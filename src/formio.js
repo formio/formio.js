@@ -290,6 +290,9 @@ module.exports = function(_baseUrl, _noalias, _domain) {
         deferred.reject(error.message);
       }
     }
+    deferred.promise.finally(function() {
+      Formio.onRequestDone();
+    });
     return deferred.promise;
   };
   Formio.onRequestError = function(deferred) {
@@ -297,6 +300,9 @@ module.exports = function(_baseUrl, _noalias, _domain) {
       deferred.reject(error);
     }
   };
+  Formio.onRequestDone = function(request) {
+    // In case someone wants to override this.
+  }
   Formio.setToken = function(token) {
     token = token || '';
     if (token === this.token) { return; }
