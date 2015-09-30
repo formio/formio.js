@@ -163,21 +163,10 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     var _id = type + 'Id';
     var _url = type + 'Url';
     return function(data) {
-      var deferred = Q.defer();
       var method = this[_id] ? 'put' : 'post';
       var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
-      Formio.request(reqUrl + this.query, method, data)
-        .then(function (result) {
-          if (result.ok) {
-            cache = {};
-            result.method = method;
-            deferred.resolve(result);
-          }
-        })
-        .catch(function(result) {
-          deferred.reject(result);
-        })
-      return deferred.promise;
+      cache = {};
+      return Formio.request(reqUrl + this.query, method, data);
     };
   };
 
@@ -193,7 +182,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     var _url = type + 'Url';
     return function() {
       var deferred = Q.defer();
-      if (!this[_id]) { return deferred.promise; }
+      if (!this[_id]) { return deferred.promise; deferred.reject('Nothing to delete'); }
       cache = {};
       return Formio.request(this[_url], 'delete');
     };
@@ -274,13 +263,18 @@ module.exports = function(_baseUrl, _noalias, _domain) {
           .then(function(response) {
             if (response.ok) {
               var token = response.headers.get('x-jwt-token');
-              if (response.status === 200 && token && token !== '') {
+              if (response.status >= 200 && response.status < 300 && token && token !== '') {
                 Formio.setToken(token);
               }
-              else if (response.status === 204 && token && token === '') {
-                Formio.setToken(token);
+              // 204 is no content. Don't try to .json() it.
+              if (response.status === 204) {
+                deferred.resolve({});
               }
-              deferred.resolve(response);
+              else {
+                response.json().then(function(body) {
+                  deferred.resolve(body);
+                });
+              }
             }
             else {
               if (response.status == 440) {
@@ -290,9 +284,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
                 Formio.onRequestError(deferred)(error);
               })
             }
-          })
-
-        //$http.get(url, query).success(deferred.resolve).error(requestError(deferred));
+          });
       }
       catch (error) {
         deferred.reject(error.message);
@@ -310,7 +302,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     if (token === this.token) { return; }
     this.token = token;
     if (!token) {
-      //this.setUser(null);
+      Formio.setUser(null);
       return localStorage.removeItem('formioToken');
     }
     localStorage.setItem('formioToken', token);

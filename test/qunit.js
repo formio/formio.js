@@ -28,10 +28,6 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
             'user.password': variables['password']
           }
         });
-      },
-      catch: function(response, assert, done) {
-        assert.equal(response, '"Username must be unique."', 'Already registered');
-        done();
       }
     },
     {
@@ -45,11 +41,9 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         });
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Logged in');
-        response.json().then(function(user) {
-          variables['user'] = user;
-          done();
-        })
+        assert.ok(true, 'Logged in');
+        variables['user'] = response;
+        done();
       }
     },
     {
@@ -58,11 +52,9 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formio.currentUser();
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Got current user');
-        response.json().then(function(user) {
-          variables['user'] = user;
-          done();
-        })
+        assert.ok(true, 'Got current user');
+        variables['user'] = response;
+        done();
       }
     },
     {
@@ -89,15 +81,13 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         });
       },
       then: function (response, assert, done) {
-        assert.ok(response.ok, 'Created project.');
-        response.json().then(function(project) {
-          variables['project'] = project;
-          assert.equal(project.title, variables['projectTitle'], 'Project Title Matches');
-          assert.equal(project.name, variables['projectName'], 'Project Name Matches');
-          assert.equal(project.description, variables['projectDescription'], 'Project Description Matches');
-          assert.equal(project.owner, variables['user']._id, 'User owns the project');
-          done();
-        });
+        assert.ok(true, 'Created project.');
+        variables['project'] = response;
+        assert.equal(response.title, variables['projectTitle'], 'Project Title Matches');
+        assert.equal(response.name, variables['projectName'], 'Project Name Matches');
+        assert.equal(response.description, variables['projectDescription'], 'Project Description Matches');
+        assert.equal(response.owner, variables['user']._id, 'User owns the project');
+        done();
       }
     },
     {
@@ -106,12 +96,10 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formio.loadProjects()
       },
       then: function (response, assert, done) {
-        assert.ok(response.ok, 'Got projects.');
-        response.json().then(function(projects) {
-          assert.equal(projects[0]._id, variables['project']._id, 'Project is returned');
-          variables['project'] = projects[0];
-          done();
-        });
+        assert.ok(true, 'Got projects.');
+        assert.equal(response[0]._id, variables['project']._id, 'Project is returned');
+        variables['project'] = response[0];
+        done();
       }
     },
     {
@@ -121,11 +109,9 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.loadProject();
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Project loaded');
-        response.json().then(function(project) {
-          assert.deepEqual(project, variables['project'], 'Project is equal to itself');
-          done();
-        });
+        assert.ok(true, 'Project loaded');
+        assert.deepEqual(response, variables['project'], 'Project is equal to itself');
+        done();
       }
     },
     {
@@ -144,16 +130,14 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.saveProject(variables['project']);
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Project saved');
-        response.json().then(function(project) {
-          assert.equal(project._id, variables['project']._id, 'Project has the same id');
-          assert.equal(project.name, variables['project'].name, 'Project has new name');
-          assert.equal(project.title, variables['project'].title, 'Project has new title');
-          assert.equal(project.description, variables['project'].description, 'Project has new description');
-          assert.notEqual(project.__v, variables['project'].__v, 'Project has new revision');
-          assert.notEqual(project.modified, variables['project'].modified, 'Project has new modified');
-          done();
-        });
+        assert.ok(true, 'Project saved');
+        assert.equal(response._id, variables['project']._id, 'Project has the same id');
+        assert.equal(response.name, variables['project'].name, 'Project has new name');
+        assert.equal(response.title, variables['project'].title, 'Project has new title');
+        assert.equal(response.description, variables['project'].description, 'Project has new description');
+        assert.notEqual(response.__v, variables['project'].__v, 'Project has new revision');
+        assert.notEqual(response.modified, variables['project'].modified, 'Project has new modified');
+        done();
       }
     },
     {
@@ -222,16 +206,14 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.saveForm(variables['form']);
       },
       then: function (response, assert, done) {
-        assert.ok(response.ok, 'Created form.');
-        response.json().then(function(form) {
-          assert.equal(form.title, variables['form'].title, 'Form Title Matches');
-          assert.equal(form.name, variables['form'].name, 'Form Name Matches');
-          assert.equal(form.path, variables['form'].path, 'Form Path Matches');
-          assert.equal(form.project, variables['project']._id, 'Form is in project');
-          assert.equal(form.owner, variables['user']._id, 'User owns the form');
-          variables['form'] = form;
-          done();
-        });
+        assert.ok(true, 'Created form.');
+        assert.equal(response.title, variables['form'].title, 'Form Title Matches');
+        assert.equal(response.name, variables['form'].name, 'Form Name Matches');
+        assert.equal(response.path, variables['form'].path, 'Form Path Matches');
+        assert.equal(response.project, variables['project']._id, 'Form is in project');
+        assert.equal(response.owner, variables['user']._id, 'User owns the form');
+        variables['form'] = response;
+        done();
       }
     },
     {
@@ -241,11 +223,9 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.loadForms();
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Forms loaded');
-        response.json().then(function(forms) {
-          assert.deepEqual(forms[0], variables['form'], 'Form is in list');
-          done();
-        });
+        assert.ok(true, 'Forms loaded');
+        assert.deepEqual(response[0], variables['form'], 'Form is in list');
+        done();
       }
     },
     {
@@ -255,11 +235,9 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.loadForm();
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Form loaded');
-        response.json().then(function(form) {
-          assert.deepEqual(form, variables['form'], 'Form is equal to itself');
-          done();
-        });
+        assert.ok(true, 'Form loaded');
+        assert.deepEqual(response, variables['form'], 'Form is equal to itself');
+        done();
       }
     },
     {
@@ -281,15 +259,14 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.saveForm(variables['form']);
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Form saved');
-        response.json().then(function(form) {
-          assert.equal(form._id, variables['form']._id, 'Form has the same id');
-          assert.equal(form.name, variables['form'].name, 'Form has the new name');
-          assert.equal(form.path, variables['form'].path, 'Form has the new path');
-          assert.equal(form.title, variables['form'].title, 'Form has the new title');
-          assert.notEqual(form.modified, variables['form'].modified, 'Form has new modified');
-          done();
-        });
+        assert.ok(true, 'Form saved');
+        assert.equal(response._id, variables['form']._id, 'Form has the same id');
+        assert.equal(response.name, variables['form'].name, 'Form has the new name');
+        assert.equal(response.path, variables['form'].path, 'Form has the new path');
+        assert.equal(response.title, variables['form'].title, 'Form has the new title');
+        assert.notEqual(response.modified, variables['form'].modified, 'Form has new modified');
+        variables['form'] = response;
+        done();
       }
     },
     {
@@ -304,14 +281,12 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.saveSubmission(variables['submission']);
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Submission saved');
-        response.json().then(function (submission) {
-          assert.deepEqual(submission.data, variables['submission'].data, 'Submission data saved');
-          assert.equal(submission.form, variables['form']._id, 'Submission has form');
-          assert.equal(submission.owner, variables['user']._id, 'Submission has user');
-          variables['submission'] = submission;
-          done();
-        });
+        assert.ok(true, 'Submission saved');
+        assert.deepEqual(response.data, variables['submission'].data, 'Submission data saved');
+        assert.equal(response.form, variables['form']._id, 'Submission has form');
+        assert.equal(response.owner, variables['user']._id, 'Submission has user');
+        variables['submission'] = response;
+        done();
       }
     },
     {
@@ -321,11 +296,9 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.loadSubmissions();
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Submissions loaded');
-        response.json().then(function(submissions) {
-          assert.deepEqual(submissions[0], variables['submission'], 'Submission is in list');
-          done();
-        });
+        assert.ok(true, 'Submissions loaded');
+        assert.deepEqual(response[0], variables['submission'], 'Submission is in list');
+        done();
       }
     },
     {
@@ -335,11 +308,9 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.loadSubmission();
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Submission loaded');
-        response.json().then(function(submission) {
-          assert.deepEqual(submission, variables['submission'], 'Submission is equal to itself');
-          done();
-        });
+        assert.ok(true, 'Submission loaded');
+        assert.deepEqual(response, variables['submission'], 'Submission is equal to itself');
+        done();
       }
     },
     {
@@ -350,13 +321,11 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formioInstance.saveSubmission(variables['submission']);
       },
       then: function(response, assert, done) {
-        assert.ok(response.ok, 'Submission updated');
-        response.json().then(function(submission) {
-          assert.equal(submission._id, variables['submission']._id, 'Submission has the same id');
-          assert.deepEqual(submission.data, variables['submission'].data, 'Submission data updated');
-          assert.notEqual(submission.modified, variables['submission'].modified, 'Form has new modified');
-          done();
-        });
+        assert.ok(true, 'Submission updated');
+        assert.equal(response._id, variables['submission']._id, 'Submission has the same id');
+        assert.deepEqual(response.data, variables['submission'].data, 'Submission data updated');
+        assert.notEqual(response.modified, variables['submission'].modified, 'Form has new modified');
+        done();
       }
     },
     // Actions
@@ -389,11 +358,9 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
         return formio.loadProjects()
       },
       then: function (response, assert, done) {
-        assert.ok(response.ok, 'Got projects.');
-        response.json().then(function(projects) {
-          assert.ok(typeof projects[0] === 'undefined', 'No more projects');
-          done();
-        });
+        assert.ok(true, 'Got projects.');
+        assert.ok(typeof response[0] === 'undefined', 'No more projects');
+        done();
       }
     },
     {
@@ -417,7 +384,7 @@ QUnit.test("Test Formio.js capabilities", function (assert) {
           item.then(response, assert, callback);
         }
         else {
-          assert.ok(response.ok, item.message);
+          assert.ok(true, item.message);
           callback();
         }
       })
