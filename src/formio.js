@@ -6,7 +6,6 @@ module.exports = function(_baseUrl, _noalias, _domain) {
 
 // The default base url.
   var baseUrl = _baseUrl || '';
-  var domain = _domain || '';
   var noalias = _noalias || false;
   var cache = {};
 
@@ -24,6 +23,15 @@ module.exports = function(_baseUrl, _noalias, _domain) {
   var getUrlParts = function(url) {
     return url.match(/^(http[s]?:\/\/)([^/]+)($|\/.*)/);
   };
+
+  var serialize = function(obj) {
+    var str = [];
+    for(var p in obj)
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
+    return str.join("&");
+  }
 
   // The formio class.
   var Formio = function(path) {
@@ -147,6 +155,9 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     var _id = type + 'Id';
     var _url = type + 'Url';
     return function(query) {
+      if (typeof query === 'object') {
+        query = '?' + serialize(query.params);
+      }
       if (!this[_id]) { return Q.defer().promise; }
       return Formio.request(this[_url] + this.query);
     };
@@ -199,6 +210,9 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     var _url = type + 'sUrl';
     return function(query) {
       query = query || '';
+      if (typeof query === 'object') {
+        query = '?' + serialize(query.params);
+      }
       return Formio.request(this[_url] + query);
     };
   };
@@ -233,6 +247,9 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     // Get the cached promise to save multiple loads.
     var cacheKey = btoa(url);
     if (method === 'GET' && cache.hasOwnProperty(cacheKey)) {
+      cache[cacheKey].finally(function() {
+        Formio.onRequestDone();
+      });
       return cache[cacheKey];
     }
     else {
