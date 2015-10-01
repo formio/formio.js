@@ -219,8 +219,8 @@ module.exports = function(_baseUrl, _noalias, _domain) {
   Formio.prototype.saveAction = _save('action');
   Formio.prototype.deleteAction = _delete('action');
   Formio.prototype.loadActions = _index('action');
-  Formio.prototype.availableActions = function() { return this.request(this.formUrl + '/actions'); };
-  Formio.prototype.actionInfo = function(name) { return this.request(this.formUrl + '/actions/' + name); };
+  Formio.prototype.availableActions = function() { return Formio.request(this.formUrl + '/actions'); };
+  Formio.prototype.actionInfo = function(name) { return Formio.request(this.formUrl + '/actions/' + name); };
 
   // Static methods.
   Formio.loadProjects = function() { return this.request(baseUrl + '/project'); };
