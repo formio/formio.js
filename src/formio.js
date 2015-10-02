@@ -65,7 +65,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
 
     // Normalize to an absolute path.
     if ((path.indexOf('http') !== 0) && (path.indexOf('//') !== 0)) {
-      baseUrl = baseUrl ? baseUrl : $location.absUrl().match(/http[s]?:\/\/api./)[0];
+      baseUrl = baseUrl ? baseUrl : window.location.href.match(/http[s]?:\/\/api./)[0];
       path = baseUrl + path;
     }
 
