@@ -137,14 +137,6 @@ module.exports = function(_baseUrl, _noalias, _domain) {
   };
 
   /**
-   * When a request error occurs.
-   * @param deferred
-   */
-  var requestError = function(deferred) {
-    this.onRequestError(deferred);
-  };
-
-  /**
    * Load a resource.
    *
    * @param type
@@ -158,7 +150,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
       if (typeof query === 'object') {
         query = '?' + serialize(query.params);
       }
-      if (!this[_id]) { return Q.defer().promise; }
+      if (!this[_id]) { return Q.reject('Missing ' + _id); }
       return Formio.request(this[_url] + this.query);
     };
   };
@@ -192,8 +184,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     var _id = type + 'Id';
     var _url = type + 'Url';
     return function() {
-      var deferred = Q.defer();
-      if (!this[_id]) { return deferred.promise; deferred.reject('Nothing to delete'); }
+      if (!this[_id]) { Q.reject('Nothing to delete'); }
       cache = {};
       return Formio.request(this[_url], 'delete');
     };
@@ -239,25 +230,18 @@ module.exports = function(_baseUrl, _noalias, _domain) {
   // Static methods.
   Formio.loadProjects = function() { return this.request(baseUrl + '/project'); };
   Formio.request = function(url, method, data) {
-    var deferred = Q.defer();
-    if (!url) { return deferred.promise; }
-    method = method || 'GET';
-    method = method.toUpperCase();
+    if (!url) { return Q.reject('No url provided'); }
+    method = (method || 'GET').toUpperCase();
 
     // Get the cached promise to save multiple loads.
     var cacheKey = btoa(url);
     if (method === 'GET' && cache.hasOwnProperty(cacheKey)) {
-      cache[cacheKey].finally(function() {
-        Formio.onRequestDone();
-      });
       return cache[cacheKey];
     }
     else {
-      // Set the cache, then send the request.
-      if (method === 'GET') {
-        cache[cacheKey] = deferred.promise;
-      }
-      try {
+      var promise = Q()
+      .then(function() {
+        // Set up and fetch request
         var headers = new Headers({
           'Accept': 'application/json',
           'Content-type': 'application/json; charset=UTF-8'
@@ -271,55 +255,54 @@ module.exports = function(_baseUrl, _noalias, _domain) {
           method: method,
           headers: headers,
           mode: 'cors'
-        }
+        };
         if (data) {
           options.body = JSON.stringify(data);
         }
 
-        fetch(url, options)
-          .then(function(response) {
-            if (response.ok) {
-              var token = response.headers.get('x-jwt-token');
-              if (response.status >= 200 && response.status < 300 && token && token !== '') {
-                Formio.setToken(token);
-              }
-              // 204 is no content. Don't try to .json() it.
-              if (response.status === 204) {
-                deferred.resolve({});
-              }
-              else {
-                response.json().then(function(body) {
-                  deferred.resolve(body);
-                });
-              }
-            }
-            else {
-              if (response.status == 440) {
-                Formio.setToken(null);
-              }
-              response.text().then(function(error) {
-                Formio.onRequestError(deferred)(error);
-              })
-            }
-          });
+        return fetch(url, options);
+      })
+      .then(function(response) {
+        // Handle fetch results
+        if (response.ok) {
+          var token = response.headers.get('x-jwt-token');
+          if (response.status >= 200 && response.status < 300 && token && token !== '') {
+            Formio.setToken(token);
+          }
+          // 204 is no content. Don't try to .json() it.
+          if (response.status === 204) {
+            return {};
+          }
+          return response.json();
+        }
+        else {
+          if (response.status === 440) {
+            Formio.setToken(null);
+          }
+          // Parse and return the error as a rejected promise to reject this promise
+          return (response.headers.get('content-type').indexOf('application/json') !== -1 ?
+            response.json() : response.text())
+            .then(function(error){
+              throw error;
+            });
+        }
+      })
+      .catch(function(err) {
+        // Remove failed promises from cache
+        delete cache[cacheKey];
+        // Propagate error so client can handle accordingly
+        throw err;
+      });
+
+      // Save the cache
+      if (method === 'GET') {
+        cache[cacheKey] = promise;
       }
-      catch (error) {
-        deferred.reject(error.message);
-      }
-    }
-    deferred.promise.finally(function() {
-      Formio.onRequestDone();
-    });
-    return deferred.promise;
-  };
-  Formio.onRequestError = function(deferred) {
-    return function(error) {
-      deferred.reject(error);
+
+      return promise;
     }
   };
-  Formio.onRequestDone = function(request) {
-    // In case someone wants to override this.
-  }
+
   Formio.setToken = function(token) {
     token = token || '';
     if (token === this.token) { return; }
@@ -355,22 +338,17 @@ module.exports = function(_baseUrl, _noalias, _domain) {
   Formio.clearCache = function() { cache = {}; };
 
   Formio.currentUser = function() {
-    var deferred = Q.defer();
     var user = this.getUser();
-    if (user) { deferred.resolve(user); return deferred.promise; }
+    if (user) { return Q(user) }
     var token = this.getToken();
-    if (!token) { deferred.resolve(null); return deferred.promise; }
-    this.request(baseUrl + '/current')
+    if (!token) { return Q(null) }
+    return this.request(baseUrl + '/current')
       .then(function(response) {
         if (response.ok) {
           Formio.setUser(response);
         }
-        deferred.resolve(response);
-      })
-      .catch(function(result) {
-        deferred.reject(result);
+        return response;
       });
-    return deferred.promise;
   };
 
 // Keep track of their logout callback.
