@@ -356,6 +356,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     return this.request(baseUrl + '/logout').finally(function() {
       this.setToken(null);
       this.setUser(null);
+      Formio.clearCache();
     }.bind(this));
   };
   Formio.fieldData = function(data, component) {
