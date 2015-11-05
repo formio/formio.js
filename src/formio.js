@@ -273,7 +273,10 @@ module.exports = function(_baseUrl, _noalias, _domain) {
           if (response.status === 204) {
             return {};
           }
-          return response.json();
+          if (response.headers.get('content-type').indexOf('application/json') !== -1) {
+            return response.json();
+          }
+          return response.text();
         }
         else {
           if (response.status === 440) {
