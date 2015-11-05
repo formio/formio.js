@@ -69,21 +69,10 @@ module.exports = function(_baseUrl, _noalias, _domain) {
       path = baseUrl + path;
     }
 
-    var hostparts = '';
+    var hostparts = getUrlParts(path);
     var parts = [];
-    var hostName = '';
-
-    if (baseUrl) {
-      hostName = baseUrl;
-      hostparts = path.match(new RegExp(hostName + '($|\/.*)'));
-      path = hostparts.length > 1 ? hostparts[1] : '';
-    }
-    else {
-      hostparts = getUrlParts(path);
-      hostName = hostparts[1] + hostparts[2];
-      path = hostparts.length > 3 ? hostparts[3] : '';
-    }
-
+    var hostName = hostparts[1] + hostparts[2];
+    path = hostparts.length > 3 ? hostparts[3] : '';
     var queryparts = path.split('?');
     if (queryparts.length > 1) {
       path = queryparts[0];
