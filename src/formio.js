@@ -228,7 +228,13 @@ module.exports = function(_baseUrl, _noalias, _domain) {
   Formio.prototype.actionInfo = function(name) { return Formio.request(this.formUrl + '/actions/' + name); };
 
   // Static methods.
-  Formio.loadProjects = function() { return this.request(baseUrl + '/project'); };
+  Formio.loadProjects = function(query) {
+    query = query || '';
+    if (typeof query === 'object') {
+      query = '?' + serialize(query.params);
+    }
+    return this.request(baseUrl + '/project' + query);
+};
   Formio.request = function(url, method, data) {
     if (!url) { return Q.reject('No url provided'); }
     method = (method || 'GET').toUpperCase();
