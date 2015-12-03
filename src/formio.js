@@ -31,7 +31,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
         str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
       }
     return str.join("&");
-  }
+  };
 
   // The formio class.
   var Formio = function(path) {
@@ -98,13 +98,15 @@ module.exports = function(_baseUrl, _noalias, _domain) {
       // Register an array of items.
       var registerItems = function(items, base, staticBase) {
         for (var i in items) {
-          var item = items[i];
-          if (item instanceof Array) {
-            registerItems(item, base, true);
-          }
-          else {
-            var newBase = registerPath(item, base);
-            base = staticBase ? base : newBase;
+          if (items.hasOwnProperty(i)) {
+            var item = items[i];
+            if (item instanceof Array) {
+              registerItems(item, base, true);
+            }
+            else {
+              var newBase = registerPath(item, base);
+              base = staticBase ? base : newBase;
+            }
           }
         }
       };
@@ -126,11 +128,13 @@ module.exports = function(_baseUrl, _noalias, _domain) {
       this.formId = path.replace(/^\/+|\/+$/g, '');
       var items = ['submission', 'action'];
       for (var i in items) {
-        var item = items[i];
-        this[item + 'sUrl'] = hostName + path + '/' + item;
-        if ((this.pathType === item) && (subs.length > 2) && subs[2]) {
-          this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
-          this[item + 'Url'] = hostName + path + subs[0];
+        if (items.hasOwnProperty(i)) {
+          var item = items[i];
+          this[item + 'sUrl'] = hostName + path + '/' + item;
+          if ((this.pathType === item) && (subs.length > 2) && subs[2]) {
+            this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
+            this[item + 'Url'] = hostName + path + subs[0];
+          }
         }
       }
     }
@@ -148,10 +152,16 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     var _url = type + 'Url';
     return function(query) {
       if (typeof query === 'object') {
-        query = '?' + serialize(query.params);
+        query = serialize(query.params);
+      }
+      if (query) {
+        query = this.query ? (this.query + '&' + query) : ('?' + query);
+      }
+      else {
+        query = this.query;
       }
       if (!this[_id]) { return Q.reject('Missing ' + _id); }
-      return Formio.request(this[_url] + this.query);
+      return Formio.request(this[_url] + query);
     };
   };
 
@@ -234,7 +244,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
       query = '?' + serialize(query.params);
     }
     return this.request(baseUrl + '/project' + query);
-};
+  };
   Formio.request = function(url, method, data) {
     if (!url) { return Q.reject('No url provided'); }
     method = (method || 'GET').toUpperCase();
@@ -343,7 +353,7 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     baseUrl = url;
     noalias = _noalias;
     Formio.baseUrl = baseUrl;
-  }
+  };
   Formio.clearCache = function() { cache = {}; };
 
   Formio.currentUser = function() {
@@ -406,4 +416,4 @@ module.exports = function(_baseUrl, _noalias, _domain) {
     }
   };
   return Formio;
-}
+};
