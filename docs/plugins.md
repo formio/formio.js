@@ -10,14 +10,19 @@ Registers a plugin with Formio.js. An optional name parameter can be provided to
 
 A plugin must be an object, and can have any of the following optional properties:
 
- - `priority`: The priority of the plugin relative to other plugins that determines call order. Higher numbers have higher priority.
+ - `priority`: The priority of the plugin relative to other plugins that determines call order. Higher numbers have higher priority. If not specified it will default to a priority of 0.
  - `init`: An initialization function called when registered with Formio. It will receive the global Formio object as its first parameter.
+ - `deregister`: A deregistration function called when deregistering with Formio. It will receive the global Formio object as its first parameter.
 
 See [below](#plugin-hooks) on using hooks in your plugin.
 
 ### Formio.getPlugin(name)
 
 Returns the plugin registered with the given name.
+
+### Formio.deregisterPlugin(plugin)
+
+Deregisters a plugin with Formio.js. It will call the `deregister` function on the plugin before deregistering. The `plugin` argument can be the instance of the plugin or the optional name given when registered. Returns true if the plugin was successfully deregistered, false if the plugin does not exist.
 
 ### Formio.events
 

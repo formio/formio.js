@@ -583,4 +583,19 @@ Formio.getPlugin = function(name) {
   }, null);
 };
 
+/**
+ * Deregisters a plugin with Formio.js.
+ * @param  plugin The instance or name of the plugin
+ * @return true if deregistered, false otherwise
+ */
+Formio.deregisterPlugin = function(plugin) {
+  var beforeLength = plugins.length;
+  plugins = plugins.filter(function(p) {
+    if(p !== plugin && p.__name !== plugin) return true;
+    (p.deregister || noop).call(p, Formio);
+    return false;
+  });
+  return beforeLength !== plugins.length;
+};
+
 module.exports = Formio;
