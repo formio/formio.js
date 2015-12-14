@@ -205,7 +205,7 @@ var _load = function(type) {
   var _id = type + 'Id';
   var _url = type + 'Url';
   return function(query, opts) {
-    if (typeof query === 'object') {
+    if (query && typeof query === 'object') {
       query = serialize(query.params);
     }
     if (query) {
@@ -265,7 +265,7 @@ var _index = function(type) {
   var _url = type + 'Url';
   return function(query, opts) {
     query = query || '';
-    if (typeof query === 'object') {
+    if (query && typeof query === 'object') {
       query = '?' + serialize(query.params);
     }
     return this.makeRequest(type, this[_url] + query, 'get', null, opts);
