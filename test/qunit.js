@@ -1,4 +1,6 @@
-QUnit.test( "Test URL capabilities", function(assert) {
+Formio.setBaseUrl('https://api.form.io');
+
+QUnit.module('URL capabilities', function() {
   var tests = {
     'http://form.io/project/234234234234/form/23234234234234': {
       projectUrl: 'http://form.io/project/234234234234',
@@ -258,10 +260,220 @@ QUnit.test( "Test URL capabilities", function(assert) {
   };
 
   for (var path in tests) {
-    var test = tests[path];
-    var formio = new Formio(path);
-    for (var param in test) {
-      assert.equal(formio[param], test[param], param + ' must match.');
-    }
+    QUnit.test('Test URL: ' + path, function(assert) {
+      var test = tests[path];
+      var formio = new Formio(path);
+      for (var param in test) {
+        assert.equal(formio[param], test[param], param + ' must match.');
+      }
+    });
   }
+});
+
+
+QUnit.module('Plugins', function(hooks) {
+  var plugin;
+
+  hooks.beforeEach(function(assert) {
+    assert.equal(Formio.getPlugin('test-plugin'), undefined, 'No plugin may be returned under the name `test-plugin`');
+
+    plugin = {
+      init: sinon.spy()
+    };
+
+    Formio.registerPlugin(plugin, 'test-plugin');
+    assert.ok(plugin.init.calledOnce, 'plugin.init must be called exactly once');
+    assert.ok(plugin.init.calledOn(plugin), 'plugin.init must be called on plugin as `this`');
+    assert.ok(plugin.init.calledWithExactly(Formio), 'plugin.init must be given Formio as argument');
+    assert.equal(Formio.getPlugin('test-plugin'), plugin, 'getPlugin must return plugin');
+
+  });
+
+  hooks.afterEach(function(assert) {
+    assert.equal(Formio.getPlugin('test-plugin'), plugin, 'getPlugin must return plugin');
+
+    plugin.deregister = sinon.spy();
+    Formio.deregisterPlugin(plugin, 'test-plugin');
+    assert.ok(plugin.deregister.calledOnce, 'plugin.deregister must be called exactly once');
+    assert.ok(plugin.deregister.calledOn(plugin), 'plugin.deregister must be called on plugin as `this`');
+    assert.ok(plugin.deregister.calledWithExactly(Formio), 'plugin.deregister must be given Formio as argument');
+    assert.equal(Formio.getPlugin('test-plugin'), undefined, 'No plugin may be returned under the name `test-plugin`');
+  });
+
+  var testRequest = function testRequest(url, method, type) {
+    var fnName;
+    switch(method) {
+      case 'GET': fnName = 'load' + _.capitalize(type); break;
+      case 'POST':
+      case 'PUT': fnName = 'save' + _.capitalize(type); break;
+      case 'DELETE': fnName = 'delete' + _.capitalize(type); break;
+    }
+
+    QUnit.test('Plugin ' + method + ' ' + fnName, function(assert) {
+      var done = assert.async();
+
+      var formio = new Formio(url);
+      method = method.toUpperCase();
+      var testData = {testRequest: 'TEST_REQUEST'};
+      var testOpts = {testOption: true};
+      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
+
+      var expectedArgs = {
+        formio: formio,
+        type: type,
+        method: method,
+        url: formio[type + (method === 'POST' ? 'sUrl' : 'Url')],
+        data: _.startsWith(fnName, 'save') ? testData : null,
+        opts: testOpts
+      };
+
+      // Set up plugin hooks
+      plugin.preRequest = function(requestArgs) {
+        assert.step(1, 'preRequest hook should be called first');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return Q()
+        .then(function() {
+          assert.step(3, 'preRequest promise should resolve third');
+          // TODO
+        });
+      };
+      plugin.request = function(requestArgs) {
+        assert.step(4, 'request hook should be called fourth');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return Q()
+        .then(function() {
+          assert.step(5, 'request promise should resolve fifth');
+          return testResult;
+        });
+      };
+      plugin.wrapRequestPromise = function(promise, requestArgs) {
+        assert.step(2, 'wrapRequestPromise hook should be called second');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return promise.then(function(result) {
+          assert.step(6, 'wrapRequestPromise post-result promise should resolve sixth');
+          return result;
+        });
+      };
+
+      var promise;
+      if(_.startsWith(fnName, 'save')) {
+        promise = formio[fnName](testData, testOpts);
+      }
+      else if(_.startsWith(fnName, 'load')) {
+        promise = formio[fnName](null, testOpts);
+      }
+      else {
+        promise = formio[fnName](testOpts);
+      }
+      promise.then(function(result) {
+        assert.step(7, 'post request promise should resolve last');
+        done();
+      });
+    });
+  };
+
+  var tests = [
+    {
+      url: 'https://api.form.io/project/myproject',
+      method: 'GET',
+      type: 'project'
+    },
+    {
+      url: '',
+      method: 'POST',
+      type: 'project'
+    },
+    {
+      url: 'https://api.form.io/project/myproject',
+      method: 'PUT',
+      type: 'project'
+    },
+    {
+      url: 'https://api.form.io/project/myproject',
+      method: 'DELETE',
+      type: 'project'
+    },
+
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567',
+      method: 'GET',
+      type: 'form'
+    },
+    {
+      url: 'https://api.form.io/project/myproject',
+      method: 'POST',
+      type: 'form'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567',
+      method: 'PUT',
+      type: 'form'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567',
+      method: 'DELETE',
+      type: 'form'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/',
+      method: 'GET',
+      type: 'forms'
+    },
+
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210',
+      method: 'GET',
+      type: 'submission'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567',
+      method: 'POST',
+      type: 'submission'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210',
+      method: 'PUT',
+      type: 'submission'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210',
+      method: 'DELETE',
+      type: 'submission'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567',
+      method: 'GET',
+      type: 'submissions'
+    },
+
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210',
+      method: 'GET',
+      type: 'action'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567',
+      method: 'POST',
+      type: 'action'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210',
+      method: 'PUT',
+      type: 'action'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210',
+      method: 'DELETE',
+      type: 'action'
+    },
+    {
+      url: 'https://api.form.io/project/myproject/form/0123456789ABCDEF01234567',
+      method: 'GET',
+      type: 'actions'
+    }
+  ]
+
+  tests.forEach(function(test) {
+    testRequest(test.url, test.method, test.type);
+  });
 });
