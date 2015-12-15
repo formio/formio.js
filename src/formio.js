@@ -344,7 +344,7 @@ Formio.makeStaticRequest = function(url, method, data) {
   });
 
   return pluginAlter('wrapStaticRequestPromise', request, requestArgs);
-}
+};
 
 // Static methods.
 Formio.loadProjects = function(query) {

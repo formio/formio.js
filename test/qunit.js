@@ -300,6 +300,7 @@ QUnit.module('Plugins', function(hooks) {
     assert.equal(Formio.getPlugin('test-plugin'), undefined, 'No plugin may be returned under the name `test-plugin`');
   });
 
+  // Test a request to see if the plugin flow order is correct
   var testRequest = function testRequest(url, method, type) {
     var fnName;
     switch(method) {
@@ -351,6 +352,7 @@ QUnit.module('Plugins', function(hooks) {
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return promise.then(function(result) {
           assert.step(6, 'wrapRequestPromise post-result promise should resolve sixth');
+          assert.deepEqual(result, testResult, 'Result should match result from request hook');
           return result;
         });
       };
@@ -367,6 +369,7 @@ QUnit.module('Plugins', function(hooks) {
       }
       promise.then(function(result) {
         assert.step(7, 'post request promise should resolve last');
+        assert.deepEqual(result, testResult, 'Result should match result from request hook');
         done();
       });
     });
@@ -476,4 +479,74 @@ QUnit.module('Plugins', function(hooks) {
   tests.forEach(function(test) {
     testRequest(test.url, test.method, test.type);
   });
+
+  var testStaticRequest = function testStaticRequest(fnName, url, method, data) {
+    QUnit.test('Plugin ' + fnName, function(assert) {
+      var done = assert.async();
+
+      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
+
+      var expectedArgs = {
+        url: url,
+        method: method,
+        data: data,
+      };
+
+      // Set up plugin hooks
+      plugin.preStaticRequest = function(requestArgs) {
+        assert.step(1, 'preRequest hook should be called first');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return Q()
+        .then(function() {
+          assert.step(3, 'preRequest promise should resolve third');
+          // TODO
+        });
+      };
+      plugin.staticRequest = function(requestArgs) {
+        assert.step(4, 'request hook should be called fourth');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return Q()
+        .then(function() {
+          assert.step(5, 'request promise should resolve fifth');
+          return testResult;
+        });
+      };
+      plugin.wrapStaticRequestPromise = function(promise, requestArgs) {
+        assert.step(2, 'wrapRequestPromise hook should be called second');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return promise.then(function(result) {
+          assert.step(6, 'wrapRequestPromise post-result promise should resolve sixth');
+          assert.deepEqual(result, testResult, 'Result should match result from request hook');
+          return result;
+        });
+      };
+
+      Formio[fnName]()
+      .then(function(result) {
+        assert.step(7, 'post request promise should resolve last');
+        assert.deepEqual(result, testResult, 'Result should match result from request hook');
+        done();
+      });
+    });
+  }
+
+  var staticTests = [
+    {
+      fnName: 'loadProjects',
+      url: 'https://api.form.io/project',
+      method: 'GET',
+      data: undefined
+    },
+    {
+      fnName: 'logout',
+      url: 'https://api.form.io/logout',
+      method: 'GET',
+      data: undefined
+    }
+  ];
+
+  staticTests.forEach(function(test) {
+    testStaticRequest(test.fnName, test.url, test.method, test.type);
+  });
+
 });
