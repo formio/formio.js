@@ -17,47 +17,47 @@ QUnit.module('URL capabilities', function() {
       submissionId: '',
       query: ''
     },
-    'http://form.io/project/234234234234/form/23234234234234': {
-      projectUrl: 'http://form.io/project/234234234234',
+    'http://form.io/form/23234234234234': {
+      projectUrl: '',
       projectsUrl: 'http://form.io/project',
-      projectId: '234234234234',
-      formsUrl: 'http://form.io/project/234234234234/form',
-      formUrl: 'http://form.io/project/234234234234/form/23234234234234',
+      projectId: '',
+      formsUrl: 'http://form.io/form',
+      formUrl: 'http://form.io/form/23234234234234',
       formId: '23234234234234',
-      actionsUrl: 'http://form.io/project/234234234234/form/23234234234234/action',
+      actionsUrl: 'http://form.io/form/23234234234234/action',
       actionUrl: '',
       actionId: '',
-      submissionsUrl: 'http://form.io/project/234234234234/form/23234234234234/submission',
+      submissionsUrl: 'http://form.io/form/23234234234234/submission',
       submissionUrl: '',
       submissionId: '',
       query: ''
     },
-    'http://form.io/project/234234234234/form/23234234234234/submission/982398220983': {
-      projectUrl: 'http://form.io/project/234234234234',
+    'http://form.io/form/23234234234234/submission/982398220983': {
+      projectUrl: '',
       projectsUrl: 'http://form.io/project',
-      projectId: '234234234234',
-      formsUrl: 'http://form.io/project/234234234234/form',
-      formUrl: 'http://form.io/project/234234234234/form/23234234234234',
+      projectId: '',
+      formsUrl: 'http://form.io/form',
+      formUrl: 'http://form.io/form/23234234234234',
       formId: '23234234234234',
-      actionsUrl: 'http://form.io/project/234234234234/form/23234234234234/action',
+      actionsUrl: 'http://form.io/form/23234234234234/action',
       actionUrl: '',
       actionId: '',
-      submissionsUrl: 'http://form.io/project/234234234234/form/23234234234234/submission',
-      submissionUrl: 'http://form.io/project/234234234234/form/23234234234234/submission/982398220983',
+      submissionsUrl: 'http://form.io/form/23234234234234/submission',
+      submissionUrl: 'http://form.io/form/23234234234234/submission/982398220983',
       submissionId: '982398220983',
       query: ''
     },
-    'http://form.io/project/234234234234/form/23234234234234/action/234230987872': {
-      projectUrl: 'http://form.io/project/234234234234',
+    'http://form.io/form/23234234234234/action/234230987872': {
+      projectUrl: '',
       projectsUrl: 'http://form.io/project',
-      projectId: '234234234234',
-      formsUrl: 'http://form.io/project/234234234234/form',
-      formUrl: 'http://form.io/project/234234234234/form/23234234234234',
+      projectId: '',
+      formsUrl: 'http://form.io/form',
+      formUrl: 'http://form.io/form/23234234234234',
       formId: '23234234234234',
-      actionsUrl: 'http://form.io/project/234234234234/form/23234234234234/action',
-      actionUrl: 'http://form.io/project/234234234234/form/23234234234234/action/234230987872',
+      actionsUrl: 'http://form.io/form/23234234234234/action',
+      actionUrl: 'http://form.io/form/23234234234234/action/234230987872',
       actionId: '234230987872',
-      submissionsUrl: 'http://form.io/project/234234234234/form/23234234234234/submission',
+      submissionsUrl: 'http://form.io/form/23234234234234/submission',
       submissionUrl: '',
       submissionId: '',
       query: ''
@@ -259,15 +259,15 @@ QUnit.module('URL capabilities', function() {
     }
   };
 
-  for (var path in tests) {
+  _.each(tests, function(test, path) {
     QUnit.test('Test URL: ' + path, function(assert) {
-      var test = tests[path];
       var formio = new Formio(path);
       for (var param in test) {
+        console.log(path, param, formio[param], test[param]);
         assert.equal(formio[param], test[param], param + ' must match.');
       }
     });
-  }
+  });
 });
 
 

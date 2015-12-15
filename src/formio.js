@@ -162,9 +162,11 @@ var Formio = function(path) {
 
     registerItems(['project', 'form', ['submission', 'action']], hostName);
 
-    if(!this.projectId) {
-      this.projectUrl = hostName;
-      this.projectId = (hostparts.length > 2) ? hostparts[2].split('.')[0] : '';
+    if (!this.projectId) {
+      if (hostparts.length > 2 && hostparts[2].split('.').length > 2) {
+        this.projectUrl = hostName;
+        this.projectId = hostparts[2].split('.')[0];
+      }
     }
   }
   else {
