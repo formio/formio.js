@@ -1,47 +1,19 @@
+<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>QUnit Example</title>
-  <link rel="stylesheet" href="https://code.jquery.com/qunit/qunit-1.19.0.css">
-  <script type="text/javascript">
-    // Polyfill for Function#bind which doesn't exist in phantomjs < 2.0.0.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind#Polyfill
-    if (!Function.prototype.bind) {
-      Function.prototype.bind = function(oThis) {
-        if (typeof this !== 'function') {
-          // closest thing possible to the ECMAScript 5
-          // internal IsCallable function
-          throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-        }
-
-        var aArgs   = Array.prototype.slice.call(arguments, 1),
-          fToBind = this,
-          fNOP    = function() {},
-          fBound  = function() {
-            return fToBind.apply(this instanceof fNOP
-                ? this
-                : oThis,
-              aArgs.concat(Array.prototype.slice.call(arguments)));
-          };
-
-        if (this.prototype) {
-          // native functions don't have a prototype
-          fNOP.prototype = this.prototype;
-        }
-        fBound.prototype = new fNOP();
-
-        return fBound;
-      };
-    }
-  </script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/es6-shim/0.33.3/es6-shim.js"></script>
+  <title>Formio.js QUnit Test</title>
+  <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css">
+  <script src="../node_modules/phantomjs-polyfill/bind-polyfill.js"></script>
 </head>
 <body>
 <div id="qunit"></div>
 <div id="qunit-fixture"></div>
-<script src="https://code.jquery.com/qunit/qunit-1.19.0.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/async/1.4.2/async.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chance/0.5.6/chance.min.js"></script>
+<script src="../node_modules/q/q.js"></script>
+<script src="../node_modules/lodash/index.js"></script>
+<script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+<script src="../node_modules/qunit-assert-step/qunit-assert-step.js"></script>
+<script src="../node_modules/sinon/pkg/sinon-1.17.2.js"></script>
 <script src="../dist/formio.js"></script>
 <script src="qunit.js"></script>
 </body>
