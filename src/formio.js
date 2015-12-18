@@ -492,6 +492,9 @@ Formio.getUser = function() {
 Formio.setBaseUrl = function(url) {
   baseUrl = url;
 };
+Formio.getBaseUrl = function() {
+  return baseUrl;
+}
 Formio.clearCache = function() { cache = {}; };
 
 Formio.currentUser = function() {
