@@ -4,7 +4,7 @@
   "description": "Common js library for client side interaction with <form.io>",
   "main": "dist/formio.js",
   "scripts": {
-    "test": "node test/test"
+    "test": "node-qunit-phantomjs test/qunit.html --verbose"
   },
   "repository": {
     "type": "git",
