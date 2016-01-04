@@ -1,4 +1,4 @@
-/*global Formio: true, QUnit: true, chance: true, Q: true, sinon: true, _: true, FetchMock: true*/
+/*global Formio: true, QUnit: true, chance: true, Q: true, sinon: true, _: true, fetchMock: true*/
 var protocol = 'https';
 var domain = 'localhost:3000';
 Formio.setBaseUrl(protocol + '://api.' + domain);
@@ -567,7 +567,7 @@ QUnit.module('Test Formio.js capabilities', function () {
       var done = assert.async();
       if (test.mock) {
         var mock = test.mock(assert);
-        FetchMock.mock(mock.url, mock.method, mock.response);
+        fetchMock.mock(mock.url, mock.method, mock.response);
       }
       Q()
       .then(function() {
@@ -582,7 +582,7 @@ QUnit.module('Test Formio.js capabilities', function () {
         done();
       })
       .finally(function() {
-        if (test.mock) FetchMock.restore();
+        if (test.mock) fetchMock.restore();
       });
     });
   };
