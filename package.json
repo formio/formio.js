@@ -4,7 +4,7 @@
   "description": "Common js library for client side interaction with <form.io>",
   "main": "dist/formio.js",
   "scripts": {
-    "test": "node test/test"
+    "test": "node-qunit-phantomjs test/qunit.html --verbose"
   },
   "repository": {
     "type": "git",
@@ -24,7 +24,9 @@
   },
   "devDependencies": {
     "browserify": "^11.2.0",
+    "chance": "^0.8.0",
     "del": "^2.0.2",
+    "fetch-mock": "^4.0.1",
     "gulp": "^3.9.0",
     "gulp-jshint": "^1.11.2",
     "gulp-load-plugins": "^1.0.0-rc.1",
