@@ -1318,3 +1318,60 @@ QUnit.module('Test Formio.js capabilities', function () {
 
   tests.forEach(testCapability);
 });
+
+QUnit.module('Formio.currentUser', function(hooks) {
+  var plugin;
+
+  hooks.beforeEach(function() {
+    plugin = {
+      wrapStaticRequestPromise: sinon.spy(function(promise, promiseArgs) {
+        return promise;
+      }),
+      staticRequest: sinon.spy(function() {
+        // Return dummy user
+        var userId = generateID();
+        return Q({
+          _id: userId,
+          created: new Date().toISOString(),
+          modified: new Date().toISOString(),
+          data: {
+            email: 'user@place.com',
+            name: 'user'
+          },
+          externalIds: [],
+          externalTokens: [],
+          form: generateID(),
+          owner: userId
+        });
+      })
+    };
+    Formio.registerPlugin(plugin, 'currentUserTestPlugin');
+  });
+
+  hooks.afterEach(function() {
+    Formio.deregisterPlugin(plugin);
+  });
+
+  QUnit.test('Initial currentUser() should make static request', function(assert) {
+    var done = assert.async();
+    // Force token
+    Formio.token = chance.string({length: 30});
+    Formio.currentUser()
+    .then(function() {
+      assert.ok(plugin.staticRequest.calledOnce, 'staticRequest should be called once');
+      done();
+    })
+    assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
+  });
+
+  QUnit.test('Next currentUser() should return cached value', function(assert) {
+    var done = assert.async();
+    // Clear token
+    Formio.currentUser()
+    .then(function() {
+      assert.notOk(plugin.staticRequest.called, 'staticRequest should not be called');
+      done();
+    })
+    assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
+  });
+})
