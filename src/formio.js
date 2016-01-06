@@ -498,11 +498,22 @@ Formio.getBaseUrl = function() {
 Formio.clearCache = function() { cache = {}; };
 
 Formio.currentUser = function() {
+  var url = baseUrl + '/current';
   var user = this.getUser();
-  if (user) { return Q(user) }
+  if (user) {
+    return pluginAlter('wrapStaticRequestPromise', Q(user), {
+      url: url,
+      method: 'GET'
+    })
+  }
   var token = this.getToken();
-  if (!token) { return Q(null) }
-  return this.makeStaticRequest(baseUrl + '/current')
+  if (!token) {
+    return pluginAlter('wrapStaticRequestPromise', Q(null), {
+      url: url,
+      method: 'GET'
+    })
+  }
+  return this.makeStaticRequest(url)
   .then(function(response) {
     Formio.setUser(response);
     return response;
