@@ -113,7 +113,7 @@ var Formio = function(path) {
   this.query = '';
 
   // Normalize to an absolute path.
-  if ((path.indexOf('http') !== -1) && (path.indexOf('//') !== -1)) {
+  if ((path.indexOf('http') !== 0) && (path.indexOf('//') !== 0)) {
     baseUrl = baseUrl ? baseUrl : window.location.href.match(/http[s]?:\/\/api./)[0];
     path = baseUrl + path;
   }
