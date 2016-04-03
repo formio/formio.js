@@ -530,6 +530,7 @@ Formio.logout = function() {
 };
 Formio.fieldData = function(data, component) {
   if (!data) { return ''; }
+  if (!component || !component.key) { return data; }
   if (component.key.indexOf('.') !== -1) {
     var value = data;
     var parts = component.key.split('.');
