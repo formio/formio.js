@@ -71,7 +71,12 @@ var pluginAlter = function(pluginFn, value) {
  */
 var getUrlParts = function(url) {
   var regex = '^(http[s]?:\\/\\/)';
-  regex += baseUrl ? '(' + baseUrl.replace(/^http[s]?:\/\//, '') + ')' : '([^/]+)';
+  if (baseUrl && url.indexOf(baseUrl) === 0) {
+    regex += '(' + baseUrl.replace(/^http[s]?:\/\//, '') + ')';
+  }
+  else {
+    regex += '([^/]+)';
+  }
   regex += '($|\\/.*)';
   return url.match(new RegExp(regex));
 };
