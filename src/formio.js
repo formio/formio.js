@@ -70,7 +70,15 @@ var pluginAlter = function(pluginFn, value) {
  * @returns {*}
  */
 var getUrlParts = function(url) {
-  return url.match(/^(http[s]?:\/\/)([^/]+)($|\/.*)/);
+  var regex = '^(http[s]?:\\/\\/)';
+  if (baseUrl && url.indexOf(baseUrl) === 0) {
+    regex += '(' + baseUrl.replace(/^http[s]?:\/\//, '') + ')';
+  }
+  else {
+    regex += '([^/]+)';
+  }
+  regex += '($|\\/.*)';
+  return url.match(new RegExp(regex));
 };
 
 var serialize = function(obj) {
