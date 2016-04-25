@@ -6,7 +6,7 @@ var EventEmitter = require('eventemitter2').EventEmitter2;
 var copy = require('shallow-copy');
 
 // The default base url.
-var baseUrl = '';
+var baseUrl = 'https://api.form.io';
 
 var plugins = [];
 
