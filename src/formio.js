@@ -475,9 +475,21 @@ Formio.setToken = function(token) {
   this.token = token;
   if (!token) {
     Formio.setUser(null);
-    return localStorage.removeItem('formioToken');
+    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+    try {
+      return localStorage.removeItem('formioToken');
+    }
+    catch(err) {
+      return;
+    }
   }
-  localStorage.setItem('formioToken', token);
+  // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+  try {
+    localStorage.setItem('formioToken', token);
+  }
+  catch(err) {
+    // Do nothing.
+  }
   Formio.currentUser(); // Run this so user is updated if null
 };
 Formio.getToken = function() {
@@ -489,9 +501,21 @@ Formio.getToken = function() {
 Formio.setUser = function(user) {
   if (!user) {
     this.setToken(null);
-    return localStorage.removeItem('formioUser');
+    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+    try {
+      return localStorage.removeItem('formioUser');
+    }
+    catch(err) {
+      return;
+    }
   }
-  localStorage.setItem('formioUser', JSON.stringify(user));
+  // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+  try {
+    localStorage.setItem('formioUser', JSON.stringify(user));
+  }
+  catch(err) {
+    // Do nothing.
+  }
 };
 Formio.getUser = function() {
   return JSON.parse(localStorage.getItem('formioUser') || null);
