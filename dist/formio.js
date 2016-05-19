@@ -3097,7 +3097,7 @@ var copy = require('shallow-copy');
 
 // The default base url.
 var baseUrl = 'https://api.form.io';
-var appUrl = '';
+var appUrl = baseUrl;
 var appUrlSet = false;
 
 var plugins = [];
@@ -3620,6 +3620,9 @@ Formio.getUser = function() {
 
 Formio.setBaseUrl = function(url) {
   baseUrl = url;
+  if (!appUrlSet) {
+    appUrl = url;
+  }
 };
 Formio.getBaseUrl = function() {
   return baseUrl;
