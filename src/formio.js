@@ -7,6 +7,8 @@ var copy = require('shallow-copy');
 
 // The default base url.
 var baseUrl = 'https://api.form.io';
+var appUrl = baseUrl;
+var appUrlSet = false;
 
 var plugins = [];
 
@@ -201,6 +203,11 @@ var Formio = function(path) {
         }
       }
     }
+  }
+
+  // Set the app url if it is not set.
+  if (!appUrlSet) {
+    appUrl = this.projectUrl;
   }
 };
 
@@ -523,10 +530,20 @@ Formio.getUser = function() {
 
 Formio.setBaseUrl = function(url) {
   baseUrl = url;
+  if (!appUrlSet) {
+    appUrl = url;
+  }
 };
 Formio.getBaseUrl = function() {
   return baseUrl;
-}
+};
+Formio.setAppUrl = function(url) {
+  appUrl = url;
+  appUrlSet = true;
+};
+Formio.getAppUrl = function() {
+  return appUrl;
+};
 Formio.clearCache = function() { cache = {}; };
 
 Formio.currentUser = function() {
