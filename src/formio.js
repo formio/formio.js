@@ -441,6 +441,10 @@ Formio.request = function(url, method, data) {
         else {
           if (response.status === 440) {
             Formio.setToken(null);
+            Formio.events.emit('formio.sessionExpired', response.body);
+          }
+          else if (response.status === 401) {
+            Formio.events.emit('formio.unauthorized', response.body);
           }
           // Parse and return the error as a rejected promise to reject this promise
           return (response.headers.get('content-type').indexOf('application/json') !== -1 ?
@@ -451,6 +455,10 @@ Formio.request = function(url, method, data) {
         }
       })
       .catch(function(err) {
+        if (err === 'Bad Token') {
+          Formio.setToken(null);
+          Formio.events.emit('formio.badToken', err);
+        }
         // Remove failed promises from cache
         delete cache[cacheKey];
         // Propagate error so client can handle accordingly
