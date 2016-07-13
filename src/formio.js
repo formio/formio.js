@@ -4,6 +4,7 @@ require('whatwg-fetch');
 var Q = require('Q');
 var EventEmitter = require('eventemitter2').EventEmitter2;
 var copy = require('shallow-copy');
+var providers = require('./providers');
 
 // The default base url.
 var baseUrl = 'https://api.form.io';
@@ -338,6 +339,26 @@ Formio.prototype.deleteAction = _delete('action');
 Formio.prototype.loadActions = _index('actions');
 Formio.prototype.availableActions = function() { return this.makeRequest('availableActions', this.formUrl + '/actions'); };
 Formio.prototype.actionInfo = function(name) { return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name); };
+
+Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback) {
+  if (providers.storage.hasOwnProperty(storage)) {
+    var provider = new providers.storage[storage](this);
+    return provider.uploadFile(file, fileName, dir, progressCallback);
+  }
+  else {
+    return Q.reject('Storage provider not found');
+  }
+}
+
+Formio.prototype.downloadFile = function(storage, file) {
+  if (providers.storage.hasOwnProperty(storage)) {
+    var provider = new providers.storage[storage](this);
+    return provider.downloadFile(file);
+  }
+  else {
+    return Q.reject('Storage provider not found');
+  }
+}
 
 Formio.makeStaticRequest = function(url, method, data) {
   var self = this;
