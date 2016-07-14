@@ -32,6 +32,7 @@ module.exports = function(formio) {
           xhr.onload = function() {
             if (xhr.status >= 200 && xhr.status < 300) {
               defer.resolve({
+                storage: 's3',
                 name: fileName,
                 bucket: response.bucket,
                 key: response.data.key,

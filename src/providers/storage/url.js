@@ -29,6 +29,7 @@ module.exports = function(formio) {
         if (xhr.status >= 200 && xhr.status < 300) {
           // Need to test if xhr.response is decoded or not.
           defer.resolve({
+            storage: 'url',
             name: fileName,
             url: xhr.response.url,
             size: file.size,

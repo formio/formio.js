@@ -341,27 +341,54 @@ Formio.prototype.availableActions = function() { return this.makeRequest('availa
 Formio.prototype.actionInfo = function(name) { return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name); };
 
 Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback) {
-  if (providers.storage.hasOwnProperty(storage)) {
-    var provider = new providers.storage[storage](this);
-    return provider.uploadFile(file, fileName, dir, progressCallback);
+  var requestArgs = {
+    provider: storage,
+    method: 'upload',
+    file: file,
+    fileName: fileName,
+    dir: dir
   }
-  else {
-    return Q.reject('Storage provider not found');
-  }
+  var request = pluginWait('preRequest', requestArgs)
+    .then(function() {
+      if (providers.storage.hasOwnProperty(storage)) {
+        var provider = new providers.storage[storage](this);
+        return provider.uploadFile(file, fileName, dir, progressCallback);
+      }
+      else {
+        throw('Storage provider not found');
+      }
+    }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
 }
 
-Formio.prototype.downloadFile = function(storage, file) {
-  if (providers.storage.hasOwnProperty(storage)) {
-    var provider = new providers.storage[storage](this);
-    return provider.downloadFile(file);
-  }
-  else {
-    return Q.reject('Storage provider not found');
-  }
+Formio.prototype.downloadFile = function(file) {
+  var requestArgs = {
+    method: 'download',
+    file: file
+  };
+
+  var request = pluginWait('preRequest', requestArgs)
+    .then(function() {
+      return pluginGet('fileRequest', requestArgs)
+        .then(function(result) {
+          if (result === null || result === undefined) {
+            if (providers.storage.hasOwnProperty(file.storage)) {
+              var provider = new providers.storage[file.storage](this);
+              return provider.downloadFile(file);
+            }
+            else {
+              throw('Storage provider not found');
+            }
+          }
+          return result;
+        }.bind(this));
+    }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
 }
 
 Formio.makeStaticRequest = function(url, method, data) {
-  var self = this;
   method = (method || 'GET').toUpperCase();
 
   var requestArgs = {
@@ -370,7 +397,7 @@ Formio.makeStaticRequest = function(url, method, data) {
     data: data
   };
 
-  var request = pluginWait('preStaticRequest', requestArgs)
+  var request = pluginWait('preRequest', requestArgs)
   .then(function() {
     return pluginGet('staticRequest', requestArgs)
     .then(function(result) {
