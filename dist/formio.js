@@ -3431,27 +3431,54 @@ Formio.prototype.availableActions = function() { return this.makeRequest('availa
 Formio.prototype.actionInfo = function(name) { return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name); };
 
 Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback) {
-  if (providers.storage.hasOwnProperty(storage)) {
-    var provider = new providers.storage[storage](this);
-    return provider.uploadFile(file, fileName, dir, progressCallback);
+  var requestArgs = {
+    provider: storage,
+    method: 'upload',
+    file: file,
+    fileName: fileName,
+    dir: dir
   }
-  else {
-    return Q.reject('Storage provider not found');
-  }
+  var request = pluginWait('preRequest', requestArgs)
+    .then(function() {
+      if (providers.storage.hasOwnProperty(storage)) {
+        var provider = new providers.storage[storage](this);
+        return provider.uploadFile(file, fileName, dir, progressCallback);
+      }
+      else {
+        throw('Storage provider not found');
+      }
+    }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
 }
 
-Formio.prototype.downloadFile = function(storage, file) {
-  if (providers.storage.hasOwnProperty(storage)) {
-    var provider = new providers.storage[storage](this);
-    return provider.downloadFile(file);
-  }
-  else {
-    return Q.reject('Storage provider not found');
-  }
+Formio.prototype.downloadFile = function(file) {
+  var requestArgs = {
+    method: 'download',
+    file: file
+  };
+
+  var request = pluginWait('preRequest', requestArgs)
+    .then(function() {
+      return pluginGet('fileRequest', requestArgs)
+        .then(function(result) {
+          if (result === null || result === undefined) {
+            if (providers.storage.hasOwnProperty(file.storage)) {
+              var provider = new providers.storage[file.storage](this);
+              return provider.downloadFile(file);
+            }
+            else {
+              throw('Storage provider not found');
+            }
+          }
+          return result;
+        }.bind(this));
+    }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
 }
 
 Formio.makeStaticRequest = function(url, method, data) {
-  var self = this;
   method = (method || 'GET').toUpperCase();
 
   var requestArgs = {
@@ -3460,7 +3487,7 @@ Formio.makeStaticRequest = function(url, method, data) {
     data: data
   };
 
-  var request = pluginWait('preStaticRequest', requestArgs)
+  var request = pluginWait('preRequest', requestArgs)
   .then(function() {
     return pluginGet('staticRequest', requestArgs)
     .then(function(result) {
@@ -3471,7 +3498,10 @@ Formio.makeStaticRequest = function(url, method, data) {
     });
   });
 
-  return pluginAlter('wrapStaticRequestPromise', request, requestArgs);
+  return pluginWait('preRequest', requestArgs)
+    .then(function() {
+      return pluginAlter('wrapStaticRequestPromise', request, requestArgs);
+    });
 };
 
 // Static methods.
@@ -3806,13 +3836,29 @@ module.exports = function(formio) {
     name: 's3',
     uploadFile: function(file, fileName, dir, progressCallback) {
       var defer = Q.defer();
-      // Sign the request
-      formio.makeRequest('file', formio.formUrl + '/storage/s3', 'POST', {
-        name: fileName,
-        size: file.size,
-        type: file.type
-      })
-        .then(function(response) {
+
+      // Send the pre response to sign the upload.
+      var pre = new XMLHttpRequest();
+
+      var prefd = new FormData();
+      prefd.append('name', fileName);
+      prefd.append('size', file.size);
+      prefd.append('type', file.type);
+
+      // This only fires on a network error.
+      pre.onerror = function(err) {
+        err.networkError = true;
+        defer.reject(err);
+      }
+
+      pre.onabort = function(err) {
+        defer.reject(err);
+      }
+
+      pre.onload = function() {
+        if (pre.status >= 200 && pre.status < 300) {
+          var response = JSON.parse(pre.response);
+
           // Send the file with data.
           var xhr = new XMLHttpRequest();
 
@@ -3823,15 +3869,22 @@ module.exports = function(formio) {
           response.data.fileName = fileName;
           response.data.key += dir + fileName;
 
-          fd = new FormData();
+          var fd = new FormData();
           for(var key in response.data) {
             fd.append(key, response.data[key]);
           }
           fd.append('file', file);
 
+          // Fire on network error.
+          xhr.onerror = function(err) {
+            err.networkError = true;
+            defer.reject(err);
+          }
+
           xhr.onload = function() {
             if (xhr.status >= 200 && xhr.status < 300) {
               defer.resolve({
+                storage: 's3',
                 name: fileName,
                 bucket: response.bucket,
                 key: response.data.key,
@@ -3846,22 +3899,31 @@ module.exports = function(formio) {
             }
           };
 
-          // Fire on network error.
-          xhr.onerror = function() {
-            defer.reject(xhr);
-          }
-
-          xhr.onabort = function() {
-            defer.reject(xhr);
+          xhr.onabort = function(err) {
+            defer.reject(err);
           }
 
           xhr.open('POST', response.url);
 
           xhr.send(fd);
-        })
-        .catch(function(response) {
-          defer.reject(response);
-        });
+        }
+        else {
+          defer.reject(pre.response || 'Unable to sign file');
+        }
+      };
+
+      pre.open('POST', formio.formUrl + '/storage/s3');
+
+      pre.setRequestHeader('Accept', 'application/json');
+      pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+      pre.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
+
+      pre.send(JSON.stringify({
+        name: fileName,
+        size: file.size,
+        type: file.type
+      }));
+
       return defer.promise;
     },
     downloadFile: function(file) {
@@ -3907,6 +3969,7 @@ module.exports = function(formio) {
         if (xhr.status >= 200 && xhr.status < 300) {
           // Need to test if xhr.response is decoded or not.
           defer.resolve({
+            storage: 'url',
             name: fileName,
             url: xhr.response.url,
             size: file.size,
