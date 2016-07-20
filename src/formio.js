@@ -422,6 +422,7 @@ Formio.loadProjects = function(query) {
   }
   return this.makeStaticRequest(baseUrl + '/project' + query);
 };
+
 Formio.request = function(url, method, data) {
   if (!url) { return Q.reject('No url provided'); }
   method = (method || 'GET').toUpperCase();
@@ -558,12 +559,14 @@ Formio.setToken = function(token) {
   }
   Formio.currentUser(); // Run this so user is updated if null
 };
+
 Formio.getToken = function() {
   if (this.token) { return this.token; }
   var token = localStorage.getItem('formioToken') || '';
   this.token = token;
   return token;
 };
+
 Formio.setUser = function(user) {
   if (!user) {
     this.setToken(null);
@@ -583,6 +586,7 @@ Formio.setUser = function(user) {
     // Do nothing.
   }
 };
+
 Formio.getUser = function() {
   return JSON.parse(localStorage.getItem('formioUser') || null);
 };
@@ -593,16 +597,20 @@ Formio.setBaseUrl = function(url) {
     appUrl = url;
   }
 };
+
 Formio.getBaseUrl = function() {
   return baseUrl;
 };
+
 Formio.setAppUrl = function(url) {
   appUrl = url;
   appUrlSet = true;
 };
+
 Formio.getAppUrl = function() {
   return appUrl;
 };
+
 Formio.clearCache = function() { cache = {}; };
 
 Formio.currentUser = function() {
@@ -636,6 +644,7 @@ Formio.logout = function() {
     Formio.clearCache();
   }.bind(this));
 };
+
 Formio.fieldData = function(data, component) {
   if (!data) { return ''; }
   if (!component || !component.key) { return data; }
@@ -674,6 +683,8 @@ Formio.fieldData = function(data, component) {
     return data[component.key];
   }
 };
+
+Formio.providers = providers;
 
 /**
  * EventEmitter for Formio events.

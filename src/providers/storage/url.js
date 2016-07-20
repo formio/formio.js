@@ -1,6 +1,6 @@
 var Q = require('Q')
 
-module.exports = function(formio) {
+var url = function(formio) {
   return {
     title: 'Url',
     name: 'url',
@@ -61,3 +61,8 @@ module.exports = function(formio) {
     }
   };
 };
+
+url.name = 'url';
+url.title = 'Url';
+
+module.exports = url;

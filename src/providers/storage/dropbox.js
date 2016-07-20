@@ -1,6 +1,6 @@
 var Q = require('Q')
 
-module.exports = function(formio) {
+var dropbox = function(formio) {
   var getDropboxToken = function() {
     var dropboxToken;
     //if ($rootScope.user && $rootScope.user.externalTokens) {
@@ -15,8 +15,6 @@ module.exports = function(formio) {
   };
 
   return {
-    title: 'Dropbox',
-    name: 'dropbox',
     uploadFile: function(file, fileName, dir, progressCallback) {
       var defer = Q.defer();
       var dir = $scope.component.dir || '';
@@ -92,4 +90,10 @@ module.exports = function(formio) {
     //}
   };
 };
+
+dropbox.title = 'Dropbox';
+dropbox.name = 'dropbox';
+
+module.exports = dropbox;
+
 

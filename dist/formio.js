@@ -3512,6 +3512,7 @@ Formio.loadProjects = function(query) {
   }
   return this.makeStaticRequest(baseUrl + '/project' + query);
 };
+
 Formio.request = function(url, method, data) {
   if (!url) { return Q.reject('No url provided'); }
   method = (method || 'GET').toUpperCase();
@@ -3648,12 +3649,14 @@ Formio.setToken = function(token) {
   }
   Formio.currentUser(); // Run this so user is updated if null
 };
+
 Formio.getToken = function() {
   if (this.token) { return this.token; }
   var token = localStorage.getItem('formioToken') || '';
   this.token = token;
   return token;
 };
+
 Formio.setUser = function(user) {
   if (!user) {
     this.setToken(null);
@@ -3673,6 +3676,7 @@ Formio.setUser = function(user) {
     // Do nothing.
   }
 };
+
 Formio.getUser = function() {
   return JSON.parse(localStorage.getItem('formioUser') || null);
 };
@@ -3683,16 +3687,20 @@ Formio.setBaseUrl = function(url) {
     appUrl = url;
   }
 };
+
 Formio.getBaseUrl = function() {
   return baseUrl;
 };
+
 Formio.setAppUrl = function(url) {
   appUrl = url;
   appUrlSet = true;
 };
+
 Formio.getAppUrl = function() {
   return appUrl;
 };
+
 Formio.clearCache = function() { cache = {}; };
 
 Formio.currentUser = function() {
@@ -3726,6 +3734,7 @@ Formio.logout = function() {
     Formio.clearCache();
   }.bind(this));
 };
+
 Formio.fieldData = function(data, component) {
   if (!data) { return ''; }
   if (!component || !component.key) { return data; }
@@ -3764,6 +3773,8 @@ Formio.fieldData = function(data, component) {
     return data[component.key];
   }
 };
+
+Formio.providers = providers;
 
 /**
  * EventEmitter for Formio events.
@@ -3820,20 +3831,119 @@ module.exports = {
   storage: require('./storage')
 };
 
-},{"./storage":8}],8:[function(require,module,exports){
+},{"./storage":9}],8:[function(require,module,exports){
+var Q = require('Q')
+
+var dropbox = function(formio) {
+  var getDropboxToken = function() {
+    var dropboxToken;
+    //if ($rootScope.user && $rootScope.user.externalTokens) {
+    //  angular.forEach($rootScope.user.externalTokens, function(token) {
+    //    if (token.type === 'dropbox') {
+    //      dropboxToken = token.token;
+    //    }
+    //  });
+    //}
+    return dropboxToken;
+    //return _.result(_.find($rootScope.user.externalTokens, {type: 'dropbox'}), 'token');
+  };
+
+  return {
+    uploadFile: function(file, fileName, dir, progressCallback) {
+      var defer = Q.defer();
+      var dir = $scope.component.dir || '';
+      var dropboxToken = getDropboxToken();
+      if (!dropboxToken) {
+        defer.reject('You must authenticate with dropbox before uploading files.');
+      }
+      else {
+        // Both Upload and $http don't handle files as application/octet-stream which is required by dropbox.
+        var xhr = new XMLHttpRequest();
+
+        xhr.upload.onprogress = progressCallback;
+
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            defer.resolve(JSON.parse(xhr.response));
+          }
+          else {
+            defer.reject(xhr.response || 'Unable to upload file');
+          }
+        };
+
+        xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
+        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
+        xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
+          path: '/' + dir + fileName,
+          mode: 'add',
+          autorename: true,
+          mute: false
+        }));
+
+        xhr.send(file);
+      }
+      return defer.promise;
+    },
+    downloadFile: function(file) {
+      var defer = Q.defer();
+      var dropboxToken = getDropboxToken();
+      if (!dropboxToken) {
+        defer.reject('You must authenticate with dropbox before downloading files.');
+      }
+      else {
+        var xhr = new XMLHttpRequest();
+        xhr.responseType = 'arraybuffer';
+
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            defer.resolve(xhr.response);
+          }
+          else {
+            defer.reject(xhr.response || 'Unable to download file');
+          }
+        };
+
+        xhr.open('POST', 'https://content.dropboxapi.com/2/files/download');
+        xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
+        xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
+          path: file.path_lower
+        }));
+        xhr.send();
+      }
+      return defer.promise;
+    }
+    //downloadFile: function(evt, file) {
+    //  var strMimeType = 'application/octet-stream';
+    //  this.getFile(null, file).then(function(data) {
+    //    var blob = new Blob([data], {type: strMimeType});
+    //    //FileSaver.saveAs(blob, file.name, true);
+    //  }).catch(function(err) {
+    //    alert(err);
+    //  });
+    //}
+  };
+};
+
+dropbox.title = 'Dropbox';
+dropbox.name = 'dropbox';
+
+module.exports = dropbox;
+
+
+
+},{"Q":1}],9:[function(require,module,exports){
 module.exports = {
-  //dropbox: require('./dropbox.js'),
+  dropbox: require('./dropbox.js'),
   s3: require('./s3.js'),
   url: require('./url.js'),
 };
 
-},{"./s3.js":9,"./url.js":10}],9:[function(require,module,exports){
+},{"./dropbox.js":8,"./s3.js":10,"./url.js":11}],10:[function(require,module,exports){
 var Q = require('Q')
 
-module.exports = function(formio) {
+var s3 = function(formio) {
   return {
-    title: 'S3',
-    name: 's3',
     uploadFile: function(file, fileName, dir, progressCallback) {
       var defer = Q.defer();
 
@@ -3937,10 +4047,15 @@ module.exports = function(formio) {
   };
 };
 
-},{"Q":1}],10:[function(require,module,exports){
+s3.title = 'S3';
+s3.name = 's3';
+
+module.exports = s3;
+
+},{"Q":1}],11:[function(require,module,exports){
 var Q = require('Q')
 
-module.exports = function(formio) {
+var url = function(formio) {
   return {
     title: 'Url',
     name: 'url',
@@ -4001,6 +4116,11 @@ module.exports = function(formio) {
     }
   };
 };
+
+url.name = 'url';
+url.title = 'Url';
+
+module.exports = url;
 
 },{"Q":1}]},{},[6])(6)
 });

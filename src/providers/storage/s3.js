@@ -1,9 +1,7 @@
 var Q = require('Q')
 
-module.exports = function(formio) {
+var s3 = function(formio) {
   return {
-    title: 'S3',
-    name: 's3',
     uploadFile: function(file, fileName, dir, progressCallback) {
       var defer = Q.defer();
 
@@ -106,3 +104,8 @@ module.exports = function(formio) {
     }
   };
 };
+
+s3.title = 'S3';
+s3.name = 's3';
+
+module.exports = s3;
