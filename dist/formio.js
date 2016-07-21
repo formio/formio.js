@@ -3835,93 +3835,58 @@ module.exports = {
 var Q = require('Q')
 
 var dropbox = function(formio) {
-  var getDropboxToken = function() {
-    var dropboxToken;
-    //if ($rootScope.user && $rootScope.user.externalTokens) {
-    //  angular.forEach($rootScope.user.externalTokens, function(token) {
-    //    if (token.type === 'dropbox') {
-    //      dropboxToken = token.token;
-    //    }
-    //  });
-    //}
-    return dropboxToken;
-    //return _.result(_.find($rootScope.user.externalTokens, {type: 'dropbox'}), 'token');
-  };
-
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {
       var defer = Q.defer();
-      var dir = $scope.component.dir || '';
-      var dropboxToken = getDropboxToken();
-      if (!dropboxToken) {
-        defer.reject('You must authenticate with dropbox before uploading files.');
-      }
-      else {
-        // Both Upload and $http don't handle files as application/octet-stream which is required by dropbox.
-        var xhr = new XMLHttpRequest();
 
+      // Send the file with data.
+      var xhr = new XMLHttpRequest();
+
+      if (typeof progressCallback === 'function') {
         xhr.upload.onprogress = progressCallback;
-
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            defer.resolve(JSON.parse(xhr.response));
-          }
-          else {
-            defer.reject(xhr.response || 'Unable to upload file');
-          }
-        };
-
-        xhr.open('POST', 'https://content.dropboxapi.com/2/files/upload');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
-        xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-        xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
-          path: '/' + dir + fileName,
-          mode: 'add',
-          autorename: true,
-          mute: false
-        }));
-
-        xhr.send(file);
       }
+
+      var fd = new FormData();
+      fd.append('name', fileName);
+      fd.append('dir', dir);
+      fd.append('file', file);
+
+      // Fire on network error.
+      xhr.onerror = function(err) {
+        err.networkError = true;
+        defer.reject(err);
+      }
+
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          var response = JSON.parse(xhr.response);
+          response.storage = 'dropbox';
+          response.size = file.size;
+          response.type = file.type;
+          response.url = response.path_lower;
+          defer.resolve(response);
+        }
+        else {
+          defer.reject(xhr.response || 'Unable to upload file');
+        }
+      };
+
+      xhr.onabort = function(err) {
+        defer.reject(err);
+      }
+
+      xhr.open('POST', formio.formUrl + '/storage/dropbox');
+
+      xhr.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
+
+      xhr.send(fd);
+
       return defer.promise;
     },
     downloadFile: function(file) {
-      var defer = Q.defer();
-      var dropboxToken = getDropboxToken();
-      if (!dropboxToken) {
-        defer.reject('You must authenticate with dropbox before downloading files.');
-      }
-      else {
-        var xhr = new XMLHttpRequest();
-        xhr.responseType = 'arraybuffer';
-
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            defer.resolve(xhr.response);
-          }
-          else {
-            defer.reject(xhr.response || 'Unable to download file');
-          }
-        };
-
-        xhr.open('POST', 'https://content.dropboxapi.com/2/files/download');
-        xhr.setRequestHeader('Authorization', 'Bearer ' + dropboxToken);
-        xhr.setRequestHeader('Dropbox-API-Arg', JSON.stringify({
-          path: file.path_lower
-        }));
-        xhr.send();
-      }
-      return defer.promise;
+      file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + '&x-jwt-token=' + localStorage.getItem('formioToken');
+      return Q(file);
     }
-    //downloadFile: function(evt, file) {
-    //  var strMimeType = 'application/octet-stream';
-    //  this.getFile(null, file).then(function(data) {
-    //    var blob = new Blob([data], {type: strMimeType});
-    //    //FileSaver.saveAs(blob, file.name, true);
-    //  }).catch(function(err) {
-    //    alert(err);
-    //  });
-    //}
   };
 };
 
