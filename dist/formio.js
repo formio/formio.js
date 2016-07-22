@@ -3443,7 +3443,7 @@ Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCal
       return pluginGet('fileRequest', requestArgs)
         .then(function(result) {
           if (result === null || result === undefined) {
-            if (providers.storage.hasOwnProperty(file.storage)) {
+            if (providers.storage.hasOwnProperty(storage)) {
               var provider = new providers.storage[storage](this);
               return provider.uploadFile(file, fileName, dir, progressCallback);
             }
