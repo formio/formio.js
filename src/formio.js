@@ -350,13 +350,19 @@ Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCal
   }
   var request = pluginWait('preRequest', requestArgs)
     .then(function() {
-      if (providers.storage.hasOwnProperty(storage)) {
-        var provider = new providers.storage[storage](this);
-        return provider.uploadFile(file, fileName, dir, progressCallback);
-      }
-      else {
-        throw('Storage provider not found');
-      }
+      return pluginGet('fileRequest', requestArgs)
+        .then(function(result) {
+          if (result === null || result === undefined) {
+            if (providers.storage.hasOwnProperty(file.storage)) {
+              var provider = new providers.storage[storage](this);
+              return provider.uploadFile(file, fileName, dir, progressCallback);
+            }
+            else {
+              throw('Storage provider not found');
+            }
+          }
+          return result;
+        }.bind(this));
     }.bind(this));
 
   return pluginAlter('wrapFileRequestPromise', request, requestArgs);
