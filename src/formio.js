@@ -4,6 +4,7 @@ require('whatwg-fetch');
 var Q = require('Q');
 var EventEmitter = require('eventemitter2').EventEmitter2;
 var copy = require('shallow-copy');
+var providers = require('./providers');
 
 // The default base url.
 var baseUrl = 'https://api.form.io';
@@ -339,8 +340,61 @@ Formio.prototype.loadActions = _index('actions');
 Formio.prototype.availableActions = function() { return this.makeRequest('availableActions', this.formUrl + '/actions'); };
 Formio.prototype.actionInfo = function(name) { return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name); };
 
+Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback) {
+  var requestArgs = {
+    provider: storage,
+    method: 'upload',
+    file: file,
+    fileName: fileName,
+    dir: dir
+  }
+  var request = pluginWait('preRequest', requestArgs)
+    .then(function() {
+      return pluginGet('fileRequest', requestArgs)
+        .then(function(result) {
+          if (result === null || result === undefined) {
+            if (providers.storage.hasOwnProperty(storage)) {
+              var provider = new providers.storage[storage](this);
+              return provider.uploadFile(file, fileName, dir, progressCallback);
+            }
+            else {
+              throw('Storage provider not found');
+            }
+          }
+          return result;
+        }.bind(this));
+    }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
+}
+
+Formio.prototype.downloadFile = function(file) {
+  var requestArgs = {
+    method: 'download',
+    file: file
+  };
+
+  var request = pluginWait('preRequest', requestArgs)
+    .then(function() {
+      return pluginGet('fileRequest', requestArgs)
+        .then(function(result) {
+          if (result === null || result === undefined) {
+            if (providers.storage.hasOwnProperty(file.storage)) {
+              var provider = new providers.storage[file.storage](this);
+              return provider.downloadFile(file);
+            }
+            else {
+              throw('Storage provider not found');
+            }
+          }
+          return result;
+        }.bind(this));
+    }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
+}
+
 Formio.makeStaticRequest = function(url, method, data) {
-  var self = this;
   method = (method || 'GET').toUpperCase();
 
   var requestArgs = {
@@ -349,7 +403,7 @@ Formio.makeStaticRequest = function(url, method, data) {
     data: data
   };
 
-  var request = pluginWait('preStaticRequest', requestArgs)
+  var request = pluginWait('preRequest', requestArgs)
   .then(function() {
     return pluginGet('staticRequest', requestArgs)
     .then(function(result) {
@@ -371,6 +425,7 @@ Formio.loadProjects = function(query) {
   }
   return this.makeStaticRequest(baseUrl + '/project' + query);
 };
+
 Formio.request = function(url, method, data) {
   if (!url) { return Q.reject('No url provided'); }
   method = (method || 'GET').toUpperCase();
@@ -507,12 +562,14 @@ Formio.setToken = function(token) {
   }
   Formio.currentUser(); // Run this so user is updated if null
 };
+
 Formio.getToken = function() {
   if (this.token) { return this.token; }
   var token = localStorage.getItem('formioToken') || '';
   this.token = token;
   return token;
 };
+
 Formio.setUser = function(user) {
   if (!user) {
     this.setToken(null);
@@ -532,6 +589,7 @@ Formio.setUser = function(user) {
     // Do nothing.
   }
 };
+
 Formio.getUser = function() {
   return JSON.parse(localStorage.getItem('formioUser') || null);
 };
@@ -542,16 +600,20 @@ Formio.setBaseUrl = function(url) {
     appUrl = url;
   }
 };
+
 Formio.getBaseUrl = function() {
   return baseUrl;
 };
+
 Formio.setAppUrl = function(url) {
   appUrl = url;
   appUrlSet = true;
 };
+
 Formio.getAppUrl = function() {
   return appUrl;
 };
+
 Formio.clearCache = function() { cache = {}; };
 
 Formio.currentUser = function() {
@@ -585,6 +647,7 @@ Formio.logout = function() {
     Formio.clearCache();
   }.bind(this));
 };
+
 Formio.fieldData = function(data, component) {
   if (!data) { return ''; }
   if (!component || !component.key) { return data; }
@@ -623,6 +686,8 @@ Formio.fieldData = function(data, component) {
     return data[component.key];
   }
 };
+
+Formio.providers = providers;
 
 /**
  * EventEmitter for Formio events.

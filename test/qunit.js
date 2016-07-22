@@ -535,7 +535,7 @@ QUnit.module('Plugins', function(hooks) {
       };
 
       // Set up plugin hooks
-      plugin.preStaticRequest = function(requestArgs) {
+      plugin.preRequest = function(requestArgs) {
         assert.step(1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return Q()
@@ -589,6 +589,114 @@ QUnit.module('Plugins', function(hooks) {
 
   staticTests.forEach(function(test) {
     testStaticRequest(test.fnName, test.url, test.method, test.type);
+  });
+
+  var testFileRequest = function testFileRequest(fnName, formUrl, args) {
+    QUnit.test('Plugin ' + fnName, function(assert) {
+      var done = assert.async();
+
+      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
+
+      if (fnName == 'downloadFile') {
+        var expectedArgs = {
+          method: 'download',
+          file: args[0]
+        };
+      }
+      else if(fnName === 'uploadFile') {
+        var expectedArgs = {
+          provider: args[0],
+          method: 'upload',
+          file: args[1],
+          fileName: args[2],
+          dir: args[3]
+        }
+      }
+
+      // Set up plugin hooks
+      plugin.preRequest = function(requestArgs) {
+        assert.step(1, 'preRequest hook should be called first');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return Q()
+        .then(function() {
+          assert.step(3, 'preRequest promise should resolve third');
+          // TODO
+        });
+      };
+      plugin.fileRequest = function(requestArgs) {
+        assert.step(4, 'request hook should be called fourth');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return Q()
+        .then(function() {
+          assert.step(5, 'request promise should resolve fifth');
+          return testResult;
+        });
+      };
+      plugin.wrapFileRequestPromise = function(promise, requestArgs) {
+        assert.step(2, 'wrapFileRequestPromise hook should be called second');
+        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
+        return promise.then(function(result) {
+          assert.step(6, 'wrapFileRequestPromise post-result promise should resolve sixth');
+          assert.deepEqual(result, testResult, 'Result should match result from request hook');
+          return result;
+        });
+      };
+
+      var formio = new Formio(formUrl);
+      formio[fnName].apply(null, args)
+      .then(function(result) {
+        assert.step(7, 'post request promise should resolve last');
+        assert.deepEqual(result, testResult, 'Result should match result from request hook');
+        done();
+      });
+    });
+  };
+
+  var fileTests = [
+    {
+      fnName: 'uploadFile',
+      formUrl: 'https://api.localhost:3000/project/123/form/123',
+      args: [
+        's3',
+        'FILE',
+        'file.jpg',
+        'dir/'
+      ]
+    },
+    {
+      fnName: 'uploadFile',
+      formUrl: 'https://api.localhost:3000/project/123/form/123',
+      args: [
+        'dropbox',
+        'FILE',
+        'file.jpg',
+        'dir/'
+      ]
+    },
+    {
+      fnName: 'downloadFile',
+      formUrl: 'https://api.localhost:3000/project/123/form/123',
+      args: [
+        {
+          storage: 's3',
+          name: 'test'
+        }
+      ]
+    },
+    {
+      fnName: 'downloadFile',
+      formUrl: 'https://api.localhost:3000/project/123/form/123',
+      args: [
+        {
+          storage: 'dropbox',
+          name: 'test'
+        }
+      ]
+    }
+  ];
+
+  fileTests.forEach(function(test) {
+    testFileRequest(test.fnName, test.formUrl, test.args);
   });
 
 });
