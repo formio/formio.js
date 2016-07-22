@@ -408,10 +408,7 @@ Formio.makeStaticRequest = function(url, method, data) {
     });
   });
 
-  return pluginWait('preRequest', requestArgs)
-    .then(function() {
-      return pluginAlter('wrapStaticRequestPromise', request, requestArgs);
-    });
+  return pluginAlter('wrapStaticRequestPromise', request, requestArgs);
 };
 
 // Static methods.
