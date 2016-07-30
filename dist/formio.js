@@ -2002,7 +2002,7 @@ var isArray = Array.isArray || function (xs) {
 'use strict';
 
 require('whatwg-fetch');
-var Promise = require('es6-promise').Promise;
+require('es6-promise').polyfill();
 var EventEmitter = require('eventemitter2').EventEmitter2;
 var copy = require('shallow-copy');
 var providers = require('./providers');
@@ -2642,11 +2642,11 @@ Formio.currentUser = function() {
 
 // Keep track of their logout callback.
 Formio.logout = function() {
-  var onLogout = function() {
+  var onLogout = function(result) {
     this.setToken(null);
     this.setUser(null);
     Formio.clearCache();
-    return Promise.resolve(null);
+    return result;
   }.bind(this);
   return this.makeStaticRequest(baseUrl + '/logout').then(onLogout).catch(onLogout);
 };
