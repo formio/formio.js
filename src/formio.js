@@ -1,7 +1,12 @@
 'use strict';
 
-require('whatwg-fetch');
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
 var Promise = require("native-promise-only");
+
+// Require other libraries.
+require('whatwg-fetch');
 var EventEmitter = require('eventemitter3');
 var copy = require('shallow-copy');
 var providers = require('./providers');
