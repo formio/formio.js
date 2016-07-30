@@ -2,7 +2,7 @@
 
 require('whatwg-fetch');
 require('es6-promise').polyfill();
-var EventEmitter = require('eventemitter2').EventEmitter2;
+var EventEmitter = require('eventemitter3');
 var copy = require('shallow-copy');
 var providers = require('./providers');
 
