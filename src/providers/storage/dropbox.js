@@ -1,4 +1,4 @@
-var Promise = require('es6-promise').Promise;
+var Promise = require("native-promise-only");
 var dropbox = function(formio) {
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {

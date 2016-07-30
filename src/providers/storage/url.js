@@ -1,4 +1,4 @@
-var Promise = require('es6-promise').Promise;
+var Promise = require("native-promise-only");
 var url = function(formio) {
   return {
     title: 'Url',

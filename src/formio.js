@@ -1,7 +1,7 @@
 'use strict';
 
 require('whatwg-fetch');
-require('es6-promise').polyfill();
+var Promise = require("native-promise-only");
 var EventEmitter = require('eventemitter3');
 var copy = require('shallow-copy');
 var providers = require('./providers');
