@@ -1,10 +1,9 @@
-/*global Formio: true, QUnit: true, chance: true, Q: true, sinon: true, _: true, fetchMock: true*/
+/*global Formio: true, QUnit: true, chance: true, Promise: true, sinon: true, _: true, fetchMock: true*/
 var protocol = 'https';
 var domain = 'localhost:3000';
 var baseUrl = protocol + '://api.' + domain;
 Formio.setBaseUrl(baseUrl);
 Formio.setToken(null);
-
 QUnit.config.reorder = false;
 
 var generateID = function() {
@@ -374,7 +373,7 @@ QUnit.module('Plugins', function(hooks) {
       plugin.preRequest = function(requestArgs) {
         assert.step(1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Q()
+        return Promise.resolve()
         .then(function() {
           assert.step(3, 'preRequest promise should resolve third');
           // TODO
@@ -383,7 +382,7 @@ QUnit.module('Plugins', function(hooks) {
       plugin.request = function(requestArgs) {
         assert.step(4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Q()
+        return Promise.resolve()
         .then(function() {
           assert.step(5, 'request promise should resolve fifth');
           return testResult;
@@ -538,7 +537,7 @@ QUnit.module('Plugins', function(hooks) {
       plugin.preRequest = function(requestArgs) {
         assert.step(1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Q()
+        return Promise.resolve()
         .then(function() {
           assert.step(3, 'preRequest promise should resolve third');
           // TODO
@@ -547,7 +546,7 @@ QUnit.module('Plugins', function(hooks) {
       plugin.staticRequest = function(requestArgs) {
         assert.step(4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Q()
+        return Promise.resolve()
         .then(function() {
           assert.step(5, 'request promise should resolve fifth');
           return testResult;
@@ -617,7 +616,7 @@ QUnit.module('Plugins', function(hooks) {
       plugin.preRequest = function(requestArgs) {
         assert.step(1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Q()
+        return Promise.resolve()
         .then(function() {
           assert.step(3, 'preRequest promise should resolve third');
           // TODO
@@ -626,7 +625,7 @@ QUnit.module('Plugins', function(hooks) {
       plugin.fileRequest = function(requestArgs) {
         assert.step(4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Q()
+        return Promise.resolve()
         .then(function() {
           assert.step(5, 'request promise should resolve fifth');
           return testResult;
@@ -710,20 +709,19 @@ QUnit.module('Test Formio.js capabilities', function () {
         var mock = test.mock(assert);
         fetchMock.mock(mock.url, mock.method, mock.response);
       }
-      Q()
+      Promise.resolve()
       .then(function() {
         return test.test(assert);
       })
       .then(function() {
+        if (test.mock) fetchMock.restore();
         done();
       })
       .catch(function(err) {
         assert.equal(err, null, 'Caught error during test');
         if (err) console.error(err.stack);
-        done();
-      })
-      .finally(function() {
         if (test.mock) fetchMock.restore();
+        done();
       });
     });
   };
@@ -1471,7 +1469,7 @@ QUnit.module('Formio.currentUser', function(hooks) {
       staticRequest: sinon.spy(function() {
         // Return dummy user
         var userId = generateID();
-        return Q({
+        return Promise.resolve({
           _id: userId,
           created: new Date().toISOString(),
           modified: new Date().toISOString(),
