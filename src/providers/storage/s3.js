@@ -1,105 +1,102 @@
-var Q = require('Q')
-
+var Promise = require("native-promise-only");
 var s3 = function(formio) {
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {
-      var defer = Q.defer();
+      return new Promise(function(resolve, reject) {
+        // Send the pre response to sign the upload.
+        var pre = new XMLHttpRequest();
 
-      // Send the pre response to sign the upload.
-      var pre = new XMLHttpRequest();
+        var prefd = new FormData();
+        prefd.append('name', fileName);
+        prefd.append('size', file.size);
+        prefd.append('type', file.type);
 
-      var prefd = new FormData();
-      prefd.append('name', fileName);
-      prefd.append('size', file.size);
-      prefd.append('type', file.type);
-
-      // This only fires on a network error.
-      pre.onerror = function(err) {
-        err.networkError = true;
-        defer.reject(err);
-      }
-
-      pre.onabort = function(err) {
-        defer.reject(err);
-      }
-
-      pre.onload = function() {
-        if (pre.status >= 200 && pre.status < 300) {
-          var response = JSON.parse(pre.response);
-
-          // Send the file with data.
-          var xhr = new XMLHttpRequest();
-
-          if (typeof progressCallback === 'function') {
-            xhr.upload.onprogress = progressCallback;
-          }
-
-          response.data.fileName = fileName;
-          response.data.key += dir + fileName;
-
-          var fd = new FormData();
-          for(var key in response.data) {
-            fd.append(key, response.data[key]);
-          }
-          fd.append('file', file);
-
-          // Fire on network error.
-          xhr.onerror = function(err) {
-            err.networkError = true;
-            defer.reject(err);
-          }
-
-          xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-              defer.resolve({
-                storage: 's3',
-                name: fileName,
-                bucket: response.bucket,
-                key: response.data.key,
-                url: response.url + response.data.key,
-                acl: response.data.acl,
-                size: file.size,
-                type: file.type
-              });
-            }
-            else {
-              defer.reject(xhr.response || 'Unable to upload file');
-            }
-          };
-
-          xhr.onabort = function(err) {
-            defer.reject(err);
-          }
-
-          xhr.open('POST', response.url);
-
-          xhr.send(fd);
+        // This only fires on a network error.
+        pre.onerror = function(err) {
+          err.networkError = true;
+          reject(err);
         }
-        else {
-          defer.reject(pre.response || 'Unable to sign file');
+
+        pre.onabort = function(err) {
+          reject(err);
         }
-      };
 
-      pre.open('POST', formio.formUrl + '/storage/s3');
+        pre.onload = function() {
+          if (pre.status >= 200 && pre.status < 300) {
+            var response = JSON.parse(pre.response);
 
-      pre.setRequestHeader('Accept', 'application/json');
-      pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-      pre.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
+            // Send the file with data.
+            var xhr = new XMLHttpRequest();
 
-      pre.send(JSON.stringify({
-        name: fileName,
-        size: file.size,
-        type: file.type
-      }));
+            if (typeof progressCallback === 'function') {
+              xhr.upload.onprogress = progressCallback;
+            }
 
-      return defer.promise;
+            response.data.fileName = fileName;
+            response.data.key += dir + fileName;
+
+            var fd = new FormData();
+            for(var key in response.data) {
+              fd.append(key, response.data[key]);
+            }
+            fd.append('file', file);
+
+            // Fire on network error.
+            xhr.onerror = function(err) {
+              err.networkError = true;
+              reject(err);
+            }
+
+            xhr.onload = function() {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                resolve({
+                  storage: 's3',
+                  name: fileName,
+                  bucket: response.bucket,
+                  key: response.data.key,
+                  url: response.url + response.data.key,
+                  acl: response.data.acl,
+                  size: file.size,
+                  type: file.type
+                });
+              }
+              else {
+                reject(xhr.response || 'Unable to upload file');
+              }
+            };
+
+            xhr.onabort = function(err) {
+              reject(err);
+            }
+
+            xhr.open('POST', response.url);
+
+            xhr.send(fd);
+          }
+          else {
+            reject(pre.response || 'Unable to sign file');
+          }
+        };
+
+        pre.open('POST', formio.formUrl + '/storage/s3');
+
+        pre.setRequestHeader('Accept', 'application/json');
+        pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        pre.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
+
+        pre.send(JSON.stringify({
+          name: fileName,
+          size: file.size,
+          type: file.type
+        }));
+      });
     },
     downloadFile: function(file) {
       if (file.acl !== 'public-read') {
         return formio.makeRequest('file', formio.formUrl + '/storage/s3?bucket=' + file.bucket + '&key=' + file.key, 'GET');
       }
       else {
-        return Q(file);
+        return Promise.resolve(file);
       }
     }
   };
@@ -107,5 +104,4 @@ var s3 = function(formio) {
 
 s3.title = 'S3';
 s3.name = 's3';
-
 module.exports = s3;

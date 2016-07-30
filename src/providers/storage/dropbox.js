@@ -1,64 +1,58 @@
-var Q = require('Q')
-
+var Promise = require("native-promise-only");
 var dropbox = function(formio) {
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {
-      var defer = Q.defer();
+      return new Promise(function(resolve, reject) {
+        // Send the file with data.
+        var xhr = new XMLHttpRequest();
 
-      // Send the file with data.
-      var xhr = new XMLHttpRequest();
-
-      if (typeof progressCallback === 'function') {
-        xhr.upload.onprogress = progressCallback;
-      }
-
-      var fd = new FormData();
-      fd.append('name', fileName);
-      fd.append('dir', dir);
-      fd.append('file', file);
-
-      // Fire on network error.
-      xhr.onerror = function(err) {
-        err.networkError = true;
-        defer.reject(err);
-      }
-
-      xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          var response = JSON.parse(xhr.response);
-          response.storage = 'dropbox';
-          response.size = file.size;
-          response.type = file.type;
-          response.url = response.path_lower;
-          defer.resolve(response);
+        if (typeof progressCallback === 'function') {
+          xhr.upload.onprogress = progressCallback;
         }
-        else {
-          defer.reject(xhr.response || 'Unable to upload file');
+
+        var fd = new FormData();
+        fd.append('name', fileName);
+        fd.append('dir', dir);
+        fd.append('file', file);
+
+        // Fire on network error.
+        xhr.onerror = function(err) {
+          err.networkError = true;
+          reject(err);
         }
-      };
 
-      xhr.onabort = function(err) {
-        defer.reject(err);
-      }
+        xhr.onload = function() {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var response = JSON.parse(xhr.response);
+            response.storage = 'dropbox';
+            response.size = file.size;
+            response.type = file.type;
+            response.url = response.path_lower;
+            resolve(response);
+          }
+          else {
+            reject(xhr.response || 'Unable to upload file');
+          }
+        };
 
-      xhr.open('POST', formio.formUrl + '/storage/dropbox');
+        xhr.onabort = function(err) {
+          reject(err);
+        }
 
-      xhr.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
-
-      xhr.send(fd);
-
-      return defer.promise;
+        xhr.open('POST', formio.formUrl + '/storage/dropbox');
+        xhr.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
+        xhr.send(fd);
+      });
     },
     downloadFile: function(file) {
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + '&x-jwt-token=' + localStorage.getItem('formioToken');
-      return Q(file);
+      return Promise.resolve(file);
     }
   };
 };
 
 dropbox.title = 'Dropbox';
 dropbox.name = 'dropbox';
-
 module.exports = dropbox;
 
 

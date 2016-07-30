@@ -1,68 +1,64 @@
-var Q = require('Q')
-
+var Promise = require("native-promise-only");
 var url = function(formio) {
   return {
     title: 'Url',
     name: 'url',
     uploadFile: function(file, fileName, dir, progressCallback) {
-      var defer = Q.defer();
+      return new Promise(function(resolve, reject) {
+        var data = {
+          dir: dir,
+          name: fileName,
+          file: file
+        };
 
-      var data = {
-        dir: dir,
-        name: fileName,
-        file: file
-      };
+        // Send the file with data.
+        var xhr = new XMLHttpRequest();
 
-      // Send the file with data.
-      var xhr = new XMLHttpRequest();
-
-      if (typeof progressCallback === 'function') {
-        xhr.upload.onprogress = progressCallback;
-      }
-
-      fd = new FormData();
-      for(var key in data) {
-        fd.append(key, data[key]);
-      }
-
-      xhr.onload = function() {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          // Need to test if xhr.response is decoded or not.
-          defer.resolve({
-            storage: 'url',
-            name: fileName,
-            url: xhr.response.url,
-            size: file.size,
-            type: file.type
-          });
+        if (typeof progressCallback === 'function') {
+          xhr.upload.onprogress = progressCallback;
         }
-        else {
-          defer.reject(xhr.response || 'Unable to upload file');
+
+        fd = new FormData();
+        for(var key in data) {
+          fd.append(key, data[key]);
         }
-      };
 
-      // Fire on network error.
-      xhr.onerror = function() {
-        defer.reject(xhr);
-      }
+        xhr.onload = function() {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            // Need to test if xhr.response is decoded or not.
+            resolve({
+              storage: 'url',
+              name: fileName,
+              url: xhr.response.url,
+              size: file.size,
+              type: file.type
+            });
+          }
+          else {
+            reject(xhr.response || 'Unable to upload file');
+          }
+        };
 
-      xhr.onabort = function() {
-        defer.reject(xhr);
-      }
+        // Fire on network error.
+        xhr.onerror = function() {
+          reject(xhr);
+        }
 
-      xhr.open('POST', response.url);
+        xhr.onabort = function() {
+          reject(xhr);
+        }
 
-      xhr.send(fd);
-      return defer.promise;
+        xhr.open('POST', response.url);
+        xhr.send(fd);
+      });
     },
     downloadFile: function(file) {
       // Return the original as there is nothing to do.
-      Q(file);
+      return Promise.resolve(file);
     }
   };
 };
 
 url.name = 'url';
 url.title = 'Url';
-
 module.exports = url;

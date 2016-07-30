@@ -1,8 +1,13 @@
 'use strict';
 
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
+var Promise = require("native-promise-only");
+
+// Require other libraries.
 require('whatwg-fetch');
-var Q = require('Q');
-var EventEmitter = require('eventemitter2').EventEmitter2;
+var EventEmitter = require('eventemitter3');
 var copy = require('shallow-copy');
 var providers = require('./providers');
 
@@ -26,7 +31,7 @@ var identity = function(value) { return value; };
 // but don't want any data returned.
 var pluginWait = function(pluginFn) {
   var args = [].slice.call(arguments, 1);
-  return Q.all(plugins.map(function(plugin) {
+  return Promise.all(plugins.map(function(plugin) {
     return (plugin[pluginFn] || noop).apply(plugin, args);
   }));
 };
@@ -39,8 +44,8 @@ var pluginGet = function(pluginFn) {
   var args = [].slice.call(arguments, 0);
   var callPlugin = function(index, pluginFn) {
     var plugin = plugins[index];
-    if (!plugin) return Q(null);
-    return Q((plugin && plugin[pluginFn] || noop).apply(plugin, [].slice.call(arguments, 2)))
+    if (!plugin) return Promise.resolve(null);
+    return Promise.resolve((plugin && plugin[pluginFn] || noop).apply(plugin, [].slice.call(arguments, 2)))
     .then(function(result) {
       if (result !== null && result !== undefined) return result;
       return callPlugin.apply(null, [index + 1].concat(args));
@@ -232,7 +237,7 @@ var _load = function(type) {
     else {
       query = this.query;
     }
-    if (!this[_id]) { return Q.reject('Missing ' + _id); }
+    if (!this[_id]) { return Promise.reject('Missing ' + _id); }
     return this.makeRequest(type, this[_url] + query, 'get', null, opts);
   };
 };
@@ -266,7 +271,7 @@ var _delete = function(type) {
   var _id = type + 'Id';
   var _url = type + 'Url';
   return function(opts) {
-    if (!this[_id]) { Q.reject('Nothing to delete'); }
+    if (!this[_id]) { Promise.reject('Nothing to delete'); }
     cache = {};
     return this.makeRequest(type, this[_url], 'delete', null, opts);
   };
@@ -427,17 +432,17 @@ Formio.loadProjects = function(query) {
 };
 
 Formio.request = function(url, method, data) {
-  if (!url) { return Q.reject('No url provided'); }
+  if (!url) { return Promise.reject('No url provided'); }
   method = (method || 'GET').toUpperCase();
   var cacheKey = btoa(url);
 
-  return Q().then(function() {
+  return Promise.resolve().then(function() {
     // Get the cached promise to save multiple loads.
     if (method === 'GET' && cache.hasOwnProperty(cacheKey)) {
       return cache[cacheKey];
     }
     else {
-      return Q()
+      return Promise.resolve()
       .then(function() {
         // Set up and fetch request
         var headers = new Headers({
@@ -524,7 +529,7 @@ Formio.request = function(url, method, data) {
   .then(function(result) {
     // Save the cache
     if (method === 'GET') {
-      cache[cacheKey] = Q(result);
+      cache[cacheKey] = Promise.resolve(result);
     }
 
     // Shallow copy result so modifications don't end up in cache
@@ -620,14 +625,14 @@ Formio.currentUser = function() {
   var url = baseUrl + '/current';
   var user = this.getUser();
   if (user) {
-    return pluginAlter('wrapStaticRequestPromise', Q(user), {
+    return pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
       url: url,
       method: 'GET'
     })
   }
   var token = this.getToken();
   if (!token) {
-    return pluginAlter('wrapStaticRequestPromise', Q(null), {
+    return pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
       url: url,
       method: 'GET'
     })
@@ -641,11 +646,13 @@ Formio.currentUser = function() {
 
 // Keep track of their logout callback.
 Formio.logout = function() {
-  return this.makeStaticRequest(baseUrl + '/logout').finally(function() {
+  var onLogout = function(result) {
     this.setToken(null);
     this.setUser(null);
     Formio.clearCache();
-  }.bind(this));
+    return result;
+  }.bind(this);
+  return this.makeStaticRequest(baseUrl + '/logout').then(onLogout).catch(onLogout);
 };
 
 Formio.fieldData = function(data, component) {
