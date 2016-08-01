@@ -7,7 +7,7 @@ var Promise = require("native-promise-only");
 
 // Require other libraries.
 require('whatwg-fetch');
-var EventEmitter = require('eventemitter3');
+var EventEmitter = require('eventemitter2').EventEmitter2;
 var copy = require('shallow-copy');
 var providers = require('./providers');
 
