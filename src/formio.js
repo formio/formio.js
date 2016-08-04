@@ -432,18 +432,21 @@ Formio.loadProjects = function(query) {
 };
 
 Formio.request = function(url, method, data) {
-  if (!url) { return Promise.reject('No url provided'); }
+  if (!url) {
+    return Promise(function(resolve, reject) {
+      reject('No url provided');
+    });
+  }
   method = (method || 'GET').toUpperCase();
   var cacheKey = btoa(url);
 
-  return Promise.resolve().then(function() {
+  return Promise(function(resolve, reject) {
     // Get the cached promise to save multiple loads.
     if (method === 'GET' && cache.hasOwnProperty(cacheKey)) {
-      return cache[cacheKey];
+      resolve(cache[cacheKey]);
     }
     else {
-      return Promise.resolve()
-      .then(function() {
+      resolve(Promise(function(resolve, reject) {
         // Set up and fetch request
         var headers = new Headers({
           'Accept': 'application/json',
@@ -463,12 +466,12 @@ Formio.request = function(url, method, data) {
           options.body = JSON.stringify(data);
         }
 
-        return fetch(url, options);
+        resolve(fetch(url, options));
       })
       .catch(function(err) {
         err.message = 'Could not connect to API server (' + err.message + ')';
         err.networkError = true;
-        throw err;
+        reject(err);
       })
       .then(function(response) {
         // Handle fetch results
