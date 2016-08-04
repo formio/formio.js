@@ -2264,12 +2264,15 @@ var dropbox = function(formio) {
         }
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        xhr.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
+        var token = localStorage.getItem('formioToken');
+        if (token) {
+          xhr.setRequestHeader('x-jwt-token', token);
+        }
         xhr.send(fd);
       });
     },
     downloadFile: function(file) {
-      file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + '&x-jwt-token=' + localStorage.getItem('formioToken');
+      file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
     }
   };
@@ -2373,7 +2376,10 @@ var s3 = function(formio) {
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        pre.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
+        var token = localStorage.getItem('formioToken');
+        if (token) {
+          pre.setRequestHeader('x-jwt-token', token);
+        }
 
         pre.send(JSON.stringify({
           name: fileName,
