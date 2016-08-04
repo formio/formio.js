@@ -82,7 +82,10 @@ var s3 = function(formio) {
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        pre.setRequestHeader('x-jwt-token', localStorage.getItem('formioToken'));
+        var token = localStorage.getItem('formioToken');
+        if (token) {
+          pre.setRequestHeader('x-jwt-token', token);
+        }
 
         pre.send(JSON.stringify({
           name: fileName,
