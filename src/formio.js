@@ -433,20 +433,18 @@ Formio.loadProjects = function(query) {
 
 Formio.request = function(url, method, data) {
   if (!url) {
-    return Promise(function(resolve, reject) {
-      reject('No url provided');
-    });
+    return Promise.reject('No url provided');
   }
   method = (method || 'GET').toUpperCase();
   var cacheKey = btoa(url);
 
-  return Promise(function(resolve, reject) {
+  return new Promise(function(resolve, reject) {
     // Get the cached promise to save multiple loads.
     if (method === 'GET' && cache.hasOwnProperty(cacheKey)) {
       resolve(cache[cacheKey]);
     }
     else {
-      resolve(Promise(function(resolve, reject) {
+      resolve(new Promise(function(resolve, reject) {
         // Set up and fetch request
         var headers = new Headers({
           'Accept': 'application/json',
@@ -526,7 +524,7 @@ Formio.request = function(url, method, data) {
         delete cache[cacheKey];
         // Propagate error so client can handle accordingly
         throw err;
-      });
+      }));
     }
   })
   .then(function(result) {
