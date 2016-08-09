@@ -40,7 +40,12 @@ var dropbox = function(formio) {
         }
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        var token = localStorage.getItem('formioToken');
+        try {
+          var token = localStorage.getItem('formioToken');
+        }
+        catch (e) {
+          // Swallow error.
+        }
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }

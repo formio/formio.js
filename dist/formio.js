@@ -695,6 +695,10 @@
     return this._events[type];
   };
 
+  EventEmitter.prototype.listenerCount = function(type) {
+    return this.listeners(type).length;
+  };
+
   EventEmitter.prototype.listenersAny = function() {
 
     if(this._all) {
@@ -2041,9 +2045,14 @@ Formio.setToken = function(token) {
 
 Formio.getToken = function() {
   if (this.token) { return this.token; }
-  var token = localStorage.getItem('formioToken') || '';
-  this.token = token;
-  return token;
+  try {
+    var token = localStorage.getItem('formioToken') || '';
+    this.token = token;
+    return token;
+  }
+  catch (e) {
+    return '';
+  }
 };
 
 Formio.setUser = function(user) {
@@ -2067,7 +2076,12 @@ Formio.setUser = function(user) {
 };
 
 Formio.getUser = function() {
-  return JSON.parse(localStorage.getItem('formioUser') || null);
+  try {
+    return JSON.parse(localStorage.getItem('formioUser') || null);
+  }
+  catch (e) {
+    return;
+  }
 };
 
 Formio.setBaseUrl = function(url) {
@@ -2265,7 +2279,12 @@ var dropbox = function(formio) {
         }
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        var token = localStorage.getItem('formioToken');
+        try {
+          var token = localStorage.getItem('formioToken');
+        }
+        catch (e) {
+          // Swallow error.
+        }
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -2377,7 +2396,12 @@ var s3 = function(formio) {
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var token = localStorage.getItem('formioToken');
+        try {
+          var token = localStorage.getItem('formioToken');
+        }
+        catch (e) {
+          // swallow error.
+        }
         if (token) {
           pre.setRequestHeader('x-jwt-token', token);
         }
