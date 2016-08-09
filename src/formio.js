@@ -571,9 +571,14 @@ Formio.setToken = function(token) {
 
 Formio.getToken = function() {
   if (this.token) { return this.token; }
-  var token = localStorage.getItem('formioToken') || '';
-  this.token = token;
-  return token;
+  try {
+    var token = localStorage.getItem('formioToken') || '';
+    this.token = token;
+    return token;
+  }
+  catch (e) {
+    return '';
+  }
 };
 
 Formio.setUser = function(user) {
@@ -597,7 +602,12 @@ Formio.setUser = function(user) {
 };
 
 Formio.getUser = function() {
-  return JSON.parse(localStorage.getItem('formioUser') || null);
+  try {
+    return JSON.parse(localStorage.getItem('formioUser') || null);
+  }
+  catch (e) {
+    return;
+  }
 };
 
 Formio.setBaseUrl = function(url) {
