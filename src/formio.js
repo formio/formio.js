@@ -469,7 +469,7 @@ Formio.request = function(url, method, data) {
       .catch(function(err) {
         err.message = 'Could not connect to API server (' + err.message + ')';
         err.networkError = true;
-        reject(err);
+        throw err;
       })
       .then(function(response) {
         // Handle fetch results
