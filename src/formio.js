@@ -357,7 +357,7 @@ Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCal
     .then(function() {
       return pluginGet('fileRequest', requestArgs)
         .then(function(result) {
-          if (result === null || result === undefined) {
+          if (storage && (result === null || result === undefined)) {
             if (providers.storage.hasOwnProperty(storage)) {
               var provider = new providers.storage[storage](this);
               return provider.uploadFile(file, fileName, dir, progressCallback);
@@ -366,7 +366,7 @@ Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCal
               throw('Storage provider not found');
             }
           }
-          return result;
+          return result || {url: ''};
         }.bind(this));
     }.bind(this));
 
@@ -383,7 +383,7 @@ Formio.prototype.downloadFile = function(file) {
     .then(function() {
       return pluginGet('fileRequest', requestArgs)
         .then(function(result) {
-          if (result === null || result === undefined) {
+          if (file.storage && (result === null || result === undefined)) {
             if (providers.storage.hasOwnProperty(file.storage)) {
               var provider = new providers.storage[file.storage](this);
               return provider.downloadFile(file);
@@ -392,7 +392,7 @@ Formio.prototype.downloadFile = function(file) {
               throw('Storage provider not found');
             }
           }
-          return result;
+          return result || {url: ''};
         }.bind(this));
     }.bind(this));
 
