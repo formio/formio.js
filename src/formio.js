@@ -345,7 +345,7 @@ Formio.prototype.loadActions = _index('actions');
 Formio.prototype.availableActions = function() { return this.makeRequest('availableActions', this.formUrl + '/actions'); };
 Formio.prototype.actionInfo = function(name) { return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name); };
 
-Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback) {
+Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCallback, url) {
   var requestArgs = {
     provider: storage,
     method: 'upload',
@@ -360,7 +360,7 @@ Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCal
           if (storage && (result === null || result === undefined)) {
             if (providers.storage.hasOwnProperty(storage)) {
               var provider = new providers.storage[storage](this);
-              return provider.uploadFile(file, fileName, dir, progressCallback);
+              return provider.uploadFile(file, fileName, dir, progressCallback, url);
             }
             else {
               throw('Storage provider not found');
