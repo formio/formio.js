@@ -431,7 +431,7 @@ Formio.loadProjects = function(query) {
   return this.makeStaticRequest(baseUrl + '/project' + query);
 };
 
-Formio.request = function(url, method, data) {
+Formio.request = function(url, method, data, header) {
   if (!url) {
     return Promise.reject('No url provided');
   }
@@ -446,7 +446,7 @@ Formio.request = function(url, method, data) {
     else {
       resolve(new Promise(function(resolve, reject) {
         // Set up and fetch request
-        var headers = new Headers({
+        var headers = header || new Headers({
           'Accept': 'application/json',
           'Content-type': 'application/json; charset=UTF-8'
         });
