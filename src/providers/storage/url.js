@@ -3,7 +3,7 @@ var url = function(formio) {
   return {
     title: 'Url',
     name: 'url',
-    uploadFile: function(file, fileName, dir, progressCallback) {
+    uploadFile: function(file, fileName, dir, progressCallback, url) {
       return new Promise(function(resolve, reject) {
         var data = {
           dir: dir,
@@ -48,7 +48,7 @@ var url = function(formio) {
           reject(xhr);
         }
 
-        xhr.open('POST', response.url);
+        xhr.open('POST', url);
         xhr.send(fd);
       });
     },
