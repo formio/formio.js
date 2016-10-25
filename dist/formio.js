@@ -2184,9 +2184,6 @@ Formio.form = function(form, options, done) {
     event.preventDefault();
     var submission = {data: {}};
     var action = options.form || form.getAttribute('action');
-    if (!action) {
-      return done('Invalid Form Action');
-    }
 
     // Set the submission value at the specific path.
     var setValue = function(path, value) {
@@ -2211,6 +2208,11 @@ Formio.form = function(form, options, done) {
     var entry = null;
     while (entry = entries.next().value) {
       setValue(entry[0], entry[1]);
+    }
+
+    // If no action was provided, then say we are done with submission.
+    if (!action) {
+      return done(null, submission, true);
     }
 
     // Save the submission.
