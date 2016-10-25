@@ -44,6 +44,28 @@ Formio.form($('form#myform'), function(err, submission) {
 });
 ```
 
+### Providing success and danger alerts.
+When using this library, you will need to provide the alerts and business logic once the submission is made. Using the form provided above,
+you could create a simple alert system using the following logic below the form declaration.
+
+```
+<script type="text/javascript">
+  var form = document.querySelector('form#myform');
+  Formio.form(form, function(err) {
+    var alert = document.createElement('div');
+    if (err) {
+      alert.setAttribute('class', 'formio-alert formio-danger');
+      alert.appendChild(document.createTextNode(err));
+    }
+    else {
+      alert.setAttribute('class', 'formio-alert formio-success');
+      alert.appendChild(document.createTextNode('Submission Created'));
+    }
+    form.parentNode.insertBefore(alert, form);
+  });
+</script>
+```
+
 ### Why is this different than a direct HTML form submit?
 You can submit a form to Form.io with HTML directly using our API endpoint as the action, but those submissions will be made
 anonymously. This code provides the authentication tokens which will allow you to do so using the authentication of the currently logged in user.
