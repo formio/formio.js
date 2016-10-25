@@ -25,7 +25,7 @@ Let's suppose you have the following HTML form.
 </form>
 ```
 
-You can now submit this form to Form.io by calling the following.
+You can now attach this form to the Form.io API by calling the following.
 
 ```
 var form = document.querySelector('form#myform');
@@ -33,6 +33,8 @@ Formio.form(form, function(err, submission) {
   console.log(submission);
 });
 ```
+
+This will now let the user fill out the form, and then when they press the submit button, will execute the API call into Form.io.
 
 This also works with **jQuery** like so...
 
