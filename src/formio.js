@@ -632,6 +632,75 @@ Formio.getAppUrl = function() {
 
 Formio.clearCache = function() { cache = {}; };
 
+/**
+ * Attach an HTML form to Form.io.
+ *
+ * @param form
+ */
+Formio.form = function(form, options, done) {
+  // Fix the parameters.
+  if (!done && typeof options === 'function') {
+    done = options;
+    options = {};
+  }
+
+  done = done || (function() { console.log(arguments); });
+  options = options || {};
+
+  // IF they provide a jquery object, then select the element.
+  if (form.jquery) { form = form[0]; }
+  if (!form) {
+    return done('Invalid Form');
+  }
+
+  // Called when the form has submitted.
+  var onSubmit = function(event) {
+    event.preventDefault();
+    var submission = {data: {}};
+    var action = options.form || form.getAttribute('action');
+    if (!action) {
+      return done('Invalid Form Action');
+    }
+
+    // Set the submission value at the specific path.
+    var setValue = function(path, value) {
+      var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
+      var current = submission;
+      while (path = paths.shift()) {
+        if (!paths.length) {
+          current[path] = value;
+        }
+        else {
+          if (!current[path]) {
+            current[path] = {};
+          }
+          current = current[path];
+        }
+      }
+    };
+
+    // Get the form data from this form.
+    var formData = new FormData(form);
+    var entries = formData.entries();
+    var entry = null;
+    while (entry = entries.next().value) {
+      setValue(entry[0], entry[1]);
+    }
+
+    // Save the submission.
+    (new Formio(action)).saveSubmission(submission).then(function(sub) {
+      done(null, sub);
+    }, done);
+  };
+
+  // Attach formio to the provided form.
+  if (form.attachEvent) {
+    form.attachEvent('submit', onSubmit);
+  } else {
+    form.addEventListener('submit', onSubmit);
+  }
+};
+
 Formio.currentUser = function() {
   var url = baseUrl + '/current';
   var user = this.getUser();
