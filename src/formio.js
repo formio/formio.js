@@ -688,7 +688,9 @@ Formio.form = function(form, options, done) {
 
   // Submits the form.
   var submit = function(event) {
-    event.preventDefault();
+    if (event) {
+      event.preventDefault();
+    }
     (new Formio(action)).saveSubmission(getSubmission()).then(function(sub) {
       done(null, sub);
     }, done);
