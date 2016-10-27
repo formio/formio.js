@@ -2179,13 +2179,13 @@ Formio.form = function(form, options, done) {
     return done('Invalid Form');
   }
 
-  // Called when the form has submitted.
-  var onSubmit = function(event) {
-    event.preventDefault();
+  /**
+   * Returns the current submission object.
+   * @returns {{data: {}}}
+   */
+  var getSubmission = function() {
     var submission = {data: {}};
     var action = options.form || form.getAttribute('action');
-
-    // Set the submission value at the specific path.
     var setValue = function(path, value) {
       var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
       var current = submission;
@@ -2209,24 +2209,28 @@ Formio.form = function(form, options, done) {
     while (entry = entries.next().value) {
       setValue(entry[0], entry[1]);
     }
+    return submission;
+  };
 
-    // If no action was provided, then say we are done with submission.
-    if (!action) {
-      return done(null, submission, true);
-    }
-
-    // Save the submission.
-    (new Formio(action)).saveSubmission(submission).then(function(sub) {
+  // Submits the form.
+  var submit = function(event) {
+    event.preventDefault();
+    (new Formio(action)).saveSubmission(getSubmission()).then(function(sub) {
       done(null, sub);
     }, done);
   };
 
   // Attach formio to the provided form.
   if (form.attachEvent) {
-    form.attachEvent('submit', onSubmit);
+    form.attachEvent('submit', submit);
   } else {
-    form.addEventListener('submit', onSubmit);
+    form.addEventListener('submit', submit);
   }
+
+  return {
+    submit: submit,
+    getSubmission: getSubmission
+  };
 };
 
 Formio.currentUser = function() {
