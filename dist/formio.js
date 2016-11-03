@@ -2408,8 +2408,9 @@ var dropbox = function(formio) {
         }
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
+        var token = false;
         try {
-          var token = localStorage.getItem('formioToken');
+          token = localStorage.getItem('formioToken');
         }
         catch (e) {
           // Swallow error.
@@ -2421,6 +2422,13 @@ var dropbox = function(formio) {
       });
     },
     downloadFile: function(file) {
+      var token = false;
+      try {
+        token = localStorage.getItem('formioToken');
+      }
+      catch (e) {
+        // Swallow error.
+      }
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
     }
@@ -2525,8 +2533,9 @@ var s3 = function(formio) {
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var token = false;
         try {
-          var token = localStorage.getItem('formioToken');
+          token = localStorage.getItem('formioToken');
         }
         catch (e) {
           // swallow error.
