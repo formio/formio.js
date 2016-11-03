@@ -22,17 +22,29 @@
 
   function configure(conf) {
     if (conf) {
-
       this._conf = conf;
 
       conf.delimiter && (this.delimiter = conf.delimiter);
-      conf.maxListeners && (this._events.maxListeners = conf.maxListeners);
+      this._events.maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
       conf.wildcard && (this.wildcard = conf.wildcard);
       conf.newListener && (this.newListener = conf.newListener);
 
       if (this.wildcard) {
         this.listenerTree = {};
       }
+    } else {
+      this._events.maxListeners = defaultMaxListeners;
+    }
+  }
+
+  function logPossibleMemoryLeak(count) {
+    console.error('(node) warning: possible EventEmitter memory ' +
+      'leak detected. %d listeners added. ' +
+      'Use emitter.setMaxListeners() to increase limit.',
+      count);
+
+    if (console.trace){
+      console.trace();
     }
   }
 
@@ -170,7 +182,7 @@
     var tree = this.listenerTree;
     var name = type.shift();
 
-    while (name) {
+    while (name !== undefined) {
 
       if (!tree[name]) {
         tree[name] = {};
@@ -183,32 +195,20 @@
         if (!tree._listeners) {
           tree._listeners = listener;
         }
-        else if(typeof tree._listeners === 'function') {
-          tree._listeners = [tree._listeners, listener];
-        }
-        else if (isArray(tree._listeners)) {
+        else {
+          if (typeof tree._listeners === 'function') {
+            tree._listeners = [tree._listeners];
+          }
 
           tree._listeners.push(listener);
 
-          if (!tree._listeners.warned) {
-
-            var m = defaultMaxListeners;
-
-            if (typeof this._events.maxListeners !== 'undefined') {
-              m = this._events.maxListeners;
-            }
-
-            if (m > 0 && tree._listeners.length > m) {
-
-              tree._listeners.warned = true;
-              console.error('(node) warning: possible EventEmitter memory ' +
-                            'leak detected. %d listeners added. ' +
-                            'Use emitter.setMaxListeners() to increase limit.',
-                            tree._listeners.length);
-              if(console.trace){
-                console.trace();
-              }
-            }
+          if (
+            !tree._listeners.warned &&
+            this._events.maxListeners > 0 &&
+            tree._listeners.length > this._events.maxListeners
+          ) {
+            tree._listeners.warned = true;
+            logPossibleMemoryLeak(tree._listeners.length);
           }
         }
         return true;
@@ -228,10 +228,12 @@
   EventEmitter.prototype.delimiter = '.';
 
   EventEmitter.prototype.setMaxListeners = function(n) {
-    this._events || init.call(this);
-    this._events.maxListeners = n;
-    if (!this._conf) this._conf = {};
-    this._conf.maxListeners = n;
+    if (n !== undefined) {
+      this._events || init.call(this);
+      this._events.maxListeners = n;
+      if (!this._conf) this._conf = {};
+      this._conf.maxListeners = n;
+    }
   };
 
   EventEmitter.prototype.event = '';
@@ -465,7 +467,6 @@
   };
 
   EventEmitter.prototype.on = function(type, listener) {
-
     if (typeof type === 'function') {
       this.onAny(type);
       return this;
@@ -480,7 +481,7 @@
     // adding it to the listeners, first emit "newListeners".
     this.emit('newListener', type, listener);
 
-    if(this.wildcard) {
+    if (this.wildcard) {
       growListenerTree.call(this, type, listener);
       return this;
     }
@@ -489,46 +490,35 @@
       // Optimize the case of one listener. Don't need the extra array object.
       this._events[type] = listener;
     }
-    else if(typeof this._events[type] === 'function') {
-      // Adding the second element, need to change to array.
-      this._events[type] = [this._events[type], listener];
-    }
-    else if (isArray(this._events[type])) {
+    else {
+      if (typeof this._events[type] === 'function') {
+        // Change to array.
+        this._events[type] = [this._events[type]];
+      }
+
       // If we've already got an array, just append.
       this._events[type].push(listener);
 
       // Check for listener leak
-      if (!this._events[type].warned) {
-
-        var m = defaultMaxListeners;
-
-        if (typeof this._events.maxListeners !== 'undefined') {
-          m = this._events.maxListeners;
-        }
-
-        if (m > 0 && this._events[type].length > m) {
-
-          this._events[type].warned = true;
-          console.error('(node) warning: possible EventEmitter memory ' +
-                        'leak detected. %d listeners added. ' +
-                        'Use emitter.setMaxListeners() to increase limit.',
-                        this._events[type].length);
-          if(console.trace){
-            console.trace();
-          }
-        }
+      if (
+        !this._events[type].warned &&
+        this._events.maxListeners > 0 &&
+        this._events[type].length > this._events.maxListeners
+      ) {
+        this._events[type].warned = true;
+        logPossibleMemoryLeak(this._events[type].length);
       }
     }
+
     return this;
   };
 
   EventEmitter.prototype.onAny = function(fn) {
-
     if (typeof fn !== 'function') {
       throw new Error('onAny only accepts instances of Function');
     }
 
-    if(!this._all) {
+    if (!this._all) {
       this._all = [];
     }
 
@@ -619,7 +609,7 @@
       for (var i in keys) {
         var key = keys[i];
         var obj = root[key];
-        if ((obj instanceof Function) || (typeof obj !== "object"))
+        if ((obj instanceof Function) || (typeof obj !== "object") || (obj === null))
           continue;
         if (Object.keys(obj).length > 0) {
           recursivelyGarbageCollect(root[key]);
@@ -662,7 +652,7 @@
       return this;
     }
 
-    if(this.wildcard) {
+    if (this.wildcard) {
       var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
       var leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
 
@@ -671,15 +661,14 @@
         leaf._listeners = null;
       }
     }
-    else {
-      if (!this._events || !this._events[type]) return this;
+    else if (this._events) {
       this._events[type] = null;
     }
     return this;
   };
 
   EventEmitter.prototype.listeners = function(type) {
-    if(this.wildcard) {
+    if (this.wildcard) {
       var handlers = [];
       var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
       searchListenerTree.call(this, handlers, ns, this.listenerTree, 0);
