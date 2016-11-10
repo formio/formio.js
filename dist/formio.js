@@ -1957,7 +1957,18 @@ Formio.loadProjects = function(query) {
   return this.makeStaticRequest(baseUrl + '/project' + query);
 };
 
-Formio.request = function(url, method, data, header) {
+/**
+ * Make a formio request, using the current token.
+ *
+ * @param url
+ * @param method
+ * @param data
+ * @param header
+ * @param {Boolean} ignoreCache
+ *   Whether or not to use the cache.
+ * @returns {*}
+ */
+Formio.request = function(url, method, data, header, ignoreCache) {
   if (!url) {
     return Promise.reject('No url provided');
   }
@@ -1966,50 +1977,50 @@ Formio.request = function(url, method, data, header) {
 
   return new Promise(function(resolve, reject) {
     // Get the cached promise to save multiple loads.
-    if (method === 'GET' && cache.hasOwnProperty(cacheKey)) {
-      resolve(cache[cacheKey]);
+    if (!ignoreCache && method === 'GET' && cache.hasOwnProperty(cacheKey)) {
+      return resolve(cache[cacheKey]);
     }
-    else {
-      resolve(new Promise(function(resolve, reject) {
-        // Set up and fetch request
-        var headers = header || new Headers({
+
+    resolve(new Promise(function(resolve, reject) {
+      // Set up and fetch request
+      var headers = header || new Headers({
           'Accept': 'application/json',
           'Content-type': 'application/json; charset=UTF-8'
         });
-        var token = Formio.getToken();
-        if (token) {
-          headers.append('x-jwt-token', token);
-        }
+      var token = Formio.getToken();
+      if (token) {
+        headers.append('x-jwt-token', token);
+      }
 
-        var options = {
-          method: method,
-          headers: headers,
-          mode: 'cors'
-        };
-        if (data) {
-          options.body = JSON.stringify(data);
-        }
+      var options = {
+        method: method,
+        headers: headers,
+        mode: 'cors'
+      };
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
 
-        resolve(fetch(url, options));
-      })
-      .catch(function(err) {
-        err.message = 'Could not connect to API server (' + err.message + ')';
-        err.networkError = true;
-        throw err;
-      })
-      .then(function(response) {
-        // Handle fetch results
-        if (response.ok) {
-          var token = response.headers.get('x-jwt-token');
-          if (response.status >= 200 && response.status < 300 && token && token !== '') {
-            Formio.setToken(token);
-          }
-          // 204 is no content. Don't try to .json() it.
-          if (response.status === 204) {
-            return {};
-          }
-          return (response.headers.get('content-type').indexOf('application/json') !== -1 ?
-            response.json() : response.text())
+      resolve(fetch(url, options));
+    })
+    .catch(function(err) {
+      err.message = 'Could not connect to API server (' + err.message + ')';
+      err.networkError = true;
+      throw err;
+    })
+    .then(function(response) {
+      // Handle fetch results
+      if (response.ok) {
+        var token = response.headers.get('x-jwt-token');
+        if (response.status >= 200 && response.status < 300 && token && token !== '') {
+          Formio.setToken(token);
+        }
+        // 204 is no content. Don't try to .json() it.
+        if (response.status === 204) {
+          return {};
+        }
+        return (response.headers.get('content-type').indexOf('application/json') !== -1 ?
+          response.json() : response.text())
           .then(function(result) {
             // Add some content-range metadata to the result here
             var range = response.headers.get('content-range');
@@ -2024,34 +2035,33 @@ Formio.request = function(url, method, data, header) {
             }
             return result;
           });
-        }
-        else {
-          if (response.status === 440) {
-            Formio.setToken(null);
-            Formio.events.emit('formio.sessionExpired', response.body);
-          }
-          else if (response.status === 401) {
-            Formio.events.emit('formio.unauthorized', response.body);
-          }
-          // Parse and return the error as a rejected promise to reject this promise
-          return (response.headers.get('content-type').indexOf('application/json') !== -1 ?
-            response.json() : response.text())
-            .then(function(error){
-              throw error;
-            });
-        }
-      })
-      .catch(function(err) {
-        if (err === 'Bad Token') {
+      }
+      else {
+        if (response.status === 440) {
           Formio.setToken(null);
-          Formio.events.emit('formio.badToken', err);
+          Formio.events.emit('formio.sessionExpired', response.body);
         }
-        // Remove failed promises from cache
-        delete cache[cacheKey];
-        // Propagate error so client can handle accordingly
-        throw err;
-      }));
-    }
+        else if (response.status === 401) {
+          Formio.events.emit('formio.unauthorized', response.body);
+        }
+        // Parse and return the error as a rejected promise to reject this promise
+        return (response.headers.get('content-type').indexOf('application/json') !== -1 ?
+          response.json() : response.text())
+          .then(function(error){
+            throw error;
+          });
+      }
+    })
+    .catch(function(err) {
+      if (err === 'Bad Token') {
+        Formio.setToken(null);
+        Formio.events.emit('formio.badToken', err);
+      }
+      // Remove failed promises from cache
+      delete cache[cacheKey];
+      // Propagate error so client can handle accordingly
+      throw err;
+    }));
   })
   .then(function(result) {
     // Save the cache
