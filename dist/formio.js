@@ -28,6 +28,7 @@
       this._events.maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
       conf.wildcard && (this.wildcard = conf.wildcard);
       conf.newListener && (this.newListener = conf.newListener);
+      conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
 
       if (this.wildcard) {
         this.listenerTree = {};
@@ -37,11 +38,17 @@
     }
   }
 
-  function logPossibleMemoryLeak(count) {
-    console.error('(node) warning: possible EventEmitter memory ' +
-      'leak detected. %d listeners added. ' +
-      'Use emitter.setMaxListeners() to increase limit.',
-      count);
+  function logPossibleMemoryLeak(count, eventName) {
+    var errorMsg = '(node) warning: possible EventEmitter memory ' +
+        'leak detected. %d listeners added. ' +
+        'Use emitter.setMaxListeners() to increase limit.';
+
+    if(this.verboseMemoryLeak){
+      errorMsg += ' Event name: %s.';
+      console.error(errorMsg, count, eventName);
+    } else {
+      console.error(errorMsg, count);
+    }
 
     if (console.trace){
       console.trace();
@@ -51,6 +58,7 @@
   function EventEmitter(conf) {
     this._events = {};
     this.newListener = false;
+    this.verboseMemoryLeak = false;
     configure.call(this, conf);
   }
   EventEmitter.EventEmitter2 = EventEmitter; // backwards compatibility for exporting EventEmitter property
@@ -208,7 +216,7 @@
             tree._listeners.length > this._events.maxListeners
           ) {
             tree._listeners.warned = true;
-            logPossibleMemoryLeak(tree._listeners.length);
+            logPossibleMemoryLeak.call(this, tree._listeners.length, name);
           }
         }
         return true;
@@ -506,7 +514,7 @@
         this._events[type].length > this._events.maxListeners
       ) {
         this._events[type].warned = true;
-        logPossibleMemoryLeak(this._events[type].length);
+        logPossibleMemoryLeak.call(this, this._events[type].length, type);
       }
     }
 
@@ -2189,13 +2197,16 @@ Formio.form = function(form, options, done) {
     return done('Invalid Form');
   }
 
+  var getAction = function() {
+    return options.form || form.getAttribute('action');
+  };
+
   /**
    * Returns the current submission object.
    * @returns {{data: {}}}
    */
   var getSubmission = function() {
     var submission = {data: {}};
-    var action = options.form || form.getAttribute('action');
     var setValue = function(path, value) {
       var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
       var current = submission;
@@ -2227,6 +2238,10 @@ Formio.form = function(form, options, done) {
     if (event) {
       event.preventDefault();
     }
+    var action = getAction();
+    if (!action) {
+      return;
+    }
     (new Formio(action)).saveSubmission(getSubmission()).then(function(sub) {
       done(null, sub);
     }, done);
@@ -2241,6 +2256,7 @@ Formio.form = function(form, options, done) {
 
   return {
     submit: submit,
+    getAction: getAction,
     getSubmission: getSubmission
   };
 };

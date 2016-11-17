@@ -663,13 +663,16 @@ Formio.form = function(form, options, done) {
     return done('Invalid Form');
   }
 
+  var getAction = function() {
+    return options.form || form.getAttribute('action');
+  };
+
   /**
    * Returns the current submission object.
    * @returns {{data: {}}}
    */
   var getSubmission = function() {
     var submission = {data: {}};
-    var action = options.form || form.getAttribute('action');
     var setValue = function(path, value) {
       var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
       var current = submission;
@@ -701,6 +704,10 @@ Formio.form = function(form, options, done) {
     if (event) {
       event.preventDefault();
     }
+    var action = getAction();
+    if (!action) {
+      return;
+    }
     (new Formio(action)).saveSubmission(getSubmission()).then(function(sub) {
       done(null, sub);
     }, done);
@@ -715,6 +722,7 @@ Formio.form = function(form, options, done) {
 
   return {
     submit: submit,
+    getAction: getAction,
     getSubmission: getSubmission
   };
 };
