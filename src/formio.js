@@ -576,7 +576,7 @@ Formio.setToken = function(token) {
   catch(err) {
     // Do nothing.
   }
-  Formio.currentUser(); // Run this so user is updated if null
+  return Formio.currentUser(); // Run this so user is updated if null
 };
 
 Formio.getToken = function() {
