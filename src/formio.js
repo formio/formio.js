@@ -317,7 +317,7 @@ Formio.prototype.makeRequest = function(type, url, method, data, opts) {
     return pluginGet('request', requestArgs)
     .then(function(result) {
       if (result === null || result === undefined) {
-        return Formio.request(url, method, data, opts.header, opts.ignoreCache);
+        return Formio.request(url, method, data, opts.header, opts);
       }
       return result;
     });
@@ -371,7 +371,7 @@ Formio.prototype.uploadFile = function(storage, file, fileName, dir, progressCal
     }.bind(this));
 
   return pluginAlter('wrapFileRequestPromise', request, requestArgs);
-}
+};
 
 Formio.prototype.downloadFile = function(file) {
   var requestArgs = {
@@ -397,9 +397,9 @@ Formio.prototype.downloadFile = function(file) {
     }.bind(this));
 
   return pluginAlter('wrapFileRequestPromise', request, requestArgs);
-}
+};
 
-Formio.makeStaticRequest = function(url, method, data) {
+Formio.makeStaticRequest = function(url, method, data, opts) {
   method = (method || 'GET').toUpperCase();
 
   var requestArgs = {
@@ -413,7 +413,7 @@ Formio.makeStaticRequest = function(url, method, data) {
     return pluginGet('staticRequest', requestArgs)
     .then(function(result) {
       if (result === null || result === undefined) {
-        return Formio.request(url, method, data);
+        return Formio.request(url, method, data, opts.header, opts);
       }
       return result;
     });
@@ -442,16 +442,26 @@ Formio.loadProjects = function(query) {
  *   Whether or not to use the cache.
  * @returns {*}
  */
-Formio.request = function(url, method, data, header, ignoreCache) {
+Formio.request = function(url, method, data, header, opts) {
   if (!url) {
     return Promise.reject('No url provided');
   }
   method = (method || 'GET').toUpperCase();
+
+  // For reverse compatibility, if they provided the ignoreCache parameter,
+  // then change it back to the options format where that is a parameter.
+  if (typeof opts === 'boolean') {
+    opts = {ignoreCache: opts};
+  }
+  if(!opts || typeof opts !== 'object') {
+    opts = {};
+  }
+
   var cacheKey = btoa(url);
 
   return new Promise(function(resolve, reject) {
     // Get the cached promise to save multiple loads.
-    if (!ignoreCache && method === 'GET' && cache.hasOwnProperty(cacheKey)) {
+    if (!opts.ignoreCache && method === 'GET' && cache.hasOwnProperty(cacheKey)) {
       return resolve(cache[cacheKey]);
     }
 
@@ -483,34 +493,7 @@ Formio.request = function(url, method, data, header, ignoreCache) {
       throw err;
     })
     .then(function(response) {
-      // Handle fetch results
-      if (response.ok) {
-        var token = response.headers.get('x-jwt-token');
-        if (response.status >= 200 && response.status < 300 && token && token !== '') {
-          Formio.setToken(token);
-        }
-        // 204 is no content. Don't try to .json() it.
-        if (response.status === 204) {
-          return {};
-        }
-        return (response.headers.get('content-type').indexOf('application/json') !== -1 ?
-          response.json() : response.text())
-          .then(function(result) {
-            // Add some content-range metadata to the result here
-            var range = response.headers.get('content-range');
-            if (range && typeof result === 'object') {
-              range = range.split('/');
-              if(range[0] !== '*') {
-                var skipLimit = range[0].split('-');
-                result.skip = Number(skipLimit[0]);
-                result.limit = skipLimit[1] - skipLimit[0] + 1;
-              }
-              result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
-            }
-            return result;
-          });
-      }
-      else {
+      if (!response.ok) {
         if (response.status === 440) {
           Formio.setToken(null);
           Formio.events.emit('formio.sessionExpired', response.body);
@@ -525,6 +508,45 @@ Formio.request = function(url, method, data, header, ignoreCache) {
             throw error;
           });
       }
+
+      // Handle fetch results
+      var token = response.headers.get('x-jwt-token');
+      if (response.status >= 200 && response.status < 300 && token && token !== '') {
+        Formio.setToken(token);
+      }
+      // 204 is no content. Don't try to .json() it.
+      if (response.status === 204) {
+        return {};
+      }
+      return (response.headers.get('content-type').indexOf('application/json') !== -1
+        ? response.json()
+        : response.text()
+      ).then(function(result) {
+        // Add some content-range metadata to the result here
+        var range = response.headers.get('content-range');
+        if (range && typeof result === 'object') {
+          range = range.split('/');
+          if(range[0] !== '*') {
+            var skipLimit = range[0].split('-');
+            result.skip = Number(skipLimit[0]);
+            result.limit = skipLimit[1] - skipLimit[0] + 1;
+          }
+          result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
+        }
+
+        if (!opts.getHeaders) {
+          return result;
+        }
+
+        var headers = {};
+        response.headers.forEach(function(item, key) {
+          headers[key] = item;
+        });
+
+        return new Promise(function(resolve, reject) {
+          resolve({result: result, headers: headers});
+        });
+      });
     })
     .catch(function(err) {
       if (err === 'Bad Token') {
