@@ -252,11 +252,11 @@ var _load = function(type) {
 var _save = function(type) {
   var _id = type + 'Id';
   var _url = type + 'Url';
-  return function(data, opts, getHeaders) {
+  return function(data, opts) {
     var method = this[_id] ? 'put' : 'post';
     var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
     cache = {};
-    return this.makeRequest(type, reqUrl + this.query, method, data, opts, getHeaders);
+    return this.makeRequest(type, reqUrl + this.query, method, data, opts);
   };
 };
 
@@ -296,7 +296,7 @@ var _index = function(type) {
 };
 
 // Activates plugin hooks, makes Formio.request if no plugin provides a request
-Formio.prototype.makeRequest = function(type, url, method, data, opts, getHeaders) {
+Formio.prototype.makeRequest = function(type, url, method, data, opts) {
   var self = this;
   method = (method || 'GET').toUpperCase();
   if(!opts || typeof opts !== 'object') {
@@ -317,7 +317,7 @@ Formio.prototype.makeRequest = function(type, url, method, data, opts, getHeader
     return pluginGet('request', requestArgs)
     .then(function(result) {
       if (result === null || result === undefined) {
-        return Formio.request(url, method, data, undefined, false, getHeaders);
+        return Formio.request(url, method, data, opts.header, opts);
       }
       return result;
     });
@@ -399,9 +399,11 @@ Formio.prototype.downloadFile = function(file) {
   return pluginAlter('wrapFileRequestPromise', request, requestArgs);
 };
 
-Formio.makeStaticRequest = function(url, method, data) {
+Formio.makeStaticRequest = function(url, method, data, opts) {
   method = (method || 'GET').toUpperCase();
-
+  if(!opts || typeof opts !== 'object') {
+    opts = {};
+  }
   var requestArgs = {
     url: url,
     method: method,
@@ -413,7 +415,7 @@ Formio.makeStaticRequest = function(url, method, data) {
     return pluginGet('staticRequest', requestArgs)
     .then(function(result) {
       if (result === null || result === undefined) {
-        return Formio.request(url, method, data);
+        return Formio.request(url, method, data, opts.header, opts);
       }
       return result;
     });
@@ -442,16 +444,26 @@ Formio.loadProjects = function(query) {
  *   Whether or not to use the cache.
  * @returns {*}
  */
-Formio.request = function(url, method, data, header, ignoreCache, getHeaders) {
+Formio.request = function(url, method, data, header, opts) {
   if (!url) {
     return Promise.reject('No url provided');
   }
   method = (method || 'GET').toUpperCase();
+
+  // For reverse compatibility, if they provided the ignoreCache parameter,
+  // then change it back to the options format where that is a parameter.
+  if (typeof opts === 'boolean') {
+    opts = {ignoreCache: opts};
+  }
+  if(!opts || typeof opts !== 'object') {
+    opts = {};
+  }
+
   var cacheKey = btoa(url);
 
   return new Promise(function(resolve, reject) {
     // Get the cached promise to save multiple loads.
-    if (!ignoreCache && method === 'GET' && cache.hasOwnProperty(cacheKey)) {
+    if (!opts.ignoreCache && method === 'GET' && cache.hasOwnProperty(cacheKey)) {
       return resolve(cache[cacheKey]);
     }
 
@@ -524,7 +536,7 @@ Formio.request = function(url, method, data, header, ignoreCache, getHeaders) {
           result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
         }
 
-        if (!getHeaders) {
+        if (!opts.getHeaders) {
           return result;
         }
 
