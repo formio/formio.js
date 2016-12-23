@@ -1935,7 +1935,9 @@ Formio.prototype.downloadFile = function(file) {
 
 Formio.makeStaticRequest = function(url, method, data, opts) {
   method = (method || 'GET').toUpperCase();
-
+  if(!opts || typeof opts !== 'object') {
+    opts = {};
+  }
   var requestArgs = {
     url: url,
     method: method,
