@@ -317,7 +317,7 @@ Formio.prototype.makeRequest = function(type, url, method, data, opts) {
     return pluginGet('request', requestArgs)
     .then(function(result) {
       if (result === null || result === undefined) {
-        return Formio.request(url, method, data);
+        return Formio.request(url, method, data, opts.header, opts.ignoreCache);
       }
       return result;
     });
