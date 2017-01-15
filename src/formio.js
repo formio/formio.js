@@ -253,8 +253,11 @@ var _save = function(type) {
   var _id = type + 'Id';
   var _url = type + 'Url';
   return function(data, opts) {
-    var method = this[_id] ? 'put' : 'post';
+    var method = (this[_id] || data._id) ? 'put' : 'post';
     var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
+    if (!this[_id] && data._id && (method === 'put')) {
+      reqUrl += '/' + data._id;
+    }
     cache = {};
     return this.makeRequest(type, reqUrl + this.query, method, data, opts);
   };
