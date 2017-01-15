@@ -1323,6 +1323,35 @@ QUnit.module('Test Formio.js capabilities', function () {
         };
       }
     },
+    {
+      name: 'Update Submission without ID',
+      test: function(assert) {
+        var formio = new Formio('/project/' + project._id + '/form/' + form._id);
+        var newSubmission = _.cloneDeep(submission);
+        newSubmission.data.fieldLabel = chance.string();
+        return formio.saveSubmission(newSubmission)
+          .then(function(response) {
+            assert.deepEqual(response, submission, 'Submission should match');
+          });
+      },
+      mock: function() {
+        return {
+          url: Formio.getBaseUrl() + '/project/' + project._id + '/form/' + form._id + '/submission/' + submission._id,
+          method: 'PUT',
+          response: function(url, opts) {
+            var body = JSON.parse(opts.body);
+            submission = body;
+            return {
+              headers: {
+                'Content-Type': 'application/json',
+                'x-jwt-token': userToken
+              },
+              body: submission
+            };
+          }
+        };
+      }
+    },
     // // Actions
     // // Available Actions
     // // Action Info
