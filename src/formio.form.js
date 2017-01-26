@@ -102,18 +102,22 @@ class FormioForm extends FormioComponents {
     this.checkConditions(this.getValue());
   }
 
+  onSubmit(submission) {
+    this.loading = false;
+    this.events.emit('submit', submission);
+  }
+
   submit(event) {
+    this.loading = true;
     if (event) {
       event.preventDefault();
     }
-    if (this.formio) {
-      this.formio.saveSubmission(this.value)
-        .then((submission) => this.events.emit('submit', submission))
-        .catch((err) => this.events.emit('error', err));
+    if (!this.formio) {
+      return this.onSubmit(submission);
     }
-    else {
-      this.events.emit('submit', this.value);
-    }
+    this.formio.saveSubmission(this.value)
+      .then((submission) => this.onSubmit(submission))
+      .catch((err) => this.events.emit('error', err));
   }
 
   onComponentChange(changed) {

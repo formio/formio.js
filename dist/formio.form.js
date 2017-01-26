@@ -6507,22 +6507,28 @@ var FormioForm = function (_FormioComponents) {
       this.checkConditions(this.getValue());
     }
   }, {
+    key: 'onSubmit',
+    value: function onSubmit(submission) {
+      this.loading = false;
+      this.events.emit('submit', submission);
+    }
+  }, {
     key: 'submit',
     value: function submit(event) {
       var _this4 = this;
 
+      this.loading = true;
       if (event) {
         event.preventDefault();
       }
-      if (this.formio) {
-        this.formio.saveSubmission(this.value).then(function (submission) {
-          return _this4.events.emit('submit', submission);
-        }).catch(function (err) {
-          return _this4.events.emit('error', err);
-        });
-      } else {
-        this.events.emit('submit', this.value);
+      if (!this.formio) {
+        return this.onSubmit(submission);
       }
+      this.formio.saveSubmission(this.value).then(function (submission) {
+        return _this4.onSubmit(submission);
+      }).catch(function (err) {
+        return _this4.events.emit('error', err);
+      });
     }
   }, {
     key: 'onComponentChange',
