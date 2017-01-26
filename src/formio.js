@@ -701,11 +701,23 @@ Formio.form = function(form, options, done) {
   var getSubmission = function() {
     var submission = {data: {}};
     var setValue = function(path, value) {
+      var isArray = path.substr(-2) === '[]';
+      if (isArray) {
+        path = path.replace('[]', '');
+      }
       var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
       var current = submission;
       while (path = paths.shift()) {
         if (!paths.length) {
-          current[path] = value;
+          if (isArray) {
+            if (!current[path]) {
+              current[path] = [];
+            }
+            current[path].push(value);
+          }
+          else {
+            current[path] = value;
+          }
         }
         else {
           if (!current[path]) {

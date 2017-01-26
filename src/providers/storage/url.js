@@ -59,6 +59,5 @@ var url = function(formio) {
   };
 };
 
-url.name = 'url';
 url.title = 'Url';
 module.exports = url;

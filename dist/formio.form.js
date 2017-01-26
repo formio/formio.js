@@ -1,0 +1,11483 @@
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.FormioForm = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*!
+ * EventEmitter2
+ * https://github.com/hij1nx/EventEmitter2
+ *
+ * Copyright (c) 2013 hij1nx
+ * Licensed under the MIT license.
+ */
+;!function(undefined) {
+
+  var isArray = Array.isArray ? Array.isArray : function _isArray(obj) {
+    return Object.prototype.toString.call(obj) === "[object Array]";
+  };
+  var defaultMaxListeners = 10;
+
+  function init() {
+    this._events = {};
+    if (this._conf) {
+      configure.call(this, this._conf);
+    }
+  }
+
+  function configure(conf) {
+    if (conf) {
+      this._conf = conf;
+
+      conf.delimiter && (this.delimiter = conf.delimiter);
+      this._events.maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
+      conf.wildcard && (this.wildcard = conf.wildcard);
+      conf.newListener && (this.newListener = conf.newListener);
+      conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
+
+      if (this.wildcard) {
+        this.listenerTree = {};
+      }
+    } else {
+      this._events.maxListeners = defaultMaxListeners;
+    }
+  }
+
+  function logPossibleMemoryLeak(count, eventName) {
+    var errorMsg = '(node) warning: possible EventEmitter memory ' +
+        'leak detected. %d listeners added. ' +
+        'Use emitter.setMaxListeners() to increase limit.';
+
+    if(this.verboseMemoryLeak){
+      errorMsg += ' Event name: %s.';
+      console.error(errorMsg, count, eventName);
+    } else {
+      console.error(errorMsg, count);
+    }
+
+    if (console.trace){
+      console.trace();
+    }
+  }
+
+  function EventEmitter(conf) {
+    this._events = {};
+    this.newListener = false;
+    this.verboseMemoryLeak = false;
+    configure.call(this, conf);
+  }
+  EventEmitter.EventEmitter2 = EventEmitter; // backwards compatibility for exporting EventEmitter property
+
+  //
+  // Attention, function return type now is array, always !
+  // It has zero elements if no any matches found and one or more
+  // elements (leafs) if there are matches
+  //
+  function searchListenerTree(handlers, type, tree, i) {
+    if (!tree) {
+      return [];
+    }
+    var listeners=[], leaf, len, branch, xTree, xxTree, isolatedBranch, endReached,
+        typeLength = type.length, currentType = type[i], nextType = type[i+1];
+    if (i === typeLength && tree._listeners) {
+      //
+      // If at the end of the event(s) list and the tree has listeners
+      // invoke those listeners.
+      //
+      if (typeof tree._listeners === 'function') {
+        handlers && handlers.push(tree._listeners);
+        return [tree];
+      } else {
+        for (leaf = 0, len = tree._listeners.length; leaf < len; leaf++) {
+          handlers && handlers.push(tree._listeners[leaf]);
+        }
+        return [tree];
+      }
+    }
+
+    if ((currentType === '*' || currentType === '**') || tree[currentType]) {
+      //
+      // If the event emitted is '*' at this part
+      // or there is a concrete match at this patch
+      //
+      if (currentType === '*') {
+        for (branch in tree) {
+          if (branch !== '_listeners' && tree.hasOwnProperty(branch)) {
+            listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i+1));
+          }
+        }
+        return listeners;
+      } else if(currentType === '**') {
+        endReached = (i+1 === typeLength || (i+2 === typeLength && nextType === '*'));
+        if(endReached && tree._listeners) {
+          // The next element has a _listeners, add it to the handlers.
+          listeners = listeners.concat(searchListenerTree(handlers, type, tree, typeLength));
+        }
+
+        for (branch in tree) {
+          if (branch !== '_listeners' && tree.hasOwnProperty(branch)) {
+            if(branch === '*' || branch === '**') {
+              if(tree[branch]._listeners && !endReached) {
+                listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], typeLength));
+              }
+              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i));
+            } else if(branch === nextType) {
+              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i+2));
+            } else {
+              // No match on this one, shift into the tree but not in the type array.
+              listeners = listeners.concat(searchListenerTree(handlers, type, tree[branch], i));
+            }
+          }
+        }
+        return listeners;
+      }
+
+      listeners = listeners.concat(searchListenerTree(handlers, type, tree[currentType], i+1));
+    }
+
+    xTree = tree['*'];
+    if (xTree) {
+      //
+      // If the listener tree will allow any match for this part,
+      // then recursively explore all branches of the tree
+      //
+      searchListenerTree(handlers, type, xTree, i+1);
+    }
+
+    xxTree = tree['**'];
+    if(xxTree) {
+      if(i < typeLength) {
+        if(xxTree._listeners) {
+          // If we have a listener on a '**', it will catch all, so add its handler.
+          searchListenerTree(handlers, type, xxTree, typeLength);
+        }
+
+        // Build arrays of matching next branches and others.
+        for(branch in xxTree) {
+          if(branch !== '_listeners' && xxTree.hasOwnProperty(branch)) {
+            if(branch === nextType) {
+              // We know the next element will match, so jump twice.
+              searchListenerTree(handlers, type, xxTree[branch], i+2);
+            } else if(branch === currentType) {
+              // Current node matches, move into the tree.
+              searchListenerTree(handlers, type, xxTree[branch], i+1);
+            } else {
+              isolatedBranch = {};
+              isolatedBranch[branch] = xxTree[branch];
+              searchListenerTree(handlers, type, { '**': isolatedBranch }, i+1);
+            }
+          }
+        }
+      } else if(xxTree._listeners) {
+        // We have reached the end and still on a '**'
+        searchListenerTree(handlers, type, xxTree, typeLength);
+      } else if(xxTree['*'] && xxTree['*']._listeners) {
+        searchListenerTree(handlers, type, xxTree['*'], typeLength);
+      }
+    }
+
+    return listeners;
+  }
+
+  function growListenerTree(type, listener) {
+
+    type = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+
+    //
+    // Looks for two consecutive '**', if so, don't add the event at all.
+    //
+    for(var i = 0, len = type.length; i+1 < len; i++) {
+      if(type[i] === '**' && type[i+1] === '**') {
+        return;
+      }
+    }
+
+    var tree = this.listenerTree;
+    var name = type.shift();
+
+    while (name !== undefined) {
+
+      if (!tree[name]) {
+        tree[name] = {};
+      }
+
+      tree = tree[name];
+
+      if (type.length === 0) {
+
+        if (!tree._listeners) {
+          tree._listeners = listener;
+        }
+        else {
+          if (typeof tree._listeners === 'function') {
+            tree._listeners = [tree._listeners];
+          }
+
+          tree._listeners.push(listener);
+
+          if (
+            !tree._listeners.warned &&
+            this._events.maxListeners > 0 &&
+            tree._listeners.length > this._events.maxListeners
+          ) {
+            tree._listeners.warned = true;
+            logPossibleMemoryLeak.call(this, tree._listeners.length, name);
+          }
+        }
+        return true;
+      }
+      name = type.shift();
+    }
+    return true;
+  }
+
+  // By default EventEmitters will print a warning if more than
+  // 10 listeners are added to it. This is a useful default which
+  // helps finding memory leaks.
+  //
+  // Obviously not all Emitters should be limited to 10. This function allows
+  // that to be increased. Set to zero for unlimited.
+
+  EventEmitter.prototype.delimiter = '.';
+
+  EventEmitter.prototype.setMaxListeners = function(n) {
+    if (n !== undefined) {
+      this._events || init.call(this);
+      this._events.maxListeners = n;
+      if (!this._conf) this._conf = {};
+      this._conf.maxListeners = n;
+    }
+  };
+
+  EventEmitter.prototype.event = '';
+
+  EventEmitter.prototype.once = function(event, fn) {
+    this.many(event, 1, fn);
+    return this;
+  };
+
+  EventEmitter.prototype.many = function(event, ttl, fn) {
+    var self = this;
+
+    if (typeof fn !== 'function') {
+      throw new Error('many only accepts instances of Function');
+    }
+
+    function listener() {
+      if (--ttl === 0) {
+        self.off(event, listener);
+      }
+      fn.apply(this, arguments);
+    }
+
+    listener._origin = fn;
+
+    this.on(event, listener);
+
+    return self;
+  };
+
+  EventEmitter.prototype.emit = function() {
+
+    this._events || init.call(this);
+
+    var type = arguments[0];
+
+    if (type === 'newListener' && !this.newListener) {
+      if (!this._events.newListener) {
+        return false;
+      }
+    }
+
+    var al = arguments.length;
+    var args,l,i,j;
+    var handler;
+
+    if (this._all && this._all.length) {
+      handler = this._all.slice();
+      if (al > 3) {
+        args = new Array(al);
+        for (j = 0; j < al; j++) args[j] = arguments[j];
+      }
+
+      for (i = 0, l = handler.length; i < l; i++) {
+        this.event = type;
+        switch (al) {
+        case 1:
+          handler[i].call(this, type);
+          break;
+        case 2:
+          handler[i].call(this, type, arguments[1]);
+          break;
+        case 3:
+          handler[i].call(this, type, arguments[1], arguments[2]);
+          break;
+        default:
+          handler[i].apply(this, args);
+        }
+      }
+    }
+
+    if (this.wildcard) {
+      handler = [];
+      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+      searchListenerTree.call(this, handler, ns, this.listenerTree, 0);
+    } else {
+      handler = this._events[type];
+      if (typeof handler === 'function') {
+        this.event = type;
+        switch (al) {
+        case 1:
+          handler.call(this);
+          break;
+        case 2:
+          handler.call(this, arguments[1]);
+          break;
+        case 3:
+          handler.call(this, arguments[1], arguments[2]);
+          break;
+        default:
+          args = new Array(al - 1);
+          for (j = 1; j < al; j++) args[j - 1] = arguments[j];
+          handler.apply(this, args);
+        }
+        return true;
+      } else if (handler) {
+        // need to make copy of handlers because list can change in the middle
+        // of emit call
+        handler = handler.slice();
+      }
+    }
+
+    if (handler && handler.length) {
+      if (al > 3) {
+        args = new Array(al - 1);
+        for (j = 1; j < al; j++) args[j - 1] = arguments[j];
+      }
+      for (i = 0, l = handler.length; i < l; i++) {
+        this.event = type;
+        switch (al) {
+        case 1:
+          handler[i].call(this);
+          break;
+        case 2:
+          handler[i].call(this, arguments[1]);
+          break;
+        case 3:
+          handler[i].call(this, arguments[1], arguments[2]);
+          break;
+        default:
+          handler[i].apply(this, args);
+        }
+      }
+      return true;
+    } else if (!this._all && type === 'error') {
+      if (arguments[1] instanceof Error) {
+        throw arguments[1]; // Unhandled 'error' event
+      } else {
+        throw new Error("Uncaught, unspecified 'error' event.");
+      }
+      return false;
+    }
+
+    return !!this._all;
+  };
+
+  EventEmitter.prototype.emitAsync = function() {
+
+    this._events || init.call(this);
+
+    var type = arguments[0];
+
+    if (type === 'newListener' && !this.newListener) {
+        if (!this._events.newListener) { return Promise.resolve([false]); }
+    }
+
+    var promises= [];
+
+    var al = arguments.length;
+    var args,l,i,j;
+    var handler;
+
+    if (this._all) {
+      if (al > 3) {
+        args = new Array(al);
+        for (j = 1; j < al; j++) args[j] = arguments[j];
+      }
+      for (i = 0, l = this._all.length; i < l; i++) {
+        this.event = type;
+        switch (al) {
+        case 1:
+          promises.push(this._all[i].call(this, type));
+          break;
+        case 2:
+          promises.push(this._all[i].call(this, type, arguments[1]));
+          break;
+        case 3:
+          promises.push(this._all[i].call(this, type, arguments[1], arguments[2]));
+          break;
+        default:
+          promises.push(this._all[i].apply(this, args));
+        }
+      }
+    }
+
+    if (this.wildcard) {
+      handler = [];
+      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+      searchListenerTree.call(this, handler, ns, this.listenerTree, 0);
+    } else {
+      handler = this._events[type];
+    }
+
+    if (typeof handler === 'function') {
+      this.event = type;
+      switch (al) {
+      case 1:
+        promises.push(handler.call(this));
+        break;
+      case 2:
+        promises.push(handler.call(this, arguments[1]));
+        break;
+      case 3:
+        promises.push(handler.call(this, arguments[1], arguments[2]));
+        break;
+      default:
+        args = new Array(al - 1);
+        for (j = 1; j < al; j++) args[j - 1] = arguments[j];
+        promises.push(handler.apply(this, args));
+      }
+    } else if (handler && handler.length) {
+      if (al > 3) {
+        args = new Array(al - 1);
+        for (j = 1; j < al; j++) args[j - 1] = arguments[j];
+      }
+      for (i = 0, l = handler.length; i < l; i++) {
+        this.event = type;
+        switch (al) {
+        case 1:
+          promises.push(handler[i].call(this));
+          break;
+        case 2:
+          promises.push(handler[i].call(this, arguments[1]));
+          break;
+        case 3:
+          promises.push(handler[i].call(this, arguments[1], arguments[2]));
+          break;
+        default:
+          promises.push(handler[i].apply(this, args));
+        }
+      }
+    } else if (!this._all && type === 'error') {
+      if (arguments[1] instanceof Error) {
+        return Promise.reject(arguments[1]); // Unhandled 'error' event
+      } else {
+        return Promise.reject("Uncaught, unspecified 'error' event.");
+      }
+    }
+
+    return Promise.all(promises);
+  };
+
+  EventEmitter.prototype.on = function(type, listener) {
+    if (typeof type === 'function') {
+      this.onAny(type);
+      return this;
+    }
+
+    if (typeof listener !== 'function') {
+      throw new Error('on only accepts instances of Function');
+    }
+    this._events || init.call(this);
+
+    // To avoid recursion in the case that type == "newListeners"! Before
+    // adding it to the listeners, first emit "newListeners".
+    this.emit('newListener', type, listener);
+
+    if (this.wildcard) {
+      growListenerTree.call(this, type, listener);
+      return this;
+    }
+
+    if (!this._events[type]) {
+      // Optimize the case of one listener. Don't need the extra array object.
+      this._events[type] = listener;
+    }
+    else {
+      if (typeof this._events[type] === 'function') {
+        // Change to array.
+        this._events[type] = [this._events[type]];
+      }
+
+      // If we've already got an array, just append.
+      this._events[type].push(listener);
+
+      // Check for listener leak
+      if (
+        !this._events[type].warned &&
+        this._events.maxListeners > 0 &&
+        this._events[type].length > this._events.maxListeners
+      ) {
+        this._events[type].warned = true;
+        logPossibleMemoryLeak.call(this, this._events[type].length, type);
+      }
+    }
+
+    return this;
+  };
+
+  EventEmitter.prototype.onAny = function(fn) {
+    if (typeof fn !== 'function') {
+      throw new Error('onAny only accepts instances of Function');
+    }
+
+    if (!this._all) {
+      this._all = [];
+    }
+
+    // Add the function to the event listener collection.
+    this._all.push(fn);
+    return this;
+  };
+
+  EventEmitter.prototype.addListener = EventEmitter.prototype.on;
+
+  EventEmitter.prototype.off = function(type, listener) {
+    if (typeof listener !== 'function') {
+      throw new Error('removeListener only takes instances of Function');
+    }
+
+    var handlers,leafs=[];
+
+    if(this.wildcard) {
+      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+      leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
+    }
+    else {
+      // does not use listeners(), so no side effect of creating _events[type]
+      if (!this._events[type]) return this;
+      handlers = this._events[type];
+      leafs.push({_listeners:handlers});
+    }
+
+    for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
+      var leaf = leafs[iLeaf];
+      handlers = leaf._listeners;
+      if (isArray(handlers)) {
+
+        var position = -1;
+
+        for (var i = 0, length = handlers.length; i < length; i++) {
+          if (handlers[i] === listener ||
+            (handlers[i].listener && handlers[i].listener === listener) ||
+            (handlers[i]._origin && handlers[i]._origin === listener)) {
+            position = i;
+            break;
+          }
+        }
+
+        if (position < 0) {
+          continue;
+        }
+
+        if(this.wildcard) {
+          leaf._listeners.splice(position, 1);
+        }
+        else {
+          this._events[type].splice(position, 1);
+        }
+
+        if (handlers.length === 0) {
+          if(this.wildcard) {
+            delete leaf._listeners;
+          }
+          else {
+            delete this._events[type];
+          }
+        }
+
+        this.emit("removeListener", type, listener);
+
+        return this;
+      }
+      else if (handlers === listener ||
+        (handlers.listener && handlers.listener === listener) ||
+        (handlers._origin && handlers._origin === listener)) {
+        if(this.wildcard) {
+          delete leaf._listeners;
+        }
+        else {
+          delete this._events[type];
+        }
+
+        this.emit("removeListener", type, listener);
+      }
+    }
+
+    function recursivelyGarbageCollect(root) {
+      if (root === undefined) {
+        return;
+      }
+      var keys = Object.keys(root);
+      for (var i in keys) {
+        var key = keys[i];
+        var obj = root[key];
+        if ((obj instanceof Function) || (typeof obj !== "object") || (obj === null))
+          continue;
+        if (Object.keys(obj).length > 0) {
+          recursivelyGarbageCollect(root[key]);
+        }
+        if (Object.keys(obj).length === 0) {
+          delete root[key];
+        }
+      }
+    }
+    recursivelyGarbageCollect(this.listenerTree);
+
+    return this;
+  };
+
+  EventEmitter.prototype.offAny = function(fn) {
+    var i = 0, l = 0, fns;
+    if (fn && this._all && this._all.length > 0) {
+      fns = this._all;
+      for(i = 0, l = fns.length; i < l; i++) {
+        if(fn === fns[i]) {
+          fns.splice(i, 1);
+          this.emit("removeListenerAny", fn);
+          return this;
+        }
+      }
+    } else {
+      fns = this._all;
+      for(i = 0, l = fns.length; i < l; i++)
+        this.emit("removeListenerAny", fns[i]);
+      this._all = [];
+    }
+    return this;
+  };
+
+  EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
+
+  EventEmitter.prototype.removeAllListeners = function(type) {
+    if (arguments.length === 0) {
+      !this._events || init.call(this);
+      return this;
+    }
+
+    if (this.wildcard) {
+      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+      var leafs = searchListenerTree.call(this, null, ns, this.listenerTree, 0);
+
+      for (var iLeaf=0; iLeaf<leafs.length; iLeaf++) {
+        var leaf = leafs[iLeaf];
+        leaf._listeners = null;
+      }
+    }
+    else if (this._events) {
+      this._events[type] = null;
+    }
+    return this;
+  };
+
+  EventEmitter.prototype.listeners = function(type) {
+    if (this.wildcard) {
+      var handlers = [];
+      var ns = typeof type === 'string' ? type.split(this.delimiter) : type.slice();
+      searchListenerTree.call(this, handlers, ns, this.listenerTree, 0);
+      return handlers;
+    }
+
+    this._events || init.call(this);
+
+    if (!this._events[type]) this._events[type] = [];
+    if (!isArray(this._events[type])) {
+      this._events[type] = [this._events[type]];
+    }
+    return this._events[type];
+  };
+
+  EventEmitter.prototype.listenerCount = function(type) {
+    return this.listeners(type).length;
+  };
+
+  EventEmitter.prototype.listenersAny = function() {
+
+    if(this._all) {
+      return this._all;
+    }
+    else {
+      return [];
+    }
+
+  };
+
+  if (typeof define === 'function' && define.amd) {
+     // AMD. Register as an anonymous module.
+    define(function() {
+      return EventEmitter;
+    });
+  } else if (typeof exports === 'object') {
+    // CommonJS
+    module.exports = EventEmitter;
+  }
+  else {
+    // Browser global.
+    window.EventEmitter2 = EventEmitter;
+  }
+}();
+
+},{}],2:[function(require,module,exports){
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*! flatpickr v2.3.4, @license MIT */
+function Flatpickr(element, config) {
+	var self = this;
+
+	function init() {
+		if (element._flatpickr) destroy(element._flatpickr);
+
+		element._flatpickr = self;
+
+		self.element = element;
+		self.instanceConfig = config || {};
+
+		setupFormats();
+
+		parseConfig();
+		setupLocale();
+		setupInputs();
+		setupDates();
+		setupHelperFunctions();
+
+		self.isOpen = self.config.inline;
+		self.changeMonth = changeMonth;
+		self.clear = clear;
+		self.close = close;
+		self.destroy = destroy;
+		self.formatDate = formatDate;
+		self.jumpToDate = jumpToDate;
+		self.open = open;
+		self.redraw = redraw;
+		self.set = set;
+		self.setDate = setDate;
+		self.toggle = toggle;
+
+		self.isMobile = !self.config.disableMobile && !self.config.inline && self.config.mode === "single" && !self.config.disable.length && !self.config.enable.length && !self.config.weekNumbers && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+		if (!self.isMobile) build();
+
+		bind();
+
+		if (!self.isMobile) {
+			Object.defineProperty(self, "dateIsPicked", {
+				set: function set(bool) {
+					if (bool) return self.calendarContainer.classList.add("dateIsPicked");
+					self.calendarContainer.classList.remove("dateIsPicked");
+				}
+			});
+		}
+
+		self.dateIsPicked = self.selectedDates.length > 0 || self.config.noCalendar;
+
+		if (self.selectedDates.length) {
+			if (self.config.enableTime) setHoursFromDate();
+			updateValue();
+		}
+
+		if (self.config.weekNumbers) {
+			self.calendarContainer.style.width = self.days.clientWidth + self.weekWrapper.clientWidth + "px";
+		}
+
+		triggerEvent("Ready");
+	}
+
+	function updateTime(e) {
+		if (self.config.noCalendar && !self.selectedDates.length)
+			// picking time only
+			self.selectedDates = [self.now];
+
+		timeWrapper(e);
+
+		if (!self.selectedDates.length) return;
+
+		if (!self.minDateHasTime || e.type !== "input" || e.target.value.length >= 2) {
+			setHoursFromInputs();
+			updateValue();
+		} else {
+			setTimeout(function () {
+				setHoursFromInputs();
+				updateValue();
+			}, 1000);
+		}
+	}
+
+	function setHoursFromInputs() {
+		if (!self.config.enableTime) return;
+
+		var hours = parseInt(self.hourElement.value, 10) || 0,
+		    minutes = parseInt(self.minuteElement.value, 10) || 0,
+		    seconds = self.config.enableSeconds ? parseInt(self.secondElement.value, 10) || 0 : 0;
+
+		if (self.amPM) hours = hours % 12 + 12 * (self.amPM.textContent === "PM");
+
+		if (self.minDateHasTime && compareDates(self.latestSelectedDateObj, self.config.minDate) === 0) {
+
+			hours = Math.max(hours, self.config.minDate.getHours());
+			if (hours === self.config.minDate.getHours()) minutes = Math.max(minutes, self.config.minDate.getMinutes());
+		} else if (self.maxDateHasTime && compareDates(self.latestSelectedDateObj, self.config.maxDate) === 0) {
+			hours = Math.min(hours, self.config.maxDate.getHours());
+			if (hours === self.config.maxDate.getHours()) minutes = Math.min(minutes, self.config.maxDate.getMinutes());
+		}
+
+		setHours(hours, minutes, seconds);
+	}
+
+	function setHoursFromDate(dateObj) {
+		var date = dateObj || self.latestSelectedDateObj;
+
+		if (date) setHours(date.getHours(), date.getMinutes(), date.getSeconds());
+	}
+
+	function setHours(hours, minutes, seconds) {
+		if (self.selectedDates.length) {
+			self.latestSelectedDateObj.setHours(hours % 24, minutes, seconds || 0, 0);
+		}
+
+		if (!self.config.enableTime || self.isMobile) return;
+
+		self.hourElement.value = self.pad(!self.config.time_24hr ? (12 + hours) % 12 + 12 * (hours % 12 === 0) : hours);
+
+		self.minuteElement.value = self.pad(minutes);
+
+		if (!self.config.time_24hr && self.selectedDates.length) self.amPM.textContent = self.latestSelectedDateObj.getHours() >= 12 ? "PM" : "AM";
+
+		if (self.config.enableSeconds) self.secondElement.value = self.pad(seconds);
+	}
+
+	function onYearInput(event) {
+		if (event.target.value.length === 4) {
+			self.currentYearElement.blur();
+			handleYearChange(event.target.value);
+			event.target.value = self.currentYear;
+		}
+	}
+
+	function bind() {
+		if (self.config.wrap) {
+			["open", "close", "toggle", "clear"].forEach(function (el) {
+				try {
+					self.element.querySelector("[data-" + el + "]").addEventListener("click", self[el]);
+				} catch (e) {
+					//
+				}
+			});
+		}
+
+		if (window.document.createEvent !== undefined) {
+			self.changeEvent = window.document.createEvent("HTMLEvents");
+			self.changeEvent.initEvent("change", false, true);
+		}
+
+		if (self.isMobile) return setupMobile();
+
+		self.debouncedResize = debounce(onResize, 50);
+		self.triggerChange = function () {
+			triggerEvent("Change");
+		};
+		self.debouncedChange = debounce(self.triggerChange, 300);
+
+		if (self.config.mode === "range" && self.days) self.days.addEventListener("mouseover", onMouseOver);
+
+		window.document.addEventListener("keydown", onKeyDown);
+
+		if (!self.config.inline && !self.config.static) window.addEventListener("resize", self.debouncedResize);
+
+		if (window.ontouchstart) window.document.addEventListener("touchstart", documentClick);
+
+		window.document.addEventListener("click", documentClick);
+		window.document.addEventListener("blur", documentClick);
+
+		if (self.config.clickOpens) (self.altInput || self.input).addEventListener("focus", open);
+
+		if (!self.config.noCalendar) {
+			self.prevMonthNav.addEventListener("click", function () {
+				return changeMonth(-1);
+			});
+			self.nextMonthNav.addEventListener("click", function () {
+				return changeMonth(1);
+			});
+
+			self.currentYearElement.addEventListener("wheel", function (e) {
+				return debounce(yearScroll(e), 50);
+			});
+			self.currentYearElement.addEventListener("focus", function () {
+				self.currentYearElement.select();
+			});
+
+			self.currentYearElement.addEventListener("input", onYearInput);
+			self.currentYearElement.addEventListener("increment", onYearInput);
+
+			self.days.addEventListener("click", selectDate);
+		}
+
+		if (self.config.enableTime) {
+			self.timeContainer.addEventListener("transitionend", positionCalendar);
+			self.timeContainer.addEventListener("wheel", function (e) {
+				return debounce(updateTime(e), 5);
+			});
+			self.timeContainer.addEventListener("input", updateTime);
+			self.timeContainer.addEventListener("increment", updateTime);
+			self.timeContainer.addEventListener("increment", self.debouncedChange);
+
+			self.timeContainer.addEventListener("wheel", self.debouncedChange);
+			self.timeContainer.addEventListener("input", self.triggerChange);
+
+			self.hourElement.addEventListener("focus", function () {
+				self.hourElement.select();
+			});
+			self.minuteElement.addEventListener("focus", function () {
+				self.minuteElement.select();
+			});
+
+			if (self.secondElement) {
+				self.secondElement.addEventListener("focus", function () {
+					self.secondElement.select();
+				});
+			}
+
+			if (self.amPM) {
+				self.amPM.addEventListener("click", function (e) {
+					updateTime(e);
+					self.triggerChange(e);
+				});
+			}
+		}
+	}
+
+	function jumpToDate(jumpDate) {
+		jumpDate = jumpDate ? self.parseDate(jumpDate) : self.latestSelectedDateObj || (self.config.minDate > self.now ? self.config.minDate : self.config.maxDate && self.config.maxDate < self.now ? self.config.maxDate : self.now);
+
+		try {
+			self.currentYear = jumpDate.getFullYear();
+			self.currentMonth = jumpDate.getMonth();
+		} catch (e) {
+			console.error(e.stack);
+			console.warn("Invalid date supplied: " + jumpDate);
+		}
+
+		self.redraw();
+	}
+
+	function incrementNumInput(e, delta) {
+		var input = e.target.parentNode.childNodes[0];
+		input.value = parseInt(input.value, 10) + delta * (input.step || 1);
+
+		try {
+			input.dispatchEvent(new Event("increment", { "bubbles": true }));
+		} catch (e) {
+			var ev = window.document.createEvent("CustomEvent");
+			ev.initCustomEvent("increment", true, true, {});
+			input.dispatchEvent(ev);
+		}
+	}
+
+	function createNumberInput(inputClassName) {
+		var wrapper = createElement("div", "numInputWrapper"),
+		    numInput = createElement("input", "numInput " + inputClassName),
+		    arrowUp = createElement("span", "arrowUp"),
+		    arrowDown = createElement("span", "arrowDown");
+
+		numInput.type = "text";
+		wrapper.appendChild(numInput);
+		wrapper.appendChild(arrowUp);
+		wrapper.appendChild(arrowDown);
+
+		arrowUp.addEventListener("click", function (e) {
+			return incrementNumInput(e, 1);
+		});
+		arrowDown.addEventListener("click", function (e) {
+			return incrementNumInput(e, -1);
+		});
+		return wrapper;
+	}
+
+	function build() {
+		var fragment = window.document.createDocumentFragment();
+		self.calendarContainer = createElement("div", "flatpickr-calendar");
+		self.numInputType = navigator.userAgent.indexOf("MSIE 9.0") > 0 ? "text" : "number";
+
+		if (!self.config.noCalendar) {
+			fragment.appendChild(buildMonthNav());
+			self.innerContainer = createElement("div", "flatpickr-innerContainer");
+
+			if (self.config.weekNumbers) self.innerContainer.appendChild(buildWeeks());
+
+			self.rContainer = createElement("div", "flatpickr-rContainer");
+			self.rContainer.appendChild(buildWeekdays());
+			self.rContainer.appendChild(buildDays());
+			self.innerContainer.appendChild(self.rContainer);
+			fragment.appendChild(self.innerContainer);
+		}
+
+		if (self.config.enableTime) fragment.appendChild(buildTime());
+
+		if (self.config.mode === "range") self.calendarContainer.classList.add("rangeMode");
+
+		self.calendarContainer.appendChild(fragment);
+
+		if (self.config.inline || self.config.static) {
+			self.calendarContainer.classList.add(self.config.inline ? "inline" : "static");
+			positionCalendar();
+
+			if (self.config.appendTo && self.config.appendTo.nodeType) self.config.appendTo.appendChild(self.calendarContainer);else {
+				self.element.parentNode.insertBefore(self.calendarContainer, (self.altInput || self.input).nextSibling);
+			}
+		} else window.document.body.appendChild(self.calendarContainer);
+	}
+
+	function createDay(className, date, dayNumber) {
+		var dateIsEnabled = isEnabled(date, true),
+		    dayElement = createElement("span", "flatpickr-day " + className, date.getDate());
+
+		dayElement.dateObj = date;
+
+		if (compareDates(date, self.now) === 0) dayElement.classList.add("today");
+
+		if (dateIsEnabled) {
+			dayElement.tabIndex = 0;
+
+			if (isDateSelected(date)) {
+				dayElement.classList.add("selected");
+
+				if (self.config.mode === "range") {
+					dayElement.classList.add(compareDates(date, self.selectedDates[0]) === 0 ? "startRange" : "endRange");
+				} else self.selectedDateElem = dayElement;
+			}
+		} else {
+			dayElement.classList.add("disabled");
+			if (self.selectedDates[0] && date > self.minRangeDate && date < self.selectedDates[0]) self.minRangeDate = date;else if (self.selectedDates[0] && date < self.maxRangeDate && date > self.selectedDates[0]) self.maxRangeDate = date;
+		}
+
+		if (self.config.mode === "range") {
+			if (isDateInRange(date) && !isDateSelected(date)) dayElement.classList.add("inRange");
+
+			if (self.selectedDates.length === 1 && (date < self.minRangeDate || date > self.maxRangeDate)) dayElement.classList.add("notAllowed");
+		}
+
+		if (self.config.weekNumbers && className !== "prevMonthDay" && dayNumber % 7 === 1) {
+			self.weekNumbers.insertAdjacentHTML("beforeend", "<span class='disabled flatpickr-day'>" + self.config.getWeek(date) + "</span>");
+		}
+
+		triggerEvent("DayCreate", dayElement);
+
+		return dayElement;
+	}
+
+	function buildDays() {
+		if (!self.days) {
+			self.days = createElement("div", "flatpickr-days");
+			self.days.tabIndex = -1;
+		}
+
+		self.firstOfMonth = (new Date(self.currentYear, self.currentMonth, 1).getDay() - self.l10n.firstDayOfWeek + 7) % 7;
+
+		self.prevMonthDays = self.utils.getDaysinMonth((self.currentMonth - 1 + 12) % 12);
+
+		var daysInMonth = self.utils.getDaysinMonth(),
+		    days = window.document.createDocumentFragment();
+
+		var dayNumber = self.prevMonthDays + 1 - self.firstOfMonth;
+
+		if (self.config.weekNumbers && self.weekNumbers.firstChild) self.weekNumbers.textContent = "";
+
+		if (self.config.mode === "range") {
+			// const dateLimits = self.config.enable.length || self.config.disable.length || self.config.mixDate || self.config.maxDate;
+			self.minRangeDate = new Date(self.currentYear, self.currentMonth - 1, dayNumber);
+			self.maxRangeDate = new Date(self.currentYear, self.currentMonth + 1, (42 - self.firstOfMonth) % daysInMonth);
+		}
+
+		if (self.days.firstChild) self.days.textContent = "";
+
+		// prepend days from the ending of previous month
+		for (var i = 0; dayNumber <= self.prevMonthDays; i++, dayNumber++) {
+			days.appendChild(createDay("prevMonthDay", new Date(self.currentYear, self.currentMonth - 1, dayNumber), dayNumber));
+		}
+
+		// Start at 1 since there is no 0th day
+		for (dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
+			days.appendChild(createDay("", new Date(self.currentYear, self.currentMonth, dayNumber), dayNumber));
+		}
+
+		// append days from the next month
+		for (var dayNum = daysInMonth + 1; dayNum <= 42 - self.firstOfMonth; dayNum++) {
+			days.appendChild(createDay("nextMonthDay", new Date(self.currentYear, self.currentMonth + 1, dayNum % daysInMonth), dayNum));
+		}
+
+		self.days.appendChild(days);
+		return self.days;
+	}
+
+	function buildMonthNav() {
+		var monthNavFragment = window.document.createDocumentFragment();
+		self.monthNav = createElement("div", "flatpickr-month");
+
+		self.prevMonthNav = createElement("span", "flatpickr-prev-month");
+		self.prevMonthNav.innerHTML = self.config.prevArrow;
+
+		self.currentMonthElement = createElement("span", "cur-month");
+
+		var yearInput = createNumberInput("cur-year");
+		self.currentYearElement = yearInput.childNodes[0];
+		self.currentYearElement.title = self.l10n.scrollTitle;
+
+		if (self.config.minDate) self.currentYearElement.min = self.config.minDate.getFullYear();
+
+		if (self.config.maxDate) {
+			self.currentYearElement.max = self.config.maxDate.getFullYear();
+
+			self.currentYearElement.disabled = self.config.minDate && self.config.minDate.getFullYear() === self.config.maxDate.getFullYear();
+		}
+
+		self.nextMonthNav = createElement("span", "flatpickr-next-month");
+		self.nextMonthNav.innerHTML = self.config.nextArrow;
+
+		self.navigationCurrentMonth = createElement("span", "flatpickr-current-month");
+		self.navigationCurrentMonth.appendChild(self.currentMonthElement);
+		self.navigationCurrentMonth.appendChild(yearInput);
+
+		monthNavFragment.appendChild(self.prevMonthNav);
+		monthNavFragment.appendChild(self.navigationCurrentMonth);
+		monthNavFragment.appendChild(self.nextMonthNav);
+		self.monthNav.appendChild(monthNavFragment);
+
+		updateNavigationCurrentMonth();
+
+		return self.monthNav;
+	}
+
+	function buildTime() {
+		self.calendarContainer.classList.add("hasTime");
+		if (self.config.noCalendar) self.calendarContainer.classList.add("noCalendar");
+		self.timeContainer = createElement("div", "flatpickr-time");
+		self.timeContainer.tabIndex = -1;
+		var separator = createElement("span", "flatpickr-time-separator", ":");
+
+		var hourInput = createNumberInput("flatpickr-hour");
+		self.hourElement = hourInput.childNodes[0];
+
+		var minuteInput = createNumberInput("flatpickr-minute");
+		self.minuteElement = minuteInput.childNodes[0];
+
+		self.hourElement.tabIndex = self.minuteElement.tabIndex = 0;
+		self.hourElement.pattern = self.minuteElement.pattern = "\\d*";
+
+		self.hourElement.value = self.pad(self.latestSelectedDateObj ? self.latestSelectedDateObj.getHours() : self.config.defaultHour);
+
+		self.minuteElement.value = self.pad(self.latestSelectedDateObj ? self.latestSelectedDateObj.getMinutes() : self.config.defaultMinute);
+
+		self.hourElement.step = self.config.hourIncrement;
+		self.minuteElement.step = self.config.minuteIncrement;
+
+		self.hourElement.min = self.config.time_24hr ? 0 : 1;
+		self.hourElement.max = self.config.time_24hr ? 23 : 12;
+
+		self.minuteElement.min = 0;
+		self.minuteElement.max = 59;
+
+		self.hourElement.title = self.minuteElement.title = self.l10n.scrollTitle;
+
+		self.timeContainer.appendChild(hourInput);
+		self.timeContainer.appendChild(separator);
+		self.timeContainer.appendChild(minuteInput);
+
+		if (self.config.time_24hr) self.timeContainer.classList.add("time24hr");
+
+		if (self.config.enableSeconds) {
+			self.timeContainer.classList.add("hasSeconds");
+
+			var secondInput = createNumberInput("flatpickr-second");
+			self.secondElement = secondInput.childNodes[0];
+
+			self.secondElement.pattern = self.hourElement.pattern;
+			self.secondElement.value = self.latestSelectedDateObj ? self.pad(self.latestSelectedDateObj.getSeconds()) : "00";
+
+			self.secondElement.step = self.minuteElement.step;
+			self.secondElement.min = self.minuteElement.min;
+			self.secondElement.max = self.minuteElement.max;
+
+			self.timeContainer.appendChild(createElement("span", "flatpickr-time-separator", ":"));
+			self.timeContainer.appendChild(secondInput);
+		}
+
+		if (!self.config.time_24hr) {
+			// add self.amPM if appropriate
+			self.amPM = createElement("span", "flatpickr-am-pm", ["AM", "PM"][self.hourElement.value > 11 | 0]);
+			self.amPM.title = self.l10n.toggleTitle;
+			self.amPM.tabIndex = 0;
+			self.timeContainer.appendChild(self.amPM);
+		}
+
+		return self.timeContainer;
+	}
+
+	function buildWeekdays() {
+		if (!self.weekdayContainer) self.weekdayContainer = createElement("div", "flatpickr-weekdays");
+
+		var firstDayOfWeek = self.l10n.firstDayOfWeek;
+		var weekdays = self.l10n.weekdays.shorthand.slice();
+
+		if (firstDayOfWeek > 0 && firstDayOfWeek < weekdays.length) {
+			weekdays = [].concat(weekdays.splice(firstDayOfWeek, weekdays.length), weekdays.splice(0, firstDayOfWeek));
+		}
+
+		self.weekdayContainer.innerHTML = "\n\t\t<span class=flatpickr-weekday>\n\t\t\t" + weekdays.join("</span><span class=flatpickr-weekday>") + "\n\t\t</span>\n\t\t";
+
+		return self.weekdayContainer;
+	}
+
+	/* istanbul ignore next */
+	function buildWeeks() {
+		self.calendarContainer.classList.add("hasWeeks");
+		self.weekWrapper = createElement("div", "flatpickr-weekwrapper");
+		self.weekWrapper.appendChild(createElement("span", "flatpickr-weekday", self.l10n.weekAbbreviation));
+		self.weekNumbers = createElement("div", "flatpickr-weeks");
+		self.weekWrapper.appendChild(self.weekNumbers);
+
+		return self.weekWrapper;
+	}
+
+	function changeMonth(value, is_offset) {
+		self.currentMonth = typeof is_offset === "undefined" || is_offset ? self.currentMonth + value : value;
+
+		handleYearChange();
+		updateNavigationCurrentMonth();
+		buildDays();
+
+		if (!self.config.noCalendar) self.days.focus();
+
+		triggerEvent("MonthChange");
+	}
+
+	function clear(triggerChangeEvent) {
+		self.input.value = "";
+
+		if (self.altInput) self.altInput.value = "";
+
+		if (self.mobileInput) self.mobileInput.value = "";
+
+		self.selectedDates = [];
+		self.latestSelectedDateObj = null;
+		self.dateIsPicked = false;
+
+		self.redraw();
+
+		if (triggerChangeEvent !== false)
+			// triggerChangeEvent is true (default) or an Event
+			triggerEvent("Change");
+	}
+
+	function close() {
+		self.isOpen = false;
+
+		if (!self.isMobile) {
+			self.calendarContainer.classList.remove("open");
+			(self.altInput || self.input).classList.remove("active");
+		}
+
+		triggerEvent("Close");
+	}
+
+	function destroy(instance) {
+		instance = instance || self;
+		instance.clear(false);
+
+		window.document.removeEventListener("keydown", onKeyDown);
+		window.removeEventListener("resize", instance.debouncedResize);
+
+		window.document.removeEventListener("click", documentClick);
+		window.document.removeEventListener("touchstart", documentClick);
+		window.document.removeEventListener("blur", documentClick);
+
+		if (instance.timeContainer) instance.timeContainer.removeEventListener("transitionend", positionCalendar);
+
+		if (instance.mobileInput && instance.mobileInput.parentNode) instance.mobileInput.parentNode.removeChild(instance.mobileInput);else if (instance.calendarContainer && instance.calendarContainer.parentNode) instance.calendarContainer.parentNode.removeChild(instance.calendarContainer);
+
+		if (instance.altInput) {
+			instance.input.type = "text";
+			if (instance.altInput.parentNode) instance.altInput.parentNode.removeChild(instance.altInput);
+		}
+
+		instance.input.type = instance.input._type;
+		instance.input.classList.remove("flatpickr-input");
+		instance.input.removeEventListener("focus", open);
+		instance.input.removeAttribute("readonly");
+
+		delete instance.input._flatpickr;
+	}
+
+	function isCalendarElem(elem) {
+		var e = elem;
+		while (e) {
+			if (/flatpickr-day|flatpickr-calendar/.test(e.className)) return true;
+			e = e.parentNode;
+		}
+
+		return false;
+	}
+
+	function documentClick(e) {
+		var isInput = self.element.contains(e.target) || e.target === self.input || e.target === self.altInput || e.path && (~e.path.indexOf(self.input) || ~e.path.indexOf(self.altInput));
+
+		if (self.isOpen && !self.config.inline && !isCalendarElem(e.target) && !isInput) {
+			e.preventDefault();
+			self.close();
+
+			if (self.config.mode === "range" && self.selectedDates.length === 1) {
+				self.clear();
+				self.redraw();
+			}
+		}
+	}
+
+	function formatDate(frmt, dateObj) {
+		if (self.config.formatDate) return self.config.formatDate(frmt, dateObj);
+
+		var chars = frmt.split("");
+		return chars.map(function (c, i) {
+			return self.formats[c] && chars[i - 1] !== "\\" ? self.formats[c](dateObj) : c !== "\\" ? c : "";
+		}).join("");
+	}
+
+	function handleYearChange(newYear) {
+		if (self.currentMonth < 0 || self.currentMonth > 11) {
+			self.currentYear += self.currentMonth % 11;
+			self.currentMonth = (self.currentMonth + 12) % 12;
+
+			triggerEvent("YearChange");
+		} else if (newYear && (!self.currentYearElement.min || newYear >= self.currentYearElement.min) && (!self.currentYearElement.max || newYear <= self.currentYearElement.max)) {
+			self.currentYear = parseInt(newYear, 10) || self.currentYear;
+
+			if (self.config.maxDate && self.currentYear === self.config.maxDate.getFullYear()) {
+				self.currentMonth = Math.min(self.config.maxDate.getMonth(), self.currentMonth);
+			} else if (self.config.minDate && self.currentYear === self.config.minDate.getFullYear()) {
+				self.currentMonth = Math.max(self.config.minDate.getMonth(), self.currentMonth);
+			}
+
+			self.redraw();
+			triggerEvent("YearChange");
+		}
+	}
+
+	function isEnabled(date, timeless) {
+		var ltmin = compareDates(date, self.config.minDate, typeof timeless !== "undefined" ? timeless : !self.minDateHasTime) < 0;
+		var gtmax = compareDates(date, self.config.maxDate, typeof timeless !== "undefined" ? timeless : !self.maxDateHasTime) > 0;
+
+		if (ltmin || gtmax) return false;
+
+		if (!self.config.enable.length && !self.config.disable.length) return true;
+
+		var dateToCheck = self.parseDate(date, true); // timeless
+
+		var bool = self.config.enable.length > 0,
+		    array = bool ? self.config.enable : self.config.disable;
+
+		for (var i = 0, d; i < array.length; i++) {
+			d = array[i];
+
+			if (d instanceof Function && d(dateToCheck)) // disabled by function
+				return bool;else if (d instanceof Date && d.getTime() === dateToCheck.getTime())
+				// disabled by date
+				return bool;else if (typeof d === "string" && self.parseDate(d, true).getTime() === dateToCheck.getTime())
+				// disabled by date string
+				return bool;else if ( // disabled by range
+			(typeof d === "undefined" ? "undefined" : _typeof(d)) === "object" && d.from && d.to && dateToCheck >= d.from && dateToCheck <= d.to) return bool;
+		}
+
+		return !bool;
+	}
+
+	function onKeyDown(e) {
+		if (self.isOpen) {
+			switch (e.which) {
+				case 13:
+					if (self.timeContainer && self.timeContainer.contains(e.target)) updateValue();else selectDate(e);
+
+					break;
+
+				case 27:
+					// escape
+					self.clear();
+					self.redraw();
+					self.close();
+					break;
+
+				case 37:
+					if (e.target !== self.input & e.target !== self.altInput) changeMonth(-1);
+					break;
+
+				case 38:
+					e.preventDefault();
+
+					if (self.timeContainer && self.timeContainer.contains(e.target)) updateTime(e);else {
+						self.currentYear++;
+						self.redraw();
+					}
+
+					break;
+
+				case 39:
+					if (e.target !== self.input & e.target !== self.altInput) changeMonth(1);
+					break;
+
+				case 40:
+					e.preventDefault();
+					if (self.timeContainer && self.timeContainer.contains(e.target)) updateTime(e);else {
+						self.currentYear--;
+						self.redraw();
+					}
+
+					break;
+
+				default:
+					break;
+			}
+		}
+	}
+
+	function onMouseOver(e) {
+		if (self.selectedDates.length !== 1 || !e.target.classList.contains("flatpickr-day")) return;
+
+		var hoverDate = e.target.dateObj,
+		    initialDate = self.parseDate(self.selectedDates[0], true),
+		    rangeStartDate = Math.min(hoverDate.getTime(), self.selectedDates[0].getTime()),
+		    rangeEndDate = Math.max(hoverDate.getTime(), self.selectedDates[0].getTime()),
+		    containsDisabled = false;
+
+		for (var t = rangeStartDate; t < rangeEndDate; t += self.utils.duration.DAY) {
+			if (!isEnabled(new Date(t))) {
+				containsDisabled = true;
+				break;
+			}
+		}
+
+		for (var timestamp = self.days.childNodes[0].dateObj.getTime(), i = 0; i < 42; i++, timestamp += self.utils.duration.DAY) {
+			var outOfRange = timestamp < self.minRangeDate.getTime() || timestamp > self.maxRangeDate.getTime();
+
+			if (outOfRange) {
+				self.days.childNodes[i].classList.add("notAllowed");
+				self.days.childNodes[i].classList.remove("inRange", "startRange", "endRange");
+				continue;
+			} else if (containsDisabled && !outOfRange) continue;
+
+			self.days.childNodes[i].classList.remove("startRange", "inRange", "endRange", "notAllowed");
+
+			var minRangeDate = Math.max(self.minRangeDate.getTime(), rangeStartDate),
+			    maxRangeDate = Math.min(self.maxRangeDate.getTime(), rangeEndDate);
+
+			e.target.classList.add(hoverDate < self.selectedDates[0] ? "startRange" : "endRange");
+
+			if (initialDate > hoverDate && timestamp === initialDate.getTime()) self.days.childNodes[i].classList.add("endRange");else if (initialDate < hoverDate && timestamp === initialDate.getTime()) self.days.childNodes[i].classList.add("startRange");else if (timestamp > minRangeDate && timestamp < maxRangeDate) self.days.childNodes[i].classList.add("inRange");
+		}
+	}
+
+	function onResize() {
+		if (self.isOpen && !self.config.static && !self.config.inline) positionCalendar();
+	}
+
+	function open(e) {
+		if (self.isMobile) {
+			if (e) {
+				e.preventDefault();
+				e.target.blur();
+			}
+
+			setTimeout(function () {
+				self.mobileInput.click();
+			}, 0);
+
+			triggerEvent("Open");
+			return;
+		} else if (self.isOpen || (self.altInput || self.input).disabled || self.config.inline) return;
+
+		self.calendarContainer.classList.add("open");
+
+		if (!self.config.static && !self.config.inline) positionCalendar();
+
+		self.isOpen = true;
+
+		if (!self.config.allowInput) {
+			(self.altInput || self.input).blur();
+			(self.config.noCalendar ? self.timeContainer : self.selectedDateElem ? self.selectedDateElem : self.days).focus();
+		}
+
+		(self.altInput || self.input).classList.add("active");
+		triggerEvent("Open");
+	}
+
+	function minMaxDateSetter(type) {
+		return function (date) {
+			var dateObj = self.config["_" + type + "Date"] = self.parseDate(date);
+			var inverseDateObj = self.config["_" + (type === "min" ? "max" : "min") + "Date"];
+
+			if (self.selectedDates) {
+				self.selectedDates = self.selectedDates.filter(isEnabled);
+				updateValue();
+			}
+
+			if (self.days) redraw();
+
+			if (!self.currentYearElement) return;
+
+			if (date && dateObj instanceof Date) {
+				self[type + "DateHasTime"] = dateObj.getHours() || dateObj.getMinutes() || dateObj.getSeconds();
+
+				self.currentYearElement[type] = dateObj.getFullYear();
+			} else self.currentYearElement.removeAttribute(type);
+
+			self.currentYearElement.disabled = inverseDateObj && dateObj && inverseDateObj.getFullYear() === dateObj.getFullYear();
+		};
+	}
+
+	function parseConfig() {
+		var boolOpts = ["utc", "wrap", "weekNumbers", "allowInput", "clickOpens", "time_24hr", "enableTime", "noCalendar", "altInput", "shorthandCurrentMonth", "inline", "static", "enableSeconds", "disableMobile"];
+		self.config = Object.create(Flatpickr.defaultConfig);
+
+		Object.defineProperty(self.config, "minDate", {
+			get: function get() {
+				return this._minDate;
+			},
+			set: minMaxDateSetter("min")
+		});
+
+		Object.defineProperty(self.config, "maxDate", {
+			get: function get() {
+				return this._maxDate;
+			},
+			set: minMaxDateSetter("max")
+		});
+
+		var userConfig = _extends({}, self.instanceConfig, JSON.parse(JSON.stringify(self.element.dataset || {})));
+
+		_extends(self.config, userConfig);
+
+		for (var i = 0; i < boolOpts.length; i++) {
+			self.config[boolOpts[i]] = self.config[boolOpts[i]] === true || self.config[boolOpts[i]] === "true";
+		}if (!userConfig.dateFormat && userConfig.enableTime) {
+			self.config.dateFormat = self.config.noCalendar ? "H:i" + (self.config.enableSeconds ? ":S" : "") : Flatpickr.defaultConfig.dateFormat + " H:i" + (self.config.enableSeconds ? ":S" : "");
+		}
+
+		if (userConfig.altInput && userConfig.enableTime && !userConfig.altFormat) {
+			self.config.altFormat = self.config.noCalendar ? "h:i" + (self.config.enableSeconds ? ":S K" : " K") : Flatpickr.defaultConfig.altFormat + (" h:i" + (self.config.enableSeconds ? ":S" : "") + " K");
+		}
+	}
+
+	function setupLocale() {
+		if (_typeof(self.config.locale) !== "object" && typeof Flatpickr.l10ns[self.config.locale] === "undefined") console.warn("flatpickr: invalid locale " + self.config.locale);
+
+		self.l10n = _extends(Object.create(Flatpickr.l10ns.default), _typeof(self.config.locale) === "object" ? self.config.locale : self.config.locale !== "default" ? Flatpickr.l10ns[self.config.locale] || {} : {});
+	}
+
+	function positionCalendar(e) {
+		if (e && e.target !== self.timeContainer) return;
+
+		var calendarHeight = self.calendarContainer.offsetHeight,
+		    calendarWidth = self.calendarContainer.offsetWidth,
+		    input = self.altInput || self.input,
+		    inputBounds = input.getBoundingClientRect(),
+		    distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight;
+
+		var top = void 0;
+
+		if (distanceFromBottom < calendarHeight + 60) {
+			top = window.pageYOffset - calendarHeight + inputBounds.top - 2;
+			self.calendarContainer.classList.remove("arrowTop");
+			self.calendarContainer.classList.add("arrowBottom");
+		} else {
+			top = window.pageYOffset + input.offsetHeight + inputBounds.top + 2;
+			self.calendarContainer.classList.remove("arrowBottom");
+			self.calendarContainer.classList.add("arrowTop");
+		}
+
+		if (!self.config.static && !self.config.inline) {
+			self.calendarContainer.style.top = top + "px";
+
+			var left = window.pageXOffset + inputBounds.left;
+			var right = window.document.body.offsetWidth - inputBounds.right;
+
+			if (left + calendarWidth <= window.document.body.offsetWidth) {
+				self.calendarContainer.style.left = left + "px";
+				self.calendarContainer.style.right = "auto";
+
+				self.calendarContainer.classList.remove("rightMost");
+			} else {
+				self.calendarContainer.style.left = "auto";
+				self.calendarContainer.style.right = right + "px";
+
+				self.calendarContainer.classList.add("rightMost");
+			}
+		}
+	}
+
+	function redraw() {
+		if (self.config.noCalendar || self.isMobile) return;
+
+		buildWeekdays();
+		updateNavigationCurrentMonth();
+		buildDays();
+	}
+
+	function selectDate(e) {
+		e.preventDefault();
+		if (self.config.allowInput && e.which === 13 && e.target === (self.altInput || self.input)) return self.setDate((self.altInput || self.input).value), e.target.blur();
+
+		if (!e.target.classList.contains("flatpickr-day") || e.target.classList.contains("disabled") || e.target.classList.contains("notAllowed")) return;
+
+		var selectedDate = self.latestSelectedDateObj = new Date(e.target.dateObj.getTime());
+
+		self.selectedDateElem = e.target;
+
+		if (self.config.mode === "single") self.selectedDates = [selectedDate];else if (self.config.mode === "multiple") {
+			var selectedIndex = isDateSelected(selectedDate);
+			if (selectedIndex) self.selectedDates.splice(selectedIndex, 1);else self.selectedDates.push(selectedDate);
+		} else if (self.config.mode === "range") {
+			if (self.selectedDates.length === 2) self.clear();
+
+			self.selectedDates.push(selectedDate);
+			self.selectedDates.sort(function (a, b) {
+				return a.getTime() - b.getTime();
+			});
+		}
+
+		setHoursFromInputs();
+
+		if (selectedDate.getMonth() !== self.currentMonth && self.config.mode !== "range") {
+			self.currentYear = selectedDate.getFullYear();
+			self.currentMonth = selectedDate.getMonth();
+			updateNavigationCurrentMonth();
+		}
+
+		buildDays();
+
+		if (self.minDateHasTime && self.config.enableTime && compareDates(selectedDate, self.config.minDate) === 0) setHoursFromDate(self.config.minDate);
+
+		updateValue();
+
+		setTimeout(function () {
+			return self.dateIsPicked = true;
+		}, 50);
+
+		if (self.config.mode === "range" && self.selectedDates.length === 1) onMouseOver(e);
+
+		if (self.config.mode === "single" && !self.config.enableTime) self.close();
+
+		triggerEvent("Change");
+	}
+
+	function set(option, value) {
+		self.config[option] = value;
+		self.redraw();
+		jumpToDate();
+	}
+
+	function setSelectedDate(inputDate) {
+		if (Array.isArray(inputDate)) self.selectedDates = inputDate.map(self.parseDate);else if (inputDate) {
+			switch (self.config.mode) {
+				case "single":
+					self.selectedDates = [self.parseDate(inputDate)];
+					break;
+
+				case "multiple":
+					self.selectedDates = inputDate.split("; ").map(self.parseDate);
+					break;
+
+				case "range":
+					self.selectedDates = inputDate.split(self.l10n.rangeSeparator).map(self.parseDate);
+					break;
+
+				default:
+					break;
+			}
+		}
+
+		self.selectedDates = self.selectedDates.filter(function (d) {
+			return d instanceof Date && d.getTime() && isEnabled(d, false);
+		});
+
+		self.selectedDates.sort(function (a, b) {
+			return a.getTime() - b.getTime();
+		});
+	}
+
+	function setDate(date, triggerChange) {
+		if (!date) return self.clear();
+
+		setSelectedDate(date);
+
+		if (self.selectedDates.length > 0) {
+			self.dateIsPicked = true;
+			self.latestSelectedDateObj = self.selectedDates[0];
+		} else self.latestSelectedDateObj = null;
+
+		self.redraw();
+		jumpToDate();
+
+		setHoursFromDate();
+		updateValue();
+
+		if (triggerChange === true) triggerEvent("Change");
+	}
+
+	function setupDates() {
+		function parseDateRules(arr) {
+			for (var i = arr.length; i--;) {
+				if (typeof arr[i] === "string" || +arr[i]) arr[i] = self.parseDate(arr[i], true);else if (arr[i] && arr[i].from && arr[i].to) {
+					arr[i].from = self.parseDate(arr[i].from);
+					arr[i].to = self.parseDate(arr[i].to);
+				}
+			}
+
+			return arr.filter(function (x) {
+				return x;
+			}); // remove falsy values
+		}
+
+		self.selectedDates = [];
+		self.now = new Date();
+
+		setSelectedDate(self.config.defaultDate || self.input.value);
+
+		if (self.config.disable.length) self.config.disable = parseDateRules(self.config.disable);
+
+		if (self.config.enable.length) self.config.enable = parseDateRules(self.config.enable);
+
+		var initialDate = self.selectedDates.length ? self.selectedDates[0] : self.config.minDate && self.config.minDate.getTime() > self.now ? self.config.minDate : self.config.maxDate && self.config.maxDate.getTime() < self.now ? self.config.maxDate : self.now;
+
+		self.currentYear = initialDate.getFullYear();
+		self.currentMonth = initialDate.getMonth();
+
+		if (self.selectedDates.length) self.latestSelectedDateObj = self.selectedDates[0];
+
+		self.minDateHasTime = self.config.minDate && (self.config.minDate.getHours() || self.config.minDate.getMinutes() || self.config.minDate.getSeconds());
+
+		self.maxDateHasTime = self.config.maxDate && (self.config.maxDate.getHours() || self.config.maxDate.getMinutes() || self.config.maxDate.getSeconds());
+
+		Object.defineProperty(self, "latestSelectedDateObj", {
+			get: function get() {
+				return self._selectedDateObj || self.selectedDates[self.selectedDates.length - 1] || null;
+			},
+			set: function set(date) {
+				self._selectedDateObj = date;
+			}
+		});
+	}
+
+	function setupHelperFunctions() {
+		self.utils = {
+			duration: {
+				DAY: 86400000
+			},
+			getDaysinMonth: function getDaysinMonth(month, yr) {
+				month = typeof month === "undefined" ? self.currentMonth : month;
+
+				yr = typeof yr === "undefined" ? self.currentYear : yr;
+
+				if (month === 1 && (yr % 4 === 0 && yr % 100 !== 0 || yr % 400 === 0)) return 29;
+
+				return self.l10n.daysInMonth[month];
+			},
+			monthToStr: function monthToStr(monthNumber, shorthand) {
+				shorthand = typeof shorthand === "undefined" ? self.config.shorthandCurrentMonth : shorthand;
+
+				return self.l10n.months[(shorthand ? "short" : "long") + "hand"][monthNumber];
+			}
+		};
+	}
+
+	/* istanbul ignore next */
+	function setupFormats() {
+		self.formats = {
+			// weekday name, short, e.g. Thu
+			D: function D(date) {
+				return self.l10n.weekdays.shorthand[self.formats.w(date)];
+			},
+
+			// full month name e.g. January
+			F: function F(date) {
+				return self.utils.monthToStr(self.formats.n(date) - 1, false);
+			},
+
+			// hours with leading zero e.g. 03
+			H: function H(date) {
+				return Flatpickr.prototype.pad(date.getHours());
+			},
+
+			// day (1-30) with ordinal suffix e.g. 1st, 2nd
+			J: function J(date) {
+				return date.getDate() + self.l10n.ordinal(date.getDate());
+			},
+
+			// AM/PM
+			K: function K(date) {
+				return date.getHours() > 11 ? "PM" : "AM";
+			},
+
+			// shorthand month e.g. Jan, Sep, Oct, etc
+			M: function M(date) {
+				return self.utils.monthToStr(date.getMonth(), true);
+			},
+
+			// seconds 00-59
+			S: function S(date) {
+				return Flatpickr.prototype.pad(date.getSeconds());
+			},
+
+			// unix timestamp
+			U: function U(date) {
+				return date.getTime() / 1000;
+			},
+
+			// full year e.g. 2016
+			Y: function Y(date) {
+				return date.getFullYear();
+			},
+
+			// day in month, padded (01-30)
+			d: function d(date) {
+				return Flatpickr.prototype.pad(self.formats.j(date));
+			},
+
+			// hour from 1-12 (am/pm)
+			h: function h(date) {
+				return date.getHours() % 12 ? date.getHours() % 12 : 12;
+			},
+
+			// minutes, padded with leading zero e.g. 09
+			i: function i(date) {
+				return Flatpickr.prototype.pad(date.getMinutes());
+			},
+
+			// day in month (1-30)
+			j: function j(date) {
+				return date.getDate();
+			},
+
+			// weekday name, full, e.g. Thursday
+			l: function l(date) {
+				return self.l10n.weekdays.longhand[self.formats.w(date)];
+			},
+
+			// padded month number (01-12)
+			m: function m(date) {
+				return Flatpickr.prototype.pad(self.formats.n(date));
+			},
+
+			// the month number (1-12)
+			n: function n(date) {
+				return date.getMonth() + 1;
+			},
+
+			// seconds 0-59
+			s: function s(date) {
+				return date.getSeconds();
+			},
+
+			// number of the day of the week
+			w: function w(date) {
+				return date.getDay();
+			},
+
+			// last two digits of year e.g. 16 for 2016
+			y: function y(date) {
+				return String(self.formats.Y(date)).substring(2);
+			}
+		};
+	}
+
+	function setupInputs() {
+		self.input = self.config.wrap ? self.element.querySelector("[data-input]") : self.element;
+
+		if (!self.input) return console.warn("Error: invalid input element specified", self.input);
+
+		self.input._type = self.input.type;
+		self.input.type = "text";
+		self.input.classList.add("flatpickr-input");
+
+		if (self.config.altInput) {
+			// replicate self.element
+			self.altInput = createElement(self.input.nodeName, self.input.className + " " + self.config.altInputClass);
+			self.altInput.placeholder = self.input.placeholder;
+			self.altInput.type = "text";
+
+			self.input.type = "hidden";
+			if (self.input.parentNode) self.input.parentNode.insertBefore(self.altInput, self.input.nextSibling);
+		}
+
+		if (!self.config.allowInput) (self.altInput || self.input).setAttribute("readonly", "readonly");
+	}
+
+	function setupMobile() {
+		var inputType = self.config.enableTime ? self.config.noCalendar ? "time" : "datetime-local" : "date";
+
+		self.mobileInput = createElement("input", self.input.className + " flatpickr-mobile");
+		self.mobileInput.step = "any";
+		self.mobileInput.tabIndex = 1;
+		self.mobileInput.type = inputType;
+		self.mobileInput.disabled = self.input.disabled;
+
+		self.mobileFormatStr = inputType === "datetime-local" ? "Y-m-d\\TH:i:S" : inputType === "date" ? "Y-m-d" : "H:i:S";
+
+		if (self.selectedDates.length) {
+			self.mobileInput.defaultValue = self.mobileInput.value = formatDate(self.mobileFormatStr, self.selectedDates[0]);
+		}
+
+		if (self.config.minDate) self.mobileInput.min = formatDate("Y-m-d", self.config.minDate);
+
+		if (self.config.maxDate) self.mobileInput.max = formatDate("Y-m-d", self.config.maxDate);
+
+		self.input.type = "hidden";
+		if (self.config.altInput) self.altInput.type = "hidden";
+
+		try {
+			self.input.parentNode.insertBefore(self.mobileInput, self.input.nextSibling);
+		} catch (e) {
+			//
+		}
+
+		self.mobileInput.addEventListener("change", function (e) {
+			self.latestSelectedDateObj = self.parseDate(e.target.value);
+			self.setDate(self.latestSelectedDateObj);
+			triggerEvent("Change");
+			triggerEvent("Close");
+		});
+	}
+
+	function toggle() {
+		if (self.isOpen) self.close();else self.open();
+	}
+
+	function triggerEvent(event, data) {
+		if (self.config["on" + event]) {
+			var hooks = Array.isArray(self.config["on" + event]) ? self.config["on" + event] : [self.config["on" + event]];
+
+			for (var i = 0; i < hooks.length; i++) {
+				hooks[i](self.selectedDates, self.input.value, self, data);
+			}
+		}
+
+		if (event === "Change") {
+			if (typeof Event === "function" && Event.constructor) {
+				self.input.dispatchEvent(new Event("change", { "bubbles": true }));
+
+				// many front-end frameworks bind to the input event
+				self.input.dispatchEvent(new Event("input", { "bubbles": true }));
+			} else {
+				if (window.document.createEvent !== undefined) return self.input.dispatchEvent(self.changeEvent);
+
+				self.input.fireEvent("onchange");
+			}
+		}
+	}
+
+	function isDateSelected(date) {
+		for (var i = 0; i < self.selectedDates.length; i++) {
+			if (compareDates(self.selectedDates[i], date) === 0) return "" + i;
+		}
+
+		return false;
+	}
+
+	function isDateInRange(date) {
+		if (self.config.mode !== "range" || self.selectedDates.length < 2) return false;
+		return compareDates(date, self.selectedDates[0]) >= 0 && compareDates(date, self.selectedDates[1]) <= 0;
+	}
+
+	function updateNavigationCurrentMonth() {
+		if (self.config.noCalendar || self.isMobile || !self.monthNav) return;
+
+		self.currentMonthElement.textContent = self.utils.monthToStr(self.currentMonth) + " ";
+		self.currentYearElement.value = self.currentYear;
+
+		if (self.config.minDate) {
+			var hidePrevMonthArrow = self.currentYear === self.config.minDate.getFullYear() ? self.currentMonth <= self.config.minDate.getMonth() : self.currentYear < self.config.minDate.getFullYear();
+
+			self.prevMonthNav.style.display = hidePrevMonthArrow ? "none" : "block";
+		} else self.prevMonthNav.style.display = "block";
+
+		if (self.config.maxDate) {
+			var hideNextMonthArrow = self.currentYear === self.config.maxDate.getFullYear() ? self.currentMonth + 1 > self.config.maxDate.getMonth() : self.currentYear > self.config.maxDate.getFullYear();
+
+			self.nextMonthNav.style.display = hideNextMonthArrow ? "none" : "block";
+		} else self.nextMonthNav.style.display = "block";
+	}
+
+	function updateValue() {
+		if (!self.selectedDates.length) return self.clear();
+
+		if (self.isMobile) {
+			self.mobileInput.value = self.selectedDates.length ? formatDate(self.mobileFormatStr, self.latestSelectedDateObj) : "";
+		}
+
+		var joinChar = self.config.mode !== "range" ? "; " : self.l10n.rangeSeparator;
+
+		self.input.value = self.selectedDates.map(function (dObj) {
+			return formatDate(self.config.dateFormat, dObj);
+		}).join(joinChar);
+
+		if (self.config.altInput) {
+			self.altInput.value = self.selectedDates.map(function (dObj) {
+				return formatDate(self.config.altFormat, dObj);
+			}).join(joinChar);
+		}
+
+		triggerEvent("ValueUpdate");
+	}
+
+	function yearScroll(e) {
+		e.preventDefault();
+
+		var delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY)),
+		    newYear = parseInt(e.target.value, 10) + delta;
+
+		handleYearChange(newYear);
+		e.target.value = self.currentYear;
+	}
+
+	function createElement(tag, className, content) {
+		var e = window.document.createElement(tag);
+		className = className || "";
+		content = content || "";
+
+		e.className = className;
+
+		if (content) e.textContent = content;
+
+		return e;
+	}
+
+	/* istanbul ignore next */
+	function debounce(func, wait, immediate) {
+		var timeout = void 0;
+		return function () {
+			for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+				args[_key] = arguments[_key];
+			}
+
+			var context = this;
+			var later = function later() {
+				timeout = null;
+				if (!immediate) func.apply(context, args);
+			};
+
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+			if (immediate && !timeout) func.apply(context, args);
+		};
+	}
+
+	function compareDates(date1, date2, timeless) {
+		if (!(date1 instanceof Date) || !(date2 instanceof Date)) return false;
+
+		if (timeless !== false) {
+			return new Date(date1.getTime()).setHours(0, 0, 0, 0) - new Date(date2.getTime()).setHours(0, 0, 0, 0);
+		}
+
+		return date1.getTime() - date2.getTime();
+	}
+
+	function timeWrapper(e) {
+		e.preventDefault();
+		if (e && ((e.target.value || e.target.textContent).length >= 2 || // typed two digits
+		e.type !== "keydown" && e.type !== "input" // scroll event
+		)) e.target.blur();
+
+		if (self.amPM && e.target === self.amPM) return e.target.textContent = ["AM", "PM"][e.target.textContent === "AM" | 0];
+
+		var min = Number(e.target.min),
+		    max = Number(e.target.max),
+		    step = Number(e.target.step),
+		    curValue = parseInt(e.target.value, 10),
+		    delta = Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY));
+
+		var newValue = Number(curValue);
+
+		switch (e.type) {
+			case "wheel":
+				newValue = curValue + step * delta;
+				break;
+
+			case "keydown":
+				newValue = curValue + step * (e.which === 38 ? 1 : -1);
+				break;
+		}
+
+		if (e.type !== "input" || e.target.value.length === 2) {
+			if (newValue < min) {
+				newValue = max + newValue + (e.target !== self.hourElement) + (e.target === self.hourElement && !self.amPM);
+			} else if (newValue > max) {
+				newValue = e.target === self.hourElement ? newValue - max - !self.amPM : min;
+			}
+
+			if (self.amPM && e.target === self.hourElement && (step === 1 ? newValue + curValue === 23 : Math.abs(newValue - curValue) > step)) self.amPM.textContent = self.amPM.textContent === "PM" ? "AM" : "PM";
+
+			e.target.value = self.pad(newValue);
+		} else e.target.value = newValue;
+	}
+
+	init();
+	return self;
+}
+
+/* istanbul ignore next */
+Flatpickr.defaultConfig = {
+
+	mode: "single",
+
+	/* if true, dates will be parsed, formatted, and displayed in UTC.
+ preloading date strings w/ timezones is recommended but not necessary */
+	utc: false,
+
+	// wrap: see https://chmln.github.io/flatpickr/#strap
+	wrap: false,
+
+	// enables week numbers
+	weekNumbers: false,
+
+	// allow manual datetime input
+	allowInput: false,
+
+	/*
+ 	clicking on input opens the date(time)picker.
+ 	disable if you wish to open the calendar manually with .open()
+ */
+	clickOpens: true,
+
+	// display time picker in 24 hour mode
+	time_24hr: false,
+
+	// enables the time picker functionality
+	enableTime: false,
+
+	// noCalendar: true will hide the calendar. use for a time picker along w/ enableTime
+	noCalendar: false,
+
+	// more date format chars at https://chmln.github.io/flatpickr/#dateformat
+	dateFormat: "Y-m-d",
+
+	// altInput - see https://chmln.github.io/flatpickr/#altinput
+	altInput: false,
+
+	// the created altInput element will have this class.
+	altInputClass: "flatpickr-input form-control input",
+
+	// same as dateFormat, but for altInput
+	altFormat: "F j, Y", // defaults to e.g. June 10, 2016
+
+	// defaultDate - either a datestring or a date object. used for datetimepicker"s initial value
+	defaultDate: null,
+
+	// the minimum date that user can pick (inclusive)
+	minDate: null,
+
+	// the maximum date that user can pick (inclusive)
+	maxDate: null,
+
+	// dateparser that transforms a given string to a date object
+	parseDate: null,
+
+	// dateformatter that transforms a given date object to a string, according to passed format
+	formatDate: null,
+
+	getWeek: function getWeek(givenDate) {
+		var date = new Date(givenDate.getTime());
+		date.setHours(0, 0, 0, 0);
+
+		// Thursday in current week decides the year.
+		date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+		// January 4 is always in week 1.
+		var week1 = new Date(date.getFullYear(), 0, 4);
+		// Adjust to Thursday in week 1 and count number of weeks from date to week1.
+		return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+	},
+
+	// see https://chmln.github.io/flatpickr/#disable
+	enable: [],
+
+	// see https://chmln.github.io/flatpickr/#disable
+	disable: [],
+
+	// display the short version of month names - e.g. Sep instead of September
+	shorthandCurrentMonth: false,
+
+	// displays calendar inline. see https://chmln.github.io/flatpickr/#inline-calendar
+	inline: false,
+
+	// position calendar inside wrapper and next to the input element
+	// leave at false unless you know what you"re doing
+	static: false,
+
+	// DOM node to append the calendar to in *static* mode
+	appendTo: null,
+
+	// code for previous/next icons. this is where you put your custom icon code e.g. fontawesome
+	prevArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M5.207 8.471l7.146 7.147-0.707 0.707-7.853-7.854 7.854-7.853 0.707 0.707-7.147 7.146z' /></svg>",
+	nextArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M13.207 8.472l-7.854 7.854-0.707-0.707 7.146-7.146-7.146-7.148 0.707-0.707 7.854 7.854z' /></svg>",
+
+	// enables seconds in the time picker
+	enableSeconds: false,
+
+	// step size used when scrolling/incrementing the hour element
+	hourIncrement: 1,
+
+	// step size used when scrolling/incrementing the minute element
+	minuteIncrement: 5,
+
+	// initial value in the hour element
+	defaultHour: 12,
+
+	// initial value in the minute element
+	defaultMinute: 0,
+
+	// disable native mobile datetime input support
+	disableMobile: false,
+
+	// default locale
+	locale: "default",
+
+	// onChange callback when user selects a date or time
+	onChange: null, // function (dateObj, dateStr) {}
+
+	// called every time calendar is opened
+	onOpen: null, // function (dateObj, dateStr) {}
+
+	// called every time calendar is closed
+	onClose: null, // function (dateObj, dateStr) {}
+
+	// called after calendar is ready
+	onReady: null, // function (dateObj, dateStr) {}
+
+	onValueUpdate: null,
+
+	onDayCreate: null
+};
+
+/* istanbul ignore next */
+Flatpickr.l10ns = {
+	en: {
+		weekdays: {
+			shorthand: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+			longhand: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+		},
+		months: {
+			shorthand: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+			longhand: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+		},
+		daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+		firstDayOfWeek: 0,
+		ordinal: function ordinal(nth) {
+			var s = nth % 100;
+			if (s > 3 && s < 21) return "th";
+			switch (s % 10) {
+				case 1:
+					return "st";
+				case 2:
+					return "nd";
+				case 3:
+					return "rd";
+				default:
+					return "th";
+			}
+		},
+		rangeSeparator: " to ",
+		weekAbbreviation: "Wk",
+		scrollTitle: "Scroll to increment",
+		toggleTitle: "Click to toggle"
+	}
+};
+
+Flatpickr.l10ns.default = Object.create(Flatpickr.l10ns.en);
+Flatpickr.localize = function (l10n) {
+	return _extends(Flatpickr.l10ns.default, l10n || {});
+};
+Flatpickr.setDefaults = function (config) {
+	return _extends(Flatpickr.defaultConfig, config || {});
+};
+
+Flatpickr.prototype = {
+	pad: function pad(number) {
+		return ("0" + number).slice(-2);
+	},
+	parseDate: function parseDate(date, timeless) {
+		if (!date) return null;
+
+		var dateTimeRegex = /(\d+)/g,
+		    timeRegex = /^(\d{1,2})[:\s](\d\d)?[:\s]?(\d\d)?\s?(a|p)?/i,
+		    timestamp = /^(\d+)$/g,
+		    date_orig = date;
+
+		if (date.toFixed || timestamp.test(date)) // timestamp
+			date = new Date(date);else if (typeof date === "string") {
+			date = date.trim();
+
+			if (date === "today") {
+				date = new Date();
+				timeless = true;
+			} else if (this.config && this.config.parseDate) date = this.config.parseDate(date);else if (timeRegex.test(date)) {
+				// time picker
+				var m = date.match(timeRegex),
+				    hours = !m[4] ? m[1] // military time, no conversion needed
+				: m[1] % 12 + (m[4].toLowerCase() === "p" ? 12 : 0); // am/pm
+
+				date = new Date();
+				date.setHours(hours, m[2] || 0, m[3] || 0);
+			} else if (/Z$/.test(date) || /GMT$/.test(date)) // datestrings w/ timezone
+				date = new Date(date);else if (dateTimeRegex.test(date) && /^[0-9]/.test(date)) {
+				var d = date.match(dateTimeRegex);
+				date = new Date(d[0] + "/" + (d[1] || 1) + "/" + (d[2] || 1) + " " + (d[3] || 0) + ":" + (d[4] || 0) + ":" + (d[5] || 0));
+			} else // fallback
+				date = new Date(date);
+		} else if (date instanceof Date) date = new Date(date.getTime()); // create a copy
+
+		if (!(date instanceof Date)) {
+			console.warn("flatpickr: invalid date " + date_orig);
+			console.info(this.element);
+			return null;
+		}
+
+		if (this.config && this.config.utc && !date.fp_isUTC) date = date.fp_toUTC();
+
+		if (timeless === true) date.setHours(0, 0, 0, 0);
+
+		return date;
+	}
+};
+
+function _flatpickr(nodeList, config) {
+	var nodes = Array.prototype.slice.call(nodeList); // static list
+	var instances = [];
+	for (var i = 0; i < nodes.length; i++) {
+		try {
+			nodes[i]._flatpickr = new Flatpickr(nodes[i], config || {});
+			instances.push(nodes[i]._flatpickr);
+		} catch (e) {
+			console.warn(e, e.stack);
+		}
+	}
+
+	return instances.length === 1 ? instances[0] : instances;
+}
+
+if (typeof HTMLElement !== "undefined") {
+	// browser env
+	HTMLCollection.prototype.flatpickr = NodeList.prototype.flatpickr = function (config) {
+		return _flatpickr(this, config);
+	};
+
+	HTMLElement.prototype.flatpickr = function (config) {
+		return _flatpickr([this], config);
+	};
+}
+
+function flatpickr(selector, config) {
+	return _flatpickr(window.document.querySelectorAll(selector), config);
+}
+
+if (typeof jQuery !== "undefined") {
+	jQuery.fn.flatpickr = function (config) {
+		return _flatpickr(this, config);
+	};
+}
+
+Date.prototype.fp_incr = function (days) {
+	return new Date(this.getFullYear(), this.getMonth(), this.getDate() + parseInt(days, 10));
+};
+
+Date.prototype.fp_isUTC = false;
+Date.prototype.fp_toUTC = function () {
+	var newDate = new Date(this.getUTCFullYear(), this.getUTCMonth(), this.getUTCDate(), this.getUTCHours(), this.getUTCMinutes(), this.getUTCSeconds());
+
+	newDate.fp_isUTC = true;
+	return newDate;
+};
+
+// IE9 classList polyfill
+/* istanbul ignore next */
+if (!window.document.documentElement.classList && Object.defineProperty && typeof HTMLElement !== "undefined") {
+	Object.defineProperty(HTMLElement.prototype, "classList", {
+		get: function get() {
+			var self = this;
+			function update(fn) {
+				return function (value) {
+					var classes = self.className.split(/\s+/),
+					    index = classes.indexOf(value);
+
+					fn(classes, index, value);
+					self.className = classes.join(" ");
+				};
+			}
+
+			var ret = {
+				add: update(function (classes, index, value) {
+					if (!~index) classes.push(value);
+				}),
+
+				remove: update(function (classes, index) {
+					if (~index) classes.splice(index, 1);
+				}),
+
+				toggle: update(function (classes, index, value) {
+					if (~index) classes.splice(index, 1);else classes.push(value);
+				}),
+
+				contains: function contains(value) {
+					return !!~self.className.split(/\s+/).indexOf(value);
+				},
+
+				item: function item(i) {
+					return self.className.split(/\s+/)[i] || null;
+				}
+			};
+
+			Object.defineProperty(ret, "length", {
+				get: function get() {
+					return self.className.split(/\s+/).length;
+				}
+			});
+
+			return ret;
+		}
+	});
+}
+
+if (typeof module !== "undefined") module.exports = Flatpickr;
+
+},{}],3:[function(require,module,exports){
+'use strict';
+module.exports = {
+  /**
+   * Determine if a component is a layout component or not.
+   *
+   * @param {Object} component
+   *   The component to check.
+   *
+   * @returns {Boolean}
+   *   Whether or not the component is a layout component.
+   */
+  isLayoutComponent: function isLayoutComponent(component) {
+    return (
+      (component.columns && Array.isArray(component.columns)) ||
+      (component.rows && Array.isArray(component.rows)) ||
+      (component.components && Array.isArray(component.components))
+    ) ? true : false;
+  },
+
+  /**
+   * Iterate through each component within a form.
+   *
+   * @param {Object} components
+   *   The components to iterate.
+   * @param {Function} fn
+   *   The iteration function to invoke for each component.
+   * @param {Boolean} includeAll
+   *   Whether or not to include layout components.
+   * @param {String} path
+   *   The current data path of the element. Example: data.user.firstName
+   */
+  eachComponent: function eachComponent(components, fn, includeAll, path) {
+    if (!components) return;
+    path = path || '';
+    components.forEach(function(component) {
+      var hasColumns = component.columns && Array.isArray(component.columns);
+      var hasRows = component.rows && Array.isArray(component.rows);
+      var hasComps = component.components && Array.isArray(component.components);
+      var noRecurse = false;
+      var newPath = component.key ? (path ? (path + '.' + component.key) : component.key) : '';
+
+      if (includeAll || component.tree || (!hasColumns && !hasRows && !hasComps)) {
+        noRecurse = fn(component, newPath);
+      }
+
+      var subPath = function() {
+        if (component.key && ((component.type === 'datagrid') || (component.type === 'container'))) {
+          return newPath;
+        }
+        return path;
+      };
+
+      if (!noRecurse) {
+        if (hasColumns) {
+          component.columns.forEach(function(column) {
+            eachComponent(column.components, fn, includeAll, subPath());
+          });
+        }
+
+        else if (hasRows) {
+          [].concat.apply([], component.rows).forEach(function(row) {
+            eachComponent(row.components, fn, includeAll, subPath());
+          });
+        }
+
+        else if (hasComps) {
+          eachComponent(component.components, fn, includeAll, subPath());
+        }
+      }
+    });
+  },
+
+  /**
+   * Get a component by its key
+   *
+   * @param {Object} components
+   *   The components to iterate.
+   * @param {String} key
+   *   The key of the component to get.
+   *
+   * @returns {Object}
+   *   The component that matches the given key, or undefined if not found.
+   */
+  getComponent: function getComponent(components, key) {
+    var result;
+    module.exports.eachComponent(components, function(component) {
+      if (component.key === key) {
+        result = component;
+      }
+    });
+    return result;
+  },
+
+  /**
+   * Flatten the form components for data manipulation.
+   *
+   * @param {Object} components
+   *   The components to iterate.
+   * @param {Boolean} includeAll
+   *   Whether or not to include layout components.
+   *
+   * @returns {Object}
+   *   The flattened components map.
+   */
+  flattenComponents: function flattenComponents(components, includeAll) {
+    var flattened = {};
+    module.exports.eachComponent(components, function(component, path) {
+      flattened[path] = component;
+    }, includeAll);
+    return flattened;
+  },
+
+  /**
+   * Checks the conditions for a provided component and data.
+   *
+   * @param component
+   *   The component to check for the condition.
+   * @param row
+   *   The data within a row
+   * @param data
+   *   The full submission data.
+   *
+   * @returns {boolean}
+   */
+  checkCondition: function(component, row, data) {
+    if (component.hasOwnProperty('customConditional') && component.customConditional) {
+      try {
+        var script = '(function() { var show = true;';
+        script += component.customConditional.toString();
+        script += '; return show; })()';
+        var result = eval(script);
+        return result.toString() === 'true';
+      }
+      catch (e) {
+        console.warn('An error occurred in a custom conditional statement for component ' + component.key, e);
+        return true;
+      }
+    }
+    else if (component.hasOwnProperty('conditional') && component.conditional && component.conditional.when) {
+      var cond = component.conditional;
+      var value = null;
+      if (row) {
+        value = this.getValue({data: row}, cond.when);
+      }
+      if (data && (value === null || typeof value === 'undefined')) {
+        value = this.getValue({data: data}, cond.when);
+      }
+      if (value === null || typeof value === 'undefined') {
+        value = component.hasOwnProperty('defaultValue') ? component.defaultValue : '';
+      }
+      // Special check for selectboxes component.
+      if (typeof value === 'object' && value.hasOwnProperty(cond.eq)) {
+        return value[cond.eq].toString() === cond.show.toString();
+      }
+      // FOR-179 - Check for multiple values.
+      if (value instanceof Array && value.indexOf(cond.eq) !== -1) {
+        return (cond.show.toString() === 'true');
+      }
+
+      return (value.toString() === cond.eq.toString()) === (cond.show.toString() === 'true');
+    }
+
+    // Default to show.
+    return true;
+  },
+
+  /**
+   * Get the value for a component key, in the given submission.
+   *
+   * @param {Object} submission
+   *   A submission object to search.
+   * @param {String} key
+   *   A for components API key to search for.
+   */
+  getValue: function getValue(submission, key) {
+    var data = submission.data || {};
+
+    var search = function search(data) {
+      var i;
+      var value;
+
+      if (!data) {
+        return null;
+      }
+
+      if (typeof data === 'object' && !(data instanceof Array)) {
+        if (data.hasOwnProperty(key)) {
+          return data[key];
+        }
+
+        var keys = Object.keys(data);
+        for (i = 0; i < keys.length; i++) {
+          if (typeof data[keys[i]] === 'object') {
+            value = search(data[keys[i]]);
+          }
+
+          if (value) {
+            return value;
+          }
+        }
+      }
+    };
+
+    return search(data);
+  }
+};
+
+},{}],4:[function(require,module,exports){
+(function (global){
+/*! Native Promise Only
+    v0.8.1 (c) Kyle Simpson
+    MIT License: http://getify.mit-license.org
+*/
+
+(function UMD(name,context,definition){
+	// special form of UMD for polyfilling across evironments
+	context[name] = context[name] || definition();
+	if (typeof module != "undefined" && module.exports) { module.exports = context[name]; }
+	else if (typeof define == "function" && define.amd) { define(function $AMD$(){ return context[name]; }); }
+})("Promise",typeof global != "undefined" ? global : this,function DEF(){
+	/*jshint validthis:true */
+	"use strict";
+
+	var builtInProp, cycle, scheduling_queue,
+		ToString = Object.prototype.toString,
+		timer = (typeof setImmediate != "undefined") ?
+			function timer(fn) { return setImmediate(fn); } :
+			setTimeout
+	;
+
+	// dammit, IE8.
+	try {
+		Object.defineProperty({},"x",{});
+		builtInProp = function builtInProp(obj,name,val,config) {
+			return Object.defineProperty(obj,name,{
+				value: val,
+				writable: true,
+				configurable: config !== false
+			});
+		};
+	}
+	catch (err) {
+		builtInProp = function builtInProp(obj,name,val) {
+			obj[name] = val;
+			return obj;
+		};
+	}
+
+	// Note: using a queue instead of array for efficiency
+	scheduling_queue = (function Queue() {
+		var first, last, item;
+
+		function Item(fn,self) {
+			this.fn = fn;
+			this.self = self;
+			this.next = void 0;
+		}
+
+		return {
+			add: function add(fn,self) {
+				item = new Item(fn,self);
+				if (last) {
+					last.next = item;
+				}
+				else {
+					first = item;
+				}
+				last = item;
+				item = void 0;
+			},
+			drain: function drain() {
+				var f = first;
+				first = last = cycle = void 0;
+
+				while (f) {
+					f.fn.call(f.self);
+					f = f.next;
+				}
+			}
+		};
+	})();
+
+	function schedule(fn,self) {
+		scheduling_queue.add(fn,self);
+		if (!cycle) {
+			cycle = timer(scheduling_queue.drain);
+		}
+	}
+
+	// promise duck typing
+	function isThenable(o) {
+		var _then, o_type = typeof o;
+
+		if (o != null &&
+			(
+				o_type == "object" || o_type == "function"
+			)
+		) {
+			_then = o.then;
+		}
+		return typeof _then == "function" ? _then : false;
+	}
+
+	function notify() {
+		for (var i=0; i<this.chain.length; i++) {
+			notifyIsolated(
+				this,
+				(this.state === 1) ? this.chain[i].success : this.chain[i].failure,
+				this.chain[i]
+			);
+		}
+		this.chain.length = 0;
+	}
+
+	// NOTE: This is a separate function to isolate
+	// the `try..catch` so that other code can be
+	// optimized better
+	function notifyIsolated(self,cb,chain) {
+		var ret, _then;
+		try {
+			if (cb === false) {
+				chain.reject(self.msg);
+			}
+			else {
+				if (cb === true) {
+					ret = self.msg;
+				}
+				else {
+					ret = cb.call(void 0,self.msg);
+				}
+
+				if (ret === chain.promise) {
+					chain.reject(TypeError("Promise-chain cycle"));
+				}
+				else if (_then = isThenable(ret)) {
+					_then.call(ret,chain.resolve,chain.reject);
+				}
+				else {
+					chain.resolve(ret);
+				}
+			}
+		}
+		catch (err) {
+			chain.reject(err);
+		}
+	}
+
+	function resolve(msg) {
+		var _then, self = this;
+
+		// already triggered?
+		if (self.triggered) { return; }
+
+		self.triggered = true;
+
+		// unwrap
+		if (self.def) {
+			self = self.def;
+		}
+
+		try {
+			if (_then = isThenable(msg)) {
+				schedule(function(){
+					var def_wrapper = new MakeDefWrapper(self);
+					try {
+						_then.call(msg,
+							function $resolve$(){ resolve.apply(def_wrapper,arguments); },
+							function $reject$(){ reject.apply(def_wrapper,arguments); }
+						);
+					}
+					catch (err) {
+						reject.call(def_wrapper,err);
+					}
+				})
+			}
+			else {
+				self.msg = msg;
+				self.state = 1;
+				if (self.chain.length > 0) {
+					schedule(notify,self);
+				}
+			}
+		}
+		catch (err) {
+			reject.call(new MakeDefWrapper(self),err);
+		}
+	}
+
+	function reject(msg) {
+		var self = this;
+
+		// already triggered?
+		if (self.triggered) { return; }
+
+		self.triggered = true;
+
+		// unwrap
+		if (self.def) {
+			self = self.def;
+		}
+
+		self.msg = msg;
+		self.state = 2;
+		if (self.chain.length > 0) {
+			schedule(notify,self);
+		}
+	}
+
+	function iteratePromises(Constructor,arr,resolver,rejecter) {
+		for (var idx=0; idx<arr.length; idx++) {
+			(function IIFE(idx){
+				Constructor.resolve(arr[idx])
+				.then(
+					function $resolver$(msg){
+						resolver(idx,msg);
+					},
+					rejecter
+				);
+			})(idx);
+		}
+	}
+
+	function MakeDefWrapper(self) {
+		this.def = self;
+		this.triggered = false;
+	}
+
+	function MakeDef(self) {
+		this.promise = self;
+		this.state = 0;
+		this.triggered = false;
+		this.chain = [];
+		this.msg = void 0;
+	}
+
+	function Promise(executor) {
+		if (typeof executor != "function") {
+			throw TypeError("Not a function");
+		}
+
+		if (this.__NPO__ !== 0) {
+			throw TypeError("Not a promise");
+		}
+
+		// instance shadowing the inherited "brand"
+		// to signal an already "initialized" promise
+		this.__NPO__ = 1;
+
+		var def = new MakeDef(this);
+
+		this["then"] = function then(success,failure) {
+			var o = {
+				success: typeof success == "function" ? success : true,
+				failure: typeof failure == "function" ? failure : false
+			};
+			// Note: `then(..)` itself can be borrowed to be used against
+			// a different promise constructor for making the chained promise,
+			// by substituting a different `this` binding.
+			o.promise = new this.constructor(function extractChain(resolve,reject) {
+				if (typeof resolve != "function" || typeof reject != "function") {
+					throw TypeError("Not a function");
+				}
+
+				o.resolve = resolve;
+				o.reject = reject;
+			});
+			def.chain.push(o);
+
+			if (def.state !== 0) {
+				schedule(notify,def);
+			}
+
+			return o.promise;
+		};
+		this["catch"] = function $catch$(failure) {
+			return this.then(void 0,failure);
+		};
+
+		try {
+			executor.call(
+				void 0,
+				function publicResolve(msg){
+					resolve.call(def,msg);
+				},
+				function publicReject(msg) {
+					reject.call(def,msg);
+				}
+			);
+		}
+		catch (err) {
+			reject.call(def,err);
+		}
+	}
+
+	var PromisePrototype = builtInProp({},"constructor",Promise,
+		/*configurable=*/false
+	);
+
+	// Note: Android 4 cannot use `Object.defineProperty(..)` here
+	Promise.prototype = PromisePrototype;
+
+	// built-in "brand" to signal an "uninitialized" promise
+	builtInProp(PromisePrototype,"__NPO__",0,
+		/*configurable=*/false
+	);
+
+	builtInProp(Promise,"resolve",function Promise$resolve(msg) {
+		var Constructor = this;
+
+		// spec mandated checks
+		// note: best "isPromise" check that's practical for now
+		if (msg && typeof msg == "object" && msg.__NPO__ === 1) {
+			return msg;
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			resolve(msg);
+		});
+	});
+
+	builtInProp(Promise,"reject",function Promise$reject(msg) {
+		return new this(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			reject(msg);
+		});
+	});
+
+	builtInProp(Promise,"all",function Promise$all(arr) {
+		var Constructor = this;
+
+		// spec mandated checks
+		if (ToString.call(arr) != "[object Array]") {
+			return Constructor.reject(TypeError("Not an array"));
+		}
+		if (arr.length === 0) {
+			return Constructor.resolve([]);
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			var len = arr.length, msgs = Array(len), count = 0;
+
+			iteratePromises(Constructor,arr,function resolver(idx,msg) {
+				msgs[idx] = msg;
+				if (++count === len) {
+					resolve(msgs);
+				}
+			},reject);
+		});
+	});
+
+	builtInProp(Promise,"race",function Promise$race(arr) {
+		var Constructor = this;
+
+		// spec mandated checks
+		if (ToString.call(arr) != "[object Array]") {
+			return Constructor.reject(TypeError("Not an array"));
+		}
+
+		return new Constructor(function executor(resolve,reject){
+			if (typeof resolve != "function" || typeof reject != "function") {
+				throw TypeError("Not a function");
+			}
+
+			iteratePromises(Constructor,arr,function resolver(idx,msg){
+				resolve(msg);
+			},reject);
+		});
+	});
+
+	return Promise;
+});
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],5:[function(require,module,exports){
+module.exports = function (obj) {
+    if (!obj || typeof obj !== 'object') return obj;
+    
+    var copy;
+    
+    if (isArray(obj)) {
+        var len = obj.length;
+        copy = Array(len);
+        for (var i = 0; i < len; i++) {
+            copy[i] = obj[i];
+        }
+    }
+    else {
+        var keys = objectKeys(obj);
+        copy = {};
+        
+        for (var i = 0, l = keys.length; i < l; i++) {
+            var key = keys[i];
+            copy[key] = obj[key];
+        }
+    }
+    return copy;
+};
+
+var objectKeys = Object.keys || function (obj) {
+    var keys = [];
+    for (var key in obj) {
+        if ({}.hasOwnProperty.call(obj, key)) keys.push(key);
+    }
+    return keys;
+};
+
+var isArray = Array.isArray || function (xs) {
+    return {}.toString.call(xs) === '[object Array]';
+};
+
+},{}],6:[function(require,module,exports){
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module unless amdModuleId is set
+    define([], function () {
+      return (root['SignaturePad'] = factory());
+    });
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like environments that support module.exports,
+    // like Node.
+    module.exports = factory();
+  } else {
+    root['SignaturePad'] = factory();
+  }
+}(this, function () {
+
+/*!
+ * Signature Pad v1.5.3
+ * https://github.com/szimek/signature_pad
+ *
+ * Copyright 2016 Szymon Nowak
+ * Released under the MIT license
+ *
+ * The main idea and some parts of the code (e.g. drawing variable width Bézier curve) are taken from:
+ * http://corner.squareup.com/2012/07/smoother-signatures.html
+ *
+ * Implementation of interpolation using cubic Bézier curves is taken from:
+ * http://benknowscode.wordpress.com/2012/09/14/path-interpolation-using-cubic-bezier-and-control-point-estimation-in-javascript
+ *
+ * Algorithm for approximated length of a Bézier curve is taken from:
+ * http://www.lemoda.net/maths/bezier-length/index.html
+ *
+ */
+var SignaturePad = (function (document) {
+    "use strict";
+
+    var SignaturePad = function (canvas, options) {
+        var self = this,
+            opts = options || {};
+
+        this.velocityFilterWeight = opts.velocityFilterWeight || 0.7;
+        this.minWidth = opts.minWidth || 0.5;
+        this.maxWidth = opts.maxWidth || 2.5;
+        this.dotSize = opts.dotSize || function () {
+            return (this.minWidth + this.maxWidth) / 2;
+        };
+        this.penColor = opts.penColor || "black";
+        this.backgroundColor = opts.backgroundColor || "rgba(0,0,0,0)";
+        this.onEnd = opts.onEnd;
+        this.onBegin = opts.onBegin;
+
+        this._canvas = canvas;
+        this._ctx = canvas.getContext("2d");
+        this.clear();
+
+        // we need add these inline so they are available to unbind while still having
+        //  access to 'self' we could use _.bind but it's not worth adding a dependency
+        this._handleMouseDown = function (event) {
+            if (event.which === 1) {
+                self._mouseButtonDown = true;
+                self._strokeBegin(event);
+            }
+        };
+
+        this._handleMouseMove = function (event) {
+            if (self._mouseButtonDown) {
+                self._strokeUpdate(event);
+            }
+        };
+
+        this._handleMouseUp = function (event) {
+            if (event.which === 1 && self._mouseButtonDown) {
+                self._mouseButtonDown = false;
+                self._strokeEnd(event);
+            }
+        };
+
+        this._handleTouchStart = function (event) {
+            if (event.targetTouches.length == 1) {
+                var touch = event.changedTouches[0];
+                self._strokeBegin(touch);
+             }
+        };
+
+        this._handleTouchMove = function (event) {
+            // Prevent scrolling.
+            event.preventDefault();
+
+            var touch = event.targetTouches[0];
+            self._strokeUpdate(touch);
+        };
+
+        this._handleTouchEnd = function (event) {
+            var wasCanvasTouched = event.target === self._canvas;
+            if (wasCanvasTouched) {
+                event.preventDefault();
+                self._strokeEnd(event);
+            }
+        };
+
+        this._handleMouseEvents();
+        this._handleTouchEvents();
+    };
+
+    SignaturePad.prototype.clear = function () {
+        var ctx = this._ctx,
+            canvas = this._canvas;
+
+        ctx.fillStyle = this.backgroundColor;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        this._reset();
+    };
+
+    SignaturePad.prototype.toDataURL = function (imageType, quality) {
+        var canvas = this._canvas;
+        return canvas.toDataURL.apply(canvas, arguments);
+    };
+
+    SignaturePad.prototype.fromDataURL = function (dataUrl) {
+        var self = this,
+            image = new Image(),
+            ratio = window.devicePixelRatio || 1,
+            width = this._canvas.width / ratio,
+            height = this._canvas.height / ratio;
+
+        this._reset();
+        image.src = dataUrl;
+        image.onload = function () {
+            self._ctx.drawImage(image, 0, 0, width, height);
+        };
+        this._isEmpty = false;
+    };
+
+    SignaturePad.prototype._strokeUpdate = function (event) {
+        var point = this._createPoint(event);
+        this._addPoint(point);
+    };
+
+    SignaturePad.prototype._strokeBegin = function (event) {
+        this._reset();
+        this._strokeUpdate(event);
+        if (typeof this.onBegin === 'function') {
+            this.onBegin(event);
+        }
+    };
+
+    SignaturePad.prototype._strokeDraw = function (point) {
+        var ctx = this._ctx,
+            dotSize = typeof(this.dotSize) === 'function' ? this.dotSize() : this.dotSize;
+
+        ctx.beginPath();
+        this._drawPoint(point.x, point.y, dotSize);
+        ctx.closePath();
+        ctx.fill();
+    };
+
+    SignaturePad.prototype._strokeEnd = function (event) {
+        var canDrawCurve = this.points.length > 2,
+            point = this.points[0];
+
+        if (!canDrawCurve && point) {
+            this._strokeDraw(point);
+        }
+        if (typeof this.onEnd === 'function') {
+            this.onEnd(event);
+        }
+    };
+
+    SignaturePad.prototype._handleMouseEvents = function () {
+        this._mouseButtonDown = false;
+
+        this._canvas.addEventListener("mousedown", this._handleMouseDown);
+        this._canvas.addEventListener("mousemove", this._handleMouseMove);
+        document.addEventListener("mouseup", this._handleMouseUp);
+    };
+
+    SignaturePad.prototype._handleTouchEvents = function () {
+        // Pass touch events to canvas element on mobile IE11 and Edge.
+        this._canvas.style.msTouchAction = 'none';
+        this._canvas.style.touchAction = 'none';
+
+        this._canvas.addEventListener("touchstart", this._handleTouchStart);
+        this._canvas.addEventListener("touchmove", this._handleTouchMove);
+        this._canvas.addEventListener("touchend", this._handleTouchEnd);
+    };
+
+    SignaturePad.prototype.on = function () {
+        this._handleMouseEvents();
+        this._handleTouchEvents();
+    };
+
+    SignaturePad.prototype.off = function () {
+        this._canvas.removeEventListener("mousedown", this._handleMouseDown);
+        this._canvas.removeEventListener("mousemove", this._handleMouseMove);
+        document.removeEventListener("mouseup", this._handleMouseUp);
+
+        this._canvas.removeEventListener("touchstart", this._handleTouchStart);
+        this._canvas.removeEventListener("touchmove", this._handleTouchMove);
+        this._canvas.removeEventListener("touchend", this._handleTouchEnd);
+    };
+
+    SignaturePad.prototype.isEmpty = function () {
+        return this._isEmpty;
+    };
+
+    SignaturePad.prototype._reset = function () {
+        this.points = [];
+        this._lastVelocity = 0;
+        this._lastWidth = (this.minWidth + this.maxWidth) / 2;
+        this._isEmpty = true;
+        this._ctx.fillStyle = this.penColor;
+    };
+
+    SignaturePad.prototype._createPoint = function (event) {
+        var rect = this._canvas.getBoundingClientRect();
+        return new Point(
+            event.clientX - rect.left,
+            event.clientY - rect.top
+        );
+    };
+
+    SignaturePad.prototype._addPoint = function (point) {
+        var points = this.points,
+            c2, c3,
+            curve, tmp;
+
+        points.push(point);
+
+        if (points.length > 2) {
+            // To reduce the initial lag make it work with 3 points
+            // by copying the first point to the beginning.
+            if (points.length === 3) points.unshift(points[0]);
+
+            tmp = this._calculateCurveControlPoints(points[0], points[1], points[2]);
+            c2 = tmp.c2;
+            tmp = this._calculateCurveControlPoints(points[1], points[2], points[3]);
+            c3 = tmp.c1;
+            curve = new Bezier(points[1], c2, c3, points[2]);
+            this._addCurve(curve);
+
+            // Remove the first element from the list,
+            // so that we always have no more than 4 points in points array.
+            points.shift();
+        }
+    };
+
+    SignaturePad.prototype._calculateCurveControlPoints = function (s1, s2, s3) {
+        var dx1 = s1.x - s2.x, dy1 = s1.y - s2.y,
+            dx2 = s2.x - s3.x, dy2 = s2.y - s3.y,
+
+            m1 = {x: (s1.x + s2.x) / 2.0, y: (s1.y + s2.y) / 2.0},
+            m2 = {x: (s2.x + s3.x) / 2.0, y: (s2.y + s3.y) / 2.0},
+
+            l1 = Math.sqrt(dx1*dx1 + dy1*dy1),
+            l2 = Math.sqrt(dx2*dx2 + dy2*dy2),
+
+            dxm = (m1.x - m2.x),
+            dym = (m1.y - m2.y),
+
+            k = l2 / (l1 + l2),
+            cm = {x: m2.x + dxm*k, y: m2.y + dym*k},
+
+            tx = s2.x - cm.x,
+            ty = s2.y - cm.y;
+
+        return {
+            c1: new Point(m1.x + tx, m1.y + ty),
+            c2: new Point(m2.x + tx, m2.y + ty)
+        };
+    };
+
+    SignaturePad.prototype._addCurve = function (curve) {
+        var startPoint = curve.startPoint,
+            endPoint = curve.endPoint,
+            velocity, newWidth;
+
+        velocity = endPoint.velocityFrom(startPoint);
+        velocity = this.velocityFilterWeight * velocity
+            + (1 - this.velocityFilterWeight) * this._lastVelocity;
+
+        newWidth = this._strokeWidth(velocity);
+        this._drawCurve(curve, this._lastWidth, newWidth);
+
+        this._lastVelocity = velocity;
+        this._lastWidth = newWidth;
+    };
+
+    SignaturePad.prototype._drawPoint = function (x, y, size) {
+        var ctx = this._ctx;
+
+        ctx.moveTo(x, y);
+        ctx.arc(x, y, size, 0, 2 * Math.PI, false);
+        this._isEmpty = false;
+    };
+
+    SignaturePad.prototype._drawCurve = function (curve, startWidth, endWidth) {
+        var ctx = this._ctx,
+            widthDelta = endWidth - startWidth,
+            drawSteps, width, i, t, tt, ttt, u, uu, uuu, x, y;
+
+        drawSteps = Math.floor(curve.length());
+        ctx.beginPath();
+        for (i = 0; i < drawSteps; i++) {
+            // Calculate the Bezier (x, y) coordinate for this step.
+            t = i / drawSteps;
+            tt = t * t;
+            ttt = tt * t;
+            u = 1 - t;
+            uu = u * u;
+            uuu = uu * u;
+
+            x = uuu * curve.startPoint.x;
+            x += 3 * uu * t * curve.control1.x;
+            x += 3 * u * tt * curve.control2.x;
+            x += ttt * curve.endPoint.x;
+
+            y = uuu * curve.startPoint.y;
+            y += 3 * uu * t * curve.control1.y;
+            y += 3 * u * tt * curve.control2.y;
+            y += ttt * curve.endPoint.y;
+
+            width = startWidth + ttt * widthDelta;
+            this._drawPoint(x, y, width);
+        }
+        ctx.closePath();
+        ctx.fill();
+    };
+
+    SignaturePad.prototype._strokeWidth = function (velocity) {
+        return Math.max(this.maxWidth / (velocity + 1), this.minWidth);
+    };
+
+
+    var Point = function (x, y, time) {
+        this.x = x;
+        this.y = y;
+        this.time = time || new Date().getTime();
+    };
+
+    Point.prototype.velocityFrom = function (start) {
+        return (this.time !== start.time) ? this.distanceTo(start) / (this.time - start.time) : 1;
+    };
+
+    Point.prototype.distanceTo = function (start) {
+        return Math.sqrt(Math.pow(this.x - start.x, 2) + Math.pow(this.y - start.y, 2));
+    };
+
+    var Bezier = function (startPoint, control1, control2, endPoint) {
+        this.startPoint = startPoint;
+        this.control1 = control1;
+        this.control2 = control2;
+        this.endPoint = endPoint;
+    };
+
+    // Returns approximated length.
+    Bezier.prototype.length = function () {
+        var steps = 10,
+            length = 0,
+            i, t, cx, cy, px, py, xdiff, ydiff;
+
+        for (i = 0; i <= steps; i++) {
+            t = i / steps;
+            cx = this._point(t, this.startPoint.x, this.control1.x, this.control2.x, this.endPoint.x);
+            cy = this._point(t, this.startPoint.y, this.control1.y, this.control2.y, this.endPoint.y);
+            if (i > 0) {
+                xdiff = cx - px;
+                ydiff = cy - py;
+                length += Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+            }
+            px = cx;
+            py = cy;
+        }
+        return length;
+    };
+
+    Bezier.prototype._point = function (t, start, c1, c2, end) {
+        return          start * (1.0 - t) * (1.0 - t)  * (1.0 - t)
+               + 3.0 *  c1    * (1.0 - t) * (1.0 - t)  * t
+               + 3.0 *  c2    * (1.0 - t) * t          * t
+               +        end   * t         * t          * t;
+    };
+
+    return SignaturePad;
+})(document);
+
+return SignaturePad;
+
+}));
+
+},{}],7:[function(require,module,exports){
+(function(root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    define(factory);
+  } else if (typeof exports === 'object') {
+    module.exports = factory();
+  } else {
+    root.VMasker = factory();
+  }
+}(this, function() {
+  var DIGIT = "9",
+      ALPHA = "A",
+      ALPHANUM = "S",
+      BY_PASS_KEYS = [8, 9, 16, 17, 18, 36, 37, 38, 39, 40, 91, 92, 93],
+      isAllowedKeyCode = function(keyCode) {
+        for (var i = 0, len = BY_PASS_KEYS.length; i < len; i++) {
+          if (keyCode == BY_PASS_KEYS[i]) {
+            return false;
+          }
+        }
+        return true;
+      },
+      mergeMoneyOptions = function(opts) {
+        opts = opts || {};
+        opts = {
+          precision: opts.hasOwnProperty("precision") ? opts.precision : 2,
+          separator: opts.separator || ",",
+          delimiter: opts.delimiter || ".",
+          unit: opts.unit && (opts.unit.replace(/[\s]/g,'') + " ") || "",
+          suffixUnit: opts.suffixUnit && (" " + opts.suffixUnit.replace(/[\s]/g,'')) || "",
+          zeroCents: opts.zeroCents,
+          lastOutput: opts.lastOutput
+        };
+        opts.moneyPrecision = opts.zeroCents ? 0 : opts.precision;
+        return opts;
+      },
+      // Fill wildcards past index in output with placeholder
+      addPlaceholdersToOutput = function(output, index, placeholder) {
+        for (; index < output.length; index++) {
+          if(output[index] === DIGIT || output[index] === ALPHA || output[index] === ALPHANUM) {
+            output[index] = placeholder;
+          }
+        }
+        return output;
+      }
+  ;
+
+  var VanillaMasker = function(elements) {
+    this.elements = elements;
+  };
+
+  VanillaMasker.prototype.unbindElementToMask = function() {
+    for (var i = 0, len = this.elements.length; i < len; i++) {
+      this.elements[i].lastOutput = "";
+      this.elements[i].onkeyup = false;
+      this.elements[i].onkeydown = false;
+
+      if (this.elements[i].value.length) {
+        this.elements[i].value = this.elements[i].value.replace(/\D/g, '');
+      }
+    }
+  };
+
+  VanillaMasker.prototype.bindElementToMask = function(maskFunction) {
+    var that = this,
+        onType = function(e) {
+          e = e || window.event;
+          var source = e.target || e.srcElement;
+
+          if (isAllowedKeyCode(e.keyCode)) {
+            setTimeout(function() {
+              that.opts.lastOutput = source.lastOutput;
+              source.value = VMasker[maskFunction](source.value, that.opts);
+              source.lastOutput = source.value;
+              if (source.setSelectionRange && that.opts.suffixUnit) {
+                source.setSelectionRange(source.value.length, (source.value.length - that.opts.suffixUnit.length));
+              }
+            }, 0);
+          }
+        }
+    ;
+    for (var i = 0, len = this.elements.length; i < len; i++) {
+      this.elements[i].lastOutput = "";
+      this.elements[i].onkeyup = onType;
+      if (this.elements[i].value.length) {
+        this.elements[i].value = VMasker[maskFunction](this.elements[i].value, this.opts);
+      }
+    }
+  };
+
+  VanillaMasker.prototype.maskMoney = function(opts) {
+    this.opts = mergeMoneyOptions(opts);
+    this.bindElementToMask("toMoney");
+  };
+
+  VanillaMasker.prototype.maskNumber = function() {
+    this.opts = {};
+    this.bindElementToMask("toNumber");
+  };
+  
+  VanillaMasker.prototype.maskAlphaNum = function() {
+    this.opts = {};
+    this.bindElementToMask("toAlphaNumeric");
+  };
+
+  VanillaMasker.prototype.maskPattern = function(pattern) {
+    this.opts = {pattern: pattern};
+    this.bindElementToMask("toPattern");
+  };
+
+  VanillaMasker.prototype.unMask = function() {
+    this.unbindElementToMask();
+  };
+
+  var VMasker = function(el) {
+    if (!el) {
+      throw new Error("VanillaMasker: There is no element to bind.");
+    }
+    var elements = ("length" in el) ? (el.length ? el : []) : [el];
+    return new VanillaMasker(elements);
+  };
+
+  VMasker.toMoney = function(value, opts) {
+    opts = mergeMoneyOptions(opts);
+    if (opts.zeroCents) {
+      opts.lastOutput = opts.lastOutput || "";
+      var zeroMatcher = ("("+ opts.separator +"[0]{0,"+ opts.precision +"})"),
+          zeroRegExp = new RegExp(zeroMatcher, "g"),
+          digitsLength = value.toString().replace(/[\D]/g, "").length || 0,
+          lastDigitLength = opts.lastOutput.toString().replace(/[\D]/g, "").length || 0
+      ;
+      value = value.toString().replace(zeroRegExp, "");
+      if (digitsLength < lastDigitLength) {
+        value = value.slice(0, value.length - 1);
+      }
+    }
+    var number = value.toString().replace(/[\D]/g, ""),
+        clearDelimiter = new RegExp("^(0|\\"+ opts.delimiter +")"),
+        clearSeparator = new RegExp("(\\"+ opts.separator +")$"),
+        money = number.substr(0, number.length - opts.moneyPrecision),
+        masked = money.substr(0, money.length % 3),
+        cents = new Array(opts.precision + 1).join("0")
+    ;
+    money = money.substr(money.length % 3, money.length);
+    for (var i = 0, len = money.length; i < len; i++) {
+      if (i % 3 === 0) {
+        masked += opts.delimiter;
+      }
+      masked += money[i];
+    }
+    masked = masked.replace(clearDelimiter, "");
+    masked = masked.length ? masked : "0";
+    if (!opts.zeroCents) {
+      var beginCents = number.length - opts.precision,
+          centsValue = number.substr(beginCents, opts.precision),
+          centsLength = centsValue.length,
+          centsSliced = (opts.precision > centsLength) ? opts.precision : centsLength
+      ;
+      cents = (cents + centsValue).slice(-centsSliced);
+    }
+    var output = opts.unit + masked + opts.separator + cents + opts.suffixUnit;
+    return output.replace(clearSeparator, "");
+  };
+
+  VMasker.toPattern = function(value, opts) {
+    var pattern = (typeof opts === 'object' ? opts.pattern : opts),
+        patternChars = pattern.replace(/\W/g, ''),
+        output = pattern.split(""),
+        values = value.toString().replace(/\W/g, ""),
+        charsValues = values.replace(/\W/g, ''),
+        index = 0,
+        i,
+        outputLength = output.length,
+        placeholder = (typeof opts === 'object' ? opts.placeholder : undefined)
+    ;
+    
+    for (i = 0; i < outputLength; i++) {
+      // Reached the end of input
+      if (index >= values.length) {
+        if (patternChars.length == charsValues.length) {
+          return output.join("");
+        }
+        else if ((placeholder !== undefined) && (patternChars.length > charsValues.length)) {
+          return addPlaceholdersToOutput(output, i, placeholder).join("");
+        }
+        else {
+          break;
+        }
+      }
+      // Remaining chars in input
+      else{
+        if ((output[i] === DIGIT && values[index].match(/[0-9]/)) ||
+            (output[i] === ALPHA && values[index].match(/[a-zA-Z]/)) ||
+            (output[i] === ALPHANUM && values[index].match(/[0-9a-zA-Z]/))) {
+          output[i] = values[index++];
+        } else if (output[i] === DIGIT || output[i] === ALPHA || output[i] === ALPHANUM) {
+          if(placeholder !== undefined){
+            return addPlaceholdersToOutput(output, i, placeholder).join("");
+          }
+          else{
+            return output.slice(0, i).join("");
+          }
+        }
+      }
+    }
+    return output.join("").substr(0, i);
+  };
+
+  VMasker.toNumber = function(value) {
+    return value.toString().replace(/(?!^-)[^0-9]/g, "");
+  };
+  
+  VMasker.toAlphaNumeric = function(value) {
+    return value.toString().replace(/[^a-z0-9 ]+/i, "");
+  };
+
+  return VMasker;
+}));
+
+},{}],8:[function(require,module,exports){
+(function(self) {
+  'use strict';
+
+  if (self.fetch) {
+    return
+  }
+
+  function normalizeName(name) {
+    if (typeof name !== 'string') {
+      name = String(name)
+    }
+    if (/[^a-z0-9\-#$%&'*+.\^_`|~]/i.test(name)) {
+      throw new TypeError('Invalid character in header field name')
+    }
+    return name.toLowerCase()
+  }
+
+  function normalizeValue(value) {
+    if (typeof value !== 'string') {
+      value = String(value)
+    }
+    return value
+  }
+
+  function Headers(headers) {
+    this.map = {}
+
+    if (headers instanceof Headers) {
+      headers.forEach(function(value, name) {
+        this.append(name, value)
+      }, this)
+
+    } else if (headers) {
+      Object.getOwnPropertyNames(headers).forEach(function(name) {
+        this.append(name, headers[name])
+      }, this)
+    }
+  }
+
+  Headers.prototype.append = function(name, value) {
+    name = normalizeName(name)
+    value = normalizeValue(value)
+    var list = this.map[name]
+    if (!list) {
+      list = []
+      this.map[name] = list
+    }
+    list.push(value)
+  }
+
+  Headers.prototype['delete'] = function(name) {
+    delete this.map[normalizeName(name)]
+  }
+
+  Headers.prototype.get = function(name) {
+    var values = this.map[normalizeName(name)]
+    return values ? values[0] : null
+  }
+
+  Headers.prototype.getAll = function(name) {
+    return this.map[normalizeName(name)] || []
+  }
+
+  Headers.prototype.has = function(name) {
+    return this.map.hasOwnProperty(normalizeName(name))
+  }
+
+  Headers.prototype.set = function(name, value) {
+    this.map[normalizeName(name)] = [normalizeValue(value)]
+  }
+
+  Headers.prototype.forEach = function(callback, thisArg) {
+    Object.getOwnPropertyNames(this.map).forEach(function(name) {
+      this.map[name].forEach(function(value) {
+        callback.call(thisArg, value, name, this)
+      }, this)
+    }, this)
+  }
+
+  function consumed(body) {
+    if (body.bodyUsed) {
+      return Promise.reject(new TypeError('Already read'))
+    }
+    body.bodyUsed = true
+  }
+
+  function fileReaderReady(reader) {
+    return new Promise(function(resolve, reject) {
+      reader.onload = function() {
+        resolve(reader.result)
+      }
+      reader.onerror = function() {
+        reject(reader.error)
+      }
+    })
+  }
+
+  function readBlobAsArrayBuffer(blob) {
+    var reader = new FileReader()
+    reader.readAsArrayBuffer(blob)
+    return fileReaderReady(reader)
+  }
+
+  function readBlobAsText(blob) {
+    var reader = new FileReader()
+    reader.readAsText(blob)
+    return fileReaderReady(reader)
+  }
+
+  var support = {
+    blob: 'FileReader' in self && 'Blob' in self && (function() {
+      try {
+        new Blob()
+        return true
+      } catch(e) {
+        return false
+      }
+    })(),
+    formData: 'FormData' in self,
+    arrayBuffer: 'ArrayBuffer' in self
+  }
+
+  function Body() {
+    this.bodyUsed = false
+
+
+    this._initBody = function(body) {
+      this._bodyInit = body
+      if (typeof body === 'string') {
+        this._bodyText = body
+      } else if (support.blob && Blob.prototype.isPrototypeOf(body)) {
+        this._bodyBlob = body
+      } else if (support.formData && FormData.prototype.isPrototypeOf(body)) {
+        this._bodyFormData = body
+      } else if (!body) {
+        this._bodyText = ''
+      } else if (support.arrayBuffer && ArrayBuffer.prototype.isPrototypeOf(body)) {
+        // Only support ArrayBuffers for POST method.
+        // Receiving ArrayBuffers happens via Blobs, instead.
+      } else {
+        throw new Error('unsupported BodyInit type')
+      }
+
+      if (!this.headers.get('content-type')) {
+        if (typeof body === 'string') {
+          this.headers.set('content-type', 'text/plain;charset=UTF-8')
+        } else if (this._bodyBlob && this._bodyBlob.type) {
+          this.headers.set('content-type', this._bodyBlob.type)
+        }
+      }
+    }
+
+    if (support.blob) {
+      this.blob = function() {
+        var rejected = consumed(this)
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return Promise.resolve(this._bodyBlob)
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as blob')
+        } else {
+          return Promise.resolve(new Blob([this._bodyText]))
+        }
+      }
+
+      this.arrayBuffer = function() {
+        return this.blob().then(readBlobAsArrayBuffer)
+      }
+
+      this.text = function() {
+        var rejected = consumed(this)
+        if (rejected) {
+          return rejected
+        }
+
+        if (this._bodyBlob) {
+          return readBlobAsText(this._bodyBlob)
+        } else if (this._bodyFormData) {
+          throw new Error('could not read FormData body as text')
+        } else {
+          return Promise.resolve(this._bodyText)
+        }
+      }
+    } else {
+      this.text = function() {
+        var rejected = consumed(this)
+        return rejected ? rejected : Promise.resolve(this._bodyText)
+      }
+    }
+
+    if (support.formData) {
+      this.formData = function() {
+        return this.text().then(decode)
+      }
+    }
+
+    this.json = function() {
+      return this.text().then(JSON.parse)
+    }
+
+    return this
+  }
+
+  // HTTP methods whose capitalization should be normalized
+  var methods = ['DELETE', 'GET', 'HEAD', 'OPTIONS', 'POST', 'PUT']
+
+  function normalizeMethod(method) {
+    var upcased = method.toUpperCase()
+    return (methods.indexOf(upcased) > -1) ? upcased : method
+  }
+
+  function Request(input, options) {
+    options = options || {}
+    var body = options.body
+    if (Request.prototype.isPrototypeOf(input)) {
+      if (input.bodyUsed) {
+        throw new TypeError('Already read')
+      }
+      this.url = input.url
+      this.credentials = input.credentials
+      if (!options.headers) {
+        this.headers = new Headers(input.headers)
+      }
+      this.method = input.method
+      this.mode = input.mode
+      if (!body) {
+        body = input._bodyInit
+        input.bodyUsed = true
+      }
+    } else {
+      this.url = input
+    }
+
+    this.credentials = options.credentials || this.credentials || 'omit'
+    if (options.headers || !this.headers) {
+      this.headers = new Headers(options.headers)
+    }
+    this.method = normalizeMethod(options.method || this.method || 'GET')
+    this.mode = options.mode || this.mode || null
+    this.referrer = null
+
+    if ((this.method === 'GET' || this.method === 'HEAD') && body) {
+      throw new TypeError('Body not allowed for GET or HEAD requests')
+    }
+    this._initBody(body)
+  }
+
+  Request.prototype.clone = function() {
+    return new Request(this)
+  }
+
+  function decode(body) {
+    var form = new FormData()
+    body.trim().split('&').forEach(function(bytes) {
+      if (bytes) {
+        var split = bytes.split('=')
+        var name = split.shift().replace(/\+/g, ' ')
+        var value = split.join('=').replace(/\+/g, ' ')
+        form.append(decodeURIComponent(name), decodeURIComponent(value))
+      }
+    })
+    return form
+  }
+
+  function headers(xhr) {
+    var head = new Headers()
+    var pairs = (xhr.getAllResponseHeaders() || '').trim().split('\n')
+    pairs.forEach(function(header) {
+      var split = header.trim().split(':')
+      var key = split.shift().trim()
+      var value = split.join(':').trim()
+      head.append(key, value)
+    })
+    return head
+  }
+
+  Body.call(Request.prototype)
+
+  function Response(bodyInit, options) {
+    if (!options) {
+      options = {}
+    }
+
+    this.type = 'default'
+    this.status = options.status
+    this.ok = this.status >= 200 && this.status < 300
+    this.statusText = options.statusText
+    this.headers = options.headers instanceof Headers ? options.headers : new Headers(options.headers)
+    this.url = options.url || ''
+    this._initBody(bodyInit)
+  }
+
+  Body.call(Response.prototype)
+
+  Response.prototype.clone = function() {
+    return new Response(this._bodyInit, {
+      status: this.status,
+      statusText: this.statusText,
+      headers: new Headers(this.headers),
+      url: this.url
+    })
+  }
+
+  Response.error = function() {
+    var response = new Response(null, {status: 0, statusText: ''})
+    response.type = 'error'
+    return response
+  }
+
+  var redirectStatuses = [301, 302, 303, 307, 308]
+
+  Response.redirect = function(url, status) {
+    if (redirectStatuses.indexOf(status) === -1) {
+      throw new RangeError('Invalid status code')
+    }
+
+    return new Response(null, {status: status, headers: {location: url}})
+  }
+
+  self.Headers = Headers
+  self.Request = Request
+  self.Response = Response
+
+  self.fetch = function(input, init) {
+    return new Promise(function(resolve, reject) {
+      var request
+      if (Request.prototype.isPrototypeOf(input) && !init) {
+        request = input
+      } else {
+        request = new Request(input, init)
+      }
+
+      var xhr = new XMLHttpRequest()
+
+      function responseURL() {
+        if ('responseURL' in xhr) {
+          return xhr.responseURL
+        }
+
+        // Avoid security warnings on getResponseHeader when not allowed by CORS
+        if (/^X-Request-URL:/m.test(xhr.getAllResponseHeaders())) {
+          return xhr.getResponseHeader('X-Request-URL')
+        }
+
+        return
+      }
+
+      xhr.onload = function() {
+        var status = (xhr.status === 1223) ? 204 : xhr.status
+        if (status < 100 || status > 599) {
+          reject(new TypeError('Network request failed'))
+          return
+        }
+        var options = {
+          status: status,
+          statusText: xhr.statusText,
+          headers: headers(xhr),
+          url: responseURL()
+        }
+        var body = 'response' in xhr ? xhr.response : xhr.responseText
+        resolve(new Response(body, options))
+      }
+
+      xhr.onerror = function() {
+        reject(new TypeError('Network request failed'))
+      }
+
+      xhr.ontimeout = function() {
+        reject(new TypeError('Network request failed'))
+      }
+
+      xhr.open(request.method, request.url, true)
+
+      if (request.credentials === 'include') {
+        xhr.withCredentials = true
+      }
+
+      if ('responseType' in xhr && support.blob) {
+        xhr.responseType = 'blob'
+      }
+
+      request.headers.forEach(function(value, name) {
+        xhr.setRequestHeader(name, value)
+      })
+
+      xhr.send(typeof request._bodyInit === 'undefined' ? null : request._bodyInit)
+    })
+  }
+  self.fetch.polyfill = true
+})(typeof self !== 'undefined' ? self : this);
+
+},{}],9:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var VMasker = require('vanilla-masker');
+var FormioUtils = require('formio-utils');
+var _get = require('lodash/get');
+var _each = require('lodash/each');
+var _debounce = require('lodash/debounce');
+var _isArray = require('lodash/isArray');
+
+var BaseComponent = function () {
+  /**
+   *   Initialize a new BaseComponent.
+   *
+   * @param component
+   *   The JSON component.
+   * @param components
+   *   The components instance.
+   * @param data
+   *   The data to represent this "row" for the component.
+   */
+  function BaseComponent(component, events, data) {
+    _classCallCheck(this, BaseComponent);
+
+    this.id = Math.random().toString(36).substring(7);
+    this._events = events;
+    this._data = data || {};
+    this._component = component;
+    this._components = [];
+    this._element = null;
+    this._tbody = null;
+    this._label = null;
+    this._errorElement = null;
+    this._inputs = [];
+    this._info = null;
+    if (this._component) {
+      this._info = this.elementInfo();
+    }
+  }
+
+  /**
+   * Builds the component.
+   */
+
+
+  _createClass(BaseComponent, [{
+    key: 'build',
+    value: function build() {
+      this.createElement();
+      this.createLabel(this._element);
+      if (!this.createWrapper()) {
+        this.createInput(this._element);
+      }
+    }
+  }, {
+    key: 'createElement',
+    value: function createElement() {
+      this._element = this.ce('div');
+      this._element.setAttribute('class', this.className);
+    }
+  }, {
+    key: 'createWrapper',
+    value: function createWrapper() {
+      if (!this._component.multiple) {
+        return false;
+      } else {
+        var table = this.ce('table');
+        table.setAttribute('class', 'table table-bordered');
+        this._tbody = this.ce('tbody');
+        table.appendChild(this._tbody);
+
+        // Add a default value.
+        this.addValue();
+
+        // Add the table to the element.
+        this._element.appendChild(table);
+        return true;
+      }
+    }
+  }, {
+    key: 'defaultValue',
+    value: function defaultValue() {
+      if (this._component.defaultValue) {
+        return this._component.defaultValue;
+      }
+      return '';
+    }
+  }, {
+    key: 'addValue',
+    value: function addValue() {
+      // Ensure we have the latest value.
+      this._data[this._component.key] = this.value;
+      if (!this._data[this._component.key]) {
+        this._data[this._component.key] = [];
+      }
+      if (!_isArray(this._data[this._component.key])) {
+        this._data[this._component.key] = [this._data[this._component.key]];
+      }
+      this._data[this._component.key].push(this.defaultValue());
+      this.buildRows();
+    }
+  }, {
+    key: 'removeValue',
+    value: function removeValue(index) {
+      if (this._data.hasOwnProperty(this._component.key)) {
+        this._data[this._component.key].splice(index, 1);
+      }
+      this.buildRows();
+    }
+  }, {
+    key: 'buildRows',
+    value: function buildRows() {
+      var _this = this;
+
+      if (!this._tbody) {
+        return;
+      }
+      this._inputs = [];
+      this._tbody.innerHTML = '';
+      _each(this._data[this._component.key], function (value, index) {
+        var tr = _this.ce('tr');
+        var td = _this.ce('td');
+        _this.createInput(td);
+        tr.appendChild(td);
+        var tdAdd = _this.ce('td');
+        tdAdd.appendChild(_this.removeButton(index));
+        tr.appendChild(tdAdd);
+        _this._tbody.appendChild(tr);
+      });
+
+      var tr = this.ce('tr');
+      var td = this.ce('td');
+      td.setAttribute('colspan', '2');
+      td.appendChild(this.addButton());
+      tr.appendChild(td);
+      this._tbody.appendChild(tr);
+
+      // Reset the values of the inputs.
+      this.value = this._data[this._component.key];
+    }
+  }, {
+    key: 'addButton',
+    value: function addButton() {
+      var _this2 = this;
+
+      var addButton = this.ce('a');
+      addButton.setAttribute('class', 'btn btn-primary');
+      this.addAnEventListener(addButton, 'click', function (event) {
+        event.preventDefault();
+        _this2.addValue();
+      });
+
+      var addIcon = this.ce('span');
+      addIcon.setAttribute('class', 'glyphicon glyphicon-plus');
+      addButton.appendChild(addIcon);
+      addButton.appendChild(this.text(this._component.addAnother || ' Add Another'));
+      return addButton;
+    }
+  }, {
+    key: 'removeButton',
+    value: function removeButton(index) {
+      var _this3 = this;
+
+      var removeButton = this.ce('button');
+      removeButton.setAttribute('class', 'btn btn-default');
+      removeButton.setAttribute('type', 'button');
+
+      // Ensure this button cannot be tabbed to.
+      removeButton.setAttribute('tabindex', '-1');
+      this.addAnEventListener(removeButton, 'click', function (event) {
+        event.preventDefault();
+        _this3.removeValue(index);
+      });
+
+      var removeIcon = this.ce('span');
+      removeIcon.setAttribute('class', 'glyphicon glyphicon-remove-circle');
+      removeButton.appendChild(removeIcon);
+      return removeButton;
+    }
+  }, {
+    key: 'createLabel',
+    value: function createLabel(container) {
+      if (!this._component.label) {
+        return;
+      }
+      this._label = this.ce('label');
+      this._label.setAttribute('class', 'control-label');
+      if (this._info.attr.id) {
+        this._label.setAttribute('for', this._info.attr.id);
+      }
+      this._label.appendChild(this.text(this._component.label));
+      container.appendChild(this._label);
+    }
+  }, {
+    key: 'createErrorElement',
+    value: function createErrorElement(container) {
+      this._errorElement = this.ce('div');
+      this._errorElement.setAttribute('class', 'formio-errors');
+      container.appendChild(this._errorElement);
+    }
+  }, {
+    key: 'addPrefix',
+    value: function addPrefix(input, inputGroup) {
+      var prefix = null;
+      if (this._component.prefix) {
+        prefix = this.ce('div');
+        prefix.setAttribute('class', 'input-group-addon');
+        prefix.appendChild(this.text(this._component.prefix));
+        inputGroup.appendChild(prefix);
+      }
+      return prefix;
+    }
+  }, {
+    key: 'addSuffix',
+    value: function addSuffix(input, inputGroup) {
+      var suffix = null;
+      if (this._component.suffix) {
+        suffix = this.ce('div');
+        suffix.setAttribute('class', 'input-group-addon');
+        suffix.appendChild(this.text(this._component.suffix));
+        inputGroup.appendChild(suffix);
+      }
+      return suffix;
+    }
+  }, {
+    key: 'addInputGroup',
+    value: function addInputGroup(input, container) {
+      var inputGroup = null;
+      if (this._component.prefix || this._component.suffix) {
+        inputGroup = this.ce('div');
+        inputGroup.setAttribute('class', 'input-group');
+        container.appendChild(inputGroup);
+      }
+      return inputGroup;
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      var input = this.ce(this._info.type, this._info.attr);
+      if (this._component.inputMask) {
+        VMasker(input).maskPattern(this._component.inputMask);
+      }
+
+      var inputGroup = this.addInputGroup(input, container);
+      this.addPrefix(input, inputGroup);
+      this.addInput(input, inputGroup || container);
+      this.addSuffix(input, inputGroup);
+      this.createErrorElement(container);
+      return inputGroup || input;
+    }
+
+    /**
+     * Wrapper method to add an event listener to an HTML element.
+     *
+     * @param obj
+     *   The DOM element to add the event to.
+     * @param evt
+     *   The event name to add.
+     * @param func
+     *   The callback function to be executed when the listener is triggered.
+     */
+
+  }, {
+    key: 'addAnEventListener',
+    value: function addAnEventListener(obj, evt, func) {
+      if ('addEventListener' in obj) {
+        obj.addEventListener(evt, func, false);
+      } else if ('attachEvent' in obj) {
+        obj.attachEvent('on' + evt, func);
+      }
+    }
+
+    /**
+     * Alias for document.createElement.
+     *
+     * @param type
+     * @returns {*}
+     */
+
+  }, {
+    key: 'ce',
+    value: function ce(type, attr) {
+      var element = document.createElement(type);
+      if (attr) {
+        this.attr(element, attr);
+      }
+      return element;
+    }
+
+    /**
+     * Alias to create a text node.
+     * @param text
+     * @returns {Text}
+     */
+
+  }, {
+    key: 'text',
+    value: function text(_text) {
+      return document.createTextNode(_text);
+    }
+
+    /**
+     * Adds an object of attributes onto an element.
+     * @param element
+     * @param attr
+     */
+
+  }, {
+    key: 'attr',
+    value: function attr(element, _attr) {
+      _each(_attr, function (value, key) {
+        if (typeof value !== 'undefined') {
+          element.setAttribute(key, value);
+        }
+      });
+    }
+
+    /**
+     * Adds a class to a DOM element.
+     *
+     * @param element
+     *   The element to add a class to.
+     * @param className
+     *   The name of the class to add.
+     */
+
+  }, {
+    key: 'addClass',
+    value: function addClass(element, className) {
+      var cls = element.getAttribute('class');
+      cls += ' ' + className;
+      element.setAttribute('class', cls);
+    }
+
+    /**
+     * Remove a class from a DOM element.
+     *
+     * @param element
+     *   The DOM element to remove the class from.
+     * @param className
+     *   The name of the class that is to be removed.
+     */
+
+  }, {
+    key: 'removeClass',
+    value: function removeClass(element, className) {
+      var cls = element.getAttribute('class');
+      cls = cls.replace(className, '');
+      element.setAttribute('class', cls);
+    }
+
+    /**
+     * Check for conditionals and hide/show the element based on those conditions.
+     */
+
+  }, {
+    key: 'checkConditions',
+    value: function checkConditions(data) {
+      this.show(FormioUtils.checkCondition(this._component, this.value, data));
+    }
+
+    /**
+     * Checks for errors within the inputs, and then adds an input error if one occurs.
+     */
+
+  }, {
+    key: 'checkErrors',
+    value: function checkErrors() {
+      var _this4 = this;
+
+      // No need to check for errors if there is no input.
+      if (!this._component.input) {
+        return;
+      }
+      if (this._errorElement) {
+        this._errorElement.innerHTML = '';
+      }
+      this.removeClass(this._element, 'has-error');
+      _each(this._inputs, function (input) {
+        if (input.validationMessage) {
+          _this4.addInputError(input.validationMessage);
+        }
+      });
+    }
+
+    /**
+     * Add a new input error to this element.
+     * @param message
+     */
+
+  }, {
+    key: 'addInputError',
+    value: function addInputError(message) {
+      if (this._errorElement) {
+        var errorMessage = this.ce('p');
+        errorMessage.setAttribute('class', 'help-block');
+        errorMessage.appendChild(this.text(message));
+        this._errorElement.appendChild(errorMessage);
+        this.addClass(this._element, 'has-error');
+      }
+    }
+
+    /**
+     * Hide or Show an element.
+     *
+     * @param show
+     */
+
+  }, {
+    key: 'show',
+    value: function show(_show) {
+      if (this._element) {
+        if (_show) {
+          this._element.removeAttribute('hidden');
+        } else {
+          this._element.setAttribute('hidden', true);
+        }
+      }
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange() {
+      this._events.emit('componentChange', {
+        component: this._component,
+        value: this.value
+      });
+      this.checkErrors();
+    }
+
+    /**
+     * Add new input element listeners.
+     *
+     * @param input
+     */
+
+  }, {
+    key: 'addInputEventListener',
+    value: function addInputEventListener(input) {
+      var _this5 = this;
+
+      var callChange = _debounce(function () {
+        return _this5.onChange();
+      }, 200);
+      this.addAnEventListener(input, this._info.changeEvent, function () {
+        _this5._data[_this5._component.key] = _this5.value;
+        callChange();
+      });
+    }
+
+    /**
+     * Add a new input to this comonent.
+     *
+     * @param input
+     * @param container
+     * @param name
+     */
+
+  }, {
+    key: 'addInput',
+    value: function addInput(input, container, name) {
+      if (input && container) {
+        this._inputs.push(input);
+        input = container.appendChild(input);
+        this.addInputEventListener(input);
+      }
+    }
+
+    /**
+     * Get the value at a specific index.
+     *
+     * @param index
+     * @returns {*}
+     */
+
+  }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      return this._inputs[index].value;
+    }
+
+    /**
+     * Get the value of this component.
+     *
+     * @returns {*}
+     */
+
+  }, {
+    key: 'setValueAt',
+
+
+    /**
+     * Set the value at a specific index.
+     *
+     * @param index
+     * @param value
+     */
+    value: function setValueAt(index, value) {
+      this._inputs[index].value = value;
+    }
+
+    /**
+     * Set the value of this component.
+     * @param value
+     */
+
+  }, {
+    key: 'elementInfo',
+
+
+    /**
+     * Get the element information.
+     *
+     * @returns {{type: string, component: *, changeEvent: string, attr: {id: (string|*), name: string, type: (*|string), style: string, class: string}}}
+     */
+    value: function elementInfo() {
+      var _this6 = this;
+
+      var style = '';
+      if (this._component.overlay) {
+        if (this._component.overlay.style) {
+          style = this._component.overlay.style;
+        }
+        if (this._component.overlay.top) {
+          style += 'top:' + this._component.overlay.top + 'px;';
+        }
+        if (this._component.overlay.left) {
+          style += 'left:' + this._component.overlay.left + 'px;';
+        }
+        if (this._component.overlay.width) {
+          style += 'width:' + this._component.overlay.width + 'px;';
+        }
+        if (this._component.overlay.height) {
+          style += 'height:' + this._component.overlay.height + 'px;';
+        }
+      }
+      this.inputId = this._component.overlay ? this._component.overlay.id : this.id;
+      var attributes = {
+        id: this.inputId,
+        name: 'data[' + this._component.key + ']',
+        type: this._component.inputType || 'text',
+        style: style,
+        class: 'form-control'
+      };
+      _each({
+        tabindex: 'tabindex',
+        placeholder: 'placeholder',
+        required: 'validate.required',
+        maxLength: 'validate.maxLength'
+      }, function (path, prop) {
+        var attrValue = _get(_this6._component, path);
+        if (attrValue) {
+          attributes[prop] = attrValue;
+        }
+      });
+      return {
+        type: 'input',
+        component: this._component,
+        changeEvent: 'change',
+        attr: attributes
+      };
+    }
+  }, {
+    key: 'className',
+    get: function get() {
+      var className = this._component.input ? 'form-group has-feedback ' : '';
+      className += 'formio-component formio-component-' + this._component.type + ' ';
+      className += 'form-field-type-' + this._component.type + ' ';
+      className += 'formio-component-' + this._component.key + ' ';
+      if (this._component.customClass) {
+        className += this._component.customClass;
+      }
+      if (this._component.input && this._component.validate && this._component.validate.required) {
+        className += ' required';
+      }
+      return className;
+    }
+  }, {
+    key: 'value',
+    get: function get() {
+      var values = [];
+      for (var i in this._inputs) {
+        if (!this._component.multiple) {
+          return this.getValueAt(i);
+        }
+        values.push(this.getValueAt(i));
+      }
+      return values;
+    },
+    set: function set(value) {
+      var isArray = _isArray(value);
+      for (var i in this._inputs) {
+        this.setValueAt(i, isArray ? value[i] : value);
+      }
+    }
+
+    /**
+     * Disable this component.
+     */
+
+  }, {
+    key: 'disable',
+    set: function set(disable) {
+      // Disable all input.
+      _each(this._inputs, function (input) {
+        input.disabled = disable;
+        input.setAttribute('disabled', 'disabled');
+      });
+    }
+  }]);
+
+  return BaseComponent;
+}();
+
+module.exports = BaseComponent;
+
+},{"formio-utils":3,"lodash/debounce":153,"lodash/each":154,"lodash/get":157,"lodash/isArray":160,"vanilla-masker":7}],10:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+
+var ButtonComponent = function (_BaseComponent) {
+  _inherits(ButtonComponent, _BaseComponent);
+
+  function ButtonComponent() {
+    _classCallCheck(this, ButtonComponent);
+
+    return _possibleConstructorReturn(this, (ButtonComponent.__proto__ || Object.getPrototypeOf(ButtonComponent)).apply(this, arguments));
+  }
+
+  _createClass(ButtonComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'button';
+      info.attr.type = this._component.action;
+      info.attr.class = 'btn btn-' + this._component.theme;
+      if (this._component.block) {
+        info.attr.class += ' btn-block';
+      }
+      return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      this._element = this.ce(this._info.type, this._info.attr);
+      if (this._component.label) {
+        this._label = this.text(this._component.label);
+        this._element.appendChild(this._label);
+      }
+    }
+  }]);
+
+  return ButtonComponent;
+}(BaseComponent);
+
+module.exports = ButtonComponent;
+
+},{"./Base":9}],11:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+
+var CheckBoxComponent = function (_BaseComponent) {
+  _inherits(CheckBoxComponent, _BaseComponent);
+
+  function CheckBoxComponent() {
+    _classCallCheck(this, CheckBoxComponent);
+
+    return _possibleConstructorReturn(this, (CheckBoxComponent.__proto__ || Object.getPrototypeOf(CheckBoxComponent)).apply(this, arguments));
+  }
+
+  _createClass(CheckBoxComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      if (this._component.overlay) {
+        this._component.overlay.width = 0;
+        this._component.overlay.height = 0;
+      }
+      var info = _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.changeEvent = 'click';
+      info.attr.type = this._component.inputType;
+      info.attr.class = '';
+      if (this._component.name) {
+        info.attr.name = 'data[' + this._component.name + ']';
+      }
+      info.attr.value = this._component.value ? this._component.value : 0;
+      return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      if (!this._component.input) {
+        return;
+      }
+      this.createElement();
+      this.input = this.createInput(this._element);
+      this.createLabel(this._element, this.input);
+      if (!this._label) {
+        this.addInput(this.input, this._element);
+      }
+    }
+  }, {
+    key: 'createElement',
+    value: function createElement() {
+      this._element = this.ce('div');
+      var className = 'form-group checkbox';
+      if (this._component.validate && this._component.validate.required) {
+        className += ' required';
+      }
+      this._element.setAttribute('class', className);
+    }
+  }, {
+    key: 'createLabel',
+    value: function createLabel(container, input) {
+      if (!this._component.label) {
+        return null;
+      }
+      this._label = this.ce('label');
+      this._label.setAttribute('class', 'control-label');
+      if (this._info.attr.id) {
+        this._label.setAttribute('for', this._info.attr.id);
+      }
+      this._label.appendChild(input);
+      this._label.appendChild(document.createTextNode(this._component.label));
+      container.appendChild(this._label);
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      if (!this._component.input) {
+        return;
+      }
+      var input = this.ce(this._info.type, this._info.attr);
+      this.createErrorElement(container);
+      return input;
+    }
+  }, {
+    key: 'value',
+    set: function set(value) {
+      if (this._component.inputType === 'radio') {
+        if (value === this.input.value) {
+          this.input.checked = 1;
+        }
+      } else {
+        if (value === 'on') {
+          this.input.value = 1;
+          this.input.checked = 1;
+          return;
+        } else if (value) {
+          this.input.value = 1;
+          this.input.checked = 1;
+          return;
+        }
+        this.input.value = 0;
+        this.input.checked = 0;
+      }
+    }
+  }]);
+
+  return CheckBoxComponent;
+}(BaseComponent);
+
+module.exports = CheckBoxComponent;
+
+},{"./Base":9}],12:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FormioComponents = require('./Components');
+
+var ColumnComponent = function (_FormioComponents) {
+  _inherits(ColumnComponent, _FormioComponents);
+
+  function ColumnComponent() {
+    _classCallCheck(this, ColumnComponent);
+
+    return _possibleConstructorReturn(this, (ColumnComponent.__proto__ || Object.getPrototypeOf(ColumnComponent)).apply(this, arguments));
+  }
+
+  _createClass(ColumnComponent, [{
+    key: 'className',
+    get: function get() {
+      return 'col col-sm-' + this._component.colWidth;
+    }
+  }]);
+
+  return ColumnComponent;
+}(FormioComponents);
+
+module.exports = ColumnComponent;
+
+},{"./Components":14}],13:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _each = require('lodash/each');
+var FormioComponents = require('./Components');
+
+var ColumnsComponent = function (_FormioComponents) {
+  _inherits(ColumnsComponent, _FormioComponents);
+
+  function ColumnsComponent() {
+    _classCallCheck(this, ColumnsComponent);
+
+    return _possibleConstructorReturn(this, (ColumnsComponent.__proto__ || Object.getPrototypeOf(ColumnsComponent)).apply(this, arguments));
+  }
+
+  _createClass(ColumnsComponent, [{
+    key: 'addComponents',
+    value: function addComponents() {
+      var _this2 = this;
+
+      var colWidth = Math.floor(12 / this._component.columns.length);
+      _each(this._component.columns, function (column) {
+        column.type = 'column';
+        column.colWidth = colWidth;
+        _this2.addComponent(column, _this2._element);
+      });
+    }
+  }, {
+    key: 'className',
+    get: function get() {
+      return 'row';
+    }
+  }]);
+
+  return ColumnsComponent;
+}(FormioComponents);
+
+module.exports = ColumnsComponent;
+
+},{"./Components":14,"lodash/each":154}],14:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _each = require('lodash/each');
+var BaseComponent = require('./Base');
+
+var FormioComponents = function (_BaseComponent) {
+  _inherits(FormioComponents, _BaseComponent);
+
+  function FormioComponents() {
+    _classCallCheck(this, FormioComponents);
+
+    return _possibleConstructorReturn(this, (FormioComponents.__proto__ || Object.getPrototypeOf(FormioComponents)).apply(this, arguments));
+  }
+
+  _createClass(FormioComponents, [{
+    key: 'build',
+    value: function build() {
+      this.createElement();
+      this.addComponents();
+    }
+  }, {
+    key: 'addComponent',
+    value: function addComponent(component, element, data) {
+      var components = require('./index');
+      var comp = components.create(component, this._events, data);
+      this._components.push(comp);
+      element.appendChild(comp._element);
+    }
+  }, {
+    key: 'addComponents',
+    value: function addComponents(element, data) {
+      var _this2 = this;
+
+      element = element || this._element;
+      data = data || this._data;
+      _each(this._component.components, function (component) {
+        return _this2.addComponent(component, element, data);
+      });
+    }
+  }, {
+    key: 'checkConditions',
+    value: function checkConditions(data) {
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
+      _each(this._components, function (comp) {
+        return comp.checkConditions(data);
+      });
+    }
+  }, {
+    key: 'assign',
+    value: function assign(data) {
+      _each(this._components, function (component) {
+        if (!component._component) {
+          return;
+        }
+        if (!component._component.input && typeof component.assign === 'function') {
+          component.assign(data);
+        } else if (component._component.input) {
+          data[component._component.key] = component.value;
+        }
+      });
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      this.assign(this._data);
+      return this._data;
+    }
+  }, {
+    key: 'setValue',
+    value: function setValue(value) {
+      _each(this._components, function (component) {
+        if (typeof component.setValue === 'function') {
+          component.setValue(value);
+        } else if (value.hasOwnProperty(component._component.key)) {
+          component.value = value[component._component.key];
+        }
+      });
+    }
+  }, {
+    key: 'disable',
+    set: function set(disable) {
+      _each(this._components, function (component) {
+        return component.disable = disable;
+      });
+    }
+  }, {
+    key: 'value',
+    get: function get() {
+      return this.getValue();
+    },
+    set: function set(value) {
+      this.setValue(value);
+    }
+  }]);
+
+  return FormioComponents;
+}(BaseComponent);
+
+module.exports = FormioComponents;
+
+},{"./Base":9,"./index":35,"lodash/each":154}],15:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FormioComponents = require('./Components');
+var _isObject = require('lodash/isObject');
+var _each = require('lodash/each');
+
+var ContainerComponent = function (_FormioComponents) {
+  _inherits(ContainerComponent, _FormioComponents);
+
+  function ContainerComponent() {
+    _classCallCheck(this, ContainerComponent);
+
+    return _possibleConstructorReturn(this, (ContainerComponent.__proto__ || Object.getPrototypeOf(ContainerComponent)).apply(this, arguments));
+  }
+
+  _createClass(ContainerComponent, [{
+    key: 'build',
+    value: function build() {
+      this._element = this.ce('div');
+      this._element.setAttribute('class', 'formio-container-component');
+      if (!this._data[this._component.key]) {
+        this._data[this._component.key] = {};
+      }
+      this.addComponents(this._element, this._data[this._component.key]);
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      this.assign(this._data[this._component.key]);
+      return this._data[this._component.key];
+    }
+  }, {
+    key: 'setValue',
+    value: function setValue(value) {
+      var _this2 = this;
+
+      if (!value.hasOwnProperty(this._component.key)) {
+        return;
+      }
+      if (!_isObject(value[this._component.key])) {
+        return;
+      }
+      _each(this._components, function (component) {
+        if (value.hasOwnProperty(component._component.key)) {
+          component.value = value[_this2._component.key][component._component.key];
+        }
+      });
+    }
+  }]);
+
+  return ContainerComponent;
+}(FormioComponents);
+
+module.exports = ContainerComponent;
+
+},{"./Components":14,"lodash/each":154,"lodash/isObject":165}],16:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+
+var ContentComponent = function (_BaseComponent) {
+  _inherits(ContentComponent, _BaseComponent);
+
+  function ContentComponent() {
+    _classCallCheck(this, ContentComponent);
+
+    return _possibleConstructorReturn(this, (ContentComponent.__proto__ || Object.getPrototypeOf(ContentComponent)).apply(this, arguments));
+  }
+
+  _createClass(ContentComponent, [{
+    key: 'build',
+    value: function build() {
+      this._element = this.ce('div');
+      this._element.setAttribute('class', 'form-group');
+      this._element.innerHTML = this._component.html;
+    }
+  }]);
+
+  return ContentComponent;
+}(BaseComponent);
+
+module.exports = ContentComponent;
+
+},{"./Base":9}],17:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _each = require('lodash/each');
+var _cloneDeep = require('lodash/cloneDeep');
+var _isArray = require('lodash/isArray');
+var BaseComponent = require('./Base');
+
+var DataGridComponent = function (_BaseComponent) {
+  _inherits(DataGridComponent, _BaseComponent);
+
+  function DataGridComponent() {
+    _classCallCheck(this, DataGridComponent);
+
+    return _possibleConstructorReturn(this, (DataGridComponent.__proto__ || Object.getPrototypeOf(DataGridComponent)).apply(this, arguments));
+  }
+
+  _createClass(DataGridComponent, [{
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this._element = this.ce('table');
+      this._element.setAttribute('class', 'form-group formio-data-grid');
+      var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
+      _each(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
+        if (_this2._component[prop]) {
+          tableClass += 'table-' + prop + ' ';
+        }
+      });
+      this._element.setAttribute('class', tableClass);
+      var thead = this.ce('thead');
+
+      // Build the header.
+      var tr = this.ce('tr');
+      _each(this._component.components, function (comp) {
+        var th = _this2.ce('th');
+        if (comp.validate && comp.validate.required) {
+          th.setAttribute('class', 'field-required');
+        }
+        th.appendChild(_this2.text(comp.label));
+        tr.appendChild(th);
+      });
+      var th = this.ce('th');
+      tr.appendChild(th);
+      thead.appendChild(tr);
+      this._element.appendChild(thead);
+
+      // Create the table body.
+      this._tbody = this.ce('tbody');
+
+      // Add a blank row.
+      this.addValue();
+
+      // Add the body to the table and to the element.
+      this._element.appendChild(this._tbody);
+    }
+  }, {
+    key: 'defaultValue',
+    value: function defaultValue() {
+      return {};
+    }
+  }, {
+    key: 'buildRows',
+    value: function buildRows() {
+      var _this3 = this;
+
+      var components = require('./index');
+      this._tbody.innerHTML = '';
+      this.rows = [];
+      _each(this._data[this._component.key], function (row, index) {
+        var tr = _this3.ce('tr');
+        var cols = [];
+        _each(_this3._component.components, function (col) {
+          var column = _cloneDeep(col);
+          column.label = false;
+          var td = _this3.ce('td');
+          var comp = components.create(column, _this3._events, row);
+          td.appendChild(comp._element);
+          if (row.hasOwnProperty(column.key)) {
+            comp.value = row[column.key];
+          }
+          cols.push(comp);
+          tr.appendChild(td);
+        });
+        _this3.rows.push(cols);
+        var td = _this3.ce('td');
+        td.appendChild(_this3.removeButton(index));
+        tr.appendChild(td);
+        _this3._tbody.appendChild(tr);
+      });
+
+      // Add the add button.
+      var tr = this.ce('tr');
+      var td = this.ce('td');
+      td.setAttribute('colspan', this._component.components.length + 1);
+      td.appendChild(this.addButton());
+      tr.appendChild(td);
+      this._tbody.appendChild(tr);
+    }
+  }, {
+    key: 'value',
+    set: function set(value) {
+      if (!value) {
+        return;
+      }
+      if (!_isArray(value)) {
+        return;
+      }
+      _each(this.rows, function (row, index) {
+        if (value.length <= index) {
+          return;
+        }
+        _each(row, function (col, key) {
+          if (!value[index].hasOwnProperty(key)) {
+            return;
+          }
+          col.value = value[index][key];
+        });
+      });
+    }
+
+    /**
+     * Get the value of this component.
+     *
+     * @returns {*}
+     */
+    ,
+    get: function get() {
+      var values = [];
+      _each(this.rows, function (row) {
+        var value = {};
+        _each(row, function (col) {
+          if (col && col._component && col._component.key) {
+            value[col._component.key] = col.value;
+          }
+        });
+        values.push(value);
+      });
+      return values;
+    }
+  }]);
+
+  return DataGridComponent;
+}(BaseComponent);
+
+module.exports = DataGridComponent;
+
+},{"./Base":9,"./index":35,"lodash/cloneDeep":152,"lodash/each":154,"lodash/isArray":160}],18:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get2 = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+var Flatpickr = require("flatpickr");
+var _get = require('lodash/get');
+
+var DateTimeComponent = function (_BaseComponent) {
+  _inherits(DateTimeComponent, _BaseComponent);
+
+  function DateTimeComponent() {
+    _classCallCheck(this, DateTimeComponent);
+
+    return _possibleConstructorReturn(this, (DateTimeComponent.__proto__ || Object.getPrototypeOf(DateTimeComponent)).apply(this, arguments));
+  }
+
+  _createClass(DateTimeComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'text';
+      info.changeEvent = 'input';
+      this._component.suffix = true;
+      return info;
+    }
+
+    // This date component can handle multiple dates on its own.
+
+  }, {
+    key: 'createWrapper',
+    value: function createWrapper() {
+      return false;
+    }
+  }, {
+    key: 'convertFormat',
+    value: function convertFormat(format) {
+      // Year conversion.
+      format = format.replace(/y/g, 'Y');
+      format = format.replace('YYYY', 'Y');
+      format = format.replace('YY', 'y');
+
+      // Month conversion.
+      format = format.replace('MMMM', 'F');
+      format = format.replace(/M/g, 'n');
+      format = format.replace('nnn', 'M');
+      format = format.replace('nn', 'm');
+
+      // Day in month.
+      format = format.replace(/d/g, 'j');
+      format = format.replace('jj', 'd');
+
+      // Day in week.
+      format = format.replace('EEEE', 'l');
+      format = format.replace('EEE', 'D');
+
+      // Hours, minutes, seconds
+      format = format.replace('HH', 'H');
+      format = format.replace('hh', 'h');
+      format = format.replace('mm', 'i');
+      format = format.replace('ss', 'S');
+      format = format.replace(/a/g, 'K');
+      return format;
+    }
+  }, {
+    key: 'addSuffix',
+    value: function addSuffix(input, inputGroup) {
+      var suffix = this.ce('span');
+      suffix.setAttribute('class', 'input-group-addon');
+      if (this._component.enableDate) {
+        var calendar = this.ce('i');
+        calendar.setAttribute('class', 'glyphicon glyphicon-calendar');
+        suffix.appendChild(calendar);
+      } else {
+        var time = this.ce('i');
+        time.setAttribute('class', 'glyphicon glyphicon-time');
+        suffix.appendChild(time);
+      }
+      inputGroup.appendChild(suffix);
+      return suffix;
+    }
+  }, {
+    key: 'addInput',
+    value: function addInput(input, container, name) {
+      _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'addInput', this).call(this, input, container, name);
+      input.setAttribute('data-input', '');
+      input.calendar = new Flatpickr(input, this.config);
+    }
+  }, {
+    key: 'config',
+    get: function get() {
+      var _this2 = this;
+
+      return {
+        altInput: true,
+        clickOpens: true,
+        enableDate: true,
+        mode: this._component.multiple ? 'multiple' : 'single',
+        enableTime: _get(this._component, 'enableTime', true),
+        noCalendar: !_get(this._component, 'enableDate', true),
+        altFormat: this.convertFormat(_get(this._component, 'format', '')),
+        dateFormat: 'U',
+        defaultDate: _get(this._component, 'defaultDate', ''),
+        hourIncrement: _get(this._component, 'timePicker.hourStep', 1),
+        minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
+        onChange: function onChange() {
+          return _this2.onChange();
+        }
+      };
+    }
+  }]);
+
+  return DateTimeComponent;
+}(BaseComponent);
+
+module.exports = DateTimeComponent;
+
+},{"./Base":9,"flatpickr":2,"lodash/get":157}],19:[function(require,module,exports){
+'use strict';
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TextFieldComponent = require('./TextField');
+
+var EmailComponent = function (_TextFieldComponent) {
+  _inherits(EmailComponent, _TextFieldComponent);
+
+  function EmailComponent() {
+    _classCallCheck(this, EmailComponent);
+
+    return _possibleConstructorReturn(this, (EmailComponent.__proto__ || Object.getPrototypeOf(EmailComponent)).apply(this, arguments));
+  }
+
+  return EmailComponent;
+}(TextFieldComponent);
+
+module.exports = EmailComponent;
+
+},{"./TextField":33}],20:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+var _each = require('lodash/each');
+
+var HTMLComponent = function (_BaseComponent) {
+  _inherits(HTMLComponent, _BaseComponent);
+
+  function HTMLComponent() {
+    _classCallCheck(this, HTMLComponent);
+
+    return _possibleConstructorReturn(this, (HTMLComponent.__proto__ || Object.getPrototypeOf(HTMLComponent)).apply(this, arguments));
+  }
+
+  _createClass(HTMLComponent, [{
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this._element = this.ce(this._component.tag);
+      if (this._component.className) {
+        this._element.setAttribute('class', this._component.className);
+      }
+      _each(this._component.attrs, function (attr) {
+        _this2._element.setAttribute(attr.attr, attr.value);
+      });
+      if (this._component.content) {
+        this._element.innerHTML = this._component.content;
+      }
+    }
+  }]);
+
+  return HTMLComponent;
+}(BaseComponent);
+
+module.exports = HTMLComponent;
+
+},{"./Base":9,"lodash/each":154}],21:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+
+var HiddenComponent = function (_BaseComponent) {
+  _inherits(HiddenComponent, _BaseComponent);
+
+  function HiddenComponent() {
+    _classCallCheck(this, HiddenComponent);
+
+    return _possibleConstructorReturn(this, (HiddenComponent.__proto__ || Object.getPrototypeOf(HiddenComponent)).apply(this, arguments));
+  }
+
+  _createClass(HiddenComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(HiddenComponent.prototype.__proto__ || Object.getPrototypeOf(HiddenComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'hidden';
+      info.changeEvent = 'change';
+      return info;
+    }
+  }]);
+
+  return HiddenComponent;
+}(BaseComponent);
+
+module.exports = HiddenComponent;
+
+},{"./Base":9}],22:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+
+var NumberComponent = function (_BaseComponent) {
+  _inherits(NumberComponent, _BaseComponent);
+
+  function NumberComponent() {
+    _classCallCheck(this, NumberComponent);
+
+    return _possibleConstructorReturn(this, (NumberComponent.__proto__ || Object.getPrototypeOf(NumberComponent)).apply(this, arguments));
+  }
+
+  _createClass(NumberComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(NumberComponent.prototype.__proto__ || Object.getPrototypeOf(NumberComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'number';
+      info.changeEvent = 'input';
+      if (this._component.validate) {
+        if (this._component.validate.min !== '') {
+          info.attr.min = this._component.validate.min;
+        }
+        if (this._component.validate.max !== '') {
+          info.attr.max = this._component.validate.max;
+        }
+        if (this._component.step !== '') {
+          info.attr.step = this._component.validate.step;
+        }
+      }
+      return info;
+    }
+  }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      if (this._component.validate && this._component.validate.integer) {
+        return parseInt(this._inputs[index].value, 10);
+      } else {
+        return parseFloat(this._inputs[index].value);
+      }
+    }
+  }, {
+    key: 'setValueAt',
+    value: function setValueAt(index, value) {
+      if (this._component.validate && this._component.validate.integer) {
+        this._inputs[index].value = parseInt(value, 10);
+      } else {
+        this._inputs[index].value = parseFloat(value);
+      }
+    }
+  }]);
+
+  return NumberComponent;
+}(BaseComponent);
+
+module.exports = NumberComponent;
+
+},{"./Base":9}],23:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FormioComponents = require('./Components');
+
+var PanelComponent = function (_FormioComponents) {
+  _inherits(PanelComponent, _FormioComponents);
+
+  function PanelComponent() {
+    _classCallCheck(this, PanelComponent);
+
+    return _possibleConstructorReturn(this, (PanelComponent.__proto__ || Object.getPrototypeOf(PanelComponent)).apply(this, arguments));
+  }
+
+  _createClass(PanelComponent, [{
+    key: 'build',
+    value: function build() {
+      this._element = this.ce('div');
+      this._element.setAttribute('class', 'panel panel-' + this._component.theme);
+      if (this._component.title) {
+        var heading = this.ce('div');
+        heading.setAttribute('class', 'panel-heading');
+        var title = this.ce('h3');
+        title.setAttribute('class', 'panel-title');
+        title.appendChild(this.text(this._component.title));
+        heading.appendChild(title);
+        this._element.appendChild(heading);
+      }
+      var body = this.ce('div');
+      body.setAttribute('class', 'panel-body');
+      this.addComponents(body);
+      this._element.appendChild(body);
+    }
+  }]);
+
+  return PanelComponent;
+}(FormioComponents);
+
+module.exports = PanelComponent;
+
+},{"./Components":14}],24:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TextFieldComponent = require('./TextField');
+
+var PasswordComponent = function (_TextFieldComponent) {
+  _inherits(PasswordComponent, _TextFieldComponent);
+
+  function PasswordComponent() {
+    _classCallCheck(this, PasswordComponent);
+
+    return _possibleConstructorReturn(this, (PasswordComponent.__proto__ || Object.getPrototypeOf(PasswordComponent)).apply(this, arguments));
+  }
+
+  _createClass(PasswordComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(PasswordComponent.prototype.__proto__ || Object.getPrototypeOf(PasswordComponent.prototype), 'elementInfo', this).call(this);
+      info.attr.type = 'password';
+      return info;
+    }
+  }]);
+
+  return PasswordComponent;
+}(TextFieldComponent);
+
+module.exports = PasswordComponent;
+
+},{"./TextField":33}],25:[function(require,module,exports){
+'use strict';
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TextFieldComponent = require('./TextField');
+
+var PhoneNumberComponent = function (_TextFieldComponent) {
+  _inherits(PhoneNumberComponent, _TextFieldComponent);
+
+  function PhoneNumberComponent() {
+    _classCallCheck(this, PhoneNumberComponent);
+
+    return _possibleConstructorReturn(this, (PhoneNumberComponent.__proto__ || Object.getPrototypeOf(PhoneNumberComponent)).apply(this, arguments));
+  }
+
+  return PhoneNumberComponent;
+}(TextFieldComponent);
+
+module.exports = PhoneNumberComponent;
+
+},{"./TextField":33}],26:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+var _each = require('lodash/each');
+
+var RadioComponent = function (_BaseComponent) {
+  _inherits(RadioComponent, _BaseComponent);
+
+  function RadioComponent() {
+    _classCallCheck(this, RadioComponent);
+
+    return _possibleConstructorReturn(this, (RadioComponent.__proto__ || Object.getPrototypeOf(RadioComponent)).apply(this, arguments));
+  }
+
+  _createClass(RadioComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.changeEvent = 'click';
+      info.attr.class = '';
+      return info;
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      var _this2 = this;
+
+      var inputGroup = this.ce('div');
+      inputGroup.setAttribute('class', 'input-group');
+      var inputType = this._component.inputType;
+      _each(this._component.values, function (value) {
+        var labelWrapper = _this2.ce('div');
+        var wrapperClass = _this2._component.inline ? inputType + '-inline' : inputType;
+        labelWrapper.setAttribute('class', wrapperClass);
+        var label = _this2.ce('label');
+        label.setAttribute('class', 'control-label');
+
+        // Determine the attributes for this input.
+        var inputId = _this2.inputId + '-' + value.value;
+        _this2._info.attr.id = inputId;
+        _this2._info.attr.value = value.value;
+        label.setAttribute('for', _this2._info.attr.id);
+
+        // Create the input.
+        var input = _this2.ce('input');
+        _each(_this2._info.attr, function (value, key) {
+          input.setAttribute(key, value);
+        });
+        _this2.addInput(input, label, value.value);
+        label.appendChild(document.createTextNode(value.label));
+        labelWrapper.appendChild(label);
+        inputGroup.appendChild(labelWrapper);
+      });
+      container.appendChild(inputGroup);
+    }
+  }, {
+    key: 'addInputEventListener',
+    value: function addInputEventListener(input) {
+      var _this3 = this;
+
+      this.addAnEventListener(input, this._info.changeEvent, function () {
+        if (input.value) {
+          _this3.onChange();
+        }
+      });
+    }
+  }, {
+    key: 'value',
+    get: function get() {
+      var value = '';
+      _each(this._inputs, function (input) {
+        if (input.checked) {
+          value = input.value;
+        }
+      });
+      return value;
+    },
+    set: function set(value) {
+      _each(this._inputs, function (input) {
+        input.checked = input.value === value;
+      });
+    }
+  }]);
+
+  return RadioComponent;
+}(BaseComponent);
+
+window.customElements.define('formio-radio', RadioComponent);
+module.exports = RadioComponent;
+
+},{"./Base":9,"lodash/each":154}],27:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+var Formio = require('../formio');
+var _each = require('lodash/each');
+
+var SelectComponent = function (_BaseComponent) {
+  _inherits(SelectComponent, _BaseComponent);
+
+  function SelectComponent() {
+    _classCallCheck(this, SelectComponent);
+
+    return _possibleConstructorReturn(this, (SelectComponent.__proto__ || Object.getPrototypeOf(SelectComponent)).apply(this, arguments));
+  }
+
+  _createClass(SelectComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'select';
+      info.changeEvent = '';
+      return info;
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      var _this2 = this;
+
+      var input = _get(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'createInput', this).call(this, container);
+      this.selectItems = [];
+      var template = this._component.template ? this._component.template.split('.')[1].split(' ')[0] : '';
+      var valueProperty = this._component.valueProperty;
+
+      (function () {
+        switch (_this2._component.dataSrc) {
+          case 'values':
+            _this2.selectItems = _this2._component.data.values;
+            _this2.updateOptions(input);
+            break;
+          case 'json':
+            _each(_this2._component.data.json, function (item) {
+              _this2.selectItems.push({
+                value: item[valueProperty],
+                label: item[template]
+              });
+            });
+            _this2.updateOptions(input);
+            break;
+          case 'resource':
+            var baseUrl = Formio.getAppUrl() + '/' + _this2._component.data.resource;
+            var value = valueProperty.split('.')[1];
+            new FormioService(baseUrl).loadSubmissions().then(function (submissions) {
+              _each(submissions, function (submission) {
+                _this2.selectItems.push({
+                  value: submission.data[value],
+                  label: submission.data[value]
+                });
+              });
+              _this2.updateOptions(input);
+            });
+            break;
+          case 'url':
+            Formio.request(_this2._component.data.url).then(function (response) {
+              _each(response, function (item) {
+                _this2.selectItems.push({
+                  value: item[valueProperty],
+                  label: item[template]
+                });
+              });
+              _this2.updateOptions(input);
+            });
+            break;
+
+        }
+      })();
+    }
+  }, {
+    key: 'updateOptions',
+    value: function updateOptions(input) {
+      var _this3 = this;
+
+      input.innerHTML = '';
+      _each(this.selectItems, function (value) {
+        var option = _this3.ce('option');
+        option.setAttribute('value', value.value);
+        option.appendChild(document.createTextNode(value.label));
+        input.appendChild(option);
+      });
+    }
+  }]);
+
+  return SelectComponent;
+}(BaseComponent);
+
+module.exports = SelectComponent;
+
+},{"../formio":37,"./Base":9,"lodash/each":154}],28:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var RadioComponent = require('./Radio');
+var _each = require('lodash/each');
+
+var SelectBoxesComponent = function (_RadioComponent) {
+  _inherits(SelectBoxesComponent, _RadioComponent);
+
+  function SelectBoxesComponent(component, events, data) {
+    _classCallCheck(this, SelectBoxesComponent);
+
+    var _this = _possibleConstructorReturn(this, (SelectBoxesComponent.__proto__ || Object.getPrototypeOf(SelectBoxesComponent)).call(this, component, events, data));
+
+    _this._component.inputType = 'checkbox';
+    return _this;
+  }
+
+  _createClass(SelectBoxesComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(SelectBoxesComponent.prototype.__proto__ || Object.getPrototypeOf(SelectBoxesComponent.prototype), 'elementInfo', this).call(this);
+      info.attr.name += '[]';
+      info.attr.type = 'checkbox';
+      return info;
+    }
+  }, {
+    key: 'value',
+    get: function get() {
+      var value = [];
+      _each(this._inputs, function (input) {
+        if (input.checked) {
+          value.push(input.value);
+        }
+      });
+      return value;
+    },
+    set: function set(value) {
+      _each(this._inputs, function (input) {
+        input.checked = value.indexOf(input.value) !== -1;
+      });
+    }
+  }]);
+
+  return SelectBoxesComponent;
+}(RadioComponent);
+
+module.exports = SelectBoxesComponent;
+
+},{"./Radio":26,"lodash/each":154}],29:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var SignaturePad = require('signature_pad');
+var BaseComponent = require('./Base');
+
+var SignatureComponent = function (_BaseComponent) {
+  _inherits(SignatureComponent, _BaseComponent);
+
+  function SignatureComponent() {
+    _classCallCheck(this, SignatureComponent);
+
+    return _possibleConstructorReturn(this, (SignatureComponent.__proto__ || Object.getPrototypeOf(SignatureComponent)).apply(this, arguments));
+  }
+
+  _createClass(SignatureComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'hidden';
+      return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this._element = this.ce('div');
+      this._element.setAttribute('id', this.id);
+      this._element.setAttribute('class', 'form-group signature-pad');
+      this.input = this.createInput(this._element);
+      var padBody = this.ce('div');
+      padBody.setAttribute('class', 'signature-pad-body');
+      padBody.setAttribute('style', 'width: ' + this._component.width + ';height: ' + this._component.height);
+
+      // Create the refresh button.
+      var refresh = this.ce('a');
+      refresh.setAttribute('class', 'btn btn-sm btn-default signature-pad-refresh');
+      var refreshIcon = this.ce('span');
+      refreshIcon.setAttribute('class', 'glyphicon glyphicon-refresh');
+      refresh.appendChild(refreshIcon);
+      padBody.appendChild(refresh);
+
+      // The signature canvas.
+      var canvas = this.ce('canvas');
+      canvas.setAttribute('class', 'signature-pad-canvas');
+      padBody.appendChild(canvas);
+      this._element.appendChild(padBody);
+
+      // Add the footer.
+      if (this._component.footer) {
+        var footer = this.ce('div');
+        footer.setAttribute('class', 'signature-pad-footer');
+        footer.appendChild(this.text(this._component.footer));
+        this._element.appendChild(footer);
+      }
+
+      // Create the signature pad.
+      this.signaturePad = new SignaturePad(canvas, {
+        minWidth: this._component.minWidth,
+        maxWidth: this._component.maxWidth,
+        penColor: this._component.penColor,
+        backgroundColor: this._component.backgroundColor
+      });
+      refresh.addEventListener("click", function (event) {
+        event.preventDefault();
+        _this2.signaturePad.clear();
+      });
+      this.signaturePad.onEnd = function () {
+        var signatureValue = _this2.signaturePad.toDataURL();
+        _this2._noSign = true;
+        _this2.value = signatureValue;
+        _this2._noSign = false;
+        _this2.onChange();
+      };
+
+      // Ensure the signature is always the size of its container.
+      var currentWidth = 0;
+      setTimeout(function checkWidth() {
+        if (padBody.offsetWidth !== currentWidth) {
+          currentWidth = padBody.offsetWidth;
+          canvas.width = currentWidth;
+          var ctx = canvas.getContext("2d");
+          ctx.fillStyle = this.signaturePad.backgroundColor;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        setTimeout(checkWidth.bind(this), 200);
+      }.bind(this), 200);
+    }
+  }, {
+    key: 'value',
+    set: function set(value) {
+      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'value', value, this);
+      if (this.signaturePad && this._noSign) {
+        this.signaturePad.fromDataURL(value);
+      }
+    }
+  }, {
+    key: 'disable',
+    set: function set(disable) {
+      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disable', disable, this);
+      var image = this.ce('img');
+      image.setAttribute('src', this.input.value);
+      image.setAttribute('style', 'width: ' + this._component.width + ';height: ' + this._component.height);
+      this._element.innerHTML = '';
+      this._element.appendChild(image);
+    }
+  }]);
+
+  return SignatureComponent;
+}(BaseComponent);
+
+module.exports = SignatureComponent;
+
+},{"./Base":9,"signature_pad":6}],30:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _each = require('lodash/each');
+var BaseComponent = require('./Base');
+
+var SurveyComponent = function (_BaseComponent) {
+  _inherits(SurveyComponent, _BaseComponent);
+
+  function SurveyComponent() {
+    _classCallCheck(this, SurveyComponent);
+
+    return _possibleConstructorReturn(this, (SurveyComponent.__proto__ || Object.getPrototypeOf(SurveyComponent)).apply(this, arguments));
+  }
+
+  _createClass(SurveyComponent, [{
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this.createElement();
+      this.createLabel(this._element);
+      this.table = this.ce('table');
+      this.table.setAttribute('class', 'table table-striped table-bordered');
+
+      // Build header.
+      var thead = this.ce('thead');
+      var thr = this.ce('tr');
+      thr.append(this.ce('td'));
+      _each(this._component.values, function (value) {
+        var th = _this2.ce('th');
+        th.setAttribute('style', 'text-align: center;');
+        th.appendChild(_this2.text(value.label));
+        thr.appendChild(th);
+      });
+      thead.appendChild(thr);
+      this.table.appendChild(thead);
+
+      // Build the body.
+      var tbody = this.ce('tbody');
+      _each(this._component.questions, function (question) {
+        var tr = _this2.ce('tr');
+        var td = _this2.ce('td');
+        td.appendChild(_this2.text(question.label));
+        tr.appendChild(td);
+        _each(_this2._component.values, function (value) {
+          var td = _this2.ce('td');
+          td.setAttribute('style', 'text-align: center;');
+          var input = _this2.ce('input');
+          input.setAttribute('type', 'radio');
+          input.setAttribute('name', 'data[' + _this2._component.key + '][' + question.value + ']');
+          input.setAttribute('id', _this2.id + '-' + question.value);
+          _this2.addInput(input);
+          td.appendChild(input);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      this.table.appendChild(tbody);
+      this._element.appendChild(this.table);
+    }
+  }]);
+
+  return SurveyComponent;
+}(BaseComponent);
+
+module.exports = SurveyComponent;
+
+},{"./Base":9,"lodash/each":154}],31:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _each = require('lodash/each');
+var FormioComponents = require('./Components');
+
+var TableComponent = function (_FormioComponents) {
+  _inherits(TableComponent, _FormioComponents);
+
+  function TableComponent() {
+    _classCallCheck(this, TableComponent);
+
+    return _possibleConstructorReturn(this, (TableComponent.__proto__ || Object.getPrototypeOf(TableComponent)).apply(this, arguments));
+  }
+
+  _createClass(TableComponent, [{
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this._element = this.ce('div');
+      this._element.setAttribute('class', 'table-responsive');
+      var table = this.ce('table');
+      var tableClass = 'table ';
+      _each(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
+        if (_this2._component[prop]) {
+          tableClass += 'table-' + prop + ' ';
+        }
+      });
+      table.setAttribute('class', tableClass);
+
+      // Build the header.
+      if (this._component.header && this._component.header.length) {
+        (function () {
+          var thead = _this2.ce('thead');
+          _each(_this2._component.header, function (header) {
+            var th = _this2.ce('th');
+            th.appendChild(_this2.text(header));
+            thead.appendChild(th);
+          });
+          table.appendChild(thead);
+        })();
+      }
+
+      // Build the body.
+      var tbody = this.ce('tbody');
+      _each(this._component.rows, function (row) {
+        var tr = _this2.ce('tr');
+        _each(row, function (column) {
+          var td = _this2.ce('td');
+          _each(column.components, function (comp) {
+            _this2.addComponent(comp, td);
+          });
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      this._element.appendChild(table);
+    }
+  }]);
+
+  return TableComponent;
+}(FormioComponents);
+
+module.exports = TableComponent;
+
+},{"./Components":14,"lodash/each":154}],32:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TextFieldComponent = require('./TextField');
+
+var TextAreaComponent = function (_TextFieldComponent) {
+  _inherits(TextAreaComponent, _TextFieldComponent);
+
+  function TextAreaComponent() {
+    _classCallCheck(this, TextAreaComponent);
+
+    return _possibleConstructorReturn(this, (TextAreaComponent.__proto__ || Object.getPrototypeOf(TextAreaComponent)).apply(this, arguments));
+  }
+
+  _createClass(TextAreaComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'textarea';
+      if (this._component.rows) {
+        info.attr.rows = this._component.rows;
+      }
+      return info;
+    }
+  }]);
+
+  return TextAreaComponent;
+}(TextFieldComponent);
+
+module.exports = TextAreaComponent;
+
+},{"./TextField":33}],33:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var BaseComponent = require('./Base');
+
+var TextFieldComponent = function (_BaseComponent) {
+  _inherits(TextFieldComponent, _BaseComponent);
+
+  function TextFieldComponent() {
+    _classCallCheck(this, TextFieldComponent);
+
+    return _possibleConstructorReturn(this, (TextFieldComponent.__proto__ || Object.getPrototypeOf(TextFieldComponent)).apply(this, arguments));
+  }
+
+  _createClass(TextFieldComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(TextFieldComponent.prototype.__proto__ || Object.getPrototypeOf(TextFieldComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'text';
+      info.changeEvent = 'input';
+      return info;
+    }
+  }]);
+
+  return TextFieldComponent;
+}(BaseComponent);
+
+module.exports = TextFieldComponent;
+
+},{"./Base":9}],34:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FormioComponents = require('./Components');
+
+var WellComponent = function (_FormioComponents) {
+  _inherits(WellComponent, _FormioComponents);
+
+  function WellComponent() {
+    _classCallCheck(this, WellComponent);
+
+    return _possibleConstructorReturn(this, (WellComponent.__proto__ || Object.getPrototypeOf(WellComponent)).apply(this, arguments));
+  }
+
+  _createClass(WellComponent, [{
+    key: 'className',
+    get: function get() {
+      return 'well formio-component formio-component-well';
+    }
+  }]);
+
+  return WellComponent;
+}(FormioComponents);
+
+module.exports = WellComponent;
+
+},{"./Components":14}],35:[function(require,module,exports){
+'use strict';
+
+var _Components;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+var Components = (_Components = {
+  base: require('./Base'),
+  content: require('./Content'),
+  container: require('./Container'),
+  datagrid: require('./DataGrid'),
+  datetime: require('./DateTime'),
+  htmlelement: require('./HTML'),
+  hidden: require('./Hidden'),
+  textfield: require('./TextField'),
+  phoneNumber: require('./PhoneNumber'),
+  email: require('./Email'),
+  checkbox: require('./Checkbox'),
+  signature: require('./Signature'),
+  select: require('./Select'),
+  textarea: require('./TextArea'),
+  button: require('./Button'),
+  number: require('./Number'),
+  password: require('./Password')
+}, _defineProperty(_Components, 'signature', require('./Signature')), _defineProperty(_Components, 'panel', require('./Panel')), _defineProperty(_Components, 'columns', require('./Columns')), _defineProperty(_Components, 'column', require('./Column')), _defineProperty(_Components, 'table', require('./Table')), _defineProperty(_Components, 'radio', require('./Radio')), _defineProperty(_Components, 'selectboxes', require('./SelectBoxes')), _defineProperty(_Components, 'survey', require('./Survey')), _defineProperty(_Components, 'well', require('./Well')), _defineProperty(_Components, 'create', function create(component, events, data) {
+  var comp = null;
+  if (!component.type) {
+    return null;
+  } else if (this.hasOwnProperty(component.type)) {
+    comp = new Components[component.type](component, events, data);
+  } else {
+    comp = new Components.base(component, events, data);
+  }
+  comp.build();
+  return comp;
+}), _Components);
+module.exports = Components;
+
+},{"./Base":9,"./Button":10,"./Checkbox":11,"./Column":12,"./Columns":13,"./Container":15,"./Content":16,"./DataGrid":17,"./DateTime":18,"./Email":19,"./HTML":20,"./Hidden":21,"./Number":22,"./Panel":23,"./Password":24,"./PhoneNumber":25,"./Radio":26,"./Select":27,"./SelectBoxes":28,"./Signature":29,"./Survey":30,"./Table":31,"./TextArea":32,"./TextField":33,"./Well":34}],36:[function(require,module,exports){
+"use strict";
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Formio = require('./formio');
+var FormioComponents = require('./components/Components');
+var EventEmitter = require('eventemitter2').EventEmitter2;
+
+var FormioForm = function (_FormioComponents) {
+  _inherits(FormioForm, _FormioComponents);
+
+  function FormioForm(element) {
+    _classCallCheck(this, FormioForm);
+
+    var _this = _possibleConstructorReturn(this, (FormioForm.__proto__ || Object.getPrototypeOf(FormioForm)).call(this, null, new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    })));
+
+    _this._wrapper = element;
+    _this._src = '';
+    _this._form = null;
+    _this._formio = null;
+    _this._loader = null;
+    _this._loading = true;
+    _this._onForm = null;
+    _this._onSubmission = null;
+    return _this;
+  }
+
+  _createClass(FormioForm, [{
+    key: 'on',
+    value: function on(event, cb) {
+      return this._events.on(event, cb);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      this._wrapper.innerHTML = '';
+      this.build();
+      this._wrapper.append(this._element);
+      this.on('componentChange', function (changed) {
+        return _this2.onComponentChange(changed);
+      });
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      var _this3 = this;
+
+      this._element = this.ce('form');
+      this._element.setAttribute('method', 'POST');
+      if (this._formio) {
+        this._element.setAttribute('action', this._formio.formUrl + '/submission');
+      }
+      this.addComponents();
+      this.checkConditions(this.getValue());
+      this._form = Formio.form(this._element, function (err, sub) {
+        return _this3.onSubmit(err, sub);
+      });
+    }
+  }, {
+    key: 'onSubmit',
+    value: function onSubmit(err, submission) {
+      if (err) {
+        return this._events.emit('error', err);
+      }
+      this._events.emit('submit', submission);
+    }
+  }, {
+    key: 'submit',
+    value: function submit() {
+      if (this._form) {
+        this._form.submit();
+      }
+    }
+  }, {
+    key: 'onComponentChange',
+    value: function onComponentChange(changed) {
+      var value = this.value;
+      value.changed = changed;
+      this._events.emit('change', value);
+      this.checkConditions(value.data);
+    }
+  }, {
+    key: 'src',
+    get: function get() {
+      return this._src;
+    },
+    set: function set(value) {
+      var _this4 = this;
+
+      if (!value || typeof value !== 'string') {
+        return;
+      }
+      this._src = value;
+      this.loading = true;
+      this._formio = new Formio(value);
+      this._onForm = this._formio.loadForm().then(function (form) {
+        return _this4.form = form;
+      });
+      if (this._formio.submissionId) {
+        this._onSubmission = this._formio.loadSubmission().then(function (submission) {
+          return _this4.submission = submission;
+        });
+      }
+    }
+  }, {
+    key: 'ready',
+    get: function get() {
+      return this._onSubmission ? this._onSubmission : this._onForm;
+    }
+  }, {
+    key: 'loading',
+    get: function get() {
+      return this._loading;
+    },
+    set: function set(loading) {
+      this._loading = loading;
+      if (!this._loader && loading) {
+        this._loader = document.createElement('div');
+        this._loader.setAttribute('class', 'loader-wrapper');
+        var spinner = document.createElement('div');
+        spinner.setAttribute('class', 'loader text-center');
+        this._loader.append(spinner);
+      }
+      if (this._loader) {
+        if (loading) {
+          this._wrapper.parentNode.insertBefore(this._loader, this._wrapper);
+        } else {
+          this._wrapper.parentNode.removeChild(this._loader);
+        }
+      }
+    }
+  }, {
+    key: 'form',
+    set: function set(form) {
+      var _this5 = this;
+
+      // Set this form as a component.
+      this._component = form;
+
+      // Render the form.
+      this.render();
+
+      // Set the loading flag when we are ready.
+      this.ready.then(function () {
+        return _this5.loading = false;
+      });
+    }
+  }, {
+    key: 'value',
+    get: function get() {
+      return {
+        data: this.getValue()
+      };
+    },
+    set: function set(submission) {
+      this.setValue(submission.data);
+    }
+  }]);
+
+  return FormioForm;
+}(FormioComponents);
+
+module.exports = FormioForm;
+
+},{"./components/Components":14,"./formio":37,"eventemitter2":1}],37:[function(require,module,exports){
+'use strict';
+
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var Promise = require("native-promise-only");
+
+// Require other libraries.
+require('whatwg-fetch');
+var EventEmitter = require('eventemitter2').EventEmitter2;
+var copy = require('shallow-copy');
+var providers = require('./providers');
+
+// The default base url.
+var baseUrl = 'https://api.form.io';
+var appUrl = baseUrl;
+var appUrlSet = false;
+
+var plugins = [];
+
+// The temporary GET request cache storage
+var cache = {};
+
+var noop = function noop() {};
+var identity = function identity(value) {
+  return value;
+};
+
+// Will invoke a function on all plugins.
+// Returns a promise that resolves when all promises
+// returned by the plugins have resolved.
+// Should be used when you want plugins to prepare for an event
+// but don't want any data returned.
+var pluginWait = function pluginWait(pluginFn) {
+  var args = [].slice.call(arguments, 1);
+  return Promise.all(plugins.map(function (plugin) {
+    return (plugin[pluginFn] || noop).apply(plugin, args);
+  }));
+};
+
+// Will invoke a function on plugins from highest priority
+// to lowest until one returns a value. Returns null if no
+// plugins return a value.
+// Should be used when you want just one plugin to handle things.
+var pluginGet = function pluginGet(pluginFn) {
+  var args = [].slice.call(arguments, 0);
+  var callPlugin = function callPlugin(index, pluginFn) {
+    var plugin = plugins[index];
+    if (!plugin) return Promise.resolve(null);
+    return Promise.resolve((plugin && plugin[pluginFn] || noop).apply(plugin, [].slice.call(arguments, 2))).then(function (result) {
+      if (result !== null && result !== undefined) return result;
+      return callPlugin.apply(null, [index + 1].concat(args));
+    });
+  };
+  return callPlugin.apply(null, [0].concat(args));
+};
+
+// Will invoke a function on plugins from highest priority to
+// lowest, building a promise chain from their return values
+// Should be used when all plugins need to process a promise's
+// success or failure
+var pluginAlter = function pluginAlter(pluginFn, value) {
+  var args = [].slice.call(arguments, 2);
+  return plugins.reduce(function (value, plugin) {
+    return (plugin[pluginFn] || identity).apply(plugin, [value].concat(args));
+  }, value);
+};
+
+/**
+ * Returns parts of the URL that are important.
+ * Indexes
+ *  - 0: The full url
+ *  - 1: The protocol
+ *  - 2: The hostname
+ *  - 3: The rest
+ *
+ * @param url
+ * @returns {*}
+ */
+var getUrlParts = function getUrlParts(url) {
+  var regex = '^(http[s]?:\\/\\/)';
+  if (baseUrl && url.indexOf(baseUrl) === 0) {
+    regex += '(' + baseUrl.replace(/^http[s]?:\/\//, '') + ')';
+  } else {
+    regex += '([^/]+)';
+  }
+  regex += '($|\\/.*)';
+  return url.match(new RegExp(regex));
+};
+
+var serialize = function serialize(obj) {
+  var str = [];
+  for (var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    }
+  }return str.join("&");
+};
+
+// The formio class.
+var Formio = function Formio(path) {
+
+  // Ensure we have an instance of Formio.
+  if (!(this instanceof Formio)) {
+    return new Formio(path);
+  }
+  if (!path) {
+    // Allow user to create new projects if this was instantiated without
+    // a url
+    this.projectUrl = baseUrl + '/project';
+    this.projectsUrl = baseUrl + '/project';
+    this.projectId = false;
+    this.query = '';
+    return;
+  }
+
+  // Initialize our variables.
+  this.projectsUrl = '';
+  this.projectUrl = '';
+  this.projectId = '';
+  this.formUrl = '';
+  this.formsUrl = '';
+  this.formId = '';
+  this.submissionsUrl = '';
+  this.submissionUrl = '';
+  this.submissionId = '';
+  this.actionsUrl = '';
+  this.actionId = '';
+  this.actionUrl = '';
+  this.query = '';
+
+  // Normalize to an absolute path.
+  if (path.indexOf('http') !== 0 && path.indexOf('//') !== 0) {
+    baseUrl = baseUrl ? baseUrl : window.location.href.match(/http[s]?:\/\/api./)[0];
+    path = baseUrl + path;
+  }
+
+  var hostparts = getUrlParts(path);
+  var parts = [];
+  var hostName = hostparts[1] + hostparts[2];
+  path = hostparts.length > 3 ? hostparts[3] : '';
+  var queryparts = path.split('?');
+  if (queryparts.length > 1) {
+    path = queryparts[0];
+    this.query = '?' + queryparts[1];
+  }
+
+  // See if this is a form path.
+  if (path.search(/(^|\/)(form|project)($|\/)/) !== -1) {
+
+    // Register a specific path.
+    var registerPath = function (name, base) {
+      this[name + 'sUrl'] = base + '/' + name;
+      var regex = new RegExp('\/' + name + '\/([^/]+)');
+      if (path.search(regex) !== -1) {
+        parts = path.match(regex);
+        this[name + 'Url'] = parts ? base + parts[0] : '';
+        this[name + 'Id'] = parts.length > 1 ? parts[1] : '';
+        base += parts[0];
+      }
+      return base;
+    }.bind(this);
+
+    // Register an array of items.
+    var registerItems = function registerItems(items, base, staticBase) {
+      for (var i in items) {
+        if (items.hasOwnProperty(i)) {
+          var item = items[i];
+          if (item instanceof Array) {
+            registerItems(item, base, true);
+          } else {
+            var newBase = registerPath(item, base);
+            base = staticBase ? base : newBase;
+          }
+        }
+      }
+    };
+
+    registerItems(['project', 'form', ['submission', 'action']], hostName);
+
+    if (!this.projectId) {
+      if (hostparts.length > 2 && hostparts[2].split('.').length > 2) {
+        this.projectUrl = hostName;
+        this.projectId = hostparts[2].split('.')[0];
+      }
+    }
+  } else {
+
+    // This is an aliased url.
+    this.projectUrl = hostName;
+    this.projectId = hostparts.length > 2 ? hostparts[2].split('.')[0] : '';
+    var subRegEx = new RegExp('\/(submission|action)($|\/.*)');
+    var subs = path.match(subRegEx);
+    this.pathType = subs && subs.length > 1 ? subs[1] : '';
+    path = path.replace(subRegEx, '');
+    path = path.replace(/\/$/, '');
+    this.formsUrl = hostName + '/form';
+    this.formUrl = hostName + path;
+    this.formId = path.replace(/^\/+|\/+$/g, '');
+    var items = ['submission', 'action'];
+    for (var i in items) {
+      if (items.hasOwnProperty(i)) {
+        var item = items[i];
+        this[item + 'sUrl'] = hostName + path + '/' + item;
+        if (this.pathType === item && subs.length > 2 && subs[2]) {
+          this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
+          this[item + 'Url'] = hostName + path + subs[0];
+        }
+      }
+    }
+  }
+
+  // Set the app url if it is not set.
+  if (!appUrlSet) {
+    appUrl = this.projectUrl;
+  }
+};
+
+/**
+ * Load a resource.
+ *
+ * @param type
+ * @returns {Function}
+ * @private
+ */
+var _load = function _load(type) {
+  var _id = type + 'Id';
+  var _url = type + 'Url';
+  return function (query, opts) {
+    if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+      query = serialize(query.params);
+    }
+    if (query) {
+      query = this.query ? this.query + '&' + query : '?' + query;
+    } else {
+      query = this.query;
+    }
+    if (!this[_id]) {
+      return Promise.reject('Missing ' + _id);
+    }
+    return this.makeRequest(type, this[_url] + query, 'get', null, opts);
+  };
+};
+
+/**
+ * Save a resource.
+ *
+ * @param type
+ * @returns {Function}
+ * @private
+ */
+var _save = function _save(type) {
+  var _id = type + 'Id';
+  var _url = type + 'Url';
+  return function (data, opts) {
+    var method = this[_id] || data._id ? 'put' : 'post';
+    var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
+    if (!this[_id] && data._id && method === 'put') {
+      reqUrl += '/' + data._id;
+    }
+    cache = {};
+    return this.makeRequest(type, reqUrl + this.query, method, data, opts);
+  };
+};
+
+/**
+ * Delete a resource.
+ *
+ * @param type
+ * @returns {Function}
+ * @private
+ */
+var _delete = function _delete(type) {
+  var _id = type + 'Id';
+  var _url = type + 'Url';
+  return function (opts) {
+    if (!this[_id]) {
+      Promise.reject('Nothing to delete');
+    }
+    cache = {};
+    return this.makeRequest(type, this[_url], 'delete', null, opts);
+  };
+};
+
+/**
+ * Resource index method.
+ *
+ * @param type
+ * @returns {Function}
+ * @private
+ */
+var _index = function _index(type) {
+  var _url = type + 'Url';
+  return function (query, opts) {
+    query = query || '';
+    if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+      query = '?' + serialize(query.params);
+    }
+    return this.makeRequest(type, this[_url] + query, 'get', null, opts);
+  };
+};
+
+// Activates plugin hooks, makes Formio.request if no plugin provides a request
+Formio.prototype.makeRequest = function (type, url, method, data, opts) {
+  var self = this;
+  method = (method || 'GET').toUpperCase();
+  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+    opts = {};
+  }
+
+  var requestArgs = {
+    formio: self,
+    type: type,
+    url: url,
+    method: method,
+    data: data,
+    opts: opts
+  };
+
+  var request = pluginWait('preRequest', requestArgs).then(function () {
+    return pluginGet('request', requestArgs).then(function (result) {
+      if (result === null || result === undefined) {
+        return Formio.request(url, method, data, opts.header, opts);
+      }
+      return result;
+    });
+  });
+
+  return pluginAlter('wrapRequestPromise', request, requestArgs);
+};
+
+// Define specific CRUD methods.
+Formio.prototype.loadProject = _load('project');
+Formio.prototype.saveProject = _save('project');
+Formio.prototype.deleteProject = _delete('project');
+Formio.prototype.loadForm = _load('form');
+Formio.prototype.saveForm = _save('form');
+Formio.prototype.deleteForm = _delete('form');
+Formio.prototype.loadForms = _index('forms');
+Formio.prototype.loadSubmission = _load('submission');
+Formio.prototype.saveSubmission = _save('submission');
+Formio.prototype.deleteSubmission = _delete('submission');
+Formio.prototype.loadSubmissions = _index('submissions');
+Formio.prototype.loadAction = _load('action');
+Formio.prototype.saveAction = _save('action');
+Formio.prototype.deleteAction = _delete('action');
+Formio.prototype.loadActions = _index('actions');
+Formio.prototype.availableActions = function () {
+  return this.makeRequest('availableActions', this.formUrl + '/actions');
+};
+Formio.prototype.actionInfo = function (name) {
+  return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
+};
+
+Formio.prototype.uploadFile = function (storage, file, fileName, dir, progressCallback, url) {
+  var requestArgs = {
+    provider: storage,
+    method: 'upload',
+    file: file,
+    fileName: fileName,
+    dir: dir
+  };
+  var request = pluginWait('preRequest', requestArgs).then(function () {
+    return pluginGet('fileRequest', requestArgs).then(function (result) {
+      if (storage && (result === null || result === undefined)) {
+        if (providers.storage.hasOwnProperty(storage)) {
+          var provider = new providers.storage[storage](this);
+          return provider.uploadFile(file, fileName, dir, progressCallback, url);
+        } else {
+          throw 'Storage provider not found';
+        }
+      }
+      return result || { url: '' };
+    }.bind(this));
+  }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
+};
+
+Formio.prototype.downloadFile = function (file) {
+  var requestArgs = {
+    method: 'download',
+    file: file
+  };
+
+  var request = pluginWait('preRequest', requestArgs).then(function () {
+    return pluginGet('fileRequest', requestArgs).then(function (result) {
+      if (file.storage && (result === null || result === undefined)) {
+        if (providers.storage.hasOwnProperty(file.storage)) {
+          var provider = new providers.storage[file.storage](this);
+          return provider.downloadFile(file);
+        } else {
+          throw 'Storage provider not found';
+        }
+      }
+      return result || { url: '' };
+    }.bind(this));
+  }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
+};
+
+Formio.makeStaticRequest = function (url, method, data, opts) {
+  method = (method || 'GET').toUpperCase();
+  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+    opts = {};
+  }
+  var requestArgs = {
+    url: url,
+    method: method,
+    data: data
+  };
+
+  var request = pluginWait('preRequest', requestArgs).then(function () {
+    return pluginGet('staticRequest', requestArgs).then(function (result) {
+      if (result === null || result === undefined) {
+        return Formio.request(url, method, data, opts.header, opts);
+      }
+      return result;
+    });
+  });
+
+  return pluginAlter('wrapStaticRequestPromise', request, requestArgs);
+};
+
+// Static methods.
+Formio.loadProjects = function (query) {
+  query = query || '';
+  if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+    query = '?' + serialize(query.params);
+  }
+  return this.makeStaticRequest(baseUrl + '/project' + query);
+};
+
+/**
+ * Make a formio request, using the current token.
+ *
+ * @param url
+ * @param method
+ * @param data
+ * @param header
+ * @param {Boolean} ignoreCache
+ *   Whether or not to use the cache.
+ * @returns {*}
+ */
+Formio.request = function (url, method, data, header, opts) {
+  if (!url) {
+    return Promise.reject('No url provided');
+  }
+  method = (method || 'GET').toUpperCase();
+
+  // For reverse compatibility, if they provided the ignoreCache parameter,
+  // then change it back to the options format where that is a parameter.
+  if (typeof opts === 'boolean') {
+    opts = { ignoreCache: opts };
+  }
+  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+    opts = {};
+  }
+
+  var cacheKey = btoa(url);
+
+  return new Promise(function (resolve, reject) {
+    // Get the cached promise to save multiple loads.
+    if (!opts.ignoreCache && method === 'GET' && cache.hasOwnProperty(cacheKey)) {
+      return resolve(cache[cacheKey]);
+    }
+
+    resolve(new Promise(function (resolve, reject) {
+      // Set up and fetch request
+      var headers = header || new Headers({
+        'Accept': 'application/json',
+        'Content-type': 'application/json; charset=UTF-8'
+      });
+      var token = Formio.getToken();
+      if (token) {
+        headers.append('x-jwt-token', token);
+      }
+
+      var options = {
+        method: method,
+        headers: headers,
+        mode: 'cors'
+      };
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
+
+      resolve(fetch(url, options));
+    }).catch(function (err) {
+      err.message = 'Could not connect to API server (' + err.message + ')';
+      err.networkError = true;
+      throw err;
+    }).then(function (response) {
+      if (!response.ok) {
+        if (response.status === 440) {
+          Formio.setToken(null);
+          Formio.events.emit('formio.sessionExpired', response.body);
+        } else if (response.status === 401) {
+          Formio.events.emit('formio.unauthorized', response.body);
+        }
+        // Parse and return the error as a rejected promise to reject this promise
+        return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (error) {
+          throw error;
+        });
+      }
+
+      // Handle fetch results
+      var token = response.headers.get('x-jwt-token');
+      if (response.status >= 200 && response.status < 300 && token && token !== '') {
+        Formio.setToken(token);
+      }
+      // 204 is no content. Don't try to .json() it.
+      if (response.status === 204) {
+        return {};
+      }
+      return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (result) {
+        // Add some content-range metadata to the result here
+        var range = response.headers.get('content-range');
+        if (range && (typeof result === 'undefined' ? 'undefined' : _typeof(result)) === 'object') {
+          range = range.split('/');
+          if (range[0] !== '*') {
+            var skipLimit = range[0].split('-');
+            result.skip = Number(skipLimit[0]);
+            result.limit = skipLimit[1] - skipLimit[0] + 1;
+          }
+          result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
+        }
+
+        if (!opts.getHeaders) {
+          return result;
+        }
+
+        var headers = {};
+        response.headers.forEach(function (item, key) {
+          headers[key] = item;
+        });
+
+        return new Promise(function (resolve, reject) {
+          resolve({ result: result, headers: headers });
+        });
+      });
+    }).catch(function (err) {
+      if (err === 'Bad Token') {
+        Formio.setToken(null);
+        Formio.events.emit('formio.badToken', err);
+      }
+      // Remove failed promises from cache
+      delete cache[cacheKey];
+      // Propagate error so client can handle accordingly
+      throw err;
+    }));
+  }).then(function (result) {
+    // Save the cache
+    if (method === 'GET') {
+      cache[cacheKey] = Promise.resolve(result);
+    }
+
+    // Shallow copy result so modifications don't end up in cache
+    if (Array.isArray(result)) {
+      var resultCopy = result.map(copy);
+      resultCopy.skip = result.skip;
+      resultCopy.limit = result.limit;
+      resultCopy.serverCount = result.serverCount;
+      return resultCopy;
+    }
+    return copy(result);
+  });
+};
+
+Formio.setToken = function (token) {
+  token = token || '';
+  if (token === this.token) {
+    return;
+  }
+  this.token = token;
+  if (!token) {
+    Formio.setUser(null);
+    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+    try {
+      return localStorage.removeItem('formioToken');
+    } catch (err) {
+      return;
+    }
+  }
+  // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+  try {
+    localStorage.setItem('formioToken', token);
+  } catch (err) {
+    // Do nothing.
+  }
+  return Formio.currentUser(); // Run this so user is updated if null
+};
+
+Formio.getToken = function () {
+  if (this.token) {
+    return this.token;
+  }
+  try {
+    var token = localStorage.getItem('formioToken') || '';
+    this.token = token;
+    return token;
+  } catch (e) {
+    return '';
+  }
+};
+
+Formio.setUser = function (user) {
+  if (!user) {
+    this.setToken(null);
+    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+    try {
+      return localStorage.removeItem('formioUser');
+    } catch (err) {
+      return;
+    }
+  }
+  // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+  try {
+    localStorage.setItem('formioUser', JSON.stringify(user));
+  } catch (err) {
+    // Do nothing.
+  }
+};
+
+Formio.getUser = function () {
+  try {
+    return JSON.parse(localStorage.getItem('formioUser') || null);
+  } catch (e) {
+    return;
+  }
+};
+
+Formio.setBaseUrl = function (url) {
+  baseUrl = url;
+  if (!appUrlSet) {
+    appUrl = url;
+  }
+};
+
+Formio.getBaseUrl = function () {
+  return baseUrl;
+};
+
+Formio.setAppUrl = function (url) {
+  appUrl = url;
+  appUrlSet = true;
+};
+
+Formio.getAppUrl = function () {
+  return appUrl;
+};
+
+Formio.clearCache = function () {
+  cache = {};
+};
+
+/**
+ * Attach an HTML form to Form.io.
+ *
+ * @param form
+ */
+Formio.form = function (form, options, done) {
+  // Fix the parameters.
+  if (!done && typeof options === 'function') {
+    done = options;
+    options = {};
+  }
+
+  done = done || function () {
+    console.log(arguments);
+  };
+  options = options || {};
+
+  // IF they provide a jquery object, then select the element.
+  if (form.jquery) {
+    form = form[0];
+  }
+  if (!form) {
+    return done('Invalid Form');
+  }
+
+  var getAction = function getAction() {
+    return options.form || form.getAttribute('action');
+  };
+
+  /**
+   * Returns the current submission object.
+   * @returns {{data: {}}}
+   */
+  var getSubmission = function getSubmission() {
+    var submission = { data: {} };
+    var setValue = function setValue(path, value) {
+      var isArray = path.substr(-2) === '[]';
+      if (isArray) {
+        path = path.replace('[]', '');
+      }
+      var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
+      var current = submission;
+      while (path = paths.shift()) {
+        if (!paths.length) {
+          if (isArray) {
+            if (!current[path]) {
+              current[path] = [];
+            }
+            current[path].push(value);
+          } else {
+            current[path] = value;
+          }
+        } else {
+          if (!current[path]) {
+            current[path] = {};
+          }
+          current = current[path];
+        }
+      }
+    };
+
+    // Get the form data from this form.
+    var formData = new FormData(form);
+    var entries = formData.entries();
+    var entry = null;
+    while (entry = entries.next().value) {
+      setValue(entry[0], entry[1]);
+    }
+    return submission;
+  };
+
+  // Submits the form.
+  var submit = function submit(event) {
+    if (event) {
+      event.preventDefault();
+    }
+    var action = getAction();
+    if (!action) {
+      return;
+    }
+    new Formio(action).saveSubmission(getSubmission()).then(function (sub) {
+      done(null, sub);
+    }, done);
+  };
+
+  // Attach formio to the provided form.
+  if (form.attachEvent) {
+    form.attachEvent('submit', submit);
+  } else {
+    form.addEventListener('submit', submit);
+  }
+
+  return {
+    submit: submit,
+    getAction: getAction,
+    getSubmission: getSubmission
+  };
+};
+
+Formio.currentUser = function () {
+  var url = baseUrl + '/current';
+  var user = this.getUser();
+  if (user) {
+    return pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
+      url: url,
+      method: 'GET'
+    });
+  }
+  var token = this.getToken();
+  if (!token) {
+    return pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
+      url: url,
+      method: 'GET'
+    });
+  }
+  return this.makeStaticRequest(url).then(function (response) {
+    Formio.setUser(response);
+    return response;
+  });
+};
+
+// Keep track of their logout callback.
+Formio.logout = function () {
+  var onLogout = function (result) {
+    this.setToken(null);
+    this.setUser(null);
+    Formio.clearCache();
+    return result;
+  }.bind(this);
+  return this.makeStaticRequest(baseUrl + '/logout').then(onLogout).catch(onLogout);
+};
+
+Formio.fieldData = function (data, component) {
+  if (!data) {
+    return '';
+  }
+  if (!component || !component.key) {
+    return data;
+  }
+  if (component.key.indexOf('.') !== -1) {
+    var value = data;
+    var parts = component.key.split('.');
+    var key = '';
+    for (var i = 0; i < parts.length; i++) {
+      key = parts[i];
+
+      // Handle nested resources
+      if (value.hasOwnProperty('_id')) {
+        value = value.data;
+      }
+
+      // Return if the key is not found on the value.
+      if (!value.hasOwnProperty(key)) {
+        return;
+      }
+
+      // Convert old single field data in submissions to multiple
+      if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {
+        value[key] = [value[key]];
+      }
+
+      // Set the value of this key.
+      value = value[key];
+    }
+    return value;
+  } else {
+    // Convert old single field data in submissions to multiple
+    if (component.multiple && !Array.isArray(data[component.key])) {
+      data[component.key] = [data[component.key]];
+    }
+    return data[component.key];
+  }
+};
+
+Formio.providers = providers;
+
+/**
+ * EventEmitter for Formio events.
+ * See Node.js documentation for API documentation: https://nodejs.org/api/events.html
+ */
+Formio.events = new EventEmitter({
+  wildcard: false,
+  maxListeners: 0
+});
+
+/**
+ * Register a plugin with Formio.js
+ * @param plugin The plugin to register. See plugin documentation.
+ * @param name   Optional name to later retrieve plugin with.
+ */
+Formio.registerPlugin = function (plugin, name) {
+  plugins.push(plugin);
+  plugins.sort(function (a, b) {
+    return (b.priority || 0) - (a.priority || 0);
+  });
+  plugin.__name = name;
+  (plugin.init || noop).call(plugin, Formio);
+};
+
+/**
+ * Returns the plugin registered with the given name.
+ */
+Formio.getPlugin = function (name) {
+  return plugins.reduce(function (result, plugin) {
+    if (result) return result;
+    if (plugin.__name === name) return plugin;
+  }, null);
+};
+
+/**
+ * Deregisters a plugin with Formio.js.
+ * @param  plugin The instance or name of the plugin
+ * @return true if deregistered, false otherwise
+ */
+Formio.deregisterPlugin = function (plugin) {
+  var beforeLength = plugins.length;
+  plugins = plugins.filter(function (p) {
+    if (p !== plugin && p.__name !== plugin) return true;
+    (p.deregister || noop).call(p, Formio);
+    return false;
+  });
+  return beforeLength !== plugins.length;
+};
+
+module.exports = Formio;
+
+},{"./providers":38,"eventemitter2":1,"native-promise-only":4,"shallow-copy":5,"whatwg-fetch":8}],38:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  storage: require('./storage')
+};
+
+},{"./storage":40}],39:[function(require,module,exports){
+'use strict';
+
+var Promise = require("native-promise-only");
+var dropbox = function dropbox(formio) {
+  return {
+    uploadFile: function uploadFile(file, fileName, dir, progressCallback) {
+      return new Promise(function (resolve, reject) {
+        // Send the file with data.
+        var xhr = new XMLHttpRequest();
+
+        if (typeof progressCallback === 'function') {
+          xhr.upload.onprogress = progressCallback;
+        }
+
+        var fd = new FormData();
+        fd.append('name', fileName);
+        fd.append('dir', dir);
+        fd.append('file', file);
+
+        // Fire on network error.
+        xhr.onerror = function (err) {
+          err.networkError = true;
+          reject(err);
+        };
+
+        xhr.onload = function () {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var response = JSON.parse(xhr.response);
+            response.storage = 'dropbox';
+            response.size = file.size;
+            response.type = file.type;
+            response.url = response.path_lower;
+            resolve(response);
+          } else {
+            reject(xhr.response || 'Unable to upload file');
+          }
+        };
+
+        xhr.onabort = function (err) {
+          reject(err);
+        };
+
+        xhr.open('POST', formio.formUrl + '/storage/dropbox');
+        var token = false;
+        try {
+          token = localStorage.getItem('formioToken');
+        } catch (e) {
+          // Swallow error.
+        }
+        if (token) {
+          xhr.setRequestHeader('x-jwt-token', token);
+        }
+        xhr.send(fd);
+      });
+    },
+    downloadFile: function downloadFile(file) {
+      var token = false;
+      try {
+        token = localStorage.getItem('formioToken');
+      } catch (e) {
+        // Swallow error.
+      }
+      file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
+      return Promise.resolve(file);
+    }
+  };
+};
+
+dropbox.title = 'Dropbox';
+module.exports = dropbox;
+
+},{"native-promise-only":4}],40:[function(require,module,exports){
+'use strict';
+
+module.exports = {
+  dropbox: require('./dropbox.js'),
+  s3: require('./s3.js'),
+  url: require('./url.js')
+};
+
+},{"./dropbox.js":39,"./s3.js":41,"./url.js":42}],41:[function(require,module,exports){
+'use strict';
+
+var Promise = require("native-promise-only");
+var s3 = function s3(formio) {
+  return {
+    uploadFile: function uploadFile(file, fileName, dir, progressCallback) {
+      return new Promise(function (resolve, reject) {
+        // Send the pre response to sign the upload.
+        var pre = new XMLHttpRequest();
+
+        var prefd = new FormData();
+        prefd.append('name', fileName);
+        prefd.append('size', file.size);
+        prefd.append('type', file.type);
+
+        // This only fires on a network error.
+        pre.onerror = function (err) {
+          err.networkError = true;
+          reject(err);
+        };
+
+        pre.onabort = function (err) {
+          reject(err);
+        };
+
+        pre.onload = function () {
+          if (pre.status >= 200 && pre.status < 300) {
+            var response = JSON.parse(pre.response);
+
+            // Send the file with data.
+            var xhr = new XMLHttpRequest();
+
+            if (typeof progressCallback === 'function') {
+              xhr.upload.onprogress = progressCallback;
+            }
+
+            response.data.fileName = fileName;
+            response.data.key += dir + fileName;
+
+            var fd = new FormData();
+            for (var key in response.data) {
+              fd.append(key, response.data[key]);
+            }
+            fd.append('file', file);
+
+            // Fire on network error.
+            xhr.onerror = function (err) {
+              err.networkError = true;
+              reject(err);
+            };
+
+            xhr.onload = function () {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                resolve({
+                  storage: 's3',
+                  name: fileName,
+                  bucket: response.bucket,
+                  key: response.data.key,
+                  url: response.url + response.data.key,
+                  acl: response.data.acl,
+                  size: file.size,
+                  type: file.type
+                });
+              } else {
+                reject(xhr.response || 'Unable to upload file');
+              }
+            };
+
+            xhr.onabort = function (err) {
+              reject(err);
+            };
+
+            xhr.open('POST', response.url);
+
+            xhr.send(fd);
+          } else {
+            reject(pre.response || 'Unable to sign file');
+          }
+        };
+
+        pre.open('POST', formio.formUrl + '/storage/s3');
+
+        pre.setRequestHeader('Accept', 'application/json');
+        pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
+        var token = false;
+        try {
+          token = localStorage.getItem('formioToken');
+        } catch (e) {
+          // swallow error.
+        }
+        if (token) {
+          pre.setRequestHeader('x-jwt-token', token);
+        }
+
+        pre.send(JSON.stringify({
+          name: fileName,
+          size: file.size,
+          type: file.type
+        }));
+      });
+    },
+    downloadFile: function downloadFile(file) {
+      if (file.acl !== 'public-read') {
+        return formio.makeRequest('file', formio.formUrl + '/storage/s3?bucket=' + file.bucket + '&key=' + file.key, 'GET');
+      } else {
+        return Promise.resolve(file);
+      }
+    }
+  };
+};
+
+s3.title = 'S3';
+module.exports = s3;
+
+},{"native-promise-only":4}],42:[function(require,module,exports){
+'use strict';
+
+var Promise = require("native-promise-only");
+var url = function url(formio) {
+  return {
+    title: 'Url',
+    name: 'url',
+    uploadFile: function uploadFile(file, fileName, dir, progressCallback, url) {
+      return new Promise(function (resolve, reject) {
+        var data = {
+          dir: dir,
+          name: fileName,
+          file: file
+        };
+
+        // Send the file with data.
+        var xhr = new XMLHttpRequest();
+
+        if (typeof progressCallback === 'function') {
+          xhr.upload.onprogress = progressCallback;
+        }
+
+        fd = new FormData();
+        for (var key in data) {
+          fd.append(key, data[key]);
+        }
+
+        xhr.onload = function () {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            // Need to test if xhr.response is decoded or not.
+            resolve({
+              storage: 'url',
+              name: fileName,
+              url: xhr.response.url,
+              size: file.size,
+              type: file.type
+            });
+          } else {
+            reject(xhr.response || 'Unable to upload file');
+          }
+        };
+
+        // Fire on network error.
+        xhr.onerror = function () {
+          reject(xhr);
+        };
+
+        xhr.onabort = function () {
+          reject(xhr);
+        };
+
+        xhr.open('POST', url);
+        xhr.send(fd);
+      });
+    },
+    downloadFile: function downloadFile(file) {
+      // Return the original as there is nothing to do.
+      return Promise.resolve(file);
+    }
+  };
+};
+
+url.title = 'Url';
+module.exports = url;
+
+},{"native-promise-only":4}],43:[function(require,module,exports){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var DataView = getNative(root, 'DataView');
+
+module.exports = DataView;
+
+},{"./_getNative":104,"./_root":142}],44:[function(require,module,exports){
+var hashClear = require('./_hashClear'),
+    hashDelete = require('./_hashDelete'),
+    hashGet = require('./_hashGet'),
+    hashHas = require('./_hashHas'),
+    hashSet = require('./_hashSet');
+
+/**
+ * Creates a hash object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Hash(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `Hash`.
+Hash.prototype.clear = hashClear;
+Hash.prototype['delete'] = hashDelete;
+Hash.prototype.get = hashGet;
+Hash.prototype.has = hashHas;
+Hash.prototype.set = hashSet;
+
+module.exports = Hash;
+
+},{"./_hashClear":111,"./_hashDelete":112,"./_hashGet":113,"./_hashHas":114,"./_hashSet":115}],45:[function(require,module,exports){
+var listCacheClear = require('./_listCacheClear'),
+    listCacheDelete = require('./_listCacheDelete'),
+    listCacheGet = require('./_listCacheGet'),
+    listCacheHas = require('./_listCacheHas'),
+    listCacheSet = require('./_listCacheSet');
+
+/**
+ * Creates an list cache object.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function ListCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `ListCache`.
+ListCache.prototype.clear = listCacheClear;
+ListCache.prototype['delete'] = listCacheDelete;
+ListCache.prototype.get = listCacheGet;
+ListCache.prototype.has = listCacheHas;
+ListCache.prototype.set = listCacheSet;
+
+module.exports = ListCache;
+
+},{"./_listCacheClear":124,"./_listCacheDelete":125,"./_listCacheGet":126,"./_listCacheHas":127,"./_listCacheSet":128}],46:[function(require,module,exports){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Map = getNative(root, 'Map');
+
+module.exports = Map;
+
+},{"./_getNative":104,"./_root":142}],47:[function(require,module,exports){
+var mapCacheClear = require('./_mapCacheClear'),
+    mapCacheDelete = require('./_mapCacheDelete'),
+    mapCacheGet = require('./_mapCacheGet'),
+    mapCacheHas = require('./_mapCacheHas'),
+    mapCacheSet = require('./_mapCacheSet');
+
+/**
+ * Creates a map cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function MapCache(entries) {
+  var index = -1,
+      length = entries == null ? 0 : entries.length;
+
+  this.clear();
+  while (++index < length) {
+    var entry = entries[index];
+    this.set(entry[0], entry[1]);
+  }
+}
+
+// Add methods to `MapCache`.
+MapCache.prototype.clear = mapCacheClear;
+MapCache.prototype['delete'] = mapCacheDelete;
+MapCache.prototype.get = mapCacheGet;
+MapCache.prototype.has = mapCacheHas;
+MapCache.prototype.set = mapCacheSet;
+
+module.exports = MapCache;
+
+},{"./_mapCacheClear":129,"./_mapCacheDelete":130,"./_mapCacheGet":131,"./_mapCacheHas":132,"./_mapCacheSet":133}],48:[function(require,module,exports){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Promise = getNative(root, 'Promise');
+
+module.exports = Promise;
+
+},{"./_getNative":104,"./_root":142}],49:[function(require,module,exports){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var Set = getNative(root, 'Set');
+
+module.exports = Set;
+
+},{"./_getNative":104,"./_root":142}],50:[function(require,module,exports){
+var ListCache = require('./_ListCache'),
+    stackClear = require('./_stackClear'),
+    stackDelete = require('./_stackDelete'),
+    stackGet = require('./_stackGet'),
+    stackHas = require('./_stackHas'),
+    stackSet = require('./_stackSet');
+
+/**
+ * Creates a stack cache object to store key-value pairs.
+ *
+ * @private
+ * @constructor
+ * @param {Array} [entries] The key-value pairs to cache.
+ */
+function Stack(entries) {
+  var data = this.__data__ = new ListCache(entries);
+  this.size = data.size;
+}
+
+// Add methods to `Stack`.
+Stack.prototype.clear = stackClear;
+Stack.prototype['delete'] = stackDelete;
+Stack.prototype.get = stackGet;
+Stack.prototype.has = stackHas;
+Stack.prototype.set = stackSet;
+
+module.exports = Stack;
+
+},{"./_ListCache":45,"./_stackClear":144,"./_stackDelete":145,"./_stackGet":146,"./_stackHas":147,"./_stackSet":148}],51:[function(require,module,exports){
+var root = require('./_root');
+
+/** Built-in value references. */
+var Symbol = root.Symbol;
+
+module.exports = Symbol;
+
+},{"./_root":142}],52:[function(require,module,exports){
+var root = require('./_root');
+
+/** Built-in value references. */
+var Uint8Array = root.Uint8Array;
+
+module.exports = Uint8Array;
+
+},{"./_root":142}],53:[function(require,module,exports){
+var getNative = require('./_getNative'),
+    root = require('./_root');
+
+/* Built-in method references that are verified to be native. */
+var WeakMap = getNative(root, 'WeakMap');
+
+module.exports = WeakMap;
+
+},{"./_getNative":104,"./_root":142}],54:[function(require,module,exports){
+/**
+ * Adds the key-value `pair` to `map`.
+ *
+ * @private
+ * @param {Object} map The map to modify.
+ * @param {Array} pair The key-value pair to add.
+ * @returns {Object} Returns `map`.
+ */
+function addMapEntry(map, pair) {
+  // Don't return `map.set` because it's not chainable in IE 11.
+  map.set(pair[0], pair[1]);
+  return map;
+}
+
+module.exports = addMapEntry;
+
+},{}],55:[function(require,module,exports){
+/**
+ * Adds `value` to `set`.
+ *
+ * @private
+ * @param {Object} set The set to modify.
+ * @param {*} value The value to add.
+ * @returns {Object} Returns `set`.
+ */
+function addSetEntry(set, value) {
+  // Don't return `set.add` because it's not chainable in IE 11.
+  set.add(value);
+  return set;
+}
+
+module.exports = addSetEntry;
+
+},{}],56:[function(require,module,exports){
+/**
+ * A specialized version of `_.forEach` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns `array`.
+ */
+function arrayEach(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  while (++index < length) {
+    if (iteratee(array[index], index, array) === false) {
+      break;
+    }
+  }
+  return array;
+}
+
+module.exports = arrayEach;
+
+},{}],57:[function(require,module,exports){
+var baseTimes = require('./_baseTimes'),
+    isArguments = require('./isArguments'),
+    isArray = require('./isArray'),
+    isBuffer = require('./isBuffer'),
+    isIndex = require('./_isIndex'),
+    isTypedArray = require('./isTypedArray');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Creates an array of the enumerable property names of the array-like `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @param {boolean} inherited Specify returning inherited property names.
+ * @returns {Array} Returns the array of property names.
+ */
+function arrayLikeKeys(value, inherited) {
+  var isArr = isArray(value),
+      isArg = !isArr && isArguments(value),
+      isBuff = !isArr && !isArg && isBuffer(value),
+      isType = !isArr && !isArg && !isBuff && isTypedArray(value),
+      skipIndexes = isArr || isArg || isBuff || isType,
+      result = skipIndexes ? baseTimes(value.length, String) : [],
+      length = result.length;
+
+  for (var key in value) {
+    if ((inherited || hasOwnProperty.call(value, key)) &&
+        !(skipIndexes && (
+           // Safari 9 has enumerable `arguments.length` in strict mode.
+           key == 'length' ||
+           // Node.js 0.10 has enumerable non-index properties on buffers.
+           (isBuff && (key == 'offset' || key == 'parent')) ||
+           // PhantomJS 2 has enumerable non-index properties on typed arrays.
+           (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+           // Skip index properties.
+           isIndex(key, length)
+        ))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = arrayLikeKeys;
+
+},{"./_baseTimes":79,"./_isIndex":119,"./isArguments":159,"./isArray":160,"./isBuffer":162,"./isTypedArray":168}],58:[function(require,module,exports){
+/**
+ * A specialized version of `_.map` for arrays without support for iteratee
+ * shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the new mapped array.
+ */
+function arrayMap(array, iteratee) {
+  var index = -1,
+      length = array == null ? 0 : array.length,
+      result = Array(length);
+
+  while (++index < length) {
+    result[index] = iteratee(array[index], index, array);
+  }
+  return result;
+}
+
+module.exports = arrayMap;
+
+},{}],59:[function(require,module,exports){
+/**
+ * Appends the elements of `values` to `array`.
+ *
+ * @private
+ * @param {Array} array The array to modify.
+ * @param {Array} values The values to append.
+ * @returns {Array} Returns `array`.
+ */
+function arrayPush(array, values) {
+  var index = -1,
+      length = values.length,
+      offset = array.length;
+
+  while (++index < length) {
+    array[offset + index] = values[index];
+  }
+  return array;
+}
+
+module.exports = arrayPush;
+
+},{}],60:[function(require,module,exports){
+/**
+ * A specialized version of `_.reduce` for arrays without support for
+ * iteratee shorthands.
+ *
+ * @private
+ * @param {Array} [array] The array to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {*} [accumulator] The initial value.
+ * @param {boolean} [initAccum] Specify using the first element of `array` as
+ *  the initial value.
+ * @returns {*} Returns the accumulated value.
+ */
+function arrayReduce(array, iteratee, accumulator, initAccum) {
+  var index = -1,
+      length = array == null ? 0 : array.length;
+
+  if (initAccum && length) {
+    accumulator = array[++index];
+  }
+  while (++index < length) {
+    accumulator = iteratee(accumulator, array[index], index, array);
+  }
+  return accumulator;
+}
+
+module.exports = arrayReduce;
+
+},{}],61:[function(require,module,exports){
+var baseAssignValue = require('./_baseAssignValue'),
+    eq = require('./eq');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Assigns `value` to `key` of `object` if the existing value is not equivalent
+ * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * for equality comparisons.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function assignValue(object, key, value) {
+  var objValue = object[key];
+  if (!(hasOwnProperty.call(object, key) && eq(objValue, value)) ||
+      (value === undefined && !(key in object))) {
+    baseAssignValue(object, key, value);
+  }
+}
+
+module.exports = assignValue;
+
+},{"./_baseAssignValue":65,"./eq":155}],62:[function(require,module,exports){
+var eq = require('./eq');
+
+/**
+ * Gets the index at which the `key` is found in `array` of key-value pairs.
+ *
+ * @private
+ * @param {Array} array The array to inspect.
+ * @param {*} key The key to search for.
+ * @returns {number} Returns the index of the matched value, else `-1`.
+ */
+function assocIndexOf(array, key) {
+  var length = array.length;
+  while (length--) {
+    if (eq(array[length][0], key)) {
+      return length;
+    }
+  }
+  return -1;
+}
+
+module.exports = assocIndexOf;
+
+},{"./eq":155}],63:[function(require,module,exports){
+var copyObject = require('./_copyObject'),
+    keys = require('./keys');
+
+/**
+ * The base implementation of `_.assign` without support for multiple sources
+ * or `customizer` functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @returns {Object} Returns `object`.
+ */
+function baseAssign(object, source) {
+  return object && copyObject(source, keys(source), object);
+}
+
+module.exports = baseAssign;
+
+},{"./_copyObject":93,"./keys":169}],64:[function(require,module,exports){
+var copyObject = require('./_copyObject'),
+    keysIn = require('./keysIn');
+
+/**
+ * The base implementation of `_.assignIn` without support for multiple sources
+ * or `customizer` functions.
+ *
+ * @private
+ * @param {Object} object The destination object.
+ * @param {Object} source The source object.
+ * @returns {Object} Returns `object`.
+ */
+function baseAssignIn(object, source) {
+  return object && copyObject(source, keysIn(source), object);
+}
+
+module.exports = baseAssignIn;
+
+},{"./_copyObject":93,"./keysIn":170}],65:[function(require,module,exports){
+var defineProperty = require('./_defineProperty');
+
+/**
+ * The base implementation of `assignValue` and `assignMergeValue` without
+ * value checks.
+ *
+ * @private
+ * @param {Object} object The object to modify.
+ * @param {string} key The key of the property to assign.
+ * @param {*} value The value to assign.
+ */
+function baseAssignValue(object, key, value) {
+  if (key == '__proto__' && defineProperty) {
+    defineProperty(object, key, {
+      'configurable': true,
+      'enumerable': true,
+      'value': value,
+      'writable': true
+    });
+  } else {
+    object[key] = value;
+  }
+}
+
+module.exports = baseAssignValue;
+
+},{"./_defineProperty":99}],66:[function(require,module,exports){
+var Stack = require('./_Stack'),
+    arrayEach = require('./_arrayEach'),
+    assignValue = require('./_assignValue'),
+    baseAssign = require('./_baseAssign'),
+    baseAssignIn = require('./_baseAssignIn'),
+    cloneBuffer = require('./_cloneBuffer'),
+    copyArray = require('./_copyArray'),
+    copySymbols = require('./_copySymbols'),
+    copySymbolsIn = require('./_copySymbolsIn'),
+    getAllKeys = require('./_getAllKeys'),
+    getAllKeysIn = require('./_getAllKeysIn'),
+    getTag = require('./_getTag'),
+    initCloneArray = require('./_initCloneArray'),
+    initCloneByTag = require('./_initCloneByTag'),
+    initCloneObject = require('./_initCloneObject'),
+    isArray = require('./isArray'),
+    isBuffer = require('./isBuffer'),
+    isObject = require('./isObject'),
+    keys = require('./keys');
+
+/** Used to compose bitmasks for cloning. */
+var CLONE_DEEP_FLAG = 1,
+    CLONE_FLAT_FLAG = 2,
+    CLONE_SYMBOLS_FLAG = 4;
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values supported by `_.clone`. */
+var cloneableTags = {};
+cloneableTags[argsTag] = cloneableTags[arrayTag] =
+cloneableTags[arrayBufferTag] = cloneableTags[dataViewTag] =
+cloneableTags[boolTag] = cloneableTags[dateTag] =
+cloneableTags[float32Tag] = cloneableTags[float64Tag] =
+cloneableTags[int8Tag] = cloneableTags[int16Tag] =
+cloneableTags[int32Tag] = cloneableTags[mapTag] =
+cloneableTags[numberTag] = cloneableTags[objectTag] =
+cloneableTags[regexpTag] = cloneableTags[setTag] =
+cloneableTags[stringTag] = cloneableTags[symbolTag] =
+cloneableTags[uint8Tag] = cloneableTags[uint8ClampedTag] =
+cloneableTags[uint16Tag] = cloneableTags[uint32Tag] = true;
+cloneableTags[errorTag] = cloneableTags[funcTag] =
+cloneableTags[weakMapTag] = false;
+
+/**
+ * The base implementation of `_.clone` and `_.cloneDeep` which tracks
+ * traversed objects.
+ *
+ * @private
+ * @param {*} value The value to clone.
+ * @param {boolean} bitmask The bitmask flags.
+ *  1 - Deep clone
+ *  2 - Flatten inherited properties
+ *  4 - Clone symbols
+ * @param {Function} [customizer] The function to customize cloning.
+ * @param {string} [key] The key of `value`.
+ * @param {Object} [object] The parent object of `value`.
+ * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
+ * @returns {*} Returns the cloned value.
+ */
+function baseClone(value, bitmask, customizer, key, object, stack) {
+  var result,
+      isDeep = bitmask & CLONE_DEEP_FLAG,
+      isFlat = bitmask & CLONE_FLAT_FLAG,
+      isFull = bitmask & CLONE_SYMBOLS_FLAG;
+
+  if (customizer) {
+    result = object ? customizer(value, key, object, stack) : customizer(value);
+  }
+  if (result !== undefined) {
+    return result;
+  }
+  if (!isObject(value)) {
+    return value;
+  }
+  var isArr = isArray(value);
+  if (isArr) {
+    result = initCloneArray(value);
+    if (!isDeep) {
+      return copyArray(value, result);
+    }
+  } else {
+    var tag = getTag(value),
+        isFunc = tag == funcTag || tag == genTag;
+
+    if (isBuffer(value)) {
+      return cloneBuffer(value, isDeep);
+    }
+    if (tag == objectTag || tag == argsTag || (isFunc && !object)) {
+      result = (isFlat || isFunc) ? {} : initCloneObject(value);
+      if (!isDeep) {
+        return isFlat
+          ? copySymbolsIn(value, baseAssignIn(result, value))
+          : copySymbols(value, baseAssign(result, value));
+      }
+    } else {
+      if (!cloneableTags[tag]) {
+        return object ? value : {};
+      }
+      result = initCloneByTag(value, tag, baseClone, isDeep);
+    }
+  }
+  // Check for circular references and return its corresponding clone.
+  stack || (stack = new Stack);
+  var stacked = stack.get(value);
+  if (stacked) {
+    return stacked;
+  }
+  stack.set(value, result);
+
+  var keysFunc = isFull
+    ? (isFlat ? getAllKeysIn : getAllKeys)
+    : (isFlat ? keysIn : keys);
+
+  var props = isArr ? undefined : keysFunc(value);
+  arrayEach(props || value, function(subValue, key) {
+    if (props) {
+      key = subValue;
+      subValue = value[key];
+    }
+    // Recursively populate clone (susceptible to call stack limits).
+    assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack));
+  });
+  return result;
+}
+
+module.exports = baseClone;
+
+},{"./_Stack":50,"./_arrayEach":56,"./_assignValue":61,"./_baseAssign":63,"./_baseAssignIn":64,"./_cloneBuffer":85,"./_copyArray":92,"./_copySymbols":94,"./_copySymbolsIn":95,"./_getAllKeys":101,"./_getAllKeysIn":102,"./_getTag":109,"./_initCloneArray":116,"./_initCloneByTag":117,"./_initCloneObject":118,"./isArray":160,"./isBuffer":162,"./isObject":165,"./keys":169}],67:[function(require,module,exports){
+var isObject = require('./isObject');
+
+/** Built-in value references. */
+var objectCreate = Object.create;
+
+/**
+ * The base implementation of `_.create` without support for assigning
+ * properties to the created object.
+ *
+ * @private
+ * @param {Object} proto The object to inherit from.
+ * @returns {Object} Returns the new object.
+ */
+var baseCreate = (function() {
+  function object() {}
+  return function(proto) {
+    if (!isObject(proto)) {
+      return {};
+    }
+    if (objectCreate) {
+      return objectCreate(proto);
+    }
+    object.prototype = proto;
+    var result = new object;
+    object.prototype = undefined;
+    return result;
+  };
+}());
+
+module.exports = baseCreate;
+
+},{"./isObject":165}],68:[function(require,module,exports){
+var baseForOwn = require('./_baseForOwn'),
+    createBaseEach = require('./_createBaseEach');
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+},{"./_baseForOwn":70,"./_createBaseEach":97}],69:[function(require,module,exports){
+var createBaseFor = require('./_createBaseFor');
+
+/**
+ * The base implementation of `baseForOwn` which iterates over `object`
+ * properties returned by `keysFunc` and invokes `iteratee` for each property.
+ * Iteratee functions may exit iteration early by explicitly returning `false`.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @returns {Object} Returns `object`.
+ */
+var baseFor = createBaseFor();
+
+module.exports = baseFor;
+
+},{"./_createBaseFor":98}],70:[function(require,module,exports){
+var baseFor = require('./_baseFor'),
+    keys = require('./keys');
+
+/**
+ * The base implementation of `_.forOwn` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Object} object The object to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Object} Returns `object`.
+ */
+function baseForOwn(object, iteratee) {
+  return object && baseFor(object, iteratee, keys);
+}
+
+module.exports = baseForOwn;
+
+},{"./_baseFor":69,"./keys":169}],71:[function(require,module,exports){
+var castPath = require('./_castPath'),
+    toKey = require('./_toKey');
+
+/**
+ * The base implementation of `_.get` without support for default values.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @returns {*} Returns the resolved value.
+ */
+function baseGet(object, path) {
+  path = castPath(path, object);
+
+  var index = 0,
+      length = path.length;
+
+  while (object != null && index < length) {
+    object = object[toKey(path[index++])];
+  }
+  return (index && index == length) ? object : undefined;
+}
+
+module.exports = baseGet;
+
+},{"./_castPath":83,"./_toKey":150}],72:[function(require,module,exports){
+var arrayPush = require('./_arrayPush'),
+    isArray = require('./isArray');
+
+/**
+ * The base implementation of `getAllKeys` and `getAllKeysIn` which uses
+ * `keysFunc` and `symbolsFunc` to get the enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {Function} keysFunc The function to get the keys of `object`.
+ * @param {Function} symbolsFunc The function to get the symbols of `object`.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function baseGetAllKeys(object, keysFunc, symbolsFunc) {
+  var result = keysFunc(object);
+  return isArray(object) ? result : arrayPush(result, symbolsFunc(object));
+}
+
+module.exports = baseGetAllKeys;
+
+},{"./_arrayPush":59,"./isArray":160}],73:[function(require,module,exports){
+var Symbol = require('./_Symbol'),
+    getRawTag = require('./_getRawTag'),
+    objectToString = require('./_objectToString');
+
+/** `Object#toString` result references. */
+var nullTag = '[object Null]',
+    undefinedTag = '[object Undefined]';
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * The base implementation of `getTag` without fallbacks for buggy environments.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+function baseGetTag(value) {
+  if (value == null) {
+    return value === undefined ? undefinedTag : nullTag;
+  }
+  value = Object(value);
+  return (symToStringTag && symToStringTag in value)
+    ? getRawTag(value)
+    : objectToString(value);
+}
+
+module.exports = baseGetTag;
+
+},{"./_Symbol":51,"./_getRawTag":106,"./_objectToString":140}],74:[function(require,module,exports){
+var baseGetTag = require('./_baseGetTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]';
+
+/**
+ * The base implementation of `_.isArguments`.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ */
+function baseIsArguments(value) {
+  return isObjectLike(value) && baseGetTag(value) == argsTag;
+}
+
+module.exports = baseIsArguments;
+
+},{"./_baseGetTag":73,"./isObjectLike":166}],75:[function(require,module,exports){
+var isFunction = require('./isFunction'),
+    isMasked = require('./_isMasked'),
+    isObject = require('./isObject'),
+    toSource = require('./_toSource');
+
+/**
+ * Used to match `RegExp`
+ * [syntax characters](http://ecma-international.org/ecma-262/7.0/#sec-patterns).
+ */
+var reRegExpChar = /[\\^$.*+?()[\]{}|]/g;
+
+/** Used to detect host constructors (Safari). */
+var reIsHostCtor = /^\[object .+?Constructor\]$/;
+
+/** Used for built-in method references. */
+var funcProto = Function.prototype,
+    objectProto = Object.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Used to detect if a method is native. */
+var reIsNative = RegExp('^' +
+  funcToString.call(hasOwnProperty).replace(reRegExpChar, '\\$&')
+  .replace(/hasOwnProperty|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') + '$'
+);
+
+/**
+ * The base implementation of `_.isNative` without bad shim checks.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a native function,
+ *  else `false`.
+ */
+function baseIsNative(value) {
+  if (!isObject(value) || isMasked(value)) {
+    return false;
+  }
+  var pattern = isFunction(value) ? reIsNative : reIsHostCtor;
+  return pattern.test(toSource(value));
+}
+
+module.exports = baseIsNative;
+
+},{"./_isMasked":122,"./_toSource":151,"./isFunction":163,"./isObject":165}],76:[function(require,module,exports){
+var baseGetTag = require('./_baseGetTag'),
+    isLength = require('./isLength'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var argsTag = '[object Arguments]',
+    arrayTag = '[object Array]',
+    boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    errorTag = '[object Error]',
+    funcTag = '[object Function]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    objectTag = '[object Object]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    weakMapTag = '[object WeakMap]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/** Used to identify `toStringTag` values of typed arrays. */
+var typedArrayTags = {};
+typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+typedArrayTags[uint32Tag] = true;
+typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
+typedArrayTags[setTag] = typedArrayTags[stringTag] =
+typedArrayTags[weakMapTag] = false;
+
+/**
+ * The base implementation of `_.isTypedArray` without Node.js optimizations.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ */
+function baseIsTypedArray(value) {
+  return isObjectLike(value) &&
+    isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+}
+
+module.exports = baseIsTypedArray;
+
+},{"./_baseGetTag":73,"./isLength":164,"./isObjectLike":166}],77:[function(require,module,exports){
+var isPrototype = require('./_isPrototype'),
+    nativeKeys = require('./_nativeKeys');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keys` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeys(object) {
+  if (!isPrototype(object)) {
+    return nativeKeys(object);
+  }
+  var result = [];
+  for (var key in Object(object)) {
+    if (hasOwnProperty.call(object, key) && key != 'constructor') {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = baseKeys;
+
+},{"./_isPrototype":123,"./_nativeKeys":137}],78:[function(require,module,exports){
+var isObject = require('./isObject'),
+    isPrototype = require('./_isPrototype'),
+    nativeKeysIn = require('./_nativeKeysIn');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function baseKeysIn(object) {
+  if (!isObject(object)) {
+    return nativeKeysIn(object);
+  }
+  var isProto = isPrototype(object),
+      result = [];
+
+  for (var key in object) {
+    if (!(key == 'constructor' && (isProto || !hasOwnProperty.call(object, key)))) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = baseKeysIn;
+
+},{"./_isPrototype":123,"./_nativeKeysIn":138,"./isObject":165}],79:[function(require,module,exports){
+/**
+ * The base implementation of `_.times` without support for iteratee shorthands
+ * or max array length checks.
+ *
+ * @private
+ * @param {number} n The number of times to invoke `iteratee`.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array} Returns the array of results.
+ */
+function baseTimes(n, iteratee) {
+  var index = -1,
+      result = Array(n);
+
+  while (++index < n) {
+    result[index] = iteratee(index);
+  }
+  return result;
+}
+
+module.exports = baseTimes;
+
+},{}],80:[function(require,module,exports){
+var Symbol = require('./_Symbol'),
+    arrayMap = require('./_arrayMap'),
+    isArray = require('./isArray'),
+    isSymbol = require('./isSymbol');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolToString = symbolProto ? symbolProto.toString : undefined;
+
+/**
+ * The base implementation of `_.toString` which doesn't convert nullish
+ * values to empty strings.
+ *
+ * @private
+ * @param {*} value The value to process.
+ * @returns {string} Returns the string.
+ */
+function baseToString(value) {
+  // Exit early for strings to avoid a performance hit in some environments.
+  if (typeof value == 'string') {
+    return value;
+  }
+  if (isArray(value)) {
+    // Recursively convert values (susceptible to call stack limits).
+    return arrayMap(value, baseToString) + '';
+  }
+  if (isSymbol(value)) {
+    return symbolToString ? symbolToString.call(value) : '';
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = baseToString;
+
+},{"./_Symbol":51,"./_arrayMap":58,"./isArray":160,"./isSymbol":167}],81:[function(require,module,exports){
+/**
+ * The base implementation of `_.unary` without support for storing metadata.
+ *
+ * @private
+ * @param {Function} func The function to cap arguments for.
+ * @returns {Function} Returns the new capped function.
+ */
+function baseUnary(func) {
+  return function(value) {
+    return func(value);
+  };
+}
+
+module.exports = baseUnary;
+
+},{}],82:[function(require,module,exports){
+var identity = require('./identity');
+
+/**
+ * Casts `value` to `identity` if it's not a function.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {Function} Returns cast function.
+ */
+function castFunction(value) {
+  return typeof value == 'function' ? value : identity;
+}
+
+module.exports = castFunction;
+
+},{"./identity":158}],83:[function(require,module,exports){
+var isArray = require('./isArray'),
+    isKey = require('./_isKey'),
+    stringToPath = require('./_stringToPath'),
+    toString = require('./toString');
+
+/**
+ * Casts `value` to a path array if it's not one.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {Array} Returns the cast property path array.
+ */
+function castPath(value, object) {
+  if (isArray(value)) {
+    return value;
+  }
+  return isKey(value, object) ? [value] : stringToPath(toString(value));
+}
+
+module.exports = castPath;
+
+},{"./_isKey":120,"./_stringToPath":149,"./isArray":160,"./toString":176}],84:[function(require,module,exports){
+var Uint8Array = require('./_Uint8Array');
+
+/**
+ * Creates a clone of `arrayBuffer`.
+ *
+ * @private
+ * @param {ArrayBuffer} arrayBuffer The array buffer to clone.
+ * @returns {ArrayBuffer} Returns the cloned array buffer.
+ */
+function cloneArrayBuffer(arrayBuffer) {
+  var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
+  new Uint8Array(result).set(new Uint8Array(arrayBuffer));
+  return result;
+}
+
+module.exports = cloneArrayBuffer;
+
+},{"./_Uint8Array":52}],85:[function(require,module,exports){
+var root = require('./_root');
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Built-in value references. */
+var Buffer = moduleExports ? root.Buffer : undefined,
+    allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
+
+/**
+ * Creates a clone of  `buffer`.
+ *
+ * @private
+ * @param {Buffer} buffer The buffer to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Buffer} Returns the cloned buffer.
+ */
+function cloneBuffer(buffer, isDeep) {
+  if (isDeep) {
+    return buffer.slice();
+  }
+  var length = buffer.length,
+      result = allocUnsafe ? allocUnsafe(length) : new buffer.constructor(length);
+
+  buffer.copy(result);
+  return result;
+}
+
+module.exports = cloneBuffer;
+
+},{"./_root":142}],86:[function(require,module,exports){
+var cloneArrayBuffer = require('./_cloneArrayBuffer');
+
+/**
+ * Creates a clone of `dataView`.
+ *
+ * @private
+ * @param {Object} dataView The data view to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the cloned data view.
+ */
+function cloneDataView(dataView, isDeep) {
+  var buffer = isDeep ? cloneArrayBuffer(dataView.buffer) : dataView.buffer;
+  return new dataView.constructor(buffer, dataView.byteOffset, dataView.byteLength);
+}
+
+module.exports = cloneDataView;
+
+},{"./_cloneArrayBuffer":84}],87:[function(require,module,exports){
+var addMapEntry = require('./_addMapEntry'),
+    arrayReduce = require('./_arrayReduce'),
+    mapToArray = require('./_mapToArray');
+
+/** Used to compose bitmasks for cloning. */
+var CLONE_DEEP_FLAG = 1;
+
+/**
+ * Creates a clone of `map`.
+ *
+ * @private
+ * @param {Object} map The map to clone.
+ * @param {Function} cloneFunc The function to clone values.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the cloned map.
+ */
+function cloneMap(map, isDeep, cloneFunc) {
+  var array = isDeep ? cloneFunc(mapToArray(map), CLONE_DEEP_FLAG) : mapToArray(map);
+  return arrayReduce(array, addMapEntry, new map.constructor);
+}
+
+module.exports = cloneMap;
+
+},{"./_addMapEntry":54,"./_arrayReduce":60,"./_mapToArray":134}],88:[function(require,module,exports){
+/** Used to match `RegExp` flags from their coerced string values. */
+var reFlags = /\w*$/;
+
+/**
+ * Creates a clone of `regexp`.
+ *
+ * @private
+ * @param {Object} regexp The regexp to clone.
+ * @returns {Object} Returns the cloned regexp.
+ */
+function cloneRegExp(regexp) {
+  var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
+  result.lastIndex = regexp.lastIndex;
+  return result;
+}
+
+module.exports = cloneRegExp;
+
+},{}],89:[function(require,module,exports){
+var addSetEntry = require('./_addSetEntry'),
+    arrayReduce = require('./_arrayReduce'),
+    setToArray = require('./_setToArray');
+
+/** Used to compose bitmasks for cloning. */
+var CLONE_DEEP_FLAG = 1;
+
+/**
+ * Creates a clone of `set`.
+ *
+ * @private
+ * @param {Object} set The set to clone.
+ * @param {Function} cloneFunc The function to clone values.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the cloned set.
+ */
+function cloneSet(set, isDeep, cloneFunc) {
+  var array = isDeep ? cloneFunc(setToArray(set), CLONE_DEEP_FLAG) : setToArray(set);
+  return arrayReduce(array, addSetEntry, new set.constructor);
+}
+
+module.exports = cloneSet;
+
+},{"./_addSetEntry":55,"./_arrayReduce":60,"./_setToArray":143}],90:[function(require,module,exports){
+var Symbol = require('./_Symbol');
+
+/** Used to convert symbols to primitives and strings. */
+var symbolProto = Symbol ? Symbol.prototype : undefined,
+    symbolValueOf = symbolProto ? symbolProto.valueOf : undefined;
+
+/**
+ * Creates a clone of the `symbol` object.
+ *
+ * @private
+ * @param {Object} symbol The symbol object to clone.
+ * @returns {Object} Returns the cloned symbol object.
+ */
+function cloneSymbol(symbol) {
+  return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
+}
+
+module.exports = cloneSymbol;
+
+},{"./_Symbol":51}],91:[function(require,module,exports){
+var cloneArrayBuffer = require('./_cloneArrayBuffer');
+
+/**
+ * Creates a clone of `typedArray`.
+ *
+ * @private
+ * @param {Object} typedArray The typed array to clone.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the cloned typed array.
+ */
+function cloneTypedArray(typedArray, isDeep) {
+  var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+  return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
+}
+
+module.exports = cloneTypedArray;
+
+},{"./_cloneArrayBuffer":84}],92:[function(require,module,exports){
+/**
+ * Copies the values of `source` to `array`.
+ *
+ * @private
+ * @param {Array} source The array to copy values from.
+ * @param {Array} [array=[]] The array to copy values to.
+ * @returns {Array} Returns `array`.
+ */
+function copyArray(source, array) {
+  var index = -1,
+      length = source.length;
+
+  array || (array = Array(length));
+  while (++index < length) {
+    array[index] = source[index];
+  }
+  return array;
+}
+
+module.exports = copyArray;
+
+},{}],93:[function(require,module,exports){
+var assignValue = require('./_assignValue'),
+    baseAssignValue = require('./_baseAssignValue');
+
+/**
+ * Copies properties of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy properties from.
+ * @param {Array} props The property identifiers to copy.
+ * @param {Object} [object={}] The object to copy properties to.
+ * @param {Function} [customizer] The function to customize copied values.
+ * @returns {Object} Returns `object`.
+ */
+function copyObject(source, props, object, customizer) {
+  var isNew = !object;
+  object || (object = {});
+
+  var index = -1,
+      length = props.length;
+
+  while (++index < length) {
+    var key = props[index];
+
+    var newValue = customizer
+      ? customizer(object[key], source[key], key, object, source)
+      : undefined;
+
+    if (newValue === undefined) {
+      newValue = source[key];
+    }
+    if (isNew) {
+      baseAssignValue(object, key, newValue);
+    } else {
+      assignValue(object, key, newValue);
+    }
+  }
+  return object;
+}
+
+module.exports = copyObject;
+
+},{"./_assignValue":61,"./_baseAssignValue":65}],94:[function(require,module,exports){
+var copyObject = require('./_copyObject'),
+    getSymbols = require('./_getSymbols');
+
+/**
+ * Copies own symbols of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy symbols from.
+ * @param {Object} [object={}] The object to copy symbols to.
+ * @returns {Object} Returns `object`.
+ */
+function copySymbols(source, object) {
+  return copyObject(source, getSymbols(source), object);
+}
+
+module.exports = copySymbols;
+
+},{"./_copyObject":93,"./_getSymbols":107}],95:[function(require,module,exports){
+var copyObject = require('./_copyObject'),
+    getSymbolsIn = require('./_getSymbolsIn');
+
+/**
+ * Copies own and inherited symbols of `source` to `object`.
+ *
+ * @private
+ * @param {Object} source The object to copy symbols from.
+ * @param {Object} [object={}] The object to copy symbols to.
+ * @returns {Object} Returns `object`.
+ */
+function copySymbolsIn(source, object) {
+  return copyObject(source, getSymbolsIn(source), object);
+}
+
+module.exports = copySymbolsIn;
+
+},{"./_copyObject":93,"./_getSymbolsIn":108}],96:[function(require,module,exports){
+var root = require('./_root');
+
+/** Used to detect overreaching core-js shims. */
+var coreJsData = root['__core-js_shared__'];
+
+module.exports = coreJsData;
+
+},{"./_root":142}],97:[function(require,module,exports){
+var isArrayLike = require('./isArrayLike');
+
+/**
+ * Creates a `baseEach` or `baseEachRight` function.
+ *
+ * @private
+ * @param {Function} eachFunc The function to iterate over a collection.
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseEach(eachFunc, fromRight) {
+  return function(collection, iteratee) {
+    if (collection == null) {
+      return collection;
+    }
+    if (!isArrayLike(collection)) {
+      return eachFunc(collection, iteratee);
+    }
+    var length = collection.length,
+        index = fromRight ? length : -1,
+        iterable = Object(collection);
+
+    while ((fromRight ? index-- : ++index < length)) {
+      if (iteratee(iterable[index], index, iterable) === false) {
+        break;
+      }
+    }
+    return collection;
+  };
+}
+
+module.exports = createBaseEach;
+
+},{"./isArrayLike":161}],98:[function(require,module,exports){
+/**
+ * Creates a base function for methods like `_.forIn` and `_.forOwn`.
+ *
+ * @private
+ * @param {boolean} [fromRight] Specify iterating from right to left.
+ * @returns {Function} Returns the new base function.
+ */
+function createBaseFor(fromRight) {
+  return function(object, iteratee, keysFunc) {
+    var index = -1,
+        iterable = Object(object),
+        props = keysFunc(object),
+        length = props.length;
+
+    while (length--) {
+      var key = props[fromRight ? length : ++index];
+      if (iteratee(iterable[key], key, iterable) === false) {
+        break;
+      }
+    }
+    return object;
+  };
+}
+
+module.exports = createBaseFor;
+
+},{}],99:[function(require,module,exports){
+var getNative = require('./_getNative');
+
+var defineProperty = (function() {
+  try {
+    var func = getNative(Object, 'defineProperty');
+    func({}, '', {});
+    return func;
+  } catch (e) {}
+}());
+
+module.exports = defineProperty;
+
+},{"./_getNative":104}],100:[function(require,module,exports){
+(function (global){
+/** Detect free variable `global` from Node.js. */
+var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
+
+module.exports = freeGlobal;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}],101:[function(require,module,exports){
+var baseGetAllKeys = require('./_baseGetAllKeys'),
+    getSymbols = require('./_getSymbols'),
+    keys = require('./keys');
+
+/**
+ * Creates an array of own enumerable property names and symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeys(object) {
+  return baseGetAllKeys(object, keys, getSymbols);
+}
+
+module.exports = getAllKeys;
+
+},{"./_baseGetAllKeys":72,"./_getSymbols":107,"./keys":169}],102:[function(require,module,exports){
+var baseGetAllKeys = require('./_baseGetAllKeys'),
+    getSymbolsIn = require('./_getSymbolsIn'),
+    keysIn = require('./keysIn');
+
+/**
+ * Creates an array of own and inherited enumerable property names and
+ * symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names and symbols.
+ */
+function getAllKeysIn(object) {
+  return baseGetAllKeys(object, keysIn, getSymbolsIn);
+}
+
+module.exports = getAllKeysIn;
+
+},{"./_baseGetAllKeys":72,"./_getSymbolsIn":108,"./keysIn":170}],103:[function(require,module,exports){
+var isKeyable = require('./_isKeyable');
+
+/**
+ * Gets the data for `map`.
+ *
+ * @private
+ * @param {Object} map The map to query.
+ * @param {string} key The reference key.
+ * @returns {*} Returns the map data.
+ */
+function getMapData(map, key) {
+  var data = map.__data__;
+  return isKeyable(key)
+    ? data[typeof key == 'string' ? 'string' : 'hash']
+    : data.map;
+}
+
+module.exports = getMapData;
+
+},{"./_isKeyable":121}],104:[function(require,module,exports){
+var baseIsNative = require('./_baseIsNative'),
+    getValue = require('./_getValue');
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+},{"./_baseIsNative":75,"./_getValue":110}],105:[function(require,module,exports){
+var overArg = require('./_overArg');
+
+/** Built-in value references. */
+var getPrototype = overArg(Object.getPrototypeOf, Object);
+
+module.exports = getPrototype;
+
+},{"./_overArg":141}],106:[function(require,module,exports){
+var Symbol = require('./_Symbol');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/** Built-in value references. */
+var symToStringTag = Symbol ? Symbol.toStringTag : undefined;
+
+/**
+ * A specialized version of `baseGetTag` which ignores `Symbol.toStringTag` values.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the raw `toStringTag`.
+ */
+function getRawTag(value) {
+  var isOwn = hasOwnProperty.call(value, symToStringTag),
+      tag = value[symToStringTag];
+
+  try {
+    value[symToStringTag] = undefined;
+    var unmasked = true;
+  } catch (e) {}
+
+  var result = nativeObjectToString.call(value);
+  if (unmasked) {
+    if (isOwn) {
+      value[symToStringTag] = tag;
+    } else {
+      delete value[symToStringTag];
+    }
+  }
+  return result;
+}
+
+module.exports = getRawTag;
+
+},{"./_Symbol":51}],107:[function(require,module,exports){
+var overArg = require('./_overArg'),
+    stubArray = require('./stubArray');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbols = nativeGetSymbols ? overArg(nativeGetSymbols, Object) : stubArray;
+
+module.exports = getSymbols;
+
+},{"./_overArg":141,"./stubArray":173}],108:[function(require,module,exports){
+var arrayPush = require('./_arrayPush'),
+    getPrototype = require('./_getPrototype'),
+    getSymbols = require('./_getSymbols'),
+    stubArray = require('./stubArray');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeGetSymbols = Object.getOwnPropertySymbols;
+
+/**
+ * Creates an array of the own and inherited enumerable symbols of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of symbols.
+ */
+var getSymbolsIn = !nativeGetSymbols ? stubArray : function(object) {
+  var result = [];
+  while (object) {
+    arrayPush(result, getSymbols(object));
+    object = getPrototype(object);
+  }
+  return result;
+};
+
+module.exports = getSymbolsIn;
+
+},{"./_arrayPush":59,"./_getPrototype":105,"./_getSymbols":107,"./stubArray":173}],109:[function(require,module,exports){
+var DataView = require('./_DataView'),
+    Map = require('./_Map'),
+    Promise = require('./_Promise'),
+    Set = require('./_Set'),
+    WeakMap = require('./_WeakMap'),
+    baseGetTag = require('./_baseGetTag'),
+    toSource = require('./_toSource');
+
+/** `Object#toString` result references. */
+var mapTag = '[object Map]',
+    objectTag = '[object Object]',
+    promiseTag = '[object Promise]',
+    setTag = '[object Set]',
+    weakMapTag = '[object WeakMap]';
+
+var dataViewTag = '[object DataView]';
+
+/** Used to detect maps, sets, and weakmaps. */
+var dataViewCtorString = toSource(DataView),
+    mapCtorString = toSource(Map),
+    promiseCtorString = toSource(Promise),
+    setCtorString = toSource(Set),
+    weakMapCtorString = toSource(WeakMap);
+
+/**
+ * Gets the `toStringTag` of `value`.
+ *
+ * @private
+ * @param {*} value The value to query.
+ * @returns {string} Returns the `toStringTag`.
+ */
+var getTag = baseGetTag;
+
+// Fallback for data views, maps, sets, and weak maps in IE 11 and promises in Node.js < 6.
+if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
+    (Map && getTag(new Map) != mapTag) ||
+    (Promise && getTag(Promise.resolve()) != promiseTag) ||
+    (Set && getTag(new Set) != setTag) ||
+    (WeakMap && getTag(new WeakMap) != weakMapTag)) {
+  getTag = function(value) {
+    var result = baseGetTag(value),
+        Ctor = result == objectTag ? value.constructor : undefined,
+        ctorString = Ctor ? toSource(Ctor) : '';
+
+    if (ctorString) {
+      switch (ctorString) {
+        case dataViewCtorString: return dataViewTag;
+        case mapCtorString: return mapTag;
+        case promiseCtorString: return promiseTag;
+        case setCtorString: return setTag;
+        case weakMapCtorString: return weakMapTag;
+      }
+    }
+    return result;
+  };
+}
+
+module.exports = getTag;
+
+},{"./_DataView":43,"./_Map":46,"./_Promise":48,"./_Set":49,"./_WeakMap":53,"./_baseGetTag":73,"./_toSource":151}],110:[function(require,module,exports){
+/**
+ * Gets the value at `key` of `object`.
+ *
+ * @private
+ * @param {Object} [object] The object to query.
+ * @param {string} key The key of the property to get.
+ * @returns {*} Returns the property value.
+ */
+function getValue(object, key) {
+  return object == null ? undefined : object[key];
+}
+
+module.exports = getValue;
+
+},{}],111:[function(require,module,exports){
+var nativeCreate = require('./_nativeCreate');
+
+/**
+ * Removes all key-value entries from the hash.
+ *
+ * @private
+ * @name clear
+ * @memberOf Hash
+ */
+function hashClear() {
+  this.__data__ = nativeCreate ? nativeCreate(null) : {};
+  this.size = 0;
+}
+
+module.exports = hashClear;
+
+},{"./_nativeCreate":136}],112:[function(require,module,exports){
+/**
+ * Removes `key` and its value from the hash.
+ *
+ * @private
+ * @name delete
+ * @memberOf Hash
+ * @param {Object} hash The hash to modify.
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function hashDelete(key) {
+  var result = this.has(key) && delete this.__data__[key];
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = hashDelete;
+
+},{}],113:[function(require,module,exports){
+var nativeCreate = require('./_nativeCreate');
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Gets the hash value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Hash
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function hashGet(key) {
+  var data = this.__data__;
+  if (nativeCreate) {
+    var result = data[key];
+    return result === HASH_UNDEFINED ? undefined : result;
+  }
+  return hasOwnProperty.call(data, key) ? data[key] : undefined;
+}
+
+module.exports = hashGet;
+
+},{"./_nativeCreate":136}],114:[function(require,module,exports){
+var nativeCreate = require('./_nativeCreate');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Checks if a hash value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Hash
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function hashHas(key) {
+  var data = this.__data__;
+  return nativeCreate ? data[key] !== undefined : hasOwnProperty.call(data, key);
+}
+
+module.exports = hashHas;
+
+},{"./_nativeCreate":136}],115:[function(require,module,exports){
+var nativeCreate = require('./_nativeCreate');
+
+/** Used to stand-in for `undefined` hash values. */
+var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+/**
+ * Sets the hash `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Hash
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the hash instance.
+ */
+function hashSet(key, value) {
+  var data = this.__data__;
+  this.size += this.has(key) ? 0 : 1;
+  data[key] = (nativeCreate && value === undefined) ? HASH_UNDEFINED : value;
+  return this;
+}
+
+module.exports = hashSet;
+
+},{"./_nativeCreate":136}],116:[function(require,module,exports){
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * Initializes an array clone.
+ *
+ * @private
+ * @param {Array} array The array to clone.
+ * @returns {Array} Returns the initialized clone.
+ */
+function initCloneArray(array) {
+  var length = array.length,
+      result = array.constructor(length);
+
+  // Add properties assigned by `RegExp#exec`.
+  if (length && typeof array[0] == 'string' && hasOwnProperty.call(array, 'index')) {
+    result.index = array.index;
+    result.input = array.input;
+  }
+  return result;
+}
+
+module.exports = initCloneArray;
+
+},{}],117:[function(require,module,exports){
+var cloneArrayBuffer = require('./_cloneArrayBuffer'),
+    cloneDataView = require('./_cloneDataView'),
+    cloneMap = require('./_cloneMap'),
+    cloneRegExp = require('./_cloneRegExp'),
+    cloneSet = require('./_cloneSet'),
+    cloneSymbol = require('./_cloneSymbol'),
+    cloneTypedArray = require('./_cloneTypedArray');
+
+/** `Object#toString` result references. */
+var boolTag = '[object Boolean]',
+    dateTag = '[object Date]',
+    mapTag = '[object Map]',
+    numberTag = '[object Number]',
+    regexpTag = '[object RegExp]',
+    setTag = '[object Set]',
+    stringTag = '[object String]',
+    symbolTag = '[object Symbol]';
+
+var arrayBufferTag = '[object ArrayBuffer]',
+    dataViewTag = '[object DataView]',
+    float32Tag = '[object Float32Array]',
+    float64Tag = '[object Float64Array]',
+    int8Tag = '[object Int8Array]',
+    int16Tag = '[object Int16Array]',
+    int32Tag = '[object Int32Array]',
+    uint8Tag = '[object Uint8Array]',
+    uint8ClampedTag = '[object Uint8ClampedArray]',
+    uint16Tag = '[object Uint16Array]',
+    uint32Tag = '[object Uint32Array]';
+
+/**
+ * Initializes an object clone based on its `toStringTag`.
+ *
+ * **Note:** This function only supports cloning values with tags of
+ * `Boolean`, `Date`, `Error`, `Number`, `RegExp`, or `String`.
+ *
+ * @private
+ * @param {Object} object The object to clone.
+ * @param {string} tag The `toStringTag` of the object to clone.
+ * @param {Function} cloneFunc The function to clone values.
+ * @param {boolean} [isDeep] Specify a deep clone.
+ * @returns {Object} Returns the initialized clone.
+ */
+function initCloneByTag(object, tag, cloneFunc, isDeep) {
+  var Ctor = object.constructor;
+  switch (tag) {
+    case arrayBufferTag:
+      return cloneArrayBuffer(object);
+
+    case boolTag:
+    case dateTag:
+      return new Ctor(+object);
+
+    case dataViewTag:
+      return cloneDataView(object, isDeep);
+
+    case float32Tag: case float64Tag:
+    case int8Tag: case int16Tag: case int32Tag:
+    case uint8Tag: case uint8ClampedTag: case uint16Tag: case uint32Tag:
+      return cloneTypedArray(object, isDeep);
+
+    case mapTag:
+      return cloneMap(object, isDeep, cloneFunc);
+
+    case numberTag:
+    case stringTag:
+      return new Ctor(object);
+
+    case regexpTag:
+      return cloneRegExp(object);
+
+    case setTag:
+      return cloneSet(object, isDeep, cloneFunc);
+
+    case symbolTag:
+      return cloneSymbol(object);
+  }
+}
+
+module.exports = initCloneByTag;
+
+},{"./_cloneArrayBuffer":84,"./_cloneDataView":86,"./_cloneMap":87,"./_cloneRegExp":88,"./_cloneSet":89,"./_cloneSymbol":90,"./_cloneTypedArray":91}],118:[function(require,module,exports){
+var baseCreate = require('./_baseCreate'),
+    getPrototype = require('./_getPrototype'),
+    isPrototype = require('./_isPrototype');
+
+/**
+ * Initializes an object clone.
+ *
+ * @private
+ * @param {Object} object The object to clone.
+ * @returns {Object} Returns the initialized clone.
+ */
+function initCloneObject(object) {
+  return (typeof object.constructor == 'function' && !isPrototype(object))
+    ? baseCreate(getPrototype(object))
+    : {};
+}
+
+module.exports = initCloneObject;
+
+},{"./_baseCreate":67,"./_getPrototype":105,"./_isPrototype":123}],119:[function(require,module,exports){
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/** Used to detect unsigned integer values. */
+var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+/**
+ * Checks if `value` is a valid array-like index.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+ * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+ */
+function isIndex(value, length) {
+  length = length == null ? MAX_SAFE_INTEGER : length;
+  return !!length &&
+    (typeof value == 'number' || reIsUint.test(value)) &&
+    (value > -1 && value % 1 == 0 && value < length);
+}
+
+module.exports = isIndex;
+
+},{}],120:[function(require,module,exports){
+var isArray = require('./isArray'),
+    isSymbol = require('./isSymbol');
+
+/** Used to match property names within property paths. */
+var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+    reIsPlainProp = /^\w*$/;
+
+/**
+ * Checks if `value` is a property name and not a property path.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @param {Object} [object] The object to query keys on.
+ * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+ */
+function isKey(value, object) {
+  if (isArray(value)) {
+    return false;
+  }
+  var type = typeof value;
+  if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+      value == null || isSymbol(value)) {
+    return true;
+  }
+  return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+    (object != null && value in Object(object));
+}
+
+module.exports = isKey;
+
+},{"./isArray":160,"./isSymbol":167}],121:[function(require,module,exports){
+/**
+ * Checks if `value` is suitable for use as unique object key.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is suitable, else `false`.
+ */
+function isKeyable(value) {
+  var type = typeof value;
+  return (type == 'string' || type == 'number' || type == 'symbol' || type == 'boolean')
+    ? (value !== '__proto__')
+    : (value === null);
+}
+
+module.exports = isKeyable;
+
+},{}],122:[function(require,module,exports){
+var coreJsData = require('./_coreJsData');
+
+/** Used to detect methods masquerading as native. */
+var maskSrcKey = (function() {
+  var uid = /[^.]+$/.exec(coreJsData && coreJsData.keys && coreJsData.keys.IE_PROTO || '');
+  return uid ? ('Symbol(src)_1.' + uid) : '';
+}());
+
+/**
+ * Checks if `func` has its source masked.
+ *
+ * @private
+ * @param {Function} func The function to check.
+ * @returns {boolean} Returns `true` if `func` is masked, else `false`.
+ */
+function isMasked(func) {
+  return !!maskSrcKey && (maskSrcKey in func);
+}
+
+module.exports = isMasked;
+
+},{"./_coreJsData":96}],123:[function(require,module,exports){
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Checks if `value` is likely a prototype object.
+ *
+ * @private
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+ */
+function isPrototype(value) {
+  var Ctor = value && value.constructor,
+      proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto;
+
+  return value === proto;
+}
+
+module.exports = isPrototype;
+
+},{}],124:[function(require,module,exports){
+/**
+ * Removes all key-value entries from the list cache.
+ *
+ * @private
+ * @name clear
+ * @memberOf ListCache
+ */
+function listCacheClear() {
+  this.__data__ = [];
+  this.size = 0;
+}
+
+module.exports = listCacheClear;
+
+},{}],125:[function(require,module,exports){
+var assocIndexOf = require('./_assocIndexOf');
+
+/** Used for built-in method references. */
+var arrayProto = Array.prototype;
+
+/** Built-in value references. */
+var splice = arrayProto.splice;
+
+/**
+ * Removes `key` and its value from the list cache.
+ *
+ * @private
+ * @name delete
+ * @memberOf ListCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function listCacheDelete(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    return false;
+  }
+  var lastIndex = data.length - 1;
+  if (index == lastIndex) {
+    data.pop();
+  } else {
+    splice.call(data, index, 1);
+  }
+  --this.size;
+  return true;
+}
+
+module.exports = listCacheDelete;
+
+},{"./_assocIndexOf":62}],126:[function(require,module,exports){
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Gets the list cache value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf ListCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function listCacheGet(key) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  return index < 0 ? undefined : data[index][1];
+}
+
+module.exports = listCacheGet;
+
+},{"./_assocIndexOf":62}],127:[function(require,module,exports){
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Checks if a list cache value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf ListCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function listCacheHas(key) {
+  return assocIndexOf(this.__data__, key) > -1;
+}
+
+module.exports = listCacheHas;
+
+},{"./_assocIndexOf":62}],128:[function(require,module,exports){
+var assocIndexOf = require('./_assocIndexOf');
+
+/**
+ * Sets the list cache `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf ListCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the list cache instance.
+ */
+function listCacheSet(key, value) {
+  var data = this.__data__,
+      index = assocIndexOf(data, key);
+
+  if (index < 0) {
+    ++this.size;
+    data.push([key, value]);
+  } else {
+    data[index][1] = value;
+  }
+  return this;
+}
+
+module.exports = listCacheSet;
+
+},{"./_assocIndexOf":62}],129:[function(require,module,exports){
+var Hash = require('./_Hash'),
+    ListCache = require('./_ListCache'),
+    Map = require('./_Map');
+
+/**
+ * Removes all key-value entries from the map.
+ *
+ * @private
+ * @name clear
+ * @memberOf MapCache
+ */
+function mapCacheClear() {
+  this.size = 0;
+  this.__data__ = {
+    'hash': new Hash,
+    'map': new (Map || ListCache),
+    'string': new Hash
+  };
+}
+
+module.exports = mapCacheClear;
+
+},{"./_Hash":44,"./_ListCache":45,"./_Map":46}],130:[function(require,module,exports){
+var getMapData = require('./_getMapData');
+
+/**
+ * Removes `key` and its value from the map.
+ *
+ * @private
+ * @name delete
+ * @memberOf MapCache
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function mapCacheDelete(key) {
+  var result = getMapData(this, key)['delete'](key);
+  this.size -= result ? 1 : 0;
+  return result;
+}
+
+module.exports = mapCacheDelete;
+
+},{"./_getMapData":103}],131:[function(require,module,exports){
+var getMapData = require('./_getMapData');
+
+/**
+ * Gets the map value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf MapCache
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function mapCacheGet(key) {
+  return getMapData(this, key).get(key);
+}
+
+module.exports = mapCacheGet;
+
+},{"./_getMapData":103}],132:[function(require,module,exports){
+var getMapData = require('./_getMapData');
+
+/**
+ * Checks if a map value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf MapCache
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function mapCacheHas(key) {
+  return getMapData(this, key).has(key);
+}
+
+module.exports = mapCacheHas;
+
+},{"./_getMapData":103}],133:[function(require,module,exports){
+var getMapData = require('./_getMapData');
+
+/**
+ * Sets the map `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf MapCache
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the map cache instance.
+ */
+function mapCacheSet(key, value) {
+  var data = getMapData(this, key),
+      size = data.size;
+
+  data.set(key, value);
+  this.size += data.size == size ? 0 : 1;
+  return this;
+}
+
+module.exports = mapCacheSet;
+
+},{"./_getMapData":103}],134:[function(require,module,exports){
+/**
+ * Converts `map` to its key-value pairs.
+ *
+ * @private
+ * @param {Object} map The map to convert.
+ * @returns {Array} Returns the key-value pairs.
+ */
+function mapToArray(map) {
+  var index = -1,
+      result = Array(map.size);
+
+  map.forEach(function(value, key) {
+    result[++index] = [key, value];
+  });
+  return result;
+}
+
+module.exports = mapToArray;
+
+},{}],135:[function(require,module,exports){
+var memoize = require('./memoize');
+
+/** Used as the maximum memoize cache size. */
+var MAX_MEMOIZE_SIZE = 500;
+
+/**
+ * A specialized version of `_.memoize` which clears the memoized function's
+ * cache when it exceeds `MAX_MEMOIZE_SIZE`.
+ *
+ * @private
+ * @param {Function} func The function to have its output memoized.
+ * @returns {Function} Returns the new memoized function.
+ */
+function memoizeCapped(func) {
+  var result = memoize(func, function(key) {
+    if (cache.size === MAX_MEMOIZE_SIZE) {
+      cache.clear();
+    }
+    return key;
+  });
+
+  var cache = result.cache;
+  return result;
+}
+
+module.exports = memoizeCapped;
+
+},{"./memoize":171}],136:[function(require,module,exports){
+var getNative = require('./_getNative');
+
+/* Built-in method references that are verified to be native. */
+var nativeCreate = getNative(Object, 'create');
+
+module.exports = nativeCreate;
+
+},{"./_getNative":104}],137:[function(require,module,exports){
+var overArg = require('./_overArg');
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeKeys = overArg(Object.keys, Object);
+
+module.exports = nativeKeys;
+
+},{"./_overArg":141}],138:[function(require,module,exports){
+/**
+ * This function is like
+ * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * except that it includes inherited enumerable properties.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ */
+function nativeKeysIn(object) {
+  var result = [];
+  if (object != null) {
+    for (var key in Object(object)) {
+      result.push(key);
+    }
+  }
+  return result;
+}
+
+module.exports = nativeKeysIn;
+
+},{}],139:[function(require,module,exports){
+var freeGlobal = require('./_freeGlobal');
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Detect free variable `process` from Node.js. */
+var freeProcess = moduleExports && freeGlobal.process;
+
+/** Used to access faster Node.js helpers. */
+var nodeUtil = (function() {
+  try {
+    return freeProcess && freeProcess.binding && freeProcess.binding('util');
+  } catch (e) {}
+}());
+
+module.exports = nodeUtil;
+
+},{"./_freeGlobal":100}],140:[function(require,module,exports){
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/**
+ * Used to resolve the
+ * [`toStringTag`](http://ecma-international.org/ecma-262/7.0/#sec-object.prototype.tostring)
+ * of values.
+ */
+var nativeObjectToString = objectProto.toString;
+
+/**
+ * Converts `value` to a string using `Object.prototype.toString`.
+ *
+ * @private
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ */
+function objectToString(value) {
+  return nativeObjectToString.call(value);
+}
+
+module.exports = objectToString;
+
+},{}],141:[function(require,module,exports){
+/**
+ * Creates a unary function that invokes `func` with its argument transformed.
+ *
+ * @private
+ * @param {Function} func The function to wrap.
+ * @param {Function} transform The argument transform.
+ * @returns {Function} Returns the new function.
+ */
+function overArg(func, transform) {
+  return function(arg) {
+    return func(transform(arg));
+  };
+}
+
+module.exports = overArg;
+
+},{}],142:[function(require,module,exports){
+var freeGlobal = require('./_freeGlobal');
+
+/** Detect free variable `self`. */
+var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
+
+/** Used as a reference to the global object. */
+var root = freeGlobal || freeSelf || Function('return this')();
+
+module.exports = root;
+
+},{"./_freeGlobal":100}],143:[function(require,module,exports){
+/**
+ * Converts `set` to an array of its values.
+ *
+ * @private
+ * @param {Object} set The set to convert.
+ * @returns {Array} Returns the values.
+ */
+function setToArray(set) {
+  var index = -1,
+      result = Array(set.size);
+
+  set.forEach(function(value) {
+    result[++index] = value;
+  });
+  return result;
+}
+
+module.exports = setToArray;
+
+},{}],144:[function(require,module,exports){
+var ListCache = require('./_ListCache');
+
+/**
+ * Removes all key-value entries from the stack.
+ *
+ * @private
+ * @name clear
+ * @memberOf Stack
+ */
+function stackClear() {
+  this.__data__ = new ListCache;
+  this.size = 0;
+}
+
+module.exports = stackClear;
+
+},{"./_ListCache":45}],145:[function(require,module,exports){
+/**
+ * Removes `key` and its value from the stack.
+ *
+ * @private
+ * @name delete
+ * @memberOf Stack
+ * @param {string} key The key of the value to remove.
+ * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+ */
+function stackDelete(key) {
+  var data = this.__data__,
+      result = data['delete'](key);
+
+  this.size = data.size;
+  return result;
+}
+
+module.exports = stackDelete;
+
+},{}],146:[function(require,module,exports){
+/**
+ * Gets the stack value for `key`.
+ *
+ * @private
+ * @name get
+ * @memberOf Stack
+ * @param {string} key The key of the value to get.
+ * @returns {*} Returns the entry value.
+ */
+function stackGet(key) {
+  return this.__data__.get(key);
+}
+
+module.exports = stackGet;
+
+},{}],147:[function(require,module,exports){
+/**
+ * Checks if a stack value for `key` exists.
+ *
+ * @private
+ * @name has
+ * @memberOf Stack
+ * @param {string} key The key of the entry to check.
+ * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+ */
+function stackHas(key) {
+  return this.__data__.has(key);
+}
+
+module.exports = stackHas;
+
+},{}],148:[function(require,module,exports){
+var ListCache = require('./_ListCache'),
+    Map = require('./_Map'),
+    MapCache = require('./_MapCache');
+
+/** Used as the size to enable large array optimizations. */
+var LARGE_ARRAY_SIZE = 200;
+
+/**
+ * Sets the stack `key` to `value`.
+ *
+ * @private
+ * @name set
+ * @memberOf Stack
+ * @param {string} key The key of the value to set.
+ * @param {*} value The value to set.
+ * @returns {Object} Returns the stack cache instance.
+ */
+function stackSet(key, value) {
+  var data = this.__data__;
+  if (data instanceof ListCache) {
+    var pairs = data.__data__;
+    if (!Map || (pairs.length < LARGE_ARRAY_SIZE - 1)) {
+      pairs.push([key, value]);
+      this.size = ++data.size;
+      return this;
+    }
+    data = this.__data__ = new MapCache(pairs);
+  }
+  data.set(key, value);
+  this.size = data.size;
+  return this;
+}
+
+module.exports = stackSet;
+
+},{"./_ListCache":45,"./_Map":46,"./_MapCache":47}],149:[function(require,module,exports){
+var memoizeCapped = require('./_memoizeCapped');
+
+/** Used to match property names within property paths. */
+var reLeadingDot = /^\./,
+    rePropName = /[^.[\]]+|\[(?:(-?\d+(?:\.\d+)?)|(["'])((?:(?!\2)[^\\]|\\.)*?)\2)\]|(?=(?:\.|\[\])(?:\.|\[\]|$))/g;
+
+/** Used to match backslashes in property paths. */
+var reEscapeChar = /\\(\\)?/g;
+
+/**
+ * Converts `string` to a property path array.
+ *
+ * @private
+ * @param {string} string The string to convert.
+ * @returns {Array} Returns the property path array.
+ */
+var stringToPath = memoizeCapped(function(string) {
+  var result = [];
+  if (reLeadingDot.test(string)) {
+    result.push('');
+  }
+  string.replace(rePropName, function(match, number, quote, string) {
+    result.push(quote ? string.replace(reEscapeChar, '$1') : (number || match));
+  });
+  return result;
+});
+
+module.exports = stringToPath;
+
+},{"./_memoizeCapped":135}],150:[function(require,module,exports){
+var isSymbol = require('./isSymbol');
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = toKey;
+
+},{"./isSymbol":167}],151:[function(require,module,exports){
+/** Used for built-in method references. */
+var funcProto = Function.prototype;
+
+/** Used to resolve the decompiled source of functions. */
+var funcToString = funcProto.toString;
+
+/**
+ * Converts `func` to its source code.
+ *
+ * @private
+ * @param {Function} func The function to convert.
+ * @returns {string} Returns the source code.
+ */
+function toSource(func) {
+  if (func != null) {
+    try {
+      return funcToString.call(func);
+    } catch (e) {}
+    try {
+      return (func + '');
+    } catch (e) {}
+  }
+  return '';
+}
+
+module.exports = toSource;
+
+},{}],152:[function(require,module,exports){
+var baseClone = require('./_baseClone');
+
+/** Used to compose bitmasks for cloning. */
+var CLONE_DEEP_FLAG = 1,
+    CLONE_SYMBOLS_FLAG = 4;
+
+/**
+ * This method is like `_.clone` except that it recursively clones `value`.
+ *
+ * @static
+ * @memberOf _
+ * @since 1.0.0
+ * @category Lang
+ * @param {*} value The value to recursively clone.
+ * @returns {*} Returns the deep cloned value.
+ * @see _.clone
+ * @example
+ *
+ * var objects = [{ 'a': 1 }, { 'b': 2 }];
+ *
+ * var deep = _.cloneDeep(objects);
+ * console.log(deep[0] === objects[0]);
+ * // => false
+ */
+function cloneDeep(value) {
+  return baseClone(value, CLONE_DEEP_FLAG | CLONE_SYMBOLS_FLAG);
+}
+
+module.exports = cloneDeep;
+
+},{"./_baseClone":66}],153:[function(require,module,exports){
+var isObject = require('./isObject'),
+    now = require('./now'),
+    toNumber = require('./toNumber');
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeMax = Math.max,
+    nativeMin = Math.min;
+
+/**
+ * Creates a debounced function that delays invoking `func` until after `wait`
+ * milliseconds have elapsed since the last time the debounced function was
+ * invoked. The debounced function comes with a `cancel` method to cancel
+ * delayed `func` invocations and a `flush` method to immediately invoke them.
+ * Provide `options` to indicate whether `func` should be invoked on the
+ * leading and/or trailing edge of the `wait` timeout. The `func` is invoked
+ * with the last arguments provided to the debounced function. Subsequent
+ * calls to the debounced function return the result of the last `func`
+ * invocation.
+ *
+ * **Note:** If `leading` and `trailing` options are `true`, `func` is
+ * invoked on the trailing edge of the timeout only if the debounced function
+ * is invoked more than once during the `wait` timeout.
+ *
+ * If `wait` is `0` and `leading` is `false`, `func` invocation is deferred
+ * until to the next tick, similar to `setTimeout` with a timeout of `0`.
+ *
+ * See [David Corbacho's article](https://css-tricks.com/debouncing-throttling-explained-examples/)
+ * for details over the differences between `_.debounce` and `_.throttle`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to debounce.
+ * @param {number} [wait=0] The number of milliseconds to delay.
+ * @param {Object} [options={}] The options object.
+ * @param {boolean} [options.leading=false]
+ *  Specify invoking on the leading edge of the timeout.
+ * @param {number} [options.maxWait]
+ *  The maximum time `func` is allowed to be delayed before it's invoked.
+ * @param {boolean} [options.trailing=true]
+ *  Specify invoking on the trailing edge of the timeout.
+ * @returns {Function} Returns the new debounced function.
+ * @example
+ *
+ * // Avoid costly calculations while the window size is in flux.
+ * jQuery(window).on('resize', _.debounce(calculateLayout, 150));
+ *
+ * // Invoke `sendMail` when clicked, debouncing subsequent calls.
+ * jQuery(element).on('click', _.debounce(sendMail, 300, {
+ *   'leading': true,
+ *   'trailing': false
+ * }));
+ *
+ * // Ensure `batchLog` is invoked once after 1 second of debounced calls.
+ * var debounced = _.debounce(batchLog, 250, { 'maxWait': 1000 });
+ * var source = new EventSource('/stream');
+ * jQuery(source).on('message', debounced);
+ *
+ * // Cancel the trailing debounced invocation.
+ * jQuery(window).on('popstate', debounced.cancel);
+ */
+function debounce(func, wait, options) {
+  var lastArgs,
+      lastThis,
+      maxWait,
+      result,
+      timerId,
+      lastCallTime,
+      lastInvokeTime = 0,
+      leading = false,
+      maxing = false,
+      trailing = true;
+
+  if (typeof func != 'function') {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  wait = toNumber(wait) || 0;
+  if (isObject(options)) {
+    leading = !!options.leading;
+    maxing = 'maxWait' in options;
+    maxWait = maxing ? nativeMax(toNumber(options.maxWait) || 0, wait) : maxWait;
+    trailing = 'trailing' in options ? !!options.trailing : trailing;
+  }
+
+  function invokeFunc(time) {
+    var args = lastArgs,
+        thisArg = lastThis;
+
+    lastArgs = lastThis = undefined;
+    lastInvokeTime = time;
+    result = func.apply(thisArg, args);
+    return result;
+  }
+
+  function leadingEdge(time) {
+    // Reset any `maxWait` timer.
+    lastInvokeTime = time;
+    // Start the timer for the trailing edge.
+    timerId = setTimeout(timerExpired, wait);
+    // Invoke the leading edge.
+    return leading ? invokeFunc(time) : result;
+  }
+
+  function remainingWait(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime,
+        result = wait - timeSinceLastCall;
+
+    return maxing ? nativeMin(result, maxWait - timeSinceLastInvoke) : result;
+  }
+
+  function shouldInvoke(time) {
+    var timeSinceLastCall = time - lastCallTime,
+        timeSinceLastInvoke = time - lastInvokeTime;
+
+    // Either this is the first call, activity has stopped and we're at the
+    // trailing edge, the system time has gone backwards and we're treating
+    // it as the trailing edge, or we've hit the `maxWait` limit.
+    return (lastCallTime === undefined || (timeSinceLastCall >= wait) ||
+      (timeSinceLastCall < 0) || (maxing && timeSinceLastInvoke >= maxWait));
+  }
+
+  function timerExpired() {
+    var time = now();
+    if (shouldInvoke(time)) {
+      return trailingEdge(time);
+    }
+    // Restart the timer.
+    timerId = setTimeout(timerExpired, remainingWait(time));
+  }
+
+  function trailingEdge(time) {
+    timerId = undefined;
+
+    // Only invoke if we have `lastArgs` which means `func` has been
+    // debounced at least once.
+    if (trailing && lastArgs) {
+      return invokeFunc(time);
+    }
+    lastArgs = lastThis = undefined;
+    return result;
+  }
+
+  function cancel() {
+    if (timerId !== undefined) {
+      clearTimeout(timerId);
+    }
+    lastInvokeTime = 0;
+    lastArgs = lastCallTime = lastThis = timerId = undefined;
+  }
+
+  function flush() {
+    return timerId === undefined ? result : trailingEdge(now());
+  }
+
+  function debounced() {
+    var time = now(),
+        isInvoking = shouldInvoke(time);
+
+    lastArgs = arguments;
+    lastThis = this;
+    lastCallTime = time;
+
+    if (isInvoking) {
+      if (timerId === undefined) {
+        return leadingEdge(lastCallTime);
+      }
+      if (maxing) {
+        // Handle invocations in a tight loop.
+        timerId = setTimeout(timerExpired, wait);
+        return invokeFunc(lastCallTime);
+      }
+    }
+    if (timerId === undefined) {
+      timerId = setTimeout(timerExpired, wait);
+    }
+    return result;
+  }
+  debounced.cancel = cancel;
+  debounced.flush = flush;
+  return debounced;
+}
+
+module.exports = debounce;
+
+},{"./isObject":165,"./now":172,"./toNumber":175}],154:[function(require,module,exports){
+module.exports = require('./forEach');
+
+},{"./forEach":156}],155:[function(require,module,exports){
+/**
+ * Performs a
+ * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+ * comparison between two values to determine if they are equivalent.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to compare.
+ * @param {*} other The other value to compare.
+ * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ * var other = { 'a': 1 };
+ *
+ * _.eq(object, object);
+ * // => true
+ *
+ * _.eq(object, other);
+ * // => false
+ *
+ * _.eq('a', 'a');
+ * // => true
+ *
+ * _.eq('a', Object('a'));
+ * // => false
+ *
+ * _.eq(NaN, NaN);
+ * // => true
+ */
+function eq(value, other) {
+  return value === other || (value !== value && other !== other);
+}
+
+module.exports = eq;
+
+},{}],156:[function(require,module,exports){
+var arrayEach = require('./_arrayEach'),
+    baseEach = require('./_baseEach'),
+    castFunction = require('./_castFunction'),
+    isArray = require('./isArray');
+
+/**
+ * Iterates over elements of `collection` and invokes `iteratee` for each element.
+ * The iteratee is invoked with three arguments: (value, index|key, collection).
+ * Iteratee functions may exit iteration early by explicitly returning `false`.
+ *
+ * **Note:** As with other "Collections" methods, objects with a "length"
+ * property are iterated like arrays. To avoid this behavior use `_.forIn`
+ * or `_.forOwn` for object iteration.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @alias each
+ * @category Collection
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ * @see _.forEachRight
+ * @example
+ *
+ * _.forEach([1, 2], function(value) {
+ *   console.log(value);
+ * });
+ * // => Logs `1` then `2`.
+ *
+ * _.forEach({ 'a': 1, 'b': 2 }, function(value, key) {
+ *   console.log(key);
+ * });
+ * // => Logs 'a' then 'b' (iteration order is not guaranteed).
+ */
+function forEach(collection, iteratee) {
+  var func = isArray(collection) ? arrayEach : baseEach;
+  return func(collection, castFunction(iteratee));
+}
+
+module.exports = forEach;
+
+},{"./_arrayEach":56,"./_baseEach":68,"./_castFunction":82,"./isArray":160}],157:[function(require,module,exports){
+var baseGet = require('./_baseGet');
+
+/**
+ * Gets the value at `path` of `object`. If the resolved value is
+ * `undefined`, the `defaultValue` is returned in its place.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.7.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path of the property to get.
+ * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+ * @returns {*} Returns the resolved value.
+ * @example
+ *
+ * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+ *
+ * _.get(object, 'a[0].b.c');
+ * // => 3
+ *
+ * _.get(object, ['a', '0', 'b', 'c']);
+ * // => 3
+ *
+ * _.get(object, 'a.b.c', 'default');
+ * // => 'default'
+ */
+function get(object, path, defaultValue) {
+  var result = object == null ? undefined : baseGet(object, path);
+  return result === undefined ? defaultValue : result;
+}
+
+module.exports = get;
+
+},{"./_baseGet":71}],158:[function(require,module,exports){
+/**
+ * This method returns the first argument it receives.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
+
+},{}],159:[function(require,module,exports){
+var baseIsArguments = require('./_baseIsArguments'),
+    isObjectLike = require('./isObjectLike');
+
+/** Used for built-in method references. */
+var objectProto = Object.prototype;
+
+/** Used to check objects for own properties. */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/** Built-in value references. */
+var propertyIsEnumerable = objectProto.propertyIsEnumerable;
+
+/**
+ * Checks if `value` is likely an `arguments` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+ *  else `false`.
+ * @example
+ *
+ * _.isArguments(function() { return arguments; }());
+ * // => true
+ *
+ * _.isArguments([1, 2, 3]);
+ * // => false
+ */
+var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+  return isObjectLike(value) && hasOwnProperty.call(value, 'callee') &&
+    !propertyIsEnumerable.call(value, 'callee');
+};
+
+module.exports = isArguments;
+
+},{"./_baseIsArguments":74,"./isObjectLike":166}],160:[function(require,module,exports){
+/**
+ * Checks if `value` is classified as an `Array` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+ * @example
+ *
+ * _.isArray([1, 2, 3]);
+ * // => true
+ *
+ * _.isArray(document.body.children);
+ * // => false
+ *
+ * _.isArray('abc');
+ * // => false
+ *
+ * _.isArray(_.noop);
+ * // => false
+ */
+var isArray = Array.isArray;
+
+module.exports = isArray;
+
+},{}],161:[function(require,module,exports){
+var isFunction = require('./isFunction'),
+    isLength = require('./isLength');
+
+/**
+ * Checks if `value` is array-like. A value is considered array-like if it's
+ * not a function and has a `value.length` that's an integer greater than or
+ * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+ * @example
+ *
+ * _.isArrayLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isArrayLike(document.body.children);
+ * // => true
+ *
+ * _.isArrayLike('abc');
+ * // => true
+ *
+ * _.isArrayLike(_.noop);
+ * // => false
+ */
+function isArrayLike(value) {
+  return value != null && isLength(value.length) && !isFunction(value);
+}
+
+module.exports = isArrayLike;
+
+},{"./isFunction":163,"./isLength":164}],162:[function(require,module,exports){
+var root = require('./_root'),
+    stubFalse = require('./stubFalse');
+
+/** Detect free variable `exports`. */
+var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+/** Detect free variable `module`. */
+var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
+
+/** Detect the popular CommonJS extension `module.exports`. */
+var moduleExports = freeModule && freeModule.exports === freeExports;
+
+/** Built-in value references. */
+var Buffer = moduleExports ? root.Buffer : undefined;
+
+/* Built-in method references for those with the same name as other `lodash` methods. */
+var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
+
+/**
+ * Checks if `value` is a buffer.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.3.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+ * @example
+ *
+ * _.isBuffer(new Buffer(2));
+ * // => true
+ *
+ * _.isBuffer(new Uint8Array(2));
+ * // => false
+ */
+var isBuffer = nativeIsBuffer || stubFalse;
+
+module.exports = isBuffer;
+
+},{"./_root":142,"./stubFalse":174}],163:[function(require,module,exports){
+var baseGetTag = require('./_baseGetTag'),
+    isObject = require('./isObject');
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+module.exports = isFunction;
+
+},{"./_baseGetTag":73,"./isObject":165}],164:[function(require,module,exports){
+/** Used as references for various `Number` constants. */
+var MAX_SAFE_INTEGER = 9007199254740991;
+
+/**
+ * Checks if `value` is a valid array-like length.
+ *
+ * **Note:** This method is loosely based on
+ * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+ * @example
+ *
+ * _.isLength(3);
+ * // => true
+ *
+ * _.isLength(Number.MIN_VALUE);
+ * // => false
+ *
+ * _.isLength(Infinity);
+ * // => false
+ *
+ * _.isLength('3');
+ * // => false
+ */
+function isLength(value) {
+  return typeof value == 'number' &&
+    value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER;
+}
+
+module.exports = isLength;
+
+},{}],165:[function(require,module,exports){
+/**
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(_.noop);
+ * // => true
+ *
+ * _.isObject(null);
+ * // => false
+ */
+function isObject(value) {
+  var type = typeof value;
+  return value != null && (type == 'object' || type == 'function');
+}
+
+module.exports = isObject;
+
+},{}],166:[function(require,module,exports){
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * _.isObjectLike({});
+ * // => true
+ *
+ * _.isObjectLike([1, 2, 3]);
+ * // => true
+ *
+ * _.isObjectLike(_.noop);
+ * // => false
+ *
+ * _.isObjectLike(null);
+ * // => false
+ */
+function isObjectLike(value) {
+  return value != null && typeof value == 'object';
+}
+
+module.exports = isObjectLike;
+
+},{}],167:[function(require,module,exports){
+var baseGetTag = require('./_baseGetTag'),
+    isObjectLike = require('./isObjectLike');
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+}
+
+module.exports = isSymbol;
+
+},{"./_baseGetTag":73,"./isObjectLike":166}],168:[function(require,module,exports){
+var baseIsTypedArray = require('./_baseIsTypedArray'),
+    baseUnary = require('./_baseUnary'),
+    nodeUtil = require('./_nodeUtil');
+
+/* Node.js helper references. */
+var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
+
+/**
+ * Checks if `value` is classified as a typed array.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+ * @example
+ *
+ * _.isTypedArray(new Uint8Array);
+ * // => true
+ *
+ * _.isTypedArray([]);
+ * // => false
+ */
+var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+module.exports = isTypedArray;
+
+},{"./_baseIsTypedArray":76,"./_baseUnary":81,"./_nodeUtil":139}],169:[function(require,module,exports){
+var arrayLikeKeys = require('./_arrayLikeKeys'),
+    baseKeys = require('./_baseKeys'),
+    isArrayLike = require('./isArrayLike');
+
+/**
+ * Creates an array of the own enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects. See the
+ * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+ * for more details.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keys(new Foo);
+ * // => ['a', 'b'] (iteration order is not guaranteed)
+ *
+ * _.keys('hi');
+ * // => ['0', '1']
+ */
+function keys(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+}
+
+module.exports = keys;
+
+},{"./_arrayLikeKeys":57,"./_baseKeys":77,"./isArrayLike":161}],170:[function(require,module,exports){
+var arrayLikeKeys = require('./_arrayLikeKeys'),
+    baseKeysIn = require('./_baseKeysIn'),
+    isArrayLike = require('./isArrayLike');
+
+/**
+ * Creates an array of the own and inherited enumerable property names of `object`.
+ *
+ * **Note:** Non-object values are coerced to objects.
+ *
+ * @static
+ * @memberOf _
+ * @since 3.0.0
+ * @category Object
+ * @param {Object} object The object to query.
+ * @returns {Array} Returns the array of property names.
+ * @example
+ *
+ * function Foo() {
+ *   this.a = 1;
+ *   this.b = 2;
+ * }
+ *
+ * Foo.prototype.c = 3;
+ *
+ * _.keysIn(new Foo);
+ * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+ */
+function keysIn(object) {
+  return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
+}
+
+module.exports = keysIn;
+
+},{"./_arrayLikeKeys":57,"./_baseKeysIn":78,"./isArrayLike":161}],171:[function(require,module,exports){
+var MapCache = require('./_MapCache');
+
+/** Error message constants. */
+var FUNC_ERROR_TEXT = 'Expected a function';
+
+/**
+ * Creates a function that memoizes the result of `func`. If `resolver` is
+ * provided, it determines the cache key for storing the result based on the
+ * arguments provided to the memoized function. By default, the first argument
+ * provided to the memoized function is used as the map cache key. The `func`
+ * is invoked with the `this` binding of the memoized function.
+ *
+ * **Note:** The cache is exposed as the `cache` property on the memoized
+ * function. Its creation may be customized by replacing the `_.memoize.Cache`
+ * constructor with one whose instances implement the
+ * [`Map`](http://ecma-international.org/ecma-262/7.0/#sec-properties-of-the-map-prototype-object)
+ * method interface of `clear`, `delete`, `get`, `has`, and `set`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Function
+ * @param {Function} func The function to have its output memoized.
+ * @param {Function} [resolver] The function to resolve the cache key.
+ * @returns {Function} Returns the new memoized function.
+ * @example
+ *
+ * var object = { 'a': 1, 'b': 2 };
+ * var other = { 'c': 3, 'd': 4 };
+ *
+ * var values = _.memoize(_.values);
+ * values(object);
+ * // => [1, 2]
+ *
+ * values(other);
+ * // => [3, 4]
+ *
+ * object.a = 2;
+ * values(object);
+ * // => [1, 2]
+ *
+ * // Modify the result cache.
+ * values.cache.set(object, ['a', 'b']);
+ * values(object);
+ * // => ['a', 'b']
+ *
+ * // Replace `_.memoize.Cache`.
+ * _.memoize.Cache = WeakMap;
+ */
+function memoize(func, resolver) {
+  if (typeof func != 'function' || (resolver != null && typeof resolver != 'function')) {
+    throw new TypeError(FUNC_ERROR_TEXT);
+  }
+  var memoized = function() {
+    var args = arguments,
+        key = resolver ? resolver.apply(this, args) : args[0],
+        cache = memoized.cache;
+
+    if (cache.has(key)) {
+      return cache.get(key);
+    }
+    var result = func.apply(this, args);
+    memoized.cache = cache.set(key, result) || cache;
+    return result;
+  };
+  memoized.cache = new (memoize.Cache || MapCache);
+  return memoized;
+}
+
+// Expose `MapCache`.
+memoize.Cache = MapCache;
+
+module.exports = memoize;
+
+},{"./_MapCache":47}],172:[function(require,module,exports){
+var root = require('./_root');
+
+/**
+ * Gets the timestamp of the number of milliseconds that have elapsed since
+ * the Unix epoch (1 January 1970 00:00:00 UTC).
+ *
+ * @static
+ * @memberOf _
+ * @since 2.4.0
+ * @category Date
+ * @returns {number} Returns the timestamp.
+ * @example
+ *
+ * _.defer(function(stamp) {
+ *   console.log(_.now() - stamp);
+ * }, _.now());
+ * // => Logs the number of milliseconds it took for the deferred invocation.
+ */
+var now = function() {
+  return root.Date.now();
+};
+
+module.exports = now;
+
+},{"./_root":142}],173:[function(require,module,exports){
+/**
+ * This method returns a new empty array.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {Array} Returns the new empty array.
+ * @example
+ *
+ * var arrays = _.times(2, _.stubArray);
+ *
+ * console.log(arrays);
+ * // => [[], []]
+ *
+ * console.log(arrays[0] === arrays[1]);
+ * // => false
+ */
+function stubArray() {
+  return [];
+}
+
+module.exports = stubArray;
+
+},{}],174:[function(require,module,exports){
+/**
+ * This method returns `false`.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.13.0
+ * @category Util
+ * @returns {boolean} Returns `false`.
+ * @example
+ *
+ * _.times(2, _.stubFalse);
+ * // => [false, false]
+ */
+function stubFalse() {
+  return false;
+}
+
+module.exports = stubFalse;
+
+},{}],175:[function(require,module,exports){
+var isObject = require('./isObject'),
+    isSymbol = require('./isSymbol');
+
+/** Used as references for various `Number` constants. */
+var NAN = 0 / 0;
+
+/** Used to match leading and trailing whitespace. */
+var reTrim = /^\s+|\s+$/g;
+
+/** Used to detect bad signed hexadecimal string values. */
+var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+/** Used to detect binary string values. */
+var reIsBinary = /^0b[01]+$/i;
+
+/** Used to detect octal string values. */
+var reIsOctal = /^0o[0-7]+$/i;
+
+/** Built-in method references without a dependency on `root`. */
+var freeParseInt = parseInt;
+
+/**
+ * Converts `value` to a number.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to process.
+ * @returns {number} Returns the number.
+ * @example
+ *
+ * _.toNumber(3.2);
+ * // => 3.2
+ *
+ * _.toNumber(Number.MIN_VALUE);
+ * // => 5e-324
+ *
+ * _.toNumber(Infinity);
+ * // => Infinity
+ *
+ * _.toNumber('3.2');
+ * // => 3.2
+ */
+function toNumber(value) {
+  if (typeof value == 'number') {
+    return value;
+  }
+  if (isSymbol(value)) {
+    return NAN;
+  }
+  if (isObject(value)) {
+    var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+    value = isObject(other) ? (other + '') : other;
+  }
+  if (typeof value != 'string') {
+    return value === 0 ? value : +value;
+  }
+  value = value.replace(reTrim, '');
+  var isBinary = reIsBinary.test(value);
+  return (isBinary || reIsOctal.test(value))
+    ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+    : (reIsBadHex.test(value) ? NAN : +value);
+}
+
+module.exports = toNumber;
+
+},{"./isObject":165,"./isSymbol":167}],176:[function(require,module,exports){
+var baseToString = require('./_baseToString');
+
+/**
+ * Converts `value` to a string. An empty string is returned for `null`
+ * and `undefined` values. The sign of `-0` is preserved.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to convert.
+ * @returns {string} Returns the converted string.
+ * @example
+ *
+ * _.toString(null);
+ * // => ''
+ *
+ * _.toString(-0);
+ * // => '-0'
+ *
+ * _.toString([1, 2, 3]);
+ * // => '1,2,3'
+ */
+function toString(value) {
+  return value == null ? '' : baseToString(value);
+}
+
+module.exports = toString;
+
+},{"./_baseToString":80}]},{},[36])(36)
+});
