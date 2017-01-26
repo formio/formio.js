@@ -4104,18 +4104,18 @@ var BaseComponent = function () {
     _classCallCheck(this, BaseComponent);
 
     this.id = Math.random().toString(36).substring(7);
-    this._events = events;
-    this._data = data || {};
-    this._component = component;
-    this._components = [];
-    this._element = null;
-    this._tbody = null;
-    this._label = null;
-    this._errorElement = null;
-    this._inputs = [];
-    this._info = null;
-    if (this._component) {
-      this._info = this.elementInfo();
+    this.events = events;
+    this.data = data || {};
+    this.component = component;
+    this.components = [];
+    this.element = null;
+    this.tbody = null;
+    this.label = null;
+    this.errorElement = null;
+    this.inputs = [];
+    this.info = null;
+    if (this.component) {
+      this.info = this.elementInfo();
     }
   }
 
@@ -4128,41 +4128,41 @@ var BaseComponent = function () {
     key: 'build',
     value: function build() {
       this.createElement();
-      this.createLabel(this._element);
+      this.createLabel(this.element);
       if (!this.createWrapper()) {
-        this.createInput(this._element);
+        this.createInput(this.element);
       }
     }
   }, {
     key: 'createElement',
     value: function createElement() {
-      this._element = this.ce('div');
-      this._element.setAttribute('class', this.className);
+      this.element = this.ce('div');
+      this.element.setAttribute('class', this.className);
     }
   }, {
     key: 'createWrapper',
     value: function createWrapper() {
-      if (!this._component.multiple) {
+      if (!this.component.multiple) {
         return false;
       } else {
         var table = this.ce('table');
         table.setAttribute('class', 'table table-bordered');
-        this._tbody = this.ce('tbody');
-        table.appendChild(this._tbody);
+        this.tbody = this.ce('tbody');
+        table.appendChild(this.tbody);
 
         // Add a default value.
         this.addValue();
 
         // Add the table to the element.
-        this._element.appendChild(table);
+        this.element.appendChild(table);
         return true;
       }
     }
   }, {
     key: 'defaultValue',
     value: function defaultValue() {
-      if (this._component.defaultValue) {
-        return this._component.defaultValue;
+      if (this.component.defaultValue) {
+        return this.component.defaultValue;
       }
       return '';
     }
@@ -4170,21 +4170,21 @@ var BaseComponent = function () {
     key: 'addValue',
     value: function addValue() {
       // Ensure we have the latest value.
-      this._data[this._component.key] = this.value;
-      if (!this._data[this._component.key]) {
-        this._data[this._component.key] = [];
+      this.data[this.component.key] = this.value;
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = [];
       }
-      if (!_isArray(this._data[this._component.key])) {
-        this._data[this._component.key] = [this._data[this._component.key]];
+      if (!_isArray(this.data[this.component.key])) {
+        this.data[this.component.key] = [this.data[this.component.key]];
       }
-      this._data[this._component.key].push(this.defaultValue());
+      this.data[this.component.key].push(this.defaultValue());
       this.buildRows();
     }
   }, {
     key: 'removeValue',
     value: function removeValue(index) {
-      if (this._data.hasOwnProperty(this._component.key)) {
-        this._data[this._component.key].splice(index, 1);
+      if (this.data.hasOwnProperty(this.component.key)) {
+        this.data[this.component.key].splice(index, 1);
       }
       this.buildRows();
     }
@@ -4193,12 +4193,12 @@ var BaseComponent = function () {
     value: function buildRows() {
       var _this = this;
 
-      if (!this._tbody) {
+      if (!this.tbody) {
         return;
       }
-      this._inputs = [];
-      this._tbody.innerHTML = '';
-      _each(this._data[this._component.key], function (value, index) {
+      this.inputs = [];
+      this.tbody.innerHTML = '';
+      _each(this.data[this.component.key], function (value, index) {
         var tr = _this.ce('tr');
         var td = _this.ce('td');
         _this.createInput(td);
@@ -4206,7 +4206,7 @@ var BaseComponent = function () {
         var tdAdd = _this.ce('td');
         tdAdd.appendChild(_this.removeButton(index));
         tr.appendChild(tdAdd);
-        _this._tbody.appendChild(tr);
+        _this.tbody.appendChild(tr);
       });
 
       var tr = this.ce('tr');
@@ -4214,10 +4214,10 @@ var BaseComponent = function () {
       td.setAttribute('colspan', '2');
       td.appendChild(this.addButton());
       tr.appendChild(td);
-      this._tbody.appendChild(tr);
+      this.tbody.appendChild(tr);
 
       // Reset the values of the inputs.
-      this.value = this._data[this._component.key];
+      this.value = this.data[this.component.key];
     }
   }, {
     key: 'addButton',
@@ -4234,7 +4234,7 @@ var BaseComponent = function () {
       var addIcon = this.ce('span');
       addIcon.setAttribute('class', 'glyphicon glyphicon-plus');
       addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this._component.addAnother || ' Add Another'));
+      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
       return addButton;
     }
   }, {
@@ -4261,32 +4261,32 @@ var BaseComponent = function () {
   }, {
     key: 'createLabel',
     value: function createLabel(container) {
-      if (!this._component.label) {
+      if (!this.component.label) {
         return;
       }
-      this._label = this.ce('label');
-      this._label.setAttribute('class', 'control-label');
-      if (this._info.attr.id) {
-        this._label.setAttribute('for', this._info.attr.id);
+      this.label = this.ce('label');
+      this.label.setAttribute('class', 'control-label');
+      if (this.info.attr.id) {
+        this.label.setAttribute('for', this.info.attr.id);
       }
-      this._label.appendChild(this.text(this._component.label));
-      container.appendChild(this._label);
+      this.label.appendChild(this.text(this.component.label));
+      container.appendChild(this.label);
     }
   }, {
     key: 'createErrorElement',
     value: function createErrorElement(container) {
-      this._errorElement = this.ce('div');
-      this._errorElement.setAttribute('class', 'formio-errors');
-      container.appendChild(this._errorElement);
+      this.errorElement = this.ce('div');
+      this.errorElement.setAttribute('class', 'formio-errors');
+      container.appendChild(this.errorElement);
     }
   }, {
     key: 'addPrefix',
     value: function addPrefix(input, inputGroup) {
       var prefix = null;
-      if (this._component.prefix) {
+      if (this.component.prefix) {
         prefix = this.ce('div');
         prefix.setAttribute('class', 'input-group-addon');
-        prefix.appendChild(this.text(this._component.prefix));
+        prefix.appendChild(this.text(this.component.prefix));
         inputGroup.appendChild(prefix);
       }
       return prefix;
@@ -4295,10 +4295,10 @@ var BaseComponent = function () {
     key: 'addSuffix',
     value: function addSuffix(input, inputGroup) {
       var suffix = null;
-      if (this._component.suffix) {
+      if (this.component.suffix) {
         suffix = this.ce('div');
         suffix.setAttribute('class', 'input-group-addon');
-        suffix.appendChild(this.text(this._component.suffix));
+        suffix.appendChild(this.text(this.component.suffix));
         inputGroup.appendChild(suffix);
       }
       return suffix;
@@ -4307,7 +4307,7 @@ var BaseComponent = function () {
     key: 'addInputGroup',
     value: function addInputGroup(input, container) {
       var inputGroup = null;
-      if (this._component.prefix || this._component.suffix) {
+      if (this.component.prefix || this.component.suffix) {
         inputGroup = this.ce('div');
         inputGroup.setAttribute('class', 'input-group');
         container.appendChild(inputGroup);
@@ -4317,9 +4317,9 @@ var BaseComponent = function () {
   }, {
     key: 'createInput',
     value: function createInput(container) {
-      var input = this.ce(this._info.type, this._info.attr);
-      if (this._component.inputMask) {
-        VMasker(input).maskPattern(this._component.inputMask);
+      var input = this.ce(this.info.type, this.info.attr);
+      if (this.component.inputMask) {
+        VMasker(input).maskPattern(this.component.inputMask);
       }
 
       var inputGroup = this.addInputGroup(input, container);
@@ -4437,7 +4437,7 @@ var BaseComponent = function () {
   }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
-      this.show(FormioUtils.checkCondition(this._component, this.value, data));
+      this.show(FormioUtils.checkCondition(this.component, this.value, data));
     }
 
     /**
@@ -4450,14 +4450,14 @@ var BaseComponent = function () {
       var _this4 = this;
 
       // No need to check for errors if there is no input.
-      if (!this._component.input) {
+      if (!this.component.input) {
         return;
       }
-      if (this._errorElement) {
-        this._errorElement.innerHTML = '';
+      if (this.errorElement) {
+        this.errorElement.innerHTML = '';
       }
-      this.removeClass(this._element, 'has-error');
-      _each(this._inputs, function (input) {
+      this.removeClass(this.element, 'has-error');
+      _each(this.inputs, function (input) {
         if (input.validationMessage) {
           _this4.addInputError(input.validationMessage);
         }
@@ -4472,12 +4472,12 @@ var BaseComponent = function () {
   }, {
     key: 'addInputError',
     value: function addInputError(message) {
-      if (this._errorElement) {
+      if (this.errorElement) {
         var errorMessage = this.ce('p');
         errorMessage.setAttribute('class', 'help-block');
         errorMessage.appendChild(this.text(message));
-        this._errorElement.appendChild(errorMessage);
-        this.addClass(this._element, 'has-error');
+        this.errorElement.appendChild(errorMessage);
+        this.addClass(this.element, 'has-error');
       }
     }
 
@@ -4490,19 +4490,19 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      if (this._element) {
+      if (this.element) {
         if (_show) {
-          this._element.removeAttribute('hidden');
+          this.element.removeAttribute('hidden');
         } else {
-          this._element.setAttribute('hidden', true);
+          this.element.setAttribute('hidden', true);
         }
       }
     }
   }, {
     key: 'onChange',
     value: function onChange() {
-      this._events.emit('componentChange', {
-        component: this._component,
+      this.events.emit('componentChange', {
+        component: this.component,
         value: this.value
       });
       this.checkErrors();
@@ -4522,8 +4522,8 @@ var BaseComponent = function () {
       var callChange = _debounce(function () {
         return _this5.onChange();
       }, 200);
-      this.addAnEventListener(input, this._info.changeEvent, function () {
-        _this5._data[_this5._component.key] = _this5.value;
+      this.addAnEventListener(input, this.info.changeEvent, function () {
+        _this5.data[_this5.component.key] = _this5.value;
         callChange();
       });
     }
@@ -4540,7 +4540,7 @@ var BaseComponent = function () {
     key: 'addInput',
     value: function addInput(input, container, name) {
       if (input && container) {
-        this._inputs.push(input);
+        this.inputs.push(input);
         input = container.appendChild(input);
         this.addInputEventListener(input);
       }
@@ -4556,7 +4556,7 @@ var BaseComponent = function () {
   }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
-      return this._inputs[index].value;
+      return this.inputs[index].value;
     }
 
     /**
@@ -4576,7 +4576,7 @@ var BaseComponent = function () {
      * @param value
      */
     value: function setValueAt(index, value) {
-      this._inputs[index].value = value;
+      this.inputs[index].value = value;
     }
 
     /**
@@ -4597,28 +4597,28 @@ var BaseComponent = function () {
       var _this6 = this;
 
       var style = '';
-      if (this._component.overlay) {
-        if (this._component.overlay.style) {
-          style = this._component.overlay.style;
+      if (this.component.overlay) {
+        if (this.component.overlay.style) {
+          style = this.component.overlay.style;
         }
-        if (this._component.overlay.top) {
-          style += 'top:' + this._component.overlay.top + 'px;';
+        if (this.component.overlay.top) {
+          style += 'top:' + this.component.overlay.top + 'px;';
         }
-        if (this._component.overlay.left) {
-          style += 'left:' + this._component.overlay.left + 'px;';
+        if (this.component.overlay.left) {
+          style += 'left:' + this.component.overlay.left + 'px;';
         }
-        if (this._component.overlay.width) {
-          style += 'width:' + this._component.overlay.width + 'px;';
+        if (this.component.overlay.width) {
+          style += 'width:' + this.component.overlay.width + 'px;';
         }
-        if (this._component.overlay.height) {
-          style += 'height:' + this._component.overlay.height + 'px;';
+        if (this.component.overlay.height) {
+          style += 'height:' + this.component.overlay.height + 'px;';
         }
       }
-      this.inputId = this._component.overlay ? this._component.overlay.id : this.id;
+      this.inputId = this.component.overlay ? this.component.overlay.id : this.id;
       var attributes = {
         id: this.inputId,
-        name: 'data[' + this._component.key + ']',
-        type: this._component.inputType || 'text',
+        name: 'data[' + this.component.key + ']',
+        type: this.component.inputType || 'text',
         style: style,
         class: 'form-control'
       };
@@ -4628,14 +4628,14 @@ var BaseComponent = function () {
         required: 'validate.required',
         maxLength: 'validate.maxLength'
       }, function (path, prop) {
-        var attrValue = _get(_this6._component, path);
+        var attrValue = _get(_this6.component, path);
         if (attrValue) {
           attributes[prop] = attrValue;
         }
       });
       return {
         type: 'input',
-        component: this._component,
+        component: this.component,
         changeEvent: 'change',
         attr: attributes
       };
@@ -4643,14 +4643,14 @@ var BaseComponent = function () {
   }, {
     key: 'className',
     get: function get() {
-      var className = this._component.input ? 'form-group has-feedback ' : '';
-      className += 'formio-component formio-component-' + this._component.type + ' ';
-      className += 'form-field-type-' + this._component.type + ' ';
-      className += 'formio-component-' + this._component.key + ' ';
-      if (this._component.customClass) {
-        className += this._component.customClass;
+      var className = this.component.input ? 'form-group has-feedback ' : '';
+      className += 'formio-component formio-component-' + this.component.type + ' ';
+      className += 'form-field-type-' + this.component.type + ' ';
+      className += 'formio-component-' + this.component.key + ' ';
+      if (this.component.customClass) {
+        className += this.component.customClass;
       }
-      if (this._component.input && this._component.validate && this._component.validate.required) {
+      if (this.component.input && this.component.validate && this.component.validate.required) {
         className += ' required';
       }
       return className;
@@ -4659,8 +4659,8 @@ var BaseComponent = function () {
     key: 'value',
     get: function get() {
       var values = [];
-      for (var i in this._inputs) {
-        if (!this._component.multiple) {
+      for (var i in this.inputs) {
+        if (!this.component.multiple) {
           return this.getValueAt(i);
         }
         values.push(this.getValueAt(i));
@@ -4669,7 +4669,7 @@ var BaseComponent = function () {
     },
     set: function set(value) {
       var isArray = _isArray(value);
-      for (var i in this._inputs) {
+      for (var i in this.inputs) {
         this.setValueAt(i, isArray ? value[i] : value);
       }
     }
@@ -4682,7 +4682,7 @@ var BaseComponent = function () {
     key: 'disable',
     set: function set(disable) {
       // Disable all input.
-      _each(this._inputs, function (input) {
+      _each(this.inputs, function (input) {
         input.disabled = disable;
         input.setAttribute('disabled', 'disabled');
       });
@@ -4723,9 +4723,9 @@ var ButtonComponent = function (_BaseComponent) {
     value: function elementInfo() {
       var info = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'button';
-      info.attr.type = this._component.action;
-      info.attr.class = 'btn btn-' + this._component.theme;
-      if (this._component.block) {
+      info.attr.type = this.component.action;
+      info.attr.class = 'btn btn-' + this.component.theme;
+      if (this.component.block) {
         info.attr.class += ' btn-block';
       }
       return info;
@@ -4733,10 +4733,10 @@ var ButtonComponent = function (_BaseComponent) {
   }, {
     key: 'build',
     value: function build() {
-      this._element = this.ce(this._info.type, this._info.attr);
-      if (this._component.label) {
-        this._label = this.text(this._component.label);
-        this._element.appendChild(this._label);
+      this.element = this.ce(this.info.type, this.info.attr);
+      if (this.component.label) {
+        this.label = this.text(this.component.label);
+        this.element.appendChild(this.label);
       }
     }
   }]);
@@ -4773,73 +4773,73 @@ var CheckBoxComponent = function (_BaseComponent) {
   _createClass(CheckBoxComponent, [{
     key: 'elementInfo',
     value: function elementInfo() {
-      if (this._component.overlay) {
-        this._component.overlay.width = 0;
-        this._component.overlay.height = 0;
+      if (this.component.overlay) {
+        this.component.overlay.width = 0;
+        this.component.overlay.height = 0;
       }
       var info = _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'input';
       info.changeEvent = 'click';
-      info.attr.type = this._component.inputType;
+      info.attr.type = this.component.inputType;
       info.attr.class = '';
-      if (this._component.name) {
-        info.attr.name = 'data[' + this._component.name + ']';
+      if (this.component.name) {
+        info.attr.name = 'data[' + this.component.name + ']';
       }
-      info.attr.value = this._component.value ? this._component.value : 0;
+      info.attr.value = this.component.value ? this.component.value : 0;
       return info;
     }
   }, {
     key: 'build',
     value: function build() {
-      if (!this._component.input) {
+      if (!this.component.input) {
         return;
       }
       this.createElement();
-      this.input = this.createInput(this._element);
-      this.createLabel(this._element, this.input);
-      if (!this._label) {
-        this.addInput(this.input, this._element);
+      this.input = this.createInput(this.element);
+      this.createLabel(this.element, this.input);
+      if (!this.label) {
+        this.addInput(this.input, this.element);
       }
     }
   }, {
     key: 'createElement',
     value: function createElement() {
-      this._element = this.ce('div');
+      this.element = this.ce('div');
       var className = 'form-group checkbox';
-      if (this._component.validate && this._component.validate.required) {
+      if (this.component.validate && this.component.validate.required) {
         className += ' required';
       }
-      this._element.setAttribute('class', className);
+      this.element.setAttribute('class', className);
     }
   }, {
     key: 'createLabel',
     value: function createLabel(container, input) {
-      if (!this._component.label) {
+      if (!this.component.label) {
         return null;
       }
-      this._label = this.ce('label');
-      this._label.setAttribute('class', 'control-label');
-      if (this._info.attr.id) {
-        this._label.setAttribute('for', this._info.attr.id);
+      this.label = this.ce('label');
+      this.label.setAttribute('class', 'control-label');
+      if (this.info.attr.id) {
+        this.label.setAttribute('for', this.info.attr.id);
       }
-      this._label.appendChild(input);
-      this._label.appendChild(document.createTextNode(this._component.label));
-      container.appendChild(this._label);
+      this.label.appendChild(input);
+      this.label.appendChild(document.createTextNode(this.component.label));
+      container.appendChild(this.label);
     }
   }, {
     key: 'createInput',
     value: function createInput(container) {
-      if (!this._component.input) {
+      if (!this.component.input) {
         return;
       }
-      var input = this.ce(this._info.type, this._info.attr);
+      var input = this.ce(this.info.type, this.info.attr);
       this.createErrorElement(container);
       return input;
     }
   }, {
     key: 'value',
     set: function set(value) {
-      if (this._component.inputType === 'radio') {
+      if (this.component.inputType === 'radio') {
         if (value === this.input.value) {
           this.input.checked = 1;
         }
@@ -4889,7 +4889,7 @@ var ColumnComponent = function (_FormioComponents) {
   _createClass(ColumnComponent, [{
     key: 'className',
     get: function get() {
-      return 'col col-sm-' + this._component.colWidth;
+      return 'col col-sm-' + this.component.colWidth;
     }
   }]);
 
@@ -4926,11 +4926,11 @@ var ColumnsComponent = function (_FormioComponents) {
     value: function addComponents() {
       var _this2 = this;
 
-      var colWidth = Math.floor(12 / this._component.columns.length);
-      _each(this._component.columns, function (column) {
+      var colWidth = Math.floor(12 / this.component.columns.length);
+      _each(this.component.columns, function (column) {
         column.type = 'column';
         column.colWidth = colWidth;
-        _this2.addComponent(column, _this2._element);
+        _this2.addComponent(column, _this2.element);
       });
     }
   }, {
@@ -4980,18 +4980,18 @@ var FormioComponents = function (_BaseComponent) {
     key: 'addComponent',
     value: function addComponent(component, element, data) {
       var components = require('./index');
-      var comp = components.create(component, this._events, data);
-      this._components.push(comp);
-      element.appendChild(comp._element);
+      var comp = components.create(component, this.events, data);
+      this.components.push(comp);
+      element.appendChild(comp.element);
     }
   }, {
     key: 'addComponents',
     value: function addComponents(element, data) {
       var _this2 = this;
 
-      element = element || this._element;
-      data = data || this._data;
-      _each(this._component.components, function (component) {
+      element = element || this.element;
+      data = data || this.data;
+      _each(this.component.components, function (component) {
         return _this2.addComponent(component, element, data);
       });
     }
@@ -4999,45 +4999,45 @@ var FormioComponents = function (_BaseComponent) {
     key: 'checkConditions',
     value: function checkConditions(data) {
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
-      _each(this._components, function (comp) {
+      _each(this.components, function (comp) {
         return comp.checkConditions(data);
       });
     }
   }, {
     key: 'assign',
     value: function assign(data) {
-      _each(this._components, function (component) {
-        if (!component._component) {
+      _each(this.components, function (component) {
+        if (!component.component) {
           return;
         }
-        if (!component._component.input && typeof component.assign === 'function') {
+        if (!component.component.input && typeof component.assign === 'function') {
           component.assign(data);
-        } else if (component._component.input) {
-          data[component._component.key] = component.value;
+        } else if (component.component.input) {
+          data[component.component.key] = component.value;
         }
       });
     }
   }, {
     key: 'getValue',
     value: function getValue() {
-      this.assign(this._data);
-      return this._data;
+      this.assign(this.data);
+      return this.data;
     }
   }, {
     key: 'setValue',
     value: function setValue(value) {
-      _each(this._components, function (component) {
+      _each(this.components, function (component) {
         if (typeof component.setValue === 'function') {
           component.setValue(value);
-        } else if (value.hasOwnProperty(component._component.key)) {
-          component.value = value[component._component.key];
+        } else if (value.hasOwnProperty(component.component.key)) {
+          component.value = value[component.component.key];
         }
       });
     }
   }, {
     key: 'disable',
     set: function set(disable) {
-      _each(this._components, function (component) {
+      _each(this.components, function (component) {
         return component.disable = disable;
       });
     }
@@ -5083,33 +5083,33 @@ var ContainerComponent = function (_FormioComponents) {
   _createClass(ContainerComponent, [{
     key: 'build',
     value: function build() {
-      this._element = this.ce('div');
-      this._element.setAttribute('class', 'formio-container-component');
-      if (!this._data[this._component.key]) {
-        this._data[this._component.key] = {};
+      this.element = this.ce('div');
+      this.element.setAttribute('class', 'formio-container-component');
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = {};
       }
-      this.addComponents(this._element, this._data[this._component.key]);
+      this.addComponents(this.element, this.data[this.component.key]);
     }
   }, {
     key: 'getValue',
     value: function getValue() {
-      this.assign(this._data[this._component.key]);
-      return this._data[this._component.key];
+      this.assign(this.data[this.component.key]);
+      return this.data[this.component.key];
     }
   }, {
     key: 'setValue',
     value: function setValue(value) {
       var _this2 = this;
 
-      if (!value.hasOwnProperty(this._component.key)) {
+      if (!value.hasOwnProperty(this.component.key)) {
         return;
       }
-      if (!_isObject(value[this._component.key])) {
+      if (!_isObject(value[this.component.key])) {
         return;
       }
-      _each(this._components, function (component) {
-        if (value.hasOwnProperty(component._component.key)) {
-          component.value = value[_this2._component.key][component._component.key];
+      _each(this.components, function (component) {
+        if (value.hasOwnProperty(component.component.key)) {
+          component.value = value[_this2.component.key][component.component.key];
         }
       });
     }
@@ -5145,9 +5145,9 @@ var ContentComponent = function (_BaseComponent) {
   _createClass(ContentComponent, [{
     key: 'build',
     value: function build() {
-      this._element = this.ce('div');
-      this._element.setAttribute('class', 'form-group');
-      this._element.innerHTML = this._component.html;
+      this.element = this.ce('div');
+      this.element.setAttribute('class', 'form-group');
+      this.element.innerHTML = this.component.html;
     }
   }]);
 
@@ -5186,20 +5186,20 @@ var DataGridComponent = function (_BaseComponent) {
     value: function build() {
       var _this2 = this;
 
-      this._element = this.ce('table');
-      this._element.setAttribute('class', 'form-group formio-data-grid');
+      this.element = this.ce('table');
+      this.element.setAttribute('class', 'form-group formio-data-grid');
       var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
       _each(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
-        if (_this2._component[prop]) {
+        if (_this2.component[prop]) {
           tableClass += 'table-' + prop + ' ';
         }
       });
-      this._element.setAttribute('class', tableClass);
+      this.element.setAttribute('class', tableClass);
       var thead = this.ce('thead');
 
       // Build the header.
       var tr = this.ce('tr');
-      _each(this._component.components, function (comp) {
+      _each(this.component.components, function (comp) {
         var th = _this2.ce('th');
         if (comp.validate && comp.validate.required) {
           th.setAttribute('class', 'field-required');
@@ -5210,16 +5210,16 @@ var DataGridComponent = function (_BaseComponent) {
       var th = this.ce('th');
       tr.appendChild(th);
       thead.appendChild(tr);
-      this._element.appendChild(thead);
+      this.element.appendChild(thead);
 
       // Create the table body.
-      this._tbody = this.ce('tbody');
+      this.tbody = this.ce('tbody');
 
       // Add a blank row.
       this.addValue();
 
       // Add the body to the table and to the element.
-      this._element.appendChild(this._tbody);
+      this.element.appendChild(this.tbody);
     }
   }, {
     key: 'defaultValue',
@@ -5232,17 +5232,17 @@ var DataGridComponent = function (_BaseComponent) {
       var _this3 = this;
 
       var components = require('./index');
-      this._tbody.innerHTML = '';
+      this.tbody.innerHTML = '';
       this.rows = [];
-      _each(this._data[this._component.key], function (row, index) {
+      _each(this.data[this.component.key], function (row, index) {
         var tr = _this3.ce('tr');
         var cols = [];
-        _each(_this3._component.components, function (col) {
+        _each(_this3.component.components, function (col) {
           var column = _cloneDeep(col);
           column.label = false;
           var td = _this3.ce('td');
-          var comp = components.create(column, _this3._events, row);
-          td.appendChild(comp._element);
+          var comp = components.create(column, _this3.events, row);
+          td.appendChild(comp.element);
           if (row.hasOwnProperty(column.key)) {
             comp.value = row[column.key];
           }
@@ -5253,16 +5253,16 @@ var DataGridComponent = function (_BaseComponent) {
         var td = _this3.ce('td');
         td.appendChild(_this3.removeButton(index));
         tr.appendChild(td);
-        _this3._tbody.appendChild(tr);
+        _this3.tbody.appendChild(tr);
       });
 
       // Add the add button.
       var tr = this.ce('tr');
       var td = this.ce('td');
-      td.setAttribute('colspan', this._component.components.length + 1);
+      td.setAttribute('colspan', this.component.components.length + 1);
       td.appendChild(this.addButton());
       tr.appendChild(td);
-      this._tbody.appendChild(tr);
+      this.tbody.appendChild(tr);
     }
   }, {
     key: 'value',
@@ -5297,8 +5297,8 @@ var DataGridComponent = function (_BaseComponent) {
       _each(this.rows, function (row) {
         var value = {};
         _each(row, function (col) {
-          if (col && col._component && col._component.key) {
-            value[col._component.key] = col.value;
+          if (col && col.component && col.component.key) {
+            value[col.component.key] = col.value;
           }
         });
         values.push(value);
@@ -5345,7 +5345,7 @@ var DateTimeComponent = function (_BaseComponent) {
       info.type = 'input';
       info.attr.type = 'text';
       info.changeEvent = 'input';
-      this._component.suffix = true;
+      this.component.suffix = true;
       return info;
     }
 
@@ -5391,7 +5391,7 @@ var DateTimeComponent = function (_BaseComponent) {
     value: function addSuffix(input, inputGroup) {
       var suffix = this.ce('span');
       suffix.setAttribute('class', 'input-group-addon');
-      if (this._component.enableDate) {
+      if (this.component.enableDate) {
         var calendar = this.ce('i');
         calendar.setAttribute('class', 'glyphicon glyphicon-calendar');
         suffix.appendChild(calendar);
@@ -5411,6 +5411,16 @@ var DateTimeComponent = function (_BaseComponent) {
       input.calendar = new Flatpickr(input, this.config);
     }
   }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      var timestamp = this.inputs[index].value;
+      if (!timestamp) {
+        // Just default to today.
+        return new Date().toISOString();
+      }
+      return new Date(parseInt(timestamp, 10) * 1000).toISOString();
+    }
+  }, {
     key: 'config',
     get: function get() {
       var _this2 = this;
@@ -5419,13 +5429,13 @@ var DateTimeComponent = function (_BaseComponent) {
         altInput: true,
         clickOpens: true,
         enableDate: true,
-        mode: this._component.multiple ? 'multiple' : 'single',
-        enableTime: _get(this._component, 'enableTime', true),
-        noCalendar: !_get(this._component, 'enableDate', true),
-        altFormat: this.convertFormat(_get(this._component, 'format', '')),
+        mode: this.component.multiple ? 'multiple' : 'single',
+        enableTime: _get(this.component, 'enableTime', true),
+        noCalendar: !_get(this.component, 'enableDate', true),
+        altFormat: this.convertFormat(_get(this.component, 'format', '')),
         dateFormat: 'U',
-        defaultDate: _get(this._component, 'defaultDate', ''),
-        hourIncrement: _get(this._component, 'timePicker.hourStep', 1),
+        defaultDate: _get(this.component, 'defaultDate', ''),
+        hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
         minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
         onChange: function onChange() {
           return _this2.onChange();
@@ -5492,15 +5502,15 @@ var HTMLComponent = function (_BaseComponent) {
     value: function build() {
       var _this2 = this;
 
-      this._element = this.ce(this._component.tag);
-      if (this._component.className) {
-        this._element.setAttribute('class', this._component.className);
+      this.element = this.ce(this.component.tag);
+      if (this.component.className) {
+        this.element.setAttribute('class', this.component.className);
       }
-      _each(this._component.attrs, function (attr) {
-        _this2._element.setAttribute(attr.attr, attr.value);
+      _each(this.component.attrs, function (attr) {
+        _this2.element.setAttribute(attr.attr, attr.value);
       });
-      if (this._component.content) {
-        this._element.innerHTML = this._component.content;
+      if (this.component.content) {
+        this.element.innerHTML = this.component.content;
       }
     }
   }]);
@@ -5581,15 +5591,15 @@ var NumberComponent = function (_BaseComponent) {
       info.type = 'input';
       info.attr.type = 'number';
       info.changeEvent = 'input';
-      if (this._component.validate) {
-        if (this._component.validate.min !== '') {
-          info.attr.min = this._component.validate.min;
+      if (this.component.validate) {
+        if (this.component.validate.min !== '') {
+          info.attr.min = this.component.validate.min;
         }
-        if (this._component.validate.max !== '') {
-          info.attr.max = this._component.validate.max;
+        if (this.component.validate.max !== '') {
+          info.attr.max = this.component.validate.max;
         }
-        if (this._component.step !== '') {
-          info.attr.step = this._component.validate.step;
+        if (this.component.step !== '') {
+          info.attr.step = this.component.validate.step;
         }
       }
       return info;
@@ -5597,19 +5607,19 @@ var NumberComponent = function (_BaseComponent) {
   }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
-      if (this._component.validate && this._component.validate.integer) {
-        return parseInt(this._inputs[index].value, 10);
+      if (this.component.validate && this.component.validate.integer) {
+        return parseInt(this.inputs[index].value, 10);
       } else {
-        return parseFloat(this._inputs[index].value);
+        return parseFloat(this.inputs[index].value);
       }
     }
   }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
-      if (this._component.validate && this._component.validate.integer) {
-        this._inputs[index].value = parseInt(value, 10);
+      if (this.component.validate && this.component.validate.integer) {
+        this.inputs[index].value = parseInt(value, 10);
       } else {
-        this._inputs[index].value = parseFloat(value);
+        this.inputs[index].value = parseFloat(value);
       }
     }
   }]);
@@ -5644,21 +5654,21 @@ var PanelComponent = function (_FormioComponents) {
   _createClass(PanelComponent, [{
     key: 'build',
     value: function build() {
-      this._element = this.ce('div');
-      this._element.setAttribute('class', 'panel panel-' + this._component.theme);
-      if (this._component.title) {
+      this.element = this.ce('div');
+      this.element.setAttribute('class', 'panel panel-' + this.component.theme);
+      if (this.component.title) {
         var heading = this.ce('div');
         heading.setAttribute('class', 'panel-heading');
         var title = this.ce('h3');
         title.setAttribute('class', 'panel-title');
-        title.appendChild(this.text(this._component.title));
+        title.appendChild(this.text(this.component.title));
         heading.appendChild(title);
-        this._element.appendChild(heading);
+        this.element.appendChild(heading);
       }
       var body = this.ce('div');
       body.setAttribute('class', 'panel-body');
       this.addComponents(body);
-      this._element.appendChild(body);
+      this.element.appendChild(body);
     }
   }]);
 
@@ -5771,23 +5781,23 @@ var RadioComponent = function (_BaseComponent) {
 
       var inputGroup = this.ce('div');
       inputGroup.setAttribute('class', 'input-group');
-      var inputType = this._component.inputType;
-      _each(this._component.values, function (value) {
+      var inputType = this.component.inputType;
+      _each(this.component.values, function (value) {
         var labelWrapper = _this2.ce('div');
-        var wrapperClass = _this2._component.inline ? inputType + '-inline' : inputType;
+        var wrapperClass = _this2.component.inline ? inputType + '-inline' : inputType;
         labelWrapper.setAttribute('class', wrapperClass);
         var label = _this2.ce('label');
         label.setAttribute('class', 'control-label');
 
         // Determine the attributes for this input.
         var inputId = _this2.inputId + '-' + value.value;
-        _this2._info.attr.id = inputId;
-        _this2._info.attr.value = value.value;
-        label.setAttribute('for', _this2._info.attr.id);
+        _this2.info.attr.id = inputId;
+        _this2.info.attr.value = value.value;
+        label.setAttribute('for', _this2.info.attr.id);
 
         // Create the input.
         var input = _this2.ce('input');
-        _each(_this2._info.attr, function (value, key) {
+        _each(_this2.info.attr, function (value, key) {
           input.setAttribute(key, value);
         });
         _this2.addInput(input, label, value.value);
@@ -5802,7 +5812,7 @@ var RadioComponent = function (_BaseComponent) {
     value: function addInputEventListener(input) {
       var _this3 = this;
 
-      this.addAnEventListener(input, this._info.changeEvent, function () {
+      this.addAnEventListener(input, this.info.changeEvent, function () {
         if (input.value) {
           _this3.onChange();
         }
@@ -5812,7 +5822,7 @@ var RadioComponent = function (_BaseComponent) {
     key: 'value',
     get: function get() {
       var value = '';
-      _each(this._inputs, function (input) {
+      _each(this.inputs, function (input) {
         if (input.checked) {
           value = input.value;
         }
@@ -5820,7 +5830,7 @@ var RadioComponent = function (_BaseComponent) {
       return value;
     },
     set: function set(value) {
-      _each(this._inputs, function (input) {
+      _each(this.inputs, function (input) {
         input.checked = input.value === value;
       });
     }
@@ -5873,17 +5883,17 @@ var SelectComponent = function (_BaseComponent) {
 
       var input = _get(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'createInput', this).call(this, container);
       this.selectItems = [];
-      var template = this._component.template ? this._component.template.split('.')[1].split(' ')[0] : '';
-      var valueProperty = this._component.valueProperty;
+      var template = this.component.template ? this.component.template.split('.')[1].split(' ')[0] : '';
+      var valueProperty = this.component.valueProperty;
 
       (function () {
-        switch (_this2._component.dataSrc) {
+        switch (_this2.component.dataSrc) {
           case 'values':
-            _this2.selectItems = _this2._component.data.values;
+            _this2.selectItems = _this2.component.data.values;
             _this2.updateOptions(input);
             break;
           case 'json':
-            _each(_this2._component.data.json, function (item) {
+            _each(_this2.component.data.json, function (item) {
               _this2.selectItems.push({
                 value: item[valueProperty],
                 label: item[template]
@@ -5892,7 +5902,7 @@ var SelectComponent = function (_BaseComponent) {
             _this2.updateOptions(input);
             break;
           case 'resource':
-            var baseUrl = Formio.getAppUrl() + '/' + _this2._component.data.resource;
+            var baseUrl = Formio.getAppUrl() + '/' + _this2.component.data.resource;
             var value = valueProperty.split('.')[1];
             new FormioService(baseUrl).loadSubmissions().then(function (submissions) {
               _each(submissions, function (submission) {
@@ -5905,7 +5915,7 @@ var SelectComponent = function (_BaseComponent) {
             });
             break;
           case 'url':
-            Formio.request(_this2._component.data.url).then(function (response) {
+            Formio.request(_this2.component.data.url).then(function (response) {
               _each(response, function (item) {
                 _this2.selectItems.push({
                   value: item[valueProperty],
@@ -5963,7 +5973,7 @@ var SelectBoxesComponent = function (_RadioComponent) {
 
     var _this = _possibleConstructorReturn(this, (SelectBoxesComponent.__proto__ || Object.getPrototypeOf(SelectBoxesComponent)).call(this, component, events, data));
 
-    _this._component.inputType = 'checkbox';
+    _this.component.inputType = 'checkbox';
     return _this;
   }
 
@@ -5979,7 +5989,7 @@ var SelectBoxesComponent = function (_RadioComponent) {
     key: 'value',
     get: function get() {
       var value = [];
-      _each(this._inputs, function (input) {
+      _each(this.inputs, function (input) {
         if (input.checked) {
           value.push(input.value);
         }
@@ -5987,7 +5997,7 @@ var SelectBoxesComponent = function (_RadioComponent) {
       return value;
     },
     set: function set(value) {
-      _each(this._inputs, function (input) {
+      _each(this.inputs, function (input) {
         input.checked = value.indexOf(input.value) !== -1;
       });
     }
@@ -6038,13 +6048,13 @@ var SignatureComponent = function (_BaseComponent) {
     value: function build() {
       var _this2 = this;
 
-      this._element = this.ce('div');
-      this._element.setAttribute('id', this.id);
-      this._element.setAttribute('class', 'form-group signature-pad');
-      this.input = this.createInput(this._element);
+      this.element = this.ce('div');
+      this.element.setAttribute('id', this.id);
+      this.element.setAttribute('class', 'form-group signature-pad');
+      this.input = this.createInput(this.element);
       var padBody = this.ce('div');
       padBody.setAttribute('class', 'signature-pad-body');
-      padBody.setAttribute('style', 'width: ' + this._component.width + ';height: ' + this._component.height);
+      padBody.setAttribute('style', 'width: ' + this.component.width + ';height: ' + this.component.height);
 
       // Create the refresh button.
       var refresh = this.ce('a');
@@ -6058,22 +6068,22 @@ var SignatureComponent = function (_BaseComponent) {
       var canvas = this.ce('canvas');
       canvas.setAttribute('class', 'signature-pad-canvas');
       padBody.appendChild(canvas);
-      this._element.appendChild(padBody);
+      this.element.appendChild(padBody);
 
       // Add the footer.
-      if (this._component.footer) {
+      if (this.component.footer) {
         var footer = this.ce('div');
         footer.setAttribute('class', 'signature-pad-footer');
-        footer.appendChild(this.text(this._component.footer));
-        this._element.appendChild(footer);
+        footer.appendChild(this.text(this.component.footer));
+        this.element.appendChild(footer);
       }
 
       // Create the signature pad.
       this.signaturePad = new SignaturePad(canvas, {
-        minWidth: this._component.minWidth,
-        maxWidth: this._component.maxWidth,
-        penColor: this._component.penColor,
-        backgroundColor: this._component.backgroundColor
+        minWidth: this.component.minWidth,
+        maxWidth: this.component.maxWidth,
+        penColor: this.component.penColor,
+        backgroundColor: this.component.backgroundColor
       });
       refresh.addEventListener("click", function (event) {
         event.preventDefault();
@@ -6081,9 +6091,9 @@ var SignatureComponent = function (_BaseComponent) {
       });
       this.signaturePad.onEnd = function () {
         var signatureValue = _this2.signaturePad.toDataURL();
-        _this2._noSign = true;
+        _this2.noSign = true;
         _this2.value = signatureValue;
-        _this2._noSign = false;
+        _this2.noSign = false;
         _this2.onChange();
       };
 
@@ -6104,7 +6114,7 @@ var SignatureComponent = function (_BaseComponent) {
     key: 'value',
     set: function set(value) {
       _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'value', value, this);
-      if (this.signaturePad && this._noSign) {
+      if (this.signaturePad && this.noSign) {
         this.signaturePad.fromDataURL(value);
       }
     }
@@ -6114,9 +6124,9 @@ var SignatureComponent = function (_BaseComponent) {
       _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disable', disable, this);
       var image = this.ce('img');
       image.setAttribute('src', this.input.value);
-      image.setAttribute('style', 'width: ' + this._component.width + ';height: ' + this._component.height);
-      this._element.innerHTML = '';
-      this._element.appendChild(image);
+      image.setAttribute('style', 'width: ' + this.component.width + ';height: ' + this.component.height);
+      this.element.innerHTML = '';
+      this.element.appendChild(image);
     }
   }]);
 
@@ -6154,7 +6164,7 @@ var SurveyComponent = function (_BaseComponent) {
       var _this2 = this;
 
       this.createElement();
-      this.createLabel(this._element);
+      this.createLabel(this.element);
       this.table = this.ce('table');
       this.table.setAttribute('class', 'table table-striped table-bordered');
 
@@ -6162,7 +6172,7 @@ var SurveyComponent = function (_BaseComponent) {
       var thead = this.ce('thead');
       var thr = this.ce('tr');
       thr.append(this.ce('td'));
-      _each(this._component.values, function (value) {
+      _each(this.component.values, function (value) {
         var th = _this2.ce('th');
         th.setAttribute('style', 'text-align: center;');
         th.appendChild(_this2.text(value.label));
@@ -6173,17 +6183,17 @@ var SurveyComponent = function (_BaseComponent) {
 
       // Build the body.
       var tbody = this.ce('tbody');
-      _each(this._component.questions, function (question) {
+      _each(this.component.questions, function (question) {
         var tr = _this2.ce('tr');
         var td = _this2.ce('td');
         td.appendChild(_this2.text(question.label));
         tr.appendChild(td);
-        _each(_this2._component.values, function (value) {
+        _each(_this2.component.values, function (value) {
           var td = _this2.ce('td');
           td.setAttribute('style', 'text-align: center;');
           var input = _this2.ce('input');
           input.setAttribute('type', 'radio');
-          input.setAttribute('name', 'data[' + _this2._component.key + '][' + question.value + ']');
+          input.setAttribute('name', 'data[' + _this2.component.key + '][' + question.value + ']');
           input.setAttribute('id', _this2.id + '-' + question.value);
           _this2.addInput(input);
           td.appendChild(input);
@@ -6192,7 +6202,7 @@ var SurveyComponent = function (_BaseComponent) {
         tbody.appendChild(tr);
       });
       this.table.appendChild(tbody);
-      this._element.appendChild(this.table);
+      this.element.appendChild(this.table);
     }
   }]);
 
@@ -6229,22 +6239,22 @@ var TableComponent = function (_FormioComponents) {
     value: function build() {
       var _this2 = this;
 
-      this._element = this.ce('div');
-      this._element.setAttribute('class', 'table-responsive');
+      this.element = this.ce('div');
+      this.element.setAttribute('class', 'table-responsive');
       var table = this.ce('table');
       var tableClass = 'table ';
       _each(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
-        if (_this2._component[prop]) {
+        if (_this2.component[prop]) {
           tableClass += 'table-' + prop + ' ';
         }
       });
       table.setAttribute('class', tableClass);
 
       // Build the header.
-      if (this._component.header && this._component.header.length) {
+      if (this.component.header && this.component.header.length) {
         (function () {
           var thead = _this2.ce('thead');
-          _each(_this2._component.header, function (header) {
+          _each(_this2.component.header, function (header) {
             var th = _this2.ce('th');
             th.appendChild(_this2.text(header));
             thead.appendChild(th);
@@ -6255,7 +6265,7 @@ var TableComponent = function (_FormioComponents) {
 
       // Build the body.
       var tbody = this.ce('tbody');
-      _each(this._component.rows, function (row) {
+      _each(this.component.rows, function (row) {
         var tr = _this2.ce('tr');
         _each(row, function (column) {
           var td = _this2.ce('td');
@@ -6267,7 +6277,7 @@ var TableComponent = function (_FormioComponents) {
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
-      this._element.appendChild(table);
+      this.element.appendChild(table);
     }
   }]);
 
@@ -6305,8 +6315,8 @@ var TextAreaComponent = function (_TextFieldComponent) {
     value: function elementInfo() {
       var info = _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'textarea';
-      if (this._component.rows) {
-        info.attr.rows = this._component.rows;
+      if (this.component.rows) {
+        info.attr.rows = this.component.rows;
       }
       return info;
     }
@@ -6456,30 +6466,29 @@ var FormioForm = function (_FormioComponents) {
       maxListeners: 0
     })));
 
-    _this._wrapper = element;
     _this._src = '';
-    _this._form = null;
-    _this._formio = null;
-    _this._loader = null;
     _this._loading = true;
-    _this._onForm = null;
-    _this._onSubmission = null;
+    _this.wrapper = element;
+    _this.formio = null;
+    _this.loader = null;
+    _this.onForm = null;
+    _this.onSubmission = null;
     return _this;
   }
 
   _createClass(FormioForm, [{
     key: 'on',
     value: function on(event, cb) {
-      return this._events.on(event, cb);
+      return this.events.on(event, cb);
     }
   }, {
     key: 'render',
     value: function render() {
       var _this2 = this;
 
-      this._wrapper.innerHTML = '';
+      this.wrapper.innerHTML = '';
       this.build();
-      this._wrapper.append(this._element);
+      this.wrapper.append(this.element);
       this.on('componentChange', function (changed) {
         return _this2.onComponentChange(changed);
       });
@@ -6487,32 +6496,27 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'build',
     value: function build() {
-      var _this3 = this;
-
-      this._element = this.ce('form');
-      this._element.setAttribute('method', 'POST');
-      if (this._formio) {
-        this._element.setAttribute('action', this._formio.formUrl + '/submission');
+      this.element = this.ce('form');
+      this.element.setAttribute('method', 'POST');
+      if (this.formio) {
+        this.element.setAttribute('action', this.formio.formUrl + '/submission');
       }
       this.addComponents();
       this.checkConditions(this.getValue());
-      this._form = Formio.form(this._element, function (err, sub) {
-        return _this3.onSubmit(err, sub);
-      });
-    }
-  }, {
-    key: 'onSubmit',
-    value: function onSubmit(err, submission) {
-      if (err) {
-        return this._events.emit('error', err);
-      }
-      this._events.emit('submit', submission);
     }
   }, {
     key: 'submit',
     value: function submit() {
-      if (this._form) {
-        this._form.submit();
+      var _this3 = this;
+
+      if (this.formio) {
+        this.formio.saveSubmission(this.value).then(function (submission) {
+          return _this3.events.emit('submit', submission);
+        }).catch(function (err) {
+          return _this3.events.emit('error', err);
+        });
+      } else {
+        this.events.emit('submit', this.value);
       }
     }
   }, {
@@ -6520,7 +6524,7 @@ var FormioForm = function (_FormioComponents) {
     value: function onComponentChange(changed) {
       var value = this.value;
       value.changed = changed;
-      this._events.emit('change', value);
+      this.events.emit('change', value);
       this.checkConditions(value.data);
     }
   }, {
@@ -6536,12 +6540,12 @@ var FormioForm = function (_FormioComponents) {
       }
       this._src = value;
       this.loading = true;
-      this._formio = new Formio(value);
-      this._onForm = this._formio.loadForm().then(function (form) {
+      this.formio = new Formio(value);
+      this.onForm = this.formio.loadForm().then(function (form) {
         return _this4.form = form;
       });
-      if (this._formio.submissionId) {
-        this._onSubmission = this._formio.loadSubmission().then(function (submission) {
+      if (this.formio.submissionId) {
+        this.onSubmission = this.formio.loadSubmission().then(function (submission) {
           return _this4.submission = submission;
         });
       }
@@ -6549,7 +6553,7 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'ready',
     get: function get() {
-      return this._onSubmission ? this._onSubmission : this._onForm;
+      return this.onSubmission ? this.onSubmission : this.onForm;
     }
   }, {
     key: 'loading',
@@ -6558,18 +6562,18 @@ var FormioForm = function (_FormioComponents) {
     },
     set: function set(loading) {
       this._loading = loading;
-      if (!this._loader && loading) {
-        this._loader = document.createElement('div');
-        this._loader.setAttribute('class', 'loader-wrapper');
+      if (!this.loader && loading) {
+        this.loader = document.createElement('div');
+        this.loader.setAttribute('class', 'loader-wrapper');
         var spinner = document.createElement('div');
         spinner.setAttribute('class', 'loader text-center');
-        this._loader.append(spinner);
+        this.loader.append(spinner);
       }
-      if (this._loader) {
+      if (this.loader) {
         if (loading) {
-          this._wrapper.parentNode.insertBefore(this._loader, this._wrapper);
+          this.wrapper.parentNode.insertBefore(this.loader, this.wrapper);
         } else {
-          this._wrapper.parentNode.removeChild(this._loader);
+          this.wrapper.parentNode.removeChild(this.loader);
         }
       }
     }
@@ -6579,7 +6583,7 @@ var FormioForm = function (_FormioComponents) {
       var _this5 = this;
 
       // Set this form as a component.
-      this._component = form;
+      this.component = form;
 
       // Render the form.
       this.render();

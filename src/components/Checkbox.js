@@ -1,68 +1,68 @@
 let BaseComponent = require('./Base');
 class CheckBoxComponent extends BaseComponent {
   elementInfo() {
-    if (this._component.overlay) {
-      this._component.overlay.width = 0;
-      this._component.overlay.height = 0;
+    if (this.component.overlay) {
+      this.component.overlay.width = 0;
+      this.component.overlay.height = 0;
     }
     let info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
-    info.attr.type = this._component.inputType;
+    info.attr.type = this.component.inputType;
     info.attr.class = '';
-    if (this._component.name) {
-      info.attr.name = 'data[' + this._component.name + ']';
+    if (this.component.name) {
+      info.attr.name = 'data[' + this.component.name + ']';
     }
-    info.attr.value = this._component.value ? this._component.value : 0;
+    info.attr.value = this.component.value ? this.component.value : 0;
     return info;
   }
 
   build() {
-    if (!this._component.input) {
+    if (!this.component.input) {
       return;
     }
     this.createElement();
-    this.input = this.createInput(this._element);
-    this.createLabel(this._element, this.input);
-    if (!this._label) {
-      this.addInput(this.input, this._element);
+    this.input = this.createInput(this.element);
+    this.createLabel(this.element, this.input);
+    if (!this.label) {
+      this.addInput(this.input, this.element);
     }
   }
 
   createElement() {
-    this._element = this.ce('div');
+    this.element = this.ce('div');
     let className = 'form-group checkbox';
-    if (this._component.validate && this._component.validate.required) {
+    if (this.component.validate && this.component.validate.required) {
       className += ' required';
     }
-    this._element.setAttribute('class', className);
+    this.element.setAttribute('class', className);
   }
 
   createLabel(container, input) {
-    if (!this._component.label) {
+    if (!this.component.label) {
       return null;
     }
-    this._label = this.ce('label');
-    this._label.setAttribute('class', 'control-label');
-    if (this._info.attr.id) {
-      this._label.setAttribute('for', this._info.attr.id);
+    this.label = this.ce('label');
+    this.label.setAttribute('class', 'control-label');
+    if (this.info.attr.id) {
+      this.label.setAttribute('for', this.info.attr.id);
     }
-    this._label.appendChild(input);
-    this._label.appendChild(document.createTextNode(this._component.label));
-    container.appendChild(this._label);
+    this.label.appendChild(input);
+    this.label.appendChild(document.createTextNode(this.component.label));
+    container.appendChild(this.label);
   }
 
   createInput(container) {
-    if (!this._component.input) {
+    if (!this.component.input) {
       return;
     }
-    let input = this.ce(this._info.type, this._info.attr);
+    let input = this.ce(this.info.type, this.info.attr);
     this.createErrorElement(container);
     return input;
   }
 
   set value(value) {
-    if (this._component.inputType === 'radio') {
+    if (this.component.inputType === 'radio') {
       if (value === this.input.value) {
         this.input.checked = 1;
       }

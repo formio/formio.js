@@ -7,7 +7,7 @@ class DateTimeComponent extends BaseComponent {
     info.type = 'input';
     info.attr.type = 'text';
     info.changeEvent = 'input';
-    this._component.suffix = true;
+    this.component.suffix = true;
     return info;
   }
 
@@ -50,13 +50,13 @@ class DateTimeComponent extends BaseComponent {
       altInput: true,
       clickOpens: true,
       enableDate: true,
-      mode: this._component.multiple ? 'multiple' : 'single',
-      enableTime: _get(this._component, 'enableTime', true),
-      noCalendar: !_get(this._component, 'enableDate', true),
-      altFormat: this.convertFormat(_get(this._component, 'format', '')),
+      mode: this.component.multiple ? 'multiple' : 'single',
+      enableTime: _get(this.component, 'enableTime', true),
+      noCalendar: !_get(this.component, 'enableDate', true),
+      altFormat: this.convertFormat(_get(this.component, 'format', '')),
       dateFormat: 'U',
-      defaultDate: _get(this._component, 'defaultDate', ''),
-      hourIncrement: _get(this._component, 'timePicker.hourStep', 1),
+      defaultDate: _get(this.component, 'defaultDate', ''),
+      hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
       onChange: () => this.onChange()
     };
@@ -65,7 +65,7 @@ class DateTimeComponent extends BaseComponent {
   addSuffix(input, inputGroup) {
     let suffix = this.ce('span');
     suffix.setAttribute('class', 'input-group-addon');
-    if (this._component.enableDate) {
+    if (this.component.enableDate) {
       let calendar = this.ce('i');
       calendar.setAttribute('class', 'glyphicon glyphicon-calendar');
       suffix.appendChild(calendar);
@@ -83,6 +83,15 @@ class DateTimeComponent extends BaseComponent {
     super.addInput(input, container, name);
     input.setAttribute('data-input', '');
     input.calendar = new Flatpickr(input, this.config);
+  }
+
+  getValueAt(index) {
+    let timestamp = this.inputs[index].value;
+    if (!timestamp) {
+      // Just default to today.
+      return (new Date()).toISOString();
+    }
+    return (new Date(parseInt(timestamp, 10) * 1000)).toISOString();
   }
 }
 module.exports = DateTimeComponent;

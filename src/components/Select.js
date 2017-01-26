@@ -11,15 +11,15 @@ class SelectComponent extends BaseComponent {
   createInput(container) {
     let input = super.createInput(container);
     this.selectItems = [];
-    let template = this._component.template ? this._component.template.split('.')[1].split(' ')[0] : '';
-    let valueProperty = this._component.valueProperty;
-    switch(this._component.dataSrc) {
+    let template = this.component.template ? this.component.template.split('.')[1].split(' ')[0] : '';
+    let valueProperty = this.component.valueProperty;
+    switch(this.component.dataSrc) {
       case 'values':
-        this.selectItems = this._component.data.values;
+        this.selectItems = this.component.data.values;
         this.updateOptions(input);
         break;
       case 'json':
-        _each(this._component.data.json, (item) => {
+        _each(this.component.data.json, (item) => {
           this.selectItems.push({
             value: item[valueProperty],
             label: item[template]
@@ -28,7 +28,7 @@ class SelectComponent extends BaseComponent {
         this.updateOptions(input);
         break;
       case 'resource':
-        let baseUrl = Formio.getAppUrl() + '/' + this._component.data.resource;
+        let baseUrl = Formio.getAppUrl() + '/' + this.component.data.resource;
         let value = valueProperty.split('.')[1];
         (new FormioService(baseUrl)).loadSubmissions().then((submissions) => {
           _each(submissions, (submission) => {
@@ -41,7 +41,7 @@ class SelectComponent extends BaseComponent {
         });
         break;
       case 'url':
-        Formio.request(this._component.data.url).then((response) => {
+        Formio.request(this.component.data.url).then((response) => {
           _each(response, (item) => {
             this.selectItems.push({
               value: item[valueProperty],

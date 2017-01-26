@@ -2,15 +2,15 @@ let BaseComponent = require('./Base');
 let _each = require('lodash/each');
 class HTMLComponent extends BaseComponent {
   build() {
-    this._element = this.ce(this._component.tag);
-    if (this._component.className) {
-      this._element.setAttribute('class', this._component.className);
+    this.element = this.ce(this.component.tag);
+    if (this.component.className) {
+      this.element.setAttribute('class', this.component.className);
     }
-    _each(this._component.attrs, (attr) => {
-      this._element.setAttribute(attr.attr, attr.value);
+    _each(this.component.attrs, (attr) => {
+      this.element.setAttribute(attr.attr, attr.value);
     });
-    if (this._component.content) {
-      this._element.innerHTML = this._component.content;
+    if (this.component.content) {
+      this.element.innerHTML = this.component.content;
     }
   }
 }

@@ -9,14 +9,13 @@ class FormioForm extends FormioComponents {
       maxListeners: 0
     }));
 
-    this._wrapper = element;
     this._src = '';
-    this._form = null;
-    this._formio = null;
-    this._loader = null;
     this._loading = true;
-    this._onForm = null;
-    this._onSubmission = null;
+    this.wrapper = element;
+    this.formio = null;
+    this.loader = null;
+    this.onForm = null;
+    this.onSubmission = null;
   }
 
   get src() {
@@ -29,19 +28,19 @@ class FormioForm extends FormioComponents {
     }
     this._src = value;
     this.loading = true;
-    this._formio = new Formio(value);
-    this._onForm = this._formio.loadForm().then((form) => (this.form = form));
-    if (this._formio.submissionId) {
-      this._onSubmission = this._formio.loadSubmission().then((submission) => (this.submission = submission));
+    this.formio = new Formio(value);
+    this.onForm = this.formio.loadForm().then((form) => (this.form = form));
+    if (this.formio.submissionId) {
+      this.onSubmission = this.formio.loadSubmission().then((submission) => (this.submission = submission));
     }
   }
 
   on(event, cb) {
-    return this._events.on(event, cb);
+    return this.events.on(event, cb);
   }
 
   get ready() {
-    return this._onSubmission ? this._onSubmission : this._onForm;
+    return this.onSubmission ? this.onSubmission : this.onForm;
   }
 
   get loading() {
@@ -50,26 +49,26 @@ class FormioForm extends FormioComponents {
 
   set loading(loading) {
     this._loading = loading;
-    if (!this._loader && loading) {
-      this._loader = document.createElement('div');
-      this._loader.setAttribute('class', 'loader-wrapper');
+    if (!this.loader && loading) {
+      this.loader = document.createElement('div');
+      this.loader.setAttribute('class', 'loader-wrapper');
       let spinner = document.createElement('div');
       spinner.setAttribute('class', 'loader text-center');
-      this._loader.append(spinner);
+      this.loader.append(spinner);
     }
-    if (this._loader) {
+    if (this.loader) {
       if (loading) {
-        this._wrapper.parentNode.insertBefore(this._loader, this._wrapper);
+        this.wrapper.parentNode.insertBefore(this.loader, this.wrapper);
       }
       else {
-        this._wrapper.parentNode.removeChild(this._loader);
+        this.wrapper.parentNode.removeChild(this.loader);
       }
     }
   }
 
   set form(form) {
     // Set this form as a component.
-    this._component = form;
+    this.component = form;
 
     // Render the form.
     this.render();
@@ -89,40 +88,37 @@ class FormioForm extends FormioComponents {
   }
 
   render() {
-    this._wrapper.innerHTML = '';
+    this.wrapper.innerHTML = '';
     this.build();
-    this._wrapper.append(this._element);
+    this.wrapper.append(this.element);
     this.on('componentChange', (changed) => this.onComponentChange(changed));
   }
 
   build() {
-    this._element = this.ce('form');
-    this._element.setAttribute('method', 'POST');
-    if (this._formio) {
-      this._element.setAttribute('action', this._formio.formUrl + '/submission');
+    this.element = this.ce('form');
+    this.element.setAttribute('method', 'POST');
+    if (this.formio) {
+      this.element.setAttribute('action', this.formio.formUrl + '/submission');
     }
     this.addComponents();
     this.checkConditions(this.getValue());
-    this._form = Formio.form(this._element, (err, sub) => this.onSubmit(err, sub));
-  }
-
-  onSubmit(err, submission) {
-    if (err) {
-      return this._events.emit('error', err);
-    }
-    this._events.emit('submit', submission);
   }
 
   submit() {
-    if (this._form) {
-      this._form.submit();
+    if (this.formio) {
+      this.formio.saveSubmission(this.value)
+        .then((submission) => this.events.emit('submit', submission))
+        .catch((err) => this.events.emit('error', err));
+    }
+    else {
+      this.events.emit('submit', this.value);
     }
   }
 
   onComponentChange(changed) {
     let value = this.value;
     value.changed = changed;
-    this._events.emit('change', value);
+    this.events.emit('change', value);
     this.checkConditions(value.data);
   }
 }

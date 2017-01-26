@@ -3,7 +3,7 @@ let _each = require('lodash/each');
 class SelectBoxesComponent extends RadioComponent {
   constructor(component, events, data) {
     super(component, events, data);
-    this._component.inputType = 'checkbox';
+    this.component.inputType = 'checkbox';
   }
   elementInfo() {
     let info = super.elementInfo();
@@ -13,7 +13,7 @@ class SelectBoxesComponent extends RadioComponent {
   }
   get value() {
     let value = [];
-    _each(this._inputs, (input) => {
+    _each(this.inputs, (input) => {
       if (input.checked) {
         value.push(input.value);
       }
@@ -21,7 +21,7 @@ class SelectBoxesComponent extends RadioComponent {
     return value;
   }
   set value(value) {
-    _each(this._inputs, (input) => {
+    _each(this.inputs, (input) => {
       input.checked = (value.indexOf(input.value) !== -1);
     });
   }

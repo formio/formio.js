@@ -17,18 +17,18 @@ class BaseComponent {
    */
   constructor(component, events, data) {
     this.id = Math.random().toString(36).substring(7);
-    this._events = events;
-    this._data = data || {};
-    this._component = component;
-    this._components = [];
-    this._element = null;
-    this._tbody = null;
-    this._label = null;
-    this._errorElement = null;
-    this._inputs = [];
-    this._info = null;
-    if (this._component) {
-      this._info = this.elementInfo();
+    this.events = events;
+    this.data = data || {};
+    this.component = component;
+    this.components = [];
+    this.element = null;
+    this.tbody = null;
+    this.label = null;
+    this.errorElement = null;
+    this.inputs = [];
+    this.info = null;
+    if (this.component) {
+      this.info = this.elementInfo();
     }
   }
 
@@ -37,84 +37,84 @@ class BaseComponent {
    */
   build() {
     this.createElement();
-    this.createLabel(this._element);
+    this.createLabel(this.element);
     if (!this.createWrapper()) {
-      this.createInput(this._element);
+      this.createInput(this.element);
     }
   }
 
   get className() {
-    let className = this._component.input ? 'form-group has-feedback ' : '';
-    className += 'formio-component formio-component-' + this._component.type + ' ';
-    className += 'form-field-type-' + this._component.type + ' ';
-    className += 'formio-component-' + this._component.key + ' ';
-    if (this._component.customClass) {
-      className += this._component.customClass;
+    let className = this.component.input ? 'form-group has-feedback ' : '';
+    className += 'formio-component formio-component-' + this.component.type + ' ';
+    className += 'form-field-type-' + this.component.type + ' ';
+    className += 'formio-component-' + this.component.key + ' ';
+    if (this.component.customClass) {
+      className += this.component.customClass;
     }
-    if (this._component.input && this._component.validate && this._component.validate.required) {
+    if (this.component.input && this.component.validate && this.component.validate.required) {
       className += ' required';
     }
     return className;
   }
 
   createElement() {
-    this._element = this.ce('div');
-    this._element.setAttribute('class', this.className);
+    this.element = this.ce('div');
+    this.element.setAttribute('class', this.className);
   }
 
   createWrapper() {
-    if (!this._component.multiple) {
+    if (!this.component.multiple) {
       return false;
     }
     else {
       let table = this.ce('table');
       table.setAttribute('class', 'table table-bordered');
-      this._tbody = this.ce('tbody');
-      table.appendChild(this._tbody);
+      this.tbody = this.ce('tbody');
+      table.appendChild(this.tbody);
 
       // Add a default value.
       this.addValue();
 
       // Add the table to the element.
-      this._element.appendChild(table);
+      this.element.appendChild(table);
       return true;
     }
   }
 
   defaultValue() {
-    if (this._component.defaultValue) {
-      return this._component.defaultValue;
+    if (this.component.defaultValue) {
+      return this.component.defaultValue;
     }
     return '';
   }
 
   addValue() {
     // Ensure we have the latest value.
-    this._data[this._component.key] = this.value;
-    if (!this._data[this._component.key]) {
-      this._data[this._component.key] = [];
+    this.data[this.component.key] = this.value;
+    if (!this.data[this.component.key]) {
+      this.data[this.component.key] = [];
     }
-    if (!_isArray(this._data[this._component.key])) {
-      this._data[this._component.key] = [this._data[this._component.key]];
+    if (!_isArray(this.data[this.component.key])) {
+      this.data[this.component.key] = [this.data[this.component.key]];
     }
-    this._data[this._component.key].push(this.defaultValue());
+    this.data[this.component.key].push(this.defaultValue());
     this.buildRows();
   }
 
   removeValue(index) {
-    if (this._data.hasOwnProperty(this._component.key)) {
-      this._data[this._component.key].splice(index, 1);
+    if (this.data.hasOwnProperty(this.component.key)) {
+      this.data[this.component.key].splice(index, 1);
     }
     this.buildRows();
   }
 
   buildRows() {
-    if (!this._tbody) {
+    if (!this.tbody) {
       return;
     }
-    this._inputs = [];
-    this._tbody.innerHTML = '';
-    _each(this._data[this._component.key], (value, index) => {
+    this.inputs = [];
+    this.tbody.innerHTML = '';
+    _each(this.data[this.component.key], (value, index) => {
       let tr = this.ce('tr');
       let td = this.ce('td');
       this.createInput(td);
@@ -122,7 +122,7 @@ class BaseComponent {
       let tdAdd = this.ce('td');
       tdAdd.appendChild(this.removeButton(index));
       tr.appendChild(tdAdd);
-      this._tbody.appendChild(tr);
+      this.tbody.appendChild(tr);
     });
 
     let tr = this.ce('tr');
@@ -130,10 +130,10 @@ class BaseComponent {
     td.setAttribute('colspan', '2');
     td.appendChild(this.addButton());
     tr.appendChild(td);
-    this._tbody.appendChild(tr);
+    this.tbody.appendChild(tr);
 
     // Reset the values of the inputs.
-    this.value = this._data[this._component.key];
+    this.value = this.data[this.component.key];
   }
 
   addButton() {
@@ -147,7 +147,7 @@ class BaseComponent {
     let addIcon = this.ce('span');
     addIcon.setAttribute('class', 'glyphicon glyphicon-plus');
     addButton.appendChild(addIcon);
-    addButton.appendChild(this.text(this._component.addAnother || ' Add Another'));
+    addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
     return addButton;
   }
 
@@ -170,30 +170,30 @@ class BaseComponent {
   }
 
   createLabel(container) {
-    if (!this._component.label) {
+    if (!this.component.label) {
       return;
     }
-    this._label = this.ce('label');
-    this._label.setAttribute('class', 'control-label');
-    if (this._info.attr.id) {
-      this._label.setAttribute('for', this._info.attr.id);
+    this.label = this.ce('label');
+    this.label.setAttribute('class', 'control-label');
+    if (this.info.attr.id) {
+      this.label.setAttribute('for', this.info.attr.id);
     }
-    this._label.appendChild(this.text(this._component.label));
-    container.appendChild(this._label);
+    this.label.appendChild(this.text(this.component.label));
+    container.appendChild(this.label);
   }
 
   createErrorElement(container) {
-    this._errorElement = this.ce('div');
-    this._errorElement.setAttribute('class', 'formio-errors');
-    container.appendChild(this._errorElement);
+    this.errorElement = this.ce('div');
+    this.errorElement.setAttribute('class', 'formio-errors');
+    container.appendChild(this.errorElement);
   }
 
   addPrefix(input, inputGroup) {
     let prefix = null;
-    if (this._component.prefix) {
+    if (this.component.prefix) {
       prefix = this.ce('div');
       prefix.setAttribute('class', 'input-group-addon');
-      prefix.appendChild(this.text(this._component.prefix));
+      prefix.appendChild(this.text(this.component.prefix));
       inputGroup.appendChild(prefix);
     }
     return prefix;
@@ -201,10 +201,10 @@ class BaseComponent {
 
   addSuffix(input, inputGroup) {
     let suffix = null;
-    if (this._component.suffix) {
+    if (this.component.suffix) {
       suffix = this.ce('div');
       suffix.setAttribute('class', 'input-group-addon');
-      suffix.appendChild(this.text(this._component.suffix));
+      suffix.appendChild(this.text(this.component.suffix));
       inputGroup.appendChild(suffix);
     }
     return suffix;
@@ -212,7 +212,7 @@ class BaseComponent {
 
   addInputGroup(input, container) {
     let inputGroup = null;
-    if (this._component.prefix || this._component.suffix) {
+    if (this.component.prefix || this.component.suffix) {
       inputGroup = this.ce('div');
       inputGroup.setAttribute('class', 'input-group');
       container.appendChild(inputGroup);
@@ -221,9 +221,9 @@ class BaseComponent {
   }
 
   createInput(container) {
-    let input = this.ce(this._info.type, this._info.attr);
-    if (this._component.inputMask) {
-      VMasker(input).maskPattern(this._component.inputMask);
+    let input = this.ce(this.info.type, this.info.attr);
+    if (this.component.inputMask) {
+      VMasker(input).maskPattern(this.component.inputMask);
     }
 
     let inputGroup = this.addInputGroup(input, container);
@@ -320,7 +320,7 @@ class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    this.show(FormioUtils.checkCondition(this._component, this.value, data));
+    this.show(FormioUtils.checkCondition(this.component, this.value, data));
   }
 
   /**
@@ -328,14 +328,14 @@ class BaseComponent {
    */
   checkErrors() {
     // No need to check for errors if there is no input.
-    if (!this._component.input) {
+    if (!this.component.input) {
       return;
     }
-    if (this._errorElement) {
-      this._errorElement.innerHTML = '';
+    if (this.errorElement) {
+      this.errorElement.innerHTML = '';
     }
-    this.removeClass(this._element, 'has-error');
-    _each(this._inputs, (input) => {
+    this.removeClass(this.element, 'has-error');
+    _each(this.inputs, (input) => {
       if (input.validationMessage) {
         this.addInputError(input.validationMessage);
       }
@@ -347,12 +347,12 @@ class BaseComponent {
    * @param message
    */
   addInputError(message) {
-    if (this._errorElement) {
+    if (this.errorElement) {
       let errorMessage = this.ce('p');
       errorMessage.setAttribute('class', 'help-block');
       errorMessage.appendChild(this.text(message));
-      this._errorElement.appendChild(errorMessage);
-      this.addClass(this._element, 'has-error');
+      this.errorElement.appendChild(errorMessage);
+      this.addClass(this.element, 'has-error');
     }
   }
 
@@ -362,19 +362,19 @@ class BaseComponent {
    * @param show
    */
   show(show) {
-    if (this._element) {
+    if (this.element) {
       if (show) {
-        this._element.removeAttribute('hidden');
+        this.element.removeAttribute('hidden');
       }
       else {
-        this._element.setAttribute('hidden', true);
+        this.element.setAttribute('hidden', true);
       }
     }
   }
 
   onChange() {
-    this._events.emit('componentChange', {
-      component: this._component,
+    this.events.emit('componentChange', {
+      component: this.component,
       value: this.value
     });
     this.checkErrors();
@@ -387,8 +387,8 @@ class BaseComponent {
    */
   addInputEventListener(input) {
     let callChange = _debounce(() => this.onChange(), 200);
-    this.addAnEventListener(input, this._info.changeEvent, () => {
-      this._data[this._component.key] = this.value;
+    this.addAnEventListener(input, this.info.changeEvent, () => {
+      this.data[this.component.key] = this.value;
       callChange();
     });
   }
@@ -402,7 +402,7 @@ class BaseComponent {
    */
   addInput(input, container, name) {
     if (input && container) {
-      this._inputs.push(input);
+      this.inputs.push(input);
       input = container.appendChild(input);
       this.addInputEventListener(input);
     }
@@ -415,7 +415,7 @@ class BaseComponent {
    * @returns {*}
    */
   getValueAt(index) {
-    return this._inputs[index].value;
+    return this.inputs[index].value;
   }
 
   /**
@@ -425,8 +425,8 @@ class BaseComponent {
    */
   get value() {
     let values = [];
-    for (let i in this._inputs) {
-      if (!this._component.multiple) {
+    for (let i in this.inputs) {
+      if (!this.component.multiple) {
         return this.getValueAt(i);
       }
       values.push(this.getValueAt(i));
@@ -441,7 +441,7 @@ class BaseComponent {
    * @param value
    */
   setValueAt(index, value) {
-    this._inputs[index].value = value;
+    this.inputs[index].value = value;
   }
 
   /**
@@ -450,7 +450,7 @@ class BaseComponent {
    */
   set value(value) {
     let isArray = _isArray(value);
-    for (let i in this._inputs) {
+    for (let i in this.inputs) {
       this.setValueAt(i, isArray ? value[i] : value);
     }
   }
@@ -460,7 +460,7 @@ class BaseComponent {
    */
   set disable(disable) {
     // Disable all input.
-    _each(this._inputs, (input) => {
+    _each(this.inputs, (input) => {
       input.disabled = disable;
       input.setAttribute('disabled', 'disabled');
     });
@@ -473,28 +473,28 @@ class BaseComponent {
    */
   elementInfo() {
     let style = '';
-    if (this._component.overlay) {
-      if (this._component.overlay.style) {
-        style = this._component.overlay.style;
+    if (this.component.overlay) {
+      if (this.component.overlay.style) {
+        style = this.component.overlay.style;
       }
-      if (this._component.overlay.top) {
-        style += 'top:' + this._component.overlay.top + 'px;';
+      if (this.component.overlay.top) {
+        style += 'top:' + this.component.overlay.top + 'px;';
       }
-      if (this._component.overlay.left) {
-        style += 'left:' + this._component.overlay.left + 'px;';
+      if (this.component.overlay.left) {
+        style += 'left:' + this.component.overlay.left + 'px;';
       }
-      if (this._component.overlay.width) {
-        style += 'width:' + this._component.overlay.width + 'px;';
+      if (this.component.overlay.width) {
+        style += 'width:' + this.component.overlay.width + 'px;';
       }
-      if (this._component.overlay.height) {
-        style += 'height:' + this._component.overlay.height + 'px;';
+      if (this.component.overlay.height) {
+        style += 'height:' + this.component.overlay.height + 'px;';
       }
     }
-    this.inputId = this._component.overlay ? this._component.overlay.id : this.id;
+    this.inputId = this.component.overlay ? this.component.overlay.id : this.id;
     let attributes = {
       id: this.inputId,
-      name: 'data[' + this._component.key + ']',
-      type: this._component.inputType || 'text',
+      name: 'data[' + this.component.key + ']',
+      type: this.component.inputType || 'text',
       style: style,
       class: 'form-control'
     };
@@ -504,14 +504,14 @@ class BaseComponent {
       required: 'validate.required',
       maxLength: 'validate.maxLength'
     }, (path, prop) => {
-      let attrValue = _get(this._component, path);
+      let attrValue = _get(this.component, path);
       if (attrValue) {
         attributes[prop] = attrValue;
       }
     });
     return {
       type: 'input',
-      component: this._component,
+      component: this.component,
       changeEvent: 'change',
       attr: attributes
     };

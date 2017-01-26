@@ -9,7 +9,7 @@ class SignatureComponent extends BaseComponent {
   }
   set value(value) {
     super.value = value;
-    if (this.signaturePad && this._noSign) {
+    if (this.signaturePad && this.noSign) {
       this.signaturePad.fromDataURL(value);
     }
   }
@@ -17,18 +17,18 @@ class SignatureComponent extends BaseComponent {
     super.disable = disable;
     let image = this.ce('img');
     image.setAttribute('src', this.input.value);
-    image.setAttribute('style', 'width: ' + this._component.width + ';height: ' + this._component.height);
-    this._element.innerHTML = '';
-    this._element.appendChild(image);
+    image.setAttribute('style', 'width: ' + this.component.width + ';height: ' + this.component.height);
+    this.element.innerHTML = '';
+    this.element.appendChild(image);
   }
   build() {
-    this._element = this.ce('div');
-    this._element.setAttribute('id', this.id);
-    this._element.setAttribute('class', 'form-group signature-pad');
-    this.input = this.createInput(this._element);
+    this.element = this.ce('div');
+    this.element.setAttribute('id', this.id);
+    this.element.setAttribute('class', 'form-group signature-pad');
+    this.input = this.createInput(this.element);
     let padBody = this.ce('div');
     padBody.setAttribute('class', 'signature-pad-body');
-    padBody.setAttribute('style', 'width: ' + this._component.width + ';height: ' + this._component.height);
+    padBody.setAttribute('style', 'width: ' + this.component.width + ';height: ' + this.component.height);
 
     // Create the refresh button.
     let refresh = this.ce('a');
@@ -42,22 +42,22 @@ class SignatureComponent extends BaseComponent {
     let canvas = this.ce('canvas');
     canvas.setAttribute('class', 'signature-pad-canvas');
     padBody.appendChild(canvas);
-    this._element.appendChild(padBody);
+    this.element.appendChild(padBody);
 
     // Add the footer.
-    if (this._component.footer) {
+    if (this.component.footer) {
       let footer = this.ce('div');
       footer.setAttribute('class', 'signature-pad-footer');
-      footer.appendChild(this.text(this._component.footer));
-      this._element.appendChild(footer);
+      footer.appendChild(this.text(this.component.footer));
+      this.element.appendChild(footer);
     }
 
     // Create the signature pad.
     this.signaturePad = new SignaturePad(canvas, {
-      minWidth: this._component.minWidth,
-      maxWidth: this._component.maxWidth,
-      penColor: this._component.penColor,
-      backgroundColor: this._component.backgroundColor
+      minWidth: this.component.minWidth,
+      maxWidth: this.component.maxWidth,
+      penColor: this.component.penColor,
+      backgroundColor: this.component.backgroundColor
     });
     refresh.addEventListener("click", (event) => {
       event.preventDefault();
@@ -65,9 +65,9 @@ class SignatureComponent extends BaseComponent {
     });
     this.signaturePad.onEnd = () => {
       var signatureValue = this.signaturePad.toDataURL();
-      this._noSign = true;
+      this.noSign = true;
       this.value = signatureValue;
-      this._noSign = false;
+      this.noSign = false;
       this.onChange();
     };
 
