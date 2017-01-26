@@ -96,15 +96,16 @@ class FormioForm extends FormioComponents {
 
   build() {
     this.element = this.ce('form');
-    this.element.setAttribute('method', 'POST');
-    if (this.formio) {
-      this.element.setAttribute('action', this.formio.formUrl + '/submission');
-    }
+    this.element.setAttribute('class', 'formio-form');
+    this.addAnEventListener(this.element, 'submit', (event) => this.submit(event));
     this.addComponents();
     this.checkConditions(this.getValue());
   }
 
-  submit() {
+  submit(event) {
+    if (event) {
+      event.preventDefault();
+    }
     if (this.formio) {
       this.formio.saveSubmission(this.value)
         .then((submission) => this.events.emit('submit', submission))

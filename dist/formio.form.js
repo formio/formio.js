@@ -6496,24 +6496,29 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'build',
     value: function build() {
+      var _this3 = this;
+
       this.element = this.ce('form');
-      this.element.setAttribute('method', 'POST');
-      if (this.formio) {
-        this.element.setAttribute('action', this.formio.formUrl + '/submission');
-      }
+      this.element.setAttribute('class', 'formio-form');
+      this.addAnEventListener(this.element, 'submit', function (event) {
+        return _this3.submit(event);
+      });
       this.addComponents();
       this.checkConditions(this.getValue());
     }
   }, {
     key: 'submit',
-    value: function submit() {
-      var _this3 = this;
+    value: function submit(event) {
+      var _this4 = this;
 
+      if (event) {
+        event.preventDefault();
+      }
       if (this.formio) {
         this.formio.saveSubmission(this.value).then(function (submission) {
-          return _this3.events.emit('submit', submission);
+          return _this4.events.emit('submit', submission);
         }).catch(function (err) {
-          return _this3.events.emit('error', err);
+          return _this4.events.emit('error', err);
         });
       } else {
         this.events.emit('submit', this.value);
@@ -6533,7 +6538,7 @@ var FormioForm = function (_FormioComponents) {
       return this._src;
     },
     set: function set(value) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (!value || typeof value !== 'string') {
         return;
@@ -6542,11 +6547,11 @@ var FormioForm = function (_FormioComponents) {
       this.loading = true;
       this.formio = new Formio(value);
       this.onForm = this.formio.loadForm().then(function (form) {
-        return _this4.form = form;
+        return _this5.form = form;
       });
       if (this.formio.submissionId) {
         this.onSubmission = this.formio.loadSubmission().then(function (submission) {
-          return _this4.submission = submission;
+          return _this5.submission = submission;
         });
       }
     }
@@ -6580,7 +6585,7 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'form',
     set: function set(form) {
-      var _this5 = this;
+      var _this6 = this;
 
       // Set this form as a component.
       this.component = form;
@@ -6590,7 +6595,7 @@ var FormioForm = function (_FormioComponents) {
 
       // Set the loading flag when we are ready.
       this.ready.then(function () {
-        return _this5.loading = false;
+        return _this6.loading = false;
       });
     }
   }, {
