@@ -889,4 +889,4 @@ Formio.deregisterPlugin = function(plugin) {
   return beforeLength !== plugins.length;
 };
 
-module.exports = Formio;
+module.exports = global.Formio = Formio;

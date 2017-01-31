@@ -4,7 +4,9 @@
   "description": "Common js library for client side interaction with <form.io>",
   "main": "src/formio.js",
   "scripts": {
-    "test": "node-qunit-phantomjs test/qunit.html --verbose"
+    "test": "node-qunit-phantomjs test/qunit.html --verbose",
+    "test-form": "karma start",
+    "test-form:watch": "karma start --no-single-run --auto-watch"
   },
   "repository": {
     "type": "git",
@@ -20,6 +22,7 @@
     "eventemitter2": "^2.2.1",
     "flatpickr": "^2.3.4",
     "formio-utils": "^0.3.0",
+    "i18next": "^6.0.3",
     "moment": "^2.17.1",
     "native-promise-only": "^0.8.1",
     "pikaday": "^1.5.1",
@@ -29,6 +32,7 @@
     "whatwg-fetch": "^0.11.1"
   },
   "devDependencies": {
+    "babel-plugin-espower": "^2.3.2",
     "babel-preset-es2015": "^6.18.0",
     "babelify": "^7.3.0",
     "browserify": "^11.2.0",
@@ -50,13 +54,32 @@
     "gulp-watch": "^4.2.0",
     "gulp-wrapper": "^0.1.5",
     "karma": "^0.13.10",
+    "karma-browserify": "^5.1.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-mocha": "^1.3.0",
+    "karma-phantomjs-launcher": "^1.0.2",
     "lodash": "^3.10.1",
+    "mocha": "^3.2.0",
     "node-qunit-phantomjs": "^1.4.0",
     "phantomjs-polyfill": "0.0.1",
     "phantomjs-prebuilt": "^2.1.7",
+    "power-assert": "^1.4.2",
     "qunit-assert-step": "^1.0.3",
     "qunitjs": "^1.20.0",
     "sinon": "^1.17.4",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^1.1.0",
+    "watchify": "^3.9.0"
+  },
+  "browserify": {
+    "transform": [
+      [
+        "babelify",
+        {
+          "presets": [
+            "es2015"
+          ]
+        }
+      ]
+    ]
   }
 }

@@ -2,8 +2,7 @@ module.exports = function(gulp, plugins) {
   return function () {
     return plugins.browserify({
       entries: './src/formio.form.js',
-      debug: false,
-      standalone: 'FormioForm'
+      debug: false
     })
       .transform('babelify', {presets: ['es2015']})
       .bundle()

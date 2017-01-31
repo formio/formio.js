@@ -1542,4 +1542,19 @@ QUnit.module('Formio.currentUser', function(hooks) {
     })
     assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
   });
-})
+});
+
+/*
+QUnit.module('Form Renderer Tests', function(hooks) {
+  window.formTests.forEach(function(formTest) {
+    QUnit.test(formTest.title, function(assert) {
+      var done = assert.async();
+      var formElement = document.getElementById('formio');
+      formElement.innerHTML = '';
+      var form = new FormioForm(formElement);
+      form.form = formTest.form;
+      formTest.test(form, assert, done);
+    });
+  });
+});
+*/

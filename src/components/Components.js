@@ -1,6 +1,11 @@
-let _each = require('lodash/each');
-let BaseComponent = require('./Base');
+import _each from 'lodash/each';
+import BaseComponent from './base/Base';
 class FormioComponents extends BaseComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.type = 'components';
+  }
+
   build() {
     this.createElement();
     this.addComponents();
@@ -8,7 +13,7 @@ class FormioComponents extends BaseComponent {
 
   addComponent(component, element, data) {
     let components = require('./index');
-    let comp = components.create(component, this.events, data);
+    let comp = components.create(component, this.options, data);
     this.components.push(comp);
     element.appendChild(comp.element);
   }
@@ -28,42 +33,19 @@ class FormioComponents extends BaseComponent {
     _each(this.components, (component) => (component.disable = disable));
   }
 
-  assign(data) {
-    _each(this.components, (component) => {
-      if (!component.component) {
-        return;
-      }
-      if (!component.component.input && (typeof component.assign === 'function')) {
-        component.assign(data);
-      }
-      else if (component.component.input) {
-        data[component.component.key] = component.value;
-      }
-    });
-  }
-
   getValue() {
-    this.assign(this.data);
     return this.data;
-  }
-
-  get value() {
-    return this.getValue();
   }
 
   setValue(value) {
     _each(this.components, (component) => {
-      if (typeof component.setValue === 'function') {
+      if (component.type === 'components') {
         component.setValue(value);
       }
       else if (value.hasOwnProperty(component.component.key)) {
-        component.value = value[component.component.key];
+        component.setValue(value[component.component.key]);
       }
     });
-  }
-
-  set value(value) {
-    this.setValue(value);
   }
 }
 

@@ -1,40 +1,39 @@
 let Components = {
-  base: require('./Base'),
-  content: require('./Content'),
-  container: require('./Container'),
-  datagrid: require('./DataGrid'),
-  datetime: require('./DateTime'),
-  htmlelement: require('./HTML'),
-  hidden: require('./Hidden'),
-  textfield: require('./TextField'),
-  phoneNumber: require('./PhoneNumber'),
-  email: require('./Email'),
-  checkbox: require('./Checkbox'),
-  signature: require('./Signature'),
-  select: require('./Select'),
-  textarea: require('./TextArea'),
-  button: require('./Button'),
-  number: require('./Number'),
-  password: require('./Password'),
-  signature: require('./Signature'),
-  panel: require('./Panel'),
-  columns: require('./Columns'),
-  column: require('./Column'),
-  table: require('./Table'),
-  radio: require('./Radio'),
-  selectboxes: require('./SelectBoxes'),
-  survey: require('./Survey'),
-  well: require('./Well'),
-  create: function(component, events, data) {
+  base: require('./base/Base'),
+  content: require('./content/Content'),
+  container: require('./container/Container'),
+  datagrid: require('./datagrid/DataGrid'),
+  datetime: require('./datetime/DateTime'),
+  htmlelement: require('./html/HTML'),
+  hidden: require('./hidden/Hidden'),
+  textfield: require('./textfield/TextField'),
+  phoneNumber: require('./phonenumber/PhoneNumber'),
+  email: require('./email/Email'),
+  checkbox: require('./checkbox/Checkbox'),
+  signature: require('./signature/Signature'),
+  select: require('./select/Select'),
+  textarea: require('./textarea/TextArea'),
+  button: require('./button/Button'),
+  number: require('./number/Number'),
+  password: require('./password/Password'),
+  panel: require('./panel/Panel'),
+  columns: require('./columns/Columns'),
+  column: require('./columns/Column'),
+  table: require('./table/Table'),
+  radio: require('./radio/Radio'),
+  selectboxes: require('./selectboxes/SelectBoxes'),
+  survey: require('./survey/Survey'),
+  well: require('./well/Well'),
+  create: function(component, options, data) {
     let comp = null;
     if (!component.type) {
       return null;
     }
     else if (this.hasOwnProperty(component.type)) {
-      comp = new Components[component.type](component, events, data);
+      comp = new Components[component.type](component, options, data);
     }
     else {
-      comp = new Components.base(component, events, data);
+      comp = new Components.base(component, options, data);
     }
     comp.build();
     return comp;

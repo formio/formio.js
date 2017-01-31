@@ -5,18 +5,31 @@
   <title>Formio.js QUnit Test</title>
   <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css">
   <script src="../node_modules/phantomjs-polyfill/bind-polyfill.js"></script>
+
+  <!-- All of our form tests. -->
+  <link rel="stylesheet" href="bootstrap.min.css">
+  <link rel="stylesheet" href="../dist/formio.form.css">
+  <script src="forms/simple.js"></script>
 </head>
 <body>
-<div id="qunit"></div>
-<div id="qunit-fixture"></div>
+<div>
+  <div style="position:absolute;width:50%;left:0;padding:20px;">
+    <div id="formio"></div>
+  </div>
+  <div style="position:absolute;width:50%;right:0;padding:20px;">
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+  </div>
+</div>
 <script src="../node_modules/native-promise-only/npo.js"></script>
 <script src="../node_modules/lodash/index.js"></script>
 <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
 <script src="../node_modules/qunit-assert-step/qunit-assert-step.js"></script>
 <script src="../node_modules/sinon/pkg/sinon.js"></script>
 <script src="../node_modules/chance/chance.js"></script>
-<script src="../dist/formio.js"></script>
+<script src="../dist/formio.form.js"></script>
 <script src="../node_modules/fetch-mock/es5/client-browserified.js"></script>
 <script src="qunit.js"></script>
+<script src="../src/components/Survey.spec.js"></script>
 </body>
 </html>

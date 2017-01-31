@@ -1,14 +1,19 @@
 "use strict";
-let Formio = require('./formio');
-let FormioComponents = require('./components/Components');
-let EventEmitter = require('eventemitter2').EventEmitter2;
+import Formio from './formio';
+import Promise from "native-promise-only";
+import FormioComponents from './components/Components';
+import EventEmitter from 'eventemitter2';
+let getOptions = function(options) {
+  options = options || {};
+  options.events = new EventEmitter({
+    wildcard: false,
+    maxListeners: 0
+  });
+  return options;
+};
 class FormioForm extends FormioComponents {
-  constructor(element) {
-    super(null, new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    }));
-
+  constructor(element, options) {
+    super(null, getOptions(options));
     this._src = '';
     this._loading = true;
     this.wrapper = element;
@@ -40,6 +45,9 @@ class FormioForm extends FormioComponents {
   }
 
   get ready() {
+    if (!this.onSubmission && !this.onForm) {
+      return Promise.resolve();
+    }
     return this.onSubmission ? this.onSubmission : this.onForm;
   }
 
@@ -71,27 +79,28 @@ class FormioForm extends FormioComponents {
     this.component = form;
 
     // Render the form.
-    this.render();
-
-    // Set the loading flag when we are ready.
-    this.ready.then(() => (this.loading = false));
+    this.render().then(() => {
+      this.ready.then(() => (this.loading = false));
+    });
   }
 
-  get value() {
+  get submission() {
     return {
       data: this.getValue()
     };
   }
 
-  set value(submission) {
+  set submission(submission) {
     this.setValue(submission.data);
   }
 
   render() {
     this.wrapper.innerHTML = '';
-    this.build();
-    this.wrapper.append(this.element);
-    this.on('componentChange', (changed) => this.onComponentChange(changed));
+    return this.localize().then(() => {
+      this.build();
+      this.wrapper.append(this.element);
+      this.on('componentChange', (changed) => this.onComponentChange(changed));
+    });
   }
 
   build() {
@@ -115,16 +124,16 @@ class FormioForm extends FormioComponents {
     if (!this.formio) {
       return this.onSubmit(submission);
     }
-    this.formio.saveSubmission(this.value)
+    this.formio.saveSubmission(this.submission)
       .then((submission) => this.onSubmit(submission))
       .catch((err) => this.events.emit('error', err));
   }
 
   onComponentChange(changed) {
-    let value = this.value;
+    let value = this.submission;
     value.changed = changed;
     this.events.emit('change', value);
     this.checkConditions(value.data);
   }
 }
-module.exports = FormioForm;
+module.exports = global.FormioForm = FormioForm;
