@@ -6918,7 +6918,7 @@ var BaseComponent = function () {
   }, {
     key: 'addValue',
     value: function addValue() {
-      this.data[this.component.key] = this.value;
+      this.data[this.component.key] = this.getValue();
       if (!this.data[this.component.key]) {
         this.data[this.component.key] = [];
       }
@@ -8130,7 +8130,7 @@ var DataGridComponent = function (_BaseComponent) {
       this.rows = [];
       (0, _each3.default)(this.data[this.component.key], function (row, index) {
         var tr = _this3.ce('tr');
-        var cols = [];
+        var cols = {};
         (0, _each3.default)(_this3.component.components, function (col) {
           var column = (0, _cloneDeep3.default)(col);
           column.label = false;
@@ -8138,9 +8138,9 @@ var DataGridComponent = function (_BaseComponent) {
           var comp = components.create(column, _this3.options, row);
           td.appendChild(comp.element);
           if (row.hasOwnProperty(column.key)) {
-            comp.value = row[column.key];
+            comp.setValue(row[column.key]);
           }
-          cols.push(comp);
+          cols[column.key] = comp;
           tr.appendChild(td);
         });
         _this3.rows.push(cols);
@@ -8159,13 +8159,42 @@ var DataGridComponent = function (_BaseComponent) {
       this.tbody.appendChild(tr);
     }
   }, {
-    key: 'getValue',
+    key: 'setValue',
+    value: function setValue(value) {
+      if (!value) {
+        return;
+      }
+      if (!(0, _isArray3.default)(value)) {
+        return;
+      }
+
+      // Add needed rows.
+      for (var i = this.rows.length; i < value.length; i++) {
+        this.addValue();
+      }
+
+      (0, _each3.default)(this.rows, function (row, index) {
+        if (value.length <= index) {
+          return;
+        }
+        (0, _each3.default)(row, function (col, key) {
+          if (!value[index].hasOwnProperty(key)) {
+            return;
+          }
+          col.value = value[index][key];
+        });
+      });
+      this.updateValue();
+    }
 
     /**
      * Get the value of this component.
      *
      * @returns {*}
      */
+
+  }, {
+    key: 'getValue',
     value: function getValue() {
       var values = [];
       (0, _each3.default)(this.rows, function (row) {
@@ -8178,27 +8207,6 @@ var DataGridComponent = function (_BaseComponent) {
         values.push(value);
       });
       return values;
-    }
-  }, {
-    key: 'value',
-    set: function set(value) {
-      if (!value) {
-        return;
-      }
-      if (!(0, _isArray3.default)(value)) {
-        return;
-      }
-      (0, _each3.default)(this.rows, function (row, index) {
-        if (value.length <= index) {
-          return;
-        }
-        (0, _each3.default)(row, function (col, key) {
-          if (!value[index].hasOwnProperty(key)) {
-            return;
-          }
-          col.value = value[index][key];
-        });
-      });
     }
   }]);
 

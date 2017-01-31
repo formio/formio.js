@@ -115,7 +115,7 @@ class BaseComponent {
   }
 
   addValue() {
-    this.data[this.component.key] = this.value;
+    this.data[this.component.key] = this.getValue();
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
     }

@@ -50,7 +50,7 @@ class DataGridComponent extends BaseComponent {
     this.rows = [];
     _each(this.data[this.component.key], (row, index) => {
       let tr = this.ce('tr');
-      let cols = [];
+      let cols = {};
       _each(this.component.components, (col) => {
         let column = _cloneDeep(col);
         column.label = false;
@@ -58,9 +58,9 @@ class DataGridComponent extends BaseComponent {
         let comp = components.create(column, this.options, row);
         td.appendChild(comp.element);
         if (row.hasOwnProperty(column.key)) {
-          comp.value = row[column.key];
+          comp.setValue(row[column.key]);
         }
-        cols.push(comp);
+        cols[column.key] = comp;
         tr.appendChild(td);
       });
       this.rows.push(cols);
@@ -79,13 +79,19 @@ class DataGridComponent extends BaseComponent {
     this.tbody.appendChild(tr);
   }
 
-  set value(value) {
+  setValue(value) {
     if (!value) {
       return;
     }
     if (!_isArray(value)) {
       return;
     }
+
+    // Add needed rows.
+    for (let i=this.rows.length; i < value.length; i++) {
+      this.addValue();
+    }
+
     _each(this.rows, (row, index) => {
       if (value.length <= index) {
         return;
@@ -97,6 +103,7 @@ class DataGridComponent extends BaseComponent {
         col.value = value[index][key];
       });
     });
+    this.updateValue();
   }
 
   /**
