@@ -4,9 +4,8 @@
   "description": "Common js library for client side interaction with <form.io>",
   "main": "src/formio.js",
   "scripts": {
-    "test": "node-qunit-phantomjs test/qunit.html --verbose",
-    "test-form": "karma start",
-    "test-form:watch": "karma start --no-single-run --auto-watch"
+    "test": "karma start --verbose",
+    "test:watch": "karma start --no-single-run --auto-watch"
   },
   "repository": {
     "type": "git",
@@ -60,13 +59,8 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "lodash": "^3.10.1",
     "mocha": "^3.2.0",
-    "node-qunit-phantomjs": "^1.4.0",
-    "phantomjs-polyfill": "0.0.1",
-    "phantomjs-prebuilt": "^2.1.7",
     "power-assert": "^1.4.2",
-    "qunit-assert-step": "^1.0.3",
-    "qunitjs": "^1.20.0",
-    "sinon": "^1.17.4",
+    "sinon": "^1.17.7",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0"
   },
