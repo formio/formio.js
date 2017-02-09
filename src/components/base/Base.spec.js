@@ -1,12 +1,12 @@
 'use strict';
 import assert from 'power-assert';
 import BaseComponent from './Base';
-import { Harness as Harness } from '../../../test/harness';
+import Harness from '../../../test/harness';
 import { components as comps } from './fixtures/index';
 describe('Base Component', function() {
   it('Should build a base component', function(done) {
     Harness.testCreate(BaseComponent, comps.comp1).then((component) => {
-      let inputs = Harness.testInputs(component, 'input[type="text"]', 1);
+      let inputs = Harness.testElements(component, 'input[type="text"]', 1);
       for (let i=0; i < inputs.length; i++) {
         assert.equal(inputs[i].name, 'data[' + comps.comp1.key + ']');
       }
@@ -72,5 +72,16 @@ describe('Base Component', function() {
         value: 'Tom'
       }
     }, done));
+  });
+
+  it('Should allow for multiple values', (done) => {
+    Harness.testCreate(BaseComponent, comps.comp2).then((component) => {
+      Harness.testElements(component, 'table', 1);
+      Harness.testElements(component, 'table tr', 2);
+      Harness.testElements(component, 'table tr:first-child td', 2);
+      Harness.testElements(component, 'table tr:first-child td:first-child input[name="data[names]"]', 1);
+      Harness.testElements(component, 'table tr:first-child td:last-child span.glyphicon-remove-circle', 1);
+      done();
+    });
   });
 });

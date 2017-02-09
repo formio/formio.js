@@ -2,6 +2,7 @@
 import Formio from './formio';
 import Promise from "native-promise-only";
 import FormioComponents from './components/Components';
+import _debounce from 'lodash/debounce';
 import EventEmitter from 'eventemitter2';
 let getOptions = function(options) {
   options = options || {};
@@ -21,6 +22,8 @@ class FormioForm extends FormioComponents {
     this.loader = null;
     this.onForm = null;
     this.onSubmission = null;
+    this.triggerSubmissionChange = _debounce(this.onSubmissionChange.bind(this), 10);
+    this.triggerSubmissionError = _debounce(this.onSubmissionError.bind(this), 10);
   }
 
   get src() {
@@ -74,14 +77,18 @@ class FormioForm extends FormioComponents {
     }
   }
 
-  set form(form) {
+  setForm(form) {
     // Set this form as a component.
     this.component = form;
 
     // Render the form.
-    this.render().then(() => {
-      this.ready.then(() => (this.loading = false));
+    return this.render().then(() => {
+      return this.ready.then(() => (this.loading = false));
     });
+  }
+
+  set form(form) {
+    this.setForm(form);
   }
 
   get submission() {
@@ -99,7 +106,8 @@ class FormioForm extends FormioComponents {
     return this.localize().then(() => {
       this.build();
       this.wrapper.append(this.element);
-      this.on('componentChange', (changed) => this.onComponentChange(changed));
+      this.on('componentChange', (changed) => this.triggerSubmissionChange(changed));
+      this.on('componentError', (changed) => this.triggerSubmissionError(changed));
     });
   }
 
@@ -129,11 +137,15 @@ class FormioForm extends FormioComponents {
       .catch((err) => this.events.emit('error', err));
   }
 
-  onComponentChange(changed) {
+  onSubmissionChange(changed) {
     let value = this.submission;
     value.changed = changed;
     this.events.emit('change', value);
     this.checkConditions(value.data);
+  }
+
+  onSubmissionError(error) {
+    this.events.emit('error', error);
   }
 }
 module.exports = global.FormioForm = FormioForm;

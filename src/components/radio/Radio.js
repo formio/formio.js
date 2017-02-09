@@ -63,5 +63,4 @@ class RadioComponent extends BaseComponent {
     });
   }
 }
-window.customElements.define('formio-radio', RadioComponent);
 module.exports = RadioComponent;

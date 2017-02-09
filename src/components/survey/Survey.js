@@ -10,7 +10,7 @@ class SurveyComponent extends BaseComponent {
     // Build header.
     let thead = this.ce('thead');
     let thr = this.ce('tr');
-    thr.append(this.ce('td'));
+    thr.appendChild(this.ce('td'));
     _each(this.component.values, (value) => {
       let th = this.ce('th');
       th.setAttribute('style', 'text-align: center;');
@@ -19,7 +19,6 @@ class SurveyComponent extends BaseComponent {
     });
     thead.appendChild(thr);
     this.table.appendChild(thead);
-
     // Build the body.
     let tbody = this.ce('tbody');
     _each(this.component.questions, (question) => {

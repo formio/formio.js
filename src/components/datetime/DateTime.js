@@ -2,6 +2,10 @@ import BaseComponent from '../base/Base';
 import Flatpickr from 'flatpickr';
 import _get from 'lodash/get';
 class DateTimeComponent extends BaseComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.precise = false;
+  }
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -86,12 +90,21 @@ class DateTimeComponent extends BaseComponent {
   }
 
   getValueAt(index) {
-    let timestamp = this.inputs[index].value;
+    let timestamp = parseInt(this.inputs[index].value, 10);
     if (!timestamp) {
       // Just default to today.
       return (new Date()).toISOString();
     }
-    return (new Date(parseInt(timestamp, 10) * 1000)).toISOString();
+    if (!this.precise) {
+      timestamp *= 1000;
+    }
+    return (new Date(timestamp)).toISOString();
+  }
+
+  setValueAt(index, value) {
+    let date = new Date(value);
+    this.precise = true;
+    this.inputs[index].value = date.getTime();
   }
 }
 module.exports = DateTimeComponent;

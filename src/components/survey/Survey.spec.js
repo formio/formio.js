@@ -2,11 +2,11 @@
 import assert from 'power-assert';
 import SurveyComponent from './Survey';
 import { components as comps } from './fixtures/index';
-import { Harness as Harness } from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('Survey Component', function() {
   it('Should build a survey component', function(done) {
     Harness.testCreate(SurveyComponent, comps.comp1).then((component) => {
-      let inputs = Harness.testInputs(component, 'input[type="radio"]', 10);
+      let inputs = Harness.testElements(component, 'input[type="radio"]', 10);
       for (let i=0; i < 5; i++) {
         assert.equal(inputs[i].name, 'data[surveyQuestions][service]');
         assert.equal(inputs[i].id, component.id + '-service-' + comps.comp1.values[i].value);
@@ -22,7 +22,7 @@ describe('Survey Component', function() {
   it('Should set the value of surveys.', function(done) {
     Harness.testCreate(SurveyComponent, comps.comp1).then((component) => {
       Harness.testSetGet(component, {service: 'bad', howWouldYouRateTheTechnology: 'good'});
-      let inputs = Harness.testInputs(component, 'input[type="radio"]', 10);
+      let inputs = Harness.testElements(component, 'input[type="radio"]', 10);
       for (let i=0; i < inputs.length; i++) {
         if (
           (inputs[i].id === component.id + '-service-bad') ||

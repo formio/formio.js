@@ -25,6 +25,7 @@ class BaseComponent {
     this.tbody = null;
     this.label = null;
     this.errorElement = null;
+    this.error = '';
     this.inputs = [];
     this.info = null;
     this.value = null;
@@ -33,7 +34,9 @@ class BaseComponent {
     this.triggerChange = _debounce(this.onChange.bind(this), 200);
     if (this.component) {
       this.type = this.component.type;
-      this.options.name += '[' + this.component.key + ']';
+      if (this.component.input && this.component.key) {
+        this.options.name += '[' + this.component.key + ']';
+      }
       this.info = this.elementInfo();
     }
   }
@@ -459,11 +462,16 @@ class BaseComponent {
     );
   }
 
+  getErrors() {
+    return this.error;
+  }
+
   setCustomValidity(message) {
     if (this.errorElement) {
       this.errorElement.innerHTML = '';
     }
     this.removeClass(this.element, 'has-error');
+    this.error = message ? message : '';
     if (message) {
       this.addInputError(message);
       if (this.events) {
