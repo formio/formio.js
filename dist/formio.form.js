@@ -727,7 +727,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! flatpickr v2.3.4, @license MIT */
+/*! flatpickr v2.3.5, @license MIT */
 function Flatpickr(element, config) {
 	var self = this;
 
@@ -769,8 +769,7 @@ function Flatpickr(element, config) {
 		if (!self.isMobile) {
 			Object.defineProperty(self, "dateIsPicked", {
 				set: function set(bool) {
-					if (bool) return self.calendarContainer.classList.add("dateIsPicked");
-					self.calendarContainer.classList.remove("dateIsPicked");
+					toggleClass(self.calendarContainer, "dateIsPicked", bool);
 				}
 			});
 		}
@@ -860,6 +859,11 @@ function Flatpickr(element, config) {
 		}
 	}
 
+	function onMonthScroll(e) {
+		e.preventDefault();
+		self.changeMonth(Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY)));
+	}
+
 	function bind() {
 		if (self.config.wrap) {
 			["open", "close", "toggle", "clear"].forEach(function (el) {
@@ -905,6 +909,9 @@ function Flatpickr(element, config) {
 				return changeMonth(1);
 			});
 
+			self.currentMonthElement.addEventListener("wheel", function (e) {
+				return debounce(onMonthScroll(e), 50);
+			});
 			self.currentYearElement.addEventListener("wheel", function (e) {
 				return debounce(yearScroll(e), 50);
 			});
@@ -959,7 +966,9 @@ function Flatpickr(element, config) {
 			self.currentYear = jumpDate.getFullYear();
 			self.currentMonth = jumpDate.getMonth();
 		} catch (e) {
+			/* istanbul ignore next */
 			console.error(e.stack);
+			/* istanbul ignore next */
 			console.warn("Invalid date supplied: " + jumpDate);
 		}
 
@@ -1023,14 +1032,26 @@ function Flatpickr(element, config) {
 
 		self.calendarContainer.appendChild(fragment);
 
+		var customAppend = self.config.appendTo && self.config.appendTo.nodeType;
+
 		if (self.config.inline || self.config.static) {
 			self.calendarContainer.classList.add(self.config.inline ? "inline" : "static");
 			positionCalendar();
 
-			if (self.config.appendTo && self.config.appendTo.nodeType) self.config.appendTo.appendChild(self.calendarContainer);else {
-				self.element.parentNode.insertBefore(self.calendarContainer, (self.altInput || self.input).nextSibling);
+			if (self.config.inline && !customAppend) {
+				return self.element.parentNode.insertBefore(self.calendarContainer, (self.altInput || self.input).nextSibling);
 			}
-		} else window.document.body.appendChild(self.calendarContainer);
+
+			if (self.config.static) {
+				var wrapper = createElement("div", "flatpickr-wrapper");
+				self.element.parentNode.insertBefore(wrapper, self.element);
+				wrapper.appendChild(self.element);
+				wrapper.appendChild(self.calendarContainer);
+				return;
+			}
+		}
+
+		(customAppend ? self.config.appendTo : window.document.body).appendChild(self.calendarContainer);
 	}
 
 	function createDay(className, date, dayNumber) {
@@ -1123,6 +1144,7 @@ function Flatpickr(element, config) {
 		self.prevMonthNav.innerHTML = self.config.prevArrow;
 
 		self.currentMonthElement = createElement("span", "cur-month");
+		self.currentMonthElement.title = self.l10n.scrollTitle;
 
 		var yearInput = createNumberInput("cur-year");
 		self.currentYearElement = yearInput.childNodes[0];
@@ -1324,7 +1346,9 @@ function Flatpickr(element, config) {
 	}
 
 	function documentClick(e) {
-		var isInput = self.element.contains(e.target) || e.target === self.input || e.target === self.altInput || e.path && (~e.path.indexOf(self.input) || ~e.path.indexOf(self.altInput));
+		var isInput = self.element.contains(e.target) || e.target === self.input || e.target === self.altInput ||
+		// web components
+		e.path && e.path.indexOf && (~e.path.indexOf(self.input) || ~e.path.indexOf(self.altInput));
 
 		if (self.isOpen && !self.config.inline && !isCalendarElem(e.target) && !isInput) {
 			e.preventDefault();
@@ -1348,7 +1372,7 @@ function Flatpickr(element, config) {
 
 	function handleYearChange(newYear) {
 		if (self.currentMonth < 0 || self.currentMonth > 11) {
-			self.currentYear += self.currentMonth % 11;
+			self.currentYear += self.currentMonth > 11 ? 1 : -1;
 			self.currentMonth = (self.currentMonth + 12) % 12;
 
 			triggerEvent("YearChange");
@@ -1404,8 +1428,6 @@ function Flatpickr(element, config) {
 
 				case 27:
 					// escape
-					self.clear();
-					self.redraw();
 					self.close();
 					break;
 
@@ -1415,11 +1437,8 @@ function Flatpickr(element, config) {
 
 				case 38:
 					e.preventDefault();
-
-					if (self.timeContainer && self.timeContainer.contains(e.target)) updateTime(e);else {
-						self.currentYear++;
-						self.redraw();
-					}
+					self.currentYear++;
+					self.redraw();
 
 					break;
 
@@ -1429,10 +1448,8 @@ function Flatpickr(element, config) {
 
 				case 40:
 					e.preventDefault();
-					if (self.timeContainer && self.timeContainer.contains(e.target)) updateTime(e);else {
-						self.currentYear--;
-						self.redraw();
-					}
+					self.currentYear--;
+					self.redraw();
 
 					break;
 
@@ -1458,16 +1475,20 @@ function Flatpickr(element, config) {
 			}
 		}
 
-		for (var timestamp = self.days.childNodes[0].dateObj.getTime(), i = 0; i < 42; i++, timestamp += self.utils.duration.DAY) {
+		var _loop = function _loop(timestamp, i) {
 			var outOfRange = timestamp < self.minRangeDate.getTime() || timestamp > self.maxRangeDate.getTime();
 
 			if (outOfRange) {
 				self.days.childNodes[i].classList.add("notAllowed");
-				self.days.childNodes[i].classList.remove("inRange", "startRange", "endRange");
-				continue;
-			} else if (containsDisabled && !outOfRange) continue;
+				["inRange", "startRange", "endRange"].forEach(function (c) {
+					self.days.childNodes[i].classList.remove(c);
+				});
+				return "continue";
+			} else if (containsDisabled && !outOfRange) return "continue";
 
-			self.days.childNodes[i].classList.remove("startRange", "inRange", "endRange", "notAllowed");
+			["startRange", "inRange", "endRange", "notAllowed"].forEach(function (c) {
+				self.days.childNodes[i].classList.remove(c);
+			});
 
 			var minRangeDate = Math.max(self.minRangeDate.getTime(), rangeStartDate),
 			    maxRangeDate = Math.min(self.maxRangeDate.getTime(), rangeEndDate);
@@ -1475,6 +1496,12 @@ function Flatpickr(element, config) {
 			e.target.classList.add(hoverDate < self.selectedDates[0] ? "startRange" : "endRange");
 
 			if (initialDate > hoverDate && timestamp === initialDate.getTime()) self.days.childNodes[i].classList.add("endRange");else if (initialDate < hoverDate && timestamp === initialDate.getTime()) self.days.childNodes[i].classList.add("startRange");else if (timestamp > minRangeDate && timestamp < maxRangeDate) self.days.childNodes[i].classList.add("inRange");
+		};
+
+		for (var timestamp = self.days.childNodes[0].dateObj.getTime(), i = 0; i < 42; i++, timestamp += self.utils.duration.DAY) {
+			var _ret = _loop(timestamp, i);
+
+			if (_ret === "continue") continue;
 		}
 	}
 
@@ -1538,6 +1565,9 @@ function Flatpickr(element, config) {
 
 	function parseConfig() {
 		var boolOpts = ["utc", "wrap", "weekNumbers", "allowInput", "clickOpens", "time_24hr", "enableTime", "noCalendar", "altInput", "shorthandCurrentMonth", "inline", "static", "enableSeconds", "disableMobile"];
+
+		var hooks = ["onChange", "onClose", "onDayCreate", "onOpen", "onReady", "onValueUpdate"];
+
 		self.config = Object.create(Flatpickr.defaultConfig);
 
 		Object.defineProperty(self.config, "minDate", {
@@ -1560,12 +1590,21 @@ function Flatpickr(element, config) {
 
 		for (var i = 0; i < boolOpts.length; i++) {
 			self.config[boolOpts[i]] = self.config[boolOpts[i]] === true || self.config[boolOpts[i]] === "true";
+		}for (var _i = 0; _i < hooks.length; _i++) {
+			self.config[hooks[_i]] = arrayify(self.config[hooks[_i]]);
 		}if (!userConfig.dateFormat && userConfig.enableTime) {
 			self.config.dateFormat = self.config.noCalendar ? "H:i" + (self.config.enableSeconds ? ":S" : "") : Flatpickr.defaultConfig.dateFormat + " H:i" + (self.config.enableSeconds ? ":S" : "");
 		}
 
 		if (userConfig.altInput && userConfig.enableTime && !userConfig.altFormat) {
 			self.config.altFormat = self.config.noCalendar ? "h:i" + (self.config.enableSeconds ? ":S K" : " K") : Flatpickr.defaultConfig.altFormat + (" h:i" + (self.config.enableSeconds ? ":S" : "") + " K");
+		}
+
+		for (var _i2 = 0; _i2 < self.config.plugins.length; _i2++) {
+			var pluginConf = self.config.plugins[_i2](self) || {};
+			for (var key in pluginConf) {
+				if (Array.isArray(self.config[key])) self.config[key] = arrayify(pluginConf[key]).concat(self.config[key]);else if (userConfig[key] !== undefined) self.config[key] = pluginConf[key];
+			}
 		}
 	}
 
@@ -1582,37 +1621,32 @@ function Flatpickr(element, config) {
 		    calendarWidth = self.calendarContainer.offsetWidth,
 		    input = self.altInput || self.input,
 		    inputBounds = input.getBoundingClientRect(),
-		    distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight;
+		    distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight,
+		    bottomCalendar = distanceFromBottom < calendarHeight + 60;
 
-		var top = void 0;
+		var top = window.pageYOffset + inputBounds.top + (!bottomCalendar ? input.offsetHeight + 2 : -calendarHeight - 2);
 
-		if (distanceFromBottom < calendarHeight + 60) {
-			top = window.pageYOffset - calendarHeight + inputBounds.top - 2;
-			self.calendarContainer.classList.remove("arrowTop");
-			self.calendarContainer.classList.add("arrowBottom");
+		toggleClass(self.calendarContainer, "arrowTop", !bottomCalendar);
+		toggleClass(self.calendarContainer, "arrowBottom", bottomCalendar);
+
+		if (self.config.inline) return;
+
+		var left = window.pageXOffset + inputBounds.left;
+		var right = window.document.body.offsetWidth - inputBounds.right;
+		var rightMost = left + calendarWidth > window.document.body.offsetWidth;
+
+		toggleClass(self.calendarContainer, "rightMost", rightMost);
+
+		if (self.config.static) return;
+
+		self.calendarContainer.style.top = top + "px";
+
+		if (!rightMost) {
+			self.calendarContainer.style.left = left + "px";
+			self.calendarContainer.style.right = "auto";
 		} else {
-			top = window.pageYOffset + input.offsetHeight + inputBounds.top + 2;
-			self.calendarContainer.classList.remove("arrowBottom");
-			self.calendarContainer.classList.add("arrowTop");
-		}
-
-		if (!self.config.static && !self.config.inline) {
-			self.calendarContainer.style.top = top + "px";
-
-			var left = window.pageXOffset + inputBounds.left;
-			var right = window.document.body.offsetWidth - inputBounds.right;
-
-			if (left + calendarWidth <= window.document.body.offsetWidth) {
-				self.calendarContainer.style.left = left + "px";
-				self.calendarContainer.style.right = "auto";
-
-				self.calendarContainer.classList.remove("rightMost");
-			} else {
-				self.calendarContainer.style.left = "auto";
-				self.calendarContainer.style.right = right + "px";
-
-				self.calendarContainer.classList.add("rightMost");
-			}
+			self.calendarContainer.style.left = "auto";
+			self.calendarContainer.style.right = right + "px";
 		}
 	}
 
@@ -1664,7 +1698,19 @@ function Flatpickr(element, config) {
 			return self.dateIsPicked = true;
 		}, 50);
 
-		if (self.config.mode === "range" && self.selectedDates.length === 1) onMouseOver(e);
+		if (self.config.mode === "range") {
+			if (self.selectedDates.length === 1) {
+				onMouseOver(e);
+
+				if (self.maxRangeDate < self.days.childNodes[41].dateObj) self.nextMonthNav.style.display = "none";
+
+				if (self.minRangeDate > self.days.childNodes[0].dateObj) self.prevMonthNav.style.display = "none";
+			} else {
+				self.nextMonthNav.style.display = "block";
+				self.prevMonthNav.style.display = "block";
+				updateNavigationCurrentMonth();
+			}
+		}
 
 		if (self.config.mode === "single" && !self.config.enableTime) self.close();
 
@@ -1678,7 +1724,7 @@ function Flatpickr(element, config) {
 	}
 
 	function setSelectedDate(inputDate) {
-		if (Array.isArray(inputDate)) self.selectedDates = inputDate.map(self.parseDate);else if (inputDate) {
+		if (Array.isArray(inputDate)) self.selectedDates = inputDate.map(self.parseDate);else if (inputDate instanceof Date || !isNaN(inputDate)) self.selectedDates = [self.parseDate(inputDate)];else if (inputDate && inputDate.substring) {
 			switch (self.config.mode) {
 				case "single":
 					self.selectedDates = [self.parseDate(inputDate)];
@@ -1690,6 +1736,7 @@ function Flatpickr(element, config) {
 
 				case "range":
 					self.selectedDates = inputDate.split(self.l10n.rangeSeparator).map(self.parseDate);
+
 					break;
 
 				default:
@@ -1894,6 +1941,7 @@ function Flatpickr(element, config) {
 	function setupInputs() {
 		self.input = self.config.wrap ? self.element.querySelector("[data-input]") : self.element;
 
+		/* istanbul ignore next */
 		if (!self.input) return console.warn("Error: invalid input element specified", self.input);
 
 		self.input._type = self.input.type;
@@ -1954,9 +2002,9 @@ function Flatpickr(element, config) {
 	}
 
 	function triggerEvent(event, data) {
-		if (self.config["on" + event]) {
-			var hooks = Array.isArray(self.config["on" + event]) ? self.config["on" + event] : [self.config["on" + event]];
+		var hooks = self.config["on" + event];
 
+		if (hooks) {
 			for (var i = 0; i < hooks.length; i++) {
 				hooks[i](self.selectedDates, self.input.value, self, data);
 			}
@@ -1968,11 +2016,14 @@ function Flatpickr(element, config) {
 
 				// many front-end frameworks bind to the input event
 				self.input.dispatchEvent(new Event("input", { "bubbles": true }));
-			} else {
-				if (window.document.createEvent !== undefined) return self.input.dispatchEvent(self.changeEvent);
-
-				self.input.fireEvent("onchange");
 			}
+
+			/* istanbul ignore next */
+			else {
+					if (window.document.createEvent !== undefined) return self.input.dispatchEvent(self.changeEvent);
+
+					self.input.fireEvent("onchange");
+				}
 		}
 	}
 
@@ -2052,6 +2103,16 @@ function Flatpickr(element, config) {
 		return e;
 	}
 
+	function arrayify(obj) {
+		if (Array.isArray(obj)) return obj;
+		return [obj];
+	}
+
+	function toggleClass(elem, className, bool) {
+		if (bool) return elem.classList.add(className);
+		elem.classList.remove(className);
+	}
+
 	/* istanbul ignore next */
 	function debounce(func, wait, immediate) {
 		var timeout = void 0;
@@ -2098,15 +2159,7 @@ function Flatpickr(element, config) {
 
 		var newValue = Number(curValue);
 
-		switch (e.type) {
-			case "wheel":
-				newValue = curValue + step * delta;
-				break;
-
-			case "keydown":
-				newValue = curValue + step * (e.which === 38 ? 1 : -1);
-				break;
-		}
+		if (e.type === "wheel") newValue = curValue + step * delta;
 
 		if (e.type !== "input" || e.target.value.length === 2) {
 			if (newValue < min) {
@@ -2241,21 +2294,23 @@ Flatpickr.defaultConfig = {
 	// default locale
 	locale: "default",
 
+	plugins: [],
+
 	// onChange callback when user selects a date or time
-	onChange: null, // function (dateObj, dateStr) {}
+	onChange: [], // function (dateObj, dateStr) {}
 
 	// called every time calendar is opened
-	onOpen: null, // function (dateObj, dateStr) {}
+	onOpen: [], // function (dateObj, dateStr) {}
 
 	// called every time calendar is closed
-	onClose: null, // function (dateObj, dateStr) {}
+	onClose: [], // function (dateObj, dateStr) {}
 
 	// called after calendar is ready
-	onReady: null, // function (dateObj, dateStr) {}
+	onReady: [], // function (dateObj, dateStr) {}
 
-	onValueUpdate: null,
+	onValueUpdate: [],
 
-	onDayCreate: null
+	onDayCreate: []
 };
 
 /* istanbul ignore next */
@@ -2335,6 +2390,7 @@ Flatpickr.prototype = {
 				date = new Date(date);
 		} else if (date instanceof Date) date = new Date(date.getTime()); // create a copy
 
+		/* istanbul ignore next */
 		if (!(date instanceof Date)) {
 			console.warn("flatpickr: invalid date " + date_orig);
 			console.info(this.element);
@@ -2349,6 +2405,7 @@ Flatpickr.prototype = {
 	}
 };
 
+/* istanbul ignore next */
 function _flatpickr(nodeList, config) {
 	var nodes = Array.prototype.slice.call(nodeList); // static list
 	var instances = [];
@@ -2364,6 +2421,7 @@ function _flatpickr(nodeList, config) {
 	return instances.length === 1 ? instances[0] : instances;
 }
 
+/* istanbul ignore next */
 if (typeof HTMLElement !== "undefined") {
 	// browser env
 	HTMLCollection.prototype.flatpickr = NodeList.prototype.flatpickr = function (config) {
@@ -2375,10 +2433,12 @@ if (typeof HTMLElement !== "undefined") {
 	};
 }
 
+/* istanbul ignore next */
 function flatpickr(selector, config) {
 	return _flatpickr(window.document.querySelectorAll(selector), config);
 }
 
+/* istanbul ignore next */
 if (typeof jQuery !== "undefined") {
 	jQuery.fn.flatpickr = function (config) {
 		return _flatpickr(this, config);
@@ -3888,12 +3948,13 @@ var Translator = function (_EventEmitter) {
   Translator.prototype.extractFromKey = function extractFromKey(key, options) {
     var nsSeparator = options.nsSeparator || this.options.nsSeparator;
     if (nsSeparator === undefined) nsSeparator = ':';
+    var keySeparator = options.keySeparator || this.options.keySeparator || '.';
 
     var namespaces = options.ns || this.options.defaultNS;
     if (nsSeparator && key.indexOf(nsSeparator) > -1) {
       var parts = key.split(nsSeparator);
-      namespaces = parts[0];
-      key = parts[1];
+      if (nsSeparator !== keySeparator || nsSeparator === keySeparator && this.options.ns.indexOf(parts[0]) > -1) namespaces = parts.shift();
+      key = parts.join(keySeparator);
     }
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
@@ -6471,6 +6532,10 @@ var _Base = require('./base/Base');
 
 var _Base2 = _interopRequireDefault(_Base);
 
+var _isArray2 = require('lodash/isArray');
+
+var _isArray3 = _interopRequireDefault(_isArray2);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -6512,8 +6577,44 @@ var FormioComponents = function (_BaseComponent) {
       this.addComponents();
     }
   }, {
+    key: 'everyComponent',
+    value: function everyComponent(cb) {
+      (0, _each3.default)(this.components, function (component) {
+        if (component.type === 'components') {
+          if (component.everyComponent(cb) === false) {
+            return false;
+          }
+        } else if (cb(component) === false) {
+          return false;
+        }
+      });
+    }
+  }, {
+    key: 'eachComponent',
+    value: function eachComponent(cb) {
+      (0, _each3.default)(this.components, function (component) {
+        if (cb(component) === false) {
+          return false;
+        }
+      });
+    }
+  }, {
+    key: 'getComponent',
+    value: function getComponent(key) {
+      var comp = null;
+      this.everyComponent(function (component) {
+        if (component.component.key === key) {
+          comp = component;
+          return false;
+        }
+      });
+      return comp;
+    }
+  }, {
     key: 'addComponent',
     value: function addComponent(component, element, data) {
+      element = element || this.element;
+      data = data || this.data;
       var components = require('./index');
       var comp = components.create(component, this.options, data);
       this.components.push(comp);
@@ -6544,13 +6645,37 @@ var FormioComponents = function (_BaseComponent) {
       return this.data;
     }
   }, {
+    key: 'getErrors',
+    value: function getErrors() {
+      var errors = [];
+      (0, _each3.default)(this.components, function (component) {
+        var compErrors = component.getErrors();
+        if ((0, _isArray3.default)(compErrors)) {
+          (0, _each3.default)(compErrors, function (compError) {
+            if (compError) {
+              errors.push(compError);
+            }
+          });
+        } else if (compErrors) {
+          errors.push(compErrors);
+        }
+      });
+      return errors;
+    }
+  }, {
     key: 'setValue',
     value: function setValue(value) {
       (0, _each3.default)(this.components, function (component) {
+        if (component.input || component.type === 'button') {
+          return;
+        }
+
         if (component.type === 'components') {
           component.setValue(value);
-        } else if (value.hasOwnProperty(component.component.key)) {
+        } else if (value && value.hasOwnProperty(component.component.key)) {
           component.setValue(value[component.component.key]);
+        } else {
+          component.setValue(null);
         }
       });
     }
@@ -6568,7 +6693,7 @@ var FormioComponents = function (_BaseComponent) {
 
 module.exports = FormioComponents;
 
-},{"./base/Base":27,"./index":39,"lodash/each":175}],26:[function(require,module,exports){
+},{"./base/Base":27,"./index":39,"lodash/each":175,"lodash/isArray":182}],26:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -6831,6 +6956,7 @@ var BaseComponent = function () {
     this.tbody = null;
     this.label = null;
     this.errorElement = null;
+    this.error = '';
     this.inputs = [];
     this.info = null;
     this.value = null;
@@ -6839,7 +6965,9 @@ var BaseComponent = function () {
     this.triggerChange = (0, _debounce3.default)(this.onChange.bind(this), 200);
     if (this.component) {
       this.type = this.component.type;
-      this.options.name += '[' + this.component.key + ']';
+      if (this.component.input && this.component.key) {
+        this.options.name += '[' + this.component.key + ']';
+      }
       this.info = this.elementInfo();
     }
   }
@@ -7311,12 +7439,18 @@ var BaseComponent = function () {
       this.setCustomValidity(_Validator2.default.check(this.validators, this.component, this.data[this.component.key], this.data, this.t.bind(this)));
     }
   }, {
+    key: 'getErrors',
+    value: function getErrors() {
+      return this.error;
+    }
+  }, {
     key: 'setCustomValidity',
     value: function setCustomValidity(message) {
       if (this.errorElement) {
         this.errorElement.innerHTML = '';
       }
       this.removeClass(this.element, 'has-error');
+      this.error = message ? message : '';
       if (message) {
         this.addInputError(message);
         if (this.events) {
@@ -8283,10 +8417,13 @@ function _inherits(subClass, superClass) {
 var DateTimeComponent = function (_BaseComponent) {
   _inherits(DateTimeComponent, _BaseComponent);
 
-  function DateTimeComponent() {
+  function DateTimeComponent(component, options, data) {
     _classCallCheck(this, DateTimeComponent);
 
-    return _possibleConstructorReturn(this, (DateTimeComponent.__proto__ || Object.getPrototypeOf(DateTimeComponent)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (DateTimeComponent.__proto__ || Object.getPrototypeOf(DateTimeComponent)).call(this, component, options, data));
+
+    _this.precise = false;
+    return _this;
   }
 
   _createClass(DateTimeComponent, [{
@@ -8364,12 +8501,22 @@ var DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
-      var timestamp = this.inputs[index].value;
+      var timestamp = parseInt(this.inputs[index].value, 10);
       if (!timestamp) {
         // Just default to today.
         return new Date().toISOString();
       }
-      return new Date(parseInt(timestamp, 10) * 1000).toISOString();
+      if (!this.precise) {
+        timestamp *= 1000;
+      }
+      return new Date(timestamp).toISOString();
+    }
+  }, {
+    key: 'setValueAt',
+    value: function setValueAt(index, value) {
+      var date = new Date(value);
+      this.precise = true;
+      this.inputs[index].value = date.getTime();
     }
   }, {
     key: 'config',
@@ -8405,6 +8552,32 @@ module.exports = DateTimeComponent;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
 var _TextField = require('../textfield/TextField');
 
 var _TextField2 = _interopRequireDefault(_TextField);
@@ -8422,12 +8595,12 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
@@ -8442,6 +8615,15 @@ var EmailComponent = function (_TextFieldComponent) {
     _this.validators.push('email');
     return _this;
   }
+
+  _createClass(EmailComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(EmailComponent.prototype.__proto__ || Object.getPrototypeOf(EmailComponent.prototype), 'elementInfo', this).call(this);
+      info.attr.type = 'email';
+      return info;
+    }
+  }]);
 
   return EmailComponent;
 }(_TextField2.default);
@@ -9109,7 +9291,6 @@ var RadioComponent = function (_BaseComponent) {
   return RadioComponent;
 }(_Base2.default);
 
-window.customElements.define('formio-radio', RadioComponent);
 module.exports = RadioComponent;
 
 },{"../base/Base":27,"lodash/each":175}],45:[function(require,module,exports){
@@ -9620,7 +9801,7 @@ var SurveyComponent = function (_BaseComponent) {
       // Build header.
       var thead = this.ce('thead');
       var thr = this.ce('tr');
-      thr.append(this.ce('td'));
+      thr.appendChild(this.ce('td'));
       (0, _each3.default)(this.component.values, function (value) {
         var th = _this2.ce('th');
         th.setAttribute('style', 'text-align: center;');
@@ -9629,7 +9810,6 @@ var SurveyComponent = function (_BaseComponent) {
       });
       thead.appendChild(thr);
       this.table.appendChild(thead);
-
       // Build the body.
       var tbody = this.ce('tbody');
       (0, _each3.default)(this.component.questions, function (question) {
@@ -10053,6 +10233,10 @@ var _Components = require("./components/Components");
 
 var _Components2 = _interopRequireDefault(_Components);
 
+var _debounce2 = require("lodash/debounce");
+
+var _debounce3 = _interopRequireDefault(_debounce2);
+
 var _eventemitter = require("eventemitter2");
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
@@ -10103,6 +10287,8 @@ var FormioForm = function (_FormioComponents) {
     _this.loader = null;
     _this.onForm = null;
     _this.onSubmission = null;
+    _this.triggerSubmissionChange = (0, _debounce3.default)(_this.onSubmissionChange.bind(_this), 10);
+    _this.triggerSubmissionError = (0, _debounce3.default)(_this.onSubmissionError.bind(_this), 10);
     return _this;
   }
 
@@ -10112,28 +10298,46 @@ var FormioForm = function (_FormioComponents) {
       return this.events.on(event, cb);
     }
   }, {
+    key: "setForm",
+    value: function setForm(form) {
+      var _this2 = this;
+
+      // Set this form as a component.
+      this.component = form;
+
+      // Render the form.
+      return this.render().then(function () {
+        return _this2.ready.then(function () {
+          return _this2.loading = false;
+        });
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.wrapper.innerHTML = '';
       return this.localize().then(function () {
-        _this2.build();
-        _this2.wrapper.append(_this2.element);
-        _this2.on('componentChange', function (changed) {
-          return _this2.onComponentChange(changed);
+        _this3.build();
+        _this3.wrapper.append(_this3.element);
+        _this3.on('componentChange', function (changed) {
+          return _this3.triggerSubmissionChange(changed);
+        });
+        _this3.on('componentError', function (changed) {
+          return _this3.triggerSubmissionError(changed);
         });
       });
     }
   }, {
     key: "build",
     value: function build() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.element = this.ce('form');
       this.element.setAttribute('class', 'formio-form');
       this.addAnEventListener(this.element, 'submit', function (event) {
-        return _this3.submit(event);
+        return _this4.submit(event);
       });
       this.addComponents();
       this.checkConditions(this.getValue());
@@ -10147,7 +10351,7 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: "submit",
     value: function submit(event) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.loading = true;
       if (event) {
@@ -10157,18 +10361,23 @@ var FormioForm = function (_FormioComponents) {
         return this.onSubmit(submission);
       }
       this.formio.saveSubmission(this.submission).then(function (submission) {
-        return _this4.onSubmit(submission);
+        return _this5.onSubmit(submission);
       }).catch(function (err) {
-        return _this4.events.emit('error', err);
+        return _this5.events.emit('error', err);
       });
     }
   }, {
-    key: "onComponentChange",
-    value: function onComponentChange(changed) {
+    key: "onSubmissionChange",
+    value: function onSubmissionChange(changed) {
       var value = this.submission;
       value.changed = changed;
       this.events.emit('change', value);
       this.checkConditions(value.data);
+    }
+  }, {
+    key: "onSubmissionError",
+    value: function onSubmissionError(error) {
+      this.events.emit('error', error);
     }
   }, {
     key: "src",
@@ -10176,7 +10385,7 @@ var FormioForm = function (_FormioComponents) {
       return this._src;
     },
     set: function set(value) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (!value || typeof value !== 'string') {
         return;
@@ -10185,11 +10394,11 @@ var FormioForm = function (_FormioComponents) {
       this.loading = true;
       this.formio = new _formio2.default(value);
       this.onForm = this.formio.loadForm().then(function (form) {
-        return _this5.form = form;
+        return _this6.form = form;
       });
       if (this.formio.submissionId) {
         this.onSubmission = this.formio.loadSubmission().then(function (submission) {
-          return _this5.submission = submission;
+          return _this6.submission = submission;
         });
       }
     }
@@ -10226,17 +10435,7 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: "form",
     set: function set(form) {
-      var _this6 = this;
-
-      // Set this form as a component.
-      this.component = form;
-
-      // Render the form.
-      this.render().then(function () {
-        _this6.ready.then(function () {
-          return _this6.loading = false;
-        });
-      });
+      this.setForm(form);
     }
   }, {
     key: "submission",
@@ -10256,7 +10455,7 @@ var FormioForm = function (_FormioComponents) {
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":25,"./formio":54,"eventemitter2":1,"native-promise-only":20}],54:[function(require,module,exports){
+},{"./components/Components":25,"./formio":54,"eventemitter2":1,"lodash/debounce":174,"native-promise-only":20}],54:[function(require,module,exports){
 (function (global){
 'use strict';
 
