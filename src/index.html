@@ -4,16 +4,17 @@
   <link rel="stylesheet" href="../dist/formio.form.css">
 </head>
 <body>
-<div id="formio"></div>
-<script src="../dist/formio.form.js"></script>
-<script type="text/javascript">
-  window.onload = function() {
-    var form = new FormioForm(document.getElementById('formio'));
-    form.src = 'https://examples.form.io/example';
-    form.on('change', function(submission) {
-      console.log(submission);
-    });
-  };
-</script>
+<div class="container">
+  <div class="row">
+    <div class="col col-sm-12">
+      <h3>Form.io Form</h3>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-sm-12">
+      <script src="../dist/formio.embed.js?src=https://examples.form.io/example"></script>
+    </div>
+  </div>
+</div>
 </body>
 </html>
