@@ -10228,7 +10228,7 @@ queryString.replace(/\?/g, '&').split("&").forEach(function (item) {
 });
 var id = query.id || 'formio-' + Math.random().toString(36).substring(7);
 var height = query.height || 500;
-var className = query.class || 'formio-form';
+var className = query.class || 'formio-form-wrapper';
 var styles = query.styles || scriptSrc + '/formio.form.min.css';
 document.write('<link rel="stylesheet" href="' + styles + '"><div id="' + id + '" class="' + className + '" style="height:' + height + 'px;"></div>');
 var formElement = document.getElementById(id);
