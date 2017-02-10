@@ -18,7 +18,7 @@ var url = function(formio) {
           xhr.upload.onprogress = progressCallback;
         }
 
-        fd = new FormData();
+        var fd = new FormData();
         for(var key in data) {
           fd.append(key, data[key]);
         }
@@ -59,6 +59,5 @@ var url = function(formio) {
   };
 };
 
-url.name = 'url';
 url.title = 'Url';
 module.exports = url;

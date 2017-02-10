@@ -112,5 +112,4 @@ var s3 = function(formio) {
 };
 
 s3.title = 'S3';
-s3.name = 's3';
 module.exports = s3;

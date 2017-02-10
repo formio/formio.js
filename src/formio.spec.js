@@ -1,308 +1,316 @@
-/*global Formio: true, QUnit: true, chance: true, Promise: true, sinon: true, _: true, fetchMock: true*/
-var protocol = 'https';
-var domain = 'localhost:3000';
-var baseUrl = protocol + '://api.' + domain;
+'use strict';
+import Formio from './formio';
+import _each from 'lodash/each';
+import assert from 'power-assert';
+import sinon from 'sinon';
+import Chance from 'chance';
+import fetchMock from 'fetch-mock/es5/client';
+import _ from 'lodash';
+
+let chance = Chance();
+let protocol = 'https';
+let domain = 'localhost:3000';
+let baseUrl = protocol + '://api.' + domain;
 Formio.setBaseUrl(baseUrl);
 Formio.setToken(null);
-QUnit.config.reorder = false;
 
 var generateID = function() {
   return chance.string({length: 24, pool: '0123456789abcdef'});
 };
 
-QUnit.module('URL capabilities', function() {
-  var tests = {};
-  var addUrlTest = function(url, test) {
-    tests[url] = test;
-  };
-  addUrlTest('http://form.io/project/234234234234/form/23234234234234', {
-    projectUrl: 'http://form.io/project/234234234234',
-    projectsUrl: 'http://form.io/project',
-    projectId: '234234234234',
-    formsUrl: 'http://form.io/project/234234234234/form',
-    formUrl: 'http://form.io/project/234234234234/form/23234234234234',
-    formId: '23234234234234',
-    actionsUrl: 'http://form.io/project/234234234234/form/23234234234234/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://form.io/project/234234234234/form/23234234234234/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://form.io/form/23234234234234', {
-    projectUrl: '',
-    projectsUrl: 'http://form.io/project',
-    projectId: '',
-    formsUrl: 'http://form.io/form',
-    formUrl: 'http://form.io/form/23234234234234',
-    formId: '23234234234234',
-    actionsUrl: 'http://form.io/form/23234234234234/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://form.io/form/23234234234234/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://form.io/form/23234234234234/submission/982398220983', {
-    projectUrl: '',
-    projectsUrl: 'http://form.io/project',
-    projectId: '',
-    formsUrl: 'http://form.io/form',
-    formUrl: 'http://form.io/form/23234234234234',
-    formId: '23234234234234',
-    actionsUrl: 'http://form.io/form/23234234234234/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://form.io/form/23234234234234/submission',
-    submissionUrl: 'http://form.io/form/23234234234234/submission/982398220983',
-    submissionId: '982398220983',
-    query: ''
-  });
-  addUrlTest('http://form.io/form/23234234234234/action/234230987872', {
-    projectUrl: '',
-    projectsUrl: 'http://form.io/project',
-    projectId: '',
-    formsUrl: 'http://form.io/form',
-    formUrl: 'http://form.io/form/23234234234234',
-    formId: '23234234234234',
-    actionsUrl: 'http://form.io/form/23234234234234/action',
-    actionUrl: 'http://form.io/form/23234234234234/action/234230987872',
-    actionId: '234230987872',
-    submissionsUrl: 'http://form.io/form/23234234234234/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://form.io/project/092934882/form/23234234234234/action/234230987872', {
-    projectUrl: 'http://form.io/project/092934882',
-    projectsUrl: 'http://form.io/project',
-    projectId: '092934882',
-    formsUrl: 'http://form.io/project/092934882/form',
-    formUrl: 'http://form.io/project/092934882/form/23234234234234',
-    formId: '23234234234234',
-    actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
-    actionUrl: 'http://form.io/project/092934882/form/23234234234234/action/234230987872',
-    actionId: '234230987872',
-    submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://api.form.io/project/092934882', {
-    projectUrl: 'http://api.form.io/project/092934882',
-    projectsUrl: 'http://api.form.io/project',
-    projectId: '092934882',
-    formsUrl: 'http://api.form.io/project/092934882/form',
-    formUrl: '',
-    formId: '',
-    actionsUrl: 'http://api.form.io/project/092934882/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://api.form.io/project/092934882/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://form.io/project/092934882/form/23234234234234/submission/2987388987982', {
-    projectUrl: 'http://form.io/project/092934882',
-    projectsUrl: 'http://form.io/project',
-    projectId: '092934882',
-    formsUrl: 'http://form.io/project/092934882/form',
-    formUrl: 'http://form.io/project/092934882/form/23234234234234',
-    formId: '23234234234234',
-    actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
-    submissionUrl: 'http://form.io/project/092934882/form/23234234234234/submission/2987388987982',
-    submissionId: '2987388987982',
-    query: ''
-  });
-  addUrlTest('http://form.io/project/092934882/form/23234234234234?test=hello&test2=there', {
-    projectUrl: 'http://form.io/project/092934882',
-    projectsUrl: 'http://form.io/project',
-    projectId: '092934882',
-    formsUrl: 'http://form.io/project/092934882/form',
-    formUrl: 'http://form.io/project/092934882/form/23234234234234',
-    formId: '23234234234234',
-    actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: '?test=hello&test2=there'
-  });
-  addUrlTest('http://project.form.io/user/login', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user/login',
-    formId: 'user/login',
-    actionsUrl: 'http://project.form.io/user/login/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://project.form.io/user/login/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://project.form.io/user/login/submission/234234243234', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user/login',
-    formId: 'user/login',
-    actionsUrl: 'http://project.form.io/user/login/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://project.form.io/user/login/submission',
-    submissionUrl: 'http://project.form.io/user/login/submission/234234243234',
-    submissionId: '234234243234',
-    query: ''
-  });
-  addUrlTest('http://project.form.io/user/login/action/234234243234', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user/login',
-    formId: 'user/login',
-    actionsUrl: 'http://project.form.io/user/login/action',
-    actionUrl: 'http://project.form.io/user/login/action/234234243234',
-    actionId: '234234243234',
-    submissionsUrl: 'http://project.form.io/user/login/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://project.form.io/user/login/action/234234243234?test=test2', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user/login',
-    formId: 'user/login',
-    actionsUrl: 'http://project.form.io/user/login/action',
-    actionUrl: 'http://project.form.io/user/login/action/234234243234',
-    actionId: '234234243234',
-    submissionsUrl: 'http://project.form.io/user/login/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: '?test=test2'
-  }),
-  addUrlTest('http://project.form.io/user/loginform/action/234234243234?test=test2', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user/loginform',
-    formId: 'user/loginform',
-    actionsUrl: 'http://project.form.io/user/loginform/action',
-    actionUrl: 'http://project.form.io/user/loginform/action/234234243234',
-    actionId: '234234243234',
-    submissionsUrl: 'http://project.form.io/user/loginform/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: '?test=test2'
-  });
-  addUrlTest('http://project.form.io/user/loginform/submission', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user/loginform',
-    formId: 'user/loginform',
-    actionsUrl: 'http://project.form.io/user/loginform/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://project.form.io/user/loginform/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://project.form.io/user', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user',
-    formId: 'user',
-    actionsUrl: 'http://project.form.io/user/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://project.form.io/user/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
-  addUrlTest('http://project.form.io/user/actionform/submission/2342424234234', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user/actionform',
-    formId: 'user/actionform',
-    actionsUrl: 'http://project.form.io/user/actionform/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://project.form.io/user/actionform/submission',
-    submissionUrl: 'http://project.form.io/user/actionform/submission/2342424234234',
-    submissionId: '2342424234234',
-    query: ''
-  });
-  addUrlTest('http://project.form.io/user/actionform/?test=foo', {
-    projectUrl: 'http://project.form.io',
-    projectsUrl: '',
-    projectId: 'project',
-    formsUrl: 'http://project.form.io/form',
-    formUrl: 'http://project.form.io/user/actionform',
-    formId: 'user/actionform',
-    actionsUrl: 'http://project.form.io/user/actionform/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: 'http://project.form.io/user/actionform/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: '?test=foo'
-  });
-  addUrlTest(baseUrl + '/user/actionform/?test=foo', {
-    projectUrl: baseUrl,
-    projectsUrl: '',
-    projectId: 'api',
-    formsUrl: baseUrl + '/form',
-    formUrl: baseUrl + '/user/actionform',
-    formId: 'user/actionform',
-    actionsUrl: baseUrl + '/user/actionform/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: baseUrl + '/user/actionform/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: '?test=foo'
-  });
-  addUrlTest(baseUrl + '/user', {
-    projectUrl: baseUrl,
-    projectsUrl: '',
-    projectId: 'api',
-    formsUrl: baseUrl + '/form',
-    formUrl: baseUrl + '/user',
-    formId: 'user',
-    actionsUrl: baseUrl + '/user/action',
-    actionUrl: '',
-    actionId: '',
-    submissionsUrl: baseUrl + '/user/submission',
-    submissionUrl: '',
-    submissionId: '',
-    query: ''
-  });
+describe('Formio Constructor Tests', () => {
+  it('Should allow a number of different URLs', () => {
+    var tests = {};
+    var addUrlTest = function(url, test) {
+      tests[url] = test;
+    };
+    addUrlTest('http://form.io/project/234234234234/form/23234234234234', {
+      projectUrl: 'http://form.io/project/234234234234',
+      projectsUrl: 'http://form.io/project',
+      projectId: '234234234234',
+      formsUrl: 'http://form.io/project/234234234234/form',
+      formUrl: 'http://form.io/project/234234234234/form/23234234234234',
+      formId: '23234234234234',
+      actionsUrl: 'http://form.io/project/234234234234/form/23234234234234/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://form.io/project/234234234234/form/23234234234234/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://form.io/form/23234234234234', {
+      projectUrl: '',
+      projectsUrl: 'http://form.io/project',
+      projectId: '',
+      formsUrl: 'http://form.io/form',
+      formUrl: 'http://form.io/form/23234234234234',
+      formId: '23234234234234',
+      actionsUrl: 'http://form.io/form/23234234234234/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://form.io/form/23234234234234/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://form.io/form/23234234234234/submission/982398220983', {
+      projectUrl: '',
+      projectsUrl: 'http://form.io/project',
+      projectId: '',
+      formsUrl: 'http://form.io/form',
+      formUrl: 'http://form.io/form/23234234234234',
+      formId: '23234234234234',
+      actionsUrl: 'http://form.io/form/23234234234234/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://form.io/form/23234234234234/submission',
+      submissionUrl: 'http://form.io/form/23234234234234/submission/982398220983',
+      submissionId: '982398220983',
+      query: ''
+    });
+    addUrlTest('http://form.io/form/23234234234234/action/234230987872', {
+      projectUrl: '',
+      projectsUrl: 'http://form.io/project',
+      projectId: '',
+      formsUrl: 'http://form.io/form',
+      formUrl: 'http://form.io/form/23234234234234',
+      formId: '23234234234234',
+      actionsUrl: 'http://form.io/form/23234234234234/action',
+      actionUrl: 'http://form.io/form/23234234234234/action/234230987872',
+      actionId: '234230987872',
+      submissionsUrl: 'http://form.io/form/23234234234234/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://form.io/project/092934882/form/23234234234234/action/234230987872', {
+      projectUrl: 'http://form.io/project/092934882',
+      projectsUrl: 'http://form.io/project',
+      projectId: '092934882',
+      formsUrl: 'http://form.io/project/092934882/form',
+      formUrl: 'http://form.io/project/092934882/form/23234234234234',
+      formId: '23234234234234',
+      actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
+      actionUrl: 'http://form.io/project/092934882/form/23234234234234/action/234230987872',
+      actionId: '234230987872',
+      submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://api.form.io/project/092934882', {
+      projectUrl: 'http://api.form.io/project/092934882',
+      projectsUrl: 'http://api.form.io/project',
+      projectId: '092934882',
+      formsUrl: 'http://api.form.io/project/092934882/form',
+      formUrl: '',
+      formId: '',
+      actionsUrl: 'http://api.form.io/project/092934882/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://api.form.io/project/092934882/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://form.io/project/092934882/form/23234234234234/submission/2987388987982', {
+      projectUrl: 'http://form.io/project/092934882',
+      projectsUrl: 'http://form.io/project',
+      projectId: '092934882',
+      formsUrl: 'http://form.io/project/092934882/form',
+      formUrl: 'http://form.io/project/092934882/form/23234234234234',
+      formId: '23234234234234',
+      actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
+      submissionUrl: 'http://form.io/project/092934882/form/23234234234234/submission/2987388987982',
+      submissionId: '2987388987982',
+      query: ''
+    });
+    addUrlTest('http://form.io/project/092934882/form/23234234234234?test=hello&test2=there', {
+      projectUrl: 'http://form.io/project/092934882',
+      projectsUrl: 'http://form.io/project',
+      projectId: '092934882',
+      formsUrl: 'http://form.io/project/092934882/form',
+      formUrl: 'http://form.io/project/092934882/form/23234234234234',
+      formId: '23234234234234',
+      actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: '?test=hello&test2=there'
+    });
+    addUrlTest('http://project.form.io/user/login', {
+      projectUrl: 'http://project.form.io',
+      projectsUrl: '',
+      projectId: 'project',
+      formsUrl: 'http://project.form.io/form',
+      formUrl: 'http://project.form.io/user/login',
+      formId: 'user/login',
+      actionsUrl: 'http://project.form.io/user/login/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://project.form.io/user/login/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://project.form.io/user/login/submission/234234243234', {
+      projectUrl: 'http://project.form.io',
+      projectsUrl: '',
+      projectId: 'project',
+      formsUrl: 'http://project.form.io/form',
+      formUrl: 'http://project.form.io/user/login',
+      formId: 'user/login',
+      actionsUrl: 'http://project.form.io/user/login/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://project.form.io/user/login/submission',
+      submissionUrl: 'http://project.form.io/user/login/submission/234234243234',
+      submissionId: '234234243234',
+      query: ''
+    });
+    addUrlTest('http://project.form.io/user/login/action/234234243234', {
+      projectUrl: 'http://project.form.io',
+      projectsUrl: '',
+      projectId: 'project',
+      formsUrl: 'http://project.form.io/form',
+      formUrl: 'http://project.form.io/user/login',
+      formId: 'user/login',
+      actionsUrl: 'http://project.form.io/user/login/action',
+      actionUrl: 'http://project.form.io/user/login/action/234234243234',
+      actionId: '234234243234',
+      submissionsUrl: 'http://project.form.io/user/login/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://project.form.io/user/login/action/234234243234?test=test2', {
+      projectUrl: 'http://project.form.io',
+      projectsUrl: '',
+      projectId: 'project',
+      formsUrl: 'http://project.form.io/form',
+      formUrl: 'http://project.form.io/user/login',
+      formId: 'user/login',
+      actionsUrl: 'http://project.form.io/user/login/action',
+      actionUrl: 'http://project.form.io/user/login/action/234234243234',
+      actionId: '234234243234',
+      submissionsUrl: 'http://project.form.io/user/login/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: '?test=test2'
+    }),
+      addUrlTest('http://project.form.io/user/loginform/action/234234243234?test=test2', {
+        projectUrl: 'http://project.form.io',
+        projectsUrl: '',
+        projectId: 'project',
+        formsUrl: 'http://project.form.io/form',
+        formUrl: 'http://project.form.io/user/loginform',
+        formId: 'user/loginform',
+        actionsUrl: 'http://project.form.io/user/loginform/action',
+        actionUrl: 'http://project.form.io/user/loginform/action/234234243234',
+        actionId: '234234243234',
+        submissionsUrl: 'http://project.form.io/user/loginform/submission',
+        submissionUrl: '',
+        submissionId: '',
+        query: '?test=test2'
+      });
+    addUrlTest('http://project.form.io/user/loginform/submission', {
+      projectUrl: 'http://project.form.io',
+      projectsUrl: '',
+      projectId: 'project',
+      formsUrl: 'http://project.form.io/form',
+      formUrl: 'http://project.form.io/user/loginform',
+      formId: 'user/loginform',
+      actionsUrl: 'http://project.form.io/user/loginform/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://project.form.io/user/loginform/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://project.form.io/user', {
+      projectUrl: 'http://project.form.io',
+      projectsUrl: '',
+      projectId: 'project',
+      formsUrl: 'http://project.form.io/form',
+      formUrl: 'http://project.form.io/user',
+      formId: 'user',
+      actionsUrl: 'http://project.form.io/user/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://project.form.io/user/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
+    addUrlTest('http://project.form.io/user/actionform/submission/2342424234234', {
+      projectUrl: 'http://project.form.io',
+      projectsUrl: '',
+      projectId: 'project',
+      formsUrl: 'http://project.form.io/form',
+      formUrl: 'http://project.form.io/user/actionform',
+      formId: 'user/actionform',
+      actionsUrl: 'http://project.form.io/user/actionform/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://project.form.io/user/actionform/submission',
+      submissionUrl: 'http://project.form.io/user/actionform/submission/2342424234234',
+      submissionId: '2342424234234',
+      query: ''
+    });
+    addUrlTest('http://project.form.io/user/actionform/?test=foo', {
+      projectUrl: 'http://project.form.io',
+      projectsUrl: '',
+      projectId: 'project',
+      formsUrl: 'http://project.form.io/form',
+      formUrl: 'http://project.form.io/user/actionform',
+      formId: 'user/actionform',
+      actionsUrl: 'http://project.form.io/user/actionform/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'http://project.form.io/user/actionform/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: '?test=foo'
+    });
+    addUrlTest(baseUrl + '/user/actionform/?test=foo', {
+      projectUrl: baseUrl,
+      projectsUrl: '',
+      projectId: 'api',
+      formsUrl: baseUrl + '/form',
+      formUrl: baseUrl + '/user/actionform',
+      formId: 'user/actionform',
+      actionsUrl: baseUrl + '/user/actionform/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: baseUrl + '/user/actionform/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: '?test=foo'
+    });
+    addUrlTest(baseUrl + '/user', {
+      projectUrl: baseUrl,
+      projectsUrl: '',
+      projectId: 'api',
+      formsUrl: baseUrl + '/form',
+      formUrl: baseUrl + '/user',
+      formId: 'user',
+      actionsUrl: baseUrl + '/user/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: baseUrl + '/user/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    });
 
-  _.each(tests, function(test, path) {
-    QUnit.test('Test URL: ' + path, function(assert) {
+    _each(tests, function(test, path) {
       var formio = new Formio(path);
       for (var param in test) {
         assert.equal(formio[param], test[param], param + ' must match.');
@@ -310,29 +318,20 @@ QUnit.module('URL capabilities', function() {
     });
   });
 });
-
-
-QUnit.module('Plugins', function(hooks) {
-  var plugin;
-
-  hooks.beforeEach(function(assert) {
+describe('Plugins', () => {
+  var plugin = null;
+  beforeEach(() => {
     assert.equal(Formio.getPlugin('test-plugin'), undefined, 'No plugin may be returned under the name `test-plugin`');
-
-    plugin = {
-      init: sinon.spy()
-    };
-
+    plugin = {init: sinon.spy()};
     Formio.registerPlugin(plugin, 'test-plugin');
     assert.ok(plugin.init.calledOnce, 'plugin.init must be called exactly once');
     assert.ok(plugin.init.calledOn(plugin), 'plugin.init must be called on plugin as `this`');
     assert.ok(plugin.init.calledWithExactly(Formio), 'plugin.init must be given Formio as argument');
     assert.equal(Formio.getPlugin('test-plugin'), plugin, 'getPlugin must return plugin');
-
   });
 
-  hooks.afterEach(function(assert) {
+  afterEach(() => {
     assert.equal(Formio.getPlugin('test-plugin'), plugin, 'getPlugin must return plugin');
-
     plugin.deregister = sinon.spy();
     Formio.deregisterPlugin(plugin, 'test-plugin');
     assert.ok(plugin.deregister.calledOnce, 'plugin.deregister must be called exactly once');
@@ -351,9 +350,8 @@ QUnit.module('Plugins', function(hooks) {
       case 'DELETE': fnName = 'delete' + _.capitalize(type); break;
     }
 
-    QUnit.test('Plugin ' + method + ' ' + fnName, function(assert) {
-      var done = assert.async();
-
+    it('Plugin ' + method + ' ' + fnName, function(done) {
+      let step = 0;
       var formio = new Formio(url);
       method = method.toUpperCase();
       var testData = {testRequest: 'TEST_REQUEST'};
@@ -371,28 +369,28 @@ QUnit.module('Plugins', function(hooks) {
 
       // Set up plugin hooks
       plugin.preRequest = function(requestArgs) {
-        assert.step(1, 'preRequest hook should be called first');
+        assert.equal(++step, 1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return Promise.resolve()
-        .then(function() {
-          assert.step(3, 'preRequest promise should resolve third');
-          // TODO
-        });
+          .then(function() {
+            assert.equal(++step, 3, 'preRequest promise should resolve third');
+            // TODO
+          });
       };
       plugin.request = function(requestArgs) {
-        assert.step(4, 'request hook should be called fourth');
+        assert.equal(++step, 4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return Promise.resolve()
-        .then(function() {
-          assert.step(5, 'request promise should resolve fifth');
-          return testResult;
-        });
+          .then(function() {
+            assert.equal(++step, 5, 'request promise should resolve fifth');
+            return testResult;
+          });
       };
       plugin.wrapRequestPromise = function(promise, requestArgs) {
-        assert.step(2, 'wrapRequestPromise hook should be called second');
+        assert.equal(++step, 2, 'wrapRequestPromise hook should be called second');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return promise.then(function(result) {
-          assert.step(6, 'wrapRequestPromise post-result promise should resolve sixth');
+          assert.equal(++step, 6, 'wrapRequestPromise post-result promise should resolve sixth');
           assert.deepEqual(result, testResult, 'Result should match result from request hook');
           return result;
         });
@@ -409,7 +407,7 @@ QUnit.module('Plugins', function(hooks) {
         promise = formio[fnName](testOpts);
       }
       promise.then(function(result) {
-        assert.step(7, 'post request promise should resolve last');
+        assert.equal(++step, 7, 'post request promise should resolve last');
         assert.deepEqual(result, testResult, 'Result should match result from request hook');
         done();
       });
@@ -522,11 +520,9 @@ QUnit.module('Plugins', function(hooks) {
   });
 
   var testStaticRequest = function testStaticRequest(fnName, url, method, data) {
-    QUnit.test('Plugin ' + fnName, function(assert) {
-      var done = assert.async();
-
+    it('Plugin ' + fnName, function(done) {
+      var step = 0;
       var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
-
       var expectedArgs = {
         url: url,
         method: method,
@@ -535,39 +531,39 @@ QUnit.module('Plugins', function(hooks) {
 
       // Set up plugin hooks
       plugin.preRequest = function(requestArgs) {
-        assert.step(1, 'preRequest hook should be called first');
+        assert.equal(++step, 1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return Promise.resolve()
-        .then(function() {
-          assert.step(3, 'preRequest promise should resolve third');
-          // TODO
-        });
+          .then(function() {
+            assert.equal(++step, 3, 'preRequest promise should resolve third');
+            // TODO
+          });
       };
       plugin.staticRequest = function(requestArgs) {
-        assert.step(4, 'request hook should be called fourth');
+        assert.equal(++step, 4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return Promise.resolve()
-        .then(function() {
-          assert.step(5, 'request promise should resolve fifth');
-          return testResult;
-        });
+          .then(function() {
+            assert.equal(++step, 5, 'request promise should resolve fifth');
+            return testResult;
+          });
       };
       plugin.wrapStaticRequestPromise = function(promise, requestArgs) {
-        assert.step(2, 'wrapRequestPromise hook should be called second');
+        assert.equal(++step, 2, 'wrapRequestPromise hook should be called second');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return promise.then(function(result) {
-          assert.step(6, 'wrapRequestPromise post-result promise should resolve sixth');
+          assert.equal(++step, 6, 'wrapRequestPromise post-result promise should resolve sixth');
           assert.deepEqual(result, testResult, 'Result should match result from request hook');
           return result;
         });
       };
 
       Formio[fnName]()
-      .then(function(result) {
-        assert.step(7, 'post request promise should resolve last');
-        assert.deepEqual(result, testResult, 'Result should match result from request hook');
-        done();
-      });
+        .then(function(result) {
+          assert.equal(++step, 7, 'post request promise should resolve last');
+          assert.deepEqual(result, testResult, 'Result should match result from request hook');
+          done();
+        });
     });
   };
 
@@ -591,9 +587,8 @@ QUnit.module('Plugins', function(hooks) {
   });
 
   var testFileRequest = function testFileRequest(fnName, formUrl, args) {
-    QUnit.test('Plugin ' + fnName, function(assert) {
-      var done = assert.async();
-
+    it('Plugin ' + fnName, function(done) {
+      var step = 0;
       var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
 
       if (fnName == 'downloadFile') {
@@ -614,28 +609,28 @@ QUnit.module('Plugins', function(hooks) {
 
       // Set up plugin hooks
       plugin.preRequest = function(requestArgs) {
-        assert.step(1, 'preRequest hook should be called first');
+        assert.equal(++step, 1, 'preRequest hook should be called first');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return Promise.resolve()
-        .then(function() {
-          assert.step(3, 'preRequest promise should resolve third');
-          // TODO
-        });
+          .then(function() {
+            assert.equal(++step, 3, 'preRequest promise should resolve third');
+            // TODO
+          });
       };
       plugin.fileRequest = function(requestArgs) {
-        assert.step(4, 'request hook should be called fourth');
+        assert.equal(++step, 4, 'request hook should be called fourth');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return Promise.resolve()
-        .then(function() {
-          assert.step(5, 'request promise should resolve fifth');
-          return testResult;
-        });
+          .then(function() {
+            assert.equal(++step, 5, 'request promise should resolve fifth');
+            return testResult;
+          });
       };
       plugin.wrapFileRequestPromise = function(promise, requestArgs) {
-        assert.step(2, 'wrapFileRequestPromise hook should be called second');
+        assert.equal(++step, 2, 'wrapFileRequestPromise hook should be called second');
         assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
         return promise.then(function(result) {
-          assert.step(6, 'wrapFileRequestPromise post-result promise should resolve sixth');
+          assert.equal(++step, 6, 'wrapFileRequestPromise post-result promise should resolve sixth');
           assert.deepEqual(result, testResult, 'Result should match result from request hook');
           return result;
         });
@@ -643,11 +638,11 @@ QUnit.module('Plugins', function(hooks) {
 
       var formio = new Formio(formUrl);
       formio[fnName].apply(null, args)
-      .then(function(result) {
-        assert.step(7, 'post request promise should resolve last');
-        assert.deepEqual(result, testResult, 'Result should match result from request hook');
-        done();
-      });
+        .then(function(result) {
+          assert.equal(++step, 7, 'post request promise should resolve last');
+          assert.deepEqual(result, testResult, 'Result should match result from request hook');
+          done();
+        });
     });
   };
 
@@ -697,32 +692,35 @@ QUnit.module('Plugins', function(hooks) {
   fileTests.forEach(function(test) {
     testFileRequest(test.fnName, test.formUrl, test.args);
   });
-
 });
-
-QUnit.module('Test Formio.js capabilities', function () {
-
+describe('Test Formio.js capabilities', () => {
   var testCapability = function(test) {
-    QUnit.test(test.name, function(assert) {
-      var done = assert.async();
+    it(test.name, function(done) {
       if (test.mock) {
-        var mock = test.mock(assert);
-        fetchMock.mock(mock.url, mock.method, mock.response);
+        var mock = test.mock();
+        if (mock instanceof Array) {
+          _.each(mock, (_mock) => {
+            fetchMock.mock(_mock.url, _mock.method, _mock.response);
+          });
+        }
+        else {
+          fetchMock.mock(mock.url, mock.method, mock.response);
+        }
       }
       Promise.resolve()
-      .then(function() {
-        return test.test(assert);
-      })
-      .then(function() {
-        if (test.mock) fetchMock.restore();
-        done();
-      })
-      .catch(function(err) {
-        assert.equal(err, null, 'Caught error during test');
-        if (err) console.error(err.stack);
-        if (test.mock) fetchMock.restore();
-        done();
-      });
+        .then(function() {
+          return test.test();
+        })
+        .then(function() {
+          if (test.mock) fetchMock.restore();
+          done();
+        })
+        .catch(function(err) {
+          assert.equal(err, null, 'Caught error during test');
+          if (err) console.error(err.stack);
+          if (test.mock) fetchMock.restore();
+          done();
+        });
     });
   };
 
@@ -737,7 +735,7 @@ QUnit.module('Test Formio.js capabilities', function () {
   var tests = [
     {
       name: 'Registering user.',
-      test: function(assert) {
+      test: function() {
         var req = {
           data: {
             'user.name': chance.string({
@@ -750,46 +748,61 @@ QUnit.module('Test Formio.js capabilities', function () {
         };
         var formio = new Formio(Formio.getBaseUrl() + '/user/register');
         return formio.saveSubmission(req)
-        .then(function(response) {
-          assert.deepEqual(response, user, 'saveSubmission response should match test user');
-          assert.equal(Formio.getToken(), userToken, 'Formio should save the user token');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, user, 'saveSubmission response should match test user');
+            assert.equal(Formio.getToken(), userToken, 'Formio should save the user token');
+          });
       },
       mock: function() {
-        return {
-          url: Formio.getBaseUrl() + '/user/register/submission',
-          method: 'POST',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
-            var userId = generateID();
-            user = {
-              _id: userId,
-              created: new Date().toISOString(),
-              modified: new Date().toISOString(),
-              data: {
-                email: body.data['user.email'],
-                name: body.data['user.name']
-              },
-              externalIds: [],
-              externalTokens: [],
-              form: userFormId,
-              owner: userId
-            };
-            userPassword = body.data['user.password'];
-            return {
-              headers: {
-                'Content-Type': 'application/json',
-                'x-jwt-token': userToken
-              },
-              body: user
-            };
+        return [
+          {
+            url: Formio.getBaseUrl() + '/current',
+            method: 'GET',
+            response: function() {
+              return {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'x-jwt-token': userToken
+                },
+                body: user
+              };
+            }
+          },
+          {
+            url: Formio.getBaseUrl() + '/user/register/submission',
+            method: 'POST',
+            response: function(url, opts) {
+              var body = JSON.parse(opts.body);
+              var userId = generateID();
+              user = {
+                _id: userId,
+                created: new Date().toISOString(),
+                modified: new Date().toISOString(),
+                data: {
+                  email: body.data['user.email'],
+                  name: body.data['user.name']
+                },
+                externalIds: [],
+                externalTokens: [],
+                form: userFormId,
+                owner: userId
+              };
+              userPassword = body.data['user.password'];
+              return {
+                headers: {
+                  'Content-Type': 'application/json',
+                  'x-jwt-token': userToken
+                },
+                body: user
+              };
+            }
           }
-        };
+        ];
       }
     },
     {
       name: 'Logging in.',
-      test: function(assert) {
+      test: function() {
         var req = {
           data: {
             'user.email': user.data.email,
@@ -798,12 +811,12 @@ QUnit.module('Test Formio.js capabilities', function () {
         };
         var formio = new Formio(Formio.getBaseUrl() + '/user/login');
         return formio.saveSubmission(req)
-        .then(function(response) {
-          assert.deepEqual(response, user, 'saveSubmission response should match test user');
-          assert.equal(Formio.getToken(), userToken, 'Formio should save the user token');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, user, 'saveSubmission response should match test user');
+            assert.equal(Formio.getToken(), userToken, 'Formio should save the user token');
+          });
       },
-      mock: function(assert) {
+      mock: function() {
         return {
           url: Formio.getBaseUrl() + '/user/login/submission',
           method: 'POST',
@@ -825,23 +838,23 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Current user.',
-      test: function(assert) {
+      test: function() {
         return Formio.currentUser()
-        .then(function(response) {
-          assert.deepEqual(response, user, 'currentUser response should match test user');
-          return Formio.currentUser();
-        })
-        .then(function(response) {
-          assert.deepEqual(response, user, 'currentUser response should match test user');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, user, 'currentUser response should match test user');
+            return Formio.currentUser();
+          })
+          .then(function(response) {
+            assert.deepEqual(response, user, 'currentUser response should match test user');
+          });
       },
-      mock: function(assert) {
+      mock: function() {
         var called = false;
         return {
           url: Formio.getBaseUrl() + '/current',
           method: 'GET',
           response: function() {
-            assert.notOk(called, 'User should be requested only once.');
+            assert.ok(!called, 'User should be requested only once.');
             called = true;
             return {
               headers: {
@@ -856,7 +869,7 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Create Project',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio();
         var req = {
           title: chance.string({
@@ -874,9 +887,9 @@ QUnit.module('Test Formio.js capabilities', function () {
           template: 'http://help.form.io/templates/empty.json'
         };
         return formio.saveProject(req)
-        .then(function(response) {
-          assert.deepEqual(response, project, 'saveProject response should match test user');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, project, 'saveProject response should match test user');
+          });
       },
       mock: function() {
         return {
@@ -915,15 +928,15 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Getting Projects',
-      test: function(assert) {
+      test: function() {
         return Formio.loadProjects()
-        .then(function(projects) {
-          assert.equal(projects.length, 1, 'Should return only one project.');
-          assert.equal(projects.skip, 0, 'skip should be 0.');
-          assert.equal(projects.limit, 1, 'limit should be 1.');
-          assert.equal(projects.serverCount, 1, 'serverCount should be 1.');
-          assert.deepEqual(projects[0], project, 'Should match project');
-        });
+          .then(function(projects) {
+            assert.equal(projects.length, 1, 'Should return only one project.');
+            assert.equal(projects.skip, 0, 'skip should be 0.');
+            assert.equal(projects.limit, 1, 'limit should be 1.');
+            assert.equal(projects.serverCount, 1, 'serverCount should be 1.');
+            assert.deepEqual(projects[0], project, 'Should match project');
+          });
       },
       mock: function() {
         return {
@@ -945,12 +958,12 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Read Project',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio(Formio.getBaseUrl() + '/project/' + project._id);
         return formio.loadProject()
-        .then(function(response) {
-          assert.deepEqual(response, project, 'Should match project');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, project, 'Should match project');
+          });
       },
       mock: function() {
         return {
@@ -970,7 +983,7 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Update Project',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id);
         var newProject = _.cloneDeep(project);
         newProject.name = chance.string({
@@ -983,9 +996,9 @@ QUnit.module('Test Formio.js capabilities', function () {
         });
         newProject.description = chance.paragraph({sentences: 1});
         return formio.saveProject(newProject)
-        .then(function(response) {
-          assert.deepEqual(response, project, 'Project should match');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, project, 'Project should match');
+          });
       },
       mock: function() {
         return {
@@ -1007,7 +1020,7 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Create Form',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form');
         var req = {
           title: chance.string({
@@ -1069,9 +1082,9 @@ QUnit.module('Test Formio.js capabilities', function () {
           submissionAccess: []
         };
         return formio.saveForm(req)
-        .then(function(response) {
-          assert.deepEqual(response, form, 'Form should match');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, form, 'Form should match');
+          });
       },
       mock: function() {
         return {
@@ -1101,16 +1114,16 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Load Forms',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form');
         return formio.loadForms()
-        .then(function(forms) {
-          assert.equal(forms.length, 1, 'Should return only one form.');
-          assert.equal(forms.skip, 0, 'skip should be 0.');
-          assert.equal(forms.limit, 1, 'limit should be 1.');
-          assert.equal(forms.serverCount, 1, 'serverCount should be 1.');
-          assert.deepEqual(forms[0], form, 'Should match form');
-        });
+          .then(function(forms) {
+            assert.equal(forms.length, 1, 'Should return only one form.');
+            assert.equal(forms.skip, 0, 'skip should be 0.');
+            assert.equal(forms.limit, 1, 'limit should be 1.');
+            assert.equal(forms.serverCount, 1, 'serverCount should be 1.');
+            assert.deepEqual(forms[0], form, 'Should match form');
+          });
       },
       mock: function() {
         return {
@@ -1132,12 +1145,12 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Read Form',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id);
         return formio.loadForm()
-        .then(function(response) {
-          assert.deepEqual(response, form, 'Form should match');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, form, 'Form should match');
+          });
       },
       mock: function() {
         return {
@@ -1157,7 +1170,7 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Update Form',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id);
         var newForm = _.cloneDeep(form);
         newForm.title = chance.string({
@@ -1173,9 +1186,9 @@ QUnit.module('Test Formio.js capabilities', function () {
           pool: 'abcdefghijklmnopqrstuvwxyz'
         });
         return formio.saveForm(newForm)
-        .then(function(response) {
-          assert.deepEqual(response, form, 'Form should match');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, form, 'Form should match');
+          });
       },
       mock: function() {
         return {
@@ -1197,7 +1210,7 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Create Submission',
-      test: function (assert) {
+      test: function () {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id + '/submission');
         var req = {
           data: {
@@ -1205,9 +1218,9 @@ QUnit.module('Test Formio.js capabilities', function () {
           }
         };
         return formio.saveSubmission(req)
-        .then(function(response) {
-          assert.deepEqual(response, submission, 'Submission should match');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, submission, 'Submission should match');
+          });
       },
       mock: function() {
         return {
@@ -1240,16 +1253,16 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Load Submissions',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id + '/submission');
         return formio.loadSubmissions()
-        .then(function(submissions) {
-          assert.equal(submissions.length, 1, 'Should return only one submission.');
-          assert.equal(submissions.skip, 0, 'skip should be 0.');
-          assert.equal(submissions.limit, 1, 'limit should be 1.');
-          assert.equal(submissions.serverCount, 1, 'serverCount should be 1.');
-          assert.deepEqual(submissions[0], submission, 'Should match submission');
-        });
+          .then(function(submissions) {
+            assert.equal(submissions.length, 1, 'Should return only one submission.');
+            assert.equal(submissions.skip, 0, 'skip should be 0.');
+            assert.equal(submissions.limit, 1, 'limit should be 1.');
+            assert.equal(submissions.serverCount, 1, 'serverCount should be 1.');
+            assert.deepEqual(submissions[0], submission, 'Should match submission');
+          });
       },
       mock: function() {
         return {
@@ -1271,12 +1284,12 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Read Submission',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id + '/submission/' + submission._id);
         return formio.loadSubmission()
-        .then(function(response) {
-          assert.deepEqual(response, submission, 'Submission should match');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, submission, 'Submission should match');
+          });
       },
       mock: function() {
         return {
@@ -1296,14 +1309,14 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Update Submission',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id + '/submission/' + submission._id);
         var newSubmission = _.cloneDeep(submission);
         newSubmission.data.fieldLabel = chance.string();
         return formio.saveSubmission(newSubmission)
-        .then(function(response) {
-          assert.deepEqual(response, submission, 'Submission should match');
-        });
+          .then(function(response) {
+            assert.deepEqual(response, submission, 'Submission should match');
+          });
       },
       mock: function() {
         return {
@@ -1325,7 +1338,7 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Update Submission without ID',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id);
         var newSubmission = _.cloneDeep(submission);
         newSubmission.data.fieldLabel = chance.string();
@@ -1357,12 +1370,12 @@ QUnit.module('Test Formio.js capabilities', function () {
     // // Action Info
     {
       name: 'Delete Submission',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id + '/submission/' + submission._id);
         return formio.deleteSubmission()
-        .then(function(response) {
-          assert.equal(response, 'OK', 'Submission should be deleted.');
-        });
+          .then(function(response) {
+            assert.equal(response, 'OK', 'Submission should be deleted.');
+          });
       },
       mock: function() {
         return {
@@ -1381,12 +1394,12 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Delete Form',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id + '/form/' + form._id);
         return formio.deleteForm()
-        .then(function(response) {
-          assert.equal(response, 'OK', 'Submission should be deleted.');
-        });
+          .then(function(response) {
+            assert.equal(response, 'OK', 'Submission should be deleted.');
+          });
       },
       mock: function() {
         return {
@@ -1405,12 +1418,12 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Delete Project',
-      test: function(assert) {
+      test: function() {
         var formio = new Formio('/project/' + project._id);
         return formio.deleteProject()
-        .then(function(response) {
-          assert.equal(response, 'OK', 'Submission should be deleted.');
-        });
+          .then(function(response) {
+            assert.equal(response, 'OK', 'Submission should be deleted.');
+          });
       },
       mock: function() {
         return {
@@ -1429,14 +1442,14 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Getting Projects',
-      test: function(assert) {
+      test: function() {
         return Formio.loadProjects()
-        .then(function(projects) {
-          assert.equal(projects.length, 0, 'Should return no projects.');
-          assert.equal(projects.skip, undefined, 'skip should be undefined.');
-          assert.equal(projects.limit, undefined, 'limit should be undefined.');
-          assert.equal(projects.serverCount, 0, 'serverCount should be 0.');
-        });
+          .then(function(projects) {
+            assert.equal(projects.length, 0, 'Should return no projects.');
+            assert.equal(projects.skip, undefined, 'skip should be undefined.');
+            assert.equal(projects.limit, undefined, 'limit should be undefined.');
+            assert.equal(projects.serverCount, 0, 'serverCount should be 0.');
+          });
       },
       mock: function() {
         return {
@@ -1458,11 +1471,11 @@ QUnit.module('Test Formio.js capabilities', function () {
     },
     {
       name: 'Logging Out',
-      test: function(assert) {
+      test: function() {
         return Formio.logout()
-        .then(function() {
-          assert.equal(Formio.getToken(), '', 'Logged out');
-        });
+          .then(function() {
+            assert.equal(Formio.getToken(), '', 'Logged out');
+          });
       },
       mock: function() {
         return {
@@ -1486,11 +1499,9 @@ QUnit.module('Test Formio.js capabilities', function () {
 
   tests.forEach(testCapability);
 });
-
-QUnit.module('Formio.currentUser', function(hooks) {
-  var plugin;
-
-  hooks.beforeEach(function() {
+describe('Formio.currentUser', () => {
+  var plugin = null;
+  beforeEach(function() {
     plugin = {
       wrapStaticRequestPromise: sinon.spy(function(promise, promiseArgs) {
         return promise;
@@ -1516,30 +1527,28 @@ QUnit.module('Formio.currentUser', function(hooks) {
     Formio.registerPlugin(plugin, 'currentUserTestPlugin');
   });
 
-  hooks.afterEach(function() {
+  afterEach(function() {
     Formio.deregisterPlugin(plugin);
   });
 
-  QUnit.test('Initial currentUser() should make static request', function(assert) {
-    var done = assert.async();
+  it('Initial currentUser() should make static request', function(done) {
     // Force token
     Formio.token = chance.string({length: 30});
     Formio.currentUser()
-    .then(function() {
-      assert.ok(plugin.staticRequest.calledOnce, 'staticRequest should be called once');
-      done();
-    })
+      .then(function() {
+        assert.ok(plugin.staticRequest.calledOnce, 'staticRequest should be called once');
+        done();
+      })
     assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
   });
 
-  QUnit.test('Next currentUser() should return cached value', function(assert) {
-    var done = assert.async();
+  it('Next currentUser() should return cached value', function(done) {
     // Clear token
     Formio.currentUser()
-    .then(function() {
-      assert.notOk(plugin.staticRequest.called, 'staticRequest should not be called');
-      done();
-    })
+      .then(function() {
+        assert.ok(!plugin.staticRequest.called, 'staticRequest should not be called');
+        done();
+      })
     assert.ok(plugin.wrapStaticRequestPromise.calledOnce, 'wrapStaticRequestPromise should be called once');
   });
-})
+});

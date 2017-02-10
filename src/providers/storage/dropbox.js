@@ -68,7 +68,6 @@ var dropbox = function(formio) {
 };
 
 dropbox.title = 'Dropbox';
-dropbox.name = 'dropbox';
 module.exports = dropbox;
 
 
