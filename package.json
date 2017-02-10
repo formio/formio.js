@@ -4,7 +4,7 @@
   "description": "Common js library for client side interaction with <form.io>",
   "main": "src/formio.js",
   "scripts": {
-    "test": "./node_modules/karma/bin/karma start --verbose",
+    "test": "./node_modules/karma/bin/karma start --verbose --single-run",
     "test:watch": "./node_modules/karma/bin/karma start --no-single-run --auto-watch"
   },
   "repository": {
