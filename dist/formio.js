@@ -2646,7 +2646,7 @@ var url = function url(formio) {
           xhr.upload.onprogress = progressCallback;
         }
 
-        fd = new FormData();
+        var fd = new FormData();
         for (var key in data) {
           fd.append(key, data[key]);
         }
