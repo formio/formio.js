@@ -40,16 +40,12 @@ describe('Formio Form Renderer tests', () => {
   });
 
   each(FormTests, (formTest) => {
-    it(formTest.title, () => {
-      describe(formTest.title + ' tests', () => {
-        each(formTest.tests, (formTestTest, title) => {
-          it(title, (done) => {
-            let formElement = document.createElement('div');
-            let form = new FormioForm(formElement);
-            form.setForm(formTest.form).then(() => {
-              formTestTest(form, done);
-            });
-          });
+    each(formTest.tests, (formTestTest, title) => {
+      it(title, (done) => {
+        let formElement = document.createElement('div');
+        let form = new FormioForm(formElement);
+        form.setForm(formTest.form).then(() => {
+          formTestTest(form, done);
         });
       });
     });

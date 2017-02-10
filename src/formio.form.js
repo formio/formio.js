@@ -65,7 +65,7 @@ class FormioForm extends FormioComponents {
       this.loader.setAttribute('class', 'loader-wrapper');
       let spinner = document.createElement('div');
       spinner.setAttribute('class', 'loader text-center');
-      this.loader.append(spinner);
+      this.loader.appendChild(spinner);
     }
     if (this.loader) {
       if (loading) {
@@ -105,7 +105,7 @@ class FormioForm extends FormioComponents {
     this.wrapper.innerHTML = '';
     return this.localize().then(() => {
       this.build();
-      this.wrapper.append(this.element);
+      this.wrapper.appendChild(this.element);
       this.on('componentChange', (changed) => this.triggerSubmissionChange(changed));
       this.on('componentError', (changed) => this.triggerSubmissionError(changed));
     });

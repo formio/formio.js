@@ -1,9 +1,3 @@
 machine:
   node:
     version: 6.9.5
-
-test:
-  pre:
-    - npm install -g karma
-  override:
-    - karma start --single-run

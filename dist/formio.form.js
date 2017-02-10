@@ -10343,7 +10343,7 @@ var FormioForm = function (_FormioComponents) {
       this.wrapper.innerHTML = '';
       return this.localize().then(function () {
         _this3.build();
-        _this3.wrapper.append(_this3.element);
+        _this3.wrapper.appendChild(_this3.element);
         _this3.on('componentChange', function (changed) {
           return _this3.triggerSubmissionChange(changed);
         });
@@ -10445,7 +10445,7 @@ var FormioForm = function (_FormioComponents) {
         this.loader.setAttribute('class', 'loader-wrapper');
         var spinner = document.createElement('div');
         spinner.setAttribute('class', 'loader text-center');
-        this.loader.append(spinner);
+        this.loader.appendChild(spinner);
       }
       if (this.loader) {
         if (loading) {
