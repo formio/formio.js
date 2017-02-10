@@ -3,8 +3,9 @@ import _isObject from 'lodash/isObject';
 import _each from 'lodash/each';
 class ContainerComponent extends FormioComponents {
   build() {
-    this.element = this.ce('div');
-    this.element.setAttribute('class', 'formio-container-component');
+    this.element = this.ce('element', 'div', {
+      class: 'formio-container-component'
+    });
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = {};
     }

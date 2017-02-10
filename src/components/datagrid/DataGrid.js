@@ -4,34 +4,35 @@ import _isArray from 'lodash/isArray';
 import BaseComponent from '../base/Base';
 class DataGridComponent extends BaseComponent {
   build() {
-    this.element = this.ce('table');
-    this.element.setAttribute('class', 'form-group formio-data-grid');
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
     _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
         tableClass += 'table-' + prop + ' ';
       }
     });
-    this.element.setAttribute('class', tableClass);
-    let thead = this.ce('thead');
+    this.element = this.ce('element', 'table', {
+      class: tableClass
+    });
+
+    let thead = this.ce('header', 'thead');
 
     // Build the header.
-    let tr = this.ce('tr');
+    let tr = this.ce('headerRow', 'tr');
     _each(this.component.components, (comp) => {
-      let th = this.ce('th');
+      let th = this.ce('headerColumn', 'th');
       if (comp.validate && comp.validate.required) {
         th.setAttribute('class', 'field-required');
       }
       th.appendChild(this.text(comp.label));
       tr.appendChild(th);
     });
-    let th = this.ce('th');
+    let th = this.ce('headerExtra', 'th');
     tr.appendChild(th);
     thead.appendChild(tr);
     this.element.appendChild(thead);
 
     // Create the table body.
-    this.tbody = this.ce('tbody');
+    this.tbody = this.ce('table', 'tbody');
 
     // Add a blank row.
     this.addValue();
@@ -49,12 +50,12 @@ class DataGridComponent extends BaseComponent {
     this.tbody.innerHTML = '';
     this.rows = [];
     _each(this.data[this.component.key], (row, index) => {
-      let tr = this.ce('tr');
+      let tr = this.ce('tableRow', 'tr');
       let cols = {};
       _each(this.component.components, (col) => {
         let column = _cloneDeep(col);
         column.label = false;
-        let td = this.ce('td');
+        let td = this.ce('tableColumn', 'td');
         let comp = components.create(column, this.options, row);
         td.appendChild(comp.element);
         if (row.hasOwnProperty(column.key)) {
@@ -64,16 +65,17 @@ class DataGridComponent extends BaseComponent {
         tr.appendChild(td);
       });
       this.rows.push(cols);
-      let td = this.ce('td');
+      let td = this.ce('tableRemoveRow', 'td');
       td.appendChild(this.removeButton(index));
       tr.appendChild(td);
       this.tbody.appendChild(tr);
     });
 
     // Add the add button.
-    let tr = this.ce('tr');
-    let td = this.ce('td');
-    td.setAttribute('colspan', (this.component.components.length + 1));
+    let tr = this.ce('tableAddRow', 'tr');
+    let td = this.ce('tableAddColumn', 'td', {
+      colspan: (this.component.components.length + 1)
+    });
     td.appendChild(this.addButton());
     tr.appendChild(td);
     this.tbody.appendChild(tr);

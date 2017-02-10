@@ -4,6 +4,7 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _debounce from 'lodash/debounce';
 import _isArray from 'lodash/isArray';
+import _assign from 'lodash/assign';
 import _clone from 'lodash/clone';
 import i18next from 'i18next';
 import Validator from '../Validator';
@@ -19,7 +20,7 @@ class BaseComponent {
     this.options.i18n = this.options.i18n || require('../../locals/en');
     this.events = this.options.events;
     this.data = data || {};
-    this.component = component;
+    this.component = component || {};
     this.components = [];
     this.element = null;
     this.tbody = null;
@@ -36,8 +37,8 @@ class BaseComponent {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
         this.options.name += '[' + this.component.key + ']';
+        this.info = this.elementInfo();
       }
-      this.info = this.elementInfo();
     }
   }
 
@@ -87,8 +88,9 @@ class BaseComponent {
   }
 
   createElement() {
-    this.element = this.ce('div');
-    this.element.setAttribute('class', this.className);
+    this.element = this.ce('element', 'div', {
+      class: this.className
+    });
   }
 
   createWrapper() {
@@ -96,9 +98,10 @@ class BaseComponent {
       return false;
     }
     else {
-      let table = this.ce('table');
-      table.setAttribute('class', 'table table-bordered');
-      this.tbody = this.ce('tbody');
+      let table = this.ce('wrapper', 'table', {
+        class: 'table table-bordered'
+      });
+      this.tbody = this.ce('wrapperBody', 'tbody');
       table.appendChild(this.tbody);
 
       // Add a default value.
@@ -143,19 +146,20 @@ class BaseComponent {
     this.inputs = [];
     this.tbody.innerHTML = '';
     _each(this.data[this.component.key], (value, index) => {
-      let tr = this.ce('tr');
-      let td = this.ce('td');
+      let tr = this.ce('row', 'tr');
+      let td = this.ce('column', 'td');
       this.createInput(td);
       tr.appendChild(td);
-      let tdAdd = this.ce('td');
+      let tdAdd = this.ce('columnAdd', 'td');
       tdAdd.appendChild(this.removeButton(index));
       tr.appendChild(tdAdd);
       this.tbody.appendChild(tr);
     });
 
-    let tr = this.ce('tr');
-    let td = this.ce('td');
-    td.setAttribute('colspan', '2');
+    let tr = this.ce('rowAdd', 'tr');
+    let td = this.ce('addRowColumn', 'td', {
+      colspan: '2'
+    });
     td.appendChild(this.addButton());
     tr.appendChild(td);
     this.tbody.appendChild(tr);
@@ -167,15 +171,17 @@ class BaseComponent {
   }
 
   addButton() {
-    let addButton = this.ce('a');
-    addButton.setAttribute('class', 'btn btn-primary');
+    let addButton = this.ce('addButton', 'a', {
+      class: 'btn btn-primary'
+    });
     this.addAnEventListener(addButton, 'click', (event) => {
       event.preventDefault();
       this.addValue();
     });
 
-    let addIcon = this.ce('span');
-    addIcon.setAttribute('class', 'glyphicon glyphicon-plus');
+    let addIcon = this.ce('addIcon', 'span', {
+      class: 'glyphicon glyphicon-plus'
+    });
     addButton.appendChild(addIcon);
     addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
     return addButton;
@@ -186,19 +192,20 @@ class BaseComponent {
   }
 
   removeButton(index) {
-    let removeButton = this.ce('button');
-    removeButton.setAttribute('class', 'btn btn-default');
-    removeButton.setAttribute('type', 'button');
+    let removeButton = this.ce('removeButton', 'button', {
+      type: 'button',
+      class: 'btn btn-default',
+      tabindex: '-1'
+    });
 
-    // Ensure this button cannot be tabbed to.
-    removeButton.setAttribute('tabindex', '-1');
     this.addAnEventListener(removeButton, 'click', (event) => {
       event.preventDefault();
       this.removeValue(index);
     });
 
-    let removeIcon = this.ce('span');
-    removeIcon.setAttribute('class', 'glyphicon glyphicon-remove-circle');
+    let removeIcon = this.ce('removeIcon', 'span', {
+      class: 'glyphicon glyphicon-remove-circle'
+    });
     removeButton.appendChild(removeIcon);
     return removeButton;
   }
@@ -207,8 +214,9 @@ class BaseComponent {
     if (!this.component.label) {
       return;
     }
-    this.label = this.ce('label');
-    this.label.setAttribute('class', 'control-label');
+    this.label = this.ce('label', 'label', {
+      class: 'control-label'
+    });
     if (this.info.attr.id) {
       this.label.setAttribute('for', this.info.attr.id);
     }
@@ -217,16 +225,18 @@ class BaseComponent {
   }
 
   createErrorElement(container) {
-    this.errorElement = this.ce('div');
-    this.errorElement.setAttribute('class', 'formio-errors');
+    this.errorElement = this.ce('errors', 'div', {
+      class: 'formio-errors'
+    });
     container.appendChild(this.errorElement);
   }
 
   addPrefix(input, inputGroup) {
     let prefix = null;
     if (this.component.prefix) {
-      prefix = this.ce('div');
-      prefix.setAttribute('class', 'input-group-addon');
+      prefix = this.ce('prefix', 'div', {
+        class: 'input-group-addon'
+      });
       prefix.appendChild(this.text(this.component.prefix));
       inputGroup.appendChild(prefix);
     }
@@ -236,8 +246,9 @@ class BaseComponent {
   addSuffix(input, inputGroup) {
     let suffix = null;
     if (this.component.suffix) {
-      suffix = this.ce('div');
-      suffix.setAttribute('class', 'input-group-addon');
+      suffix = this.ce('suffix', 'div', {
+        class: 'input-group-addon'
+      });
       suffix.appendChild(this.text(this.component.suffix));
       inputGroup.appendChild(suffix);
     }
@@ -247,15 +258,16 @@ class BaseComponent {
   addInputGroup(input, container) {
     let inputGroup = null;
     if (this.component.prefix || this.component.suffix) {
-      inputGroup = this.ce('div');
-      inputGroup.setAttribute('class', 'input-group');
+      inputGroup = this.ce('inputGroup', 'div', {
+        class: 'input-group'
+      });
       container.appendChild(inputGroup);
     }
     return inputGroup;
   }
 
   createInput(container) {
-    let input = this.ce(this.info.type, this.info.attr);
+    let input = this.ce('input', this.info.type, this.info.attr);
     if (this.component.inputMask) {
       VMasker(input).maskPattern(this.component.inputMask);
     }
@@ -292,8 +304,28 @@ class BaseComponent {
    * @param type
    * @returns {*}
    */
-  ce(type, attr) {
-    let element = document.createElement(type);
+  ce(name, type, attr) {
+    // Allow for template overrides.
+    let element = null;
+    let compType = this.component.type || this.type;
+    if (
+      this.options &&
+      this.options.template &&
+      this.options.template[compType] &&
+      this.options.template[compType][name]
+    ) {
+      if (typeof this.options.template[compType][name] === 'function') {
+        element = this.options.template[compType][name](this, type, attr);
+        if (element) {
+          return element;
+        }
+      }
+      else {
+        // Assign the attributes.
+        _assign(attr, this.options.template[compType][name]);
+      }
+    }
+    element = document.createElement(type);
     if (attr) {
       this.attr(element, attr);
     }
@@ -363,8 +395,9 @@ class BaseComponent {
    */
   addInputError(message) {
     if (this.errorElement) {
-      let errorMessage = this.ce('p');
-      errorMessage.setAttribute('class', 'help-block');
+      let errorMessage = this.ce('errorMessage', 'p', {
+        class: 'help-block'
+      });
       errorMessage.appendChild(this.text(message));
       this.errorElement.appendChild(errorMessage);
       this.addClass(this.element, 'has-error');

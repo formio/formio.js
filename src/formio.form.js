@@ -15,6 +15,7 @@ let getOptions = function(options) {
 class FormioForm extends FormioComponents {
   constructor(element, options) {
     super(null, getOptions(options));
+    this.type = 'form';
     this._src = '';
     this._loading = true;
     this.wrapper = element;
@@ -61,10 +62,12 @@ class FormioForm extends FormioComponents {
   set loading(loading) {
     this._loading = loading;
     if (!this.loader && loading) {
-      this.loader = document.createElement('div');
-      this.loader.setAttribute('class', 'loader-wrapper');
-      let spinner = document.createElement('div');
-      spinner.setAttribute('class', 'loader text-center');
+      this.loader = this.ce('loaderWrapper', 'div', {
+        class: 'loader-wrapper'
+      });
+      let spinner = this.ce('loader', 'div', {
+        class: 'loader text-center'
+      });
       this.loader.appendChild(spinner);
     }
     if (this.loader) {
@@ -112,8 +115,9 @@ class FormioForm extends FormioComponents {
   }
 
   build() {
-    this.element = this.ce('form');
-    this.element.setAttribute('class', 'formio-form');
+    this.element = this.ce('element', 'form', {
+      class: 'formio-form'
+    });
     this.addAnEventListener(this.element, 'submit', (event) => this.submit(event));
     this.addComponents();
     this.checkConditions(this.getValue());

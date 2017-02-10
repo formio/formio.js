@@ -10,15 +10,18 @@ class RadioComponent extends BaseComponent {
   }
 
   createInput(container) {
-    let inputGroup = this.ce('div');
-    inputGroup.setAttribute('class', 'input-group');
+    let inputGroup = this.ce('inputGroup', 'div', {
+      class: 'input-group'
+    });
     let inputType = this.component.inputType;
     _each(this.component.values, (value) => {
-      let labelWrapper = this.ce('div');
       var wrapperClass = (this.component.inline ? inputType + '-inline' : inputType);
-      labelWrapper.setAttribute('class', wrapperClass);
-      let label = this.ce('label');
-      label.setAttribute('class', 'control-label');
+      let labelWrapper = this.ce('labelWrapper', 'div', {
+        class: wrapperClass
+      });
+      let label = this.ce('label', 'label', {
+        class: 'control-label'
+      });
 
       // Determine the attributes for this input.
       let inputId = this.inputId + '-' + value.value;
@@ -27,7 +30,7 @@ class RadioComponent extends BaseComponent {
       label.setAttribute('for', this.info.attr.id);
 
       // Create the input.
-      let input = this.ce('input');
+      let input = this.ce('input', 'input');
       _each(this.info.attr, function(value, key) {
         input.setAttribute(key, value);
       });

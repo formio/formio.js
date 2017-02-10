@@ -12,7 +12,7 @@ class ButtonComponent extends BaseComponent {
   }
 
   build() {
-    this.element = this.ce(this.info.type, this.info.attr);
+    this.element = this.ce('element', this.info.type, this.info.attr);
     if (this.component.label) {
       this.label = this.text(this.component.label);
       this.element.appendChild(this.label);

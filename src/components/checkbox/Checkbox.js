@@ -30,20 +30,22 @@ class CheckBoxComponent extends BaseComponent {
   }
 
   createElement() {
-    this.element = this.ce('div');
     let className = 'form-group checkbox';
     if (this.component.validate && this.component.validate.required) {
       className += ' required';
     }
-    this.element.setAttribute('class', className);
+    this.element = this.ce('element', 'div', {
+      class: className
+    });
   }
 
   createLabel(container, input) {
     if (!this.component.label) {
       return null;
     }
-    this.label = this.ce('label');
-    this.label.setAttribute('class', 'control-label');
+    this.label = this.ce('label', 'label', {
+      class: 'control-label'
+    });
     if (this.info.attr.id) {
       this.label.setAttribute('for', this.info.attr.id);
     }
@@ -56,7 +58,7 @@ class CheckBoxComponent extends BaseComponent {
     if (!this.component.input) {
       return;
     }
-    let input = this.ce(this.info.type, this.info.attr);
+    let input = this.ce('input', this.info.type, this.info.attr);
     this.createErrorElement(container);
     return input;
   }

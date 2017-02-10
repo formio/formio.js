@@ -15,39 +15,46 @@ class SignatureComponent extends BaseComponent {
   }
   set disable(disable) {
     super.disable = disable;
-    let image = this.ce('img');
+    let image = this.ce('image', 'img', {
+      style: ('width: ' + this.component.width + ';height: ' + this.component.height)
+    });
     image.setAttribute('src', this.input.value);
-    image.setAttribute('style', 'width: ' + this.component.width + ';height: ' + this.component.height);
     this.element.innerHTML = '';
     this.element.appendChild(image);
   }
   build() {
-    this.element = this.ce('div');
-    this.element.setAttribute('id', this.id);
-    this.element.setAttribute('class', 'form-group signature-pad');
+    this.element = this.ce('element', 'div', {
+      id: this.id,
+      class: 'form-group signature-pad'
+    });
     this.input = this.createInput(this.element);
-    let padBody = this.ce('div');
-    padBody.setAttribute('class', 'signature-pad-body');
-    padBody.setAttribute('style', 'width: ' + this.component.width + ';height: ' + this.component.height);
+    let padBody = this.ce('pad', 'div', {
+      class: 'signature-pad-body',
+      style: ('width: ' + this.component.width + ';height: ' + this.component.height)
+    });
 
     // Create the refresh button.
-    let refresh = this.ce('a');
-    refresh.setAttribute('class', 'btn btn-sm btn-default signature-pad-refresh');
-    let refreshIcon = this.ce('span');
-    refreshIcon.setAttribute('class', 'glyphicon glyphicon-refresh');
+    let refresh = this.ce('refresh', 'a', {
+      class: 'btn btn-sm btn-default signature-pad-refresh'
+    });
+    let refreshIcon = this.ce('refreshIcon', 'span', {
+      class: 'glyphicon glyphicon-refresh'
+    });
     refresh.appendChild(refreshIcon);
     padBody.appendChild(refresh);
 
     // The signature canvas.
-    let canvas = this.ce('canvas');
-    canvas.setAttribute('class', 'signature-pad-canvas');
+    let canvas = this.ce('canvas', 'canvas', {
+      class: 'signature-pad-canvas'
+    });
     padBody.appendChild(canvas);
     this.element.appendChild(padBody);
 
     // Add the footer.
     if (this.component.footer) {
-      let footer = this.ce('div');
-      footer.setAttribute('class', 'signature-pad-footer');
+      let footer = this.ce('footer', 'div', {
+        class: 'signature-pad-footer'
+      });
       footer.appendChild(this.text(this.component.footer));
       this.element.appendChild(footer);
     }

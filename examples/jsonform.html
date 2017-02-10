@@ -1,0 +1,45 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../dist/formio.form.css">
+    <script src="../dist/formio.form.js"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+        var form = new FormioForm(document.getElementById('formio'));
+        form.form = {
+          components: [
+            {
+              type: 'textfield',
+              key: 'firstName',
+              label: 'First Name',
+              placeholder: 'Enter your first name.',
+              input: true
+            },
+            {
+              type: 'textfield',
+              key: 'lastName',
+              label: 'Last Name',
+              placeholder: 'Enter your last name',
+              input: true
+            },
+            {
+              type: 'button',
+              action: 'submit',
+              label: 'Submit',
+              theme: 'primary'
+            }
+          ]
+        };
+      };
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col col-sm-12">
+          <div id="formio"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
