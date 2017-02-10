@@ -154,3 +154,34 @@ var mySubmission = a.loadSubmission();
 var myForm = a.loadForm();
 var myProject = a.loadProject();
 ```
+
+## New in Version 2!
+Verson 2.x of this library introduces a few new major features. You can install this version using the following.
+
+```
+npm install --save formiojs@next
+```
+
+### Dynamic Form Rendering
+We have introduced a core JavaScript renderer with this package. This can be used as follows.
+
+```html
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="node_modules/formiojs/dist/formio.form.min.css" />
+<script src="node_modules/formiojs/dist/formio.form.min.js"></script>
+<div id="formio"></div>
+<script type="text/javascript">
+  var form = new FormioForm(document.getElementById('formio'));
+  form.src = 'https://examples.form.io/example';
+  form.on('change', function(submission) {
+    console.log(submission);
+  });
+</script>
+```
+
+### JavaScript Embedding
+With this library, you can also create a very simple JavaScript embed using the following code.
+
+```html
+<script src="node_modules/formiojs/dist/formio.embed.js?src=https://examples.form.io/example"></script>
+```
