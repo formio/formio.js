@@ -2413,12 +2413,14 @@ Formio.deregisterPlugin = function(plugin) {
 
 module.exports = Formio;
 
-},{"./providers":6,"eventemitter2":1,"native-promise-only":2,"shallow-copy":3,"whatwg-fetch":4}],6:[function(require,module,exports){
+},{"./providers":7,"eventemitter2":1,"native-promise-only":2,"shallow-copy":3,"whatwg-fetch":4}],6:[function(require,module,exports){
+arguments[4][5][0].apply(exports,arguments)
+},{"./providers":7,"dup":5,"eventemitter2":1,"native-promise-only":2,"shallow-copy":3,"whatwg-fetch":4}],7:[function(require,module,exports){
 module.exports = {
   storage: require('./storage')
 };
 
-},{"./storage":8}],7:[function(require,module,exports){
+},{"./storage":9}],8:[function(require,module,exports){
 var Promise = require("native-promise-only");
 var dropbox = function(formio) {
   return {
@@ -2494,14 +2496,14 @@ module.exports = dropbox;
 
 
 
-},{"native-promise-only":2}],8:[function(require,module,exports){
+},{"native-promise-only":2}],9:[function(require,module,exports){
 module.exports = {
   dropbox: require('./dropbox.js'),
   s3: require('./s3.js'),
   url: require('./url.js'),
 };
 
-},{"./dropbox.js":7,"./s3.js":9,"./url.js":10}],9:[function(require,module,exports){
+},{"./dropbox.js":8,"./s3.js":10,"./url.js":11}],10:[function(require,module,exports){
 var Promise = require("native-promise-only");
 var s3 = function(formio) {
   return {
@@ -2619,8 +2621,9 @@ s3.title = 'S3';
 s3.name = 's3';
 module.exports = s3;
 
-},{"native-promise-only":2}],10:[function(require,module,exports){
+},{"native-promise-only":2}],11:[function(require,module,exports){
 var Promise = require("native-promise-only");
+var Formio  = require("../../Formio");
 var url = function(formio) {
   return {
     title: 'Url',
@@ -2651,7 +2654,7 @@ var url = function(formio) {
             resolve({
               storage: 'url',
               name: fileName,
-              url: xhr.response.url,
+              url: xhr.responseURL + '/' + fileName,
               size: file.size,
               type: file.type
             });
@@ -2671,6 +2674,7 @@ var url = function(formio) {
         }
 
         xhr.open('POST', url);
+        xhr.setRequestHeader('x-jwt-token', Formio.getToken());
         xhr.send(fd);
       });
     },
@@ -2685,5 +2689,5 @@ url.name = 'url';
 url.title = 'Url';
 module.exports = url;
 
-},{"native-promise-only":2}]},{},[5])(5)
+},{"../../Formio":5,"native-promise-only":2}]},{},[6])(6)
 });
