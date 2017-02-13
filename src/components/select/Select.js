@@ -56,13 +56,7 @@ class SelectComponent extends BaseComponent {
   }
   updateOptions(input) {
     input.innerHTML = '';
-    _each(this.selectItems, (value) => {
-      let option = this.ce('option', 'option', {
-        value: value.value
-      });
-      option.appendChild(document.createTextNode(value.label));
-      input.appendChild(option);
-    });
+    this.selectOptions(input, 'selectOption', this.selectItems);
   }
 }
 module.exports = SelectComponent;

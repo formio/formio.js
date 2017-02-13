@@ -23,6 +23,30 @@
               input: true
             },
             {
+              type: 'day',
+              key: 'birthdate',
+              label: 'Birthdate',
+              input: true,
+              dayFirst: false,
+              fields: {
+                year: {
+                  required: false,
+                  placeholder: '',
+                  type: 'text'
+                },
+                month: {
+                  required: false,
+                  placeholder: "",
+                  type: 'select'
+                },
+                day: {
+                  required: false,
+                  placeholder: '',
+                  type: 'text'
+                }
+              },
+            },
+            {
               type: 'button',
               action: 'submit',
               label: 'Submit',

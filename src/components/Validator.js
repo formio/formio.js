@@ -111,7 +111,7 @@ let Validator = {
     },
     email: {
       message: function(component, setting, t) {
-        return t('email', {
+        return t('invalid_email', {
           field: this.name(component)
         });
       },
@@ -119,6 +119,16 @@ let Validator = {
         // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(value);
+      }
+    },
+    date: {
+      message: function(component, setting, t) {
+        return t('invalid_date', {
+          field: this.name(component)
+        });
+      },
+      check: function(component, setting, value) {
+        return (value !== 'Invalid date');
       }
     },
     custom: {

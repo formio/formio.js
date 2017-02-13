@@ -37,8 +37,8 @@ class BaseComponent {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
         this.options.name += '[' + this.component.key + ']';
-        this.info = this.elementInfo();
       }
+      this.info = this.elementInfo();
     }
   }
 
@@ -489,10 +489,14 @@ class BaseComponent {
     this.setCustomValidity(Validator.check(
       this.validators,
       this.component,
-      this.data[this.component.key],
+      this.getValidateValue(),
       this.data,
       this.t.bind(this))
     );
+  }
+
+  getValidateValue() {
+    return this.data[this.component.key];
   }
 
   getErrors() {
@@ -552,6 +556,38 @@ class BaseComponent {
       input.disabled = disable;
       input.setAttribute('disabled', 'disabled');
     });
+  }
+
+  selectOptions(select, tag, options, defaultValue) {
+    _each(options, (option) => {
+      let attrs = {
+        value: option.value
+      };
+      if (defaultValue !== undefined && (option.value === defaultValue)) {
+        attrs.selected = 'selected';
+      }
+      let optionElement = this.ce(tag, 'option', attrs);
+      optionElement.appendChild(this.text(option.label));
+      select.appendChild(optionElement);
+    });
+  }
+
+  setSelectValue(select, value) {
+    let options = select.querySelectorAll('option');
+    _each(options, (option) => {
+      if (option.value === value) {
+        option.setAttribute('selected', 'selected');
+      }
+      else {
+        option.removeAttribute('selected');
+      }
+    });
+    if (select.onchange) {
+      select.onchange();
+    }
+    if (select.onselect) {
+      select.onchange();
+    }
   }
 
   /**

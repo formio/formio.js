@@ -1,9 +1,11 @@
 import BaseComponent from '../base/Base';
 import Flatpickr from 'flatpickr';
+import moment from 'moment';
 import _get from 'lodash/get';
 class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
+    this.validators.push('date');
     this.precise = false;
   }
   elementInfo() {
@@ -92,16 +94,31 @@ class DateTimeComponent extends BaseComponent {
     input.calendar = new Flatpickr(input, this.config);
   }
 
-  getValueAt(index) {
-    let timestamp = parseInt(this.inputs[index].value, 10);
+  getDate(value) {
+    let timestamp = parseInt(value, 10);
     if (!timestamp) {
       // Just default to today.
-      return (new Date()).toISOString();
+      return moment();
     }
     if (!this.precise) {
       timestamp *= 1000;
     }
-    return (new Date(timestamp)).toISOString();
+    return moment(timestamp);
+  }
+
+  getValidateValue() {
+    let values = [];
+    for (let i in this.inputs) {
+      if (!this.component.multiple) {
+        return this.getDate(this.inputs[i].value).format();
+      }
+      values.push(this.getDate(this.inputs[i].value).format());
+    }
+    return values;
+  }
+
+  getValueAt(index) {
+    return this.getDate(this.inputs[index].value).toISOString();
   }
 
   setValueAt(index, value) {

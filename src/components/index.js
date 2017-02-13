@@ -4,6 +4,7 @@ let Components = {
   container: require('./container/Container'),
   datagrid: require('./datagrid/DataGrid'),
   datetime: require('./datetime/DateTime'),
+  day: require('./day/Day'),
   htmlelement: require('./html/HTML'),
   hidden: require('./hidden/Hidden'),
   textfield: require('./textfield/TextField'),

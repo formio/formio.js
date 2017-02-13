@@ -21,8 +21,16 @@ class FormioForm extends FormioComponents {
     this.wrapper = element;
     this.formio = null;
     this.loader = null;
-    this.onForm = null;
-    this.onSubmission = null;
+    this.onFormLoad = null;
+    this.onSubmissionLoad = null;
+
+    // Promise that executes when the form is rendered and ready.
+    this.ready = new Promise((resolve, reject) => {
+      this.readyResolve = resolve;
+      this.readyReject = reject;
+    });
+
+    // Trigger submission changes and errors debounced.
     this.triggerSubmissionChange = _debounce(this.onSubmissionChange.bind(this), 10);
     this.triggerSubmissionError = _debounce(this.onSubmissionError.bind(this), 10);
   }
@@ -36,11 +44,10 @@ class FormioForm extends FormioComponents {
       return;
     }
     this._src = value;
-    this.loading = true;
     this.formio = new Formio(value);
-    this.onForm = this.formio.loadForm().then((form) => (this.form = form));
+    this.onFormLoad = this.formio.loadForm().then((form) => (this.form = form));
     if (this.formio.submissionId) {
-      this.onSubmission = this.formio.loadSubmission().then((submission) => (this.submission = submission));
+      this.onSubmissionLoad = this.formio.loadSubmission().then((submission) => (this.submission = submission));
     }
   }
 
@@ -48,11 +55,11 @@ class FormioForm extends FormioComponents {
     return this.events.on(event, cb);
   }
 
-  get ready() {
-    if (!this.onSubmission && !this.onForm) {
+  get onLoaded() {
+    if (!this.onSubmissionLoad && !this.onFormLoad) {
       return Promise.resolve();
     }
-    return this.onSubmission ? this.onSubmission : this.onForm;
+    return this.onSubmissionLoad ? this.onSubmissionLoad : this.onFormLoad;
   }
 
   get loading() {
@@ -83,11 +90,13 @@ class FormioForm extends FormioComponents {
   setForm(form) {
     // Set this form as a component.
     this.component = form;
-
-    // Render the form.
+    this.loading = true;
     return this.render().then(() => {
-      return this.ready.then(() => (this.loading = false));
-    });
+      return this.onLoaded.then(() => {
+        this.loading = false;
+        this.readyResolve();
+      }, (err) => this.readyReject(err));
+    }, (err) => this.readyReject(err));
   }
 
   set form(form) {
@@ -101,7 +110,7 @@ class FormioForm extends FormioComponents {
   }
 
   set submission(submission) {
-    this.setValue(submission.data);
+    this.ready.then(() => this.setValue(submission.data));
   }
 
   render() {
@@ -109,6 +118,7 @@ class FormioForm extends FormioComponents {
     return this.localize().then(() => {
       this.build();
       this.wrapper.appendChild(this.element);
+      this.on('resetForm', () => this.reset());
       this.on('componentChange', (changed) => this.triggerSubmissionChange(changed));
       this.on('componentError', (changed) => this.triggerSubmissionError(changed));
     });
@@ -128,17 +138,25 @@ class FormioForm extends FormioComponents {
     this.events.emit('submit', submission);
   }
 
+  reset() {
+    // Reset the submission data.
+    this.submission = {data: {}};
+  }
+
   submit(event) {
     this.loading = true;
     if (event) {
       event.preventDefault();
     }
     if (!this.formio) {
-      return this.onSubmit(submission);
+      return this.onSubmit(this.submission);
     }
     this.formio.saveSubmission(this.submission)
       .then((submission) => this.onSubmit(submission))
-      .catch((err) => this.events.emit('error', err));
+      .catch((err) => {
+        this.loading = false;
+        this.events.emit('error', err);
+      });
   }
 
   onSubmissionChange(changed) {
