@@ -5,11 +5,7 @@
     <script src="../dist/formio.form.js"></script>
     <script type="text/javascript">
       window.onload = function() {
-        var form = new FormioForm(document.getElementById('formio'), {
-          template: {
-            form
-          }
-        });
+        var form = new FormioForm(document.getElementById('formio'));
         form.form = {
           components: [
             {

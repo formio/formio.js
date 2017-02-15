@@ -180,7 +180,7 @@ class FormioForm extends FormioComponents {
 
   onSubmissionError(error) {
     this.loading = false;
-    error.errors = this.showErrors();
+    this.showErrors();
     this.events.emit('error', error);
   }
 

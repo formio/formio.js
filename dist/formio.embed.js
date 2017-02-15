@@ -20659,6 +20659,9 @@ var SurveyComponent = function (_BaseComponent) {
     value: function setValue(value) {
       var _this3 = this;
 
+      if (!value) {
+        return;
+      }
       var key = 'data[' + this.component.key + ']';
       (0, _each3.default)(this.component.questions, function (question) {
         (0, _each3.default)(_this3.inputs, function (input) {
@@ -21263,7 +21266,7 @@ var FormioForm = function (_FormioComponents) {
     key: "onSubmissionError",
     value: function onSubmissionError(error) {
       this.loading = false;
-      error.errors = this.showErrors();
+      this.showErrors();
       this.events.emit('error', error);
     }
   }, {
