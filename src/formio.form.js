@@ -3,6 +3,7 @@ import Formio from './formio';
 import Promise from "native-promise-only";
 import FormioComponents from './components/Components';
 import _debounce from 'lodash/debounce';
+import _each from 'lodash/each';
 import EventEmitter from 'eventemitter2';
 let getOptions = function(options) {
   options = options || {};
@@ -21,6 +22,7 @@ class FormioForm extends FormioComponents {
     this.wrapper = element;
     this.formio = null;
     this.loader = null;
+    this.alert = null;
     this.onFormLoad = null;
     this.onSubmissionLoad = null;
 
@@ -51,10 +53,6 @@ class FormioForm extends FormioComponents {
     }
   }
 
-  on(event, cb) {
-    return this.events.on(event, cb);
-  }
-
   get onLoaded() {
     if (!this.onSubmissionLoad && !this.onFormLoad) {
       return Promise.resolve();
@@ -78,12 +76,15 @@ class FormioForm extends FormioComponents {
       this.loader.appendChild(spinner);
     }
     if (this.loader) {
-      if (loading) {
-        this.wrapper.parentNode.insertBefore(this.loader, this.wrapper);
+      try {
+        if (loading) {
+          this.wrapper.parentNode.insertBefore(this.loader, this.wrapper);
+        }
+        else {
+          this.wrapper.parentNode.removeChild(this.loader);
+        }
       }
-      else {
-        this.wrapper.parentNode.removeChild(this.loader);
-      }
+      catch (err) {}
     }
   }
 
@@ -124,6 +125,27 @@ class FormioForm extends FormioComponents {
     });
   }
 
+  setAlert(type, message) {
+    if (this.alert) {
+      try {
+        this.wrapper.removeChild(this.alert);
+        this.alert = null;
+      }
+      catch(err) {}
+    }
+    if (message) {
+      this.alert = this.ce('alert-' + type, 'div', {
+        class: 'alert alert-' + type,
+        role: 'alert'
+      });
+      this.alert.innerHTML = message;
+    }
+    if (!this.alert) {
+      return;
+    }
+    this.wrapper.insertBefore(this.alert, this.wrapper.firstChild);
+  }
+
   build() {
     this.element = this.ce('element', 'form', {
       class: 'formio-form'
@@ -133,9 +155,44 @@ class FormioForm extends FormioComponents {
     this.checkConditions(this.getValue());
   }
 
+  showErrors() {
+    let errors = this.errors;
+    if (!errors.length) {
+      this.setAlert(false);
+      return;
+    }
+    let message = '<p>' + this.t('error') + '</p><ul>';
+    _each(errors, (err) => {
+      if (err) {
+        message += '<li><strong>' + err + '</strong></li>';
+      }
+    });
+    message += '</ul>';
+    this.setAlert('danger', message);
+    return errors;
+  }
+
   onSubmit(submission) {
     this.loading = false;
+    this.setAlert('success', '<p>' + this.t('complete') + '</p>');
     this.events.emit('submit', submission);
+  }
+
+  onSubmissionError(error) {
+    this.loading = false;
+    error.errors = this.showErrors();
+    this.events.emit('error', error);
+  }
+
+  onSubmissionChange(changed) {
+    let value = this.submission;
+    let errors = this.errors;
+    if (!errors.length) {
+      this.setAlert(false);
+    }
+    value.changed = changed;
+    this.events.emit('change', value);
+    this.checkConditions(value.data);
   }
 
   reset() {
@@ -153,21 +210,7 @@ class FormioForm extends FormioComponents {
     }
     this.formio.saveSubmission(this.submission)
       .then((submission) => this.onSubmit(submission))
-      .catch((err) => {
-        this.loading = false;
-        this.events.emit('error', err);
-      });
-  }
-
-  onSubmissionChange(changed) {
-    let value = this.submission;
-    value.changed = changed;
-    this.events.emit('change', value);
-    this.checkConditions(value.data);
-  }
-
-  onSubmissionError(error) {
-    this.events.emit('error', error);
+      .catch((err) => this.onSubmissionError(err));
   }
 }
 module.exports = global.FormioForm = FormioForm;

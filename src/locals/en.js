@@ -3,6 +3,8 @@ module.exports = {
   resources: {
     en: {
       translation: {
+        complete: 'Submission Complete',
+        error: 'Please fix the following errors before submitting.',
         required: '{{field}} is required',
         minLength: '{{field}} must be longer than {{length}} characters.',
         maxLength: '{{field}} must be shorter than {{length}} characters.',

@@ -3,6 +3,47 @@
   color:red;
 }
 
+.glyphicon-spin {
+  -webkit-animation: formio-spin 1s infinite linear;
+  -moz-animation: formio-spin 1s infinite linear;
+  -o-animation: formio-spin 1s infinite linear;
+  animation: formio-spin 1s infinite linear;
+  -webkit-transform-origin: 50% 58%;
+  transform-origin: 50% 58%;
+  -ms-transform-origin: 50% 58%; /* IE 9 */
+}
+
+@-moz-keyframes formio-spin {
+  from {
+    -moz-transform: rotate(0deg);
+  }
+  to {
+    -moz-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes formio-spin {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes formio-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.button-icon-right {
+  margin-left: 5px;
+}
+
 .form-control.flatpickr-input {
   background-color: #fff;
 }

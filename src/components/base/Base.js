@@ -47,6 +47,13 @@ class BaseComponent {
     return message;
   }
 
+  on(event, cb) {
+    if (!this.events) {
+      return;
+    }
+    return this.events.on(event, cb);
+  }
+
   localize() {
     if (i18next.initialized) {
       return Promise.resolve(i18next);
@@ -499,8 +506,8 @@ class BaseComponent {
     return this.data[this.component.key];
   }
 
-  getErrors() {
-    return this.error;
+  get errors() {
+    return this.error ? [this.error] : [];
   }
 
   setCustomValidity(message) {

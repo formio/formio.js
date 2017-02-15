@@ -15,25 +15,32 @@ class ButtonComponent extends BaseComponent {
     this._loading = loading;
     if (!this.loader && loading) {
       this.loader = this.ce('buttonLoader', 'i', {
-        class: 'glyphicon glyphicon-refresh glyphicon-spin'
+        class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
       });
     }
     if (this.loader) {
       if (loading) {
-        this.input.appendChild(this.loader);
+        this.element.appendChild(this.loader);
       }
       else {
-        this.input.removeChild(this.loader);
+        this.element.removeChild(this.loader);
       }
     }
   }
 
-  createInput(container) {
-    let input = super.createInput(container);
+  build() {
+    this.element = this.ce('element', this.info.type, this.info.attr);
+    if (this.component.label) {
+      this.label = this.text(this.component.label);
+      this.element.appendChild(this.label);
+    }
     this.on('submit', () => {
       this.loading = false;
     });
-    this.addAnEventListener(input, 'click', (event) => {
+    this.on('error', () => {
+      this.loading = false;
+    });
+    this.addAnEventListener(this.element, 'click', (event) => {
       switch (this.component.action) {
         case 'submit':
           this.loading = true;
@@ -49,14 +56,6 @@ class ButtonComponent extends BaseComponent {
           break;
       }
     });
-  }
-
-  build() {
-    this.element = this.ce('element', this.info.type, this.info.attr);
-    if (this.component.label) {
-      this.label = this.text(this.component.label);
-      this.element.appendChild(this.label);
-    }
   }
 }
 

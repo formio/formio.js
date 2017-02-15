@@ -1,5 +1,6 @@
 'use strict';
 import _each from 'lodash/each';
+import _filter from 'lodash/filter';
 import BaseComponent from './base/Base';
 import _isArray from 'lodash/isArray';
 class FormioComponents extends BaseComponent {
@@ -69,26 +70,19 @@ class FormioComponents extends BaseComponent {
     _each(this.components, (component) => (component.disable = disable));
   }
 
-  getValue() {
-    return this.data;
-  }
-
-  getErrors() {
+  get errors() {
     let errors = [];
-    _each(this.components, (component) => {
-      let compErrors = component.getErrors();
-      if (_isArray(compErrors)) {
-        _each(compErrors, (compError) => {
-          if (compError) {
-            errors.push(compError);
-          }
-        });
-      }
-      else if (compErrors) {
-        errors.push(compErrors);
+    _each(this.components, (comp) => {
+      let compErrors = comp.errors;
+      if (compErrors.length) {
+        errors = errors.concat(compErrors);
       }
     });
     return errors;
+  }
+
+  getValue() {
+    return this.data;
   }
 
   setValue(value) {
