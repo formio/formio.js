@@ -15956,4541 +15956,6 @@ return SignaturePad;
 })(typeof self !== 'undefined' ? self : this);
 
 },{}],199:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _filter2 = require('lodash/filter');
-
-var _filter3 = _interopRequireDefault(_filter2);
-
-var _Base = require('./base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-var _isArray2 = require('lodash/isArray');
-
-var _isArray3 = _interopRequireDefault(_isArray2);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var FormioComponents = function (_BaseComponent) {
-  _inherits(FormioComponents, _BaseComponent);
-
-  function FormioComponents(component, options, data) {
-    _classCallCheck(this, FormioComponents);
-
-    var _this = _possibleConstructorReturn(this, (FormioComponents.__proto__ || Object.getPrototypeOf(FormioComponents)).call(this, component, options, data));
-
-    _this.type = 'components';
-    return _this;
-  }
-
-  _createClass(FormioComponents, [{
-    key: 'build',
-    value: function build() {
-      this.createElement();
-      this.addComponents();
-    }
-  }, {
-    key: 'everyComponent',
-    value: function everyComponent(cb) {
-      (0, _each3.default)(this.components, function (component) {
-        if (component.type === 'components') {
-          if (component.everyComponent(cb) === false) {
-            return false;
-          }
-        } else if (cb(component) === false) {
-          return false;
-        }
-      });
-    }
-  }, {
-    key: 'eachComponent',
-    value: function eachComponent(cb) {
-      (0, _each3.default)(this.components, function (component) {
-        if (cb(component) === false) {
-          return false;
-        }
-      });
-    }
-  }, {
-    key: 'getComponent',
-    value: function getComponent(key) {
-      var comp = null;
-      this.everyComponent(function (component) {
-        if (component.component.key === key) {
-          comp = component;
-          return false;
-        }
-      });
-      return comp;
-    }
-  }, {
-    key: 'addComponent',
-    value: function addComponent(component, element, data) {
-      element = element || this.element;
-      data = data || this.data;
-      var components = require('./index');
-      var comp = components.create(component, this.options, data);
-      this.components.push(comp);
-      element.appendChild(comp.element);
-    }
-  }, {
-    key: 'addComponents',
-    value: function addComponents(element, data) {
-      var _this2 = this;
-
-      element = element || this.element;
-      data = data || this.data;
-      (0, _each3.default)(this.component.components, function (component) {
-        return _this2.addComponent(component, element, data);
-      });
-    }
-  }, {
-    key: 'checkConditions',
-    value: function checkConditions(data) {
-      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
-      (0, _each3.default)(this.components, function (comp) {
-        return comp.checkConditions(data);
-      });
-    }
-  }, {
-    key: 'getValue',
-    value: function getValue() {
-      return this.data;
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value) {
-      (0, _each3.default)(this.components, function (component) {
-        if (component.input || component.type === 'button') {
-          return;
-        }
-
-        if (component.type === 'components') {
-          component.setValue(value);
-        } else if (value && value.hasOwnProperty(component.component.key)) {
-          component.setValue(value[component.component.key]);
-        } else {
-          component.setValue(null);
-        }
-      });
-    }
-  }, {
-    key: 'disable',
-    set: function set(disable) {
-      (0, _each3.default)(this.components, function (component) {
-        return component.disable = disable;
-      });
-    }
-  }, {
-    key: 'errors',
-    get: function get() {
-      var errors = [];
-      (0, _each3.default)(this.components, function (comp) {
-        var compErrors = comp.errors;
-        if (compErrors.length) {
-          errors = errors.concat(compErrors);
-        }
-      });
-      return errors;
-    }
-  }]);
-
-  return FormioComponents;
-}(_Base2.default);
-
-module.exports = FormioComponents;
-
-},{"./base/Base":201,"./index":214,"lodash/each":166,"lodash/filter":168,"lodash/isArray":175}],200:[function(require,module,exports){
-'use strict';
-
-var _get2 = require('lodash/get');
-
-var _get3 = _interopRequireDefault(_get2);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _has2 = require('lodash/has');
-
-var _has3 = _interopRequireDefault(_has2);
-
-var _isArray2 = require('lodash/isArray');
-
-var _isArray3 = _interopRequireDefault(_isArray2);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-var Validator = {
-  get: _get3.default,
-  each: _each3.default,
-  has: _has3.default,
-  boolValue: function boolValue(value) {
-    if (typeof value === 'boolean') {
-      return value;
-    } else if (typeof value === 'string') {
-      return value.toLowerCase() === 'true';
-    } else {
-      return !!value;
-    }
-  },
-  empty: function empty(value) {
-    return value == null || value.length === 0;
-  },
-  name: function name(component) {
-    return component.label || component.placeholder || component.key;
-  },
-  checkValidator: function checkValidator(validator, component, setting, value, data, t) {
-    var result = validator.check.call(this, component, setting, value, data);
-    if (typeof result === 'string') {
-      return result;
-    }
-    if (!result) {
-      return validator.message.call(this, component, setting, t);
-    }
-    return '';
-  },
-  validate: function validate(validator, component, value, data, t) {
-    if (validator.key && (0, _has3.default)(component, validator.key)) {
-      var setting = this.get(component, validator.key);
-      return this.checkValidator(validator, component, setting, value, data, t);
-    }
-    return this.checkValidator(validator, component, null, value, data, t);
-  },
-  check: function check(validators, component, value, data, t) {
-    var _this = this;
-
-    var result = '';
-    (0, _each3.default)(validators, function (name) {
-      if (_this.validators.hasOwnProperty(name)) {
-        var validator = _this.validators[name];
-        if (component.multiple && (0, _isArray3.default)(value)) {
-          (0, _each3.default)(value, function (val) {
-            result = _this.validate(validator, component, val, data, t);
-            if (result) {
-              return false;
-            }
-          });
-        } else {
-          result = _this.validate(validator, component, value, data, t);
-        }
-        if (result) {
-          return false;
-        }
-      }
-    });
-    return result;
-  },
-  validators: {
-    required: {
-      key: 'validate.required',
-      message: function message(component, setting, t) {
-        return t('required', { field: this.name(component) });
-      },
-      check: function check(component, setting, value) {
-        var required = Validator.boolValue(setting);
-        if (!required) {
-          return true;
-        }
-        return !Validator.empty(value);
-      }
-    },
-    minLength: {
-      key: 'validate.minLength',
-      message: function message(component, setting, t) {
-        return t('minLength', {
-          field: this.name(component),
-          length: setting - 1
-        });
-      },
-      check: function check(component, setting, value) {
-        var minLength = parseInt(setting, 10);
-        if (!minLength || typeof value !== 'string') {
-          return true;
-        }
-        return value.length >= minLength;
-      }
-    },
-    maxLength: {
-      key: 'validate.maxLength',
-      message: function message(component, setting, t) {
-        return t('maxLength', {
-          field: this.name(component),
-          length: setting + 1
-        });
-      },
-      check: function check(component, setting, value) {
-        var maxLength = parseInt(setting, 10);
-        if (!maxLength || typeof value !== 'string') {
-          return true;
-        }
-        return value.length <= maxLength;
-      }
-    },
-    email: {
-      message: function message(component, setting, t) {
-        return t('invalid_email', {
-          field: this.name(component)
-        });
-      },
-      check: function check(component, setting, value) {
-        // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(value);
-      }
-    },
-    date: {
-      message: function message(component, setting, t) {
-        return t('invalid_date', {
-          field: this.name(component)
-        });
-      },
-      check: function check(component, setting, value) {
-        return value !== 'Invalid date';
-      }
-    },
-    custom: {
-      key: 'validate.custom',
-      message: function message(component, setting, t) {
-        return t('custom', {
-          field: this.name(component)
-        });
-      },
-      check: function check(component, setting, value, data) {
-        if (!setting) {
-          return true;
-        }
-        var valid = true;
-        var custom = setting;
-        /*eslint-disable no-unused-vars */
-        var input = value;
-        /*eslint-enable no-unused-vars */
-        custom = custom.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
-          return data[$2];
-        });
-
-        /* jshint evil: true */
-        eval(custom);
-        return valid;
-      }
-    }
-  }
-};
-module.exports = Validator;
-
-},{"lodash/each":166,"lodash/get":170,"lodash/has":171,"lodash/isArray":175}],201:[function(require,module,exports){
-'use strict';
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _vanillaMasker = require('vanilla-masker');
-
-var _vanillaMasker2 = _interopRequireDefault(_vanillaMasker);
-
-var _formioUtils = require('formio-utils');
-
-var _formioUtils2 = _interopRequireDefault(_formioUtils);
-
-var _get2 = require('lodash/get');
-
-var _get3 = _interopRequireDefault(_get2);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _debounce2 = require('lodash/debounce');
-
-var _debounce3 = _interopRequireDefault(_debounce2);
-
-var _isArray2 = require('lodash/isArray');
-
-var _isArray3 = _interopRequireDefault(_isArray2);
-
-var _assign2 = require('lodash/assign');
-
-var _assign3 = _interopRequireDefault(_assign2);
-
-var _clone2 = require('lodash/clone');
-
-var _clone3 = _interopRequireDefault(_clone2);
-
-var _i18next = require('i18next');
-
-var _i18next2 = _interopRequireDefault(_i18next);
-
-var _Validator = require('../Validator');
-
-var _Validator2 = _interopRequireDefault(_Validator);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-_i18next2.default.initialized = false;
-
-var BaseComponent = function () {
-  /**
-   *   Initialize a new BaseComponent.
-   */
-  function BaseComponent(component, options, data) {
-    _classCallCheck(this, BaseComponent);
-
-    this.id = Math.random().toString(36).substring(7);
-    this.options = (0, _clone3.default)(options) || {};
-    this.options.i18n = this.options.i18n || require('../../locals/en');
-    this.events = this.options.events;
-    this.data = data || {};
-    this.component = component || {};
-    this.components = [];
-    this.element = null;
-    this.tbody = null;
-    this.label = null;
-    this.errorElement = null;
-    this.error = '';
-    this.inputs = [];
-    this.info = null;
-    this.value = null;
-    this.options.name = this.options.name || 'data';
-    this.validators = ['required', 'minLength', 'maxLength', 'custom'];
-    this.triggerChange = (0, _debounce3.default)(this.onChange.bind(this), 200);
-    if (this.component) {
-      this.type = this.component.type;
-      if (this.component.input && this.component.key) {
-        this.options.name += '[' + this.component.key + ']';
-      }
-      this.info = this.elementInfo();
-    }
-  }
-
-  _createClass(BaseComponent, [{
-    key: 't',
-    value: function t(text, params) {
-      var message = _i18next2.default.t(text, params);
-      return message;
-    }
-  }, {
-    key: 'on',
-    value: function on(event, cb) {
-      if (!this.events) {
-        return;
-      }
-      return this.events.on(event, cb);
-    }
-  }, {
-    key: 'localize',
-    value: function localize() {
-      var _this = this;
-
-      if (_i18next2.default.initialized) {
-        return Promise.resolve(_i18next2.default);
-      }
-      _i18next2.default.initialized = true;
-      return new Promise(function (resolve, reject) {
-        _i18next2.default.init(_this.options.i18n, function (err, t) {
-          if (err) {
-            return reject(err);
-          }
-          resolve(_i18next2.default);
-        });
-      });
-    }
-
-    /**
-     * Builds the component.
-     */
-
-  }, {
-    key: 'build',
-    value: function build() {
-      this.createElement();
-      this.createLabel(this.element);
-      if (!this.createWrapper()) {
-        this.createInput(this.element);
-      }
-    }
-  }, {
-    key: 'createElement',
-    value: function createElement() {
-      this.element = this.ce('element', 'div', {
-        class: this.className
-      });
-    }
-  }, {
-    key: 'createWrapper',
-    value: function createWrapper() {
-      if (!this.component.multiple) {
-        return false;
-      } else {
-        var table = this.ce('wrapper', 'table', {
-          class: 'table table-bordered'
-        });
-        this.tbody = this.ce('wrapperBody', 'tbody');
-        table.appendChild(this.tbody);
-
-        // Add a default value.
-        this.addValue();
-
-        // Add the table to the element.
-        this.element.appendChild(table);
-        return true;
-      }
-    }
-  }, {
-    key: 'defaultValue',
-    value: function defaultValue() {
-      if (this.component.defaultValue) {
-        return this.component.defaultValue;
-      }
-      return '';
-    }
-  }, {
-    key: 'addValue',
-    value: function addValue() {
-      this.data[this.component.key] = this.getValue();
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = [];
-      }
-      if (!(0, _isArray3.default)(this.data[this.component.key])) {
-        this.data[this.component.key] = [this.data[this.component.key]];
-      }
-      this.data[this.component.key].push(this.defaultValue());
-      this.buildRows();
-    }
-  }, {
-    key: 'removeValue',
-    value: function removeValue(index) {
-      if (this.data.hasOwnProperty(this.component.key)) {
-        this.data[this.component.key].splice(index, 1);
-      }
-      this.buildRows();
-    }
-  }, {
-    key: 'buildRows',
-    value: function buildRows() {
-      var _this2 = this;
-
-      if (!this.tbody) {
-        return;
-      }
-      this.inputs = [];
-      this.tbody.innerHTML = '';
-      (0, _each3.default)(this.data[this.component.key], function (value, index) {
-        var tr = _this2.ce('row', 'tr');
-        var td = _this2.ce('column', 'td');
-        _this2.createInput(td);
-        tr.appendChild(td);
-        var tdAdd = _this2.ce('columnAdd', 'td');
-        tdAdd.appendChild(_this2.removeButton(index));
-        tr.appendChild(tdAdd);
-        _this2.tbody.appendChild(tr);
-      });
-
-      var tr = this.ce('rowAdd', 'tr');
-      var td = this.ce('addRowColumn', 'td', {
-        colspan: '2'
-      });
-      td.appendChild(this.addButton());
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
-
-      // Reset the values of the inputs.
-      if (this.data.hasOwnProperty(this.component.key)) {
-        this.setValue(this.data[this.component.key]);
-      }
-    }
-  }, {
-    key: 'addButton',
-    value: function addButton() {
-      var _this3 = this;
-
-      var addButton = this.ce('addButton', 'a', {
-        class: 'btn btn-primary'
-      });
-      this.addAnEventListener(addButton, 'click', function (event) {
-        event.preventDefault();
-        _this3.addValue();
-      });
-
-      var addIcon = this.ce('addIcon', 'span', {
-        class: 'glyphicon glyphicon-plus'
-      });
-      addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
-      return addButton;
-    }
-  }, {
-    key: 'removeButton',
-    value: function removeButton(index) {
-      var _this4 = this;
-
-      var removeButton = this.ce('removeButton', 'button', {
-        type: 'button',
-        class: 'btn btn-default',
-        tabindex: '-1'
-      });
-
-      this.addAnEventListener(removeButton, 'click', function (event) {
-        event.preventDefault();
-        _this4.removeValue(index);
-      });
-
-      var removeIcon = this.ce('removeIcon', 'span', {
-        class: 'glyphicon glyphicon-remove-circle'
-      });
-      removeButton.appendChild(removeIcon);
-      return removeButton;
-    }
-  }, {
-    key: 'createLabel',
-    value: function createLabel(container) {
-      if (!this.component.label) {
-        return;
-      }
-      this.label = this.ce('label', 'label', {
-        class: 'control-label'
-      });
-      if (this.info.attr.id) {
-        this.label.setAttribute('for', this.info.attr.id);
-      }
-      this.label.appendChild(this.text(this.component.label));
-      container.appendChild(this.label);
-    }
-  }, {
-    key: 'createErrorElement',
-    value: function createErrorElement(container) {
-      this.errorElement = this.ce('errors', 'div', {
-        class: 'formio-errors'
-      });
-      container.appendChild(this.errorElement);
-    }
-  }, {
-    key: 'addPrefix',
-    value: function addPrefix(input, inputGroup) {
-      var prefix = null;
-      if (this.component.prefix) {
-        prefix = this.ce('prefix', 'div', {
-          class: 'input-group-addon'
-        });
-        prefix.appendChild(this.text(this.component.prefix));
-        inputGroup.appendChild(prefix);
-      }
-      return prefix;
-    }
-  }, {
-    key: 'addSuffix',
-    value: function addSuffix(input, inputGroup) {
-      var suffix = null;
-      if (this.component.suffix) {
-        suffix = this.ce('suffix', 'div', {
-          class: 'input-group-addon'
-        });
-        suffix.appendChild(this.text(this.component.suffix));
-        inputGroup.appendChild(suffix);
-      }
-      return suffix;
-    }
-  }, {
-    key: 'addInputGroup',
-    value: function addInputGroup(input, container) {
-      var inputGroup = null;
-      if (this.component.prefix || this.component.suffix) {
-        inputGroup = this.ce('inputGroup', 'div', {
-          class: 'input-group'
-        });
-        container.appendChild(inputGroup);
-      }
-      return inputGroup;
-    }
-  }, {
-    key: 'createInput',
-    value: function createInput(container) {
-      var input = this.ce('input', this.info.type, this.info.attr);
-      if (this.component.inputMask) {
-        (0, _vanillaMasker2.default)(input).maskPattern(this.component.inputMask);
-      }
-
-      var inputGroup = this.addInputGroup(input, container);
-      this.addPrefix(input, inputGroup);
-      this.addInput(input, inputGroup || container);
-      this.addSuffix(input, inputGroup);
-      this.createErrorElement(container);
-      return inputGroup || input;
-    }
-
-    /**
-     * Wrapper method to add an event listener to an HTML element.
-     *
-     * @param obj
-     *   The DOM element to add the event to.
-     * @param evt
-     *   The event name to add.
-     * @param func
-     *   The callback function to be executed when the listener is triggered.
-     */
-
-  }, {
-    key: 'addAnEventListener',
-    value: function addAnEventListener(obj, evt, func) {
-      if ('addEventListener' in obj) {
-        obj.addEventListener(evt, func, false);
-      } else if ('attachEvent' in obj) {
-        obj.attachEvent('on' + evt, func);
-      }
-    }
-
-    /**
-     * Alias for document.createElement.
-     *
-     * @param type
-     * @returns {*}
-     */
-
-  }, {
-    key: 'ce',
-    value: function ce(name, type, attr) {
-      // Allow for template overrides.
-      var element = null;
-      var compType = this.component.type || this.type;
-      if (this.options && this.options.template && this.options.template[compType] && this.options.template[compType][name]) {
-        if (typeof this.options.template[compType][name] === 'function') {
-          element = this.options.template[compType][name](this, type, attr);
-          if (element) {
-            return element;
-          }
-        } else {
-          // Assign the attributes.
-          (0, _assign3.default)(attr, this.options.template[compType][name]);
-        }
-      }
-      element = document.createElement(type);
-      if (attr) {
-        this.attr(element, attr);
-      }
-      return element;
-    }
-
-    /**
-     * Alias to create a text node.
-     * @param text
-     * @returns {Text}
-     */
-
-  }, {
-    key: 'text',
-    value: function text(_text) {
-      return document.createTextNode(_text);
-    }
-
-    /**
-     * Adds an object of attributes onto an element.
-     * @param element
-     * @param attr
-     */
-
-  }, {
-    key: 'attr',
-    value: function attr(element, _attr) {
-      (0, _each3.default)(_attr, function (value, key) {
-        if (typeof value !== 'undefined') {
-          element.setAttribute(key, value);
-        }
-      });
-    }
-
-    /**
-     * Adds a class to a DOM element.
-     *
-     * @param element
-     *   The element to add a class to.
-     * @param className
-     *   The name of the class to add.
-     */
-
-  }, {
-    key: 'addClass',
-    value: function addClass(element, className) {
-      var cls = element.getAttribute('class');
-      cls += ' ' + className;
-      element.setAttribute('class', cls);
-    }
-
-    /**
-     * Remove a class from a DOM element.
-     *
-     * @param element
-     *   The DOM element to remove the class from.
-     * @param className
-     *   The name of the class that is to be removed.
-     */
-
-  }, {
-    key: 'removeClass',
-    value: function removeClass(element, className) {
-      var cls = element.getAttribute('class');
-      cls = cls.replace(className, '');
-      element.setAttribute('class', cls);
-    }
-
-    /**
-     * Check for conditionals and hide/show the element based on those conditions.
-     */
-
-  }, {
-    key: 'checkConditions',
-    value: function checkConditions(data) {
-      this.show(_formioUtils2.default.checkCondition(this.component, this.value, data));
-    }
-
-    /**
-     * Add a new input error to this element.
-     * @param message
-     */
-
-  }, {
-    key: 'addInputError',
-    value: function addInputError(message) {
-      if (this.errorElement) {
-        var errorMessage = this.ce('errorMessage', 'p', {
-          class: 'help-block'
-        });
-        errorMessage.appendChild(this.text(message));
-        this.errorElement.appendChild(errorMessage);
-        this.addClass(this.element, 'has-error');
-      }
-    }
-
-    /**
-     * Hide or Show an element.
-     *
-     * @param show
-     */
-
-  }, {
-    key: 'show',
-    value: function show(_show) {
-      if (this.element) {
-        if (_show) {
-          this.element.removeAttribute('hidden');
-        } else {
-          this.element.setAttribute('hidden', true);
-        }
-      }
-    }
-  }, {
-    key: 'onChange',
-    value: function onChange() {
-      this.checkValidity();
-      if (this.events) {
-        this.events.emit('componentChange', {
-          component: this.component,
-          value: this.value
-        });
-      }
-    }
-
-    /**
-     * Add new input element listeners.
-     *
-     * @param input
-     */
-
-  }, {
-    key: 'addInputEventListener',
-    value: function addInputEventListener(input) {
-      var _this5 = this;
-
-      this.addAnEventListener(input, this.info.changeEvent, function () {
-        return _this5.updateValue();
-      });
-    }
-
-    /**
-     * Add a new input to this comonent.
-     *
-     * @param input
-     * @param container
-     * @param name
-     */
-
-  }, {
-    key: 'addInput',
-    value: function addInput(input, container) {
-      if (input && container) {
-        this.inputs.push(input);
-        input = container.appendChild(input);
-        this.addInputEventListener(input);
-      }
-    }
-
-    /**
-     * Get the value at a specific index.
-     *
-     * @param index
-     * @returns {*}
-     */
-
-  }, {
-    key: 'getValueAt',
-    value: function getValueAt(index) {
-      return this.inputs[index].value;
-    }
-  }, {
-    key: 'getValue',
-    value: function getValue() {
-      var values = [];
-      for (var i in this.inputs) {
-        if (!this.component.multiple) {
-          return this.getValueAt(i);
-        }
-        values.push(this.getValueAt(i));
-      }
-      return values;
-    }
-  }, {
-    key: 'updateValue',
-    value: function updateValue() {
-      this.data[this.component.key] = this.value = this.getValue();
-      this.triggerChange();
-    }
-  }, {
-    key: 'checkValidity',
-    value: function checkValidity() {
-      // No need to check for errors if there is no input.
-      if (!this.component.input) {
-        return;
-      }
-
-      this.setCustomValidity(_Validator2.default.check(this.validators, this.component, this.getValidateValue(), this.data, this.t.bind(this)));
-    }
-  }, {
-    key: 'getValidateValue',
-    value: function getValidateValue() {
-      return this.data[this.component.key];
-    }
-  }, {
-    key: 'setCustomValidity',
-    value: function setCustomValidity(message) {
-      if (this.errorElement) {
-        this.errorElement.innerHTML = '';
-      }
-      this.removeClass(this.element, 'has-error');
-      this.error = message ? message : '';
-      if (message) {
-        this.addInputError(message);
-        if (this.events) {
-          this.events.emit('componentError', {
-            component: this.component,
-            error: message
-          });
-        }
-      }
-      (0, _each3.default)(this.inputs, function (input) {
-        if (typeof input.setCustomValidity === 'function') {
-          input.setCustomValidity(message);
-        }
-      });
-    }
-
-    /**
-     * Set the value at a specific index.
-     *
-     * @param index
-     * @param value
-     */
-
-  }, {
-    key: 'setValueAt',
-    value: function setValueAt(index, value) {
-      this.inputs[index].value = value;
-    }
-
-    /**
-     * Set the value of this component.
-     * @param value
-     */
-
-  }, {
-    key: 'setValue',
-    value: function setValue(value) {
-      var isArray = (0, _isArray3.default)(value);
-      for (var i in this.inputs) {
-        this.setValueAt(i, isArray ? value[i] : value);
-      }
-      this.updateValue();
-    }
-
-    /**
-     * Disable this component.
-     */
-
-  }, {
-    key: 'selectOptions',
-    value: function selectOptions(select, tag, options, defaultValue) {
-      var _this6 = this;
-
-      (0, _each3.default)(options, function (option) {
-        var attrs = {
-          value: option.value
-        };
-        if (defaultValue !== undefined && option.value === defaultValue) {
-          attrs.selected = 'selected';
-        }
-        var optionElement = _this6.ce(tag, 'option', attrs);
-        optionElement.appendChild(_this6.text(option.label));
-        select.appendChild(optionElement);
-      });
-    }
-  }, {
-    key: 'setSelectValue',
-    value: function setSelectValue(select, value) {
-      var options = select.querySelectorAll('option');
-      (0, _each3.default)(options, function (option) {
-        if (option.value === value) {
-          option.setAttribute('selected', 'selected');
-        } else {
-          option.removeAttribute('selected');
-        }
-      });
-      if (select.onchange) {
-        select.onchange();
-      }
-      if (select.onselect) {
-        select.onchange();
-      }
-    }
-
-    /**
-     * Get the element information.
-     *
-     * @returns {{type: string, component: *, changeEvent: string, attr: {id: (string|*), name: string, type: (*|string), style: string, class: string}}}
-     */
-
-  }, {
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var _this7 = this;
-
-      var style = '';
-      if (this.component.overlay) {
-        if (this.component.overlay.style) {
-          style = this.component.overlay.style;
-        }
-        if (this.component.overlay.top) {
-          style += 'top:' + this.component.overlay.top + 'px;';
-        }
-        if (this.component.overlay.left) {
-          style += 'left:' + this.component.overlay.left + 'px;';
-        }
-        if (this.component.overlay.width) {
-          style += 'width:' + this.component.overlay.width + 'px;';
-        }
-        if (this.component.overlay.height) {
-          style += 'height:' + this.component.overlay.height + 'px;';
-        }
-      }
-      this.inputId = this.component.overlay ? this.component.overlay.id : this.id;
-      var attributes = {
-        id: this.inputId,
-        name: this.options.name,
-        type: this.component.inputType || 'text',
-        style: style,
-        class: 'form-control'
-      };
-      (0, _each3.default)({
-        tabindex: 'tabindex',
-        placeholder: 'placeholder'
-      }, function (path, prop) {
-        var attrValue = (0, _get3.default)(_this7.component, path);
-        if (attrValue) {
-          attributes[prop] = attrValue;
-        }
-      });
-      return {
-        type: 'input',
-        component: this.component,
-        changeEvent: 'change',
-        attr: attributes
-      };
-    }
-  }, {
-    key: 'className',
-    get: function get() {
-      var className = this.component.input ? 'form-group has-feedback ' : '';
-      className += 'formio-component formio-component-' + this.component.type + ' ';
-      className += 'form-field-type-' + this.component.type + ' ';
-      className += 'formio-component-' + this.component.key + ' ';
-      if (this.component.customClass) {
-        className += this.component.customClass;
-      }
-      if (this.component.input && this.component.validate && this.component.validate.required) {
-        className += ' required';
-      }
-      return className;
-    }
-  }, {
-    key: 'name',
-    get: function get() {
-      return this.component.label || this.component.placeholder || this.component.key;
-    }
-  }, {
-    key: 'errors',
-    get: function get() {
-      return this.error ? [this.error] : [];
-    }
-  }, {
-    key: 'disable',
-    set: function set(disable) {
-      // Disable all input.
-      (0, _each3.default)(this.inputs, function (input) {
-        input.disabled = disable;
-        input.setAttribute('disabled', 'disabled');
-      });
-    }
-  }]);
-
-  return BaseComponent;
-}();
-
-module.exports = BaseComponent;
-
-},{"../../locals/en":231,"../Validator":200,"formio-utils":3,"i18next":19,"lodash/assign":161,"lodash/clone":162,"lodash/debounce":165,"lodash/each":166,"lodash/get":170,"lodash/isArray":175,"vanilla-masker":197}],202:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var ButtonComponent = function (_BaseComponent) {
-  _inherits(ButtonComponent, _BaseComponent);
-
-  function ButtonComponent() {
-    _classCallCheck(this, ButtonComponent);
-
-    return _possibleConstructorReturn(this, (ButtonComponent.__proto__ || Object.getPrototypeOf(ButtonComponent)).apply(this, arguments));
-  }
-
-  _createClass(ButtonComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'button';
-      info.attr.type = this.component.action;
-      info.attr.class = 'btn btn-' + this.component.theme;
-      if (this.component.block) {
-        info.attr.class += ' btn-block';
-      }
-      return info;
-    }
-  }, {
-    key: 'build',
-    value: function build() {
-      var _this2 = this;
-
-      this.element = this.ce('element', this.info.type, this.info.attr);
-      if (this.component.label) {
-        this.label = this.text(this.component.label);
-        this.element.appendChild(this.label);
-      }
-      this.on('submit', function () {
-        _this2.loading = false;
-      });
-      this.on('error', function () {
-        _this2.loading = false;
-      });
-      this.addAnEventListener(this.element, 'click', function (event) {
-        switch (_this2.component.action) {
-          case 'submit':
-            _this2.loading = true;
-            break;
-          case 'event':
-            _this2.events.emit(_this2.component.event, _this2.data);
-            break;
-          case 'reset':
-            _this2.events.emit('resetForm');
-            break;
-          case 'oauth':
-            console.log('OAuth currently not supported.');
-            break;
-        }
-      });
-    }
-  }, {
-    key: 'loading',
-    set: function set(loading) {
-      this._loading = loading;
-      if (!this.loader && loading) {
-        this.loader = this.ce('buttonLoader', 'i', {
-          class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
-        });
-      }
-      if (this.loader) {
-        if (loading) {
-          this.element.appendChild(this.loader);
-        } else {
-          this.element.removeChild(this.loader);
-        }
-      }
-    }
-  }]);
-
-  return ButtonComponent;
-}(_Base2.default);
-
-module.exports = ButtonComponent;
-
-},{"../base/Base":201}],203:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var CheckBoxComponent = function (_BaseComponent) {
-  _inherits(CheckBoxComponent, _BaseComponent);
-
-  function CheckBoxComponent() {
-    _classCallCheck(this, CheckBoxComponent);
-
-    return _possibleConstructorReturn(this, (CheckBoxComponent.__proto__ || Object.getPrototypeOf(CheckBoxComponent)).apply(this, arguments));
-  }
-
-  _createClass(CheckBoxComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      if (this.component.overlay) {
-        this.component.overlay.width = 0;
-        this.component.overlay.height = 0;
-      }
-      var info = _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.changeEvent = 'click';
-      info.attr.type = this.component.inputType;
-      info.attr.class = '';
-      if (this.component.name) {
-        info.attr.name = 'data[' + this.component.name + ']';
-      }
-      info.attr.value = this.component.value ? this.component.value : 0;
-      return info;
-    }
-  }, {
-    key: 'build',
-    value: function build() {
-      if (!this.component.input) {
-        return;
-      }
-      this.createElement();
-      this.input = this.createInput(this.element);
-      this.createLabel(this.element, this.input);
-      if (!this.label) {
-        this.addInput(this.input, this.element);
-      }
-    }
-  }, {
-    key: 'createElement',
-    value: function createElement() {
-      var className = 'form-group checkbox';
-      if (this.component.validate && this.component.validate.required) {
-        className += ' required';
-      }
-      this.element = this.ce('element', 'div', {
-        class: className
-      });
-    }
-  }, {
-    key: 'createLabel',
-    value: function createLabel(container, input) {
-      if (!this.component.label) {
-        return null;
-      }
-      this.label = this.ce('label', 'label', {
-        class: 'control-label'
-      });
-      if (this.info.attr.id) {
-        this.label.setAttribute('for', this.info.attr.id);
-      }
-      this.addInput(input, this.label);
-      this.label.appendChild(document.createTextNode(this.component.label));
-      container.appendChild(this.label);
-    }
-  }, {
-    key: 'createInput',
-    value: function createInput(container) {
-      if (!this.component.input) {
-        return;
-      }
-      var input = this.ce('input', this.info.type, this.info.attr);
-      this.createErrorElement(container);
-      return input;
-    }
-  }, {
-    key: 'getValueAt',
-    value: function getValueAt(index) {
-      return parseInt(_get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'getValueAt', this).call(this, index), 10);
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value) {
-      if (this.component.inputType === 'radio') {
-        this.input.checked = value === this.input.value ? 1 : 0;
-      } else if (value === 'on') {
-        this.input.value = 1;
-        this.input.checked = 1;
-      } else if (value === 'off') {
-        this.input.value = 0;
-        this.input.checked = 0;
-      } else if (value) {
-        this.input.value = 1;
-        this.input.checked = 1;
-      } else {
-        this.input.value = 0;
-        this.input.checked = 0;
-      }
-      this.updateValue();
-    }
-  }]);
-
-  return CheckBoxComponent;
-}(_Base2.default);
-
-module.exports = CheckBoxComponent;
-
-},{"../base/Base":201}],204:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _Components = require('../Components');
-
-var _Components2 = _interopRequireDefault(_Components);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var ColumnComponent = function (_FormioComponents) {
-  _inherits(ColumnComponent, _FormioComponents);
-
-  function ColumnComponent() {
-    _classCallCheck(this, ColumnComponent);
-
-    return _possibleConstructorReturn(this, (ColumnComponent.__proto__ || Object.getPrototypeOf(ColumnComponent)).apply(this, arguments));
-  }
-
-  _createClass(ColumnComponent, [{
-    key: 'className',
-    get: function get() {
-      return 'col col-sm-' + this.component.colWidth;
-    }
-  }]);
-
-  return ColumnComponent;
-}(_Components2.default);
-
-module.exports = ColumnComponent;
-
-},{"../Components":199}],205:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _Components = require('../Components');
-
-var _Components2 = _interopRequireDefault(_Components);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var ColumnsComponent = function (_FormioComponents) {
-  _inherits(ColumnsComponent, _FormioComponents);
-
-  function ColumnsComponent() {
-    _classCallCheck(this, ColumnsComponent);
-
-    return _possibleConstructorReturn(this, (ColumnsComponent.__proto__ || Object.getPrototypeOf(ColumnsComponent)).apply(this, arguments));
-  }
-
-  _createClass(ColumnsComponent, [{
-    key: 'addComponents',
-    value: function addComponents() {
-      var _this2 = this;
-
-      var colWidth = Math.floor(12 / this.component.columns.length);
-      (0, _each3.default)(this.component.columns, function (column) {
-        column.type = 'column';
-        column.colWidth = colWidth;
-        _this2.addComponent(column, _this2.element, _this2.data);
-      });
-    }
-  }, {
-    key: 'className',
-    get: function get() {
-      return 'row';
-    }
-  }]);
-
-  return ColumnsComponent;
-}(_Components2.default);
-
-module.exports = ColumnsComponent;
-
-},{"../Components":199,"lodash/each":166}],206:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _Components = require('../Components');
-
-var _Components2 = _interopRequireDefault(_Components);
-
-var _isObject2 = require('lodash/isObject');
-
-var _isObject3 = _interopRequireDefault(_isObject2);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var ContainerComponent = function (_FormioComponents) {
-  _inherits(ContainerComponent, _FormioComponents);
-
-  function ContainerComponent() {
-    _classCallCheck(this, ContainerComponent);
-
-    return _possibleConstructorReturn(this, (ContainerComponent.__proto__ || Object.getPrototypeOf(ContainerComponent)).apply(this, arguments));
-  }
-
-  _createClass(ContainerComponent, [{
-    key: 'build',
-    value: function build() {
-      this.element = this.ce('element', 'div', {
-        class: 'formio-container-component'
-      });
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = {};
-      }
-      this.addComponents(this.element, this.data[this.component.key]);
-    }
-  }, {
-    key: 'getValue',
-    value: function getValue() {
-      var value = {};
-      (0, _each3.default)(this.components, function (component) {
-        value[component.component.key] = component.getValue();
-      });
-      return value;
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value) {
-      if (!value || !(0, _isObject3.default)(value)) {
-        return;
-      }
-      (0, _each3.default)(this.components, function (component) {
-        if (value.hasOwnProperty(component.component.key)) {
-          component.setValue(value[component.component.key]);
-        }
-      });
-      this.updateValue();
-    }
-  }]);
-
-  return ContainerComponent;
-}(_Components2.default);
-
-module.exports = ContainerComponent;
-
-},{"../Components":199,"lodash/each":166,"lodash/isObject":180}],207:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var ContentComponent = function (_BaseComponent) {
-  _inherits(ContentComponent, _BaseComponent);
-
-  function ContentComponent() {
-    _classCallCheck(this, ContentComponent);
-
-    return _possibleConstructorReturn(this, (ContentComponent.__proto__ || Object.getPrototypeOf(ContentComponent)).apply(this, arguments));
-  }
-
-  _createClass(ContentComponent, [{
-    key: 'build',
-    value: function build() {
-      this.element = this.ce('element', 'div', {
-        class: 'form-group'
-      });
-      this.element.innerHTML = this.component.html;
-    }
-  }]);
-
-  return ContentComponent;
-}(_Base2.default);
-
-module.exports = ContentComponent;
-
-},{"../base/Base":201}],208:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _cloneDeep2 = require('lodash/cloneDeep');
-
-var _cloneDeep3 = _interopRequireDefault(_cloneDeep2);
-
-var _isArray2 = require('lodash/isArray');
-
-var _isArray3 = _interopRequireDefault(_isArray2);
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var DataGridComponent = function (_BaseComponent) {
-  _inherits(DataGridComponent, _BaseComponent);
-
-  function DataGridComponent() {
-    _classCallCheck(this, DataGridComponent);
-
-    return _possibleConstructorReturn(this, (DataGridComponent.__proto__ || Object.getPrototypeOf(DataGridComponent)).apply(this, arguments));
-  }
-
-  _createClass(DataGridComponent, [{
-    key: 'build',
-    value: function build() {
-      var _this2 = this;
-
-      var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
-      (0, _each3.default)(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
-        if (_this2.component[prop]) {
-          tableClass += 'table-' + prop + ' ';
-        }
-      });
-      this.element = this.ce('element', 'table', {
-        class: tableClass
-      });
-
-      var thead = this.ce('header', 'thead');
-
-      // Build the header.
-      var tr = this.ce('headerRow', 'tr');
-      (0, _each3.default)(this.component.components, function (comp) {
-        var th = _this2.ce('headerColumn', 'th');
-        if (comp.validate && comp.validate.required) {
-          th.setAttribute('class', 'field-required');
-        }
-        th.appendChild(_this2.text(comp.label));
-        tr.appendChild(th);
-      });
-      var th = this.ce('headerExtra', 'th');
-      tr.appendChild(th);
-      thead.appendChild(tr);
-      this.element.appendChild(thead);
-
-      // Create the table body.
-      this.tbody = this.ce('table', 'tbody');
-
-      // Add a blank row.
-      this.addValue();
-
-      // Add the body to the table and to the element.
-      this.element.appendChild(this.tbody);
-    }
-  }, {
-    key: 'defaultValue',
-    value: function defaultValue() {
-      return {};
-    }
-  }, {
-    key: 'buildRows',
-    value: function buildRows() {
-      var _this3 = this;
-
-      var components = require('../index');
-      this.tbody.innerHTML = '';
-      this.rows = [];
-      (0, _each3.default)(this.data[this.component.key], function (row, index) {
-        var tr = _this3.ce('tableRow', 'tr');
-        var cols = {};
-        (0, _each3.default)(_this3.component.components, function (col) {
-          var column = (0, _cloneDeep3.default)(col);
-          column.label = false;
-          var td = _this3.ce('tableColumn', 'td');
-          var comp = components.create(column, _this3.options, row);
-          td.appendChild(comp.element);
-          if (row.hasOwnProperty(column.key)) {
-            comp.setValue(row[column.key]);
-          }
-          cols[column.key] = comp;
-          tr.appendChild(td);
-        });
-        _this3.rows.push(cols);
-        var td = _this3.ce('tableRemoveRow', 'td');
-        td.appendChild(_this3.removeButton(index));
-        tr.appendChild(td);
-        _this3.tbody.appendChild(tr);
-      });
-
-      // Add the add button.
-      var tr = this.ce('tableAddRow', 'tr');
-      var td = this.ce('tableAddColumn', 'td', {
-        colspan: this.component.components.length + 1
-      });
-      td.appendChild(this.addButton());
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value) {
-      if (!value) {
-        return;
-      }
-      if (!(0, _isArray3.default)(value)) {
-        return;
-      }
-
-      // Add needed rows.
-      for (var i = this.rows.length; i < value.length; i++) {
-        this.addValue();
-      }
-
-      (0, _each3.default)(this.rows, function (row, index) {
-        if (value.length <= index) {
-          return;
-        }
-        (0, _each3.default)(row, function (col, key) {
-          if (!value[index].hasOwnProperty(key)) {
-            return;
-          }
-          col.value = value[index][key];
-        });
-      });
-      this.updateValue();
-    }
-
-    /**
-     * Get the value of this component.
-     *
-     * @returns {*}
-     */
-
-  }, {
-    key: 'getValue',
-    value: function getValue() {
-      var values = [];
-      (0, _each3.default)(this.rows, function (row) {
-        var value = {};
-        (0, _each3.default)(row, function (col) {
-          if (col && col.component && col.component.key) {
-            value[col.component.key] = col.value;
-          }
-        });
-        values.push(value);
-      });
-      return values;
-    }
-  }]);
-
-  return DataGridComponent;
-}(_Base2.default);
-
-module.exports = DataGridComponent;
-
-},{"../base/Base":201,"../index":214,"lodash/cloneDeep":163,"lodash/each":166,"lodash/isArray":175}],209:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get2 = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-var _flatpickr = require('flatpickr');
-
-var _flatpickr2 = _interopRequireDefault(_flatpickr);
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-var _get3 = require('lodash/get');
-
-var _get4 = _interopRequireDefault(_get3);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var DateTimeComponent = function (_BaseComponent) {
-  _inherits(DateTimeComponent, _BaseComponent);
-
-  function DateTimeComponent(component, options, data) {
-    _classCallCheck(this, DateTimeComponent);
-
-    var _this = _possibleConstructorReturn(this, (DateTimeComponent.__proto__ || Object.getPrototypeOf(DateTimeComponent)).call(this, component, options, data));
-
-    _this.validators.push('date');
-    _this.precise = false;
-    return _this;
-  }
-
-  _createClass(DateTimeComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.attr.type = 'text';
-      info.changeEvent = 'input';
-      this.component.suffix = true;
-      return info;
-    }
-
-    // This date component can handle multiple dates on its own.
-
-  }, {
-    key: 'createWrapper',
-    value: function createWrapper() {
-      return false;
-    }
-  }, {
-    key: 'convertFormat',
-    value: function convertFormat(format) {
-      // Year conversion.
-      format = format.replace(/y/g, 'Y');
-      format = format.replace('YYYY', 'Y');
-      format = format.replace('YY', 'y');
-
-      // Month conversion.
-      format = format.replace('MMMM', 'F');
-      format = format.replace(/M/g, 'n');
-      format = format.replace('nnn', 'M');
-      format = format.replace('nn', 'm');
-
-      // Day in month.
-      format = format.replace(/d/g, 'j');
-      format = format.replace('jj', 'd');
-
-      // Day in week.
-      format = format.replace('EEEE', 'l');
-      format = format.replace('EEE', 'D');
-
-      // Hours, minutes, seconds
-      format = format.replace('HH', 'H');
-      format = format.replace('hh', 'h');
-      format = format.replace('mm', 'i');
-      format = format.replace('ss', 'S');
-      format = format.replace(/a/g, 'K');
-      return format;
-    }
-  }, {
-    key: 'addSuffix',
-    value: function addSuffix(input, inputGroup) {
-      var suffix = this.ce('suffix', 'span', {
-        class: 'input-group-addon'
-      });
-      if (this.component.enableDate) {
-        var calendar = this.ce('calendarIcon', 'i', {
-          class: 'glyphicon glyphicon-calendar'
-        });
-        suffix.appendChild(calendar);
-      } else {
-        var time = this.ce('timeIcon', 'i', {
-          class: 'glyphicon glyphicon-time'
-        });
-        suffix.appendChild(time);
-      }
-      inputGroup.appendChild(suffix);
-      return suffix;
-    }
-  }, {
-    key: 'addInput',
-    value: function addInput(input, container, name) {
-      _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'addInput', this).call(this, input, container, name);
-      input.setAttribute('data-input', '');
-      input.calendar = new _flatpickr2.default(input, this.config);
-    }
-  }, {
-    key: 'getDate',
-    value: function getDate(value) {
-      var timestamp = parseInt(value, 10);
-      if (!timestamp) {
-        // Just default to today.
-        return (0, _moment2.default)();
-      }
-      if (!this.precise) {
-        timestamp *= 1000;
-      }
-      return (0, _moment2.default)(timestamp);
-    }
-  }, {
-    key: 'getValidateValue',
-    value: function getValidateValue() {
-      var values = [];
-      for (var i in this.inputs) {
-        if (!this.component.multiple) {
-          return this.getDate(this.inputs[i].value).format();
-        }
-        values.push(this.getDate(this.inputs[i].value).format());
-      }
-      return values;
-    }
-  }, {
-    key: 'getValueAt',
-    value: function getValueAt(index) {
-      return this.getDate(this.inputs[index].value).toISOString();
-    }
-  }, {
-    key: 'setValueAt',
-    value: function setValueAt(index, value) {
-      var date = new Date(value);
-      this.precise = true;
-      this.inputs[index].value = date.getTime();
-    }
-  }, {
-    key: 'config',
-    get: function get() {
-      var _this2 = this;
-
-      return {
-        altInput: true,
-        clickOpens: true,
-        enableDate: true,
-        mode: this.component.multiple ? 'multiple' : 'single',
-        enableTime: (0, _get4.default)(this.component, 'enableTime', true),
-        noCalendar: !(0, _get4.default)(this.component, 'enableDate', true),
-        altFormat: this.convertFormat((0, _get4.default)(this.component, 'format', '')),
-        dateFormat: 'U',
-        defaultDate: (0, _get4.default)(this.component, 'defaultDate', ''),
-        hourIncrement: (0, _get4.default)(this.component, 'timePicker.hourStep', 1),
-        minuteIncrement: (0, _get4.default)(this.component, 'timePicker.minuteStep', 5),
-        onChange: function onChange() {
-          return _this2.onChange();
-        }
-      };
-    }
-  }]);
-
-  return DateTimeComponent;
-}(_Base2.default);
-
-module.exports = DateTimeComponent;
-
-},{"../base/Base":201,"flatpickr":2,"lodash/get":170,"moment":193}],210:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get2 = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-var _get3 = require('lodash/get');
-
-var _get4 = _interopRequireDefault(_get3);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _moment = require('moment');
-
-var _moment2 = _interopRequireDefault(_moment);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var DayComponent = function (_BaseComponent) {
-  _inherits(DayComponent, _BaseComponent);
-
-  function DayComponent(component, options, data) {
-    _classCallCheck(this, DayComponent);
-
-    var _this = _possibleConstructorReturn(this, (DayComponent.__proto__ || Object.getPrototypeOf(DayComponent)).call(this, component, options, data));
-
-    _this.validators.push('date');
-    return _this;
-  }
-
-  _createClass(DayComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get2(DayComponent.prototype.__proto__ || Object.getPrototypeOf(DayComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.attr.type = 'hidden';
-      info.changeEvent = 'change';
-      return info;
-    }
-  }, {
-    key: 'createDayInput',
-    value: function createDayInput() {
-      var _this2 = this;
-
-      var dayColumn = this.ce('dayColumn', 'div', {
-        class: 'form-group col col-xs-3'
-      });
-      var dayLabel = this.ce('dayLabel', 'label', {
-        for: this.component.key + '-day',
-        class: (0, _get4.default)(this.component, 'fields.day.required', false) ? 'field-required' : ''
-      });
-      dayLabel.appendChild(this.text(this.t('day')));
-      dayColumn.appendChild(dayLabel);
-      this.dayInput = this.ce('dayInput', 'input', {
-        class: 'form-control',
-        type: 'number',
-        step: '1',
-        min: '1',
-        max: '31',
-        placeholder: (0, _get4.default)(this.component, 'fields.day.placeholder', ''),
-        id: this.component.key + '-day'
-      });
-      this.addAnEventListener(this.dayInput, 'change', function () {
-        return _this2.updateValue();
-      });
-      dayColumn.appendChild(this.dayInput);
-      return dayColumn;
-    }
-  }, {
-    key: 'createMonthInput',
-    value: function createMonthInput() {
-      var monthColumn = this.ce('monthColumn', 'div', {
-        class: 'form-group col col-xs-4'
-      });
-      var monthLabel = this.ce('monthLabel', 'label', {
-        for: this.component.key + '-month',
-        class: (0, _get4.default)(this.component, 'fields.month.required', false) ? 'field-required' : ''
-      });
-      monthLabel.appendChild(this.text(this.t('month')));
-      monthColumn.appendChild(monthLabel);
-      this.monthInput = this.ce('monthInput', 'select', {
-        class: 'form-control',
-        id: this.component.key + '-month'
-      });
-      this.selectOptions(this.monthInput, 'monthOption', this.months);
-      var self = this;
-
-      // Ensure the day limits match up with the months selected.
-      this.monthInput.onchange = function () {
-        self.dayInput.max = new Date(self.yearInput.value, this.value, 0).getDate();
-        if (self.dayInput.value > self.dayInput.max) {
-          self.dayInput.value = self.dayInput.max;
-        }
-        self.updateValue();
-      };
-      monthColumn.appendChild(this.monthInput);
-      return monthColumn;
-    }
-  }, {
-    key: 'createYearInput',
-    value: function createYearInput() {
-      var _this3 = this;
-
-      var yearColumn = this.ce('yearColumn', 'div', {
-        class: 'form-group col col-xs-5'
-      });
-      var yearLabel = this.ce('yearLabel', 'label', {
-        for: this.component.key + '-year',
-        class: (0, _get4.default)(this.component, 'fields.year.required', false) ? 'field-required' : ''
-      });
-      yearLabel.appendChild(this.text(this.t('year')));
-      yearColumn.appendChild(yearLabel);
-      this.yearInput = this.ce('yearInput', 'input', {
-        class: 'form-control',
-        type: 'number',
-        step: '1',
-        min: '1',
-        placeholder: (0, _get4.default)(this.component, 'fields.year.placeholder', ''),
-        value: new Date().getFullYear(),
-        id: this.component.key + '-year'
-      });
-      this.addAnEventListener(this.yearInput, 'change', function () {
-        return _this3.updateValue();
-      });
-      yearColumn.appendChild(this.yearInput);
-      return yearColumn;
-    }
-  }, {
-    key: 'createInput',
-    value: function createInput(container) {
-      var inputGroup = this.ce('inputGroup', 'div', {
-        class: 'input-group row'
-      });
-
-      var dayColumn = this.createDayInput();
-      var monthColumn = this.createMonthInput();
-      var yearColumn = this.createYearInput();
-
-      // Add the columns to the day select in the right order.
-      if (this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
-        inputGroup.appendChild(dayColumn);
-      }
-      if (!(0, _get4.default)(this.component, 'fields.month.hide', false)) {
-        inputGroup.appendChild(monthColumn);
-      }
-      if (!this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
-        inputGroup.appendChild(dayColumn);
-      }
-      if (!(0, _get4.default)(this.component, 'fields.year.hide', false)) {
-        inputGroup.appendChild(yearColumn);
-      }
-
-      var input = this.ce('input', this.info.type, this.info.attr);
-      this.addInput(input, inputGroup);
-      this.createErrorElement(container);
-      container.appendChild(inputGroup);
-    }
-
-    /**
-     * Set the value at a specific index.
-     *
-     * @param index
-     * @param value
-     */
-
-  }, {
-    key: 'setValueAt',
-    value: function setValueAt(index, value) {
-      var parts = value.split('/');
-      if (this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
-        this.dayInput.value = parseInt(parts.shift(), 10);
-      }
-      if (!(0, _get4.default)(this.component, 'fields.month.hide', false)) {
-        this.monthInput.value = parseInt(parts.shift(), 10);
-      }
-      if (!this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
-        this.dayInput.value = parseInt(parts.shift(), 10);
-      }
-      if (!(0, _get4.default)(this.component, 'fields.year.hide', false)) {
-        this.yearInput.value = parseInt(parts.shift(), 10);
-      }
-    }
-
-    /**
-     * Get the format for the value string.
-     * @returns {string}
-     */
-
-  }, {
-    key: 'getValidateValue',
-
-    /**
-     * Validate the date object.
-     * @returns {Date}
-     */
-    value: function getValidateValue() {
-      return this.date.format();
-    }
-
-    /**
-     * Get the value at a specific index.
-     *
-     * @param index
-     * @returns {*}
-     */
-
-  }, {
-    key: 'getValueAt',
-    value: function getValueAt(index) {
-      this.inputs[index].value = this.date.format(this.format);
-      return this.inputs[index].value;
-    }
-  }, {
-    key: 'months',
-    get: function get() {
-      if (this._months) {
-        return this._months;
-      }
-      this._months = [{ value: 0, label: (0, _get4.default)(this.component, 'fields.month.placeholder', '') }, { value: 1, label: this.t('january') }, { value: 2, label: this.t('february') }, { value: 3, label: this.t('march') }, { value: 4, label: this.t('april') }, { value: 5, label: this.t('may') }, { value: 6, label: this.t('june') }, { value: 7, label: this.t('july') }, { value: 8, label: this.t('august') }, { value: 9, label: this.t('september') }, { value: 10, label: this.t('october') }, { value: 11, label: this.t('november') }, { value: 12, label: this.t('december') }];
-      return this._months;
-    }
-  }, {
-    key: 'format',
-    get: function get() {
-      var format = '';
-      if (this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
-        format += 'D/';
-      }
-      if (!(0, _get4.default)(this.component, 'fields.month.hide', false)) {
-        format += 'M/';
-      }
-      if (!this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
-        format += 'D/';
-      }
-      if (!(0, _get4.default)(this.component, 'fields.year.hide', false)) {
-        format += 'YYYY';
-      }
-      return format;
-    }
-
-    /**
-     * Return the date object for this component.
-     * @returns {Date}
-     */
-
-  }, {
-    key: 'date',
-    get: function get() {
-      var day = this.dayInput.value;
-      var month = this.monthInput.value;
-      var year = this.yearInput.value;
-      return (0, _moment2.default)([parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10)]);
-    }
-  }]);
-
-  return DayComponent;
-}(_Base2.default);
-
-module.exports = DayComponent;
-
-},{"../base/Base":201,"lodash/each":166,"lodash/get":170,"moment":193}],211:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _TextField = require('../textfield/TextField');
-
-var _TextField2 = _interopRequireDefault(_TextField);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var EmailComponent = function (_TextFieldComponent) {
-  _inherits(EmailComponent, _TextFieldComponent);
-
-  function EmailComponent(component, options, data) {
-    _classCallCheck(this, EmailComponent);
-
-    var _this = _possibleConstructorReturn(this, (EmailComponent.__proto__ || Object.getPrototypeOf(EmailComponent)).call(this, component, options, data));
-
-    _this.validators.push('email');
-    return _this;
-  }
-
-  _createClass(EmailComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(EmailComponent.prototype.__proto__ || Object.getPrototypeOf(EmailComponent.prototype), 'elementInfo', this).call(this);
-      info.attr.type = 'email';
-      return info;
-    }
-  }]);
-
-  return EmailComponent;
-}(_TextField2.default);
-
-module.exports = EmailComponent;
-
-},{"../textfield/TextField":226}],212:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var HiddenComponent = function (_BaseComponent) {
-  _inherits(HiddenComponent, _BaseComponent);
-
-  function HiddenComponent() {
-    _classCallCheck(this, HiddenComponent);
-
-    return _possibleConstructorReturn(this, (HiddenComponent.__proto__ || Object.getPrototypeOf(HiddenComponent)).apply(this, arguments));
-  }
-
-  _createClass(HiddenComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(HiddenComponent.prototype.__proto__ || Object.getPrototypeOf(HiddenComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.attr.type = 'hidden';
-      info.changeEvent = 'change';
-      return info;
-    }
-  }]);
-
-  return HiddenComponent;
-}(_Base2.default);
-
-module.exports = HiddenComponent;
-
-},{"../base/Base":201}],213:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var HTMLComponent = function (_BaseComponent) {
-  _inherits(HTMLComponent, _BaseComponent);
-
-  function HTMLComponent() {
-    _classCallCheck(this, HTMLComponent);
-
-    return _possibleConstructorReturn(this, (HTMLComponent.__proto__ || Object.getPrototypeOf(HTMLComponent)).apply(this, arguments));
-  }
-
-  _createClass(HTMLComponent, [{
-    key: 'build',
-    value: function build() {
-      var _this2 = this;
-
-      this.element = this.ce('element', this.component.tag, {
-        class: this.component.className
-      });
-      (0, _each3.default)(this.component.attrs, function (attr) {
-        _this2.element.setAttribute(attr.attr, attr.value);
-      });
-      if (this.component.content) {
-        this.element.innerHTML = this.component.content;
-      }
-    }
-  }]);
-
-  return HTMLComponent;
-}(_Base2.default);
-
-module.exports = HTMLComponent;
-
-},{"../base/Base":201,"lodash/each":166}],214:[function(require,module,exports){
-'use strict';
-
-var Components = {
-  base: require('./base/Base'),
-  content: require('./content/Content'),
-  container: require('./container/Container'),
-  datagrid: require('./datagrid/DataGrid'),
-  datetime: require('./datetime/DateTime'),
-  day: require('./day/Day'),
-  htmlelement: require('./html/HTML'),
-  hidden: require('./hidden/Hidden'),
-  textfield: require('./textfield/TextField'),
-  phoneNumber: require('./phonenumber/PhoneNumber'),
-  email: require('./email/Email'),
-  checkbox: require('./checkbox/Checkbox'),
-  signature: require('./signature/Signature'),
-  select: require('./select/Select'),
-  textarea: require('./textarea/TextArea'),
-  button: require('./button/Button'),
-  number: require('./number/Number'),
-  password: require('./password/Password'),
-  panel: require('./panel/Panel'),
-  columns: require('./columns/Columns'),
-  column: require('./columns/Column'),
-  table: require('./table/Table'),
-  radio: require('./radio/Radio'),
-  selectboxes: require('./selectboxes/SelectBoxes'),
-  survey: require('./survey/Survey'),
-  well: require('./well/Well'),
-  create: function create(component, options, data) {
-    var comp = null;
-    if (!component.type) {
-      return null;
-    } else if (this.hasOwnProperty(component.type)) {
-      comp = new Components[component.type](component, options, data);
-    } else {
-      comp = new Components.base(component, options, data);
-    }
-    comp.build();
-    return comp;
-  }
-};
-module.exports = Components;
-
-},{"./base/Base":201,"./button/Button":202,"./checkbox/Checkbox":203,"./columns/Column":204,"./columns/Columns":205,"./container/Container":206,"./content/Content":207,"./datagrid/DataGrid":208,"./datetime/DateTime":209,"./day/Day":210,"./email/Email":211,"./hidden/Hidden":212,"./html/HTML":213,"./number/Number":215,"./panel/Panel":216,"./password/Password":217,"./phonenumber/PhoneNumber":218,"./radio/Radio":219,"./select/Select":220,"./selectboxes/SelectBoxes":221,"./signature/Signature":222,"./survey/Survey":223,"./table/Table":224,"./textarea/TextArea":225,"./textfield/TextField":226,"./well/Well":227}],215:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var NumberComponent = function (_BaseComponent) {
-  _inherits(NumberComponent, _BaseComponent);
-
-  function NumberComponent() {
-    _classCallCheck(this, NumberComponent);
-
-    return _possibleConstructorReturn(this, (NumberComponent.__proto__ || Object.getPrototypeOf(NumberComponent)).apply(this, arguments));
-  }
-
-  _createClass(NumberComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(NumberComponent.prototype.__proto__ || Object.getPrototypeOf(NumberComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.attr.type = 'number';
-      info.changeEvent = 'input';
-      if (this.component.validate) {
-        if (this.component.validate.min !== '') {
-          info.attr.min = this.component.validate.min;
-        }
-        if (this.component.validate.max !== '') {
-          info.attr.max = this.component.validate.max;
-        }
-        if (this.component.step !== '') {
-          info.attr.step = this.component.validate.step;
-        }
-      }
-      return info;
-    }
-  }, {
-    key: 'getValueAt',
-    value: function getValueAt(index) {
-      if (this.component.validate && this.component.validate.integer) {
-        return parseInt(this.inputs[index].value, 10);
-      } else {
-        return parseFloat(this.inputs[index].value);
-      }
-    }
-  }, {
-    key: 'setValueAt',
-    value: function setValueAt(index, value) {
-      if (this.component.validate && this.component.validate.integer) {
-        this.inputs[index].value = parseInt(value, 10);
-      } else {
-        this.inputs[index].value = parseFloat(value);
-      }
-    }
-  }]);
-
-  return NumberComponent;
-}(_Base2.default);
-
-module.exports = NumberComponent;
-
-},{"../base/Base":201}],216:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _Components = require('../Components');
-
-var _Components2 = _interopRequireDefault(_Components);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var PanelComponent = function (_FormioComponents) {
-  _inherits(PanelComponent, _FormioComponents);
-
-  function PanelComponent() {
-    _classCallCheck(this, PanelComponent);
-
-    return _possibleConstructorReturn(this, (PanelComponent.__proto__ || Object.getPrototypeOf(PanelComponent)).apply(this, arguments));
-  }
-
-  _createClass(PanelComponent, [{
-    key: 'build',
-    value: function build() {
-      this.element = this.ce('element', 'div', {
-        class: 'panel panel-' + this.component.theme
-      });
-      if (this.component.title) {
-        var heading = this.ce('heading', 'div', {
-          class: 'panel-heading'
-        });
-        var title = this.ce('title', 'h3', {
-          class: 'panel-title'
-        });
-        title.appendChild(this.text(this.component.title));
-        heading.appendChild(title);
-        this.element.appendChild(heading);
-      }
-      var body = this.ce('body', 'div', {
-        class: 'panel-body'
-      });
-      this.addComponents(body);
-      this.element.appendChild(body);
-    }
-  }]);
-
-  return PanelComponent;
-}(_Components2.default);
-
-module.exports = PanelComponent;
-
-},{"../Components":199}],217:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _TextField = require('../textfield/TextField');
-
-var _TextField2 = _interopRequireDefault(_TextField);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var PasswordComponent = function (_TextFieldComponent) {
-  _inherits(PasswordComponent, _TextFieldComponent);
-
-  function PasswordComponent() {
-    _classCallCheck(this, PasswordComponent);
-
-    return _possibleConstructorReturn(this, (PasswordComponent.__proto__ || Object.getPrototypeOf(PasswordComponent)).apply(this, arguments));
-  }
-
-  _createClass(PasswordComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(PasswordComponent.prototype.__proto__ || Object.getPrototypeOf(PasswordComponent.prototype), 'elementInfo', this).call(this);
-      info.attr.type = 'password';
-      return info;
-    }
-  }]);
-
-  return PasswordComponent;
-}(_TextField2.default);
-
-module.exports = PasswordComponent;
-
-},{"../textfield/TextField":226}],218:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _TextField = require('../textfield/TextField');
-
-var _TextField2 = _interopRequireDefault(_TextField);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var PhoneNumberComponent = function (_TextFieldComponent) {
-  _inherits(PhoneNumberComponent, _TextFieldComponent);
-
-  function PhoneNumberComponent() {
-    _classCallCheck(this, PhoneNumberComponent);
-
-    return _possibleConstructorReturn(this, (PhoneNumberComponent.__proto__ || Object.getPrototypeOf(PhoneNumberComponent)).apply(this, arguments));
-  }
-
-  return PhoneNumberComponent;
-}(_TextField2.default);
-
-module.exports = PhoneNumberComponent;
-
-},{"../textfield/TextField":226}],219:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var RadioComponent = function (_BaseComponent) {
-  _inherits(RadioComponent, _BaseComponent);
-
-  function RadioComponent() {
-    _classCallCheck(this, RadioComponent);
-
-    return _possibleConstructorReturn(this, (RadioComponent.__proto__ || Object.getPrototypeOf(RadioComponent)).apply(this, arguments));
-  }
-
-  _createClass(RadioComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.changeEvent = 'click';
-      info.attr.class = '';
-      return info;
-    }
-  }, {
-    key: 'createInput',
-    value: function createInput(container) {
-      var _this2 = this;
-
-      var inputGroup = this.ce('inputGroup', 'div', {
-        class: 'input-group'
-      });
-      var inputType = this.component.inputType;
-      (0, _each3.default)(this.component.values, function (value) {
-        var wrapperClass = _this2.component.inline ? inputType + '-inline' : inputType;
-        var labelWrapper = _this2.ce('labelWrapper', 'div', {
-          class: wrapperClass
-        });
-        var label = _this2.ce('label', 'label', {
-          class: 'control-label'
-        });
-
-        // Determine the attributes for this input.
-        var inputId = _this2.inputId + '-' + value.value;
-        _this2.info.attr.id = inputId;
-        _this2.info.attr.value = value.value;
-        label.setAttribute('for', _this2.info.attr.id);
-
-        // Create the input.
-        var input = _this2.ce('input', 'input');
-        (0, _each3.default)(_this2.info.attr, function (value, key) {
-          input.setAttribute(key, value);
-        });
-        _this2.addInput(input, label);
-        label.appendChild(document.createTextNode(value.label));
-        labelWrapper.appendChild(label);
-        inputGroup.appendChild(labelWrapper);
-      });
-      container.appendChild(inputGroup);
-    }
-  }, {
-    key: 'addInputEventListener',
-    value: function addInputEventListener(input) {
-      var _this3 = this;
-
-      this.addAnEventListener(input, this.info.changeEvent, function () {
-        if (input.value) {
-          _this3.onChange();
-        }
-      });
-    }
-  }, {
-    key: 'getValue',
-    value: function getValue() {
-      var value = '';
-      (0, _each3.default)(this.inputs, function (input) {
-        if (input.checked) {
-          value = input.value;
-        }
-      });
-      return value;
-    }
-  }, {
-    key: 'value',
-    set: function set(value) {
-      (0, _each3.default)(this.inputs, function (input) {
-        input.checked = input.value === value;
-      });
-    }
-  }]);
-
-  return RadioComponent;
-}(_Base2.default);
-
-module.exports = RadioComponent;
-
-},{"../base/Base":201,"lodash/each":166}],220:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-var _formio = require('../../formio');
-
-var _formio2 = _interopRequireDefault(_formio);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var SelectComponent = function (_BaseComponent) {
-  _inherits(SelectComponent, _BaseComponent);
-
-  function SelectComponent() {
-    _classCallCheck(this, SelectComponent);
-
-    return _possibleConstructorReturn(this, (SelectComponent.__proto__ || Object.getPrototypeOf(SelectComponent)).apply(this, arguments));
-  }
-
-  _createClass(SelectComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'select';
-      info.changeEvent = '';
-      return info;
-    }
-  }, {
-    key: 'createInput',
-    value: function createInput(container) {
-      var _this2 = this;
-
-      var input = _get(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'createInput', this).call(this, container);
-      this.selectItems = [];
-      var template = this.component.template ? this.component.template.split('.')[1].split(' ')[0] : '';
-      var valueProperty = this.component.valueProperty;
-      switch (this.component.dataSrc) {
-        case 'values':
-          this.selectItems = this.component.data.values;
-          this.updateOptions(input);
-          break;
-        case 'json':
-          (0, _each3.default)(this.component.data.json, function (item) {
-            _this2.selectItems.push({
-              value: item[valueProperty],
-              label: item[template]
-            });
-          });
-          this.updateOptions(input);
-          break;
-        case 'resource':
-          var baseUrl = _formio2.default.getAppUrl() + '/' + this.component.data.resource;
-          var value = valueProperty.split('.')[1];
-          new FormioService(baseUrl).loadSubmissions().then(function (submissions) {
-            (0, _each3.default)(submissions, function (submission) {
-              _this2.selectItems.push({
-                value: submission.data[value],
-                label: submission.data[value]
-              });
-            });
-            _this2.updateOptions(input);
-          });
-          break;
-        case 'url':
-          _formio2.default.request(this.component.data.url).then(function (response) {
-            (0, _each3.default)(response, function (item) {
-              _this2.selectItems.push({
-                value: item[valueProperty],
-                label: item[template]
-              });
-            });
-            _this2.updateOptions(input);
-          });
-          break;
-
-      }
-    }
-  }, {
-    key: 'updateOptions',
-    value: function updateOptions(input) {
-      input.innerHTML = '';
-      this.selectOptions(input, 'selectOption', this.selectItems);
-    }
-  }]);
-
-  return SelectComponent;
-}(_Base2.default);
-
-module.exports = SelectComponent;
-
-},{"../../formio":230,"../base/Base":201,"lodash/each":166}],221:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Radio = require('../radio/Radio');
-
-var _Radio2 = _interopRequireDefault(_Radio);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var SelectBoxesComponent = function (_RadioComponent) {
-  _inherits(SelectBoxesComponent, _RadioComponent);
-
-  function SelectBoxesComponent(component, options, data) {
-    _classCallCheck(this, SelectBoxesComponent);
-
-    var _this = _possibleConstructorReturn(this, (SelectBoxesComponent.__proto__ || Object.getPrototypeOf(SelectBoxesComponent)).call(this, component, options, data));
-
-    _this.component.inputType = 'checkbox';
-    return _this;
-  }
-
-  _createClass(SelectBoxesComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(SelectBoxesComponent.prototype.__proto__ || Object.getPrototypeOf(SelectBoxesComponent.prototype), 'elementInfo', this).call(this);
-      info.attr.name += '[]';
-      info.attr.type = 'checkbox';
-      return info;
-    }
-  }, {
-    key: 'getValue',
-    value: function getValue() {
-      var value = [];
-      (0, _each3.default)(this.inputs, function (input) {
-        if (input.checked) {
-          value.push(input.value);
-        }
-      });
-      return value;
-    }
-  }, {
-    key: 'value',
-    set: function set(value) {
-      (0, _each3.default)(this.inputs, function (input) {
-        input.checked = value.indexOf(input.value) !== -1;
-      });
-    }
-  }]);
-
-  return SelectBoxesComponent;
-}(_Radio2.default);
-
-module.exports = SelectBoxesComponent;
-
-},{"../radio/Radio":219,"lodash/each":166}],222:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _set = function set(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent !== null) {
-      set(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }return value;
-};
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _signature_pad = require('signature_pad');
-
-var _signature_pad2 = _interopRequireDefault(_signature_pad);
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var SignatureComponent = function (_BaseComponent) {
-  _inherits(SignatureComponent, _BaseComponent);
-
-  function SignatureComponent() {
-    _classCallCheck(this, SignatureComponent);
-
-    return _possibleConstructorReturn(this, (SignatureComponent.__proto__ || Object.getPrototypeOf(SignatureComponent)).apply(this, arguments));
-  }
-
-  _createClass(SignatureComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.attr.type = 'hidden';
-      return info;
-    }
-  }, {
-    key: 'build',
-    value: function build() {
-      var _this2 = this;
-
-      this.element = this.ce('element', 'div', {
-        id: this.id,
-        class: 'form-group signature-pad'
-      });
-      this.input = this.createInput(this.element);
-      var padBody = this.ce('pad', 'div', {
-        class: 'signature-pad-body',
-        style: 'width: ' + this.component.width + ';height: ' + this.component.height
-      });
-
-      // Create the refresh button.
-      var refresh = this.ce('refresh', 'a', {
-        class: 'btn btn-sm btn-default signature-pad-refresh'
-      });
-      var refreshIcon = this.ce('refreshIcon', 'span', {
-        class: 'glyphicon glyphicon-refresh'
-      });
-      refresh.appendChild(refreshIcon);
-      padBody.appendChild(refresh);
-
-      // The signature canvas.
-      var canvas = this.ce('canvas', 'canvas', {
-        class: 'signature-pad-canvas'
-      });
-      padBody.appendChild(canvas);
-      this.element.appendChild(padBody);
-
-      // Add the footer.
-      if (this.component.footer) {
-        var footer = this.ce('footer', 'div', {
-          class: 'signature-pad-footer'
-        });
-        footer.appendChild(this.text(this.component.footer));
-        this.element.appendChild(footer);
-      }
-
-      // Create the signature pad.
-      this.signaturePad = new _signature_pad2.default(canvas, {
-        minWidth: this.component.minWidth,
-        maxWidth: this.component.maxWidth,
-        penColor: this.component.penColor,
-        backgroundColor: this.component.backgroundColor
-      });
-      refresh.addEventListener("click", function (event) {
-        event.preventDefault();
-        _this2.signaturePad.clear();
-      });
-      this.signaturePad.onEnd = function () {
-        return _this2.setValue(_this2.signaturePad.toDataURL());
-      };
-
-      // Ensure the signature is always the size of its container.
-      var currentWidth = 0;
-      setTimeout(function checkWidth() {
-        if (padBody.offsetWidth !== currentWidth) {
-          currentWidth = padBody.offsetWidth;
-          canvas.width = currentWidth;
-          var ctx = canvas.getContext("2d");
-          ctx.fillStyle = this.signaturePad.backgroundColor;
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-        setTimeout(checkWidth.bind(this), 200);
-      }.bind(this), 200);
-    }
-  }, {
-    key: 'value',
-    set: function set(value) {
-      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'value', value, this);
-      if (this.signaturePad && this.noSign) {
-        this.signaturePad.fromDataURL(value);
-      }
-    }
-  }, {
-    key: 'disable',
-    set: function set(disable) {
-      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disable', disable, this);
-      var image = this.ce('image', 'img', {
-        style: 'width: ' + this.component.width + ';height: ' + this.component.height
-      });
-      image.setAttribute('src', this.input.value);
-      this.element.innerHTML = '';
-      this.element.appendChild(image);
-    }
-  }]);
-
-  return SignatureComponent;
-}(_Base2.default);
-
-module.exports = SignatureComponent;
-
-},{"../base/Base":201,"signature_pad":196}],223:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var SurveyComponent = function (_BaseComponent) {
-  _inherits(SurveyComponent, _BaseComponent);
-
-  function SurveyComponent() {
-    _classCallCheck(this, SurveyComponent);
-
-    return _possibleConstructorReturn(this, (SurveyComponent.__proto__ || Object.getPrototypeOf(SurveyComponent)).apply(this, arguments));
-  }
-
-  _createClass(SurveyComponent, [{
-    key: 'build',
-    value: function build() {
-      var _this2 = this;
-
-      this.createElement();
-      this.createLabel(this.element);
-      this.table = this.ce('table', 'table', {
-        class: 'table table-striped table-bordered'
-      });
-
-      // Build header.
-      var thead = this.ce('header', 'thead');
-      var thr = this.ce('headerRow', 'tr');
-      thr.appendChild(this.ce('headerColumn', 'td'));
-      (0, _each3.default)(this.component.values, function (value) {
-        var th = _this2.ce('headerColumn', 'th', {
-          style: 'text-align: center;'
-        });
-        th.appendChild(_this2.text(value.label));
-        thr.appendChild(th);
-      });
-      thead.appendChild(thr);
-      this.table.appendChild(thead);
-      // Build the body.
-      var tbody = this.ce('table', 'tbody');
-      (0, _each3.default)(this.component.questions, function (question) {
-        var tr = _this2.ce('tableRow', 'tr');
-        var td = _this2.ce('questionColumn', 'td');
-        td.appendChild(_this2.text(question.label));
-        tr.appendChild(td);
-        (0, _each3.default)(_this2.component.values, function (value) {
-          var td = _this2.ce('valueColumn', 'td', {
-            style: 'text-align: center;'
-          });
-          var input = _this2.ce('input', 'input', {
-            type: 'radio',
-            name: 'data[' + _this2.component.key + '][' + question.value + ']',
-            value: value.value,
-            id: _this2.id + '-' + question.value + '-' + value.value
-          });
-          _this2.addInput(input, td);
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-      this.table.appendChild(tbody);
-      this.element.appendChild(this.table);
-    }
-  }, {
-    key: 'setValue',
-    value: function setValue(value) {
-      var _this3 = this;
-
-      var key = 'data[' + this.component.key + ']';
-      (0, _each3.default)(this.component.questions, function (question) {
-        (0, _each3.default)(_this3.inputs, function (input) {
-          if (input.name === key + '[' + question.value + ']') {
-            input.checked = input.value === value[question.value];
-          }
-        });
-      });
-      this.updateValue();
-    }
-  }, {
-    key: 'getValue',
-    value: function getValue() {
-      var _this4 = this;
-
-      var value = {};
-      var key = 'data[' + this.component.key + ']';
-      (0, _each3.default)(this.component.questions, function (question) {
-        (0, _each3.default)(_this4.inputs, function (input) {
-          if (input.checked && input.name === key + '[' + question.value + ']') {
-            value[question.value] = input.value;
-            return false;
-          }
-        });
-      });
-      return value;
-    }
-  }]);
-
-  return SurveyComponent;
-}(_Base2.default);
-
-module.exports = SurveyComponent;
-
-},{"../base/Base":201,"lodash/each":166}],224:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _Components = require('../Components');
-
-var _Components2 = _interopRequireDefault(_Components);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var TableComponent = function (_FormioComponents) {
-  _inherits(TableComponent, _FormioComponents);
-
-  function TableComponent() {
-    _classCallCheck(this, TableComponent);
-
-    return _possibleConstructorReturn(this, (TableComponent.__proto__ || Object.getPrototypeOf(TableComponent)).apply(this, arguments));
-  }
-
-  _createClass(TableComponent, [{
-    key: 'build',
-    value: function build() {
-      var _this2 = this;
-
-      this.element = this.ce('element', 'div', {
-        class: 'table-responsive'
-      });
-
-      var tableClass = 'table ';
-      (0, _each3.default)(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
-        if (_this2.component[prop]) {
-          tableClass += 'table-' + prop + ' ';
-        }
-      });
-      var table = this.ce('table', 'table', {
-        class: tableClass
-      });
-
-      // Build the header.
-      if (this.component.header && this.component.header.length) {
-        var thead = this.ce('header', 'thead');
-        var thr = this.ce('headerRow', 'tr');
-        (0, _each3.default)(this.component.header, function (header) {
-          var th = _this2.ce('headerColumn', 'th');
-          th.appendChild(_this2.text(header));
-          thr.appendChild(th);
-        });
-        thead.appendChild(thr);
-        table.appendChild(thead);
-      }
-
-      // Build the body.
-      var tbody = this.ce('table', 'tbody');
-      (0, _each3.default)(this.component.rows, function (row) {
-        var tr = _this2.ce('tableRow', 'tr');
-        (0, _each3.default)(row, function (column) {
-          var td = _this2.ce('tableColumn', 'td');
-          (0, _each3.default)(column.components, function (comp) {
-            _this2.addComponent(comp, td);
-          });
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-      table.appendChild(tbody);
-      this.element.appendChild(table);
-    }
-  }]);
-
-  return TableComponent;
-}(_Components2.default);
-
-module.exports = TableComponent;
-
-},{"../Components":199,"lodash/each":166}],225:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _TextField = require('../textfield/TextField');
-
-var _TextField2 = _interopRequireDefault(_TextField);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var TextAreaComponent = function (_TextFieldComponent) {
-  _inherits(TextAreaComponent, _TextFieldComponent);
-
-  function TextAreaComponent() {
-    _classCallCheck(this, TextAreaComponent);
-
-    return _possibleConstructorReturn(this, (TextAreaComponent.__proto__ || Object.getPrototypeOf(TextAreaComponent)).apply(this, arguments));
-  }
-
-  _createClass(TextAreaComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'textarea';
-      if (this.component.rows) {
-        info.attr.rows = this.component.rows;
-      }
-      return info;
-    }
-  }]);
-
-  return TextAreaComponent;
-}(_TextField2.default);
-
-module.exports = TextAreaComponent;
-
-},{"../textfield/TextField":226}],226:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var TextFieldComponent = function (_BaseComponent) {
-  _inherits(TextFieldComponent, _BaseComponent);
-
-  function TextFieldComponent() {
-    _classCallCheck(this, TextFieldComponent);
-
-    return _possibleConstructorReturn(this, (TextFieldComponent.__proto__ || Object.getPrototypeOf(TextFieldComponent)).apply(this, arguments));
-  }
-
-  _createClass(TextFieldComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(TextFieldComponent.prototype.__proto__ || Object.getPrototypeOf(TextFieldComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.attr.type = 'text';
-      info.changeEvent = 'input';
-      return info;
-    }
-  }]);
-
-  return TextFieldComponent;
-}(_Base2.default);
-
-module.exports = TextFieldComponent;
-
-},{"../base/Base":201}],227:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _Components = require('../Components');
-
-var _Components2 = _interopRequireDefault(_Components);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var WellComponent = function (_FormioComponents) {
-  _inherits(WellComponent, _FormioComponents);
-
-  function WellComponent() {
-    _classCallCheck(this, WellComponent);
-
-    return _possibleConstructorReturn(this, (WellComponent.__proto__ || Object.getPrototypeOf(WellComponent)).apply(this, arguments));
-  }
-
-  _createClass(WellComponent, [{
-    key: 'className',
-    get: function get() {
-      return 'well formio-component formio-component-well';
-    }
-  }]);
-
-  return WellComponent;
-}(_Components2.default);
-
-module.exports = WellComponent;
-
-},{"../Components":199}],228:[function(require,module,exports){
-'use strict';
-
-var _formioForm = require('./formio.form.js');
-
-var _formioForm2 = _interopRequireDefault(_formioForm);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-var query = {};
-var scripts = document.getElementsByTagName('script');
-var thisScript = scripts[scripts.length - 1];
-var scriptSrc = thisScript.src.replace(/^([^\?]+).*/, '$1').split('/');
-scriptSrc.pop();
-scriptSrc = scriptSrc.join('/');
-var queryString = thisScript.src.replace(/^[^\?]+\??/, '');
-queryString.replace(/\?/g, '&').split("&").forEach(function (item) {
-  query[item.split("=")[0]] = item.split("=")[1] && decodeURIComponent(item.split("=")[1]);
-});
-var id = query.id || 'formio-' + Math.random().toString(36).substring(7);
-var height = query.height || 500;
-var className = query.class || 'formio-form-wrapper';
-var styles = query.styles || scriptSrc + '/formio.form.min.css';
-document.write('<link rel="stylesheet" href="' + styles + '"><div id="' + id + '" class="' + className + '" style="height:' + height + 'px;"></div>');
-var formElement = document.getElementById(id);
-var form = new _formioForm2.default(formElement);
-form.src = query.src;
-
-},{"./formio.form.js":229}],229:[function(require,module,exports){
-(function (global){
-"use strict";
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _formio = require("./formio");
-
-var _formio2 = _interopRequireDefault(_formio);
-
-var _nativePromiseOnly = require("native-promise-only");
-
-var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
-
-var _Components = require("./components/Components");
-
-var _Components2 = _interopRequireDefault(_Components);
-
-var _debounce2 = require("lodash/debounce");
-
-var _debounce3 = _interopRequireDefault(_debounce2);
-
-var _each2 = require("lodash/each");
-
-var _each3 = _interopRequireDefault(_each2);
-
-var _eventemitter = require("eventemitter2");
-
-var _eventemitter2 = _interopRequireDefault(_eventemitter);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var getOptions = function getOptions(options) {
-  options = options || {};
-  options.events = new _eventemitter2.default({
-    wildcard: false,
-    maxListeners: 0
-  });
-  return options;
-};
-
-var FormioForm = function (_FormioComponents) {
-  _inherits(FormioForm, _FormioComponents);
-
-  function FormioForm(element, options) {
-    _classCallCheck(this, FormioForm);
-
-    var _this = _possibleConstructorReturn(this, (FormioForm.__proto__ || Object.getPrototypeOf(FormioForm)).call(this, null, getOptions(options)));
-
-    _this.type = 'form';
-    _this._src = '';
-    _this._loading = true;
-    _this.wrapper = element;
-    _this.formio = null;
-    _this.loader = null;
-    _this.alert = null;
-    _this.onFormLoad = null;
-    _this.onSubmissionLoad = null;
-
-    // Promise that executes when the form is rendered and ready.
-    _this.ready = new _nativePromiseOnly2.default(function (resolve, reject) {
-      _this.readyResolve = resolve;
-      _this.readyReject = reject;
-    });
-
-    // Trigger submission changes and errors debounced.
-    _this.triggerSubmissionChange = (0, _debounce3.default)(_this.onSubmissionChange.bind(_this), 10);
-    _this.triggerSubmissionError = (0, _debounce3.default)(_this.onSubmissionError.bind(_this), 10);
-    return _this;
-  }
-
-  _createClass(FormioForm, [{
-    key: "setForm",
-    value: function setForm(form) {
-      var _this2 = this;
-
-      // Set this form as a component.
-      this.component = form;
-      this.loading = true;
-      return this.render().then(function () {
-        return _this2.onLoaded.then(function () {
-          _this2.loading = false;
-          _this2.readyResolve();
-        }, function (err) {
-          return _this2.readyReject(err);
-        });
-      }, function (err) {
-        return _this2.readyReject(err);
-      });
-    }
-  }, {
-    key: "render",
-    value: function render() {
-      var _this3 = this;
-
-      this.wrapper.innerHTML = '';
-      return this.localize().then(function () {
-        _this3.build();
-        _this3.wrapper.appendChild(_this3.element);
-        _this3.on('resetForm', function () {
-          return _this3.reset();
-        });
-        _this3.on('componentChange', function (changed) {
-          return _this3.triggerSubmissionChange(changed);
-        });
-        _this3.on('componentError', function (changed) {
-          return _this3.triggerSubmissionError(changed);
-        });
-      });
-    }
-  }, {
-    key: "setAlert",
-    value: function setAlert(type, message) {
-      if (this.alert) {
-        try {
-          this.wrapper.removeChild(this.alert);
-          this.alert = null;
-        } catch (err) {}
-      }
-      if (message) {
-        this.alert = this.ce('alert-' + type, 'div', {
-          class: 'alert alert-' + type,
-          role: 'alert'
-        });
-        this.alert.innerHTML = message;
-      }
-      if (!this.alert) {
-        return;
-      }
-      this.wrapper.insertBefore(this.alert, this.wrapper.firstChild);
-    }
-  }, {
-    key: "build",
-    value: function build() {
-      var _this4 = this;
-
-      this.element = this.ce('element', 'form', {
-        class: 'formio-form'
-      });
-      this.addAnEventListener(this.element, 'submit', function (event) {
-        return _this4.submit(event);
-      });
-      this.addComponents();
-      this.checkConditions(this.getValue());
-    }
-  }, {
-    key: "showErrors",
-    value: function showErrors() {
-      var errors = this.errors;
-      if (!errors.length) {
-        this.setAlert(false);
-        return;
-      }
-      var message = '<p>' + this.t('error') + '</p><ul>';
-      (0, _each3.default)(errors, function (err) {
-        if (err) {
-          message += '<li><strong>' + err + '</strong></li>';
-        }
-      });
-      message += '</ul>';
-      this.setAlert('danger', message);
-      return errors;
-    }
-  }, {
-    key: "onSubmit",
-    value: function onSubmit(submission) {
-      this.loading = false;
-      this.setAlert('success', '<p>' + this.t('complete') + '</p>');
-      this.events.emit('submit', submission);
-    }
-  }, {
-    key: "onSubmissionError",
-    value: function onSubmissionError(error) {
-      this.loading = false;
-      error.errors = this.showErrors();
-      this.events.emit('error', error);
-    }
-  }, {
-    key: "onSubmissionChange",
-    value: function onSubmissionChange(changed) {
-      var value = this.submission;
-      var errors = this.errors;
-      if (!errors.length) {
-        this.setAlert(false);
-      }
-      value.changed = changed;
-      this.events.emit('change', value);
-      this.checkConditions(value.data);
-    }
-  }, {
-    key: "reset",
-    value: function reset() {
-      // Reset the submission data.
-      this.submission = { data: {} };
-    }
-  }, {
-    key: "submit",
-    value: function submit(event) {
-      var _this5 = this;
-
-      this.loading = true;
-      if (event) {
-        event.preventDefault();
-      }
-      if (!this.formio) {
-        return this.onSubmit(this.submission);
-      }
-      this.formio.saveSubmission(this.submission).then(function (submission) {
-        return _this5.onSubmit(submission);
-      }).catch(function (err) {
-        return _this5.onSubmissionError(err);
-      });
-    }
-  }, {
-    key: "src",
-    get: function get() {
-      return this._src;
-    },
-    set: function set(value) {
-      var _this6 = this;
-
-      if (!value || typeof value !== 'string') {
-        return;
-      }
-      this._src = value;
-      this.formio = new _formio2.default(value);
-      this.onFormLoad = this.formio.loadForm().then(function (form) {
-        return _this6.form = form;
-      });
-      if (this.formio.submissionId) {
-        this.onSubmissionLoad = this.formio.loadSubmission().then(function (submission) {
-          return _this6.submission = submission;
-        });
-      }
-    }
-  }, {
-    key: "onLoaded",
-    get: function get() {
-      if (!this.onSubmissionLoad && !this.onFormLoad) {
-        return _nativePromiseOnly2.default.resolve();
-      }
-      return this.onSubmissionLoad ? this.onSubmissionLoad : this.onFormLoad;
-    }
-  }, {
-    key: "loading",
-    get: function get() {
-      return this._loading;
-    },
-    set: function set(loading) {
-      this._loading = loading;
-      if (!this.loader && loading) {
-        this.loader = this.ce('loaderWrapper', 'div', {
-          class: 'loader-wrapper'
-        });
-        var spinner = this.ce('loader', 'div', {
-          class: 'loader text-center'
-        });
-        this.loader.appendChild(spinner);
-      }
-      if (this.loader) {
-        try {
-          if (loading) {
-            this.wrapper.parentNode.insertBefore(this.loader, this.wrapper);
-          } else {
-            this.wrapper.parentNode.removeChild(this.loader);
-          }
-        } catch (err) {}
-      }
-    }
-  }, {
-    key: "form",
-    set: function set(form) {
-      this.setForm(form);
-    }
-  }, {
-    key: "submission",
-    get: function get() {
-      return {
-        data: this.getValue()
-      };
-    },
-    set: function set(submission) {
-      var _this7 = this;
-
-      this.ready.then(function () {
-        return _this7.setValue(submission.data);
-      });
-    }
-  }]);
-
-  return FormioForm;
-}(_Components2.default);
-
-module.exports = global.FormioForm = FormioForm;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":199,"./formio":230,"eventemitter2":1,"lodash/debounce":165,"lodash/each":166,"native-promise-only":194}],230:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -21385,7 +16850,5437 @@ Formio.deregisterPlugin = function (plugin) {
 module.exports = global.Formio = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./providers":232,"eventemitter2":1,"native-promise-only":194,"shallow-copy":195,"whatwg-fetch":198}],231:[function(require,module,exports){
+},{"./providers":233,"eventemitter2":1,"native-promise-only":194,"shallow-copy":195,"whatwg-fetch":198}],200:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _filter2 = require('lodash/filter');
+
+var _filter3 = _interopRequireDefault(_filter2);
+
+var _Base = require('./base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+var _isArray2 = require('lodash/isArray');
+
+var _isArray3 = _interopRequireDefault(_isArray2);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var FormioComponents = function (_BaseComponent) {
+  _inherits(FormioComponents, _BaseComponent);
+
+  function FormioComponents(component, options, data) {
+    _classCallCheck(this, FormioComponents);
+
+    var _this = _possibleConstructorReturn(this, (FormioComponents.__proto__ || Object.getPrototypeOf(FormioComponents)).call(this, component, options, data));
+
+    _this.type = 'components';
+    return _this;
+  }
+
+  _createClass(FormioComponents, [{
+    key: 'build',
+    value: function build() {
+      this.createElement();
+      this.addComponents();
+    }
+  }, {
+    key: 'everyComponent',
+    value: function everyComponent(cb) {
+      (0, _each3.default)(this.components, function (component) {
+        if (component.type === 'components') {
+          if (component.everyComponent(cb) === false) {
+            return false;
+          }
+        } else if (cb(component) === false) {
+          return false;
+        }
+      });
+    }
+  }, {
+    key: 'eachComponent',
+    value: function eachComponent(cb) {
+      (0, _each3.default)(this.components, function (component) {
+        if (cb(component) === false) {
+          return false;
+        }
+      });
+    }
+  }, {
+    key: 'getComponent',
+    value: function getComponent(key) {
+      var comp = null;
+      this.everyComponent(function (component) {
+        if (component.component.key === key) {
+          comp = component;
+          return false;
+        }
+      });
+      return comp;
+    }
+  }, {
+    key: 'addComponent',
+    value: function addComponent(component, element, data) {
+      element = element || this.element;
+      data = data || this.data;
+      var components = require('./index');
+      var comp = components.create(component, this.options, data);
+      this.components.push(comp);
+      element.appendChild(comp.element);
+    }
+  }, {
+    key: 'addComponents',
+    value: function addComponents(element, data) {
+      var _this2 = this;
+
+      element = element || this.element;
+      data = data || this.data;
+      (0, _each3.default)(this.component.components, function (component) {
+        return _this2.addComponent(component, element, data);
+      });
+    }
+  }, {
+    key: 'checkConditions',
+    value: function checkConditions(data) {
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
+      (0, _each3.default)(this.components, function (comp) {
+        return comp.checkConditions(data);
+      });
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      return this.data;
+    }
+  }, {
+    key: 'setValue',
+    value: function setValue(value) {
+      (0, _each3.default)(this.components, function (component) {
+        if (component.input || component.type === 'button') {
+          return;
+        }
+
+        if (component.type === 'components') {
+          component.setValue(value);
+        } else if (value && value.hasOwnProperty(component.component.key)) {
+          component.setValue(value[component.component.key]);
+        } else {
+          component.setValue(null);
+        }
+      });
+    }
+  }, {
+    key: 'disable',
+    set: function set(disable) {
+      (0, _each3.default)(this.components, function (component) {
+        return component.disable = disable;
+      });
+    }
+  }, {
+    key: 'errors',
+    get: function get() {
+      var errors = [];
+      (0, _each3.default)(this.components, function (comp) {
+        var compErrors = comp.errors;
+        if (compErrors.length) {
+          errors = errors.concat(compErrors);
+        }
+      });
+      return errors;
+    }
+  }]);
+
+  return FormioComponents;
+}(_Base2.default);
+
+module.exports = FormioComponents;
+
+},{"./base/Base":202,"./index":215,"lodash/each":166,"lodash/filter":168,"lodash/isArray":175}],201:[function(require,module,exports){
+'use strict';
+
+var _get2 = require('lodash/get');
+
+var _get3 = _interopRequireDefault(_get2);
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _has2 = require('lodash/has');
+
+var _has3 = _interopRequireDefault(_has2);
+
+var _isArray2 = require('lodash/isArray');
+
+var _isArray3 = _interopRequireDefault(_isArray2);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+var Validator = {
+  get: _get3.default,
+  each: _each3.default,
+  has: _has3.default,
+  boolValue: function boolValue(value) {
+    if (typeof value === 'boolean') {
+      return value;
+    } else if (typeof value === 'string') {
+      return value.toLowerCase() === 'true';
+    } else {
+      return !!value;
+    }
+  },
+  empty: function empty(value) {
+    return value == null || value.length === 0;
+  },
+  name: function name(component) {
+    return component.label || component.placeholder || component.key;
+  },
+  checkValidator: function checkValidator(validator, component, setting, value, data, t) {
+    var result = validator.check.call(this, component, setting, value, data);
+    if (typeof result === 'string') {
+      return result;
+    }
+    if (!result) {
+      return validator.message.call(this, component, setting, t);
+    }
+    return '';
+  },
+  validate: function validate(validator, component, value, data, t) {
+    if (validator.key && (0, _has3.default)(component, validator.key)) {
+      var setting = this.get(component, validator.key);
+      return this.checkValidator(validator, component, setting, value, data, t);
+    }
+    return this.checkValidator(validator, component, null, value, data, t);
+  },
+  check: function check(validators, component, value, data, t) {
+    var _this = this;
+
+    var result = '';
+    (0, _each3.default)(validators, function (name) {
+      if (_this.validators.hasOwnProperty(name)) {
+        var validator = _this.validators[name];
+        if (component.multiple && (0, _isArray3.default)(value)) {
+          (0, _each3.default)(value, function (val) {
+            result = _this.validate(validator, component, val, data, t);
+            if (result) {
+              return false;
+            }
+          });
+        } else {
+          result = _this.validate(validator, component, value, data, t);
+        }
+        if (result) {
+          return false;
+        }
+      }
+    });
+    return result;
+  },
+  validators: {
+    required: {
+      key: 'validate.required',
+      message: function message(component, setting, t) {
+        return t('required', { field: this.name(component) });
+      },
+      check: function check(component, setting, value) {
+        var required = Validator.boolValue(setting);
+        if (!required) {
+          return true;
+        }
+        return !Validator.empty(value);
+      }
+    },
+    minLength: {
+      key: 'validate.minLength',
+      message: function message(component, setting, t) {
+        return t('minLength', {
+          field: this.name(component),
+          length: setting - 1
+        });
+      },
+      check: function check(component, setting, value) {
+        var minLength = parseInt(setting, 10);
+        if (!minLength || typeof value !== 'string') {
+          return true;
+        }
+        return value.length >= minLength;
+      }
+    },
+    maxLength: {
+      key: 'validate.maxLength',
+      message: function message(component, setting, t) {
+        return t('maxLength', {
+          field: this.name(component),
+          length: setting + 1
+        });
+      },
+      check: function check(component, setting, value) {
+        var maxLength = parseInt(setting, 10);
+        if (!maxLength || typeof value !== 'string') {
+          return true;
+        }
+        return value.length <= maxLength;
+      }
+    },
+    email: {
+      message: function message(component, setting, t) {
+        return t('invalid_email', {
+          field: this.name(component)
+        });
+      },
+      check: function check(component, setting, value) {
+        // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(value);
+      }
+    },
+    date: {
+      message: function message(component, setting, t) {
+        return t('invalid_date', {
+          field: this.name(component)
+        });
+      },
+      check: function check(component, setting, value) {
+        return value !== 'Invalid date';
+      }
+    },
+    custom: {
+      key: 'validate.custom',
+      message: function message(component, setting, t) {
+        return t('custom', {
+          field: this.name(component)
+        });
+      },
+      check: function check(component, setting, value, data) {
+        if (!setting) {
+          return true;
+        }
+        var valid = true;
+        var custom = setting;
+        /*eslint-disable no-unused-vars */
+        var input = value;
+        /*eslint-enable no-unused-vars */
+        custom = custom.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
+          return data[$2];
+        });
+
+        /* jshint evil: true */
+        eval(custom);
+        return valid;
+      }
+    }
+  }
+};
+module.exports = Validator;
+
+},{"lodash/each":166,"lodash/get":170,"lodash/has":171,"lodash/isArray":175}],202:[function(require,module,exports){
+'use strict';
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _vanillaMasker = require('vanilla-masker');
+
+var _vanillaMasker2 = _interopRequireDefault(_vanillaMasker);
+
+var _formioUtils = require('formio-utils');
+
+var _formioUtils2 = _interopRequireDefault(_formioUtils);
+
+var _get2 = require('lodash/get');
+
+var _get3 = _interopRequireDefault(_get2);
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _debounce2 = require('lodash/debounce');
+
+var _debounce3 = _interopRequireDefault(_debounce2);
+
+var _isArray2 = require('lodash/isArray');
+
+var _isArray3 = _interopRequireDefault(_isArray2);
+
+var _assign2 = require('lodash/assign');
+
+var _assign3 = _interopRequireDefault(_assign2);
+
+var _clone2 = require('lodash/clone');
+
+var _clone3 = _interopRequireDefault(_clone2);
+
+var _i18next = require('i18next');
+
+var _i18next2 = _interopRequireDefault(_i18next);
+
+var _Validator = require('../Validator');
+
+var _Validator2 = _interopRequireDefault(_Validator);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+_i18next2.default.initialized = false;
+
+var BaseComponent = function () {
+  /**
+   *   Initialize a new BaseComponent.
+   */
+  function BaseComponent(component, options, data) {
+    _classCallCheck(this, BaseComponent);
+
+    this.id = Math.random().toString(36).substring(7);
+    this.options = (0, _clone3.default)(options) || {};
+    this.options.i18n = this.options.i18n || require('../../locals/en');
+    this.events = this.options.events;
+    this.data = data || {};
+    this.component = component || {};
+    this.components = [];
+    this.element = null;
+    this.tbody = null;
+    this.label = null;
+    this.errorElement = null;
+    this.error = '';
+    this.inputs = [];
+    this.info = null;
+    this.value = null;
+    this.options.name = this.options.name || 'data';
+    this.validators = ['required', 'minLength', 'maxLength', 'custom'];
+    this.triggerChange = (0, _debounce3.default)(this.onChange.bind(this), 200);
+    if (this.component) {
+      this.type = this.component.type;
+      if (this.component.input && this.component.key) {
+        this.options.name += '[' + this.component.key + ']';
+      }
+      this.info = this.elementInfo();
+    }
+  }
+
+  _createClass(BaseComponent, [{
+    key: 't',
+    value: function t(text, params) {
+      var message = _i18next2.default.t(text, params);
+      return message;
+    }
+  }, {
+    key: 'on',
+    value: function on(event, cb) {
+      if (!this.events) {
+        return;
+      }
+      return this.events.on(event, cb);
+    }
+  }, {
+    key: 'localize',
+    value: function localize() {
+      var _this = this;
+
+      if (_i18next2.default.initialized) {
+        return Promise.resolve(_i18next2.default);
+      }
+      _i18next2.default.initialized = true;
+      return new Promise(function (resolve, reject) {
+        _i18next2.default.init(_this.options.i18n, function (err, t) {
+          if (err) {
+            return reject(err);
+          }
+          resolve(_i18next2.default);
+        });
+      });
+    }
+
+    /**
+     * Builds the component.
+     */
+
+  }, {
+    key: 'build',
+    value: function build() {
+      this.createElement();
+      this.createLabel(this.element);
+      if (!this.createWrapper()) {
+        this.createInput(this.element);
+      }
+    }
+  }, {
+    key: 'createElement',
+    value: function createElement() {
+      this.element = this.ce('element', 'div', {
+        class: this.className
+      });
+    }
+  }, {
+    key: 'createWrapper',
+    value: function createWrapper() {
+      if (!this.component.multiple) {
+        return false;
+      } else {
+        var table = this.ce('wrapper', 'table', {
+          class: 'table table-bordered'
+        });
+        this.tbody = this.ce('wrapperBody', 'tbody');
+        table.appendChild(this.tbody);
+
+        // Add a default value.
+        this.addValue();
+
+        // Add the table to the element.
+        this.element.appendChild(table);
+        return true;
+      }
+    }
+  }, {
+    key: 'defaultValue',
+    value: function defaultValue() {
+      if (this.component.defaultValue) {
+        return this.component.defaultValue;
+      }
+      return '';
+    }
+  }, {
+    key: 'addValue',
+    value: function addValue() {
+      this.data[this.component.key] = this.getValue();
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = [];
+      }
+      if (!(0, _isArray3.default)(this.data[this.component.key])) {
+        this.data[this.component.key] = [this.data[this.component.key]];
+      }
+      this.data[this.component.key].push(this.defaultValue());
+      this.buildRows();
+    }
+  }, {
+    key: 'removeValue',
+    value: function removeValue(index) {
+      if (this.data.hasOwnProperty(this.component.key)) {
+        this.data[this.component.key].splice(index, 1);
+      }
+      this.buildRows();
+    }
+  }, {
+    key: 'buildRows',
+    value: function buildRows() {
+      var _this2 = this;
+
+      if (!this.tbody) {
+        return;
+      }
+      this.inputs = [];
+      this.tbody.innerHTML = '';
+      (0, _each3.default)(this.data[this.component.key], function (value, index) {
+        var tr = _this2.ce('row', 'tr');
+        var td = _this2.ce('column', 'td');
+        _this2.createInput(td);
+        tr.appendChild(td);
+        var tdAdd = _this2.ce('columnAdd', 'td');
+        tdAdd.appendChild(_this2.removeButton(index));
+        tr.appendChild(tdAdd);
+        _this2.tbody.appendChild(tr);
+      });
+
+      var tr = this.ce('rowAdd', 'tr');
+      var td = this.ce('addRowColumn', 'td', {
+        colspan: '2'
+      });
+      td.appendChild(this.addButton());
+      tr.appendChild(td);
+      this.tbody.appendChild(tr);
+
+      // Reset the values of the inputs.
+      if (this.data.hasOwnProperty(this.component.key)) {
+        this.setValue(this.data[this.component.key]);
+      }
+    }
+  }, {
+    key: 'addButton',
+    value: function addButton() {
+      var _this3 = this;
+
+      var addButton = this.ce('addButton', 'a', {
+        class: 'btn btn-primary'
+      });
+      this.addAnEventListener(addButton, 'click', function (event) {
+        event.preventDefault();
+        _this3.addValue();
+      });
+
+      var addIcon = this.ce('addIcon', 'span', {
+        class: 'glyphicon glyphicon-plus'
+      });
+      addButton.appendChild(addIcon);
+      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
+      return addButton;
+    }
+  }, {
+    key: 'removeButton',
+    value: function removeButton(index) {
+      var _this4 = this;
+
+      var removeButton = this.ce('removeButton', 'button', {
+        type: 'button',
+        class: 'btn btn-default',
+        tabindex: '-1'
+      });
+
+      this.addAnEventListener(removeButton, 'click', function (event) {
+        event.preventDefault();
+        _this4.removeValue(index);
+      });
+
+      var removeIcon = this.ce('removeIcon', 'span', {
+        class: 'glyphicon glyphicon-remove-circle'
+      });
+      removeButton.appendChild(removeIcon);
+      return removeButton;
+    }
+  }, {
+    key: 'createLabel',
+    value: function createLabel(container) {
+      if (!this.component.label) {
+        return;
+      }
+      this.label = this.ce('label', 'label', {
+        class: 'control-label'
+      });
+      if (this.info.attr.id) {
+        this.label.setAttribute('for', this.info.attr.id);
+      }
+      this.label.appendChild(this.text(this.component.label));
+      container.appendChild(this.label);
+    }
+  }, {
+    key: 'createErrorElement',
+    value: function createErrorElement(container) {
+      this.errorElement = this.ce('errors', 'div', {
+        class: 'formio-errors'
+      });
+      container.appendChild(this.errorElement);
+    }
+  }, {
+    key: 'addPrefix',
+    value: function addPrefix(input, inputGroup) {
+      var prefix = null;
+      if (this.component.prefix) {
+        prefix = this.ce('prefix', 'div', {
+          class: 'input-group-addon'
+        });
+        prefix.appendChild(this.text(this.component.prefix));
+        inputGroup.appendChild(prefix);
+      }
+      return prefix;
+    }
+  }, {
+    key: 'addSuffix',
+    value: function addSuffix(input, inputGroup) {
+      var suffix = null;
+      if (this.component.suffix) {
+        suffix = this.ce('suffix', 'div', {
+          class: 'input-group-addon'
+        });
+        suffix.appendChild(this.text(this.component.suffix));
+        inputGroup.appendChild(suffix);
+      }
+      return suffix;
+    }
+  }, {
+    key: 'addInputGroup',
+    value: function addInputGroup(input, container) {
+      var inputGroup = null;
+      if (this.component.prefix || this.component.suffix) {
+        inputGroup = this.ce('inputGroup', 'div', {
+          class: 'input-group'
+        });
+        container.appendChild(inputGroup);
+      }
+      return inputGroup;
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      var input = this.ce('input', this.info.type, this.info.attr);
+      if (this.component.inputMask) {
+        (0, _vanillaMasker2.default)(input).maskPattern(this.component.inputMask);
+      }
+
+      var inputGroup = this.addInputGroup(input, container);
+      this.addPrefix(input, inputGroup);
+      this.addInput(input, inputGroup || container);
+      this.addSuffix(input, inputGroup);
+      this.createErrorElement(container);
+      return inputGroup || input;
+    }
+
+    /**
+     * Wrapper method to add an event listener to an HTML element.
+     *
+     * @param obj
+     *   The DOM element to add the event to.
+     * @param evt
+     *   The event name to add.
+     * @param func
+     *   The callback function to be executed when the listener is triggered.
+     */
+
+  }, {
+    key: 'addAnEventListener',
+    value: function addAnEventListener(obj, evt, func) {
+      if ('addEventListener' in obj) {
+        obj.addEventListener(evt, func, false);
+      } else if ('attachEvent' in obj) {
+        obj.attachEvent('on' + evt, func);
+      }
+    }
+
+    /**
+     * Alias for document.createElement.
+     *
+     * @param type
+     * @returns {*}
+     */
+
+  }, {
+    key: 'ce',
+    value: function ce(name, type, attr) {
+      // Allow for template overrides.
+      var element = null;
+      var compType = this.component.type || this.type;
+      if (this.options && this.options.template && this.options.template[compType] && this.options.template[compType][name]) {
+        if (typeof this.options.template[compType][name] === 'function') {
+          element = this.options.template[compType][name](this, type, attr);
+          if (element) {
+            return element;
+          }
+        } else {
+          // Assign the attributes.
+          (0, _assign3.default)(attr, this.options.template[compType][name]);
+        }
+      }
+      element = document.createElement(type);
+      if (attr) {
+        this.attr(element, attr);
+      }
+      return element;
+    }
+
+    /**
+     * Alias to create a text node.
+     * @param text
+     * @returns {Text}
+     */
+
+  }, {
+    key: 'text',
+    value: function text(_text) {
+      return document.createTextNode(_text);
+    }
+
+    /**
+     * Adds an object of attributes onto an element.
+     * @param element
+     * @param attr
+     */
+
+  }, {
+    key: 'attr',
+    value: function attr(element, _attr) {
+      (0, _each3.default)(_attr, function (value, key) {
+        if (typeof value !== 'undefined') {
+          element.setAttribute(key, value);
+        }
+      });
+    }
+
+    /**
+     * Adds a class to a DOM element.
+     *
+     * @param element
+     *   The element to add a class to.
+     * @param className
+     *   The name of the class to add.
+     */
+
+  }, {
+    key: 'addClass',
+    value: function addClass(element, className) {
+      var cls = element.getAttribute('class');
+      cls += ' ' + className;
+      element.setAttribute('class', cls);
+    }
+
+    /**
+     * Remove a class from a DOM element.
+     *
+     * @param element
+     *   The DOM element to remove the class from.
+     * @param className
+     *   The name of the class that is to be removed.
+     */
+
+  }, {
+    key: 'removeClass',
+    value: function removeClass(element, className) {
+      var cls = element.getAttribute('class');
+      cls = cls.replace(className, '');
+      element.setAttribute('class', cls);
+    }
+
+    /**
+     * Check for conditionals and hide/show the element based on those conditions.
+     */
+
+  }, {
+    key: 'checkConditions',
+    value: function checkConditions(data) {
+      this.show(_formioUtils2.default.checkCondition(this.component, this.value, data));
+    }
+
+    /**
+     * Add a new input error to this element.
+     * @param message
+     */
+
+  }, {
+    key: 'addInputError',
+    value: function addInputError(message) {
+      if (this.errorElement) {
+        var errorMessage = this.ce('errorMessage', 'p', {
+          class: 'help-block'
+        });
+        errorMessage.appendChild(this.text(message));
+        this.errorElement.appendChild(errorMessage);
+        this.addClass(this.element, 'has-error');
+      }
+    }
+
+    /**
+     * Hide or Show an element.
+     *
+     * @param show
+     */
+
+  }, {
+    key: 'show',
+    value: function show(_show) {
+      if (this.element) {
+        if (_show) {
+          this.element.removeAttribute('hidden');
+        } else {
+          this.element.setAttribute('hidden', true);
+        }
+      }
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange() {
+      this.checkValidity();
+      if (this.events) {
+        this.events.emit('componentChange', {
+          component: this.component,
+          value: this.value
+        });
+      }
+    }
+
+    /**
+     * Add new input element listeners.
+     *
+     * @param input
+     */
+
+  }, {
+    key: 'addInputEventListener',
+    value: function addInputEventListener(input) {
+      var _this5 = this;
+
+      this.addAnEventListener(input, this.info.changeEvent, function () {
+        return _this5.updateValue();
+      });
+    }
+
+    /**
+     * Add a new input to this comonent.
+     *
+     * @param input
+     * @param container
+     * @param name
+     */
+
+  }, {
+    key: 'addInput',
+    value: function addInput(input, container) {
+      if (input && container) {
+        this.inputs.push(input);
+        input = container.appendChild(input);
+        this.addInputEventListener(input);
+      }
+    }
+
+    /**
+     * Get the value at a specific index.
+     *
+     * @param index
+     * @returns {*}
+     */
+
+  }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      return this.inputs[index].value;
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      var values = [];
+      for (var i in this.inputs) {
+        if (!this.component.multiple) {
+          return this.getValueAt(i);
+        }
+        values.push(this.getValueAt(i));
+      }
+      return values;
+    }
+  }, {
+    key: 'updateValue',
+    value: function updateValue() {
+      this.data[this.component.key] = this.value = this.getValue();
+      this.triggerChange();
+    }
+  }, {
+    key: 'checkValidity',
+    value: function checkValidity() {
+      // No need to check for errors if there is no input.
+      if (!this.component.input) {
+        return;
+      }
+
+      this.setCustomValidity(_Validator2.default.check(this.validators, this.component, this.getValidateValue(), this.data, this.t.bind(this)));
+    }
+  }, {
+    key: 'getValidateValue',
+    value: function getValidateValue() {
+      return this.data[this.component.key];
+    }
+  }, {
+    key: 'setCustomValidity',
+    value: function setCustomValidity(message) {
+      if (this.errorElement) {
+        this.errorElement.innerHTML = '';
+      }
+      this.removeClass(this.element, 'has-error');
+      this.error = message ? message : '';
+      if (message) {
+        this.addInputError(message);
+        if (this.events) {
+          this.events.emit('componentError', {
+            component: this.component,
+            error: message
+          });
+        }
+      }
+      (0, _each3.default)(this.inputs, function (input) {
+        if (typeof input.setCustomValidity === 'function') {
+          input.setCustomValidity(message);
+        }
+      });
+    }
+
+    /**
+     * Set the value at a specific index.
+     *
+     * @param index
+     * @param value
+     */
+
+  }, {
+    key: 'setValueAt',
+    value: function setValueAt(index, value) {
+      this.inputs[index].value = value;
+    }
+
+    /**
+     * Set the value of this component.
+     * @param value
+     */
+
+  }, {
+    key: 'setValue',
+    value: function setValue(value) {
+      var isArray = (0, _isArray3.default)(value);
+      for (var i in this.inputs) {
+        this.setValueAt(i, isArray ? value[i] : value);
+      }
+      this.updateValue();
+    }
+
+    /**
+     * Disable this component.
+     */
+
+  }, {
+    key: 'selectOptions',
+    value: function selectOptions(select, tag, options, defaultValue) {
+      var _this6 = this;
+
+      (0, _each3.default)(options, function (option) {
+        var attrs = {
+          value: option.value
+        };
+        if (defaultValue !== undefined && option.value === defaultValue) {
+          attrs.selected = 'selected';
+        }
+        var optionElement = _this6.ce(tag, 'option', attrs);
+        optionElement.appendChild(_this6.text(option.label));
+        select.appendChild(optionElement);
+      });
+    }
+  }, {
+    key: 'setSelectValue',
+    value: function setSelectValue(select, value) {
+      var options = select.querySelectorAll('option');
+      (0, _each3.default)(options, function (option) {
+        if (option.value === value) {
+          option.setAttribute('selected', 'selected');
+        } else {
+          option.removeAttribute('selected');
+        }
+      });
+      if (select.onchange) {
+        select.onchange();
+      }
+      if (select.onselect) {
+        select.onchange();
+      }
+    }
+
+    /**
+     * Get the element information.
+     *
+     * @returns {{type: string, component: *, changeEvent: string, attr: {id: (string|*), name: string, type: (*|string), style: string, class: string}}}
+     */
+
+  }, {
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var _this7 = this;
+
+      var style = '';
+      if (this.component.overlay) {
+        if (this.component.overlay.style) {
+          style = this.component.overlay.style;
+        }
+        if (this.component.overlay.top) {
+          style += 'top:' + this.component.overlay.top + 'px;';
+        }
+        if (this.component.overlay.left) {
+          style += 'left:' + this.component.overlay.left + 'px;';
+        }
+        if (this.component.overlay.width) {
+          style += 'width:' + this.component.overlay.width + 'px;';
+        }
+        if (this.component.overlay.height) {
+          style += 'height:' + this.component.overlay.height + 'px;';
+        }
+      }
+      this.inputId = this.component.overlay ? this.component.overlay.id : this.id;
+      var attributes = {
+        id: this.inputId,
+        name: this.options.name,
+        type: this.component.inputType || 'text',
+        style: style,
+        class: 'form-control'
+      };
+      (0, _each3.default)({
+        tabindex: 'tabindex',
+        placeholder: 'placeholder'
+      }, function (path, prop) {
+        var attrValue = (0, _get3.default)(_this7.component, path);
+        if (attrValue) {
+          attributes[prop] = attrValue;
+        }
+      });
+      return {
+        type: 'input',
+        component: this.component,
+        changeEvent: 'change',
+        attr: attributes
+      };
+    }
+  }, {
+    key: 'className',
+    get: function get() {
+      var className = this.component.input ? 'form-group has-feedback ' : '';
+      className += 'formio-component formio-component-' + this.component.type + ' ';
+      className += 'form-field-type-' + this.component.type + ' ';
+      className += 'formio-component-' + this.component.key + ' ';
+      if (this.component.customClass) {
+        className += this.component.customClass;
+      }
+      if (this.component.input && this.component.validate && this.component.validate.required) {
+        className += ' required';
+      }
+      return className;
+    }
+  }, {
+    key: 'name',
+    get: function get() {
+      return this.component.label || this.component.placeholder || this.component.key;
+    }
+  }, {
+    key: 'errors',
+    get: function get() {
+      return this.error ? [this.error] : [];
+    }
+  }, {
+    key: 'disable',
+    set: function set(disable) {
+      // Disable all input.
+      (0, _each3.default)(this.inputs, function (input) {
+        input.disabled = disable;
+        input.setAttribute('disabled', 'disabled');
+      });
+    }
+  }]);
+
+  return BaseComponent;
+}();
+
+module.exports = BaseComponent;
+
+},{"../../locals/en":232,"../Validator":201,"formio-utils":3,"i18next":19,"lodash/assign":161,"lodash/clone":162,"lodash/debounce":165,"lodash/each":166,"lodash/get":170,"lodash/isArray":175,"vanilla-masker":197}],203:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var ButtonComponent = function (_BaseComponent) {
+  _inherits(ButtonComponent, _BaseComponent);
+
+  function ButtonComponent() {
+    _classCallCheck(this, ButtonComponent);
+
+    return _possibleConstructorReturn(this, (ButtonComponent.__proto__ || Object.getPrototypeOf(ButtonComponent)).apply(this, arguments));
+  }
+
+  _createClass(ButtonComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'button';
+      info.attr.type = this.component.action;
+      info.attr.class = 'btn btn-' + this.component.theme;
+      if (this.component.block) {
+        info.attr.class += ' btn-block';
+      }
+      return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this.element = this.ce('element', this.info.type, this.info.attr);
+      if (this.component.label) {
+        this.label = this.text(this.component.label);
+        this.element.appendChild(this.label);
+      }
+      this.on('submit', function () {
+        _this2.loading = false;
+      });
+      this.on('error', function () {
+        _this2.loading = false;
+      });
+      this.addAnEventListener(this.element, 'click', function (event) {
+        switch (_this2.component.action) {
+          case 'submit':
+            _this2.loading = true;
+            break;
+          case 'event':
+            _this2.events.emit(_this2.component.event, _this2.data);
+            break;
+          case 'reset':
+            _this2.events.emit('resetForm');
+            break;
+          case 'oauth':
+            console.log('OAuth currently not supported.');
+            break;
+        }
+      });
+    }
+  }, {
+    key: 'loading',
+    set: function set(loading) {
+      this._loading = loading;
+      if (!this.loader && loading) {
+        this.loader = this.ce('buttonLoader', 'i', {
+          class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
+        });
+      }
+      if (this.loader) {
+        if (loading) {
+          this.element.appendChild(this.loader);
+        } else {
+          this.element.removeChild(this.loader);
+        }
+      }
+    }
+  }]);
+
+  return ButtonComponent;
+}(_Base2.default);
+
+module.exports = ButtonComponent;
+
+},{"../base/Base":202}],204:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var CheckBoxComponent = function (_BaseComponent) {
+  _inherits(CheckBoxComponent, _BaseComponent);
+
+  function CheckBoxComponent() {
+    _classCallCheck(this, CheckBoxComponent);
+
+    return _possibleConstructorReturn(this, (CheckBoxComponent.__proto__ || Object.getPrototypeOf(CheckBoxComponent)).apply(this, arguments));
+  }
+
+  _createClass(CheckBoxComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      if (this.component.overlay) {
+        this.component.overlay.width = 0;
+        this.component.overlay.height = 0;
+      }
+      var info = _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.changeEvent = 'click';
+      info.attr.type = this.component.inputType;
+      info.attr.class = '';
+      if (this.component.name) {
+        info.attr.name = 'data[' + this.component.name + ']';
+      }
+      info.attr.value = this.component.value ? this.component.value : 0;
+      return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      if (!this.component.input) {
+        return;
+      }
+      this.createElement();
+      this.input = this.createInput(this.element);
+      this.createLabel(this.element, this.input);
+      if (!this.label) {
+        this.addInput(this.input, this.element);
+      }
+    }
+  }, {
+    key: 'createElement',
+    value: function createElement() {
+      var className = 'form-group checkbox';
+      if (this.component.validate && this.component.validate.required) {
+        className += ' required';
+      }
+      this.element = this.ce('element', 'div', {
+        class: className
+      });
+    }
+  }, {
+    key: 'createLabel',
+    value: function createLabel(container, input) {
+      if (!this.component.label) {
+        return null;
+      }
+      this.label = this.ce('label', 'label', {
+        class: 'control-label'
+      });
+      if (this.info.attr.id) {
+        this.label.setAttribute('for', this.info.attr.id);
+      }
+      this.addInput(input, this.label);
+      this.label.appendChild(document.createTextNode(this.component.label));
+      container.appendChild(this.label);
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      if (!this.component.input) {
+        return;
+      }
+      var input = this.ce('input', this.info.type, this.info.attr);
+      this.createErrorElement(container);
+      return input;
+    }
+  }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      return parseInt(_get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'getValueAt', this).call(this, index), 10);
+    }
+  }, {
+    key: 'setValue',
+    value: function setValue(value) {
+      if (this.component.inputType === 'radio') {
+        this.input.checked = value === this.input.value ? 1 : 0;
+      } else if (value === 'on') {
+        this.input.value = 1;
+        this.input.checked = 1;
+      } else if (value === 'off') {
+        this.input.value = 0;
+        this.input.checked = 0;
+      } else if (value) {
+        this.input.value = 1;
+        this.input.checked = 1;
+      } else {
+        this.input.value = 0;
+        this.input.checked = 0;
+      }
+      this.updateValue();
+    }
+  }]);
+
+  return CheckBoxComponent;
+}(_Base2.default);
+
+module.exports = CheckBoxComponent;
+
+},{"../base/Base":202}],205:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _Components = require('../Components');
+
+var _Components2 = _interopRequireDefault(_Components);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var ColumnComponent = function (_FormioComponents) {
+  _inherits(ColumnComponent, _FormioComponents);
+
+  function ColumnComponent() {
+    _classCallCheck(this, ColumnComponent);
+
+    return _possibleConstructorReturn(this, (ColumnComponent.__proto__ || Object.getPrototypeOf(ColumnComponent)).apply(this, arguments));
+  }
+
+  _createClass(ColumnComponent, [{
+    key: 'className',
+    get: function get() {
+      return 'col col-sm-' + this.component.colWidth;
+    }
+  }]);
+
+  return ColumnComponent;
+}(_Components2.default);
+
+module.exports = ColumnComponent;
+
+},{"../Components":200}],206:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _Components = require('../Components');
+
+var _Components2 = _interopRequireDefault(_Components);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var ColumnsComponent = function (_FormioComponents) {
+  _inherits(ColumnsComponent, _FormioComponents);
+
+  function ColumnsComponent() {
+    _classCallCheck(this, ColumnsComponent);
+
+    return _possibleConstructorReturn(this, (ColumnsComponent.__proto__ || Object.getPrototypeOf(ColumnsComponent)).apply(this, arguments));
+  }
+
+  _createClass(ColumnsComponent, [{
+    key: 'addComponents',
+    value: function addComponents() {
+      var _this2 = this;
+
+      var colWidth = Math.floor(12 / this.component.columns.length);
+      (0, _each3.default)(this.component.columns, function (column) {
+        column.type = 'column';
+        column.colWidth = colWidth;
+        _this2.addComponent(column, _this2.element, _this2.data);
+      });
+    }
+  }, {
+    key: 'className',
+    get: function get() {
+      return 'row';
+    }
+  }]);
+
+  return ColumnsComponent;
+}(_Components2.default);
+
+module.exports = ColumnsComponent;
+
+},{"../Components":200,"lodash/each":166}],207:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _Components = require('../Components');
+
+var _Components2 = _interopRequireDefault(_Components);
+
+var _isObject2 = require('lodash/isObject');
+
+var _isObject3 = _interopRequireDefault(_isObject2);
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var ContainerComponent = function (_FormioComponents) {
+  _inherits(ContainerComponent, _FormioComponents);
+
+  function ContainerComponent() {
+    _classCallCheck(this, ContainerComponent);
+
+    return _possibleConstructorReturn(this, (ContainerComponent.__proto__ || Object.getPrototypeOf(ContainerComponent)).apply(this, arguments));
+  }
+
+  _createClass(ContainerComponent, [{
+    key: 'build',
+    value: function build() {
+      this.element = this.ce('element', 'div', {
+        class: 'formio-container-component'
+      });
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = {};
+      }
+      this.addComponents(this.element, this.data[this.component.key]);
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      var value = {};
+      (0, _each3.default)(this.components, function (component) {
+        value[component.component.key] = component.getValue();
+      });
+      return value;
+    }
+  }, {
+    key: 'setValue',
+    value: function setValue(value) {
+      if (!value || !(0, _isObject3.default)(value)) {
+        return;
+      }
+      (0, _each3.default)(this.components, function (component) {
+        if (value.hasOwnProperty(component.component.key)) {
+          component.setValue(value[component.component.key]);
+        }
+      });
+      this.updateValue();
+    }
+  }]);
+
+  return ContainerComponent;
+}(_Components2.default);
+
+module.exports = ContainerComponent;
+
+},{"../Components":200,"lodash/each":166,"lodash/isObject":180}],208:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var ContentComponent = function (_BaseComponent) {
+  _inherits(ContentComponent, _BaseComponent);
+
+  function ContentComponent() {
+    _classCallCheck(this, ContentComponent);
+
+    return _possibleConstructorReturn(this, (ContentComponent.__proto__ || Object.getPrototypeOf(ContentComponent)).apply(this, arguments));
+  }
+
+  _createClass(ContentComponent, [{
+    key: 'build',
+    value: function build() {
+      this.element = this.ce('element', 'div', {
+        class: 'form-group'
+      });
+      this.element.innerHTML = this.component.html;
+    }
+  }]);
+
+  return ContentComponent;
+}(_Base2.default);
+
+module.exports = ContentComponent;
+
+},{"../base/Base":202}],209:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _cloneDeep2 = require('lodash/cloneDeep');
+
+var _cloneDeep3 = _interopRequireDefault(_cloneDeep2);
+
+var _isArray2 = require('lodash/isArray');
+
+var _isArray3 = _interopRequireDefault(_isArray2);
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var DataGridComponent = function (_BaseComponent) {
+  _inherits(DataGridComponent, _BaseComponent);
+
+  function DataGridComponent() {
+    _classCallCheck(this, DataGridComponent);
+
+    return _possibleConstructorReturn(this, (DataGridComponent.__proto__ || Object.getPrototypeOf(DataGridComponent)).apply(this, arguments));
+  }
+
+  _createClass(DataGridComponent, [{
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
+      (0, _each3.default)(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
+        if (_this2.component[prop]) {
+          tableClass += 'table-' + prop + ' ';
+        }
+      });
+      this.element = this.ce('element', 'table', {
+        class: tableClass
+      });
+
+      var thead = this.ce('header', 'thead');
+
+      // Build the header.
+      var tr = this.ce('headerRow', 'tr');
+      (0, _each3.default)(this.component.components, function (comp) {
+        var th = _this2.ce('headerColumn', 'th');
+        if (comp.validate && comp.validate.required) {
+          th.setAttribute('class', 'field-required');
+        }
+        th.appendChild(_this2.text(comp.label));
+        tr.appendChild(th);
+      });
+      var th = this.ce('headerExtra', 'th');
+      tr.appendChild(th);
+      thead.appendChild(tr);
+      this.element.appendChild(thead);
+
+      // Create the table body.
+      this.tbody = this.ce('table', 'tbody');
+
+      // Add a blank row.
+      this.addValue();
+
+      // Add the body to the table and to the element.
+      this.element.appendChild(this.tbody);
+    }
+  }, {
+    key: 'defaultValue',
+    value: function defaultValue() {
+      return {};
+    }
+  }, {
+    key: 'buildRows',
+    value: function buildRows() {
+      var _this3 = this;
+
+      var components = require('../index');
+      this.tbody.innerHTML = '';
+      this.rows = [];
+      (0, _each3.default)(this.data[this.component.key], function (row, index) {
+        var tr = _this3.ce('tableRow', 'tr');
+        var cols = {};
+        (0, _each3.default)(_this3.component.components, function (col) {
+          var column = (0, _cloneDeep3.default)(col);
+          column.label = false;
+          var td = _this3.ce('tableColumn', 'td');
+          var comp = components.create(column, _this3.options, row);
+          td.appendChild(comp.element);
+          if (row.hasOwnProperty(column.key)) {
+            comp.setValue(row[column.key]);
+          }
+          cols[column.key] = comp;
+          tr.appendChild(td);
+        });
+        _this3.rows.push(cols);
+        var td = _this3.ce('tableRemoveRow', 'td');
+        td.appendChild(_this3.removeButton(index));
+        tr.appendChild(td);
+        _this3.tbody.appendChild(tr);
+      });
+
+      // Add the add button.
+      var tr = this.ce('tableAddRow', 'tr');
+      var td = this.ce('tableAddColumn', 'td', {
+        colspan: this.component.components.length + 1
+      });
+      td.appendChild(this.addButton());
+      tr.appendChild(td);
+      this.tbody.appendChild(tr);
+    }
+  }, {
+    key: 'setValue',
+    value: function setValue(value) {
+      if (!value) {
+        return;
+      }
+      if (!(0, _isArray3.default)(value)) {
+        return;
+      }
+
+      // Add needed rows.
+      for (var i = this.rows.length; i < value.length; i++) {
+        this.addValue();
+      }
+
+      (0, _each3.default)(this.rows, function (row, index) {
+        if (value.length <= index) {
+          return;
+        }
+        (0, _each3.default)(row, function (col, key) {
+          if (!value[index].hasOwnProperty(key)) {
+            return;
+          }
+          col.value = value[index][key];
+        });
+      });
+      this.updateValue();
+    }
+
+    /**
+     * Get the value of this component.
+     *
+     * @returns {*}
+     */
+
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      var values = [];
+      (0, _each3.default)(this.rows, function (row) {
+        var value = {};
+        (0, _each3.default)(row, function (col) {
+          if (col && col.component && col.component.key) {
+            value[col.component.key] = col.value;
+          }
+        });
+        values.push(value);
+      });
+      return values;
+    }
+  }]);
+
+  return DataGridComponent;
+}(_Base2.default);
+
+module.exports = DataGridComponent;
+
+},{"../base/Base":202,"../index":215,"lodash/cloneDeep":163,"lodash/each":166,"lodash/isArray":175}],210:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get2 = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+var _flatpickr = require('flatpickr');
+
+var _flatpickr2 = _interopRequireDefault(_flatpickr);
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+var _get3 = require('lodash/get');
+
+var _get4 = _interopRequireDefault(_get3);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var DateTimeComponent = function (_BaseComponent) {
+  _inherits(DateTimeComponent, _BaseComponent);
+
+  function DateTimeComponent(component, options, data) {
+    _classCallCheck(this, DateTimeComponent);
+
+    var _this = _possibleConstructorReturn(this, (DateTimeComponent.__proto__ || Object.getPrototypeOf(DateTimeComponent)).call(this, component, options, data));
+
+    _this.validators.push('date');
+    _this.precise = false;
+    return _this;
+  }
+
+  _createClass(DateTimeComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'text';
+      info.changeEvent = 'input';
+      this.component.suffix = true;
+      return info;
+    }
+
+    // This date component can handle multiple dates on its own.
+
+  }, {
+    key: 'createWrapper',
+    value: function createWrapper() {
+      return false;
+    }
+  }, {
+    key: 'convertFormat',
+    value: function convertFormat(format) {
+      // Year conversion.
+      format = format.replace(/y/g, 'Y');
+      format = format.replace('YYYY', 'Y');
+      format = format.replace('YY', 'y');
+
+      // Month conversion.
+      format = format.replace('MMMM', 'F');
+      format = format.replace(/M/g, 'n');
+      format = format.replace('nnn', 'M');
+      format = format.replace('nn', 'm');
+
+      // Day in month.
+      format = format.replace(/d/g, 'j');
+      format = format.replace('jj', 'd');
+
+      // Day in week.
+      format = format.replace('EEEE', 'l');
+      format = format.replace('EEE', 'D');
+
+      // Hours, minutes, seconds
+      format = format.replace('HH', 'H');
+      format = format.replace('hh', 'h');
+      format = format.replace('mm', 'i');
+      format = format.replace('ss', 'S');
+      format = format.replace(/a/g, 'K');
+      return format;
+    }
+  }, {
+    key: 'addSuffix',
+    value: function addSuffix(input, inputGroup) {
+      var suffix = this.ce('suffix', 'span', {
+        class: 'input-group-addon'
+      });
+      if (this.component.enableDate) {
+        var calendar = this.ce('calendarIcon', 'i', {
+          class: 'glyphicon glyphicon-calendar'
+        });
+        suffix.appendChild(calendar);
+      } else {
+        var time = this.ce('timeIcon', 'i', {
+          class: 'glyphicon glyphicon-time'
+        });
+        suffix.appendChild(time);
+      }
+      inputGroup.appendChild(suffix);
+      return suffix;
+    }
+  }, {
+    key: 'addInput',
+    value: function addInput(input, container, name) {
+      _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'addInput', this).call(this, input, container, name);
+      input.setAttribute('data-input', '');
+      input.calendar = new _flatpickr2.default(input, this.config);
+    }
+  }, {
+    key: 'getDate',
+    value: function getDate(value) {
+      var timestamp = parseInt(value, 10);
+      if (!timestamp) {
+        // Just default to today.
+        return (0, _moment2.default)();
+      }
+      if (!this.precise) {
+        timestamp *= 1000;
+      }
+      return (0, _moment2.default)(timestamp);
+    }
+  }, {
+    key: 'getValidateValue',
+    value: function getValidateValue() {
+      var values = [];
+      for (var i in this.inputs) {
+        if (!this.component.multiple) {
+          return this.getDate(this.inputs[i].value).format();
+        }
+        values.push(this.getDate(this.inputs[i].value).format());
+      }
+      return values;
+    }
+  }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      return this.getDate(this.inputs[index].value).toISOString();
+    }
+  }, {
+    key: 'setValueAt',
+    value: function setValueAt(index, value) {
+      var date = new Date(value);
+      this.precise = true;
+      this.inputs[index].value = date.getTime();
+    }
+  }, {
+    key: 'config',
+    get: function get() {
+      var _this2 = this;
+
+      return {
+        altInput: true,
+        clickOpens: true,
+        enableDate: true,
+        mode: this.component.multiple ? 'multiple' : 'single',
+        enableTime: (0, _get4.default)(this.component, 'enableTime', true),
+        noCalendar: !(0, _get4.default)(this.component, 'enableDate', true),
+        altFormat: this.convertFormat((0, _get4.default)(this.component, 'format', '')),
+        dateFormat: 'U',
+        defaultDate: (0, _get4.default)(this.component, 'defaultDate', ''),
+        hourIncrement: (0, _get4.default)(this.component, 'timePicker.hourStep', 1),
+        minuteIncrement: (0, _get4.default)(this.component, 'timePicker.minuteStep', 5),
+        onChange: function onChange() {
+          return _this2.onChange();
+        }
+      };
+    }
+  }]);
+
+  return DateTimeComponent;
+}(_Base2.default);
+
+module.exports = DateTimeComponent;
+
+},{"../base/Base":202,"flatpickr":2,"lodash/get":170,"moment":193}],211:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get2 = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+var _get3 = require('lodash/get');
+
+var _get4 = _interopRequireDefault(_get3);
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var DayComponent = function (_BaseComponent) {
+  _inherits(DayComponent, _BaseComponent);
+
+  function DayComponent(component, options, data) {
+    _classCallCheck(this, DayComponent);
+
+    var _this = _possibleConstructorReturn(this, (DayComponent.__proto__ || Object.getPrototypeOf(DayComponent)).call(this, component, options, data));
+
+    _this.validators.push('date');
+    return _this;
+  }
+
+  _createClass(DayComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get2(DayComponent.prototype.__proto__ || Object.getPrototypeOf(DayComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'hidden';
+      info.changeEvent = 'change';
+      return info;
+    }
+  }, {
+    key: 'createDayInput',
+    value: function createDayInput() {
+      var _this2 = this;
+
+      var dayColumn = this.ce('dayColumn', 'div', {
+        class: 'form-group col col-xs-3'
+      });
+      var dayLabel = this.ce('dayLabel', 'label', {
+        for: this.component.key + '-day',
+        class: (0, _get4.default)(this.component, 'fields.day.required', false) ? 'field-required' : ''
+      });
+      dayLabel.appendChild(this.text(this.t('day')));
+      dayColumn.appendChild(dayLabel);
+      this.dayInput = this.ce('dayInput', 'input', {
+        class: 'form-control',
+        type: 'number',
+        step: '1',
+        min: '1',
+        max: '31',
+        placeholder: (0, _get4.default)(this.component, 'fields.day.placeholder', ''),
+        id: this.component.key + '-day'
+      });
+      this.addAnEventListener(this.dayInput, 'change', function () {
+        return _this2.updateValue();
+      });
+      dayColumn.appendChild(this.dayInput);
+      return dayColumn;
+    }
+  }, {
+    key: 'createMonthInput',
+    value: function createMonthInput() {
+      var monthColumn = this.ce('monthColumn', 'div', {
+        class: 'form-group col col-xs-4'
+      });
+      var monthLabel = this.ce('monthLabel', 'label', {
+        for: this.component.key + '-month',
+        class: (0, _get4.default)(this.component, 'fields.month.required', false) ? 'field-required' : ''
+      });
+      monthLabel.appendChild(this.text(this.t('month')));
+      monthColumn.appendChild(monthLabel);
+      this.monthInput = this.ce('monthInput', 'select', {
+        class: 'form-control',
+        id: this.component.key + '-month'
+      });
+      this.selectOptions(this.monthInput, 'monthOption', this.months);
+      var self = this;
+
+      // Ensure the day limits match up with the months selected.
+      this.monthInput.onchange = function () {
+        self.dayInput.max = new Date(self.yearInput.value, this.value, 0).getDate();
+        if (self.dayInput.value > self.dayInput.max) {
+          self.dayInput.value = self.dayInput.max;
+        }
+        self.updateValue();
+      };
+      monthColumn.appendChild(this.monthInput);
+      return monthColumn;
+    }
+  }, {
+    key: 'createYearInput',
+    value: function createYearInput() {
+      var _this3 = this;
+
+      var yearColumn = this.ce('yearColumn', 'div', {
+        class: 'form-group col col-xs-5'
+      });
+      var yearLabel = this.ce('yearLabel', 'label', {
+        for: this.component.key + '-year',
+        class: (0, _get4.default)(this.component, 'fields.year.required', false) ? 'field-required' : ''
+      });
+      yearLabel.appendChild(this.text(this.t('year')));
+      yearColumn.appendChild(yearLabel);
+      this.yearInput = this.ce('yearInput', 'input', {
+        class: 'form-control',
+        type: 'number',
+        step: '1',
+        min: '1',
+        placeholder: (0, _get4.default)(this.component, 'fields.year.placeholder', ''),
+        value: new Date().getFullYear(),
+        id: this.component.key + '-year'
+      });
+      this.addAnEventListener(this.yearInput, 'change', function () {
+        return _this3.updateValue();
+      });
+      yearColumn.appendChild(this.yearInput);
+      return yearColumn;
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      var inputGroup = this.ce('inputGroup', 'div', {
+        class: 'input-group row'
+      });
+
+      var dayColumn = this.createDayInput();
+      var monthColumn = this.createMonthInput();
+      var yearColumn = this.createYearInput();
+
+      // Add the columns to the day select in the right order.
+      if (this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
+        inputGroup.appendChild(dayColumn);
+      }
+      if (!(0, _get4.default)(this.component, 'fields.month.hide', false)) {
+        inputGroup.appendChild(monthColumn);
+      }
+      if (!this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
+        inputGroup.appendChild(dayColumn);
+      }
+      if (!(0, _get4.default)(this.component, 'fields.year.hide', false)) {
+        inputGroup.appendChild(yearColumn);
+      }
+
+      var input = this.ce('input', this.info.type, this.info.attr);
+      this.addInput(input, inputGroup);
+      this.createErrorElement(container);
+      container.appendChild(inputGroup);
+    }
+
+    /**
+     * Set the value at a specific index.
+     *
+     * @param index
+     * @param value
+     */
+
+  }, {
+    key: 'setValueAt',
+    value: function setValueAt(index, value) {
+      var parts = value.split('/');
+      if (this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
+        this.dayInput.value = parseInt(parts.shift(), 10);
+      }
+      if (!(0, _get4.default)(this.component, 'fields.month.hide', false)) {
+        this.monthInput.value = parseInt(parts.shift(), 10);
+      }
+      if (!this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
+        this.dayInput.value = parseInt(parts.shift(), 10);
+      }
+      if (!(0, _get4.default)(this.component, 'fields.year.hide', false)) {
+        this.yearInput.value = parseInt(parts.shift(), 10);
+      }
+    }
+
+    /**
+     * Get the format for the value string.
+     * @returns {string}
+     */
+
+  }, {
+    key: 'getValidateValue',
+
+    /**
+     * Validate the date object.
+     * @returns {Date}
+     */
+    value: function getValidateValue() {
+      return this.date.format();
+    }
+
+    /**
+     * Get the value at a specific index.
+     *
+     * @param index
+     * @returns {*}
+     */
+
+  }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      this.inputs[index].value = this.date.format(this.format);
+      return this.inputs[index].value;
+    }
+  }, {
+    key: 'months',
+    get: function get() {
+      if (this._months) {
+        return this._months;
+      }
+      this._months = [{ value: 0, label: (0, _get4.default)(this.component, 'fields.month.placeholder', '') }, { value: 1, label: this.t('january') }, { value: 2, label: this.t('february') }, { value: 3, label: this.t('march') }, { value: 4, label: this.t('april') }, { value: 5, label: this.t('may') }, { value: 6, label: this.t('june') }, { value: 7, label: this.t('july') }, { value: 8, label: this.t('august') }, { value: 9, label: this.t('september') }, { value: 10, label: this.t('october') }, { value: 11, label: this.t('november') }, { value: 12, label: this.t('december') }];
+      return this._months;
+    }
+  }, {
+    key: 'format',
+    get: function get() {
+      var format = '';
+      if (this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
+        format += 'D/';
+      }
+      if (!(0, _get4.default)(this.component, 'fields.month.hide', false)) {
+        format += 'M/';
+      }
+      if (!this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
+        format += 'D/';
+      }
+      if (!(0, _get4.default)(this.component, 'fields.year.hide', false)) {
+        format += 'YYYY';
+      }
+      return format;
+    }
+
+    /**
+     * Return the date object for this component.
+     * @returns {Date}
+     */
+
+  }, {
+    key: 'date',
+    get: function get() {
+      var day = this.dayInput.value;
+      var month = this.monthInput.value;
+      var year = this.yearInput.value;
+      return (0, _moment2.default)([parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10)]);
+    }
+  }]);
+
+  return DayComponent;
+}(_Base2.default);
+
+module.exports = DayComponent;
+
+},{"../base/Base":202,"lodash/each":166,"lodash/get":170,"moment":193}],212:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _TextField = require('../textfield/TextField');
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var EmailComponent = function (_TextFieldComponent) {
+  _inherits(EmailComponent, _TextFieldComponent);
+
+  function EmailComponent(component, options, data) {
+    _classCallCheck(this, EmailComponent);
+
+    var _this = _possibleConstructorReturn(this, (EmailComponent.__proto__ || Object.getPrototypeOf(EmailComponent)).call(this, component, options, data));
+
+    _this.validators.push('email');
+    return _this;
+  }
+
+  _createClass(EmailComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(EmailComponent.prototype.__proto__ || Object.getPrototypeOf(EmailComponent.prototype), 'elementInfo', this).call(this);
+      info.attr.type = 'email';
+      return info;
+    }
+  }]);
+
+  return EmailComponent;
+}(_TextField2.default);
+
+module.exports = EmailComponent;
+
+},{"../textfield/TextField":227}],213:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var HiddenComponent = function (_BaseComponent) {
+  _inherits(HiddenComponent, _BaseComponent);
+
+  function HiddenComponent() {
+    _classCallCheck(this, HiddenComponent);
+
+    return _possibleConstructorReturn(this, (HiddenComponent.__proto__ || Object.getPrototypeOf(HiddenComponent)).apply(this, arguments));
+  }
+
+  _createClass(HiddenComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(HiddenComponent.prototype.__proto__ || Object.getPrototypeOf(HiddenComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'hidden';
+      info.changeEvent = 'change';
+      return info;
+    }
+  }]);
+
+  return HiddenComponent;
+}(_Base2.default);
+
+module.exports = HiddenComponent;
+
+},{"../base/Base":202}],214:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var HTMLComponent = function (_BaseComponent) {
+  _inherits(HTMLComponent, _BaseComponent);
+
+  function HTMLComponent() {
+    _classCallCheck(this, HTMLComponent);
+
+    return _possibleConstructorReturn(this, (HTMLComponent.__proto__ || Object.getPrototypeOf(HTMLComponent)).apply(this, arguments));
+  }
+
+  _createClass(HTMLComponent, [{
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this.element = this.ce('element', this.component.tag, {
+        class: this.component.className
+      });
+      (0, _each3.default)(this.component.attrs, function (attr) {
+        _this2.element.setAttribute(attr.attr, attr.value);
+      });
+      if (this.component.content) {
+        this.element.innerHTML = this.component.content;
+      }
+    }
+  }]);
+
+  return HTMLComponent;
+}(_Base2.default);
+
+module.exports = HTMLComponent;
+
+},{"../base/Base":202,"lodash/each":166}],215:[function(require,module,exports){
+'use strict';
+
+var Components = {
+  base: require('./base/Base'),
+  content: require('./content/Content'),
+  container: require('./container/Container'),
+  datagrid: require('./datagrid/DataGrid'),
+  datetime: require('./datetime/DateTime'),
+  day: require('./day/Day'),
+  htmlelement: require('./html/HTML'),
+  hidden: require('./hidden/Hidden'),
+  textfield: require('./textfield/TextField'),
+  phoneNumber: require('./phonenumber/PhoneNumber'),
+  email: require('./email/Email'),
+  checkbox: require('./checkbox/Checkbox'),
+  signature: require('./signature/Signature'),
+  select: require('./select/Select'),
+  textarea: require('./textarea/TextArea'),
+  button: require('./button/Button'),
+  number: require('./number/Number'),
+  password: require('./password/Password'),
+  panel: require('./panel/Panel'),
+  columns: require('./columns/Columns'),
+  column: require('./columns/Column'),
+  table: require('./table/Table'),
+  radio: require('./radio/Radio'),
+  selectboxes: require('./selectboxes/SelectBoxes'),
+  survey: require('./survey/Survey'),
+  well: require('./well/Well'),
+  create: function create(component, options, data) {
+    var comp = null;
+    if (!component.type) {
+      return null;
+    } else if (this.hasOwnProperty(component.type)) {
+      comp = new Components[component.type](component, options, data);
+    } else {
+      comp = new Components.base(component, options, data);
+    }
+    comp.build();
+    return comp;
+  }
+};
+module.exports = Components;
+
+},{"./base/Base":202,"./button/Button":203,"./checkbox/Checkbox":204,"./columns/Column":205,"./columns/Columns":206,"./container/Container":207,"./content/Content":208,"./datagrid/DataGrid":209,"./datetime/DateTime":210,"./day/Day":211,"./email/Email":212,"./hidden/Hidden":213,"./html/HTML":214,"./number/Number":216,"./panel/Panel":217,"./password/Password":218,"./phonenumber/PhoneNumber":219,"./radio/Radio":220,"./select/Select":221,"./selectboxes/SelectBoxes":222,"./signature/Signature":223,"./survey/Survey":224,"./table/Table":225,"./textarea/TextArea":226,"./textfield/TextField":227,"./well/Well":228}],216:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var NumberComponent = function (_BaseComponent) {
+  _inherits(NumberComponent, _BaseComponent);
+
+  function NumberComponent() {
+    _classCallCheck(this, NumberComponent);
+
+    return _possibleConstructorReturn(this, (NumberComponent.__proto__ || Object.getPrototypeOf(NumberComponent)).apply(this, arguments));
+  }
+
+  _createClass(NumberComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(NumberComponent.prototype.__proto__ || Object.getPrototypeOf(NumberComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'number';
+      info.changeEvent = 'input';
+      if (this.component.validate) {
+        if (this.component.validate.min !== '') {
+          info.attr.min = this.component.validate.min;
+        }
+        if (this.component.validate.max !== '') {
+          info.attr.max = this.component.validate.max;
+        }
+        if (this.component.step !== '') {
+          info.attr.step = this.component.validate.step;
+        }
+      }
+      return info;
+    }
+  }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      if (this.component.validate && this.component.validate.integer) {
+        return parseInt(this.inputs[index].value, 10);
+      } else {
+        return parseFloat(this.inputs[index].value);
+      }
+    }
+  }, {
+    key: 'setValueAt',
+    value: function setValueAt(index, value) {
+      if (this.component.validate && this.component.validate.integer) {
+        this.inputs[index].value = parseInt(value, 10);
+      } else {
+        this.inputs[index].value = parseFloat(value);
+      }
+    }
+  }]);
+
+  return NumberComponent;
+}(_Base2.default);
+
+module.exports = NumberComponent;
+
+},{"../base/Base":202}],217:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _Components = require('../Components');
+
+var _Components2 = _interopRequireDefault(_Components);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var PanelComponent = function (_FormioComponents) {
+  _inherits(PanelComponent, _FormioComponents);
+
+  function PanelComponent() {
+    _classCallCheck(this, PanelComponent);
+
+    return _possibleConstructorReturn(this, (PanelComponent.__proto__ || Object.getPrototypeOf(PanelComponent)).apply(this, arguments));
+  }
+
+  _createClass(PanelComponent, [{
+    key: 'build',
+    value: function build() {
+      this.element = this.ce('element', 'div', {
+        class: 'panel panel-' + this.component.theme
+      });
+      if (this.component.title) {
+        var heading = this.ce('heading', 'div', {
+          class: 'panel-heading'
+        });
+        var title = this.ce('title', 'h3', {
+          class: 'panel-title'
+        });
+        title.appendChild(this.text(this.component.title));
+        heading.appendChild(title);
+        this.element.appendChild(heading);
+      }
+      var body = this.ce('body', 'div', {
+        class: 'panel-body'
+      });
+      this.addComponents(body);
+      this.element.appendChild(body);
+    }
+  }]);
+
+  return PanelComponent;
+}(_Components2.default);
+
+module.exports = PanelComponent;
+
+},{"../Components":200}],218:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _TextField = require('../textfield/TextField');
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var PasswordComponent = function (_TextFieldComponent) {
+  _inherits(PasswordComponent, _TextFieldComponent);
+
+  function PasswordComponent() {
+    _classCallCheck(this, PasswordComponent);
+
+    return _possibleConstructorReturn(this, (PasswordComponent.__proto__ || Object.getPrototypeOf(PasswordComponent)).apply(this, arguments));
+  }
+
+  _createClass(PasswordComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(PasswordComponent.prototype.__proto__ || Object.getPrototypeOf(PasswordComponent.prototype), 'elementInfo', this).call(this);
+      info.attr.type = 'password';
+      return info;
+    }
+  }]);
+
+  return PasswordComponent;
+}(_TextField2.default);
+
+module.exports = PasswordComponent;
+
+},{"../textfield/TextField":227}],219:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _TextField = require('../textfield/TextField');
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var PhoneNumberComponent = function (_TextFieldComponent) {
+  _inherits(PhoneNumberComponent, _TextFieldComponent);
+
+  function PhoneNumberComponent() {
+    _classCallCheck(this, PhoneNumberComponent);
+
+    return _possibleConstructorReturn(this, (PhoneNumberComponent.__proto__ || Object.getPrototypeOf(PhoneNumberComponent)).apply(this, arguments));
+  }
+
+  return PhoneNumberComponent;
+}(_TextField2.default);
+
+module.exports = PhoneNumberComponent;
+
+},{"../textfield/TextField":227}],220:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var RadioComponent = function (_BaseComponent) {
+  _inherits(RadioComponent, _BaseComponent);
+
+  function RadioComponent() {
+    _classCallCheck(this, RadioComponent);
+
+    return _possibleConstructorReturn(this, (RadioComponent.__proto__ || Object.getPrototypeOf(RadioComponent)).apply(this, arguments));
+  }
+
+  _createClass(RadioComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.changeEvent = 'click';
+      info.attr.class = '';
+      return info;
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      var _this2 = this;
+
+      var inputGroup = this.ce('inputGroup', 'div', {
+        class: 'input-group'
+      });
+      var inputType = this.component.inputType;
+      (0, _each3.default)(this.component.values, function (value) {
+        var wrapperClass = _this2.component.inline ? inputType + '-inline' : inputType;
+        var labelWrapper = _this2.ce('labelWrapper', 'div', {
+          class: wrapperClass
+        });
+        var label = _this2.ce('label', 'label', {
+          class: 'control-label'
+        });
+
+        // Determine the attributes for this input.
+        var inputId = _this2.inputId + '-' + value.value;
+        _this2.info.attr.id = inputId;
+        _this2.info.attr.value = value.value;
+        label.setAttribute('for', _this2.info.attr.id);
+
+        // Create the input.
+        var input = _this2.ce('input', 'input');
+        (0, _each3.default)(_this2.info.attr, function (value, key) {
+          input.setAttribute(key, value);
+        });
+        _this2.addInput(input, label);
+        label.appendChild(document.createTextNode(value.label));
+        labelWrapper.appendChild(label);
+        inputGroup.appendChild(labelWrapper);
+      });
+      container.appendChild(inputGroup);
+    }
+  }, {
+    key: 'addInputEventListener',
+    value: function addInputEventListener(input) {
+      var _this3 = this;
+
+      this.addAnEventListener(input, this.info.changeEvent, function () {
+        if (input.value) {
+          _this3.onChange();
+        }
+      });
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      var value = '';
+      (0, _each3.default)(this.inputs, function (input) {
+        if (input.checked) {
+          value = input.value;
+        }
+      });
+      return value;
+    }
+  }, {
+    key: 'value',
+    set: function set(value) {
+      (0, _each3.default)(this.inputs, function (input) {
+        input.checked = input.value === value;
+      });
+    }
+  }]);
+
+  return RadioComponent;
+}(_Base2.default);
+
+module.exports = RadioComponent;
+
+},{"../base/Base":202,"lodash/each":166}],221:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+var _formio = require('../../formio');
+
+var _formio2 = _interopRequireDefault(_formio);
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var SelectComponent = function (_BaseComponent) {
+  _inherits(SelectComponent, _BaseComponent);
+
+  function SelectComponent() {
+    _classCallCheck(this, SelectComponent);
+
+    return _possibleConstructorReturn(this, (SelectComponent.__proto__ || Object.getPrototypeOf(SelectComponent)).apply(this, arguments));
+  }
+
+  _createClass(SelectComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'select';
+      info.changeEvent = '';
+      return info;
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      var _this2 = this;
+
+      var input = _get(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'createInput', this).call(this, container);
+      this.selectItems = [];
+      var template = this.component.template ? this.component.template.split('.')[1].split(' ')[0] : '';
+      var valueProperty = this.component.valueProperty;
+      switch (this.component.dataSrc) {
+        case 'values':
+          this.selectItems = this.component.data.values;
+          this.updateOptions(input);
+          break;
+        case 'json':
+          (0, _each3.default)(this.component.data.json, function (item) {
+            _this2.selectItems.push({
+              value: item[valueProperty],
+              label: item[template]
+            });
+          });
+          this.updateOptions(input);
+          break;
+        case 'resource':
+          var baseUrl = _formio2.default.getAppUrl() + '/' + this.component.data.resource;
+          var value = valueProperty.split('.')[1];
+          new FormioService(baseUrl).loadSubmissions().then(function (submissions) {
+            (0, _each3.default)(submissions, function (submission) {
+              _this2.selectItems.push({
+                value: submission.data[value],
+                label: submission.data[value]
+              });
+            });
+            _this2.updateOptions(input);
+          });
+          break;
+        case 'url':
+          _formio2.default.request(this.component.data.url).then(function (response) {
+            (0, _each3.default)(response, function (item) {
+              _this2.selectItems.push({
+                value: item[valueProperty],
+                label: item[template]
+              });
+            });
+            _this2.updateOptions(input);
+          });
+          break;
+
+      }
+    }
+  }, {
+    key: 'updateOptions',
+    value: function updateOptions(input) {
+      input.innerHTML = '';
+      this.selectOptions(input, 'selectOption', this.selectItems);
+    }
+  }]);
+
+  return SelectComponent;
+}(_Base2.default);
+
+module.exports = SelectComponent;
+
+},{"../../formio":231,"../base/Base":202,"lodash/each":166}],222:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Radio = require('../radio/Radio');
+
+var _Radio2 = _interopRequireDefault(_Radio);
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var SelectBoxesComponent = function (_RadioComponent) {
+  _inherits(SelectBoxesComponent, _RadioComponent);
+
+  function SelectBoxesComponent(component, options, data) {
+    _classCallCheck(this, SelectBoxesComponent);
+
+    var _this = _possibleConstructorReturn(this, (SelectBoxesComponent.__proto__ || Object.getPrototypeOf(SelectBoxesComponent)).call(this, component, options, data));
+
+    _this.component.inputType = 'checkbox';
+    return _this;
+  }
+
+  _createClass(SelectBoxesComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(SelectBoxesComponent.prototype.__proto__ || Object.getPrototypeOf(SelectBoxesComponent.prototype), 'elementInfo', this).call(this);
+      info.attr.name += '[]';
+      info.attr.type = 'checkbox';
+      return info;
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      var value = [];
+      (0, _each3.default)(this.inputs, function (input) {
+        if (input.checked) {
+          value.push(input.value);
+        }
+      });
+      return value;
+    }
+  }, {
+    key: 'value',
+    set: function set(value) {
+      (0, _each3.default)(this.inputs, function (input) {
+        input.checked = value.indexOf(input.value) !== -1;
+      });
+    }
+  }]);
+
+  return SelectBoxesComponent;
+}(_Radio2.default);
+
+module.exports = SelectBoxesComponent;
+
+},{"../radio/Radio":220,"lodash/each":166}],223:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _set = function set(object, property, value, receiver) {
+  var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent !== null) {
+      set(parent, property, value, receiver);
+    }
+  } else if ("value" in desc && desc.writable) {
+    desc.value = value;
+  } else {
+    var setter = desc.set;if (setter !== undefined) {
+      setter.call(receiver, value);
+    }
+  }return value;
+};
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _signature_pad = require('signature_pad');
+
+var _signature_pad2 = _interopRequireDefault(_signature_pad);
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var SignatureComponent = function (_BaseComponent) {
+  _inherits(SignatureComponent, _BaseComponent);
+
+  function SignatureComponent() {
+    _classCallCheck(this, SignatureComponent);
+
+    return _possibleConstructorReturn(this, (SignatureComponent.__proto__ || Object.getPrototypeOf(SignatureComponent)).apply(this, arguments));
+  }
+
+  _createClass(SignatureComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'hidden';
+      return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this.element = this.ce('element', 'div', {
+        id: this.id,
+        class: 'form-group signature-pad'
+      });
+      this.input = this.createInput(this.element);
+      var padBody = this.ce('pad', 'div', {
+        class: 'signature-pad-body',
+        style: 'width: ' + this.component.width + ';height: ' + this.component.height
+      });
+
+      // Create the refresh button.
+      var refresh = this.ce('refresh', 'a', {
+        class: 'btn btn-sm btn-default signature-pad-refresh'
+      });
+      var refreshIcon = this.ce('refreshIcon', 'span', {
+        class: 'glyphicon glyphicon-refresh'
+      });
+      refresh.appendChild(refreshIcon);
+      padBody.appendChild(refresh);
+
+      // The signature canvas.
+      var canvas = this.ce('canvas', 'canvas', {
+        class: 'signature-pad-canvas'
+      });
+      padBody.appendChild(canvas);
+      this.element.appendChild(padBody);
+
+      // Add the footer.
+      if (this.component.footer) {
+        var footer = this.ce('footer', 'div', {
+          class: 'signature-pad-footer'
+        });
+        footer.appendChild(this.text(this.component.footer));
+        this.element.appendChild(footer);
+      }
+
+      // Create the signature pad.
+      this.signaturePad = new _signature_pad2.default(canvas, {
+        minWidth: this.component.minWidth,
+        maxWidth: this.component.maxWidth,
+        penColor: this.component.penColor,
+        backgroundColor: this.component.backgroundColor
+      });
+      refresh.addEventListener("click", function (event) {
+        event.preventDefault();
+        _this2.signaturePad.clear();
+      });
+      this.signaturePad.onEnd = function () {
+        return _this2.setValue(_this2.signaturePad.toDataURL());
+      };
+
+      // Ensure the signature is always the size of its container.
+      var currentWidth = 0;
+      setTimeout(function checkWidth() {
+        if (padBody.offsetWidth !== currentWidth) {
+          currentWidth = padBody.offsetWidth;
+          canvas.width = currentWidth;
+          var ctx = canvas.getContext("2d");
+          ctx.fillStyle = this.signaturePad.backgroundColor;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        setTimeout(checkWidth.bind(this), 200);
+      }.bind(this), 200);
+    }
+  }, {
+    key: 'value',
+    set: function set(value) {
+      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'value', value, this);
+      if (this.signaturePad && this.noSign) {
+        this.signaturePad.fromDataURL(value);
+      }
+    }
+  }, {
+    key: 'disable',
+    set: function set(disable) {
+      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disable', disable, this);
+      var image = this.ce('image', 'img', {
+        style: 'width: ' + this.component.width + ';height: ' + this.component.height
+      });
+      image.setAttribute('src', this.input.value);
+      this.element.innerHTML = '';
+      this.element.appendChild(image);
+    }
+  }]);
+
+  return SignatureComponent;
+}(_Base2.default);
+
+module.exports = SignatureComponent;
+
+},{"../base/Base":202,"signature_pad":196}],224:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var SurveyComponent = function (_BaseComponent) {
+  _inherits(SurveyComponent, _BaseComponent);
+
+  function SurveyComponent() {
+    _classCallCheck(this, SurveyComponent);
+
+    return _possibleConstructorReturn(this, (SurveyComponent.__proto__ || Object.getPrototypeOf(SurveyComponent)).apply(this, arguments));
+  }
+
+  _createClass(SurveyComponent, [{
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this.createElement();
+      this.createLabel(this.element);
+      this.table = this.ce('table', 'table', {
+        class: 'table table-striped table-bordered'
+      });
+
+      // Build header.
+      var thead = this.ce('header', 'thead');
+      var thr = this.ce('headerRow', 'tr');
+      thr.appendChild(this.ce('headerColumn', 'td'));
+      (0, _each3.default)(this.component.values, function (value) {
+        var th = _this2.ce('headerColumn', 'th', {
+          style: 'text-align: center;'
+        });
+        th.appendChild(_this2.text(value.label));
+        thr.appendChild(th);
+      });
+      thead.appendChild(thr);
+      this.table.appendChild(thead);
+      // Build the body.
+      var tbody = this.ce('table', 'tbody');
+      (0, _each3.default)(this.component.questions, function (question) {
+        var tr = _this2.ce('tableRow', 'tr');
+        var td = _this2.ce('questionColumn', 'td');
+        td.appendChild(_this2.text(question.label));
+        tr.appendChild(td);
+        (0, _each3.default)(_this2.component.values, function (value) {
+          var td = _this2.ce('valueColumn', 'td', {
+            style: 'text-align: center;'
+          });
+          var input = _this2.ce('input', 'input', {
+            type: 'radio',
+            name: 'data[' + _this2.component.key + '][' + question.value + ']',
+            value: value.value,
+            id: _this2.id + '-' + question.value + '-' + value.value
+          });
+          _this2.addInput(input, td);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      this.table.appendChild(tbody);
+      this.element.appendChild(this.table);
+    }
+  }, {
+    key: 'setValue',
+    value: function setValue(value) {
+      var _this3 = this;
+
+      var key = 'data[' + this.component.key + ']';
+      (0, _each3.default)(this.component.questions, function (question) {
+        (0, _each3.default)(_this3.inputs, function (input) {
+          if (input.name === key + '[' + question.value + ']') {
+            input.checked = input.value === value[question.value];
+          }
+        });
+      });
+      this.updateValue();
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      var _this4 = this;
+
+      var value = {};
+      var key = 'data[' + this.component.key + ']';
+      (0, _each3.default)(this.component.questions, function (question) {
+        (0, _each3.default)(_this4.inputs, function (input) {
+          if (input.checked && input.name === key + '[' + question.value + ']') {
+            value[question.value] = input.value;
+            return false;
+          }
+        });
+      });
+      return value;
+    }
+  }]);
+
+  return SurveyComponent;
+}(_Base2.default);
+
+module.exports = SurveyComponent;
+
+},{"../base/Base":202,"lodash/each":166}],225:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _Components = require('../Components');
+
+var _Components2 = _interopRequireDefault(_Components);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var TableComponent = function (_FormioComponents) {
+  _inherits(TableComponent, _FormioComponents);
+
+  function TableComponent() {
+    _classCallCheck(this, TableComponent);
+
+    return _possibleConstructorReturn(this, (TableComponent.__proto__ || Object.getPrototypeOf(TableComponent)).apply(this, arguments));
+  }
+
+  _createClass(TableComponent, [{
+    key: 'build',
+    value: function build() {
+      var _this2 = this;
+
+      this.element = this.ce('element', 'div', {
+        class: 'table-responsive'
+      });
+
+      var tableClass = 'table ';
+      (0, _each3.default)(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
+        if (_this2.component[prop]) {
+          tableClass += 'table-' + prop + ' ';
+        }
+      });
+      var table = this.ce('table', 'table', {
+        class: tableClass
+      });
+
+      // Build the header.
+      if (this.component.header && this.component.header.length) {
+        var thead = this.ce('header', 'thead');
+        var thr = this.ce('headerRow', 'tr');
+        (0, _each3.default)(this.component.header, function (header) {
+          var th = _this2.ce('headerColumn', 'th');
+          th.appendChild(_this2.text(header));
+          thr.appendChild(th);
+        });
+        thead.appendChild(thr);
+        table.appendChild(thead);
+      }
+
+      // Build the body.
+      var tbody = this.ce('table', 'tbody');
+      (0, _each3.default)(this.component.rows, function (row) {
+        var tr = _this2.ce('tableRow', 'tr');
+        (0, _each3.default)(row, function (column) {
+          var td = _this2.ce('tableColumn', 'td');
+          (0, _each3.default)(column.components, function (comp) {
+            _this2.addComponent(comp, td);
+          });
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+      this.element.appendChild(table);
+    }
+  }]);
+
+  return TableComponent;
+}(_Components2.default);
+
+module.exports = TableComponent;
+
+},{"../Components":200,"lodash/each":166}],226:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _TextField = require('../textfield/TextField');
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var TextAreaComponent = function (_TextFieldComponent) {
+  _inherits(TextAreaComponent, _TextFieldComponent);
+
+  function TextAreaComponent() {
+    _classCallCheck(this, TextAreaComponent);
+
+    return _possibleConstructorReturn(this, (TextAreaComponent.__proto__ || Object.getPrototypeOf(TextAreaComponent)).apply(this, arguments));
+  }
+
+  _createClass(TextAreaComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'textarea';
+      if (this.component.rows) {
+        info.attr.rows = this.component.rows;
+      }
+      return info;
+    }
+  }]);
+
+  return TextAreaComponent;
+}(_TextField2.default);
+
+module.exports = TextAreaComponent;
+
+},{"../textfield/TextField":227}],227:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _Base = require('../base/Base');
+
+var _Base2 = _interopRequireDefault(_Base);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var TextFieldComponent = function (_BaseComponent) {
+  _inherits(TextFieldComponent, _BaseComponent);
+
+  function TextFieldComponent() {
+    _classCallCheck(this, TextFieldComponent);
+
+    return _possibleConstructorReturn(this, (TextFieldComponent.__proto__ || Object.getPrototypeOf(TextFieldComponent)).apply(this, arguments));
+  }
+
+  _createClass(TextFieldComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(TextFieldComponent.prototype.__proto__ || Object.getPrototypeOf(TextFieldComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'text';
+      info.changeEvent = 'input';
+      return info;
+    }
+  }]);
+
+  return TextFieldComponent;
+}(_Base2.default);
+
+module.exports = TextFieldComponent;
+
+},{"../base/Base":202}],228:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _Components = require('../Components');
+
+var _Components2 = _interopRequireDefault(_Components);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var WellComponent = function (_FormioComponents) {
+  _inherits(WellComponent, _FormioComponents);
+
+  function WellComponent() {
+    _classCallCheck(this, WellComponent);
+
+    return _possibleConstructorReturn(this, (WellComponent.__proto__ || Object.getPrototypeOf(WellComponent)).apply(this, arguments));
+  }
+
+  _createClass(WellComponent, [{
+    key: 'className',
+    get: function get() {
+      return 'well formio-component formio-component-well';
+    }
+  }]);
+
+  return WellComponent;
+}(_Components2.default);
+
+module.exports = WellComponent;
+
+},{"../Components":200}],229:[function(require,module,exports){
+'use strict';
+
+var _formioForm = require('./formio.form.js');
+
+var _formioForm2 = _interopRequireDefault(_formioForm);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+var query = {};
+var scripts = document.getElementsByTagName('script');
+var thisScript = scripts[scripts.length - 1];
+var scriptSrc = thisScript.src.replace(/^([^\?]+).*/, '$1').split('/');
+scriptSrc.pop();
+scriptSrc = scriptSrc.join('/');
+var queryString = thisScript.src.replace(/^[^\?]+\??/, '');
+queryString.replace(/\?/g, '&').split("&").forEach(function (item) {
+  query[item.split("=")[0]] = item.split("=")[1] && decodeURIComponent(item.split("=")[1]);
+});
+var id = query.id || 'formio-' + Math.random().toString(36).substring(7);
+var height = query.height || 500;
+var className = query.class || 'formio-form-wrapper';
+var styles = query.styles || scriptSrc + '/formio.form.min.css';
+document.write('<link rel="stylesheet" href="' + styles + '"><div id="' + id + '" class="' + className + '" style="height:' + height + 'px;"></div>');
+var formElement = document.getElementById(id);
+var form = new _formioForm2.default(formElement);
+form.src = query.src;
+
+},{"./formio.form.js":230}],230:[function(require,module,exports){
+(function (global){
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _formio = require("./formio");
+
+var _formio2 = _interopRequireDefault(_formio);
+
+var _nativePromiseOnly = require("native-promise-only");
+
+var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
+
+var _Components = require("./components/Components");
+
+var _Components2 = _interopRequireDefault(_Components);
+
+var _debounce2 = require("lodash/debounce");
+
+var _debounce3 = _interopRequireDefault(_debounce2);
+
+var _each2 = require("lodash/each");
+
+var _each3 = _interopRequireDefault(_each2);
+
+var _eventemitter = require("eventemitter2");
+
+var _eventemitter2 = _interopRequireDefault(_eventemitter);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var getOptions = function getOptions(options) {
+  options = options || {};
+  options.events = new _eventemitter2.default({
+    wildcard: false,
+    maxListeners: 0
+  });
+  return options;
+};
+
+var FormioForm = function (_FormioComponents) {
+  _inherits(FormioForm, _FormioComponents);
+
+  function FormioForm(element, options) {
+    _classCallCheck(this, FormioForm);
+
+    var _this = _possibleConstructorReturn(this, (FormioForm.__proto__ || Object.getPrototypeOf(FormioForm)).call(this, null, getOptions(options)));
+
+    _this.type = 'form';
+    _this._src = '';
+    _this._loading = true;
+    _this.wrapper = element;
+    _this.formio = null;
+    _this.loader = null;
+    _this.alert = null;
+    _this.onFormLoad = null;
+    _this.onSubmissionLoad = null;
+
+    // Promise that executes when the form is rendered and ready.
+    _this.ready = new _nativePromiseOnly2.default(function (resolve, reject) {
+      _this.readyResolve = resolve;
+      _this.readyReject = reject;
+    });
+
+    // Trigger submission changes and errors debounced.
+    _this.triggerSubmissionChange = (0, _debounce3.default)(_this.onSubmissionChange.bind(_this), 10);
+    _this.triggerSubmissionError = (0, _debounce3.default)(_this.onSubmissionError.bind(_this), 10);
+    return _this;
+  }
+
+  _createClass(FormioForm, [{
+    key: "setForm",
+    value: function setForm(form) {
+      var _this2 = this;
+
+      // Set this form as a component.
+      this.component = form;
+      this.loading = true;
+      return this.render().then(function () {
+        return _this2.onLoaded.then(function () {
+          _this2.loading = false;
+          _this2.readyResolve();
+        }, function (err) {
+          return _this2.readyReject(err);
+        });
+      }, function (err) {
+        return _this2.readyReject(err);
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this3 = this;
+
+      this.wrapper.innerHTML = '';
+      return this.localize().then(function () {
+        _this3.build();
+        _this3.wrapper.appendChild(_this3.element);
+        _this3.on('resetForm', function () {
+          return _this3.reset();
+        });
+        _this3.on('componentChange', function (changed) {
+          return _this3.triggerSubmissionChange(changed);
+        });
+        _this3.on('componentError', function (changed) {
+          return _this3.triggerSubmissionError(changed);
+        });
+      });
+    }
+  }, {
+    key: "setAlert",
+    value: function setAlert(type, message) {
+      if (this.alert) {
+        try {
+          this.wrapper.removeChild(this.alert);
+          this.alert = null;
+        } catch (err) {}
+      }
+      if (message) {
+        this.alert = this.ce('alert-' + type, 'div', {
+          class: 'alert alert-' + type,
+          role: 'alert'
+        });
+        this.alert.innerHTML = message;
+      }
+      if (!this.alert) {
+        return;
+      }
+      this.wrapper.insertBefore(this.alert, this.wrapper.firstChild);
+    }
+  }, {
+    key: "build",
+    value: function build() {
+      var _this4 = this;
+
+      this.element = this.ce('element', 'form', {
+        class: 'formio-form'
+      });
+      this.addAnEventListener(this.element, 'submit', function (event) {
+        return _this4.submit(event);
+      });
+      this.addComponents();
+      this.checkConditions(this.getValue());
+    }
+  }, {
+    key: "showErrors",
+    value: function showErrors() {
+      var errors = this.errors;
+      if (!errors.length) {
+        this.setAlert(false);
+        return;
+      }
+      var message = '<p>' + this.t('error') + '</p><ul>';
+      (0, _each3.default)(errors, function (err) {
+        if (err) {
+          message += '<li><strong>' + err + '</strong></li>';
+        }
+      });
+      message += '</ul>';
+      this.setAlert('danger', message);
+      return errors;
+    }
+  }, {
+    key: "onSubmit",
+    value: function onSubmit(submission) {
+      this.loading = false;
+      this.setAlert('success', '<p>' + this.t('complete') + '</p>');
+      this.events.emit('submit', submission);
+    }
+  }, {
+    key: "onSubmissionError",
+    value: function onSubmissionError(error) {
+      this.loading = false;
+      error.errors = this.showErrors();
+      this.events.emit('error', error);
+    }
+  }, {
+    key: "onSubmissionChange",
+    value: function onSubmissionChange(changed) {
+      var value = this.submission;
+      var errors = this.errors;
+      if (!errors.length) {
+        this.setAlert(false);
+      }
+      value.changed = changed;
+      this.events.emit('change', value);
+      this.checkConditions(value.data);
+    }
+  }, {
+    key: "reset",
+    value: function reset() {
+      // Reset the submission data.
+      this.submission = { data: {} };
+    }
+  }, {
+    key: "submit",
+    value: function submit(event) {
+      var _this5 = this;
+
+      this.loading = true;
+      if (event) {
+        event.preventDefault();
+      }
+      if (!this.formio) {
+        return this.onSubmit(this.submission);
+      }
+      this.formio.saveSubmission(this.submission).then(function (submission) {
+        return _this5.onSubmit(submission);
+      }).catch(function (err) {
+        return _this5.onSubmissionError(err);
+      });
+    }
+  }, {
+    key: "src",
+    get: function get() {
+      return this._src;
+    },
+    set: function set(value) {
+      var _this6 = this;
+
+      if (!value || typeof value !== 'string') {
+        return;
+      }
+      this._src = value;
+      this.formio = new _formio2.default(value);
+      this.onFormLoad = this.formio.loadForm().then(function (form) {
+        return _this6.form = form;
+      });
+      if (this.formio.submissionId) {
+        this.onSubmissionLoad = this.formio.loadSubmission().then(function (submission) {
+          return _this6.submission = submission;
+        });
+      }
+    }
+  }, {
+    key: "onLoaded",
+    get: function get() {
+      if (!this.onSubmissionLoad && !this.onFormLoad) {
+        return _nativePromiseOnly2.default.resolve();
+      }
+      return this.onSubmissionLoad ? this.onSubmissionLoad : this.onFormLoad;
+    }
+  }, {
+    key: "loading",
+    get: function get() {
+      return this._loading;
+    },
+    set: function set(loading) {
+      this._loading = loading;
+      if (!this.loader && loading) {
+        this.loader = this.ce('loaderWrapper', 'div', {
+          class: 'loader-wrapper'
+        });
+        var spinner = this.ce('loader', 'div', {
+          class: 'loader text-center'
+        });
+        this.loader.appendChild(spinner);
+      }
+      if (this.loader) {
+        try {
+          if (loading) {
+            this.wrapper.parentNode.insertBefore(this.loader, this.wrapper);
+          } else {
+            this.wrapper.parentNode.removeChild(this.loader);
+          }
+        } catch (err) {}
+      }
+    }
+  }, {
+    key: "form",
+    set: function set(form) {
+      this.setForm(form);
+    }
+  }, {
+    key: "submission",
+    get: function get() {
+      return {
+        data: this.getValue()
+      };
+    },
+    set: function set(submission) {
+      var _this7 = this;
+
+      this.ready.then(function () {
+        return _this7.setValue(submission.data);
+      });
+    }
+  }]);
+
+  return FormioForm;
+}(_Components2.default);
+
+module.exports = global.FormioForm = FormioForm;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./components/Components":200,"./formio":231,"eventemitter2":1,"lodash/debounce":165,"lodash/each":166,"native-promise-only":194}],231:[function(require,module,exports){
+(function (global){
+'use strict';
+
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
+
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
+
+var Promise = require("native-promise-only");
+
+// Require other libraries.
+require('whatwg-fetch');
+var EventEmitter = require('eventemitter2').EventEmitter2;
+var copy = require('shallow-copy');
+var providers = require('./providers');
+
+// The default base url.
+var baseUrl = 'https://api.form.io';
+var appUrl = baseUrl;
+var appUrlSet = false;
+
+var plugins = [];
+
+// The temporary GET request cache storage
+var cache = {};
+
+var noop = function noop() {};
+var identity = function identity(value) {
+  return value;
+};
+
+// Will invoke a function on all plugins.
+// Returns a promise that resolves when all promises
+// returned by the plugins have resolved.
+// Should be used when you want plugins to prepare for an event
+// but don't want any data returned.
+var pluginWait = function pluginWait(pluginFn) {
+  var args = [].slice.call(arguments, 1);
+  return Promise.all(plugins.map(function (plugin) {
+    return (plugin[pluginFn] || noop).apply(plugin, args);
+  }));
+};
+
+// Will invoke a function on plugins from highest priority
+// to lowest until one returns a value. Returns null if no
+// plugins return a value.
+// Should be used when you want just one plugin to handle things.
+var pluginGet = function pluginGet(pluginFn) {
+  var args = [].slice.call(arguments, 0);
+  var callPlugin = function callPlugin(index, pluginFn) {
+    var plugin = plugins[index];
+    if (!plugin) return Promise.resolve(null);
+    return Promise.resolve((plugin && plugin[pluginFn] || noop).apply(plugin, [].slice.call(arguments, 2))).then(function (result) {
+      if (result !== null && result !== undefined) return result;
+      return callPlugin.apply(null, [index + 1].concat(args));
+    });
+  };
+  return callPlugin.apply(null, [0].concat(args));
+};
+
+// Will invoke a function on plugins from highest priority to
+// lowest, building a promise chain from their return values
+// Should be used when all plugins need to process a promise's
+// success or failure
+var pluginAlter = function pluginAlter(pluginFn, value) {
+  var args = [].slice.call(arguments, 2);
+  return plugins.reduce(function (value, plugin) {
+    return (plugin[pluginFn] || identity).apply(plugin, [value].concat(args));
+  }, value);
+};
+
+/**
+ * Returns parts of the URL that are important.
+ * Indexes
+ *  - 0: The full url
+ *  - 1: The protocol
+ *  - 2: The hostname
+ *  - 3: The rest
+ *
+ * @param url
+ * @returns {*}
+ */
+var getUrlParts = function getUrlParts(url) {
+  var regex = '^(http[s]?:\\/\\/)';
+  if (baseUrl && url.indexOf(baseUrl) === 0) {
+    regex += '(' + baseUrl.replace(/^http[s]?:\/\//, '') + ')';
+  } else {
+    regex += '([^/]+)';
+  }
+  regex += '($|\\/.*)';
+  return url.match(new RegExp(regex));
+};
+
+var serialize = function serialize(obj) {
+  var str = [];
+  for (var p in obj) {
+    if (obj.hasOwnProperty(p)) {
+      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+    }
+  }return str.join("&");
+};
+
+// The formio class.
+var Formio = function Formio(path) {
+
+  // Ensure we have an instance of Formio.
+  if (!(this instanceof Formio)) {
+    return new Formio(path);
+  }
+  if (!path) {
+    // Allow user to create new projects if this was instantiated without
+    // a url
+    this.projectUrl = baseUrl + '/project';
+    this.projectsUrl = baseUrl + '/project';
+    this.projectId = false;
+    this.query = '';
+    return;
+  }
+
+  // Initialize our variables.
+  this.projectsUrl = '';
+  this.projectUrl = '';
+  this.projectId = '';
+  this.formUrl = '';
+  this.formsUrl = '';
+  this.formId = '';
+  this.submissionsUrl = '';
+  this.submissionUrl = '';
+  this.submissionId = '';
+  this.actionsUrl = '';
+  this.actionId = '';
+  this.actionUrl = '';
+  this.query = '';
+
+  // Normalize to an absolute path.
+  if (path.indexOf('http') !== 0 && path.indexOf('//') !== 0) {
+    baseUrl = baseUrl ? baseUrl : window.location.href.match(/http[s]?:\/\/api./)[0];
+    path = baseUrl + path;
+  }
+
+  var hostparts = getUrlParts(path);
+  var parts = [];
+  var hostName = hostparts[1] + hostparts[2];
+  path = hostparts.length > 3 ? hostparts[3] : '';
+  var queryparts = path.split('?');
+  if (queryparts.length > 1) {
+    path = queryparts[0];
+    this.query = '?' + queryparts[1];
+  }
+
+  // See if this is a form path.
+  if (path.search(/(^|\/)(form|project)($|\/)/) !== -1) {
+
+    // Register a specific path.
+    var registerPath = function (name, base) {
+      this[name + 'sUrl'] = base + '/' + name;
+      var regex = new RegExp('\/' + name + '\/([^/]+)');
+      if (path.search(regex) !== -1) {
+        parts = path.match(regex);
+        this[name + 'Url'] = parts ? base + parts[0] : '';
+        this[name + 'Id'] = parts.length > 1 ? parts[1] : '';
+        base += parts[0];
+      }
+      return base;
+    }.bind(this);
+
+    // Register an array of items.
+    var registerItems = function registerItems(items, base, staticBase) {
+      for (var i in items) {
+        if (items.hasOwnProperty(i)) {
+          var item = items[i];
+          if (item instanceof Array) {
+            registerItems(item, base, true);
+          } else {
+            var newBase = registerPath(item, base);
+            base = staticBase ? base : newBase;
+          }
+        }
+      }
+    };
+
+    registerItems(['project', 'form', ['submission', 'action']], hostName);
+
+    if (!this.projectId) {
+      if (hostparts.length > 2 && hostparts[2].split('.').length > 2) {
+        this.projectUrl = hostName;
+        this.projectId = hostparts[2].split('.')[0];
+      }
+    }
+  } else {
+
+    // This is an aliased url.
+    this.projectUrl = hostName;
+    this.projectId = hostparts.length > 2 ? hostparts[2].split('.')[0] : '';
+    var subRegEx = new RegExp('\/(submission|action)($|\/.*)');
+    var subs = path.match(subRegEx);
+    this.pathType = subs && subs.length > 1 ? subs[1] : '';
+    path = path.replace(subRegEx, '');
+    path = path.replace(/\/$/, '');
+    this.formsUrl = hostName + '/form';
+    this.formUrl = hostName + path;
+    this.formId = path.replace(/^\/+|\/+$/g, '');
+    var items = ['submission', 'action'];
+    for (var i in items) {
+      if (items.hasOwnProperty(i)) {
+        var item = items[i];
+        this[item + 'sUrl'] = hostName + path + '/' + item;
+        if (this.pathType === item && subs.length > 2 && subs[2]) {
+          this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
+          this[item + 'Url'] = hostName + path + subs[0];
+        }
+      }
+    }
+  }
+
+  // Set the app url if it is not set.
+  if (!appUrlSet) {
+    appUrl = this.projectUrl;
+  }
+};
+
+/**
+ * Load a resource.
+ *
+ * @param type
+ * @returns {Function}
+ * @private
+ */
+var _load = function _load(type) {
+  var _id = type + 'Id';
+  var _url = type + 'Url';
+  return function (query, opts) {
+    if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+      query = serialize(query.params);
+    }
+    if (query) {
+      query = this.query ? this.query + '&' + query : '?' + query;
+    } else {
+      query = this.query;
+    }
+    if (!this[_id]) {
+      return Promise.reject('Missing ' + _id);
+    }
+    return this.makeRequest(type, this[_url] + query, 'get', null, opts);
+  };
+};
+
+/**
+ * Save a resource.
+ *
+ * @param type
+ * @returns {Function}
+ * @private
+ */
+var _save = function _save(type) {
+  var _id = type + 'Id';
+  var _url = type + 'Url';
+  return function (data, opts) {
+    var method = this[_id] || data._id ? 'put' : 'post';
+    var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
+    if (!this[_id] && data._id && method === 'put') {
+      reqUrl += '/' + data._id;
+    }
+    cache = {};
+    return this.makeRequest(type, reqUrl + this.query, method, data, opts);
+  };
+};
+
+/**
+ * Delete a resource.
+ *
+ * @param type
+ * @returns {Function}
+ * @private
+ */
+var _delete = function _delete(type) {
+  var _id = type + 'Id';
+  var _url = type + 'Url';
+  return function (opts) {
+    if (!this[_id]) {
+      Promise.reject('Nothing to delete');
+    }
+    cache = {};
+    return this.makeRequest(type, this[_url], 'delete', null, opts);
+  };
+};
+
+/**
+ * Resource index method.
+ *
+ * @param type
+ * @returns {Function}
+ * @private
+ */
+var _index = function _index(type) {
+  var _url = type + 'Url';
+  return function (query, opts) {
+    query = query || '';
+    if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+      query = '?' + serialize(query.params);
+    }
+    return this.makeRequest(type, this[_url] + query, 'get', null, opts);
+  };
+};
+
+// Activates plugin hooks, makes Formio.request if no plugin provides a request
+Formio.prototype.makeRequest = function (type, url, method, data, opts) {
+  var self = this;
+  method = (method || 'GET').toUpperCase();
+  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+    opts = {};
+  }
+
+  var requestArgs = {
+    formio: self,
+    type: type,
+    url: url,
+    method: method,
+    data: data,
+    opts: opts
+  };
+
+  var request = pluginWait('preRequest', requestArgs).then(function () {
+    return pluginGet('request', requestArgs).then(function (result) {
+      if (result === null || result === undefined) {
+        return Formio.request(url, method, data, opts.header, opts);
+      }
+      return result;
+    });
+  });
+
+  return pluginAlter('wrapRequestPromise', request, requestArgs);
+};
+
+// Define specific CRUD methods.
+Formio.prototype.loadProject = _load('project');
+Formio.prototype.saveProject = _save('project');
+Formio.prototype.deleteProject = _delete('project');
+Formio.prototype.loadForm = _load('form');
+Formio.prototype.saveForm = _save('form');
+Formio.prototype.deleteForm = _delete('form');
+Formio.prototype.loadForms = _index('forms');
+Formio.prototype.loadSubmission = _load('submission');
+Formio.prototype.saveSubmission = _save('submission');
+Formio.prototype.deleteSubmission = _delete('submission');
+Formio.prototype.loadSubmissions = _index('submissions');
+Formio.prototype.loadAction = _load('action');
+Formio.prototype.saveAction = _save('action');
+Formio.prototype.deleteAction = _delete('action');
+Formio.prototype.loadActions = _index('actions');
+Formio.prototype.availableActions = function () {
+  return this.makeRequest('availableActions', this.formUrl + '/actions');
+};
+Formio.prototype.actionInfo = function (name) {
+  return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
+};
+
+Formio.prototype.uploadFile = function (storage, file, fileName, dir, progressCallback, url) {
+  var requestArgs = {
+    provider: storage,
+    method: 'upload',
+    file: file,
+    fileName: fileName,
+    dir: dir
+  };
+  var request = pluginWait('preRequest', requestArgs).then(function () {
+    return pluginGet('fileRequest', requestArgs).then(function (result) {
+      if (storage && (result === null || result === undefined)) {
+        if (providers.storage.hasOwnProperty(storage)) {
+          var provider = new providers.storage[storage](this);
+          return provider.uploadFile(file, fileName, dir, progressCallback, url);
+        } else {
+          throw 'Storage provider not found';
+        }
+      }
+      return result || { url: '' };
+    }.bind(this));
+  }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
+};
+
+Formio.prototype.downloadFile = function (file) {
+  var requestArgs = {
+    method: 'download',
+    file: file
+  };
+
+  var request = pluginWait('preRequest', requestArgs).then(function () {
+    return pluginGet('fileRequest', requestArgs).then(function (result) {
+      if (file.storage && (result === null || result === undefined)) {
+        if (providers.storage.hasOwnProperty(file.storage)) {
+          var provider = new providers.storage[file.storage](this);
+          return provider.downloadFile(file);
+        } else {
+          throw 'Storage provider not found';
+        }
+      }
+      return result || { url: '' };
+    }.bind(this));
+  }.bind(this));
+
+  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
+};
+
+Formio.makeStaticRequest = function (url, method, data, opts) {
+  method = (method || 'GET').toUpperCase();
+  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+    opts = {};
+  }
+  var requestArgs = {
+    url: url,
+    method: method,
+    data: data
+  };
+
+  var request = pluginWait('preRequest', requestArgs).then(function () {
+    return pluginGet('staticRequest', requestArgs).then(function (result) {
+      if (result === null || result === undefined) {
+        return Formio.request(url, method, data, opts.header, opts);
+      }
+      return result;
+    });
+  });
+
+  return pluginAlter('wrapStaticRequestPromise', request, requestArgs);
+};
+
+// Static methods.
+Formio.loadProjects = function (query) {
+  query = query || '';
+  if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+    query = '?' + serialize(query.params);
+  }
+  return this.makeStaticRequest(baseUrl + '/project' + query);
+};
+
+/**
+ * Make a formio request, using the current token.
+ *
+ * @param url
+ * @param method
+ * @param data
+ * @param header
+ * @param {Boolean} ignoreCache
+ *   Whether or not to use the cache.
+ * @returns {*}
+ */
+Formio.request = function (url, method, data, header, opts) {
+  if (!url) {
+    return Promise.reject('No url provided');
+  }
+  method = (method || 'GET').toUpperCase();
+
+  // For reverse compatibility, if they provided the ignoreCache parameter,
+  // then change it back to the options format where that is a parameter.
+  if (typeof opts === 'boolean') {
+    opts = { ignoreCache: opts };
+  }
+  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+    opts = {};
+  }
+
+  var cacheKey = btoa(url);
+
+  return new Promise(function (resolve, reject) {
+    // Get the cached promise to save multiple loads.
+    if (!opts.ignoreCache && method === 'GET' && cache.hasOwnProperty(cacheKey)) {
+      return resolve(cache[cacheKey]);
+    }
+
+    resolve(new Promise(function (resolve, reject) {
+      // Set up and fetch request
+      var headers = header || new Headers({
+        'Accept': 'application/json',
+        'Content-type': 'application/json; charset=UTF-8'
+      });
+      var token = Formio.getToken();
+      if (token) {
+        headers.append('x-jwt-token', token);
+      }
+
+      var options = {
+        method: method,
+        headers: headers,
+        mode: 'cors'
+      };
+      if (data) {
+        options.body = JSON.stringify(data);
+      }
+
+      resolve(fetch(url, options));
+    }).catch(function (err) {
+      err.message = 'Could not connect to API server (' + err.message + ')';
+      err.networkError = true;
+      throw err;
+    }).then(function (response) {
+      if (!response.ok) {
+        if (response.status === 440) {
+          Formio.setToken(null);
+          Formio.events.emit('formio.sessionExpired', response.body);
+        } else if (response.status === 401) {
+          Formio.events.emit('formio.unauthorized', response.body);
+        }
+        // Parse and return the error as a rejected promise to reject this promise
+        return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (error) {
+          throw error;
+        });
+      }
+
+      // Handle fetch results
+      var token = response.headers.get('x-jwt-token');
+      if (response.status >= 200 && response.status < 300 && token && token !== '') {
+        Formio.setToken(token);
+      }
+      // 204 is no content. Don't try to .json() it.
+      if (response.status === 204) {
+        return {};
+      }
+      return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (result) {
+        // Add some content-range metadata to the result here
+        var range = response.headers.get('content-range');
+        if (range && (typeof result === 'undefined' ? 'undefined' : _typeof(result)) === 'object') {
+          range = range.split('/');
+          if (range[0] !== '*') {
+            var skipLimit = range[0].split('-');
+            result.skip = Number(skipLimit[0]);
+            result.limit = skipLimit[1] - skipLimit[0] + 1;
+          }
+          result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
+        }
+
+        if (!opts.getHeaders) {
+          return result;
+        }
+
+        var headers = {};
+        response.headers.forEach(function (item, key) {
+          headers[key] = item;
+        });
+
+        return new Promise(function (resolve, reject) {
+          resolve({ result: result, headers: headers });
+        });
+      });
+    }).catch(function (err) {
+      if (err === 'Bad Token') {
+        Formio.setToken(null);
+        Formio.events.emit('formio.badToken', err);
+      }
+      // Remove failed promises from cache
+      delete cache[cacheKey];
+      // Propagate error so client can handle accordingly
+      throw err;
+    }));
+  }).then(function (result) {
+    // Save the cache
+    if (method === 'GET') {
+      cache[cacheKey] = Promise.resolve(result);
+    }
+
+    // Shallow copy result so modifications don't end up in cache
+    if (Array.isArray(result)) {
+      var resultCopy = result.map(copy);
+      resultCopy.skip = result.skip;
+      resultCopy.limit = result.limit;
+      resultCopy.serverCount = result.serverCount;
+      return resultCopy;
+    }
+    return copy(result);
+  });
+};
+
+Formio.setToken = function (token) {
+  token = token || '';
+  if (token === this.token) {
+    return;
+  }
+  this.token = token;
+  if (!token) {
+    Formio.setUser(null);
+    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+    try {
+      return localStorage.removeItem('formioToken');
+    } catch (err) {
+      return;
+    }
+  }
+  // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+  try {
+    localStorage.setItem('formioToken', token);
+  } catch (err) {
+    // Do nothing.
+  }
+  return Formio.currentUser(); // Run this so user is updated if null
+};
+
+Formio.getToken = function () {
+  if (this.token) {
+    return this.token;
+  }
+  try {
+    var token = localStorage.getItem('formioToken') || '';
+    this.token = token;
+    return token;
+  } catch (e) {
+    return '';
+  }
+};
+
+Formio.setUser = function (user) {
+  if (!user) {
+    this.setToken(null);
+    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+    try {
+      return localStorage.removeItem('formioUser');
+    } catch (err) {
+      return;
+    }
+  }
+  // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+  try {
+    localStorage.setItem('formioUser', JSON.stringify(user));
+  } catch (err) {
+    // Do nothing.
+  }
+};
+
+Formio.getUser = function () {
+  try {
+    return JSON.parse(localStorage.getItem('formioUser') || null);
+  } catch (e) {
+    return;
+  }
+};
+
+Formio.setBaseUrl = function (url) {
+  baseUrl = url;
+  if (!appUrlSet) {
+    appUrl = url;
+  }
+};
+
+Formio.getBaseUrl = function () {
+  return baseUrl;
+};
+
+Formio.setAppUrl = function (url) {
+  appUrl = url;
+  appUrlSet = true;
+};
+
+Formio.getAppUrl = function () {
+  return appUrl;
+};
+
+Formio.clearCache = function () {
+  cache = {};
+};
+
+/**
+ * Attach an HTML form to Form.io.
+ *
+ * @param form
+ */
+Formio.form = function (form, options, done) {
+  // Fix the parameters.
+  if (!done && typeof options === 'function') {
+    done = options;
+    options = {};
+  }
+
+  done = done || function () {
+    console.log(arguments);
+  };
+  options = options || {};
+
+  // IF they provide a jquery object, then select the element.
+  if (form.jquery) {
+    form = form[0];
+  }
+  if (!form) {
+    return done('Invalid Form');
+  }
+
+  var getAction = function getAction() {
+    return options.form || form.getAttribute('action');
+  };
+
+  /**
+   * Returns the current submission object.
+   * @returns {{data: {}}}
+   */
+  var getSubmission = function getSubmission() {
+    var submission = { data: {} };
+    var setValue = function setValue(path, value) {
+      var isArray = path.substr(-2) === '[]';
+      if (isArray) {
+        path = path.replace('[]', '');
+      }
+      var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
+      var current = submission;
+      while (path = paths.shift()) {
+        if (!paths.length) {
+          if (isArray) {
+            if (!current[path]) {
+              current[path] = [];
+            }
+            current[path].push(value);
+          } else {
+            current[path] = value;
+          }
+        } else {
+          if (!current[path]) {
+            current[path] = {};
+          }
+          current = current[path];
+        }
+      }
+    };
+
+    // Get the form data from this form.
+    var formData = new FormData(form);
+    var entries = formData.entries();
+    var entry = null;
+    while (entry = entries.next().value) {
+      setValue(entry[0], entry[1]);
+    }
+    return submission;
+  };
+
+  // Submits the form.
+  var submit = function submit(event) {
+    if (event) {
+      event.preventDefault();
+    }
+    var action = getAction();
+    if (!action) {
+      return;
+    }
+    new Formio(action).saveSubmission(getSubmission()).then(function (sub) {
+      done(null, sub);
+    }, done);
+  };
+
+  // Attach formio to the provided form.
+  if (form.attachEvent) {
+    form.attachEvent('submit', submit);
+  } else {
+    form.addEventListener('submit', submit);
+  }
+
+  return {
+    submit: submit,
+    getAction: getAction,
+    getSubmission: getSubmission
+  };
+};
+
+Formio.currentUser = function () {
+  var url = baseUrl + '/current';
+  var user = this.getUser();
+  if (user) {
+    return pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
+      url: url,
+      method: 'GET'
+    });
+  }
+  var token = this.getToken();
+  if (!token) {
+    return pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
+      url: url,
+      method: 'GET'
+    });
+  }
+  return this.makeStaticRequest(url).then(function (response) {
+    Formio.setUser(response);
+    return response;
+  });
+};
+
+// Keep track of their logout callback.
+Formio.logout = function () {
+  var onLogout = function (result) {
+    this.setToken(null);
+    this.setUser(null);
+    Formio.clearCache();
+    return result;
+  }.bind(this);
+  return this.makeStaticRequest(baseUrl + '/logout').then(onLogout).catch(onLogout);
+};
+
+Formio.fieldData = function (data, component) {
+  if (!data) {
+    return '';
+  }
+  if (!component || !component.key) {
+    return data;
+  }
+  if (component.key.indexOf('.') !== -1) {
+    var value = data;
+    var parts = component.key.split('.');
+    var key = '';
+    for (var i = 0; i < parts.length; i++) {
+      key = parts[i];
+
+      // Handle nested resources
+      if (value.hasOwnProperty('_id')) {
+        value = value.data;
+      }
+
+      // Return if the key is not found on the value.
+      if (!value.hasOwnProperty(key)) {
+        return;
+      }
+
+      // Convert old single field data in submissions to multiple
+      if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {
+        value[key] = [value[key]];
+      }
+
+      // Set the value of this key.
+      value = value[key];
+    }
+    return value;
+  } else {
+    // Convert old single field data in submissions to multiple
+    if (component.multiple && !Array.isArray(data[component.key])) {
+      data[component.key] = [data[component.key]];
+    }
+    return data[component.key];
+  }
+};
+
+Formio.providers = providers;
+
+/**
+ * EventEmitter for Formio events.
+ * See Node.js documentation for API documentation: https://nodejs.org/api/events.html
+ */
+Formio.events = new EventEmitter({
+  wildcard: false,
+  maxListeners: 0
+});
+
+/**
+ * Register a plugin with Formio.js
+ * @param plugin The plugin to register. See plugin documentation.
+ * @param name   Optional name to later retrieve plugin with.
+ */
+Formio.registerPlugin = function (plugin, name) {
+  plugins.push(plugin);
+  plugins.sort(function (a, b) {
+    return (b.priority || 0) - (a.priority || 0);
+  });
+  plugin.__name = name;
+  (plugin.init || noop).call(plugin, Formio);
+};
+
+/**
+ * Returns the plugin registered with the given name.
+ */
+Formio.getPlugin = function (name) {
+  return plugins.reduce(function (result, plugin) {
+    if (result) return result;
+    if (plugin.__name === name) return plugin;
+  }, null);
+};
+
+/**
+ * Deregisters a plugin with Formio.js.
+ * @param  plugin The instance or name of the plugin
+ * @return true if deregistered, false otherwise
+ */
+Formio.deregisterPlugin = function (plugin) {
+  var beforeLength = plugins.length;
+  plugins = plugins.filter(function (p) {
+    if (p !== plugin && p.__name !== plugin) return true;
+    (p.deregister || noop).call(p, Formio);
+    return false;
+  });
+  return beforeLength !== plugins.length;
+};
+
+module.exports = global.Formio = Formio;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"./providers":233,"eventemitter2":1,"native-promise-only":194,"shallow-copy":195,"whatwg-fetch":198}],232:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -21421,14 +22316,14 @@ module.exports = {
   }
 };
 
-},{}],232:[function(require,module,exports){
+},{}],233:[function(require,module,exports){
 'use strict';
 
 module.exports = {
   storage: require('./storage')
 };
 
-},{"./storage":234}],233:[function(require,module,exports){
+},{"./storage":235}],234:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -21500,7 +22395,7 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 module.exports = dropbox;
 
-},{"native-promise-only":194}],234:[function(require,module,exports){
+},{"native-promise-only":194}],235:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -21509,7 +22404,7 @@ module.exports = {
   url: require('./url.js')
 };
 
-},{"./dropbox.js":233,"./s3.js":235,"./url.js":236}],235:[function(require,module,exports){
+},{"./dropbox.js":234,"./s3.js":236,"./url.js":237}],236:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -21624,10 +22519,11 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 module.exports = s3;
 
-},{"native-promise-only":194}],236:[function(require,module,exports){
-'use strict';
+},{"native-promise-only":194}],237:[function(require,module,exports){
+"use strict";
 
 var Promise = require("native-promise-only");
+var Formio = require("../../Formio");
 var url = function url(formio) {
   return {
     title: 'Url',
@@ -21658,7 +22554,7 @@ var url = function url(formio) {
             resolve({
               storage: 'url',
               name: fileName,
-              url: xhr.response.url,
+              url: xhr.responseURL + '/' + fileName,
               size: file.size,
               type: file.type
             });
@@ -21677,6 +22573,7 @@ var url = function url(formio) {
         };
 
         xhr.open('POST', url);
+        xhr.setRequestHeader('x-jwt-token', Formio.getToken());
         xhr.send(fd);
       });
     },
@@ -21690,4 +22587,4 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"native-promise-only":194}]},{},[228]);
+},{"../../Formio":199,"native-promise-only":194}]},{},[229]);

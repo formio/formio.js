@@ -1,4 +1,5 @@
 var Promise = require("native-promise-only");
+var Formio  = require("../../Formio");
 var url = function(formio) {
   return {
     title: 'Url',
@@ -29,7 +30,7 @@ var url = function(formio) {
             resolve({
               storage: 'url',
               name: fileName,
-              url: xhr.response.url,
+              url: xhr.responseURL + '/' + fileName,
               size: file.size,
               type: file.type
             });
@@ -49,6 +50,7 @@ var url = function(formio) {
         }
 
         xhr.open('POST', url);
+        xhr.setRequestHeader('x-jwt-token', Formio.getToken());
         xhr.send(fd);
       });
     },
