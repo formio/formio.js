@@ -1,10 +1,6 @@
 import BaseComponent from '../base/Base';
 class CheckBoxComponent extends BaseComponent {
   elementInfo() {
-    if (this.component.overlay) {
-      this.component.overlay.width = 0;
-      this.component.overlay.height = 0;
-    }
     let info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
@@ -35,6 +31,7 @@ class CheckBoxComponent extends BaseComponent {
       className += ' required';
     }
     this.element = this.ce('element', 'div', {
+      id: this.id,
       class: className
     });
   }

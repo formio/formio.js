@@ -15,7 +15,7 @@ class BaseComponent {
    *   Initialize a new BaseComponent.
    */
   constructor(component, options, data) {
-    this.id = Math.random().toString(36).substring(7);
+    this.id = (component && component.id) ? component.id : Math.random().toString(36).substring(7);
     this.options = _clone(options) || {};
     this.options.i18n = this.options.i18n || require('../../locals/en');
     this.events = this.options.events;
@@ -96,8 +96,14 @@ class BaseComponent {
 
   createElement() {
     this.element = this.ce('element', 'div', {
+      id: this.id,
       class: this.className
     });
+
+    if (this.element) {
+      // Ensure you can get the component info from the element.
+      this.element.component = this.component;
+    }
   }
 
   createWrapper() {
@@ -218,7 +224,7 @@ class BaseComponent {
   }
 
   createLabel(container) {
-    if (!this.component.label) {
+    if (!this.component.label || this.options.inputsOnly) {
       return;
     }
     this.label = this.ce('label', 'label', {
@@ -318,18 +324,21 @@ class BaseComponent {
     if (
       this.options &&
       this.options.template &&
-      this.options.template[compType] &&
-      this.options.template[compType][name]
+      (
+        (this.options.template[compType] && this.options.template[compType][name]) ||
+        (this.options.template.global && this.options.template.global[name])
+      )
     ) {
-      if (typeof this.options.template[compType][name] === 'function') {
-        element = this.options.template[compType][name](this, type, attr);
+      let template = _get(this.options, 'template.' + compType + '.' + name) || _get(this.options, 'template.global.' + name);
+      if (typeof template === 'function') {
+        element = template(this, type, attr);
         if (element) {
           return element;
         }
       }
       else {
         // Assign the attributes.
-        _assign(attr, this.options.template[compType][name]);
+        _assign(attr, template);
       }
     }
     element = document.createElement(type);
@@ -454,6 +463,11 @@ class BaseComponent {
    * @param name
    */
   addInput(input, container) {
+    // If the options say readOnly then disable the input.
+    if (input && this.options.readOnly) {
+      input.disabled = true;
+      input.setAttribute('disabled', 'disabled');
+    }
     if (input && container) {
       this.inputs.push(input);
       input = container.appendChild(input);
@@ -599,34 +613,11 @@ class BaseComponent {
 
   /**
    * Get the element information.
-   *
-   * @returns {{type: string, component: *, changeEvent: string, attr: {id: (string|*), name: string, type: (*|string), style: string, class: string}}}
    */
   elementInfo() {
-    let style = '';
-    if (this.component.overlay) {
-      if (this.component.overlay.style) {
-        style = this.component.overlay.style;
-      }
-      if (this.component.overlay.top) {
-        style += 'top:' + this.component.overlay.top + 'px;';
-      }
-      if (this.component.overlay.left) {
-        style += 'left:' + this.component.overlay.left + 'px;';
-      }
-      if (this.component.overlay.width) {
-        style += 'width:' + this.component.overlay.width + 'px;';
-      }
-      if (this.component.overlay.height) {
-        style += 'height:' + this.component.overlay.height + 'px;';
-      }
-    }
-    this.inputId = this.component.overlay ? this.component.overlay.id : this.id;
     let attributes = {
-      id: this.inputId,
       name: this.options.name,
       type: this.component.inputType || 'text',
-      style: style,
       class: 'form-control'
     };
     _each({

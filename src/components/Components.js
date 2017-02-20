@@ -1,6 +1,7 @@
 'use strict';
 import _each from 'lodash/each';
 import _filter from 'lodash/filter';
+import _remove from 'lodash/remove';
 import BaseComponent from './base/Base';
 import _isArray from 'lodash/isArray';
 class FormioComponents extends BaseComponent {
@@ -21,7 +22,7 @@ class FormioComponents extends BaseComponent {
           return false;
         }
       }
-      else if (cb(component) === false) {
+      else if (cb(component, this.components) === false) {
         return false;
       }
     });
@@ -35,11 +36,28 @@ class FormioComponents extends BaseComponent {
     });
   }
 
-  getComponent(key) {
+  getComponent(key, cb) {
     let comp = null;
-    this.everyComponent((component) => {
+    this.everyComponent((component, components) => {
       if (component.component.key === key) {
         comp = component;
+        if (cb) {
+          cb(component, components);
+        }
+        return false;
+      }
+    });
+    return comp;
+  }
+
+  getComponentById(id, cb) {
+    let comp = null;
+    this.everyComponent((component, components) => {
+      if (component.id === id) {
+        comp = component;
+        if (cb) {
+          cb(component, components);
+        }
         return false;
       }
     });
@@ -53,6 +71,39 @@ class FormioComponents extends BaseComponent {
     let comp = components.create(component, this.options, data);
     this.components.push(comp);
     element.appendChild(comp.element);
+    return comp;
+  }
+
+  removeComponent(key, cb) {
+    let comp = this.getComponent(key, (component, components) => {
+      component.element.parentNode.removeChild(component.element);
+      _remove(components, {id: component.id});
+      if (cb) {
+        cb(component, components);
+      }
+    });
+    if (!comp) {
+      if (cb) {
+        cb(null);
+      }
+      return null;
+    }
+  }
+
+  removeComponentById(id, cb) {
+    let comp = this.getComponentById(id, (component, components) => {
+      component.element.parentNode.removeChild(component.element);
+      _remove(components, {id: component.id});
+      if (cb) {
+        cb(component, components);
+      }
+    });
+    if (!comp) {
+      if (cb) {
+        cb(null);
+      }
+      return null;
+    }
   }
 
   addComponents(element, data) {

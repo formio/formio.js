@@ -1,5 +1,5 @@
 var Promise = require("native-promise-only");
-var Formio  = require("../../Formio");
+var Formio  = require("../../formio");
 var url = function(formio) {
   return {
     title: 'Url',
