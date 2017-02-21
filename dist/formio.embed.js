@@ -16738,6 +16738,8 @@ var BaseComponent = function () {
         // Ensure you can get the component info from the element.
         this.element.component = this.component;
       }
+
+      return this.element;
     }
   }, {
     key: 'createWrapper',
@@ -16755,7 +16757,7 @@ var BaseComponent = function () {
         this.addValue();
 
         // Add the table to the element.
-        this.element.appendChild(table);
+        this.append(table);
         return true;
       }
     }
@@ -17288,6 +17290,48 @@ var BaseComponent = function () {
         select.onchange();
       }
     }
+  }, {
+    key: 'clear',
+    value: function clear() {
+      if (this.element) {
+        this.element.innerHTML = '';
+      }
+    }
+  }, {
+    key: 'append',
+    value: function append(element) {
+      if (this.element) {
+        this.element.appendChild(element);
+      }
+    }
+  }, {
+    key: 'prepend',
+    value: function prepend(element) {
+      if (this.element) {
+        this.element.insertBefore(element, this.element.firstChild);
+      }
+    }
+  }, {
+    key: 'before',
+    value: function before(element) {
+      if (this.element) {
+        this.element.parentNode.insertBefore(element, this.element);
+      }
+    }
+  }, {
+    key: 'remove',
+    value: function remove(element) {
+      if (this.element) {
+        this.element.parentNode.removeChild(element);
+      }
+    }
+  }, {
+    key: 'removeChild',
+    value: function removeChild(element) {
+      if (this.element) {
+        this.element.removeChild(element);
+      }
+    }
 
     /**
      * Get the element information.
@@ -17613,7 +17657,9 @@ var CheckBoxComponent = function (_BaseComponent) {
         this.label.setAttribute('for', this.info.attr.id);
       }
       this.addInput(input, this.label);
-      this.label.appendChild(document.createTextNode(this.component.label));
+      if (!this.options.inputsOnly) {
+        this.label.appendChild(document.createTextNode(this.component.label));
+      }
       container.appendChild(this.label);
     }
   }, {
@@ -19796,15 +19842,25 @@ var SignatureComponent = function (_BaseComponent) {
       return info;
     }
   }, {
+    key: 'getSignatureImage',
+    value: function getSignatureImage() {
+      var image = this.ce('image', 'img', {
+        style: 'width: ' + this.component.width + ';height: ' + this.component.height
+      });
+      image.setAttribute('src', this.input.value);
+      return image;
+    }
+  }, {
     key: 'build',
     value: function build() {
       var _this2 = this;
 
-      this.element = this.ce('element', 'div', {
-        id: this.id,
-        class: 'form-group signature-pad'
-      });
-      this.input = this.createInput(this.element);
+      var element = this.createElement();
+      var classNames = element.getAttribute('class');
+      classNames += ' signature-pad';
+      element.setAttribute('class', classNames);
+
+      this.input = this.createInput(element);
       var padBody = this.ce('pad', 'div', {
         class: 'signature-pad-body',
         style: 'width: ' + this.component.width + ';height: ' + this.component.height
@@ -19814,8 +19870,8 @@ var SignatureComponent = function (_BaseComponent) {
       var refresh = this.ce('refresh', 'a', {
         class: 'btn btn-sm btn-default signature-pad-refresh'
       });
-      var refreshIcon = this.ce('refreshIcon', 'span', {
-        class: 'glyphicon glyphicon-refresh'
+      var refreshIcon = this.ce('refreshIcon', 'img', {
+        src: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDMyIDMyIiBoZWlnaHQ9IjMycHgiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMycHgiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxnPjxwYXRoIGQ9Ik0yNS40NDQsNC4yOTFjMCwwLTEuMzI1LDEuMjkzLTIuMjQzLDIuMjAxQzE4LjUxNCwzLjA2OCwxMS45MDksMy40NTYsNy42NzYsNy42ODkgICBjLTIuNDcsMi40Ny0zLjYyMyw1Ljc0Ny0zLjQ4NCw4Ljk4M2g0QzguMDUxLDE0LjQ2LDguODEsMTIuMjA1LDEwLjUsMTAuNTE0YzIuNjYzLTIuNjYzLDYuNzM1LTMuMDQzLDkuODEyLTEuMTYyICAgYy0xLjA0MiwxLjAzMi0yLjI0NSwyLjIzOC0yLjI0NSwyLjIzOGMtMC44NDEsMS4wMDksMC4xMDQsMS41OTIsMC41ODQsMS41NzdsNS42MjQtMC4wMDFjMC4yOTcsMCwwLjUzOSwwLjAwMSwwLjUzOSwwLjAwMSAgIHMwLjI0NSwwLDAuNTQzLDBoMS4wOTJjMC4yOTgsMCwwLjU0LTAuMjQzLDAuNTQtMC41NDFWNC44OTVDMjcuMDIzLDQuMTg4LDI2LjI0NywzLjUwMiwyNS40NDQsNC4yOTF6IiBmaWxsPSIjNTE1MTUxIi8+PHBhdGggZD0iTTYuNTU1LDI3LjcwOWMwLDAsMS4zMjYtMS4yOTMsMi4yNDMtMi4yMDFjNC42ODgsMy40MjQsMTEuMjkyLDMuMDM2LDE1LjUyNi0xLjE5NyAgIGMyLjQ3LTIuNDcxLDMuNjIyLTUuNzQ3LDMuNDg0LTguOTgzaC00LjAwMWMwLjE0MiwyLjIxMS0wLjYxNyw0LjQ2Ny0yLjMwOCw2LjE1OWMtMi42NjMsMi42NjItNi43MzUsMy4wNDMtOS44MTIsMS4xNjEgICBjMS4wNDItMS4wMzIsMi4yNDUtMi4yMzgsMi4yNDUtMi4yMzhjMC44NDEtMS4wMS0wLjEwNC0xLjU5Mi0wLjU4NC0xLjU3N2wtNS42MjQsMC4wMDJjLTAuMjk3LDAtMC41NC0wLjAwMi0wLjU0LTAuMDAyICAgcy0wLjI0NSwwLTAuNTQzLDBINS41NTFjLTAuMjk4LDAtMC41NCwwLjI0Mi0wLjU0MSwwLjU0MXY3LjczMkM0Ljk3NywyNy44MTIsNS43NTMsMjguNDk4LDYuNTU1LDI3LjcwOXoiIGZpbGw9IiM1MTUxNTEiLz48L2c+PC9zdmc+'
       });
       refresh.appendChild(refreshIcon);
       padBody.appendChild(refresh);
@@ -19825,7 +19881,7 @@ var SignatureComponent = function (_BaseComponent) {
         class: 'signature-pad-canvas'
       });
       padBody.appendChild(canvas);
-      this.element.appendChild(padBody);
+      element.appendChild(padBody);
 
       // Add the footer.
       if (this.component.footer) {
@@ -19833,7 +19889,7 @@ var SignatureComponent = function (_BaseComponent) {
           class: 'signature-pad-footer'
         });
         footer.appendChild(this.text(this.component.footer));
-        this.element.appendChild(footer);
+        element.appendChild(footer);
       }
 
       // Create the signature pad.
@@ -19876,12 +19932,8 @@ var SignatureComponent = function (_BaseComponent) {
     key: 'disable',
     set: function set(disable) {
       _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disable', disable, this);
-      var image = this.ce('image', 'img', {
-        style: 'width: ' + this.component.width + ';height: ' + this.component.height
-      });
-      image.setAttribute('src', this.input.value);
       this.element.innerHTML = '';
-      this.element.appendChild(image);
+      this.element.appendChild(this.getSignatureImage());
     }
   }]);
 
@@ -20472,12 +20524,26 @@ var FormioForm = function (_FormioComponents) {
   function FormioForm(element, options) {
     _classCallCheck(this, FormioForm);
 
+    // Allow the element to either be a form, or a wrapper.
     var _this = _possibleConstructorReturn(this, (FormioForm.__proto__ || Object.getPrototypeOf(FormioForm)).call(this, null, getOptions(options)));
+
+    if (element && element.nodeName.toLowerCase() === 'form') {
+      _this.element = element;
+      var classNames = _this.element.getAttribute('class');
+      classNames += ' formio-form';
+      _this.element.setAttribute('class', classNames);
+    } else {
+      _this.element = _this.ce('element', 'form', {
+        class: 'formio-form'
+      });
+      if (element) {
+        element.appendChild(_this.element);
+      }
+    }
 
     _this.type = 'form';
     _this._src = '';
     _this._loading = true;
-    _this.wrapper = element;
     _this.formio = null;
     _this.loader = null;
     _this.alert = null;
@@ -20520,10 +20586,9 @@ var FormioForm = function (_FormioComponents) {
     value: function render() {
       var _this3 = this;
 
-      this.wrapper.innerHTML = '';
+      this.clear();
       return this.localize().then(function () {
         _this3.build();
-        _this3.wrapper.appendChild(_this3.element);
         _this3.on('resetForm', function () {
           return _this3.reset();
         });
@@ -20540,7 +20605,7 @@ var FormioForm = function (_FormioComponents) {
     value: function setAlert(type, message) {
       if (this.alert) {
         try {
-          this.wrapper.removeChild(this.alert);
+          this.removeChild(this.alert);
           this.alert = null;
         } catch (err) {}
       }
@@ -20554,16 +20619,13 @@ var FormioForm = function (_FormioComponents) {
       if (!this.alert) {
         return;
       }
-      this.wrapper.insertBefore(this.alert, this.wrapper.firstChild);
+      this.prepend(this.alert);
     }
   }, {
     key: "build",
     value: function build() {
       var _this4 = this;
 
-      this.element = this.ce('element', 'form', {
-        class: 'formio-form'
-      });
       this.addAnEventListener(this.element, 'submit', function (event) {
         return _this4.submit(event);
       });
@@ -20687,9 +20749,9 @@ var FormioForm = function (_FormioComponents) {
       if (this.loader) {
         try {
           if (loading) {
-            this.wrapper.parentNode.insertBefore(this.loader, this.wrapper);
+            this.before(this.loader);
           } else {
-            this.wrapper.parentNode.removeChild(this.loader);
+            this.remove(this.loader);
           }
         } catch (err) {}
       }

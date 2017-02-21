@@ -13,21 +13,28 @@ class SignatureComponent extends BaseComponent {
       this.signaturePad.fromDataURL(value);
     }
   }
-  set disable(disable) {
-    super.disable = disable;
+
+  getSignatureImage() {
     let image = this.ce('image', 'img', {
       style: ('width: ' + this.component.width + ';height: ' + this.component.height)
     });
     image.setAttribute('src', this.input.value);
-    this.element.innerHTML = '';
-    this.element.appendChild(image);
+    return image;
   }
+
+  set disable(disable) {
+    super.disable = disable;
+    this.element.innerHTML = '';
+    this.element.appendChild(this.getSignatureImage());
+  }
+
   build() {
-    this.element = this.ce('element', 'div', {
-      id: this.id,
-      class: 'form-group signature-pad'
-    });
-    this.input = this.createInput(this.element);
+    let element = this.createElement();
+    let classNames = element.getAttribute('class');
+    classNames += ' signature-pad';
+    element.setAttribute('class', classNames);
+
+    this.input = this.createInput(element);
     let padBody = this.ce('pad', 'div', {
       class: 'signature-pad-body',
       style: ('width: ' + this.component.width + ';height: ' + this.component.height)
@@ -37,8 +44,8 @@ class SignatureComponent extends BaseComponent {
     let refresh = this.ce('refresh', 'a', {
       class: 'btn btn-sm btn-default signature-pad-refresh'
     });
-    let refreshIcon = this.ce('refreshIcon', 'span', {
-      class: 'glyphicon glyphicon-refresh'
+    let refreshIcon = this.ce('refreshIcon', 'img', {
+      src: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDMyIDMyIiBoZWlnaHQ9IjMycHgiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMycHgiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxnPjxwYXRoIGQ9Ik0yNS40NDQsNC4yOTFjMCwwLTEuMzI1LDEuMjkzLTIuMjQzLDIuMjAxQzE4LjUxNCwzLjA2OCwxMS45MDksMy40NTYsNy42NzYsNy42ODkgICBjLTIuNDcsMi40Ny0zLjYyMyw1Ljc0Ny0zLjQ4NCw4Ljk4M2g0QzguMDUxLDE0LjQ2LDguODEsMTIuMjA1LDEwLjUsMTAuNTE0YzIuNjYzLTIuNjYzLDYuNzM1LTMuMDQzLDkuODEyLTEuMTYyICAgYy0xLjA0MiwxLjAzMi0yLjI0NSwyLjIzOC0yLjI0NSwyLjIzOGMtMC44NDEsMS4wMDksMC4xMDQsMS41OTIsMC41ODQsMS41NzdsNS42MjQtMC4wMDFjMC4yOTcsMCwwLjUzOSwwLjAwMSwwLjUzOSwwLjAwMSAgIHMwLjI0NSwwLDAuNTQzLDBoMS4wOTJjMC4yOTgsMCwwLjU0LTAuMjQzLDAuNTQtMC41NDFWNC44OTVDMjcuMDIzLDQuMTg4LDI2LjI0NywzLjUwMiwyNS40NDQsNC4yOTF6IiBmaWxsPSIjNTE1MTUxIi8+PHBhdGggZD0iTTYuNTU1LDI3LjcwOWMwLDAsMS4zMjYtMS4yOTMsMi4yNDMtMi4yMDFjNC42ODgsMy40MjQsMTEuMjkyLDMuMDM2LDE1LjUyNi0xLjE5NyAgIGMyLjQ3LTIuNDcxLDMuNjIyLTUuNzQ3LDMuNDg0LTguOTgzaC00LjAwMWMwLjE0MiwyLjIxMS0wLjYxNyw0LjQ2Ny0yLjMwOCw2LjE1OWMtMi42NjMsMi42NjItNi43MzUsMy4wNDMtOS44MTIsMS4xNjEgICBjMS4wNDItMS4wMzIsMi4yNDUtMi4yMzgsMi4yNDUtMi4yMzhjMC44NDEtMS4wMS0wLjEwNC0xLjU5Mi0wLjU4NC0xLjU3N2wtNS42MjQsMC4wMDJjLTAuMjk3LDAtMC41NC0wLjAwMi0wLjU0LTAuMDAyICAgcy0wLjI0NSwwLTAuNTQzLDBINS41NTFjLTAuMjk4LDAtMC41NCwwLjI0Mi0wLjU0MSwwLjU0MXY3LjczMkM0Ljk3NywyNy44MTIsNS43NTMsMjguNDk4LDYuNTU1LDI3LjcwOXoiIGZpbGw9IiM1MTUxNTEiLz48L2c+PC9zdmc+'
     });
     refresh.appendChild(refreshIcon);
     padBody.appendChild(refresh);
@@ -48,7 +55,7 @@ class SignatureComponent extends BaseComponent {
       class: 'signature-pad-canvas'
     });
     padBody.appendChild(canvas);
-    this.element.appendChild(padBody);
+    element.appendChild(padBody);
 
     // Add the footer.
     if (this.component.footer) {
@@ -56,7 +63,7 @@ class SignatureComponent extends BaseComponent {
         class: 'signature-pad-footer'
       });
       footer.appendChild(this.text(this.component.footer));
-      this.element.appendChild(footer);
+      element.appendChild(footer);
     }
 
     // Create the signature pad.

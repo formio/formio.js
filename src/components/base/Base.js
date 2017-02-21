@@ -104,6 +104,8 @@ class BaseComponent {
       // Ensure you can get the component info from the element.
       this.element.component = this.component;
     }
+
+    return this.element;
   }
 
   createWrapper() {
@@ -121,7 +123,7 @@ class BaseComponent {
       this.addValue();
 
       // Add the table to the element.
-      this.element.appendChild(table);
+      this.append(table);
       return true;
     }
   }
@@ -608,6 +610,42 @@ class BaseComponent {
     }
     if (select.onselect) {
       select.onchange();
+    }
+  }
+
+  clear() {
+    if (this.element) {
+      this.element.innerHTML = '';
+    }
+  }
+
+  append(element) {
+    if (this.element) {
+      this.element.appendChild(element);
+    }
+  }
+
+  prepend(element) {
+    if (this.element) {
+      this.element.insertBefore(element, this.element.firstChild);
+    }
+  }
+
+  before(element) {
+    if (this.element) {
+      this.element.parentNode.insertBefore(element, this.element);
+    }
+  }
+
+  remove(element) {
+    if (this.element) {
+      this.element.parentNode.removeChild(element);
+    }
+  }
+
+  removeChild(element) {
+    if (this.element) {
+      this.element.removeChild(element);
     }
   }
 

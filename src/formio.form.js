@@ -16,10 +16,26 @@ let getOptions = function(options) {
 class FormioForm extends FormioComponents {
   constructor(element, options) {
     super(null, getOptions(options));
+
+    // Allow the element to either be a form, or a wrapper.
+    if (element && element.nodeName.toLowerCase() === 'form') {
+      this.element = element;
+      var classNames = this.element.getAttribute('class');
+      classNames += ' formio-form';
+      this.element.setAttribute('class', classNames);
+    }
+    else {
+      this.element = this.ce('element', 'form', {
+        class: 'formio-form'
+      });
+      if (element) {
+        element.appendChild(this.element);
+      }
+    }
+
     this.type = 'form';
     this._src = '';
     this._loading = true;
-    this.wrapper = element;
     this.formio = null;
     this.loader = null;
     this.alert = null;
@@ -78,10 +94,10 @@ class FormioForm extends FormioComponents {
     if (this.loader) {
       try {
         if (loading) {
-          this.wrapper.parentNode.insertBefore(this.loader, this.wrapper);
+          this.before(this.loader);
         }
         else {
-          this.wrapper.parentNode.removeChild(this.loader);
+          this.remove(this.loader);
         }
       }
       catch (err) {}
@@ -115,10 +131,9 @@ class FormioForm extends FormioComponents {
   }
 
   render() {
-    this.wrapper.innerHTML = '';
+    this.clear();
     return this.localize().then(() => {
       this.build();
-      this.wrapper.appendChild(this.element);
       this.on('resetForm', () => this.reset());
       this.on('componentChange', (changed) => this.triggerSubmissionChange(changed));
       this.on('componentError', (changed) => this.triggerSubmissionError(changed));
@@ -128,7 +143,7 @@ class FormioForm extends FormioComponents {
   setAlert(type, message) {
     if (this.alert) {
       try {
-        this.wrapper.removeChild(this.alert);
+        this.removeChild(this.alert);
         this.alert = null;
       }
       catch(err) {}
@@ -143,13 +158,10 @@ class FormioForm extends FormioComponents {
     if (!this.alert) {
       return;
     }
-    this.wrapper.insertBefore(this.alert, this.wrapper.firstChild);
+    this.prepend(this.alert);
   }
 
   build() {
-    this.element = this.ce('element', 'form', {
-      class: 'formio-form'
-    });
     this.addAnEventListener(this.element, 'submit', (event) => this.submit(event));
     this.addComponents();
     this.checkConditions(this.getValue());

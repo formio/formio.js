@@ -62,11 +62,17 @@ td > .form-group {
   border: 1px solid #f4f4f4;
 }
 
-.signature-pad-refresh {
+.btn.signature-pad-refresh {
   position:absolute;
   left: 0;
   top: 0;
   z-index: 1000;
+  padding: 3px;
+  line-height: 0;
+}
+
+.signature-pad-refresh img {
+  height: 1.2em;
 }
 
 .signature-pad-footer {
