@@ -7,9 +7,10 @@ class SignatureComponent extends BaseComponent {
     info.attr.type = 'hidden';
     return info;
   }
-  set value(value) {
-    super.value = value;
-    if (this.signaturePad && this.noSign) {
+
+  setValue(value, noSign) {
+    super.setValue(value);
+    if (!noSign && this.signaturePad) {
       this.signaturePad.fromDataURL(value);
     }
   }
@@ -26,6 +27,13 @@ class SignatureComponent extends BaseComponent {
     super.disable = disable;
     this.element.innerHTML = '';
     this.element.appendChild(this.getSignatureImage());
+  }
+
+  destroy() {
+    super.destroy();
+    if (this.signaturePad) {
+      this.signaturePad.off();
+    }
   }
 
   build() {
@@ -75,7 +83,7 @@ class SignatureComponent extends BaseComponent {
       event.preventDefault();
       this.signaturePad.clear();
     });
-    this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL());
+    this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), true);
 
     // Ensure the signature is always the size of its container.
     let currentWidth = 0;

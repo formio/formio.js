@@ -43,7 +43,7 @@ class RadioComponent extends BaseComponent {
   }
 
   addInputEventListener(input) {
-    this.addAnEventListener(input, this.info.changeEvent, () => {
+    this.addEventListener(input, this.info.changeEvent, () => {
       if (input.value) {
         this.onChange();
       }
@@ -60,10 +60,8 @@ class RadioComponent extends BaseComponent {
     return value;
   }
 
-  set value(value) {
-    _each(this.inputs, (input) => {
-      input.checked = (input.value === value);
-    });
+  setValueAt(value, index) {
+    this.inputs[index].checked = (this.inputs[index].value === value);
   }
 }
 module.exports = RadioComponent;

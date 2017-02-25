@@ -20,10 +20,9 @@ class SelectBoxesComponent extends RadioComponent {
     });
     return value;
   }
-  set value(value) {
-    _each(this.inputs, (input) => {
-      input.checked = (value.indexOf(input.value) !== -1);
-    });
+
+  setValueAt(value, index) {
+    this.inputs[index].checked = (value.indexOf(this.inputs[index].value) !== -1);
   }
 }
 module.exports = SelectBoxesComponent;

@@ -33,6 +33,7 @@ class BaseComponent {
     this.options.name = this.options.name || 'data';
     this.validators = ['required', 'minLength', 'maxLength', 'custom'];
     this.triggerChange = _debounce(this.onChange.bind(this), 200);
+    this.eventHandlers = [];
     if (this.component) {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
@@ -199,7 +200,7 @@ class BaseComponent {
     let addButton = this.ce('addButton', 'a', {
       class: 'btn btn-primary'
     });
-    this.addAnEventListener(addButton, 'click', (event) => {
+    this.addEventListener(addButton, 'click', (event) => {
       event.preventDefault();
       this.addValue();
     });
@@ -223,7 +224,7 @@ class BaseComponent {
       tabindex: '-1'
     });
 
-    this.addAnEventListener(removeButton, 'click', (event) => {
+    this.addEventListener(removeButton, 'click', (event) => {
       event.preventDefault();
       this.removeValue(index);
     });
@@ -315,12 +316,22 @@ class BaseComponent {
    * @param func
    *   The callback function to be executed when the listener is triggered.
    */
-  addAnEventListener(obj, evt, func) {
+  addEventListener(obj, evt, func) {
+    this.eventHandlers.push({type: evt, func: func});
     if ('addEventListener' in obj){
       obj.addEventListener(evt, func, false);
     } else if ('attachEvent' in obj) {
       obj.attachEvent('on'+evt, func);
     }
+  }
+
+  /**
+   * Remove all event handlers.
+   */
+  destroy() {
+    _each(this.eventHandlers, (handler) => {
+      window.removeEventListener(handler.event, handler.func);
+    });
   }
 
   /**
@@ -463,7 +474,7 @@ class BaseComponent {
    * @param input
    */
   addInputEventListener(input) {
-    this.addAnEventListener(input, this.info.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.info.changeEvent, this.updateValue.bind(this));
   }
 
   /**
@@ -623,6 +634,7 @@ class BaseComponent {
   }
 
   clear() {
+    this.destroy();
     if (this.element) {
       this.element.innerHTML = '';
     }

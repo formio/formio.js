@@ -1,5 +1,6 @@
 'use strict';
 import _each from 'lodash/each';
+import _clone from 'lodash/clone';
 import _filter from 'lodash/filter';
 import _remove from 'lodash/remove';
 import BaseComponent from './base/Base';
@@ -74,10 +75,15 @@ class FormioComponents extends BaseComponent {
     return comp;
   }
 
-  removeComponent(key, cb) {
+  removeComponent(component, components) {
+    component.destroy();
+    component.element.parentNode.removeChild(component.element);
+    _remove(components, {id: component.id});
+  }
+
+  removeComponentByKey(key, cb) {
     let comp = this.getComponent(key, (component, components) => {
-      component.element.parentNode.removeChild(component.element);
-      _remove(components, {id: component.id});
+      this.removeComponent(component, components);
       if (cb) {
         cb(component, components);
       }
@@ -92,8 +98,7 @@ class FormioComponents extends BaseComponent {
 
   removeComponentById(id, cb) {
     let comp = this.getComponentById(id, (component, components) => {
-      component.element.parentNode.removeChild(component.element);
-      _remove(components, {id: component.id});
+      this.removeComponent(component, components);
       if (cb) {
         cb(component, components);
       }
@@ -115,6 +120,12 @@ class FormioComponents extends BaseComponent {
   checkConditions(data) {
     super.checkConditions(data);
     _each(this.components, (comp) => comp.checkConditions(data));
+  }
+
+  destroy() {
+    super.destroy();
+    let components = _clone(this.components);
+    _each(components, (comp) => this.removeComponent(comp, this.components));
   }
 
   set disable(disable) {

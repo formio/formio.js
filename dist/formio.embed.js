@@ -16179,6 +16179,10 @@ var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
 
+var _clone2 = require('lodash/clone');
+
+var _clone3 = _interopRequireDefault(_clone2);
+
 var _filter2 = require('lodash/filter');
 
 var _filter3 = _interopRequireDefault(_filter2);
@@ -16302,10 +16306,18 @@ var FormioComponents = function (_BaseComponent) {
     }
   }, {
     key: 'removeComponent',
-    value: function removeComponent(key, cb) {
+    value: function removeComponent(component, components) {
+      component.destroy();
+      component.element.parentNode.removeChild(component.element);
+      (0, _remove3.default)(components, { id: component.id });
+    }
+  }, {
+    key: 'removeComponentByKey',
+    value: function removeComponentByKey(key, cb) {
+      var _this3 = this;
+
       var comp = this.getComponent(key, function (component, components) {
-        component.element.parentNode.removeChild(component.element);
-        (0, _remove3.default)(components, { id: component.id });
+        _this3.removeComponent(component, components);
         if (cb) {
           cb(component, components);
         }
@@ -16320,9 +16332,10 @@ var FormioComponents = function (_BaseComponent) {
   }, {
     key: 'removeComponentById',
     value: function removeComponentById(id, cb) {
+      var _this4 = this;
+
       var comp = this.getComponentById(id, function (component, components) {
-        component.element.parentNode.removeChild(component.element);
-        (0, _remove3.default)(components, { id: component.id });
+        _this4.removeComponent(component, components);
         if (cb) {
           cb(component, components);
         }
@@ -16337,12 +16350,12 @@ var FormioComponents = function (_BaseComponent) {
   }, {
     key: 'addComponents',
     value: function addComponents(element, data) {
-      var _this3 = this;
+      var _this5 = this;
 
       element = element || this.element;
       data = data || this.data;
       (0, _each3.default)(this.component.components, function (component) {
-        return _this3.addComponent(component, element, data);
+        return _this5.addComponent(component, element, data);
       });
     }
   }, {
@@ -16351,6 +16364,17 @@ var FormioComponents = function (_BaseComponent) {
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
       (0, _each3.default)(this.components, function (comp) {
         return comp.checkConditions(data);
+      });
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      var _this6 = this;
+
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'destroy', this).call(this);
+      var components = (0, _clone3.default)(this.components);
+      (0, _each3.default)(components, function (comp) {
+        return _this6.removeComponent(comp, _this6.components);
       });
     }
   }, {
@@ -16401,7 +16425,7 @@ var FormioComponents = function (_BaseComponent) {
 
 module.exports = FormioComponents;
 
-},{"./base/Base":207,"./index":220,"lodash/each":170,"lodash/filter":172,"lodash/isArray":179,"lodash/remove":194}],206:[function(require,module,exports){
+},{"./base/Base":207,"./index":220,"lodash/clone":166,"lodash/each":170,"lodash/filter":172,"lodash/isArray":179,"lodash/remove":194}],206:[function(require,module,exports){
 'use strict';
 
 var _get2 = require('lodash/get');
@@ -16671,6 +16695,7 @@ var BaseComponent = function () {
     this.options.name = this.options.name || 'data';
     this.validators = ['required', 'minLength', 'maxLength', 'custom'];
     this.triggerChange = (0, _debounce3.default)(this.onChange.bind(this), 200);
+    this.eventHandlers = [];
     if (this.component) {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
@@ -16844,7 +16869,7 @@ var BaseComponent = function () {
       var addButton = this.ce('addButton', 'a', {
         class: 'btn btn-primary'
       });
-      this.addAnEventListener(addButton, 'click', function (event) {
+      this.addEventListener(addButton, 'click', function (event) {
         event.preventDefault();
         _this3.addValue();
       });
@@ -16867,7 +16892,7 @@ var BaseComponent = function () {
         tabindex: '-1'
       });
 
-      this.addAnEventListener(removeButton, 'click', function (event) {
+      this.addEventListener(removeButton, 'click', function (event) {
         event.preventDefault();
         _this4.removeValue(index);
       });
@@ -16967,13 +16992,26 @@ var BaseComponent = function () {
      */
 
   }, {
-    key: 'addAnEventListener',
-    value: function addAnEventListener(obj, evt, func) {
+    key: 'addEventListener',
+    value: function addEventListener(obj, evt, func) {
+      this.eventHandlers.push({ type: evt, func: func });
       if ('addEventListener' in obj) {
         obj.addEventListener(evt, func, false);
       } else if ('attachEvent' in obj) {
         obj.attachEvent('on' + evt, func);
       }
+    }
+
+    /**
+     * Remove all event handlers.
+     */
+
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      (0, _each3.default)(this.eventHandlers, function (handler) {
+        window.removeEventListener(handler.event, handler.func);
+      });
     }
 
     /**
@@ -17135,11 +17173,7 @@ var BaseComponent = function () {
   }, {
     key: 'addInputEventListener',
     value: function addInputEventListener(input) {
-      var _this5 = this;
-
-      this.addAnEventListener(input, this.info.changeEvent, function () {
-        return _this5.updateValue();
-      });
+      this.addEventListener(input, this.info.changeEvent, this.updateValue.bind(this));
     }
 
     /**
@@ -17269,7 +17303,7 @@ var BaseComponent = function () {
   }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
-      var _this6 = this;
+      var _this5 = this;
 
       (0, _each3.default)(options, function (option) {
         var attrs = {
@@ -17278,8 +17312,8 @@ var BaseComponent = function () {
         if (defaultValue !== undefined && option.value === defaultValue) {
           attrs.selected = 'selected';
         }
-        var optionElement = _this6.ce(tag, 'option', attrs);
-        optionElement.appendChild(_this6.text(option.label));
+        var optionElement = _this5.ce(tag, 'option', attrs);
+        optionElement.appendChild(_this5.text(option.label));
         select.appendChild(optionElement);
       });
     }
@@ -17304,6 +17338,7 @@ var BaseComponent = function () {
   }, {
     key: 'clear',
     value: function clear() {
+      this.destroy();
       if (this.element) {
         this.element.innerHTML = '';
       }
@@ -17351,7 +17386,7 @@ var BaseComponent = function () {
   }, {
     key: 'elementInfo',
     value: function elementInfo() {
-      var _this7 = this;
+      var _this6 = this;
 
       var attributes = {
         name: this.options.name,
@@ -17362,7 +17397,7 @@ var BaseComponent = function () {
         tabindex: 'tabindex',
         placeholder: 'placeholder'
       }, function (path, prop) {
-        var attrValue = (0, _get3.default)(_this7.component, path);
+        var attrValue = (0, _get3.default)(_this6.component, path);
         if (attrValue) {
           attributes[prop] = attrValue;
         }
@@ -17509,7 +17544,7 @@ var ButtonComponent = function (_BaseComponent) {
       this.on('error', function () {
         _this2.loading = false;
       });
-      this.addAnEventListener(this.element, 'click', function (event) {
+      this.addEventListener(this.element, 'click', function (event) {
         switch (_this2.component.action) {
           case 'submit':
             _this2.loading = true;
@@ -18548,7 +18583,7 @@ var DayComponent = function (_BaseComponent) {
         placeholder: (0, _get4.default)(this.component, 'fields.day.placeholder', ''),
         id: this.component.key + '-day'
       });
-      this.addAnEventListener(this.dayInput, 'change', function () {
+      this.addEventListener(this.dayInput, 'change', function () {
         return _this2.updateValue();
       });
       dayColumn.appendChild(this.dayInput);
@@ -18607,7 +18642,7 @@ var DayComponent = function (_BaseComponent) {
         value: new Date().getFullYear(),
         id: this.component.key + '-year'
       });
-      this.addAnEventListener(this.yearInput, 'change', function () {
+      this.addEventListener(this.yearInput, 'change', function () {
         return _this3.updateValue();
       });
       yearColumn.appendChild(this.yearInput);
@@ -19468,7 +19503,7 @@ var RadioComponent = function (_BaseComponent) {
     value: function addInputEventListener(input) {
       var _this3 = this;
 
-      this.addAnEventListener(input, this.info.changeEvent, function () {
+      this.addEventListener(input, this.info.changeEvent, function () {
         if (input.value) {
           _this3.onChange();
         }
@@ -19486,11 +19521,9 @@ var RadioComponent = function (_BaseComponent) {
       return value;
     }
   }, {
-    key: 'value',
-    set: function set(value) {
-      (0, _each3.default)(this.inputs, function (input) {
-        input.checked = input.value === value;
-      });
+    key: 'setValueAt',
+    value: function setValueAt(value, index) {
+      this.inputs[index].checked = this.inputs[index].value === value;
     }
   }]);
 
@@ -19737,11 +19770,9 @@ var SelectBoxesComponent = function (_RadioComponent) {
       return value;
     }
   }, {
-    key: 'value',
-    set: function set(value) {
-      (0, _each3.default)(this.inputs, function (input) {
-        input.checked = value.indexOf(input.value) !== -1;
-      });
+    key: 'setValueAt',
+    value: function setValueAt(value, index) {
+      this.inputs[index].checked = value.indexOf(this.inputs[index].value) !== -1;
     }
   }]);
 
@@ -19843,6 +19874,14 @@ var SignatureComponent = function (_BaseComponent) {
       return info;
     }
   }, {
+    key: 'setValue',
+    value: function setValue(value, noSign) {
+      _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'setValue', this).call(this, value);
+      if (!noSign && this.signaturePad) {
+        this.signaturePad.fromDataURL(value);
+      }
+    }
+  }, {
     key: 'getSignatureImage',
     value: function getSignatureImage() {
       var image = this.ce('image', 'img', {
@@ -19850,6 +19889,14 @@ var SignatureComponent = function (_BaseComponent) {
       });
       image.setAttribute('src', this.input.value);
       return image;
+    }
+  }, {
+    key: 'destroy',
+    value: function destroy() {
+      _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'destroy', this).call(this);
+      if (this.signaturePad) {
+        this.signaturePad.off();
+      }
     }
   }, {
     key: 'build',
@@ -19903,7 +19950,7 @@ var SignatureComponent = function (_BaseComponent) {
         _this2.signaturePad.clear();
       });
       this.signaturePad.onEnd = function () {
-        return _this2.setValue(_this2.signaturePad.toDataURL());
+        return _this2.setValue(_this2.signaturePad.toDataURL(), true);
       };
 
       // Ensure the signature is always the size of its container.
@@ -19918,14 +19965,6 @@ var SignatureComponent = function (_BaseComponent) {
         }
         setTimeout(checkWidth.bind(this), 200);
       }.bind(this), 200);
-    }
-  }, {
-    key: 'value',
-    set: function set(value) {
-      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'value', value, this);
-      if (this.signaturePad && this.noSign) {
-        this.signaturePad.fromDataURL(value);
-      }
     }
   }, {
     key: 'disable',
@@ -20626,7 +20665,7 @@ var FormioForm = function (_FormioComponents) {
     value: function build() {
       var _this4 = this;
 
-      this.addAnEventListener(this.element, 'submit', function (event) {
+      this.addEventListener(this.element, 'submit', function (event) {
         return _this4.submit(event);
       });
       this.addComponents();

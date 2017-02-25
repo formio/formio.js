@@ -57,7 +57,7 @@ class DayComponent extends BaseComponent {
       placeholder: _get(this.component, 'fields.day.placeholder', ''),
       id: this.component.key + '-day'
     });
-    this.addAnEventListener(this.dayInput, 'change', () => this.updateValue());
+    this.addEventListener(this.dayInput, 'change', () => this.updateValue());
     dayColumn.appendChild(this.dayInput);
     return dayColumn;
   }
@@ -110,7 +110,7 @@ class DayComponent extends BaseComponent {
       value: (new Date().getFullYear()),
       id: this.component.key + '-year'
     });
-    this.addAnEventListener(this.yearInput, 'change', () => this.updateValue());
+    this.addEventListener(this.yearInput, 'change', () => this.updateValue());
     yearColumn.appendChild(this.yearInput);
     return yearColumn;
   }

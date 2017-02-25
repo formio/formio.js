@@ -163,7 +163,7 @@ class FormioForm extends FormioComponents {
   }
 
   build() {
-    this.addAnEventListener(this.element, 'submit', (event) => this.submit(event));
+    this.addEventListener(this.element, 'submit', (event) => this.submit(event));
     this.addComponents();
     this.checkConditions(this.getValue());
   }

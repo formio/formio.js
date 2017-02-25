@@ -40,7 +40,7 @@ class ButtonComponent extends BaseComponent {
     this.on('error', () => {
       this.loading = false;
     });
-    this.addAnEventListener(this.element, 'click', (event) => {
+    this.addEventListener(this.element, 'click', (event) => {
       switch (this.component.action) {
         case 'submit':
           this.loading = true;
