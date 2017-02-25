@@ -16297,7 +16297,7 @@ var FormioComponents = function (_BaseComponent) {
       var components = require('./index');
       var comp = components.create(component, this.options, data);
       this.components.push(comp);
-      element.appendChild(comp.element);
+      element.appendChild(comp.getElement());
       return comp;
     }
   }, {
@@ -16695,6 +16695,13 @@ var BaseComponent = function () {
       return this.events.on(event, cb);
     }
   }, {
+    key: 'getIcon',
+    value: function getIcon(name) {
+      return this.ce(name + 'Icon', 'i', {
+        class: 'glyphicon glyphicon-' + name
+      });
+    }
+  }, {
     key: 'localize',
     value: function localize() {
       var _this = this;
@@ -16725,6 +16732,11 @@ var BaseComponent = function () {
       if (!this.createWrapper()) {
         this.createInput(this.element);
       }
+    }
+  }, {
+    key: 'getElement',
+    value: function getElement() {
+      return this.element;
     }
   }, {
     key: 'createElement',
@@ -16975,21 +16987,20 @@ var BaseComponent = function () {
     key: 'ce',
     value: function ce(name, type, attr) {
       // Allow for template overrides.
-      var element = null;
+      var element = document.createElement(type);
       var compType = this.component.type || this.type;
       if (this.options && this.options.template && (this.options.template[compType] && this.options.template[compType][name] || this.options.template.global && this.options.template.global[name])) {
         var template = (0, _get3.default)(this.options, 'template.' + compType + '.' + name) || (0, _get3.default)(this.options, 'template.global.' + name);
         if (typeof template === 'function') {
-          element = template(this, type, attr);
-          if (element) {
-            return element;
+          var returnElement = template(this, type, attr, element);
+          if (returnElement) {
+            return returnElement;
           }
         } else {
           // Assign the attributes.
           (0, _assign3.default)(attr, template);
         }
       }
-      element = document.createElement(type);
       if (attr) {
         this.attr(element, attr);
       }
@@ -18347,17 +18358,7 @@ var DateTimeComponent = function (_BaseComponent) {
       var suffix = this.ce('suffix', 'span', {
         class: 'input-group-addon'
       });
-      if (this.component.enableDate) {
-        var calendar = this.ce('calendarIcon', 'i', {
-          class: 'glyphicon glyphicon-calendar'
-        });
-        suffix.appendChild(calendar);
-      } else {
-        var time = this.ce('timeIcon', 'i', {
-          class: 'glyphicon glyphicon-time'
-        });
-        suffix.appendChild(time);
-      }
+      suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
       inputGroup.appendChild(suffix);
       return suffix;
     }
@@ -19870,9 +19871,7 @@ var SignatureComponent = function (_BaseComponent) {
       var refresh = this.ce('refresh', 'a', {
         class: 'btn btn-sm btn-default signature-pad-refresh'
       });
-      var refreshIcon = this.ce('refreshIcon', 'img', {
-        src: 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjwhRE9DVFlQRSBzdmcgIFBVQkxJQyAnLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4nICAnaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkJz48c3ZnIGVuYWJsZS1iYWNrZ3JvdW5kPSJuZXcgMCAwIDMyIDMyIiBoZWlnaHQ9IjMycHgiIGlkPSJMYXllcl8xIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMycHgiIHhtbDpzcGFjZT0icHJlc2VydmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiPjxnPjxwYXRoIGQ9Ik0yNS40NDQsNC4yOTFjMCwwLTEuMzI1LDEuMjkzLTIuMjQzLDIuMjAxQzE4LjUxNCwzLjA2OCwxMS45MDksMy40NTYsNy42NzYsNy42ODkgICBjLTIuNDcsMi40Ny0zLjYyMyw1Ljc0Ny0zLjQ4NCw4Ljk4M2g0QzguMDUxLDE0LjQ2LDguODEsMTIuMjA1LDEwLjUsMTAuNTE0YzIuNjYzLTIuNjYzLDYuNzM1LTMuMDQzLDkuODEyLTEuMTYyICAgYy0xLjA0MiwxLjAzMi0yLjI0NSwyLjIzOC0yLjI0NSwyLjIzOGMtMC44NDEsMS4wMDksMC4xMDQsMS41OTIsMC41ODQsMS41NzdsNS42MjQtMC4wMDFjMC4yOTcsMCwwLjUzOSwwLjAwMSwwLjUzOSwwLjAwMSAgIHMwLjI0NSwwLDAuNTQzLDBoMS4wOTJjMC4yOTgsMCwwLjU0LTAuMjQzLDAuNTQtMC41NDFWNC44OTVDMjcuMDIzLDQuMTg4LDI2LjI0NywzLjUwMiwyNS40NDQsNC4yOTF6IiBmaWxsPSIjNTE1MTUxIi8+PHBhdGggZD0iTTYuNTU1LDI3LjcwOWMwLDAsMS4zMjYtMS4yOTMsMi4yNDMtMi4yMDFjNC42ODgsMy40MjQsMTEuMjkyLDMuMDM2LDE1LjUyNi0xLjE5NyAgIGMyLjQ3LTIuNDcxLDMuNjIyLTUuNzQ3LDMuNDg0LTguOTgzaC00LjAwMWMwLjE0MiwyLjIxMS0wLjYxNyw0LjQ2Ny0yLjMwOCw2LjE1OWMtMi42NjMsMi42NjItNi43MzUsMy4wNDMtOS44MTIsMS4xNjEgICBjMS4wNDItMS4wMzIsMi4yNDUtMi4yMzgsMi4yNDUtMi4yMzhjMC44NDEtMS4wMS0wLjEwNC0xLjU5Mi0wLjU4NC0xLjU3N2wtNS42MjQsMC4wMDJjLTAuMjk3LDAtMC41NC0wLjAwMi0wLjU0LTAuMDAyICAgcy0wLjI0NSwwLTAuNTQzLDBINS41NTFjLTAuMjk4LDAtMC41NCwwLjI0Mi0wLjU0MSwwLjU0MXY3LjczMkM0Ljk3NywyNy44MTIsNS43NTMsMjguNDk4LDYuNTU1LDI3LjcwOXoiIGZpbGw9IiM1MTUxNTEiLz48L2c+PC9zdmc+'
-      });
+      var refreshIcon = this.getIcon('refresh');
       refresh.appendChild(refreshIcon);
       padBody.appendChild(refresh);
 
@@ -20533,11 +20532,12 @@ var FormioForm = function (_FormioComponents) {
       classNames += ' formio-form';
       _this.element.setAttribute('class', classNames);
     } else {
+      _this.wrapper = element;
       _this.element = _this.ce('element', 'form', {
         class: 'formio-form'
       });
-      if (element) {
-        element.appendChild(_this.element);
+      if (_this.wrapper) {
+        _this.wrapper.appendChild(_this.element);
       }
     }
 

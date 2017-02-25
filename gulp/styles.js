@@ -1,5 +1,5 @@
 module.exports = function(gulp, plugins) {
-  let sassFilter = plugins.filter(['*.sass'], {restore: true})
+  let sassFilter = plugins.filter(['*.scss'], {restore: true});
   return function () {
     return gulp.src([
       './src/sass/formio.form.scss',

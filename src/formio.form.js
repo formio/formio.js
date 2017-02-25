@@ -25,11 +25,12 @@ class FormioForm extends FormioComponents {
       this.element.setAttribute('class', classNames);
     }
     else {
+      this.wrapper = element;
       this.element = this.ce('element', 'form', {
         class: 'formio-form'
       });
-      if (element) {
-        element.appendChild(this.element);
+      if (this.wrapper) {
+        this.wrapper.appendChild(this.element);
       }
     }
 

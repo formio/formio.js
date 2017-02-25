@@ -70,7 +70,7 @@ class FormioComponents extends BaseComponent {
     let components = require('./index');
     let comp = components.create(component, this.options, data);
     this.components.push(comp);
-    element.appendChild(comp.element);
+    element.appendChild(comp.getElement());
     return comp;
   }
 

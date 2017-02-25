@@ -72,18 +72,7 @@ class DateTimeComponent extends BaseComponent {
     let suffix = this.ce('suffix', 'span', {
       class: 'input-group-addon'
     });
-    if (this.component.enableDate) {
-      let calendar = this.ce('calendarIcon', 'i', {
-        class: 'glyphicon glyphicon-calendar'
-      });
-      suffix.appendChild(calendar);
-    }
-    else {
-      let time = this.ce('timeIcon', 'i', {
-        class: 'glyphicon glyphicon-time'
-      });
-      suffix.appendChild(time);
-    }
+    suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
     inputGroup.appendChild(suffix);
     return suffix;
   }

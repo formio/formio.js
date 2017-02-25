@@ -54,6 +54,12 @@ class BaseComponent {
     return this.events.on(event, cb);
   }
 
+  getIcon(name) {
+    return this.ce(name + 'Icon', 'i', {
+      class: 'glyphicon glyphicon-' + name
+    });
+  }
+
   localize() {
     if (i18next.initialized) {
       return Promise.resolve(i18next);
@@ -92,6 +98,10 @@ class BaseComponent {
       className += ' required';
     }
     return className;
+  }
+
+  getElement() {
+    return this.element;
   }
 
   createElement() {
@@ -321,7 +331,7 @@ class BaseComponent {
    */
   ce(name, type, attr) {
     // Allow for template overrides.
-    let element = null;
+    let element = document.createElement(type);
     let compType = this.component.type || this.type;
     if (
       this.options &&
@@ -333,9 +343,9 @@ class BaseComponent {
     ) {
       let template = _get(this.options, 'template.' + compType + '.' + name) || _get(this.options, 'template.global.' + name);
       if (typeof template === 'function') {
-        element = template(this, type, attr);
-        if (element) {
-          return element;
+        let returnElement = template(this, type, attr, element);
+        if (returnElement) {
+          return returnElement;
         }
       }
       else {
@@ -343,7 +353,6 @@ class BaseComponent {
         _assign(attr, template);
       }
     }
-    element = document.createElement(type);
     if (attr) {
       this.attr(element, attr);
     }
