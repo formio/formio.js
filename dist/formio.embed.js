@@ -16308,7 +16308,10 @@ var FormioComponents = function (_BaseComponent) {
     key: 'removeComponent',
     value: function removeComponent(component, components) {
       component.destroy();
-      component.element.parentNode.removeChild(component.element);
+      var element = component.getElement();
+      if (element && element.parentNode) {
+        element.parentNode.removeChild(element);
+      }
       (0, _remove3.default)(components, { id: component.id });
     }
   }, {
@@ -17339,8 +17342,9 @@ var BaseComponent = function () {
     key: 'clear',
     value: function clear() {
       this.destroy();
-      if (this.element) {
-        this.element.innerHTML = '';
+      var element = this.getElement();
+      if (element) {
+        element.innerHTML = '';
       }
     }
   }, {

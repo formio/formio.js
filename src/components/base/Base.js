@@ -635,8 +635,9 @@ class BaseComponent {
 
   clear() {
     this.destroy();
-    if (this.element) {
-      this.element.innerHTML = '';
+    let element = this.getElement();
+    if (element) {
+      element.innerHTML = '';
     }
   }
 
