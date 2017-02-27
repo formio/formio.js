@@ -251,6 +251,7 @@ class BaseComponent {
   }
 
   createErrorElement(container) {
+    this.errorContainer = container;
     this.errorElement = this.ce('errors', 'div', {
       class: 'formio-errors'
     });
@@ -547,12 +548,17 @@ class BaseComponent {
   }
 
   setCustomValidity(message) {
-    if (this.errorElement) {
+    if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
+      try {
+        this.errorContainer.removeChild(this.errorElement);
+      }
+      catch (err) {}
     }
     this.removeClass(this.element, 'has-error');
     this.error = message ? message : '';
     if (message) {
+      this.errorContainer.appendChild(this.errorElement);
       this.addInputError(message);
       if (this.events) {
         this.events.emit('componentError', {
