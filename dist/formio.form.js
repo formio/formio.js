@@ -16986,12 +16986,14 @@ var BaseComponent = function () {
     }
   }, {
     key: 'createErrorElement',
-    value: function createErrorElement(container) {
-      this.errorContainer = container;
+    value: function createErrorElement() {
+      if (!this.errorContainer) {
+        return;
+      }
       this.errorElement = this.ce('errors', 'div', {
         class: 'formio-errors'
       });
-      container.appendChild(this.errorElement);
+      this.errorContainer.appendChild(this.errorElement);
     }
   }, {
     key: 'addPrefix',
@@ -17043,7 +17045,7 @@ var BaseComponent = function () {
       this.addPrefix(input, inputGroup);
       this.addInput(input, inputGroup || container);
       this.addSuffix(input, inputGroup);
-      this.createErrorElement(container);
+      this.errorContainer = container;
       return inputGroup || input;
     }
 
@@ -17293,8 +17295,15 @@ var BaseComponent = function () {
   }, {
     key: 'updateValue',
     value: function updateValue() {
+      var falsey = !this.value;
       this.data[this.component.key] = this.value = this.getValue();
-      this.triggerChange();
+      if (falsey) {
+        if (!!this.value) {
+          this.triggerChange();
+        }
+      } else {
+        this.triggerChange();
+      }
     }
   }, {
     key: 'checkValidity',
@@ -17323,7 +17332,7 @@ var BaseComponent = function () {
       this.removeClass(this.element, 'has-error');
       this.error = message ? message : '';
       if (message) {
-        this.errorContainer.appendChild(this.errorElement);
+        this.createErrorElement();
         this.addInputError(message);
         if (this.events) {
           this.events.emit('componentError', {
@@ -17787,7 +17796,7 @@ var CheckBoxComponent = function (_BaseComponent) {
         return;
       }
       var input = this.ce('input', this.info.type, this.info.attr);
-      this.createErrorElement(container);
+      this.errorContainer = container;
       return input;
     }
   }, {
@@ -18747,7 +18756,7 @@ var DayComponent = function (_BaseComponent) {
 
       var input = this.ce('input', this.info.type, this.info.attr);
       this.addInput(input, inputGroup);
-      this.createErrorElement(container);
+      this.errorContainer = container;
       container.appendChild(inputGroup);
     }
 

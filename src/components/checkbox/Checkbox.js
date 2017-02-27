@@ -58,7 +58,7 @@ class CheckBoxComponent extends BaseComponent {
       return;
     }
     let input = this.ce('input', this.info.type, this.info.attr);
-    this.createErrorElement(container);
+    this.errorContainer = container;
     return input;
   }
 

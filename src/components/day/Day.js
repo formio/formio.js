@@ -140,7 +140,7 @@ class DayComponent extends BaseComponent {
 
     let input = this.ce('input', this.info.type, this.info.attr);
     this.addInput(input, inputGroup);
-    this.createErrorElement(container);
+    this.errorContainer = container;
     container.appendChild(inputGroup);
   }
 
