@@ -1,4 +1,5 @@
 let Components = {
+  address: require('./address/Address'),
   base: require('./base/Base'),
   content: require('./content/Content'),
   container: require('./container/Container'),

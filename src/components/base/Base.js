@@ -522,7 +522,7 @@ class BaseComponent {
   }
 
   updateValue() {
-    let falsey = !this.value;
+    let falsey = !this.value && (this.value !== null) && (this.value !== undefined);
     this.data[this.component.key] = this.value = this.getValue();
     if (falsey) {
       if (!!this.value) {

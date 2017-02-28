@@ -16491,7 +16491,7 @@ var FormioComponents = function (_BaseComponent) {
 
 module.exports = FormioComponents;
 
-},{"./base/Base":207,"./index":220,"lodash/clone":166,"lodash/each":170,"lodash/filter":172,"lodash/isArray":179,"lodash/remove":194}],206:[function(require,module,exports){
+},{"./base/Base":208,"./index":221,"lodash/clone":166,"lodash/each":170,"lodash/filter":172,"lodash/isArray":179,"lodash/remove":194}],206:[function(require,module,exports){
 'use strict';
 
 var _get2 = require('lodash/get');
@@ -16672,6 +16672,141 @@ var Validator = {
 module.exports = Validator;
 
 },{"lodash/each":170,"lodash/get":174,"lodash/has":175,"lodash/isArray":179}],207:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _TextField = require('../textfield/TextField');
+
+var _TextField2 = _interopRequireDefault(_TextField);
+
+var _nativePromiseOnly = require('native-promise-only');
+
+var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var AddressComponent = function (_TextfieldComponent) {
+  _inherits(AddressComponent, _TextfieldComponent);
+
+  function AddressComponent(component, options, data) {
+    _classCallCheck(this, AddressComponent);
+
+    // If google maps api is not ready, then load it.
+    var _this = _possibleConstructorReturn(this, (AddressComponent.__proto__ || Object.getPrototypeOf(AddressComponent)).call(this, component, options, data));
+
+    if (!AddressComponent.apiAdded && !(window.google && window.google.maps && window.google.maps.places && window.google.maps.places.Autocomplete)) {
+      // Add the API.
+      AddressComponent.apiAdded = true;
+
+      // Get the source for Google Maps API
+      var src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=formioGoogleMapsCallback';
+      if (component.map.key) {
+        src += '&key=' + component.map.key;
+      }
+      var script = document.createElement('script');
+      script.setAttribute('src', src);
+      script.setAttribute('type', 'text/javascript');
+      script.setAttribute('defer', true);
+      script.setAttribute('async', true);
+      document.getElementsByTagName('head')[0].appendChild(script);
+    }
+    return _this;
+  }
+
+  _createClass(AddressComponent, [{
+    key: 'setValueAt',
+    value: function setValueAt(index, value) {
+      this.value = value;
+    }
+  }, {
+    key: 'getValueAt',
+    value: function getValueAt(index) {
+      return this.value;
+    }
+  }, {
+    key: 'addInput',
+    value: function addInput(input, container) {
+      var _this2 = this;
+
+      _get(AddressComponent.prototype.__proto__ || Object.getPrototypeOf(AddressComponent.prototype), 'addInput', this).call(this, input, container);
+      AddressComponent.apiReady.then(function () {
+        var autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.addListener("place_changed", function () {
+          return _this2.setValue(autocomplete.getPlace());
+        });
+      });
+    }
+  }, {
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(AddressComponent.prototype.__proto__ || Object.getPrototypeOf(AddressComponent.prototype), 'elementInfo', this).call(this);
+      info.attr.class += ' address-search';
+      return info;
+    }
+  }]);
+
+  return AddressComponent;
+}(_TextField2.default);
+
+AddressComponent.apiReady = new _nativePromiseOnly2.default(function (resolve, reject) {
+  AddressComponent.apiResolve = resolve;
+  AddressComponent.apiReject = reject;
+});
+
+window.formioGoogleMapsCallback = function () {
+  AddressComponent.apiResolve();
+};
+
+module.exports = AddressComponent;
+
+},{"../textfield/TextField":233,"native-promise-only":200}],208:[function(require,module,exports){
 'use strict';
 
 var _createClass = function () {
@@ -17295,7 +17430,7 @@ var BaseComponent = function () {
   }, {
     key: 'updateValue',
     value: function updateValue() {
-      var falsey = !this.value;
+      var falsey = !this.value && this.value !== null && this.value !== undefined;
       this.data[this.component.key] = this.value = this.getValue();
       if (falsey) {
         if (!!this.value) {
@@ -17531,7 +17666,7 @@ var BaseComponent = function () {
 
 module.exports = BaseComponent;
 
-},{"../../locals/en":237,"../Validator":206,"formio-utils":3,"i18next":19,"lodash/assign":165,"lodash/clone":166,"lodash/debounce":169,"lodash/each":170,"lodash/get":174,"lodash/isArray":179,"vanilla-masker":203}],208:[function(require,module,exports){
+},{"../../locals/en":238,"../Validator":206,"formio-utils":3,"i18next":19,"lodash/assign":165,"lodash/clone":166,"lodash/debounce":169,"lodash/each":170,"lodash/get":174,"lodash/isArray":179,"vanilla-masker":203}],209:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -17666,7 +17801,7 @@ var ButtonComponent = function (_BaseComponent) {
 
 module.exports = ButtonComponent;
 
-},{"../base/Base":207}],209:[function(require,module,exports){
+},{"../base/Base":208}],210:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -17831,7 +17966,7 @@ var CheckBoxComponent = function (_BaseComponent) {
 
 module.exports = CheckBoxComponent;
 
-},{"../base/Base":207}],210:[function(require,module,exports){
+},{"../base/Base":208}],211:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -17893,7 +18028,7 @@ var ColumnComponent = function (_FormioComponents) {
 
 module.exports = ColumnComponent;
 
-},{"../Components":205}],211:[function(require,module,exports){
+},{"../Components":205}],212:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -17971,7 +18106,7 @@ var ColumnsComponent = function (_FormioComponents) {
 
 module.exports = ColumnsComponent;
 
-},{"../Components":205,"lodash/each":170}],212:[function(require,module,exports){
+},{"../Components":205,"lodash/each":170}],213:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -18069,7 +18204,7 @@ var ContainerComponent = function (_FormioComponents) {
 
 module.exports = ContainerComponent;
 
-},{"../Components":205,"lodash/each":170,"lodash/isObject":184}],213:[function(require,module,exports){
+},{"../Components":205,"lodash/each":170,"lodash/isObject":184}],214:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -18134,7 +18269,7 @@ var ContentComponent = function (_BaseComponent) {
 
 module.exports = ContentComponent;
 
-},{"../base/Base":207}],214:[function(require,module,exports){
+},{"../base/Base":208}],215:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -18338,7 +18473,7 @@ var DataGridComponent = function (_BaseComponent) {
 
 module.exports = DataGridComponent;
 
-},{"../base/Base":207,"../index":220,"lodash/cloneDeep":167,"lodash/each":170,"lodash/isArray":179}],215:[function(require,module,exports){
+},{"../base/Base":208,"../index":221,"lodash/cloneDeep":167,"lodash/each":170,"lodash/isArray":179}],216:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -18551,7 +18686,7 @@ var DateTimeComponent = function (_BaseComponent) {
 
 module.exports = DateTimeComponent;
 
-},{"../base/Base":207,"flatpickr":2,"lodash/get":174,"moment":199}],216:[function(require,module,exports){
+},{"../base/Base":208,"flatpickr":2,"lodash/get":174,"moment":199}],217:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -18862,7 +18997,7 @@ var DayComponent = function (_BaseComponent) {
 
 module.exports = DayComponent;
 
-},{"../base/Base":207,"lodash/each":170,"lodash/get":174,"moment":199}],217:[function(require,module,exports){
+},{"../base/Base":208,"lodash/each":170,"lodash/get":174,"moment":199}],218:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -18945,7 +19080,7 @@ var EmailComponent = function (_TextFieldComponent) {
 
 module.exports = EmailComponent;
 
-},{"../textfield/TextField":232}],218:[function(require,module,exports){
+},{"../textfield/TextField":233}],219:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19027,7 +19162,7 @@ var HiddenComponent = function (_BaseComponent) {
 
 module.exports = HiddenComponent;
 
-},{"../base/Base":207}],219:[function(require,module,exports){
+},{"../base/Base":208}],220:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19103,10 +19238,11 @@ var HTMLComponent = function (_BaseComponent) {
 
 module.exports = HTMLComponent;
 
-},{"../base/Base":207,"lodash/each":170}],220:[function(require,module,exports){
+},{"../base/Base":208,"lodash/each":170}],221:[function(require,module,exports){
 'use strict';
 
 var Components = {
+  address: require('./address/Address'),
   base: require('./base/Base'),
   content: require('./content/Content'),
   container: require('./container/Container'),
@@ -19148,7 +19284,7 @@ var Components = {
 };
 module.exports = Components;
 
-},{"./base/Base":207,"./button/Button":208,"./checkbox/Checkbox":209,"./columns/Column":210,"./columns/Columns":211,"./container/Container":212,"./content/Content":213,"./datagrid/DataGrid":214,"./datetime/DateTime":215,"./day/Day":216,"./email/Email":217,"./hidden/Hidden":218,"./html/HTML":219,"./number/Number":221,"./panel/Panel":222,"./password/Password":223,"./phonenumber/PhoneNumber":224,"./radio/Radio":225,"./select/Select":226,"./selectboxes/SelectBoxes":227,"./signature/Signature":228,"./survey/Survey":229,"./table/Table":230,"./textarea/TextArea":231,"./textfield/TextField":232,"./well/Well":233}],221:[function(require,module,exports){
+},{"./address/Address":207,"./base/Base":208,"./button/Button":209,"./checkbox/Checkbox":210,"./columns/Column":211,"./columns/Columns":212,"./container/Container":213,"./content/Content":214,"./datagrid/DataGrid":215,"./datetime/DateTime":216,"./day/Day":217,"./email/Email":218,"./hidden/Hidden":219,"./html/HTML":220,"./number/Number":222,"./panel/Panel":223,"./password/Password":224,"./phonenumber/PhoneNumber":225,"./radio/Radio":226,"./select/Select":227,"./selectboxes/SelectBoxes":228,"./signature/Signature":229,"./survey/Survey":230,"./table/Table":231,"./textarea/TextArea":232,"./textfield/TextField":233,"./well/Well":234}],222:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19259,7 +19395,7 @@ var NumberComponent = function (_BaseComponent) {
 
 module.exports = NumberComponent;
 
-},{"../base/Base":207}],222:[function(require,module,exports){
+},{"../base/Base":208}],223:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19339,7 +19475,7 @@ var PanelComponent = function (_FormioComponents) {
 
 module.exports = PanelComponent;
 
-},{"../Components":205}],223:[function(require,module,exports){
+},{"../Components":205}],224:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19419,7 +19555,7 @@ var PasswordComponent = function (_TextFieldComponent) {
 
 module.exports = PasswordComponent;
 
-},{"../textfield/TextField":232}],224:[function(require,module,exports){
+},{"../textfield/TextField":233}],225:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19464,7 +19600,7 @@ var PhoneNumberComponent = function (_TextFieldComponent) {
 
 module.exports = PhoneNumberComponent;
 
-},{"../textfield/TextField":232}],225:[function(require,module,exports){
+},{"../textfield/TextField":233}],226:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19613,7 +19749,7 @@ var RadioComponent = function (_BaseComponent) {
 
 module.exports = RadioComponent;
 
-},{"../base/Base":207,"lodash/each":170}],226:[function(require,module,exports){
+},{"../base/Base":208,"lodash/each":170}],227:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19758,7 +19894,7 @@ var SelectComponent = function (_BaseComponent) {
 
 module.exports = SelectComponent;
 
-},{"../../formio":236,"../base/Base":207,"lodash/each":170}],227:[function(require,module,exports){
+},{"../../formio":237,"../base/Base":208,"lodash/each":170}],228:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -19862,7 +19998,7 @@ var SelectBoxesComponent = function (_RadioComponent) {
 
 module.exports = SelectBoxesComponent;
 
-},{"../radio/Radio":225,"lodash/each":170}],228:[function(require,module,exports){
+},{"../radio/Radio":226,"lodash/each":170}],229:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -20061,7 +20197,7 @@ var SignatureComponent = function (_BaseComponent) {
 
 module.exports = SignatureComponent;
 
-},{"../base/Base":207,"signature_pad":202}],229:[function(require,module,exports){
+},{"../base/Base":208,"signature_pad":202}],230:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -20206,7 +20342,7 @@ var SurveyComponent = function (_BaseComponent) {
 
 module.exports = SurveyComponent;
 
-},{"../base/Base":207,"lodash/each":170}],230:[function(require,module,exports){
+},{"../base/Base":208,"lodash/each":170}],231:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -20315,7 +20451,7 @@ var TableComponent = function (_FormioComponents) {
 
 module.exports = TableComponent;
 
-},{"../Components":205,"lodash/each":170}],231:[function(require,module,exports){
+},{"../Components":205,"lodash/each":170}],232:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -20398,7 +20534,7 @@ var TextAreaComponent = function (_TextFieldComponent) {
 
 module.exports = TextAreaComponent;
 
-},{"../textfield/TextField":232}],232:[function(require,module,exports){
+},{"../textfield/TextField":233}],233:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -20480,7 +20616,7 @@ var TextFieldComponent = function (_BaseComponent) {
 
 module.exports = TextFieldComponent;
 
-},{"../base/Base":207}],233:[function(require,module,exports){
+},{"../base/Base":208}],234:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -20542,7 +20678,7 @@ var WellComponent = function (_FormioComponents) {
 
 module.exports = WellComponent;
 
-},{"../Components":205}],234:[function(require,module,exports){
+},{"../Components":205}],235:[function(require,module,exports){
 'use strict';
 
 var _formioForm = require('./formio.form.js');
@@ -20566,7 +20702,7 @@ queryString.replace(/\?/g, '&').split("&").forEach(function (item) {
 query.styles = query.styles || scriptSrc + '/formio.form.min.css';
 _formioForm2.default.embed(query);
 
-},{"./formio.form.js":235}],235:[function(require,module,exports){
+},{"./formio.form.js":236}],236:[function(require,module,exports){
 (function (global){
 "use strict";
 
@@ -20924,7 +21060,7 @@ FormioForm.embed = function (embed) {
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":205,"./formio":236,"eventemitter2":1,"lodash/debounce":169,"lodash/each":170,"native-promise-only":200}],236:[function(require,module,exports){
+},{"./components/Components":205,"./formio":237,"eventemitter2":1,"lodash/debounce":169,"lodash/each":170,"native-promise-only":200}],237:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -21819,7 +21955,7 @@ Formio.deregisterPlugin = function (plugin) {
 module.exports = global.Formio = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./providers":238,"eventemitter2":1,"native-promise-only":200,"shallow-copy":201,"whatwg-fetch":204}],237:[function(require,module,exports){
+},{"./providers":239,"eventemitter2":1,"native-promise-only":200,"shallow-copy":201,"whatwg-fetch":204}],238:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -21855,14 +21991,14 @@ module.exports = {
   }
 };
 
-},{}],238:[function(require,module,exports){
+},{}],239:[function(require,module,exports){
 'use strict';
 
 module.exports = {
   storage: require('./storage')
 };
 
-},{"./storage":240}],239:[function(require,module,exports){
+},{"./storage":241}],240:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -21934,7 +22070,7 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 module.exports = dropbox;
 
-},{"native-promise-only":200}],240:[function(require,module,exports){
+},{"native-promise-only":200}],241:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -21943,7 +22079,7 @@ module.exports = {
   url: require('./url.js')
 };
 
-},{"./dropbox.js":239,"./s3.js":241,"./url.js":242}],241:[function(require,module,exports){
+},{"./dropbox.js":240,"./s3.js":242,"./url.js":243}],242:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -22058,7 +22194,7 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 module.exports = s3;
 
-},{"native-promise-only":200}],242:[function(require,module,exports){
+},{"native-promise-only":200}],243:[function(require,module,exports){
 "use strict";
 
 var Promise = require("native-promise-only");
@@ -22126,4 +22262,4 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"../../formio":236,"native-promise-only":200}]},{},[234]);
+},{"../../formio":237,"native-promise-only":200}]},{},[235]);
