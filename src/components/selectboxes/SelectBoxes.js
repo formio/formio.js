@@ -1,6 +1,6 @@
-import RadioComponent from '../radio/Radio';
+import { RadioComponent } from '../radio/Radio';
 import _each from 'lodash/each';
-class SelectBoxesComponent extends RadioComponent {
+export class SelectBoxesComponent extends RadioComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.component.inputType = 'checkbox';
@@ -25,4 +25,3 @@ class SelectBoxesComponent extends RadioComponent {
     this.inputs[index].checked = (value.indexOf(this.inputs[index].value) !== -1);
   }
 }
-module.exports = SelectBoxesComponent;

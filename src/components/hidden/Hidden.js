@@ -1,5 +1,5 @@
-import BaseComponent from '../base/Base';
-class HiddenComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class HiddenComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -8,4 +8,3 @@ class HiddenComponent extends BaseComponent {
     return info;
   }
 }
-module.exports = HiddenComponent;

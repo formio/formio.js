@@ -1,5 +1,5 @@
 'use strict';
-import Validator from './Validator';
+import { Validator } from './Validator';
 import assert from 'power-assert';
 describe('Validator Tests', () => {
   it('Should test for minLength', () => {

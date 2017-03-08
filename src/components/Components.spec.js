@@ -1,6 +1,6 @@
 'use strict';
-import FormioComponents from './Components';
-import Harness from '../../test/harness';
+import { FormioComponents } from './Components';
+import { Harness } from '../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 describe('FormioComponents class', () => {

@@ -1,5 +1,5 @@
-import BaseComponent from '../base/Base';
-class ContentComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class ContentComponent extends BaseComponent {
   build() {
     this.element = this.ce('element', 'div', {
       class: 'form-group'
@@ -7,5 +7,3 @@ class ContentComponent extends BaseComponent {
     this.element.innerHTML = this.component.html;
   }
 }
-
-module.exports = ContentComponent;

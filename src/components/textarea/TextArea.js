@@ -1,5 +1,5 @@
-import TextFieldComponent from '../textfield/TextField';
-class TextAreaComponent extends TextFieldComponent {
+import { TextFieldComponent } from '../textfield/TextField';
+export class TextAreaComponent extends TextFieldComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'textarea';
@@ -9,4 +9,3 @@ class TextAreaComponent extends TextFieldComponent {
     return info;
   }
 }
-module.exports = TextAreaComponent;

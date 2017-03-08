@@ -1,8 +1,8 @@
 import _each from 'lodash/each';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isArray from 'lodash/isArray';
-import BaseComponent from '../base/Base';
-class DataGridComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class DataGridComponent extends BaseComponent {
   build() {
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
     _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
@@ -131,5 +131,3 @@ class DataGridComponent extends BaseComponent {
     return values;
   }
 }
-
-module.exports = DataGridComponent;

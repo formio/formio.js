@@ -1,8 +1,8 @@
 'use strict';
-import FormioForm from './formio.form';
-import Harness from '../test/harness';
+import { FormioForm } from './formio.form';
+import { Harness } from '../test/harness';
+import { FormTests } from '../test/forms/index';
 import assert from 'power-assert';
-import FormTests from '../test/forms/index';
 import each from 'lodash/each';
 
 describe('Formio Form Renderer tests', () => {

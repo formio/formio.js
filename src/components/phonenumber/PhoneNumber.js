@@ -1,3 +1,2 @@
-import TextFieldComponent from '../textfield/TextField';
-class PhoneNumberComponent extends TextFieldComponent {}
-module.exports = PhoneNumberComponent;
+import { TextFieldComponent } from '../textfield/TextField';
+export class PhoneNumberComponent extends TextFieldComponent {}

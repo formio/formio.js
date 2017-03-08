@@ -16353,6 +16353,11 @@ return SignaturePad;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FormioComponents = undefined;
+
 var _createClass = function () {
   function defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
@@ -16395,13 +16400,11 @@ var _remove2 = require('lodash/remove');
 
 var _remove3 = _interopRequireDefault(_remove2);
 
-var _Base = require('./base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
 var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
+
+var _Base = require('./base/Base');
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -16425,7 +16428,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var FormioComponents = function (_BaseComponent) {
+var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   _inherits(FormioComponents, _BaseComponent);
 
   function FormioComponents(component, options, data) {
@@ -16628,12 +16631,15 @@ var FormioComponents = function (_BaseComponent) {
   }]);
 
   return FormioComponents;
-}(_Base2.default);
-
-module.exports = FormioComponents;
+}(_Base.BaseComponent);
 
 },{"./base/Base":208,"./index":221,"lodash/clone":166,"lodash/each":170,"lodash/filter":172,"lodash/isArray":179,"lodash/remove":194}],206:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Validator = undefined;
 
 var _get2 = require('lodash/get');
 
@@ -16655,7 +16661,7 @@ function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
 
-var Validator = {
+var Validator = exports.Validator = {
   get: _get3.default,
   each: _each3.default,
   has: _has3.default,
@@ -16810,12 +16816,16 @@ var Validator = {
     }
   }
 };
-module.exports = Validator;
 
 },{"lodash/each":170,"lodash/get":174,"lodash/has":175,"lodash/isArray":179}],207:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.AddressComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -16845,8 +16855,6 @@ var _get = function get(object, property, receiver) {
 
 var _TextField = require('../textfield/TextField');
 
-var _TextField2 = _interopRequireDefault(_TextField);
-
 var _nativePromiseOnly = require('native-promise-only');
 
 var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
@@ -16873,8 +16881,8 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var AddressComponent = function (_TextfieldComponent) {
-  _inherits(AddressComponent, _TextfieldComponent);
+var AddressComponent = exports.AddressComponent = function (_TextFieldComponent) {
+  _inherits(AddressComponent, _TextFieldComponent);
 
   function AddressComponent(component, options, data) {
     _classCallCheck(this, AddressComponent);
@@ -16934,7 +16942,7 @@ var AddressComponent = function (_TextfieldComponent) {
   }]);
 
   return AddressComponent;
-}(_TextField2.default);
+}(_TextField.TextFieldComponent);
 
 AddressComponent.apiReady = new _nativePromiseOnly2.default(function (resolve, reject) {
   AddressComponent.apiResolve = resolve;
@@ -16945,10 +16953,13 @@ window.formioGoogleMapsCallback = function () {
   AddressComponent.apiResolve();
 };
 
-module.exports = AddressComponent;
-
 },{"../textfield/TextField":233,"native-promise-only":200}],208:[function(require,module,exports){
 'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BaseComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -16997,8 +17008,6 @@ var _i18next = require('i18next');
 var _i18next2 = _interopRequireDefault(_i18next);
 
 var _Validator = require('../Validator');
-
-var _Validator2 = _interopRequireDefault(_Validator);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -17589,7 +17598,7 @@ var BaseComponent = function () {
         return;
       }
 
-      this.setCustomValidity(_Validator2.default.check(this.validators, this.component, this.getValidateValue(), this.data, this.t.bind(this)));
+      this.setCustomValidity(_Validator.Validator.check(this.validators, this.component, this.getValidateValue(), this.data, this.t.bind(this)));
     }
   }, {
     key: 'getValidateValue',
@@ -17805,12 +17814,17 @@ var BaseComponent = function () {
   return BaseComponent;
 }();
 
-module.exports = BaseComponent;
+exports.BaseComponent = BaseComponent;
 
 },{"../../locals/en":238,"../Validator":206,"formio-utils":3,"i18next":19,"lodash/assign":165,"lodash/clone":166,"lodash/debounce":169,"lodash/each":170,"lodash/get":174,"lodash/isArray":179,"vanilla-masker":203}],209:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ButtonComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -17840,12 +17854,6 @@ var _get = function get(object, property, receiver) {
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -17864,7 +17872,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var ButtonComponent = function (_BaseComponent) {
+var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
   _inherits(ButtonComponent, _BaseComponent);
 
   function ButtonComponent() {
@@ -17938,14 +17946,17 @@ var ButtonComponent = function (_BaseComponent) {
   }]);
 
   return ButtonComponent;
-}(_Base2.default);
-
-module.exports = ButtonComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208}],210:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.CheckBoxComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -17975,12 +17986,6 @@ var _get = function get(object, property, receiver) {
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -17999,7 +18004,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var CheckBoxComponent = function (_BaseComponent) {
+var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   _inherits(CheckBoxComponent, _BaseComponent);
 
   function CheckBoxComponent() {
@@ -18103,14 +18108,17 @@ var CheckBoxComponent = function (_BaseComponent) {
   }]);
 
   return CheckBoxComponent;
-}(_Base2.default);
-
-module.exports = CheckBoxComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208}],211:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ColumnComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -18124,12 +18132,6 @@ var _createClass = function () {
 
 var _Components = require('../Components');
 
-var _Components2 = _interopRequireDefault(_Components);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -18139,16 +18141,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var ColumnComponent = function (_FormioComponents) {
+var ColumnComponent = exports.ColumnComponent = function (_FormioComponents) {
   _inherits(ColumnComponent, _FormioComponents);
 
   function ColumnComponent() {
@@ -18165,14 +18167,17 @@ var ColumnComponent = function (_FormioComponents) {
   }]);
 
   return ColumnComponent;
-}(_Components2.default);
-
-module.exports = ColumnComponent;
+}(_Components.FormioComponents);
 
 },{"../Components":205}],212:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ColumnsComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -18190,8 +18195,6 @@ var _each3 = _interopRequireDefault(_each2);
 
 var _Components = require('../Components');
 
-var _Components2 = _interopRequireDefault(_Components);
-
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -18205,16 +18208,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var ColumnsComponent = function (_FormioComponents) {
+var ColumnsComponent = exports.ColumnsComponent = function (_FormioComponents) {
   _inherits(ColumnsComponent, _FormioComponents);
 
   function ColumnsComponent() {
@@ -18243,14 +18246,17 @@ var ColumnsComponent = function (_FormioComponents) {
   }]);
 
   return ColumnsComponent;
-}(_Components2.default);
-
-module.exports = ColumnsComponent;
+}(_Components.FormioComponents);
 
 },{"../Components":205,"lodash/each":170}],213:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ContainerComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -18263,8 +18269,6 @@ var _createClass = function () {
 }();
 
 var _Components = require('../Components');
-
-var _Components2 = _interopRequireDefault(_Components);
 
 var _isObject2 = require('lodash/isObject');
 
@@ -18287,16 +18291,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var ContainerComponent = function (_FormioComponents) {
+var ContainerComponent = exports.ContainerComponent = function (_FormioComponents) {
   _inherits(ContainerComponent, _FormioComponents);
 
   function ContainerComponent() {
@@ -18341,14 +18345,17 @@ var ContainerComponent = function (_FormioComponents) {
   }]);
 
   return ContainerComponent;
-}(_Components2.default);
-
-module.exports = ContainerComponent;
+}(_Components.FormioComponents);
 
 },{"../Components":205,"lodash/each":170,"lodash/isObject":184}],214:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ContentComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -18362,12 +18369,6 @@ var _createClass = function () {
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -18377,16 +18378,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var ContentComponent = function (_BaseComponent) {
+var ContentComponent = exports.ContentComponent = function (_BaseComponent) {
   _inherits(ContentComponent, _BaseComponent);
 
   function ContentComponent() {
@@ -18406,14 +18407,17 @@ var ContentComponent = function (_BaseComponent) {
   }]);
 
   return ContentComponent;
-}(_Base2.default);
-
-module.exports = ContentComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208}],215:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DataGridComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -18439,8 +18443,6 @@ var _isArray3 = _interopRequireDefault(_isArray2);
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -18454,16 +18456,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var DataGridComponent = function (_BaseComponent) {
+var DataGridComponent = exports.DataGridComponent = function (_BaseComponent) {
   _inherits(DataGridComponent, _BaseComponent);
 
   function DataGridComponent() {
@@ -18610,14 +18612,17 @@ var DataGridComponent = function (_BaseComponent) {
   }]);
 
   return DataGridComponent;
-}(_Base2.default);
-
-module.exports = DataGridComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208,"../index":221,"lodash/cloneDeep":167,"lodash/each":170,"lodash/isArray":179}],216:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DateTimeComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -18646,8 +18651,6 @@ var _get2 = function get(object, property, receiver) {
 };
 
 var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
 
 var _flatpickr = require('flatpickr');
 
@@ -18683,7 +18686,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var DateTimeComponent = function (_BaseComponent) {
+var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   _inherits(DateTimeComponent, _BaseComponent);
 
   function DateTimeComponent(component, options, data) {
@@ -18823,14 +18826,17 @@ var DateTimeComponent = function (_BaseComponent) {
   }]);
 
   return DateTimeComponent;
-}(_Base2.default);
-
-module.exports = DateTimeComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208,"flatpickr":2,"lodash/get":174,"moment":199}],217:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.DayComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -18859,8 +18865,6 @@ var _get2 = function get(object, property, receiver) {
 };
 
 var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
 
 var _get3 = require('lodash/get');
 
@@ -18896,7 +18900,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var DayComponent = function (_BaseComponent) {
+var DayComponent = exports.DayComponent = function (_BaseComponent) {
   _inherits(DayComponent, _BaseComponent);
 
   function DayComponent(component, options, data) {
@@ -19134,14 +19138,17 @@ var DayComponent = function (_BaseComponent) {
   }]);
 
   return DayComponent;
-}(_Base2.default);
-
-module.exports = DayComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208,"lodash/each":170,"lodash/get":174,"moment":199}],218:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.EmailComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -19171,12 +19178,6 @@ var _get = function get(object, property, receiver) {
 
 var _TextField = require('../textfield/TextField');
 
-var _TextField2 = _interopRequireDefault(_TextField);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -19195,7 +19196,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var EmailComponent = function (_TextFieldComponent) {
+var EmailComponent = exports.EmailComponent = function (_TextFieldComponent) {
   _inherits(EmailComponent, _TextFieldComponent);
 
   function EmailComponent(component, options, data) {
@@ -19217,14 +19218,17 @@ var EmailComponent = function (_TextFieldComponent) {
   }]);
 
   return EmailComponent;
-}(_TextField2.default);
-
-module.exports = EmailComponent;
+}(_TextField.TextFieldComponent);
 
 },{"../textfield/TextField":233}],219:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.HiddenComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -19254,7 +19258,72 @@ var _get = function get(object, property, receiver) {
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+function _possibleConstructorReturn(self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
+var HiddenComponent = exports.HiddenComponent = function (_BaseComponent) {
+  _inherits(HiddenComponent, _BaseComponent);
+
+  function HiddenComponent() {
+    _classCallCheck(this, HiddenComponent);
+
+    return _possibleConstructorReturn(this, (HiddenComponent.__proto__ || Object.getPrototypeOf(HiddenComponent)).apply(this, arguments));
+  }
+
+  _createClass(HiddenComponent, [{
+    key: 'elementInfo',
+    value: function elementInfo() {
+      var info = _get(HiddenComponent.prototype.__proto__ || Object.getPrototypeOf(HiddenComponent.prototype), 'elementInfo', this).call(this);
+      info.type = 'input';
+      info.attr.type = 'hidden';
+      info.changeEvent = 'change';
+      return info;
+    }
+  }]);
+
+  return HiddenComponent;
+}(_Base.BaseComponent);
+
+},{"../base/Base":208}],220:[function(require,module,exports){
+'use strict';
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.HTMLComponent = undefined;
+
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _Base = require('../base/Base');
+
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -19278,77 +19347,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var HiddenComponent = function (_BaseComponent) {
-  _inherits(HiddenComponent, _BaseComponent);
-
-  function HiddenComponent() {
-    _classCallCheck(this, HiddenComponent);
-
-    return _possibleConstructorReturn(this, (HiddenComponent.__proto__ || Object.getPrototypeOf(HiddenComponent)).apply(this, arguments));
-  }
-
-  _createClass(HiddenComponent, [{
-    key: 'elementInfo',
-    value: function elementInfo() {
-      var info = _get(HiddenComponent.prototype.__proto__ || Object.getPrototypeOf(HiddenComponent.prototype), 'elementInfo', this).call(this);
-      info.type = 'input';
-      info.attr.type = 'hidden';
-      info.changeEvent = 'change';
-      return info;
-    }
-  }]);
-
-  return HiddenComponent;
-}(_Base2.default);
-
-module.exports = HiddenComponent;
-
-},{"../base/Base":208}],220:[function(require,module,exports){
-'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
-
-var _Base = require('../base/Base');
-
-var _Base2 = _interopRequireDefault(_Base);
-
-var _each2 = require('lodash/each');
-
-var _each3 = _interopRequireDefault(_each2);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
-
-function _possibleConstructorReturn(self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
-}
-
-function _inherits(subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
-  }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-}
-
-var HTMLComponent = function (_BaseComponent) {
+var HTMLComponent = exports.HTMLComponent = function (_BaseComponent) {
   _inherits(HTMLComponent, _BaseComponent);
 
   function HTMLComponent() {
@@ -19375,60 +19374,116 @@ var HTMLComponent = function (_BaseComponent) {
   }]);
 
   return HTMLComponent;
-}(_Base2.default);
-
-module.exports = HTMLComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208,"lodash/each":170}],221:[function(require,module,exports){
 'use strict';
 
-var Components = {
-  address: require('./address/Address'),
-  base: require('./base/Base'),
-  content: require('./content/Content'),
-  container: require('./container/Container'),
-  datagrid: require('./datagrid/DataGrid'),
-  datetime: require('./datetime/DateTime'),
-  day: require('./day/Day'),
-  htmlelement: require('./html/HTML'),
-  hidden: require('./hidden/Hidden'),
-  textfield: require('./textfield/TextField'),
-  phoneNumber: require('./phonenumber/PhoneNumber'),
-  email: require('./email/Email'),
-  checkbox: require('./checkbox/Checkbox'),
-  signature: require('./signature/Signature'),
-  select: require('./select/Select'),
-  textarea: require('./textarea/TextArea'),
-  button: require('./button/Button'),
-  number: require('./number/Number'),
-  password: require('./password/Password'),
-  panel: require('./panel/Panel'),
-  columns: require('./columns/Columns'),
-  column: require('./columns/Column'),
-  table: require('./table/Table'),
-  radio: require('./radio/Radio'),
-  selectboxes: require('./selectboxes/SelectBoxes'),
-  survey: require('./survey/Survey'),
-  well: require('./well/Well'),
+var _address = require('./address/address');
+
+var _Base = require('./base/Base');
+
+var _Content = require('./content/Content');
+
+var _Container = require('./container/Container');
+
+var _DataGrid = require('./datagrid/DataGrid');
+
+var _DateTime = require('./datetime/DateTime');
+
+var _Day = require('./day/Day');
+
+var _HTML = require('./html/HTML');
+
+var _Hidden = require('./hidden/Hidden');
+
+var _TextField = require('./textfield/TextField');
+
+var _PhoneNumber = require('./phonenumber/PhoneNumber');
+
+var _Email = require('./email/Email');
+
+var _Checkbox = require('./checkbox/Checkbox');
+
+var _Signature = require('./signature/Signature');
+
+var _Select = require('./select/Select');
+
+var _TextArea = require('./textarea/TextArea');
+
+var _Button = require('./button/Button');
+
+var _Number = require('./number/Number');
+
+var _Password = require('./password/Password');
+
+var _Panel = require('./panel/Panel');
+
+var _Column = require('./columns/Column');
+
+var _Columns = require('./columns/Columns');
+
+var _Table = require('./table/Table');
+
+var _Radio = require('./radio/Radio');
+
+var _SelectBoxes = require('./selectboxes/SelectBoxes');
+
+var _Survey = require('./survey/Survey');
+
+var _Well = require('./well/Well');
+
+module.exports = {
+  address: _address.AddressComponent,
+  base: _Base.BaseComponent,
+  content: _Content.ContentComponent,
+  container: _Container.ContainerComponent,
+  datagrid: _DataGrid.DataGridComponent,
+  datetime: _DateTime.DateTimeComponent,
+  day: _Day.DayComponent,
+  htmlelement: _HTML.HTMLComponent,
+  hidden: _Hidden.HiddenComponent,
+  textfield: _TextField.TextFieldComponent,
+  phoneNumber: _PhoneNumber.PhoneNumberComponent,
+  email: _Email.EmailComponent,
+  checkbox: _Checkbox.CheckboxComponent,
+  signature: _Signature.SignatureComponent,
+  select: _Select.SelectComponent,
+  textarea: _TextArea.TextAreaComponent,
+  button: _Button.ButtonComponent,
+  number: _Number.NumberComponent,
+  password: _Password.PasswordComponent,
+  panel: _Panel.PanelComponent,
+  column: _Column.ColumnComponent,
+  columns: _Columns.ColumnsComponent,
+  table: _Table.TableComponent,
+  radio: _Radio.RadioComponent,
+  selectboxes: _SelectBoxes.SelectBoxesComponent,
+  survey: _Survey.SurveyComponent,
+  well: _Well.WellComponent,
   create: function create(component, options, data) {
     var comp = null;
     if (!component.type) {
       return null;
     } else if (this.hasOwnProperty(component.type)) {
-      comp = new Components[component.type](component, options, data);
+      comp = new this[component.type](component, options, data);
     } else {
-      comp = new Components.base(component, options, data);
+      comp = new this.base(component, options, data);
     }
     comp.build();
     return comp;
   }
 };
-module.exports = Components;
 
-},{"./address/Address":207,"./base/Base":208,"./button/Button":209,"./checkbox/Checkbox":210,"./columns/Column":211,"./columns/Columns":212,"./container/Container":213,"./content/Content":214,"./datagrid/DataGrid":215,"./datetime/DateTime":216,"./day/Day":217,"./email/Email":218,"./hidden/Hidden":219,"./html/HTML":220,"./number/Number":222,"./panel/Panel":223,"./password/Password":224,"./phonenumber/PhoneNumber":225,"./radio/Radio":226,"./select/Select":227,"./selectboxes/SelectBoxes":228,"./signature/Signature":229,"./survey/Survey":230,"./table/Table":231,"./textarea/TextArea":232,"./textfield/TextField":233,"./well/Well":234}],222:[function(require,module,exports){
+},{"./address/address":207,"./base/Base":208,"./button/Button":209,"./checkbox/Checkbox":210,"./columns/Column":211,"./columns/Columns":212,"./container/Container":213,"./content/Content":214,"./datagrid/DataGrid":215,"./datetime/DateTime":216,"./day/Day":217,"./email/Email":218,"./hidden/Hidden":219,"./html/HTML":220,"./number/Number":222,"./panel/Panel":223,"./password/Password":224,"./phonenumber/PhoneNumber":225,"./radio/Radio":226,"./select/Select":227,"./selectboxes/SelectBoxes":228,"./signature/Signature":229,"./survey/Survey":230,"./table/Table":231,"./textarea/TextArea":232,"./textfield/TextField":233,"./well/Well":234}],222:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.NumberComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -19458,12 +19513,6 @@ var _get = function get(object, property, receiver) {
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -19482,7 +19531,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var NumberComponent = function (_BaseComponent) {
+var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
   _inherits(NumberComponent, _BaseComponent);
 
   function NumberComponent() {
@@ -19532,14 +19581,17 @@ var NumberComponent = function (_BaseComponent) {
   }]);
 
   return NumberComponent;
-}(_Base2.default);
-
-module.exports = NumberComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208}],223:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PanelComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -19553,12 +19605,6 @@ var _createClass = function () {
 
 var _Components = require('../Components');
 
-var _Components2 = _interopRequireDefault(_Components);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -19568,16 +19614,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var PanelComponent = function (_FormioComponents) {
+var PanelComponent = exports.PanelComponent = function (_FormioComponents) {
   _inherits(PanelComponent, _FormioComponents);
 
   function PanelComponent() {
@@ -19612,14 +19658,17 @@ var PanelComponent = function (_FormioComponents) {
   }]);
 
   return PanelComponent;
-}(_Components2.default);
-
-module.exports = PanelComponent;
+}(_Components.FormioComponents);
 
 },{"../Components":205}],224:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PasswordComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -19649,12 +19698,6 @@ var _get = function get(object, property, receiver) {
 
 var _TextField = require('../textfield/TextField');
 
-var _TextField2 = _interopRequireDefault(_TextField);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -19673,7 +19716,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var PasswordComponent = function (_TextFieldComponent) {
+var PasswordComponent = exports.PasswordComponent = function (_TextFieldComponent) {
   _inherits(PasswordComponent, _TextFieldComponent);
 
   function PasswordComponent() {
@@ -19692,22 +19735,19 @@ var PasswordComponent = function (_TextFieldComponent) {
   }]);
 
   return PasswordComponent;
-}(_TextField2.default);
-
-module.exports = PasswordComponent;
+}(_TextField.TextFieldComponent);
 
 },{"../textfield/TextField":233}],225:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.PhoneNumberComponent = undefined;
+
 var _TextField = require('../textfield/TextField');
-
-var _TextField2 = _interopRequireDefault(_TextField);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -19727,7 +19767,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var PhoneNumberComponent = function (_TextFieldComponent) {
+var PhoneNumberComponent = exports.PhoneNumberComponent = function (_TextFieldComponent) {
   _inherits(PhoneNumberComponent, _TextFieldComponent);
 
   function PhoneNumberComponent() {
@@ -19737,14 +19777,17 @@ var PhoneNumberComponent = function (_TextFieldComponent) {
   }
 
   return PhoneNumberComponent;
-}(_TextField2.default);
-
-module.exports = PhoneNumberComponent;
+}(_TextField.TextFieldComponent);
 
 },{"../textfield/TextField":233}],226:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.RadioComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -19774,8 +19817,6 @@ var _get = function get(object, property, receiver) {
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
 var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
@@ -19802,7 +19843,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var RadioComponent = function (_BaseComponent) {
+var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
   _inherits(RadioComponent, _BaseComponent);
 
   function RadioComponent() {
@@ -19886,14 +19927,17 @@ var RadioComponent = function (_BaseComponent) {
   }]);
 
   return RadioComponent;
-}(_Base2.default);
-
-module.exports = RadioComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208,"lodash/each":170}],227:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SelectComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -19923,11 +19967,7 @@ var _get = function get(object, property, receiver) {
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
 var _formio = require('../../formio');
-
-var _formio2 = _interopRequireDefault(_formio);
 
 var _each2 = require('lodash/each');
 
@@ -19955,7 +19995,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var SelectComponent = function (_BaseComponent) {
+var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   _inherits(SelectComponent, _BaseComponent);
 
   function SelectComponent() {
@@ -19996,7 +20036,7 @@ var SelectComponent = function (_BaseComponent) {
           this.updateOptions(input);
           break;
         case 'resource':
-          var baseUrl = _formio2.default.getAppUrl() + '/' + this.component.data.resource;
+          var baseUrl = _formio.Formio.getAppUrl() + '/' + this.component.data.resource;
           var value = valueProperty.split('.')[1];
           new FormioService(baseUrl).loadSubmissions().then(function (submissions) {
             (0, _each3.default)(submissions, function (submission) {
@@ -20009,7 +20049,7 @@ var SelectComponent = function (_BaseComponent) {
           });
           break;
         case 'url':
-          _formio2.default.request(this.component.data.url).then(function (response) {
+          _formio.Formio.request(this.component.data.url).then(function (response) {
             (0, _each3.default)(response, function (item) {
               _this2.selectItems.push({
                 value: item[valueProperty],
@@ -20031,14 +20071,17 @@ var SelectComponent = function (_BaseComponent) {
   }]);
 
   return SelectComponent;
-}(_Base2.default);
-
-module.exports = SelectComponent;
+}(_Base.BaseComponent);
 
 },{"../../formio":237,"../base/Base":208,"lodash/each":170}],228:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SelectBoxesComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -20068,8 +20111,6 @@ var _get = function get(object, property, receiver) {
 
 var _Radio = require('../radio/Radio');
 
-var _Radio2 = _interopRequireDefault(_Radio);
-
 var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
@@ -20096,7 +20137,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var SelectBoxesComponent = function (_RadioComponent) {
+var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioComponent) {
   _inherits(SelectBoxesComponent, _RadioComponent);
 
   function SelectBoxesComponent(component, options, data) {
@@ -20135,14 +20176,17 @@ var SelectBoxesComponent = function (_RadioComponent) {
   }]);
 
   return SelectBoxesComponent;
-}(_Radio2.default);
-
-module.exports = SelectBoxesComponent;
+}(_Radio.RadioComponent);
 
 },{"../radio/Radio":226,"lodash/each":170}],229:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SignatureComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -20190,8 +20234,6 @@ var _signature_pad2 = _interopRequireDefault(_signature_pad);
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -20214,7 +20256,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var SignatureComponent = function (_BaseComponent) {
+var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) {
   _inherits(SignatureComponent, _BaseComponent);
 
   function SignatureComponent() {
@@ -20334,14 +20376,17 @@ var SignatureComponent = function (_BaseComponent) {
   }]);
 
   return SignatureComponent;
-}(_Base2.default);
-
-module.exports = SignatureComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208,"signature_pad":202}],230:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SurveyComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -20359,8 +20404,6 @@ var _each3 = _interopRequireDefault(_each2);
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -20374,16 +20417,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var SurveyComponent = function (_BaseComponent) {
+var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
   _inherits(SurveyComponent, _BaseComponent);
 
   function SurveyComponent() {
@@ -20479,14 +20522,17 @@ var SurveyComponent = function (_BaseComponent) {
   }]);
 
   return SurveyComponent;
-}(_Base2.default);
-
-module.exports = SurveyComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208,"lodash/each":170}],231:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TableComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -20504,8 +20550,6 @@ var _each3 = _interopRequireDefault(_each2);
 
 var _Components = require('../Components');
 
-var _Components2 = _interopRequireDefault(_Components);
-
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -20519,16 +20563,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var TableComponent = function (_FormioComponents) {
+var TableComponent = exports.TableComponent = function (_FormioComponents) {
   _inherits(TableComponent, _FormioComponents);
 
   function TableComponent() {
@@ -20588,14 +20632,17 @@ var TableComponent = function (_FormioComponents) {
   }]);
 
   return TableComponent;
-}(_Components2.default);
-
-module.exports = TableComponent;
+}(_Components.FormioComponents);
 
 },{"../Components":205,"lodash/each":170}],232:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TextAreaComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -20625,12 +20672,6 @@ var _get = function get(object, property, receiver) {
 
 var _TextField = require('../textfield/TextField');
 
-var _TextField2 = _interopRequireDefault(_TextField);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -20649,7 +20690,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var TextAreaComponent = function (_TextFieldComponent) {
+var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponent) {
   _inherits(TextAreaComponent, _TextFieldComponent);
 
   function TextAreaComponent() {
@@ -20671,14 +20712,17 @@ var TextAreaComponent = function (_TextFieldComponent) {
   }]);
 
   return TextAreaComponent;
-}(_TextField2.default);
-
-module.exports = TextAreaComponent;
+}(_TextField.TextFieldComponent);
 
 },{"../textfield/TextField":233}],233:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.TextFieldComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -20708,12 +20752,6 @@ var _get = function get(object, property, receiver) {
 
 var _Base = require('../base/Base');
 
-var _Base2 = _interopRequireDefault(_Base);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -20732,7 +20770,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var TextFieldComponent = function (_BaseComponent) {
+var TextFieldComponent = exports.TextFieldComponent = function (_BaseComponent) {
   _inherits(TextFieldComponent, _BaseComponent);
 
   function TextFieldComponent() {
@@ -20753,14 +20791,17 @@ var TextFieldComponent = function (_BaseComponent) {
   }]);
 
   return TextFieldComponent;
-}(_Base2.default);
-
-module.exports = TextFieldComponent;
+}(_Base.BaseComponent);
 
 },{"../base/Base":208}],234:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.WellComponent = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -20774,12 +20815,6 @@ var _createClass = function () {
 
 var _Components = require('../Components');
 
-var _Components2 = _interopRequireDefault(_Components);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
-
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -20789,16 +20824,16 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var WellComponent = function (_FormioComponents) {
+var WellComponent = exports.WellComponent = function (_FormioComponents) {
   _inherits(WellComponent, _FormioComponents);
 
   function WellComponent() {
@@ -20815,20 +20850,12 @@ var WellComponent = function (_FormioComponents) {
   }]);
 
   return WellComponent;
-}(_Components2.default);
-
-module.exports = WellComponent;
+}(_Components.FormioComponents);
 
 },{"../Components":205}],235:[function(require,module,exports){
 'use strict';
 
 var _formioForm = require('./formio.form.js');
-
-var _formioForm2 = _interopRequireDefault(_formioForm);
-
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : { default: obj };
-}
 
 var query = {};
 var scripts = document.getElementsByTagName('script');
@@ -20841,13 +20868,17 @@ queryString.replace(/\?/g, '&').split("&").forEach(function (item) {
   query[item.split("=")[0]] = item.split("=")[1] && decodeURIComponent(item.split("=")[1]);
 });
 query.styles = query.styles || scriptSrc + '/formio.form.min.css';
-_formioForm2.default.embed(query);
+_formioForm.FormioForm.embed(query);
 
 },{"./formio.form.js":236}],236:[function(require,module,exports){
-(function (global){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FormioForm = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -20859,15 +20890,13 @@ var _createClass = function () {
   };
 }();
 
-var _formio = require("./formio");
-
 var _nativePromiseOnly = require("native-promise-only");
 
 var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
 
-var _Components = require("./components/Components");
+var _formio = require("./formio");
 
-var _Components2 = _interopRequireDefault(_Components);
+var _Components = require("./components/Components");
 
 var _debounce2 = require("lodash/debounce");
 
@@ -20912,7 +20941,7 @@ var getOptions = function getOptions(options) {
   return options;
 };
 
-var FormioForm = function (_FormioComponents) {
+var FormioForm = exports.FormioForm = function (_FormioComponents) {
   _inherits(FormioForm, _FormioComponents);
 
   function FormioForm(element, options) {
@@ -21173,7 +21202,7 @@ var FormioForm = function (_FormioComponents) {
   }]);
 
   return FormioForm;
-}(_Components2.default);
+}(_Components.FormioComponents);
 
 /**
  * Embed this form within the current page.
@@ -21196,9 +21225,6 @@ FormioForm.embed = function (embed) {
   return form;
 };
 
-module.exports = global.FormioForm = FormioForm;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/Components":205,"./formio":237,"eventemitter2":1,"lodash/debounce":169,"lodash/each":170,"native-promise-only":200}],237:[function(require,module,exports){
 'use strict';
 

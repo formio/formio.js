@@ -1,44 +1,70 @@
-let Components = {
-  address: require('./address/Address'),
-  base: require('./base/Base'),
-  content: require('./content/Content'),
-  container: require('./container/Container'),
-  datagrid: require('./datagrid/DataGrid'),
-  datetime: require('./datetime/DateTime'),
-  day: require('./day/Day'),
-  htmlelement: require('./html/HTML'),
-  hidden: require('./hidden/Hidden'),
-  textfield: require('./textfield/TextField'),
-  phoneNumber: require('./phonenumber/PhoneNumber'),
-  email: require('./email/Email'),
-  checkbox: require('./checkbox/Checkbox'),
-  signature: require('./signature/Signature'),
-  select: require('./select/Select'),
-  textarea: require('./textarea/TextArea'),
-  button: require('./button/Button'),
-  number: require('./number/Number'),
-  password: require('./password/Password'),
-  panel: require('./panel/Panel'),
-  columns: require('./columns/Columns'),
-  column: require('./columns/Column'),
-  table: require('./table/Table'),
-  radio: require('./radio/Radio'),
-  selectboxes: require('./selectboxes/SelectBoxes'),
-  survey: require('./survey/Survey'),
-  well: require('./well/Well'),
+import { AddressComponent } from './address/address';
+import { BaseComponent } from './base/Base';
+import { ContentComponent } from './content/Content';
+import { ContainerComponent } from './container/Container';
+import { DataGridComponent } from './datagrid/DataGrid';
+import { DateTimeComponent } from './datetime/DateTime';
+import { DayComponent } from './day/Day';
+import { HTMLComponent } from './html/HTML';
+import { HiddenComponent } from './hidden/Hidden';
+import { TextFieldComponent } from './textfield/TextField';
+import { PhoneNumberComponent } from './phonenumber/PhoneNumber';
+import { EmailComponent } from './email/Email';
+import { CheckboxComponent } from './checkbox/Checkbox';
+import { SignatureComponent } from './signature/Signature';
+import { SelectComponent } from './select/Select';
+import { TextAreaComponent } from './textarea/TextArea';
+import { ButtonComponent } from './button/Button';
+import { NumberComponent } from './number/Number';
+import { PasswordComponent } from './password/Password';
+import { PanelComponent } from './panel/Panel';
+import { ColumnComponent } from './columns/Column';
+import { ColumnsComponent } from './columns/Columns';
+import { TableComponent } from './table/Table';
+import { RadioComponent } from './radio/Radio';
+import { SelectBoxesComponent } from './selectboxes/SelectBoxes';
+import { SurveyComponent } from './survey/Survey';
+import { WellComponent } from './well/Well';
+module.exports = {
+  address: AddressComponent,
+  base: BaseComponent,
+  content: ContentComponent,
+  container: ContainerComponent,
+  datagrid: DataGridComponent,
+  datetime: DateTimeComponent,
+  day: DayComponent,
+  htmlelement: HTMLComponent,
+  hidden: HiddenComponent,
+  textfield: TextFieldComponent,
+  phoneNumber: PhoneNumberComponent,
+  email: EmailComponent,
+  checkbox: CheckboxComponent,
+  signature: SignatureComponent,
+  select: SelectComponent,
+  textarea: TextAreaComponent,
+  button: ButtonComponent,
+  number: NumberComponent,
+  password: PasswordComponent,
+  panel: PanelComponent,
+  column: ColumnComponent,
+  columns: ColumnsComponent,
+  table: TableComponent,
+  radio: RadioComponent,
+  selectboxes: SelectBoxesComponent,
+  survey: SurveyComponent,
+  well: WellComponent,
   create: function(component, options, data) {
     let comp = null;
     if (!component.type) {
       return null;
     }
     else if (this.hasOwnProperty(component.type)) {
-      comp = new Components[component.type](component, options, data);
+      comp = new this[component.type](component, options, data);
     }
     else {
-      comp = new Components.base(component, options, data);
+      comp = new this.base(component, options, data);
     }
     comp.build();
     return comp;
   }
 };
-module.exports = Components;

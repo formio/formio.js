@@ -2,7 +2,7 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _has from 'lodash/has';
 import _isArray from 'lodash/isArray';
-let Validator = {
+export var Validator = {
   get: _get,
   each: _each,
   has: _has,
@@ -158,4 +158,3 @@ let Validator = {
     }
   }
 };
-module.exports = Validator;

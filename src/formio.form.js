@@ -1,7 +1,7 @@
 "use strict";
-import { Formio } from './formio';
 import Promise from "native-promise-only";
-import FormioComponents from './components/Components';
+import { Formio } from './formio';
+import { FormioComponents } from './components/Components';
 import _debounce from 'lodash/debounce';
 import _each from 'lodash/each';
 import EventEmitter from 'eventemitter2';
@@ -13,7 +13,7 @@ let getOptions = function(options) {
   });
   return options;
 };
-class FormioForm extends FormioComponents {
+export class FormioForm extends FormioComponents {
   constructor(element, options) {
     super(null, getOptions(options));
 
@@ -247,4 +247,3 @@ FormioForm.embed = function(embed) {
   return form;
 };
 
-module.exports = global.FormioForm = FormioForm;

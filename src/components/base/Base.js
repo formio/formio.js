@@ -7,10 +7,10 @@ import _isArray from 'lodash/isArray';
 import _assign from 'lodash/assign';
 import _clone from 'lodash/clone';
 import i18next from 'i18next';
-import Validator from '../Validator';
+import { Validator } from '../Validator';
 
 i18next.initialized = false;
-class BaseComponent {
+export class BaseComponent {
   /**
    *   Initialize a new BaseComponent.
    */
@@ -713,4 +713,3 @@ class BaseComponent {
     };
   }
 }
-module.exports = BaseComponent;

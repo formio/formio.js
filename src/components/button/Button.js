@@ -1,5 +1,5 @@
-import BaseComponent from '../base/Base';
-class ButtonComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class ButtonComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'button';
@@ -58,5 +58,3 @@ class ButtonComponent extends BaseComponent {
     });
   }
 }
-
-module.exports = ButtonComponent;

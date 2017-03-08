@@ -1,8 +1,8 @@
 'use strict';
 import assert from 'power-assert';
-import CheckBoxComponent from './Checkbox';
+import { CheckBoxComponent } from './Checkbox';
 import { components as comps } from './fixtures/index';
-import Harness from '../../../test/harness';
+import { Harness } from '../../../test/harness';
 describe('Checkbox Component', function() {
   it('Should build a checkbox component', function(done) {
     Harness.testCreate(CheckBoxComponent, comps.comp1).then((component) => {

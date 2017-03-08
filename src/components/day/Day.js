@@ -1,8 +1,8 @@
-import BaseComponent from '../base/Base';
+import { BaseComponent } from '../base/Base';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import moment from 'moment';
-class DayComponent extends BaseComponent {
+export class DayComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
@@ -217,4 +217,3 @@ class DayComponent extends BaseComponent {
     return this.inputs[index].value;
   }
 }
-module.exports = DayComponent;

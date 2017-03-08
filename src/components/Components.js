@@ -3,9 +3,9 @@ import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _filter from 'lodash/filter';
 import _remove from 'lodash/remove';
-import BaseComponent from './base/Base';
 import _isArray from 'lodash/isArray';
-class FormioComponents extends BaseComponent {
+import { BaseComponent } from './base/Base';
+export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'components';
@@ -168,5 +168,3 @@ class FormioComponents extends BaseComponent {
     });
   }
 }
-
-module.exports = FormioComponents;

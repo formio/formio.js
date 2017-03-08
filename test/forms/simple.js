@@ -1,5 +1,5 @@
 import assert from 'power-assert';
-import Harness from '../harness';
+import { Harness } from '../harness';
 module.exports = {
   title: 'Simple Form Test',
 

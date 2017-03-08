@@ -1,3 +1,3 @@
-module.exports = [
+export const FormTests = [
   require('./simple')
 ];

@@ -1,6 +1,6 @@
-import BaseComponent from '../base/Base';
+import { BaseComponent } from '../base/Base';
 import _each from 'lodash/each';
-class HTMLComponent extends BaseComponent {
+export class HTMLComponent extends BaseComponent {
   build() {
     this.element = this.ce('element', this.component.tag, {
       class: this.component.className
@@ -13,4 +13,3 @@ class HTMLComponent extends BaseComponent {
     }
   }
 }
-module.exports = HTMLComponent;

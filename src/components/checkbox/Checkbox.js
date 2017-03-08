@@ -1,5 +1,5 @@
-import BaseComponent from '../base/Base';
-class CheckBoxComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class CheckBoxComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -89,5 +89,3 @@ class CheckBoxComponent extends BaseComponent {
     this.updateValue();
   }
 }
-
-module.exports = CheckBoxComponent;

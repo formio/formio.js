@@ -1,6 +1,6 @@
 import _each from 'lodash/each';
-import BaseComponent from '../base/Base';
-class SurveyComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class SurveyComponent extends BaseComponent {
   build() {
     this.createElement();
     this.createLabel(this.element);
@@ -76,4 +76,3 @@ class SurveyComponent extends BaseComponent {
     return value;
   }
 }
-module.exports = SurveyComponent;

@@ -1,7 +1,7 @@
-import BaseComponent from '../base/Base';
-import Formio from '../../formio';
+import { BaseComponent } from '../base/Base';
+import { Formio } from '../../formio';
 import _each from 'lodash/each';
-class SelectComponent extends BaseComponent {
+export class SelectComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'select';
@@ -59,4 +59,3 @@ class SelectComponent extends BaseComponent {
     this.selectOptions(input, 'selectOption', this.selectItems);
   }
 }
-module.exports = SelectComponent;

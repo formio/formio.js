@@ -1,7 +1,7 @@
-import FormioComponents from '../Components';
+import { FormioComponents } from '../Components';
 import _isObject from 'lodash/isObject';
 import _each from 'lodash/each';
-class ContainerComponent extends FormioComponents {
+export class ContainerComponent extends FormioComponents {
   build() {
     this.element = this.ce('element', 'div', {
       class: 'formio-container-component'
@@ -32,5 +32,3 @@ class ContainerComponent extends FormioComponents {
     this.updateValue();
   }
 }
-
-module.exports = ContainerComponent;

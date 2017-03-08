@@ -1,6 +1,6 @@
 import _each from 'lodash/each';
-import FormioComponents from '../Components';
-class ColumnsComponent extends FormioComponents {
+import { FormioComponents } from '../Components';
+export class ColumnsComponent extends FormioComponents {
   get className() {
     return 'row';
   }
@@ -13,4 +13,3 @@ class ColumnsComponent extends FormioComponents {
     });
   }
 }
-module.exports = ColumnsComponent;

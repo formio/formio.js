@@ -1,5 +1,5 @@
-import BaseComponent from '../base/Base';
-class TextFieldComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class TextFieldComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -8,4 +8,3 @@ class TextFieldComponent extends BaseComponent {
     return info;
   }
 }
-module.exports = TextFieldComponent;

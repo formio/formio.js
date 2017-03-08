@@ -1,6 +1,6 @@
 import SignaturePad from 'signature_pad';
-import BaseComponent from '../base/Base';
-class SignatureComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class SignatureComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -99,4 +99,3 @@ class SignatureComponent extends BaseComponent {
     }.bind(this), 200);
   }
 }
-module.exports = SignatureComponent;

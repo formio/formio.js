@@ -1,5 +1,5 @@
-import BaseComponent from '../base/Base';
-class NumberComponent extends BaseComponent {
+import { BaseComponent } from '../base/Base';
+export class NumberComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -37,4 +37,3 @@ class NumberComponent extends BaseComponent {
     }
   }
 }
-module.exports = NumberComponent;

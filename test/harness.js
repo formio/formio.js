@@ -3,7 +3,7 @@ import _cloneDeep from 'lodash/cloneDeep';
 import EventEmitter from 'eventemitter2';
 import _merge from 'lodash/merge';
 import _each from 'lodash/each';
-module.exports = {
+export const Harness = {
   testCreate: function(Component, componentSettings, settings) {
     settings = settings || {};
     let compSettings = _cloneDeep(componentSettings);

@@ -1,6 +1,6 @@
 import _each from 'lodash/each';
-import FormioComponents from '../Components';
-class TableComponent extends FormioComponents {
+import { FormioComponents } from '../Components';
+export class TableComponent extends FormioComponents {
   build() {
     this.element = this.ce('element', 'div', {
       class: 'table-responsive'
@@ -46,4 +46,3 @@ class TableComponent extends FormioComponents {
     this.element.appendChild(table);
   }
 }
-module.exports = TableComponent;

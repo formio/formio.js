@@ -1,5 +1,5 @@
-import FormioComponents from '../Components';
-class PanelComponent extends FormioComponents {
+import { FormioComponents } from '../Components';
+export class PanelComponent extends FormioComponents {
   build() {
     this.element = this.ce('element', 'div', {
       class: 'panel panel-' + this.component.theme
@@ -22,4 +22,3 @@ class PanelComponent extends FormioComponents {
     this.element.appendChild(body);
   }
 }
-module.exports = PanelComponent;

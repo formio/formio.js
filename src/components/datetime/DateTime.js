@@ -1,8 +1,8 @@
-import BaseComponent from '../base/Base';
+import { BaseComponent } from '../base/Base';
 import Flatpickr from 'flatpickr';
 import moment from 'moment';
 import _get from 'lodash/get';
-class DateTimeComponent extends BaseComponent {
+export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
@@ -116,4 +116,3 @@ class DateTimeComponent extends BaseComponent {
     this.inputs[index].value = date.getTime();
   }
 }
-module.exports = DateTimeComponent;

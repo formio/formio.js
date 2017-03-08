@@ -1,5 +1,5 @@
-import TextFieldComponent from '../textfield/TextField';
-class EmailComponent extends TextFieldComponent {
+import { TextFieldComponent } from '../textfield/TextField';
+export class EmailComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('email');
@@ -10,4 +10,3 @@ class EmailComponent extends TextFieldComponent {
     return info;
   }
 }
-module.exports = EmailComponent;

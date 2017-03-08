@@ -1,6 +1,6 @@
-import TextfieldComponent from '../textfield/TextField';
+import { TextFieldComponent } from '../textfield/TextField';
 import Promise from "native-promise-only";
-class AddressComponent extends TextfieldComponent {
+export class AddressComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
 
@@ -59,5 +59,3 @@ AddressComponent.apiReady = new Promise((resolve, reject) => {
 window.formioGoogleMapsCallback = function() {
   AddressComponent.apiResolve();
 };
-
-module.exports = AddressComponent;

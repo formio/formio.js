@@ -1,6 +1,6 @@
-import BaseComponent from '../base/Base';
+import { BaseComponent } from '../base/Base';
 import _each from 'lodash/each';
-class RadioComponent extends BaseComponent {
+export class RadioComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -64,4 +64,3 @@ class RadioComponent extends BaseComponent {
     this.inputs[index].checked = (this.inputs[index].value === value);
   }
 }
-module.exports = RadioComponent;
