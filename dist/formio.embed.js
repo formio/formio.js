@@ -727,7 +727,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! flatpickr v2.4.2, @license MIT */
+/*! flatpickr v2.4.4, @license MIT */
 function Flatpickr(element, config) {
 	var self = this;
 
@@ -756,7 +756,6 @@ function Flatpickr(element, config) {
 		self.parseDate = Flatpickr.prototype.parseDate.bind(self);
 
 		setupFormats();
-
 		parseConfig();
 		setupLocale();
 		setupInputs();
@@ -771,16 +770,6 @@ function Flatpickr(element, config) {
 
 		bind();
 
-		if (!self.isMobile) {
-			Object.defineProperty(self, "dateIsPicked", {
-				set: function set(bool) {
-					toggleClass(self.calendarContainer, "dateIsPicked", bool);
-				}
-			});
-		}
-
-		self.dateIsPicked = self.selectedDates.length > 0 || self.config.noCalendar;
-
 		if (self.selectedDates.length) {
 			if (self.config.enableTime) setHoursFromDate();
 			updateValue();
@@ -790,7 +779,15 @@ function Flatpickr(element, config) {
 			self.calendarContainer.style.width = self.days.clientWidth + self.weekWrapper.clientWidth + "px";
 		}
 
+		self.showTimeInput = self.selectedDates.length || self.config.noCalendar;
+
+		if (!self.isMobile) positionCalendar();
 		triggerEvent("Ready");
+	}
+
+	function bindToInstance(fn) {
+		if (fn && fn.bind) return fn.bind(self);
+		return fn;
 	}
 
 	function updateTime(e) {
@@ -860,6 +857,8 @@ function Flatpickr(element, config) {
 
 	function onYearInput(event) {
 		var year = event.target.value;
+		if (event.delta) year = (parseInt(year) + event.delta).toString();
+
 		if (year.length === 4) {
 			self.currentYearElement.blur();
 			if (!/[^\d]/.test(year)) changeYear(year);
@@ -896,7 +895,9 @@ function Flatpickr(element, config) {
 
 		if (self.config.mode === "range" && self.days) self.days.addEventListener("mouseover", onMouseOver);
 
-		window.document.addEventListener("keydown", onKeyDown);
+		self.calendarContainer.addEventListener("keydown", onKeyDown);
+
+		if (!self.config.static && self.config.allowInput) (self.altInput || self.input).addEventListener("keydown", onKeyDown);
 
 		if (!self.config.inline && !self.config.static) window.addEventListener("resize", self.debouncedResize);
 
@@ -981,16 +982,18 @@ function Flatpickr(element, config) {
 		self.redraw();
 	}
 
-	function incrementNumInput(e, delta) {
-		var input = e.target.parentNode.childNodes[0];
-		input.value = parseInt(input.value, 10) + delta * (input.step || 1);
+	function incrementNumInput(e, delta, inputElem) {
+		var input = inputElem || e.target.parentNode.childNodes[0];
 
-		try {
-			input.dispatchEvent(new Event("increment", { "bubbles": true }));
-		} catch (e) {
-			var ev = window.document.createEvent("CustomEvent");
-			ev.initCustomEvent("increment", true, true, {});
+		if (typeof Event !== "undefined") {
+			var ev = new Event("increment", { "bubbles": true });
+			ev.delta = delta;
 			input.dispatchEvent(ev);
+		} else {
+			var _ev = window.document.createEvent("CustomEvent");
+			_ev.initCustomEvent("increment", true, true, {});
+			_ev.delta = delta;
+			input.dispatchEvent(_ev);
 		}
 	}
 
@@ -1061,6 +1064,9 @@ function Flatpickr(element, config) {
 				var wrapper = createElement("div", "flatpickr-wrapper");
 				self.element.parentNode.insertBefore(wrapper, self.element);
 				wrapper.appendChild(self.element);
+
+				if (self.altInput) wrapper.appendChild(self.altInput);
+
 				wrapper.appendChild(self.calendarContainer);
 				return;
 			}
@@ -1131,7 +1137,7 @@ function Flatpickr(element, config) {
 		if (self.days.firstChild) self.days.textContent = "";
 
 		// prepend days from the ending of previous month
-		for (var i = 0; dayNumber <= self.prevMonthDays; i++, dayNumber++) {
+		for (; dayNumber <= self.prevMonthDays; dayNumber++) {
 			days.appendChild(createDay("prevMonthDay", new Date(self.currentYear, self.currentMonth - 1, dayNumber), dayNumber));
 		}
 
@@ -1148,7 +1154,7 @@ function Flatpickr(element, config) {
 		if (isRangeMode && self.selectedDates.length === 1 && days.childNodes[0]) {
 			self._hidePrevMonthArrow = self._hidePrevMonthArrow || self.minRangeDate > days.childNodes[0].dateObj;
 
-			self._hideNextMonthArrow = self._hideNextMonthArrow || self.maxRangeDate < days.childNodes[41].dateObj;
+			self._hideNextMonthArrow = self._hideNextMonthArrow || self.maxRangeDate < new Date(self.currentYear, self.currentMonth + 1, 1);
 		} else updateNavigationCurrentMonth();
 
 		self.days.appendChild(days);
@@ -1335,7 +1341,7 @@ function Flatpickr(element, config) {
 
 		self.selectedDates = [];
 		self.latestSelectedDateObj = null;
-		self.dateIsPicked = false;
+		self.showTimeInput = false;
 
 		self.redraw();
 
@@ -1359,7 +1365,6 @@ function Flatpickr(element, config) {
 		instance = instance || self;
 		instance.clear(false);
 
-		window.document.removeEventListener("keydown", onKeyDown);
 		window.removeEventListener("resize", instance.debouncedResize);
 
 		window.document.removeEventListener("click", documentClick);
@@ -1467,7 +1472,7 @@ function Flatpickr(element, config) {
 	}
 
 	function onKeyDown(e) {
-		if (e.target === (self.altInput || self.input) && e.which === 13) selectDate(e);else if (self.isOpen && isCalendarElem(e.target)) {
+		if (e.target === (self.altInput || self.input) && e.which === 13) selectDate(e);else if (self.isOpen || self.config.inline) {
 			switch (e.which) {
 				case 13:
 					if (self.timeContainer && self.timeContainer.contains(e.target)) updateValue();else selectDate(e);
@@ -1481,6 +1486,7 @@ function Flatpickr(element, config) {
 
 				case 37:
 					if (e.target !== self.input & e.target !== self.altInput) {
+						e.preventDefault();
 						changeMonth(-1);
 						self.currentMonthElement.focus();
 					}
@@ -1497,6 +1503,7 @@ function Flatpickr(element, config) {
 
 				case 39:
 					if (e.target !== self.input & e.target !== self.altInput) {
+						e.preventDefault();
 						changeMonth(1);
 						self.currentMonthElement.focus();
 					}
@@ -1554,7 +1561,7 @@ function Flatpickr(element, config) {
 
 			e.target.classList.add(hoverDate < self.selectedDates[0] ? "startRange" : "endRange");
 
-			if (initialDate > hoverDate && timestamp === initialDate.getTime()) self.days.childNodes[i].classList.add("endRange");else if (initialDate < hoverDate && timestamp === initialDate.getTime()) self.days.childNodes[i].classList.add("startRange");else if (timestamp > minRangeDate && timestamp < maxRangeDate) self.days.childNodes[i].classList.add("inRange");
+			if (initialDate > hoverDate && timestamp === initialDate.getTime()) self.days.childNodes[i].classList.add("endRange");else if (initialDate < hoverDate && timestamp === initialDate.getTime()) self.days.childNodes[i].classList.add("startRange");else if (timestamp >= minRangeDate && timestamp <= maxRangeDate) self.days.childNodes[i].classList.add("inRange");
 		};
 
 		for (var timestamp = self.days.childNodes[0].dateObj.getTime(), i = 0; i < 42; i++, timestamp += self.utils.duration.DAY) {
@@ -1601,21 +1608,25 @@ function Flatpickr(element, config) {
 	function minMaxDateSetter(type) {
 		return function (date) {
 			var dateObj = self.config["_" + type + "Date"] = self.parseDate(date);
+
 			var inverseDateObj = self.config["_" + (type === "min" ? "max" : "min") + "Date"];
 			var isValidDate = date && dateObj instanceof Date;
-
-			if (self.selectedDates) {
-				self.selectedDates = self.selectedDates.filter(isEnabled);
-				updateValue();
-			}
-
-			if (self.days) redraw();
 
 			if (isValidDate) {
 				self[type + "DateHasTime"] = dateObj.getHours() || dateObj.getMinutes() || dateObj.getSeconds();
 			}
 
-			if (self.currentYearElement) {
+			if (self.selectedDates) {
+				self.selectedDates = self.selectedDates.filter(function (d) {
+					return isEnabled(d);
+				});
+				if (!self.selectedDates.length && type === "min") setHoursFromDate(dateObj);
+				updateValue();
+			}
+
+			if (self.days) {
+				redraw();
+
 				if (isValidDate) self.currentYearElement[type] = dateObj.getFullYear();else self.currentYearElement.removeAttribute(type);
 
 				self.currentYearElement.disabled = inverseDateObj && dateObj && inverseDateObj.getFullYear() === dateObj.getFullYear();
@@ -1626,9 +1637,24 @@ function Flatpickr(element, config) {
 	function parseConfig() {
 		var boolOpts = ["utc", "wrap", "weekNumbers", "allowInput", "clickOpens", "time_24hr", "enableTime", "noCalendar", "altInput", "shorthandCurrentMonth", "inline", "static", "enableSeconds", "disableMobile"];
 
-		var hooks = ["onChange", "onClose", "onDayCreate", "onMonthChange", "onOpen", "onReady", "onValueUpdate", "onYearChange"];
+		var hooks = ["onChange", "onClose", "onDayCreate", "onMonthChange", "onOpen", "onParseConfig", "onReady", "onValueUpdate", "onYearChange"];
 
 		self.config = Object.create(Flatpickr.defaultConfig);
+
+		var userConfig = _extends({}, self.instanceConfig, JSON.parse(JSON.stringify(self.element.dataset || {})));
+
+		self.config.parseDate = userConfig.parseDate;
+		self.config.formatDate = userConfig.formatDate;
+
+		_extends(self.config, userConfig);
+
+		if (!userConfig.dateFormat && userConfig.enableTime) {
+			self.config.dateFormat = self.config.noCalendar ? "H:i" + (self.config.enableSeconds ? ":S" : "") : Flatpickr.defaultConfig.dateFormat + " H:i" + (self.config.enableSeconds ? ":S" : "");
+		}
+
+		if (userConfig.altInput && userConfig.enableTime && !userConfig.altFormat) {
+			self.config.altFormat = self.config.noCalendar ? "h:i" + (self.config.enableSeconds ? ":S K" : " K") : Flatpickr.defaultConfig.altFormat + (" h:i" + (self.config.enableSeconds ? ":S" : "") + " K");
+		}
 
 		Object.defineProperty(self.config, "minDate", {
 			get: function get() {
@@ -1644,33 +1670,21 @@ function Flatpickr(element, config) {
 			set: minMaxDateSetter("max")
 		});
 
-		var userConfig = _extends({}, self.instanceConfig, JSON.parse(JSON.stringify(self.element.dataset || {})));
-
-		self.config.parseDate = userConfig.parseDate;
-		self.config.formatDate = userConfig.formatDate;
-
-		_extends(self.config, userConfig);
+		self.config.minDate = userConfig.minDate;
+		self.config.maxDate = userConfig.maxDate;
 
 		for (var i = 0; i < boolOpts.length; i++) {
 			self.config[boolOpts[i]] = self.config[boolOpts[i]] === true || self.config[boolOpts[i]] === "true";
 		}for (var _i = 0; _i < hooks.length; _i++) {
-			self.config[hooks[_i]] = arrayify(self.config[hooks[_i]] || []);
-		}
-
-		if (!userConfig.dateFormat && userConfig.enableTime) {
-			self.config.dateFormat = self.config.noCalendar ? "H:i" + (self.config.enableSeconds ? ":S" : "") : Flatpickr.defaultConfig.dateFormat + " H:i" + (self.config.enableSeconds ? ":S" : "");
-		}
-
-		if (userConfig.altInput && userConfig.enableTime && !userConfig.altFormat) {
-			self.config.altFormat = self.config.noCalendar ? "h:i" + (self.config.enableSeconds ? ":S K" : " K") : Flatpickr.defaultConfig.altFormat + (" h:i" + (self.config.enableSeconds ? ":S" : "") + " K");
-		}
-
-		for (var _i2 = 0; _i2 < self.config.plugins.length; _i2++) {
+			self.config[hooks[_i]] = arrayify(self.config[hooks[_i]] || []).map(bindToInstance);
+		}for (var _i2 = 0; _i2 < self.config.plugins.length; _i2++) {
 			var pluginConf = self.config.plugins[_i2](self) || {};
 			for (var key in pluginConf) {
-				if (Array.isArray(self.config[key])) self.config[key] = arrayify(pluginConf[key]).concat(self.config[key]);else if (userConfig[key] !== undefined) self.config[key] = pluginConf[key];
+				if (Array.isArray(self.config[key])) self.config[key] = arrayify(pluginConf[key]).map(bindToInstance).concat(self.config[key]);else if (typeof userConfig[key] === "undefined") self.config[key] = pluginConf[key];
 			}
 		}
+
+		triggerEvent("ParseConfig");
 	}
 
 	function setupLocale() {
@@ -1684,15 +1698,16 @@ function Flatpickr(element, config) {
 
 		var calendarHeight = self.calendarContainer.offsetHeight,
 		    calendarWidth = self.calendarContainer.offsetWidth,
+		    configPos = self.config.position,
 		    input = self.altInput || self.input,
 		    inputBounds = input.getBoundingClientRect(),
 		    distanceFromBottom = window.innerHeight - inputBounds.bottom + input.offsetHeight,
-		    bottomCalendar = distanceFromBottom < calendarHeight + 60;
+		    showOnTop = configPos === "above" || configPos !== "below" && distanceFromBottom < calendarHeight + 60;
 
-		var top = window.pageYOffset + inputBounds.top + (!bottomCalendar ? input.offsetHeight + 2 : -calendarHeight - 2);
+		var top = window.pageYOffset + inputBounds.top + (!showOnTop ? input.offsetHeight + 2 : -calendarHeight - 2);
 
-		toggleClass(self.calendarContainer, "arrowTop", !bottomCalendar);
-		toggleClass(self.calendarContainer, "arrowBottom", bottomCalendar);
+		toggleClass(self.calendarContainer, "arrowTop", !showOnTop);
+		toggleClass(self.calendarContainer, "arrowBottom", showOnTop);
 
 		if (self.config.inline) return;
 
@@ -1727,7 +1742,10 @@ function Flatpickr(element, config) {
 		e.preventDefault();
 		e.stopPropagation();
 
-		if (self.config.allowInput && e.which === 13 && e.target === (self.altInput || self.input)) return self.setDate((self.altInput || self.input).value), e.target.blur();
+		if (self.config.allowInput && e.which === 13 && e.target === (self.altInput || self.input)) {
+			self.setDate((self.altInput || self.input).value, true, e.target === self.altInput ? self.config.altFormat : self.config.dateFormat);
+			return e.target.blur();
+		}
 
 		if (!e.target.classList.contains("flatpickr-day") || e.target.classList.contains("disabled") || e.target.classList.contains("notAllowed")) return;
 
@@ -1768,7 +1786,7 @@ function Flatpickr(element, config) {
 		updateValue();
 
 		setTimeout(function () {
-			return self.dateIsPicked = true;
+			return self.showTimeInput = true;
 		}, 50);
 
 		if (self.config.mode === "range") {
@@ -1777,8 +1795,11 @@ function Flatpickr(element, config) {
 
 				self._hidePrevMonthArrow = self._hidePrevMonthArrow || self.minRangeDate > self.days.childNodes[0].dateObj;
 
-				self._hideNextMonthArrow = self._hideNextMonthArrow || self.maxRangeDate < self.days.childNodes[41].dateObj;
-			} else updateNavigationCurrentMonth();
+				self._hideNextMonthArrow = self._hideNextMonthArrow || self.maxRangeDate < new Date(self.currentYear, self.currentMonth + 1, 1);
+			} else {
+				updateNavigationCurrentMonth();
+				self.close();
+			}
 		}
 
 		if (e.which === 13 && self.config.enableTime) setTimeout(function () {
@@ -1796,19 +1817,25 @@ function Flatpickr(element, config) {
 		jumpToDate();
 	}
 
-	function setSelectedDate(inputDate) {
-		if (Array.isArray(inputDate)) self.selectedDates = inputDate.map(self.parseDate);else if (inputDate instanceof Date || !isNaN(inputDate)) self.selectedDates = [self.parseDate(inputDate)];else if (inputDate && inputDate.substring) {
+	function setSelectedDate(inputDate, format) {
+		if (Array.isArray(inputDate)) self.selectedDates = inputDate.map(function (d) {
+			return self.parseDate(d, false, format);
+		});else if (inputDate instanceof Date || !isNaN(inputDate)) self.selectedDates = [self.parseDate(inputDate)];else if (inputDate && inputDate.substring) {
 			switch (self.config.mode) {
 				case "single":
-					self.selectedDates = [self.parseDate(inputDate)];
+					self.selectedDates = [self.parseDate(inputDate, false, format)];
 					break;
 
 				case "multiple":
-					self.selectedDates = inputDate.split("; ").map(self.parseDate);
+					self.selectedDates = inputDate.split("; ").map(function (date) {
+						return self.parseDate(date, false, format);
+					});
 					break;
 
 				case "range":
-					self.selectedDates = inputDate.split(self.l10n.rangeSeparator).map(self.parseDate);
+					self.selectedDates = inputDate.split(self.l10n.rangeSeparator).map(function (date) {
+						return self.parseDate(date, false, format);
+					});
 
 					break;
 
@@ -1826,13 +1853,13 @@ function Flatpickr(element, config) {
 		});
 	}
 
-	function setDate(date, triggerChange) {
+	function setDate(date, triggerChange, format) {
 		if (!date) return self.clear();
 
-		setSelectedDate(date);
+		setSelectedDate(date, format);
 
 		if (self.selectedDates.length > 0) {
-			self.dateIsPicked = true;
+			self.showTimeInput = true;
 			self.latestSelectedDateObj = self.selectedDates[0];
 		} else self.latestSelectedDateObj = null;
 
@@ -1887,6 +1914,14 @@ function Flatpickr(element, config) {
 				self._selectedDateObj = date;
 			}
 		});
+
+		if (!self.isMobile) {
+			Object.defineProperty(self, "showTimeInput", {
+				set: function set(bool) {
+					if (self.calendarContainer) toggleClass(self.calendarContainer, "showTimeInput", bool);
+				}
+			});
+		}
 	}
 
 	function setupHelperFunctions() {
@@ -1913,107 +1948,12 @@ function Flatpickr(element, config) {
 
 	/* istanbul ignore next */
 	function setupFormats() {
-		self.formats = {
-			// get the date in UTC
-			Z: function Z(date) {
-				return date.toISOString();
-			},
+		["D", "F", "J", "M", "W", "l"].forEach(function (f) {
+			self.formats[f] = Flatpickr.prototype.formats[f].bind(self);
+		});
 
-			// weekday name, short, e.g. Thu
-			D: function D(date) {
-				return self.l10n.weekdays.shorthand[self.formats.w(date)];
-			},
-
-			// full month name e.g. January
-			F: function F(date) {
-				return self.utils.monthToStr(self.formats.n(date) - 1, false);
-			},
-
-			// hours with leading zero e.g. 03
-			H: function H(date) {
-				return Flatpickr.prototype.pad(date.getHours());
-			},
-
-			// day (1-30) with ordinal suffix e.g. 1st, 2nd
-			J: function J(date) {
-				return date.getDate() + self.l10n.ordinal(date.getDate());
-			},
-
-			// AM/PM
-			K: function K(date) {
-				return date.getHours() > 11 ? "PM" : "AM";
-			},
-
-			// shorthand month e.g. Jan, Sep, Oct, etc
-			M: function M(date) {
-				return self.utils.monthToStr(date.getMonth(), true);
-			},
-
-			// seconds 00-59
-			S: function S(date) {
-				return Flatpickr.prototype.pad(date.getSeconds());
-			},
-
-			// unix timestamp
-			U: function U(date) {
-				return date.getTime() / 1000;
-			},
-
-			// full year e.g. 2016
-			Y: function Y(date) {
-				return date.getFullYear();
-			},
-
-			// day in month, padded (01-30)
-			d: function d(date) {
-				return Flatpickr.prototype.pad(self.formats.j(date));
-			},
-
-			// hour from 1-12 (am/pm)
-			h: function h(date) {
-				return date.getHours() % 12 ? date.getHours() % 12 : 12;
-			},
-
-			// minutes, padded with leading zero e.g. 09
-			i: function i(date) {
-				return Flatpickr.prototype.pad(date.getMinutes());
-			},
-
-			// day in month (1-30)
-			j: function j(date) {
-				return date.getDate();
-			},
-
-			// weekday name, full, e.g. Thursday
-			l: function l(date) {
-				return self.l10n.weekdays.longhand[self.formats.w(date)];
-			},
-
-			// padded month number (01-12)
-			m: function m(date) {
-				return Flatpickr.prototype.pad(self.formats.n(date));
-			},
-
-			// the month number (1-12)
-			n: function n(date) {
-				return date.getMonth() + 1;
-			},
-
-			// seconds 0-59
-			s: function s(date) {
-				return date.getSeconds();
-			},
-
-			// number of the day of the week
-			w: function w(date) {
-				return date.getDay();
-			},
-
-			// last two digits of year e.g. 16 for 2016
-			y: function y(date) {
-				return String(self.formats.Y(date)).substring(2);
-			}
-		};
+		self.revFormat.F = Flatpickr.prototype.revFormat.F.bind(self);
+		self.revFormat.M = Flatpickr.prototype.revFormat.M.bind(self);
 	}
 
 	function setupInputs() {
@@ -2031,9 +1971,9 @@ function Flatpickr(element, config) {
 			self.altInput = createElement(self.input.nodeName, self.input.className + " " + self.config.altInputClass);
 			self.altInput.placeholder = self.input.placeholder;
 			self.altInput.type = "text";
-
 			self.input.type = "hidden";
-			if (self.input.parentNode) self.input.parentNode.insertBefore(self.altInput, self.input.nextSibling);
+
+			if (!self.config.static && self.input.parentNode) self.input.parentNode.insertBefore(self.altInput, self.input.nextSibling);
 		}
 
 		if (!self.config.allowInput) (self.altInput || self.input).setAttribute("readonly", "readonly");
@@ -2085,7 +2025,7 @@ function Flatpickr(element, config) {
 
 		if (hooks) {
 			for (var i = 0; i < hooks.length; i++) {
-				hooks[i](self.selectedDates, self.input.value, self, data);
+				hooks[i](self.selectedDates, self.input && self.input.value, self, data);
 			}
 		}
 
@@ -2218,7 +2158,9 @@ function Flatpickr(element, config) {
 		e.preventDefault();
 
 		var isKeyDown = e.type === "keydown",
-		    isWheel = e.type === "wheel";
+		    isWheel = e.type === "wheel",
+		    isIncrement = e.type === "increment",
+		    input = e.target;
 
 		if (e.type !== "input" && !isKeyDown && (e.target.value || e.target.textContent).length >= 2 // typed two digits
 		) {
@@ -2228,26 +2170,31 @@ function Flatpickr(element, config) {
 
 		if (self.amPM && e.target === self.amPM) return e.target.textContent = ["AM", "PM"][e.target.textContent === "AM" | 0];
 
-		var min = Number(e.target.min),
-		    max = Number(e.target.max),
-		    step = Number(e.target.step),
-		    curValue = parseInt(e.target.value, 10),
-		    delta = !isKeyDown ? Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY)) || 0 : e.which === 38 ? 1 : -1;
+		var min = Number(input.min),
+		    max = Number(input.max),
+		    step = Number(input.step),
+		    curValue = parseInt(input.value, 10),
+		    delta = e.delta || (!isKeyDown ? Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY)) || 0 : e.which === 38 ? 1 : -1);
 
-		var newValue = curValue + (isWheel || isKeyDown) * step * delta;
+		var newValue = curValue + step * delta;
 
-		if (e.target.value.length === 2) {
-			var isHourElem = e.target === self.hourElement;
+		if (input.value.length === 2) {
+			var isHourElem = input === self.hourElement,
+			    isMinuteElem = input === self.minuteElement;
 
 			if (newValue < min) {
 				newValue = max + newValue + !isHourElem + (isHourElem && !self.amPM);
+
+				if (isMinuteElem) incrementNumInput(null, -1, self.hourElement);
 			} else if (newValue > max) {
-				newValue = e.target === self.hourElement ? newValue - max - !self.amPM : min;
+				newValue = input === self.hourElement ? newValue - max - !self.amPM : min;
+
+				if (isMinuteElem) incrementNumInput(null, 1, self.hourElement);
 			}
 
 			if (self.amPM && isHourElem && (step === 1 ? newValue + curValue === 23 : Math.abs(newValue - curValue) > step)) self.amPM.textContent = self.amPM.textContent === "PM" ? "AM" : "PM";
 
-			e.target.value = self.pad(newValue);
+			input.value = self.pad(newValue);
 		}
 	}
 
@@ -2259,6 +2206,8 @@ function Flatpickr(element, config) {
 Flatpickr.defaultConfig = {
 
 	mode: "single",
+
+	position: "top",
 
 	/* if true, dates will be parsed, formatted, and displayed in UTC.
  preloading date strings w/ timezones is recommended but not necessary */
@@ -2373,24 +2322,31 @@ Flatpickr.defaultConfig = {
 
 	plugins: [],
 
+	// called every time calendar is closed
+	onClose: [], // function (dateObj, dateStr) {}
+
 	// onChange callback when user selects a date or time
 	onChange: [], // function (dateObj, dateStr) {}
+
+	// called for every day element
+	onDayCreate: [],
+
+	// called every time the month is changed
+	onMonthChange: [],
 
 	// called every time calendar is opened
 	onOpen: [], // function (dateObj, dateStr) {}
 
-	// called every time calendar is closed
-	onClose: [], // function (dateObj, dateStr) {}
+	// called after the configuration has been parsed
+	onParseConfig: [],
 
 	// called after calendar is ready
 	onReady: [], // function (dateObj, dateStr) {}
 
+	// called after input value updated
 	onValueUpdate: [],
 
-	onDayCreate: [],
-
-	onMonthChange: [],
-
+	// called every time the year is changed
 	onYearChange: []
 };
 
@@ -2437,43 +2393,228 @@ Flatpickr.setDefaults = function (config) {
 };
 
 Flatpickr.prototype = {
+	formats: {
+		// get the date in UTC
+		Z: function Z(date) {
+			return date.toISOString();
+		},
+
+		// weekday name, short, e.g. Thu
+		D: function D(date) {
+			return this.l10n.weekdays.shorthand[this.formats.w(date)];
+		},
+
+		// full month name e.g. January
+		F: function F(date) {
+			return this.utils.monthToStr(this.formats.n(date) - 1, false);
+		},
+
+		// hours with leading zero e.g. 03
+		H: function H(date) {
+			return Flatpickr.prototype.pad(date.getHours());
+		},
+
+		// day (1-30) with ordinal suffix e.g. 1st, 2nd
+		J: function J(date) {
+			return date.getDate() + this.l10n.ordinal(date.getDate());
+		},
+
+		// AM/PM
+		K: function K(date) {
+			return date.getHours() > 11 ? "PM" : "AM";
+		},
+
+		// shorthand month e.g. Jan, Sep, Oct, etc
+		M: function M(date) {
+			return this.utils.monthToStr(date.getMonth(), true);
+		},
+
+		// seconds 00-59
+		S: function S(date) {
+			return Flatpickr.prototype.pad(date.getSeconds());
+		},
+
+		// unix timestamp
+		U: function U(date) {
+			return date.getTime() / 1000;
+		},
+
+		W: function W(date) {
+			return this.config.getWeek(date);
+		},
+
+		// full year e.g. 2016
+		Y: function Y(date) {
+			return date.getFullYear();
+		},
+
+		// day in month, padded (01-30)
+		d: function d(date) {
+			return Flatpickr.prototype.pad(date.getDate());
+		},
+
+		// hour from 1-12 (am/pm)
+		h: function h(date) {
+			return date.getHours() % 12 ? date.getHours() % 12 : 12;
+		},
+
+		// minutes, padded with leading zero e.g. 09
+		i: function i(date) {
+			return Flatpickr.prototype.pad(date.getMinutes());
+		},
+
+		// day in month (1-30)
+		j: function j(date) {
+			return date.getDate();
+		},
+
+		// weekday name, full, e.g. Thursday
+		l: function l(date) {
+			return this.l10n.weekdays.longhand[date.getDay()];
+		},
+
+		// padded month number (01-12)
+		m: function m(date) {
+			return Flatpickr.prototype.pad(date.getMonth() + 1);
+		},
+
+		// the month number (1-12)
+		n: function n(date) {
+			return date.getMonth() + 1;
+		},
+
+		// seconds 0-59
+		s: function s(date) {
+			return date.getSeconds();
+		},
+
+		// number of the day of the week
+		w: function w(date) {
+			return date.getDay();
+		},
+
+		// last two digits of year e.g. 16 for 2016
+		y: function y(date) {
+			return String(date.getFullYear()).substring(2);
+		}
+	},
+
+	revFormat: {
+		D: function D() {},
+		F: function F(dateObj, monthName) {
+			dateObj.setMonth(this.l10n.months.longhand.indexOf(monthName));
+		},
+		H: function H(dateObj, hour) {
+			return dateObj.setHours(parseFloat(hour));
+		},
+		J: function J(dateObj, day) {
+			return dateObj.setDate(parseFloat(day));
+		},
+		K: function K(dateObj, amPM) {
+			var hours = dateObj.getHours();
+
+			if (hours !== 12) dateObj.setHours(hours % 12 + 12 * /pm/i.test(amPM));
+		},
+		M: function M(dateObj, shortMonth) {
+			dateObj.setMonth(this.l10n.months.shorthand.indexOf(shortMonth));
+		},
+		S: function S(dateObj, seconds) {
+			return dateObj.setSeconds(seconds);
+		},
+		W: function W() {},
+		Y: function Y(dateObj, year) {
+			return dateObj.setFullYear(year);
+		},
+		Z: function Z(dateObj, ISODate) {
+			return dateObj = new Date(ISODate);
+		},
+
+		d: function d(dateObj, day) {
+			return dateObj.setDate(parseFloat(day));
+		},
+		h: function h(dateObj, hour) {
+			return dateObj.setHours(parseFloat(hour));
+		},
+		i: function i(dateObj, minutes) {
+			return dateObj.setMinutes(parseFloat(minutes));
+		},
+		j: function j(dateObj, day) {
+			return dateObj.setDate(parseFloat(day));
+		},
+		l: function l() {},
+		m: function m(dateObj, month) {
+			return dateObj.setMonth(parseFloat(month) - 1);
+		},
+		n: function n(dateObj, month) {
+			return dateObj.setMonth(parseFloat(month) - 1);
+		},
+		s: function s(dateObj, seconds) {
+			return dateObj.setSeconds(parseFloat(seconds));
+		},
+		w: function w() {},
+		y: function y(dateObj, year) {
+			return dateObj.setFullYear(2000 + parseFloat(year));
+		}
+	},
+
+	tokenRegex: {
+		D: "(\\w+)",
+		F: "(\\w+)",
+		H: "(\\d\\d|\\d)",
+		J: "(\\d\\d|\\d)\\w+",
+		K: "(\\w+)",
+		M: "(\\w+)",
+		S: "(\\d\\d|\\d)",
+		Y: "(\\d{4})",
+		Z: "(.+)",
+		d: "(\\d\\d|\\d)",
+		h: "(\\d\\d|\\d)",
+		i: "(\\d\\d|\\d)",
+		j: "(\\d\\d|\\d)",
+		l: "(\\w+)",
+		m: "(\\d\\d|\\d)",
+		n: "(\\d\\d|\\d)",
+		s: "(\\d\\d|\\d)",
+		w: "(\\d\\d|\\d)",
+		y: "(\\d{2})"
+	},
+
 	pad: function pad(number) {
 		return ("0" + number).slice(-2);
 	},
-	parseDate: function parseDate(date, timeless) {
+
+	parseDate: function parseDate(date, timeless, givenFormat) {
 		if (!date) return null;
 
-		var dateTimeRegex = /(\d+)/g,
-		    timeRegex = /^(\d{1,2})[:\s](\d\d)?[:\s]?(\d\d)?\s?(a|p|A|P)?/i,
-		    timestamp = /^(\d+)$/g,
-		    date_orig = date;
+		var date_orig = date;
 
-		if (date.toFixed || timestamp.test(date)) // timestamp
+		if (date.toFixed) // timestamp
 			date = new Date(date);else if (typeof date === "string") {
+			var format = typeof givenFormat === "string" ? givenFormat : this.config.dateFormat;
 			date = date.trim();
 
 			if (date === "today") {
 				date = new Date();
 				timeless = true;
-			} else if (this.config && this.config.parseDate) date = this.config.parseDate(date);else if (timeRegex.test(date)) {
-				// time picker
-				var m = date.match(timeRegex),
-				    hours = !m[4] ? m[1] // military time, no conversion needed
-				: m[1] % 12 + (m[4].toLowerCase() === "p" ? 12 : 0); // am/pm
+			} else if (this.config && this.config.parseDate) date = this.config.parseDate(date);else if (/Z$/.test(date) || /GMT$/.test(date)) // datestrings w/ timezone
+				date = new Date(date);else {
+				var parsedDate = this.config.noCalendar ? new Date(new Date().setHours(0, 0, 0, 0)) : new Date(new Date().getFullYear(), 0, 1, 0, 0, 0, 0);
 
-				date = new Date();
-				date.setHours(hours, m[2] || 0, m[3] || 0);
-			} else if (/Z$/.test(date) || /GMT$/.test(date)) // datestrings w/ timezone
-				date = new Date(date);else if (dateTimeRegex.test(date) && /^[0-9]/.test(date)) {
-				var d = date.match(dateTimeRegex),
-				    isAM = /(am|AM)$/.test(date),
-				    isPM = /(pm|PM)$/.test(date);
+				var matched = false;
 
-				date = new Date(d[0] + "/" + (d[1] || 1) + "/" + (d[2] || 1) + " " + (d[3] || 0) + ":" + (d[4] || 0) + ":" + (d[5] || 0));
+				for (var i = 0, matchIndex = 0, regexStr = ""; i < format.length; i++) {
+					var token = format[i];
+					var isBackSlash = token === "\\";
+					var escaped = format[i - 1] === "\\" || isBackSlash;
+					if (this.tokenRegex[token] && !escaped) {
+						regexStr += this.tokenRegex[token];
+						var match = new RegExp(regexStr).exec(date);
+						if (match && (matched = true)) this.revFormat[token](parsedDate, match[++matchIndex]);
+					} else if (!isBackSlash) regexStr += "."; // don't really care
+				}
 
-				if (isAM || isPM) date.setHours(date.getHours() % 12 + 12 * isPM);
-			} else // fallback
-				date = new Date(date);
+				date = matched ? parsedDate : null;
+			}
 		} else if (date instanceof Date) date = new Date(date.getTime()); // create a copy
 
 		/* istanbul ignore next */
@@ -15606,7 +15747,7 @@ return SignaturePad;
   var DIGIT = "9",
       ALPHA = "A",
       ALPHANUM = "S",
-      BY_PASS_KEYS = [8, 9, 16, 17, 18, 36, 37, 38, 39, 40, 91, 92, 93],
+      BY_PASS_KEYS = [9, 16, 17, 18, 36, 37, 38, 39, 40, 91, 92, 93],
       isAllowedKeyCode = function(keyCode) {
         for (var i = 0, len = BY_PASS_KEYS.length; i < len; i++) {
           if (keyCode == BY_PASS_KEYS[i]) {
@@ -20720,8 +20861,6 @@ var _createClass = function () {
 
 var _formio = require("./formio");
 
-var _formio2 = _interopRequireDefault(_formio);
-
 var _nativePromiseOnly = require("native-promise-only");
 
 var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
@@ -20968,7 +21107,7 @@ var FormioForm = function (_FormioComponents) {
         return;
       }
       this._src = value;
-      this.formio = new _formio2.default(value);
+      this.formio = new _formio.Formio(value);
       this.onFormLoad = this.formio.loadForm().then(function (form) {
         return _this6.form = form;
       });
@@ -21061,7 +21200,6 @@ module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/Components":205,"./formio":237,"eventemitter2":1,"lodash/debounce":169,"lodash/each":170,"native-promise-only":200}],237:[function(require,module,exports){
-(function (global){
 'use strict';
 
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
@@ -21070,891 +21208,933 @@ module.exports = global.FormioForm = FormioForm;
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
   return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 };
 
-var Promise = require("native-promise-only");
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
 
-// Require other libraries.
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
+
+var Promise = require("native-promise-only");
 require('whatwg-fetch');
 var EventEmitter = require('eventemitter2').EventEmitter2;
 var copy = require('shallow-copy');
-var providers = require('./providers');
-
-// The default base url.
-var baseUrl = 'https://api.form.io';
-var appUrl = baseUrl;
-var appUrlSet = false;
-
-var plugins = [];
-
-// The temporary GET request cache storage
-var cache = {};
-
-var noop = function noop() {};
-var identity = function identity(value) {
-  return value;
-};
-
-// Will invoke a function on all plugins.
-// Returns a promise that resolves when all promises
-// returned by the plugins have resolved.
-// Should be used when you want plugins to prepare for an event
-// but don't want any data returned.
-var pluginWait = function pluginWait(pluginFn) {
-  var args = [].slice.call(arguments, 1);
-  return Promise.all(plugins.map(function (plugin) {
-    return (plugin[pluginFn] || noop).apply(plugin, args);
-  }));
-};
-
-// Will invoke a function on plugins from highest priority
-// to lowest until one returns a value. Returns null if no
-// plugins return a value.
-// Should be used when you want just one plugin to handle things.
-var pluginGet = function pluginGet(pluginFn) {
-  var args = [].slice.call(arguments, 0);
-  var callPlugin = function callPlugin(index, pluginFn) {
-    var plugin = plugins[index];
-    if (!plugin) return Promise.resolve(null);
-    return Promise.resolve((plugin && plugin[pluginFn] || noop).apply(plugin, [].slice.call(arguments, 2))).then(function (result) {
-      if (result !== null && result !== undefined) return result;
-      return callPlugin.apply(null, [index + 1].concat(args));
-    });
-  };
-  return callPlugin.apply(null, [0].concat(args));
-};
-
-// Will invoke a function on plugins from highest priority to
-// lowest, building a promise chain from their return values
-// Should be used when all plugins need to process a promise's
-// success or failure
-var pluginAlter = function pluginAlter(pluginFn, value) {
-  var args = [].slice.call(arguments, 2);
-  return plugins.reduce(function (value, plugin) {
-    return (plugin[pluginFn] || identity).apply(plugin, [value].concat(args));
-  }, value);
-};
 
 /**
- * Returns parts of the URL that are important.
- * Indexes
- *  - 0: The full url
- *  - 1: The protocol
- *  - 2: The hostname
- *  - 3: The rest
+ * The Formio interface class.
  *
- * @param url
- * @returns {*}
+ *   let formio = new Formio('https://examples.form.io/example');
  */
-var getUrlParts = function getUrlParts(url) {
-  var regex = '^(http[s]?:\\/\\/)';
-  if (baseUrl && url.indexOf(baseUrl) === 0) {
-    regex += '(' + baseUrl.replace(/^http[s]?:\/\//, '') + ')';
-  } else {
-    regex += '([^/]+)';
-  }
-  regex += '($|\\/.*)';
-  return url.match(new RegExp(regex));
-};
 
-var serialize = function serialize(obj) {
-  var str = [];
-  for (var p in obj) {
-    if (obj.hasOwnProperty(p)) {
-      str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+var Formio = function () {
+  function Formio(path) {
+    _classCallCheck(this, Formio);
+
+    // Ensure we have an instance of Formio.
+    if (!(this instanceof Formio)) {
+      return new Formio(path);
     }
-  }return str.join("&");
-};
+    if (!path) {
+      // Allow user to create new projects if this was instantiated without
+      // a url
+      this.projectUrl = Formio.baseUrl + '/project';
+      this.projectsUrl = Formio.baseUrl + '/project';
+      this.projectId = false;
+      this.query = '';
+      return;
+    }
 
-// The formio class.
-var Formio = function Formio(path) {
-
-  // Ensure we have an instance of Formio.
-  if (!(this instanceof Formio)) {
-    return new Formio(path);
-  }
-  if (!path) {
-    // Allow user to create new projects if this was instantiated without
-    // a url
-    this.projectUrl = baseUrl + '/project';
-    this.projectsUrl = baseUrl + '/project';
-    this.projectId = false;
+    // Initialize our variables.
+    this.projectsUrl = '';
+    this.projectUrl = '';
+    this.projectId = '';
+    this.formUrl = '';
+    this.formsUrl = '';
+    this.formId = '';
+    this.submissionsUrl = '';
+    this.submissionUrl = '';
+    this.submissionId = '';
+    this.actionsUrl = '';
+    this.actionId = '';
+    this.actionUrl = '';
     this.query = '';
-    return;
-  }
 
-  // Initialize our variables.
-  this.projectsUrl = '';
-  this.projectUrl = '';
-  this.projectId = '';
-  this.formUrl = '';
-  this.formsUrl = '';
-  this.formId = '';
-  this.submissionsUrl = '';
-  this.submissionUrl = '';
-  this.submissionId = '';
-  this.actionsUrl = '';
-  this.actionId = '';
-  this.actionUrl = '';
-  this.query = '';
+    // Normalize to an absolute path.
+    if (path.indexOf('http') !== 0 && path.indexOf('//') !== 0) {
+      Formio.baseUrl = Formio.baseUrl ? Formio.baseUrl : window.location.href.match(/http[s]?:\/\/api./)[0];
+      path = Formio.baseUrl + path;
+    }
 
-  // Normalize to an absolute path.
-  if (path.indexOf('http') !== 0 && path.indexOf('//') !== 0) {
-    baseUrl = baseUrl ? baseUrl : window.location.href.match(/http[s]?:\/\/api./)[0];
-    path = baseUrl + path;
-  }
+    var hostparts = Formio.getUrlParts(path);
+    var parts = [];
+    var hostName = hostparts[1] + hostparts[2];
+    path = hostparts.length > 3 ? hostparts[3] : '';
+    var queryparts = path.split('?');
+    if (queryparts.length > 1) {
+      path = queryparts[0];
+      this.query = '?' + queryparts[1];
+    }
 
-  var hostparts = getUrlParts(path);
-  var parts = [];
-  var hostName = hostparts[1] + hostparts[2];
-  path = hostparts.length > 3 ? hostparts[3] : '';
-  var queryparts = path.split('?');
-  if (queryparts.length > 1) {
-    path = queryparts[0];
-    this.query = '?' + queryparts[1];
-  }
+    // See if this is a form path.
+    if (path.search(/(^|\/)(form|project)($|\/)/) !== -1) {
 
-  // See if this is a form path.
-  if (path.search(/(^|\/)(form|project)($|\/)/) !== -1) {
+      // Register a specific path.
+      var registerPath = function (name, base) {
+        this[name + 'sUrl'] = base + '/' + name;
+        var regex = new RegExp('\/' + name + '\/([^/]+)');
+        if (path.search(regex) !== -1) {
+          parts = path.match(regex);
+          this[name + 'Url'] = parts ? base + parts[0] : '';
+          this[name + 'Id'] = parts.length > 1 ? parts[1] : '';
+          base += parts[0];
+        }
+        return base;
+      }.bind(this);
 
-    // Register a specific path.
-    var registerPath = function (name, base) {
-      this[name + 'sUrl'] = base + '/' + name;
-      var regex = new RegExp('\/' + name + '\/([^/]+)');
-      if (path.search(regex) !== -1) {
-        parts = path.match(regex);
-        this[name + 'Url'] = parts ? base + parts[0] : '';
-        this[name + 'Id'] = parts.length > 1 ? parts[1] : '';
-        base += parts[0];
+      // Register an array of items.
+      var registerItems = function registerItems(items, base, staticBase) {
+        for (var i in items) {
+          if (items.hasOwnProperty(i)) {
+            var item = items[i];
+            if (item instanceof Array) {
+              registerItems(item, base, true);
+            } else {
+              var newBase = registerPath(item, base);
+              base = staticBase ? base : newBase;
+            }
+          }
+        }
+      };
+
+      registerItems(['project', 'form', ['submission', 'action']], hostName);
+
+      if (!this.projectId) {
+        if (hostparts.length > 2 && hostparts[2].split('.').length > 2) {
+          this.projectUrl = hostName;
+          this.projectId = hostparts[2].split('.')[0];
+        }
       }
-      return base;
-    }.bind(this);
+    } else {
 
-    // Register an array of items.
-    var registerItems = function registerItems(items, base, staticBase) {
+      // This is an aliased url.
+      this.projectUrl = hostName;
+      this.projectId = hostparts.length > 2 ? hostparts[2].split('.')[0] : '';
+      var subRegEx = new RegExp('\/(submission|action)($|\/.*)');
+      var subs = path.match(subRegEx);
+      this.pathType = subs && subs.length > 1 ? subs[1] : '';
+      path = path.replace(subRegEx, '');
+      path = path.replace(/\/$/, '');
+      this.formsUrl = hostName + '/form';
+      this.formUrl = hostName + path;
+      this.formId = path.replace(/^\/+|\/+$/g, '');
+      var items = ['submission', 'action'];
       for (var i in items) {
         if (items.hasOwnProperty(i)) {
           var item = items[i];
-          if (item instanceof Array) {
-            registerItems(item, base, true);
-          } else {
-            var newBase = registerPath(item, base);
-            base = staticBase ? base : newBase;
+          this[item + 'sUrl'] = hostName + path + '/' + item;
+          if (this.pathType === item && subs.length > 2 && subs[2]) {
+            this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
+            this[item + 'Url'] = hostName + path + subs[0];
           }
         }
       }
-    };
+    }
 
-    registerItems(['project', 'form', ['submission', 'action']], hostName);
+    // Set the app url if it is not set.
+    if (!Formio.appUrlSet) {
+      Formio.appUrl = this.projectUrl;
+    }
+  }
 
-    if (!this.projectId) {
-      if (hostparts.length > 2 && hostparts[2].split('.').length > 2) {
-        this.projectUrl = hostName;
-        this.projectId = hostparts[2].split('.')[0];
+  _createClass(Formio, [{
+    key: 'delete',
+    value: function _delete(type, opts) {
+      var _id = type + 'Id';
+      var _url = type + 'Url';
+      if (!this[_id]) {
+        Promise.reject('Nothing to delete');
       }
+      Formio.cache = {};
+      return this.makeRequest(type, this[_url], 'delete', null, opts);
     }
-  } else {
-
-    // This is an aliased url.
-    this.projectUrl = hostName;
-    this.projectId = hostparts.length > 2 ? hostparts[2].split('.')[0] : '';
-    var subRegEx = new RegExp('\/(submission|action)($|\/.*)');
-    var subs = path.match(subRegEx);
-    this.pathType = subs && subs.length > 1 ? subs[1] : '';
-    path = path.replace(subRegEx, '');
-    path = path.replace(/\/$/, '');
-    this.formsUrl = hostName + '/form';
-    this.formUrl = hostName + path;
-    this.formId = path.replace(/^\/+|\/+$/g, '');
-    var items = ['submission', 'action'];
-    for (var i in items) {
-      if (items.hasOwnProperty(i)) {
-        var item = items[i];
-        this[item + 'sUrl'] = hostName + path + '/' + item;
-        if (this.pathType === item && subs.length > 2 && subs[2]) {
-          this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
-          this[item + 'Url'] = hostName + path + subs[0];
-        }
+  }, {
+    key: 'index',
+    value: function index(type, query, opts) {
+      var _url = type + 'Url';
+      query = query || '';
+      if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+        query = '?' + Formio.serialize(query.params);
       }
+      return this.makeRequest(type, this[_url] + query, 'get', null, opts);
     }
-  }
-
-  // Set the app url if it is not set.
-  if (!appUrlSet) {
-    appUrl = this.projectUrl;
-  }
-};
-
-/**
- * Load a resource.
- *
- * @param type
- * @returns {Function}
- * @private
- */
-var _load = function _load(type) {
-  var _id = type + 'Id';
-  var _url = type + 'Url';
-  return function (query, opts) {
-    if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
-      query = serialize(query.params);
-    }
-    if (query) {
-      query = this.query ? this.query + '&' + query : '?' + query;
-    } else {
-      query = this.query;
-    }
-    if (!this[_id]) {
-      return Promise.reject('Missing ' + _id);
-    }
-    return this.makeRequest(type, this[_url] + query, 'get', null, opts);
-  };
-};
-
-/**
- * Save a resource.
- *
- * @param type
- * @returns {Function}
- * @private
- */
-var _save = function _save(type) {
-  var _id = type + 'Id';
-  var _url = type + 'Url';
-  return function (data, opts) {
-    var method = this[_id] || data._id ? 'put' : 'post';
-    var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
-    if (!this[_id] && data._id && method === 'put') {
-      reqUrl += '/' + data._id;
-    }
-    cache = {};
-    return this.makeRequest(type, reqUrl + this.query, method, data, opts);
-  };
-};
-
-/**
- * Delete a resource.
- *
- * @param type
- * @returns {Function}
- * @private
- */
-var _delete = function _delete(type) {
-  var _id = type + 'Id';
-  var _url = type + 'Url';
-  return function (opts) {
-    if (!this[_id]) {
-      Promise.reject('Nothing to delete');
-    }
-    cache = {};
-    return this.makeRequest(type, this[_url], 'delete', null, opts);
-  };
-};
-
-/**
- * Resource index method.
- *
- * @param type
- * @returns {Function}
- * @private
- */
-var _index = function _index(type) {
-  var _url = type + 'Url';
-  return function (query, opts) {
-    query = query || '';
-    if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
-      query = '?' + serialize(query.params);
-    }
-    return this.makeRequest(type, this[_url] + query, 'get', null, opts);
-  };
-};
-
-// Activates plugin hooks, makes Formio.request if no plugin provides a request
-Formio.prototype.makeRequest = function (type, url, method, data, opts) {
-  var self = this;
-  method = (method || 'GET').toUpperCase();
-  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
-    opts = {};
-  }
-
-  var requestArgs = {
-    formio: self,
-    type: type,
-    url: url,
-    method: method,
-    data: data,
-    opts: opts
-  };
-
-  var request = pluginWait('preRequest', requestArgs).then(function () {
-    return pluginGet('request', requestArgs).then(function (result) {
-      if (result === null || result === undefined) {
-        return Formio.request(url, method, data, opts.header, opts);
+  }, {
+    key: 'save',
+    value: function save(type, data, opts) {
+      var _id = type + 'Id';
+      var _url = type + 'Url';
+      var method = this[_id] || data._id ? 'put' : 'post';
+      var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
+      if (!this[_id] && data._id && method === 'put') {
+        reqUrl += '/' + data._id;
       }
-      return result;
-    });
-  });
-
-  return pluginAlter('wrapRequestPromise', request, requestArgs);
-};
-
-// Define specific CRUD methods.
-Formio.prototype.loadProject = _load('project');
-Formio.prototype.saveProject = _save('project');
-Formio.prototype.deleteProject = _delete('project');
-Formio.prototype.loadForm = _load('form');
-Formio.prototype.saveForm = _save('form');
-Formio.prototype.deleteForm = _delete('form');
-Formio.prototype.loadForms = _index('forms');
-Formio.prototype.loadSubmission = _load('submission');
-Formio.prototype.saveSubmission = _save('submission');
-Formio.prototype.deleteSubmission = _delete('submission');
-Formio.prototype.loadSubmissions = _index('submissions');
-Formio.prototype.loadAction = _load('action');
-Formio.prototype.saveAction = _save('action');
-Formio.prototype.deleteAction = _delete('action');
-Formio.prototype.loadActions = _index('actions');
-Formio.prototype.availableActions = function () {
-  return this.makeRequest('availableActions', this.formUrl + '/actions');
-};
-Formio.prototype.actionInfo = function (name) {
-  return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
-};
-
-Formio.prototype.uploadFile = function (storage, file, fileName, dir, progressCallback, url) {
-  var requestArgs = {
-    provider: storage,
-    method: 'upload',
-    file: file,
-    fileName: fileName,
-    dir: dir
-  };
-  var request = pluginWait('preRequest', requestArgs).then(function () {
-    return pluginGet('fileRequest', requestArgs).then(function (result) {
-      if (storage && (result === null || result === undefined)) {
-        if (providers.storage.hasOwnProperty(storage)) {
-          var provider = new providers.storage[storage](this);
-          return provider.uploadFile(file, fileName, dir, progressCallback, url);
-        } else {
-          throw 'Storage provider not found';
-        }
-      }
-      return result || { url: '' };
-    }.bind(this));
-  }.bind(this));
-
-  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
-};
-
-Formio.prototype.downloadFile = function (file) {
-  var requestArgs = {
-    method: 'download',
-    file: file
-  };
-
-  var request = pluginWait('preRequest', requestArgs).then(function () {
-    return pluginGet('fileRequest', requestArgs).then(function (result) {
-      if (file.storage && (result === null || result === undefined)) {
-        if (providers.storage.hasOwnProperty(file.storage)) {
-          var provider = new providers.storage[file.storage](this);
-          return provider.downloadFile(file);
-        } else {
-          throw 'Storage provider not found';
-        }
-      }
-      return result || { url: '' };
-    }.bind(this));
-  }.bind(this));
-
-  return pluginAlter('wrapFileRequestPromise', request, requestArgs);
-};
-
-Formio.makeStaticRequest = function (url, method, data, opts) {
-  method = (method || 'GET').toUpperCase();
-  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
-    opts = {};
-  }
-  var requestArgs = {
-    url: url,
-    method: method,
-    data: data
-  };
-
-  var request = pluginWait('preRequest', requestArgs).then(function () {
-    return pluginGet('staticRequest', requestArgs).then(function (result) {
-      if (result === null || result === undefined) {
-        return Formio.request(url, method, data, opts.header, opts);
-      }
-      return result;
-    });
-  });
-
-  return pluginAlter('wrapStaticRequestPromise', request, requestArgs);
-};
-
-// Static methods.
-Formio.loadProjects = function (query) {
-  query = query || '';
-  if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
-    query = '?' + serialize(query.params);
-  }
-  return this.makeStaticRequest(baseUrl + '/project' + query);
-};
-
-/**
- * Make a formio request, using the current token.
- *
- * @param url
- * @param method
- * @param data
- * @param header
- * @param {Boolean} ignoreCache
- *   Whether or not to use the cache.
- * @returns {*}
- */
-Formio.request = function (url, method, data, header, opts) {
-  if (!url) {
-    return Promise.reject('No url provided');
-  }
-  method = (method || 'GET').toUpperCase();
-
-  // For reverse compatibility, if they provided the ignoreCache parameter,
-  // then change it back to the options format where that is a parameter.
-  if (typeof opts === 'boolean') {
-    opts = { ignoreCache: opts };
-  }
-  if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
-    opts = {};
-  }
-
-  var cacheKey = btoa(url);
-
-  return new Promise(function (resolve, reject) {
-    // Get the cached promise to save multiple loads.
-    if (!opts.ignoreCache && method === 'GET' && cache.hasOwnProperty(cacheKey)) {
-      return resolve(cache[cacheKey]);
+      Formio.cache = {};
+      return this.makeRequest(type, reqUrl + this.query, method, data, opts);
     }
-
-    resolve(new Promise(function (resolve, reject) {
-      // Set up and fetch request
-      var headers = header || new Headers({
-        'Accept': 'application/json',
-        'Content-type': 'application/json; charset=UTF-8'
-      });
-      var token = Formio.getToken();
-      if (token) {
-        headers.append('x-jwt-token', token);
+  }, {
+    key: 'load',
+    value: function load(type, query, opts) {
+      var _id = type + 'Id';
+      var _url = type + 'Url';
+      if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+        query = Formio.serialize(query.params);
+      }
+      if (query) {
+        query = this.query ? this.query + '&' + query : '?' + query;
+      } else {
+        query = this.query;
+      }
+      if (!this[_id]) {
+        return Promise.reject('Missing ' + _id);
+      }
+      return this.makeRequest(type, this[_url] + query, 'get', null, opts);
+    }
+  }, {
+    key: 'makeRequest',
+    value: function makeRequest(type, url, method, data, opts) {
+      method = (method || 'GET').toUpperCase();
+      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+        opts = {};
       }
 
-      var options = {
+      var requestArgs = {
+        formio: this,
+        type: type,
+        url: url,
         method: method,
-        headers: headers,
-        mode: 'cors'
+        data: data,
+        opts: opts
       };
-      if (data) {
-        options.body = JSON.stringify(data);
-      }
 
-      resolve(fetch(url, options));
-    }).catch(function (err) {
-      err.message = 'Could not connect to API server (' + err.message + ')';
-      err.networkError = true;
-      throw err;
-    }).then(function (response) {
-      if (!response.ok) {
-        if (response.status === 440) {
-          Formio.setToken(null);
-          Formio.events.emit('formio.sessionExpired', response.body);
-        } else if (response.status === 401) {
-          Formio.events.emit('formio.unauthorized', response.body);
-        }
-        // Parse and return the error as a rejected promise to reject this promise
-        return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (error) {
-          throw error;
-        });
-      }
-
-      // Handle fetch results
-      var token = response.headers.get('x-jwt-token');
-      if (response.status >= 200 && response.status < 300 && token && token !== '') {
-        Formio.setToken(token);
-      }
-      // 204 is no content. Don't try to .json() it.
-      if (response.status === 204) {
-        return {};
-      }
-      return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (result) {
-        // Add some content-range metadata to the result here
-        var range = response.headers.get('content-range');
-        if (range && (typeof result === 'undefined' ? 'undefined' : _typeof(result)) === 'object') {
-          range = range.split('/');
-          if (range[0] !== '*') {
-            var skipLimit = range[0].split('-');
-            result.skip = Number(skipLimit[0]);
-            result.limit = skipLimit[1] - skipLimit[0] + 1;
+      var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
+        return Formio.pluginGet('request', requestArgs).then(function (result) {
+          if (result === null || result === undefined) {
+            return Formio.request(url, method, data, opts.header, opts);
           }
-          result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
-        }
-
-        if (!opts.getHeaders) {
           return result;
-        }
-
-        var headers = {};
-        response.headers.forEach(function (item, key) {
-          headers[key] = item;
-        });
-
-        return new Promise(function (resolve, reject) {
-          resolve({ result: result, headers: headers });
         });
       });
-    }).catch(function (err) {
-      if (err === 'Bad Token') {
-        Formio.setToken(null);
-        Formio.events.emit('formio.badToken', err);
-      }
-      // Remove failed promises from cache
-      delete cache[cacheKey];
-      // Propagate error so client can handle accordingly
-      throw err;
-    }));
-  }).then(function (result) {
-    // Save the cache
-    if (method === 'GET') {
-      cache[cacheKey] = Promise.resolve(result);
+
+      return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
     }
-
-    // Shallow copy result so modifications don't end up in cache
-    if (Array.isArray(result)) {
-      var resultCopy = result.map(copy);
-      resultCopy.skip = result.skip;
-      resultCopy.limit = result.limit;
-      resultCopy.serverCount = result.serverCount;
-      return resultCopy;
+  }, {
+    key: 'loadProject',
+    value: function loadProject(query, opts) {
+      return this.load('project', query, opts);
     }
-    return copy(result);
-  });
-};
-
-Formio.setToken = function (token) {
-  token = token || '';
-  if (token === this.token) {
-    return;
-  }
-  this.token = token;
-  if (!token) {
-    Formio.setUser(null);
-    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
-    try {
-      return localStorage.removeItem('formioToken');
-    } catch (err) {
-      return;
+  }, {
+    key: 'saveProject',
+    value: function saveProject(data, opts) {
+      return this.save('project', data, opts);
     }
-  }
-  // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
-  try {
-    localStorage.setItem('formioToken', token);
-  } catch (err) {
-    // Do nothing.
-  }
-  return Formio.currentUser(); // Run this so user is updated if null
-};
-
-Formio.getToken = function () {
-  if (this.token) {
-    return this.token;
-  }
-  try {
-    var token = localStorage.getItem('formioToken') || '';
-    this.token = token;
-    return token;
-  } catch (e) {
-    return '';
-  }
-};
-
-Formio.setUser = function (user) {
-  if (!user) {
-    this.setToken(null);
-    // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
-    try {
-      return localStorage.removeItem('formioUser');
-    } catch (err) {
-      return;
+  }, {
+    key: 'deleteProject',
+    value: function deleteProject(opts) {
+      return this.delete('project', opts);
     }
-  }
-  // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
-  try {
-    localStorage.setItem('formioUser', JSON.stringify(user));
-  } catch (err) {
-    // Do nothing.
-  }
-};
-
-Formio.getUser = function () {
-  try {
-    return JSON.parse(localStorage.getItem('formioUser') || null);
-  } catch (e) {
-    return;
-  }
-};
-
-Formio.setBaseUrl = function (url) {
-  baseUrl = url;
-  if (!appUrlSet) {
-    appUrl = url;
-  }
-};
-
-Formio.getBaseUrl = function () {
-  return baseUrl;
-};
-
-Formio.setAppUrl = function (url) {
-  appUrl = url;
-  appUrlSet = true;
-};
-
-Formio.getAppUrl = function () {
-  return appUrl;
-};
-
-Formio.clearCache = function () {
-  cache = {};
-};
-
-/**
- * Attach an HTML form to Form.io.
- *
- * @param form
- */
-Formio.form = function (form, options, done) {
-  // Fix the parameters.
-  if (!done && typeof options === 'function') {
-    done = options;
-    options = {};
-  }
-
-  done = done || function () {
-    console.log(arguments);
-  };
-  options = options || {};
-
-  // IF they provide a jquery object, then select the element.
-  if (form.jquery) {
-    form = form[0];
-  }
-  if (!form) {
-    return done('Invalid Form');
-  }
-
-  var getAction = function getAction() {
-    return options.form || form.getAttribute('action');
-  };
-
-  /**
-   * Returns the current submission object.
-   * @returns {{data: {}}}
-   */
-  var getSubmission = function getSubmission() {
-    var submission = { data: {} };
-    var setValue = function setValue(path, value) {
-      var isArray = path.substr(-2) === '[]';
-      if (isArray) {
-        path = path.replace('[]', '');
-      }
-      var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
-      var current = submission;
-      while (path = paths.shift()) {
-        if (!paths.length) {
-          if (isArray) {
-            if (!current[path]) {
-              current[path] = [];
+  }, {
+    key: 'loadForm',
+    value: function loadForm(query, opts) {
+      return this.load('form', query, opts);
+    }
+  }, {
+    key: 'saveForm',
+    value: function saveForm(data, opts) {
+      return this.save('form', data, opts);
+    }
+  }, {
+    key: 'deleteForm',
+    value: function deleteForm(opts) {
+      return this.delete('form', opts);
+    }
+  }, {
+    key: 'loadForms',
+    value: function loadForms(query, opts) {
+      return this.index('forms', query, opts);
+    }
+  }, {
+    key: 'loadSubmission',
+    value: function loadSubmission(query, opts) {
+      return this.load('submission', query, opts);
+    }
+  }, {
+    key: 'saveSubmission',
+    value: function saveSubmission(data, opts) {
+      return this.save('submission', data, opts);
+    }
+  }, {
+    key: 'deleteSubmission',
+    value: function deleteSubmission(opts) {
+      return this.delete('submission', opts);
+    }
+  }, {
+    key: 'loadSubmissions',
+    value: function loadSubmissions(query, opts) {
+      return this.index('submissions', query, opts);
+    }
+  }, {
+    key: 'loadAction',
+    value: function loadAction(query, opts) {
+      return this.load('action', query, opts);
+    }
+  }, {
+    key: 'saveAction',
+    value: function saveAction(data, opts) {
+      return this.save('action', data, opts);
+    }
+  }, {
+    key: 'deleteAction',
+    value: function deleteAction(opts) {
+      return this.delete('action', opts);
+    }
+  }, {
+    key: 'loadActions',
+    value: function loadActions(query, opts) {
+      return this.index('actions', query, opts);
+    }
+  }, {
+    key: 'availableActions',
+    value: function availableActions() {
+      return this.makeRequest('availableActions', this.formUrl + '/actions');
+    }
+  }, {
+    key: 'actionInfo',
+    value: function actionInfo() {
+      return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
+    }
+  }, {
+    key: 'uploadFile',
+    value: function uploadFile(storage, file, fileName, dir, progressCallback, url) {
+      var requestArgs = {
+        provider: storage,
+        method: 'upload',
+        file: file,
+        fileName: fileName,
+        dir: dir
+      };
+      var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
+        return Formio.pluginGet('fileRequest', requestArgs).then(function (result) {
+          if (storage && (result === null || result === undefined)) {
+            if (Formio.providers.storage.hasOwnProperty(storage)) {
+              var provider = new Formio.providers.storage[storage](this);
+              return provider.uploadFile(file, fileName, dir, progressCallback, url);
+            } else {
+              throw 'Storage provider not found';
             }
-            current[path].push(value);
-          } else {
-            current[path] = value;
           }
-        } else {
-          if (!current[path]) {
-            current[path] = {};
+          return result || { url: '' };
+        }.bind(this));
+      }.bind(this));
+
+      return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
+    }
+  }, {
+    key: 'downloadFile',
+    value: function downloadFile(file) {
+      var requestArgs = {
+        method: 'download',
+        file: file
+      };
+
+      var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
+        return Formio.pluginGet('fileRequest', requestArgs).then(function (result) {
+          if (file.storage && (result === null || result === undefined)) {
+            if (Formio.providers.storage.hasOwnProperty(file.storage)) {
+              var provider = new Formio.providers.storage[file.storage](this);
+              return provider.downloadFile(file);
+            } else {
+              throw 'Storage provider not found';
+            }
           }
-          current = current[path];
+          return result || { url: '' };
+        }.bind(this));
+      }.bind(this));
+
+      return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
+    }
+  }], [{
+    key: 'loadProjects',
+    value: function loadProjects(query, opts) {
+      query = query || '';
+      if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+        query = '?' + serialize(query.params);
+      }
+      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query);
+    }
+  }, {
+    key: 'getUrlParts',
+    value: function getUrlParts(url) {
+      var regex = '^(http[s]?:\\/\\/)';
+      if (Formio.baseUrl && url.indexOf(Formio.baseUrl) === 0) {
+        regex += '(' + Formio.baseUrl.replace(/^http[s]?:\/\//, '') + ')';
+      } else {
+        regex += '([^/]+)';
+      }
+      regex += '($|\\/.*)';
+      return url.match(new RegExp(regex));
+    }
+  }, {
+    key: 'serialize',
+    value: function serialize(obj) {
+      var str = [];
+      for (var p in obj) {
+        if (obj.hasOwnProperty(p)) {
+          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
         }
+      }return str.join("&");
+    }
+  }, {
+    key: 'makeStaticRequest',
+    value: function makeStaticRequest(url, method, data, opts) {
+      method = (method || 'GET').toUpperCase();
+      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+        opts = {};
       }
-    };
+      var requestArgs = {
+        url: url,
+        method: method,
+        data: data
+      };
 
-    // Get the form data from this form.
-    var formData = new FormData(form);
-    var entries = formData.entries();
-    var entry = null;
-    while (entry = entries.next().value) {
-      setValue(entry[0], entry[1]);
+      var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
+        return Formio.pluginGet('staticRequest', requestArgs).then(function (result) {
+          if (result === null || result === undefined) {
+            return Formio.request(url, method, data, opts.header, opts);
+          }
+          return result;
+        });
+      });
+
+      return Formio.pluginAlter('wrapStaticRequestPromise', request, requestArgs);
     }
-    return submission;
-  };
+  }, {
+    key: 'request',
+    value: function request(url, method, data, header, opts) {
+      if (!url) {
+        return Promise.reject('No url provided');
+      }
+      method = (method || 'GET').toUpperCase();
 
-  // Submits the form.
-  var submit = function submit(event) {
-    if (event) {
-      event.preventDefault();
-    }
-    var action = getAction();
-    if (!action) {
-      return;
-    }
-    new Formio(action).saveSubmission(getSubmission()).then(function (sub) {
-      done(null, sub);
-    }, done);
-  };
-
-  // Attach formio to the provided form.
-  if (form.attachEvent) {
-    form.attachEvent('submit', submit);
-  } else {
-    form.addEventListener('submit', submit);
-  }
-
-  return {
-    submit: submit,
-    getAction: getAction,
-    getSubmission: getSubmission
-  };
-};
-
-Formio.currentUser = function () {
-  var url = baseUrl + '/current';
-  var user = this.getUser();
-  if (user) {
-    return pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
-      url: url,
-      method: 'GET'
-    });
-  }
-  var token = this.getToken();
-  if (!token) {
-    return pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
-      url: url,
-      method: 'GET'
-    });
-  }
-  return this.makeStaticRequest(url).then(function (response) {
-    Formio.setUser(response);
-    return response;
-  });
-};
-
-// Keep track of their logout callback.
-Formio.logout = function () {
-  var onLogout = function (result) {
-    this.setToken(null);
-    this.setUser(null);
-    Formio.clearCache();
-    return result;
-  }.bind(this);
-  return this.makeStaticRequest(baseUrl + '/logout').then(onLogout).catch(onLogout);
-};
-
-Formio.fieldData = function (data, component) {
-  if (!data) {
-    return '';
-  }
-  if (!component || !component.key) {
-    return data;
-  }
-  if (component.key.indexOf('.') !== -1) {
-    var value = data;
-    var parts = component.key.split('.');
-    var key = '';
-    for (var i = 0; i < parts.length; i++) {
-      key = parts[i];
-
-      // Handle nested resources
-      if (value.hasOwnProperty('_id')) {
-        value = value.data;
+      // For reverse compatibility, if they provided the ignoreCache parameter,
+      // then change it back to the options format where that is a parameter.
+      if (typeof opts === 'boolean') {
+        opts = { ignoreCache: opts };
+      }
+      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+        opts = {};
       }
 
-      // Return if the key is not found on the value.
-      if (!value.hasOwnProperty(key)) {
+      var cacheKey = btoa(url);
+
+      return new Promise(function (resolve, reject) {
+        // Get the cached promise to save multiple loads.
+        if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
+          return resolve(Formio.cache[cacheKey]);
+        }
+
+        resolve(new Promise(function (resolve, reject) {
+          // Set up and fetch request
+          var headers = header || new Headers({
+            'Accept': 'application/json',
+            'Content-type': 'application/json; charset=UTF-8'
+          });
+          var token = Formio.getToken();
+          if (token) {
+            headers.append('x-jwt-token', token);
+          }
+
+          var options = {
+            method: method,
+            headers: headers,
+            mode: 'cors'
+          };
+          if (data) {
+            options.body = JSON.stringify(data);
+          }
+
+          resolve(fetch(url, options));
+        }).catch(function (err) {
+          err.message = 'Could not connect to API server (' + err.message + ')';
+          err.networkError = true;
+          throw err;
+        }).then(function (response) {
+          if (!response.ok) {
+            if (response.status === 440) {
+              Formio.setToken(null);
+              Formio.events.emit('formio.sessionExpired', response.body);
+            } else if (response.status === 401) {
+              Formio.events.emit('formio.unauthorized', response.body);
+            }
+            // Parse and return the error as a rejected promise to reject this promise
+            return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (error) {
+              throw error;
+            });
+          }
+
+          // Handle fetch results
+          var token = response.headers.get('x-jwt-token');
+          if (response.status >= 200 && response.status < 300 && token && token !== '') {
+            Formio.setToken(token);
+          }
+          // 204 is no content. Don't try to .json() it.
+          if (response.status === 204) {
+            return {};
+          }
+          return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (result) {
+            // Add some content-range metadata to the result here
+            var range = response.headers.get('content-range');
+            if (range && (typeof result === 'undefined' ? 'undefined' : _typeof(result)) === 'object') {
+              range = range.split('/');
+              if (range[0] !== '*') {
+                var skipLimit = range[0].split('-');
+                result.skip = Number(skipLimit[0]);
+                result.limit = skipLimit[1] - skipLimit[0] + 1;
+              }
+              result.serverCount = range[1] === '*' ? range[1] : Number(range[1]);
+            }
+
+            if (!opts.getHeaders) {
+              return result;
+            }
+
+            var headers = {};
+            response.headers.forEach(function (item, key) {
+              headers[key] = item;
+            });
+
+            return new Promise(function (resolve, reject) {
+              resolve({ result: result, headers: headers });
+            });
+          });
+        }).catch(function (err) {
+          if (err === 'Bad Token') {
+            Formio.setToken(null);
+            Formio.events.emit('formio.badToken', err);
+          }
+          if (Formio.cache.hasOwnProperty(cacheKey)) {
+            // Remove failed promises from cache
+            delete Formio.cache[cacheKey];
+          }
+          // Propagate error so client can handle accordingly
+          throw err;
+        }));
+      }).then(function (result) {
+        // Save the cache
+        if (method === 'GET') {
+          Formio.cache[cacheKey] = Promise.resolve(result);
+        }
+
+        // Shallow copy result so modifications don't end up in cache
+        if (Array.isArray(result)) {
+          var resultCopy = result.map(copy);
+          resultCopy.skip = result.skip;
+          resultCopy.limit = result.limit;
+          resultCopy.serverCount = result.serverCount;
+          return resultCopy;
+        }
+        return copy(result);
+      });
+    }
+  }, {
+    key: 'setToken',
+    value: function setToken(token) {
+      token = token || '';
+      if (token === this.token) {
         return;
       }
+      this.token = token;
+      if (!token) {
+        Formio.setUser(null);
+        // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+        try {
+          return localStorage.removeItem('formioToken');
+        } catch (err) {
+          return;
+        }
+      }
+      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+      try {
+        localStorage.setItem('formioToken', token);
+      } catch (err) {
+        // Do nothing.
+      }
+      return Formio.currentUser(); // Run this so user is updated if null
+    }
+  }, {
+    key: 'getToken',
+    value: function getToken() {
+      if (this.token) {
+        return this.token;
+      }
+      try {
+        var token = localStorage.getItem('formioToken') || '';
+        this.token = token;
+        return token;
+      } catch (e) {
+        return '';
+      }
+    }
+  }, {
+    key: 'setUser',
+    value: function setUser(user) {
+      if (!user) {
+        this.setToken(null);
+        // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+        try {
+          return localStorage.removeItem('formioUser');
+        } catch (err) {
+          return;
+        }
+      }
+      // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
+      try {
+        localStorage.setItem('formioUser', JSON.stringify(user));
+      } catch (err) {
+        // Do nothing.
+      }
+    }
+  }, {
+    key: 'getUser',
+    value: function getUser() {
+      try {
+        return JSON.parse(localStorage.getItem('formioUser') || null);
+      } catch (e) {
+        return;
+      }
+    }
+  }, {
+    key: 'setBaseUrl',
+    value: function setBaseUrl(url) {
+      Formio.baseUrl = url;
+      if (!Formio.appUrlSet) {
+        Formio.appUrl = url;
+      }
+    }
+  }, {
+    key: 'getBaseUrl',
+    value: function getBaseUrl() {
+      return Formio.baseUrl;
+    }
+  }, {
+    key: 'setApiUrl',
+    value: function setApiUrl(url) {
+      return Formio.setBaseUrl(url);
+    }
+  }, {
+    key: 'getApiUrl',
+    value: function getApiUrl() {
+      return Formio.getBaseUrl();
+    }
+  }, {
+    key: 'setAppUrl',
+    value: function setAppUrl(url) {
+      Formio.appUrl = url;
+      Formio.appUrlSet = true;
+    }
+  }, {
+    key: 'getAppUrl',
+    value: function getAppUrl() {
+      return Formio.appUrl;
+    }
+  }, {
+    key: 'clearCache',
+    value: function clearCache() {
+      Formio.cache = {};
+    }
+  }, {
+    key: 'noop',
+    value: function noop() {}
+  }, {
+    key: 'identity',
+    value: function identity(value) {
+      return value;
+    }
+  }, {
+    key: 'deregisterPlugin',
+    value: function deregisterPlugin(plugin) {
+      var beforeLength = Formio.plugins.length;
+      Formio.plugins = Formio.plugins.filter(function (p) {
+        if (p !== plugin && p.__name !== plugin) return true;
+        (p.deregister || Formio.noop).call(p, Formio);
+        return false;
+      });
+      return beforeLength !== Formio.plugins.length;
+    }
+  }, {
+    key: 'registerPlugin',
+    value: function registerPlugin(plugin, name) {
+      Formio.plugins.push(plugin);
+      Formio.plugins.sort(function (a, b) {
+        return (b.priority || 0) - (a.priority || 0);
+      });
+      plugin.__name = name;
+      (plugin.init || Formio.noop).call(plugin, Formio);
+    }
+  }, {
+    key: 'getPlugin',
+    value: function getPlugin(name) {
+      return Formio.plugins.reduce(function (result, plugin) {
+        if (result) return result;
+        if (plugin.__name === name) return plugin;
+      }, null);
+    }
+  }, {
+    key: 'pluginWait',
+    value: function pluginWait(pluginFn) {
+      var args = [].slice.call(arguments, 1);
+      return Promise.all(Formio.plugins.map(function (plugin) {
+        return (plugin[pluginFn] || Formio.noop).apply(plugin, args);
+      }));
+    }
+  }, {
+    key: 'pluginGet',
+    value: function pluginGet(pluginFn) {
+      var args = [].slice.call(arguments, 0);
+      var callPlugin = function callPlugin(index, pluginFn) {
+        var plugin = Formio.plugins[index];
+        if (!plugin) return Promise.resolve(null);
+        return Promise.resolve((plugin && plugin[pluginFn] || Formio.noop).apply(plugin, [].slice.call(arguments, 2))).then(function (result) {
+          if (result !== null && result !== undefined) return result;
+          return callPlugin.apply(null, [index + 1].concat(args));
+        });
+      };
+      return callPlugin.apply(null, [0].concat(args));
+    }
+  }, {
+    key: 'pluginAlter',
+    value: function pluginAlter(pluginFn, value) {
+      var args = [].slice.call(arguments, 2);
+      return Formio.plugins.reduce(function (value, plugin) {
+        return (plugin[pluginFn] || Formio.identity).apply(plugin, [value].concat(args));
+      }, value);
+    }
+  }, {
+    key: 'currentUser',
+    value: function currentUser() {
+      var url = Formio.baseUrl + '/current';
+      var user = this.getUser();
+      if (user) {
+        return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
+          url: url,
+          method: 'GET'
+        });
+      }
+      var token = this.getToken();
+      if (!token) {
+        return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
+          url: url,
+          method: 'GET'
+        });
+      }
+      return Formio.makeStaticRequest(url).then(function (response) {
+        Formio.setUser(response);
+        return response;
+      });
+    }
+  }, {
+    key: 'logout',
+    value: function logout() {
+      var onLogout = function onLogout(result) {
+        Formio.setToken(null);
+        Formio.setUser(null);
+        Formio.clearCache();
+        return result;
+      };
+      return Formio.makeStaticRequest(Formio.baseUrl + '/logout').then(onLogout).catch(onLogout);
+    }
 
-      // Convert old single field data in submissions to multiple
-      if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {
-        value[key] = [value[key]];
+    /**
+     * Attach an HTML form to Form.io.
+     *
+     * @param form
+     */
+
+  }, {
+    key: 'form',
+    value: function form(_form, options, done) {
+      // Fix the parameters.
+      if (!done && typeof options === 'function') {
+        done = options;
+        options = {};
       }
 
-      // Set the value of this key.
-      value = value[key];
-    }
-    return value;
-  } else {
-    // Convert old single field data in submissions to multiple
-    if (component.multiple && !Array.isArray(data[component.key])) {
-      data[component.key] = [data[component.key]];
-    }
-    return data[component.key];
-  }
-};
+      done = done || function () {
+        console.log(arguments);
+      };
+      options = options || {};
 
-Formio.providers = providers;
+      // IF they provide a jquery object, then select the element.
+      if (_form.jquery) {
+        _form = _form[0];
+      }
+      if (!_form) {
+        return done('Invalid Form');
+      }
 
-/**
- * EventEmitter for Formio events.
- * See Node.js documentation for API documentation: https://nodejs.org/api/events.html
- */
+      var getAction = function getAction() {
+        return options.form || _form.getAttribute('action');
+      };
+
+      /**
+       * Returns the current submission object.
+       * @returns {{data: {}}}
+       */
+      var getSubmission = function getSubmission() {
+        var submission = { data: {} };
+        var setValue = function setValue(path, value) {
+          var isArray = path.substr(-2) === '[]';
+          if (isArray) {
+            path = path.replace('[]', '');
+          }
+          var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
+          var current = submission;
+          while (path = paths.shift()) {
+            if (!paths.length) {
+              if (isArray) {
+                if (!current[path]) {
+                  current[path] = [];
+                }
+                current[path].push(value);
+              } else {
+                current[path] = value;
+              }
+            } else {
+              if (!current[path]) {
+                current[path] = {};
+              }
+              current = current[path];
+            }
+          }
+        };
+
+        // Get the form data from this form.
+        var formData = new FormData(_form);
+        var entries = formData.entries();
+        var entry = null;
+        while (entry = entries.next().value) {
+          setValue(entry[0], entry[1]);
+        }
+        return submission;
+      };
+
+      // Submits the form.
+      var submit = function submit(event) {
+        if (event) {
+          event.preventDefault();
+        }
+        var action = getAction();
+        if (!action) {
+          return;
+        }
+        new Formio(action).saveSubmission(getSubmission()).then(function (sub) {
+          done(null, sub);
+        }, done);
+      };
+
+      // Attach formio to the provided form.
+      if (_form.attachEvent) {
+        _form.attachEvent('submit', submit);
+      } else {
+        _form.addEventListener('submit', submit);
+      }
+
+      return {
+        submit: submit,
+        getAction: getAction,
+        getSubmission: getSubmission
+      };
+    }
+  }, {
+    key: 'fieldData',
+    value: function fieldData(data, component) {
+      if (!data) {
+        return '';
+      }
+      if (!component || !component.key) {
+        return data;
+      }
+      if (component.key.indexOf('.') !== -1) {
+        var value = data;
+        var parts = component.key.split('.');
+        var key = '';
+        for (var i = 0; i < parts.length; i++) {
+          key = parts[i];
+
+          // Handle nested resources
+          if (value.hasOwnProperty('_id')) {
+            value = value.data;
+          }
+
+          // Return if the key is not found on the value.
+          if (!value.hasOwnProperty(key)) {
+            return;
+          }
+
+          // Convert old single field data in submissions to multiple
+          if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {
+            value[key] = [value[key]];
+          }
+
+          // Set the value of this key.
+          value = value[key];
+        }
+        return value;
+      } else {
+        // Convert old single field data in submissions to multiple
+        if (component.multiple && !Array.isArray(data[component.key])) {
+          data[component.key] = [data[component.key]];
+        }
+        return data[component.key];
+      }
+    }
+  }]);
+
+  return Formio;
+}();
+
+// Define all the static properties.
+
+
+exports.Formio = Formio;
+Formio.baseUrl = 'https://api.form.io';
+Formio.appUrl = Formio.baseUrl;
+Formio.appUrlSet = false;
+Formio.plugins = [];
+Formio.cache = {};
+Formio.providers = require('./providers');
 Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
 
-/**
- * Register a plugin with Formio.js
- * @param plugin The plugin to register. See plugin documentation.
- * @param name   Optional name to later retrieve plugin with.
- */
-Formio.registerPlugin = function (plugin, name) {
-  plugins.push(plugin);
-  plugins.sort(function (a, b) {
-    return (b.priority || 0) - (a.priority || 0);
-  });
-  plugin.__name = name;
-  (plugin.init || noop).call(plugin, Formio);
-};
-
-/**
- * Returns the plugin registered with the given name.
- */
-Formio.getPlugin = function (name) {
-  return plugins.reduce(function (result, plugin) {
-    if (result) return result;
-    if (plugin.__name === name) return plugin;
-  }, null);
-};
-
-/**
- * Deregisters a plugin with Formio.js.
- * @param  plugin The instance or name of the plugin
- * @return true if deregistered, false otherwise
- */
-Formio.deregisterPlugin = function (plugin) {
-  var beforeLength = plugins.length;
-  plugins = plugins.filter(function (p) {
-    if (p !== plugin && p.__name !== plugin) return true;
-    (p.deregister || noop).call(p, Formio);
-    return false;
-  });
-  return beforeLength !== plugins.length;
-};
-
-module.exports = global.Formio = Formio;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./providers":239,"eventemitter2":1,"native-promise-only":200,"shallow-copy":201,"whatwg-fetch":204}],238:[function(require,module,exports){
 'use strict';
 
@@ -22195,10 +22375,9 @@ s3.title = 'S3';
 module.exports = s3;
 
 },{"native-promise-only":200}],243:[function(require,module,exports){
-"use strict";
+'use strict';
 
 var Promise = require("native-promise-only");
-var Formio = require("../../formio");
 var url = function url(formio) {
   return {
     title: 'Url',
@@ -22226,12 +22405,21 @@ var url = function url(formio) {
         xhr.onload = function () {
           if (xhr.status >= 200 && xhr.status < 300) {
             // Need to test if xhr.response is decoded or not.
+            var respData = {};
+            try {
+              respData = typeof xhr.response === 'string' ? JSON.parse(xhr.response) : {};
+              respData = respData && respData.data ? respData.data : {};
+            } catch (err) {
+              respData = {};
+            }
+
             resolve({
               storage: 'url',
               name: fileName,
               url: xhr.responseURL + '/' + fileName,
               size: file.size,
-              type: file.type
+              type: file.type,
+              data: respData
             });
           } else {
             reject(xhr.response || 'Unable to upload file');
@@ -22248,7 +22436,10 @@ var url = function url(formio) {
         };
 
         xhr.open('POST', url);
-        xhr.setRequestHeader('x-jwt-token', Formio.getToken());
+        var token = localStorage.getItem('formioToken');
+        if (token) {
+          xhr.setRequestHeader('x-jwt-token', token);
+        }
         xhr.send(fd);
       });
     },
@@ -22262,4 +22453,4 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"../../formio":237,"native-promise-only":200}]},{},[235]);
+},{"native-promise-only":200}]},{},[235]);

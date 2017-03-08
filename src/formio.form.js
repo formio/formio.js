@@ -1,5 +1,5 @@
 "use strict";
-import Formio from './formio';
+import { Formio } from './formio';
 import Promise from "native-promise-only";
 import FormioComponents from './components/Components';
 import _debounce from 'lodash/debounce';

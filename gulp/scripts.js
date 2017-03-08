@@ -4,6 +4,7 @@ module.exports = function(gulp, plugins) {
       entries: './src/formio.js',
       debug: false
     })
+      .transform('babelify', {presets: ['es2015']})
       .bundle()
       .pipe(plugins.source('formio.js'))
       .pipe(gulp.dest('dist/'))
