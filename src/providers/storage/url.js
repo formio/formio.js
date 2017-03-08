@@ -1,5 +1,4 @@
 var Promise = require("native-promise-only");
-var Formio  = require("../../formio");
 var url = function(formio) {
   return {
     title: 'Url',
@@ -27,12 +26,22 @@ var url = function(formio) {
         xhr.onload = function() {
           if (xhr.status >= 200 && xhr.status < 300) {
             // Need to test if xhr.response is decoded or not.
+            var respData = {};
+            try {
+              respData = (typeof xhr.response === 'string') ? JSON.parse(xhr.response) : {};
+              respData = (respData && respData.data) ? respData.data : {};
+            }
+            catch(err) {
+              respData = {};
+            }
+
             resolve({
               storage: 'url',
               name: fileName,
               url: xhr.responseURL + '/' + fileName,
               size: file.size,
-              type: file.type
+              type: file.type,
+              data: respData
             });
           }
           else {
@@ -50,7 +59,10 @@ var url = function(formio) {
         }
 
         xhr.open('POST', url);
-        xhr.setRequestHeader('x-jwt-token', Formio.getToken());
+        var token = localStorage.getItem('formioToken');
+        if (token) {
+          xhr.setRequestHeader('x-jwt-token', token);
+        }
         xhr.send(fd);
       });
     },
