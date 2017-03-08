@@ -20853,6 +20853,7 @@ var WellComponent = exports.WellComponent = function (_FormioComponents) {
 }(_Components.FormioComponents);
 
 },{"../Components":205}],235:[function(require,module,exports){
+(function (global){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -21207,7 +21208,11 @@ FormioForm.embed = function (embed) {
   return form;
 };
 
+global.FormioForm = FormioForm;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/Components":205,"./formio":236,"eventemitter2":1,"lodash/debounce":169,"lodash/each":170,"native-promise-only":200}],236:[function(require,module,exports){
+(function (global){
 'use strict';
 
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
@@ -22143,6 +22148,9 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
+global.Formio = Formio;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./providers":238,"eventemitter2":1,"native-promise-only":200,"shallow-copy":201,"whatwg-fetch":204}],237:[function(require,module,exports){
 'use strict';
 

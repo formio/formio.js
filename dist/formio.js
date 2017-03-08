@@ -1532,6 +1532,7 @@ var isArray = Array.isArray || function (xs) {
 })(typeof self !== 'undefined' ? self : this);
 
 },{}],5:[function(require,module,exports){
+(function (global){
 'use strict';
 
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
@@ -2467,6 +2468,9 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
+global.Formio = Formio;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./providers":6,"eventemitter2":1,"native-promise-only":2,"shallow-copy":3,"whatwg-fetch":4}],6:[function(require,module,exports){
 'use strict';
 

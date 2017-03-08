@@ -247,3 +247,4 @@ FormioForm.embed = function(embed) {
   return form;
 };
 
+global.FormioForm = FormioForm;

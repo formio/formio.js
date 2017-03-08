@@ -853,3 +853,5 @@ Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
+
+global.Formio = Formio;
