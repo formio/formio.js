@@ -1,5 +1,5 @@
 'use strict';
-import { FormioForm } from './formio.form';
+import FormioForm from './formio.form';
 import { Harness } from '../test/harness';
 import { FormTests } from '../test/forms/index';
 import assert from 'power-assert';

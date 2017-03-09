@@ -1,10 +1,9 @@
 module.exports = function(gulp, plugins) {
   return function () {
     return plugins.browserify({
-      entries: './src/formio.embed.js',
+      entries: './build/formio.embed.js',
       debug: false
     })
-      .transform('babelify', {presets: ['es2015']})
       .bundle()
       .pipe(plugins.source('formio.embed.js'))
       .pipe(gulp.dest('dist/'))

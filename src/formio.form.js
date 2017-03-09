@@ -247,4 +247,4 @@ FormioForm.embed = function(embed) {
   return form;
 };
 
-global.FormioForm = FormioForm;
+module.exports = global.FormioForm = FormioForm;

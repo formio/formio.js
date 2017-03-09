@@ -1,14 +1,16 @@
 'use strict';
 var gulp = require('gulp');
+var gulpsync = require('gulp-sync')(gulp);
 var plugins = require('gulp-load-plugins')();
 plugins.source = require('vinyl-source-stream');
 plugins.browserify = require('browserify');
 plugins.cleanCSS = require('gulp-clean-css');
-gulp.task('clean', require('del').bind(null, ['dist']));
+gulp.task('clean', require('del').bind(null, ['dist', 'build']));
+gulp.task('babel', require('./gulp/babel')(gulp, plugins));
 gulp.task('scripts-form', require('./gulp/scripts-form')(gulp, plugins));
 gulp.task('scripts-embed', require('./gulp/scripts-embed')(gulp, plugins));
 gulp.task('scripts', require('./gulp/scripts')(gulp, plugins));
 gulp.task('styles', require('./gulp/styles')(gulp, plugins));
 gulp.task('watch', require('./gulp/watch')(gulp, plugins));
-gulp.task('build', ['clean', 'styles', 'scripts', 'scripts-form', 'scripts-embed']);
+gulp.task('build', gulpsync.sync([['clean'], 'babel', ['styles', 'scripts', 'scripts-form', 'scripts-embed']]));
 gulp.task('default', ['build', 'watch']);

@@ -1,9 +1,15 @@
 {
   "name": "formiojs",
-  "version": "2.0.0-alpha.3",
+  "version": "2.0.0-alpha.4",
   "description": "Common js library for client side interaction with <form.io>",
-  "main": "src/formio.js",
+  "main": "build/formio.js",
+  "files": [
+    "dist",
+    "build"
+  ],
   "scripts": {
+    "prepublish": "gulp build",
+    "build": "gulp build",
     "test": "./node_modules/karma/bin/karma start --verbose --single-run",
     "test:watch": "./node_modules/karma/bin/karma start --no-single-run --auto-watch"
   },
@@ -11,7 +17,10 @@
     "type": "git",
     "url": "git+https://github.com/formio/formio.js.git"
   },
-  "author": "Randall Knutson <randall@form.io>",
+  "contributors": [
+    "Randall Knutson <randall@form.io>",
+    "Travis Tidwell <travis@form.io>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/formio/formio.js/issues"
@@ -21,6 +30,7 @@
     "eventemitter2": "^2.2.1",
     "flatpickr": "^2.4.4",
     "formio-utils": "^0.3.0",
+    "gulp-babel": "^6.1.2",
     "i18next": "^6.0.3",
     "lodash": "^4.17.4",
     "moment": "^2.17.1",
@@ -49,6 +59,7 @@
     "gulp-sass": "^3.0.0",
     "gulp-streamify": "^1.0.2",
     "gulp-strip-debug": "^1.0.2",
+    "gulp-sync": "^0.1.4",
     "gulp-uglify": "^1.1.0",
     "gulp-watch": "^4.2.0",
     "gulp-wrapper": "^0.1.5",

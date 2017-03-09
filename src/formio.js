@@ -854,4 +854,4 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
-global.Formio = Formio;
+module.exports = global.Formio = Formio;
