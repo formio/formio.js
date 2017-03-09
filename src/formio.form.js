@@ -1,6 +1,6 @@
 "use strict";
 import Promise from "native-promise-only";
-import { Formio } from './formio';
+import Formio from './formio';
 import { FormioComponents } from './components/Components';
 import _debounce from 'lodash/debounce';
 import _each from 'lodash/each';
@@ -16,24 +16,6 @@ let getOptions = function(options) {
 export class FormioForm extends FormioComponents {
   constructor(element, options) {
     super(null, getOptions(options));
-
-    // Allow the element to either be a form, or a wrapper.
-    if (element && element.nodeName.toLowerCase() === 'form') {
-      this.element = element;
-      var classNames = this.element.getAttribute('class');
-      classNames += ' formio-form';
-      this.element.setAttribute('class', classNames);
-    }
-    else {
-      this.wrapper = element;
-      this.element = this.ce('element', 'form', {
-        class: 'formio-form'
-      });
-      if (this.wrapper) {
-        this.wrapper.appendChild(this.element);
-      }
-    }
-
     this.type = 'form';
     this._src = '';
     this._loading = true;
@@ -52,6 +34,37 @@ export class FormioForm extends FormioComponents {
     // Trigger submission changes and errors debounced.
     this.triggerSubmissionChange = _debounce(this.onSubmissionChange.bind(this), 10);
     this.triggerSubmissionError = _debounce(this.onSubmissionError.bind(this), 10);
+
+    // Set the element (if it is ready).
+    this.onElement = new Promise((resolve) => {
+      this.elementResolve = resolve;
+      this.setElement(element);
+    });
+  }
+
+  setElement(element) {
+    if (!element) {
+      return;
+    }
+
+    // Allow the element to either be a form, or a wrapper.
+    if (element.nodeName.toLowerCase() === 'form') {
+      this.element = element;
+      var classNames = this.element.getAttribute('class');
+      classNames += ' formio-form';
+      this.element.setAttribute('class', classNames);
+    }
+    else {
+      this.wrapper = element;
+      this.element = this.ce('element', 'form', {
+        class: 'formio-form'
+      });
+      if (this.wrapper) {
+        this.wrapper.appendChild(this.element);
+      }
+    }
+
+    this.elementResolve(element);
   }
 
   get src() {
@@ -132,12 +145,14 @@ export class FormioForm extends FormioComponents {
   }
 
   render() {
-    this.clear();
-    return this.localize().then(() => {
-      this.build();
-      this.on('resetForm', () => this.reset());
-      this.on('componentChange', (changed) => this.triggerSubmissionChange(changed));
-      this.on('componentError', (changed) => this.triggerSubmissionError(changed));
+    return this.onElement.then(() => {
+      this.clear();
+      return this.localize().then(() => {
+        this.build();
+        this.on('resetForm', () => this.reset());
+        this.on('componentChange', (changed) => this.triggerSubmissionChange(changed));
+        this.on('componentError', (changed) => this.triggerSubmissionError(changed));
+      });
     });
   }
 

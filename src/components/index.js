@@ -10,7 +10,7 @@ import { HiddenComponent } from './hidden/Hidden';
 import { TextFieldComponent } from './textfield/TextField';
 import { PhoneNumberComponent } from './phonenumber/PhoneNumber';
 import { EmailComponent } from './email/Email';
-import { CheckboxComponent } from './checkbox/Checkbox';
+import { CheckBoxComponent } from './checkbox/Checkbox';
 import { SignatureComponent } from './signature/Signature';
 import { SelectComponent } from './select/Select';
 import { TextAreaComponent } from './textarea/TextArea';
@@ -21,6 +21,7 @@ import { PanelComponent } from './panel/Panel';
 import { ColumnComponent } from './columns/Column';
 import { ColumnsComponent } from './columns/Columns';
 import { TableComponent } from './table/Table';
+import { UnknownComponent } from './unknown/Unknown';
 import { RadioComponent } from './radio/Radio';
 import { SelectBoxesComponent } from './selectboxes/SelectBoxes';
 import { SurveyComponent } from './survey/Survey';
@@ -38,7 +39,7 @@ module.exports = {
   textfield: TextFieldComponent,
   phoneNumber: PhoneNumberComponent,
   email: EmailComponent,
-  checkbox: CheckboxComponent,
+  checkbox: CheckBoxComponent,
   signature: SignatureComponent,
   select: SelectComponent,
   textarea: TextAreaComponent,
@@ -49,6 +50,7 @@ module.exports = {
   column: ColumnComponent,
   columns: ColumnsComponent,
   table: TableComponent,
+  unknown: UnknownComponent,
   radio: RadioComponent,
   selectboxes: SelectBoxesComponent,
   survey: SurveyComponent,
@@ -62,7 +64,7 @@ module.exports = {
       comp = new this[component.type](component, options, data);
     }
     else {
-      comp = new this.base(component, options, data);
+      comp = new UnknownComponent(component, options, data);
     }
     comp.build();
     return comp;

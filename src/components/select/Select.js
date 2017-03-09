@@ -1,5 +1,5 @@
 import { BaseComponent } from '../base/Base';
-import { Formio } from '../../formio';
+import Formio from '../../formio';
 import _each from 'lodash/each';
 export class SelectComponent extends BaseComponent {
   elementInfo() {

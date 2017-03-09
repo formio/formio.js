@@ -1,4 +1,4 @@
-import { FormioForm } from './formio.form.js';
+import FormioForm from './formio.form.js';
 let query = {};
 var scripts = document.getElementsByTagName('script');
 var thisScript = scripts[ scripts.length - 1 ];
