@@ -1,4 +1,4 @@
-import VMasker from 'vanilla-masker';
+import maskInput from 'text-mask-all/vanilla';
 import FormioUtils from 'formio-utils';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
@@ -30,6 +30,7 @@ export class BaseComponent {
     this.inputs = [];
     this.info = null;
     this.value = null;
+    this.inputMask = null;
     this.options.name = this.options.name || 'data';
     this.validators = ['required', 'minLength', 'maxLength', 'custom'];
     this.triggerChange = _debounce(this.onChange.bind(this), 200);
@@ -90,8 +91,9 @@ export class BaseComponent {
   get className() {
     let className = this.component.input ? 'form-group has-feedback ' : '';
     className += 'formio-component formio-component-' + this.component.type + ' ';
-    className += 'form-field-type-' + this.component.type + ' ';
-    className += 'formio-component-' + this.component.key + ' ';
+    if (this.component.key) {
+      className += 'formio-component-' + this.component.key + ' ';
+    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -295,12 +297,52 @@ export class BaseComponent {
     return inputGroup;
   }
 
+  getInputMask(mask) {
+    if (mask instanceof Array) {
+      return mask;
+    }
+    let maskArray = [];
+    for (let i=0; i < mask.length; i++) {
+      switch (mask[i]) {
+        case '9':
+          maskArray.push(/\d/);
+          break;
+        case 'A':
+          maskArray.push(/[a-zA-Z]/);
+          break;
+        case '*':
+          maskArray.push(/[a-zA-Z0-9]/);
+          break;
+        default:
+          maskArray.push(mask[i]);
+          break;
+      }
+    }
+    return maskArray;
+  }
+
+  maskPlaceholder(mask) {
+    return mask.map((char) => {
+      return (char instanceof RegExp) ? '_' : char
+    }).join('')
+  }
+
+  setInputMask(input) {
+    if (input && this.component.inputMask) {
+      let mask = this.getInputMask(this.component.inputMask);
+      this.inputMask = maskInput({
+        inputElement: input,
+        mask: mask
+      });
+      if (!this.component.placeholder) {
+        input.setAttribute('placeholder', this.maskPlaceholder(mask));
+      }
+    }
+  }
+
   createInput(container) {
     let input = this.ce('input', this.info.type, this.info.attr);
-    if (this.component.inputMask) {
-      VMasker(input).maskPattern(this.component.inputMask);
-    }
-
+    this.setInputMask(input);
     let inputGroup = this.addInputGroup(input, container);
     this.addPrefix(input, inputGroup);
     this.addInput(input, inputGroup || container);
@@ -332,6 +374,9 @@ export class BaseComponent {
    * Remove all event handlers.
    */
   destroy() {
+    if (this.inputMask) {
+      this.inputMask.destroy();
+    }
     _each(this.eventHandlers, (handler) => {
       window.removeEventListener(handler.event, handler.func);
     });

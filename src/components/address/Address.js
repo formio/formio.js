@@ -16,7 +16,7 @@ export class AddressComponent extends TextFieldComponent {
 
       // Get the source for Google Maps API
       let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=formioGoogleMapsCallback';
-      if (component.map.key) {
+      if (component.map && component.map.key) {
         src += '&key=' + component.map.key;
       }
       let script = document.createElement('script');

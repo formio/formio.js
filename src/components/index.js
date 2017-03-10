@@ -11,6 +11,8 @@ import { TextFieldComponent } from './textfield/TextField';
 import { PhoneNumberComponent } from './phonenumber/PhoneNumber';
 import { EmailComponent } from './email/Email';
 import { CheckBoxComponent } from './checkbox/Checkbox';
+import { CurrencyComponent } from './currency/Currency';
+import { FieldsetComponent } from './fieldset/Fieldset';
 import { SignatureComponent } from './signature/Signature';
 import { SelectComponent } from './select/Select';
 import { TextAreaComponent } from './textarea/TextArea';
@@ -40,6 +42,8 @@ module.exports = {
   phoneNumber: PhoneNumberComponent,
   email: EmailComponent,
   checkbox: CheckBoxComponent,
+  currency: CurrencyComponent,
+  fieldset: FieldsetComponent,
   signature: SignatureComponent,
   select: SelectComponent,
   textarea: TextAreaComponent,
