@@ -508,7 +508,7 @@ export class Formio {
 
         // Shallow copy result so modifications don't end up in cache
         if(Array.isArray(result)) {
-          var resultCopy = result.map(copy);
+          var resultCopy = result.map(_clone);
           resultCopy.skip = result.skip;
           resultCopy.limit = result.limit;
           resultCopy.serverCount = result.serverCount;
