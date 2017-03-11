@@ -6,7 +6,7 @@
 var Promise = require("native-promise-only");
 require('whatwg-fetch');
 var EventEmitter = require('eventemitter2').EventEmitter2;
-var _clone = require('lodash/clone');
+var copy = require('shallow-copy');
 
 /**
  * The Formio interface class.
@@ -508,13 +508,13 @@ export class Formio {
 
         // Shallow copy result so modifications don't end up in cache
         if(Array.isArray(result)) {
-          var resultCopy = result.map(_clone);
+          var resultCopy = result.map(copy);
           resultCopy.skip = result.skip;
           resultCopy.limit = result.limit;
           resultCopy.serverCount = result.serverCount;
           return resultCopy;
         }
-        return _clone(result);
+        return copy(result);
       });
   }
 
