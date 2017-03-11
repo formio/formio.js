@@ -110,3 +110,7 @@ td > .form-group {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.choices__list--dropdown {
+  z-index: 100;
+}

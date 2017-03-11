@@ -1,61 +1,130 @@
 import { BaseComponent } from '../base/Base';
+import Choices from 'choices.js';
 import Formio from '../../formio';
 import _each from 'lodash/each';
+import _get from 'lodash/get';
 export class SelectComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'select';
-    info.changeEvent = '';
+    info.changeEvent = 'change';
     return info;
   }
-  createInput(container) {
-    let input = super.createInput(container);
-    this.selectItems = [];
-    let template = this.component.template ? this.component.template.split('.')[1].split(' ')[0] : '';
-    let valueProperty = this.component.valueProperty;
+
+  createWrapper() {
+    return false;
+  }
+
+  itemTemplate(data) {
+    return this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
+  }
+
+  itemValue(data) {
+    return this.component.valueProperty ? _get(data, this.component.valueProperty) : data;
+  }
+
+  setItems(items) {
+    this.choices._clearChoices();
+    _each(items, (item) => {
+      this.choices._addChoice(false, false, this.itemValue(item), this.itemTemplate(item));
+    });
+  }
+
+  loadItems(url, input) {
+    let query = {
+      limit: 100,
+      skip: 0
+    };
+
+    // Allow for url interpolation.
+    url = this.interpolate(url, {
+      data: this.data,
+      formioBase: Formio.getBaseUrl()
+    });
+
+    // Add search capability.
+    if (this.component.searchField && input) {
+      query[this.component.searchField] = input;
+    }
+
+    // Add filter capability
+    if (this.component.filter) {
+      let filter = this.interpolate(this.component.filter, {data: this.data});
+      url += ((url.indexOf('?') === -1) ? '?' : '&') + filter;
+    }
+
+    // If they wish to return only some fields.
+    if (this.component.selectFields) {
+      query.select = this.component.selectFields;
+    }
+
+    // Add the query string.
+    url += '?' + Formio.serialize(query);
+
+    // Make the request.
+    Formio.request(url, null, null, new Headers(), {
+      noToken: true
+    }).then((response) => this.setItems(response));
+  }
+
+  updateItems() {
     switch(this.component.dataSrc) {
       case 'values':
-        this.selectItems = this.component.data.values;
-        this.updateOptions(input);
+        this.component.valueProperty = 'value';
+        this.setItems(this.component.data.values);
         break;
       case 'json':
-        _each(this.component.data.json, (item) => {
-          this.selectItems.push({
-            value: item[valueProperty],
-            label: item[template]
-          });
-        });
-        this.updateOptions(input);
+        try {
+          this.setItems(JSON.parse(this.component.data.json));
+        }
+        catch (error) {
+          console.log(error);
+        }
         break;
       case 'resource':
-        let baseUrl = Formio.getAppUrl() + '/' + this.component.data.resource;
-        let value = valueProperty.split('.')[1];
-        (new FormioService(baseUrl)).loadSubmissions().then((submissions) => {
-          _each(submissions, (submission) => {
-            this.selectItems.push({
-              value: submission.data[value],
-              label: submission.data[value]
-            });
-          });
-          this.updateOptions(input);
-        });
+        this.loadItems(Formio.getAppUrl() + '/form/' + this.component.data.resource + '/submission');
         break;
       case 'url':
-        Formio.request(this.component.data.url).then((response) => {
-          _each(response, (item) => {
-            this.selectItems.push({
-              value: item[valueProperty],
-              label: item[template]
-            });
-          });
-          this.updateOptions(input);
-        });
+        this.loadItems(this.component.data.url);
         break;
-
     }
   }
-  updateOptions(input) {
-    input.innerHTML = '';
-    this.selectOptions(input, 'selectOption', this.selectItems);
+
+  addInput(input, container, name) {
+    super.addInput(input, container, name);
+    if (this.component.multiple) {
+      input.setAttribute('multiple', true);
+    }
+    var self = this;
+    this.choices = new Choices(input, {
+      placeholder: !!this.component.placeholder,
+      placeholderValue: this.component.placeholder,
+      removeItemButton: true
+    });
+    this.updateItems();
+  }
+
+  set disable(disable) {
+    super.disable = disable;
+    if (disable) {
+      this.choices.disable();
+    }
+    else {
+      this.choices.enable();
+    }
+  }
+
+  getValue() {
+    return this.choices.getValue(true);
+  }
+
+  setValue(value) {
+    this.choices.setValue(value);
+  }
+
+  destroy() {
+    if (this.choices) {
+      this.choices.destroy();
+    }
   }
 }

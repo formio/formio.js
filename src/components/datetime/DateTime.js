@@ -8,6 +8,7 @@ export class DateTimeComponent extends BaseComponent {
     this.validators.push('date');
     this.precise = false;
   }
+
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -17,7 +18,7 @@ export class DateTimeComponent extends BaseComponent {
     return info;
   }
 
-  // This date component can handle multiple dates on its own.
+  // This select component can handle multiple items on its own.
   createWrapper() {
     return false;
   }

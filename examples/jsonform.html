@@ -1,9 +1,9 @@
 <html>
   <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../dist/formio.form.css">
-    <script src="../dist/formio.form.js"></script>
-    <script type="text/javascript">
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='../dist/formio.form.css'>
+    <script src='../dist/formio.form.js'></script>
+    <script type='text/javascript'>
       window.onload = function() {
         var form = new FormioForm(document.getElementById('formio'));
         form.form = {
@@ -21,6 +21,56 @@
               label: 'Last Name',
               placeholder: 'Enter your last name',
               input: true
+            },
+            {
+              type: 'select',
+              key: 'select',
+              label: 'Favorite Color',
+              placeholder: 'Select your favorite color',
+              template: '<span>{{ item.label }}</span>',
+              multiple: true,
+              dataSrc: 'values',
+              input: true,
+              valueProperty: '',
+              defaultValue: '',
+              filter: '',
+              refreshOn: '',
+              data: {
+                custom: '',
+                resource: '',
+                url: '',
+                json: '',
+                values: [
+                  {
+                    label: 'Red',
+                    value: 'red'
+                  },
+                  {
+                    label: 'Blue',
+                    value: 'blue'
+                  },
+                  {
+                    label: 'Green',
+                    value: 'green'
+                  },
+                  {
+                    label: 'Yellow',
+                    value: 'yellow'
+                  },
+                  {
+                    label: 'Purple',
+                    value: 'purple'
+                  },
+                  {
+                    label: 'Orange',
+                    value: 'orange'
+                  },
+                  {
+                    label: 'Black',
+                    value: 'black'
+                  }
+                ]
+              }
             },
             {
               type: 'address',
@@ -47,7 +97,7 @@
                 },
                 month: {
                   required: false,
-                  placeholder: "",
+                  placeholder: '',
                   type: 'select'
                 },
                 day: {
@@ -69,10 +119,10 @@
     </script>
   </head>
   <body>
-    <div class="container">
-      <div class="row">
-        <div class="col col-sm-12">
-          <div id="formio"></div>
+    <div class='container'>
+      <div class='row'>
+        <div class='col col-sm-12'>
+          <div id='formio'></div>
         </div>
       </div>
     </div>

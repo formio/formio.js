@@ -6,7 +6,7 @@
 var Promise = require("native-promise-only");
 require('whatwg-fetch');
 var EventEmitter = require('eventemitter2').EventEmitter2;
-var copy = require('shallow-copy');
+var _clone = require('lodash/clone');
 
 /**
  * The Formio interface class.
@@ -411,7 +411,7 @@ export class Formio {
             'Content-type': 'application/json; charset=UTF-8'
           });
         var token = Formio.getToken();
-        if (token) {
+        if (token && !opts.noToken) {
           headers.append('x-jwt-token', token);
         }
 
@@ -514,7 +514,7 @@ export class Formio {
           resultCopy.serverCount = result.serverCount;
           return resultCopy;
         }
-        return copy(result);
+        return _clone(result);
       });
   }
 

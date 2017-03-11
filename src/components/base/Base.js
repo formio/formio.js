@@ -602,6 +602,12 @@ export class BaseComponent {
     return this.error ? [this.error] : [];
   }
 
+  interpolate(string, data) {
+    return string.replace(/\{\{\s*([^\s]*)\s*\}\}/g, function(match, token) {
+      return _get(data, token);
+    });
+  }
+
   setCustomValidity(message) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';

@@ -15,6 +15,7 @@ import { CurrencyComponent } from './currency/Currency';
 import { FieldsetComponent } from './fieldset/Fieldset';
 import { SignatureComponent } from './signature/Signature';
 import { SelectComponent } from './select/Select';
+import { ResourceComponent } from './resource/Resource';
 import { TextAreaComponent } from './textarea/TextArea';
 import { ButtonComponent } from './button/Button';
 import { NumberComponent } from './number/Number';
@@ -46,6 +47,7 @@ module.exports = {
   fieldset: FieldsetComponent,
   signature: SignatureComponent,
   select: SelectComponent,
+  resource: ResourceComponent,
   textarea: TextAreaComponent,
   button: ButtonComponent,
   number: NumberComponent,
