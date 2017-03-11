@@ -150,20 +150,20 @@ export class FormioComponents extends BaseComponent {
     return this.data;
   }
 
-  setValue(value) {
+  setValue(value, noValidate) {
     _each(this.components, (component) => {
       if (component.input || (component.type === 'button')) {
         return;
       }
 
       if (component.type === 'components') {
-        component.setValue(value);
+        component.setValue(value, noValidate);
       }
       else if (value && value.hasOwnProperty(component.component.key)) {
         component.setValue(value[component.component.key]);
       }
       else {
-        component.setValue(null);
+        component.setValue(null, true);
       }
     });
   }

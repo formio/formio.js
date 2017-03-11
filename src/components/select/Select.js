@@ -122,8 +122,9 @@ export class SelectComponent extends BaseComponent {
     return this.choices.getValue(true);
   }
 
-  setValue(value) {
+  setValue(value, noValidate) {
     this.choices.setValue(value);
+    this.updateValue(noValidate);
   }
 
   destroy() {

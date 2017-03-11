@@ -44,12 +44,15 @@ export class ButtonComponent extends BaseComponent {
       switch (this.component.action) {
         case 'submit':
           this.loading = true;
+          event.preventDefault();
+          event.stopPropagation();
+          this.emit('submitButton');
           break;
         case 'event':
           this.events.emit(this.component.event, this.data);
           break;
         case 'reset':
-          this.events.emit('resetForm');
+          this.emit('resetForm');
           break;
         case 'oauth':
           console.log('OAuth currently not supported.');

@@ -53,7 +53,11 @@ export class BaseComponent {
     if (!this.events) {
       return;
     }
-    return this.events.on(event, cb);
+    return this.events.on('formio.' + event, cb);
+  }
+
+  emit(event, data) {
+    this.events.emit('formio.' + event, data);
   }
 
   getIcon(name) {
@@ -506,10 +510,12 @@ export class BaseComponent {
     }
   }
 
-  onChange() {
-    this.checkValidity();
+  onChange(noValidate) {
+    if (!noValidate) {
+      this.checkValidity();
+    }
     if (this.events) {
-      this.events.emit('componentChange', {
+      this.emit('componentChange', {
         component: this.component,
         value: this.value
       });
@@ -570,16 +576,16 @@ export class BaseComponent {
     return values;
   }
 
-  updateValue() {
+  updateValue(noValidate) {
     let falsey = !this.value && (this.value !== null) && (this.value !== undefined);
     this.data[this.component.key] = this.value = this.getValue();
     if (falsey) {
       if (!!this.value) {
-        this.triggerChange();
+        this.triggerChange(noValidate);
       }
     }
     else {
-      this.triggerChange();
+      this.triggerChange(noValidate);
     }
   }
 
@@ -626,7 +632,7 @@ export class BaseComponent {
       this.createErrorElement();
       this.addInputError(message);
       if (this.events) {
-        this.events.emit('componentError', {
+        this.emit('componentError', {
           component: this.component,
           error: message
         });
@@ -653,12 +659,12 @@ export class BaseComponent {
    * Set the value of this component.
    * @param value
    */
-  setValue(value) {
+  setValue(value, noValidate) {
     let isArray = _isArray(value);
     for (let i in this.inputs) {
       this.setValueAt(i, isArray ? value[i] : value);
     }
-    this.updateValue();
+    this.updateValue(noValidate);
   }
 
   /**

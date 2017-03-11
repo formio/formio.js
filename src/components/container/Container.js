@@ -20,15 +20,15 @@ export class ContainerComponent extends FormioComponents {
     return value;
   }
 
-  setValue(value) {
+  setValue(value, noValidate) {
     if (!value || !_isObject(value)) {
       return;
     }
     _each(this.components, (component) => {
       if (value.hasOwnProperty(component.component.key)) {
-        component.setValue(value[component.component.key]);
+        component.setValue(value[component.component.key], noValidate);
       }
     });
-    this.updateValue();
+    this.updateValue(noValidate);
   }
 }

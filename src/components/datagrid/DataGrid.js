@@ -81,7 +81,7 @@ export class DataGridComponent extends BaseComponent {
     this.tbody.appendChild(tr);
   }
 
-  setValue(value) {
+  setValue(value, noValidate) {
     if (!value) {
       return;
     }
@@ -105,7 +105,7 @@ export class DataGridComponent extends BaseComponent {
         col.value = value[index][key];
       });
     });
-    this.updateValue();
+    this.updateValue(noValidate);
   }
 
   /**

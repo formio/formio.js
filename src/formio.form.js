@@ -152,6 +152,7 @@ export class FormioForm extends FormioComponents {
         this.on('resetForm', () => this.reset());
         this.on('componentChange', (changed) => this.triggerSubmissionChange(changed));
         this.on('componentError', (changed) => this.triggerSubmissionError(changed));
+        this.emit('render');
       });
     });
   }
@@ -178,7 +179,7 @@ export class FormioForm extends FormioComponents {
   }
 
   build() {
-    this.addEventListener(this.element, 'submit', (event) => this.submit(event));
+    this.on('submitButton', () => this.submit());
     this.addComponents();
     this.checkConditions(this.getValue());
   }
@@ -203,13 +204,13 @@ export class FormioForm extends FormioComponents {
   onSubmit(submission) {
     this.loading = false;
     this.setAlert('success', '<p>' + this.t('complete') + '</p>');
-    this.events.emit('submit', submission);
+    this.emit('submit', submission);
   }
 
   onSubmissionError(error) {
     this.loading = false;
     this.showErrors();
-    this.events.emit('error', error);
+    this.emit('error', error);
   }
 
   onSubmissionChange(changed) {
@@ -219,7 +220,7 @@ export class FormioForm extends FormioComponents {
       this.setAlert(false);
     }
     value.changed = changed;
-    this.events.emit('change', value);
+    this.emit('change', value);
     this.checkConditions(value.data);
   }
 
@@ -228,11 +229,8 @@ export class FormioForm extends FormioComponents {
     this.submission = {data: {}};
   }
 
-  submit(event) {
+  submit() {
     this.loading = true;
-    if (event) {
-      event.preventDefault();
-    }
     if (!this.formio) {
       return this.onSubmit(this.submission);
     }
