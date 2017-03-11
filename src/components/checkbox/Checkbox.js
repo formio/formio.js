@@ -63,7 +63,7 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   getValueAt(index) {
-    return parseInt(super.getValueAt(index), 10);
+    return !!this.inputs[index].checked;
   }
 
   setValue(value) {

@@ -472,7 +472,7 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    this.show(FormioUtils.checkCondition(this.component, this.value, data));
+    this.show(FormioUtils.checkCondition(this.component, this.data, data));
   }
 
   /**
@@ -525,6 +525,15 @@ export class BaseComponent {
     this.addEventListener(input, this.info.changeEvent, this.updateValue.bind(this));
   }
 
+  attachInput(input) {
+    // If the options say readOnly then disable the input.
+    if (input && this.options.readOnly) {
+      input.disabled = true;
+      input.setAttribute('disabled', 'disabled');
+    }
+    this.addInputEventListener(input);
+  }
+
   /**
    * Add a new input to this comonent.
    *
@@ -533,16 +542,11 @@ export class BaseComponent {
    * @param name
    */
   addInput(input, container) {
-    // If the options say readOnly then disable the input.
-    if (input && this.options.readOnly) {
-      input.disabled = true;
-      input.setAttribute('disabled', 'disabled');
-    }
     if (input && container) {
       this.inputs.push(input);
       input = container.appendChild(input);
-      this.addInputEventListener(input);
     }
+    this.attachInput(input);
   }
 
   /**
