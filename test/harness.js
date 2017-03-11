@@ -34,13 +34,13 @@ export const Harness = {
   },
   testSubmission: function(form, submission, onChange) {
     if (onChange) {
-      form.events.on('change', onChange);
+      form.on('change', onChange);
     }
     this.testSetGet(form, submission.data);
     assert.deepEqual(form.data, submission.data);
   },
   testErrors: function(form, submission, error, done) {
-    form.events.on('error', (err) => {
+    form.on('error', (err) => {
       error.component = form.getComponent(error.component).component;
       assert.deepEqual(err, error);
       done();
@@ -50,7 +50,7 @@ export const Harness = {
   },
   testComponent: function(component, test, done) {
     let hasError = false;
-    component.events.on('componentChange', (change) => {
+    component.on('componentChange', (change) => {
       if (hasError) {
         assert.equal(change.value, test.good.value);
         done();
@@ -59,7 +59,7 @@ export const Harness = {
         done(new Error('No error thrown'));
       }
     });
-    component.events.on('componentError', (error) => {
+    component.on('componentError', (error) => {
       hasError = true;
       assert.equal(error.component.key, test.bad.field);
       assert.equal(error.error, test.bad.error);
