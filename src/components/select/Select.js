@@ -99,7 +99,11 @@ export class SelectComponent extends BaseComponent {
     this.choices = new Choices(input, {
       placeholder: !!this.component.placeholder,
       placeholderValue: this.component.placeholder,
-      removeItemButton: true
+      removeItemButton: true,
+      classNames: {
+        containerOuter: 'choices form-group formio-choices',
+        containerInner: 'form-control'
+      }
     });
     this.updateItems();
   }
