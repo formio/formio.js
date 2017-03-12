@@ -36,6 +36,7 @@ export class ButtonComponent extends BaseComponent {
     }
     this.on('submit', () => {
       this.loading = false;
+      this.element.disable = false;
     });
     this.on('error', () => {
       this.loading = false;
@@ -44,6 +45,7 @@ export class ButtonComponent extends BaseComponent {
       switch (this.component.action) {
         case 'submit':
           this.loading = true;
+          this.element.disable = true;
           event.preventDefault();
           event.stopPropagation();
           this.emit('submitButton');

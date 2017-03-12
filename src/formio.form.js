@@ -158,6 +158,9 @@ export class FormioForm extends FormioComponents {
   }
 
   setAlert(type, message) {
+    if (this.options.noAlerts) {
+      return;
+    }
     if (this.alert) {
       try {
         this.removeChild(this.alert);
