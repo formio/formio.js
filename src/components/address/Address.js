@@ -42,7 +42,11 @@ export class AddressComponent extends TextFieldComponent {
   addInput(input, container) {
     super.addInput(input, container);
     AddressComponent.apiReady.then(() => {
-      let autocomplete = new google.maps.places.Autocomplete(input);
+      let autocompleteOptions = {}
+      if (this.component.map) {
+        autocompleteOptions = this.component.map.autocompleteOptions || {}
+      }
+      let autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
       autocomplete.addListener("place_changed", () => this.setValue(autocomplete.getPlace()));
     });
   }

@@ -11,7 +11,8 @@ export const component = {
   "persistent": true,
   "map": {
     "region": "",
-    "key": ""
+    "key": "",
+    "autocompleteOptions": null
   },
   "validate": {
     "required": false
