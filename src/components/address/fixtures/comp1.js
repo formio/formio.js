@@ -15,6 +15,8 @@ export const component = {
     "autocompleteOptions": null
   },
   "validate": {
+    "customPrivate": false,
+    "custom": "",
     "required": false
   },
   "type": "address",
