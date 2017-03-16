@@ -1678,7 +1678,33 @@ var Formio = function(path) {
     this.query = '?' + queryparts[1];
   }
 
-  // See if this is a form path.
+  // Set initially.
+  if (hostparts.length > 2 && hostparts[2].split('.').length > 2) {
+    // Hostname is different than baseUrl so project is the first subdomain.
+    this.projectUrl = hostName;
+    this.projectId = hostparts[2].split('.')[0];
+  }
+
+  // If hostName and baseUrl are equal, project is either by id or the first subdirectory.
+  if (hostName === baseUrl) {
+    // Fill in by subdirectory here. The next section will clean up if projectId.
+    if (hostparts.length > 3 && path.split('/').length > 2) {
+      var pathParts = path.split('/');
+      pathParts.shift(); // Throw away the first /.
+      this.projectId = pathParts.shift();
+      path = '/' + pathParts.join('/');
+      this.projectUrl = hostName + '/' + this.projectId;
+    }
+  }
+  else {
+    if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.indexOf('localhost') !== -1)) {
+      // Hostname is different than baseUrl so project is the first subdomain.
+      this.projectUrl = hostName;
+      this.projectId = (hostparts.length > 2) ? hostparts[2].split('.')[0] : '';
+    }
+  }
+
+  // See if the paths has explicit project or form ids.
   if ((path.search(/(^|\/)(form|project)($|\/)/) !== -1)) {
 
     // Register a specific path.
@@ -1711,35 +1737,26 @@ var Formio = function(path) {
     };
 
     registerItems(['project', 'form', ['submission', 'action']], hostName);
-
-    if (!this.projectId) {
-      if (hostparts.length > 2 && hostparts[2].split('.').length > 2) {
-        this.projectUrl = hostName;
-        this.projectId = hostparts[2].split('.')[0];
-      }
-    }
   }
   else {
 
     // This is an aliased url.
-    this.projectUrl = hostName;
-    this.projectId = (hostparts.length > 2) ? hostparts[2].split('.')[0] : '';
     var subRegEx = new RegExp('\/(submission|action)($|\/.*)');
     var subs = path.match(subRegEx);
     this.pathType = (subs && (subs.length > 1)) ? subs[1] : '';
     path = path.replace(subRegEx, '');
     path = path.replace(/\/$/, '');
-    this.formsUrl = hostName + '/form';
-    this.formUrl = hostName + path;
+    this.formsUrl = this.projectUrl + '/form';
+    this.formUrl = this.projectUrl + path;
     this.formId = path.replace(/^\/+|\/+$/g, '');
     var items = ['submission', 'action'];
     for (var i in items) {
       if (items.hasOwnProperty(i)) {
         var item = items[i];
-        this[item + 'sUrl'] = hostName + path + '/' + item;
+        this[item + 'sUrl'] = this.projectUrl + path + '/' + item;
         if ((this.pathType === item) && (subs.length > 2) && subs[2]) {
           this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
-          this[item + 'Url'] = hostName + path + subs[0];
+          this[item + 'Url'] = this.projectUrl + path + subs[0];
         }
       }
     }
