@@ -12,7 +12,8 @@ export const component = {
   "map": {
     "region": "",
     "key": "",
-    "autocompleteOptions": null
+    "autocompleteOptions": null,
+    "autocompleteFilter": null
   },
   "validate": {
     "customPrivate": false,
