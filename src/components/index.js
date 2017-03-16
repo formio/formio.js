@@ -1,4 +1,4 @@
-import { AddressComponent } from './address/address';
+import { AddressComponent } from './address/Address';
 import { BaseComponent } from './base/Base';
 import { ContentComponent } from './content/Content';
 import { ContainerComponent } from './container/Container';
