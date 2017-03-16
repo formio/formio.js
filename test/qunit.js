@@ -10,7 +10,7 @@ var generateID = function() {
   return chance.string({length: 24, pool: '0123456789abcdef'});
 };
 
-QUnit.module('URL capabilities', function() {
+QUnit.module('Base URL capabilities', function() {
   var tests = {};
   var addUrlTest = function(url, test) {
     tests[url] = test;
@@ -270,32 +270,45 @@ QUnit.module('URL capabilities', function() {
     submissionId: '',
     query: '?test=foo'
   });
-  addUrlTest(baseUrl + '/user/actionform/?test=foo', {
-    projectUrl: baseUrl,
+});
+
+QUnit.module('Localhost URL capabilities', function() {
+  var tests = {};
+  var addUrlTest = function(url, test) {
+    tests[url] = test;
+  };
+
+  protocol = 'http://';
+  testBaseUrl = 'localhost:3000';
+  projectName = 'api';
+  projectUrl = protocol + projectName + '.' + testBaseUrl;
+
+  addUrlTest(projectUrl + '/user/actionform/?test=foo', {
+    projectUrl: projectUrl,
     projectsUrl: '',
-    projectId: 'api',
-    formsUrl: baseUrl + '/form',
-    formUrl: baseUrl + '/user/actionform',
+    projectId: projectName,
+    formsUrl: projectUrl + '/form',
+    formUrl: projectUrl + '/user/actionform',
     formId: 'user/actionform',
-    actionsUrl: baseUrl + '/user/actionform/action',
+    actionsUrl: projectUrl + '/user/actionform/action',
     actionUrl: '',
     actionId: '',
-    submissionsUrl: baseUrl + '/user/actionform/submission',
+    submissionsUrl: projectUrl + '/user/actionform/submission',
     submissionUrl: '',
     submissionId: '',
     query: '?test=foo'
   });
-  addUrlTest(baseUrl + '/user', {
-    projectUrl: baseUrl,
+  addUrlTest(projectUrl + '/user', {
+    projectUrl: projectUrl,
     projectsUrl: '',
-    projectId: 'api',
-    formsUrl: baseUrl + '/form',
-    formUrl: baseUrl + '/user',
+    projectId: projectName,
+    formsUrl: projectUrl + '/form',
+    formUrl: projectUrl + '/user',
     formId: 'user',
-    actionsUrl: baseUrl + '/user/action',
+    actionsUrl: projectUrl + '/user/action',
     actionUrl: '',
     actionId: '',
-    submissionsUrl: baseUrl + '/user/submission',
+    submissionsUrl: projectUrl + '/user/submission',
     submissionUrl: '',
     submissionId: '',
     query: ''
@@ -303,6 +316,7 @@ QUnit.module('URL capabilities', function() {
 
   _.each(tests, function(test, path) {
     QUnit.test('Test URL: ' + path, function(assert) {
+      Formio.setBaseUrl(protocol + testBaseUrl);
       var formio = new Formio(path);
       for (var param in test) {
         assert.equal(formio[param], test[param], param + ' must match.');
@@ -311,393 +325,101 @@ QUnit.module('URL capabilities', function() {
   });
 });
 
-
-QUnit.module('Plugins', function(hooks) {
-  var plugin;
-
-  hooks.beforeEach(function(assert) {
-    assert.equal(Formio.getPlugin('test-plugin'), undefined, 'No plugin may be returned under the name `test-plugin`');
-
-    plugin = {
-      init: sinon.spy()
-    };
-
-    Formio.registerPlugin(plugin, 'test-plugin');
-    assert.ok(plugin.init.calledOnce, 'plugin.init must be called exactly once');
-    assert.ok(plugin.init.calledOn(plugin), 'plugin.init must be called on plugin as `this`');
-    assert.ok(plugin.init.calledWithExactly(Formio), 'plugin.init must be given Formio as argument');
-    assert.equal(Formio.getPlugin('test-plugin'), plugin, 'getPlugin must return plugin');
-
-  });
-
-  hooks.afterEach(function(assert) {
-    assert.equal(Formio.getPlugin('test-plugin'), plugin, 'getPlugin must return plugin');
-
-    plugin.deregister = sinon.spy();
-    Formio.deregisterPlugin(plugin, 'test-plugin');
-    assert.ok(plugin.deregister.calledOnce, 'plugin.deregister must be called exactly once');
-    assert.ok(plugin.deregister.calledOn(plugin), 'plugin.deregister must be called on plugin as `this`');
-    assert.ok(plugin.deregister.calledWithExactly(Formio), 'plugin.deregister must be given Formio as argument');
-    assert.equal(Formio.getPlugin('test-plugin'), undefined, 'No plugin may be returned under the name `test-plugin`');
-  });
-
-  // Test a request to see if the plugin flow order is correct
-  var testRequest = function testRequest(url, method, type) {
-    var fnName;
-    switch (method) {
-      case 'GET': fnName = 'load' + _.capitalize(type); break;
-      case 'POST':
-      case 'PUT': fnName = 'save' + _.capitalize(type); break;
-      case 'DELETE': fnName = 'delete' + _.capitalize(type); break;
-    }
-
-    QUnit.test('Plugin ' + method + ' ' + fnName, function(assert) {
-      var done = assert.async();
-
-      var formio = new Formio(url);
-      method = method.toUpperCase();
-      var testData = {testRequest: 'TEST_REQUEST'};
-      var testOpts = {testOption: true};
-      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
-
-      var expectedArgs = {
-        formio: formio,
-        type: type,
-        method: method,
-        url: formio[type + (method === 'POST' ? 'sUrl' : 'Url')],
-        data: _.startsWith(fnName, 'save') ? testData : null,
-        opts: testOpts
-      };
-
-      // Set up plugin hooks
-      plugin.preRequest = function(requestArgs) {
-        assert.step(1, 'preRequest hook should be called first');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
-        .then(function() {
-          assert.step(3, 'preRequest promise should resolve third');
-          // TODO
-        });
-      };
-      plugin.request = function(requestArgs) {
-        assert.step(4, 'request hook should be called fourth');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
-        .then(function() {
-          assert.step(5, 'request promise should resolve fifth');
-          return testResult;
-        });
-      };
-      plugin.wrapRequestPromise = function(promise, requestArgs) {
-        assert.step(2, 'wrapRequestPromise hook should be called second');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return promise.then(function(result) {
-          assert.step(6, 'wrapRequestPromise post-result promise should resolve sixth');
-          assert.deepEqual(result, testResult, 'Result should match result from request hook');
-          return result;
-        });
-      };
-
-      var promise;
-      if (_.startsWith(fnName, 'save')) {
-        promise = formio[fnName](testData, testOpts);
-      }
-      else if (_.startsWith(fnName, 'load')) {
-        promise = formio[fnName](null, testOpts);
-      }
-      else {
-        promise = formio[fnName](testOpts);
-      }
-      promise.then(function(result) {
-        assert.step(7, 'post request promise should resolve last');
-        assert.deepEqual(result, testResult, 'Result should match result from request hook');
-        done();
-      });
-    });
+QUnit.module('Subdomains URL capabilities', function() {
+  var tests = {};
+  var addUrlTest = function(url, test) {
+    tests[url] = test;
   };
 
-  var tests = [
-    {
-      url: 'https://api.localhost:3000/project/myproject',
-      method: 'GET',
-      type: 'project'
-    },
-    {
-      url: '',
-      method: 'POST',
-      type: 'project'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject',
-      method: 'PUT',
-      type: 'project'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject',
-      method: 'DELETE',
-      type: 'project'
-    },
+  // Test multiple subdomains.
+  protocol = 'http://';
+  testBaseUrl = 'foo.blah.form.io';
+  projectName = 'myproject';
+  projectUrl = protocol + projectName + '.' + testBaseUrl;
 
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
-      method: 'GET',
-      type: 'form'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject',
-      method: 'POST',
-      type: 'form'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
-      method: 'PUT',
-      type: 'form'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
-      method: 'DELETE',
-      type: 'form'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/',
-      method: 'GET',
-      type: 'forms'
-    },
-
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210',
-      method: 'GET',
-      type: 'submission'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
-      method: 'POST',
-      type: 'submission'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210',
-      method: 'PUT',
-      type: 'submission'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/submission/76543210FEDCBA9876543210',
-      method: 'DELETE',
-      type: 'submission'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
-      method: 'GET',
-      type: 'submissions'
-    },
-
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210',
-      method: 'GET',
-      type: 'action'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
-      method: 'POST',
-      type: 'action'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210',
-      method: 'PUT',
-      type: 'action'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567/action/76543210FEDCBA9876543210',
-      method: 'DELETE',
-      type: 'action'
-    },
-    {
-      url: 'https://api.localhost:3000/project/myproject/form/0123456789ABCDEF01234567',
-      method: 'GET',
-      type: 'actions'
-    }
-  ];
-
-  tests.forEach(function(test) {
-    testRequest(test.url, test.method, test.type);
+  addUrlTest(projectUrl + '/user/actionform/?test=foo', {
+    projectUrl: projectUrl,
+    projectsUrl: '',
+    projectId: projectName,
+    formsUrl: projectUrl + '/form',
+    formUrl: projectUrl + '/user/actionform',
+    formId: 'user/actionform',
+    actionsUrl: projectUrl + '/user/actionform/action',
+    actionUrl: '',
+    actionId: '',
+    submissionsUrl: projectUrl + '/user/actionform/submission',
+    submissionUrl: '',
+    submissionId: '',
+    query: '?test=foo'
+  });
+  addUrlTest(projectUrl + '/user', {
+    projectUrl: projectUrl,
+    projectsUrl: '',
+    projectId: projectName,
+    formsUrl: projectUrl + '/form',
+    formUrl: projectUrl + '/user',
+    formId: 'user',
+    actionsUrl: projectUrl + '/user/action',
+    actionUrl: '',
+    actionId: '',
+    submissionsUrl: projectUrl + '/user/submission',
+    submissionUrl: '',
+    submissionId: '',
+    query: ''
   });
 
-  var testStaticRequest = function testStaticRequest(fnName, url, method, data) {
-    QUnit.test('Plugin ' + fnName, function(assert) {
-      var done = assert.async();
-
-      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
-
-      var expectedArgs = {
-        url: url,
-        method: method,
-        data: data
-      };
-
-      // Set up plugin hooks
-      plugin.preRequest = function(requestArgs) {
-        assert.step(1, 'preRequest hook should be called first');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
-        .then(function() {
-          assert.step(3, 'preRequest promise should resolve third');
-          // TODO
-        });
-      };
-      plugin.staticRequest = function(requestArgs) {
-        assert.step(4, 'request hook should be called fourth');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
-        .then(function() {
-          assert.step(5, 'request promise should resolve fifth');
-          return testResult;
-        });
-      };
-      plugin.wrapStaticRequestPromise = function(promise, requestArgs) {
-        assert.step(2, 'wrapRequestPromise hook should be called second');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return promise.then(function(result) {
-          assert.step(6, 'wrapRequestPromise post-result promise should resolve sixth');
-          assert.deepEqual(result, testResult, 'Result should match result from request hook');
-          return result;
-        });
-      };
-
-      Formio[fnName]()
-      .then(function(result) {
-        assert.step(7, 'post request promise should resolve last');
-        assert.deepEqual(result, testResult, 'Result should match result from request hook');
-        done();
-      });
-    });
-  };
-
-  var staticTests = [
-    {
-      fnName: 'loadProjects',
-      url: 'https://api.localhost:3000/project',
-      method: 'GET',
-      data: undefined
-    },
-    {
-      fnName: 'logout',
-      url: 'https://api.localhost:3000/logout',
-      method: 'GET',
-      data: undefined
-    }
-  ];
-
-  staticTests.forEach(function(test) {
-    testStaticRequest(test.fnName, test.url, test.method, test.type);
-  });
-
-  var testFileRequest = function testFileRequest(fnName, formUrl, args) {
-    QUnit.test('Plugin ' + fnName, function(assert) {
-      var done = assert.async();
-
-      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
-
-      if (fnName == 'downloadFile') {
-        var expectedArgs = {
-          method: 'download',
-          file: args[0]
-        };
+  _.each(tests, function(test, path) {
+    QUnit.test('Test URL: ' + path, function(assert) {
+      Formio.setBaseUrl(protocol + testBaseUrl);
+      var formio = new Formio(path);
+      for (var param in test) {
+        assert.equal(formio[param], test[param], param + ' must match.');
       }
-      else if(fnName === 'uploadFile') {
-        var expectedArgs = {
-          provider: args[0],
-          method: 'upload',
-          file: args[1],
-          fileName: args[2],
-          dir: args[3]
-        }
-      }
-
-      // Set up plugin hooks
-      plugin.preRequest = function(requestArgs) {
-        assert.step(1, 'preRequest hook should be called first');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
-        .then(function() {
-          assert.step(3, 'preRequest promise should resolve third');
-          // TODO
-        });
-      };
-      plugin.fileRequest = function(requestArgs) {
-        assert.step(4, 'request hook should be called fourth');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return Promise.resolve()
-        .then(function() {
-          assert.step(5, 'request promise should resolve fifth');
-          return testResult;
-        });
-      };
-      plugin.wrapFileRequestPromise = function(promise, requestArgs) {
-        assert.step(2, 'wrapFileRequestPromise hook should be called second');
-        assert.deepEqual(requestArgs, expectedArgs, 'Request hook arguments match expected arguments');
-        return promise.then(function(result) {
-          assert.step(6, 'wrapFileRequestPromise post-result promise should resolve sixth');
-          assert.deepEqual(result, testResult, 'Result should match result from request hook');
-          return result;
-        });
-      };
-
-      var formio = new Formio(formUrl);
-      formio[fnName].apply(null, args)
-      .then(function(result) {
-        assert.step(7, 'post request promise should resolve last');
-        assert.deepEqual(result, testResult, 'Result should match result from request hook');
-        done();
-      });
     });
-  };
-
-  var fileTests = [
-    {
-      fnName: 'uploadFile',
-      formUrl: 'https://api.localhost:3000/project/123/form/123',
-      args: [
-        's3',
-        'FILE',
-        'file.jpg',
-        'dir/'
-      ]
-    },
-    {
-      fnName: 'uploadFile',
-      formUrl: 'https://api.localhost:3000/project/123/form/123',
-      args: [
-        'dropbox',
-        'FILE',
-        'file.jpg',
-        'dir/'
-      ]
-    },
-    {
-      fnName: 'downloadFile',
-      formUrl: 'https://api.localhost:3000/project/123/form/123',
-      args: [
-        {
-          storage: 's3',
-          name: 'test'
-        }
-      ]
-    },
-    {
-      fnName: 'downloadFile',
-      formUrl: 'https://api.localhost:3000/project/123/form/123',
-      args: [
-        {
-          storage: 'dropbox',
-          name: 'test'
-        }
-      ]
-    }
-  ];
-
-  fileTests.forEach(function(test) {
-    testFileRequest(test.fnName, test.formUrl, test.args);
   });
 
+  projectUrl = protocol + testBaseUrl + '/' + projectName;
+
+  addUrlTest(projectUrl + '/user/actionform/?test=foo', {
+    projectUrl: projectUrl,
+    projectsUrl: '',
+    projectId: projectName,
+    formsUrl: projectUrl + '/form',
+    formUrl: projectUrl + '/user/actionform',
+    formId: 'user/actionform',
+    actionsUrl: projectUrl + '/user/actionform/action',
+    actionUrl: '',
+    actionId: '',
+    submissionsUrl: projectUrl + '/user/actionform/submission',
+    submissionUrl: '',
+    submissionId: '',
+    query: '?test=foo'
+  });
+  addUrlTest(projectUrl + '/user', {
+    projectUrl: projectUrl,
+    projectsUrl: '',
+    projectId: projectName,
+    formsUrl: projectUrl + '/form',
+    formUrl: projectUrl + '/user',
+    formId: 'user',
+    actionsUrl: projectUrl + '/user/action',
+    actionUrl: '',
+    actionId: '',
+    submissionsUrl: projectUrl + '/user/submission',
+    submissionUrl: '',
+    submissionId: '',
+    query: ''
+  });
+
+  _.each(tests, function(test, path) {
+    QUnit.test('Test URL: ' + path, function(assert) {
+      Formio.setBaseUrl(protocol + testBaseUrl);
+      var formio = new Formio(path);
+      for (var param in test) {
+        assert.equal(formio[param], test[param], param + ' must match.');
+      }
+    });
+  });
 });
 
 QUnit.module('Test Formio.js capabilities', function () {
@@ -946,6 +668,7 @@ QUnit.module('Test Formio.js capabilities', function () {
     {
       name: 'Read Project',
       test: function(assert) {
+        Formio.setBaseUrl(baseUrl);
         var formio = new Formio(Formio.getBaseUrl() + '/project/' + project._id);
         return formio.loadProject()
         .then(function(response) {
