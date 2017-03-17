@@ -104,7 +104,7 @@ export class Formio {
     }
     else if (hostName === this.base) {
       // Get project id as first part of path (subdirectory).
-      if (hostparts.length > 3 && path.split('/').length > 2) {
+      if (hostparts.length > 3 && path.split('/').length > 1) {
         var pathParts = path.split('/');
         pathParts.shift(); // Throw away the first /.
         this.projectId = pathParts.shift();
