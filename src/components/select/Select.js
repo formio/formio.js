@@ -3,6 +3,7 @@ import Choices from 'choices.js';
 import Formio from '../../formio';
 import _each from 'lodash/each';
 import _get from 'lodash/get';
+import _isArray from 'lodash/isArray';
 export class SelectComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
@@ -123,7 +124,9 @@ export class SelectComponent extends BaseComponent {
   }
 
   setValue(value, noValidate) {
-    this.choices.setValue(value);
+    if (value) {
+      this.choices.setValue(_isArray(value) ? value : [value]);
+    }
     this.updateValue(noValidate);
   }
 
