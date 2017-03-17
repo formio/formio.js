@@ -1,4 +1,4 @@
-import { AddressComponent } from './address/address';
+import { AddressComponent } from './address/Address';
 import { BaseComponent } from './base/Base';
 import { ContentComponent } from './content/Content';
 import { ContainerComponent } from './container/Container';
@@ -29,6 +29,7 @@ import { RadioComponent } from './radio/Radio';
 import { SelectBoxesComponent } from './selectboxes/SelectBoxes';
 import { SurveyComponent } from './survey/Survey';
 import { WellComponent } from './well/Well';
+import { GmapComponent } from './gmap/Gmap';
 module.exports = {
   address: AddressComponent,
   base: BaseComponent,
@@ -61,6 +62,7 @@ module.exports = {
   selectboxes: SelectBoxesComponent,
   survey: SurveyComponent,
   well: WellComponent,
+  gmap: GmapComponent,
   create: function(component, options, data) {
     let comp = null;
     if (!component.type) {
