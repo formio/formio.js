@@ -434,6 +434,21 @@ describe('Subdirectory Constructor Tests', () => {
     submissionId: '',
     query: ''
   });
+  addUrlTest(projectUrl, {
+    projectUrl: projectUrl,
+    projectsUrl: protocol + '://' + testBaseUrl + '/project',
+    projectId: projectName,
+    formsUrl: projectUrl + '/form',
+    formUrl: projectUrl,
+    formId: '',
+    actionsUrl: projectUrl + '/action',
+    actionUrl: '',
+    actionId: '',
+    submissionsUrl: projectUrl + '/submission',
+    submissionUrl: '',
+    submissionId: '',
+    query: ''
+  });
 
   _each(tests, function(test, path) {
     it ('Should initialize for ' + path, function(done) {
