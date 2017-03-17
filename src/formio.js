@@ -14,14 +14,24 @@ var copy = require('shallow-copy');
  *   let formio = new Formio('https://examples.form.io/example');
  */
 export class Formio {
-  constructor(path) {
+  constructor(path, base) {
+    if (base) {
+      this.base = base;
+    }
+    else if (Formio.baseUrl) {
+      this.base = Formio.baseUrl;
+    }
+    else {
+      this.base = window.location.href.match(/http[s]?:\/\/api./)[0];
+    }
+
     // Ensure we have an instance of Formio.
     if (!(this instanceof Formio)) { return new Formio(path); }
     if (!path) {
       // Allow user to create new projects if this was instantiated without
       // a url
-      this.projectUrl = Formio.baseUrl + '/project';
-      this.projectsUrl = Formio.baseUrl + '/project';
+      this.projectUrl = this.base + '/project';
+      this.projectsUrl = this.base + '/project';
       this.projectId = false;
       this.query = '';
       return;
@@ -44,8 +54,7 @@ export class Formio {
 
     // Normalize to an absolute path.
     if ((path.indexOf('http') !== 0) && (path.indexOf('//') !== 0)) {
-      Formio.baseUrl = Formio.baseUrl ? Formio.baseUrl : window.location.href.match(/http[s]?:\/\/api./)[0];
-      path = Formio.baseUrl + path;
+      path = this.base + path;
     }
 
     var hostparts = Formio.getUrlParts(path);
@@ -58,68 +67,81 @@ export class Formio {
       this.query = '?' + queryparts[1];
     }
 
-    // See if this is a form path.
-    if ((path.search(/(^|\/)(form|project)($|\/)/) !== -1)) {
+    // Register a specific path.
+    var registerPath = (name, base) => {
+      this[name + 'sUrl'] = base + '/' + name;
+      var regex = new RegExp('\/' + name + '\/([^/]+)');
+      if (path.search(regex) !== -1) {
+        parts = path.match(regex);
+        this[name + 'Url'] = parts ? (base + parts[0]) : '';
+        this[name + 'Id'] = (parts.length > 1) ? parts[1] : '';
+        base += parts[0];
+      }
+      return base;
+    };
 
-      // Register a specific path.
-      var registerPath = function(name, base) {
-        this[name + 'sUrl'] = base + '/' + name;
-        var regex = new RegExp('\/' + name + '\/([^/]+)');
-        if (path.search(regex) !== -1) {
-          parts = path.match(regex);
-          this[name + 'Url'] = parts ? (base + parts[0]) : '';
-          this[name + 'Id'] = (parts.length > 1) ? parts[1] : '';
-          base += parts[0];
-        }
-        return base;
-      }.bind(this);
-
-      // Register an array of items.
-      var registerItems = function(items, base, staticBase) {
-        for (var i in items) {
-          if (items.hasOwnProperty(i)) {
-            var item = items[i];
-            if (item instanceof Array) {
-              registerItems(item, base, true);
-            }
-            else {
-              var newBase = registerPath(item, base);
-              base = staticBase ? base : newBase;
-            }
+    // Register an array of items.
+    var registerItems = function(items, base, staticBase) {
+      for (var i in items) {
+        if (items.hasOwnProperty(i)) {
+          var item = items[i];
+          if (item instanceof Array) {
+            registerItems(item, base, true);
+          }
+          else {
+            var newBase = registerPath(item, base);
+            base = staticBase ? base : newBase;
           }
         }
-      };
+      }
+    };
 
-      registerItems(['project', 'form', ['submission', 'action']], hostName);
-
-      if (!this.projectId) {
-        if (hostparts.length > 2 && hostparts[2].split('.').length > 2) {
-          this.projectUrl = hostName;
-          this.projectId = hostparts[2].split('.')[0];
-        }
+    this.projectUrl = hostName;
+    // Determine the projectUrl and projectId
+    if ((path.search(/(^|\/)(project)($|\/)/) !== -1)) {
+      // Get project id as project/:projectId.
+      registerItems(['project'], hostName);
+    }
+    else if (hostName === this.base) {
+      // Get project id as first part of path (subdirectory).
+      if (hostparts.length > 3 && path.split('/').length > 2) {
+        var pathParts = path.split('/');
+        pathParts.shift(); // Throw away the first /.
+        this.projectId = pathParts.shift();
+        path = '/' + pathParts.join('/');
+        this.projectUrl = hostName + '/' + this.projectId;
       }
     }
     else {
+      // Get project id from subdomain.
+      if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.indexOf('localhost') !== -1)) {
+        this.projectUrl = hostName;
+        this.projectId = hostparts[2].split('.')[0];
+      }
+    }
+    this.projectsUrl = this.projectsUrl || this.base + '/project';
 
-      // This is an aliased url.
-      this.projectUrl = hostName;
-      this.projectId = (hostparts.length > 2) ? hostparts[2].split('.')[0] : '';
+    // Configure Form urls and form ids.
+    if ((path.search(/(^|\/)(project|form)($|\/)/) !== -1)) {
+      registerItems(['form', ['submission', 'action']], this.projectUrl);
+    }
+    else {
       var subRegEx = new RegExp('\/(submission|action)($|\/.*)');
       var subs = path.match(subRegEx);
       this.pathType = (subs && (subs.length > 1)) ? subs[1] : '';
       path = path.replace(subRegEx, '');
       path = path.replace(/\/$/, '');
-      this.formsUrl = hostName + '/form';
-      this.formUrl = hostName + path;
+      this.formsUrl = this.projectUrl + '/form';
+      this.formUrl = this.projectUrl + path;
       this.formId = path.replace(/^\/+|\/+$/g, '');
       var items = ['submission', 'action'];
       for (var i in items) {
         if (items.hasOwnProperty(i)) {
           var item = items[i];
-          this[item + 'sUrl'] = hostName + path + '/' + item;
+          this[item + 'sUrl'] = this.projectUrl + path + '/' + item;
           if ((this.pathType === item) && (subs.length > 2) && subs[2]) {
             this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
-            this[item + 'Url'] = hostName + path + subs[0];
+            this[item + 'Url'] = this.projectUrl + path + subs[0];
           }
         }
       }
@@ -337,8 +359,8 @@ export class Formio {
 
   static getUrlParts(url) {
     var regex = '^(http[s]?:\\/\\/)';
-    if (Formio.baseUrl && url.indexOf(Formio.baseUrl) === 0) {
-      regex += '(' + Formio.baseUrl.replace(/^http[s]?:\/\//, '') + ')';
+    if (this.base && url.indexOf(this.base) === 0) {
+      regex += '(' + this.base.replace(/^http[s]?:\/\//, '') + ')';
     }
     else {
       regex += '([^/]+)';
