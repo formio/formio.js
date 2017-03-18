@@ -19,6 +19,9 @@ export class AddressComponent extends TextFieldComponent {
       if (component.map && component.map.key) {
         src += '&key=' + component.map.key;
       }
+      if (component.map && component.map.region) {
+        src += '&region=' + component.map.region;
+      }
       let script = document.createElement('script');
       script.setAttribute('src', src);
       script.setAttribute('type', 'text/javascript');
