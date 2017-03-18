@@ -4,6 +4,11 @@ import EventEmitter from 'eventemitter2';
 import _merge from 'lodash/merge';
 import _each from 'lodash/each';
 export const Harness = {
+  getDate: function() {
+    let timestamp = (new Date()).getTime();
+    timestamp = parseInt(timestamp / 1000, 10);
+    return (new Date(timestamp * 1000)).toISOString();
+  },
   testCreate: function(Component, componentSettings, settings) {
     settings = settings || {};
     let compSettings = _cloneDeep(componentSettings);

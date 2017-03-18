@@ -15,14 +15,14 @@ module.exports = {
           email: 'test@example.com',
           password: '123test',
           verifyPassword: '123test',
-          date: (new Date()).toISOString()
+          date: Harness.getDate()
         }
       });
       done();
     },
     'Test invalid email': (form, done) => {
       Harness.testErrors(form, {data: {
-        date: (new Date()).toISOString(),
+        date: Harness.getDate(),
         firstName: 'test',
         lastName: 'test2',
         email: 'bademail',
