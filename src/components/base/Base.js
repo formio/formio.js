@@ -1,5 +1,6 @@
 import maskInput from 'text-mask-all/vanilla';
 import FormioUtils from 'formio-utils';
+import Promise from "native-promise-only";
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _debounce from 'lodash/debounce';
@@ -786,3 +787,46 @@ export class BaseComponent {
     };
   }
 }
+
+BaseComponent.externalLibraries = {};
+BaseComponent.requireLibrary = function(name, property, src) {
+  if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
+    BaseComponent.externalLibraries[name] = {};
+    BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {
+      BaseComponent.externalLibraries[name].resolve = resolve;
+      BaseComponent.externalLibraries[name].reject = reject;
+    });
+
+    if (!window[name + 'Callback']) {
+      window[name + 'Callback'] = function() {
+        this.resolve();
+      }.bind(BaseComponent.externalLibraries[name]);
+    }
+
+    // See if the plugin already exists.
+    let plugin = _get(window, property);
+    if (plugin) {
+      BaseComponent.externalLibraries[name].resolve(plugin);
+    }
+    else {
+      // Add the script to the top page.
+      let script = document.createElement('script');
+      script.setAttribute('src', src);
+      script.setAttribute('type', 'text/javascript');
+      script.setAttribute('defer', true);
+      script.setAttribute('async', true);
+      document.getElementsByTagName('head')[0].appendChild(script);
+    }
+  }
+};
+
+BaseComponent.libraryReady = function(name) {
+  if (
+    BaseComponent.externalLibraries.hasOwnProperty(name) &&
+    BaseComponent.externalLibraries[name].ready
+  ) {
+    return BaseComponent.externalLibraries[name].ready;
+  }
+
+  return Promise.reject(name + ' library was not required.');
+};

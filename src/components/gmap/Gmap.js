@@ -1,34 +1,17 @@
-import Promise from "native-promise-only";
 import { BaseComponent } from '../base/Base';
 export class GmapComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
 
-    // If google maps api is not ready, then load it.
-    if (!GmapComponent.apiAdded && !(
-        window.google &&
-        window.google.maps &&
-        window.google.maps.places &&
-        window.google.maps.places.Autocomplete
-      )) {
-      // Add the API.
-      GmapComponent.apiAdded = true;
-
-      // Get the source for Google Maps API
-      let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=formioGoogleMapsCallback';
-      if (component.map && component.map.key) {
-        src += '&key=' + component.map.key;
-      }
-      if (component.map && component.map.region) {
-        src += '&region=' + component.map.region;
-      }
-      let script = document.createElement('script');
-      script.setAttribute('src', src);
-      script.setAttribute('type', 'text/javascript');
-      script.setAttribute('defer', true);
-      script.setAttribute('async', true);
-      document.getElementsByTagName('head')[0].appendChild(script);
+    // Get the source for Google Maps API
+    let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=googleMapsCallback';
+    if (component.map && component.map.key) {
+      src += '&key=' + component.map.key;
     }
+    if (component.map && component.map.region) {
+      src += '&region=' + component.map.region;
+    }
+    BaseComponent.requireLibrary('googleMaps', 'google.maps.places', src);
   }
 
   build() {
@@ -52,7 +35,7 @@ export class GmapComponent extends BaseComponent {
   addInput(input, container) {
     super.addInput(input, container);
     let that = this;
-    GmapComponent.apiReady.then((result) => {
+    BaseComponent.libraryReady('googleMaps').then(() => {
       let autocompleteOptions = {};
       if (this.component.map) {
         autocompleteOptions = this.component.map.autocompleteOptions || {};
@@ -102,7 +85,7 @@ export class GmapComponent extends BaseComponent {
   }
 
   initGoogleMap() {
-    GmapComponent.apiReady.then((result) => {
+    BaseComponent.libraryReady('googleMaps').then((result) => {
       let defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
       let options = {
         zoom: 19,
@@ -157,12 +140,3 @@ export class GmapComponent extends BaseComponent {
     });
   }
 }
-
-GmapComponent.apiReady = new Promise((resolve, reject) => {
-  GmapComponent.apiResolve = resolve;
-  GmapComponent.apiReject = reject;
-});
-
-window.formioGoogleMapsCallback = function() {
-  GmapComponent.apiResolve();
-};

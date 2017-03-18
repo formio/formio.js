@@ -1,36 +1,19 @@
 import { TextFieldComponent } from '../textfield/TextField';
-import Promise from "native-promise-only";
+import { BaseComponent } from '../base/Base';
 import _defaultsDeep from 'lodash/defaultsDeep';
 import _delay from 'lodash/delay';
+
 export class AddressComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
-
-    // If google maps api is not ready, then load it.
-    if (!AddressComponent.apiAdded && !(
-      window.google &&
-      window.google.maps &&
-      window.google.maps.places &&
-      window.google.maps.places.Autocomplete
-    )) {
-      // Add the API.
-      AddressComponent.apiAdded = true;
-
-      // Get the source for Google Maps API
-      let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=formioGoogleMapsCallback';
-      if (component.map && component.map.key) {
-        src += '&key=' + component.map.key;
-      }
-      if (component.map && component.map.region) {
-        src += '&region=' + component.map.region;
-      }
-      let script = document.createElement('script');
-      script.setAttribute('src', src);
-      script.setAttribute('type', 'text/javascript');
-      script.setAttribute('defer', true);
-      script.setAttribute('async', true);
-      document.getElementsByTagName('head')[0].appendChild(script);
+    let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=googleMapsCallback';
+    if (component.map && component.map.key) {
+      src += '&key=' + component.map.key;
     }
+    if (component.map && component.map.region) {
+      src += '&region=' + component.map.region;
+    }
+    BaseComponent.requireLibrary('googleMaps', 'google.maps.places', src);
   }
 
   setValueAt(index, value) {
@@ -41,24 +24,23 @@ export class AddressComponent extends TextFieldComponent {
     return this.value;
   }
 
-
   /**
    * Start the autocomplete and the input listeners
    *
    * @param input
    *   The input field
-   * @param autocompleteOptions
+   * @param autoCompleteOptions
    *   The default option for the autocompletion
    */
-  autocompleteInit(input, autocompleteOptions) {
-    // Set attribute autocomplete to off
+  autoCompleteInit(input, autoCompleteOptions) {
+    // Set attribute autoComplete to off
     input.setAttribute("autocomplete", "off");
 
     // Init suggestions list
-    this.autocompleteSuggestions = []
+    this.autoCompleteSuggestions = []
 
     // Start Google AutocompleteService
-    const autocomplete = new google.maps.places.AutocompleteService();
+    const autoComplete = new google.maps.places.AutocompleteService();
 
     // Create suggestions container
     const suggestionContainer = document.createElement('div');
@@ -71,12 +53,12 @@ export class AddressComponent extends TextFieldComponent {
         let options = {
           input: input.value
         }
-        autocomplete.getPlacePredictions(_defaultsDeep(options, autocompleteOptions),
+        autoComplete.getPlacePredictions(_defaultsDeep(options, autoCompleteOptions),
           (suggestions, status) => {
-            this.autocompleteDisplaySuggestions(suggestions, status, suggestionContainer, input);
+            this.autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input);
         });
       } else {
-        this.autocompleteCleanSuggestions(suggestionContainer);
+        this.autoCompleteCleanSuggestions(suggestionContainer);
         suggestionContainer.style.display = 'none';
       }
     });
@@ -99,7 +81,7 @@ export class AddressComponent extends TextFieldComponent {
       suggestionContainer.style.width = input.offsetWidth + 'px';
     });
     // Add listiner on input field for key event
-    this.autocompleteKeyboardListener(suggestionContainer, input);
+    this.autoCompleteKeyboardListener(suggestionContainer, input);
   }
 
   /**
@@ -110,34 +92,34 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
-  autocompleteKeyboardListener(suggestionContainer, input) {
-    this.autocompleteKeyCodeListener = (event) => {
+  autoCompleteKeyboardListener(suggestionContainer, input) {
+    this.autoCompleteKeyCodeListener = (event) => {
       if (input.value) {
         switch (event.keyCode) {
           case 38:
           // UP
-            this.autocompleteKeyUpInteraction(suggestionContainer, input);
+            this.autoCompleteKeyUpInteraction(suggestionContainer, input);
             break;
 
           case 40:
             // DOWN
-            this.autocompleteKeyDownInteraction(suggestionContainer, input);
+            this.autoCompleteKeyDownInteraction(suggestionContainer, input);
             break;
 
           case 9:
             // TAB
-            this.autocompleteKeyValidationInteraction(suggestionContainer, input);
+            this.autoCompleteKeyValidationInteraction(suggestionContainer, input);
             break;
 
           case 13:
             // ENTER
-            this.autocompleteKeyValidationInteraction(suggestionContainer, input);
+            this.autoCompleteKeyValidationInteraction(suggestionContainer, input);
             break;
         }
       }
     };
 
-    this.addEventListener(input, 'keydown', this.autocompleteKeyCodeListener)
+    this.addEventListener(input, 'keydown', this.autoCompleteKeyCodeListener)
   }
 
   /**
@@ -148,20 +130,20 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
-  autocompleteKeyUpInteraction(suggestionContainer, input) {
+  autoCompleteKeyUpInteraction(suggestionContainer, input) {
     let elementSelected = document.querySelector('.pac-item-selected');
     if (!elementSelected) {
       // Returns the bottom of the list.
-      return this.autocompleteListDecorator(suggestionContainer.lastChild, input);
+      return this.autoCompleteListDecorator(suggestionContainer.lastChild, input);
     } else {
       // Transverse the list in reverse order.
       const previousSibling = elementSelected.previousSibling;
       if (previousSibling) {
-       this.autocompleteListDecorator(previousSibling, input);
+       this.autoCompleteListDecorator(previousSibling, input);
       } else {
         // Return to input value
         elementSelected.classList.remove('pac-item-selected');
-        input.value = this.autocompleteInputValue;
+        input.value = this.autoCompleteInputValue;
       }
     }
   }
@@ -174,20 +156,20 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
-  autocompleteKeyDownInteraction(suggestionContainer, input) {
+  autoCompleteKeyDownInteraction(suggestionContainer, input) {
     let elementSelected = document.querySelector('.pac-item-selected');
     if (!elementSelected) {
       // Start at the top of the list.
-      return this.autocompleteListDecorator(suggestionContainer.firstChild, input);
+      return this.autoCompleteListDecorator(suggestionContainer.firstChild, input);
     } else {
       // Transverse the list from top down.
       const nextSibling = elementSelected.nextSibling;
       if (nextSibling) {
-        this.autocompleteListDecorator(nextSibling, input);
+        this.autoCompleteListDecorator(nextSibling, input);
       } else {
         // Return to input value
         elementSelected.classList.remove('pac-item-selected');
-        input.value = this.autocompleteInputValue;
+        input.value = this.autoCompleteInputValue;
       }
     }
   }
@@ -200,13 +182,13 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
-  autocompleteKeyValidationInteraction(suggestionContainer, input) {
+  autoCompleteKeyValidationInteraction(suggestionContainer, input) {
     let elementSelected = document.querySelector('.pac-item-selected');
     if (elementSelected) {
-      for (const suggestion of this.autocompleteSuggestions) {
+      for (const suggestion of this.autoCompleteSuggestions) {
         let content = elementSelected.textContent || elementSelected.innerText;
         if (content === suggestion.description) {
-          this.autocompleteServiceListener(suggestion, suggestionContainer, input);
+          this.autoCompleteServiceListener(suggestion, suggestionContainer, input);
         }
       }
       elementSelected.classList.remove('pac-item-selected');
@@ -221,7 +203,7 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
-  autocompleteListDecorator(item, input) {
+  autoCompleteListDecorator(item, input) {
     let elementSelected = document.querySelector('.pac-item-selected');
     if (elementSelected) {
       elementSelected.classList.remove('pac-item-selected');
@@ -237,16 +219,16 @@ export class AddressComponent extends TextFieldComponent {
    *   Data to check
    * @returns {Boolean}
    */
-  autocompleteFilterSuggestion(data) {
+  autoCompleteFilterSuggestion(data) {
     try {
       let script = '(function() { var show = true;';
-      script += this.component.map.autocompleteFilter.toString();
+      script += this.component.map.autoCompleteFilter.toString();
       script += '; return show; })()';
       let result = eval(script);
       return result.toString() === 'true';
     }
     catch (e) {
-      console.warn('An error occurred in a custom autocomplete filter statement for component ' + this.component.key, e);
+      console.warn('An error occurred in a custom autoComplete filter statement for component ' + this.component.key, e);
       return true;
     }
 
@@ -259,12 +241,12 @@ export class AddressComponent extends TextFieldComponent {
    * @param suggestionContainer
    *   Container tag
    */
-  autocompleteCleanSuggestions(suggestionContainer) {
+  autoCompleteCleanSuggestions(suggestionContainer) {
     // Clean click listener
-    for (const suggestion of this.autocompleteSuggestions) {
+    for (const suggestion of this.autoCompleteSuggestions) {
       suggestion.item.removeEventListener('click', suggestion.clickListener);
     }
-    this.autocompleteSuggestions = [];
+    this.autoCompleteSuggestions = [];
 
     // Delete current suggestion list
     while (suggestionContainer.firstChild) {
@@ -284,29 +266,29 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
-  autocompleteDisplaySuggestions(suggestions, status, suggestionContainer, input) {
+  autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input) {
 
     // Set the same width as input field
     suggestionContainer.style.width = input.offsetWidth + 'px';
 
     // Set the default input value
-    this.autocompleteInputValue = input.value;
+    this.autoCompleteInputValue = input.value;
 
-    this.autocompleteCleanSuggestions(suggestionContainer);
+    this.autoCompleteCleanSuggestions(suggestionContainer);
     if (status != google.maps.places.PlacesServiceStatus.OK) {
       suggestionContainer.style.display = 'none';
       return;
     }
 
     for (const suggestion of suggestions) {
-      if (this.autocompleteFilterSuggestion(suggestion)) {
-        this.autocompleteSuggestions.push(suggestion);
-        this.autocompleteSuggestionBuilder(suggestion, suggestionContainer, input);
+      if (this.autoCompleteFilterSuggestion(suggestion)) {
+        this.autoCompleteSuggestions.push(suggestion);
+        this.autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input);
       }
     }
 
     if (!suggestionContainer.childElementCount) {
-      this.autocompleteCleanSuggestions(suggestionContainer);
+      this.autoCompleteCleanSuggestions(suggestionContainer);
       suggestionContainer.style.display = 'none';
     }
     else {
@@ -324,7 +306,7 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
-  autocompleteSuggestionBuilder(suggestion, suggestionContainer, input) {
+  autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input) {
 
     const item = document.createElement('div');
     item.classList.add('pac-item');
@@ -370,8 +352,6 @@ export class AddressComponent extends TextFieldComponent {
         let matches = suggestion.structured_formatting.secondary_text_matched_substrings;
         for(let k in matches) {
           let part = matches[k];
-          console.log(part);
-          console.log((part.offset + part.length));
           if (k == 0 && part.offset > 0) {
             itemSecondary.appendChild(document.createTextNode(suggestion.structured_formatting.secondary_text.substring(0, part.offset)));
           }
@@ -399,8 +379,8 @@ export class AddressComponent extends TextFieldComponent {
 
     let clickListener = (event) => {
       input.value = suggestion.description;
-      this.autocompleteInputValue = suggestion.description;
-      this.autocompleteServiceListener(suggestion, suggestionContainer, input);
+      this.autoCompleteInputValue = suggestion.description;
+      this.autoCompleteServiceListener(suggestion, suggestionContainer, input);
     };
     suggestion.clickListener = clickListener;
     suggestion.item = item;
@@ -422,7 +402,7 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
-  autocompleteServiceListener(suggestion, suggestionContainer, input) {
+  autoCompleteServiceListener(suggestion, suggestionContainer, input) {
     const service = new google.maps.places.PlacesService(input);
     service.getDetails({
       placeId: suggestion.place_id,
@@ -436,22 +416,22 @@ export class AddressComponent extends TextFieldComponent {
 
   addInput(input, container) {
     super.addInput(input, container);
-    AddressComponent.apiReady.then(() => {
-      let autocompleteOptions = {}
+    BaseComponent.libraryReady('googleMaps').then(() => {
+      let autoCompleteOptions = {};
       if (this.component.map) {
-        autocompleteOptions = this.component.map.autocompleteOptions || {}
-        if (autocompleteOptions.location) {
-          autocompleteOptions.location = new google.maps.LatLng(autocompleteOptions.location.lat, autocompleteOptions.location.lng);
+        autoCompleteOptions = this.component.map.autoCompleteOptions || {};
+        if (autoCompleteOptions.location) {
+          autoCompleteOptions.location = new google.maps.LatLng(autoCompleteOptions.location.lat, autoCompleteOptions.location.lng);
         }
       }
 
-      if (this.component.map && this.component.map.autocompleteFilter) {
-          // Call custom autocomplete to filter suggestions
-          this.autocompleteInit(input, autocompleteOptions);
+      if (this.component.map && this.component.map.autoCompleteFilter) {
+        // Call custom autoComplete to filter suggestions
+        this.autoCompleteInit(input, autoCompleteOptions);
       }
       else {
-          let autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
-          autocomplete.addListener("place_changed", () => this.setValue(autocomplete.getPlace()));
+        let autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.addListener("place_changed", () => this.setValue(autocomplete.getPlace()));
       }
     });
   }
@@ -462,12 +442,3 @@ export class AddressComponent extends TextFieldComponent {
     return info;
   }
 }
-
-AddressComponent.apiReady = new Promise((resolve, reject) => {
-  AddressComponent.apiResolve = resolve;
-  AddressComponent.apiReject = reject;
-});
-
-window.formioGoogleMapsCallback = function() {
-  AddressComponent.apiResolve();
-};
