@@ -35,6 +35,7 @@ export class BaseComponent {
     this.validators = ['required', 'minLength', 'maxLength', 'custom'];
     this.triggerChange = _debounce(this.onChange.bind(this), 200);
     this.eventHandlers = [];
+    this.eventListeners = [];
     if (this.component) {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
@@ -49,11 +50,17 @@ export class BaseComponent {
     return message;
   }
 
-  on(event, cb) {
+  on(event, cb, internal) {
     if (!this.events) {
       return;
     }
-    return this.events.on('formio.' + event, cb);
+    let type = 'formio.' + event;
+    this.eventListeners.push({
+      type: type,
+      listener: cb,
+      internal: internal
+    });
+    return this.events.on(type, cb);
   }
 
   emit(event, data) {
@@ -377,10 +384,15 @@ export class BaseComponent {
   /**
    * Remove all event handlers.
    */
-  destroy() {
+  destroy(all) {
     if (this.inputMask) {
       this.inputMask.destroy();
     }
+    _each(this.eventListeners, (listener) => {
+      if (all || listener.internal) {
+        this.events.off(listener.type, listener.listener);
+      }
+    });
     _each(this.eventHandlers, (handler) => {
       window.removeEventListener(handler.event, handler.func);
     });

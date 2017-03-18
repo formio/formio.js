@@ -37,10 +37,10 @@ export class ButtonComponent extends BaseComponent {
     this.on('submit', () => {
       this.loading = false;
       this.element.disable = false;
-    });
+    }, true);
     this.on('error', () => {
       this.loading = false;
-    });
+    }, true);
     this.addEventListener(this.element, 'click', (event) => {
       switch (this.component.action) {
         case 'submit':

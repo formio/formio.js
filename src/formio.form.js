@@ -157,9 +157,9 @@ export class FormioForm extends FormioComponents {
       this.clear();
       return this.localize().then(() => {
         this.build();
-        this.on('resetForm', () => this.reset());
-        this.on('componentChange', (changed) => this.triggerSubmissionChange(changed));
-        this.on('componentError', (changed) => this.triggerSubmissionError(changed));
+        this.on('resetForm', () => this.reset(), true);
+        this.on('componentChange', (changed) => this.triggerSubmissionChange(changed), true);
+        this.on('componentError', (changed) => this.triggerSubmissionError(changed), true);
         this.emit('render');
       });
     });
@@ -190,7 +190,7 @@ export class FormioForm extends FormioComponents {
   }
 
   build() {
-    this.on('submitButton', () => this.submit());
+    this.on('submitButton', () => this.submit(), true);
     this.addComponents();
     this.checkConditions(this.getValue());
   }
