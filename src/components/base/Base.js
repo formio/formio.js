@@ -35,6 +35,7 @@ export class BaseComponent {
     this.validators = ['required', 'minLength', 'maxLength', 'custom'];
     this.triggerChange = _debounce(this.onChange.bind(this), 200);
     this.eventHandlers = [];
+    this.eventListeners = [];
     if (this.component) {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
@@ -49,11 +50,17 @@ export class BaseComponent {
     return message;
   }
 
-  on(event, cb) {
+  on(event, cb, internal) {
     if (!this.events) {
       return;
     }
-    return this.events.on('formio.' + event, cb);
+    let type = 'formio.' + event;
+    this.eventListeners.push({
+      type: type,
+      listener: cb,
+      internal: internal
+    });
+    return this.events.on(type, cb);
   }
 
   emit(event, data) {
@@ -377,10 +384,15 @@ export class BaseComponent {
   /**
    * Remove all event handlers.
    */
-  destroy() {
+  destroy(all) {
     if (this.inputMask) {
       this.inputMask.destroy();
     }
+    _each(this.eventListeners, (listener) => {
+      if (all || listener.internal) {
+        this.events.off(listener.type, listener.listener);
+      }
+    });
     _each(this.eventHandlers, (handler) => {
       window.removeEventListener(handler.event, handler.func);
     });
@@ -531,15 +543,6 @@ export class BaseComponent {
     this.addEventListener(input, this.info.changeEvent, this.updateValue.bind(this));
   }
 
-  attachInput(input) {
-    // If the options say readOnly then disable the input.
-    if (input && this.options.readOnly) {
-      input.disabled = true;
-      input.setAttribute('disabled', 'disabled');
-    }
-    this.addInputEventListener(input);
-  }
-
   /**
    * Add a new input to this comonent.
    *
@@ -551,8 +554,12 @@ export class BaseComponent {
     if (input && container) {
       this.inputs.push(input);
       input = container.appendChild(input);
+      if (input && this.options.readOnly) {
+        input.disabled = true;
+        input.setAttribute('disabled', 'disabled');
+      }
     }
-    this.attachInput(input);
+    this.addInputEventListener(input);
   }
 
   /**
@@ -569,10 +576,12 @@ export class BaseComponent {
     let values = [];
     for (let i in this.inputs) {
       if (!this.component.multiple) {
-        return this.getValueAt(i);
+        this.value = this.getValueAt(i);
+        return this.value;
       }
       values.push(this.getValueAt(i));
     }
+    this.value = values;
     return values;
   }
 
@@ -660,6 +669,9 @@ export class BaseComponent {
    * @param value
    */
   setValue(value, noValidate) {
+    if (value === null) {
+      return;
+    }
     let isArray = _isArray(value);
     for (let i in this.inputs) {
       this.setValueAt(i, isArray ? value[i] : value);

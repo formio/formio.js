@@ -125,8 +125,8 @@ export class FormioComponents extends BaseComponent {
     _each(this.components, (comp) => comp.checkConditions(data));
   }
 
-  destroy() {
-    super.destroy();
+  destroy(all) {
+    super.destroy(all);
     let components = _clone(this.components);
     _each(components, (comp) => this.removeComponent(comp, this.components));
   }
@@ -151,6 +151,9 @@ export class FormioComponents extends BaseComponent {
   }
 
   setValue(value, noValidate) {
+    if (!value) {
+      return;
+    }
     _each(this.components, (component) => {
       if (component.input || (component.type === 'button')) {
         return;

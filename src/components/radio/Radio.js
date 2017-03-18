@@ -42,14 +42,6 @@ export class RadioComponent extends BaseComponent {
     container.appendChild(inputGroup);
   }
 
-  addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => {
-      if (input.value) {
-        this.onChange();
-      }
-    });
-  }
-
   getValue() {
     let value = '';
     _each(this.inputs, (input) => {
