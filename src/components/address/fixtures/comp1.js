@@ -11,9 +11,13 @@ export const component = {
   "persistent": true,
   "map": {
     "region": "",
-    "key": ""
+    "key": "",
+    "autocompleteOptions": null,
+    "autocompleteFilter": null
   },
   "validate": {
+    "customPrivate": false,
+    "custom": "",
     "required": false
   },
   "type": "address",
