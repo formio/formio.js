@@ -151,6 +151,9 @@ export class FormioComponents extends BaseComponent {
   }
 
   setValue(value, noValidate) {
+    if (!value) {
+      return;
+    }
     _each(this.components, (component) => {
       if (component.input || (component.type === 'button')) {
         return;

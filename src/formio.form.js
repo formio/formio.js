@@ -24,6 +24,7 @@ export class FormioForm extends FormioComponents {
     this.alert = null;
     this.onFormLoad = null;
     this.onSubmissionLoad = null;
+    this.onFormBuild = null;
 
     // Promise that executes when the form is rendered and ready.
     this.ready = new Promise((resolve, reject) => {
@@ -119,13 +120,19 @@ export class FormioForm extends FormioComponents {
   }
 
   setForm(form) {
+    if (this.onFormBuild) {
+      return this.onFormBuild.then(() => this.setForm(form));
+    }
+
     // Set this form as a component.
     this.component = form;
     this.loading = true;
-    return this.render().then(() => {
+    return this.onFormBuild = this.render().then(() => {
       return this.onLoaded.then(() => {
         this.loading = false;
         this.readyResolve();
+        this.setValue(this.value);
+        this.onFormBuild = null;
       }, (err) => this.readyReject(err));
     }, (err) => this.readyReject(err));
   }
@@ -141,7 +148,8 @@ export class FormioForm extends FormioComponents {
   }
 
   set submission(submission) {
-    this.ready.then(() => this.setValue(submission.data));
+    this.value = submission.data;
+    this.ready.then(() => this.setValue(this.value));
   }
 
   render() {

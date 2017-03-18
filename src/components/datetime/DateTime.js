@@ -69,6 +69,15 @@ export class DateTimeComponent extends BaseComponent {
     };
   }
 
+  set disable(disable) {
+    super.disable = disable;
+    _each(this.inputs, (input) => {
+      if (input.calendar) {
+        input.calendar.redraw();
+      }
+    });
+  }
+
   addSuffix(input, inputGroup) {
     let suffix = this.ce('suffix', 'span', {
       class: 'input-group-addon'
@@ -80,7 +89,6 @@ export class DateTimeComponent extends BaseComponent {
 
   addInput(input, container, name) {
     super.addInput(input, container, name);
-    input.setAttribute('data-input', '');
     input.calendar = new Flatpickr(input, this.config);
   }
 
@@ -115,5 +123,8 @@ export class DateTimeComponent extends BaseComponent {
     let date = new Date(value);
     this.precise = true;
     this.inputs[index].value = date.getTime();
+    if (this.inputs[index].calendar) {
+      this.inputs[index].calendar.setDate(date);
+    }
   }
 }
