@@ -1,23 +1,7 @@
 import Promise from "native-promise-only";
 import { BaseComponent } from '../base/Base';
 export class GmapComponent extends BaseComponent {
-
-  build() {
-    this.element = this.ce('element', 'div', {
-      class: 'map-container'
-    });
-    this.initGoogleMap();
-    this.input = this.createInput(this.element);
-    this.addInput(this.input, this.element);
-    let gmapElement = this.ce('gmapElement', 'div', {
-      id: this.component.map.gmapId,
-      style: "min-height: 300px; height: calc(100vh - 600px);"
-    });
-    this.element.appendChild(gmapElement);
-  }
-
   constructor(component, options, data) {
-    console.log('component', component, options, data);
     super(component, options, data);
 
     // If google maps api is not ready, then load it.
@@ -47,8 +31,21 @@ export class GmapComponent extends BaseComponent {
     }
   }
 
+  build() {
+    this.element = this.ce('element', 'div', {
+      class: 'map-container'
+    });
+    this.initGoogleMap();
+    this.input = this.createInput(this.element);
+    this.addInput(this.input, this.element);
+    let gmapElement = this.ce('gmapElement', 'div', {
+      id: this.component.map.gmapId,
+      style: "min-height: 300px; height: calc(100vh - 600px);"
+    });
+    this.element.appendChild(gmapElement);
+  }
+
   setValue(value) {
-    console.log('value', value);
     super.setValue(value, true);
   }
 
@@ -93,7 +90,6 @@ export class GmapComponent extends BaseComponent {
             (place.address_components[2] && place.address_components[2].short_name || '')
           ].join(' ');
         }
-        console.log('place.name', place.name, place);
         that.setValue(place.name);
       });
     });
