@@ -25,7 +25,11 @@ module.exports = {
         september: 'September',
         october: 'October',
         november: 'November',
-        december: 'December'
+        december: 'December',
+        next: 'Next',
+        previous: 'Previous',
+        cancel: 'Cancel',
+        submit: 'Submit Form'
       }
     }
   }
