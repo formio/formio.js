@@ -120,21 +120,20 @@ export class FormioForm extends FormioComponents {
   }
 
   setForm(form) {
-    if (this.onFormBuild) {
-      return this.onFormBuild.then(() => this.setForm(form));
+    if (form.type === 'wizard') {
+      console.warn('You need to instantiate the FormioWizard class to use this form as a wizard.');
     }
 
-    // Set this form as a component.
-    this.component = form;
-    this.loading = true;
-    return this.onFormBuild = this.render().then(() => {
-      return this.onLoaded.then(() => {
-        this.loading = false;
-        this.readyResolve();
-        this.setValue(this.value);
-        this.onFormBuild = null;
-      }, (err) => this.readyReject(err));
-    }, (err) => this.readyReject(err));
+    if (this.onFormBuild) {
+      return this.onFormBuild.then(() => this.createForm(form));
+    }
+
+    // Create the form.
+    return this.createForm(form);
+  }
+
+  cancel() {
+    this.submission = {data: {}};
   }
 
   set form(form) {
@@ -150,6 +149,19 @@ export class FormioForm extends FormioComponents {
   set submission(submission) {
     this.value = submission.data;
     this.ready.then(() => this.setValue(this.value));
+  }
+
+  createForm(form) {
+    this.component = form;
+    this.loading = true;
+    return this.onFormBuild = this.render().then(() => {
+      return this.onLoaded.then(() => {
+        this.loading = false;
+        this.readyResolve();
+        this.setValue(this.value);
+        this.onFormBuild = null;
+      }, (err) => this.readyReject(err));
+    }, (err) => this.readyReject(err));
   }
 
   render() {

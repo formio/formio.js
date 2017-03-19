@@ -203,11 +203,6 @@ export class BaseComponent {
     td.appendChild(this.addButton());
     tr.appendChild(td);
     this.tbody.appendChild(tr);
-
-    // Reset the values of the inputs.
-    if (this.data.hasOwnProperty(this.component.key)) {
-      this.setValue(this.data[this.component.key]);
-    }
   }
 
   addButton() {
@@ -561,6 +556,11 @@ export class BaseComponent {
       }
     }
     this.addInputEventListener(input);
+
+    // Reset the values of the inputs.
+    if (this.data && this.data.hasOwnProperty(this.component.key)) {
+      this.setValue(this.data[this.component.key]);
+    }
   }
 
   /**
@@ -670,9 +670,6 @@ export class BaseComponent {
    * @param value
    */
   setValue(value, noValidate) {
-    if (value === null) {
-      return;
-    }
     let isArray = _isArray(value);
     for (let i in this.inputs) {
       this.setValueAt(i, isArray ? value[i] : value);
