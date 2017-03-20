@@ -123,11 +123,13 @@ export class SelectComponent extends BaseComponent {
     return this.choices.getValue(true);
   }
 
-  setValue(value, noValidate) {
+  setValue(value, noUpdate, noValidate) {
     if (value) {
       this.choices.setValue(_isArray(value) ? value : [value]);
     }
-    this.updateValue(noValidate);
+    if (!noUpdate) {
+      this.updateValue(noValidate);
+    }
   }
 
   destroy() {

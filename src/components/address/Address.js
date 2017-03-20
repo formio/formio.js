@@ -231,8 +231,6 @@ export class AddressComponent extends TextFieldComponent {
       console.warn('An error occurred in a custom autoComplete filter statement for component ' + this.component.key, e);
       return true;
     }
-
-    return true;
   }
 
   /**

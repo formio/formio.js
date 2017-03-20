@@ -150,7 +150,7 @@ export class FormioComponents extends BaseComponent {
     return this.data;
   }
 
-  setValue(value, noValidate) {
+  setValue(value, noUpdate, noValidate) {
     if (!value) {
       return;
     }
@@ -160,13 +160,13 @@ export class FormioComponents extends BaseComponent {
       }
 
       if (component.type === 'components') {
-        component.setValue(value, noValidate);
+        component.setValue(value, noUpdate, noValidate);
       }
       else if (value && value.hasOwnProperty(component.component.key)) {
-        component.setValue(value[component.component.key]);
+        component.setValue(value[component.component.key], noUpdate);
       }
       else {
-        component.setValue(null, true);
+        component.setValue(null, noUpdate, true);
       }
     });
   }

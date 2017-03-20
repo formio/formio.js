@@ -145,7 +145,12 @@ export class BaseComponent {
       table.appendChild(this.tbody);
 
       // Add a default value.
-      this.addValue();
+      if (!this.data[this.component.key] || !this.data[this.component.key].length) {
+        this.addNewValue();
+      }
+
+      // Build the rows.
+      this.buildRows();
 
       // Add the table to the element.
       this.append(table);
@@ -160,8 +165,7 @@ export class BaseComponent {
     return '';
   }
 
-  addValue() {
-    this.data[this.component.key] = this.getValue();
+  addNewValue() {
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
     }
@@ -169,6 +173,10 @@ export class BaseComponent {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
     this.data[this.component.key].push(this.defaultValue());
+  }
+
+  addValue() {
+    this.addNewValue();
     this.buildRows();
   }
 
@@ -559,7 +567,7 @@ export class BaseComponent {
 
     // Reset the values of the inputs.
     if (this.data && this.data.hasOwnProperty(this.component.key)) {
-      this.setValue(this.data[this.component.key]);
+      this.setValue(this.data[this.component.key], true);
     }
   }
 
@@ -662,6 +670,9 @@ export class BaseComponent {
    * @param value
    */
   setValueAt(index, value) {
+    if (value === null || value === undefined) {
+      value = this.defaultValue();
+    }
     this.inputs[index].value = value;
   }
 
@@ -669,12 +680,14 @@ export class BaseComponent {
    * Set the value of this component.
    * @param value
    */
-  setValue(value, noValidate) {
+  setValue(value, noUpdate, noValidate) {
     let isArray = _isArray(value);
     for (let i in this.inputs) {
       this.setValueAt(i, isArray ? value[i] : value);
     }
-    this.updateValue(noValidate);
+    if (!noUpdate) {
+      this.updateValue(noValidate);
+    }
   }
 
   /**

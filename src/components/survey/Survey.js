@@ -47,7 +47,7 @@ export class SurveyComponent extends BaseComponent {
     this.element.appendChild(this.table);
   }
 
-  setValue(value, noValidate) {
+  setValue(value, noUpdate, noValidate) {
     if (!value) {
       return;
     }
@@ -59,7 +59,9 @@ export class SurveyComponent extends BaseComponent {
         }
       });
     });
-    this.updateValue(noValidate);
+    if (!noUpdate) {
+      this.updateValue(noValidate);
+    }
   }
 
   getValue() {

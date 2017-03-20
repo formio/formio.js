@@ -28,8 +28,8 @@ export class GmapComponent extends BaseComponent {
     this.element.appendChild(gmapElement);
   }
 
-  setValue(value) {
-    super.setValue(value, true);
+  setValue(value, noUpdate) {
+    super.setValue(value, noUpdate, true);
   }
 
   addInput(input, container) {
