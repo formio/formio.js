@@ -17,6 +17,7 @@ export class FormioForm extends FormioComponents {
   constructor(element, options) {
     super(null, getOptions(options));
     this.type = 'form';
+    this._class = 'form';
     this._src = '';
     this._loading = true;
     this.formio = null;
@@ -250,6 +251,10 @@ export class FormioForm extends FormioComponents {
   reset() {
     // Reset the submission data.
     this.submission = {data: {}};
+  }
+
+  getClassName() {
+    return this._class;
   }
 
   submit() {

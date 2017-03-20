@@ -5,6 +5,7 @@ import each from 'lodash/each';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
+    this._class = 'wizard';
     this.pages = [];
     this.page = 0;
   }
