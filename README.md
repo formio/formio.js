@@ -1,5 +1,9 @@
-# formio.js
-A common library for including Form.io in the browser.
+# JavaScript powered forms and SDK for Form.io
+This library is a plain JavaScript form renderer and SDK for Form.io. This allows you to render the JSON schema forms produced by Form.io and render those within your application using plain JavaScript, as well as provides an interface SDK to communicate to the Form.io API's. The benefits of this library include.
+
+ - Plain JavaScript implementation using ES6 and Modern practices (no jQuery, Angular, React, or any other framework dependency)
+ - Renders a JSON schema as a webform and hooks up that form to the Form.io API's
+ - Nested components, layouts, Date/Time, Select, Input Masks, and many more included features
 
 ### Usage
 Creating an instance of Formio is simple, and takes only a path (URL String). The path can be different, depending on
