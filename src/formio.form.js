@@ -120,7 +120,7 @@ export class FormioForm extends FormioComponents {
   }
 
   setForm(form) {
-    if (form.type === 'wizard') {
+    if (form.display === 'wizard') {
       console.warn('You need to instantiate the FormioWizard class to use this form as a wizard.');
     }
 
