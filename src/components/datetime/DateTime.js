@@ -116,7 +116,8 @@ export class DateTimeComponent extends BaseComponent {
 
   setValueAt(index, value) {
     if (this.inputs[index].calendar) {
-      this.inputs[index].calendar.setDate(new Date(value));
+      let date = value ? new Date(value) : new Date();
+      this.inputs[index].calendar.setDate(date);
     }
   }
 }

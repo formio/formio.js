@@ -19,6 +19,7 @@ export class FormioForm extends FormioComponents {
     this.type = 'form';
     this._src = '';
     this._loading = true;
+    this._submission = {};
     this.formio = null;
     this.loader = null;
     this.alert = null;
@@ -141,12 +142,13 @@ export class FormioForm extends FormioComponents {
   }
 
   get submission() {
-    return {
-      data: this.getValue()
-    };
+    this._submission.data = this.getValue();
+    return this._submission;
   }
 
   set submission(submission) {
+    submission = submission || {};
+    this._submission = submission;
     this.value = submission.data;
     this.ready.then(() => this.setValue(this.value));
   }
