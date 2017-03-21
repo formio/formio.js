@@ -31,7 +31,7 @@ export class SelectComponent extends BaseComponent {
     });
   }
 
-  loadItems(url, input) {
+  loadItems(url, input, headers, options) {
     let query = {
       limit: 100,
       skip: 0
@@ -63,9 +63,7 @@ export class SelectComponent extends BaseComponent {
     url += '?' + Formio.serialize(query);
 
     // Make the request.
-    Formio.request(url, null, null, new Headers(), {
-      noToken: true
-    }).then((response) => this.setItems(response));
+    Formio.request(url, null, null, headers, options).then((response) => this.setItems(response));
   }
 
   updateItems() {
@@ -86,7 +84,9 @@ export class SelectComponent extends BaseComponent {
         this.loadItems(Formio.getAppUrl() + '/form/' + this.component.data.resource + '/submission');
         break;
       case 'url':
-        this.loadItems(this.component.data.url);
+        this.loadItems(this.component.data.url, null, new Headers(), {
+          noToken: true
+        });
         break;
     }
   }

@@ -1,6 +1,7 @@
 'use strict';
 import Promise from "native-promise-only";
 import FormioForm from './formio.form';
+import Formio from './formio';
 import each from 'lodash/each';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
@@ -122,5 +123,9 @@ export class FormioWizard extends FormioForm {
     this.element.appendChild(this.wizardNav);
   }
 }
+
+FormioWizard.setBaseUrl = Formio.setBaseUrl;
+FormioWizard.setApiUrl = Formio.setApiUrl;
+FormioWizard.setAppUrl = Formio.setAppUrl;
 
 module.exports = global.FormioWizard = FormioWizard;
