@@ -29,7 +29,7 @@ export class Formio {
       this.isFormOnly = options.formOnly;
     }
     else if (Formio.formOnly) {
-      this.isFormOnly = Formio.formOnly;
+      this.isFormOnly = !!Formio.formOnly;
     }
     else {
       this.isFormOnly = false;
