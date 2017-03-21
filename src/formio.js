@@ -25,6 +25,16 @@ export class Formio {
       this.base = window.location.href.match(/http[s]?:\/\/api./)[0];
     }
 
+    if (options.hasOwnProperty('formOnly')) {
+      this.isFormOnly = options.formOnly;
+    }
+    else if (Formio.formOnly) {
+      this.isFormOnly = Formio.formOnly;
+    }
+    else {
+      this.isFormOnly = false;
+    }
+
     // Ensure we have an instance of Formio.
     if (!(this instanceof Formio)) { return new Formio(path); }
     if (!path) {
@@ -97,7 +107,7 @@ export class Formio {
     };
 
     this.projectUrl = hostName;
-    if (!options.hasOwnProperty('formOnly') || !options.formOnly) {
+    if (!this.isFormOnly) {
       // Determine the projectUrl and projectId
       if ((path.search(/(^|\/)(project)($|\/)/) !== -1)) {
         // Get project id as project/:projectId.
@@ -605,6 +615,14 @@ export class Formio {
     catch (e) {
       return;
     }
+  }
+
+  static setFormOnly(formOnly) {
+    Formio.formOnly = formOnly;
+  }
+
+  static getFormOnly() {
+    return Formio.formOnly;
   }
 
   static setBaseUrl(url) {
