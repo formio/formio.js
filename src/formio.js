@@ -14,9 +14,9 @@ var copy = require('shallow-copy');
  *   let formio = new Formio('https://examples.form.io/example');
  */
 export class Formio {
-  constructor(path, base) {
-    if (base) {
-      this.base = base;
+  constructor(path, options = {}) {
+    if (options.hasOwnProperty('base')) {
+      this.base = options.base;
     }
     else if (Formio.baseUrl) {
       this.base = Formio.baseUrl;
@@ -97,29 +97,31 @@ export class Formio {
     };
 
     this.projectUrl = hostName;
-    // Determine the projectUrl and projectId
-    if ((path.search(/(^|\/)(project)($|\/)/) !== -1)) {
-      // Get project id as project/:projectId.
-      registerItems(['project'], hostName);
-    }
-    else if (hostName === this.base) {
-      // Get project id as first part of path (subdirectory).
-      if (hostparts.length > 3 && path.split('/').length > 1) {
-        var pathParts = path.split('/');
-        pathParts.shift(); // Throw away the first /.
-        this.projectId = pathParts.shift();
-        path = '/' + pathParts.join('/');
-        this.projectUrl = hostName + '/' + this.projectId;
+    if (!options.hasOwnProperty('formOnly') || !options.formOnly) {
+      // Determine the projectUrl and projectId
+      if ((path.search(/(^|\/)(project)($|\/)/) !== -1)) {
+        // Get project id as project/:projectId.
+        registerItems(['project'], hostName);
       }
-    }
-    else {
-      // Get project id from subdomain.
-      if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.indexOf('localhost') !== -1)) {
-        this.projectUrl = hostName;
-        this.projectId = hostparts[2].split('.')[0];
+      else if (hostName === this.base) {
+        // Get project id as first part of path (subdirectory).
+        if (hostparts.length > 3 && path.split('/').length > 1) {
+          var pathParts = path.split('/');
+          pathParts.shift(); // Throw away the first /.
+          this.projectId = pathParts.shift();
+          path = '/' + pathParts.join('/');
+          this.projectUrl = hostName + '/' + this.projectId;
+        }
       }
+      else {
+        // Get project id from subdomain.
+        if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.indexOf('localhost') !== -1)) {
+          this.projectUrl = hostName;
+          this.projectId = hostparts[2].split('.')[0];
+        }
+      }
+      this.projectsUrl = this.projectsUrl || this.base + '/project';
     }
-    this.projectsUrl = this.projectsUrl || this.base + '/project';
 
     // Configure Form urls and form ids.
     if ((path.search(/(^|\/)(project|form)($|\/)/) !== -1)) {
