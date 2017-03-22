@@ -333,7 +333,7 @@ describe('Localhost Constructor Tests', () => {
 
   _each(tests, function(test, path) {
     it ('Should initialize for ' + path, function(done) {
-      var formio = new Formio(path, baseUrl);
+      var formio = new Formio(path, { base: baseUrl });
       for (var param in test) {
         assert.equal(formio[param], test[param], param + ' is not equal. ' + formio[param] + ' == ' + test[param] + '\n');
       }
@@ -385,7 +385,7 @@ describe('Subdomain Constructor Tests', () => {
 
   _each(tests, function(test, path) {
     it ('Should initialize for ' + path, function(done) {
-      var formio = new Formio(path, baseUrl);
+      var formio = new Formio(path, { base: baseUrl });
       for (var param in test) {
         assert.equal(formio[param], test[param], param + ' is not equal. ' + formio[param] + ' == ' + test[param] + '\n');
       }
@@ -452,9 +452,60 @@ describe('Subdirectory Constructor Tests', () => {
 
   _each(tests, function(test, path) {
     it ('Should initialize for ' + path, function(done) {
-      var formio = new Formio(path, protocol + '://' + testBaseUrl);
+      var formio = new Formio(path, { base: protocol + '://' + testBaseUrl});
       for (var param in test) {
         assert.equal(formio[param], test[param], param + ' is not equal. ' + formio[param] + ' == ' + test[param] + '\n');
+      }
+      done();
+    });
+  });
+});
+
+describe('Form only Constructor Tests', () => {
+  var tests = {};
+  var addUrlTest = function(url, test) {
+    tests[url] = test;
+  };
+
+  var testBaseUrl = 'foo.blah.form.io';
+  var formBaseUrl = protocol + '://' + testBaseUrl;
+
+  addUrlTest(formBaseUrl + '/user', {
+    projectUrl: formBaseUrl,
+    projectsUrl: '',
+    projectId: '',
+    formsUrl: formBaseUrl + '/form',
+    formUrl: formBaseUrl + '/user',
+    formId: 'user',
+    actionsUrl: formBaseUrl + '/user/action',
+    actionUrl: '',
+    actionId: '',
+    submissionsUrl: formBaseUrl + '/user/submission',
+    submissionUrl: '',
+    submissionId: '',
+    query: ''
+  });
+  addUrlTest(formBaseUrl + '/user/actionform/?test=foo', {
+    projectUrl: formBaseUrl,
+    projectsUrl: '',
+    projectId: '',
+    formsUrl: formBaseUrl + '/form',
+    formUrl: formBaseUrl + '/user/actionform',
+    formId: 'user/actionform',
+    actionsUrl: formBaseUrl + '/user/actionform/action',
+    actionUrl: '',
+    actionId: '',
+    submissionsUrl: formBaseUrl + '/user/actionform/submission',
+    submissionUrl: '',
+    submissionId: '',
+    query: '?test=foo'
+  });
+
+  _each(tests, function(test, path) {
+    it ('Should initialize for ' + path, function(done) {
+      var formio = new Formio(path, { formOnly: true });
+      for (var param in test) {
+        assert.equal(formio[param], test[param], param + ' is not equal. "' + formio[param] + '" == "' + test[param] + '"\n');
       }
       done();
     });
