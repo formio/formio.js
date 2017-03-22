@@ -265,6 +265,10 @@ export class FormioForm extends FormioComponents {
   }
 }
 
+FormioForm.setBaseUrl = Formio.setBaseUrl;
+FormioForm.setApiUrl = Formio.setApiUrl;
+FormioForm.setAppUrl = Formio.setAppUrl;
+
 /**
  * Embed this form within the current page.
  * @param embed

@@ -1,5 +1,4 @@
 import maskInput from 'text-mask-all/vanilla';
-import FormioUtils from 'formio-utils';
 import Promise from "native-promise-only";
 import _get from 'lodash/get';
 import _each from 'lodash/each';
@@ -8,6 +7,7 @@ import _isArray from 'lodash/isArray';
 import _assign from 'lodash/assign';
 import _clone from 'lodash/clone';
 import i18next from 'i18next';
+import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
 
 i18next.initialized = false;
@@ -22,7 +22,6 @@ export class BaseComponent {
     this.events = this.options.events;
     this.data = data || {};
     this.component = component || {};
-    this.components = [];
     this.element = null;
     this.tbody = null;
     this.label = null;
@@ -31,6 +30,7 @@ export class BaseComponent {
     this.inputs = [];
     this.info = null;
     this.value = null;
+    this.disabled = false;
     this.inputMask = null;
     this.options.name = this.options.name || 'data';
     this.validators = ['required', 'minLength', 'maxLength', 'custom'];
@@ -554,7 +554,7 @@ export class BaseComponent {
    * @param container
    * @param name
    */
-  addInput(input, container) {
+  addInput(input, container, noSet) {
     if (input && container) {
       this.inputs.push(input);
       input = container.appendChild(input);
@@ -566,7 +566,7 @@ export class BaseComponent {
     this.addInputEventListener(input);
 
     // Reset the values of the inputs.
-    if (this.data && this.data.hasOwnProperty(this.component.key)) {
+    if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {
       this.setValue(this.data[this.component.key], true);
     }
   }
@@ -595,10 +595,11 @@ export class BaseComponent {
   }
 
   updateValue(noValidate) {
-    let falsey = !this.value && (this.value !== null) && (this.value !== undefined);
-    this.data[this.component.key] = this.value = this.getValue();
+    let value = this.data[this.component.key];
+    let falsey = !value && (value !== null) && (value !== undefined);
+    this.data[this.component.key] = this.getValue();
     if (falsey) {
-      if (!!this.value) {
+      if (!!this.data[this.component.key]) {
         this.triggerChange(noValidate);
       }
     }
@@ -631,9 +632,7 @@ export class BaseComponent {
   }
 
   interpolate(string, data) {
-    return string.replace(/\{\{\s*([^\s]*)\s*\}\}/g, function(match, token) {
-      return _get(data, token);
-    });
+    return FormioUtils.interpolate(string, data);
   }
 
   setCustomValidity(message) {
@@ -681,6 +680,7 @@ export class BaseComponent {
    * @param value
    */
   setValue(value, noUpdate, noValidate) {
+    this.value = value;
     let isArray = _isArray(value);
     for (let i in this.inputs) {
       this.setValueAt(i, isArray ? value[i] : value);
@@ -690,10 +690,29 @@ export class BaseComponent {
     }
   }
 
+  set visible(visible) {
+    let element = this.getElement();
+    if (element) {
+      if (visible && this.styles) {
+        element.style.visibility = this.styles.visibility;
+        element.style.position = this.styles.position;
+      }
+      else if (!visible) {
+        this.styles = {
+          visibility: element.style.visibility,
+          position: element.style.position
+        };
+        element.style.visibility = 'hidden';
+        element.style.position = 'absolute';
+      }
+    }
+  }
+
   /**
    * Disable this component.
    */
   set disable(disable) {
+    this.disabled = disable;
     // Disable all input.
     _each(this.inputs, (input) => {
       input.disabled = disable;
