@@ -51,6 +51,7 @@ export class SurveyComponent extends BaseComponent {
     if (!value) {
       return;
     }
+    this.value = value;
     let key = 'data[' + this.component.key + ']';
     _each(this.component.questions, (question) => {
       _each(this.inputs, (input) => {

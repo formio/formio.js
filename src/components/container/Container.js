@@ -24,6 +24,7 @@ export class ContainerComponent extends FormioComponents {
     if (!value || !_isObject(value)) {
       return;
     }
+    this.value = value;
     _each(this.components, (component) => {
       if (value.hasOwnProperty(component.component.key)) {
         component.setValue(value[component.component.key], noUpdate, noValidate);

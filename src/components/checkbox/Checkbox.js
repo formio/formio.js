@@ -67,6 +67,7 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   setValue(value, noUpdate, noValidate) {
+    this.value = value;
     if (this.component.inputType === 'radio') {
       this.input.checked = (value === this.input.value) ? 1 : 0;
     }

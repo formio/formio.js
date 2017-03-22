@@ -1,14 +1,15 @@
 'use strict';
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
-import _filter from 'lodash/filter';
 import _remove from 'lodash/remove';
-import _isArray from 'lodash/isArray';
+import Promise from "native-promise-only";
 import { BaseComponent } from './base/Base';
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'components';
+    this.components = [];
+    this.hidden = [];
   }
 
   build() {
@@ -71,6 +72,7 @@ export class FormioComponents extends BaseComponent {
     let components = require('./index');
     let comp = components.create(component, this.options, data);
     this.components.push(comp);
+    this.setHidden(comp);
     element.appendChild(comp.getElement());
     return comp;
   }
@@ -135,6 +137,20 @@ export class FormioComponents extends BaseComponent {
     _each(this.components, (component) => (component.disable = disable));
   }
 
+  setHidden(component) {
+    if (component.components && component.components.length) {
+      component.hideComponents(this.hidden);
+    }
+    else {
+      component.visible = (!this.hidden || (this.hidden.indexOf(component.component.key) === -1));
+    }
+  }
+
+  hideComponents(hidden) {
+    this.hidden = hidden;
+    this.eachComponent((component) => this.setHidden(component));
+  }
+
   get errors() {
     let errors = [];
     _each(this.components, (comp) => {
@@ -154,6 +170,7 @@ export class FormioComponents extends BaseComponent {
     if (!value) {
       return;
     }
+    this.value = value;
     _each(this.components, (component) => {
       if (component.input || (component.type === 'button')) {
         return;

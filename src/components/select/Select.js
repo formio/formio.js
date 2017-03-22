@@ -25,10 +25,16 @@ export class SelectComponent extends BaseComponent {
   }
 
   setItems(items) {
+    if (!this.choices) {
+      return;
+    }
     this.choices._clearChoices();
     _each(items, (item) => {
       this.choices._addChoice(false, false, this.itemValue(item), this.itemTemplate(item));
     });
+    if (this.value) {
+      this.setValue(this.value, true);
+    }
   }
 
   loadItems(url, input, headers, options) {
@@ -91,8 +97,8 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
-  addInput(input, container, name) {
-    super.addInput(input, container, name);
+  addInput(input, container) {
+    super.addInput(input, container, true);
     if (this.component.multiple) {
       input.setAttribute('multiple', true);
     }
@@ -106,11 +112,17 @@ export class SelectComponent extends BaseComponent {
         containerInner: 'form-control'
       }
     });
+    if (this.disabled) {
+      this.choices.disable();
+    }
     this.updateItems();
   }
 
   set disable(disable) {
     super.disable = disable;
+    if (!this.choices) {
+      return;
+    }
     if (disable) {
       this.choices.disable();
     }
@@ -124,8 +136,23 @@ export class SelectComponent extends BaseComponent {
   }
 
   setValue(value, noUpdate, noValidate) {
-    if (value) {
-      this.choices.setValue(_isArray(value) ? value : [value]);
+    this.value = value;
+    if (value && this.choices) {
+      if (this.choices.store) {
+        // Search for the choice.
+        const choices = this.choices.store.getChoices();
+        const foundChoice = choices.find((choice) => {
+          return choice.value === value;
+        });
+
+        // If it is not found, then add it.
+        if (!foundChoice) {
+          this.choices._addChoice(false, false, this.itemValue(value), this.itemTemplate(value));
+        }
+      }
+
+      // Now set the value.
+      this.choices.setValueByChoice(_isArray(value) ? this.itemValue(value) : [this.itemValue(value)]);
     }
     if (!noUpdate) {
       this.updateValue(noValidate);

@@ -89,6 +89,8 @@ export class DataGridComponent extends BaseComponent {
       return;
     }
 
+    this.value = value;
+
     // Add needed rows.
     for (let i=this.rows.length; i < value.length; i++) {
       this.addValue();
