@@ -33,7 +33,7 @@ export class BaseComponent {
     this.disabled = false;
     this.inputMask = null;
     this.options.name = this.options.name || 'data';
-    this.validators = ['required', 'minLength', 'maxLength', 'custom'];
+    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern'];
     this.triggerChange = _debounce(this.onChange.bind(this), 200);
     this.eventHandlers = [];
     this.eventListeners = [];
