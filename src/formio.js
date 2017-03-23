@@ -15,39 +15,11 @@ var copy = require('shallow-copy');
  */
 export class Formio {
   constructor(path, options = {}) {
-    if (options.hasOwnProperty('base')) {
-      this.base = options.base;
-    }
-    else if (Formio.baseUrl) {
-      this.base = Formio.baseUrl;
-    }
-    else {
-      this.base = window.location.href.match(/http[s]?:\/\/api./)[0];
-    }
-
-    if (options.hasOwnProperty('formOnly')) {
-      this.isFormOnly = options.formOnly;
-    }
-    else if (Formio.formOnly) {
-      this.isFormOnly = Formio.formOnly;
-    }
-    else {
-      this.isFormOnly = false;
-    }
-
     // Ensure we have an instance of Formio.
     if (!(this instanceof Formio)) { return new Formio(path); }
-    if (!path) {
-      // Allow user to create new projects if this was instantiated without
-      // a url
-      this.projectUrl = this.base + '/project';
-      this.projectsUrl = this.base + '/project';
-      this.projectId = false;
-      this.query = '';
-      return;
-    }
 
     // Initialize our variables.
+    this.base = '';
     this.projectsUrl = '';
     this.projectUrl = '';
     this.projectId = '';
@@ -61,6 +33,39 @@ export class Formio {
     this.actionId = '';
     this.actionUrl = '';
     this.query = '';
+
+    if (options.hasOwnProperty('base')) {
+      this.base = options.base;
+    }
+    else if (Formio.baseUrl) {
+      this.base = Formio.baseUrl;
+    }
+    else {
+      this.base = window.location.href.match(/http[s]?:\/\/api./)[0];
+    }
+
+    if (!path) {
+      // Allow user to create new projects if this was instantiated without
+      // a url
+      this.projectUrl = this.base + '/project';
+      this.projectsUrl = this.base + '/project';
+      this.projectId = false;
+      this.query = '';
+      return;
+    }
+
+    if (options.hasOwnProperty('project')) {
+      this.projectUrl = options.project;
+    }
+
+    let project = this.projectUrl || Formio.appUrl;
+
+    // The baseURL is the same as the projectUrl. This is almost certainly against
+    // the Open Source server.
+    if (project && this.base === project) {
+      this.noProject = true;
+      this.projectUrl = this.base;
+    }
 
     // Normalize to an absolute path.
     if ((path.indexOf('http') !== 0) && (path.indexOf('//') !== 0)) {
@@ -106,8 +111,8 @@ export class Formio {
       }
     };
 
-    this.projectUrl = hostName;
-    if (!this.isFormOnly) {
+    this.projectUrl = this.projectUrl || hostName;
+    if (!this.noProject) {
       // Determine the projectUrl and projectId
       if ((path.search(/(^|\/)(project)($|\/)/) !== -1)) {
         // Get project id as project/:projectId.
@@ -615,14 +620,6 @@ export class Formio {
     catch (e) {
       return;
     }
-  }
-
-  static setFormOnly(formOnly) {
-    Formio.formOnly = !!formOnly;
-  }
-
-  static getFormOnly() {
-    return Formio.formOnly;
   }
 
   static setBaseUrl(url) {
