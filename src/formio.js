@@ -311,7 +311,7 @@ export class Formio {
     return this.makeRequest('availableActions', this.formUrl + '/actions');
   }
 
-  actionInfo() {
+  actionInfo(name) {
     return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
   }
 
