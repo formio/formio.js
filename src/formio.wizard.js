@@ -19,7 +19,10 @@ export class FormioWizard extends FormioForm {
   }
 
   nextPage() {
-    this.setPage(this.page + 1);
+    // Validate the form builed, before go to the next page
+    if (this.checkValidity()) {
+      this.setPage(this.page + 1);
+    }
   }
 
   prevPage() {

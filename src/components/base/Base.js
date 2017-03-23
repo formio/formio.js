@@ -611,16 +611,20 @@ export class BaseComponent {
   checkValidity() {
     // No need to check for errors if there is no input.
     if (!this.component.input) {
-      return;
+      return true;
     }
 
-    this.setCustomValidity(Validator.check(
+    let message = Validator.check(
       this.validators,
       this.component,
       this.getValidateValue(),
       this.data,
-      this.t.bind(this))
+      this.t.bind(this)
     );
+    this.setCustomValidity(message);
+
+    // No message, returns true
+    return message ? false : true;
   }
 
   getValidateValue() {

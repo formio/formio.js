@@ -255,13 +255,16 @@ export class FormioForm extends FormioComponents {
   }
 
   submit() {
-    this.loading = true;
-    if (!this.formio) {
-      return this.onSubmit(this.submission);
+    // Validate the form builed, before submission
+    if (this.checkValidity()) {
+      this.loading = true;
+      if (!this.formio) {
+        return this.onSubmit(this.submission);
+      }
+      this.formio.saveSubmission(this.submission)
+        .then((submission) => this.onSubmit(submission))
+        .catch((err) => this.onSubmissionError(err));
     }
-    this.formio.saveSubmission(this.submission)
-      .then((submission) => this.onSubmit(submission))
-      .catch((err) => this.onSubmissionError(err));
   }
 }
 
