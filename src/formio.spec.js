@@ -20,12 +20,14 @@ var generateID = function() {
 
 var runTests = function(cb, options) {
   var tests = {};
-  cb(tests);
-  beforeEach(() => {
-    Formio.setBaseUrl(baseUrl);
-    Formio.appUrlSet = false;
-    Formio.appUrl = 'https://api.form.io';
-  });
+  var noBefore = cb(tests);
+  if (!noBefore) {
+    beforeEach(() => {
+      Formio.setBaseUrl(baseUrl);
+      Formio.appUrlSet = false;
+      Formio.appUrl = 'https://api.form.io';
+    });
+  }
   _each(tests, function(test, path) {
     it ('Should initialize for ' + path, function(done) {
       if (typeof test === 'function') {
@@ -429,6 +431,32 @@ describe('Subdirectory Constructor Tests', () => {
       query: ''
     };
   }, { base: protocol + '://' + testBaseUrl});
+});
+
+describe('Simple Form Constructor Tests', () => {
+  runTests((tests) => {
+    tests['init'] = () => {
+      Formio.setBaseUrl('https://api.form.io');
+      Formio.appUrlSet = false;
+      Formio.appUrl = 'https://api.form.io';
+    };
+    tests['https://examples.form.io/example'] = {
+      projectUrl: 'https://examples.form.io',
+      projectsUrl: '',
+      projectId: '',
+      formsUrl: 'https://examples.form.io/form',
+      formUrl: 'https://examples.form.io/example',
+      formId: 'example',
+      actionsUrl: 'https://examples.form.io/example/action',
+      actionUrl: '',
+      actionId: '',
+      submissionsUrl: 'https://examples.form.io/example/submission',
+      submissionUrl: '',
+      submissionId: '',
+      query: ''
+    };
+    return true;
+  });
 });
 
 describe('Open Source Constructor Tests', () => {

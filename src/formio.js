@@ -111,7 +111,10 @@ export class Formio {
       }
     };
 
-    this.projectUrl = this.projectUrl || hostName;
+    if (!this.projectUrl || (this.projectUrl === this.base)) {
+      this.projectUrl = hostName;
+    }
+
     if (!this.noProject) {
       // Determine the projectUrl and projectId
       if ((path.search(/(^|\/)(project)($|\/)/) !== -1)) {
