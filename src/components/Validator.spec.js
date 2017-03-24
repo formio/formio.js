@@ -43,4 +43,13 @@ describe('Validator Tests', () => {
     assert.equal(Validator.validators.custom.check({}, 'valid = (input == "test") ? true : "Should be false."', 'test2'), 'Should be false.');
     assert.equal(Validator.validators.custom.check({}, 'valid = (input == "test") ? true : "Should be false."', 'test'), true);
   });
+
+  it('Should test for pattern', () => {
+    assert.equal(Validator.validators.pattern.check({}, 'A.*', 'A'), true);
+    assert.equal(Validator.validators.pattern.check({}, 'A.*', 'Aaaa'), true);
+    assert.equal(Validator.validators.pattern.check({}, '\w+', 'test'), false);
+    assert.equal(Validator.validators.pattern.check({}, '\\w+', 'test'), true);
+    assert.equal(Validator.validators.pattern.check({}, '\\w+@\\w+', 'test@a'), true);
+    assert.equal(Validator.validators.pattern.check({}, '\\w+@\\w+', 'test@example.com'), false);
+  });
 });

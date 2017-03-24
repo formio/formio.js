@@ -131,6 +131,23 @@ export var Validator = {
         return (value !== 'Invalid date');
       }
     },
+    pattern: {
+      key: 'validate.pattern',
+      message: function(component, setting, t) {
+        return t('pattern', {
+          field: this.name(component)
+        });
+      },
+      check: function(component, setting, value) {
+        let pattern = setting;
+        if (!pattern) {
+          return true;
+        }
+        let regexStr = '^' + pattern + '$';
+        let regex = new RegExp(regexStr);
+        return regex.test(value);
+      }
+    },
     custom: {
       key: 'validate.custom',
       message: function(component, setting, t) {
