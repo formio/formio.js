@@ -272,7 +272,7 @@ export class FormioForm extends FormioComponents {
     if (this.checkValidity()) {
       this.loading = true;
       if (!this.formio) {
-        return this.onSubmit(this.submission);
+        return this.onSubmit(this.submission, false);
       }
       this.formio.saveSubmission(this.submission)
         .then((submission) => this.onSubmit(submission, true))
