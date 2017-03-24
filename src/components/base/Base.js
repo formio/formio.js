@@ -652,13 +652,11 @@ export class BaseComponent {
     if (message) {
       this.createErrorElement();
       this.addInputError(message);
-      if (this.events) {
-        this.emit('componentError', {
-          component: this.component,
-          error: message
-        });
-      }
     }
+    this.emit('componentError', {
+      component: this.component,
+      message: message
+    });
     _each(this.inputs, (input) => {
       if (typeof input.setCustomValidity === 'function') {
         input.setCustomValidity(message);
