@@ -236,8 +236,10 @@ export class FormioForm extends FormioComponents {
   onSubmit(submission, saved) {
     this.loading = false;
     this.setAlert('success', '<p>' + this.t('complete') + '</p>');
-    submission.saved = !!saved;
     this.emit('submit', submission);
+    if (saved) {
+      this.emit('submitDone', submission);
+    }
   }
 
   onSubmissionError(error) {
