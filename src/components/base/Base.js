@@ -544,7 +544,7 @@ export class BaseComponent {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, this.updateValue.bind(this));
+    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
   }
 
   /**
