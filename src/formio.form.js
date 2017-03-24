@@ -4,9 +4,6 @@ import Formio from './formio';
 import { FormioComponents } from './components/Components';
 import _debounce from 'lodash/debounce';
 import _each from 'lodash/each';
-import _find from 'lodash/find';
-import _remove from 'lodash/remove';
-import _get from 'lodash/get';
 import EventEmitter from 'eventemitter2';
 let getOptions = function(options) {
   options = options || {};
@@ -39,7 +36,6 @@ export class FormioForm extends FormioComponents {
 
     // Trigger submission changes and errors debounced.
     this.triggerSubmissionChange = _debounce(this.onSubmissionChange.bind(this), 10);
-    this.triggerSubmissionError = _debounce(this.onSubmissionError.bind(this), 10);
 
     // Set the element (if it is ready).
     this.onElement = new Promise((resolve) => {
@@ -177,7 +173,6 @@ export class FormioForm extends FormioComponents {
         this.build();
         this.on('resetForm', () => this.reset(), true);
         this.on('componentChange', (changed) => this.triggerSubmissionChange(changed), true);
-        this.on('componentError', (error) => this.triggerSubmissionError(error), true);
         this.emit('render');
       });
     });
@@ -216,22 +211,26 @@ export class FormioForm extends FormioComponents {
     this.checkConditions(this.getValue());
   }
 
-  showErrors() {
+  showErrors(error) {
     this.loading = false;
-    if (!this.allErrors.length) {
+    let errors = this.errors;
+    if (error) {
+      errors.push(error);
+    }
+    if (!errors.length) {
       this.setAlert(false);
       return;
     }
     let message = '<p>' + this.t('error') + '</p><ul>';
-    _each(this.allErrors, (err) => {
+    _each(errors, (err) => {
       if (err) {
-        message += '<li><strong>' + err.message + '</strong></li>';
+        message += '<li><strong>' + err + '</strong></li>';
       }
     });
     message += '</ul>';
     this.setAlert('danger', message);
-    this.emit('error', this.allErrors);
-    return this.allErrors;
+    this.emit('error', errors);
+    return errors;
   }
 
   onSubmit(submission, saved) {
@@ -251,22 +250,7 @@ export class FormioForm extends FormioComponents {
       error = {message: error};
     }
 
-    // Get the component this error is for.
-    let component = _get(error, 'component.key');
-    let predicate = (err) => (_get(err, 'component.key') === component);
-    let existing = _find(this.allErrors, predicate);
-
-    // Need to remove the error if it exists and the message is empty.
-    if (!error.message && existing) {
-
-      // Remove the error.
-      _remove(this.allErrors, predicate);
-    }
-    else if (error.message && (!component || !existing)) {
-
-      // Add it to the errors array.
-      this.allErrors.push(error);
-    }
+    this.showErrors(error);
   }
 
   onSubmissionChange(changed) {
@@ -290,10 +274,7 @@ export class FormioForm extends FormioComponents {
       }
       this.formio.saveSubmission(this.submission)
         .then((submission) => this.onSubmit(submission, true))
-        .catch((err) => {
-          this.onSubmissionError(err);
-          this.showErrors();
-        });
+        .catch((err) => this.onSubmissionError(err));
     }
     else {
       this.showErrors();
