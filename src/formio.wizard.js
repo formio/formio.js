@@ -22,6 +22,7 @@ export class FormioWizard extends FormioForm {
     // Validate the form builed, before go to the next page
     if (this.checkValidity()) {
       this.setPage(this.page + 1);
+      this.emit('nextPage', {page: this.page, submission: this.submission});
     }
     else {
       this.showErrors();
@@ -30,6 +31,7 @@ export class FormioWizard extends FormioForm {
 
   prevPage() {
     this.setPage(this.page - 1);
+    this.emit('prevPage', {page: this.page, submission: this.submission});
   }
 
   cancel() {
