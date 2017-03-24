@@ -26,6 +26,7 @@ export class FormioForm extends FormioComponents {
     this.onFormLoad = null;
     this.onSubmissionLoad = null;
     this.onFormBuild = null;
+    this.allErrors = [];
 
     // Promise that executes when the form is rendered and ready.
     this.ready = new Promise((resolve, reject) => {
@@ -35,7 +36,6 @@ export class FormioForm extends FormioComponents {
 
     // Trigger submission changes and errors debounced.
     this.triggerSubmissionChange = _debounce(this.onSubmissionChange.bind(this), 10);
-    this.triggerSubmissionError = _debounce(this.onSubmissionError.bind(this), 10);
 
     // Set the element (if it is ready).
     this.onElement = new Promise((resolve) => {
@@ -173,7 +173,6 @@ export class FormioForm extends FormioComponents {
         this.build();
         this.on('resetForm', () => this.reset(), true);
         this.on('componentChange', (changed) => this.triggerSubmissionChange(changed), true);
-        this.on('componentError', (changed) => this.triggerSubmissionError(changed), true);
         this.emit('render');
       });
     });
@@ -181,6 +180,9 @@ export class FormioForm extends FormioComponents {
 
   setAlert(type, message) {
     if (this.options.noAlerts) {
+      if (!message) {
+        this.emit('error', false);
+      }
       return;
     }
     if (this.alert) {
@@ -209,8 +211,12 @@ export class FormioForm extends FormioComponents {
     this.checkConditions(this.getValue());
   }
 
-  showErrors() {
+  showErrors(error) {
+    this.loading = false;
     let errors = this.errors;
+    if (error) {
+      errors.push(error);
+    }
     if (!errors.length) {
       this.setAlert(false);
       return;
@@ -223,27 +229,32 @@ export class FormioForm extends FormioComponents {
     });
     message += '</ul>';
     this.setAlert('danger', message);
+    this.emit('error', errors);
     return errors;
   }
 
-  onSubmit(submission) {
+  onSubmit(submission, saved) {
     this.loading = false;
     this.setAlert('success', '<p>' + this.t('complete') + '</p>');
+    submission.saved = !!saved;
     this.emit('submit', submission);
   }
 
   onSubmissionError(error) {
-    this.loading = false;
-    this.showErrors();
-    this.emit('error', error);
+    if (!error) {
+      return;
+    }
+
+    // Normalize the error.
+    if (typeof error === 'string') {
+      error = {message: error};
+    }
+
+    this.showErrors(error);
   }
 
   onSubmissionChange(changed) {
     let value = this.submission;
-    let errors = this.errors;
-    if (!errors.length) {
-      this.setAlert(false);
-    }
     value.changed = changed;
     this.emit('change', value);
     this.checkConditions(value.data);
@@ -262,8 +273,11 @@ export class FormioForm extends FormioComponents {
         return this.onSubmit(this.submission);
       }
       this.formio.saveSubmission(this.submission)
-        .then((submission) => this.onSubmit(submission))
+        .then((submission) => this.onSubmit(submission, true))
         .catch((err) => this.onSubmissionError(err));
+    }
+    else {
+      this.showErrors();
     }
   }
 }

@@ -71,7 +71,7 @@ describe('Day Component', function() {
     comps.comp1.dayFirst = false;
     Harness.testCreate(DayComponent, comps.comp1).then((component) => {
       component.on('componentError', (err) => {
-        assert.equal(err.error, 'Date is not a valid date.');
+        assert.equal(err.message, 'Date is not a valid date.');
         assert.equal(err.component.key, 'date');
         done();
       });
@@ -83,7 +83,7 @@ describe('Day Component', function() {
   it('Should not allow invalid months', (done) => {
     Harness.testCreate(DayComponent, comps.comp1).then((component) => {
       component.on('componentError', (err) => {
-        assert.equal(err.error, 'Date is not a valid date.');
+        assert.equal(err.message, 'Date is not a valid date.');
         assert.equal(err.component.key, 'date');
         done();
       });

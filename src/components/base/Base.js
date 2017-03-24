@@ -648,16 +648,17 @@ export class BaseComponent {
       catch (err) {}
     }
     this.removeClass(this.element, 'has-error');
-    this.error = message ? message : '';
     if (message) {
+      this.error = {
+        component: this.component,
+        message: message
+      };
+      this.emit('componentError', this.error);
       this.createErrorElement();
       this.addInputError(message);
-      if (this.events) {
-        this.emit('componentError', {
-          component: this.component,
-          error: message
-        });
-      }
+    }
+    else {
+      this.error = null;
     }
     _each(this.inputs, (input) => {
       if (typeof input.setCustomValidity === 'function') {

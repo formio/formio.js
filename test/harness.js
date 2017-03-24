@@ -44,14 +44,17 @@ export const Harness = {
     this.testSetGet(form, submission.data);
     assert.deepEqual(form.data, submission.data);
   },
-  testErrors: function(form, submission, error, done) {
+  testErrors: function(form, submission, errors, done) {
     form.on('error', (err) => {
-      error.component = form.getComponent(error.component).component;
-      assert.deepEqual(err, error);
+      _each(errors, (error, index) => {
+        error.component = form.getComponent(error.component).component;
+        assert.deepEqual(err[index], error);
+      });
       done();
     });
     this.testSetGet(form, submission.data);
     assert.deepEqual(form.data, submission.data);
+    form.submit();
   },
   testComponent: function(component, test, done) {
     let hasError = false;
@@ -67,7 +70,7 @@ export const Harness = {
     component.on('componentError', (error) => {
       hasError = true;
       assert.equal(error.component.key, test.bad.field);
-      assert.equal(error.error, test.bad.error);
+      assert.equal(error.message, test.bad.error);
       component.setValue(test.good.value);
     });
 

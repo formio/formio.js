@@ -23,6 +23,9 @@ export class FormioWizard extends FormioForm {
     if (this.checkValidity()) {
       this.setPage(this.page + 1);
     }
+    else {
+      this.showErrors();
+    }
   }
 
   prevPage() {

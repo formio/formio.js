@@ -28,10 +28,10 @@ module.exports = {
         email: 'bademail',
         password: '',
         verifyPassword: ''
-      }}, {
+      }}, [{
         component: 'email',
-        error: 'Email must be a valid email.'
-      }, done);
+        message: 'Email must be a valid email.'
+      }], done);
     }
   }
 };
