@@ -2,6 +2,7 @@
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _remove from 'lodash/remove';
+import _reduce from 'lodash/reduce';
 import Promise from "native-promise-only";
 import { BaseComponent } from './base/Base';
 export class FormioComponents extends BaseComponent {
@@ -125,6 +126,11 @@ export class FormioComponents extends BaseComponent {
   checkConditions(data) {
     super.checkConditions(data);
     _each(this.components, (comp) => comp.checkConditions(data));
+  }
+
+  checkValidity() {
+    let check = super.checkValidity();
+    return _reduce(this.components, (check, comp) => check && comp.checkValidity(), check);
   }
 
   destroy(all) {
