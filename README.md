@@ -65,6 +65,37 @@ form.form = {
 
 This will render the JSON schema of the form within your application.
 
+## Wizard Rendering
+This library can also be used to render a form wizard within your application using the Wizard library.
+
+```html
+<html>
+  <head>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://unpkg.com/formiojs@2.3.4/dist/formio.wizard.min.css'>
+    <script src='https://unpkg.com/formiojs@2.3.4/dist/formio.form.min.js'></script>
+    <script type='text/javascript'>
+      window.onload = function() {
+        var form = new FormioWizard(document.getElementById('formio'));
+        form.src = 'https://examples.form.io/wizard';
+      };
+    </script>
+  </head>
+  <body>
+    <div id='formio'></div>
+  </body>
+</html>
+```
+
+## Form Embedding
+You can also use this library as a JavaScript embedding of the form using a single line of code. For example, to embed the https://examples.form.io/example form within your application you can simply use the following embed code.
+
+```html
+<script src="https://unpkg.com/formiojs@latest/dist/formio.embed.min.js?src=https://examples.form.io/example"></script>
+```
+
+For an example of how this looks and works, check out the following [Form.io Form Embedding CodePen](http://codepen.io/travist/pen/ggQOBa)
+
 ## Full Form Renderer Documentation
 For a more complete documentation of how to utilize this library within your application go to the [Form Renderer](https://github.com/formio/formio.js/wiki/Form-Renderer) documentation within the [Wiki](https://github.com/formio/formio.js/wiki)
 
