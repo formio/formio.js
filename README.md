@@ -146,3 +146,6 @@ formio.loadForm((form) => {
 
 ## JavaScript SDK Documentation.
 For more complete documentation over the JavaScript SDK, please take a look at the [JavaScript SDK](https://github.com/formio/formio.js/wiki/JavaScript-API) within the [wiki](https://github.com/formio/formio.js/wiki).
+
+## Full Developer API Documentation
+To view the full SDK Documentation, go to [Developer SDK Documentation](https://formio.github.io/formio.js/docs/)
