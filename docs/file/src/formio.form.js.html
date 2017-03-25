@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">src/formio.form.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/formio/formio.js" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/base</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/base/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/button</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/button/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/checkbox</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/checkbox/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/columns</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Column.js~ColumnComponent.html">ColumnComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/columns/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/container</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/container/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/content</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/content/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/currency</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/currency/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/datagrid</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/datagrid/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/datetime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/datetime/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/day</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/day/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/email</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/email/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/hidden</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/hidden/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/html</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/html/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/password</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/password/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/phonenumber</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/phonenumber/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/radio</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/radio/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/resource</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/resource/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/survey</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/survey/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/table</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/table/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textarea</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textarea/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/unknown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/formio.form.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
+import Promise from &quot;native-promise-only&quot;;
+import Formio from &apos;./formio&apos;;
+import { FormioComponents } from &apos;./components/Components&apos;;
+import _debounce from &apos;lodash/debounce&apos;;
+import _each from &apos;lodash/each&apos;;
+import EventEmitter from &apos;eventemitter2&apos;;
+let getOptions = function(options) {
+  options = options || {};
+  options.events = new EventEmitter({
+    wildcard: false,
+    maxListeners: 0
+  });
+  return options;
+};
+
+/**
+ * Renders a Form.io form within the webpage.
+ *
+ * @example
+ * import FormioForm from &apos;formiojs/form&apos;;
+ * let form = new FormioForm(document.getElementById(&apos;formio&apos;));
+ * form.src = &apos;https://examples.form.io/example&apos;;
+ */
+export class FormioForm extends FormioComponents {
+  /**
+   * Creates a new FormioForm instance.
+   *
+   * @param {Object} element - The DOM element you wish to render this form within.
+   * @param {Object} options - The options to create a new form instance.
+   * @param {boolean} options.readOnly - Set this form to readOnly
+   * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.
+   * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/src/locals/en.js
+   * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
+   *
+   * @example
+   * import FormioForm from &apos;formiojs/form&apos;;
+   * let form = new FormioForm(document.getElementById(&apos;formio&apos;), {
+   *   readOnly: true
+   * });
+   * form.src = &apos;https://examples.form.io/example&apos;;
+   *
+   */
+  constructor(element, options) {
+    super(null, getOptions(options));
+
+    /**
+     * The type of this element.
+     * @type {string}
+     */
+    this.type = &apos;form&apos;;
+    this._src = &apos;&apos;;
+    this._loading = true;
+    this._submission = {};
+
+    /**
+     * The Formio instance for this form.
+     * @type {Formio}
+     */
+    this.formio = null;
+
+    /**
+     * The loader HTML element.
+     * @type {HTMLElement}
+     */
+    this.loader = null;
+
+    /**
+     * The alert HTML element
+     * @type {HTMLElement}
+     */
+    this.alert = null;
+
+    /**
+     * Promise that is triggered when the form is done loading.
+     * @type {Promise}
+     */
+    this.onFormLoad = null;
+
+    /**
+     * Promise that is triggered when the submission is done loading.
+     * @type {Promise}
+     */
+    this.onSubmissionLoad = null;
+
+    /**
+     * Promise that is triggered when the form is done building.
+     * @type {Promise}
+     */
+    this.onFormBuild = null;
+
+    /**
+     * Promise that executes when the form is ready and rendered.
+     * @type {Promise}
+     *
+     * @example
+     * let form = new FormioForm(document.getElementById(&apos;formio&apos;));
+     * form.ready.then(() =&gt; {
+     *   console.log(&apos;The form is ready!&apos;);
+     * });
+     * form.src = &apos;https://examples.form.io/example&apos;;
+     */
+    this.ready = new Promise((resolve, reject) =&gt; {
+      /**
+       * Called when the ready state of this form has been resolved.
+       *
+       * @type {function}
+       */
+      this.readyResolve = resolve;
+
+      /**
+       * Called when this form could not load and is rejected.
+       *
+       * @type {function}
+       */
+      this.readyReject = reject;
+    });
+
+    /**
+     * Triggers a new submission change after a certain debounce interval.
+     *
+     * @type {function} - Call then when you wish to trigger a submission change.
+     */
+    this.triggerSubmissionChange = _debounce(this.onSubmissionChange.bind(this), 10);
+
+    /**
+     * Promise to trigger when the element for this form is established.
+     *
+     * @type {Promise}
+     */
+    this.onElement = new Promise((resolve) =&gt; {
+      /**
+       * Called when the element has been resolved.
+       *
+       * @type {function}
+       */
+      this.elementResolve = resolve;
+      this.setElement(element);
+    });
+  }
+
+  /**
+   * Sets the the outside wrapper element of the Form.
+   *
+   * @param {HTMLElement} element - The element to set as the outside wrapper element for this form.
+   */
+  setElement(element) {
+    if (!element) {
+      return;
+    }
+
+    // Allow the element to either be a form, or a wrapper.
+    if (element.nodeName.toLowerCase() === &apos;form&apos;) {
+      /**
+       * {@link BaseComponent.element}
+       */
+      this.element = element;
+      var classNames = this.element.getAttribute(&apos;class&apos;);
+      classNames += &apos; formio-form&apos;;
+      this.element.setAttribute(&apos;class&apos;, classNames);
+    }
+    else {
+      /**
+       * The wrapper element for this form component.
+       * @type {HTMLElement}
+       */
+      this.wrapper = element;
+      this.element = this.ce(&apos;element&apos;, &apos;form&apos;, {
+        class: &apos;formio-form&apos;
+      });
+      if (this.wrapper) {
+        this.wrapper.appendChild(this.element);
+      }
+    }
+
+    this.elementResolve(element);
+  }
+
+  /**
+   * Get the embed source of the form.
+   *
+   * @returns {string}
+   */
+  get src() {
+    return this._src;
+  }
+
+  /**
+   * Set the Form source, which is typically the Form.io embed URL.
+   *
+   * @param {string} value - The value of the form embed url.
+   *
+   * @example
+   * let form = new FormioForm(document.getElementById(&apos;formio&apos;));
+   * form.ready.then(() =&gt; {
+   *   console.log(&apos;The form is ready!&apos;);
+   * });
+   * form.src = &apos;https://examples.form.io/example&apos;;
+   */
+  set src(value) {
+    if (!value || typeof value !== &apos;string&apos;) {
+      return;
+    }
+    this._src = value;
+    this.formio = new Formio(value);
+    this.onFormLoad = this.formio.loadForm().then((form) =&gt; (this.form = form));
+    if (this.formio.submissionId) {
+      this.onSubmissionLoad = this.formio.loadSubmission().then((submission) =&gt; (this.submission = submission));
+    }
+  }
+
+  /**
+   * Called when both the form and submission have been loaded.
+   *
+   * @returns {Promise} - The promise to trigger when both form and submission have loaded.
+   */
+  get onLoaded() {
+    if (!this.onSubmissionLoad &amp;&amp; !this.onFormLoad) {
+      return Promise.resolve();
+    }
+    return this.onSubmissionLoad ? this.onSubmissionLoad : this.onFormLoad;
+  }
+
+  /**
+   * Returns if this form is loading.
+   *
+   * @returns {boolean} - TRUE means the form is loading, FALSE otherwise.
+   */
+  get loading() {
+    return this._loading;
+  }
+
+  /**
+   * Set the loading state for this form, and also show the loader spinner.
+   *
+   * @param {boolean} loading - If this form should be &quot;loading&quot; or not.
+   */
+  set loading(loading) {
+    this._loading = loading;
+    if (!this.loader &amp;&amp; loading) {
+      this.loader = this.ce(&apos;loaderWrapper&apos;, &apos;div&apos;, {
+        class: &apos;loader-wrapper&apos;
+      });
+      let spinner = this.ce(&apos;loader&apos;, &apos;div&apos;, {
+        class: &apos;loader text-center&apos;
+      });
+      this.loader.appendChild(spinner);
+    }
+    if (this.loader) {
+      try {
+        if (loading) {
+          this.before(this.loader);
+        }
+        else {
+          this.remove(this.loader);
+        }
+      }
+      catch (err) {}
+    }
+  }
+
+  /**
+   * Sets the JSON schema for the form to be rendered.
+   *
+   * @example
+   * let form = new FormioForm(document.getElementById(&apos;formio&apos;));
+   * form.setForm({
+   *   components: [
+   *     {
+   *       type: &apos;textfield&apos;,
+   *       key: &apos;firstName&apos;,
+   *       label: &apos;First Name&apos;,
+   *       placeholder: &apos;Enter your first name.&apos;,
+   *       input: true
+   *     },
+   *     {
+   *       type: &apos;textfield&apos;,
+   *       key: &apos;lastName&apos;,
+   *       label: &apos;Last Name&apos;,
+   *       placeholder: &apos;Enter your last name&apos;,
+   *       input: true
+   *     },
+   *     {
+   *       type: &apos;button&apos;,
+   *       action: &apos;submit&apos;,
+   *       label: &apos;Submit&apos;,
+   *       theme: &apos;primary&apos;
+   *     }
+   *   ]
+   * });
+   *
+   * @param {Object} form - The JSON schema of the form @see https://examples.form.io/example for an example JSON schema.
+   * @returns {*}
+   */
+  setForm(form) {
+    if (form.display === &apos;wizard&apos;) {
+      console.warn(&apos;You need to instantiate the FormioWizard class to use this form as a wizard.&apos;);
+    }
+
+    if (this.onFormBuild) {
+      return this.onFormBuild.then(() =&gt; this.createForm(form));
+    }
+
+    // Create the form.
+    return this.createForm(form);
+  }
+
+  /**
+   * Sets the form value.
+   *
+   * @alias setForm
+   * @param {Object} form - The form schema object.
+   */
+  set form(form) {
+    this.setForm(form);
+  }
+
+  /**
+   * Returns the submission object that was set within this form.
+   *
+   * @returns {Object}
+   */
+  get submission() {
+    this._submission.data = this.getValue();
+    return this._submission;
+  }
+
+  /**
+   * Sets the submission of a form.
+   *
+   * @example
+   * let form = new FormioForm(document.getElementById(&apos;formio&apos;));
+   * form.src = &apos;https://examples.form.io/example&apos;;
+   * form.submission = {data: {
+   *   firstName: &apos;Joe&apos;,
+   *   lastName: &apos;Smith&apos;,
+   *   email: &apos;joe@example.com&apos;
+   * }};
+   *
+   * @param {Object} submission - The Form.io submission object.
+   */
+  set submission(submission) {
+    submission = submission || {};
+    this._submission = submission;
+    /**
+     * {@link BaseComponent.value}
+     */
+    this.value = submission.data;
+    this.ready.then(() =&gt; this.setValue(this.value));
+  }
+
+  /**
+   * Create a new form.
+   *
+   * @param {Object} form - The form object that is created.
+   * @returns {Promise.&lt;TResult&gt;}
+   */
+  createForm(form) {
+    /**
+     * {@link BaseComponent.component}
+     */
+    this.component = form;
+    this.loading = true;
+    return this.onFormBuild = this.render().then(() =&gt; {
+      return this.onLoaded.then(() =&gt; {
+        this.loading = false;
+        this.readyResolve();
+        this.setValue(this.value);
+        this.onFormBuild = null;
+      }, (err) =&gt; this.readyReject(err));
+    }, (err) =&gt; this.readyReject(err));
+  }
+
+  /**
+   * Render the form within the HTML element.
+   * @returns {Promise.&lt;TResult&gt;}
+   */
+  render() {
+    return this.onElement.then(() =&gt; {
+      this.clear();
+      return this.localize().then(() =&gt; {
+        this.build();
+        this.on(&apos;resetForm&apos;, () =&gt; this.reset(), true);
+        this.on(&apos;componentChange&apos;, (changed) =&gt; this.triggerSubmissionChange(changed), true);
+        this.emit(&apos;render&apos;);
+      });
+    });
+  }
+
+  /**
+   * Sets a new alert to display in the error dialog of the form.
+   *
+   * @param {string} type - The type of alert to display. &quot;danger&quot;, &quot;success&quot;, &quot;warning&quot;, etc.
+   * @param {string} message - The message to show in the alert.
+   */
+  setAlert(type, message) {
+    if (this.options.noAlerts) {
+      if (!message) {
+        this.emit(&apos;error&apos;, false);
+      }
+      return;
+    }
+    if (this.alert) {
+      try {
+        this.removeChild(this.alert);
+        this.alert = null;
+      }
+      catch(err) {}
+    }
+    if (message) {
+      this.alert = this.ce(&apos;alert-&apos; + type, &apos;div&apos;, {
+        class: &apos;alert alert-&apos; + type,
+        role: &apos;alert&apos;
+      });
+      this.alert.innerHTML = message;
+    }
+    if (!this.alert) {
+      return;
+    }
+    this.prepend(this.alert);
+  }
+
+  /**
+   * Build the form.
+   */
+  build() {
+    this.on(&apos;submitButton&apos;, () =&gt; this.submit(), true);
+    this.addComponents();
+    this.checkConditions(this.getValue());
+  }
+
+  /**
+   * Show the errors of this form within the alert dialog.
+   *
+   * @param {Object} error - An optional additional error to display along with the component errors.
+   * @returns {*}
+   */
+  showErrors(error) {
+    this.loading = false;
+    let errors = this.errors;
+    if (error) {
+      errors.push(error);
+    }
+    if (!errors.length) {
+      this.setAlert(false);
+      return;
+    }
+    let message = &apos;&lt;p&gt;&apos; + this.t(&apos;error&apos;) + &apos;&lt;/p&gt;&lt;ul&gt;&apos;;
+    _each(errors, (err) =&gt; {
+      if (err) {
+        message += &apos;&lt;li&gt;&lt;strong&gt;&apos; + err + &apos;&lt;/strong&gt;&lt;/li&gt;&apos;;
+      }
+    });
+    message += &apos;&lt;/ul&gt;&apos;;
+    this.setAlert(&apos;danger&apos;, message);
+    this.emit(&apos;error&apos;, errors);
+    return errors;
+  }
+
+  /**
+   * Called when the submission has completed, or if the submission needs to be sent to an external library.
+   *
+   * @param {Object} submission - The submission object.
+   * @param {boolean} saved - Whether or not this submission was saved to the server.
+   * @returns {object} - The submission object.
+   */
+  onSubmit(submission, saved) {
+    this.loading = false;
+    this.setAlert(&apos;success&apos;, &apos;&lt;p&gt;&apos; + this.t(&apos;complete&apos;) + &apos;&lt;/p&gt;&apos;);
+    this.emit(&apos;submit&apos;, submission);
+    if (saved) {
+      this.emit(&apos;submitDone&apos;, submission);
+    }
+    return submission;
+  }
+
+  /**
+   * Called when an error occurs during the submission.
+   *
+   * @param {Object} error - The error that occured.
+   */
+  onSubmissionError(error) {
+    if (!error) {
+      return;
+    }
+
+    // Normalize the error.
+    if (typeof error === &apos;string&apos;) {
+      error = {message: error};
+    }
+
+    this.showErrors(error);
+  }
+
+  /**
+   * Called when the submission has changed in value.
+   *
+   * @param {Object} changed - The changed value that triggered this event.
+   * @param {Object} changed.component - The component that was changed.
+   * @param {*} changed.value - The new value of the changed component.
+   */
+  onSubmissionChange(changed) {
+    let value = this.submission;
+    value.changed = changed;
+    this.emit(&apos;change&apos;, value);
+    this.checkConditions(value.data);
+  }
+
+  /**
+   * Resets the submission of a form and restores defaults.
+   *
+   * @example
+   * let form = new FormioForm(document.getElementById(&apos;formio&apos;));
+   * form.src = &apos;https://examples.form.io/example&apos;;
+   * form.submission = {data: {
+   *   firstName: &apos;Joe&apos;,
+   *   lastName: &apos;Smith&apos;,
+   *   email: &apos;joe@example.com&apos;
+   * }};
+   *
+   * // In two seconds, reset the data in the form.
+   * setTimeout(() =&gt; form.reset(), 2000);
+   */
+  reset() {
+    // Reset the submission data.
+    this.submission = {data: {}};
+  }
+
+  /**
+   * Cancels the submission.
+   *
+   * @alias reset
+   */
+  cancel() {
+    this.reset();
+  }
+
+  /**
+   * Submits the form.
+   *
+   * @example
+   * let form = new FormioForm(document.getElementById(&apos;formio&apos;));
+   * form.src = &apos;https://examples.form.io/example&apos;;
+   * form.submission = {data: {
+   *   firstName: &apos;Joe&apos;,
+   *   lastName: &apos;Smith&apos;,
+   *   email: &apos;joe@example.com&apos;
+   * }};
+   * form.submit().then((submission) =&gt; {
+   *   console.log(submission);
+   * });
+   *
+   * @returns {Promise} - A promise when the form is done submitting.
+   */
+  submit() {
+    // Validate the form builed, before submission
+    if (this.checkValidity()) {
+      this.loading = true;
+      if (!this.formio) {
+        return this.onSubmit(this.submission, false);
+      }
+      return this.formio.saveSubmission(this.submission)
+        .then((submission) =&gt; this.onSubmit(submission, true))
+        .catch((err) =&gt; this.onSubmissionError(err));
+    }
+    else {
+      this.showErrors();
+      return Promise.reject(&apos;Invalid Submission&apos;);
+    }
+  }
+}
+
+FormioForm.setBaseUrl = Formio.setBaseUrl;
+FormioForm.setApiUrl = Formio.setApiUrl;
+FormioForm.setAppUrl = Formio.setAppUrl;
+
+/**
+ * Embed this form within the current page.
+ * @param embed
+ */
+FormioForm.embed = function(embed) {
+  if (!embed || !embed.src) {
+    return null;
+  }
+  let id = embed.id || &apos;formio-&apos; + Math.random().toString(36).substring(7);
+  let height = embed.height || 500;
+  let className = embed.class || &apos;formio-form-wrapper&apos;;
+  let code = embed.styles ? &apos;&lt;link rel=&quot;stylesheet&quot; href=&quot;&apos; + embed.styles + &apos;&quot;&gt;&apos; : &apos;&apos;;
+  code += &apos;&lt;div id=&quot;&apos; + id + &apos;&quot; class=&quot;&apos; + className + &apos;&quot; style=&quot;height:&apos; + height + &apos;px;&quot;&gt;&lt;/div&gt;&apos;;
+  document.write(code);
+  let formElement = document.getElementById(id);
+  let form = new FormioForm(formElement);
+  form.src = embed.src;
+  return form;
+};
+
+module.exports = global.FormioForm = FormioForm;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

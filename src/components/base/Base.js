@@ -11,46 +11,184 @@ import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
 
 i18next.initialized = false;
+
+/**
+ * This is the BaseComponent class which all elements within the FormioForm derive from.
+ */
 export class BaseComponent {
   /**
-   *   Initialize a new BaseComponent.
+   * Initialize a new BaseComponent.
+   *
+   * @param {Object} component - The component JSON you wish to initialize.
+   * @param {Object} options - The options for this component.
+   * @param {Object} data - The global data submission object this component will belong.
    */
   constructor(component, options, data) {
+    /**
+     * The ID of this component. This value is auto-generated when the component is created, but
+     * can also be provided from the component.id value passed into the constructor.
+     * @type {string}
+     */
     this.id = (component && component.id) ? component.id : Math.random().toString(36).substring(7);
+
+    /**
+     * The options for this component.
+     * @type {{}}
+     */
     this.options = _clone(options) || {};
+
+    /**
+     * The i18n configuration for this component.
+     */
     this.options.i18n = this.options.i18n || require('../../locals/en');
+
+    /**
+     * The events that are triggered for the whole FormioForm object.
+     */
     this.events = this.options.events;
+
+    /**
+     * The data object in which this component resides.
+     * @type {*}
+     */
     this.data = data || {};
+
+    /**
+     * The Form.io component JSON schema.
+     * @type {*}
+     */
     this.component = component || {};
+
+    /**
+     * The bounding HTML Element which this component is rendered.
+     * @type {null}
+     */
     this.element = null;
+
+    /**
+     * The HTML Element for the table body. This is relevant for the "multiple" flag on inputs.
+     * @type {null}
+     */
     this.tbody = null;
+
+    /**
+     * The HTMLElement that is assigned to the label of this component.
+     * @type {null}
+     */
     this.label = null;
+
+    /**
+     * The HTMLElement for which the errors are rendered for this component (usually underneath the component).
+     * @type {null}
+     */
     this.errorElement = null;
+
+    /**
+     * The existing error that this component has.
+     * @type {string}
+     */
     this.error = '';
+
+    /**
+     * An array of all of the input HTML Elements that have been added to this component.
+     * @type {Array}
+     */
     this.inputs = [];
+
+    /**
+     * The basic component information which tells the BaseComponent how to render the input element of the components that derive from this class.
+     * @type {null}
+     */
     this.info = null;
+
+    /**
+     * The value of this component
+     * @type {*}
+     */
     this.value = null;
+
+    /**
+     * Determines if this component is disabled, or not.
+     *
+     * @type {boolean}
+     */
     this.disabled = false;
+
+    /**
+     * The Input mask instance for this component.
+     * @type {InputMask}
+     */
     this.inputMask = null;
+
     this.options.name = this.options.name || 'data';
+
+    /**
+     * The validators that are assigned to this component.
+     * @type {[string]}
+     */
     this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern'];
+
+    /**
+     * Used to trigger a new change in this component.
+     * @type {function} - Call to trigger a change in this component.
+     */
     this.triggerChange = _debounce(this.onChange.bind(this), 200);
+
+    /**
+     * An array of event handlers so that the destry command can deregister them.
+     * @type {Array}
+     */
     this.eventHandlers = [];
+
+    /**
+     * An array of the event listeners so that the destroy command can deregister them.
+     * @type {Array}
+     */
     this.eventListeners = [];
+
     if (this.component) {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
         this.options.name += '[' + this.component.key + ']';
       }
+
+      /**
+       * The element information for creating the input element.
+       * @type {*}
+       */
       this.info = this.elementInfo();
     }
   }
 
+  /**
+   * Translate a text using the i18n system.
+   *
+   * @param {string} text - The i18n identifier.
+   * @param {Object} params - The i18n parameters to use for translation.
+   */
   t(text, params) {
     let message = i18next.t(text, params);
     return message;
   }
 
+  /**
+   * Register for a new event within this component.
+   *
+   * @example
+   * let component = new BaseComponent({
+   *   type: 'textfield',
+   *   label: 'First Name',
+   *   key: 'firstName'
+   * });
+   * component.on('componentChange', (changed) => {
+   *   console.log('this element is changed.');
+   * });
+   *
+   *
+   * @param {string} event - The event you wish to register the handler for.
+   * @param {function} cb - The callback handler to handle this event.
+   * @param {boolean} internal - This is an internal event handler.
+   */
   on(event, cb, internal) {
     if (!this.events) {
       return;
@@ -64,16 +202,32 @@ export class BaseComponent {
     return this.events.on(type, cb);
   }
 
+  /**
+   * Emit a new event.
+   *
+   * @param {string} event - The event to emit.
+   * @param {Object} data - The data to emit with the handler.
+   */
   emit(event, data) {
     this.events.emit('formio.' + event, data);
   }
 
+  /**
+   * Returns an HTMLElement icon element.
+   *
+   * @param {string} name - The name of the icon to retrieve.
+   * @returns {HTMLElement} - The icon element.
+   */
   getIcon(name) {
     return this.ce(name + 'Icon', 'i', {
       class: 'glyphicon glyphicon-' + name
     });
   }
 
+  /**
+   * Perform the localization initialization.
+   * @returns {*}
+   */
   localize() {
     if (i18next.initialized) {
       return Promise.resolve(i18next);
@@ -100,6 +254,10 @@ export class BaseComponent {
     }
   }
 
+  /**
+   * Retrieves the CSS class name of this component.
+   * @returns {string} - The class name of this component.
+   */
   get className() {
     let className = this.component.input ? 'form-group has-feedback ' : '';
     className += 'formio-component formio-component-' + this.component.type + ' ';
@@ -115,10 +273,18 @@ export class BaseComponent {
     return className;
   }
 
+  /**
+   * Returns the outside wrapping element of this component.
+   * @returns {HTMLElement}
+   */
   getElement() {
     return this.element;
   }
 
+  /**
+   * Create the outside wrapping element for this component.
+   * @returns {HTMLElement}
+   */
   createElement() {
     this.element = this.ce('element', 'div', {
       id: this.id,
@@ -133,6 +299,10 @@ export class BaseComponent {
     return this.element;
   }
 
+  /**
+   * Create the input wrapping element. For multiple, this may be the table wrapper for the elements.
+   * @returns {boolean}
+   */
   createWrapper() {
     if (!this.component.multiple) {
       return false;
@@ -158,6 +328,10 @@ export class BaseComponent {
     }
   }
 
+  /**
+   * Get the default value for this component.
+   * @returns {string}
+   */
   defaultValue() {
     if (this.component.defaultValue) {
       return this.component.defaultValue;
@@ -165,6 +339,9 @@ export class BaseComponent {
     return '';
   }
 
+  /**
+   * Adds a new empty value to the data array.
+   */
   addNewValue() {
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
@@ -175,11 +352,18 @@ export class BaseComponent {
     this.data[this.component.key].push(this.defaultValue());
   }
 
+  /**
+   * Adds a new empty value to the data array, and add a new row to contain it.
+   */
   addValue() {
     this.addNewValue();
     this.buildRows();
   }
 
+  /**
+   * Removes a value out of the data array and rebuild the rows.
+   * @param {number} index - The index of the data element to remove.
+   */
   removeValue(index) {
     if (this.data.hasOwnProperty(this.component.key)) {
       this.data[this.component.key].splice(index, 1);
@@ -187,6 +371,9 @@ export class BaseComponent {
     this.buildRows();
   }
 
+  /**
+   * Rebuild the rows to contain the values of this component.
+   */
   buildRows() {
     if (!this.tbody) {
       return;
@@ -213,6 +400,10 @@ export class BaseComponent {
     this.tbody.appendChild(tr);
   }
 
+  /**
+   * Adds a new button to add new rows to the multiple input elements.
+   * @returns {HTMLElement} - The "Add New" button html element.
+   */
   addButton() {
     let addButton = this.ce('addButton', 'a', {
       class: 'btn btn-primary'
@@ -230,10 +421,19 @@ export class BaseComponent {
     return addButton;
   }
 
+  /**
+   * The readible name for this component.
+   * @returns {string} - The name of the component.
+   */
   get name() {
     return this.component.label || this.component.placeholder || this.component.key;
   }
 
+  /**
+   * Creates a new "remove" row button and returns the html element of that button.
+   * @param {number} index - The index of the row that should be removed.
+   * @returns {HTMLElement} - The html element of the remove button.
+   */
   removeButton(index) {
     let removeButton = this.ce('removeButton', 'button', {
       type: 'button',
@@ -253,6 +453,10 @@ export class BaseComponent {
     return removeButton;
   }
 
+  /**
+   * Create the HTML element for the label of this comonent.
+   * @param {HTMLElement} container - The containing element that will comtain this label.
+   */
   createLabel(container) {
     if (!this.component.label || this.options.inputsOnly) {
       return;
@@ -267,6 +471,9 @@ export class BaseComponent {
     container.appendChild(this.label);
   }
 
+  /**
+   * Creates a new error element to hold the errors of this element.
+   */
   createErrorElement() {
     if (!this.errorContainer) {
       return;
@@ -277,6 +484,13 @@ export class BaseComponent {
     this.errorContainer.appendChild(this.errorElement);
   }
 
+  /**
+   * Adds a prefix html element.
+   *
+   * @param {HTMLElement} input - The input element.
+   * @param {HTMLElement} inputGroup - The group that will hold this prefix.
+   * @returns {HTMLElement} - The html element for this prefix.
+   */
   addPrefix(input, inputGroup) {
     let prefix = null;
     if (this.component.prefix) {
@@ -289,6 +503,13 @@ export class BaseComponent {
     return prefix;
   }
 
+  /**
+   * Adds a suffix html element.
+   *
+   * @param {HTMLElement} input - The input element.
+   * @param {HTMLElement} inputGroup - The group that will hold this suffix.
+   * @returns {HTMLElement} - The html element for this suffix.
+   */
   addSuffix(input, inputGroup) {
     let suffix = null;
     if (this.component.suffix) {
@@ -301,6 +522,13 @@ export class BaseComponent {
     return suffix;
   }
 
+  /**
+   * Adds a new input group to hold the input html elements.
+   *
+   * @param {HTMLElement} input - The input html element.
+   * @param {HTMLElement} container - The containing html element for this group.
+   * @returns {HTMLElement} - The input group element.
+   */
   addInputGroup(input, container) {
     let inputGroup = null;
     if (this.component.prefix || this.component.suffix) {
@@ -312,6 +540,11 @@ export class BaseComponent {
     return inputGroup;
   }
 
+  /**
+   * Returns an input mask that is compatible with the input mask library.
+   * @param {string} mask - The Form.io input mask.
+   * @returns {Array} - The input mask for the mask library.
+   */
   getInputMask(mask) {
     if (mask instanceof Array) {
       return mask;
@@ -336,12 +569,21 @@ export class BaseComponent {
     return maskArray;
   }
 
+  /**
+   * Creates a new input mask placeholder.
+   * @param {HTMLElement} mask - The input mask.
+   * @returns {string} - The placeholder that will exist within the input as they type.
+   */
   maskPlaceholder(mask) {
     return mask.map((char) => {
       return (char instanceof RegExp) ? '_' : char
     }).join('')
   }
 
+  /**
+   * Sets the input mask for an input.
+   * @param {HTMLElement} input - The html input to apply the mask to.
+   */
   setInputMask(input) {
     if (input && this.component.inputMask) {
       let mask = this.getInputMask(this.component.inputMask);
@@ -355,6 +597,11 @@ export class BaseComponent {
     }
   }
 
+  /**
+   * Creates a new input element.
+   * @param {HTMLElement} container - The container which should hold this new input element.
+   * @returns {HTMLElement} - Either the input or the group that contains the input.
+   */
   createInput(container) {
     let input = this.ce('input', this.info.type, this.info.attr);
     this.setInputMask(input);
@@ -405,8 +652,11 @@ export class BaseComponent {
   /**
    * Alias for document.createElement.
    *
-   * @param type
-   * @returns {*}
+   * @param {string} name - The name of the element to create, for templating purposes.
+   * @param {string} type - The type of element to create
+   * @param {Object} attr - The element attributes to add to the created element.
+   *
+   * @return {HTMLElement} - The created element.
    */
   ce(name, type, attr) {
     // Allow for template overrides.
@@ -449,8 +699,8 @@ export class BaseComponent {
 
   /**
    * Adds an object of attributes onto an element.
-   * @param element
-   * @param attr
+   * @param {HtmlElement} element - The element to add the attributes to.
+   * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
     _each(attr, function (value, key) {
