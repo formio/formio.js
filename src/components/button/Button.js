@@ -34,11 +34,9 @@ export class ButtonComponent extends BaseComponent {
       this.label = this.text(this.component.label);
       this.element.appendChild(this.label);
     }
-    this.on('submitDone', (submission) => {
-      if (submission.saved) {
-        this.loading = false;
-        this.element.disable = false;
-      }
+    this.on('submitDone', () => {
+      this.loading = false;
+      this.element.disable = false;
     }, true);
     this.on('error', () => {
       this.loading = false;
