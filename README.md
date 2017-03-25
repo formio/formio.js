@@ -6,8 +6,7 @@ This library is a plain JavaScript form renderer and SDK for Form.io. This allow
  - Nested components, layouts, Date/Time, Select, Input Masks, and many more included features
  - Full JavaScript API SDK library on top of Form.io
  
-Simple Example
-==============
+## Simple Example
 The following is a simple example on how to render a form within your HTML application.
 
 ```html
