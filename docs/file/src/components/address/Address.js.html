@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">src/components/address/Address.js | API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/formio/formio.js" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/base</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/base/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/button</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/button/Button.js~ButtonComponent.html">ButtonComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/button/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/checkbox</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html">CheckBoxComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/checkbox/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/columns</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Column.js~ColumnComponent.html">ColumnComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/columns/Columns.js~ColumnsComponent.html">ColumnsComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/columns/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/container</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/container/Container.js~ContainerComponent.html">ContainerComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/container/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/content</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/content/Content.js~ContentComponent.html">ContentComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/content/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/currency</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/currency/Currency.js~CurrencyComponent.html">CurrencyComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/currency/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/datagrid</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datagrid/DataGrid.js~DataGridComponent.html">DataGridComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/datagrid/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/datetime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/datetime/DateTime.js~DateTimeComponent.html">DateTimeComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/datetime/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/day</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/day/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/email</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/email/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/hidden</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/hidden/Hidden.js~HiddenComponent.html">HiddenComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/hidden/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/html</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/html/HTML.js~HTMLComponent.html">HTMLComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/html/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/password</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/password/Password.js~PasswordComponent.html">PasswordComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/password/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/phonenumber</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/phonenumber/PhoneNumber.js~PhoneNumberComponent.html">PhoneNumberComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/phonenumber/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/radio</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html">RadioComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/radio/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/resource</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/resource/Resource.js~ResourceComponent.html">ResourceComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/resource/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/survey</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/survey/Survey.js~SurveyComponent.html">SurveyComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/survey/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/table</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/table/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textarea</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textarea/TextArea.js~TextAreaComponent.html">TextAreaComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textarea/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/unknown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">src/components/address/Address.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { TextFieldComponent } from &apos;../textfield/TextField&apos;;
+import { BaseComponent } from &apos;../base/Base&apos;;
+import _defaultsDeep from &apos;lodash/defaultsDeep&apos;;
+import _delay from &apos;lodash/delay&apos;;
+
+export class AddressComponent extends TextFieldComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+    let src = &apos;https://maps.googleapis.com/maps/api/js?v=3&amp;libraries=places&amp;callback=googleMapsCallback&apos;;
+    if (component.map &amp;&amp; component.map.key) {
+      src += &apos;&amp;key=&apos; + component.map.key;
+    }
+    if (component.map &amp;&amp; component.map.region) {
+      src += &apos;&amp;region=&apos; + component.map.region;
+    }
+    BaseComponent.requireLibrary(&apos;googleMaps&apos;, &apos;google.maps.places&apos;, src);
+  }
+
+  setValueAt(index, value) {
+    this.value = value;
+  }
+
+  getValueAt(index) {
+    return this.value;
+  }
+
+  /**
+   * Start the autocomplete and the input listeners
+   *
+   * @param input
+   *   The input field
+   * @param autoCompleteOptions
+   *   The default option for the autocompletion
+   */
+  autoCompleteInit(input, autoCompleteOptions) {
+    // Set attribute autoComplete to off
+    input.setAttribute(&quot;autocomplete&quot;, &quot;off&quot;);
+
+    // Init suggestions list
+    this.autoCompleteSuggestions = []
+
+    // Start Google AutocompleteService
+    const autoComplete = new google.maps.places.AutocompleteService();
+
+    // Create suggestions container
+    const suggestionContainer = document.createElement(&apos;div&apos;);
+    suggestionContainer.classList.add(&apos;pac-container&apos;, &apos;pac-logo&apos;);
+    input.parentNode.appendChild(suggestionContainer);
+
+    // Add listener on input field for input event
+    this.addEventListener(input, &apos;input&apos;, (event) =&gt; {
+      if (input.value) {
+        let options = {
+          input: input.value
+        }
+        autoComplete.getPlacePredictions(_defaultsDeep(options, autoCompleteOptions),
+          (suggestions, status) =&gt; {
+            this.autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input);
+        });
+      } else {
+        this.autoCompleteCleanSuggestions(suggestionContainer);
+        suggestionContainer.style.display = &apos;none&apos;;
+      }
+    });
+    // Add listener on input field for blur event
+    this.addEventListener(input, &apos;blur&apos;, (event) =&gt; {
+      // Delay to allow click on suggestion list
+      _delay(function() {
+        suggestionContainer.style.display = &apos;none&apos;;
+      }, 100);
+    });
+    // Add listener on input field for focus event
+    this.addEventListener(input, &apos;focus&apos;, (event) =&gt; {
+      if (suggestionContainer.childElementCount) {
+        suggestionContainer.style.display = &apos;block&apos;;
+      }
+    });
+    // Add listener on input field for focus event
+    this.addEventListener(window, &apos;resize&apos;, (event) =&gt; {
+      // Set the same width as input field
+      suggestionContainer.style.width = input.offsetWidth + &apos;px&apos;;
+    });
+    // Add listiner on input field for key event
+    this.autoCompleteKeyboardListener(suggestionContainer, input);
+  }
+
+  /**
+   * Add listiner on input field for key event
+   *
+   * @param suggestionContainer
+   *   Suggestions container
+   * @param input
+   *   Input field to listen
+   */
+  autoCompleteKeyboardListener(suggestionContainer, input) {
+    this.autoCompleteKeyCodeListener = (event) =&gt; {
+      if (input.value) {
+        switch (event.keyCode) {
+          case 38:
+          // UP
+            this.autoCompleteKeyUpInteraction(suggestionContainer, input);
+            break;
+
+          case 40:
+            // DOWN
+            this.autoCompleteKeyDownInteraction(suggestionContainer, input);
+            break;
+
+          case 9:
+            // TAB
+            this.autoCompleteKeyValidationInteraction(suggestionContainer, input);
+            break;
+
+          case 13:
+            // ENTER
+            this.autoCompleteKeyValidationInteraction(suggestionContainer, input);
+            break;
+        }
+      }
+    };
+
+    this.addEventListener(input, &apos;keydown&apos;, this.autoCompleteKeyCodeListener)
+  }
+
+  /**
+   * Action when key up is trigger
+   *
+   * @param suggestionContainer
+   *   Suggestions container
+   * @param input
+   *   Input field to listen
+   */
+  autoCompleteKeyUpInteraction(suggestionContainer, input) {
+    let elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
+    if (!elementSelected) {
+      // Returns the bottom of the list.
+      return this.autoCompleteListDecorator(suggestionContainer.lastChild, input);
+    } else {
+      // Transverse the list in reverse order.
+      const previousSibling = elementSelected.previousSibling;
+      if (previousSibling) {
+       this.autoCompleteListDecorator(previousSibling, input);
+      } else {
+        // Return to input value
+        elementSelected.classList.remove(&apos;pac-item-selected&apos;);
+        input.value = this.autoCompleteInputValue;
+      }
+    }
+  }
+
+  /**
+   * Action when key down is trigger
+   *
+   * @param suggestionContainer
+   *   Suggestions container
+   * @param input
+   *   Input field to listen
+   */
+  autoCompleteKeyDownInteraction(suggestionContainer, input) {
+    let elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
+    if (!elementSelected) {
+      // Start at the top of the list.
+      return this.autoCompleteListDecorator(suggestionContainer.firstChild, input);
+    } else {
+      // Transverse the list from top down.
+      const nextSibling = elementSelected.nextSibling;
+      if (nextSibling) {
+        this.autoCompleteListDecorator(nextSibling, input);
+      } else {
+        // Return to input value
+        elementSelected.classList.remove(&apos;pac-item-selected&apos;);
+        input.value = this.autoCompleteInputValue;
+      }
+    }
+  }
+
+  /**
+   * Action when validation is trigger
+   *
+   * @param suggestionContainer
+   *   Suggestions container
+   * @param input
+   *   Input field to listen
+   */
+  autoCompleteKeyValidationInteraction(suggestionContainer, input) {
+    let elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
+    if (elementSelected) {
+      for (const suggestion of this.autoCompleteSuggestions) {
+        let content = elementSelected.textContent || elementSelected.innerText;
+        if (content === suggestion.description) {
+          this.autoCompleteServiceListener(suggestion, suggestionContainer, input);
+        }
+      }
+      elementSelected.classList.remove(&apos;pac-item-selected&apos;);
+    }
+  }
+
+  /**
+   * Highlight suggestion selected
+   *
+   * @param item
+   *   Item selected in suggestions container
+   * @param input
+   *   Input field to listen
+   */
+  autoCompleteListDecorator(item, input) {
+    let elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
+    if (elementSelected) {
+      elementSelected.classList.remove(&apos;pac-item-selected&apos;);
+    }
+    input.value = item.textContent || suggestionContainer.innerText;
+    item.classList.add(&apos;pac-item-selected&apos;);
+  }
+
+  /**
+   * Filter method to return if the suggestion should be displayed
+   *
+   * @param data
+   *   Data to check
+   * @returns {Boolean}
+   */
+  autoCompleteFilterSuggestion(data) {
+    try {
+      let script = &apos;(function() { var show = true;&apos;;
+      script += this.component.map.autoCompleteFilter.toString();
+      script += &apos;; return show; })()&apos;;
+      let result = eval(script);
+      return result.toString() === &apos;true&apos;;
+    }
+    catch (e) {
+      console.warn(&apos;An error occurred in a custom autoComplete filter statement for component &apos; + this.component.key, e);
+      return true;
+    }
+  }
+
+  /**
+   * Clean suggestions list
+   *
+   * @param suggestionContainer
+   *   Container tag
+   */
+  autoCompleteCleanSuggestions(suggestionContainer) {
+    // Clean click listener
+    for (const suggestion of this.autoCompleteSuggestions) {
+      suggestion.item.removeEventListener(&apos;click&apos;, suggestion.clickListener);
+    }
+    this.autoCompleteSuggestions = [];
+
+    // Delete current suggestion list
+    while (suggestionContainer.firstChild) {
+      suggestionContainer.removeChild(suggestionContainer.firstChild);
+    }
+  }
+
+  /**
+   * Display suggestions when API returns value
+   *
+   * @param suggestions
+   *   Suggestions returned
+   * @param status
+   *   State returned
+   * @param suggestionContainer
+   *   Suggestions container
+   * @param input
+   *   Input field to listen
+   */
+  autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input) {
+
+    // Set the same width as input field
+    suggestionContainer.style.width = input.offsetWidth + &apos;px&apos;;
+
+    // Set the default input value
+    this.autoCompleteInputValue = input.value;
+
+    this.autoCompleteCleanSuggestions(suggestionContainer);
+    if (status != google.maps.places.PlacesServiceStatus.OK) {
+      suggestionContainer.style.display = &apos;none&apos;;
+      return;
+    }
+
+    for (const suggestion of suggestions) {
+      if (this.autoCompleteFilterSuggestion(suggestion)) {
+        this.autoCompleteSuggestions.push(suggestion);
+        this.autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input);
+      }
+    }
+
+    if (!suggestionContainer.childElementCount) {
+      this.autoCompleteCleanSuggestions(suggestionContainer);
+      suggestionContainer.style.display = &apos;none&apos;;
+    }
+    else {
+      suggestionContainer.style.display = &apos;block&apos;;
+    }
+  }
+
+  /**
+   * Draw a suggestion in the list
+   *
+   * @param suggestion
+   *   Suggestion to draw
+   * @param suggestionContainer
+   *   Suggestions container
+   * @param input
+   *   Input field to listen
+   */
+  autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input) {
+
+    const item = document.createElement(&apos;div&apos;);
+    item.classList.add(&apos;pac-item&apos;);
+
+    const itemLogo = document.createElement(&apos;span&apos;);
+    itemLogo.classList.add(&apos;pac-icon&apos;, &apos;pac-icon-marker&apos;);
+    item.appendChild(itemLogo);
+
+    // Draw Main part
+    const itemMain = document.createElement(&apos;span&apos;);
+    itemMain.classList.add(&apos;pac-item-query&apos;);
+    if (suggestion.structured_formatting.main_text_matched_substrings) {
+      let matches = suggestion.structured_formatting.main_text_matched_substrings;
+      for(let k in matches) {
+        let part = matches[k];
+        if (k == 0 &amp;&amp; part.offset &gt; 0) {
+          itemMain.appendChild(document.createTextNode(suggestion.structured_formatting.main_text.substring(0, part.offset)));
+        }
+
+        const itemBold = document.createElement(&apos;span&apos;);
+        itemBold.classList.add(&apos;pac-matched&apos;);
+        itemBold.appendChild(document.createTextNode(suggestion.structured_formatting.main_text.substring(part.offset, (part.offset + part.length))));
+        itemMain.appendChild(itemBold);
+
+        if (k == (matches.length - 1)) {
+          let content = suggestion.structured_formatting.main_text.substring((part.offset + part.length));
+          if (content.length &gt; 0) {
+            itemMain.appendChild(document.createTextNode(content));
+          }
+        }
+      }
+    }
+    else {
+      itemMain.appendChild(document.createTextNode(suggestion.structured_formatting.main_text));
+    }
+    item.appendChild(itemMain);
+
+
+    // Draw secondary part
+    if (suggestion.structured_formatting.secondary_text) {
+      const itemSecondary = document.createElement(&apos;span&apos;)
+      if (suggestion.structured_formatting.secondary_text_matched_substrings) {
+        let matches = suggestion.structured_formatting.secondary_text_matched_substrings;
+        for(let k in matches) {
+          let part = matches[k];
+          if (k == 0 &amp;&amp; part.offset &gt; 0) {
+            itemSecondary.appendChild(document.createTextNode(suggestion.structured_formatting.secondary_text.substring(0, part.offset)));
+          }
+
+          const itemBold = document.createElement(&apos;span&apos;);
+          itemBold.classList.add(&apos;pac-matched&apos;);
+          itemBold.appendChild(document.createTextNode(suggestion.structured_formatting.secondary_text.substring(part.offset, (part.offset + part.length))));
+          itemSecondary.appendChild(itemBold);
+
+          if (k == (matches.length - 1)) {
+            let content = suggestion.structured_formatting.secondary_text.substring((part.offset + part.length));
+            if (content.length &gt; 0) {
+              itemSecondary.appendChild(document.createTextNode(content));
+            }
+          }
+        }
+      }
+      else {
+        itemSecondary.appendChild(document.createTextNode(suggestion.structured_formatting.secondary_text));
+      }
+      item.appendChild(itemSecondary);
+    }
+
+    suggestionContainer.appendChild(item);
+
+    let clickListener = (event) =&gt; {
+      input.value = suggestion.description;
+      this.autoCompleteInputValue = suggestion.description;
+      this.autoCompleteServiceListener(suggestion, suggestionContainer, input);
+    };
+    suggestion.clickListener = clickListener;
+    suggestion.item = item;
+    if (&apos;addEventListener&apos; in item){
+      item.addEventListener(&apos;click&apos;, clickListener, false);
+    } else if (&apos;attachEvent&apos; in item) {
+      item.attachEvent(&apos;onclick&apos;, clickListener);
+    }
+  }
+
+
+  /**
+   * Get detailed information and set it as value
+   *
+   * @param suggestion
+   *   Suggestion to draw
+   * @param suggestionContainer
+   *   Suggestions container
+   * @param input
+   *   Input field to listen
+   */
+  autoCompleteServiceListener(suggestion, suggestionContainer, input) {
+    const service = new google.maps.places.PlacesService(input);
+    service.getDetails({
+      placeId: suggestion.place_id,
+    }, (place, status) =&gt; {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        this.setValue(place);
+      }
+    });
+  }
+
+
+  addInput(input, container) {
+    super.addInput(input, container);
+    BaseComponent.libraryReady(&apos;googleMaps&apos;).then(() =&gt; {
+      let autoCompleteOptions = {};
+      if (this.component.map) {
+        autoCompleteOptions = this.component.map.autoCompleteOptions || {};
+        if (autoCompleteOptions.location) {
+          autoCompleteOptions.location = new google.maps.LatLng(autoCompleteOptions.location.lat, autoCompleteOptions.location.lng);
+        }
+      }
+
+      if (this.component.map &amp;&amp; this.component.map.autoCompleteFilter) {
+        // Call custom autoComplete to filter suggestions
+        this.autoCompleteInit(input, autoCompleteOptions);
+      }
+      else {
+        let autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.addListener(&quot;place_changed&quot;, () =&gt; this.setValue(autocomplete.getPlace()));
+      }
+    });
+  }
+
+  elementInfo() {
+    let info = super.elementInfo();
+    info.attr.class += &apos; address-search&apos;;
+    return info;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.5.2)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>
