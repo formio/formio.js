@@ -583,10 +583,9 @@ FormioForm.embed = function(embed) {
     return null;
   }
   let id = embed.id || 'formio-' + Math.random().toString(36).substring(7);
-  let height = embed.height || 500;
   let className = embed.class || 'formio-form-wrapper';
   let code = embed.styles ? '<link rel="stylesheet" href="' + embed.styles + '">' : '';
-  code += '<div id="' + id + '" class="' + className + '" style="height:' + height + 'px;"></div>';
+  code += '<div id="' + id + '" class="' + className + '"></div>';
   document.write(code);
   let formElement = document.getElementById(id);
   let form = new FormioForm(formElement);
