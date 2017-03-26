@@ -16,7 +16,7 @@ section: home
   </p>
 </div>
 
-<h3>Simple Example</h3>
+### Simple Example
 ```html
 <html>
   <head>
@@ -35,4 +35,6 @@ section: home
   </body>
 </html>
 ```
-<script src="/dist/formio.embed.min.js?src=https://examples.form.io/example"></script>
+
+### Result
+<script src="{{ site.baseurl }}/dist/formio.embed.min.js?src=https://examples.form.io/example"></script>
