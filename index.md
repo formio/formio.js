@@ -37,4 +37,6 @@ section: home
 ```
 
 ### Result
+<div class="well">
 <script src="{{ site.baseurl }}/dist/formio.embed.min.js?src=https://examples.form.io/example"></script>
+</div>
