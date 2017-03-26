@@ -1,0 +1,38 @@
+---
+title: Home
+layout: default
+section: home
+---
+<div class="jumbotron">
+  <h2>JavaScript Powered Forms by <img height="25px;" style="display: inline;" alt="Form.io" src="https://help.form.io/assets/formio-logo.png"></h2>
+  <p>This library is a plain JavaScript form renderer and SDK for Form.io. This allows you to render the JSON schema forms produced by Form.io and render those within your application using plain JavaScript, as well as provides an interface SDK to communicate to the Form.io API's. The benefits of this library include.</p>
+  <p>
+    <ul>
+      <li>Plain JavaScript implementation using ES6 and Modern practices (no jQuery, Angular, React, or any other framework dependency)</li>
+      <li>Renders a JSON schema as a webform and hooks up that form to the Form.io API's</li>
+      <li>Nested components, layouts, Date/Time, Select, Input Masks, and many more included features</li>
+      <li>Full JavaScript API SDK library on top of Form.io</li>
+    </ul>
+  </p>
+</div>
+
+<h3>Simple Example</h3>
+```html
+<html>
+  <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.form.css">
+    <script src="https://unpkg.com/formiojs@latest/dist/formio.form.js"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+        var form = new FormioForm(document.getElementById('formio'));
+        form.src = 'https://examples.form.io/example';
+      };
+    </script>
+  </head>
+  <body>
+    <div id="formio"></div>
+  </body>
+</html>
+```
+<script src="/dist/formio.embed.min.js?src=https://examples.form.io/example"></script>
