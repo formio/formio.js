@@ -13,4 +13,4 @@ You can combine these forms with the amazing [Bootswatch](https://bootswatch.com
 <script src="https://unpkg.com/formiojs@latest/dist/formio.embed.js?src=https://examples.form.io/example"></script>
 ```
 
-<script src="/dist/formio.embed.js?src=https://examples.form.io/example"></script>
+<script src="{{ site.baseurl }}/dist/formio.embed.js?src=https://examples.form.io/example"></script>

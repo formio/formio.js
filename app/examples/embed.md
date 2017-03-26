@@ -14,5 +14,5 @@ With this library, you can easly embed a form within your website by adding the 
 
 <h3>Result</h3>
 <div class="well">
-<script src="/dist/formio.embed.js?src=https://examples.form.io/example"></script>
+<script src="{{ site.baseurl }}/dist/formio.embed.js?src=https://examples.form.io/example"></script>
 </div>
