@@ -6,6 +6,9 @@ This library is a plain JavaScript form renderer and SDK for Form.io. This allow
  - Nested components, layouts, Date/Time, Select, Input Masks, and many more included features
  - Full JavaScript API SDK library on top of Form.io
  
+## Examples and Demonstration
+To find out more about this library as well as see a demonstration of what you can do with this library, go to the Examples and Demo site @ [https://formio.github.io/formio.js](https://formio.github.io/formio.js)
+ 
 ## Installation
 To install this SDK into your project, you can use the following command within your terminal.
 
