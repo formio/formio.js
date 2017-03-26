@@ -4,7 +4,7 @@ layout: default
 section: home
 ---
 <div class="jumbotron">
-  <h2>JavaScript Powered Forms by <img height="25px;" style="display: inline;" alt="Form.io" src="https://help.form.io/assets/formio-logo.png"></h2>
+  <h2>JavaScript Powered Forms by <a href="https://form.io" target="_blank"><img height="25px;" style="display: inline;" alt="Form.io" src="https://help.form.io/assets/formio-logo.png"></a></h2>
   <p>This library is a plain JavaScript form renderer and SDK for Form.io. This allows you to render the JSON schema forms produced by Form.io and render those within your application using plain JavaScript, as well as provides an interface SDK to communicate to the Form.io API's. The benefits of this library include.</p>
   <p>
     <ul>
