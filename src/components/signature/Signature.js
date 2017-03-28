@@ -19,7 +19,7 @@ export class SignatureComponent extends BaseComponent {
     let image = this.ce('image', 'img', {
       style: ('width: ' + this.component.width + ';height: ' + this.component.height)
     });
-    image.setAttribute('src', this.input.value);
+    image.setAttribute('src', this.value);
     return image;
   }
 
@@ -37,12 +37,12 @@ export class SignatureComponent extends BaseComponent {
   }
 
   build() {
-    let element = this.createElement();
-    let classNames = element.getAttribute('class');
+    this.element = this.createElement();
+    let classNames = this.element.getAttribute('class');
     classNames += ' signature-pad';
-    element.setAttribute('class', classNames);
+    this.element.setAttribute('class', classNames);
 
-    this.input = this.createInput(element);
+    this.input = this.createInput(this.element);
     let padBody = this.ce('pad', 'div', {
       class: 'signature-pad-body',
       style: ('width: ' + this.component.width + ';height: ' + this.component.height)
@@ -61,7 +61,7 @@ export class SignatureComponent extends BaseComponent {
       class: 'signature-pad-canvas'
     });
     padBody.appendChild(canvas);
-    element.appendChild(padBody);
+    this.element.appendChild(padBody);
 
     // Add the footer.
     if (this.component.footer) {
@@ -69,7 +69,7 @@ export class SignatureComponent extends BaseComponent {
         class: 'signature-pad-footer'
       });
       footer.appendChild(this.text(this.component.footer));
-      element.appendChild(footer);
+      this.element.appendChild(footer);
     }
 
     // Create the signature pad.
@@ -97,5 +97,9 @@ export class SignatureComponent extends BaseComponent {
       }
       setTimeout(checkWidth.bind(this), 200);
     }.bind(this), 200);
+
+    if (this.options.readOnly) {
+      this.disable = true;
+    }
   }
 }

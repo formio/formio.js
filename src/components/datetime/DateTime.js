@@ -1,6 +1,7 @@
 import { BaseComponent } from '../base/Base';
 import Flatpickr from 'flatpickr';
 import _get from 'lodash/get';
+import _each from 'lodash/each';
 export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
