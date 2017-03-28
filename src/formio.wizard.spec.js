@@ -9,7 +9,9 @@ describe('Form Wizard Renderer tests', () => {
         let wizardElement = document.createElement('div');
         let wizard = new FormioWizard(wizardElement);
         wizard.setForm(wizardTest.form).then(() => {
-          wizardTestTest(wizard, done);
+          return wizardTestTest(wizard, done);
+        }).catch((error) => {
+          done(error);
         });
       });
     });

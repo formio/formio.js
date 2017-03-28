@@ -21,22 +21,24 @@ export class FormioWizard extends FormioForm {
   nextPage() {
     // Validate the form builed, before go to the next page
     if (this.checkValidity()) {
-      this.setPage(this.page + 1);
-      this.emit('nextPage', {page: this.page, submission: this.submission});
+      return this.setPage(this.page + 1).then(() => {
+        this.emit('nextPage', {page: this.page, submission: this.submission});
+      });
     }
     else {
-      this.showErrors();
+      return Promise.reject(this.showErrors());
     }
   }
 
   prevPage() {
-    this.setPage(this.page - 1);
-    this.emit('prevPage', {page: this.page, submission: this.submission});
+    return this.setPage(this.page - 1).then(() => {
+      this.emit('prevPage', {page: this.page, submission: this.submission});
+    });
   }
 
   cancel() {
     super.cancel();
-    this.setPage(0);
+    return this.setPage(0);
   }
 
   currentPage() {
