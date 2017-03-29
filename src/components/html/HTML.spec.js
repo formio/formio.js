@@ -8,4 +8,14 @@ describe('HTML Component', function() {
       done();
     });
   });
+  it('Should build an html component and ignore empty attribute name', function(done) {
+    let comp = comps.comp1;
+    comp.attrs.push({
+      "attr": "",
+      "value": ""
+    });
+    Harness.testCreate(HTMLComponent, comps.comp1).then((component) => {
+      done();
+    });
+  });
 });
