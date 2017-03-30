@@ -6,7 +6,9 @@ export class HTMLComponent extends BaseComponent {
       class: this.component.className
     });
     _each(this.component.attrs, (attr) => {
-      this.element.setAttribute(attr.attr, attr.value);
+      if (attr.attr) {
+        this.element.setAttribute(attr.attr, attr.value);
+      }
     });
     if (this.component.content) {
       this.element.innerHTML = this.component.content;
