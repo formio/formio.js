@@ -235,7 +235,7 @@ var Formio = function () {
       var _url = type + 'Url';
       var method = this[_id] || data._id ? 'put' : 'post';
       var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
-      if (!this[_id] && data._id && method === 'put') {
+      if (!this[_id] && data._id && method === 'put' && reqUrl.indexOf(data._id) === -1) {
         reqUrl += '/' + data._id;
       }
       Formio.cache = {};
