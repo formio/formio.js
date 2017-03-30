@@ -123,6 +123,10 @@ export class FormioComponents extends BaseComponent {
     _each(this.component.components, (component) => this.addComponent(component, element, data));
   }
 
+  updateValue(noValidate) {
+    _each(this.components, (comp) => comp.updateValue(noValidate));
+  }
+
   checkConditions(data) {
     super.checkConditions(data);
     _each(this.components, (comp) => comp.checkConditions(data));
@@ -178,7 +182,7 @@ export class FormioComponents extends BaseComponent {
     }
     this.value = value;
     _each(this.components, (component) => {
-      if (component.input || (component.type === 'button')) {
+      if (component.type === 'button') {
         return;
       }
 

@@ -222,6 +222,13 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       });
     }
   }, {
+    key: 'updateValue',
+    value: function updateValue(noValidate) {
+      (0, _each3.default)(this.components, function (comp) {
+        return comp.updateValue(noValidate);
+      });
+    }
+  }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
@@ -280,7 +287,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       }
       this.value = value;
       (0, _each3.default)(this.components, function (component) {
-        if (component.input || component.type === 'button') {
+        if (component.type === 'button') {
           return;
         }
 
@@ -1475,6 +1482,9 @@ var BaseComponent = function () {
       if (!this.createWrapper()) {
         this.createInput(this.element);
       }
+      if (this.options.readOnly) {
+        this.disable = true;
+      }
     }
 
     /**
@@ -1632,6 +1642,9 @@ var BaseComponent = function () {
       td.appendChild(this.addButton());
       tr.appendChild(td);
       this.tbody.appendChild(tr);
+      if (this.options.readOnly) {
+        this.disable = true;
+      }
     }
 
     /**
@@ -2110,10 +2123,6 @@ var BaseComponent = function () {
       if (input && container) {
         this.inputs.push(input);
         input = container.appendChild(input);
-        if (input && this.options.readOnly) {
-          input.disabled = true;
-          input.setAttribute('disabled', 'disabled');
-        }
       }
       this.addInputEventListener(input);
 
@@ -2425,7 +2434,7 @@ var BaseComponent = function () {
 exports.BaseComponent = BaseComponent;
 
 BaseComponent.externalLibraries = {};
-BaseComponent.requireLibrary = function (name, property, src) {
+BaseComponent.requireLibrary = function (name, property, src, polling) {
   if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
     BaseComponent.externalLibraries[name] = {};
     BaseComponent.externalLibraries[name].ready = new _nativePromiseOnly2.default(function (resolve, reject) {
@@ -2433,7 +2442,7 @@ BaseComponent.requireLibrary = function (name, property, src) {
       BaseComponent.externalLibraries[name].reject = reject;
     });
 
-    if (!window[name + 'Callback']) {
+    if (!polling && !window[name + 'Callback']) {
       window[name + 'Callback'] = function () {
         this.resolve();
       }.bind(BaseComponent.externalLibraries[name]);
@@ -2451,8 +2460,22 @@ BaseComponent.requireLibrary = function (name, property, src) {
       script.setAttribute('defer', true);
       script.setAttribute('async', true);
       document.getElementsByTagName('head')[0].appendChild(script);
+
+      // if no callback is provided, then check periodically for the script.
+      if (polling) {
+        setTimeout(function checkLibrary() {
+          var plugin = (0, _get3.default)(window, property);
+          if (plugin) {
+            BaseComponent.externalLibraries[name].resolve(plugin);
+          } else {
+            // check again after 200 ms.
+            setTimeout(checkLibrary, 200);
+          }
+        }, 200);
+      }
     }
   }
+  return BaseComponent.externalLibraries[name].ready;
 };
 
 BaseComponent.libraryReady = function (name) {
@@ -2552,7 +2575,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
       this.on('submitDone', function () {
         _this2.loading = false;
-        _this2.element.disable = false;
+        _this2.disable = false;
       }, true);
       this.on('error', function () {
         _this2.loading = false;
@@ -2561,7 +2584,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         switch (_this2.component.action) {
           case 'submit':
             _this2.loading = true;
-            _this2.element.disable = true;
+            _this2.disable = true;
             event.preventDefault();
             event.stopPropagation();
             _this2.emit('submitButton');
@@ -2577,6 +2600,9 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
             break;
         }
       });
+      if (this.options.readOnly) {
+        this.disable = true;
+      }
     }
   }, {
     key: 'loading',
@@ -2594,6 +2620,12 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
           this.element.removeChild(this.loader);
         }
       }
+    }
+  }, {
+    key: 'disable',
+    set: function set(disable) {
+      this.disabled = disable;
+      this.element.disable = disable;
     }
   }]);
 
@@ -2691,6 +2723,9 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       if (!this.label) {
         this.addInput(this.input, this.element);
       }
+      if (this.options.readOnly) {
+        this.disable = true;
+      }
     }
   }, {
     key: 'createElement',
@@ -2733,6 +2768,22 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       return input;
     }
   }, {
+    key: 'addInputEventListener',
+    value: function addInputEventListener(input) {
+      var _this2 = this;
+
+      this.addEventListener(input, this.info.changeEvent, function () {
+        // If this input has a "name", then its other input elements are elsewhere on
+        // the form. To get the correct submission object, we need to refresh the whole
+        // data object.
+        if (_this2.component.name) {
+          _this2.emit('refreshData');
+        } else {
+          _this2.updateValue();
+        }
+      });
+    }
+  }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
       return !!this.inputs[index].checked;
@@ -2741,9 +2792,10 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
     key: 'setValue',
     value: function setValue(value, noUpdate, noValidate) {
       this.value = value;
-      if (this.component.inputType === 'radio') {
-        this.input.checked = value === this.input.value ? 1 : 0;
-      } else if (value === 'on') {
+      if (!this.input) {
+        return;
+      }
+      if (value === 'on') {
         this.input.value = 1;
         this.input.checked = 1;
       } else if (value === 'off') {
@@ -3421,6 +3473,10 @@ var _get3 = require('lodash/get');
 
 var _get4 = _interopRequireDefault(_get3);
 
+var _each2 = require('lodash/each');
+
+var _each3 = _interopRequireDefault(_each2);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -3580,7 +3636,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     key: 'disable',
     set: function set(disable) {
       _set(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'disable', disable, this);
-      _each(this.inputs, function (input) {
+      (0, _each3.default)(this.inputs, function (input) {
         if (input.calendar) {
           input.calendar.redraw();
         }
@@ -3591,7 +3647,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   return DateTimeComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"flatpickr":48,"lodash/get":225}],14:[function(require,module,exports){
+},{"../base/Base":4,"flatpickr":48,"lodash/each":222,"lodash/get":225}],14:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5516,7 +5572,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       var image = this.ce('image', 'img', {
         style: 'width: ' + this.component.width + ';height: ' + this.component.height
       });
-      image.setAttribute('src', this.input.value);
+      image.setAttribute('src', this.value);
       return image;
     }
   }, {
@@ -5532,12 +5588,12 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     value: function build() {
       var _this2 = this;
 
-      var element = this.createElement();
-      var classNames = element.getAttribute('class');
+      this.element = this.createElement();
+      var classNames = this.element.getAttribute('class');
       classNames += ' signature-pad';
-      element.setAttribute('class', classNames);
+      this.element.setAttribute('class', classNames);
 
-      this.input = this.createInput(element);
+      this.input = this.createInput(this.element);
       var padBody = this.ce('pad', 'div', {
         class: 'signature-pad-body',
         style: 'width: ' + this.component.width + ';height: ' + this.component.height
@@ -5556,7 +5612,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
         class: 'signature-pad-canvas'
       });
       padBody.appendChild(canvas);
-      element.appendChild(padBody);
+      this.element.appendChild(padBody);
 
       // Add the footer.
       if (this.component.footer) {
@@ -5564,7 +5620,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
           class: 'signature-pad-footer'
         });
         footer.appendChild(this.text(this.component.footer));
-        element.appendChild(footer);
+        this.element.appendChild(footer);
       }
 
       // Create the signature pad.
@@ -5594,6 +5650,10 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
         }
         setTimeout(checkWidth.bind(this), 200);
       }.bind(this), 200);
+
+      if (this.options.readOnly) {
+        this.disable = true;
+      }
     }
   }, {
     key: 'disable',
@@ -5712,6 +5772,9 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
       });
       this.table.appendChild(tbody);
       this.element.appendChild(this.table);
+      if (this.options.readOnly) {
+        this.disable = true;
+      }
     }
   }, {
     key: 'setValue',
@@ -6210,6 +6273,10 @@ var _each2 = require("lodash/each");
 
 var _each3 = _interopRequireDefault(_each2);
 
+var _clone2 = require("lodash/clone");
+
+var _clone3 = _interopRequireDefault(_clone2);
+
 var _eventemitter = require("eventemitter2");
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
@@ -6532,6 +6599,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
           _this4.on('componentChange', function (changed) {
             return _this4.triggerSubmissionChange(changed);
           }, true);
+          _this4.on('refreshData', function () {
+            return _this4.updateValue();
+          });
           _this4.emit('render');
         });
       });
@@ -6671,7 +6741,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: "onSubmissionChange",
     value: function onSubmissionChange(changed) {
-      var value = this.submission;
+      var value = (0, _clone3.default)(this.submission);
       value.changed = changed;
       this.emit('change', value);
       this.checkConditions(value.data);
@@ -6920,7 +6990,7 @@ FormioForm.embed = function (embed) {
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":38,"eventemitter2":47,"lodash/debounce":219,"lodash/each":222,"native-promise-only":256}],38:[function(require,module,exports){
+},{"./components/Components":1,"./formio":38,"eventemitter2":47,"lodash/clone":216,"lodash/debounce":219,"lodash/each":222,"native-promise-only":256}],38:[function(require,module,exports){
 (function (global){
 'use strict';
 

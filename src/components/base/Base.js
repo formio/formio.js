@@ -252,6 +252,9 @@ export class BaseComponent {
     if (!this.createWrapper()) {
       this.createInput(this.element);
     }
+    if (this.options.readOnly) {
+      this.disable = true;
+    }
   }
 
   /**
@@ -398,6 +401,9 @@ export class BaseComponent {
     td.appendChild(this.addButton());
     tr.appendChild(td);
     this.tbody.appendChild(tr);
+    if (this.options.readOnly) {
+      this.disable = true;
+    }
   }
 
   /**
@@ -808,10 +814,6 @@ export class BaseComponent {
     if (input && container) {
       this.inputs.push(input);
       input = container.appendChild(input);
-      if (input && this.options.readOnly) {
-        input.disabled = true;
-        input.setAttribute('disabled', 'disabled');
-      }
     }
     this.addInputEventListener(input);
 
@@ -1073,7 +1075,7 @@ export class BaseComponent {
 }
 
 BaseComponent.externalLibraries = {};
-BaseComponent.requireLibrary = function(name, property, src) {
+BaseComponent.requireLibrary = function(name, property, src, polling) {
   if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
     BaseComponent.externalLibraries[name] = {};
     BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {
@@ -1081,7 +1083,7 @@ BaseComponent.requireLibrary = function(name, property, src) {
       BaseComponent.externalLibraries[name].reject = reject;
     });
 
-    if (!window[name + 'Callback']) {
+    if (!polling && !window[name + 'Callback']) {
       window[name + 'Callback'] = function() {
         this.resolve();
       }.bind(BaseComponent.externalLibraries[name]);
@@ -1100,8 +1102,23 @@ BaseComponent.requireLibrary = function(name, property, src) {
       script.setAttribute('defer', true);
       script.setAttribute('async', true);
       document.getElementsByTagName('head')[0].appendChild(script);
+
+      // if no callback is provided, then check periodically for the script.
+      if (polling) {
+        setTimeout(function checkLibrary() {
+          let plugin = _get(window, property);
+          if (plugin) {
+            BaseComponent.externalLibraries[name].resolve(plugin);
+          }
+          else {
+            // check again after 200 ms.
+            setTimeout(checkLibrary, 200);
+          }
+        }, 200)
+      }
     }
   }
+  return BaseComponent.externalLibraries[name].ready;
 };
 
 BaseComponent.libraryReady = function(name) {

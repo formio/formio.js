@@ -4,6 +4,7 @@ import Formio from './formio';
 import { FormioComponents } from './components/Components';
 import _debounce from 'lodash/debounce';
 import _each from 'lodash/each';
+import _clone from 'lodash/clone';
 import EventEmitter from 'eventemitter2';
 let getOptions = function(options) {
   options = options || {};
@@ -382,6 +383,7 @@ export class FormioForm extends FormioComponents {
         this.build();
         this.on('resetForm', () => this.reset(), true);
         this.on('componentChange', (changed) => this.triggerSubmissionChange(changed), true);
+        this.on('refreshData', () => this.updateValue());
         this.emit('render');
       });
     });
@@ -500,7 +502,7 @@ export class FormioForm extends FormioComponents {
    * @param {*} changed.value - The new value of the changed component.
    */
   onSubmissionChange(changed) {
-    let value = this.submission;
+    let value = _clone(this.submission);
     value.changed = changed;
     this.emit('change', value);
     this.checkConditions(value.data);
