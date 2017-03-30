@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "2.3.4",
+  "version": "2.4.0",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "build/formio.js",
   "files": [
@@ -45,15 +45,15 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "choices.js": "^2.7.6",
+    "choices.js": "^2.7.7",
     "eventemitter2": "^2.2.2",
-    "flatpickr": "^2.4.6",
+    "flatpickr": "^2.4.7",
     "i18next": "^6.1.2",
     "lodash": "^4.17.4",
-    "moment": "^2.18.0",
+    "moment": "^2.18.1",
     "native-promise-only": "^0.8.1",
     "shallow-copy": "0.0.1",
-    "signature_pad": "^1.5.3",
+    "signature_pad": "^1.6.0",
     "text-mask-all": "github:text-mask/text-mask",
     "whatwg-fetch": "^0.11.1"
   },
