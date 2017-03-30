@@ -4458,7 +4458,9 @@ var HTMLComponent = exports.HTMLComponent = function (_BaseComponent) {
         class: this.component.className
       });
       (0, _each3.default)(this.component.attrs, function (attr) {
-        _this2.element.setAttribute(attr.attr, attr.value);
+        if (attr.attr) {
+          _this2.element.setAttribute(attr.attr, attr.value);
+        }
       });
       if (this.component.content) {
         this.element.innerHTML = this.component.content;

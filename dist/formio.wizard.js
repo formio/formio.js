@@ -4458,7 +4458,9 @@ var HTMLComponent = exports.HTMLComponent = function (_BaseComponent) {
         class: this.component.className
       });
       (0, _each3.default)(this.component.attrs, function (attr) {
-        _this2.element.setAttribute(attr.attr, attr.value);
+        if (attr.attr) {
+          _this2.element.setAttribute(attr.attr, attr.value);
+        }
       });
       if (this.component.content) {
         this.element.innerHTML = this.component.content;
@@ -8048,25 +8050,31 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'nextPage',
     value: function nextPage() {
+      var _this2 = this;
+
       // Validate the form builed, before go to the next page
       if (this.checkValidity()) {
-        this.setPage(this.page + 1);
-        this.emit('nextPage', { page: this.page, submission: this.submission });
+        return this.setPage(this.page + 1).then(function () {
+          _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+        });
       } else {
-        this.showErrors();
+        return _nativePromiseOnly2.default.reject(this.showErrors());
       }
     }
   }, {
     key: 'prevPage',
     value: function prevPage() {
-      this.setPage(this.page - 1);
-      this.emit('prevPage', { page: this.page, submission: this.submission });
+      var _this3 = this;
+
+      return this.setPage(this.page - 1).then(function () {
+        _this3.emit('prevPage', { page: _this3.page, submission: _this3.submission });
+      });
     }
   }, {
     key: 'cancel',
     value: function cancel() {
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'cancel', this).call(this);
-      this.setPage(0);
+      return this.setPage(0);
     }
   }, {
     key: 'currentPage',
@@ -8080,12 +8088,12 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'setForm',
     value: function setForm(form) {
-      var _this2 = this;
+      var _this4 = this;
 
       this.pages = [];
       (0, _each2.default)(form.components, function (component) {
         if (component.type === 'panel') {
-          _this2.pages.push(component);
+          _this4.pages.push(component);
         }
       });
       return this.setPage(this.page);
@@ -8114,25 +8122,25 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'createWizardHeader',
     value: function createWizardHeader() {
-      var _this3 = this;
+      var _this5 = this;
 
       this.wizardHeader = this.ce('wizardHeader', 'ul', {
         class: 'pagination'
       });
 
       (0, _each2.default)(this.pages, function (page, i) {
-        var pageButton = _this3.ce('pageButton', 'li', {
-          class: i === _this3.page ? 'active' : 'disabled'
+        var pageButton = _this5.ce('pageButton', 'li', {
+          class: i === _this5.page ? 'active' : 'disabled'
         });
 
-        var pageLabel = _this3.ce('pageLabel', 'span');
-        var pageTitle = i === _this3.page ? page.title : i + 1;
+        var pageLabel = _this5.ce('pageLabel', 'span');
+        var pageTitle = i === _this5.page ? page.title : i + 1;
         if (!pageTitle) {
           pageTitle = i + 1;
         }
-        pageLabel.appendChild(_this3.text(pageTitle));
+        pageLabel.appendChild(_this5.text(pageTitle));
         pageButton.appendChild(pageLabel);
-        _this3.wizardHeader.appendChild(pageButton);
+        _this5.wizardHeader.appendChild(pageButton);
       });
 
       this.element.appendChild(this.wizardHeader);
@@ -8140,28 +8148,28 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'createWizardNav',
     value: function createWizardNav() {
-      var _this4 = this;
+      var _this6 = this;
 
       this.wizardNav = this.ce('wizardNav', 'ul', {
         class: 'list-inline'
       });
 
       (0, _each2.default)([{ name: 'cancel', method: 'cancel', class: 'btn btn-default' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
-        if (!_this4.hasButton(button.name)) {
+        if (!_this6.hasButton(button.name)) {
           return;
         }
-        var buttonWrapper = _this4.ce('wizardNavButton', 'li');
+        var buttonWrapper = _this6.ce('wizardNavButton', 'li');
         var buttonProp = button.name + 'Button';
-        _this4[buttonProp] = _this4.ce(buttonProp, 'button', {
+        _this6[buttonProp] = _this6.ce(buttonProp, 'button', {
           class: button.class
         });
-        _this4[buttonProp].appendChild(_this4.text(_this4.t(button.name)));
-        _this4.addEventListener(_this4[buttonProp], 'click', function (event) {
+        _this6[buttonProp].appendChild(_this6.text(_this6.t(button.name)));
+        _this6.addEventListener(_this6[buttonProp], 'click', function (event) {
           event.preventDefault();
-          _this4[button.method]();
+          _this6[button.method]();
         });
-        buttonWrapper.appendChild(_this4[buttonProp]);
-        _this4.wizardNav.appendChild(buttonWrapper);
+        buttonWrapper.appendChild(_this6[buttonProp]);
+        _this6.wizardNav.appendChild(buttonWrapper);
       });
 
       // Add the wizard navigation

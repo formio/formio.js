@@ -46,6 +46,8 @@ describe('Formio Form Renderer tests', () => {
         let form = new FormioForm(formElement);
         form.setForm(formTest.form).then(() => {
           formTestTest(form, done);
+        }).catch((error) => {
+          done(error);
         });
       });
     });

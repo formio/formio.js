@@ -76,5 +76,33 @@ export const Harness = {
 
     // Set the value.
     component.setValue(test.bad.value);
+  },
+  testWizardPrevPage: function(form, errors, onPrevPage) {
+    if (errors) {
+      form.on('error', (err) => {
+        _each(errors, (error, index) => {
+          error.component = form.getComponent(error.component).component;
+          assert.deepEqual(err[index], error);
+        });
+      });
+    }
+    if (onPrevPage) {
+      form.on('prevPage', onPrevPage);
+    }
+    return form.prevPage();
+  },
+  testWizardNextPage: function(form, errors, onNextPage) {
+    if (errors) {
+      form.on('error', (err) => {
+        _each(errors, (error, index) => {
+          error.component = form.getComponent(error.component).component;
+          assert.deepEqual(err[index], error);
+        });
+      });
+    }
+    if (onNextPage) {
+      form.on('nextPage', onNextPage);
+    }
+    return form.nextPage();
   }
 };
