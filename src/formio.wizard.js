@@ -8,6 +8,8 @@ export class FormioWizard extends FormioForm {
     super(element, options);
     this.pages = [];
     this.page = 0;
+    this.historyPages = {};
+    this._nextPage = 1;
   }
 
   setPage(num) {
@@ -18,10 +20,51 @@ export class FormioWizard extends FormioForm {
     return Promise.reject('Page not found');
   }
 
+  getCondionalNextPage(data, page) {
+    let form = this.pages[page];
+    // Check conditional nextPage
+    if (form) {
+      if(form.nextPage) {
+        try {
+          let script = '(function() { var page = '+(page + 1)+';';
+          script += form.nextPage.toString();
+          script += '; return page; })()';
+          let result = eval(script);
+          if (result == page) {
+            console.warn('A recursive result is returned in a custom nextPage function statement for component ' + form.key, e);
+            return page + 1;
+          }
+          return result;
+        }
+        catch (e) {
+          console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);
+          return page + 1;
+        }
+      }
+
+      return page + 1;
+    }
+
+    return null;
+  }
+
+  getPreviousPage() {
+    if(typeof this.historyPages[this.page] !== 'undefined') {
+      return this.historyPages[this.page];
+    }
+
+    return this.page - 1;
+  }
+
   nextPage() {
     // Validate the form builed, before go to the next page
     if (this.checkValidity()) {
-      return this.setPage(this.page + 1).then(() => {
+      let currentPage = this.page;
+      let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+
+      return this.setPage(nextPage).then(() => {
+        this.historyPages[this.page] = currentPage;
+        this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
         this.emit('nextPage', {page: this.page, submission: this.submission});
       });
     }
@@ -31,13 +74,15 @@ export class FormioWizard extends FormioForm {
   }
 
   prevPage() {
-    return this.setPage(this.page - 1).then(() => {
+    let prevPage = this.getPreviousPage();
+    return this.setPage(prevPage).then(() => {
       this.emit('prevPage', {page: this.page, submission: this.submission});
     });
   }
 
   cancel() {
     super.cancel();
+    this.historyPages = {};
     return this.setPage(0);
   }
 
@@ -66,14 +111,15 @@ export class FormioWizard extends FormioForm {
   }
 
   hasButton(name) {
-    if (name === 'next') {
-      return (this.page + 1) < this.pages.length;
-    }
     if (name === 'previous') {
       return (this.page > 0);
     }
+    let nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+    if (name === 'next') {
+      return (nextPage !== null) && (nextPage < this.pages.length);
+    }
     if (name === 'submit') {
-      return (this.page === (this.pages.length - 1));
+      return (nextPage === null) || (this.page === (this.pages.length - 1));
     }
     return true;
   }
@@ -99,6 +145,19 @@ export class FormioWizard extends FormioForm {
     });
 
     this.element.appendChild(this.wizardHeader);
+  }
+
+  onSubmissionChange(changed) {
+    super.onSubmissionChange(changed);
+
+    // Update Wizard Nav
+    let nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+    if (this._nextPage != nextPage) {
+      this.element.removeChild(this.wizardNav);
+      this.createWizardNav();
+      this.emit('updateWizardNav', {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
+      this._nextPage = nextPage;
+    }
   }
 
   createWizardNav() {
