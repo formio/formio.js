@@ -58,7 +58,7 @@ export class Formio {
       this.projectUrl = options.project;
     }
 
-    let project = this.projectUrl || Formio.appUrl;
+    let project = this.projectUrl || Formio.projectUrl;
 
     // The baseURL is the same as the projectUrl. This is almost certainly against
     // the Open Source server.
@@ -168,8 +168,8 @@ export class Formio {
     }
 
     // Set the app url if it is not set.
-    if (!Formio.appUrlSet) {
-      Formio.appUrl = this.projectUrl;
+    if (!Formio.projectUrlSet) {
+      Formio.projectUrl = this.projectUrl;
     }
   }
 
@@ -627,8 +627,8 @@ export class Formio {
 
   static setBaseUrl(url) {
     Formio.baseUrl = url;
-    if (!Formio.appUrlSet) {
-      Formio.appUrl = url;
+    if (!Formio.projectUrlSet) {
+      Formio.projectUrl = url;
     }
   }
 
@@ -645,12 +645,23 @@ export class Formio {
   }
 
   static setAppUrl(url) {
-    Formio.appUrl = url;
-    Formio.appUrlSet = true;
+    console.warn('Formio.setAppUrl() is deprecated. Use Formio.setProjectUrl instead.')
+    Formio.projectUrl = url;
+    Formio.projectUrlSet = true;
+  }
+
+  static setProjectUrl(url) {
+    Formio.projectUrl = url;
+    Formio.projectUrlSet = true;
   }
 
   static getAppUrl() {
-    return Formio.appUrl;
+    console.warn('Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.')
+    return Formio.projectUrl;
+  }
+
+  static getProjectUrl() {
+    return Formio.projectUrl;
   }
 
   static clearCache() {
@@ -886,8 +897,8 @@ export class Formio {
 
 // Define all the static properties.
 Formio.baseUrl = 'https://api.form.io';
-Formio.appUrl = Formio.baseUrl;
-Formio.appUrlSet = false;
+Formio.projectUrl = Formio.baseUrl;
+Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
 Formio.providers = require('./providers');

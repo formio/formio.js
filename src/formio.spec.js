@@ -24,8 +24,8 @@ var runTests = function(cb, options) {
   if (!noBefore) {
     beforeEach(() => {
       Formio.setBaseUrl(baseUrl);
-      Formio.appUrlSet = false;
-      Formio.appUrl = 'https://api.form.io';
+      Formio.projectUrlSet = false;
+      Formio.projectUrl = 'https://api.form.io';
     });
   }
   _each(tests, function(test, path) {
@@ -437,8 +437,8 @@ describe('Simple Form Constructor Tests', () => {
   runTests((tests) => {
     tests['init'] = () => {
       Formio.setBaseUrl('https://api.form.io');
-      Formio.appUrlSet = false;
-      Formio.appUrl = 'https://api.form.io';
+      Formio.projectUrlSet = false;
+      Formio.projectUrl = 'https://api.form.io';
     };
     tests['https://examples.form.io/example'] = {
       projectUrl: 'https://examples.form.io',
