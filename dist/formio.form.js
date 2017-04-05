@@ -7066,7 +7066,7 @@ var Formio = function () {
       this.projectUrl = options.project;
     }
 
-    var project = this.projectUrl || Formio.appUrl;
+    var project = this.projectUrl || Formio.projectUrl;
 
     // The baseURL is the same as the projectUrl. This is almost certainly against
     // the Open Source server.
@@ -7172,8 +7172,8 @@ var Formio = function () {
     }
 
     // Set the app url if it is not set.
-    if (!Formio.appUrlSet) {
-      Formio.appUrl = this.projectUrl;
+    if (!Formio.projectUrlSet) {
+      Formio.projectUrl = this.projectUrl;
     }
   }
 
@@ -7646,8 +7646,8 @@ var Formio = function () {
     key: 'setBaseUrl',
     value: function setBaseUrl(url) {
       Formio.baseUrl = url;
-      if (!Formio.appUrlSet) {
-        Formio.appUrl = url;
+      if (!Formio.projectUrlSet) {
+        Formio.projectUrl = url;
       }
     }
   }, {
@@ -7668,13 +7668,26 @@ var Formio = function () {
   }, {
     key: 'setAppUrl',
     value: function setAppUrl(url) {
-      Formio.appUrl = url;
-      Formio.appUrlSet = true;
+      console.warn('Formio.setAppUrl() is deprecated. Use Formio.setProjectUrl instead.');
+      Formio.projectUrl = url;
+      Formio.projectUrlSet = true;
+    }
+  }, {
+    key: 'setProjectUrl',
+    value: function setProjectUrl(url) {
+      Formio.projectUrl = url;
+      Formio.projectUrlSet = true;
     }
   }, {
     key: 'getAppUrl',
     value: function getAppUrl() {
-      return Formio.appUrl;
+      console.warn('Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.');
+      return Formio.projectUrl;
+    }
+  }, {
+    key: 'getProjectUrl',
+    value: function getProjectUrl() {
+      return Formio.projectUrl;
     }
   }, {
     key: 'clearCache',
@@ -7937,8 +7950,8 @@ var Formio = function () {
 
 exports.Formio = Formio;
 Formio.baseUrl = 'https://api.form.io';
-Formio.appUrl = Formio.baseUrl;
-Formio.appUrlSet = false;
+Formio.projectUrl = Formio.baseUrl;
+Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
 Formio.providers = require('./providers');
@@ -9228,7 +9241,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/*! flatpickr v2.4.7, @license MIT */
+/*! flatpickr v2.4.8, @license MIT */
 function Flatpickr(element, config) {
 	var self = this;
 
@@ -9238,7 +9251,6 @@ function Flatpickr(element, config) {
 	self.close = close;
 	self._createElement = createElement;
 	self.destroy = destroy;
-	self.formatDate = formatDate;
 	self.isEnabled = isEnabled;
 	self.jumpToDate = jumpToDate;
 	self.open = open;
@@ -9255,6 +9267,7 @@ function Flatpickr(element, config) {
 		self.element = element;
 		self.instanceConfig = config || {};
 		self.parseDate = Flatpickr.prototype.parseDate.bind(self);
+		self.formatDate = Flatpickr.prototype.formatDate.bind(self);
 
 		setupFormats();
 		parseConfig();
@@ -9272,7 +9285,9 @@ function Flatpickr(element, config) {
 		bind();
 
 		if (self.selectedDates.length || self.config.noCalendar) {
-			if (self.config.enableTime) setHoursFromDate(self.config.noCalendar ? self.config.minDate : null);
+			if (self.config.enableTime) {
+				setHoursFromDate(self.config.noCalendar ? self.latestSelectedDateObj || self.config.minDate : null);
+			}
 			updateValue();
 		}
 
@@ -9314,8 +9329,8 @@ function Flatpickr(element, config) {
 	function setHoursFromInputs() {
 		if (!self.config.enableTime) return;
 
-		var hours = parseInt(self.hourElement.value, 10) || 0,
-		    minutes = parseInt(self.minuteElement.value, 10) || 0,
+		var hours = (parseInt(self.hourElement.value, 10) || 0) % (self.amPM ? 12 : 24),
+		    minutes = (parseInt(self.minuteElement.value, 10) || 0) % 60,
 		    seconds = self.config.enableSeconds ? parseInt(self.secondElement.value, 10) || 0 : 0;
 
 		if (self.amPM) hours = hours % 12 + 12 * (self.amPM.textContent === "PM");
@@ -9575,16 +9590,21 @@ function Flatpickr(element, config) {
 		(customAppend ? self.config.appendTo : window.document.body).appendChild(self.calendarContainer);
 	}
 
-	function createDay(className, date, dayNumber) {
+	function createDay(className, date, dayNumber, i) {
 		var dateIsEnabled = isEnabled(date, true),
 		    dayElement = createElement("span", "flatpickr-day " + className, date.getDate());
 
 		dayElement.dateObj = date;
+		dayElement.$i = i;
+		dayElement.setAttribute("aria-label", self.formatDate(date, "F j, Y"));
 
-		toggleClass(dayElement, "today", compareDates(date, self.now) === 0);
+		if (compareDates(date, self.now) === 0) {
+			self.todayDateElem = dayElement;
+			dayElement.classList.add("today");
+		}
 
 		if (dateIsEnabled) {
-
+			dayElement.tabIndex = -1;
 			if (isDateSelected(date)) {
 				dayElement.classList.add("selected");
 				self.selectedDateElem = dayElement;
@@ -9614,16 +9634,33 @@ function Flatpickr(element, config) {
 		return dayElement;
 	}
 
+	function focusOnDay(currentIndex, offset) {
+		if (currentIndex === undefined) return (self.todayDateElem || self.days.childNodes[0]).focus();
+
+		var newIndex = currentIndex + offset || 0,
+		    targetNode = self.days.childNodes[newIndex];
+
+		if (targetNode) targetNode.focus();else if (offset > 0) {
+			self.changeMonth(1);
+			self.days.childNodes[newIndex % 42].focus();
+		} else {
+			self.changeMonth(-1);
+			self.days.childNodes[42 + newIndex].focus();
+		}
+	}
+
 	function buildDays(year, month) {
 		var firstOfMonth = (new Date(self.currentYear, self.currentMonth, 1).getDay() - self.l10n.firstDayOfWeek + 7) % 7,
 		    isRangeMode = self.config.mode === "range";
 
 		self.prevMonthDays = self.utils.getDaysinMonth((self.currentMonth - 1 + 12) % 12);
+		self.todayDateElem = null;
 
 		var daysInMonth = self.utils.getDaysinMonth(),
 		    days = window.document.createDocumentFragment();
 
-		var dayNumber = self.prevMonthDays + 1 - firstOfMonth;
+		var dayNumber = self.prevMonthDays + 1 - firstOfMonth,
+		    dayIndex = 0;
 
 		if (self.config.weekNumbers && self.weekNumbers.firstChild) self.weekNumbers.textContent = "";
 
@@ -9636,18 +9673,18 @@ function Flatpickr(element, config) {
 		if (self.days.firstChild) self.days.textContent = "";
 
 		// prepend days from the ending of previous month
-		for (; dayNumber <= self.prevMonthDays; dayNumber++) {
-			days.appendChild(createDay("prevMonthDay", new Date(self.currentYear, self.currentMonth - 1, dayNumber), dayNumber));
+		for (; dayNumber <= self.prevMonthDays; dayNumber++, dayIndex++) {
+			days.appendChild(createDay("prevMonthDay", new Date(self.currentYear, self.currentMonth - 1, dayNumber), dayNumber, dayIndex));
 		}
 
 		// Start at 1 since there is no 0th day
-		for (dayNumber = 1; dayNumber <= daysInMonth; dayNumber++) {
-			days.appendChild(createDay("", new Date(self.currentYear, self.currentMonth, dayNumber), dayNumber));
+		for (dayNumber = 1; dayNumber <= daysInMonth; dayNumber++, dayIndex++) {
+			days.appendChild(createDay("", new Date(self.currentYear, self.currentMonth, dayNumber), dayNumber, dayIndex));
 		}
 
 		// append days from the next month
-		for (var dayNum = daysInMonth + 1; dayNum <= 42 - firstOfMonth; dayNum++) {
-			days.appendChild(createDay("nextMonthDay", new Date(self.currentYear, self.currentMonth + 1, dayNum % daysInMonth), dayNum));
+		for (var dayNum = daysInMonth + 1; dayNum <= 42 - firstOfMonth; dayNum++, dayIndex++) {
+			days.appendChild(createDay("nextMonthDay", new Date(self.currentYear, self.currentMonth + 1, dayNum % daysInMonth), dayNum, dayIndex));
 		}
 
 		if (isRangeMode && self.selectedDates.length === 1 && days.childNodes[0]) {
@@ -9826,8 +9863,6 @@ function Flatpickr(element, config) {
 		updateNavigationCurrentMonth();
 		buildDays();
 
-		if (!self.config.noCalendar) self.days.focus();
-
 		triggerEvent("MonthChange");
 	}
 
@@ -9894,14 +9929,7 @@ function Flatpickr(element, config) {
 	function isCalendarElem(elem) {
 		if (self.config.appendTo && self.config.appendTo.contains(elem)) return true;
 
-		var e = elem;
-		while (e) {
-
-			if (e === self.calendarContainer) return true;
-			e = e.parentNode;
-		}
-
-		return false;
+		return self.calendarContainer.contains(elem);
 	}
 
 	function documentClick(e) {
@@ -9923,15 +9951,6 @@ function Flatpickr(element, config) {
 				}
 			}
 		}
-	}
-
-	function formatDate(frmt, dateObj) {
-		if (self.config.formatDate) return self.config.formatDate(frmt, dateObj);
-
-		var chars = frmt.split("");
-		return chars.map(function (c, i) {
-			return self.formats[c] && chars[i - 1] !== "\\" ? self.formats[c](dateObj) : c !== "\\" ? c : "";
-		}).join("");
 	}
 
 	function changeYear(newYear) {
@@ -9983,8 +10002,7 @@ function Flatpickr(element, config) {
 	}
 
 	function onKeyDown(e) {
-
-		if (e.target === (self.altInput || self.input) && e.which === 13) selectDate(e);else if (self.isOpen || self.config.inline) {
+		if (e.target === (self.altInput || self.input) && e.key === "Enter") selectDate(e);else if (self.isOpen || self.config.inline) {
 			switch (e.key) {
 				case "Enter":
 					if (self.timeContainer && self.timeContainer.contains(e.target)) updateValue();else selectDate(e);
@@ -9993,40 +10011,43 @@ function Flatpickr(element, config) {
 
 				case "Escape":
 					// escape
+					e.preventDefault();
 					self.close();
 					break;
 
 				case "ArrowLeft":
-					if (e.target !== self.input & e.target !== self.altInput) {
-						e.preventDefault();
-						changeMonth(-1);
-						self.currentMonthElement.focus();
+					e.preventDefault();
+					if (!e.ctrlKey) focusOnDay(e.target.$i, -1);else {
+						changeMonth(-1, true);
+						focusOnDay(e.target.$i, 0);
 					}
-					break;
-
-				case "ArrowUp":
-					if (!self.timeContainer || !self.timeContainer.contains(e.target)) {
-						e.preventDefault();
-						self.currentYear++;
-						self.redraw();
-					} else updateTime(e);
 
 					break;
 
 				case "ArrowRight":
-					if (e.target !== self.input & e.target !== self.altInput) {
-						e.preventDefault();
-						changeMonth(1);
-						self.currentMonthElement.focus();
+					e.preventDefault();
+					if (!e.ctrlKey) focusOnDay(e.target.$i, 1);else {
+						changeMonth(1, true);
+						focusOnDay(e.target.$i, 0);
 					}
+
+					break;
+
+				case "ArrowUp":
+					e.preventDefault();
+					if (e.ctrlKey) {
+						changeYear(self.currentYear + 1);
+						focusOnDay(e.target.$i, 0);
+					} else if (!self.timeContainer || !self.timeContainer.contains(e.target)) focusOnDay(e.target.$i, -7);else updateTime(e);
+
 					break;
 
 				case "ArrowDown":
-					if (!self.timeContainer || !self.timeContainer.contains(e.target)) {
-						e.preventDefault();
-						self.currentYear--;
-						self.redraw();
-					} else updateTime(e);
+					e.preventDefault();
+					if (e.ctrlKey) {
+						changeYear(self.currentYear - 1);
+						focusOnDay(e.target.$i, 0);
+					} else if (!self.timeContainer || !self.timeContainer.contains(e.target)) focusOnDay(e.target.$i, 7);else updateTime(e);
 
 					break;
 
@@ -10039,6 +10060,22 @@ function Flatpickr(element, config) {
 						self.amPM.focus();
 					}
 
+					break;
+
+				case "a":
+					if (e.target === self.amPM) {
+						self.amPM.textContent = "AM";
+						setHoursFromInputs();
+						updateValue();
+					}
+					break;
+
+				case "p":
+					if (e.target === self.amPM) {
+						self.amPM.textContent = "PM";
+						setHoursFromInputs();
+						updateValue();
+					}
 					break;
 
 				default:
@@ -10201,7 +10238,9 @@ function Flatpickr(element, config) {
 			var pluginConf = self.config.plugins[_i2](self) || {};
 			for (var key in pluginConf) {
 
-				if (Array.isArray(self.config[key]) || ~hooks.indexOf(key)) self.config[key] = arrayify(pluginConf[key]).map(bindToInstance).concat(self.config[key]);else if (typeof userConfig[key] === "undefined") self.config[key] = pluginConf[key];
+				if (Array.isArray(self.config[key]) || ~hooks.indexOf(key)) {
+					self.config[key] = arrayify(pluginConf[key]).map(bindToInstance).concat(self.config[key]);
+				} else if (typeof userConfig[key] === "undefined") self.config[key] = pluginConf[key];
 			}
 		}
 
@@ -10324,7 +10363,7 @@ function Flatpickr(element, config) {
 		}
 
 		if (self.config.enableTime) setTimeout(function () {
-			self.hourElement.select();
+			return self.hourElement.select();
 		}, 451);
 
 		if (self.config.mode === "single" && !self.config.enableTime) self.close();
@@ -10375,7 +10414,7 @@ function Flatpickr(element, config) {
 	}
 
 	function setDate(date, triggerChange, format) {
-		if (!date) return self.clear();
+		if (!date) return self.clear(triggerChange);
 
 		setSelectedDate(date, format);
 
@@ -10515,12 +10554,12 @@ function Flatpickr(element, config) {
 		self.mobileFormatStr = inputType === "datetime-local" ? "Y-m-d\\TH:i:S" : inputType === "date" ? "Y-m-d" : "H:i:S";
 
 		if (self.selectedDates.length) {
-			self.mobileInput.defaultValue = self.mobileInput.value = formatDate(self.mobileFormatStr, self.selectedDates[0]);
+			self.mobileInput.defaultValue = self.mobileInput.value = self.formatDate(self.selectedDates[0], self.mobileFormatStr);
 		}
 
-		if (self.config.minDate) self.mobileInput.min = formatDate("Y-m-d", self.config.minDate);
+		if (self.config.minDate) self.mobileInput.min = self.formatDate(self.config.minDate, "Y-m-d");
 
-		if (self.config.maxDate) self.mobileInput.max = formatDate("Y-m-d", self.config.maxDate);
+		if (self.config.maxDate) self.mobileInput.max = self.formatDate(self.config.maxDate, "Y-m-d");
 
 		self.input.type = "hidden";
 		if (self.config.altInput) self.altInput.type = "hidden";
@@ -10597,18 +10636,18 @@ function Flatpickr(element, config) {
 		if (!self.selectedDates.length) return self.clear();
 
 		if (self.isMobile) {
-			self.mobileInput.value = self.selectedDates.length ? formatDate(self.mobileFormatStr, self.latestSelectedDateObj) : "";
+			self.mobileInput.value = self.selectedDates.length ? self.formatDate(self.latestSelectedDateObj, self.mobileFormatStr) : "";
 		}
 
 		var joinChar = self.config.mode !== "range" ? "; " : self.l10n.rangeSeparator;
 
 		self.input.value = self.selectedDates.map(function (dObj) {
-			return formatDate(self.config.dateFormat, dObj);
+			return self.formatDate(dObj, self.config.dateFormat);
 		}).join(joinChar);
 
 		if (self.config.altInput) {
 			self.altInput.value = self.selectedDates.map(function (dObj) {
-				return formatDate(self.config.altFormat, dObj);
+				return self.formatDate(dObj, self.config.altFormat);
 			}).join(joinChar);
 		}
 
@@ -11019,6 +11058,25 @@ Flatpickr.prototype = {
 		}
 	},
 
+	formatDate: function formatDate(dateObj, frmt) {
+		var _this = this;
+
+		if (this.config.formatDate) {
+			try {
+				return this.config.formatDate(dateObj, frmt);
+			} catch (e) {
+				console.warn("Please swap the format string and the date object parameters in your formatDate option", "\nThe old signature will be deprecated by v2.5");
+
+				return this.config.formatDate(frmt, dateObj);
+			}
+		}
+
+		return frmt.split("").map(function (c, i, arr) {
+			return _this.formats[c] && arr[i - 1] !== "\\" ? _this.formats[c](dateObj) : c !== "\\" ? c : "";
+		}).join("");
+	},
+
+
 	revFormat: {
 		D: function D() {},
 		F: function F(dateObj, monthName) {
@@ -11108,8 +11166,8 @@ Flatpickr.prototype = {
 
 		var date_orig = date;
 
-		if (date.toFixed) // timestamp
-			date = new Date(date);else if (typeof date === "string") {
+		if (date.toFixed || /^\d{8}/.test(date)) // timestamp
+			date = new Date(parseInt(date, 10));else if (typeof date === "string") {
 			var format = typeof givenFormat === "string" ? givenFormat : this.config.dateFormat;
 			date = date.trim();
 
@@ -24805,7 +24863,7 @@ return SignaturePad;
 },{}],258:[function(require,module,exports){
 !function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.createNumberMask=t():e.createNumberMask=t()}(this,function(){return function(e){function t(n){if(o[n])return o[n].exports;var i=o[n]={exports:{},id:n,loaded:!1};return e[n].call(i.exports,i,i.exports,t),i.loaded=!0,i.exports}var o={};return t.m=e,t.c=o,t.p="",t(0)}([function(e,t,o){e.exports=o(2)},,function(e,t){"use strict";function o(){function e(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,t=e.length;if(e===l||e[0]===y[0]&&1===t)return y.split(l).concat([m]).concat(g.split(l));var o=e.lastIndexOf(k),c=o!==-1,u=e[0]===d&&B,a=void 0,b=void 0,h=void 0;if(e.slice(Z*-1)===g&&(e=e.slice(0,Z*-1)),c&&(w||_)?(a=e.slice(e.slice(0,T)===y?T:0,o),b=e.slice(o+1,t),b=n(b.replace(f,l))):a=e.slice(0,T)===y?e.slice(T):e,R&&("undefined"==typeof R?"undefined":r(R))===p){var S="."===N?"[.]":""+N,j=(a.match(new RegExp(S,"g"))||[]).length;a=a.slice(0,R+j*$)}return a=a.replace(f,l),I||(a=String(Number(a))),a=x?i(a,N):a,h=n(a),(c&&w||_===!0)&&(e[o-1]!==k&&h.push(v),h.push(k,v),b&&(("undefined"==typeof L?"undefined":r(L))===p&&(b=b.slice(0,L)),h=h.concat(b)),_===!0&&e[o-1]===k&&h.push(m)),T>0&&(h=y.split(l).concat(h)),u&&(h.length===T&&h.push(m),h=[s].concat(h)),g.length>0&&(h=h.concat(g.split(l))),h}var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},o=t.prefix,y=void 0===o?c:o,b=t.suffix,g=void 0===b?l:b,h=t.includeThousandsSeparator,x=void 0===h||h,S=t.thousandsSeparatorSymbol,N=void 0===S?u:S,j=t.allowDecimal,w=void 0!==j&&j,M=t.decimalSymbol,k=void 0===M?a:M,D=t.decimalLimit,L=void 0===D?2:D,O=t.requireDecimal,_=void 0!==O&&O,q=t.allowNegative,B=void 0!==q&&q,E=t.allowLeadingZeroes,I=void 0!==E&&E,P=t.integerLimit,R=void 0===P?null:P,T=y&&y.length||0,Z=g&&g.length||0,$=N&&N.length||0;return e.instanceOf="createNumberMask",e}function n(e){return e.split(l).map(function(e){return m.test(e)?m:e})}function i(e,t){return e.replace(/\B(?=(\d{3})+(?!\d))/g,t)}Object.defineProperty(t,"__esModule",{value:!0});var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};t.default=o;var c="$",l="",u=",",a=".",d="-",s=/-/,f=/\D+/g,p="number",m=/\d/,v="[]"}])});
 },{}],259:[function(require,module,exports){
-!function(e,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports.vanillaTextMask=r():e.vanillaTextMask=r()}(this,function(){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var t={};return r.m=e,r.c=t,r.p="",r(0)}([function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r=e.inputElement,t=(0,u.default)(e),n=function(e){var r=e.target.value;return t.update(r)};return r.addEventListener("input",n),t.update(r.value),{textMaskInputElement:t,destroy:function(){r.removeEventListener("input",n)}}}Object.defineProperty(r,"__esModule",{value:!0}),r.conformToMask=void 0,r.maskInput=o;var i=t(2);Object.defineProperty(r,"conformToMask",{enumerable:!0,get:function(){return n(i).default}});var a=t(5),u=n(a);r.default=o},function(e,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.placeholderChar="_"},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:a,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:a,t=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},n=t.guide,u=void 0===n||n,l=t.previousConformedValue,s=void 0===l?a:l,d=t.placeholderChar,f=void 0===d?i.placeholderChar:d,c=t.placeholder,v=void 0===c?(0,o.convertMaskToPlaceholder)(r,f):c,p=t.currentCaretPosition,h=t.keepCharPositions,m=u===!1&&void 0!==s,g=e.length,y=s.length,C=v.length,b=r.length,P=g-y,x=P>0,k=p+(x?-P:0),O=k+Math.abs(P);if(h===!0&&!x){for(var T=a,M=k;M<O;M++)v[M]===f&&(T+=f);e=e.slice(0,k)+T+e.slice(k,g)}for(var _=e.split(a).map(function(e,r){return{char:e,isNew:r>=k&&r<O}}),j=g-1;j>=0;j--){var w=_[j].char;if(w!==f){var S=j>=k&&y===b;w===v[S?j-P:j]&&_.splice(j,1)}}var V=a,N=!1;e:for(var E=0;E<C;E++){var A=v[E];if(A===f){if(_.length>0)for(;_.length>0;){var I=_.shift(),L=I.char,R=I.isNew;if(L===f&&m!==!0){V+=f;continue e}if(r[E].test(L)){if(h===!0&&R!==!1&&s!==a&&u!==!1&&x){for(var J=_.length,q=null,F=0;F<J;F++){var W=_[F];if(W.char!==f&&W.isNew===!1)break;if(W.char===f){q=F;break}}null!==q?(V+=L,_.splice(q,1)):E--}else V+=L;continue e}N=!0}m===!1&&(V+=v.substr(E,C));break}V+=A}if(m&&x===!1){for(var z=null,B=0;B<V.length;B++)v[B]===f&&(z=B);V=null!==z?V.substr(0,z+1):a}return{conformedValue:V,meta:{someCharsRejected:N}}}Object.defineProperty(r,"__esModule",{value:!0}),r.default=n;var o=t(3),i=t(1),a=""},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:u.placeholderChar;if(e.indexOf(r)!==-1)throw new Error("Placeholder character must not be used as part of the mask. Please specify a character that is not present in your mask as your placeholder character.\n\n"+("The placeholder character that was received is: "+JSON.stringify(r)+"\n\n")+("The mask that was received is: "+JSON.stringify(e)));return e.map(function(e){return e instanceof RegExp?r:e}).join("")}function o(e){return"string"==typeof e||e instanceof String}function i(e){return"number"==typeof e&&void 0===e.length&&!isNaN(e)}function a(e){for(var r=[],t=void 0;t=e.indexOf(s),t!==-1;)r.push(t),e.splice(t,1);return{maskWithoutCaretTraps:e,indexes:r}}Object.defineProperty(r,"__esModule",{value:!0}),r.convertMaskToPlaceholder=n,r.isString=o,r.isNumber=i,r.processCaretTraps=a;var u=t(1),l=[],s="[]"},function(e,r){"use strict";function t(e){var r=e.previousConformedValue,t=void 0===r?o:r,i=e.previousPlaceholder,a=void 0===i?o:i,u=e.currentCaretPosition,l=void 0===u?0:u,s=e.conformedValue,d=e.rawValue,f=e.placeholderChar,c=e.placeholder,v=e.indexesOfPipedChars,p=void 0===v?n:v,h=e.caretTrapIndexes,m=void 0===h?n:h;if(0===l)return 0;var g=d.length,y=t.length,C=c.length,b=s.length,P=g-y,x=P>0,k=0===y,O=P>1&&!x&&!k;if(O)return l;var T=x&&(t===s||s===c),M=0,_=void 0;if(T)M=l-P;else{var j=s.toLowerCase(),w=d.toLowerCase(),S=w.substr(0,l).split(o),V=S.filter(function(e){return j.indexOf(e)!==-1}),N=V[V.length-1];_=void 0!==a[V.length-1]&&void 0!==c[V.length-2]&&a[V.length-1]!==f&&a[V.length-1]!==c[V.length-1]&&a[V.length-1]===c[V.length-2];for(var E=p.map(function(e){return j[e]}),A=E.filter(function(e){return e===N}).length,I=V.filter(function(e){return e===N}).length,L=c.substr(0,c.indexOf(f)).split(o).filter(function(e,r){return e===N&&d[r]!==e}).length,R=L+I+A,J=0,q=0;q<b;q++){var F=j[q];if(M=q+1,F===N&&J++,J>=R)break}}if(x){for(var W=M,z=M;z<=C;z++)if(c[z]===f&&(W=z),c[z]===f||m.indexOf(z)!==-1||z===C)return W}else for(var B=M+(_?1:0);B>=0;B--)if(c[B-1]===f||m.indexOf(B)!==-1||0===B)return B}Object.defineProperty(r,"__esModule",{value:!0}),r.default=t;var n=[],o=""},function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r={previousConformedValue:void 0,previousPlaceholder:void 0};return{state:r,update:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:e,o=n.inputElement,s=n.mask,f=n.guide,g=n.pipe,C=n.placeholderChar,b=void 0===C?p.placeholderChar:C,P=n.keepCharPositions,x=void 0!==P&&P;if("undefined"==typeof t&&(t=o.value),t!==r.previousConformedValue){("undefined"==typeof s?"undefined":l(s))===y&&void 0!==s.pipe&&void 0!==s.mask&&(g=s.pipe,s=s.mask);var k=void 0,O=void 0;if(s instanceof Array&&(k=(0,v.convertMaskToPlaceholder)(s,b)),s!==!1){var T=a(t),M=o.selectionStart,_=r.previousConformedValue,j=r.previousPlaceholder,w=void 0;if(("undefined"==typeof s?"undefined":l(s))===h){if(O=s(T,{currentCaretPosition:M,previousConformedValue:_,placeholderChar:b}),O===!1)return;var S=(0,v.processCaretTraps)(O),V=S.maskWithoutCaretTraps,N=S.indexes;O=V,w=N,k=(0,v.convertMaskToPlaceholder)(O,b)}else O=s;var E={previousConformedValue:_,guide:f,placeholderChar:b,pipe:g,placeholder:k,currentCaretPosition:M,keepCharPositions:x},A=(0,c.default)(T,O,E),I=A.conformedValue,L=("undefined"==typeof g?"undefined":l(g))===h,R={};L&&(R=g(I,u({rawValue:T},E)),R===!1?R={value:_,rejected:!0}:(0,v.isString)(R)&&(R={value:R}));var J=L?R.value:I,q=(0,d.default)({previousConformedValue:_,previousPlaceholder:j,conformedValue:J,placeholder:k,rawValue:T,currentCaretPosition:M,placeholderChar:b,indexesOfPipedChars:R.indexesOfPipedChars,caretTrapIndexes:w}),F=J===k&&0===q,W=F?m:J;r.previousConformedValue=W,r.previousPlaceholder=k,o.value!==W&&(o.value=W,i(o,q))}}}}}function i(e,r){document.activeElement===e&&(C?b(function(){return e.setSelectionRange(r,r,g)},0):e.setSelectionRange(r,r,g))}function a(e){if((0,v.isString)(e))return e;if((0,v.isNumber)(e))return String(e);if(void 0===e||null===e)return m;throw new Error("The 'value' provided to Text Mask needs to be a string or a number. The value received was:\n\n "+JSON.stringify(e))}Object.defineProperty(r,"__esModule",{value:!0});var u=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=o;var s=t(4),d=n(s),f=t(2),c=n(f),v=t(3),p=t(1),h="function",m="",g="none",y="object",C="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),b="undefined"!=typeof requestAnimationFrame?requestAnimationFrame:setTimeout}])});
+!function(e,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports.vanillaTextMask=r():e.vanillaTextMask=r()}(this,function(){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var t={};return r.m=e,r.c=t,r.p="",r(0)}([function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r=e.inputElement,t=(0,u.default)(e),n=function(e){var r=e.target.value;return t.update(r)};return r.addEventListener("input",n),t.update(r.value),{textMaskInputElement:t,destroy:function(){r.removeEventListener("input",n)}}}Object.defineProperty(r,"__esModule",{value:!0}),r.conformToMask=void 0,r.maskInput=o;var i=t(2);Object.defineProperty(r,"conformToMask",{enumerable:!0,get:function(){return n(i).default}});var a=t(5),u=n(a);r.default=o},function(e,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.placeholderChar="_"},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:a,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:a,t=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},n=t.guide,u=void 0===n||n,l=t.previousConformedValue,s=void 0===l?a:l,f=t.placeholderChar,d=void 0===f?i.placeholderChar:f,c=t.placeholder,v=void 0===c?(0,o.convertMaskToPlaceholder)(r,d):c,p=t.currentCaretPosition,h=t.keepCharPositions,g=u===!1&&void 0!==s,m=e.length,y=s.length,b=v.length,C=r.length,P=m-y,x=P>0,k=p+(x?-P:0),O=k+Math.abs(P);if(h===!0&&!x){for(var M=a,T=k;T<O;T++)v[T]===d&&(M+=d);e=e.slice(0,k)+M+e.slice(k,m)}for(var w=e.split(a).map(function(e,r){return{char:e,isNew:r>=k&&r<O}}),_=m-1;_>=0;_--){var j=w[_].char;if(j!==d){var S=_>=k&&y===C;j===v[S?_-P:_]&&w.splice(_,1)}}var V=a,N=!1;e:for(var E=0;E<b;E++){var A=v[E];if(A===d){if(w.length>0)for(;w.length>0;){var I=w.shift(),L=I.char,R=I.isNew;if(L===d&&g!==!0){V+=d;continue e}if(r[E].test(L)){if(h===!0&&R!==!1&&s!==a&&u!==!1&&x){for(var J=w.length,q=null,F=0;F<J;F++){var W=w[F];if(W.char!==d&&W.isNew===!1)break;if(W.char===d){q=F;break}}null!==q?(V+=L,w.splice(q,1)):E--}else V+=L;continue e}N=!0}g===!1&&(V+=v.substr(E,b));break}V+=A}if(g&&x===!1){for(var z=null,B=0;B<V.length;B++)v[B]===d&&(z=B);V=null!==z?V.substr(0,z+1):a}return{conformedValue:V,meta:{someCharsRejected:N}}}Object.defineProperty(r,"__esModule",{value:!0}),r.default=n;var o=t(3),i=t(1),a=""},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:u.placeholderChar;if(e.indexOf(r)!==-1)throw new Error("Placeholder character must not be used as part of the mask. Please specify a character that is not present in your mask as your placeholder character.\n\n"+("The placeholder character that was received is: "+JSON.stringify(r)+"\n\n")+("The mask that was received is: "+JSON.stringify(e)));return e.map(function(e){return e instanceof RegExp?r:e}).join("")}function o(e){return"string"==typeof e||e instanceof String}function i(e){return"number"==typeof e&&void 0===e.length&&!isNaN(e)}function a(e){for(var r=[],t=void 0;t=e.indexOf(s),t!==-1;)r.push(t),e.splice(t,1);return{maskWithoutCaretTraps:e,indexes:r}}Object.defineProperty(r,"__esModule",{value:!0}),r.convertMaskToPlaceholder=n,r.isString=o,r.isNumber=i,r.processCaretTraps=a;var u=t(1),l=[],s="[]"},function(e,r){"use strict";function t(e){var r=e.previousConformedValue,t=void 0===r?o:r,i=e.previousPlaceholder,a=void 0===i?o:i,u=e.currentCaretPosition,l=void 0===u?0:u,s=e.conformedValue,f=e.rawValue,d=e.placeholderChar,c=e.placeholder,v=e.indexesOfPipedChars,p=void 0===v?n:v,h=e.caretTrapIndexes,g=void 0===h?n:h;if(0===l)return 0;var m=f.length,y=t.length,b=c.length,C=s.length,P=m-y,x=P>0,k=0===y,O=P>1&&!x&&!k;if(O)return l;var M=x&&(t===s||s===c),T=0,w=void 0,_=void 0;if(M)T=l-P;else{var j=s.toLowerCase(),S=f.toLowerCase(),V=S.substr(0,l).split(o),N=V.filter(function(e){return j.indexOf(e)!==-1});_=N[N.length-1];var E=a.substr(0,N.length).split(o).filter(function(e){return e!==d}).length,A=c.substr(0,N.length).split(o).filter(function(e){return e!==d}).length,I=A!==E,L=void 0!==a[N.length-1]&&void 0!==c[N.length-2]&&a[N.length-1]!==d&&a[N.length-1]!==c[N.length-1]&&a[N.length-1]===c[N.length-2];!x&&(I||L)&&E>0&&c.indexOf(_)>-1&&void 0!==f[l]&&(w=!0,_=f[l]);for(var R=p.map(function(e){return j[e]}),J=R.filter(function(e){return e===_}).length,q=N.filter(function(e){return e===_}).length,F=c.substr(0,c.indexOf(d)).split(o).filter(function(e,r){return e===_&&f[r]!==e}).length,W=F+q+J+(w?1:0),z=0,B=0;B<C;B++){var D=j[B];if(T=B+1,D===_&&z++,z>=W)break}}if(x){for(var G=T,H=T;H<=b;H++)if(c[H]===d&&(G=H),c[H]===d||g.indexOf(H)!==-1||H===b)return G}else if(w){for(var K=T-1;K>=0;K--)if(s[K]===_||g.indexOf(K)!==-1||0===K)return K}else for(var Q=T;Q>=0;Q--)if(c[Q-1]===d||g.indexOf(Q)!==-1||0===Q)return Q}Object.defineProperty(r,"__esModule",{value:!0}),r.default=t;var n=[],o=""},function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r={previousConformedValue:void 0,previousPlaceholder:void 0};return{state:r,update:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:e,o=n.inputElement,s=n.mask,d=n.guide,m=n.pipe,b=n.placeholderChar,C=void 0===b?p.placeholderChar:b,P=n.keepCharPositions,x=void 0!==P&&P,k=n.showMask,O=void 0!==k&&k;if("undefined"==typeof t&&(t=o.value),t!==r.previousConformedValue){("undefined"==typeof s?"undefined":l(s))===y&&void 0!==s.pipe&&void 0!==s.mask&&(m=s.pipe,s=s.mask);var M=void 0,T=void 0;if(s instanceof Array&&(M=(0,v.convertMaskToPlaceholder)(s,C)),s!==!1){var w=a(t),_=o.selectionStart,j=r.previousConformedValue,S=r.previousPlaceholder,V=void 0;if(("undefined"==typeof s?"undefined":l(s))===h){if(T=s(w,{currentCaretPosition:_,previousConformedValue:j,placeholderChar:C}),T===!1)return;var N=(0,v.processCaretTraps)(T),E=N.maskWithoutCaretTraps,A=N.indexes;T=E,V=A,M=(0,v.convertMaskToPlaceholder)(T,C)}else T=s;var I={previousConformedValue:j,guide:d,placeholderChar:C,pipe:m,placeholder:M,currentCaretPosition:_,keepCharPositions:x},L=(0,c.default)(w,T,I),R=L.conformedValue,J=("undefined"==typeof m?"undefined":l(m))===h,q={};J&&(q=m(R,u({rawValue:w},I)),q===!1?q={value:j,rejected:!0}:(0,v.isString)(q)&&(q={value:q}));var F=J?q.value:R,W=(0,f.default)({previousConformedValue:j,previousPlaceholder:S,conformedValue:F,placeholder:M,rawValue:w,currentCaretPosition:_,placeholderChar:C,indexesOfPipedChars:q.indexesOfPipedChars,caretTrapIndexes:V}),z=F===M&&0===W,B=O?M:g,D=z?B:F;r.previousConformedValue=D,r.previousPlaceholder=M,o.value!==D&&(o.value=D,i(o,W))}}}}}function i(e,r){document.activeElement===e&&(b?C(function(){return e.setSelectionRange(r,r,m)},0):e.setSelectionRange(r,r,m))}function a(e){if((0,v.isString)(e))return e;if((0,v.isNumber)(e))return String(e);if(void 0===e||null===e)return g;throw new Error("The 'value' provided to Text Mask needs to be a string or a number. The value received was:\n\n "+JSON.stringify(e))}Object.defineProperty(r,"__esModule",{value:!0});var u=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=o;var s=t(4),f=n(s),d=t(2),c=n(d),v=t(3),p=t(1),h="function",g="",m="none",y="object",b="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),C="undefined"!=typeof requestAnimationFrame?requestAnimationFrame:setTimeout}])});
 },{}],260:[function(require,module,exports){
 (function(self) {
   'use strict';
