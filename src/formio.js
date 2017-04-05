@@ -645,7 +645,7 @@ export class Formio {
   }
 
   static setAppUrl(url) {
-    console.warn('Formio.setAppUrl() is deprecated. Use Form.setProjectUrl instead.')
+    console.warn('Formio.setAppUrl() is deprecated. Use Formio.setProjectUrl instead.')
     Formio.projectUrl = url;
     Formio.projectUrlSet = true;
   }
@@ -656,7 +656,7 @@ export class Formio {
   }
 
   static getAppUrl() {
-    console.warn('Formio.getAppUrl() is deprecated. Use Form.getProjectUrl instead.')
+    console.warn('Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.')
     return Formio.projectUrl;
   }
 
