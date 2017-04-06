@@ -823,7 +823,7 @@ var Formio = function () {
         Formio.clearCache();
         return result;
       };
-      return Formio.makeStaticRequest(Formio.baseUrl + '/logout').then(onLogout).catch(onLogout);
+      return Formio.makeStaticRequest(Formio.baseUrl + '/logout').then(onLogout, onLogout).catch(onLogout);
     }
 
     /**
