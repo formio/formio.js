@@ -446,6 +446,7 @@ export class Formio {
         return resolve(Formio.cache[cacheKey]);
       }
 
+      var requestToken = '';
       resolve(new Promise(function(resolve, reject) {
         // Set up and fetch request
         var headers = header || new Headers({
@@ -466,6 +467,7 @@ export class Formio {
           options.body = JSON.stringify(data);
         }
 
+        requestToken = headers.get('x-jwt-token');
         resolve(fetch(url, options));
       })
         .catch(function(err) {
@@ -492,7 +494,30 @@ export class Formio {
 
           // Handle fetch results
           var token = response.headers.get('x-jwt-token');
-          if (response.status >= 200 && response.status < 300 && token && token !== '') {
+
+          // In some strange cases, the fetch library will return an x-jwt-token without sending
+          // one to the server. This has even been debugged on the server to verify that no token
+          // was introduced with the request, but the response contains a token. This is an Invalid
+          // case where we do not send an x-jwt-token and get one in return for any GET request.
+          var tokenIntroduced = false;
+          if (
+            (method === 'GET') &&
+            !requestToken &&
+            token &&
+            (url.indexOf('token=') === -1) &&
+            (url.indexOf('x-jwt-token=' === -1))
+          ) {
+            console.warn('Token was introduced in request.');
+            tokenIntroduced = true;
+          }
+
+          if (
+            response.status >= 200 &&
+            response.status < 300 &&
+            token &&
+            token !== '' &&
+            !tokenIntroduced
+          ) {
             Formio.setToken(token);
           }
           // 204 is no content. Don't try to .json() it.
@@ -749,13 +774,10 @@ export class Formio {
   }
 
   static logout() {
-    var onLogout = function(result) {
-      Formio.setToken(null);
-      Formio.setUser(null);
-      Formio.clearCache();
-      return result;
-    };
-    return Formio.makeStaticRequest(Formio.baseUrl + '/logout').then(onLogout, onLogout).catch(onLogout);
+    Formio.setToken(null);
+    Formio.setUser(null);
+    Formio.clearCache();
+    return Promise.resolve();
   }
 
   /**
