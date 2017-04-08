@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
+
+### Fixed
+
+### Removed
+
+## 2.4.2
+
+### Changed
  - Moved the logout token and cache clearing to before the call is made to the server.
 
 ### Fixed
@@ -15,8 +23,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    JWT token when a request was made without one. It was verified that the server was not sending
    the token in the response, so it is concluded that for some reason fetch was introducing it (cache maybe?).
    Regardless, we fixed it so that it will detect when a token was introduced and throw it out.
-
-### Removed
 
 ## 2.4.1
 ### Changed
