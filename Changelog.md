@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 ### Changed
- - No longer need to call the "logout" endpoint to logout. Just clear tokens and cache.
+ - Moved the logout token and cache clearing to before the call is made to the server.
 
 ### Fixed
  - Bizarre issue that seems to be a bug in browser "fetch" library where it would introduce a response

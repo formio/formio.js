@@ -833,7 +833,7 @@ var Formio = function () {
       Formio.setToken(null);
       Formio.setUser(null);
       Formio.clearCache();
-      return Promise.resolve();
+      return Formio.makeStaticRequest(Formio.baseUrl + '/logout');
     }
 
     /**
