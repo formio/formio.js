@@ -386,11 +386,8 @@ var Formio = function () {
       }
       return this.makeRequest('tempToken', this.projectUrl + '/token', 'GET', null, {
         header: new Headers({
-          'Accept': 'application/json',
-          'Content-type': 'application/json; charset=UTF-8',
           'x-expire': expire,
-          'x-allow': allowed,
-          'x-jwt-token': token
+          'x-allow': allowed
         })
       });
     }
