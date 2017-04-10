@@ -1647,6 +1647,31 @@ describe('Test Formio.js capabilities', () => {
       }
     },
     {
+      name: 'Temporary Token',
+      test: function() {
+        var formio = new Formio('/project/' + project._id);
+        return formio.getTempToken(200, 'GET:/current').then(function(tempToken) {
+          assert.equal(tempToken, userToken);
+        });
+      },
+      mock: function() {
+        return {
+          url: Formio.getBaseUrl() + '/project/' + project._id + '/token',
+          method: 'GET',
+          response: function() {
+            return {
+              status: 200,
+              body: userToken,
+              headers: {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'x-jwt-token': userToken
+              }
+            };
+          }
+        };
+      }
+    },
+    {
       name: 'Logging Out',
       test: function() {
         return Formio.logout()

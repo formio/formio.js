@@ -323,6 +323,25 @@ export class Formio {
     return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
   }
 
+  /**
+   * Returns a temporary authentication token for single purpose token generation.
+   */
+  getTempToken(expire, allowed) {
+    var token = Formio.getToken();
+    if (!token) {
+      return Promise.reject('You must be authenticated to generate a temporary auth token.');
+    }
+    return this.makeRequest('tempToken', this.projectUrl + '/token', 'GET', null, {
+      header: new Headers({
+          'Accept': 'application/json',
+          'Content-type': 'application/json; charset=UTF-8',
+          'x-expire': expire,
+          'x-allow': allowed,
+          'x-jwt-token': token
+      })
+    });
+  }
+
   uploadFile(storage, file, fileName, dir, progressCallback, url) {
     var requestArgs = {
       provider: storage,
