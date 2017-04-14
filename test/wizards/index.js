@@ -1,3 +1,4 @@
 export const WizardTests = [
-  require('./simple')
+  require('./simple'),
+  require('./condional.next.page')
 ];
