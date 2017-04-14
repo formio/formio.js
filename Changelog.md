@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 
+## 2.5.0
+### Added
+ - JavaScript SDK logic to easily get the temporary tokens using the new temp token api.
+ - Adding conditional next pages to the Wizard functionality.
+
 ## 2.4.2
 
 ### Changed
