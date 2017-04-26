@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 
+## 2.6.0
+### Changed
+  - Upgraded the fetch library to resolve some strange header response caching issues.
+
 ## 2.5.0
 ### Added
  - JavaScript SDK logic to easily get the temporary tokens using the new temp token api.
