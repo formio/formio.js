@@ -145,6 +145,16 @@ describe(&apos;HTML Component&apos;, function() {
       done();
     });
   });
+  it(&apos;Should build an html component and ignore empty attribute name&apos;, function(done) {
+    let comp = comps.comp1;
+    comp.attrs.push({
+      &quot;attr&quot;: &quot;&quot;,
+      &quot;value&quot;: &quot;&quot;
+    });
+    Harness.testCreate(HTMLComponent, comps.comp1).then((component) =&gt; {
+      done();
+    });
+  });
 });
 </code></pre>
 

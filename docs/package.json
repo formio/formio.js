@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "2.3.4",
+  "version": "2.6.0",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "build/formio.js",
   "files": [
@@ -14,6 +14,7 @@
   "scripts": {
     "prepublish": "gulp build",
     "build": "esdoc;gulp build",
+    "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "./node_modules/karma/bin/karma start --verbose --single-run",
     "test:watch": "./node_modules/karma/bin/karma start --no-single-run --auto-watch"
   },
@@ -45,17 +46,18 @@
   },
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
-    "choices.js": "^2.7.6",
+    "choices.js": "^2.7.8",
     "eventemitter2": "^2.2.2",
-    "flatpickr": "^2.4.6",
+    "flatpickr": "^2.5.6",
     "i18next": "^6.1.2",
+    "json-logic-js": "^1.1.0",
     "lodash": "^4.17.4",
-    "moment": "^2.18.0",
+    "moment": "^2.18.1",
     "native-promise-only": "^0.8.1",
     "shallow-copy": "0.0.1",
-    "signature_pad": "^1.5.3",
+    "signature_pad": "^1.6.0",
     "text-mask-all": "github:text-mask/text-mask",
-    "whatwg-fetch": "^0.11.1"
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "babel-plugin-espower": "^2.3.2",

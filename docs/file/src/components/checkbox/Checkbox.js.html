@@ -160,6 +160,9 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.label) {
       this.addInput(this.input, this.element);
     }
+    if (this.options.readOnly) {
+      this.disable = true;
+    }
   }
 
   createElement() {
@@ -199,16 +202,30 @@ export class CheckBoxComponent extends BaseComponent {
     return input;
   }
 
+  addInputEventListener(input) {
+    this.addEventListener(input, this.info.changeEvent, () =&gt; {
+      // If this input has a &quot;name&quot;, then its other input elements are elsewhere on
+      // the form. To get the correct submission object, we need to refresh the whole
+      // data object.
+      if (this.component.name) {
+        this.emit(&apos;refreshData&apos;);
+      }
+      else {
+        this.updateValue();
+      }
+    });
+  }
+
   getValueAt(index) {
     return !!this.inputs[index].checked;
   }
 
   setValue(value, noUpdate, noValidate) {
     this.value = value;
-    if (this.component.inputType === &apos;radio&apos;) {
-      this.input.checked = (value === this.input.value) ? 1 : 0;
+    if (!this.input) {
+      return;
     }
-    else if (value === &apos;on&apos;) {
+    if (value === &apos;on&apos;) {
       this.input.value = 1;
       this.input.checked = 1;
     }

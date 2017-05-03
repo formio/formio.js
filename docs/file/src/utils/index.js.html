@@ -137,6 +137,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/utils/index.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 const _get = require(&apos;lodash/get&apos;);
+import jsonLogic from &apos;json-logic-js&apos;;
 module.exports = {
   /**
    * Determine if a component is a layout component or not.
@@ -297,6 +298,12 @@ module.exports = {
       }
 
       return (value.toString() === cond.eq.toString()) === (cond.show.toString() === &apos;true&apos;);
+    }
+    else if (component.hasOwnProperty(&apos;conditional&apos;) &amp;&amp; component.conditional &amp;&amp; component.conditional.json) {
+      return jsonLogic.apply(component.conditional.json, {
+        data: data,
+        row: row
+      });
     }
 
     // Default to show.

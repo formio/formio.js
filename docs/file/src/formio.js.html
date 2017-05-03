@@ -195,7 +195,7 @@ export class Formio {
       this.projectUrl = options.project;
     }
 
-    let project = this.projectUrl || Formio.appUrl;
+    let project = this.projectUrl || Formio.projectUrl;
 
     // The baseURL is the same as the projectUrl. This is almost certainly against
     // the Open Source server.
@@ -305,8 +305,8 @@ export class Formio {
     }
 
     // Set the app url if it is not set.
-    if (!Formio.appUrlSet) {
-      Formio.appUrl = this.projectUrl;
+    if (!Formio.projectUrlSet) {
+      Formio.projectUrl = this.projectUrl;
     }
   }
 
@@ -332,7 +332,7 @@ export class Formio {
     var _url = type + &apos;Url&apos;;
     var method = (this[_id] || data._id) ? &apos;put&apos; : &apos;post&apos;;
     var reqUrl = this[_id] ? this[_url] : this[type + &apos;sUrl&apos;];
-    if (!this[_id] &amp;&amp; data._id &amp;&amp; (method === &apos;put&apos;)) {
+    if (!this[_id] &amp;&amp; data._id &amp;&amp; (method === &apos;put&apos;) &amp;&amp; (reqUrl.indexOf(data._id) === -1)) {
       reqUrl += &apos;/&apos; + data._id;
     }
     Formio.cache = {};
@@ -460,6 +460,22 @@ export class Formio {
     return this.makeRequest(&apos;actionInfo&apos;, this.formUrl + &apos;/actions/&apos; + name);
   }
 
+  /**
+   * Returns a temporary authentication token for single purpose token generation.
+   */
+  getTempToken(expire, allowed) {
+    var token = Formio.getToken();
+    if (!token) {
+      return Promise.reject(&apos;You must be authenticated to generate a temporary auth token.&apos;);
+    }
+    return this.makeRequest(&apos;tempToken&apos;, this.projectUrl + &apos;/token&apos;, &apos;GET&apos;, null, {
+      header: new Headers({
+        &apos;x-expire&apos;: expire,
+        &apos;x-allow&apos;: allowed
+      })
+    });
+  }
+
   uploadFile(storage, file, fileName, dir, progressCallback, url) {
     var requestArgs = {
       provider: storage,
@@ -583,6 +599,7 @@ export class Formio {
         return resolve(Formio.cache[cacheKey]);
       }
 
+      var requestToken = &apos;&apos;;
       resolve(new Promise(function(resolve, reject) {
         // Set up and fetch request
         var headers = header || new Headers({
@@ -603,6 +620,7 @@ export class Formio {
           options.body = JSON.stringify(data);
         }
 
+        requestToken = headers.get(&apos;x-jwt-token&apos;);
         resolve(fetch(url, options));
       })
         .catch(function(err) {
@@ -629,7 +647,30 @@ export class Formio {
 
           // Handle fetch results
           var token = response.headers.get(&apos;x-jwt-token&apos;);
-          if (response.status &gt;= 200 &amp;&amp; response.status &lt; 300 &amp;&amp; token &amp;&amp; token !== &apos;&apos;) {
+
+          // In some strange cases, the fetch library will return an x-jwt-token without sending
+          // one to the server. This has even been debugged on the server to verify that no token
+          // was introduced with the request, but the response contains a token. This is an Invalid
+          // case where we do not send an x-jwt-token and get one in return for any GET request.
+          var tokenIntroduced = false;
+          if (
+            (method === &apos;GET&apos;) &amp;&amp;
+            !requestToken &amp;&amp;
+            token &amp;&amp;
+            (url.indexOf(&apos;token=&apos;) === -1) &amp;&amp;
+            (url.indexOf(&apos;x-jwt-token=&apos; === -1))
+          ) {
+            console.warn(&apos;Token was introduced in request.&apos;);
+            tokenIntroduced = true;
+          }
+
+          if (
+            response.status &gt;= 200 &amp;&amp;
+            response.status &lt; 300 &amp;&amp;
+            token &amp;&amp;
+            token !== &apos;&apos; &amp;&amp;
+            !tokenIntroduced
+          ) {
             Formio.setToken(token);
           }
           // 204 is no content. Don&apos;t try to .json() it.
@@ -764,8 +805,8 @@ export class Formio {
 
   static setBaseUrl(url) {
     Formio.baseUrl = url;
-    if (!Formio.appUrlSet) {
-      Formio.appUrl = url;
+    if (!Formio.projectUrlSet) {
+      Formio.projectUrl = url;
     }
   }
 
@@ -782,12 +823,23 @@ export class Formio {
   }
 
   static setAppUrl(url) {
-    Formio.appUrl = url;
-    Formio.appUrlSet = true;
+    console.warn(&apos;Formio.setAppUrl() is deprecated. Use Formio.setProjectUrl instead.&apos;)
+    Formio.projectUrl = url;
+    Formio.projectUrlSet = true;
+  }
+
+  static setProjectUrl(url) {
+    Formio.projectUrl = url;
+    Formio.projectUrlSet = true;
   }
 
   static getAppUrl() {
-    return Formio.appUrl;
+    console.warn(&apos;Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.&apos;)
+    return Formio.projectUrl;
+  }
+
+  static getProjectUrl() {
+    return Formio.projectUrl;
   }
 
   static clearCache() {
@@ -875,13 +927,10 @@ export class Formio {
   }
 
   static logout() {
-    var onLogout = function(result) {
-      Formio.setToken(null);
-      Formio.setUser(null);
-      Formio.clearCache();
-      return result;
-    };
-    return Formio.makeStaticRequest(Formio.baseUrl + &apos;/logout&apos;).then(onLogout).catch(onLogout);
+    Formio.setToken(null);
+    Formio.setUser(null);
+    Formio.clearCache();
+    return Formio.makeStaticRequest(Formio.baseUrl + &apos;/logout&apos;);
   }
 
   /**
@@ -1023,8 +1072,8 @@ export class Formio {
 
 // Define all the static properties.
 Formio.baseUrl = &apos;https://api.form.io&apos;;
-Formio.appUrl = Formio.baseUrl;
-Formio.appUrlSet = false;
+Formio.projectUrl = Formio.baseUrl;
+Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
 Formio.providers = require(&apos;./providers&apos;);

@@ -500,12 +500,13 @@ export class FormioForm extends FormioComponents {
    * @param {Object} changed - The changed value that triggered this event.
    * @param {Object} changed.component - The component that was changed.
    * @param {*} changed.value - The new value of the changed component.
+   * @param {boolean} changed.validate - If the change needs to be validated.
    */
   onSubmissionChange(changed) {
     let value = _clone(this.submission);
     value.changed = changed;
     this.emit('change', value);
-    this.checkConditions(value.data);
+    this.checkData(value.data, !changed.validate);
   }
 
   /**
@@ -556,7 +557,7 @@ export class FormioForm extends FormioComponents {
    */
   submit() {
     // Validate the form builed, before submission
-    if (this.checkValidity()) {
+    if (this.checkValidity(this.submission.data, true)) {
       this.loading = true;
       if (!this.formio) {
         return this.onSubmit(this.submission, false);

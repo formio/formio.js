@@ -183,6 +183,8 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
         let form = new FormioForm(formElement);
         form.setForm(formTest.form).then(() =&gt; {
           formTestTest(form, done);
+        }).catch((error) =&gt; {
+          done(error);
         });
       });
     });

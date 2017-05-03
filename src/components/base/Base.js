@@ -7,6 +7,7 @@ import _isArray from 'lodash/isArray';
 import _assign from 'lodash/assign';
 import _clone from 'lodash/clone';
 import i18next from 'i18next';
+import jsonLogic from 'json-logic-js';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
 
@@ -115,6 +116,13 @@ export class BaseComponent {
     this.disabled = false;
 
     /**
+     * If this input has been input and provided value.
+     *
+     * @type {boolean}
+     */
+    this.pristine = true;
+
+    /**
      * The Input mask instance for this component.
      * @type {InputMask}
      */
@@ -126,7 +134,7 @@ export class BaseComponent {
      * The validators that are assigned to this component.
      * @type {[string]}
      */
-    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern'];
+    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json'];
 
     /**
      * Used to trigger a new change in this component.
@@ -775,21 +783,24 @@ export class BaseComponent {
     if (this.element) {
       if (show) {
         this.element.removeAttribute('hidden');
+        this.element.style.visibility = "visible";
       }
       else {
         this.element.setAttribute('hidden', true);
+        this.element.style.visibility = "hidden";
       }
     }
   }
 
   onChange(noValidate) {
     if (!noValidate) {
-      this.checkValidity();
+      this.pristine = false;
     }
     if (this.events) {
       this.emit('componentChange', {
         component: this.component,
-        value: this.value
+        value: this.value,
+        validate: !noValidate
       });
     }
   }
@@ -860,9 +871,48 @@ export class BaseComponent {
     }
   }
 
-  checkValidity() {
-    // No need to check for errors if there is no input.
-    if (!this.component.input) {
+  /**
+   * Perform a calculated value operation.
+   *
+   * @param data - The global data object.
+   */
+  calculateValue(data) {
+    if (!this.component.calculateValue) {
+      return;
+    }
+
+    // If this is a string, then use eval to evalulate it.
+    if (typeof this.component.calculateValue === 'string') {
+      try {
+        let row = this.data;
+        let val = eval('var value = [];' + this.component.calculateValue.toString() + '; return value;');
+        this.setValue(val);
+      }
+      catch (e) {
+        /* eslint-disable no-console */
+        console.warn('An error occurred calculating a value for ' + this.component.key, e);
+        /* eslint-enable no-console */
+      }
+    }
+    else {
+      try {
+        let val = jsonLogic.apply(this.component.calculateValue, {
+          data: data,
+          row: this.data
+        });
+        this.setValue(val);
+      }
+      catch (err) {
+        /* eslint-disable no-console */
+        console.warn('An error occurred calculating a value for ' + this.component.key, e);
+        /* eslint-enable no-console */
+      }
+    }
+  }
+
+  checkValidity(data, dirty) {
+    // No need to check for errors if there is no input or if it is pristine.
+    if (!this.component.input || (!dirty && this.pristine)) {
       return true;
     }
 
@@ -870,6 +920,7 @@ export class BaseComponent {
       this.validators,
       this.component,
       this.getValidateValue(),
+      data,
       this.data,
       this.t.bind(this)
     );

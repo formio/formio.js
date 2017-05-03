@@ -57,18 +57,19 @@ export const Harness = {
     form.submit();
   },
   testComponent: function(component, test, done) {
-    let hasError = false;
+    let testBad = true;
     component.on('componentChange', (change) => {
-      if (hasError) {
+      let valid = component.checkValidity();
+      if (valid && !testBad) {
         assert.equal(change.value, test.good.value);
         done();
       }
-      else {
-        done(new Error('No error thrown'));
-      }
     });
     component.on('componentError', (error) => {
-      hasError = true;
+      if (!testBad) {
+        return done(new Error('Validation Error'));
+      }
+      testBad = false;
       assert.equal(error.component.key, test.bad.field);
       assert.equal(error.message, test.bad.error);
       component.setValue(test.good.value);

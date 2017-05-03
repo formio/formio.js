@@ -1,5 +1,6 @@
 'use strict';
 const _get = require('lodash/get');
+import jsonLogic from 'json-logic-js';
 module.exports = {
   /**
    * Determine if a component is a layout component or not.
@@ -160,6 +161,12 @@ module.exports = {
       }
 
       return (value.toString() === cond.eq.toString()) === (cond.show.toString() === 'true');
+    }
+    else if (component.hasOwnProperty('conditional') && component.conditional && component.conditional.json) {
+      return jsonLogic.apply(component.conditional.json, {
+        data: data,
+        row: row
+      });
     }
 
     // Default to show.

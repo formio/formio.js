@@ -146,7 +146,9 @@ describe(&apos;Form Wizard Renderer tests&apos;, () =&gt; {
         let wizardElement = document.createElement(&apos;div&apos;);
         let wizard = new FormioWizard(wizardElement);
         wizard.setForm(wizardTest.form).then(() =&gt; {
-          wizardTestTest(wizard, done);
+          return wizardTestTest(wizard, done);
+        }).catch((error) =&gt; {
+          done(error);
         });
       });
     });
