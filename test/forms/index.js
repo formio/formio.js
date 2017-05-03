@@ -1,3 +1,4 @@
 export const FormTests = [
-  require('./simple')
+  require('./simple'),
+  require('./conditions')
 ];

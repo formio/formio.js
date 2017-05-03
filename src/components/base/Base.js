@@ -845,6 +845,9 @@ export class BaseComponent {
   }
 
   getValue() {
+    if (!this.component.input) {
+      return;
+    }
     let values = [];
     for (let i in this.inputs) {
       if (!this.component.multiple) {
@@ -920,7 +923,7 @@ export class BaseComponent {
       this.validators,
       this.component,
       this.getValidateValue(),
-      data,
+      data || this.data,
       this.data,
       this.t.bind(this)
     );
@@ -988,6 +991,9 @@ export class BaseComponent {
    * @param value
    */
   setValue(value, noUpdate, noValidate) {
+    if (!this.component.input) {
+      return;
+    }
     this.value = value;
     let isArray = _isArray(value);
     for (let i in this.inputs) {

@@ -75,7 +75,29 @@ describe('Base Component', function() {
   });
 
   it('Should provide json validation', function(done) {
-    done();
+    Harness.testCreate(BaseComponent, comps.comp1, {
+      validate: {json: {
+        "if": [
+          {
+            "===": [
+              {var: "data.firstName"},
+              "Joe"
+            ]
+          },
+          true,
+          "You must be Joe"
+        ]
+      }}
+    }).then((component) => Harness.testComponent(component, {
+      bad: {
+        value: 'Tom',
+        field: 'firstName',
+        error: 'You must be Joe'
+      },
+      good: {
+        value: 'Joe'
+      }
+    }, done));
   });
 
   it('Should allow for multiple values', (done) => {

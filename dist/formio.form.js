@@ -341,9 +341,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
       var check = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkValidity', this).call(this, data, dirty);
-      return (0, _reduce3.default)(this.components, function (check, comp) {
-        return check && comp.checkValidity(data, dirty);
-      }, check);
+      (0, _each3.default)(this.components, function (comp) {
+        check &= comp.checkValidity(data, dirty);
+      });
+      return check;
     }
   }, {
     key: 'destroy',
@@ -396,7 +397,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
           component.setValue(value, noUpdate, noValidate);
         } else if (value && value.hasOwnProperty(component.component.key)) {
           component.setValue(value[component.component.key], noUpdate);
-        } else {
+        } else if (component.component.input) {
           component.setValue(null, noUpdate, true);
         }
       });
@@ -2291,6 +2292,9 @@ var BaseComponent = function () {
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (!this.component.input) {
+        return;
+      }
       var values = [];
       for (var i in this.inputs) {
         if (!this.component.multiple) {
@@ -2363,7 +2367,7 @@ var BaseComponent = function () {
         return true;
       }
 
-      var message = _Validator.Validator.check(this.validators, this.component, this.getValidateValue(), data, this.data, this.t.bind(this));
+      var message = _Validator.Validator.check(this.validators, this.component, this.getValidateValue(), data || this.data, this.data, this.t.bind(this));
       this.setCustomValidity(message);
 
       // No message, returns true
@@ -2431,6 +2435,9 @@ var BaseComponent = function () {
   }, {
     key: 'setValue',
     value: function setValue(value, noUpdate, noValidate) {
+      if (!this.component.input) {
+        return;
+      }
       this.value = value;
       var isArray = (0, _isArray3.default)(value);
       for (var i in this.inputs) {
@@ -6841,7 +6848,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var message = '<p>' + this.t('error') + '</p><ul>';
       (0, _each3.default)(errors, function (err) {
         if (err) {
-          message += '<li><strong>' + err + '</strong></li>';
+          var errorMessage = err.message || err;
+          message += '<li><strong>' + errorMessage + '</strong></li>';
         }
       });
       message += '</ul>';
@@ -6905,8 +6913,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     value: function onSubmissionChange(changed) {
       var value = (0, _clone3.default)(this.submission);
       value.changed = changed;
-      this.emit('change', value);
       this.checkData(value.data, !changed.validate);
+      this.emit('change', value);
     }
 
     /**

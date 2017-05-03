@@ -25,6 +25,24 @@ export const Harness = {
       return component;
     });
   },
+  testConditionals: function(form, submission, hidden, done) {
+    form.on('change', () => {
+      form.everyComponent((comp) => {
+        if (hidden.indexOf(comp.component.key) !== -1) {
+          // Should be hidden.
+          assert.equal(comp.element.hidden, true);
+          assert.equal(comp.element.style.visibility, 'hidden');
+        }
+        else {
+          // Should be visible.
+          assert(!comp.element.hidden, 'Element is hidden');
+          assert.equal(comp.element.style.visibility, 'visible');
+        }
+      });
+      done();
+    });
+    form.submission = submission;
+  },
   testElements: function(component, query, numInputs) {
     let elements = component.element.querySelectorAll(query);
     if (numInputs !== undefined) {

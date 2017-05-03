@@ -450,7 +450,8 @@ export class FormioForm extends FormioComponents {
     let message = '<p>' + this.t('error') + '</p><ul>';
     _each(errors, (err) => {
       if (err) {
-        message += '<li><strong>' + err + '</strong></li>';
+        let errorMessage = err.message || err;
+        message += '<li><strong>' + errorMessage + '</strong></li>';
       }
     });
     message += '</ul>';
@@ -505,8 +506,8 @@ export class FormioForm extends FormioComponents {
   onSubmissionChange(changed) {
     let value = _clone(this.submission);
     value.changed = changed;
-    this.emit('change', value);
     this.checkData(value.data, !changed.validate);
+    this.emit('change', value);
   }
 
   /**
