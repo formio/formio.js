@@ -1457,7 +1457,7 @@ var BaseComponent = function () {
      *
      * @type {boolean}
      */
-    this.disabled = false;
+    this._disabled = false;
 
     /**
      * If this input has been input and provided value.
@@ -1624,8 +1624,16 @@ var BaseComponent = function () {
       if (!this.createWrapper()) {
         this.createInput(this.element);
       }
-      if (this.options.readOnly) {
+
+      // Disable if needed.
+      if (this.options.readOnly || this.component.disabled) {
         this.disable = true;
+      }
+
+      // Set default values.
+      var defaultValue = this.defaultValue;
+      if (defaultValue) {
+        this.setValue(defaultValue);
       }
     }
 
@@ -1696,27 +1704,12 @@ var BaseComponent = function () {
         return true;
       }
     }
-
-    /**
-     * Get the default value for this component.
-     * @returns {string}
-     */
-
   }, {
-    key: 'defaultValue',
-    value: function defaultValue() {
-      if (this.component.defaultValue) {
-        return this.component.defaultValue;
-      }
-      return '';
-    }
+    key: 'addNewValue',
 
     /**
      * Adds a new empty value to the data array.
      */
-
-  }, {
-    key: 'addNewValue',
     value: function addNewValue() {
       if (!this.data[this.component.key]) {
         this.data[this.component.key] = [];
@@ -1724,7 +1717,7 @@ var BaseComponent = function () {
       if (!(0, _isArray3.default)(this.data[this.component.key])) {
         this.data[this.component.key] = [this.data[this.component.key]];
       }
-      this.data[this.component.key].push(this.defaultValue());
+      this.data[this.component.key].push(this.defaultValue);
     }
 
     /**
@@ -2422,7 +2415,7 @@ var BaseComponent = function () {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
       if (value === null || value === undefined) {
-        value = this.defaultValue();
+        value = this.defaultValue;
       }
       this.inputs[index].value = value;
     }
@@ -2574,6 +2567,38 @@ var BaseComponent = function () {
       return className;
     }
   }, {
+    key: 'defaultValue',
+    get: function get() {
+      var defaultValue = '';
+      if (this.component.defaultValue) {
+        defaultValue = this.component.defaultValue;
+      } else if (this.component.customDefaultValue) {
+        if (typeof this.component.customDefaultValue === 'string') {
+          try {
+            var row = this.data;
+            defaultValue = eval('var value = 0;' + this.component.customDefaultValue.toString() + '; return value;');
+          } catch (e) {
+            defaultValue = null;
+            /* eslint-disable no-console */
+            console.warn('An error occurred getting default value for ' + this.component.key, e);
+            /* eslint-enable no-console */
+          }
+        } else {
+          try {
+            defaultValue = _jsonLogicJs2.default.apply(this.component.customDefaultValue, {
+              data: this.data
+            });
+          } catch (err) {
+            defaultValue = null;
+            /* eslint-disable no-console */
+            console.warn('An error occurred calculating a value for ' + this.component.key, e);
+            /* eslint-enable no-console */
+          }
+        }
+      }
+      return defaultValue;
+    }
+  }, {
     key: 'name',
     get: function get() {
       return this.component.label || this.component.placeholder || this.component.key;
@@ -2603,13 +2628,24 @@ var BaseComponent = function () {
     }
 
     /**
+     * Return if the component is disabled.
+     * @return {boolean|*}
+     */
+
+  }, {
+    key: 'disabled',
+    get: function get() {
+      return this._disabled;
+    }
+
+    /**
      * Disable this component.
      */
 
   }, {
     key: 'disable',
     set: function set(disable) {
-      this.disabled = disable;
+      this._disabled = disable;
       // Disable all input.
       (0, _each3.default)(this.inputs, function (input) {
         input.disabled = disable;

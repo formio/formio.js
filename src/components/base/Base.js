@@ -113,7 +113,7 @@ export class BaseComponent {
      *
      * @type {boolean}
      */
-    this.disabled = false;
+    this._disabled = false;
 
     /**
      * If this input has been input and provided value.
@@ -260,8 +260,16 @@ export class BaseComponent {
     if (!this.createWrapper()) {
       this.createInput(this.element);
     }
-    if (this.options.readOnly) {
+
+    // Disable if needed.
+    if (this.options.readOnly || this.component.disabled) {
       this.disable = true;
+    }
+
+    // Set default values.
+    let defaultValue = this.defaultValue;
+    if (defaultValue) {
+      this.setValue(defaultValue);
     }
   }
 
@@ -339,15 +347,39 @@ export class BaseComponent {
     }
   }
 
-  /**
-   * Get the default value for this component.
-   * @returns {string}
-   */
-  defaultValue() {
+  get defaultValue() {
+    let defaultValue = '';
     if (this.component.defaultValue) {
-      return this.component.defaultValue;
+      defaultValue = this.component.defaultValue;
     }
-    return '';
+    else if (this.component.customDefaultValue) {
+      if (typeof this.component.customDefaultValue === 'string') {
+        try {
+          let row = this.data;
+          defaultValue = eval('var value = 0;' + this.component.customDefaultValue.toString() + '; return value;');
+        }
+        catch (e) {
+          defaultValue = null;
+          /* eslint-disable no-console */
+          console.warn('An error occurred getting default value for ' + this.component.key, e);
+          /* eslint-enable no-console */
+        }
+      }
+      else {
+        try {
+          defaultValue = jsonLogic.apply(this.component.customDefaultValue, {
+            data: this.data
+          });
+        }
+        catch (err) {
+          defaultValue = null;
+          /* eslint-disable no-console */
+          console.warn('An error occurred calculating a value for ' + this.component.key, e);
+          /* eslint-enable no-console */
+        }
+      }
+    }
+    return defaultValue;
   }
 
   /**
@@ -360,7 +392,7 @@ export class BaseComponent {
     if (!_isArray(this.data[this.component.key])) {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
-    this.data[this.component.key].push(this.defaultValue());
+    this.data[this.component.key].push(this.defaultValue);
   }
 
   /**
@@ -981,7 +1013,7 @@ export class BaseComponent {
    */
   setValueAt(index, value) {
     if (value === null || value === undefined) {
-      value = this.defaultValue();
+      value = this.defaultValue;
     }
     this.inputs[index].value = value;
   }
@@ -1023,10 +1055,18 @@ export class BaseComponent {
   }
 
   /**
+   * Return if the component is disabled.
+   * @return {boolean|*}
+   */
+  get disabled() {
+    return this._disabled;
+  }
+
+  /**
    * Disable this component.
    */
   set disable(disable) {
-    this.disabled = disable;
+    this._disabled = disable;
     // Disable all input.
     _each(this.inputs, (input) => {
       input.disabled = disable;

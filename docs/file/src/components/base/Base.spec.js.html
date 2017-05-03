@@ -212,7 +212,29 @@ describe(&apos;Base Component&apos;, function() {
   });
 
   it(&apos;Should provide json validation&apos;, function(done) {
-    done();
+    Harness.testCreate(BaseComponent, comps.comp1, {
+      validate: {json: {
+        &quot;if&quot;: [
+          {
+            &quot;===&quot;: [
+              {var: &quot;data.firstName&quot;},
+              &quot;Joe&quot;
+            ]
+          },
+          true,
+          &quot;You must be Joe&quot;
+        ]
+      }}
+    }).then((component) =&gt; Harness.testComponent(component, {
+      bad: {
+        value: &apos;Tom&apos;,
+        field: &apos;firstName&apos;,
+        error: &apos;You must be Joe&apos;
+      },
+      good: {
+        value: &apos;Joe&apos;
+      }
+    }, done));
   });
 
   it(&apos;Should allow for multiple values&apos;, (done) =&gt; {

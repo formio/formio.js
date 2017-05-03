@@ -351,7 +351,10 @@ export class FormioComponents extends BaseComponent {
 
   checkValidity(data, dirty) {
     let check = super.checkValidity(data, dirty);
-    return _reduce(this.components, (check, comp) =&gt; check &amp;&amp; comp.checkValidity(data, dirty), check);
+    _each(this.components, (comp) =&gt; {
+      check &amp;= comp.checkValidity(data, dirty);
+    });
+    return check;
   }
 
   destroy(all) {
@@ -409,7 +412,7 @@ export class FormioComponents extends BaseComponent {
       else if (value &amp;&amp; value.hasOwnProperty(component.component.key)) {
         component.setValue(value[component.component.key], noUpdate);
       }
-      else {
+      else if (component.component.input) {
         component.setValue(null, noUpdate, true);
       }
     });

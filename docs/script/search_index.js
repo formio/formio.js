@@ -1435,9 +1435,9 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#defaultvalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-defaultValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-defaultValue",
     "src/components/base/Base.js~BaseComponent#defaultValue",
-    "method"
+    "member"
   ],
   [
     "src/components/base/base.js~basecomponent#destroy",
@@ -1453,7 +1453,7 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-member-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -3403,13 +3403,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
