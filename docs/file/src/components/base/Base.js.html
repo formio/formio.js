@@ -493,6 +493,7 @@ export class BaseComponent {
       if (typeof this.component.customDefaultValue === &apos;string&apos;) {
         try {
           let row = this.data;
+          let data = this.data;
           defaultValue = eval(&apos;var value = 0;&apos; + this.component.customDefaultValue.toString() + &apos;; return value;&apos;);
         }
         catch (e) {

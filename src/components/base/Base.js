@@ -356,6 +356,7 @@ export class BaseComponent {
       if (typeof this.component.customDefaultValue === 'string') {
         try {
           let row = this.data;
+          let data = this.data;
           defaultValue = eval('var value = 0;' + this.component.customDefaultValue.toString() + '; return value;');
         }
         catch (e) {

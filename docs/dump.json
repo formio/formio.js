@@ -1832,7 +1832,7 @@
     "__docId__": 63,
     "kind": "file",
     "name": "src/components/base/Base.js",
-    "content": "import maskInput from 'text-mask-all/vanilla';\nimport Promise from \"native-promise-only\";\nimport _get from 'lodash/get';\nimport _each from 'lodash/each';\nimport _debounce from 'lodash/debounce';\nimport _isArray from 'lodash/isArray';\nimport _assign from 'lodash/assign';\nimport _clone from 'lodash/clone';\nimport i18next from 'i18next';\nimport jsonLogic from 'json-logic-js';\nimport FormioUtils from '../../utils';\nimport { Validator } from '../Validator';\n\ni18next.initialized = false;\n\n/**\n * This is the BaseComponent class which all elements within the FormioForm derive from.\n */\nexport class BaseComponent {\n  /**\n   * Initialize a new BaseComponent.\n   *\n   * @param {Object} component - The component JSON you wish to initialize.\n   * @param {Object} options - The options for this component.\n   * @param {Object} data - The global data submission object this component will belong.\n   */\n  constructor(component, options, data) {\n    /**\n     * The ID of this component. This value is auto-generated when the component is created, but\n     * can also be provided from the component.id value passed into the constructor.\n     * @type {string}\n     */\n    this.id = (component && component.id) ? component.id : Math.random().toString(36).substring(7);\n\n    /**\n     * The options for this component.\n     * @type {{}}\n     */\n    this.options = _clone(options) || {};\n\n    /**\n     * The i18n configuration for this component.\n     */\n    this.options.i18n = this.options.i18n || require('../../locals/en');\n\n    /**\n     * The events that are triggered for the whole FormioForm object.\n     */\n    this.events = this.options.events;\n\n    /**\n     * The data object in which this component resides.\n     * @type {*}\n     */\n    this.data = data || {};\n\n    /**\n     * The Form.io component JSON schema.\n     * @type {*}\n     */\n    this.component = component || {};\n\n    /**\n     * The bounding HTML Element which this component is rendered.\n     * @type {null}\n     */\n    this.element = null;\n\n    /**\n     * The HTML Element for the table body. This is relevant for the \"multiple\" flag on inputs.\n     * @type {null}\n     */\n    this.tbody = null;\n\n    /**\n     * The HTMLElement that is assigned to the label of this component.\n     * @type {null}\n     */\n    this.label = null;\n\n    /**\n     * The HTMLElement for which the errors are rendered for this component (usually underneath the component).\n     * @type {null}\n     */\n    this.errorElement = null;\n\n    /**\n     * The existing error that this component has.\n     * @type {string}\n     */\n    this.error = '';\n\n    /**\n     * An array of all of the input HTML Elements that have been added to this component.\n     * @type {Array}\n     */\n    this.inputs = [];\n\n    /**\n     * The basic component information which tells the BaseComponent how to render the input element of the components that derive from this class.\n     * @type {null}\n     */\n    this.info = null;\n\n    /**\n     * The value of this component\n     * @type {*}\n     */\n    this.value = null;\n\n    /**\n     * Determines if this component is disabled, or not.\n     *\n     * @type {boolean}\n     */\n    this._disabled = false;\n\n    /**\n     * If this input has been input and provided value.\n     *\n     * @type {boolean}\n     */\n    this.pristine = true;\n\n    /**\n     * The Input mask instance for this component.\n     * @type {InputMask}\n     */\n    this.inputMask = null;\n\n    this.options.name = this.options.name || 'data';\n\n    /**\n     * The validators that are assigned to this component.\n     * @type {[string]}\n     */\n    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json'];\n\n    /**\n     * Used to trigger a new change in this component.\n     * @type {function} - Call to trigger a change in this component.\n     */\n    this.triggerChange = _debounce(this.onChange.bind(this), 200);\n\n    /**\n     * An array of event handlers so that the destry command can deregister them.\n     * @type {Array}\n     */\n    this.eventHandlers = [];\n\n    /**\n     * An array of the event listeners so that the destroy command can deregister them.\n     * @type {Array}\n     */\n    this.eventListeners = [];\n\n    if (this.component) {\n      this.type = this.component.type;\n      if (this.component.input && this.component.key) {\n        this.options.name += '[' + this.component.key + ']';\n      }\n\n      /**\n       * The element information for creating the input element.\n       * @type {*}\n       */\n      this.info = this.elementInfo();\n    }\n  }\n\n  /**\n   * Translate a text using the i18n system.\n   *\n   * @param {string} text - The i18n identifier.\n   * @param {Object} params - The i18n parameters to use for translation.\n   */\n  t(text, params) {\n    let message = i18next.t(text, params);\n    return message;\n  }\n\n  /**\n   * Register for a new event within this component.\n   *\n   * @example\n   * let component = new BaseComponent({\n   *   type: 'textfield',\n   *   label: 'First Name',\n   *   key: 'firstName'\n   * });\n   * component.on('componentChange', (changed) => {\n   *   console.log('this element is changed.');\n   * });\n   *\n   *\n   * @param {string} event - The event you wish to register the handler for.\n   * @param {function} cb - The callback handler to handle this event.\n   * @param {boolean} internal - This is an internal event handler.\n   */\n  on(event, cb, internal) {\n    if (!this.events) {\n      return;\n    }\n    let type = 'formio.' + event;\n    this.eventListeners.push({\n      type: type,\n      listener: cb,\n      internal: internal\n    });\n    return this.events.on(type, cb);\n  }\n\n  /**\n   * Emit a new event.\n   *\n   * @param {string} event - The event to emit.\n   * @param {Object} data - The data to emit with the handler.\n   */\n  emit(event, data) {\n    this.events.emit('formio.' + event, data);\n  }\n\n  /**\n   * Returns an HTMLElement icon element.\n   *\n   * @param {string} name - The name of the icon to retrieve.\n   * @returns {HTMLElement} - The icon element.\n   */\n  getIcon(name) {\n    return this.ce(name + 'Icon', 'i', {\n      class: 'glyphicon glyphicon-' + name\n    });\n  }\n\n  /**\n   * Perform the localization initialization.\n   * @returns {*}\n   */\n  localize() {\n    if (i18next.initialized) {\n      return Promise.resolve(i18next);\n    }\n    i18next.initialized = true;\n    return new Promise((resolve, reject) => {\n      i18next.init(this.options.i18n, (err, t) => {\n        if (err) {\n          return reject(err);\n        }\n        resolve(i18next);\n      });\n    });\n  }\n\n  /**\n   * Builds the component.\n   */\n  build() {\n    this.createElement();\n    this.createLabel(this.element);\n    if (!this.createWrapper()) {\n      this.createInput(this.element);\n    }\n\n    // Disable if needed.\n    if (this.options.readOnly || this.component.disabled) {\n      this.disable = true;\n    }\n\n    // Set default values.\n    let defaultValue = this.defaultValue;\n    if (defaultValue) {\n      this.setValue(defaultValue);\n    }\n  }\n\n  /**\n   * Retrieves the CSS class name of this component.\n   * @returns {string} - The class name of this component.\n   */\n  get className() {\n    let className = this.component.input ? 'form-group has-feedback ' : '';\n    className += 'formio-component formio-component-' + this.component.type + ' ';\n    if (this.component.key) {\n      className += 'formio-component-' + this.component.key + ' ';\n    }\n    if (this.component.customClass) {\n      className += this.component.customClass;\n    }\n    if (this.component.input && this.component.validate && this.component.validate.required) {\n      className += ' required';\n    }\n    return className;\n  }\n\n  /**\n   * Returns the outside wrapping element of this component.\n   * @returns {HTMLElement}\n   */\n  getElement() {\n    return this.element;\n  }\n\n  /**\n   * Create the outside wrapping element for this component.\n   * @returns {HTMLElement}\n   */\n  createElement() {\n    this.element = this.ce('element', 'div', {\n      id: this.id,\n      class: this.className\n    });\n\n    if (this.element) {\n      // Ensure you can get the component info from the element.\n      this.element.component = this.component;\n    }\n\n    return this.element;\n  }\n\n  /**\n   * Create the input wrapping element. For multiple, this may be the table wrapper for the elements.\n   * @returns {boolean}\n   */\n  createWrapper() {\n    if (!this.component.multiple) {\n      return false;\n    }\n    else {\n      let table = this.ce('wrapper', 'table', {\n        class: 'table table-bordered'\n      });\n      this.tbody = this.ce('wrapperBody', 'tbody');\n      table.appendChild(this.tbody);\n\n      // Add a default value.\n      if (!this.data[this.component.key] || !this.data[this.component.key].length) {\n        this.addNewValue();\n      }\n\n      // Build the rows.\n      this.buildRows();\n\n      // Add the table to the element.\n      this.append(table);\n      return true;\n    }\n  }\n\n  get defaultValue() {\n    let defaultValue = '';\n    if (this.component.defaultValue) {\n      defaultValue = this.component.defaultValue;\n    }\n    else if (this.component.customDefaultValue) {\n      if (typeof this.component.customDefaultValue === 'string') {\n        try {\n          let row = this.data;\n          defaultValue = eval('var value = 0;' + this.component.customDefaultValue.toString() + '; return value;');\n        }\n        catch (e) {\n          defaultValue = null;\n          /* eslint-disable no-console */\n          console.warn('An error occurred getting default value for ' + this.component.key, e);\n          /* eslint-enable no-console */\n        }\n      }\n      else {\n        try {\n          defaultValue = jsonLogic.apply(this.component.customDefaultValue, {\n            data: this.data\n          });\n        }\n        catch (err) {\n          defaultValue = null;\n          /* eslint-disable no-console */\n          console.warn('An error occurred calculating a value for ' + this.component.key, e);\n          /* eslint-enable no-console */\n        }\n      }\n    }\n    return defaultValue;\n  }\n\n  /**\n   * Adds a new empty value to the data array.\n   */\n  addNewValue() {\n    if (!this.data[this.component.key]) {\n      this.data[this.component.key] = [];\n    }\n    if (!_isArray(this.data[this.component.key])) {\n      this.data[this.component.key] = [this.data[this.component.key]];\n    }\n    this.data[this.component.key].push(this.defaultValue);\n  }\n\n  /**\n   * Adds a new empty value to the data array, and add a new row to contain it.\n   */\n  addValue() {\n    this.addNewValue();\n    this.buildRows();\n  }\n\n  /**\n   * Removes a value out of the data array and rebuild the rows.\n   * @param {number} index - The index of the data element to remove.\n   */\n  removeValue(index) {\n    if (this.data.hasOwnProperty(this.component.key)) {\n      this.data[this.component.key].splice(index, 1);\n    }\n    this.buildRows();\n  }\n\n  /**\n   * Rebuild the rows to contain the values of this component.\n   */\n  buildRows() {\n    if (!this.tbody) {\n      return;\n    }\n    this.inputs = [];\n    this.tbody.innerHTML = '';\n    _each(this.data[this.component.key], (value, index) => {\n      let tr = this.ce('row', 'tr');\n      let td = this.ce('column', 'td');\n      this.createInput(td);\n      tr.appendChild(td);\n      let tdAdd = this.ce('columnAdd', 'td');\n      tdAdd.appendChild(this.removeButton(index));\n      tr.appendChild(tdAdd);\n      this.tbody.appendChild(tr);\n    });\n\n    let tr = this.ce('rowAdd', 'tr');\n    let td = this.ce('addRowColumn', 'td', {\n      colspan: '2'\n    });\n    td.appendChild(this.addButton());\n    tr.appendChild(td);\n    this.tbody.appendChild(tr);\n    if (this.options.readOnly) {\n      this.disable = true;\n    }\n  }\n\n  /**\n   * Adds a new button to add new rows to the multiple input elements.\n   * @returns {HTMLElement} - The \"Add New\" button html element.\n   */\n  addButton() {\n    let addButton = this.ce('addButton', 'a', {\n      class: 'btn btn-primary'\n    });\n    this.addEventListener(addButton, 'click', (event) => {\n      event.preventDefault();\n      this.addValue();\n    });\n\n    let addIcon = this.ce('addIcon', 'span', {\n      class: 'glyphicon glyphicon-plus'\n    });\n    addButton.appendChild(addIcon);\n    addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));\n    return addButton;\n  }\n\n  /**\n   * The readible name for this component.\n   * @returns {string} - The name of the component.\n   */\n  get name() {\n    return this.component.label || this.component.placeholder || this.component.key;\n  }\n\n  /**\n   * Creates a new \"remove\" row button and returns the html element of that button.\n   * @param {number} index - The index of the row that should be removed.\n   * @returns {HTMLElement} - The html element of the remove button.\n   */\n  removeButton(index) {\n    let removeButton = this.ce('removeButton', 'button', {\n      type: 'button',\n      class: 'btn btn-default',\n      tabindex: '-1'\n    });\n\n    this.addEventListener(removeButton, 'click', (event) => {\n      event.preventDefault();\n      this.removeValue(index);\n    });\n\n    let removeIcon = this.ce('removeIcon', 'span', {\n      class: 'glyphicon glyphicon-remove-circle'\n    });\n    removeButton.appendChild(removeIcon);\n    return removeButton;\n  }\n\n  /**\n   * Create the HTML element for the label of this comonent.\n   * @param {HTMLElement} container - The containing element that will comtain this label.\n   */\n  createLabel(container) {\n    if (!this.component.label || this.options.inputsOnly) {\n      return;\n    }\n    this.label = this.ce('label', 'label', {\n      class: 'control-label'\n    });\n    if (this.info.attr.id) {\n      this.label.setAttribute('for', this.info.attr.id);\n    }\n    this.label.appendChild(this.text(this.component.label));\n    container.appendChild(this.label);\n  }\n\n  /**\n   * Creates a new error element to hold the errors of this element.\n   */\n  createErrorElement() {\n    if (!this.errorContainer) {\n      return;\n    }\n    this.errorElement = this.ce('errors', 'div', {\n      class: 'formio-errors'\n    });\n    this.errorContainer.appendChild(this.errorElement);\n  }\n\n  /**\n   * Adds a prefix html element.\n   *\n   * @param {HTMLElement} input - The input element.\n   * @param {HTMLElement} inputGroup - The group that will hold this prefix.\n   * @returns {HTMLElement} - The html element for this prefix.\n   */\n  addPrefix(input, inputGroup) {\n    let prefix = null;\n    if (this.component.prefix) {\n      prefix = this.ce('prefix', 'div', {\n        class: 'input-group-addon'\n      });\n      prefix.appendChild(this.text(this.component.prefix));\n      inputGroup.appendChild(prefix);\n    }\n    return prefix;\n  }\n\n  /**\n   * Adds a suffix html element.\n   *\n   * @param {HTMLElement} input - The input element.\n   * @param {HTMLElement} inputGroup - The group that will hold this suffix.\n   * @returns {HTMLElement} - The html element for this suffix.\n   */\n  addSuffix(input, inputGroup) {\n    let suffix = null;\n    if (this.component.suffix) {\n      suffix = this.ce('suffix', 'div', {\n        class: 'input-group-addon'\n      });\n      suffix.appendChild(this.text(this.component.suffix));\n      inputGroup.appendChild(suffix);\n    }\n    return suffix;\n  }\n\n  /**\n   * Adds a new input group to hold the input html elements.\n   *\n   * @param {HTMLElement} input - The input html element.\n   * @param {HTMLElement} container - The containing html element for this group.\n   * @returns {HTMLElement} - The input group element.\n   */\n  addInputGroup(input, container) {\n    let inputGroup = null;\n    if (this.component.prefix || this.component.suffix) {\n      inputGroup = this.ce('inputGroup', 'div', {\n        class: 'input-group'\n      });\n      container.appendChild(inputGroup);\n    }\n    return inputGroup;\n  }\n\n  /**\n   * Returns an input mask that is compatible with the input mask library.\n   * @param {string} mask - The Form.io input mask.\n   * @returns {Array} - The input mask for the mask library.\n   */\n  getInputMask(mask) {\n    if (mask instanceof Array) {\n      return mask;\n    }\n    let maskArray = [];\n    for (let i=0; i < mask.length; i++) {\n      switch (mask[i]) {\n        case '9':\n          maskArray.push(/\\d/);\n          break;\n        case 'A':\n          maskArray.push(/[a-zA-Z]/);\n          break;\n        case '*':\n          maskArray.push(/[a-zA-Z0-9]/);\n          break;\n        default:\n          maskArray.push(mask[i]);\n          break;\n      }\n    }\n    return maskArray;\n  }\n\n  /**\n   * Creates a new input mask placeholder.\n   * @param {HTMLElement} mask - The input mask.\n   * @returns {string} - The placeholder that will exist within the input as they type.\n   */\n  maskPlaceholder(mask) {\n    return mask.map((char) => {\n      return (char instanceof RegExp) ? '_' : char\n    }).join('')\n  }\n\n  /**\n   * Sets the input mask for an input.\n   * @param {HTMLElement} input - The html input to apply the mask to.\n   */\n  setInputMask(input) {\n    if (input && this.component.inputMask) {\n      let mask = this.getInputMask(this.component.inputMask);\n      this.inputMask = maskInput({\n        inputElement: input,\n        mask: mask\n      });\n      if (!this.component.placeholder) {\n        input.setAttribute('placeholder', this.maskPlaceholder(mask));\n      }\n    }\n  }\n\n  /**\n   * Creates a new input element.\n   * @param {HTMLElement} container - The container which should hold this new input element.\n   * @returns {HTMLElement} - Either the input or the group that contains the input.\n   */\n  createInput(container) {\n    let input = this.ce('input', this.info.type, this.info.attr);\n    this.setInputMask(input);\n    let inputGroup = this.addInputGroup(input, container);\n    this.addPrefix(input, inputGroup);\n    this.addInput(input, inputGroup || container);\n    this.addSuffix(input, inputGroup);\n    this.errorContainer = container;\n    return inputGroup || input;\n  }\n\n  /**\n   * Wrapper method to add an event listener to an HTML element.\n   *\n   * @param obj\n   *   The DOM element to add the event to.\n   * @param evt\n   *   The event name to add.\n   * @param func\n   *   The callback function to be executed when the listener is triggered.\n   */\n  addEventListener(obj, evt, func) {\n    this.eventHandlers.push({type: evt, func: func});\n    if ('addEventListener' in obj){\n      obj.addEventListener(evt, func, false);\n    } else if ('attachEvent' in obj) {\n      obj.attachEvent('on'+evt, func);\n    }\n  }\n\n  /**\n   * Remove all event handlers.\n   */\n  destroy(all) {\n    if (this.inputMask) {\n      this.inputMask.destroy();\n    }\n    _each(this.eventListeners, (listener) => {\n      if (all || listener.internal) {\n        this.events.off(listener.type, listener.listener);\n      }\n    });\n    _each(this.eventHandlers, (handler) => {\n      window.removeEventListener(handler.event, handler.func);\n    });\n  }\n\n  /**\n   * Alias for document.createElement.\n   *\n   * @param {string} name - The name of the element to create, for templating purposes.\n   * @param {string} type - The type of element to create\n   * @param {Object} attr - The element attributes to add to the created element.\n   *\n   * @return {HTMLElement} - The created element.\n   */\n  ce(name, type, attr) {\n    // Allow for template overrides.\n    let element = document.createElement(type);\n    let compType = this.component.type || this.type;\n    if (\n      this.options &&\n      this.options.template &&\n      (\n        (this.options.template[compType] && this.options.template[compType][name]) ||\n        (this.options.template.global && this.options.template.global[name])\n      )\n    ) {\n      let template = _get(this.options, 'template.' + compType + '.' + name) || _get(this.options, 'template.global.' + name);\n      if (typeof template === 'function') {\n        let returnElement = template(this, type, attr, element);\n        if (returnElement) {\n          return returnElement;\n        }\n      }\n      else {\n        // Assign the attributes.\n        _assign(attr, template);\n      }\n    }\n    if (attr) {\n      this.attr(element, attr);\n    }\n    return element;\n  }\n\n  /**\n   * Alias to create a text node.\n   * @param text\n   * @returns {Text}\n   */\n  text(text) {\n    return document.createTextNode(text);\n  }\n\n  /**\n   * Adds an object of attributes onto an element.\n   * @param {HtmlElement} element - The element to add the attributes to.\n   * @param {Object} attr - The attributes to add to the input element.\n   */\n  attr(element, attr) {\n    _each(attr, function (value, key) {\n      if (typeof value !== 'undefined') {\n        element.setAttribute(key, value);\n      }\n    });\n  }\n\n  /**\n   * Adds a class to a DOM element.\n   *\n   * @param element\n   *   The element to add a class to.\n   * @param className\n   *   The name of the class to add.\n   */\n  addClass(element, className) {\n    var cls = element.getAttribute('class');\n    cls += (' ' + className);\n    element.setAttribute('class', cls);\n  }\n\n  /**\n   * Remove a class from a DOM element.\n   *\n   * @param element\n   *   The DOM element to remove the class from.\n   * @param className\n   *   The name of the class that is to be removed.\n   */\n  removeClass(element, className) {\n    var cls = element.getAttribute('class');\n    cls = cls.replace(className, '');\n    element.setAttribute('class', cls);\n  }\n\n  /**\n   * Check for conditionals and hide/show the element based on those conditions.\n   */\n  checkConditions(data) {\n    this.show(FormioUtils.checkCondition(this.component, this.data, data));\n  }\n\n  /**\n   * Add a new input error to this element.\n   * @param message\n   */\n  addInputError(message) {\n    if (this.errorElement) {\n      let errorMessage = this.ce('errorMessage', 'p', {\n        class: 'help-block'\n      });\n      errorMessage.appendChild(this.text(message));\n      this.errorElement.appendChild(errorMessage);\n      this.addClass(this.element, 'has-error');\n    }\n  }\n\n  /**\n   * Hide or Show an element.\n   *\n   * @param show\n   */\n  show(show) {\n    if (this.element) {\n      if (show) {\n        this.element.removeAttribute('hidden');\n        this.element.style.visibility = \"visible\";\n      }\n      else {\n        this.element.setAttribute('hidden', true);\n        this.element.style.visibility = \"hidden\";\n      }\n    }\n  }\n\n  onChange(noValidate) {\n    if (!noValidate) {\n      this.pristine = false;\n    }\n    if (this.events) {\n      this.emit('componentChange', {\n        component: this.component,\n        value: this.value,\n        validate: !noValidate\n      });\n    }\n  }\n\n  /**\n   * Add new input element listeners.\n   *\n   * @param input\n   */\n  addInputEventListener(input) {\n    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());\n  }\n\n  /**\n   * Add a new input to this comonent.\n   *\n   * @param input\n   * @param container\n   * @param name\n   */\n  addInput(input, container, noSet) {\n    if (input && container) {\n      this.inputs.push(input);\n      input = container.appendChild(input);\n    }\n    this.addInputEventListener(input);\n\n    // Reset the values of the inputs.\n    if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {\n      this.setValue(this.data[this.component.key], true);\n    }\n  }\n\n  /**\n   * Get the value at a specific index.\n   *\n   * @param index\n   * @returns {*}\n   */\n  getValueAt(index) {\n    return this.inputs[index].value;\n  }\n\n  getValue() {\n    if (!this.component.input) {\n      return;\n    }\n    let values = [];\n    for (let i in this.inputs) {\n      if (!this.component.multiple) {\n        this.value = this.getValueAt(i);\n        return this.value;\n      }\n      values.push(this.getValueAt(i));\n    }\n    this.value = values;\n    return values;\n  }\n\n  updateValue(noValidate) {\n    let value = this.data[this.component.key];\n    let falsey = !value && (value !== null) && (value !== undefined);\n    this.data[this.component.key] = this.getValue();\n    if (falsey) {\n      if (!!this.data[this.component.key]) {\n        this.triggerChange(noValidate);\n      }\n    }\n    else {\n      this.triggerChange(noValidate);\n    }\n  }\n\n  /**\n   * Perform a calculated value operation.\n   *\n   * @param data - The global data object.\n   */\n  calculateValue(data) {\n    if (!this.component.calculateValue) {\n      return;\n    }\n\n    // If this is a string, then use eval to evalulate it.\n    if (typeof this.component.calculateValue === 'string') {\n      try {\n        let row = this.data;\n        let val = eval('var value = [];' + this.component.calculateValue.toString() + '; return value;');\n        this.setValue(val);\n      }\n      catch (e) {\n        /* eslint-disable no-console */\n        console.warn('An error occurred calculating a value for ' + this.component.key, e);\n        /* eslint-enable no-console */\n      }\n    }\n    else {\n      try {\n        let val = jsonLogic.apply(this.component.calculateValue, {\n          data: data,\n          row: this.data\n        });\n        this.setValue(val);\n      }\n      catch (err) {\n        /* eslint-disable no-console */\n        console.warn('An error occurred calculating a value for ' + this.component.key, e);\n        /* eslint-enable no-console */\n      }\n    }\n  }\n\n  checkValidity(data, dirty) {\n    // No need to check for errors if there is no input or if it is pristine.\n    if (!this.component.input || (!dirty && this.pristine)) {\n      return true;\n    }\n\n    let message = Validator.check(\n      this.validators,\n      this.component,\n      this.getValidateValue(),\n      data || this.data,\n      this.data,\n      this.t.bind(this)\n    );\n    this.setCustomValidity(message);\n\n    // No message, returns true\n    return message ? false : true;\n  }\n\n  getValidateValue() {\n    return this.data[this.component.key];\n  }\n\n  get errors() {\n    return this.error ? [this.error] : [];\n  }\n\n  interpolate(string, data) {\n    return FormioUtils.interpolate(string, data);\n  }\n\n  setCustomValidity(message) {\n    if (this.errorElement && this.errorContainer) {\n      this.errorElement.innerHTML = '';\n      try {\n        this.errorContainer.removeChild(this.errorElement);\n      }\n      catch (err) {}\n    }\n    this.removeClass(this.element, 'has-error');\n    if (message) {\n      this.error = {\n        component: this.component,\n        message: message\n      };\n      this.emit('componentError', this.error);\n      this.createErrorElement();\n      this.addInputError(message);\n    }\n    else {\n      this.error = null;\n    }\n    _each(this.inputs, (input) => {\n      if (typeof input.setCustomValidity === 'function') {\n        input.setCustomValidity(message);\n      }\n    });\n  }\n\n  /**\n   * Set the value at a specific index.\n   *\n   * @param index\n   * @param value\n   */\n  setValueAt(index, value) {\n    if (value === null || value === undefined) {\n      value = this.defaultValue;\n    }\n    this.inputs[index].value = value;\n  }\n\n  /**\n   * Set the value of this component.\n   * @param value\n   */\n  setValue(value, noUpdate, noValidate) {\n    if (!this.component.input) {\n      return;\n    }\n    this.value = value;\n    let isArray = _isArray(value);\n    for (let i in this.inputs) {\n      this.setValueAt(i, isArray ? value[i] : value);\n    }\n    if (!noUpdate) {\n      this.updateValue(noValidate);\n    }\n  }\n\n  set visible(visible) {\n    let element = this.getElement();\n    if (element) {\n      if (visible && this.styles) {\n        element.style.visibility = this.styles.visibility;\n        element.style.position = this.styles.position;\n      }\n      else if (!visible) {\n        this.styles = {\n          visibility: element.style.visibility,\n          position: element.style.position\n        };\n        element.style.visibility = 'hidden';\n        element.style.position = 'absolute';\n      }\n    }\n  }\n\n  /**\n   * Return if the component is disabled.\n   * @return {boolean|*}\n   */\n  get disabled() {\n    return this._disabled;\n  }\n\n  /**\n   * Disable this component.\n   */\n  set disable(disable) {\n    this._disabled = disable;\n    // Disable all input.\n    _each(this.inputs, (input) => {\n      input.disabled = disable;\n      input.setAttribute('disabled', 'disabled');\n    });\n  }\n\n  selectOptions(select, tag, options, defaultValue) {\n    _each(options, (option) => {\n      let attrs = {\n        value: option.value\n      };\n      if (defaultValue !== undefined && (option.value === defaultValue)) {\n        attrs.selected = 'selected';\n      }\n      let optionElement = this.ce(tag, 'option', attrs);\n      optionElement.appendChild(this.text(option.label));\n      select.appendChild(optionElement);\n    });\n  }\n\n  setSelectValue(select, value) {\n    let options = select.querySelectorAll('option');\n    _each(options, (option) => {\n      if (option.value === value) {\n        option.setAttribute('selected', 'selected');\n      }\n      else {\n        option.removeAttribute('selected');\n      }\n    });\n    if (select.onchange) {\n      select.onchange();\n    }\n    if (select.onselect) {\n      select.onchange();\n    }\n  }\n\n  clear() {\n    this.destroy();\n    let element = this.getElement();\n    if (element) {\n      element.innerHTML = '';\n    }\n  }\n\n  append(element) {\n    if (this.element) {\n      this.element.appendChild(element);\n    }\n  }\n\n  prepend(element) {\n    if (this.element) {\n      this.element.insertBefore(element, this.element.firstChild);\n    }\n  }\n\n  before(element) {\n    if (this.element) {\n      this.element.parentNode.insertBefore(element, this.element);\n    }\n  }\n\n  remove(element) {\n    if (this.element) {\n      this.element.parentNode.removeChild(element);\n    }\n  }\n\n  removeChild(element) {\n    if (this.element) {\n      this.element.removeChild(element);\n    }\n  }\n\n  /**\n   * Get the element information.\n   */\n  elementInfo() {\n    let attributes = {\n      name: this.options.name,\n      type: this.component.inputType || 'text',\n      class: 'form-control'\n    };\n    _each({\n      tabindex: 'tabindex',\n      placeholder: 'placeholder'\n    }, (path, prop) => {\n      let attrValue = _get(this.component, path);\n      if (attrValue) {\n        attributes[prop] = attrValue;\n      }\n    });\n    return {\n      type: 'input',\n      component: this.component,\n      changeEvent: 'change',\n      attr: attributes\n    };\n  }\n}\n\nBaseComponent.externalLibraries = {};\nBaseComponent.requireLibrary = function(name, property, src, polling) {\n  if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {\n    BaseComponent.externalLibraries[name] = {};\n    BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {\n      BaseComponent.externalLibraries[name].resolve = resolve;\n      BaseComponent.externalLibraries[name].reject = reject;\n    });\n\n    if (!polling && !window[name + 'Callback']) {\n      window[name + 'Callback'] = function() {\n        this.resolve();\n      }.bind(BaseComponent.externalLibraries[name]);\n    }\n\n    // See if the plugin already exists.\n    let plugin = _get(window, property);\n    if (plugin) {\n      BaseComponent.externalLibraries[name].resolve(plugin);\n    }\n    else {\n      // Add the script to the top page.\n      let script = document.createElement('script');\n      script.setAttribute('src', src);\n      script.setAttribute('type', 'text/javascript');\n      script.setAttribute('defer', true);\n      script.setAttribute('async', true);\n      document.getElementsByTagName('head')[0].appendChild(script);\n\n      // if no callback is provided, then check periodically for the script.\n      if (polling) {\n        setTimeout(function checkLibrary() {\n          let plugin = _get(window, property);\n          if (plugin) {\n            BaseComponent.externalLibraries[name].resolve(plugin);\n          }\n          else {\n            // check again after 200 ms.\n            setTimeout(checkLibrary, 200);\n          }\n        }, 200)\n      }\n    }\n  }\n  return BaseComponent.externalLibraries[name].ready;\n};\n\nBaseComponent.libraryReady = function(name) {\n  if (\n    BaseComponent.externalLibraries.hasOwnProperty(name) &&\n    BaseComponent.externalLibraries[name].ready\n  ) {\n    return BaseComponent.externalLibraries[name].ready;\n  }\n\n  return Promise.reject(name + ' library was not required.');\n};\n",
+    "content": "import maskInput from 'text-mask-all/vanilla';\nimport Promise from \"native-promise-only\";\nimport _get from 'lodash/get';\nimport _each from 'lodash/each';\nimport _debounce from 'lodash/debounce';\nimport _isArray from 'lodash/isArray';\nimport _assign from 'lodash/assign';\nimport _clone from 'lodash/clone';\nimport i18next from 'i18next';\nimport jsonLogic from 'json-logic-js';\nimport FormioUtils from '../../utils';\nimport { Validator } from '../Validator';\n\ni18next.initialized = false;\n\n/**\n * This is the BaseComponent class which all elements within the FormioForm derive from.\n */\nexport class BaseComponent {\n  /**\n   * Initialize a new BaseComponent.\n   *\n   * @param {Object} component - The component JSON you wish to initialize.\n   * @param {Object} options - The options for this component.\n   * @param {Object} data - The global data submission object this component will belong.\n   */\n  constructor(component, options, data) {\n    /**\n     * The ID of this component. This value is auto-generated when the component is created, but\n     * can also be provided from the component.id value passed into the constructor.\n     * @type {string}\n     */\n    this.id = (component && component.id) ? component.id : Math.random().toString(36).substring(7);\n\n    /**\n     * The options for this component.\n     * @type {{}}\n     */\n    this.options = _clone(options) || {};\n\n    /**\n     * The i18n configuration for this component.\n     */\n    this.options.i18n = this.options.i18n || require('../../locals/en');\n\n    /**\n     * The events that are triggered for the whole FormioForm object.\n     */\n    this.events = this.options.events;\n\n    /**\n     * The data object in which this component resides.\n     * @type {*}\n     */\n    this.data = data || {};\n\n    /**\n     * The Form.io component JSON schema.\n     * @type {*}\n     */\n    this.component = component || {};\n\n    /**\n     * The bounding HTML Element which this component is rendered.\n     * @type {null}\n     */\n    this.element = null;\n\n    /**\n     * The HTML Element for the table body. This is relevant for the \"multiple\" flag on inputs.\n     * @type {null}\n     */\n    this.tbody = null;\n\n    /**\n     * The HTMLElement that is assigned to the label of this component.\n     * @type {null}\n     */\n    this.label = null;\n\n    /**\n     * The HTMLElement for which the errors are rendered for this component (usually underneath the component).\n     * @type {null}\n     */\n    this.errorElement = null;\n\n    /**\n     * The existing error that this component has.\n     * @type {string}\n     */\n    this.error = '';\n\n    /**\n     * An array of all of the input HTML Elements that have been added to this component.\n     * @type {Array}\n     */\n    this.inputs = [];\n\n    /**\n     * The basic component information which tells the BaseComponent how to render the input element of the components that derive from this class.\n     * @type {null}\n     */\n    this.info = null;\n\n    /**\n     * The value of this component\n     * @type {*}\n     */\n    this.value = null;\n\n    /**\n     * Determines if this component is disabled, or not.\n     *\n     * @type {boolean}\n     */\n    this._disabled = false;\n\n    /**\n     * If this input has been input and provided value.\n     *\n     * @type {boolean}\n     */\n    this.pristine = true;\n\n    /**\n     * The Input mask instance for this component.\n     * @type {InputMask}\n     */\n    this.inputMask = null;\n\n    this.options.name = this.options.name || 'data';\n\n    /**\n     * The validators that are assigned to this component.\n     * @type {[string]}\n     */\n    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json'];\n\n    /**\n     * Used to trigger a new change in this component.\n     * @type {function} - Call to trigger a change in this component.\n     */\n    this.triggerChange = _debounce(this.onChange.bind(this), 200);\n\n    /**\n     * An array of event handlers so that the destry command can deregister them.\n     * @type {Array}\n     */\n    this.eventHandlers = [];\n\n    /**\n     * An array of the event listeners so that the destroy command can deregister them.\n     * @type {Array}\n     */\n    this.eventListeners = [];\n\n    if (this.component) {\n      this.type = this.component.type;\n      if (this.component.input && this.component.key) {\n        this.options.name += '[' + this.component.key + ']';\n      }\n\n      /**\n       * The element information for creating the input element.\n       * @type {*}\n       */\n      this.info = this.elementInfo();\n    }\n  }\n\n  /**\n   * Translate a text using the i18n system.\n   *\n   * @param {string} text - The i18n identifier.\n   * @param {Object} params - The i18n parameters to use for translation.\n   */\n  t(text, params) {\n    let message = i18next.t(text, params);\n    return message;\n  }\n\n  /**\n   * Register for a new event within this component.\n   *\n   * @example\n   * let component = new BaseComponent({\n   *   type: 'textfield',\n   *   label: 'First Name',\n   *   key: 'firstName'\n   * });\n   * component.on('componentChange', (changed) => {\n   *   console.log('this element is changed.');\n   * });\n   *\n   *\n   * @param {string} event - The event you wish to register the handler for.\n   * @param {function} cb - The callback handler to handle this event.\n   * @param {boolean} internal - This is an internal event handler.\n   */\n  on(event, cb, internal) {\n    if (!this.events) {\n      return;\n    }\n    let type = 'formio.' + event;\n    this.eventListeners.push({\n      type: type,\n      listener: cb,\n      internal: internal\n    });\n    return this.events.on(type, cb);\n  }\n\n  /**\n   * Emit a new event.\n   *\n   * @param {string} event - The event to emit.\n   * @param {Object} data - The data to emit with the handler.\n   */\n  emit(event, data) {\n    this.events.emit('formio.' + event, data);\n  }\n\n  /**\n   * Returns an HTMLElement icon element.\n   *\n   * @param {string} name - The name of the icon to retrieve.\n   * @returns {HTMLElement} - The icon element.\n   */\n  getIcon(name) {\n    return this.ce(name + 'Icon', 'i', {\n      class: 'glyphicon glyphicon-' + name\n    });\n  }\n\n  /**\n   * Perform the localization initialization.\n   * @returns {*}\n   */\n  localize() {\n    if (i18next.initialized) {\n      return Promise.resolve(i18next);\n    }\n    i18next.initialized = true;\n    return new Promise((resolve, reject) => {\n      i18next.init(this.options.i18n, (err, t) => {\n        if (err) {\n          return reject(err);\n        }\n        resolve(i18next);\n      });\n    });\n  }\n\n  /**\n   * Builds the component.\n   */\n  build() {\n    this.createElement();\n    this.createLabel(this.element);\n    if (!this.createWrapper()) {\n      this.createInput(this.element);\n    }\n\n    // Disable if needed.\n    if (this.options.readOnly || this.component.disabled) {\n      this.disable = true;\n    }\n\n    // Set default values.\n    let defaultValue = this.defaultValue;\n    if (defaultValue) {\n      this.setValue(defaultValue);\n    }\n  }\n\n  /**\n   * Retrieves the CSS class name of this component.\n   * @returns {string} - The class name of this component.\n   */\n  get className() {\n    let className = this.component.input ? 'form-group has-feedback ' : '';\n    className += 'formio-component formio-component-' + this.component.type + ' ';\n    if (this.component.key) {\n      className += 'formio-component-' + this.component.key + ' ';\n    }\n    if (this.component.customClass) {\n      className += this.component.customClass;\n    }\n    if (this.component.input && this.component.validate && this.component.validate.required) {\n      className += ' required';\n    }\n    return className;\n  }\n\n  /**\n   * Returns the outside wrapping element of this component.\n   * @returns {HTMLElement}\n   */\n  getElement() {\n    return this.element;\n  }\n\n  /**\n   * Create the outside wrapping element for this component.\n   * @returns {HTMLElement}\n   */\n  createElement() {\n    this.element = this.ce('element', 'div', {\n      id: this.id,\n      class: this.className\n    });\n\n    if (this.element) {\n      // Ensure you can get the component info from the element.\n      this.element.component = this.component;\n    }\n\n    return this.element;\n  }\n\n  /**\n   * Create the input wrapping element. For multiple, this may be the table wrapper for the elements.\n   * @returns {boolean}\n   */\n  createWrapper() {\n    if (!this.component.multiple) {\n      return false;\n    }\n    else {\n      let table = this.ce('wrapper', 'table', {\n        class: 'table table-bordered'\n      });\n      this.tbody = this.ce('wrapperBody', 'tbody');\n      table.appendChild(this.tbody);\n\n      // Add a default value.\n      if (!this.data[this.component.key] || !this.data[this.component.key].length) {\n        this.addNewValue();\n      }\n\n      // Build the rows.\n      this.buildRows();\n\n      // Add the table to the element.\n      this.append(table);\n      return true;\n    }\n  }\n\n  get defaultValue() {\n    let defaultValue = '';\n    if (this.component.defaultValue) {\n      defaultValue = this.component.defaultValue;\n    }\n    else if (this.component.customDefaultValue) {\n      if (typeof this.component.customDefaultValue === 'string') {\n        try {\n          let row = this.data;\n          let data = this.data;\n          defaultValue = eval('var value = 0;' + this.component.customDefaultValue.toString() + '; return value;');\n        }\n        catch (e) {\n          defaultValue = null;\n          /* eslint-disable no-console */\n          console.warn('An error occurred getting default value for ' + this.component.key, e);\n          /* eslint-enable no-console */\n        }\n      }\n      else {\n        try {\n          defaultValue = jsonLogic.apply(this.component.customDefaultValue, {\n            data: this.data\n          });\n        }\n        catch (err) {\n          defaultValue = null;\n          /* eslint-disable no-console */\n          console.warn('An error occurred calculating a value for ' + this.component.key, e);\n          /* eslint-enable no-console */\n        }\n      }\n    }\n    return defaultValue;\n  }\n\n  /**\n   * Adds a new empty value to the data array.\n   */\n  addNewValue() {\n    if (!this.data[this.component.key]) {\n      this.data[this.component.key] = [];\n    }\n    if (!_isArray(this.data[this.component.key])) {\n      this.data[this.component.key] = [this.data[this.component.key]];\n    }\n    this.data[this.component.key].push(this.defaultValue);\n  }\n\n  /**\n   * Adds a new empty value to the data array, and add a new row to contain it.\n   */\n  addValue() {\n    this.addNewValue();\n    this.buildRows();\n  }\n\n  /**\n   * Removes a value out of the data array and rebuild the rows.\n   * @param {number} index - The index of the data element to remove.\n   */\n  removeValue(index) {\n    if (this.data.hasOwnProperty(this.component.key)) {\n      this.data[this.component.key].splice(index, 1);\n    }\n    this.buildRows();\n  }\n\n  /**\n   * Rebuild the rows to contain the values of this component.\n   */\n  buildRows() {\n    if (!this.tbody) {\n      return;\n    }\n    this.inputs = [];\n    this.tbody.innerHTML = '';\n    _each(this.data[this.component.key], (value, index) => {\n      let tr = this.ce('row', 'tr');\n      let td = this.ce('column', 'td');\n      this.createInput(td);\n      tr.appendChild(td);\n      let tdAdd = this.ce('columnAdd', 'td');\n      tdAdd.appendChild(this.removeButton(index));\n      tr.appendChild(tdAdd);\n      this.tbody.appendChild(tr);\n    });\n\n    let tr = this.ce('rowAdd', 'tr');\n    let td = this.ce('addRowColumn', 'td', {\n      colspan: '2'\n    });\n    td.appendChild(this.addButton());\n    tr.appendChild(td);\n    this.tbody.appendChild(tr);\n    if (this.options.readOnly) {\n      this.disable = true;\n    }\n  }\n\n  /**\n   * Adds a new button to add new rows to the multiple input elements.\n   * @returns {HTMLElement} - The \"Add New\" button html element.\n   */\n  addButton() {\n    let addButton = this.ce('addButton', 'a', {\n      class: 'btn btn-primary'\n    });\n    this.addEventListener(addButton, 'click', (event) => {\n      event.preventDefault();\n      this.addValue();\n    });\n\n    let addIcon = this.ce('addIcon', 'span', {\n      class: 'glyphicon glyphicon-plus'\n    });\n    addButton.appendChild(addIcon);\n    addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));\n    return addButton;\n  }\n\n  /**\n   * The readible name for this component.\n   * @returns {string} - The name of the component.\n   */\n  get name() {\n    return this.component.label || this.component.placeholder || this.component.key;\n  }\n\n  /**\n   * Creates a new \"remove\" row button and returns the html element of that button.\n   * @param {number} index - The index of the row that should be removed.\n   * @returns {HTMLElement} - The html element of the remove button.\n   */\n  removeButton(index) {\n    let removeButton = this.ce('removeButton', 'button', {\n      type: 'button',\n      class: 'btn btn-default',\n      tabindex: '-1'\n    });\n\n    this.addEventListener(removeButton, 'click', (event) => {\n      event.preventDefault();\n      this.removeValue(index);\n    });\n\n    let removeIcon = this.ce('removeIcon', 'span', {\n      class: 'glyphicon glyphicon-remove-circle'\n    });\n    removeButton.appendChild(removeIcon);\n    return removeButton;\n  }\n\n  /**\n   * Create the HTML element for the label of this comonent.\n   * @param {HTMLElement} container - The containing element that will comtain this label.\n   */\n  createLabel(container) {\n    if (!this.component.label || this.options.inputsOnly) {\n      return;\n    }\n    this.label = this.ce('label', 'label', {\n      class: 'control-label'\n    });\n    if (this.info.attr.id) {\n      this.label.setAttribute('for', this.info.attr.id);\n    }\n    this.label.appendChild(this.text(this.component.label));\n    container.appendChild(this.label);\n  }\n\n  /**\n   * Creates a new error element to hold the errors of this element.\n   */\n  createErrorElement() {\n    if (!this.errorContainer) {\n      return;\n    }\n    this.errorElement = this.ce('errors', 'div', {\n      class: 'formio-errors'\n    });\n    this.errorContainer.appendChild(this.errorElement);\n  }\n\n  /**\n   * Adds a prefix html element.\n   *\n   * @param {HTMLElement} input - The input element.\n   * @param {HTMLElement} inputGroup - The group that will hold this prefix.\n   * @returns {HTMLElement} - The html element for this prefix.\n   */\n  addPrefix(input, inputGroup) {\n    let prefix = null;\n    if (this.component.prefix) {\n      prefix = this.ce('prefix', 'div', {\n        class: 'input-group-addon'\n      });\n      prefix.appendChild(this.text(this.component.prefix));\n      inputGroup.appendChild(prefix);\n    }\n    return prefix;\n  }\n\n  /**\n   * Adds a suffix html element.\n   *\n   * @param {HTMLElement} input - The input element.\n   * @param {HTMLElement} inputGroup - The group that will hold this suffix.\n   * @returns {HTMLElement} - The html element for this suffix.\n   */\n  addSuffix(input, inputGroup) {\n    let suffix = null;\n    if (this.component.suffix) {\n      suffix = this.ce('suffix', 'div', {\n        class: 'input-group-addon'\n      });\n      suffix.appendChild(this.text(this.component.suffix));\n      inputGroup.appendChild(suffix);\n    }\n    return suffix;\n  }\n\n  /**\n   * Adds a new input group to hold the input html elements.\n   *\n   * @param {HTMLElement} input - The input html element.\n   * @param {HTMLElement} container - The containing html element for this group.\n   * @returns {HTMLElement} - The input group element.\n   */\n  addInputGroup(input, container) {\n    let inputGroup = null;\n    if (this.component.prefix || this.component.suffix) {\n      inputGroup = this.ce('inputGroup', 'div', {\n        class: 'input-group'\n      });\n      container.appendChild(inputGroup);\n    }\n    return inputGroup;\n  }\n\n  /**\n   * Returns an input mask that is compatible with the input mask library.\n   * @param {string} mask - The Form.io input mask.\n   * @returns {Array} - The input mask for the mask library.\n   */\n  getInputMask(mask) {\n    if (mask instanceof Array) {\n      return mask;\n    }\n    let maskArray = [];\n    for (let i=0; i < mask.length; i++) {\n      switch (mask[i]) {\n        case '9':\n          maskArray.push(/\\d/);\n          break;\n        case 'A':\n          maskArray.push(/[a-zA-Z]/);\n          break;\n        case '*':\n          maskArray.push(/[a-zA-Z0-9]/);\n          break;\n        default:\n          maskArray.push(mask[i]);\n          break;\n      }\n    }\n    return maskArray;\n  }\n\n  /**\n   * Creates a new input mask placeholder.\n   * @param {HTMLElement} mask - The input mask.\n   * @returns {string} - The placeholder that will exist within the input as they type.\n   */\n  maskPlaceholder(mask) {\n    return mask.map((char) => {\n      return (char instanceof RegExp) ? '_' : char\n    }).join('')\n  }\n\n  /**\n   * Sets the input mask for an input.\n   * @param {HTMLElement} input - The html input to apply the mask to.\n   */\n  setInputMask(input) {\n    if (input && this.component.inputMask) {\n      let mask = this.getInputMask(this.component.inputMask);\n      this.inputMask = maskInput({\n        inputElement: input,\n        mask: mask\n      });\n      if (!this.component.placeholder) {\n        input.setAttribute('placeholder', this.maskPlaceholder(mask));\n      }\n    }\n  }\n\n  /**\n   * Creates a new input element.\n   * @param {HTMLElement} container - The container which should hold this new input element.\n   * @returns {HTMLElement} - Either the input or the group that contains the input.\n   */\n  createInput(container) {\n    let input = this.ce('input', this.info.type, this.info.attr);\n    this.setInputMask(input);\n    let inputGroup = this.addInputGroup(input, container);\n    this.addPrefix(input, inputGroup);\n    this.addInput(input, inputGroup || container);\n    this.addSuffix(input, inputGroup);\n    this.errorContainer = container;\n    return inputGroup || input;\n  }\n\n  /**\n   * Wrapper method to add an event listener to an HTML element.\n   *\n   * @param obj\n   *   The DOM element to add the event to.\n   * @param evt\n   *   The event name to add.\n   * @param func\n   *   The callback function to be executed when the listener is triggered.\n   */\n  addEventListener(obj, evt, func) {\n    this.eventHandlers.push({type: evt, func: func});\n    if ('addEventListener' in obj){\n      obj.addEventListener(evt, func, false);\n    } else if ('attachEvent' in obj) {\n      obj.attachEvent('on'+evt, func);\n    }\n  }\n\n  /**\n   * Remove all event handlers.\n   */\n  destroy(all) {\n    if (this.inputMask) {\n      this.inputMask.destroy();\n    }\n    _each(this.eventListeners, (listener) => {\n      if (all || listener.internal) {\n        this.events.off(listener.type, listener.listener);\n      }\n    });\n    _each(this.eventHandlers, (handler) => {\n      window.removeEventListener(handler.event, handler.func);\n    });\n  }\n\n  /**\n   * Alias for document.createElement.\n   *\n   * @param {string} name - The name of the element to create, for templating purposes.\n   * @param {string} type - The type of element to create\n   * @param {Object} attr - The element attributes to add to the created element.\n   *\n   * @return {HTMLElement} - The created element.\n   */\n  ce(name, type, attr) {\n    // Allow for template overrides.\n    let element = document.createElement(type);\n    let compType = this.component.type || this.type;\n    if (\n      this.options &&\n      this.options.template &&\n      (\n        (this.options.template[compType] && this.options.template[compType][name]) ||\n        (this.options.template.global && this.options.template.global[name])\n      )\n    ) {\n      let template = _get(this.options, 'template.' + compType + '.' + name) || _get(this.options, 'template.global.' + name);\n      if (typeof template === 'function') {\n        let returnElement = template(this, type, attr, element);\n        if (returnElement) {\n          return returnElement;\n        }\n      }\n      else {\n        // Assign the attributes.\n        _assign(attr, template);\n      }\n    }\n    if (attr) {\n      this.attr(element, attr);\n    }\n    return element;\n  }\n\n  /**\n   * Alias to create a text node.\n   * @param text\n   * @returns {Text}\n   */\n  text(text) {\n    return document.createTextNode(text);\n  }\n\n  /**\n   * Adds an object of attributes onto an element.\n   * @param {HtmlElement} element - The element to add the attributes to.\n   * @param {Object} attr - The attributes to add to the input element.\n   */\n  attr(element, attr) {\n    _each(attr, function (value, key) {\n      if (typeof value !== 'undefined') {\n        element.setAttribute(key, value);\n      }\n    });\n  }\n\n  /**\n   * Adds a class to a DOM element.\n   *\n   * @param element\n   *   The element to add a class to.\n   * @param className\n   *   The name of the class to add.\n   */\n  addClass(element, className) {\n    var cls = element.getAttribute('class');\n    cls += (' ' + className);\n    element.setAttribute('class', cls);\n  }\n\n  /**\n   * Remove a class from a DOM element.\n   *\n   * @param element\n   *   The DOM element to remove the class from.\n   * @param className\n   *   The name of the class that is to be removed.\n   */\n  removeClass(element, className) {\n    var cls = element.getAttribute('class');\n    cls = cls.replace(className, '');\n    element.setAttribute('class', cls);\n  }\n\n  /**\n   * Check for conditionals and hide/show the element based on those conditions.\n   */\n  checkConditions(data) {\n    this.show(FormioUtils.checkCondition(this.component, this.data, data));\n  }\n\n  /**\n   * Add a new input error to this element.\n   * @param message\n   */\n  addInputError(message) {\n    if (this.errorElement) {\n      let errorMessage = this.ce('errorMessage', 'p', {\n        class: 'help-block'\n      });\n      errorMessage.appendChild(this.text(message));\n      this.errorElement.appendChild(errorMessage);\n      this.addClass(this.element, 'has-error');\n    }\n  }\n\n  /**\n   * Hide or Show an element.\n   *\n   * @param show\n   */\n  show(show) {\n    if (this.element) {\n      if (show) {\n        this.element.removeAttribute('hidden');\n        this.element.style.visibility = \"visible\";\n      }\n      else {\n        this.element.setAttribute('hidden', true);\n        this.element.style.visibility = \"hidden\";\n      }\n    }\n  }\n\n  onChange(noValidate) {\n    if (!noValidate) {\n      this.pristine = false;\n    }\n    if (this.events) {\n      this.emit('componentChange', {\n        component: this.component,\n        value: this.value,\n        validate: !noValidate\n      });\n    }\n  }\n\n  /**\n   * Add new input element listeners.\n   *\n   * @param input\n   */\n  addInputEventListener(input) {\n    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());\n  }\n\n  /**\n   * Add a new input to this comonent.\n   *\n   * @param input\n   * @param container\n   * @param name\n   */\n  addInput(input, container, noSet) {\n    if (input && container) {\n      this.inputs.push(input);\n      input = container.appendChild(input);\n    }\n    this.addInputEventListener(input);\n\n    // Reset the values of the inputs.\n    if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {\n      this.setValue(this.data[this.component.key], true);\n    }\n  }\n\n  /**\n   * Get the value at a specific index.\n   *\n   * @param index\n   * @returns {*}\n   */\n  getValueAt(index) {\n    return this.inputs[index].value;\n  }\n\n  getValue() {\n    if (!this.component.input) {\n      return;\n    }\n    let values = [];\n    for (let i in this.inputs) {\n      if (!this.component.multiple) {\n        this.value = this.getValueAt(i);\n        return this.value;\n      }\n      values.push(this.getValueAt(i));\n    }\n    this.value = values;\n    return values;\n  }\n\n  updateValue(noValidate) {\n    let value = this.data[this.component.key];\n    let falsey = !value && (value !== null) && (value !== undefined);\n    this.data[this.component.key] = this.getValue();\n    if (falsey) {\n      if (!!this.data[this.component.key]) {\n        this.triggerChange(noValidate);\n      }\n    }\n    else {\n      this.triggerChange(noValidate);\n    }\n  }\n\n  /**\n   * Perform a calculated value operation.\n   *\n   * @param data - The global data object.\n   */\n  calculateValue(data) {\n    if (!this.component.calculateValue) {\n      return;\n    }\n\n    // If this is a string, then use eval to evalulate it.\n    if (typeof this.component.calculateValue === 'string') {\n      try {\n        let row = this.data;\n        let val = eval('var value = [];' + this.component.calculateValue.toString() + '; return value;');\n        this.setValue(val);\n      }\n      catch (e) {\n        /* eslint-disable no-console */\n        console.warn('An error occurred calculating a value for ' + this.component.key, e);\n        /* eslint-enable no-console */\n      }\n    }\n    else {\n      try {\n        let val = jsonLogic.apply(this.component.calculateValue, {\n          data: data,\n          row: this.data\n        });\n        this.setValue(val);\n      }\n      catch (err) {\n        /* eslint-disable no-console */\n        console.warn('An error occurred calculating a value for ' + this.component.key, e);\n        /* eslint-enable no-console */\n      }\n    }\n  }\n\n  checkValidity(data, dirty) {\n    // No need to check for errors if there is no input or if it is pristine.\n    if (!this.component.input || (!dirty && this.pristine)) {\n      return true;\n    }\n\n    let message = Validator.check(\n      this.validators,\n      this.component,\n      this.getValidateValue(),\n      data || this.data,\n      this.data,\n      this.t.bind(this)\n    );\n    this.setCustomValidity(message);\n\n    // No message, returns true\n    return message ? false : true;\n  }\n\n  getValidateValue() {\n    return this.data[this.component.key];\n  }\n\n  get errors() {\n    return this.error ? [this.error] : [];\n  }\n\n  interpolate(string, data) {\n    return FormioUtils.interpolate(string, data);\n  }\n\n  setCustomValidity(message) {\n    if (this.errorElement && this.errorContainer) {\n      this.errorElement.innerHTML = '';\n      try {\n        this.errorContainer.removeChild(this.errorElement);\n      }\n      catch (err) {}\n    }\n    this.removeClass(this.element, 'has-error');\n    if (message) {\n      this.error = {\n        component: this.component,\n        message: message\n      };\n      this.emit('componentError', this.error);\n      this.createErrorElement();\n      this.addInputError(message);\n    }\n    else {\n      this.error = null;\n    }\n    _each(this.inputs, (input) => {\n      if (typeof input.setCustomValidity === 'function') {\n        input.setCustomValidity(message);\n      }\n    });\n  }\n\n  /**\n   * Set the value at a specific index.\n   *\n   * @param index\n   * @param value\n   */\n  setValueAt(index, value) {\n    if (value === null || value === undefined) {\n      value = this.defaultValue;\n    }\n    this.inputs[index].value = value;\n  }\n\n  /**\n   * Set the value of this component.\n   * @param value\n   */\n  setValue(value, noUpdate, noValidate) {\n    if (!this.component.input) {\n      return;\n    }\n    this.value = value;\n    let isArray = _isArray(value);\n    for (let i in this.inputs) {\n      this.setValueAt(i, isArray ? value[i] : value);\n    }\n    if (!noUpdate) {\n      this.updateValue(noValidate);\n    }\n  }\n\n  set visible(visible) {\n    let element = this.getElement();\n    if (element) {\n      if (visible && this.styles) {\n        element.style.visibility = this.styles.visibility;\n        element.style.position = this.styles.position;\n      }\n      else if (!visible) {\n        this.styles = {\n          visibility: element.style.visibility,\n          position: element.style.position\n        };\n        element.style.visibility = 'hidden';\n        element.style.position = 'absolute';\n      }\n    }\n  }\n\n  /**\n   * Return if the component is disabled.\n   * @return {boolean|*}\n   */\n  get disabled() {\n    return this._disabled;\n  }\n\n  /**\n   * Disable this component.\n   */\n  set disable(disable) {\n    this._disabled = disable;\n    // Disable all input.\n    _each(this.inputs, (input) => {\n      input.disabled = disable;\n      input.setAttribute('disabled', 'disabled');\n    });\n  }\n\n  selectOptions(select, tag, options, defaultValue) {\n    _each(options, (option) => {\n      let attrs = {\n        value: option.value\n      };\n      if (defaultValue !== undefined && (option.value === defaultValue)) {\n        attrs.selected = 'selected';\n      }\n      let optionElement = this.ce(tag, 'option', attrs);\n      optionElement.appendChild(this.text(option.label));\n      select.appendChild(optionElement);\n    });\n  }\n\n  setSelectValue(select, value) {\n    let options = select.querySelectorAll('option');\n    _each(options, (option) => {\n      if (option.value === value) {\n        option.setAttribute('selected', 'selected');\n      }\n      else {\n        option.removeAttribute('selected');\n      }\n    });\n    if (select.onchange) {\n      select.onchange();\n    }\n    if (select.onselect) {\n      select.onchange();\n    }\n  }\n\n  clear() {\n    this.destroy();\n    let element = this.getElement();\n    if (element) {\n      element.innerHTML = '';\n    }\n  }\n\n  append(element) {\n    if (this.element) {\n      this.element.appendChild(element);\n    }\n  }\n\n  prepend(element) {\n    if (this.element) {\n      this.element.insertBefore(element, this.element.firstChild);\n    }\n  }\n\n  before(element) {\n    if (this.element) {\n      this.element.parentNode.insertBefore(element, this.element);\n    }\n  }\n\n  remove(element) {\n    if (this.element) {\n      this.element.parentNode.removeChild(element);\n    }\n  }\n\n  removeChild(element) {\n    if (this.element) {\n      this.element.removeChild(element);\n    }\n  }\n\n  /**\n   * Get the element information.\n   */\n  elementInfo() {\n    let attributes = {\n      name: this.options.name,\n      type: this.component.inputType || 'text',\n      class: 'form-control'\n    };\n    _each({\n      tabindex: 'tabindex',\n      placeholder: 'placeholder'\n    }, (path, prop) => {\n      let attrValue = _get(this.component, path);\n      if (attrValue) {\n        attributes[prop] = attrValue;\n      }\n    });\n    return {\n      type: 'input',\n      component: this.component,\n      changeEvent: 'change',\n      attr: attributes\n    };\n  }\n}\n\nBaseComponent.externalLibraries = {};\nBaseComponent.requireLibrary = function(name, property, src, polling) {\n  if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {\n    BaseComponent.externalLibraries[name] = {};\n    BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {\n      BaseComponent.externalLibraries[name].resolve = resolve;\n      BaseComponent.externalLibraries[name].reject = reject;\n    });\n\n    if (!polling && !window[name + 'Callback']) {\n      window[name + 'Callback'] = function() {\n        this.resolve();\n      }.bind(BaseComponent.externalLibraries[name]);\n    }\n\n    // See if the plugin already exists.\n    let plugin = _get(window, property);\n    if (plugin) {\n      BaseComponent.externalLibraries[name].resolve(plugin);\n    }\n    else {\n      // Add the script to the top page.\n      let script = document.createElement('script');\n      script.setAttribute('src', src);\n      script.setAttribute('type', 'text/javascript');\n      script.setAttribute('defer', true);\n      script.setAttribute('async', true);\n      document.getElementsByTagName('head')[0].appendChild(script);\n\n      // if no callback is provided, then check periodically for the script.\n      if (polling) {\n        setTimeout(function checkLibrary() {\n          let plugin = _get(window, property);\n          if (plugin) {\n            BaseComponent.externalLibraries[name].resolve(plugin);\n          }\n          else {\n            // check again after 200 ms.\n            setTimeout(checkLibrary, 200);\n          }\n        }, 200)\n      }\n    }\n  }\n  return BaseComponent.externalLibraries[name].ready;\n};\n\nBaseComponent.libraryReady = function(name) {\n  if (\n    BaseComponent.externalLibraries.hasOwnProperty(name) &&\n    BaseComponent.externalLibraries[name].ready\n  ) {\n    return BaseComponent.externalLibraries[name].ready;\n  }\n\n  return Promise.reject(name + ' library was not required.');\n};\n",
     "static": true,
     "longname": "src/components/base/Base.js",
     "access": null,
@@ -2748,7 +2748,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addNewValue",
     "access": null,
     "description": "Adds a new empty value to the data array.",
-    "lineNumber": 388,
+    "lineNumber": 389,
     "params": []
   },
   {
@@ -2762,7 +2762,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addValue",
     "access": null,
     "description": "Adds a new empty value to the data array, and add a new row to contain it.",
-    "lineNumber": 401,
+    "lineNumber": 402,
     "params": []
   },
   {
@@ -2776,7 +2776,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#removeValue",
     "access": null,
     "description": "Removes a value out of the data array and rebuild the rows.",
-    "lineNumber": 410,
+    "lineNumber": 411,
     "params": [
       {
         "nullable": null,
@@ -2801,7 +2801,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#buildRows",
     "access": null,
     "description": "Rebuild the rows to contain the values of this component.",
-    "lineNumber": 420,
+    "lineNumber": 421,
     "params": []
   },
   {
@@ -2813,7 +2813,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#inputs",
     "access": null,
     "description": null,
-    "lineNumber": 424,
+    "lineNumber": 425,
     "undocument": true,
     "unknown": [
       {
@@ -2836,7 +2836,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#disable",
     "access": null,
     "description": null,
-    "lineNumber": 445,
+    "lineNumber": 446,
     "undocument": true,
     "unknown": [
       {
@@ -2861,7 +2861,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addButton",
     "access": null,
     "description": "Adds a new button to add new rows to the multiple input elements.",
-    "lineNumber": 453,
+    "lineNumber": 454,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2889,7 +2889,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#name",
     "access": null,
     "description": "The readible name for this component.",
-    "lineNumber": 474,
+    "lineNumber": 475,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2921,7 +2921,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#removeButton",
     "access": null,
     "description": "Creates a new \"remove\" row button and returns the html element of that button.",
-    "lineNumber": 483,
+    "lineNumber": 484,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2960,7 +2960,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#createLabel",
     "access": null,
     "description": "Create the HTML element for the label of this comonent.",
-    "lineNumber": 506,
+    "lineNumber": 507,
     "params": [
       {
         "nullable": null,
@@ -2983,7 +2983,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#label",
     "access": null,
     "description": null,
-    "lineNumber": 510,
+    "lineNumber": 511,
     "undocument": true,
     "unknown": [
       {
@@ -3008,7 +3008,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#createErrorElement",
     "access": null,
     "description": "Creates a new error element to hold the errors of this element.",
-    "lineNumber": 523,
+    "lineNumber": 524,
     "params": []
   },
   {
@@ -3020,7 +3020,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#errorElement",
     "access": null,
     "description": null,
-    "lineNumber": 527,
+    "lineNumber": 528,
     "undocument": true,
     "unknown": [
       {
@@ -3045,7 +3045,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addPrefix",
     "access": null,
     "description": "Adds a prefix html element.",
-    "lineNumber": 540,
+    "lineNumber": 541,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3094,7 +3094,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addSuffix",
     "access": null,
     "description": "Adds a suffix html element.",
-    "lineNumber": 559,
+    "lineNumber": 560,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3143,7 +3143,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addInputGroup",
     "access": null,
     "description": "Adds a new input group to hold the input html elements.",
-    "lineNumber": 578,
+    "lineNumber": 579,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3192,7 +3192,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#getInputMask",
     "access": null,
     "description": "Returns an input mask that is compatible with the input mask library.",
-    "lineNumber": 594,
+    "lineNumber": 595,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3231,7 +3231,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#maskPlaceholder",
     "access": null,
     "description": "Creates a new input mask placeholder.",
-    "lineNumber": 623,
+    "lineNumber": 624,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3270,7 +3270,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#setInputMask",
     "access": null,
     "description": "Sets the input mask for an input.",
-    "lineNumber": 633,
+    "lineNumber": 634,
     "params": [
       {
         "nullable": null,
@@ -3293,7 +3293,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#inputMask",
     "access": null,
     "description": null,
-    "lineNumber": 636,
+    "lineNumber": 637,
     "undocument": true,
     "unknown": [
       {
@@ -3318,7 +3318,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#createInput",
     "access": null,
     "description": "Creates a new input element.",
-    "lineNumber": 651,
+    "lineNumber": 652,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3355,7 +3355,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#errorContainer",
     "access": null,
     "description": null,
-    "lineNumber": 658,
+    "lineNumber": 659,
     "undocument": true,
     "unknown": [
       {
@@ -3380,7 +3380,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addEventListener",
     "access": null,
     "description": "Wrapper method to add an event listener to an HTML element.",
-    "lineNumber": 672,
+    "lineNumber": 673,
     "params": [
       {
         "nullable": null,
@@ -3425,7 +3425,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#destroy",
     "access": null,
     "description": "Remove all event handlers.",
-    "lineNumber": 684,
+    "lineNumber": 685,
     "params": [
       {
         "name": "all",
@@ -3446,7 +3446,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#ce",
     "access": null,
     "description": "Alias for document.createElement.",
-    "lineNumber": 707,
+    "lineNumber": 708,
     "params": [
       {
         "nullable": null,
@@ -3499,7 +3499,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#text",
     "access": null,
     "description": "Alias to create a text node.",
-    "lineNumber": 742,
+    "lineNumber": 743,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3538,7 +3538,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#attr",
     "access": null,
     "description": "Adds an object of attributes onto an element.",
-    "lineNumber": 751,
+    "lineNumber": 752,
     "params": [
       {
         "nullable": null,
@@ -3573,7 +3573,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addClass",
     "access": null,
     "description": "Adds a class to a DOM element.",
-    "lineNumber": 767,
+    "lineNumber": 768,
     "params": [
       {
         "nullable": null,
@@ -3608,7 +3608,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#removeClass",
     "access": null,
     "description": "Remove a class from a DOM element.",
-    "lineNumber": 781,
+    "lineNumber": 782,
     "params": [
       {
         "nullable": null,
@@ -3643,7 +3643,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#checkConditions",
     "access": null,
     "description": "Check for conditionals and hide/show the element based on those conditions.",
-    "lineNumber": 790,
+    "lineNumber": 791,
     "params": [
       {
         "name": "data",
@@ -3664,7 +3664,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addInputError",
     "access": null,
     "description": "Add a new input error to this element.",
-    "lineNumber": 798,
+    "lineNumber": 799,
     "params": [
       {
         "nullable": null,
@@ -3689,7 +3689,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#show",
     "access": null,
     "description": "Hide or Show an element.",
-    "lineNumber": 814,
+    "lineNumber": 815,
     "params": [
       {
         "nullable": null,
@@ -3714,7 +3714,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#onChange",
     "access": null,
     "description": null,
-    "lineNumber": 827,
+    "lineNumber": 828,
     "undocument": true,
     "unknown": [
       {
@@ -3740,7 +3740,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#pristine",
     "access": null,
     "description": null,
-    "lineNumber": 829,
+    "lineNumber": 830,
     "undocument": true,
     "unknown": [
       {
@@ -3765,7 +3765,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addInputEventListener",
     "access": null,
     "description": "Add new input element listeners.",
-    "lineNumber": 845,
+    "lineNumber": 846,
     "params": [
       {
         "nullable": null,
@@ -3790,7 +3790,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#addInput",
     "access": null,
     "description": "Add a new input to this comonent.",
-    "lineNumber": 856,
+    "lineNumber": 857,
     "params": [
       {
         "nullable": null,
@@ -3835,7 +3835,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#getValueAt",
     "access": null,
     "description": "Get the value at a specific index.",
-    "lineNumber": 875,
+    "lineNumber": 876,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3874,7 +3874,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#getValue",
     "access": null,
     "description": null,
-    "lineNumber": 879,
+    "lineNumber": 880,
     "undocument": true,
     "unknown": [
       {
@@ -3898,7 +3898,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#value",
     "access": null,
     "description": null,
-    "lineNumber": 886,
+    "lineNumber": 887,
     "undocument": true,
     "unknown": [
       {
@@ -3921,7 +3921,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#value",
     "access": null,
     "description": null,
-    "lineNumber": 891,
+    "lineNumber": 892,
     "undocument": true,
     "unknown": [
       {
@@ -3946,7 +3946,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#updateValue",
     "access": null,
     "description": null,
-    "lineNumber": 895,
+    "lineNumber": 896,
     "undocument": true,
     "unknown": [
       {
@@ -3974,7 +3974,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#calculateValue",
     "access": null,
     "description": "Perform a calculated value operation.",
-    "lineNumber": 914,
+    "lineNumber": 915,
     "params": [
       {
         "nullable": null,
@@ -3999,7 +3999,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#checkValidity",
     "access": null,
     "description": null,
-    "lineNumber": 948,
+    "lineNumber": 949,
     "undocument": true,
     "unknown": [
       {
@@ -4038,7 +4038,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#getValidateValue",
     "access": null,
     "description": null,
-    "lineNumber": 968,
+    "lineNumber": 969,
     "undocument": true,
     "unknown": [
       {
@@ -4064,7 +4064,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#errors",
     "access": null,
     "description": null,
-    "lineNumber": 972,
+    "lineNumber": 973,
     "undocument": true,
     "unknown": [
       {
@@ -4089,7 +4089,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#interpolate",
     "access": null,
     "description": null,
-    "lineNumber": 976,
+    "lineNumber": 977,
     "undocument": true,
     "unknown": [
       {
@@ -4128,7 +4128,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#setCustomValidity",
     "access": null,
     "description": null,
-    "lineNumber": 980,
+    "lineNumber": 981,
     "undocument": true,
     "unknown": [
       {
@@ -4154,7 +4154,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#error",
     "access": null,
     "description": null,
-    "lineNumber": 990,
+    "lineNumber": 991,
     "undocument": true,
     "unknown": [
       {
@@ -4177,7 +4177,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#error",
     "access": null,
     "description": null,
-    "lineNumber": 999,
+    "lineNumber": 1000,
     "undocument": true,
     "unknown": [
       {
@@ -4202,7 +4202,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#setValueAt",
     "access": null,
     "description": "Set the value at a specific index.",
-    "lineNumber": 1014,
+    "lineNumber": 1015,
     "params": [
       {
         "nullable": null,
@@ -4237,7 +4237,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#setValue",
     "access": null,
     "description": "Set the value of this component.",
-    "lineNumber": 1025,
+    "lineNumber": 1026,
     "params": [
       {
         "nullable": null,
@@ -4260,7 +4260,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#value",
     "access": null,
     "description": null,
-    "lineNumber": 1029,
+    "lineNumber": 1030,
     "undocument": true,
     "unknown": [
       {
@@ -4285,7 +4285,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#visible",
     "access": null,
     "description": null,
-    "lineNumber": 1039,
+    "lineNumber": 1040,
     "undocument": true,
     "unknown": [
       {
@@ -4308,7 +4308,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#styles",
     "access": null,
     "description": null,
-    "lineNumber": 1047,
+    "lineNumber": 1048,
     "undocument": true,
     "unknown": [
       {
@@ -4333,7 +4333,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#disabled",
     "access": null,
     "description": "Return if the component is disabled.",
-    "lineNumber": 1061,
+    "lineNumber": 1062,
     "return": {
       "nullable": null,
       "types": [
@@ -4360,7 +4360,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#disable",
     "access": null,
     "description": "Disable this component.",
-    "lineNumber": 1068,
+    "lineNumber": 1069,
     "type": {
       "types": [
         "*"
@@ -4376,7 +4376,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#_disabled",
     "access": null,
     "description": null,
-    "lineNumber": 1069,
+    "lineNumber": 1070,
     "undocument": true,
     "unknown": [
       {
@@ -4401,7 +4401,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#selectOptions",
     "access": null,
     "description": null,
-    "lineNumber": 1077,
+    "lineNumber": 1078,
     "undocument": true,
     "unknown": [
       {
@@ -4447,7 +4447,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#setSelectValue",
     "access": null,
     "description": null,
-    "lineNumber": 1091,
+    "lineNumber": 1092,
     "undocument": true,
     "unknown": [
       {
@@ -4481,7 +4481,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#clear",
     "access": null,
     "description": null,
-    "lineNumber": 1109,
+    "lineNumber": 1110,
     "undocument": true,
     "unknown": [
       {
@@ -4502,7 +4502,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#append",
     "access": null,
     "description": null,
-    "lineNumber": 1117,
+    "lineNumber": 1118,
     "undocument": true,
     "unknown": [
       {
@@ -4530,7 +4530,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#prepend",
     "access": null,
     "description": null,
-    "lineNumber": 1123,
+    "lineNumber": 1124,
     "undocument": true,
     "unknown": [
       {
@@ -4558,7 +4558,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#before",
     "access": null,
     "description": null,
-    "lineNumber": 1129,
+    "lineNumber": 1130,
     "undocument": true,
     "unknown": [
       {
@@ -4586,7 +4586,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#remove",
     "access": null,
     "description": null,
-    "lineNumber": 1135,
+    "lineNumber": 1136,
     "undocument": true,
     "unknown": [
       {
@@ -4614,7 +4614,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#removeChild",
     "access": null,
     "description": null,
-    "lineNumber": 1141,
+    "lineNumber": 1142,
     "undocument": true,
     "unknown": [
       {
@@ -4642,7 +4642,7 @@
     "longname": "src/components/base/Base.js~BaseComponent#elementInfo",
     "access": null,
     "description": "Get the element information.",
-    "lineNumber": 1150,
+    "lineNumber": 1151,
     "params": [],
     "return": {
       "types": [
@@ -4664,7 +4664,7 @@
     "importPath": "formiojs/src/components/base/Base.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 1175,
+    "lineNumber": 1176,
     "undocument": true,
     "unknown": [
       {
@@ -4718,7 +4718,7 @@
     "importPath": "formiojs/src/components/base/Base.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 1221,
+    "lineNumber": 1222,
     "undocument": true,
     "unknown": [
       {
