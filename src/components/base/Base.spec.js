@@ -74,6 +74,10 @@ describe('Base Component', function() {
     }, done));
   });
 
+  it('Should provide json validation', function(done) {
+    done();
+  });
+
   it('Should allow for multiple values', (done) => {
     Harness.testCreate(BaseComponent, comps.comp2).then((component) => {
       Harness.testElements(component, 'table', 1);

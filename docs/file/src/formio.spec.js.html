@@ -161,8 +161,8 @@ var runTests = function(cb, options) {
   if (!noBefore) {
     beforeEach(() =&gt; {
       Formio.setBaseUrl(baseUrl);
-      Formio.appUrlSet = false;
-      Formio.appUrl = &apos;https://api.form.io&apos;;
+      Formio.projectUrlSet = false;
+      Formio.projectUrl = &apos;https://api.form.io&apos;;
     });
   }
   _each(tests, function(test, path) {
@@ -574,8 +574,8 @@ describe(&apos;Simple Form Constructor Tests&apos;, () =&gt; {
   runTests((tests) =&gt; {
     tests[&apos;init&apos;] = () =&gt; {
       Formio.setBaseUrl(&apos;https://api.form.io&apos;);
-      Formio.appUrlSet = false;
-      Formio.appUrl = &apos;https://api.form.io&apos;;
+      Formio.projectUrlSet = false;
+      Formio.projectUrl = &apos;https://api.form.io&apos;;
     };
     tests[&apos;https://examples.form.io/example&apos;] = {
       projectUrl: &apos;https://examples.form.io&apos;,
@@ -1778,6 +1778,31 @@ describe(&apos;Test Formio.js capabilities&apos;, () =&gt; {
                 &apos;x-jwt-token&apos;: userToken
               },
               body: []
+            };
+          }
+        };
+      }
+    },
+    {
+      name: &apos;Temporary Token&apos;,
+      test: function() {
+        var formio = new Formio(&apos;/project/&apos; + project._id);
+        return formio.getTempToken(200, &apos;GET:/current&apos;).then(function(tempToken) {
+          assert.equal(tempToken, userToken);
+        });
+      },
+      mock: function() {
+        return {
+          url: Formio.getBaseUrl() + &apos;/project/&apos; + project._id + &apos;/token&apos;,
+          method: &apos;GET&apos;,
+          response: function() {
+            return {
+              status: 200,
+              body: userToken,
+              headers: {
+                &apos;Content-Type&apos;: &apos;text/plain; charset=utf-8&apos;,
+                &apos;x-jwt-token&apos;: userToken
+              }
             };
           }
         };

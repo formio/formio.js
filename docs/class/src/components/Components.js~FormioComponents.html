@@ -135,13 +135,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FormioComponents} from &apos;<span><a href="file/src/components/Components.js.html#lineNumber8">formiojs/src/components/Components.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FormioComponents} from &apos;<span><a href="file/src/components/Components.js.html#lineNumber7">formiojs/src/components/Components.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/components/Components.js.html#lineNumber8">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/components/Components.js.html#lineNumber7">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -395,13 +395,14 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-addComponent">addComponent</a></span></span><span data-ice="signature">(component: <span>*</span>, element: <span>*</span>, data: <span>*</span>): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-addComponent">addComponent</a></span></span><span data-ice="signature">(component: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, element: <span>HTMLElement</span>, data: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Add a new component to the components array.</p>
+</div>
       </div>
     </td>
     <td>
@@ -476,6 +477,33 @@
         <p>
           
           
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-calculateValue">calculateValue</a></span></span><span data-ice="signature">(data: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-checkConditions">checkConditions</a></span></span><span data-ice="signature">(data: <span>*</span>)</span>
         </p>
       </div>
@@ -503,7 +531,36 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-checkValidity">checkValidity</a></span></span><span data-ice="signature">(): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-checkData">checkData</a></span></span><span data-ice="signature">(data: <span>*</span>, noValidate: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>A more performant way to check the conditions, calculations, and validity of
+a submission once it has been changed.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-checkValidity">checkValidity</a></span></span><span data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -557,13 +614,14 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-eachComponent">eachComponent</a></span></span><span data-ice="signature">(cb: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-eachComponent">eachComponent</a></span></span><span data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Perform an iteration over each component within this container component.</p>
+</div>
       </div>
     </td>
     <td>
@@ -584,13 +642,15 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-everyComponent">everyComponent</a></span></span><span data-ice="signature">(cb: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-everyComponent">everyComponent</a></span></span><span data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Perform a deep iteration over every component, including those
+within other container based components.</p>
+</div>
       </div>
     </td>
     <td>
@@ -611,13 +671,14 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-getComponent">getComponent</a></span></span><span data-ice="signature">(key: <span>*</span>, cb: <span>*</span>): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-getComponent">getComponent</a></span></span><span data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Returns a component provided a key.</p>
+</div>
       </div>
     </td>
     <td>
@@ -638,13 +699,14 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-getComponentById">getComponentById</a></span></span><span data-ice="signature">(id: <span>*</span>, cb: <span>*</span>): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-getComponentById">getComponentById</a></span></span><span data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Return a component provided the Id of the component.</p>
+</div>
       </div>
     </td>
     <td>
@@ -719,13 +781,14 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponent">removeComponent</a></span></span><span data-ice="signature">(component: <span>*</span>, components: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponent">removeComponent</a></span></span><span data-ice="signature">(component: <span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span>, components: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span>&gt;)</span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Remove a component from the components array.</p>
+</div>
       </div>
     </td>
     <td>
@@ -746,13 +809,14 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponentById">removeComponentById</a></span></span><span data-ice="signature">(id: <span>*</span>, cb: <span>*</span>): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponentById">removeComponentById</a></span></span><span data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Removes a component provided the Id of the component.</p>
+</div>
       </div>
     </td>
     <td>
@@ -773,13 +837,14 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponentByKey">removeComponentByKey</a></span></span><span data-ice="signature">(key: <span>*</span>, cb: <span>*</span>): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponentByKey">removeComponentByKey</a></span></span><span data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Removes a component provided the API key of that component.</p>
+</div>
       </div>
     </td>
     <td>
@@ -828,6 +893,33 @@
           
           
           <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-setValue">setValue</a></span></span><span data-ice="signature">(value: <span>*</span>, noUpdate: <span>*</span>, noValidate: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-updateValue">updateValue</a></span></span><span data-ice="signature">(noValidate: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -1426,6 +1518,34 @@
         
         
         <div data-ice="description"><p>The options for this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-member-pristine">pristine</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>If this input has been input and provided value.</p>
 </div>
       </div>
     </td>
@@ -2059,6 +2179,34 @@
         <p>
           
           
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-calculateValue">calculateValue</a></span></span><span data-ice="signature">(data: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Perform a calculated value operation.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-ce">ce</a></span></span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, type: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, attr: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span>HTMLElement</span></span>
         </p>
       </div>
@@ -2115,7 +2263,7 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-checkValidity">checkValidity</a></span></span><span data-ice="signature">(): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-checkValidity">checkValidity</a></span></span><span data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -3173,7 +3321,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber9">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber8">source</a></span></span>
     </span>
   </h3>
 
@@ -3248,7 +3396,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber12">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber11">source</a></span></span>
     </span>
   </h3>
 
@@ -3291,7 +3439,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber142">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber226">source</a></span></span>
     </span>
   </h3>
 
@@ -3335,7 +3483,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber160">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber244">source</a></span></span>
     </span>
   </h3>
 
@@ -3378,7 +3526,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber13">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber12">source</a></span></span>
     </span>
   </h3>
 
@@ -3421,7 +3569,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber11">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber10">source</a></span></span>
     </span>
   </h3>
 
@@ -3464,7 +3612,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber179">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber263">source</a></span></span>
     </span>
   </h3>
 
@@ -3507,18 +3655,19 @@
     
     
     
-    <span data-ice="name">addComponent</span><span data-ice="signature">(component: <span>*</span>, element: <span>*</span>, data: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">addComponent</span><span data-ice="signature">(component: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, element: <span>HTMLElement</span>, data: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber70">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber103">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Add a new component to the components array.</p>
+</div>
 
   
 
@@ -3532,21 +3681,24 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">component</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The component JSON schema to add.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">element</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span>HTMLElement</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The DOM element to append this child to.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">data</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The submission data object to house the data for this component.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -3558,8 +3710,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type" data-ice="returnType"><span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>The created component instance.</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -3594,7 +3747,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber120">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber178">source</a></span></span>
     </span>
   </h3>
 
@@ -3659,7 +3812,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber16">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber15">source</a></span></span>
     </span>
   </h3>
 
@@ -3692,6 +3845,66 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-calculateValue">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">calculateValue</span><span data-ice="signature">(data: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber210">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Perform a calculated value operation.</p>
+</div>
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-calculateValue">BaseComponent#calculateValue</a></span></div>
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">data</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-checkConditions">
     <span class="access" data-ice="access">public</span>
     
@@ -3703,7 +3916,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber126">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber205">source</a></span></span>
     </span>
   </h3>
 
@@ -3752,6 +3965,73 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-checkData">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">checkData</span><span data-ice="signature">(data: <span>*</span>, noValidate: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber195">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>A more performant way to check the conditions, calculations, and validity of
+a submission once it has been changed.</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">data</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">noValidate</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-checkValidity">
     <span class="access" data-ice="access">public</span>
     
@@ -3759,11 +4039,11 @@
     
     
     
-    <span data-ice="name">checkValidity</span><span data-ice="signature">(): <span>*</span></span>
+    <span data-ice="name">checkValidity</span><span data-ice="signature">(data: <span>*</span>, dirty: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber131">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber215">source</a></span></span>
     </span>
   </h3>
 
@@ -3774,7 +4054,29 @@
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-checkValidity">BaseComponent#checkValidity</a></span></div>
 
-  <div data-ice="properties">
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">data</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">dirty</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
 </div>
 
   <div class="return-params" data-ice="returnParams">
@@ -3818,7 +4120,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber136">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber220">source</a></span></span>
     </span>
   </h3>
 
@@ -3874,18 +4176,19 @@
     
     
     
-    <span data-ice="name">eachComponent</span><span data-ice="signature">(cb: <span>*</span>)</span>
+    <span data-ice="name">eachComponent</span><span data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber34">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber44">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Perform an iteration over each component within this container component.</p>
+</div>
 
   
 
@@ -3899,9 +4202,10 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">cb</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>Called for each component</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -3933,18 +4237,20 @@
     
     
     
-    <span data-ice="name">everyComponent</span><span data-ice="signature">(cb: <span>*</span>)</span>
+    <span data-ice="name">everyComponent</span><span data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber21">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber26">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Perform a deep iteration over every component, including those
+within other container based components.</p>
+</div>
 
   
 
@@ -3958,9 +4264,10 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">cb</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>Called for every component.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -3992,18 +4299,20 @@
     
     
     
-    <span data-ice="name">getComponent</span><span data-ice="signature">(key: <span>*</span>, cb: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">getComponent</span><span data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber42">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber60">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Returns a component provided a key. This performs a deep search within the
+component tree.</p>
+</div>
 
   
 
@@ -4017,15 +4326,17 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">key</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The key of the component to retrieve.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">cb</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>Called with the component once found.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -4037,8 +4348,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>The component that is located.</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -4069,18 +4381,19 @@
     
     
     
-    <span data-ice="name">getComponentById</span><span data-ice="signature">(id: <span>*</span>, cb: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">getComponentById</span><span data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber56">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber81">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Return a component provided the Id of the component.</p>
+</div>
 
   
 
@@ -4094,15 +4407,17 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">id</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The Id of the component.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">cb</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>Called with the component once it is retrieved.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -4114,8 +4429,9 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type" data-ice="returnType"><span>*</span></td>
-          
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+          <td class="return-desc" data-ice="returnDescription"><p>The component retrieved.</p>
+</td>
         </tr>
       </tbody>
     </table>
@@ -4150,7 +4466,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber171">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber255">source</a></span></span>
     </span>
   </h3>
 
@@ -4205,7 +4521,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber155">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber239">source</a></span></span>
     </span>
   </h3>
 
@@ -4260,18 +4576,19 @@
     
     
     
-    <span data-ice="name">removeComponent</span><span data-ice="signature">(component: <span>*</span>, components: <span>*</span>)</span>
+    <span data-ice="name">removeComponent</span><span data-ice="signature">(component: <span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span>, components: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span>&gt;)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber81">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber120">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Remove a component from the components array.</p>
+</div>
 
   
 
@@ -4285,15 +4602,17 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">component</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The component to remove from the components.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">components</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>&lt;<span><a href="class/src/components/base/Base.js~BaseComponent.html">BaseComponent</a></span>&gt;</td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>An array of components to remove this component from.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -4325,18 +4644,19 @@
     
     
     
-    <span data-ice="name">removeComponentById</span><span data-ice="signature">(id: <span>*</span>, cb: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">removeComponentById</span><span data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber105">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber158">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Removes a component provided the Id of the component.</p>
+</div>
 
   
 
@@ -4350,15 +4670,17 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">id</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The Id of the component to remove.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">cb</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>Called when the component is removed.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -4370,7 +4692,7 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type" data-ice="returnType"><span>*</span></td>
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></td>
           
         </tr>
       </tbody>
@@ -4402,18 +4724,19 @@
     
     
     
-    <span data-ice="name">removeComponentByKey</span><span data-ice="signature">(key: <span>*</span>, cb: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">removeComponentByKey</span><span data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber90">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber136">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Removes a component provided the API key of that component.</p>
+</div>
 
   
 
@@ -4427,15 +4750,17 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">key</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>The API key of the component to remove.</p>
+</td>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">cb</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>Called once the component is removed.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -4447,7 +4772,7 @@
     <table>
       <tbody>
         <tr>
-          <td class="return-type" data-ice="returnType"><span>*</span></td>
+          <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></td>
           
         </tr>
       </tbody>
@@ -4483,7 +4808,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber146">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber230">source</a></span></span>
     </span>
   </h3>
 
@@ -4542,7 +4867,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber175">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber259">source</a></span></span>
     </span>
   </h3>
 
@@ -4575,6 +4900,65 @@
       <td data-ice="description"></td>
     </tr>
 <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">noValidate</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-updateValue">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">updateValue</span><span data-ice="signature">(noValidate: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber184">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-updateValue">BaseComponent#updateValue</a></span></div>
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">noValidate</td>
       <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>

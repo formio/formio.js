@@ -144,6 +144,7 @@ import _isArray from &apos;lodash/isArray&apos;;
 import _assign from &apos;lodash/assign&apos;;
 import _clone from &apos;lodash/clone&apos;;
 import i18next from &apos;i18next&apos;;
+import jsonLogic from &apos;json-logic-js&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 import { Validator } from &apos;../Validator&apos;;
 
@@ -252,6 +253,13 @@ export class BaseComponent {
     this.disabled = false;
 
     /**
+     * If this input has been input and provided value.
+     *
+     * @type {boolean}
+     */
+    this.pristine = true;
+
+    /**
      * The Input mask instance for this component.
      * @type {InputMask}
      */
@@ -263,7 +271,7 @@ export class BaseComponent {
      * The validators that are assigned to this component.
      * @type {[string]}
      */
-    this.validators = [&apos;required&apos;, &apos;minLength&apos;, &apos;maxLength&apos;, &apos;custom&apos;, &apos;pattern&apos;];
+    this.validators = [&apos;required&apos;, &apos;minLength&apos;, &apos;maxLength&apos;, &apos;custom&apos;, &apos;pattern&apos;, &apos;json&apos;];
 
     /**
      * Used to trigger a new change in this component.
@@ -388,6 +396,9 @@ export class BaseComponent {
     this.createLabel(this.element);
     if (!this.createWrapper()) {
       this.createInput(this.element);
+    }
+    if (this.options.readOnly) {
+      this.disable = true;
     }
   }
 
@@ -535,6 +546,9 @@ export class BaseComponent {
     td.appendChild(this.addButton());
     tr.appendChild(td);
     this.tbody.appendChild(tr);
+    if (this.options.readOnly) {
+      this.disable = true;
+    }
   }
 
   /**
@@ -906,21 +920,24 @@ export class BaseComponent {
     if (this.element) {
       if (show) {
         this.element.removeAttribute(&apos;hidden&apos;);
+        this.element.style.visibility = &quot;visible&quot;;
       }
       else {
         this.element.setAttribute(&apos;hidden&apos;, true);
+        this.element.style.visibility = &quot;hidden&quot;;
       }
     }
   }
 
   onChange(noValidate) {
     if (!noValidate) {
-      this.checkValidity();
+      this.pristine = false;
     }
     if (this.events) {
       this.emit(&apos;componentChange&apos;, {
         component: this.component,
-        value: this.value
+        value: this.value,
+        validate: !noValidate
       });
     }
   }
@@ -945,10 +962,6 @@ export class BaseComponent {
     if (input &amp;&amp; container) {
       this.inputs.push(input);
       input = container.appendChild(input);
-      if (input &amp;&amp; this.options.readOnly) {
-        input.disabled = true;
-        input.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
-      }
     }
     this.addInputEventListener(input);
 
@@ -995,9 +1008,48 @@ export class BaseComponent {
     }
   }
 
-  checkValidity() {
-    // No need to check for errors if there is no input.
-    if (!this.component.input) {
+  /**
+   * Perform a calculated value operation.
+   *
+   * @param data - The global data object.
+   */
+  calculateValue(data) {
+    if (!this.component.calculateValue) {
+      return;
+    }
+
+    // If this is a string, then use eval to evalulate it.
+    if (typeof this.component.calculateValue === &apos;string&apos;) {
+      try {
+        let row = this.data;
+        let val = eval(&apos;var value = [];&apos; + this.component.calculateValue.toString() + &apos;; return value;&apos;);
+        this.setValue(val);
+      }
+      catch (e) {
+        /* eslint-disable no-console */
+        console.warn(&apos;An error occurred calculating a value for &apos; + this.component.key, e);
+        /* eslint-enable no-console */
+      }
+    }
+    else {
+      try {
+        let val = jsonLogic.apply(this.component.calculateValue, {
+          data: data,
+          row: this.data
+        });
+        this.setValue(val);
+      }
+      catch (err) {
+        /* eslint-disable no-console */
+        console.warn(&apos;An error occurred calculating a value for &apos; + this.component.key, e);
+        /* eslint-enable no-console */
+      }
+    }
+  }
+
+  checkValidity(data, dirty) {
+    // No need to check for errors if there is no input or if it is pristine.
+    if (!this.component.input || (!dirty &amp;&amp; this.pristine)) {
       return true;
     }
 
@@ -1005,6 +1057,7 @@ export class BaseComponent {
       this.validators,
       this.component,
       this.getValidateValue(),
+      data,
       this.data,
       this.t.bind(this)
     );
@@ -1210,7 +1263,7 @@ export class BaseComponent {
 }
 
 BaseComponent.externalLibraries = {};
-BaseComponent.requireLibrary = function(name, property, src) {
+BaseComponent.requireLibrary = function(name, property, src, polling) {
   if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
     BaseComponent.externalLibraries[name] = {};
     BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) =&gt; {
@@ -1218,7 +1271,7 @@ BaseComponent.requireLibrary = function(name, property, src) {
       BaseComponent.externalLibraries[name].reject = reject;
     });
 
-    if (!window[name + &apos;Callback&apos;]) {
+    if (!polling &amp;&amp; !window[name + &apos;Callback&apos;]) {
       window[name + &apos;Callback&apos;] = function() {
         this.resolve();
       }.bind(BaseComponent.externalLibraries[name]);
@@ -1237,8 +1290,23 @@ BaseComponent.requireLibrary = function(name, property, src) {
       script.setAttribute(&apos;defer&apos;, true);
       script.setAttribute(&apos;async&apos;, true);
       document.getElementsByTagName(&apos;head&apos;)[0].appendChild(script);
+
+      // if no callback is provided, then check periodically for the script.
+      if (polling) {
+        setTimeout(function checkLibrary() {
+          let plugin = _get(window, property);
+          if (plugin) {
+            BaseComponent.externalLibraries[name].resolve(plugin);
+          }
+          else {
+            // check again after 200 ms.
+            setTimeout(checkLibrary, 200);
+          }
+        }, 200)
+      }
     }
   }
+  return BaseComponent.externalLibraries[name].ready;
 };
 
 BaseComponent.libraryReady = function(name) {

@@ -3,7 +3,6 @@ import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _remove from 'lodash/remove';
 import _reduce from 'lodash/reduce';
-import Promise from "native-promise-only";
 import { BaseComponent } from './base/Base';
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
@@ -18,6 +17,12 @@ export class FormioComponents extends BaseComponent {
     this.addComponents();
   }
 
+  /**
+   * Perform a deep iteration over every component, including those
+   * within other container based components.
+   *
+   * @param {function} cb - Called for every component.
+   */
   everyComponent(cb) {
     _each(this.components, (component) => {
       if (component.type === 'components') {
@@ -31,6 +36,11 @@ export class FormioComponents extends BaseComponent {
     });
   }
 
+  /**
+   * Perform an iteration over each component within this container component.
+   *
+   * @param {function} cb - Called for each component
+   */
   eachComponent(cb) {
     _each(this.components, (component) => {
       if (cb(component) === false) {
@@ -39,6 +49,14 @@ export class FormioComponents extends BaseComponent {
     });
   }
 
+  /**
+   * Returns a component provided a key. This performs a deep search within the
+   * component tree.
+   *
+   * @param {string} key - The key of the component to retrieve.
+   * @param {function} cb - Called with the component once found.
+   * @return {Object} - The component that is located.
+   */
   getComponent(key, cb) {
     let comp = null;
     this.everyComponent((component, components) => {
@@ -53,6 +71,13 @@ export class FormioComponents extends BaseComponent {
     return comp;
   }
 
+  /**
+   * Return a component provided the Id of the component.
+   *
+   * @param {string} id - The Id of the component.
+   * @param {function} cb - Called with the component once it is retrieved.
+   * @return {Object} - The component retrieved.
+   */
   getComponentById(id, cb) {
     let comp = null;
     this.everyComponent((component, components) => {
@@ -67,6 +92,14 @@ export class FormioComponents extends BaseComponent {
     return comp;
   }
 
+  /**
+   * Add a new component to the components array.
+   *
+   * @param {Object} component - The component JSON schema to add.
+   * @param {HTMLElement} element - The DOM element to append this child to.
+   * @param {Object} data - The submission data object to house the data for this component.
+   * @return {BaseComponent} - The created component instance.
+   */
   addComponent(component, element, data) {
     element = element || this.element;
     data = data || this.data;
@@ -78,6 +111,12 @@ export class FormioComponents extends BaseComponent {
     return comp;
   }
 
+  /**
+   * Remove a component from the components array.
+   *
+   * @param {BaseComponent} component - The component to remove from the components.
+   * @param {Array<BaseComponent>} components - An array of components to remove this component from.
+   */
   removeComponent(component, components) {
     component.destroy();
     let element = component.getElement();
@@ -87,6 +126,13 @@ export class FormioComponents extends BaseComponent {
     _remove(components, {id: component.id});
   }
 
+  /**
+   * Removes a component provided the API key of that component.
+   *
+   * @param {string} key - The API key of the component to remove.
+   * @param {function} cb - Called once the component is removed.
+   * @return {null}
+   */
   removeComponentByKey(key, cb) {
     let comp = this.getComponent(key, (component, components) => {
       this.removeComponent(component, components);
@@ -102,6 +148,13 @@ export class FormioComponents extends BaseComponent {
     }
   }
 
+  /**
+   * Removes a component provided the Id of the component.
+   *
+   * @param {string} id - The Id of the component to remove.
+   * @param {function} cb - Called when the component is removed.
+   * @return {null}
+   */
   removeComponentById(id, cb) {
     let comp = this.getComponentById(id, (component, components) => {
       this.removeComponent(component, components);
@@ -117,6 +170,11 @@ export class FormioComponents extends BaseComponent {
     }
   }
 
+  /**
+   *
+   * @param element
+   * @param data
+   */
   addComponents(element, data) {
     element = element || this.element;
     data = data || this.data;
@@ -127,14 +185,36 @@ export class FormioComponents extends BaseComponent {
     _each(this.components, (comp) => comp.updateValue(noValidate));
   }
 
+  /**
+   * A more performant way to check the conditions, calculations, and validity of
+   * a submission once it has been changed.
+   *
+   * @param data
+   * @param noValidate
+   */
+  checkData(data, noValidate) {
+    _each(this.components, (comp) => {
+      comp.checkConditions(data);
+      comp.calculateValue(data);
+      if (!noValidate) {
+        comp.checkValidity(data);
+      }
+    });
+  }
+
   checkConditions(data) {
     super.checkConditions(data);
     _each(this.components, (comp) => comp.checkConditions(data));
   }
 
-  checkValidity() {
-    let check = super.checkValidity();
-    return _reduce(this.components, (check, comp) => check && comp.checkValidity(), check);
+  calculateValue(data) {
+    super.calculateValue(data);
+    _each(this.components, (comp) => comp.calculateValue(data));
+  }
+
+  checkValidity(data, dirty) {
+    let check = super.checkValidity(data, dirty);
+    return _reduce(this.components, (check, comp) => check && comp.checkValidity(data, dirty), check);
   }
 
   destroy(all) {

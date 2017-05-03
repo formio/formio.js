@@ -139,6 +139,7 @@
 import _each from &apos;lodash/each&apos;;
 import _has from &apos;lodash/has&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
+import jsonLogic from &apos;json-logic-js&apos;;
 export var Validator = {
   get: _get,
   each: _each,
@@ -160,8 +161,8 @@ export var Validator = {
   name: function(component) {
     return component.label || component.placeholder || component.key;
   },
-  checkValidator: function(validator, component, setting, value, data, t) {
-    let result = validator.check.call(this, component, setting, value, data);
+  checkValidator: function(validator, component, setting, value, data, row, t) {
+    let result = validator.check.call(this, component, setting, value, data, row);
     if (typeof result === &apos;string&apos;) {
       return result;
     }
@@ -170,28 +171,28 @@ export var Validator = {
     }
     return &apos;&apos;;
   },
-  validate: function(validator, component, value, data, t) {
+  validate: function(validator, component, value, data, row, t) {
     if (validator.key &amp;&amp; _has(component, validator.key)) {
       let setting = this.get(component, validator.key);
-      return this.checkValidator(validator, component, setting, value, data, t);
+      return this.checkValidator(validator, component, setting, value, data, row, t);
     }
-    return this.checkValidator(validator, component, null, value, data, t);
+    return this.checkValidator(validator, component, null, value, data, row, t);
   },
-  check: function(validators, component, value, data, t) {
+  check: function(validators, component, value, data, row, t) {
     let result = &apos;&apos;;
     _each(validators, (name) =&gt; {
       if (this.validators.hasOwnProperty(name)) {
         let validator = this.validators[name];
         if (component.multiple &amp;&amp; _isArray(value)) {
           _each(value, (val) =&gt; {
-            result = this.validate(validator, component, val, data, t);
+            result = this.validate(validator, component, val, data, row, t);
             if (result) {
               return false;
             }
           });
         }
         else {
-          result = this.validate(validator, component, value, data, t);
+          result = this.validate(validator, component, value, data, row, t);
         }
         if (result) {
           return false;
@@ -285,6 +286,25 @@ export var Validator = {
         return regex.test(value);
       }
     },
+    json: {
+      key: &apos;validate.json&apos;,
+      check: function(component, setting, value, data, row) {
+        if (!setting) {
+          return true;
+        }
+        let valid = true;
+        try {
+          valid = jsonLogic.apply(setting, {
+            data: data,
+            row: row
+          });
+        }
+        catch (err) {
+          valid = err.message;
+        }
+        return valid;
+      }
+    },
     custom: {
       key: &apos;validate.custom&apos;,
       message: function(component, setting, t) {
@@ -292,7 +312,7 @@ export var Validator = {
           field: this.name(component)
         });
       },
-      check: function(component, setting, value, data) {
+      check: function(component, setting, value, data, row) {
         if (!setting) {
           return true;
         }
@@ -302,7 +322,15 @@ export var Validator = {
         var input = value;
         /*eslint-enable no-unused-vars */
         custom = custom.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
-          return data[$2];
+          if ($2.indexOf(&apos;data.&apos;) === 0) {
+            return _get(data, $2.replace(&apos;data.&apos;, &apos;&apos;));
+          }
+          else if ($2.indexOf(&apos;row.&apos;) === 0) {
+            return _get(row, $2.replace(&apos;row.&apos;, &apos;&apos;));
+          }
+
+          // Support legacy...
+          return _get(data, $2);
         });
 
         /* jshint evil: true */

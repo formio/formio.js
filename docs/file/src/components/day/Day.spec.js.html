@@ -213,6 +213,10 @@ describe(&apos;Day Component&apos;, function() {
         done();
       });
 
+      component.on(&apos;componentChange&apos;, () =&gt; {
+        component.checkValidity();
+      });
+
       component.setValue(&apos;3/40/2017&apos;);
     });
   });
@@ -223,6 +227,10 @@ describe(&apos;Day Component&apos;, function() {
         assert.equal(err.message, &apos;Date is not a valid date.&apos;);
         assert.equal(err.component.key, &apos;date&apos;);
         done();
+      });
+
+      component.on(&apos;componentChange&apos;, () =&gt; {
+        component.checkValidity();
       });
 
       component.setValue(&apos;15/20/2017&apos;);

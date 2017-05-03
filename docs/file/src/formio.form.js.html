@@ -141,6 +141,7 @@ import Formio from &apos;./formio&apos;;
 import { FormioComponents } from &apos;./components/Components&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
 import _each from &apos;lodash/each&apos;;
+import _clone from &apos;lodash/clone&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 let getOptions = function(options) {
   options = options || {};
@@ -519,6 +520,7 @@ export class FormioForm extends FormioComponents {
         this.build();
         this.on(&apos;resetForm&apos;, () =&gt; this.reset(), true);
         this.on(&apos;componentChange&apos;, (changed) =&gt; this.triggerSubmissionChange(changed), true);
+        this.on(&apos;refreshData&apos;, () =&gt; this.updateValue());
         this.emit(&apos;render&apos;);
       });
     });
@@ -635,12 +637,13 @@ export class FormioForm extends FormioComponents {
    * @param {Object} changed - The changed value that triggered this event.
    * @param {Object} changed.component - The component that was changed.
    * @param {*} changed.value - The new value of the changed component.
+   * @param {boolean} changed.validate - If the change needs to be validated.
    */
   onSubmissionChange(changed) {
-    let value = this.submission;
+    let value = _clone(this.submission);
     value.changed = changed;
     this.emit(&apos;change&apos;, value);
-    this.checkConditions(value.data);
+    this.checkData(value.data, !changed.validate);
   }
 
   /**
@@ -691,7 +694,7 @@ export class FormioForm extends FormioComponents {
    */
   submit() {
     // Validate the form builed, before submission
-    if (this.checkValidity()) {
+    if (this.checkValidity(this.submission.data, true)) {
       this.loading = true;
       if (!this.formio) {
         return this.onSubmit(this.submission, false);
@@ -720,10 +723,9 @@ FormioForm.embed = function(embed) {
     return null;
   }
   let id = embed.id || &apos;formio-&apos; + Math.random().toString(36).substring(7);
-  let height = embed.height || 500;
   let className = embed.class || &apos;formio-form-wrapper&apos;;
   let code = embed.styles ? &apos;&lt;link rel=&quot;stylesheet&quot; href=&quot;&apos; + embed.styles + &apos;&quot;&gt;&apos; : &apos;&apos;;
-  code += &apos;&lt;div id=&quot;&apos; + id + &apos;&quot; class=&quot;&apos; + className + &apos;&quot; style=&quot;height:&apos; + height + &apos;px;&quot;&gt;&lt;/div&gt;&apos;;
+  code += &apos;&lt;div id=&quot;&apos; + id + &apos;&quot; class=&quot;&apos; + className + &apos;&quot;&gt;&lt;/div&gt;&apos;;
   document.write(code);
   let formElement = document.getElementById(id);
   let form = new FormioForm(formElement);

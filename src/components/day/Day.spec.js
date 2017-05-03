@@ -76,6 +76,10 @@ describe('Day Component', function() {
         done();
       });
 
+      component.on('componentChange', () => {
+        component.checkValidity();
+      });
+
       component.setValue('3/40/2017');
     });
   });
@@ -86,6 +90,10 @@ describe('Day Component', function() {
         assert.equal(err.message, 'Date is not a valid date.');
         assert.equal(err.component.key, 'date');
         done();
+      });
+
+      component.on('componentChange', () => {
+        component.checkValidity();
       });
 
       component.setValue('15/20/2017');
