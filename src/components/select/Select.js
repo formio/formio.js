@@ -69,7 +69,9 @@ export class SelectComponent extends BaseComponent {
     url += '?' + Formio.serialize(query);
 
     // Make the request.
-    Formio.request(url, null, null, headers, options).then((response) => this.setItems(response));
+    Formio.request(url, null, null, headers, options)
+      .then((response) => this.setItems(response))
+      .catch(() => console.warn('Unable to load resources for ' + this.component.key))
   }
 
   updateItems() {
@@ -82,12 +84,17 @@ export class SelectComponent extends BaseComponent {
         try {
           this.setItems(JSON.parse(this.component.data.json));
         }
-        catch (error) {
-          console.log(error);
+        catch (err) {
+          console.warn('Unable to parse JSON for ' + this.component.key);
         }
         break;
       case 'resource':
-        this.loadItems(Formio.getAppUrl() + '/form/' + this.component.data.resource + '/submission');
+        try {
+          this.loadItems(Formio.getAppUrl() + '/form/' + this.component.data.resource + '/submission');
+        }
+        catch (err) {
+          console.warn('Unable to load resources for ' + this.component.key);
+        }
         break;
       case 'url':
         this.loadItems(this.component.data.url, null, new Headers(), {

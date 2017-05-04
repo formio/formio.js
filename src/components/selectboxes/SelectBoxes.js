@@ -5,12 +5,14 @@ export class SelectBoxesComponent extends RadioComponent {
     super(component, options, data);
     this.component.inputType = 'checkbox';
   }
+
   elementInfo() {
     let info = super.elementInfo();
     info.attr.name += '[]';
     info.attr.type = 'checkbox';
     return info;
   }
+
   getValue() {
     let value = [];
     _each(this.inputs, (input) => {
@@ -22,6 +24,8 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   setValueAt(value, index) {
-    this.inputs[index].checked = (value.indexOf(this.inputs[index].value) !== -1);
+    if (this.inputs && this.inputs[index]) {
+      this.inputs[index].checked = (value.indexOf(this.inputs[index].value) !== -1);
+    }
   }
 }

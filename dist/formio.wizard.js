@@ -4096,6 +4096,9 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
   }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
+      if (!value) {
+        return;
+      }
       var parts = value.split('/');
       if (this.component.dayFirst && !(0, _get4.default)(this.component, 'fields.day.hide', false)) {
         this.dayInput.value = parseInt(parts.shift(), 10);
@@ -5485,6 +5488,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       // Make the request.
       _formio2.default.request(url, null, null, headers, options).then(function (response) {
         return _this3.setItems(response);
+      }).catch(function () {
+        return console.warn('Unable to load resources for ' + _this3.component.key);
       });
     }
   }, {
@@ -5498,12 +5503,16 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         case 'json':
           try {
             this.setItems(JSON.parse(this.component.data.json));
-          } catch (error) {
-            console.log(error);
+          } catch (err) {
+            console.warn('Unable to parse JSON for ' + this.component.key);
           }
           break;
         case 'resource':
-          this.loadItems(_formio2.default.getAppUrl() + '/form/' + this.component.data.resource + '/submission');
+          try {
+            this.loadItems(_formio2.default.getAppUrl() + '/form/' + this.component.data.resource + '/submission');
+          } catch (err) {
+            console.warn('Unable to load resources for ' + this.component.key);
+          }
           break;
         case 'url':
           this.loadItems(this.component.data.url, null, new Headers(), {
@@ -5687,7 +5696,9 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
   }, {
     key: 'setValueAt',
     value: function setValueAt(value, index) {
-      this.inputs[index].checked = value.indexOf(this.inputs[index].value) !== -1;
+      if (this.inputs && this.inputs[index]) {
+        this.inputs[index].checked = value.indexOf(this.inputs[index].value) !== -1;
+      }
     }
   }]);
 

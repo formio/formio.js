@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 
+## 2.7.2
+### Fixed
+ - Some cases where errors would occur during rendering.
+
 ## 2.7.1
 ### Fixed
  - An issue where Radio buttons could cause javascript error.
