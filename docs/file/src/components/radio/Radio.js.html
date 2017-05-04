@@ -190,7 +190,9 @@ export class RadioComponent extends BaseComponent {
   }
 
   setValueAt(value, index) {
-    this.inputs[index].checked = (this.inputs[index].value === value);
+    if (this.inputs &amp;&amp; this.inputs[index]) {
+      this.inputs[index].checked = (this.inputs[index].value === value);
+    }
   }
 }
 </code></pre>

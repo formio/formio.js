@@ -206,7 +206,9 @@ export class SelectComponent extends BaseComponent {
     url += &apos;?&apos; + Formio.serialize(query);
 
     // Make the request.
-    Formio.request(url, null, null, headers, options).then((response) =&gt; this.setItems(response));
+    Formio.request(url, null, null, headers, options)
+      .then((response) =&gt; this.setItems(response))
+      .catch(() =&gt; console.warn(&apos;Unable to load resources for &apos; + this.component.key))
   }
 
   updateItems() {
@@ -219,12 +221,17 @@ export class SelectComponent extends BaseComponent {
         try {
           this.setItems(JSON.parse(this.component.data.json));
         }
-        catch (error) {
-          console.log(error);
+        catch (err) {
+          console.warn(&apos;Unable to parse JSON for &apos; + this.component.key);
         }
         break;
       case &apos;resource&apos;:
-        this.loadItems(Formio.getAppUrl() + &apos;/form/&apos; + this.component.data.resource + &apos;/submission&apos;);
+        try {
+          this.loadItems(Formio.getAppUrl() + &apos;/form/&apos; + this.component.data.resource + &apos;/submission&apos;);
+        }
+        catch (err) {
+          console.warn(&apos;Unable to load resources for &apos; + this.component.key);
+        }
         break;
       case &apos;url&apos;:
         this.loadItems(this.component.data.url, null, new Headers(), {
@@ -255,12 +262,12 @@ export class SelectComponent extends BaseComponent {
     this.updateItems();
   }
 
-  set disable(disable) {
-    super.disable = disable;
+  set disabled(disabled) {
+    super.disabled = disabled;
     if (!this.choices) {
       return;
     }
-    if (disable) {
+    if (disabled) {
       this.choices.disable();
     }
     else {

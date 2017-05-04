@@ -288,6 +288,9 @@ export class DayComponent extends BaseComponent {
    * @param value
    */
   setValueAt(index, value) {
+    if (!value) {
+      return;
+    }
     let parts = value.split(&apos;/&apos;);
     if (this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
       this.dayInput.value = parseInt(parts.shift(), 10);

@@ -363,8 +363,8 @@ export class FormioComponents extends BaseComponent {
     _each(components, (comp) =&gt; this.removeComponent(comp, this.components));
   }
 
-  set disable(disable) {
-    _each(this.components, (component) =&gt; (component.disable = disable));
+  set disabled(disabled) {
+    _each(this.components, (component) =&gt; (component.disabled = disabled));
   }
 
   setHidden(component) {

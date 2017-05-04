@@ -142,12 +142,14 @@ export class SelectBoxesComponent extends RadioComponent {
     super(component, options, data);
     this.component.inputType = &apos;checkbox&apos;;
   }
+
   elementInfo() {
     let info = super.elementInfo();
     info.attr.name += &apos;[]&apos;;
     info.attr.type = &apos;checkbox&apos;;
     return info;
   }
+
   getValue() {
     let value = [];
     _each(this.inputs, (input) =&gt; {
@@ -159,7 +161,9 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   setValueAt(value, index) {
-    this.inputs[index].checked = (value.indexOf(this.inputs[index].value) !== -1);
+    if (this.inputs &amp;&amp; this.inputs[index]) {
+      this.inputs[index].checked = (value.indexOf(this.inputs[index].value) !== -1);
+    }
   }
 }
 </code></pre>
