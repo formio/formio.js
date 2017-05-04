@@ -5248,7 +5248,9 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
   }, {
     key: 'setValueAt',
     value: function setValueAt(value, index) {
-      this.inputs[index].checked = this.inputs[index].value === value;
+      if (this.inputs && this.inputs[index]) {
+        this.inputs[index].checked = this.inputs[index].value === value;
+      }
     }
   }]);
 

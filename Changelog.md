@@ -13,6 +13,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 
+## 2.7.1
+### Fixed
+ - An issue where Radio buttons could cause javascript error.
+
+## 2.7.0
+### Added
+ - JSONLogic to perform all validations, conditionals, and calculations.
+
+### Fixed
+ - Fixed many issues with validations, conditionals, and calculations.
+ - Fixed the disabled flag to disable on start.
+ - Fixed default values to work.
+
 ## 2.6.0
 ### Changed
   - Upgraded the fetch library to resolve some strange header response caching issues.
