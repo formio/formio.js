@@ -68,8 +68,8 @@ export class DateTimeComponent extends BaseComponent {
     };
   }
 
-  set disable(disable) {
-    super.disable = disable;
+  set disabled(disabled) {
+    super.disabled = disabled;
     _each(this.inputs, (input) => {
       if (input.calendar) {
         input.calendar.redraw();

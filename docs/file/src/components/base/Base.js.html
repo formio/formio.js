@@ -7,18 +7,18 @@
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
-  
-  
+
+
   <script src="script/manual.js"></script>
 </head>
 <body class="layout-container" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  
+
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
-  
+
   <a data-ice="repoURL" href="https://github.com/formio/formio.js" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
@@ -31,7 +31,7 @@
 
 <nav class="navigation" data-ice="nav"><div>
   <ul>
-    
+
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
@@ -400,7 +400,7 @@ export class BaseComponent {
 
     // Disable if needed.
     if (this.options.readOnly || this.component.disabled) {
-      this.disable = true;
+      this.disabled = true;
     }
 
     // Set default values.
@@ -580,7 +580,7 @@ export class BaseComponent {
     tr.appendChild(td);
     this.tbody.appendChild(tr);
     if (this.options.readOnly) {
-      this.disable = true;
+      this.disabled = true;
     }
   }
 

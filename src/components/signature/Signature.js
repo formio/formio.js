@@ -23,8 +23,8 @@ export class SignatureComponent extends BaseComponent {
     return image;
   }
 
-  set disable(disable) {
-    super.disable = disable;
+  set disabled(disabled) {
+    super.disabled = disabled;
     this.element.innerHTML = '';
     this.element.appendChild(this.getSignatureImage());
   }
@@ -99,7 +99,7 @@ export class SignatureComponent extends BaseComponent {
     }.bind(this), 200);
 
     if (this.options.readOnly) {
-      this.disable = true;
+      this.disabled = true;
     }
   }
 }

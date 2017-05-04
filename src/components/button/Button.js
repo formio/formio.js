@@ -28,9 +28,9 @@ export class ButtonComponent extends BaseComponent {
     }
   }
 
-  set disable(disable) {
-    this.disabled = disable;
-    this.element.disable = disable;
+  set disabled(disabled) {
+    super.disabled = disabled;
+    this.element.disable = disabled;
   }
 
   build() {
@@ -41,7 +41,7 @@ export class ButtonComponent extends BaseComponent {
     }
     this.on('submitDone', () => {
       this.loading = false;
-      this.disable = false;
+      this.disabled = false;
     }, true);
     this.on('error', () => {
       this.loading = false;
@@ -50,7 +50,7 @@ export class ButtonComponent extends BaseComponent {
       switch (this.component.action) {
         case 'submit':
           this.loading = true;
-          this.disable = true;
+          this.disabled = true;
           event.preventDefault();
           event.stopPropagation();
           this.emit('submitButton');
@@ -67,7 +67,7 @@ export class ButtonComponent extends BaseComponent {
       }
     });
     if (this.options.readOnly) {
-      this.disable = true;
+      this.disabled = true;
     }
   }
 }

@@ -125,12 +125,12 @@ export class SelectComponent extends BaseComponent {
     this.updateItems();
   }
 
-  set disable(disable) {
-    super.disable = disable;
+  set disabled(disabled) {
+    super.disabled = disabled;
     if (!this.choices) {
       return;
     }
-    if (disable) {
+    if (disabled) {
       this.choices.disable();
     }
     else {

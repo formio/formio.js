@@ -263,7 +263,7 @@ export class BaseComponent {
 
     // Disable if needed.
     if (this.options.readOnly || this.component.disabled) {
-      this.disable = true;
+      this.disabled = true;
     }
 
     // Set default values.
@@ -443,7 +443,7 @@ export class BaseComponent {
     tr.appendChild(td);
     this.tbody.appendChild(tr);
     if (this.options.readOnly) {
-      this.disable = true;
+      this.disabled = true;
     }
   }
 
@@ -1057,7 +1057,7 @@ export class BaseComponent {
 
   /**
    * Return if the component is disabled.
-   * @return {boolean|*}
+   * @return {boolean}
    */
   get disabled() {
     return this._disabled;
@@ -1065,12 +1065,14 @@ export class BaseComponent {
 
   /**
    * Disable this component.
+   *
+   * @param {boolean} disabled
    */
-  set disable(disable) {
-    this._disabled = disable;
+  set disabled(disabled) {
+    this._disabled = disabled;
     // Disable all input.
     _each(this.inputs, (input) => {
-      input.disabled = disable;
+      input.disabled = disabled;
       input.setAttribute('disabled', 'disabled');
     });
   }

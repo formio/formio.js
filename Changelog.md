@@ -13,6 +13,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Removed
 
+## 2.7.3
+### Changed
+ - All disabled flags to be consistent.
+
+### Fixed
+ - Issue where submit button would not disable.
+
 ## 2.7.2
 ### Fixed
  - Some cases where errors would occur during rendering.

@@ -403,10 +403,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       });
     }
   }, {
-    key: 'disable',
-    set: function set(disable) {
+    key: 'disabled',
+    set: function set(disabled) {
       (0, _each3.default)(this.components, function (component) {
-        return component.disable = disable;
+        return component.disabled = disabled;
       });
     }
   }, {
@@ -1627,7 +1627,7 @@ var BaseComponent = function () {
 
       // Disable if needed.
       if (this.options.readOnly || this.component.disabled) {
-        this.disable = true;
+        this.disabled = true;
       }
 
       // Set default values.
@@ -1778,7 +1778,7 @@ var BaseComponent = function () {
       tr.appendChild(td);
       this.tbody.appendChild(tr);
       if (this.options.readOnly) {
-        this.disable = true;
+        this.disabled = true;
       }
     }
 
@@ -2630,7 +2630,7 @@ var BaseComponent = function () {
 
     /**
      * Return if the component is disabled.
-     * @return {boolean|*}
+     * @return {boolean}
      */
 
   }, {
@@ -2641,15 +2641,15 @@ var BaseComponent = function () {
 
     /**
      * Disable this component.
+     *
+     * @param {boolean} disabled
      */
 
-  }, {
-    key: 'disable',
-    set: function set(disable) {
-      this._disabled = disable;
+    , set: function set(disabled) {
+      this._disabled = disabled;
       // Disable all input.
       (0, _each3.default)(this.inputs, function (input) {
-        input.disabled = disable;
+        input.disabled = disabled;
         input.setAttribute('disabled', 'disabled');
       });
     }
@@ -2733,6 +2733,20 @@ var _createClass = function () {
   };
 }();
 
+var _set = function set(object, property, value, receiver) {
+  var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent !== null) {
+      set(parent, property, value, receiver);
+    }
+  } else if ("value" in desc && desc.writable) {
+    desc.value = value;
+  } else {
+    var setter = desc.set;if (setter !== undefined) {
+      setter.call(receiver, value);
+    }
+  }return value;
+};
+
 var _get = function get(object, property, receiver) {
   if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
     var parent = Object.getPrototypeOf(object);if (parent === null) {
@@ -2802,7 +2816,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
       this.on('submitDone', function () {
         _this2.loading = false;
-        _this2.disable = false;
+        _this2.disabled = false;
       }, true);
       this.on('error', function () {
         _this2.loading = false;
@@ -2811,7 +2825,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         switch (_this2.component.action) {
           case 'submit':
             _this2.loading = true;
-            _this2.disable = true;
+            _this2.disabled = true;
             event.preventDefault();
             event.stopPropagation();
             _this2.emit('submitButton');
@@ -2828,7 +2842,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }
       });
       if (this.options.readOnly) {
-        this.disable = true;
+        this.disabled = true;
       }
     }
   }, {
@@ -2849,10 +2863,10 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
     }
   }, {
-    key: 'disable',
-    set: function set(disable) {
-      this.disabled = disable;
-      this.element.disable = disable;
+    key: 'disabled',
+    set: function set(disabled) {
+      _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
+      this.element.disable = disabled;
     }
   }]);
 
@@ -2951,7 +2965,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         this.addInput(this.input, this.element);
       }
       if (this.options.readOnly) {
-        this.disable = true;
+        this.disabled = true;
       }
     }
   }, {
@@ -3860,9 +3874,9 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       };
     }
   }, {
-    key: 'disable',
-    set: function set(disable) {
-      _set(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'disable', disable, this);
+    key: 'disabled',
+    set: function set(disabled) {
+      _set(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'disabled', disabled, this);
       (0, _each3.default)(this.inputs, function (input) {
         if (input.calendar) {
           input.calendar.redraw();
@@ -5581,13 +5595,13 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
     }
   }, {
-    key: 'disable',
-    set: function set(disable) {
-      _set(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'disable', disable, this);
+    key: 'disabled',
+    set: function set(disabled) {
+      _set(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'disabled', disabled, this);
       if (!this.choices) {
         return;
       }
-      if (disable) {
+      if (disabled) {
         this.choices.disable();
       } else {
         this.choices.enable();
@@ -5894,13 +5908,13 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       }.bind(this), 200);
 
       if (this.options.readOnly) {
-        this.disable = true;
+        this.disabled = true;
       }
     }
   }, {
-    key: 'disable',
-    set: function set(disable) {
-      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disable', disable, this);
+    key: 'disabled',
+    set: function set(disabled) {
+      _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disabled', disabled, this);
       this.element.innerHTML = '';
       this.element.appendChild(this.getSignatureImage());
     }
@@ -6015,7 +6029,7 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
       this.table.appendChild(tbody);
       this.element.appendChild(this.table);
       if (this.options.readOnly) {
-        this.disable = true;
+        this.disabled = true;
       }
     }
   }, {
