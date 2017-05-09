@@ -3,6 +3,7 @@ import Promise from "native-promise-only";
 import FormioForm from './formio.form';
 import Formio from './formio';
 import each from 'lodash/each';
+import jsonLogic from 'json-logic-js';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
@@ -21,28 +22,49 @@ export class FormioWizard extends FormioForm {
   }
 
   getCondionalNextPage(data, page) {
+
     let form = this.pages[page];
     // Check conditional nextPage
     if (form) {
+      page++;
       if(form.nextPage) {
-        try {
-          let script = '(function() { var page = '+(page + 1)+';';
-          script += form.nextPage.toString();
-          script += '; return page; })()';
-          let result = eval(script);
-          if (result == page) {
-            console.warn('A recursive result is returned in a custom nextPage function statement for component ' + form.key, e);
-            return page + 1;
+        // Allow for script execution.
+        if (typeof form.nextPage === 'string') {
+          try {
+            let script = '(function() {';
+            script += form.nextPage.toString();
+            script += '; return page; })()';
+            let result = eval(script);
+            let newPage = parseInt(result, 10);
+            if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
+              return newPage;
+            }
+
+            // Assume they passed back the key of the page to go to.
+            return this.getPageIndexByKey(result);
           }
-          return result;
+          catch (e) {
+            console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);
+            return page;
+          }
         }
-        catch (e) {
-          console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);
-          return page + 1;
+        // Or use JSON Logic.
+        else {
+          let result = jsonLogic.apply(form.nextPage, {
+            data: data,
+            page: page,
+            form: form
+          });
+          let newPage = parseInt(result, 10);
+          if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
+            return newPage;
+          }
+
+          return this.getPageIndexByKey(result);
         }
       }
 
-      return page + 1;
+      return page;
     }
 
     return null;
@@ -62,10 +84,15 @@ export class FormioWizard extends FormioForm {
       let currentPage = this.page;
       let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
 
-      return this.setPage(nextPage).then(() => {
-        this.historyPages[this.page] = currentPage;
-        this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
-        this.emit('nextPage', {page: this.page, submission: this.submission});
+      // Allow components to perform their own functions.
+      return this.beforeNext(this.getPage(currentPage), this.getPage(nextPage)).then(() => {
+
+        // Set the next page.
+        return this.setPage(nextPage).then(() => {
+          this.historyPages[this.page] = currentPage;
+          this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+          this.emit('nextPage', {page: this.page, submission: this.submission});
+        });
       });
     }
     else {
@@ -86,12 +113,26 @@ export class FormioWizard extends FormioForm {
     return this.setPage(0);
   }
 
-  currentPage() {
-    if ((this.page >= 0) && (this.page < this.pages.length)) {
-      return this.pages[this.page];
+  getPageIndexByKey(key) {
+    let pageIndex = 0;
+    each(this.pages, (_page, index) => {
+      if (_page.key === key) {
+        pageIndex = index;
+        return false;
+      }
+    });
+    return pageIndex;
+  }
+
+  getPage(pageNum) {
+    if ((pageNum >= 0) && (pageNum < this.pages.length)) {
+      return this.pages[pageNum];
     }
-    this.page = 0;
     return this.pages.length ? this.pages[0] : {components: []};
+  }
+
+  currentPage() {
+    return this.getPage(this.page);
   }
 
   setForm(form) {

@@ -252,6 +252,16 @@ export class BaseComponent {
   }
 
   /**
+   * Called before a next page is triggered allowing the components
+   * to perform special functions.
+   *
+   * @return {*}
+   */
+  beforeNext() {
+    return Promise.resolve(true);
+  }
+
+  /**
    * Builds the component.
    */
   build() {
@@ -813,16 +823,23 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
-    if (this.element) {
-      if (show) {
-        this.element.removeAttribute('hidden');
-        this.element.style.visibility = "visible";
+    let element = this.getElement();
+    if (element) {
+      if (show && !this.component.hidden) {
+        element.removeAttribute('hidden');
+        element.style.visibility = 'visible';
+        element.style.position = 'relative';
       }
-      else {
-        this.element.setAttribute('hidden', true);
-        this.element.style.visibility = "hidden";
+      else if (!show || this.component.hidden) {
+        element.setAttribute('hidden', true);
+        element.style.visibility = 'hidden';
+        element.style.position = 'absolute';
       }
     }
+  }
+
+  set visible(visible) {
+    this.show(visible);
   }
 
   onChange(noValidate) {
@@ -1034,24 +1051,6 @@ export class BaseComponent {
     }
     if (!noUpdate) {
       this.updateValue(noValidate);
-    }
-  }
-
-  set visible(visible) {
-    let element = this.getElement();
-    if (element) {
-      if (visible && this.styles) {
-        element.style.visibility = this.styles.visibility;
-        element.style.position = this.styles.position;
-      }
-      else if (!visible) {
-        this.styles = {
-          visibility: element.style.visibility,
-          position: element.style.position
-        };
-        element.style.visibility = 'hidden';
-        element.style.position = 'absolute';
-      }
     }
   }
 

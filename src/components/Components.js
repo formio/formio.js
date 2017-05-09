@@ -2,7 +2,7 @@
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _remove from 'lodash/remove';
-import _reduce from 'lodash/reduce';
+import Promise from "native-promise-only";
 import { BaseComponent } from './base/Base';
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
@@ -24,13 +24,13 @@ export class FormioComponents extends BaseComponent {
    * @param {function} cb - Called for every component.
    */
   everyComponent(cb) {
-    _each(this.components, (component) => {
+    _each(this.components, (component, index) => {
       if (component.type === 'components') {
         if (component.everyComponent(cb) === false) {
           return false;
         }
       }
-      else if (cb(component, this.components) === false) {
+      else if (cb(component, this.components, index) === false) {
         return false;
       }
     });
@@ -42,8 +42,8 @@ export class FormioComponents extends BaseComponent {
    * @param {function} cb - Called for each component
    */
   eachComponent(cb) {
-    _each(this.components, (component) => {
-      if (cb(component) === false) {
+    _each(this.components, (component, index) => {
+      if (cb(component, index) === false) {
         return false;
       }
     });
@@ -207,6 +207,12 @@ export class FormioComponents extends BaseComponent {
     _each(this.components, (comp) => comp.checkConditions(data));
   }
 
+  beforeNext() {
+    var ops = [];
+    _each(this.components, (comp) => ops.push(comp.beforeNext()));
+    return Promise.all(ops);
+  }
+
   calculateValue(data) {
     super.calculateValue(data);
     _each(this.components, (comp) => comp.calculateValue(data));
@@ -233,6 +239,9 @@ export class FormioComponents extends BaseComponent {
   setHidden(component) {
     if (component.components && component.components.length) {
       component.hideComponents(this.hidden);
+    }
+    else if (component.component.hidden) {
+      component.visible = false;
     }
     else {
       component.visible = (!this.hidden || (this.hidden.indexOf(component.component.key) === -1));

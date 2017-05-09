@@ -167,6 +167,7 @@ export class FormioForm extends FormioComponents {
        */
       this.wrapper = element;
       this.element = this.ce('element', 'form', {
+        id: this.id,
         class: 'formio-form'
       });
       if (this.wrapper) {
