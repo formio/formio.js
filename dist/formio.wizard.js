@@ -8337,6 +8337,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     _this.page = 0;
     _this.historyPages = {};
     _this._nextPage = 1;
+    _this.buttons = [];
     return _this;
   }
 
@@ -8345,6 +8346,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     value: function setPage(num) {
       if (num >= 0 && num < this.pages.length) {
         this.page = num;
+        this.buttons = [];
+        var page = this.currentPage();
+        this.buttons = page.buttons;
         return _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'setForm', this).call(this, this.currentPage());
       }
       return _nativePromiseOnly2.default.reject('Page not found');
@@ -8437,6 +8441,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       var _this4 = this;
 
       this.pages = [];
+      this.buttons = [];
       (0, _each2.default)(form.components, function (component) {
         if (component.type === 'panel') {
           _this4.pages.push(component);
@@ -8514,25 +8519,47 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       this.wizardNav = this.ce('wizardNav', 'ul', {
         class: 'list-inline'
       });
-
-      (0, _each2.default)([{ name: 'cancel', method: 'cancel', class: 'btn btn-default' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
-        if (!_this6.hasButton(button.name)) {
-          return;
-        }
-        var buttonWrapper = _this6.ce('wizardNavButton', 'li');
-        var buttonProp = button.name + 'Button';
-        _this6[buttonProp] = _this6.ce(buttonProp, 'button', {
-          class: button.class
+      if (this.buttons) {
+        (0, _each2.default)(this.buttons, function (button) {
+          if (!_this6.hasButton(button.name)) {
+            return;
+          }
+          var buttonWrapper = _this6.ce('wizardNavButton', 'li');
+          var buttonProp = button.name + 'Button';
+          _this6[buttonProp] = _this6.ce(buttonProp, 'button', {
+            class: button.class
+          });
+          if (button.custom) {
+            _this6[buttonProp].appendChild(_this6.text(_this6.t(button.custom)));
+          } else {
+            _this6[buttonProp].appendChild(_this6.text(_this6.t(button.name)));
+          }
+          _this6.addEventListener(_this6[buttonProp], 'click', function (event) {
+            event.preventDefault();
+            _this6[button.method]();
+          });
+          buttonWrapper.appendChild(_this6[buttonProp]);
+          _this6.wizardNav.appendChild(buttonWrapper);
         });
-        _this6[buttonProp].appendChild(_this6.text(_this6.t(button.name)));
-        _this6.addEventListener(_this6[buttonProp], 'click', function (event) {
-          event.preventDefault();
-          _this6[button.method]();
+      } else {
+        (0, _each2.default)([{ name: 'cancel', method: 'cancel', class: 'btn btn-default' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
+          if (!_this6.hasButton(button.name)) {
+            return;
+          }
+          var buttonWrapper = _this6.ce('wizardNavButton', 'li');
+          var buttonProp = button.name + 'Button';
+          _this6[buttonProp] = _this6.ce(buttonProp, 'button', {
+            class: button.class
+          });
+          _this6[buttonProp].appendChild(_this6.text(_this6.t(button.name)));
+          _this6.addEventListener(_this6[buttonProp], 'click', function (event) {
+            event.preventDefault();
+            _this6[button.method]();
+          });
+          buttonWrapper.appendChild(_this6[buttonProp]);
+          _this6.wizardNav.appendChild(buttonWrapper);
         });
-        buttonWrapper.appendChild(_this6[buttonProp]);
-        _this6.wizardNav.appendChild(buttonWrapper);
-      });
-
+      }
       // Add the wizard navigation
       this.element.appendChild(this.wizardNav);
     }
