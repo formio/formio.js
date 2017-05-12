@@ -830,12 +830,12 @@ export class BaseComponent {
       this.pristine = false;
     }
     if (this.events) {
-      if (this.type !== 'textfield'
-          || (this.type === 'textfield' && this.error)) {
+      if ((this.type !== 'textfield' && this.type !== 'email')
+            || (this.type === 'textfield' && this.error || this.type === 'email' && this.error)) {
         this.emit('componentChange', {
-            component: this.component,
-            value: this.value,
-            validate: !noValidate
+          component: this.component,
+          value: this.value,
+          validate: !noValidate
         });
       }
     }
