@@ -2971,7 +2971,10 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   }, {
     key: 'createElement',
     value: function createElement() {
-      var className = 'form-group checkbox';
+      var className = 'form-group';
+      if (this.component.label) {
+        className += ' checkbox';
+      }
       if (this.component.validate && this.component.validate.required) {
         className += ' required';
       }

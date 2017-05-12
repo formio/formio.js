@@ -55,6 +55,13 @@ form.form = {
             }
           },
           {
+            type: 'checkbox',
+            label: 'Dependant',
+            key: 'dependant',
+            inputType: 'checkbox',
+            input: true
+          },
+          {
             label: 'Gender',
             key: 'gender',
             type: 'select',
@@ -133,6 +140,13 @@ form.form = {
               arrowkeys: true
             }
           },
+         {
+           type: 'checkbox',
+           label: 'Dependant',
+           key: 'dependant',
+           inputType: 'checkbox',
+           input: true
+         },
           {
             label: 'Gender',
             key: 'gender',
