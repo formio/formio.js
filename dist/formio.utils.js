@@ -493,9 +493,6 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     });
 
 
-    // The operation is called with "data" bound to its "this" and "values" passed as arguments.
-    // Structured commands like % or > can name formal arguments while flexible commands (like missing or merge) can operate on the pseudo-array arguments
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
     if(typeof operations[op] === "function") {
       return operations[op].apply(data, values);
     }else if(op.indexOf(".") > 0) { // Contains a dot, and not in the 0th position
@@ -511,9 +508,14 @@ http://ricostacruz.com/cheatsheets/umdjs.html
       }
 
       return operation.apply(data, values);
+    }else{
+      throw new Error("Unrecognized operation " + op );
     }
 
-    throw new Error("Unrecognized operation " + op );
+    // The operation is called with "data" bound to its "this" and "values" passed as arguments.
+    // Structured commands like % or > can name formal arguments while flexible commands (like missing or merge) can operate on the pseudo-array arguments
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
+    return operations[op].apply(data, values);
   };
 
   jsonLogic.uses_data = function(logic) {
