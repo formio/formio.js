@@ -166,7 +166,10 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   createElement() {
-    let className = &apos;form-group checkbox&apos;;
+    let className = &apos;form-group&apos;;
+    if (this.component.label) {
+      className += &apos; checkbox&apos;;
+    }
     if (this.component.validate &amp;&amp; this.component.validate.required) {
       className += &apos; required&apos;;
     }
