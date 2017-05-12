@@ -3,8 +3,25 @@ import Choices from 'choices.js';
 import Formio from '../../formio';
 import _each from 'lodash/each';
 import _get from 'lodash/get';
+import _isEmpty from 'lodash/isEmpty';
 import _isArray from 'lodash/isArray';
 export class SelectComponent extends BaseComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+
+    // If they wish to refresh on a value, then add that here.
+    if (this.component.refreshOn) {
+      this.on('change', (event) => {
+        if (this.component.refreshOn === 'data') {
+          this.updateItems();
+        }
+        else if (event.changed.component.key === this.component.refreshOn) {
+          this.updateItems();
+        }
+      });
+    }
+  }
+
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'select';
@@ -29,16 +46,27 @@ export class SelectComponent extends BaseComponent {
       return;
     }
     this.choices._clearChoices();
+
+    // If they provided select values, then we need to get them instead.
+    if (this.component.selectValues) {
+      items = _get(items, this.component.selectValues);
+    }
+
+    // Iterate through each of the items.
     _each(items, (item) => {
+
+      // Add the choice to the select list.
       this.choices._addChoice(false, false, this.itemValue(item), this.itemTemplate(item));
     });
+
+    // If a value is provided, then select it.
     if (this.value) {
       this.setValue(this.value, true);
     }
   }
 
   loadItems(url, input, headers, options) {
-    let query = {
+    let query = (this.component.dataSrc === 'url') ? {} : {
       limit: 100,
       skip: 0
     };
@@ -65,8 +93,10 @@ export class SelectComponent extends BaseComponent {
       query.select = this.component.selectFields;
     }
 
-    // Add the query string.
-    url += '?' + Formio.serialize(query);
+    if (!_isEmpty(query)) {
+      // Add the query string.
+      url += '?' + Formio.serialize(query);
+    }
 
     // Make the request.
     Formio.request(url, null, null, headers, options)
@@ -114,6 +144,7 @@ export class SelectComponent extends BaseComponent {
       placeholder: !!this.component.placeholder,
       placeholderValue: this.component.placeholder,
       removeItemButton: true,
+      itemSelectText: '',
       classNames: {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
@@ -154,12 +185,12 @@ export class SelectComponent extends BaseComponent {
 
         // If it is not found, then add it.
         if (!foundChoice) {
-          this.choices._addChoice(false, false, this.itemValue(value), this.itemTemplate(value));
+          this.choices._addChoice(false, false, value, value);
         }
       }
 
       // Now set the value.
-      this.choices.setValueByChoice(_isArray(value) ? this.itemValue(value) : [this.itemValue(value)]);
+      this.choices.setValueByChoice(_isArray(value) ? value : [value]);
     }
     if (!noUpdate) {
       this.updateValue(noValidate);
