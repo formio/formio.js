@@ -100,7 +100,7 @@ export class DateTimeComponent extends BaseComponent {
     return (new Date(timestamp * 1000));
   }
 
-  getValidateValue() {
+  getRawValue() {
     let values = [];
     for (let i in this.inputs) {
       if (!this.component.multiple) {

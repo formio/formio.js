@@ -262,6 +262,16 @@ export class BaseComponent {
   }
 
   /**
+   * Called before a submission is triggered allowing the components
+   * to perform special async functions.
+   *
+   * @return {*}
+   */
+  beforeSubmit() {
+    return Promise.resolve(true);
+  }
+
+  /**
    * Builds the component.
    */
   build() {
@@ -972,7 +982,7 @@ export class BaseComponent {
     let message = Validator.check(
       this.validators,
       this.component,
-      this.getValidateValue(),
+      this.getRawValue(),
       data || this.data,
       this.data,
       this.t.bind(this)
@@ -983,7 +993,7 @@ export class BaseComponent {
     return message ? false : true;
   }
 
-  getValidateValue() {
+  getRawValue() {
     return this.data[this.component.key];
   }
 

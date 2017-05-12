@@ -207,9 +207,25 @@ export class FormioComponents extends BaseComponent {
     _each(this.components, (comp) => comp.checkConditions(data));
   }
 
+  /**
+   * Allow components to hook into the next page trigger to perform their own logic.
+   *
+   * @return {*}
+   */
   beforeNext() {
     var ops = [];
     _each(this.components, (comp) => ops.push(comp.beforeNext()));
+    return Promise.all(ops);
+  }
+
+  /**
+   * Allow components to hook into the submission to provide their own async data.
+   *
+   * @return {*}
+   */
+  beforeSubmit() {
+    var ops = [];
+    _each(this.components, (comp) => ops.push(comp.beforeSubmit()));
     return Promise.all(ops);
   }
 

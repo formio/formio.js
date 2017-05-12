@@ -53,6 +53,7 @@ export class FormioForm extends FormioComponents {
     this._src = '';
     this._loading = true;
     this._submission = {};
+    this._form = null;
 
     /**
      * The Formio instance for this form.
@@ -303,8 +304,20 @@ export class FormioForm extends FormioComponents {
       return this.onFormBuild.then(() => this.createForm(form));
     }
 
+    // Set the form object.
+    this._form = form;
+
     // Create the form.
     return this.createForm(form);
+  }
+
+  /**
+   * Gets the form object.
+   *
+   * @returns {Object} - The form JSON schema.
+   */
+  get form() {
+    return this._form;
   }
 
   /**
@@ -361,7 +374,12 @@ export class FormioForm extends FormioComponents {
     /**
      * {@link BaseComponent.component}
      */
-    this.component = form;
+    if (this.component) {
+      this.component.components = form.components;
+    }
+    else {
+      this.component = form;
+    }
     this.loading = true;
     return this.onFormBuild = this.render().then(() => {
       return this.onLoaded.then(() => {
@@ -540,6 +558,21 @@ export class FormioForm extends FormioComponents {
     this.reset();
   }
 
+  executeSubmit() {
+    if (this.checkValidity(this.submission.data, true)) {
+      this.loading = true;
+      if (!this.formio) {
+        return this.onSubmit(this.submission, false);
+      }
+      return this.formio.saveSubmission(this.submission)
+        .then((submission) => this.onSubmit(submission, true), (err) => this.onSubmissionError(err))
+        .catch((err) => this.onSubmissionError(err));
+    }
+    else {
+      this.showErrors();
+    }
+  }
+
   /**
    * Submits the form.
    *
@@ -555,22 +588,16 @@ export class FormioForm extends FormioComponents {
    *   console.log(submission);
    * });
    *
+   * @param {boolean} before - If this submission occured from the before handlers.
+   *
    * @returns {Promise} - A promise when the form is done submitting.
    */
-  submit() {
-    // Validate the form builed, before submission
-    if (this.checkValidity(this.submission.data, true)) {
-      this.loading = true;
-      if (!this.formio) {
-        return this.onSubmit(this.submission, false);
-      }
-      return this.formio.saveSubmission(this.submission)
-        .then((submission) => this.onSubmit(submission, true))
-        .catch((err) => this.onSubmissionError(err));
+  submit(before) {
+    if (!before) {
+      return this.beforeSubmit().then(() => this.executeSubmit());
     }
     else {
-      this.showErrors();
-      return Promise.reject('Invalid Submission');
+      return this.executeSubmit();
     }
   }
 }
