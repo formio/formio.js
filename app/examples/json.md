@@ -30,7 +30,7 @@ form.form = {
       key: 'select',
       label: 'Favorite Color',
       placeholder: 'Select your favorite color',
-      template: '<span>{{ item.label }}</span>',
+      template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>',
       multiple: true,
       dataSrc: 'values',
       input: true,

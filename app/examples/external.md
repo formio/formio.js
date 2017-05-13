@@ -48,10 +48,10 @@ form.form = {
       placeholder: 'Select your model',
       dataSrc: 'url',
       data: {
-        url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{{ data.make }}?format=json'
+        url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{% raw %}{{ data.make }}{% endraw %}?format=json'
       },
       valueProperty: 'Model_Name',
-      template: '<span>{{ item.Model_Name }}</span>"',
+      template: '<span>{% raw %}{{ item.Model_Name }}{% endraw %}</span>"',
       refreshOn: 'make',
       selectValues: 'Results'
     }
