@@ -87,7 +87,7 @@ form.form = {
               ]
             },
             dataSrc: 'values',
-            template: '<span>\{\{ item.label \}\}</span>'
+            template: '<span>{{ item.label }}</span>'
           }
         ]
       }
