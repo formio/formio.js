@@ -15,21 +15,25 @@ form.form = {
         label: 'Children',
         key: 'children',
         type: 'datagrid',
+        input: true,
         components: [
           {
             label: 'First Name',
             key: 'firstName',
-            type: 'textfield'
+            type: 'textfield',
+            input: true
           },
           {
             label: 'Last Name',
             key: 'lastName',
-            type: 'textfield'
+            type: 'textfield',
+            input: true
           },
           {
             label: 'Birthdate',
             key: 'birthdate',
             type: 'datetime',
+            input: true,
             format: 'yyyy-MM-dd hh:mm a',
             enableDate: true,
             enableTime: true,
@@ -65,6 +69,7 @@ form.form = {
             label: 'Gender',
             key: 'gender',
             type: 'select',
+            input: true,
             data: {
               values: [
                 {
@@ -101,21 +106,25 @@ form.form = {
         label: 'Children',
         key: 'children',
         type: 'datagrid',
+        input: true,
         components: [
           {
             label: 'First Name',
             key: 'firstName',
-            type: 'textfield'
+            type: 'textfield',
+            input: true
           },
           {
             label: 'Last Name',
             key: 'lastName',
-            type: 'textfield'
+            type: 'textfield',
+            input: true
           },
           {
             label: 'Birthdate',
             key: 'birthdate',
             type: 'datetime',
+            input: true,
             format: 'yyyy-MM-dd hh:mm a',
             enableDate: true,
             enableTime: true,
@@ -151,6 +160,7 @@ form.form = {
             label: 'Gender',
             key: 'gender',
             type: 'select',
+            input: true,
             data: {
               values: [
                 {
