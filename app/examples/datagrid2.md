@@ -18,84 +18,81 @@ form.form = {
         input: true,
         components: [
           {
-            type: 'panel',
-            label: 'User Information',
-            key: 'userinfo',
-            components: [
-              {
-                label: 'First Name',
-                key: 'firstName',
-                type: 'textfield',
-                input: true
-              },
-              {
-                label: 'Last Name',
-                key: 'lastName',
-                type: 'textfield',
-                input: true
-              },
-              {
-                label: 'Birthdate',
-                key: 'birthdate',
-                type: 'datetime',
-                input: true,
-                format: 'yyyy-MM-dd hh:mm a',
-                enableDate: true,
-                enableTime: true,
-                defaultDate: '',
-                datepickerMode: 'day',
-                datePicker: {
-                  showWeeks: true,
-                  startingDay: 0,
-                  initDate: '',
-                  minMode: 'day',
-                  maxMode: 'year',
-                  yearRows: 4,
-                  yearColumns: 5,
-                  datepickerMode: 'day'
+            label: 'First Name',
+            key: 'firstName',
+            type: 'textfield',
+            input: true
+          },
+          {
+            label: 'Last Name',
+            key: 'lastName',
+            type: 'textfield',
+            input: true
+          },
+          {
+            label: 'Gender',
+            key: 'gender',
+            type: 'select',
+            input: true,
+            data: {
+              values: [
+                {
+                  value: 'male',
+                  label: 'Male'
                 },
-                timePicker: {
-                  hourStep: 1,
-                  minuteStep: 1,
-                  showMeridian: true,
-                  readonlyInput: false,
-                  mousewheel: true,
-                  arrowkeys: true
+                {
+                  value: 'female',
+                  label: 'Female'
+                },
+                {
+                  value: 'other',
+                  label: 'Other'
                 }
-              },
-              {
-                type: 'checkbox',
-                label: 'Dependant',
-                key: 'dependant',
-                inputType: 'checkbox',
-                input: true
-              },
-              {
-                label: 'Gender',
-                key: 'gender',
-                type: 'select',
-                input: true,
-                data: {
-                  values: [
-                    {
-                      value: 'male',
-                      label: 'Male'
-                    },
-                    {
-                      value: 'female',
-                      label: 'Female'
-                    },
-                    {
-                      value: 'other',
-                      label: 'Other'
-                    }
-                  ]
-                },
-                dataSrc: 'values',
-                template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>'
-              }
-            
-            ]
+              ]
+            },
+            dataSrc: 'values',
+            template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>'
+          },
+          {
+            type: 'checkbox',
+            label: 'Dependant',
+            key: 'dependant',
+            inputType: 'checkbox',
+            input: true
+          },
+          {
+            label: 'Birthdate',
+            key: 'birthdate',
+            type: 'datetime',
+            input: true,
+            format: 'yyyy-MM-dd hh:mm a',
+            enableDate: true,
+            enableTime: true,
+            defaultDate: '',
+            datepickerMode: 'day',
+            datePicker: {
+              showWeeks: true,
+              startingDay: 0,
+              initDate: '',
+              minMode: 'day',
+              maxMode: 'year',
+              yearRows: 4,
+              yearColumns: 5,
+              datepickerMode: 'day'
+            },
+            timePicker: {
+              hourStep: 1,
+              minuteStep: 1,
+              showMeridian: true,
+              readonlyInput: false,
+              mousewheel: true,
+              arrowkeys: true
+            },
+            "conditional": {
+              "eq": "true",
+              "when": "dependant",
+              "show": "true"
+            }
           }
         ]
       }
@@ -134,6 +131,37 @@ form.form = {
                 input: true
               },
               {
+                label: 'Gender',
+                key: 'gender',
+                type: 'select',
+                input: true,
+                data: {
+                  values: [
+                    {
+                      value: 'male',
+                      label: 'Male'
+                    },
+                    {
+                      value: 'female',
+                      label: 'Female'
+                    },
+                    {
+                      value: 'other',
+                      label: 'Other'
+                    }
+                  ]
+                },
+                dataSrc: 'values',
+                template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>'
+              },
+              {
+                type: 'checkbox',
+                label: 'Dependant',
+                key: 'dependant',
+                inputType: 'checkbox',
+                input: true
+              },
+              {
                 label: 'Birthdate',
                 key: 'birthdate',
                 type: 'datetime',
@@ -160,38 +188,12 @@ form.form = {
                   readonlyInput: false,
                   mousewheel: true,
                   arrowkeys: true
-                }
-              },
-              {
-                type: 'checkbox',
-                label: 'Dependant',
-                key: 'dependant',
-                inputType: 'checkbox',
-                input: true
-              },
-              {
-                label: 'Gender',
-                key: 'gender',
-                type: 'select',
-                input: true,
-                data: {
-                  values: [
-                    {
-                      value: 'male',
-                      label: 'Male'
-                    },
-                    {
-                      value: 'female',
-                      label: 'Female'
-                    },
-                    {
-                      value: 'other',
-                      label: 'Other'
-                    }
-                  ]
                 },
-                dataSrc: 'values',
-                template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>'
+                "conditional": {
+                  "eq": "true",
+                  "when": "dependant",
+                  "show": "true"
+                }
               }
             
             ]
