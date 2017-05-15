@@ -261,7 +261,7 @@ export class FormioComponents extends BaseComponent {
     return this.beforeNextPageCallback;
   }
 
-  setBeforeNetPageCallback(beforeNextPageCallback) {
+  setBeforeNextPageCallback(beforeNextPageCallback) {
     this.beforeNextPageCallback = beforeNextPageCallback;
   }
 
