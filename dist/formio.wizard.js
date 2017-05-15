@@ -85,6 +85,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     _this.type = 'components';
     _this.components = [];
     _this.hidden = [];
+
+    _this.beforeNextPageCallback = null;
     return _this;
   }
 
@@ -375,6 +377,16 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       this.eachComponent(function (component) {
         return _this7.setHidden(component);
       });
+    }
+  }, {
+    key: 'getBeforeNextPageCallback',
+    value: function getBeforeNextPageCallback() {
+      return this.beforeNextPageCallback;
+    }
+  }, {
+    key: 'setBeforeNetPageCallback',
+    value: function setBeforeNetPageCallback(beforeNextPageCallback) {
+      this.beforeNextPageCallback = beforeNextPageCallback;
     }
   }, {
     key: 'getValue',
