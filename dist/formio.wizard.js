@@ -7329,6 +7329,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         });
       } else {
         this.showErrors();
+        return _nativePromiseOnly2.default.reject('Invalid Submission');
       }
     }
 
@@ -8674,27 +8675,25 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     }
   }, {
     key: 'getCondionalNextPage',
-    value: function getCondionalNextPage(data, page) {
-
-      var form = this.pages[page];
+    value: function getCondionalNextPage(data, currentPage) {
+      var form = this.pages[currentPage];
       // Check conditional nextPage
       if (form) {
-        page++;
+        var page = ++currentPage;
         if (form.nextPage) {
           // Allow for script execution.
           if (typeof form.nextPage === 'string') {
             try {
-              var script = '(function() {';
-              script += form.nextPage.toString();
-              script += '; return page; })()';
-              var result = eval(script);
-              var newPage = parseInt(result, 10);
-              if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
-                return newPage;
+              eval(form.nextPage.toString());
+              if (!isNaN(parseInt(page, 10)) && isFinite(page)) {
+                return page;
+              }
+              if (typeof page !== 'string') {
+                return page;
               }
 
               // Assume they passed back the key of the page to go to.
-              return this.getPageIndexByKey(result);
+              return this.getPageIndexByKey(page);
             } catch (e) {
               console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);
               return page;
@@ -8702,17 +8701,17 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
           }
           // Or use JSON Logic.
           else {
-              var _result = _jsonLogicJs2.default.apply(form.nextPage, {
+              var result = _jsonLogicJs2.default.apply(form.nextPage, {
                 data: data,
                 page: page,
                 form: form
               });
-              var _newPage = parseInt(_result, 10);
-              if (!isNaN(parseInt(_newPage, 10)) && isFinite(_newPage)) {
-                return _newPage;
+              var newPage = parseInt(result, 10);
+              if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
+                return newPage;
               }
 
-              return this.getPageIndexByKey(_result);
+              return this.getPageIndexByKey(result);
             }
         }
 

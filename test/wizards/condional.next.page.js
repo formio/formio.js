@@ -2,7 +2,7 @@ import _map from 'lodash/map';
 import assert from 'power-assert';
 import { Harness } from '../harness';
 module.exports = {
-  title: 'Wizard With Condinal Next Page',
+  title: 'Wizard With Conditional Next Page',
   form: {
     _id: '58cdd541d482d500aaf48368',
     machineName: 'eguamgudzerbvzc:wizard',
@@ -17,7 +17,7 @@ module.exports = {
       key: 'panel1',
       input: false,
       title: 'Page 1',
-      nextPage: 'if (data.a == "goTo2") { return 2; } return 1;',
+      nextPage: 'if (data.a == "goTo2") { page = 2; } else { page = 1; }',
       theme: 'default',
       components: [{
         input: true,
@@ -68,7 +68,7 @@ module.exports = {
       input: false,
       title: 'Page 2',
       theme: 'default',
-      nextPage: 'if (data.c == "directSubmit") { return null; } return 2;',
+      nextPage: 'if (data.c == "directSubmit") { page = null; }',
       components: [{
         input: true,
         tableView: true,
@@ -405,7 +405,7 @@ module.exports = {
           // Check updateWizardNav event
           form.on('updateWizardNav', (change) => {
             assert.equal(change.oldpage, 2);
-            assert.equal(change.newpage, 0);
+            assert.equal(change.newpage, null);
             // Check submission
             assert.deepEqual(change.submission.data, {
               a: 'a',

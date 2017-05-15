@@ -21,27 +21,25 @@ export class FormioWizard extends FormioForm {
     return Promise.reject('Page not found');
   }
 
-  getCondionalNextPage(data, page) {
-
-    let form = this.pages[page];
+  getCondionalNextPage(data, currentPage) {
+    let form = this.pages[currentPage];
     // Check conditional nextPage
     if (form) {
-      page++;
+      let page = ++currentPage;
       if(form.nextPage) {
         // Allow for script execution.
         if (typeof form.nextPage === 'string') {
           try {
-            let script = '(function() {';
-            script += form.nextPage.toString();
-            script += '; return page; })()';
-            let result = eval(script);
-            let newPage = parseInt(result, 10);
-            if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
-              return newPage;
+            eval(form.nextPage.toString());
+            if (!isNaN(parseInt(page, 10)) && isFinite(page)) {
+              return page;
+            }
+            if (typeof page !== 'string') {
+              return page;
             }
 
             // Assume they passed back the key of the page to go to.
-            return this.getPageIndexByKey(result);
+            return this.getPageIndexByKey(page);
           }
           catch (e) {
             console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);

@@ -570,6 +570,7 @@ export class FormioForm extends FormioComponents {
     }
     else {
       this.showErrors();
+      return Promise.reject('Invalid Submission');
     }
   }
 

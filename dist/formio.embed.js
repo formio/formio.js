@@ -7353,6 +7353,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         });
       } else {
         this.showErrors();
+        return _nativePromiseOnly2.default.reject('Invalid Submission');
       }
     }
 
