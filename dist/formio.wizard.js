@@ -8456,11 +8456,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
           thisInstance.emit('nextPage', { page: thisInstance.page, submission: thisInstance.submission });
         });
       } else {
-        /*return Promise.reject(
-          thisInstance.showErrors(message)
-        );*/
-
-        return _nativePromiseOnly2.default.reject(thisInstance.addInputError(message));
+        return _nativePromiseOnly2.default.reject(thisInstance.showErrors(message));
       }
     }
   }, {
