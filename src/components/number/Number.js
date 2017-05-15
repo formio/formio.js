@@ -20,11 +20,19 @@ export class NumberComponent extends BaseComponent {
   }
 
   getValueAt(index) {
+    if (!this.inputs.length || !this.inputs[index]) {
+      return null;
+    }
+    let val = this.inputs[index].value;
+    if (!val) {
+      return null;
+    }
+
     if (this.component.validate && this.component.validate.integer) {
-      return parseInt(this.inputs[index].value, 10);
+      return parseInt(val, 10);
     }
     else {
-      return parseFloat(this.inputs[index].value);
+      return parseFloat(val);
     }
   }
 

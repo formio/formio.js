@@ -2161,14 +2161,8 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#defaultvalue",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-defaultValue",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-defaultValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#defaultValue",
-    "method"
-  ],
-  [
-    "src/components/datagrid/datagrid.js~datagridcomponent#element",
-    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-element",
-    "src/components/datagrid/DataGrid.js~DataGridComponent#element",
     "member"
   ],
   [
@@ -2188,6 +2182,12 @@ window.esdocSearchIndex = [
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-setValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#setValue",
     "method"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#tableelement",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-tableElement",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#tableElement",
+    "member"
   ],
   [
     "src/components/datagrid/datagrid.js~datagridcomponent#tbody",
@@ -2898,6 +2898,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/select/select.js~selectcomponent#constructor",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-constructor-constructor",
+    "src/components/select/Select.js~SelectComponent#constructor",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#createwrapper",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-createWrapper",
     "src/components/select/Select.js~SelectComponent#createWrapper",
@@ -3397,13 +3403,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
@@ -3511,13 +3517,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#src",
-    "class/src/formio.form.js~FormioForm.html#instance-get-src",
+    "class/src/formio.form.js~FormioForm.html#instance-set-src",
     "src/formio.form.js~FormioForm#src",
     "member"
   ],
   [
     "src/formio.form.js~formioform#src",
-    "class/src/formio.form.js~FormioForm.html#instance-set-src",
+    "class/src/formio.form.js~FormioForm.html#instance-get-src",
     "src/formio.form.js~FormioForm#src",
     "member"
   ],

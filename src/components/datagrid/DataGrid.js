@@ -1,16 +1,19 @@
 import _each from 'lodash/each';
 import _cloneDeep from 'lodash/cloneDeep';
 import _isArray from 'lodash/isArray';
-import { BaseComponent } from '../base/Base';
-export class DataGridComponent extends BaseComponent {
+import { FormioComponents } from '../Components';
+export class DataGridComponent extends FormioComponents {
   build() {
+    this.createElement();
+    this.createLabel(this.element);
+
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
     _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
         tableClass += 'table-' + prop + ' ';
       }
     });
-    this.element = this.ce('element', 'table', {
+    this.tableElement = this.ce('element', 'table', {
       class: tableClass
     });
 
@@ -23,13 +26,13 @@ export class DataGridComponent extends BaseComponent {
       if (comp.validate && comp.validate.required) {
         th.setAttribute('class', 'field-required');
       }
-      th.appendChild(this.text(comp.label));
+      th.appendChild(this.text(comp.label || comp.title || comp.key));
       tr.appendChild(th);
     });
     let th = this.ce('headerExtra', 'th');
     tr.appendChild(th);
     thead.appendChild(tr);
-    this.element.appendChild(thead);
+    this.tableElement.appendChild(thead);
 
     // Create the table body.
     this.tbody = this.ce('table', 'tbody');
@@ -38,10 +41,11 @@ export class DataGridComponent extends BaseComponent {
     this.addValue();
 
     // Add the body to the table and to the element.
-    this.element.appendChild(this.tbody);
+    this.tableElement.appendChild(this.tbody);
+    this.element.appendChild(this.tableElement);
   }
 
-  defaultValue() {
+  get defaultValue() {
     return {};
   }
 
@@ -104,12 +108,9 @@ export class DataGridComponent extends BaseComponent {
         if (!value[index].hasOwnProperty(key)) {
           return;
         }
-        col.value = value[index][key];
+        col.setValue(value[index][key], noUpdate, noValidate);
       });
     });
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
   }
 
   /**
@@ -127,7 +128,7 @@ export class DataGridComponent extends BaseComponent {
           col.component &&
           col.component.key
         ) {
-          value[col.component.key] = col.value;
+          value[col.component.key] = col.getValue();
         }
       });
       values.push(value);

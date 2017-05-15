@@ -405,7 +405,7 @@ module.exports = {
           // Check updateWizardNav event
           form.on('updateWizardNav', (change) => {
             assert.equal(change.oldpage, 2);
-            assert.equal(change.newpage, null);
+            assert.equal(change.newpage, 0);
             // Check submission
             assert.deepEqual(change.submission.data, {
               a: 'a',
