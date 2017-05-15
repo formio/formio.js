@@ -90,7 +90,7 @@ export class FormioWizard extends FormioForm {
   nextPageWithValidation(valid, message) {
     console.log('nextPageWithValidation');
 
-    if (typeof variable === 'undefined' && typeof message === 'undefined') {
+    if (typeof valid === 'undefined' && typeof message === 'undefined') {
       this.performRegularNextPage();
     } else {
       console.log('valid' + ' = ' + valid);
