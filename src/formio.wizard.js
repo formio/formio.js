@@ -60,6 +60,17 @@ export class FormioWizard extends FormioForm {
     return this.page - 1;
   }
 
+  performRegularNextPage() {
+    let currentPage = this.page;
+    let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+
+    return this.setPage(nextPage).then(() => {
+      this.historyPages[this.page] = currentPage;
+      this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+      this.emit('nextPage', {page: this.page, submission: this.submission});
+    });
+  }
+
   nextPage() {
     console.log('nextPage');
 
@@ -68,14 +79,7 @@ export class FormioWizard extends FormioForm {
       if (this.beforeNextPageCallback) {
         this.beforeNextPageCallback(this.submission.data, this.nextPageWithValidation);
       } else {
-        let currentPage = this.page;
-        let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
-
-        return this.setPage(nextPage).then(() => {
-          this.historyPages[this.page] = currentPage;
-          this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
-          this.emit('nextPage', {page: this.page, submission: this.submission});
-        });
+        this.performRegularNextPage();
       }
     }
     else {
@@ -83,10 +87,15 @@ export class FormioWizard extends FormioForm {
     }
   }
 
-  nextPageWithValidation() {
+  nextPageWithValidation(valid, message) {
     console.log('nextPageWithValidation');
 
-    
+    if (typeof variable === 'undefined' && typeof message === 'undefined') {
+      this.performRegularNextPage();
+    } else {
+      console.log('valid' + ' = ' + valid);
+      console.log('message' + ' = ' + message);
+    }
   }
 
   prevPage() {

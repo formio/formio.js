@@ -8405,10 +8405,22 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       return this.page - 1;
     }
   }, {
-    key: 'nextPage',
-    value: function nextPage() {
+    key: 'performRegularNextPage',
+    value: function performRegularNextPage() {
       var _this2 = this;
 
+      var currentPage = this.page;
+      var nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+
+      return this.setPage(nextPage).then(function () {
+        _this2.historyPages[_this2.page] = currentPage;
+        _this2._nextPage = _this2.getCondionalNextPage(_this2.submission.data, _this2.page);
+        _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+      });
+    }
+  }, {
+    key: 'nextPage',
+    value: function nextPage() {
       console.log('nextPage');
 
       // Validate the form before go to the next page
@@ -8416,14 +8428,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
         if (this.beforeNextPageCallback) {
           this.beforeNextPageCallback(this.submission.data, this.nextPageWithValidation);
         } else {
-          var currentPage = this.page;
-          var nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
-
-          return this.setPage(nextPage).then(function () {
-            _this2.historyPages[_this2.page] = currentPage;
-            _this2._nextPage = _this2.getCondionalNextPage(_this2.submission.data, _this2.page);
-            _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
-          });
+          this.performRegularNextPage();
         }
       } else {
         return _nativePromiseOnly2.default.reject(this.showErrors());
@@ -8431,8 +8436,15 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     }
   }, {
     key: 'nextPageWithValidation',
-    value: function nextPageWithValidation() {
+    value: function nextPageWithValidation(valid, message) {
       console.log('nextPageWithValidation');
+
+      if (typeof variable === 'undefined' && typeof message === 'undefined') {
+        this.performRegularNextPage();
+      } else {
+        console.log('valid' + ' = ' + valid);
+        console.log('message' + ' = ' + message);
+      }
     }
   }, {
     key: 'prevPage',
