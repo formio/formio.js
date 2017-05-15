@@ -63,20 +63,26 @@ export class FormioWizard extends FormioForm {
   nextPage() {
     console.log('nextPage');
 
-    // Validate the form builed, before go to the next page
+    // Validate the form before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
+      let beforeNextPageCallbackValid = true;
+
       if (this.beforeNextPageCallback) {
-        this.beforeNextPageCallback();
+        beforeNextPageCallbackValid = this.beforeNextPageCallback(this.submission.data);
       }
 
-      let currentPage = this.page;
-      let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
-      
-      return this.setPage(nextPage).then(() => {
-        this.historyPages[this.page] = currentPage;
-        this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
-        this.emit('nextPage', {page: this.page, submission: this.submission});
-      });
+      if (beforeNextPageCallbackValid) {
+        let currentPage = this.page;
+        let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+
+        return this.setPage(nextPage).then(() => {
+          this.historyPages[this.page] = currentPage;
+          this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+          this.emit('nextPage', {page: this.page, submission: this.submission});
+        });
+      } else {
+
+      }
     }
     else {
       return Promise.reject(this.showErrors());

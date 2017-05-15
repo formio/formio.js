@@ -8411,20 +8411,24 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
 
       console.log('nextPage');
 
-      // Validate the form builed, before go to the next page
+      // Validate the form before go to the next page
       if (this.checkValidity(this.submission.data, true)) {
+        var beforeNextPageCallbackValid = true;
+
         if (this.beforeNextPageCallback) {
-          this.beforeNextPageCallback();
+          beforeNextPageCallbackValid = this.beforeNextPageCallback(this.submission.data);
         }
 
-        var currentPage = this.page;
-        var nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+        if (beforeNextPageCallbackValid) {
+          var currentPage = this.page;
+          var nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
 
-        return this.setPage(nextPage).then(function () {
-          _this2.historyPages[_this2.page] = currentPage;
-          _this2._nextPage = _this2.getCondionalNextPage(_this2.submission.data, _this2.page);
-          _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
-        });
+          return this.setPage(nextPage).then(function () {
+            _this2.historyPages[_this2.page] = currentPage;
+            _this2._nextPage = _this2.getCondionalNextPage(_this2.submission.data, _this2.page);
+            _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+          });
+        } else {}
       } else {
         return _nativePromiseOnly2.default.reject(this.showErrors());
       }
