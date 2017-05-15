@@ -65,13 +65,9 @@ export class FormioWizard extends FormioForm {
 
     // Validate the form before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
-      let beforeNextPageCallbackValid = true;
-
       if (this.beforeNextPageCallback) {
-        beforeNextPageCallbackValid = this.beforeNextPageCallback(this.submission.data);
-      }
-
-      if (beforeNextPageCallbackValid) {
+        this.beforeNextPageCallback(this.submission.data, this.nextPageWithValidation);
+      } else {
         let currentPage = this.page;
         let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
 
@@ -80,13 +76,17 @@ export class FormioWizard extends FormioForm {
           this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
           this.emit('nextPage', {page: this.page, submission: this.submission});
         });
-      } else {
-
       }
     }
     else {
       return Promise.reject(this.showErrors());
     }
+  }
+
+  nextPageWithValidation() {
+    console.log('nextPageWithValidation');
+
+    
   }
 
   prevPage() {
