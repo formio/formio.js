@@ -108,8 +108,12 @@ export class FormioWizard extends FormioForm {
           thisInstance.emit('nextPage', {page: thisInstance.page, submission: thisInstance.submission});
         });
     } else {
-      return Promise.reject(
+      /*return Promise.reject(
         thisInstance.showErrors(message)
+      );*/
+
+      return Promise.reject(
+        thisInstance.addInputError(message)
       );
     }
   }
