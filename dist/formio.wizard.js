@@ -324,10 +324,11 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
-      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
+      var show = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
       (0, _each3.default)(this.components, function (comp) {
-        return comp.checkConditions(data);
+        show |= comp.checkConditions(data);
       });
+      return show;
     }
 
     /**
@@ -2236,7 +2237,7 @@ var BaseComponent = function () {
   }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
-      this.show(_utils2.default.checkCondition(this.component, this.data, data));
+      return this.show(_utils2.default.checkCondition(this.component, this.data, data));
     }
 
     /**
@@ -2278,6 +2279,7 @@ var BaseComponent = function () {
           element.style.position = 'absolute';
         }
       }
+      return _show;
     }
   }, {
     key: 'onChange',
@@ -3518,6 +3520,22 @@ var _createClass = function () {
   };
 }();
 
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
 var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
@@ -3566,10 +3584,22 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   _createClass(DataGridComponent, [{
     key: 'build',
     value: function build() {
-      var _this2 = this;
-
       this.createElement();
       this.createLabel(this.element);
+      this.addNewValue();
+      this.visibleColumns = {};
+      this.buildTable();
+    }
+  }, {
+    key: 'buildTable',
+    value: function buildTable(data) {
+      var _this2 = this;
+
+      data = data || {};
+      if (this.tableElement) {
+        this.element.removeChild(this.tableElement);
+        this.tableElement.innerHTML = '';
+      }
 
       var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
       (0, _each3.default)(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
@@ -3586,12 +3616,17 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       // Build the header.
       var tr = this.ce('headerRow', 'tr');
       (0, _each3.default)(this.component.components, function (comp) {
-        var th = _this2.ce('headerColumn', 'th');
-        if (comp.validate && comp.validate.required) {
-          th.setAttribute('class', 'field-required');
+        if (_this2.visibleColumns[comp.key]) {
+          var _th = _this2.ce('headerColumn', 'th');
+          if (comp.validate && comp.validate.required) {
+            _th.setAttribute('class', 'field-required');
+          }
+          var title = comp.label || comp.title;
+          if (title) {
+            _th.appendChild(_this2.text(title));
+          }
+          tr.appendChild(_th);
         }
-        th.appendChild(_this2.text(comp.label || comp.title || comp.key));
-        tr.appendChild(th);
       });
       var th = this.ce('headerExtra', 'th');
       tr.appendChild(th);
@@ -3601,8 +3636,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       // Create the table body.
       this.tbody = this.ce('table', 'tbody');
 
-      // Add a blank row.
-      this.addValue();
+      // Build the rows.
+      this.buildRows(data);
 
       // Add the body to the table and to the element.
       this.tableElement.appendChild(this.tbody);
@@ -3610,7 +3645,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     }
   }, {
     key: 'buildRows',
-    value: function buildRows() {
+    value: function buildRows(data) {
       var _this3 = this;
 
       var components = require('../index');
@@ -3622,14 +3657,19 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         (0, _each3.default)(_this3.component.components, function (col) {
           var column = (0, _cloneDeep3.default)(col);
           column.label = false;
-          var td = _this3.ce('tableColumn', 'td');
           var comp = components.create(column, _this3.options, row);
-          td.appendChild(comp.element);
           if (row.hasOwnProperty(column.key)) {
             comp.setValue(row[column.key]);
+          } else if (comp.type === 'components') {
+            comp.setValue(row);
           }
           cols[column.key] = comp;
-          tr.appendChild(td);
+          if (_this3.visibleColumns[col.key]) {
+            var _td = _this3.ce('tableColumn', 'td');
+            _td.appendChild(comp.element);
+            tr.appendChild(_td);
+            comp.checkConditions(data);
+          }
         });
         _this3.rows.push(cols);
         var td = _this3.ce('tableRemoveRow', 'td');
@@ -3646,6 +3686,34 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       td.appendChild(this.addButton());
       tr.appendChild(td);
       this.tbody.appendChild(tr);
+    }
+  }, {
+    key: 'checkConditions',
+    value: function checkConditions(data) {
+      var _this4 = this;
+
+      var show = _get(DataGridComponent.prototype.__proto__ || Object.getPrototypeOf(DataGridComponent.prototype), 'checkConditions', this).call(this, data);
+      var rebuild = false;
+      (0, _each3.default)(this.component.components, function (col) {
+        var showColumn = false;
+        (0, _each3.default)(_this4.rows, function (comps) {
+          showColumn |= comps[col.key].checkConditions(data);
+        });
+        if (_this4.visibleColumns[col.key] && !showColumn || !_this4.visibleColumns[col.key] && showColumn) {
+          rebuild = true;
+        }
+
+        _this4.visibleColumns[col.key] = showColumn;
+        show |= showColumn;
+      });
+
+      // If a rebuild is needed, then rebuild the table.
+      if (rebuild && show) {
+        this.buildTable(data);
+      }
+
+      // Return if this table should show.
+      return show;
     }
   }, {
     key: 'setValue',
@@ -5941,6 +6009,10 @@ var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
 
+var _isArray2 = require('lodash/isArray');
+
+var _isArray3 = _interopRequireDefault(_isArray2);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -5994,11 +6066,22 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
       });
       return value;
     }
+
+    /**
+     * Set the value of this component.
+     * @param value
+     */
+
   }, {
-    key: 'setValueAt',
-    value: function setValueAt(value, index) {
-      if (this.inputs && this.inputs[index]) {
-        this.inputs[index].checked = value.indexOf(this.inputs[index].value) !== -1;
+    key: 'setValue',
+    value: function setValue(value, noUpdate, noValidate) {
+      this.value = value;
+      value = (0, _isArray3.default)(value) ? value : [value];
+      (0, _each3.default)(this.inputs, function (input) {
+        input.checked = value.indexOf(input.value) !== -1;
+      });
+      if (!noUpdate) {
+        this.updateValue(noValidate);
       }
     }
   }]);
@@ -6006,7 +6089,7 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
   return SelectBoxesComponent;
 }(_Radio.RadioComponent);
 
-},{"../radio/Radio":26,"lodash/each":223}],30:[function(require,module,exports){
+},{"../radio/Radio":26,"lodash/each":223,"lodash/isArray":231}],30:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -9356,6 +9439,17 @@ module.exports = {
       flattened[path] = component;
     }, includeAll);
     return flattened;
+  },
+
+  /**
+   * Returns if this component has a conditional statement.
+   *
+   * @param component - The component JSON schema.
+   *
+   * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
+   */
+  hasCondition: function hasCondition(component) {
+    return component.hasOwnProperty('customConditional') && component.customConditional || component.hasOwnProperty('conditional') && component.conditional && component.conditional.when || component.hasOwnProperty('conditional') && component.conditional && component.conditional.json;
   },
 
   /**

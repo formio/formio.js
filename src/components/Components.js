@@ -203,8 +203,11 @@ export class FormioComponents extends BaseComponent {
   }
 
   checkConditions(data) {
-    super.checkConditions(data);
-    _each(this.components, (comp) => comp.checkConditions(data));
+    let show = super.checkConditions(data);
+    _each(this.components, (comp) => {
+      show |= comp.checkConditions(data);
+    });
+    return show;
   }
 
   /**

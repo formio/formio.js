@@ -809,7 +809,7 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    this.show(FormioUtils.checkCondition(this.component, this.data, data));
+    return this.show(FormioUtils.checkCondition(this.component, this.data, data));
   }
 
   /**
@@ -846,6 +846,7 @@ export class BaseComponent {
         element.style.position = 'absolute';
       }
     }
+    return show;
   }
 
   set visible(visible) {

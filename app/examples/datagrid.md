@@ -89,14 +89,9 @@ form.form = {
               arrowkeys: true
             },
             "conditional": {
-              "json": {
-                "===": [
-                  {
-                    "var": "data.dependant"
-                  },
-                  "true"
-                ]
-              }
+              "eq": "true",
+              "when": "dependant",
+              "show": "true"
             }
           }
         ]
@@ -190,14 +185,9 @@ form.form = {
               arrowkeys: true
             },
             "conditional": {
-              "json": {
-                "===": [
-                  {
-                    "var": "data.dependant"
-                  },
-                  "1"
-                ]
-              }
+              "eq": "true",
+              "when": "dependant",
+              "show": "true"
             }
           }
         ]
