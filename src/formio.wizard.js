@@ -66,7 +66,7 @@ export class FormioWizard extends FormioForm {
     // Validate the form before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
       if (this.beforeNextPageCallback) {
-        this.beforeNextPageCallback(this.submission.data, this.nextPageWithValidation);
+        this.beforeNextPageCallback(this, this.submission.data, this.nextPageWithValidation);
       } else {
         let currentPage = this.page;
         let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
@@ -83,23 +83,21 @@ export class FormioWizard extends FormioForm {
     }
   }
 
-  nextPageWithValidation(valid, message) {
+  nextPageWithValidation(thisInstance, valid, message) {
     console.log('nextPageWithValidation');
 
     if (typeof valid === 'undefined' && typeof message === 'undefined') {
-        let currentPage = this.page;
-        let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+        let currentPage = thisInstance.page;
+        let nextPage = thisInstance.getCondionalNextPage(thisInstance.submission.data, currentPage);
 
-        return this.setPage(nextPage).then(() => {
-          this.historyPages[this.page] = currentPage;
-          this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
-          this.emit('nextPage', {page: this.page, submission: this.submission});
+        return thisInstance.setPage(nextPage).then(() => {
+          thisInstance.historyPages[thisInstance.page] = currentPage;
+          thisInstance._nextPage = thisInstance.getCondionalNextPage(thisInstance.submission.data, thisInstance.page);
+          thisInstance.emit('nextPage', {page: thisInstance.page, submission: thisInstance.submission});
         });
     } else {
       console.log('valid' + ' = ' + valid);
       console.log('message' + ' = ' + message);
-
-      
     }
   }
 
