@@ -109,7 +109,7 @@ export class FormioWizard extends FormioForm {
         });
     } else {
       return Promise.reject(
-        this.showErrors(message)
+        thisInstance.showErrors(message)
       );
     }
   }
