@@ -8397,6 +8397,8 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     value: function nextPage() {
       var _this2 = this;
 
+      console.log('nextPage');
+
       // Validate the form builed, before go to the next page
       if (this.checkValidity(this.submission.data, true)) {
         var currentPage = this.page;
@@ -14759,6 +14761,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     });
 
 
+    // The operation is called with "data" bound to its "this" and "values" passed as arguments.
+    // Structured commands like % or > can name formal arguments while flexible commands (like missing or merge) can operate on the pseudo-array arguments
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
     if(typeof operations[op] === "function") {
       return operations[op].apply(data, values);
     }else if(op.indexOf(".") > 0) { // Contains a dot, and not in the 0th position
@@ -14774,14 +14779,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
       }
 
       return operation.apply(data, values);
-    }else{
-      throw new Error("Unrecognized operation " + op );
     }
 
-    // The operation is called with "data" bound to its "this" and "values" passed as arguments.
-    // Structured commands like % or > can name formal arguments while flexible commands (like missing or merge) can operate on the pseudo-array arguments
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
-    return operations[op].apply(data, values);
+    throw new Error("Unrecognized operation " + op );
   };
 
   jsonLogic.uses_data = function(logic) {
