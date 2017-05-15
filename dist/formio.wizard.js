@@ -8434,7 +8434,19 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     value: function nextPageWithValidation(thisInstance, valid, message) {
       console.log('nextPageWithValidation');
 
+      var proceedToNextPage = false;
+
+      // If no data given, then proceed to the next page.
       if (typeof valid === 'undefined' && typeof message === 'undefined') {
+        proceedToNextPage = true;
+      }
+
+      // If data was given and the valid flag is true.
+      if (valid) {
+        proceedToNextPage = true;
+      }
+
+      if (proceedToNextPage) {
         var currentPage = thisInstance.page;
         var nextPage = thisInstance.getCondionalNextPage(thisInstance.submission.data, currentPage);
 
@@ -8444,8 +8456,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
           thisInstance.emit('nextPage', { page: thisInstance.page, submission: thisInstance.submission });
         });
       } else {
-        console.log('valid' + ' = ' + valid);
-        console.log('message' + ' = ' + message);
+        return _nativePromiseOnly2.default.reject(this.showErrors(message));
       }
     }
   }, {

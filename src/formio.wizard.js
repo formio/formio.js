@@ -86,7 +86,19 @@ export class FormioWizard extends FormioForm {
   nextPageWithValidation(thisInstance, valid, message) {
     console.log('nextPageWithValidation');
 
+    let proceedToNextPage = false;
+
+    // If no data given, then proceed to the next page.
     if (typeof valid === 'undefined' && typeof message === 'undefined') {
+      proceedToNextPage = true;
+    }
+
+    // If data was given and the valid flag is true.
+    if (valid) {
+      proceedToNextPage = true;
+    }
+
+    if (proceedToNextPage) {
         let currentPage = thisInstance.page;
         let nextPage = thisInstance.getCondionalNextPage(thisInstance.submission.data, currentPage);
 
@@ -96,8 +108,9 @@ export class FormioWizard extends FormioForm {
           thisInstance.emit('nextPage', {page: thisInstance.page, submission: thisInstance.submission});
         });
     } else {
-      console.log('valid' + ' = ' + valid);
-      console.log('message' + ' = ' + message);
+      return Promise.reject(
+        this.showErrors(message)
+      );
     }
   }
 
