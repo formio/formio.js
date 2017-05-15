@@ -65,6 +65,10 @@ export class FormioWizard extends FormioForm {
 
     // Validate the form builed, before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
+      if (this.beforeNextPageCallback) {
+        this.beforeNextPageCallback();
+      }
+
       let currentPage = this.page;
       let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
       

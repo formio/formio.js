@@ -8413,6 +8413,10 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
 
       // Validate the form builed, before go to the next page
       if (this.checkValidity(this.submission.data, true)) {
+        if (this.beforeNextPageCallback) {
+          this.beforeNextPageCallback();
+        }
+
         var currentPage = this.page;
         var nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
 
