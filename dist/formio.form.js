@@ -85,6 +85,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     _this.type = 'components';
     _this.components = [];
     _this.hidden = [];
+
+    _this.beforeNextPageCallback = null;
     return _this;
   }
 
@@ -375,6 +377,16 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       this.eachComponent(function (component) {
         return _this7.setHidden(component);
       });
+    }
+  }, {
+    key: 'getBeforeNextPageCallback',
+    value: function getBeforeNextPageCallback() {
+      return this.beforeNextPageCallback;
+    }
+  }, {
+    key: 'setBeforeNextPageCallback',
+    value: function setBeforeNextPageCallback(beforeNextPageCallback) {
+      this.beforeNextPageCallback = beforeNextPageCallback;
     }
   }, {
     key: 'getValue',
@@ -2223,11 +2235,13 @@ var BaseComponent = function () {
         this.pristine = false;
       }
       if (this.events) {
-        this.emit('componentChange', {
-          component: this.component,
-          value: this.value,
-          validate: !noValidate
-        });
+        if (this.type !== 'textfield' && this.type !== 'email' || this.type === 'textfield' && this.error || this.type === 'email' && this.error) {
+          this.emit('componentChange', {
+            component: this.component,
+            value: this.value,
+            validate: !noValidate
+          });
+        }
       }
     }
 
@@ -2997,7 +3011,9 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       }
       this.addInput(input, this.label);
       if (!this.options.inputsOnly) {
-        this.label.appendChild(document.createTextNode(this.component.label));
+        var labelElement = document.createElement('div');
+        labelElement.innerHTML = this.component.label;
+        this.label.appendChild(labelElement);
       }
       container.appendChild(this.label);
     }
@@ -14467,6 +14483,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     });
 
 
+    // The operation is called with "data" bound to its "this" and "values" passed as arguments.
+    // Structured commands like % or > can name formal arguments while flexible commands (like missing or merge) can operate on the pseudo-array arguments
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
     if(typeof operations[op] === "function") {
       return operations[op].apply(data, values);
     }else if(op.indexOf(".") > 0) { // Contains a dot, and not in the 0th position
@@ -14482,14 +14501,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
       }
 
       return operation.apply(data, values);
-    }else{
-      throw new Error("Unrecognized operation " + op );
     }
 
-    // The operation is called with "data" bound to its "this" and "values" passed as arguments.
-    // Structured commands like % or > can name formal arguments while flexible commands (like missing or merge) can operate on the pseudo-array arguments
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
-    return operations[op].apply(data, values);
+    throw new Error("Unrecognized operation " + op );
   };
 
   jsonLogic.uses_data = function(logic) {

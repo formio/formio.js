@@ -10,11 +10,15 @@ export class FormioWizard extends FormioForm {
     this.page = 0;
     this.historyPages = {};
     this._nextPage = 1;
+    this.buttons = [];
   }
 
   setPage(num) {
     if (num >= 0 && num < this.pages.length) {
       this.page = num;
+      this.buttons = [];
+      let page = this.currentPage();
+      this.buttons = page.buttons;
       return super.setForm(this.currentPage());
     }
     return Promise.reject('Page not found');
@@ -57,19 +61,56 @@ export class FormioWizard extends FormioForm {
   }
 
   nextPage() {
-    // Validate the form builed, before go to the next page
-    if (this.checkValidity(this.submission.data, true)) {
-      let currentPage = this.page;
-      let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+    console.log('nextPage');
 
-      return this.setPage(nextPage).then(() => {
-        this.historyPages[this.page] = currentPage;
-        this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
-        this.emit('nextPage', {page: this.page, submission: this.submission});
-      });
+    // Validate the form before go to the next page
+    if (this.checkValidity(this.submission.data, true)) {
+      if (this.beforeNextPageCallback) {
+        this.beforeNextPageCallback(this, this.submission.data, this.nextPageWithValidation);
+      } else {
+        let currentPage = this.page;
+        let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+
+        return this.setPage(nextPage).then(() => {
+          this.historyPages[this.page] = currentPage;
+          this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+          this.emit('nextPage', {page: this.page, submission: this.submission});
+        });
+      }
     }
     else {
       return Promise.reject(this.showErrors());
+    }
+  }
+
+  nextPageWithValidation(thisInstance, valid, message) {
+    console.log('nextPageWithValidation');
+
+    let proceedToNextPage = false;
+
+    // If no data given, then proceed to the next page.
+    if (typeof valid === 'undefined' && typeof message === 'undefined') {
+      proceedToNextPage = true;
+    }
+
+    // If data was given and the valid flag is true.
+    if (valid) {
+      proceedToNextPage = true;
+    }
+
+    if (proceedToNextPage) {
+        let currentPage = thisInstance.page;
+        let nextPage = thisInstance.getCondionalNextPage(thisInstance.submission.data, currentPage);
+
+        return thisInstance.setPage(nextPage).then(() => {
+          thisInstance.historyPages[thisInstance.page] = currentPage;
+          thisInstance._nextPage = thisInstance.getCondionalNextPage(thisInstance.submission.data, thisInstance.page);
+          thisInstance.emit('nextPage', {page: thisInstance.page, submission: thisInstance.submission});
+        });
+    } else {
+      return Promise.reject(
+        thisInstance.showErrors(message)
+      );
     }
   }
 
@@ -96,6 +137,7 @@ export class FormioWizard extends FormioForm {
 
   setForm(form) {
     this.pages = [];
+    this.buttons = [];
     each(form.components, (component) => {
       if (component.type === 'panel') {
         this.pages.push(component);
@@ -103,9 +145,8 @@ export class FormioWizard extends FormioForm {
     });
     return this.setPage(this.page);
   }
-
   build() {
-    this.createWizardHeader();
+    // this.createWizardHeader();
     super.build();
     this.createWizardNav();
   }
@@ -164,30 +205,52 @@ export class FormioWizard extends FormioForm {
     this.wizardNav = this.ce('wizardNav', 'ul', {
       class: 'list-inline'
     });
-
-    each([
-      {name: 'cancel',    method: 'cancel',   class: 'btn btn-default'},
-      {name: 'previous',  method: 'prevPage', class: 'btn btn-primary'},
-      {name: 'next',      method: 'nextPage', class: 'btn btn-primary'},
-      {name: 'submit',    method: 'submit',   class: 'btn btn-primary'}
-    ], (button) => {
-      if (!this.hasButton(button.name)) {
-        return;
-      }
-      let buttonWrapper = this.ce('wizardNavButton', 'li');
-      let buttonProp = button.name + 'Button';
-      this[buttonProp] = this.ce(buttonProp, 'button', {
-        class: button.class
+    if (this.buttons) {
+      each(this.buttons, (button) => {
+        if (!this.hasButton(button.name)) {
+          return;
+        }
+        let buttonWrapper = this.ce('wizardNavButton', 'li');
+        let buttonProp = button.name + 'Button';
+        this[buttonProp] = this.ce(buttonProp, 'button', {
+          class: button.class
+        });
+        if (button.custom) {
+          this[buttonProp].appendChild(this.text(this.t(button.custom)));
+        } else {
+          this[buttonProp].appendChild(this.text(this.t(button.name)));
+        }
+        this.addEventListener(this[buttonProp], 'click', (event) => {
+          event.preventDefault();
+          this[button.method]();
+        });
+        buttonWrapper.appendChild(this[buttonProp]);
+        this.wizardNav.appendChild(buttonWrapper);
       });
-      this[buttonProp].appendChild(this.text(this.t(button.name)));
-      this.addEventListener(this[buttonProp], 'click', (event) => {
-        event.preventDefault();
-        this[button.method]();
+    } else {
+      each([
+        {name: 'cancel',    method: 'cancel',   class: 'btn btn-default'},
+        {name: 'previous',  method: 'prevPage', class: 'btn btn-primary'},
+        {name: 'next',      method: 'nextPage', class: 'btn btn-primary'},
+        {name: 'submit',    method: 'submit',   class: 'btn btn-primary'}
+      ], (button) => {
+        if (!this.hasButton(button.name)) {
+          return;
+        }
+        let buttonWrapper = this.ce('wizardNavButton', 'li');
+        let buttonProp = button.name + 'Button';
+        this[buttonProp] = this.ce(buttonProp, 'button', {
+          class: button.class
+        });
+        this[buttonProp].appendChild(this.text(this.t(button.name)));
+        this.addEventListener(this[buttonProp], 'click', (event) => {
+          event.preventDefault();
+          this[button.method]();
+        });
+        buttonWrapper.appendChild(this[buttonProp]);
+        this.wizardNav.appendChild(buttonWrapper);
       });
-      buttonWrapper.appendChild(this[buttonProp]);
-      this.wizardNav.appendChild(buttonWrapper);
-    });
-
+    }
     // Add the wizard navigation
     this.element.appendChild(this.wizardNav);
   }

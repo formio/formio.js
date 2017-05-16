@@ -54,7 +54,9 @@ export class CheckBoxComponent extends BaseComponent {
     }
     this.addInput(input, this.label);
     if (!this.options.inputsOnly) {
-      this.label.appendChild(document.createTextNode(this.component.label));
+      var labelElement = document.createElement('div');
+      labelElement.innerHTML = this.component.label;
+      this.label.appendChild(labelElement);
     }
     container.appendChild(this.label);
   }

@@ -10,6 +10,8 @@ export class FormioComponents extends BaseComponent {
     this.type = 'components';
     this.components = [];
     this.hidden = [];
+
+    this.beforeNextPageCallback = null;
   }
 
   build() {
@@ -253,6 +255,14 @@ export class FormioComponents extends BaseComponent {
       }
     });
     return errors;
+  }
+
+  getBeforeNextPageCallback() {
+    return this.beforeNextPageCallback;
+  }
+
+  setBeforeNextPageCallback(beforeNextPageCallback) {
+    this.beforeNextPageCallback = beforeNextPageCallback;
   }
 
   getValue() {

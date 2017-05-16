@@ -85,6 +85,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     _this.type = 'components';
     _this.components = [];
     _this.hidden = [];
+
+    _this.beforeNextPageCallback = null;
     return _this;
   }
 
@@ -375,6 +377,16 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       this.eachComponent(function (component) {
         return _this7.setHidden(component);
       });
+    }
+  }, {
+    key: 'getBeforeNextPageCallback',
+    value: function getBeforeNextPageCallback() {
+      return this.beforeNextPageCallback;
+    }
+  }, {
+    key: 'setBeforeNextPageCallback',
+    value: function setBeforeNextPageCallback(beforeNextPageCallback) {
+      this.beforeNextPageCallback = beforeNextPageCallback;
     }
   }, {
     key: 'getValue',
@@ -2223,11 +2235,13 @@ var BaseComponent = function () {
         this.pristine = false;
       }
       if (this.events) {
-        this.emit('componentChange', {
-          component: this.component,
-          value: this.value,
-          validate: !noValidate
-        });
+        if (this.type !== 'textfield' && this.type !== 'email' || this.type === 'textfield' && this.error || this.type === 'email' && this.error) {
+          this.emit('componentChange', {
+            component: this.component,
+            value: this.value,
+            validate: !noValidate
+          });
+        }
       }
     }
 
@@ -2997,7 +3011,9 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       }
       this.addInput(input, this.label);
       if (!this.options.inputsOnly) {
-        this.label.appendChild(document.createTextNode(this.component.label));
+        var labelElement = document.createElement('div');
+        labelElement.innerHTML = this.component.label;
+        this.label.appendChild(labelElement);
       }
       container.appendChild(this.label);
     }
@@ -8372,6 +8388,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     _this.page = 0;
     _this.historyPages = {};
     _this._nextPage = 1;
+    _this.buttons = [];
     return _this;
   }
 
@@ -8380,6 +8397,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     value: function setPage(num) {
       if (num >= 0 && num < this.pages.length) {
         this.page = num;
+        this.buttons = [];
+        var page = this.currentPage();
+        this.buttons = page.buttons;
         return _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'setForm', this).call(this, this.currentPage());
       }
       return _nativePromiseOnly2.default.reject('Page not found');
@@ -8426,18 +8446,54 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     value: function nextPage() {
       var _this2 = this;
 
-      // Validate the form builed, before go to the next page
-      if (this.checkValidity(this.submission.data, true)) {
-        var currentPage = this.page;
-        var nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+      console.log('nextPage');
 
-        return this.setPage(nextPage).then(function () {
-          _this2.historyPages[_this2.page] = currentPage;
-          _this2._nextPage = _this2.getCondionalNextPage(_this2.submission.data, _this2.page);
-          _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
-        });
+      // Validate the form before go to the next page
+      if (this.checkValidity(this.submission.data, true)) {
+        if (this.beforeNextPageCallback) {
+          this.beforeNextPageCallback(this, this.submission.data, this.nextPageWithValidation);
+        } else {
+          var currentPage = this.page;
+          var nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
+
+          return this.setPage(nextPage).then(function () {
+            _this2.historyPages[_this2.page] = currentPage;
+            _this2._nextPage = _this2.getCondionalNextPage(_this2.submission.data, _this2.page);
+            _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+          });
+        }
       } else {
         return _nativePromiseOnly2.default.reject(this.showErrors());
+      }
+    }
+  }, {
+    key: 'nextPageWithValidation',
+    value: function nextPageWithValidation(thisInstance, valid, message) {
+      console.log('nextPageWithValidation');
+
+      var proceedToNextPage = false;
+
+      // If no data given, then proceed to the next page.
+      if (typeof valid === 'undefined' && typeof message === 'undefined') {
+        proceedToNextPage = true;
+      }
+
+      // If data was given and the valid flag is true.
+      if (valid) {
+        proceedToNextPage = true;
+      }
+
+      if (proceedToNextPage) {
+        var currentPage = thisInstance.page;
+        var nextPage = thisInstance.getCondionalNextPage(thisInstance.submission.data, currentPage);
+
+        return thisInstance.setPage(nextPage).then(function () {
+          thisInstance.historyPages[thisInstance.page] = currentPage;
+          thisInstance._nextPage = thisInstance.getCondionalNextPage(thisInstance.submission.data, thisInstance.page);
+          thisInstance.emit('nextPage', { page: thisInstance.page, submission: thisInstance.submission });
+        });
+      } else {
+        return _nativePromiseOnly2.default.reject(thisInstance.showErrors(message));
       }
     }
   }, {
@@ -8472,6 +8528,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       var _this4 = this;
 
       this.pages = [];
+      this.buttons = [];
       (0, _each2.default)(form.components, function (component) {
         if (component.type === 'panel') {
           _this4.pages.push(component);
@@ -8482,7 +8539,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'build',
     value: function build() {
-      this.createWizardHeader();
+      // this.createWizardHeader();
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'build', this).call(this);
       this.createWizardNav();
     }
@@ -8549,25 +8606,47 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       this.wizardNav = this.ce('wizardNav', 'ul', {
         class: 'list-inline'
       });
-
-      (0, _each2.default)([{ name: 'cancel', method: 'cancel', class: 'btn btn-default' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
-        if (!_this6.hasButton(button.name)) {
-          return;
-        }
-        var buttonWrapper = _this6.ce('wizardNavButton', 'li');
-        var buttonProp = button.name + 'Button';
-        _this6[buttonProp] = _this6.ce(buttonProp, 'button', {
-          class: button.class
+      if (this.buttons) {
+        (0, _each2.default)(this.buttons, function (button) {
+          if (!_this6.hasButton(button.name)) {
+            return;
+          }
+          var buttonWrapper = _this6.ce('wizardNavButton', 'li');
+          var buttonProp = button.name + 'Button';
+          _this6[buttonProp] = _this6.ce(buttonProp, 'button', {
+            class: button.class
+          });
+          if (button.custom) {
+            _this6[buttonProp].appendChild(_this6.text(_this6.t(button.custom)));
+          } else {
+            _this6[buttonProp].appendChild(_this6.text(_this6.t(button.name)));
+          }
+          _this6.addEventListener(_this6[buttonProp], 'click', function (event) {
+            event.preventDefault();
+            _this6[button.method]();
+          });
+          buttonWrapper.appendChild(_this6[buttonProp]);
+          _this6.wizardNav.appendChild(buttonWrapper);
         });
-        _this6[buttonProp].appendChild(_this6.text(_this6.t(button.name)));
-        _this6.addEventListener(_this6[buttonProp], 'click', function (event) {
-          event.preventDefault();
-          _this6[button.method]();
+      } else {
+        (0, _each2.default)([{ name: 'cancel', method: 'cancel', class: 'btn btn-default' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
+          if (!_this6.hasButton(button.name)) {
+            return;
+          }
+          var buttonWrapper = _this6.ce('wizardNavButton', 'li');
+          var buttonProp = button.name + 'Button';
+          _this6[buttonProp] = _this6.ce(buttonProp, 'button', {
+            class: button.class
+          });
+          _this6[buttonProp].appendChild(_this6.text(_this6.t(button.name)));
+          _this6.addEventListener(_this6[buttonProp], 'click', function (event) {
+            event.preventDefault();
+            _this6[button.method]();
+          });
+          buttonWrapper.appendChild(_this6[buttonProp]);
+          _this6.wizardNav.appendChild(buttonWrapper);
         });
-        buttonWrapper.appendChild(_this6[buttonProp]);
-        _this6.wizardNav.appendChild(buttonWrapper);
-      });
-
+      }
       // Add the wizard navigation
       this.element.appendChild(this.wizardNav);
     }
@@ -14765,6 +14844,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     });
 
 
+    // The operation is called with "data" bound to its "this" and "values" passed as arguments.
+    // Structured commands like % or > can name formal arguments while flexible commands (like missing or merge) can operate on the pseudo-array arguments
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
     if(typeof operations[op] === "function") {
       return operations[op].apply(data, values);
     }else if(op.indexOf(".") > 0) { // Contains a dot, and not in the 0th position
@@ -14780,14 +14862,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
       }
 
       return operation.apply(data, values);
-    }else{
-      throw new Error("Unrecognized operation " + op );
     }
 
-    // The operation is called with "data" bound to its "this" and "values" passed as arguments.
-    // Structured commands like % or > can name formal arguments while flexible commands (like missing or merge) can operate on the pseudo-array arguments
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments
-    return operations[op].apply(data, values);
+    throw new Error("Unrecognized operation " + op );
   };
 
   jsonLogic.uses_data = function(logic) {
