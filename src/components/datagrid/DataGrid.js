@@ -4,13 +4,16 @@ import _isArray from 'lodash/isArray';
 import { BaseComponent } from '../base/Base';
 export class DataGridComponent extends BaseComponent {
   build() {
+    this.createElement();
+    this.createLabel(this.element);
+
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
     _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
         tableClass += 'table-' + prop + ' ';
       }
     });
-    this.element = this.ce('element', 'table', {
+    this.tableElement = this.ce('element', 'table', {
       class: tableClass
     });
 
@@ -29,7 +32,7 @@ export class DataGridComponent extends BaseComponent {
     let th = this.ce('headerExtra', 'th');
     tr.appendChild(th);
     thead.appendChild(tr);
-    this.element.appendChild(thead);
+    this.tableElement.appendChild(thead);
 
     // Create the table body.
     this.tbody = this.ce('table', 'tbody');
@@ -38,10 +41,11 @@ export class DataGridComponent extends BaseComponent {
     this.addValue();
 
     // Add the body to the table and to the element.
-    this.element.appendChild(this.tbody);
+    this.tableElement.appendChild(this.tbody);
+    this.element.appendChild(this.tableElement);
   }
 
-  defaultValue() {
+  get defaultValue() {
     return {};
   }
 
