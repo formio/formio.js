@@ -146,7 +146,7 @@ export class FormioWizard extends FormioForm {
     return this.setPage(this.page);
   }
   build() {
-    this.createWizardHeader();
+    // this.createWizardHeader();
     super.build();
     this.createWizardNav();
   }

@@ -8539,7 +8539,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'build',
     value: function build() {
-      this.createWizardHeader();
+      // this.createWizardHeader();
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'build', this).call(this);
       this.createWizardNav();
     }
