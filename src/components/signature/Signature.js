@@ -1,6 +1,16 @@
 import SignaturePad from 'signature_pad';
 import { BaseComponent } from '../base/Base';
 export class SignatureComponent extends BaseComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+    if (!this.component.width) {
+      this.component.width = '100%';
+    }
+    if (!this.component.height) {
+      this.component.height = '200px';
+    }
+  }
+
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';
@@ -58,7 +68,8 @@ export class SignatureComponent extends BaseComponent {
 
     // The signature canvas.
     let canvas = this.ce('canvas', 'canvas', {
-      class: 'signature-pad-canvas'
+      class: 'signature-pad-canvas',
+      height: this.component.height
     });
     padBody.appendChild(canvas);
     this.element.appendChild(padBody);

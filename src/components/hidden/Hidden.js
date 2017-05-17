@@ -7,4 +7,8 @@ export class HiddenComponent extends BaseComponent {
     info.changeEvent = 'change';
     return info;
   }
+
+  createLabel(container) {
+    return;
+  }
 }

@@ -1139,18 +1139,6 @@ export class BaseComponent {
     }
   }
 
-  before(element) {
-    if (this.element) {
-      this.element.parentNode.insertBefore(element, this.element);
-    }
-  }
-
-  remove(element) {
-    if (this.element) {
-      this.element.parentNode.removeChild(element);
-    }
-  }
-
   removeChild(element) {
     if (this.element) {
       this.element.removeChild(element);

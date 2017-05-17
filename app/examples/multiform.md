@@ -17,77 +17,91 @@ workflow.form = {
   components: [
     {
       type: 'panel',
-      key: 'page1',
-      label: 'A',
-      nextPage: {
-        "if": [
-          {"var": "data.a"},
-          {"var": "data.a"},
-          {"var": "page"}
-        ]
-      },
+      key: 'pageA',
+      title: 'A',
+      nextPage: {"var": "data.a.data.nextPage"},
       components: [
         {
           type: 'form',
           key: 'a',
           src: 'https://examples.form.io/a',
-          submitOnNext: true
+          submit: true
         }
       ]
     },
     {
       type: 'panel',
-      key: 'page2',
-      label: 'B',
-      nextPage: {"var": "data.b"},
+      key: 'pageB',
+      title: 'B',
+      nextPage: {"var": "data.b.data.nextPage"},
       components: [
         {
           type: 'form',
           key: 'b',
           src: 'https://examples.form.io/b',
-          submitOnNext: true
+          submit: true
         }
       ]
     },
     {
       type: 'panel',
-      key: 'page3',
-      label: 'C',
-      nextPage: {"var": "data.c"},
+      key: 'pageC',
+      title: 'C',
+      nextPage: {"var": "data.c.data.nextPage"},
       components: [
         {
           type: 'form',
           key: 'c',
           src: 'https://examples.form.io/c',
-          submitOnNext: true
+          submit: true
         }
       ]
     },
     {
       type: 'panel',
-      key: 'page3',
-      label: 'D',
-      nextPage: {"var": "data.d"},
+      key: 'pageD',
+      title: 'D',
+      nextPage: {"var": "data.d.data.nextPage"},
       components: [
         {
           type: 'form',
           key: 'd',
           src: 'https://examples.form.io/d',
-          submitOnNext: true
+          submit: true
         }
       ]
     },
     {
       type: 'panel',
-      key: 'page3',
-      label: 'E',
-      nextPage: {"var": "data.e"},
+      key: 'pageE',
+      title: 'E',
+      nextPage: {"var": "data.e.data.nextPage"},
       components: [
         {
           type: 'form',
           key: 'e',
           src: 'https://examples.form.io/e',
-          submitOnNext: true
+          submit: true
+        }
+      ]
+    },
+    {
+      type: 'panel',
+      key: 'done',
+      title: 'E',
+      components: [
+        {
+          input: false,
+          html: `<h2>Are you sure you wish to submit?</h3>
+          <ul>
+            <li><strong>Page A</strong> - \{\{ data.a._id \}\}</li>
+            <li><strong>Page B</strong> - \{\{ data.b._id \}\}</li>
+            <li><strong>Page C</strong> - \{\{ data.c._id \}\}</li>
+            <li><strong>Page D</strong> - \{\{ data.d._id \}\}</li>
+            <li><strong>Page E</strong> - \{\{ data.e._id \}\}</li>
+          </ul>`,
+          type: 'content',
+          key: 'areyousure'
         }
       ]
     },
