@@ -4534,15 +4534,34 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
     var _this = _possibleConstructorReturn(this, (FormComponent.__proto__ || Object.getPrototypeOf(FormComponent)).call(this, null, options));
 
+    _this.type = 'formcomponent';
     _this.component = component;
     _this.data = data;
+
+    // Make sure that if reference is provided, the form must submit.
+    if (_this.component.reference) {
+      _this.component.submit = true;
+    }
+
+    // Build the source based on the root src path.
+    if (!component.src && component.path && _this.options.src) {
+      var parts = _this.options.src.split('/');
+      parts.pop();
+      component.src = parts.join('/') + '/' + component.path;
+    }
+
+    // Add the source to this actual submission if the component is a reference.
+    if (data[component.key] && _this.component.reference && component.src.indexOf('/submission/') === -1) {
+      component.src += '/submission/' + data[component.key]._id;
+    }
 
     // Set the src if the property is provided in the JSON.
     if (component.src) {
       _this.src = component.src;
     }
 
-    if (data[component.key]) {
+    // Directly set the submission if it isn't a reference.
+    if (data[component.key] && !_this.component.reference) {
       _this.setSubmission(data[component.key]);
     }
     return _this;
@@ -4602,13 +4621,16 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     key: 'setValue',
     value: function setValue(submission, noUpdate, noValidate) {
       this.data[this.component.key] = submission || { data: {} };
+      if (this.component.reference) {
+        this.data[this.component.key] = { _id: this.data[this.component.key]._id };
+      }
       return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, noUpdate, noValidate);
     }
   }, {
     key: 'getValue',
     value: function getValue() {
       this._submission = this.data[this.component.key];
-      return this._submission;
+      return this.component.reference ? { _id: this._submission._id } : this._submission;
     }
   }]);
 
@@ -7515,6 +7537,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         return;
       }
       this._src = value;
+      if (this.type === 'form') {
+        // Set the options source so this can be passed to other components.
+        this.options.src = value;
+      }
       this.formio = new _formio2.default(value);
       this.formio.loadForm().then(function (form) {
         return _this10.setForm(form);

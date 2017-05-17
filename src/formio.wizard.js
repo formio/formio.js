@@ -9,7 +9,7 @@ export class FormioWizard extends FormioForm {
     super(element, options);
     this.pages = [];
     this.page = 0;
-    this.historyPages = {};
+    this.history = [];
     this._nextPage = 1;
   }
 
@@ -21,7 +21,7 @@ export class FormioWizard extends FormioForm {
     return Promise.reject('Page not found');
   }
 
-  getCondionalNextPage(data, currentPage) {
+  getNextPage(data, currentPage) {
     let form = this.pages[currentPage];
     // Check conditional nextPage
     if (form) {
@@ -69,8 +69,9 @@ export class FormioWizard extends FormioForm {
   }
 
   getPreviousPage() {
-    if(typeof this.historyPages[this.page] !== 'undefined') {
-      return this.historyPages[this.page];
+    let prev = this.history.pop();
+    if(typeof prev !== 'undefined') {
+      return prev;
     }
 
     return this.page - 1;
@@ -79,16 +80,10 @@ export class FormioWizard extends FormioForm {
   nextPage() {
     // Validate the form builed, before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
-      let currentPage = this.page;
-      let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
-
-      // Allow components to perform their own functions.
-      return this.beforeNext(this.getPage(currentPage), this.getPage(nextPage)).then(() => {
-
-        // Set the next page.
-        return this.setPage(nextPage).then(() => {
-          this.historyPages[this.page] = currentPage;
-          this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+      return this.beforeNext().then(() => {
+        this.history.push(this.page);
+        return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
+          this._nextPage = this.getNextPage(this.submission.data, this.page);
           this.emit('nextPage', {page: this.page, submission: this.submission});
         });
       });
@@ -107,7 +102,7 @@ export class FormioWizard extends FormioForm {
 
   cancel() {
     super.cancel();
-    this.historyPages = {};
+    this.history = [];
     return this.setPage(0);
   }
 
@@ -153,7 +148,7 @@ export class FormioWizard extends FormioForm {
     if (name === 'previous') {
       return (this.page > 0);
     }
-    let nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+    let nextPage = this.getNextPage(this.submission.data, this.page);
     if (name === 'next') {
       return (nextPage !== null) && (nextPage < this.pages.length);
     }
@@ -164,17 +159,37 @@ export class FormioWizard extends FormioForm {
   }
 
   createWizardHeader() {
+    let currentPage = this.currentPage();
+    currentPage.breadcrumb = currentPage.breadcrumb || 'default';
+    if (currentPage.breadcrumb.toLowerCase() === 'none') {
+      return;
+    }
     this.wizardHeader = this.ce('wizardHeader', 'ul', {
       class: 'pagination'
     });
 
+    let showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
     each(this.pages, (page, i) => {
+      // See if this page is in our history.
+      if (showHistory && ((this.page !== i) && (this.history.indexOf(i) === -1))) {
+        return;
+      }
+
       let pageButton = this.ce('pageButton', 'li', {
-        class: (i === this.page) ? 'active' : 'disabled'
+        class: (i === this.page) ? 'active' : '',
+        style: (i === this.page) ? '' : 'cursor: pointer;'
       });
 
+      // Navigate to the page as they click on it.
+      if (this.page !== i) {
+        this.addEventListener(pageButton, 'click', (event) => {
+          event.preventDefault();
+          this.setPage(i);
+        });
+      }
+
       let pageLabel = this.ce('pageLabel', 'span');
-      let pageTitle = (i === this.page) ? page.title : (i + 1);
+      let pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
       if (!pageTitle) {
         pageTitle = (i + 1);
       }
@@ -190,7 +205,7 @@ export class FormioWizard extends FormioForm {
     super.onSubmissionChange(changed);
 
     // Update Wizard Nav
-    let nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+    let nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage != nextPage) {
       this.element.removeChild(this.wizardNav);
       this.createWizardNav();

@@ -207,6 +207,10 @@ export class FormioForm extends FormioComponents {
       return;
     }
     this._src = value;
+    if (this.type === 'form') {
+      // Set the options source so this can be passed to other components.
+      this.options.src = value;
+    }
     this.formio = new Formio(value);
     this.formio.loadForm().then((form) => this.setForm(form));
     if (this.formio.submissionId) {

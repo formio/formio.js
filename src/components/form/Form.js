@@ -3,15 +3,34 @@ import FormioUtils from '../../utils';
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
     super(null, options);
+    this.type = 'formcomponent';
     this.component = component;
     this.data = data;
+
+    // Make sure that if reference is provided, the form must submit.
+    if (this.component.reference) {
+      this.component.submit = true;
+    }
+
+    // Build the source based on the root src path.
+    if (!component.src && component.path && this.options.src) {
+      let parts = this.options.src.split('/');
+      parts.pop();
+      component.src = parts.join('/') + '/' + component.path;
+    }
+
+    // Add the source to this actual submission if the component is a reference.
+    if (data[component.key] && this.component.reference && (component.src.indexOf('/submission/') === -1)) {
+      component.src += '/submission/' + data[component.key]._id;
+    }
 
     // Set the src if the property is provided in the JSON.
     if (component.src) {
       this.src = component.src;
     }
 
-    if (data[component.key]) {
+    // Directly set the submission if it isn't a reference.
+    if (data[component.key] && !this.component.reference) {
       this.setSubmission(data[component.key]);
     }
   }
@@ -64,11 +83,14 @@ export class FormComponent extends FormioForm {
 
   setValue(submission, noUpdate, noValidate) {
     this.data[this.component.key] = submission || {data: {}};
+    if (this.component.reference) {
+      this.data[this.component.key] = {_id: this.data[this.component.key]._id};
+    }
     return super.setValue(submission, noUpdate, noValidate);
   }
 
   getValue() {
     this._submission = this.data[this.component.key];
-    return this._submission;
+    return this.component.reference ? {_id: this._submission._id} : this._submission;
   }
 }

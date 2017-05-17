@@ -4534,15 +4534,34 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
     var _this = _possibleConstructorReturn(this, (FormComponent.__proto__ || Object.getPrototypeOf(FormComponent)).call(this, null, options));
 
+    _this.type = 'formcomponent';
     _this.component = component;
     _this.data = data;
+
+    // Make sure that if reference is provided, the form must submit.
+    if (_this.component.reference) {
+      _this.component.submit = true;
+    }
+
+    // Build the source based on the root src path.
+    if (!component.src && component.path && _this.options.src) {
+      var parts = _this.options.src.split('/');
+      parts.pop();
+      component.src = parts.join('/') + '/' + component.path;
+    }
+
+    // Add the source to this actual submission if the component is a reference.
+    if (data[component.key] && _this.component.reference && component.src.indexOf('/submission/') === -1) {
+      component.src += '/submission/' + data[component.key]._id;
+    }
 
     // Set the src if the property is provided in the JSON.
     if (component.src) {
       _this.src = component.src;
     }
 
-    if (data[component.key]) {
+    // Directly set the submission if it isn't a reference.
+    if (data[component.key] && !_this.component.reference) {
       _this.setSubmission(data[component.key]);
     }
     return _this;
@@ -4602,13 +4621,16 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     key: 'setValue',
     value: function setValue(submission, noUpdate, noValidate) {
       this.data[this.component.key] = submission || { data: {} };
+      if (this.component.reference) {
+        this.data[this.component.key] = { _id: this.data[this.component.key]._id };
+      }
       return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, noUpdate, noValidate);
     }
   }, {
     key: 'getValue',
     value: function getValue() {
       this._submission = this.data[this.component.key];
-      return this._submission;
+      return this.component.reference ? { _id: this._submission._id } : this._submission;
     }
   }]);
 
@@ -7491,6 +7513,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         return;
       }
       this._src = value;
+      if (this.type === 'form') {
+        // Set the options source so this can be passed to other components.
+        this.options.src = value;
+      }
       this.formio = new _formio2.default(value);
       this.formio.loadForm().then(function (form) {
         return _this10.setForm(form);
@@ -8750,7 +8776,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
 
     _this.pages = [];
     _this.page = 0;
-    _this.historyPages = {};
+    _this.history = [];
     _this._nextPage = 1;
     return _this;
   }
@@ -8765,8 +8791,8 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       return _nativePromiseOnly2.default.reject('Page not found');
     }
   }, {
-    key: 'getCondionalNextPage',
-    value: function getCondionalNextPage(data, currentPage) {
+    key: 'getNextPage',
+    value: function getNextPage(data, currentPage) {
       var form = this.pages[currentPage];
       // Check conditional nextPage
       if (form) {
@@ -8814,8 +8840,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'getPreviousPage',
     value: function getPreviousPage() {
-      if (typeof this.historyPages[this.page] !== 'undefined') {
-        return this.historyPages[this.page];
+      var prev = this.history.pop();
+      if (typeof prev !== 'undefined') {
+        return prev;
       }
 
       return this.page - 1;
@@ -8827,16 +8854,10 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
 
       // Validate the form builed, before go to the next page
       if (this.checkValidity(this.submission.data, true)) {
-        var currentPage = this.page;
-        var nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
-
-        // Allow components to perform their own functions.
-        return this.beforeNext(this.getPage(currentPage), this.getPage(nextPage)).then(function () {
-
-          // Set the next page.
-          return _this2.setPage(nextPage).then(function () {
-            _this2.historyPages[_this2.page] = currentPage;
-            _this2._nextPage = _this2.getCondionalNextPage(_this2.submission.data, _this2.page);
+        return this.beforeNext().then(function () {
+          _this2.history.push(_this2.page);
+          return _this2.setPage(_this2.getNextPage(_this2.submission.data, _this2.page)).then(function () {
+            _this2._nextPage = _this2.getNextPage(_this2.submission.data, _this2.page);
             _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
           });
         });
@@ -8858,7 +8879,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     key: 'cancel',
     value: function cancel() {
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'cancel', this).call(this);
-      this.historyPages = {};
+      this.history = [];
       return this.setPage(0);
     }
   }, {
@@ -8912,7 +8933,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       if (name === 'previous') {
         return this.page > 0;
       }
-      var nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+      var nextPage = this.getNextPage(this.submission.data, this.page);
       if (name === 'next') {
         return nextPage !== null && nextPage < this.pages.length;
       }
@@ -8926,17 +8947,37 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     value: function createWizardHeader() {
       var _this5 = this;
 
+      var currentPage = this.currentPage();
+      currentPage.breadcrumb = currentPage.breadcrumb || 'default';
+      if (currentPage.breadcrumb.toLowerCase() === 'none') {
+        return;
+      }
       this.wizardHeader = this.ce('wizardHeader', 'ul', {
         class: 'pagination'
       });
 
+      var showHistory = currentPage.breadcrumb.toLowerCase() === 'history';
       (0, _each2.default)(this.pages, function (page, i) {
+        // See if this page is in our history.
+        if (showHistory && _this5.page !== i && _this5.history.indexOf(i) === -1) {
+          return;
+        }
+
         var pageButton = _this5.ce('pageButton', 'li', {
-          class: i === _this5.page ? 'active' : 'disabled'
+          class: i === _this5.page ? 'active' : '',
+          style: i === _this5.page ? '' : 'cursor: pointer;'
         });
 
+        // Navigate to the page as they click on it.
+        if (_this5.page !== i) {
+          _this5.addEventListener(pageButton, 'click', function (event) {
+            event.preventDefault();
+            _this5.setPage(i);
+          });
+        }
+
         var pageLabel = _this5.ce('pageLabel', 'span');
-        var pageTitle = i === _this5.page ? page.title : i + 1;
+        var pageTitle = i === _this5.page || showHistory ? page.title : i + 1;
         if (!pageTitle) {
           pageTitle = i + 1;
         }
@@ -8953,7 +8994,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'onSubmissionChange', this).call(this, changed);
 
       // Update Wizard Nav
-      var nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+      var nextPage = this.getNextPage(this.submission.data, this.page);
       if (this._nextPage != nextPage) {
         this.element.removeChild(this.wizardNav);
         this.createWizardNav();
