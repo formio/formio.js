@@ -19,6 +19,6 @@ workflow.src = 'https://examples.form.io/multiform';
   <div id="workflow"></div>
   <script type="text/javascript">
   var workflow = new FormioWizard(document.getElementById('workflow'));
-  workflow.src = 'https://examples.form.io/multiform';
+  workflow.src = 'https://examples.form.io/multiform/submission/591e079c1a12eb008024e736';
   </script>
 </div>

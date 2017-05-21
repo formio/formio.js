@@ -110,7 +110,12 @@ export class GmapComponent extends BaseComponent {
           }
         ]
       };
-      this.map = new google.maps.Map(document.getElementById(this.component.map.gmapId), options);
+
+      let mapElement = document.getElementById(this.component.map.gmapId);
+      if (!mapElement) {
+        return;
+      }
+      this.map = new google.maps.Map(mapElement, options);
       this.addMarker(defaultLatlng, 'Default Marker', this.map);
     });
   }

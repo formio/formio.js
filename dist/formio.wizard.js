@@ -46,6 +46,10 @@ var _remove2 = require('lodash/remove');
 
 var _remove3 = _interopRequireDefault(_remove2);
 
+var _assign2 = require('lodash/assign');
+
+var _assign3 = _interopRequireDefault(_assign2);
+
 var _nativePromiseOnly = require('native-promise-only');
 
 var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
@@ -94,6 +98,11 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       this.createElement();
       this.addComponents();
     }
+  }, {
+    key: 'getComponents',
+    value: function getComponents() {
+      return this.components;
+    }
 
     /**
      * Perform a deep iteration over every component, including those
@@ -105,14 +114,13 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'everyComponent',
     value: function everyComponent(cb) {
-      var _this2 = this;
-
-      (0, _each3.default)(this.components, function (component, index) {
+      var components = this.getComponents();
+      (0, _each3.default)(components, function (component, index) {
         if (component.type === 'components') {
           if (component.everyComponent(cb) === false) {
             return false;
           }
-        } else if (cb(component, _this2.components, index) === false) {
+        } else if (cb(component, components, index) === false) {
           return false;
         }
       });
@@ -127,7 +135,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'eachComponent',
     value: function eachComponent(cb) {
-      (0, _each3.default)(this.components, function (component, index) {
+      (0, _each3.default)(this.getComponents(), function (component, index) {
         if (cb(component, index) === false) {
           return false;
         }
@@ -234,10 +242,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'removeComponentByKey',
     value: function removeComponentByKey(key, cb) {
-      var _this3 = this;
+      var _this2 = this;
 
       var comp = this.getComponent(key, function (component, components) {
-        _this3.removeComponent(component, components);
+        _this2.removeComponent(component, components);
         if (cb) {
           cb(component, components);
         }
@@ -261,10 +269,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'removeComponentById',
     value: function removeComponentById(id, cb) {
-      var _this4 = this;
+      var _this3 = this;
 
       var comp = this.getComponentById(id, function (component, components) {
-        _this4.removeComponent(component, components);
+        _this3.removeComponent(component, components);
         if (cb) {
           cb(component, components);
         }
@@ -286,12 +294,12 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'addComponents',
     value: function addComponents(element, data) {
-      var _this5 = this;
+      var _this4 = this;
 
       element = element || this.element;
       data = data || this.data;
       (0, _each3.default)(this.component.components, function (component) {
-        return _this5.addComponent(component, element, data);
+        return _this4.addComponent(component, element, data);
       });
     }
   }, {
@@ -313,11 +321,13 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'checkData',
     value: function checkData(data, noValidate) {
-      (0, _each3.default)(this.components, function (comp) {
-        comp.checkConditions(data);
-        comp.calculateValue(data);
-        if (!noValidate) {
-          comp.checkValidity(data);
+      (0, _each3.default)(this.getComponents(), function (comp) {
+        if (comp.type !== 'formcomponent') {
+          comp.checkConditions(data);
+          comp.calculateValue(data);
+          if (!noValidate) {
+            comp.checkValidity(data);
+          }
         }
       });
     }
@@ -325,7 +335,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'checkConditions',
     value: function checkConditions(data) {
       var show = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
-      (0, _each3.default)(this.components, function (comp) {
+      (0, _each3.default)(this.getComponents(), function (comp) {
         show |= comp.checkConditions(data);
       });
       return show;
@@ -341,7 +351,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'beforeNext',
     value: function beforeNext() {
       var ops = [];
-      (0, _each3.default)(this.components, function (comp) {
+      (0, _each3.default)(this.getComponents(), function (comp) {
         return ops.push(comp.beforeNext());
       });
       return _nativePromiseOnly2.default.all(ops);
@@ -357,7 +367,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'beforeSubmit',
     value: function beforeSubmit() {
       var ops = [];
-      (0, _each3.default)(this.components, function (comp) {
+      (0, _each3.default)(this.getComponents(), function (comp) {
         return ops.push(comp.beforeSubmit());
       });
       return _nativePromiseOnly2.default.all(ops);
@@ -366,7 +376,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'calculateValue',
     value: function calculateValue(data) {
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'calculateValue', this).call(this, data);
-      (0, _each3.default)(this.components, function (comp) {
+      (0, _each3.default)(this.getComponents(), function (comp) {
         return comp.calculateValue(data);
       });
     }
@@ -374,7 +384,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
       var check = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkValidity', this).call(this, data, dirty);
-      (0, _each3.default)(this.components, function (comp) {
+      (0, _each3.default)(this.getComponents(), function (comp) {
         check &= comp.checkValidity(data, dirty);
       });
       return check;
@@ -382,12 +392,12 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'destroy',
     value: function destroy(all) {
-      var _this6 = this;
+      var _this5 = this;
 
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'destroy', this).call(this, all);
       var components = (0, _clone3.default)(this.components);
       (0, _each3.default)(components, function (comp) {
-        return _this6.removeComponent(comp, _this6.components);
+        return _this5.removeComponent(comp, _this5.components);
       });
     }
   }, {
@@ -404,11 +414,11 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'hideComponents',
     value: function hideComponents(hidden) {
-      var _this7 = this;
+      var _this6 = this;
 
       this.hidden = hidden;
       this.eachComponent(function (component) {
-        return _this7.setHidden(component);
+        return _this6.setHidden(component);
       });
     }
   }, {
@@ -423,7 +433,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         return;
       }
       this.value = value;
-      (0, _each3.default)(this.components, function (component) {
+      (0, _each3.default)(this.getComponents(), function (component) {
         if (component.type === 'button') {
           return;
         }
@@ -448,7 +458,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'errors',
     get: function get() {
       var errors = [];
-      (0, _each3.default)(this.components, function (comp) {
+      (0, _each3.default)(this.getComponents(), function (comp) {
         var compErrors = comp.errors;
         if (compErrors.length) {
           errors = errors.concat(compErrors);
@@ -461,7 +471,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   return FormioComponents;
 }(_Base.BaseComponent);
 
-},{"./base/Base":4,"./index":21,"lodash/clone":217,"lodash/each":223,"lodash/remove":250,"native-promise-only":257}],2:[function(require,module,exports){
+},{"./base/Base":4,"./index":21,"lodash/assign":216,"lodash/clone":217,"lodash/each":223,"lodash/remove":251,"native-promise-only":258}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -942,7 +952,9 @@ var AddressComponent = exports.AddressComponent = function (_TextFieldComponent)
       var elementSelected = document.querySelector('.pac-item-selected');
       if (!elementSelected) {
         // Start at the top of the list.
-        return this.autoCompleteListDecorator(suggestionContainer.firstChild, input);
+        if (suggestionContainer.firstChild) {
+          return this.autoCompleteListDecorator(suggestionContainer.firstChild, input);
+        }
       } else {
         // Transverse the list from top down.
         var nextSibling = elementSelected.nextSibling;
@@ -2370,6 +2382,10 @@ var BaseComponent = function () {
       var value = this.data[this.component.key];
       var falsey = !value && value !== null && value !== undefined;
       this.data[this.component.key] = this.getValue();
+      var changed = value !== this.data[this.component.key];
+      if (!changed) {
+        return;
+      }
       if (falsey) {
         if (!!this.data[this.component.key]) {
           this.triggerChange(noValidate);
@@ -2565,7 +2581,7 @@ var BaseComponent = function () {
   }, {
     key: 'prepend',
     value: function prepend(element) {
-      if (this.element) {
+      if (this.element && this.element.firstChild) {
         this.element.insertBefore(element, this.element.firstChild);
       }
     }
@@ -2634,7 +2650,7 @@ var BaseComponent = function () {
           try {
             var row = this.data;
             var data = this.data;
-            defaultValue = eval('var value = 0;' + this.component.customDefaultValue.toString() + '; return value;');
+            defaultValue = eval('(function(data, row) { var value = "";' + this.component.customDefaultValue.toString() + '; return value; })(data, row)');
           } catch (e) {
             defaultValue = null;
             /* eslint-disable no-console */
@@ -2644,7 +2660,8 @@ var BaseComponent = function () {
         } else {
           try {
             defaultValue = _jsonLogicJs2.default.apply(this.component.customDefaultValue, {
-              data: this.data
+              data: this.data,
+              row: this.data
             });
           } catch (err) {
             defaultValue = null;
@@ -2751,7 +2768,7 @@ BaseComponent.libraryReady = function (name) {
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
 
-},{"../../locals/en":40,"../../utils":46,"../Validator":2,"i18next":65,"json-logic-js":66,"lodash/assign":216,"lodash/clone":217,"lodash/debounce":220,"lodash/each":223,"lodash/get":226,"lodash/isArray":231,"native-promise-only":257,"text-mask-all/vanilla":261}],5:[function(require,module,exports){
+},{"../../locals/en":40,"../../utils":46,"../Validator":2,"i18next":65,"json-logic-js":66,"lodash/assign":216,"lodash/clone":217,"lodash/debounce":220,"lodash/each":223,"lodash/get":226,"lodash/isArray":231,"native-promise-only":258,"text-mask-all/vanilla":262}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -3486,7 +3503,7 @@ var CurrencyComponent = exports.CurrencyComponent = function (_TextFieldComponen
   return CurrencyComponent;
 }(_TextField.TextFieldComponent);
 
-},{"../textfield/TextField":34,"lodash/get":226,"text-mask-all/addons/dist/createNumberMask":260,"text-mask-all/vanilla":261}],12:[function(require,module,exports){
+},{"../textfield/TextField":34,"lodash/get":226,"text-mask-all/addons/dist/createNumberMask":261,"text-mask-all/vanilla":262}],12:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -3573,8 +3590,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       this.createElement();
       this.createLabel(this.element);
       this.addNewValue();
-      this.visibleColumns = {};
+      this.visibleColumns = true;
       this.buildTable();
+      this.visibleColumns = {};
     }
   }, {
     key: 'buildTable',
@@ -3602,7 +3620,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       // Build the header.
       var tr = this.ce('headerRow', 'tr');
       (0, _each3.default)(this.component.components, function (comp) {
-        if (_this2.visibleColumns[comp.key]) {
+        if (_this2.visibleColumns === true || _this2.visibleColumns[comp.key]) {
           var _th = _this2.ce('headerColumn', 'th');
           if (comp.validate && comp.validate.required) {
             _th.setAttribute('class', 'field-required');
@@ -3650,7 +3668,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
             comp.setValue(row);
           }
           cols[column.key] = comp;
-          if (_this3.visibleColumns[col.key]) {
+          if (_this3.visibleColumns === true || _this3.visibleColumns[col.key]) {
             var _td = _this3.ce('tableColumn', 'td');
             _td.appendChild(comp.element);
             tr.appendChild(_td);
@@ -4312,7 +4330,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
   return DayComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"lodash/each":223,"lodash/get":226,"moment":256}],15:[function(require,module,exports){
+},{"../base/Base":4,"lodash/each":223,"lodash/get":226,"moment":257}],15:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4504,6 +4522,10 @@ var _utils = require('../../utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
+var _merge2 = require('lodash/merge');
+
+var _merge3 = _interopRequireDefault(_merge2);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -4536,6 +4558,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
     _this.type = 'formcomponent';
     _this.component = component;
+    _this.submitted = false;
     _this.data = data;
 
     // Make sure that if reference is provided, the form must submit.
@@ -4544,8 +4567,9 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     }
 
     // Build the source based on the root src path.
-    if (!component.src && component.path && _this.options.src) {
-      var parts = _this.options.src.split('/');
+    if (!component.src && component.path && _this.options.formio) {
+      var rootSrc = _this.options.formio.formUrl;
+      var parts = rootSrc.split('/');
       parts.pop();
       component.src = parts.join('/') + '/' + component.path;
     }
@@ -4576,6 +4600,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     value: function beforeNext() {
       // If we wish to submit the form on next page, then do that here.
       if (this.component.submit) {
+        this.submitted = true;
         return this.submit(true);
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeNext', this).call(this);
@@ -4589,7 +4614,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'beforeSubmit',
     value: function beforeSubmit() {
-      if (this.component.submit) {
+      // Before we submit, we need to filter out the references.
+      this.data[this.component.key] = this.component.reference ? { _id: this._submission._id } : this._submission;
+
+      // Ensure we submit the form.
+      if (this.component.submit && !this.submitted) {
         return this.submit(true);
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeSubmit', this).call(this);
@@ -4616,28 +4645,53 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
       // Add components using the data of the submission.
       this.addComponents(this.element, this.data[this.component.key].data);
+
+      // Set default values.
+      var defaultValue = this.defaultValue;
+      if (defaultValue) {
+        this.setValue(defaultValue);
+      }
+
+      // Check conditions for this form.
+      this.checkConditions(this.getValue());
     }
   }, {
     key: 'setValue',
     value: function setValue(submission, noUpdate, noValidate) {
-      this.data[this.component.key] = submission || { data: {} };
-      if (this.component.reference) {
-        this.data[this.component.key] = { _id: this.data[this.component.key]._id };
+      var _this2 = this;
+
+      if (!submission) {
+        this.data[this.component.key] = this._submission = { data: {} };
+        return;
       }
-      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, noUpdate, noValidate);
+
+      if (submission.data) {
+        this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
+        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, noUpdate, noValidate);
+      } else if (submission._id) {
+        this.formio.submissionId = submission._id;
+        this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
+        return this.formReady.then(function () {
+          _this2._loading = false;
+          _this2.loading = true;
+          return _this2.formio.loadSubmission().then(function (result) {
+            _this2.loading = false;
+            return _this2.setValue(result);
+          });
+        });
+      }
     }
   }, {
     key: 'getValue',
     value: function getValue() {
-      this._submission = this.data[this.component.key];
-      return this.component.reference ? { _id: this._submission._id } : this._submission;
+      return this.data[this.component.key];
     }
   }]);
 
   return FormComponent;
 }(_formio2.default);
 
-},{"../../formio.form":37,"../../utils":46}],18:[function(require,module,exports){
+},{"../../formio.form":37,"../../utils":46,"lodash/merge":247}],18:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4808,7 +4862,12 @@ var GmapComponent = exports.GmapComponent = function (_BaseComponent) {
             }]
           }]
         };
-        _this3.map = new google.maps.Map(document.getElementById(_this3.component.map.gmapId), options);
+
+        var mapElement = document.getElementById(_this3.component.map.gmapId);
+        if (!mapElement) {
+          return;
+        }
+        _this3.map = new google.maps.Map(mapElement, options);
         _this3.addMarker(defaultLatlng, 'Default Marker', _this3.map);
       });
     }
@@ -6279,7 +6338,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
   return SignatureComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"signature_pad":259}],31:[function(require,module,exports){
+},{"../base/Base":4,"signature_pad":260}],31:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -6881,6 +6940,10 @@ var _clone2 = require("lodash/clone");
 
 var _clone3 = _interopRequireDefault(_clone2);
 
+var _assign2 = require("lodash/assign");
+
+var _assign3 = _interopRequireDefault(_assign2);
+
 var _eventemitter = require("eventemitter2");
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
@@ -6909,10 +6972,12 @@ function _inherits(subClass, superClass) {
 
 var getOptions = function getOptions(options) {
   options = options || {};
-  options.events = new _eventemitter2.default({
-    wildcard: false,
-    maxListeners: 0
-  });
+  if (!options.events) {
+    options.events = new _eventemitter2.default({
+      wildcard: false,
+      maxListeners: 0
+    });
+  }
   return options;
 };
 
@@ -7190,7 +7255,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: "getValue",
     value: function getValue() {
-      this._submission.data = _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), "getValue", this).call(this);
+      if (!this._submission.data) {
+        this._submission.data = {};
+      }
+      this._submission.data = (0, _assign3.default)(this.data, _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), "getValue", this).call(this));
       return this._submission;
     }
 
@@ -7436,7 +7504,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var _this8 = this;
 
       var submission = this.submission;
-      if (this.checkValidity(submission.data, true)) {
+      if (submission && submission.data && this.checkValidity(submission.data, true)) {
         this.loading = true;
         if (!this.formio) {
           return this.onSubmit(submission, false);
@@ -7513,11 +7581,14 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         return;
       }
       this._src = value;
+      this.formio = new _formio2.default(value);
+
       if (this.type === 'form') {
         // Set the options source so this can be passed to other components.
         this.options.src = value;
+        this.options.formio = this.formio;
       }
-      this.formio = new _formio2.default(value);
+
       this.formio.loadForm().then(function (form) {
         return _this10.setForm(form);
       });
@@ -7663,7 +7734,7 @@ FormioForm.embed = function (embed) {
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":38,"eventemitter2":48,"lodash/clone":217,"lodash/debounce":220,"lodash/each":223,"native-promise-only":257}],38:[function(require,module,exports){
+},{"./components/Components":1,"./formio":38,"eventemitter2":48,"lodash/assign":216,"lodash/clone":217,"lodash/debounce":220,"lodash/each":223,"native-promise-only":258}],38:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -8687,7 +8758,7 @@ Formio.events = new EventEmitter({
 module.exports = global.Formio = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./providers":41,"eventemitter2":48,"native-promise-only":257,"shallow-copy":258,"whatwg-fetch":262}],39:[function(require,module,exports){
+},{"./providers":41,"eventemitter2":48,"native-promise-only":258,"shallow-copy":259,"whatwg-fetch":263}],39:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -8740,6 +8811,10 @@ var _each = require('lodash/each');
 
 var _each2 = _interopRequireDefault(_each);
 
+var _clone = require('lodash/clone');
+
+var _clone2 = _interopRequireDefault(_clone);
+
 var _jsonLogicJs = require('json-logic-js');
 
 var _jsonLogicJs2 = _interopRequireDefault(_jsonLogicJs);
@@ -8777,6 +8852,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     _this.pages = [];
     _this.page = 0;
     _this.history = [];
+    _this.allComponents = {};
     _this._nextPage = 1;
     return _this;
   }
@@ -8784,9 +8860,14 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   _createClass(FormioWizard, [{
     key: 'setPage',
     value: function setPage(num) {
+      var _this2 = this;
+
       if (num >= 0 && num < this.pages.length) {
         this.page = num;
-        return _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'setForm', this).call(this, this.currentPage());
+        return _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'setForm', this).call(this, this.currentPage()).then(function () {
+          // Save the components for when we finally submit.
+          _this2.allComponents[_this2.page] = (0, _clone2.default)(_this2.components);
+        });
       }
       return _nativePromiseOnly2.default.reject('Page not found');
     }
@@ -8850,15 +8931,16 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'nextPage',
     value: function nextPage() {
-      var _this2 = this;
+      var _this3 = this;
 
       // Validate the form builed, before go to the next page
       if (this.checkValidity(this.submission.data, true)) {
+        this.checkData(this.submission.data, true);
         return this.beforeNext().then(function () {
-          _this2.history.push(_this2.page);
-          return _this2.setPage(_this2.getNextPage(_this2.submission.data, _this2.page)).then(function () {
-            _this2._nextPage = _this2.getNextPage(_this2.submission.data, _this2.page);
-            _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+          _this3.history.push(_this3.page);
+          return _this3.setPage(_this3.getNextPage(_this3.submission.data, _this3.page)).then(function () {
+            _this3._nextPage = _this3.getNextPage(_this3.submission.data, _this3.page);
+            _this3.emit('nextPage', { page: _this3.page, submission: _this3.submission });
           });
         });
       } else {
@@ -8868,11 +8950,11 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'prevPage',
     value: function prevPage() {
-      var _this3 = this;
+      var _this4 = this;
 
       var prevPage = this.getPreviousPage();
       return this.setPage(prevPage).then(function () {
-        _this3.emit('prevPage', { page: _this3.page, submission: _this3.submission });
+        _this4.emit('prevPage', { page: _this4.page, submission: _this4.submission });
       });
     }
   }, {
@@ -8910,12 +8992,14 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'setForm',
     value: function setForm(form) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.pages = [];
       (0, _each2.default)(form.components, function (component) {
         if (component.type === 'panel') {
-          _this4.pages.push(component);
+          _this5.pages.push(component);
+        } else if (component.key) {
+          _this5.allComponents[component.key] = _this5.addComponent(component, _this5.element, _this5.data);
         }
       });
       return this.setPage(this.page);
@@ -8945,7 +9029,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'createWizardHeader',
     value: function createWizardHeader() {
-      var _this5 = this;
+      var _this6 = this;
 
       var currentPage = this.currentPage();
       currentPage.breadcrumb = currentPage.breadcrumb || 'default';
@@ -8959,31 +9043,31 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       var showHistory = currentPage.breadcrumb.toLowerCase() === 'history';
       (0, _each2.default)(this.pages, function (page, i) {
         // See if this page is in our history.
-        if (showHistory && _this5.page !== i && _this5.history.indexOf(i) === -1) {
+        if (showHistory && _this6.page !== i && _this6.history.indexOf(i) === -1) {
           return;
         }
 
-        var pageButton = _this5.ce('pageButton', 'li', {
-          class: i === _this5.page ? 'active' : '',
-          style: i === _this5.page ? '' : 'cursor: pointer;'
+        var pageButton = _this6.ce('pageButton', 'li', {
+          class: i === _this6.page ? 'active' : '',
+          style: i === _this6.page ? '' : 'cursor: pointer;'
         });
 
         // Navigate to the page as they click on it.
-        if (_this5.page !== i) {
-          _this5.addEventListener(pageButton, 'click', function (event) {
+        if (_this6.page !== i) {
+          _this6.addEventListener(pageButton, 'click', function (event) {
             event.preventDefault();
-            _this5.setPage(i);
+            _this6.setPage(i);
           });
         }
 
-        var pageLabel = _this5.ce('pageLabel', 'span');
-        var pageTitle = i === _this5.page || showHistory ? page.title : i + 1;
+        var pageLabel = _this6.ce('pageLabel', 'span');
+        var pageTitle = i === _this6.page || showHistory ? page.title : i + 1;
         if (!pageTitle) {
           pageTitle = i + 1;
         }
-        pageLabel.appendChild(_this5.text(pageTitle));
+        pageLabel.appendChild(_this6.text(pageTitle));
         pageButton.appendChild(pageLabel);
-        _this5.wizardHeader.appendChild(pageButton);
+        _this6.wizardHeader.appendChild(pageButton);
       });
 
       this.element.appendChild(this.wizardHeader);
@@ -9005,32 +9089,42 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'createWizardNav',
     value: function createWizardNav() {
-      var _this6 = this;
+      var _this7 = this;
 
       this.wizardNav = this.ce('wizardNav', 'ul', {
         class: 'list-inline'
       });
 
       (0, _each2.default)([{ name: 'cancel', method: 'cancel', class: 'btn btn-default' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
-        if (!_this6.hasButton(button.name)) {
+        if (!_this7.hasButton(button.name)) {
           return;
         }
-        var buttonWrapper = _this6.ce('wizardNavButton', 'li');
+        var buttonWrapper = _this7.ce('wizardNavButton', 'li');
         var buttonProp = button.name + 'Button';
-        _this6[buttonProp] = _this6.ce(buttonProp, 'button', {
+        _this7[buttonProp] = _this7.ce(buttonProp, 'button', {
           class: button.class
         });
-        _this6[buttonProp].appendChild(_this6.text(_this6.t(button.name)));
-        _this6.addEventListener(_this6[buttonProp], 'click', function (event) {
+        _this7[buttonProp].appendChild(_this7.text(_this7.t(button.name)));
+        _this7.addEventListener(_this7[buttonProp], 'click', function (event) {
           event.preventDefault();
-          _this6[button.method]();
+          _this7[button.method]();
         });
-        buttonWrapper.appendChild(_this6[buttonProp]);
-        _this6.wizardNav.appendChild(buttonWrapper);
+        buttonWrapper.appendChild(_this7[buttonProp]);
+        _this7.wizardNav.appendChild(buttonWrapper);
       });
 
       // Add the wizard navigation
       this.element.appendChild(this.wizardNav);
+    }
+  }, {
+    key: 'getComponents',
+    value: function getComponents() {
+      // Set the components based on all components.
+      var components = [];
+      (0, _each2.default)(this.allComponents, function (comps) {
+        components = components.concat(comps);
+      });
+      return components;
     }
   }]);
 
@@ -9044,7 +9138,7 @@ FormioWizard.setAppUrl = _formio4.default.setAppUrl;
 module.exports = global.FormioWizard = FormioWizard;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./formio":38,"./formio.form":37,"json-logic-js":66,"lodash/each":223,"native-promise-only":257}],40:[function(require,module,exports){
+},{"./formio":38,"./formio.form":37,"json-logic-js":66,"lodash/clone":217,"lodash/each":223,"native-promise-only":258}],40:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -9163,7 +9257,7 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 module.exports = dropbox;
 
-},{"native-promise-only":257}],43:[function(require,module,exports){
+},{"native-promise-only":258}],43:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -9287,7 +9381,7 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 module.exports = s3;
 
-},{"native-promise-only":257}],45:[function(require,module,exports){
+},{"native-promise-only":258}],45:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -9366,7 +9460,7 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"native-promise-only":257}],46:[function(require,module,exports){
+},{"native-promise-only":258}],46:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -16683,7 +16777,7 @@ function baseIteratee(value) {
 
 module.exports = baseIteratee;
 
-},{"./_baseMatches":115,"./_baseMatchesProperty":116,"./identity":229,"./isArray":231,"./property":249}],113:[function(require,module,exports){
+},{"./_baseMatches":115,"./_baseMatchesProperty":116,"./identity":229,"./isArray":231,"./property":250}],113:[function(require,module,exports){
 var isPrototype = require('./_isPrototype'),
     nativeKeys = require('./_nativeKeys');
 
@@ -16947,7 +17041,7 @@ function baseMergeDeep(object, source, key, srcIndex, mergeFunc, customizer, sta
 
 module.exports = baseMergeDeep;
 
-},{"./_assignMergeValue":89,"./_cloneBuffer":133,"./_cloneTypedArray":139,"./_copyArray":140,"./_initCloneObject":173,"./isArguments":230,"./isArray":231,"./isArrayLikeObject":233,"./isBuffer":234,"./isFunction":236,"./isObject":238,"./isPlainObject":240,"./isTypedArray":242,"./toPlainObject":254}],119:[function(require,module,exports){
+},{"./_assignMergeValue":89,"./_cloneBuffer":133,"./_cloneTypedArray":139,"./_copyArray":140,"./_initCloneObject":173,"./isArguments":230,"./isArray":231,"./isArrayLikeObject":233,"./isBuffer":234,"./isFunction":236,"./isObject":238,"./isPlainObject":240,"./isTypedArray":242,"./toPlainObject":255}],119:[function(require,module,exports){
 /**
  * The base implementation of `_.property` without support for deep paths.
  *
@@ -17249,7 +17343,7 @@ function castPath(value, object) {
 
 module.exports = castPath;
 
-},{"./_isKey":176,"./_stringToPath":213,"./isArray":231,"./toString":255}],132:[function(require,module,exports){
+},{"./_isKey":176,"./_stringToPath":213,"./isArray":231,"./toString":256}],132:[function(require,module,exports){
 var Uint8Array = require('./_Uint8Array');
 
 /**
@@ -18166,7 +18260,7 @@ var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
 
 module.exports = getSymbols;
 
-},{"./_arrayFilter":83,"./stubArray":251}],162:[function(require,module,exports){
+},{"./_arrayFilter":83,"./stubArray":252}],162:[function(require,module,exports){
 var arrayPush = require('./_arrayPush'),
     getPrototype = require('./_getPrototype'),
     getSymbols = require('./_getSymbols'),
@@ -18193,7 +18287,7 @@ var getSymbolsIn = !nativeGetSymbols ? stubArray : function(object) {
 
 module.exports = getSymbolsIn;
 
-},{"./_arrayPush":86,"./_getPrototype":159,"./_getSymbols":161,"./stubArray":251}],163:[function(require,module,exports){
+},{"./_arrayPush":86,"./_getPrototype":159,"./_getSymbols":161,"./stubArray":252}],163:[function(require,module,exports){
 var DataView = require('./_DataView'),
     Map = require('./_Map'),
     Promise = require('./_Promise'),
@@ -19827,7 +19921,7 @@ function debounce(func, wait, options) {
 
 module.exports = debounce;
 
-},{"./isObject":238,"./now":248,"./toNumber":253}],221:[function(require,module,exports){
+},{"./isObject":238,"./now":249,"./toNumber":254}],221:[function(require,module,exports){
 var apply = require('./_apply'),
     baseRest = require('./_baseRest'),
     customDefaultsMerge = require('./_customDefaultsMerge'),
@@ -19859,7 +19953,7 @@ var defaultsDeep = baseRest(function(args) {
 
 module.exports = defaultsDeep;
 
-},{"./_apply":81,"./_baseRest":122,"./_customDefaultsMerge":148,"./mergeWith":247}],222:[function(require,module,exports){
+},{"./_apply":81,"./_baseRest":122,"./_customDefaultsMerge":148,"./mergeWith":248}],222:[function(require,module,exports){
 var baseDelay = require('./_baseDelay'),
     baseRest = require('./_baseRest'),
     toNumber = require('./toNumber');
@@ -19889,7 +19983,7 @@ var delay = baseRest(function(func, wait, args) {
 
 module.exports = delay;
 
-},{"./_baseDelay":97,"./_baseRest":122,"./toNumber":253}],223:[function(require,module,exports){
+},{"./_baseDelay":97,"./_baseRest":122,"./toNumber":254}],223:[function(require,module,exports){
 module.exports = require('./forEach');
 
 },{"./forEach":225}],224:[function(require,module,exports){
@@ -20281,7 +20375,7 @@ var isBuffer = nativeIsBuffer || stubFalse;
 
 module.exports = isBuffer;
 
-},{"./_root":202,"./stubFalse":252}],235:[function(require,module,exports){
+},{"./_root":202,"./stubFalse":253}],235:[function(require,module,exports){
 var baseKeys = require('./_baseKeys'),
     getTag = require('./_getTag'),
     isArguments = require('./isArguments'),
@@ -20799,6 +20893,47 @@ var baseMerge = require('./_baseMerge'),
     createAssigner = require('./_createAssigner');
 
 /**
+ * This method is like `_.assign` except that it recursively merges own and
+ * inherited enumerable string keyed properties of source objects into the
+ * destination object. Source properties that resolve to `undefined` are
+ * skipped if a destination value exists. Array and plain object properties
+ * are merged recursively. Other objects and value types are overridden by
+ * assignment. Source objects are applied from left to right. Subsequent
+ * sources overwrite property assignments of previous sources.
+ *
+ * **Note:** This method mutates `object`.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.5.0
+ * @category Object
+ * @param {Object} object The destination object.
+ * @param {...Object} [sources] The source objects.
+ * @returns {Object} Returns `object`.
+ * @example
+ *
+ * var object = {
+ *   'a': [{ 'b': 2 }, { 'd': 4 }]
+ * };
+ *
+ * var other = {
+ *   'a': [{ 'c': 3 }, { 'e': 5 }]
+ * };
+ *
+ * _.merge(object, other);
+ * // => { 'a': [{ 'b': 2, 'c': 3 }, { 'd': 4, 'e': 5 }] }
+ */
+var merge = createAssigner(function(object, source, srcIndex) {
+  baseMerge(object, source, srcIndex);
+});
+
+module.exports = merge;
+
+},{"./_baseMerge":117,"./_createAssigner":145}],248:[function(require,module,exports){
+var baseMerge = require('./_baseMerge'),
+    createAssigner = require('./_createAssigner');
+
+/**
  * This method is like `_.merge` except that it accepts `customizer` which
  * is invoked to produce the merged values of the destination and source
  * properties. If `customizer` returns `undefined`, merging is handled by the
@@ -20835,7 +20970,7 @@ var mergeWith = createAssigner(function(object, source, srcIndex, customizer) {
 
 module.exports = mergeWith;
 
-},{"./_baseMerge":117,"./_createAssigner":145}],248:[function(require,module,exports){
+},{"./_baseMerge":117,"./_createAssigner":145}],249:[function(require,module,exports){
 var root = require('./_root');
 
 /**
@@ -20860,7 +20995,7 @@ var now = function() {
 
 module.exports = now;
 
-},{"./_root":202}],249:[function(require,module,exports){
+},{"./_root":202}],250:[function(require,module,exports){
 var baseProperty = require('./_baseProperty'),
     basePropertyDeep = require('./_basePropertyDeep'),
     isKey = require('./_isKey'),
@@ -20894,7 +21029,7 @@ function property(path) {
 
 module.exports = property;
 
-},{"./_baseProperty":119,"./_basePropertyDeep":120,"./_isKey":176,"./_toKey":214}],250:[function(require,module,exports){
+},{"./_baseProperty":119,"./_basePropertyDeep":120,"./_isKey":176,"./_toKey":214}],251:[function(require,module,exports){
 var baseIteratee = require('./_baseIteratee'),
     basePullAt = require('./_basePullAt');
 
@@ -20949,7 +21084,7 @@ function remove(array, predicate) {
 
 module.exports = remove;
 
-},{"./_baseIteratee":112,"./_basePullAt":121}],251:[function(require,module,exports){
+},{"./_baseIteratee":112,"./_basePullAt":121}],252:[function(require,module,exports){
 /**
  * This method returns a new empty array.
  *
@@ -20974,7 +21109,7 @@ function stubArray() {
 
 module.exports = stubArray;
 
-},{}],252:[function(require,module,exports){
+},{}],253:[function(require,module,exports){
 /**
  * This method returns `false`.
  *
@@ -20994,7 +21129,7 @@ function stubFalse() {
 
 module.exports = stubFalse;
 
-},{}],253:[function(require,module,exports){
+},{}],254:[function(require,module,exports){
 var isObject = require('./isObject'),
     isSymbol = require('./isSymbol');
 
@@ -21062,7 +21197,7 @@ function toNumber(value) {
 
 module.exports = toNumber;
 
-},{"./isObject":238,"./isSymbol":241}],254:[function(require,module,exports){
+},{"./isObject":238,"./isSymbol":241}],255:[function(require,module,exports){
 var copyObject = require('./_copyObject'),
     keysIn = require('./keysIn');
 
@@ -21096,7 +21231,7 @@ function toPlainObject(value) {
 
 module.exports = toPlainObject;
 
-},{"./_copyObject":141,"./keysIn":244}],255:[function(require,module,exports){
+},{"./_copyObject":141,"./keysIn":244}],256:[function(require,module,exports){
 var baseToString = require('./_baseToString');
 
 /**
@@ -21126,7 +21261,7 @@ function toString(value) {
 
 module.exports = toString;
 
-},{"./_baseToString":126}],256:[function(require,module,exports){
+},{"./_baseToString":126}],257:[function(require,module,exports){
 //! moment.js
 //! version : 2.18.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -25591,7 +25726,7 @@ return hooks;
 
 })));
 
-},{}],257:[function(require,module,exports){
+},{}],258:[function(require,module,exports){
 (function (global){
 /*! Native Promise Only
     v0.8.1 (c) Kyle Simpson
@@ -25968,7 +26103,7 @@ return hooks;
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],258:[function(require,module,exports){
+},{}],259:[function(require,module,exports){
 module.exports = function (obj) {
     if (!obj || typeof obj !== 'object') return obj;
     
@@ -26005,7 +26140,7 @@ var isArray = Array.isArray || function (xs) {
     return {}.toString.call(xs) === '[object Array]';
 };
 
-},{}],259:[function(require,module,exports){
+},{}],260:[function(require,module,exports){
 /*!
  * Signature Pad v1.6.0
  * https://github.com/szimek/signature_pad
@@ -26536,11 +26671,11 @@ return SignaturePad;
 
 })));
 
-},{}],260:[function(require,module,exports){
-!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.createNumberMask=t():e.createNumberMask=t()}(this,function(){return function(e){function t(n){if(o[n])return o[n].exports;var i=o[n]={exports:{},id:n,loaded:!1};return e[n].call(i.exports,i,i.exports,t),i.loaded=!0,i.exports}var o={};return t.m=e,t.c=o,t.p="",t(0)}([function(e,t,o){e.exports=o(2)},,function(e,t){"use strict";function o(){function e(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,t=e.length;if(e===l||e[0]===y[0]&&1===t)return y.split(l).concat([v]).concat(h.split(l));var o=e.lastIndexOf(k),c=o!==-1,u=e[0]===d&&q,a=void 0,b=void 0,g=void 0;if(e.slice(T*-1)===h&&(e=e.slice(0,T*-1)),c&&(M||$)?(a=e.slice(e.slice(0,R)===y?R:0,o),b=e.slice(o+1,t),b=n(b.replace(f,l))):a=e.slice(0,R)===y?e.slice(R):e,P&&("undefined"==typeof P?"undefined":r(P))===p){var S="."===j?"[.]":""+j,w=(a.match(new RegExp(S,"g"))||[]).length;a=a.slice(0,P+w*Z)}return a=a.replace(f,l),E||(a=a.replace(/^0+(0$|[^0])/,"$1")),a=x?i(a,j):a,g=n(a),(c&&M||$===!0)&&(e[o-1]!==k&&g.push(m),g.push(k,m),b&&(("undefined"==typeof L?"undefined":r(L))===p&&(b=b.slice(0,L)),g=g.concat(b)),$===!0&&e[o-1]===k&&g.push(v)),R>0&&(g=y.split(l).concat(g)),u&&(g.length===R&&g.push(v),g=[s].concat(g)),h.length>0&&(g=g.concat(h.split(l))),g}var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},o=t.prefix,y=void 0===o?c:o,b=t.suffix,h=void 0===b?l:b,g=t.includeThousandsSeparator,x=void 0===g||g,S=t.thousandsSeparatorSymbol,j=void 0===S?u:S,w=t.allowDecimal,M=void 0!==w&&w,N=t.decimalSymbol,k=void 0===N?a:N,D=t.decimalLimit,L=void 0===D?2:D,O=t.requireDecimal,$=void 0!==O&&O,_=t.allowNegative,q=void 0!==_&&_,B=t.allowLeadingZeroes,E=void 0!==B&&B,I=t.integerLimit,P=void 0===I?null:I,R=y&&y.length||0,T=h&&h.length||0,Z=j&&j.length||0;return e.instanceOf="createNumberMask",e}function n(e){return e.split(l).map(function(e){return v.test(e)?v:e})}function i(e,t){return e.replace(/\B(?=(\d{3})+(?!\d))/g,t)}Object.defineProperty(t,"__esModule",{value:!0});var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};t.default=o;var c="$",l="",u=",",a=".",d="-",s=/-/,f=/\D+/g,p="number",v=/\d/,m="[]"}])});
 },{}],261:[function(require,module,exports){
-!function(e,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports.vanillaTextMask=r():e.vanillaTextMask=r()}(this,function(){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var t={};return r.m=e,r.c=t,r.p="",r(0)}([function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r=e.inputElement,t=(0,u.default)(e),n=function(e){var r=e.target.value;return t.update(r)};return r.addEventListener("input",n),t.update(r.value),{textMaskInputElement:t,destroy:function(){r.removeEventListener("input",n)}}}Object.defineProperty(r,"__esModule",{value:!0}),r.conformToMask=void 0,r.maskInput=o;var i=t(2);Object.defineProperty(r,"conformToMask",{enumerable:!0,get:function(){return n(i).default}});var a=t(5),u=n(a);r.default=o},function(e,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.placeholderChar="_"},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:a,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:a,t=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},n=t.guide,u=void 0===n||n,l=t.previousConformedValue,s=void 0===l?a:l,f=t.placeholderChar,d=void 0===f?i.placeholderChar:f,c=t.placeholder,v=void 0===c?(0,o.convertMaskToPlaceholder)(r,d):c,p=t.currentCaretPosition,h=t.keepCharPositions,g=u===!1&&void 0!==s,m=e.length,y=s.length,b=v.length,C=r.length,P=m-y,x=P>0,k=p+(x?-P:0),O=k+Math.abs(P);if(h===!0&&!x){for(var M=a,T=k;T<O;T++)v[T]===d&&(M+=d);e=e.slice(0,k)+M+e.slice(k,m)}for(var w=e.split(a).map(function(e,r){return{char:e,isNew:r>=k&&r<O}}),_=m-1;_>=0;_--){var j=w[_].char;if(j!==d){var V=_>=k&&y===C;j===v[V?_-P:_]&&w.splice(_,1)}}var S=a,E=!1;e:for(var N=0;N<b;N++){var A=v[N];if(A===d){if(w.length>0)for(;w.length>0;){var I=w.shift(),L=I.char,R=I.isNew;if(L===d&&g!==!0){S+=d;continue e}if(r[N].test(L)){if(h===!0&&R!==!1&&s!==a&&u!==!1&&x){for(var J=w.length,q=null,F=0;F<J;F++){var W=w[F];if(W.char!==d&&W.isNew===!1)break;if(W.char===d){q=F;break}}null!==q?(S+=L,w.splice(q,1)):N--}else S+=L;continue e}E=!0}g===!1&&(S+=v.substr(N,b));break}S+=A}if(g&&x===!1){for(var z=null,B=0;B<S.length;B++)v[B]===d&&(z=B);S=null!==z?S.substr(0,z+1):a}return{conformedValue:S,meta:{someCharsRejected:E}}}Object.defineProperty(r,"__esModule",{value:!0}),r.default=n;var o=t(3),i=t(1),a=""},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:u.placeholderChar;if(e.indexOf(r)!==-1)throw new Error("Placeholder character must not be used as part of the mask. Please specify a character that is not present in your mask as your placeholder character.\n\n"+("The placeholder character that was received is: "+JSON.stringify(r)+"\n\n")+("The mask that was received is: "+JSON.stringify(e)));return e.map(function(e){return e instanceof RegExp?r:e}).join("")}function o(e){return"string"==typeof e||e instanceof String}function i(e){return"number"==typeof e&&void 0===e.length&&!isNaN(e)}function a(e){for(var r=[],t=void 0;t=e.indexOf(s),t!==-1;)r.push(t),e.splice(t,1);return{maskWithoutCaretTraps:e,indexes:r}}Object.defineProperty(r,"__esModule",{value:!0}),r.convertMaskToPlaceholder=n,r.isString=o,r.isNumber=i,r.processCaretTraps=a;var u=t(1),l=[],s="[]"},function(e,r){"use strict";function t(e){var r=e.previousConformedValue,t=void 0===r?o:r,i=e.previousPlaceholder,a=void 0===i?o:i,u=e.currentCaretPosition,l=void 0===u?0:u,s=e.conformedValue,f=e.rawValue,d=e.placeholderChar,c=e.placeholder,v=e.indexesOfPipedChars,p=void 0===v?n:v,h=e.caretTrapIndexes,g=void 0===h?n:h;if(0===l)return 0;var m=f.length,y=t.length,b=c.length,C=s.length,P=m-y,x=P>0,k=0===y,O=P>1&&!x&&!k;if(O)return l;var M=x&&(t===s||s===c),T=0,w=void 0,_=void 0;if(M)T=l-P;else{var j=s.toLowerCase(),V=f.toLowerCase(),S=V.substr(0,l).split(o),E=S.filter(function(e){return j.indexOf(e)!==-1});_=E[E.length-1];var N=a.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,A=c.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,I=A!==N,L=void 0!==a[E.length-1]&&void 0!==c[E.length-2]&&a[E.length-1]!==d&&a[E.length-1]!==c[E.length-1]&&a[E.length-1]===c[E.length-2];!x&&(I||L)&&N>0&&c.indexOf(_)>-1&&void 0!==f[l]&&(w=!0,_=f[l]);for(var R=p.map(function(e){return j[e]}),J=R.filter(function(e){return e===_}).length,q=E.filter(function(e){return e===_}).length,F=c.substr(0,c.indexOf(d)).split(o).filter(function(e,r){return e===_&&f[r]!==e}).length,W=F+q+J+(w?1:0),z=0,B=0;B<C;B++){var D=j[B];if(T=B+1,D===_&&z++,z>=W)break}}if(x){for(var G=T,H=T;H<=b;H++)if(c[H]===d&&(G=H),c[H]===d||g.indexOf(H)!==-1||H===b)return G}else if(w){for(var K=T-1;K>=0;K--)if(s[K]===_||g.indexOf(K)!==-1||0===K)return K}else for(var Q=T;Q>=0;Q--)if(c[Q-1]===d||g.indexOf(Q)!==-1||0===Q)return Q}Object.defineProperty(r,"__esModule",{value:!0}),r.default=t;var n=[],o=""},function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r={previousConformedValue:void 0,previousPlaceholder:void 0};return{state:r,update:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:e,o=n.inputElement,s=n.mask,d=n.guide,m=n.pipe,b=n.placeholderChar,C=void 0===b?p.placeholderChar:b,P=n.keepCharPositions,x=void 0!==P&&P,k=n.showMask,O=void 0!==k&&k;if("undefined"==typeof t&&(t=o.value),t!==r.previousConformedValue){("undefined"==typeof s?"undefined":l(s))===y&&void 0!==s.pipe&&void 0!==s.mask&&(m=s.pipe,s=s.mask);var M=void 0,T=void 0;if(s instanceof Array&&(M=(0,v.convertMaskToPlaceholder)(s,C)),s!==!1){var w=a(t),_=o.selectionEnd,j=r.previousConformedValue,V=r.previousPlaceholder,S=void 0;if(("undefined"==typeof s?"undefined":l(s))===h){if(T=s(w,{currentCaretPosition:_,previousConformedValue:j,placeholderChar:C}),T===!1)return;var E=(0,v.processCaretTraps)(T),N=E.maskWithoutCaretTraps,A=E.indexes;T=N,S=A,M=(0,v.convertMaskToPlaceholder)(T,C)}else T=s;var I={previousConformedValue:j,guide:d,placeholderChar:C,pipe:m,placeholder:M,currentCaretPosition:_,keepCharPositions:x},L=(0,c.default)(w,T,I),R=L.conformedValue,J=("undefined"==typeof m?"undefined":l(m))===h,q={};J&&(q=m(R,u({rawValue:w},I)),q===!1?q={value:j,rejected:!0}:(0,v.isString)(q)&&(q={value:q}));var F=J?q.value:R,W=(0,f.default)({previousConformedValue:j,previousPlaceholder:V,conformedValue:F,placeholder:M,rawValue:w,currentCaretPosition:_,placeholderChar:C,indexesOfPipedChars:q.indexesOfPipedChars,caretTrapIndexes:S}),z=F===M&&0===W,B=O?M:g,D=z?B:F;r.previousConformedValue=D,r.previousPlaceholder=M,o.value!==D&&(o.value=D,i(o,W))}}}}}function i(e,r){document.activeElement===e&&(b?C(function(){return e.setSelectionRange(r,r,m)},0):e.setSelectionRange(r,r,m))}function a(e){if((0,v.isString)(e))return e;if((0,v.isNumber)(e))return String(e);if(void 0===e||null===e)return g;throw new Error("The 'value' provided to Text Mask needs to be a string or a number. The value received was:\n\n "+JSON.stringify(e))}Object.defineProperty(r,"__esModule",{value:!0});var u=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=o;var s=t(4),f=n(s),d=t(2),c=n(d),v=t(3),p=t(1),h="function",g="",m="none",y="object",b="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),C="undefined"!=typeof requestAnimationFrame?requestAnimationFrame:setTimeout}])});
+!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.createNumberMask=t():e.createNumberMask=t()}(this,function(){return function(e){function t(n){if(o[n])return o[n].exports;var i=o[n]={exports:{},id:n,loaded:!1};return e[n].call(i.exports,i,i.exports,t),i.loaded=!0,i.exports}var o={};return t.m=e,t.c=o,t.p="",t(0)}([function(e,t,o){e.exports=o(2)},,function(e,t){"use strict";function o(){function e(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,t=e.length;if(e===l||e[0]===y[0]&&1===t)return y.split(l).concat([v]).concat(h.split(l));var o=e.lastIndexOf(k),c=o!==-1,u=e[0]===d&&q,a=void 0,b=void 0,g=void 0;if(e.slice(T*-1)===h&&(e=e.slice(0,T*-1)),c&&(M||$)?(a=e.slice(e.slice(0,R)===y?R:0,o),b=e.slice(o+1,t),b=n(b.replace(f,l))):a=e.slice(0,R)===y?e.slice(R):e,P&&("undefined"==typeof P?"undefined":r(P))===p){var S="."===j?"[.]":""+j,w=(a.match(new RegExp(S,"g"))||[]).length;a=a.slice(0,P+w*Z)}return a=a.replace(f,l),E||(a=a.replace(/^0+(0$|[^0])/,"$1")),a=x?i(a,j):a,g=n(a),(c&&M||$===!0)&&(e[o-1]!==k&&g.push(m),g.push(k,m),b&&(("undefined"==typeof L?"undefined":r(L))===p&&(b=b.slice(0,L)),g=g.concat(b)),$===!0&&e[o-1]===k&&g.push(v)),R>0&&(g=y.split(l).concat(g)),u&&(g.length===R&&g.push(v),g=[s].concat(g)),h.length>0&&(g=g.concat(h.split(l))),g}var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},o=t.prefix,y=void 0===o?c:o,b=t.suffix,h=void 0===b?l:b,g=t.includeThousandsSeparator,x=void 0===g||g,S=t.thousandsSeparatorSymbol,j=void 0===S?u:S,w=t.allowDecimal,M=void 0!==w&&w,N=t.decimalSymbol,k=void 0===N?a:N,D=t.decimalLimit,L=void 0===D?2:D,O=t.requireDecimal,$=void 0!==O&&O,_=t.allowNegative,q=void 0!==_&&_,B=t.allowLeadingZeroes,E=void 0!==B&&B,I=t.integerLimit,P=void 0===I?null:I,R=y&&y.length||0,T=h&&h.length||0,Z=j&&j.length||0;return e.instanceOf="createNumberMask",e}function n(e){return e.split(l).map(function(e){return v.test(e)?v:e})}function i(e,t){return e.replace(/\B(?=(\d{3})+(?!\d))/g,t)}Object.defineProperty(t,"__esModule",{value:!0});var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};t.default=o;var c="$",l="",u=",",a=".",d="-",s=/-/,f=/\D+/g,p="number",v=/\d/,m="[]"}])});
 },{}],262:[function(require,module,exports){
+!function(e,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports.vanillaTextMask=r():e.vanillaTextMask=r()}(this,function(){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var t={};return r.m=e,r.c=t,r.p="",r(0)}([function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r=e.inputElement,t=(0,u.default)(e),n=function(e){var r=e.target.value;return t.update(r)};return r.addEventListener("input",n),t.update(r.value),{textMaskInputElement:t,destroy:function(){r.removeEventListener("input",n)}}}Object.defineProperty(r,"__esModule",{value:!0}),r.conformToMask=void 0,r.maskInput=o;var i=t(2);Object.defineProperty(r,"conformToMask",{enumerable:!0,get:function(){return n(i).default}});var a=t(5),u=n(a);r.default=o},function(e,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.placeholderChar="_"},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:a,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:a,t=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},n=t.guide,u=void 0===n||n,l=t.previousConformedValue,s=void 0===l?a:l,f=t.placeholderChar,d=void 0===f?i.placeholderChar:f,c=t.placeholder,v=void 0===c?(0,o.convertMaskToPlaceholder)(r,d):c,p=t.currentCaretPosition,h=t.keepCharPositions,g=u===!1&&void 0!==s,m=e.length,y=s.length,b=v.length,C=r.length,P=m-y,x=P>0,k=p+(x?-P:0),O=k+Math.abs(P);if(h===!0&&!x){for(var M=a,T=k;T<O;T++)v[T]===d&&(M+=d);e=e.slice(0,k)+M+e.slice(k,m)}for(var w=e.split(a).map(function(e,r){return{char:e,isNew:r>=k&&r<O}}),_=m-1;_>=0;_--){var j=w[_].char;if(j!==d){var V=_>=k&&y===C;j===v[V?_-P:_]&&w.splice(_,1)}}var S=a,E=!1;e:for(var N=0;N<b;N++){var A=v[N];if(A===d){if(w.length>0)for(;w.length>0;){var I=w.shift(),L=I.char,R=I.isNew;if(L===d&&g!==!0){S+=d;continue e}if(r[N].test(L)){if(h===!0&&R!==!1&&s!==a&&u!==!1&&x){for(var J=w.length,q=null,F=0;F<J;F++){var W=w[F];if(W.char!==d&&W.isNew===!1)break;if(W.char===d){q=F;break}}null!==q?(S+=L,w.splice(q,1)):N--}else S+=L;continue e}E=!0}g===!1&&(S+=v.substr(N,b));break}S+=A}if(g&&x===!1){for(var z=null,B=0;B<S.length;B++)v[B]===d&&(z=B);S=null!==z?S.substr(0,z+1):a}return{conformedValue:S,meta:{someCharsRejected:E}}}Object.defineProperty(r,"__esModule",{value:!0}),r.default=n;var o=t(3),i=t(1),a=""},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:u.placeholderChar;if(e.indexOf(r)!==-1)throw new Error("Placeholder character must not be used as part of the mask. Please specify a character that is not present in your mask as your placeholder character.\n\n"+("The placeholder character that was received is: "+JSON.stringify(r)+"\n\n")+("The mask that was received is: "+JSON.stringify(e)));return e.map(function(e){return e instanceof RegExp?r:e}).join("")}function o(e){return"string"==typeof e||e instanceof String}function i(e){return"number"==typeof e&&void 0===e.length&&!isNaN(e)}function a(e){for(var r=[],t=void 0;t=e.indexOf(s),t!==-1;)r.push(t),e.splice(t,1);return{maskWithoutCaretTraps:e,indexes:r}}Object.defineProperty(r,"__esModule",{value:!0}),r.convertMaskToPlaceholder=n,r.isString=o,r.isNumber=i,r.processCaretTraps=a;var u=t(1),l=[],s="[]"},function(e,r){"use strict";function t(e){var r=e.previousConformedValue,t=void 0===r?o:r,i=e.previousPlaceholder,a=void 0===i?o:i,u=e.currentCaretPosition,l=void 0===u?0:u,s=e.conformedValue,f=e.rawValue,d=e.placeholderChar,c=e.placeholder,v=e.indexesOfPipedChars,p=void 0===v?n:v,h=e.caretTrapIndexes,g=void 0===h?n:h;if(0===l)return 0;var m=f.length,y=t.length,b=c.length,C=s.length,P=m-y,x=P>0,k=0===y,O=P>1&&!x&&!k;if(O)return l;var M=x&&(t===s||s===c),T=0,w=void 0,_=void 0;if(M)T=l-P;else{var j=s.toLowerCase(),V=f.toLowerCase(),S=V.substr(0,l).split(o),E=S.filter(function(e){return j.indexOf(e)!==-1});_=E[E.length-1];var N=a.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,A=c.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,I=A!==N,L=void 0!==a[E.length-1]&&void 0!==c[E.length-2]&&a[E.length-1]!==d&&a[E.length-1]!==c[E.length-1]&&a[E.length-1]===c[E.length-2];!x&&(I||L)&&N>0&&c.indexOf(_)>-1&&void 0!==f[l]&&(w=!0,_=f[l]);for(var R=p.map(function(e){return j[e]}),J=R.filter(function(e){return e===_}).length,q=E.filter(function(e){return e===_}).length,F=c.substr(0,c.indexOf(d)).split(o).filter(function(e,r){return e===_&&f[r]!==e}).length,W=F+q+J+(w?1:0),z=0,B=0;B<C;B++){var D=j[B];if(T=B+1,D===_&&z++,z>=W)break}}if(x){for(var G=T,H=T;H<=b;H++)if(c[H]===d&&(G=H),c[H]===d||g.indexOf(H)!==-1||H===b)return G}else if(w){for(var K=T-1;K>=0;K--)if(s[K]===_||g.indexOf(K)!==-1||0===K)return K}else for(var Q=T;Q>=0;Q--)if(c[Q-1]===d||g.indexOf(Q)!==-1||0===Q)return Q}Object.defineProperty(r,"__esModule",{value:!0}),r.default=t;var n=[],o=""},function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r={previousConformedValue:void 0,previousPlaceholder:void 0};return{state:r,update:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:e,o=n.inputElement,s=n.mask,d=n.guide,m=n.pipe,b=n.placeholderChar,C=void 0===b?p.placeholderChar:b,P=n.keepCharPositions,x=void 0!==P&&P,k=n.showMask,O=void 0!==k&&k;if("undefined"==typeof t&&(t=o.value),t!==r.previousConformedValue){("undefined"==typeof s?"undefined":l(s))===y&&void 0!==s.pipe&&void 0!==s.mask&&(m=s.pipe,s=s.mask);var M=void 0,T=void 0;if(s instanceof Array&&(M=(0,v.convertMaskToPlaceholder)(s,C)),s!==!1){var w=a(t),_=o.selectionEnd,j=r.previousConformedValue,V=r.previousPlaceholder,S=void 0;if(("undefined"==typeof s?"undefined":l(s))===h){if(T=s(w,{currentCaretPosition:_,previousConformedValue:j,placeholderChar:C}),T===!1)return;var E=(0,v.processCaretTraps)(T),N=E.maskWithoutCaretTraps,A=E.indexes;T=N,S=A,M=(0,v.convertMaskToPlaceholder)(T,C)}else T=s;var I={previousConformedValue:j,guide:d,placeholderChar:C,pipe:m,placeholder:M,currentCaretPosition:_,keepCharPositions:x},L=(0,c.default)(w,T,I),R=L.conformedValue,J=("undefined"==typeof m?"undefined":l(m))===h,q={};J&&(q=m(R,u({rawValue:w},I)),q===!1?q={value:j,rejected:!0}:(0,v.isString)(q)&&(q={value:q}));var F=J?q.value:R,W=(0,f.default)({previousConformedValue:j,previousPlaceholder:V,conformedValue:F,placeholder:M,rawValue:w,currentCaretPosition:_,placeholderChar:C,indexesOfPipedChars:q.indexesOfPipedChars,caretTrapIndexes:S}),z=F===M&&0===W,B=O?M:g,D=z?B:F;r.previousConformedValue=D,r.previousPlaceholder=M,o.value!==D&&(o.value=D,i(o,W))}}}}}function i(e,r){document.activeElement===e&&(b?C(function(){return e.setSelectionRange(r,r,m)},0):e.setSelectionRange(r,r,m))}function a(e){if((0,v.isString)(e))return e;if((0,v.isNumber)(e))return String(e);if(void 0===e||null===e)return g;throw new Error("The 'value' provided to Text Mask needs to be a string or a number. The value received was:\n\n "+JSON.stringify(e))}Object.defineProperty(r,"__esModule",{value:!0});var u=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=o;var s=t(4),f=n(s),d=t(2),c=n(d),v=t(3),p=t(1),h="function",g="",m="none",y="object",b="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),C="undefined"!=typeof requestAnimationFrame?requestAnimationFrame:setTimeout}])});
+},{}],263:[function(require,module,exports){
 (function(self) {
   'use strict';
 

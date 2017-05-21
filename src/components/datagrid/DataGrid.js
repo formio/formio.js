@@ -7,8 +7,9 @@ export class DataGridComponent extends FormioComponents {
     this.createElement();
     this.createLabel(this.element);
     this.addNewValue();
-    this.visibleColumns = {};
+    this.visibleColumns = true;
     this.buildTable();
+    this.visibleColumns = {};
   }
 
   buildTable(data) {
@@ -33,7 +34,7 @@ export class DataGridComponent extends FormioComponents {
     // Build the header.
     let tr = this.ce('headerRow', 'tr');
     _each(this.component.components, (comp) => {
-      if (this.visibleColumns[comp.key]) {
+      if ((this.visibleColumns === true) || (this.visibleColumns[comp.key])) {
         let th = this.ce('headerColumn', 'th');
         if (comp.validate && comp.validate.required) {
           th.setAttribute('class', 'field-required');
@@ -83,7 +84,7 @@ export class DataGridComponent extends FormioComponents {
           comp.setValue(row);
         }
         cols[column.key] = comp;
-        if (this.visibleColumns[col.key]) {
+        if ((this.visibleColumns === true) || this.visibleColumns[col.key]) {
           let td = this.ce('tableColumn', 'td');
           td.appendChild(comp.element);
           tr.appendChild(td);

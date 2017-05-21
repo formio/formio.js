@@ -59,7 +59,7 @@ export const Harness = {
     if (onChange) {
       form.on('change', onChange);
     }
-    this.testSetGet(form, submission.data);
+    this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
   },
   testErrors: function(form, submission, errors, done) {
@@ -70,7 +70,7 @@ export const Harness = {
       });
       done();
     });
-    this.testSetGet(form, submission.data);
+    this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
     form.submit();
   },

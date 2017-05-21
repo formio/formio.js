@@ -377,7 +377,7 @@ export class BaseComponent {
         try {
           let row = this.data;
           let data = this.data;
-          defaultValue = eval('var value = 0;' + this.component.customDefaultValue.toString() + '; return value;');
+          defaultValue = eval('(function(data, row) { var value = "";' + this.component.customDefaultValue.toString() + '; return value; })(data, row)');
         }
         catch (e) {
           defaultValue = null;
@@ -389,7 +389,8 @@ export class BaseComponent {
       else {
         try {
           defaultValue = jsonLogic.apply(this.component.customDefaultValue, {
-            data: this.data
+            data: this.data,
+            row: this.data
           });
         }
         catch (err) {
@@ -925,6 +926,10 @@ export class BaseComponent {
     let value = this.data[this.component.key];
     let falsey = !value && (value !== null) && (value !== undefined);
     this.data[this.component.key] = this.getValue();
+    let changed = (value !== this.data[this.component.key]);
+    if (!changed) {
+      return;
+    }
     if (falsey) {
       if (!!this.data[this.component.key]) {
         this.triggerChange(noValidate);
@@ -1134,7 +1139,7 @@ export class BaseComponent {
   }
 
   prepend(element) {
-    if (this.element) {
+    if (this.element && this.element.firstChild) {
       this.element.insertBefore(element, this.element.firstChild);
     }
   }

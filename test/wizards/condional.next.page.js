@@ -68,7 +68,7 @@ module.exports = {
       input: false,
       title: 'Page 2',
       theme: 'default',
-      nextPage: 'if (data.c == "directSubmit") { page = null; }',
+      nextPage: 'if (data.c == "directSubmit") { page = null; } else { page = 2 }',
       components: [{
         input: true,
         tableView: true,

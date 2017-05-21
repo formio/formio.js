@@ -39,14 +39,14 @@ module.exports = {
     'Test calculated fields': (form, done) => {
       form.on('change', () => {
         let value = form.getValue();
-        assert.equal(value.total, '25');
+        assert.equal(value.data.total, '25');
         done();
       });
-      Harness.testSetGet(form, {
+      Harness.testSetGet(form, {data: {
         a: '10',
         b: '15',
         total: ''
-      });
+      }});
     }
   }
 };

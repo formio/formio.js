@@ -1,10 +1,12 @@
 import FormioForm from '../../formio.form';
 import FormioUtils from '../../utils';
+import _merge from 'lodash/merge';
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
     super(null, options);
     this.type = 'formcomponent';
     this.component = component;
+    this.submitted = false;
     this.data = data;
 
     // Make sure that if reference is provided, the form must submit.
@@ -13,8 +15,9 @@ export class FormComponent extends FormioForm {
     }
 
     // Build the source based on the root src path.
-    if (!component.src && component.path && this.options.src) {
-      let parts = this.options.src.split('/');
+    if (!component.src && component.path && this.options.formio) {
+      let rootSrc = this.options.formio.formUrl;
+      let parts = rootSrc.split('/');
       parts.pop();
       component.src = parts.join('/') + '/' + component.path;
     }
@@ -41,6 +44,7 @@ export class FormComponent extends FormioForm {
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
     if (this.component.submit) {
+      this.submitted = true;
       return this.submit(true);
     }
     else {
@@ -52,7 +56,11 @@ export class FormComponent extends FormioForm {
    * Submit the form before the whole form is triggered.
    */
   beforeSubmit() {
-    if (this.component.submit) {
+    // Before we submit, we need to filter out the references.
+    this.data[this.component.key] = this.component.reference ? {_id: this._submission._id} : this._submission;
+
+    // Ensure we submit the form.
+    if (this.component.submit && !this.submitted) {
       return this.submit(true);
     }
     else {
@@ -79,18 +87,42 @@ export class FormComponent extends FormioForm {
 
     // Add components using the data of the submission.
     this.addComponents(this.element, this.data[this.component.key].data);
+
+    // Set default values.
+    let defaultValue = this.defaultValue;
+    if (defaultValue) {
+      this.setValue(defaultValue);
+    }
+
+    // Check conditions for this form.
+    this.checkConditions(this.getValue());
   }
 
   setValue(submission, noUpdate, noValidate) {
-    this.data[this.component.key] = submission || {data: {}};
-    if (this.component.reference) {
-      this.data[this.component.key] = {_id: this.data[this.component.key]._id};
+    if (!submission) {
+      this.data[this.component.key] = this._submission = {data: {}};
+      return;
     }
-    return super.setValue(submission, noUpdate, noValidate);
+
+    if (submission.data) {
+      this._submission = _merge(this.data[this.component.key], submission);
+      return super.setValue(submission, noUpdate, noValidate);
+    }
+    else if (submission._id) {
+      this.formio.submissionId = submission._id;
+      this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
+      return this.formReady.then(() => {
+        this._loading = false;
+        this.loading = true;
+        return this.formio.loadSubmission().then((result) => {
+          this.loading = false;
+          return this.setValue(result);
+        });
+      });
+    }
   }
 
   getValue() {
-    this._submission = this.data[this.component.key];
-    return this.component.reference ? {_id: this._submission._id} : this._submission;
+    return this.data[this.component.key];
   }
 }

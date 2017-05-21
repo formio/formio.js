@@ -5,13 +5,16 @@ import { FormioComponents } from './components/Components';
 import _debounce from 'lodash/debounce';
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
+import _assign from 'lodash/assign';
 import EventEmitter from 'eventemitter2';
 let getOptions = function(options) {
   options = options || {};
-  options.events = new EventEmitter({
-    wildcard: false,
-    maxListeners: 0
-  });
+  if (!options.events) {
+    options.events = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+  }
   return options;
 };
 
@@ -207,11 +210,14 @@ export class FormioForm extends FormioComponents {
       return;
     }
     this._src = value;
+    this.formio = new Formio(value);
+
     if (this.type === 'form') {
       // Set the options source so this can be passed to other components.
       this.options.src = value;
+      this.options.formio = this.formio;
     }
-    this.formio = new Formio(value);
+
     this.formio.loadForm().then((form) => this.setForm(form));
     if (this.formio.submissionId) {
       this.onSubmission = this.formio.loadSubmission().then((submission) => this.setSubmission(submission));
@@ -383,7 +389,10 @@ export class FormioForm extends FormioComponents {
   }
 
   getValue() {
-    this._submission.data = super.getValue();
+    if (!this._submission.data) {
+      this._submission.data = {};
+    }
+    this._submission.data = _assign(this.data, super.getValue());
     return this._submission;
   }
 
@@ -582,7 +591,11 @@ export class FormioForm extends FormioComponents {
 
   executeSubmit() {
     let submission = this.submission;
-    if (this.checkValidity(submission.data, true)) {
+    if (
+      submission &&
+      submission.data &&
+      this.checkValidity(submission.data, true)
+    ) {
       this.loading = true;
       if (!this.formio) {
         return this.onSubmit(submission, false);

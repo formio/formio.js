@@ -3,6 +3,7 @@ import Promise from "native-promise-only";
 import FormioForm from './formio.form';
 import Formio from './formio';
 import each from 'lodash/each';
+import clone from 'lodash/clone';
 import jsonLogic from 'json-logic-js';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
@@ -10,13 +11,17 @@ export class FormioWizard extends FormioForm {
     this.pages = [];
     this.page = 0;
     this.history = [];
+    this.allComponents = {};
     this._nextPage = 1;
   }
 
   setPage(num) {
     if (num >= 0 && num < this.pages.length) {
       this.page = num;
-      return super.setForm(this.currentPage());
+      return super.setForm(this.currentPage()).then(() => {
+        // Save the components for when we finally submit.
+        this.allComponents[this.page] = clone(this.components);
+      });
     }
     return Promise.reject('Page not found');
   }
@@ -80,6 +85,7 @@ export class FormioWizard extends FormioForm {
   nextPage() {
     // Validate the form builed, before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
+      this.checkData(this.submission.data, true);
       return this.beforeNext().then(() => {
         this.history.push(this.page);
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
@@ -133,6 +139,9 @@ export class FormioWizard extends FormioForm {
     each(form.components, (component) => {
       if (component.type === 'panel') {
         this.pages.push(component);
+      }
+      else if (component.key) {
+        this.allComponents[component.key] = this.addComponent(component, this.element, this.data);
       }
     });
     return this.setPage(this.page);
@@ -244,6 +253,15 @@ export class FormioWizard extends FormioForm {
 
     // Add the wizard navigation
     this.element.appendChild(this.wizardNav);
+  }
+
+  getComponents() {
+    // Set the components based on all components.
+    let components = [];
+    each(this.allComponents, (comps) => {
+      components = components.concat(comps);
+    });
+    return components;
   }
 }
 
