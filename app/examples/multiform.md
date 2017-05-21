@@ -11,6 +11,14 @@ user input within the workflow.
 
 ```js
 var workflow = new FormioWizard(document.getElementById('workflow'));
+workflow.src = 'https://examples.form.io/multiform';
+```
+
+This workflow is a form that uses Form components to bring in multiple forms into a single dynamic workflow. This form
+may look something like the following.
+
+```js
+var workflow = new FormioWizard(document.getElementById('workflow'));
 workflow.form = {
   components: [
     {
