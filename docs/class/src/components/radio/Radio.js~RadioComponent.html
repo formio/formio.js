@@ -78,6 +78,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -275,7 +278,7 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html#instance-method-setValueAt">setValueAt</a></span></span><span data-ice="signature">(value: <span>*</span>, index: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/radio/Radio.js~RadioComponent.html#instance-method-setValueAt">setValueAt</a></span></span><span data-ice="signature">(index: <span>*</span>, value: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -950,33 +953,6 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-member-styles">styles</a></span></span><span data-ice="signature">: {&quot;visibility&quot;: <span>*</span>, &quot;position&quot;: <span>*</span>}</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
           <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-member-tbody">tbody</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
         </p>
       </div>
@@ -1479,13 +1455,44 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-before">before</a></span></span><span data-ice="signature">(element: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-beforeNext">beforeNext</a></span></span><span data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
+        <div data-ice="description"><p>Called before a next page is triggered allowing the components
+to perform special functions.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-beforeSubmit">beforeSubmit</a></span></span><span data-ice="signature">(): <span>*</span></span>
+        </p>
+      </div>
+      <div>
         
+        
+        <div data-ice="description"><p>Called before a submission is triggered allowing the components
+to perform special async functions.</p>
+</div>
       </div>
     </td>
     <td>
@@ -1618,7 +1625,7 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-checkConditions">checkConditions</a></span></span><span data-ice="signature">(data: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-checkConditions">checkConditions</a></span></span><span data-ice="signature">(data: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2008,7 +2015,7 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-getValidateValue">getValidateValue</a></span></span><span data-ice="signature">(): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-getRawValue">getRawValue</a></span></span><span data-ice="signature">(): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2229,33 +2236,6 @@
           
           
           <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-prepend">prepend</a></span></span><span data-ice="signature">(element: <span>*</span>)</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-remove">remove</a></span></span><span data-ice="signature">(element: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -2558,7 +2538,7 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-show">show</a></span></span><span data-ice="signature">(show: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-show">show</a></span></span><span data-ice="signature">(show: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2845,7 +2825,7 @@
     
     
     
-    <span data-ice="name">setValueAt</span><span data-ice="signature">(value: <span>*</span>, index: <span>*</span>)</span>
+    <span data-ice="name">setValueAt</span><span data-ice="signature">(index: <span>*</span>, value: <span>*</span>)</span>
     <span class="right-info">
       
       
@@ -2870,13 +2850,13 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">value</td>
+      <td data-ice="name" data-depth="0">index</td>
       <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">index</td>
+      <td data-ice="name" data-depth="0">value</td>
       <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>

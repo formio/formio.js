@@ -78,6 +78,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,54 +143,80 @@ import Promise from &quot;native-promise-only&quot;;
 import FormioForm from &apos;./formio.form&apos;;
 import Formio from &apos;./formio&apos;;
 import each from &apos;lodash/each&apos;;
+import clone from &apos;lodash/clone&apos;;
+import jsonLogic from &apos;json-logic-js&apos;;
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
     this.pages = [];
     this.page = 0;
-    this.historyPages = {};
+    this.history = [];
+    this.allComponents = {};
     this._nextPage = 1;
   }
 
   setPage(num) {
     if (num &gt;= 0 &amp;&amp; num &lt; this.pages.length) {
       this.page = num;
-      return super.setForm(this.currentPage());
+      return super.setForm(this.currentPage()).then(() =&gt; {
+        // Save the components for when we finally submit.
+        this.allComponents[this.page] = clone(this.components);
+      });
     }
     return Promise.reject(&apos;Page not found&apos;);
   }
 
-  getCondionalNextPage(data, page) {
-    let form = this.pages[page];
+  getNextPage(data, currentPage) {
+    let form = this.pages[currentPage];
     // Check conditional nextPage
     if (form) {
+      let page = ++currentPage;
       if(form.nextPage) {
-        try {
-          let script = &apos;(function() { var page = &apos;+(page + 1)+&apos;;&apos;;
-          script += form.nextPage.toString();
-          script += &apos;; return page; })()&apos;;
-          let result = eval(script);
-          if (result == page) {
-            console.warn(&apos;A recursive result is returned in a custom nextPage function statement for component &apos; + form.key, e);
-            return page + 1;
+        // Allow for script execution.
+        if (typeof form.nextPage === &apos;string&apos;) {
+          try {
+            eval(form.nextPage.toString());
+            if (!isNaN(parseInt(page, 10)) &amp;&amp; isFinite(page)) {
+              return page;
+            }
+            if (typeof page !== &apos;string&apos;) {
+              return page;
+            }
+
+            // Assume they passed back the key of the page to go to.
+            return this.getPageIndexByKey(page);
           }
-          return result;
+          catch (e) {
+            console.warn(&apos;An error occurred in a custom nextPage function statement for component &apos; + form.key, e);
+            return page;
+          }
         }
-        catch (e) {
-          console.warn(&apos;An error occurred in a custom nextPage function statement for component &apos; + form.key, e);
-          return page + 1;
+        // Or use JSON Logic.
+        else {
+          let result = jsonLogic.apply(form.nextPage, {
+            data: data,
+            page: page,
+            form: form
+          });
+          let newPage = parseInt(result, 10);
+          if (!isNaN(parseInt(newPage, 10)) &amp;&amp; isFinite(newPage)) {
+            return newPage;
+          }
+
+          return this.getPageIndexByKey(result);
         }
       }
 
-      return page + 1;
+      return page;
     }
 
     return null;
   }
 
   getPreviousPage() {
-    if(typeof this.historyPages[this.page] !== &apos;undefined&apos;) {
-      return this.historyPages[this.page];
+    let prev = this.history.pop();
+    if(typeof prev !== &apos;undefined&apos;) {
+      return prev;
     }
 
     return this.page - 1;
@@ -196,13 +225,13 @@ export class FormioWizard extends FormioForm {
   nextPage() {
     // Validate the form builed, before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
-      let currentPage = this.page;
-      let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
-
-      return this.setPage(nextPage).then(() =&gt; {
-        this.historyPages[this.page] = currentPage;
-        this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
-        this.emit(&apos;nextPage&apos;, {page: this.page, submission: this.submission});
+      this.checkData(this.submission.data, true);
+      return this.beforeNext().then(() =&gt; {
+        this.history.push(this.page);
+        return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() =&gt; {
+          this._nextPage = this.getNextPage(this.submission.data, this.page);
+          this.emit(&apos;nextPage&apos;, {page: this.page, submission: this.submission});
+        });
       });
     }
     else {
@@ -219,16 +248,30 @@ export class FormioWizard extends FormioForm {
 
   cancel() {
     super.cancel();
-    this.historyPages = {};
+    this.history = [];
     return this.setPage(0);
   }
 
-  currentPage() {
-    if ((this.page &gt;= 0) &amp;&amp; (this.page &lt; this.pages.length)) {
-      return this.pages[this.page];
+  getPageIndexByKey(key) {
+    let pageIndex = 0;
+    each(this.pages, (_page, index) =&gt; {
+      if (_page.key === key) {
+        pageIndex = index;
+        return false;
+      }
+    });
+    return pageIndex;
+  }
+
+  getPage(pageNum) {
+    if ((pageNum &gt;= 0) &amp;&amp; (pageNum &lt; this.pages.length)) {
+      return this.pages[pageNum];
     }
-    this.page = 0;
     return this.pages.length ? this.pages[0] : {components: []};
+  }
+
+  currentPage() {
+    return this.getPage(this.page);
   }
 
   setForm(form) {
@@ -236,6 +279,9 @@ export class FormioWizard extends FormioForm {
     each(form.components, (component) =&gt; {
       if (component.type === &apos;panel&apos;) {
         this.pages.push(component);
+      }
+      else if (component.key) {
+        this.allComponents[component.key] = this.addComponent(component, this.element, this.data);
       }
     });
     return this.setPage(this.page);
@@ -251,7 +297,7 @@ export class FormioWizard extends FormioForm {
     if (name === &apos;previous&apos;) {
       return (this.page &gt; 0);
     }
-    let nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+    let nextPage = this.getNextPage(this.submission.data, this.page);
     if (name === &apos;next&apos;) {
       return (nextPage !== null) &amp;&amp; (nextPage &lt; this.pages.length);
     }
@@ -262,17 +308,37 @@ export class FormioWizard extends FormioForm {
   }
 
   createWizardHeader() {
+    let currentPage = this.currentPage();
+    currentPage.breadcrumb = currentPage.breadcrumb || &apos;default&apos;;
+    if (currentPage.breadcrumb.toLowerCase() === &apos;none&apos;) {
+      return;
+    }
     this.wizardHeader = this.ce(&apos;wizardHeader&apos;, &apos;ul&apos;, {
       class: &apos;pagination&apos;
     });
 
+    let showHistory = (currentPage.breadcrumb.toLowerCase() === &apos;history&apos;);
     each(this.pages, (page, i) =&gt; {
+      // See if this page is in our history.
+      if (showHistory &amp;&amp; ((this.page !== i) &amp;&amp; (this.history.indexOf(i) === -1))) {
+        return;
+      }
+
       let pageButton = this.ce(&apos;pageButton&apos;, &apos;li&apos;, {
-        class: (i === this.page) ? &apos;active&apos; : &apos;disabled&apos;
+        class: (i === this.page) ? &apos;active&apos; : &apos;&apos;,
+        style: (i === this.page) ? &apos;&apos; : &apos;cursor: pointer;&apos;
       });
 
+      // Navigate to the page as they click on it.
+      if (this.page !== i) {
+        this.addEventListener(pageButton, &apos;click&apos;, (event) =&gt; {
+          event.preventDefault();
+          this.setPage(i);
+        });
+      }
+
       let pageLabel = this.ce(&apos;pageLabel&apos;, &apos;span&apos;);
-      let pageTitle = (i === this.page) ? page.title : (i + 1);
+      let pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
       if (!pageTitle) {
         pageTitle = (i + 1);
       }
@@ -288,7 +354,7 @@ export class FormioWizard extends FormioForm {
     super.onSubmissionChange(changed);
 
     // Update Wizard Nav
-    let nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+    let nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage != nextPage) {
       this.element.removeChild(this.wizardNav);
       this.createWizardNav();
@@ -327,6 +393,15 @@ export class FormioWizard extends FormioForm {
 
     // Add the wizard navigation
     this.element.appendChild(this.wizardNav);
+  }
+
+  getComponents() {
+    // Set the components based on all components.
+    let components = [];
+    each(this.allComponents, (comps) =&gt; {
+      components = components.concat(comps);
+    });
+    return components;
   }
 }
 

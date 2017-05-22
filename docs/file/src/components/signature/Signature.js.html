@@ -78,6 +78,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -138,6 +141,16 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import SignaturePad from &apos;signature_pad&apos;;
 import { BaseComponent } from &apos;../base/Base&apos;;
 export class SignatureComponent extends BaseComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+    if (!this.component.width) {
+      this.component.width = &apos;100%&apos;;
+    }
+    if (!this.component.height) {
+      this.component.height = &apos;200px&apos;;
+    }
+  }
+
   elementInfo() {
     let info = super.elementInfo();
     info.type = &apos;input&apos;;
@@ -195,7 +208,8 @@ export class SignatureComponent extends BaseComponent {
 
     // The signature canvas.
     let canvas = this.ce(&apos;canvas&apos;, &apos;canvas&apos;, {
-      class: &apos;signature-pad-canvas&apos;
+      class: &apos;signature-pad-canvas&apos;,
+      height: this.component.height
     });
     padBody.appendChild(canvas);
     this.element.appendChild(padBody);

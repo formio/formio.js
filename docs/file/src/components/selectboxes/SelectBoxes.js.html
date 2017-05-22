@@ -78,6 +78,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -137,6 +140,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/selectboxes/SelectBoxes.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { RadioComponent } from &apos;../radio/Radio&apos;;
 import _each from &apos;lodash/each&apos;;
+import _isArray from &apos;lodash/isArray&apos;;
 export class SelectBoxesComponent extends RadioComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -160,9 +164,19 @@ export class SelectBoxesComponent extends RadioComponent {
     return value;
   }
 
-  setValueAt(value, index) {
-    if (this.inputs &amp;&amp; this.inputs[index]) {
-      this.inputs[index].checked = (value.indexOf(this.inputs[index].value) !== -1);
+
+  /**
+   * Set the value of this component.
+   * @param value
+   */
+  setValue(value, noUpdate, noValidate) {
+    this.value = value;
+    value = _isArray(value) ? value : [value];
+    _each(this.inputs, (input) =&gt; {
+      input.checked = (value.indexOf(input.value) !== -1);
+    });
+    if (!noUpdate) {
+      this.updateValue(noValidate);
     }
   }
 }

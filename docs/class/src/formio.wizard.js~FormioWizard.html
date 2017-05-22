@@ -78,6 +78,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/gmap/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -135,13 +138,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FormioWizard} from &apos;<span><a href="file/src/formio.wizard.js.html#lineNumber6">formiojs/src/formio.wizard.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FormioWizard} from &apos;<span><a href="file/src/formio.wizard.js.html#lineNumber8">formiojs/src/formio.wizard.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/formio.wizard.js.html#lineNumber6">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/formio.wizard.js.html#lineNumber8">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -253,7 +256,34 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html#instance-member-historyPages">historyPages</a></span></span><span data-ice="signature">: {}</span>
+          <span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html#instance-member-allComponents">allComponents</a></span></span><span data-ice="signature">: {}</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html#instance-member-history">history</a></span></span><span data-ice="signature">: <span><span>*</span><span>[]</span></span></span>
         </p>
       </div>
       <div>
@@ -530,7 +560,88 @@
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html#instance-method-getCondionalNextPage">getCondionalNextPage</a></span></span><span data-ice="signature">(data: <span>*</span>, page: <span>*</span>): <span>*</span></span>
+          <span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html#instance-method-getComponents">getComponents</a></span></span><span data-ice="signature">(): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html#instance-method-getNextPage">getNextPage</a></span></span><span data-ice="signature">(data: <span>*</span>, currentPage: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html#instance-method-getPage">getPage</a></span></span><span data-ice="signature">(pageNum: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html#instance-method-getPageIndexByKey">getPageIndexByKey</a></span></span><span data-ice="signature">(key: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -755,7 +866,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber7">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber9">source</a></span></span>
     </span>
   </h3>
 
@@ -823,7 +934,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber179">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber242">source</a></span></span>
     </span>
   </h3>
 
@@ -855,18 +966,61 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-historyPages">
+  <h3 data-ice="anchor" id="instance-member-allComponents">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span data-ice="name">historyPages</span><span data-ice="signature">: {}</span>
+    <span data-ice="name">allComponents</span><span data-ice="signature">: {}</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber11">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber14">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-history">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">history</span><span data-ice="signature">: <span><span>*</span><span>[]</span></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber13">source</a></span></span>
     </span>
   </h3>
 
@@ -909,7 +1063,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber10">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber12">source</a></span></span>
     </span>
   </h3>
 
@@ -952,7 +1106,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber9">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber11">source</a></span></span>
     </span>
   </h3>
 
@@ -995,7 +1149,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber128">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber176">source</a></span></span>
     </span>
   </h3>
 
@@ -1038,7 +1192,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber164">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber227">source</a></span></span>
     </span>
   </h3>
 
@@ -1084,7 +1238,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber107">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber150">source</a></span></span>
     </span>
   </h3>
 
@@ -1127,7 +1281,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber83">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber109">source</a></span></span>
     </span>
   </h3>
 
@@ -1182,7 +1336,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber127">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber170">source</a></span></span>
     </span>
   </h3>
 
@@ -1225,7 +1379,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber163">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber226">source</a></span></span>
     </span>
   </h3>
 
@@ -1268,7 +1422,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber89">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber133">source</a></span></span>
     </span>
   </h3>
 
@@ -1312,18 +1466,73 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-getCondionalNextPage">
+  <h3 data-ice="anchor" id="instance-method-getComponents">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span data-ice="name">getCondionalNextPage</span><span data-ice="signature">(data: <span>*</span>, page: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">getComponents</span><span data-ice="signature">(): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber23">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber258">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-getNextPage">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">getNextPage</span><span data-ice="signature">(data: <span>*</span>, currentPage: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber29">source</a></span></span>
     </span>
   </h3>
 
@@ -1349,7 +1558,149 @@
       <td data-ice="description"></td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">page</td>
+      <td data-ice="name" data-depth="0">currentPage</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-getPage">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">getPage</span><span data-ice="signature">(pageNum: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber126">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">pageNum</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tbody>
+        <tr>
+          <td class="return-type" data-ice="returnType"><span>*</span></td>
+          
+        </tr>
+      </tbody>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-getPageIndexByKey">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span data-ice="name">getPageIndexByKey</span><span data-ice="signature">(key: <span>*</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber115">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">key</td>
       <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -1400,7 +1751,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber51">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber76">source</a></span></span>
     </span>
   </h3>
 
@@ -1455,7 +1806,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber113">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber156">source</a></span></span>
     </span>
   </h3>
 
@@ -1526,7 +1877,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber59">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber85">source</a></span></span>
     </span>
   </h3>
 
@@ -1581,7 +1932,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber150">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber213">source</a></span></span>
     </span>
   </h3>
 
@@ -1640,7 +1991,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber76">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber102">source</a></span></span>
     </span>
   </h3>
 
@@ -1695,7 +2046,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber137">source</a></span></span>
     </span>
   </h3>
 
@@ -1766,7 +2117,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber15">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.wizard.js.html#lineNumber18">source</a></span></span>
     </span>
   </h3>
 
