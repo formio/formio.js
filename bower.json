@@ -1,0 +1,26 @@
+{
+  "name": "formiojs",
+  "description": "Common js library for client side interaction with <form.io>",
+  "main": "dist/formio.min.js",
+  "license": "MIT",
+  "homepage": "https://github.com/formio/formio.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "choices.js": "^2.8.2",
+    "eventemitter2": "^4.1.0",
+    "flatpickr": "^2.6.3",
+    "i18next": "^8.3.0",
+    "json-logic-js": "^1.1.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "native-promise-only": "^0.8.0-a",
+    "signature_pad": "^2.1.1",
+    "fetch": "whatwg-fetch#^2.0.3"
+  }
+}

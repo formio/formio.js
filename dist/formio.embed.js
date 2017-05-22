@@ -2307,6 +2307,20 @@ var BaseComponent = function () {
         });
       }
     }
+  }, {
+    key: 'addInputSubmitListener',
+    value: function addInputSubmitListener(input) {
+      var _this6 = this;
+
+      this.addEventListener(input, 'keypress', function (event) {
+        var key = event.keyCode || event.which;
+        if (key == 13) {
+          event.preventDefault();
+          event.stopPropagation();
+          _this6.emit('submitButton');
+        }
+      });
+    }
 
     /**
      * Add new input element listeners.
@@ -2317,10 +2331,10 @@ var BaseComponent = function () {
   }, {
     key: 'addInputEventListener',
     value: function addInputEventListener(input) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.addEventListener(input, this.info.changeEvent, function () {
-        return _this6.updateValue();
+        return _this7.updateValue();
       });
     }
 
@@ -2340,6 +2354,7 @@ var BaseComponent = function () {
         input = container.appendChild(input);
       }
       this.addInputEventListener(input);
+      this.addInputSubmitListener(input);
 
       // Reset the values of the inputs.
       if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {
@@ -2530,7 +2545,7 @@ var BaseComponent = function () {
   }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
-      var _this7 = this;
+      var _this8 = this;
 
       (0, _each3.default)(options, function (option) {
         var attrs = {
@@ -2539,8 +2554,8 @@ var BaseComponent = function () {
         if (defaultValue !== undefined && option.value === defaultValue) {
           attrs.selected = 'selected';
         }
-        var optionElement = _this7.ce(tag, 'option', attrs);
-        optionElement.appendChild(_this7.text(option.label));
+        var optionElement = _this8.ce(tag, 'option', attrs);
+        optionElement.appendChild(_this8.text(option.label));
         select.appendChild(optionElement);
       });
     }
@@ -2600,7 +2615,7 @@ var BaseComponent = function () {
   }, {
     key: 'elementInfo',
     value: function elementInfo() {
-      var _this8 = this;
+      var _this9 = this;
 
       var attributes = {
         name: this.options.name,
@@ -2611,7 +2626,7 @@ var BaseComponent = function () {
         tabindex: 'tabindex',
         placeholder: 'placeholder'
       }, function (path, prop) {
-        var attrValue = (0, _get3.default)(_this8.component, path);
+        var attrValue = (0, _get3.default)(_this9.component, path);
         if (attrValue) {
           attributes[prop] = attrValue;
         }
@@ -2852,7 +2867,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     value: function elementInfo() {
       var info = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'button';
-      info.attr.type = this.component.action;
+      info.attr.type = this.component.action === 'submit' ? 'submit' : 'button';
       info.attr.class = 'btn btn-' + this.component.theme;
       if (this.component.block) {
         info.attr.class += ' btn-block';

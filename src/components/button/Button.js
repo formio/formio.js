@@ -3,7 +3,7 @@ export class ButtonComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'button';
-    info.attr.type = this.component.action;
+    info.attr.type = (this.component.action === 'submit') ? 'submit' : 'button';
     info.attr.class = 'btn btn-' + this.component.theme;
     if (this.component.block) {
       info.attr.class += ' btn-block';

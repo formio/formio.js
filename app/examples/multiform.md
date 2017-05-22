@@ -191,7 +191,6 @@ workflow.form = {
   <div id="workflow"></div>
   <script type="text/javascript">
   var workflow = new FormioWizard(document.getElementById('workflow'));
-  var workflow = new FormioWizard(document.getElementById('workflow'));
   workflow.form = {
     components: [
       {

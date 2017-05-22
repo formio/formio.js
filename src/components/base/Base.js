@@ -867,6 +867,17 @@ export class BaseComponent {
     }
   }
 
+  addInputSubmitListener(input) {
+    this.addEventListener(input, 'keypress', (event) => {
+      let key = event.keyCode || event.which;
+      if (key == 13) {
+        event.preventDefault();
+        event.stopPropagation();
+        this.emit('submitButton');
+      }
+    });
+  }
+
   /**
    * Add new input element listeners.
    *
@@ -889,6 +900,7 @@ export class BaseComponent {
       input = container.appendChild(input);
     }
     this.addInputEventListener(input);
+    this.addInputSubmitListener(input);
 
     // Reset the values of the inputs.
     if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {
