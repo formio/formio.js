@@ -1105,7 +1105,7 @@ Here is a large form which includes all fields with many different configuration
           key: 'signature',
           placeholder: 'Please Sign here...',
           footer: 'Sign above',
-          width: '50%',
+          width: '100%',
           height: '200px',
           penColor: 'green',
           backgroundColor: 'rgb(245,245,235)',

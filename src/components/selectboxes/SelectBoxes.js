@@ -1,5 +1,6 @@
 import { RadioComponent } from '../radio/Radio';
 import _each from 'lodash/each';
+import _isArray from 'lodash/isArray';
 export class SelectBoxesComponent extends RadioComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -23,9 +24,19 @@ export class SelectBoxesComponent extends RadioComponent {
     return value;
   }
 
-  setValueAt(value, index) {
-    if (this.inputs && this.inputs[index]) {
-      this.inputs[index].checked = (value.indexOf(this.inputs[index].value) !== -1);
+
+  /**
+   * Set the value of this component.
+   * @param value
+   */
+  setValue(value, noUpdate, noValidate) {
+    this.value = value;
+    value = _isArray(value) ? value : [value];
+    _each(this.inputs, (input) => {
+      input.checked = (value.indexOf(input.value) !== -1);
+    });
+    if (!noUpdate) {
+      this.updateValue(noValidate);
     }
   }
 }

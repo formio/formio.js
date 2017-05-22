@@ -1,11 +1,11 @@
 ---
-title: Data Grid Input
+title: Data Grid Panels
 layout: vtabs
 section: examples
-weight: 220
+weight: 222
 ---
-### Data Grid Input
-Data Grids allow you to collect an array of object values.
+### Data Grid Panels
+In addition to data grid input, you can also place panels inside the data grid to provide dynamic "add another" sections.
 
 ```js
 var form = new FormioForm(document.getElementById('formio'));
@@ -114,81 +114,89 @@ form.form = {
         input: true,
         components: [
           {
-            label: 'First Name',
-            key: 'firstName',
-            type: 'textfield',
-            input: true
-          },
-          {
-            label: 'Last Name',
-            key: 'lastName',
-            type: 'textfield',
-            input: true
-          },
-          {
-            label: 'Gender',
-            key: 'gender',
-            type: 'select',
-            input: true,
-            data: {
-              values: [
-                {
-                  value: 'male',
-                  label: 'Male'
+            type: 'panel',
+            label: 'User Information',
+            key: 'userinfo',
+            components: [
+              {
+                label: 'First Name',
+                key: 'firstName',
+                type: 'textfield',
+                input: true
+              },
+              {
+                label: 'Last Name',
+                key: 'lastName',
+                type: 'textfield',
+                input: true
+              },
+              {
+                label: 'Gender',
+                key: 'gender',
+                type: 'select',
+                input: true,
+                data: {
+                  values: [
+                    {
+                      value: 'male',
+                      label: 'Male'
+                    },
+                    {
+                      value: 'female',
+                      label: 'Female'
+                    },
+                    {
+                      value: 'other',
+                      label: 'Other'
+                    }
+                  ]
                 },
-                {
-                  value: 'female',
-                  label: 'Female'
+                dataSrc: 'values',
+                template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>'
+              },
+              {
+                type: 'checkbox',
+                label: 'Dependant',
+                key: 'dependant',
+                inputType: 'checkbox',
+                input: true
+              },
+              {
+                label: 'Birthdate',
+                key: 'birthdate',
+                type: 'datetime',
+                input: true,
+                format: 'yyyy-MM-dd hh:mm a',
+                enableDate: true,
+                enableTime: true,
+                defaultDate: '',
+                datepickerMode: 'day',
+                datePicker: {
+                  showWeeks: true,
+                  startingDay: 0,
+                  initDate: '',
+                  minMode: 'day',
+                  maxMode: 'year',
+                  yearRows: 4,
+                  yearColumns: 5,
+                  datepickerMode: 'day'
                 },
-                {
-                  value: 'other',
-                  label: 'Other'
+                timePicker: {
+                  hourStep: 1,
+                  minuteStep: 1,
+                  showMeridian: true,
+                  readonlyInput: false,
+                  mousewheel: true,
+                  arrowkeys: true
+                },
+                "conditional": {
+                  "eq": "true",
+                  "when": "dependant",
+                  "show": "true"
                 }
-              ]
-            },
-            dataSrc: 'values',
-            template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>'
-          },
-          {
-            type: 'checkbox',
-            label: 'Dependant',
-            key: 'dependant',
-            inputType: 'checkbox',
-            input: true
-          },
-          {
-            label: 'Birthdate',
-            key: 'birthdate',
-            type: 'datetime',
-            input: true,
-            format: 'yyyy-MM-dd hh:mm a',
-            enableDate: true,
-            enableTime: true,
-            defaultDate: '',
-            datepickerMode: 'day',
-            datePicker: {
-              showWeeks: true,
-              startingDay: 0,
-              initDate: '',
-              minMode: 'day',
-              maxMode: 'year',
-              yearRows: 4,
-              yearColumns: 5,
-              datepickerMode: 'day'
-            },
-            timePicker: {
-              hourStep: 1,
-              minuteStep: 1,
-              showMeridian: true,
-              readonlyInput: false,
-              mousewheel: true,
-              arrowkeys: true
-            },
-            "conditional": {
-              "eq": "true",
-              "when": "dependant",
-              "show": "true"
-            }
+              }
+            
+            ]
           }
         ]
       }

@@ -47,8 +47,8 @@ describe('DataGrid Component', function() {
           year: 1997
         },
         {
-          make: null,
-          model: null,
+          make: "",
+          model: "",
           year: null
         }
       ]);

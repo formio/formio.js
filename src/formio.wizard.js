@@ -3,54 +3,80 @@ import Promise from "native-promise-only";
 import FormioForm from './formio.form';
 import Formio from './formio';
 import each from 'lodash/each';
+import clone from 'lodash/clone';
+import jsonLogic from 'json-logic-js';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
     this.pages = [];
     this.page = 0;
-    this.historyPages = {};
+    this.history = [];
+    this.allComponents = {};
     this._nextPage = 1;
   }
 
   setPage(num) {
     if (num >= 0 && num < this.pages.length) {
       this.page = num;
-      return super.setForm(this.currentPage());
+      return super.setForm(this.currentPage()).then(() => {
+        // Save the components for when we finally submit.
+        this.allComponents[this.page] = clone(this.components);
+      });
     }
     return Promise.reject('Page not found');
   }
 
-  getCondionalNextPage(data, page) {
-    let form = this.pages[page];
+  getNextPage(data, currentPage) {
+    let form = this.pages[currentPage];
     // Check conditional nextPage
     if (form) {
+      let page = ++currentPage;
       if(form.nextPage) {
-        try {
-          let script = '(function() { var page = '+(page + 1)+';';
-          script += form.nextPage.toString();
-          script += '; return page; })()';
-          let result = eval(script);
-          if (result == page) {
-            console.warn('A recursive result is returned in a custom nextPage function statement for component ' + form.key, e);
-            return page + 1;
+        // Allow for script execution.
+        if (typeof form.nextPage === 'string') {
+          try {
+            eval(form.nextPage.toString());
+            if (!isNaN(parseInt(page, 10)) && isFinite(page)) {
+              return page;
+            }
+            if (typeof page !== 'string') {
+              return page;
+            }
+
+            // Assume they passed back the key of the page to go to.
+            return this.getPageIndexByKey(page);
           }
-          return result;
+          catch (e) {
+            console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);
+            return page;
+          }
         }
-        catch (e) {
-          console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);
-          return page + 1;
+        // Or use JSON Logic.
+        else {
+          let result = jsonLogic.apply(form.nextPage, {
+            data: data,
+            page: page,
+            form: form
+          });
+          let newPage = parseInt(result, 10);
+          if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
+            return newPage;
+          }
+
+          return this.getPageIndexByKey(result);
         }
       }
 
-      return page + 1;
+      return page;
     }
 
     return null;
   }
 
   getPreviousPage() {
-    if(typeof this.historyPages[this.page] !== 'undefined') {
-      return this.historyPages[this.page];
+    let prev = this.history.pop();
+    if(typeof prev !== 'undefined') {
+      return prev;
     }
 
     return this.page - 1;
@@ -59,13 +85,13 @@ export class FormioWizard extends FormioForm {
   nextPage() {
     // Validate the form builed, before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
-      let currentPage = this.page;
-      let nextPage = this.getCondionalNextPage(this.submission.data, currentPage);
-
-      return this.setPage(nextPage).then(() => {
-        this.historyPages[this.page] = currentPage;
-        this._nextPage = this.getCondionalNextPage(this.submission.data, this.page);
-        this.emit('nextPage', {page: this.page, submission: this.submission});
+      this.checkData(this.submission.data, true);
+      return this.beforeNext().then(() => {
+        this.history.push(this.page);
+        return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
+          this._nextPage = this.getNextPage(this.submission.data, this.page);
+          this.emit('nextPage', {page: this.page, submission: this.submission});
+        });
       });
     }
     else {
@@ -82,16 +108,30 @@ export class FormioWizard extends FormioForm {
 
   cancel() {
     super.cancel();
-    this.historyPages = {};
+    this.history = [];
     return this.setPage(0);
   }
 
-  currentPage() {
-    if ((this.page >= 0) && (this.page < this.pages.length)) {
-      return this.pages[this.page];
+  getPageIndexByKey(key) {
+    let pageIndex = 0;
+    each(this.pages, (_page, index) => {
+      if (_page.key === key) {
+        pageIndex = index;
+        return false;
+      }
+    });
+    return pageIndex;
+  }
+
+  getPage(pageNum) {
+    if ((pageNum >= 0) && (pageNum < this.pages.length)) {
+      return this.pages[pageNum];
     }
-    this.page = 0;
     return this.pages.length ? this.pages[0] : {components: []};
+  }
+
+  currentPage() {
+    return this.getPage(this.page);
   }
 
   setForm(form) {
@@ -99,6 +139,9 @@ export class FormioWizard extends FormioForm {
     each(form.components, (component) => {
       if (component.type === 'panel') {
         this.pages.push(component);
+      }
+      else if (component.key) {
+        this.allComponents[component.key] = this.addComponent(component, this.element, this.data);
       }
     });
     return this.setPage(this.page);
@@ -114,7 +157,7 @@ export class FormioWizard extends FormioForm {
     if (name === 'previous') {
       return (this.page > 0);
     }
-    let nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+    let nextPage = this.getNextPage(this.submission.data, this.page);
     if (name === 'next') {
       return (nextPage !== null) && (nextPage < this.pages.length);
     }
@@ -125,17 +168,37 @@ export class FormioWizard extends FormioForm {
   }
 
   createWizardHeader() {
+    let currentPage = this.currentPage();
+    currentPage.breadcrumb = currentPage.breadcrumb || 'default';
+    if (currentPage.breadcrumb.toLowerCase() === 'none') {
+      return;
+    }
     this.wizardHeader = this.ce('wizardHeader', 'ul', {
       class: 'pagination'
     });
 
+    let showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
     each(this.pages, (page, i) => {
+      // See if this page is in our history.
+      if (showHistory && ((this.page !== i) && (this.history.indexOf(i) === -1))) {
+        return;
+      }
+
       let pageButton = this.ce('pageButton', 'li', {
-        class: (i === this.page) ? 'active' : 'disabled'
+        class: (i === this.page) ? 'active' : '',
+        style: (i === this.page) ? '' : 'cursor: pointer;'
       });
 
+      // Navigate to the page as they click on it.
+      if (this.page !== i) {
+        this.addEventListener(pageButton, 'click', (event) => {
+          event.preventDefault();
+          this.setPage(i);
+        });
+      }
+
       let pageLabel = this.ce('pageLabel', 'span');
-      let pageTitle = (i === this.page) ? page.title : (i + 1);
+      let pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
       if (!pageTitle) {
         pageTitle = (i + 1);
       }
@@ -151,7 +214,7 @@ export class FormioWizard extends FormioForm {
     super.onSubmissionChange(changed);
 
     // Update Wizard Nav
-    let nextPage = this.getCondionalNextPage(this.submission.data, this.page);
+    let nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage != nextPage) {
       this.element.removeChild(this.wizardNav);
       this.createWizardNav();
@@ -190,6 +253,15 @@ export class FormioWizard extends FormioForm {
 
     // Add the wizard navigation
     this.element.appendChild(this.wizardNav);
+  }
+
+  getComponents() {
+    // Set the components based on all components.
+    let components = [];
+    each(this.allComponents, (comps) => {
+      components = components.concat(comps);
+    });
+    return components;
   }
 }
 

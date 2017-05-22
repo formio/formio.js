@@ -160,7 +160,9 @@ export class AddressComponent extends TextFieldComponent {
     let elementSelected = document.querySelector('.pac-item-selected');
     if (!elementSelected) {
       // Start at the top of the list.
-      return this.autoCompleteListDecorator(suggestionContainer.firstChild, input);
+      if (suggestionContainer.firstChild) {
+        return this.autoCompleteListDecorator(suggestionContainer.firstChild, input);
+      }
     } else {
       // Transverse the list from top down.
       const nextSibling = elementSelected.nextSibling;

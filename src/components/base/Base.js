@@ -252,6 +252,26 @@ export class BaseComponent {
   }
 
   /**
+   * Called before a next page is triggered allowing the components
+   * to perform special functions.
+   *
+   * @return {*}
+   */
+  beforeNext() {
+    return Promise.resolve(true);
+  }
+
+  /**
+   * Called before a submission is triggered allowing the components
+   * to perform special async functions.
+   *
+   * @return {*}
+   */
+  beforeSubmit() {
+    return Promise.resolve(true);
+  }
+
+  /**
    * Builds the component.
    */
   build() {
@@ -357,7 +377,7 @@ export class BaseComponent {
         try {
           let row = this.data;
           let data = this.data;
-          defaultValue = eval('var value = 0;' + this.component.customDefaultValue.toString() + '; return value;');
+          defaultValue = eval('(function(data, row) { var value = "";' + this.component.customDefaultValue.toString() + '; return value; })(data, row)');
         }
         catch (e) {
           defaultValue = null;
@@ -369,7 +389,8 @@ export class BaseComponent {
       else {
         try {
           defaultValue = jsonLogic.apply(this.component.customDefaultValue, {
-            data: this.data
+            data: this.data,
+            row: this.data
           });
         }
         catch (err) {
@@ -789,7 +810,7 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    this.show(FormioUtils.checkCondition(this.component, this.data, data));
+    return this.show(FormioUtils.checkCondition(this.component, this.data, data));
   }
 
   /**
@@ -813,16 +834,24 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
-    if (this.element) {
-      if (show) {
-        this.element.removeAttribute('hidden');
-        this.element.style.visibility = "visible";
+    let element = this.getElement();
+    if (element) {
+      if (show && !this.component.hidden) {
+        element.removeAttribute('hidden');
+        element.style.visibility = 'visible';
+        element.style.position = 'relative';
       }
-      else {
-        this.element.setAttribute('hidden', true);
-        this.element.style.visibility = "hidden";
+      else if (!show || this.component.hidden) {
+        element.setAttribute('hidden', true);
+        element.style.visibility = 'hidden';
+        element.style.position = 'absolute';
       }
     }
+    return show;
+  }
+
+  set visible(visible) {
+    this.show(visible);
   }
 
   onChange(noValidate) {
@@ -897,6 +926,10 @@ export class BaseComponent {
     let value = this.data[this.component.key];
     let falsey = !value && (value !== null) && (value !== undefined);
     this.data[this.component.key] = this.getValue();
+    let changed = (value !== this.data[this.component.key]);
+    if (!changed) {
+      return;
+    }
     if (falsey) {
       if (!!this.data[this.component.key]) {
         this.triggerChange(noValidate);
@@ -955,7 +988,7 @@ export class BaseComponent {
     let message = Validator.check(
       this.validators,
       this.component,
-      this.getValidateValue(),
+      this.getRawValue(),
       data || this.data,
       this.data,
       this.t.bind(this)
@@ -966,7 +999,7 @@ export class BaseComponent {
     return message ? false : true;
   }
 
-  getValidateValue() {
+  getRawValue() {
     return this.data[this.component.key];
   }
 
@@ -1034,24 +1067,6 @@ export class BaseComponent {
     }
     if (!noUpdate) {
       this.updateValue(noValidate);
-    }
-  }
-
-  set visible(visible) {
-    let element = this.getElement();
-    if (element) {
-      if (visible && this.styles) {
-        element.style.visibility = this.styles.visibility;
-        element.style.position = this.styles.position;
-      }
-      else if (!visible) {
-        this.styles = {
-          visibility: element.style.visibility,
-          position: element.style.position
-        };
-        element.style.visibility = 'hidden';
-        element.style.position = 'absolute';
-      }
     }
   }
 
@@ -1124,20 +1139,8 @@ export class BaseComponent {
   }
 
   prepend(element) {
-    if (this.element) {
+    if (this.element && this.element.firstChild) {
       this.element.insertBefore(element, this.element.firstChild);
-    }
-  }
-
-  before(element) {
-    if (this.element) {
-      this.element.parentNode.insertBefore(element, this.element);
-    }
-  }
-
-  remove(element) {
-    if (this.element) {
-      this.element.parentNode.removeChild(element);
     }
   }
 

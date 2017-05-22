@@ -150,7 +150,7 @@ form.form = {
       key: 'select',
       label: 'Favorite Color',
       placeholder: 'Select your favorite color',
-      template: '<span>{{ item.label }}</span>',
+      template: '<span>\{\{ item.label \}\}</span>',
       multiple: true,
       dataSrc: 'values',
       input: true,

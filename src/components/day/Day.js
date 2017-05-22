@@ -202,10 +202,11 @@ export class DayComponent extends BaseComponent {
   }
 
   /**
-   * Validate the date object.
+   * Return the raw value.
+   *
    * @returns {Date}
    */
-  getValidateValue() {
+  getRawValue() {
     return this.date.format();
   }
 

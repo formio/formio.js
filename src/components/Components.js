@@ -2,7 +2,8 @@
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _remove from 'lodash/remove';
-import _reduce from 'lodash/reduce';
+import _assign from 'lodash/assign';
+import Promise from "native-promise-only";
 import { BaseComponent } from './base/Base';
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
@@ -17,6 +18,10 @@ export class FormioComponents extends BaseComponent {
     this.addComponents();
   }
 
+  getComponents() {
+    return this.components;
+  }
+
   /**
    * Perform a deep iteration over every component, including those
    * within other container based components.
@@ -24,13 +29,14 @@ export class FormioComponents extends BaseComponent {
    * @param {function} cb - Called for every component.
    */
   everyComponent(cb) {
-    _each(this.components, (component) => {
+    let components = this.getComponents();
+    _each(components, (component, index) => {
       if (component.type === 'components') {
         if (component.everyComponent(cb) === false) {
           return false;
         }
       }
-      else if (cb(component, this.components) === false) {
+      else if (cb(component, components, index) === false) {
         return false;
       }
     });
@@ -42,8 +48,8 @@ export class FormioComponents extends BaseComponent {
    * @param {function} cb - Called for each component
    */
   eachComponent(cb) {
-    _each(this.components, (component) => {
-      if (cb(component) === false) {
+    _each(this.getComponents(), (component, index) => {
+      if (cb(component, index) === false) {
         return false;
       }
     });
@@ -193,28 +199,55 @@ export class FormioComponents extends BaseComponent {
    * @param noValidate
    */
   checkData(data, noValidate) {
-    _each(this.components, (comp) => {
-      comp.checkConditions(data);
-      comp.calculateValue(data);
-      if (!noValidate) {
-        comp.checkValidity(data);
+    _each(this.getComponents(), (comp) => {
+      if (comp.type !== 'formcomponent') {
+        comp.checkConditions(data);
+        comp.calculateValue(data);
+        if (!noValidate) {
+          comp.checkValidity(data);
+        }
       }
     });
   }
 
   checkConditions(data) {
-    super.checkConditions(data);
-    _each(this.components, (comp) => comp.checkConditions(data));
+    let show = super.checkConditions(data);
+    _each(this.getComponents(), (comp) => {
+      show |= comp.checkConditions(data);
+    });
+    return show;
+  }
+
+  /**
+   * Allow components to hook into the next page trigger to perform their own logic.
+   *
+   * @return {*}
+   */
+  beforeNext() {
+    var ops = [];
+    _each(this.getComponents(), (comp) => ops.push(comp.beforeNext()));
+    return Promise.all(ops);
+  }
+
+  /**
+   * Allow components to hook into the submission to provide their own async data.
+   *
+   * @return {*}
+   */
+  beforeSubmit() {
+    var ops = [];
+    _each(this.getComponents(), (comp) => ops.push(comp.beforeSubmit()));
+    return Promise.all(ops);
   }
 
   calculateValue(data) {
     super.calculateValue(data);
-    _each(this.components, (comp) => comp.calculateValue(data));
+    _each(this.getComponents(), (comp) => comp.calculateValue(data));
   }
 
   checkValidity(data, dirty) {
     let check = super.checkValidity(data, dirty);
-    _each(this.components, (comp) => {
+    _each(this.getComponents(), (comp) => {
       check &= comp.checkValidity(data, dirty);
     });
     return check;
@@ -234,6 +267,9 @@ export class FormioComponents extends BaseComponent {
     if (component.components && component.components.length) {
       component.hideComponents(this.hidden);
     }
+    else if (component.component.hidden) {
+      component.visible = false;
+    }
     else {
       component.visible = (!this.hidden || (this.hidden.indexOf(component.component.key) === -1));
     }
@@ -246,7 +282,7 @@ export class FormioComponents extends BaseComponent {
 
   get errors() {
     let errors = [];
-    _each(this.components, (comp) => {
+    _each(this.getComponents(), (comp) => {
       let compErrors = comp.errors;
       if (compErrors.length) {
         errors = errors.concat(compErrors);
@@ -264,7 +300,7 @@ export class FormioComponents extends BaseComponent {
       return;
     }
     this.value = value;
-    _each(this.components, (component) => {
+    _each(this.getComponents(), (component) => {
       if (component.type === 'button') {
         return;
       }

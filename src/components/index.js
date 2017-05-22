@@ -7,6 +7,7 @@ import { DateTimeComponent } from './datetime/DateTime';
 import { DayComponent } from './day/Day';
 import { HTMLComponent } from './html/HTML';
 import { HiddenComponent } from './hidden/Hidden';
+import { FormComponent } from './form/Form';
 import { TextFieldComponent } from './textfield/TextField';
 import { PhoneNumberComponent } from './phonenumber/PhoneNumber';
 import { EmailComponent } from './email/Email';
@@ -40,6 +41,7 @@ module.exports = {
   day: DayComponent,
   htmlelement: HTMLComponent,
   hidden: HiddenComponent,
+  form: FormComponent,
   textfield: TextFieldComponent,
   phoneNumber: PhoneNumberComponent,
   email: EmailComponent,

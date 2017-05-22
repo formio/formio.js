@@ -4,6 +4,6 @@ export class ContentComponent extends BaseComponent {
     this.element = this.ce('element', 'div', {
       class: 'form-group'
     });
-    this.element.innerHTML = this.component.html;
+    this.element.innerHTML = this.interpolate(this.component.html, {data: this.data});
   }
 }
