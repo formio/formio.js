@@ -143,7 +143,7 @@ export class ButtonComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
     info.type = &apos;button&apos;;
-    info.attr.type = this.component.action;
+    info.attr.type = (this.component.action === &apos;submit&apos;) ? &apos;submit&apos; : &apos;button&apos;;
     info.attr.class = &apos;btn btn-&apos; + this.component.theme;
     if (this.component.block) {
       info.attr.class += &apos; btn-block&apos;;
@@ -179,18 +179,22 @@ export class ButtonComponent extends BaseComponent {
       this.label = this.text(this.component.label);
       this.element.appendChild(this.label);
     }
-    this.on(&apos;submitDone&apos;, () =&gt; {
-      this.loading = false;
-      this.disabled = false;
-    }, true);
-    this.on(&apos;error&apos;, () =&gt; {
-      this.loading = false;
-    }, true);
+    if (this.component.action === &apos;submit&apos;) {
+      this.on(&apos;submitButton&apos;, () =&gt; {
+        this.loading = true;
+        this.disabled = true;
+      }, true);
+      this.on(&apos;submitDone&apos;, () =&gt; {
+        this.loading = false;
+        this.disabled = false;
+      }, true);
+      this.on(&apos;error&apos;, () =&gt; {
+        this.loading = false;
+      }, true);
+    }
     this.addEventListener(this.element, &apos;click&apos;, (event) =&gt; {
       switch (this.component.action) {
         case &apos;submit&apos;:
-          this.loading = true;
-          this.disabled = true;
           event.preventDefault();
           event.stopPropagation();
           this.emit(&apos;submitButton&apos;);
