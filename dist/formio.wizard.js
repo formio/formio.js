@@ -2884,18 +2884,22 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         this.label = this.text(this.component.label);
         this.element.appendChild(this.label);
       }
-      this.on('submitDone', function () {
-        _this2.loading = false;
-        _this2.disabled = false;
-      }, true);
-      this.on('error', function () {
-        _this2.loading = false;
-      }, true);
+      if (this.component.action === 'submit') {
+        this.on('submitButton', function () {
+          _this2.loading = true;
+          _this2.disabled = true;
+        }, true);
+        this.on('submitDone', function () {
+          _this2.loading = false;
+          _this2.disabled = false;
+        }, true);
+        this.on('error', function () {
+          _this2.loading = false;
+        }, true);
+      }
       this.addEventListener(this.element, 'click', function (event) {
         switch (_this2.component.action) {
           case 'submit':
-            _this2.loading = true;
-            _this2.disabled = true;
             event.preventDefault();
             event.stopPropagation();
             _this2.emit('submitButton');

@@ -39,18 +39,22 @@ export class ButtonComponent extends BaseComponent {
       this.label = this.text(this.component.label);
       this.element.appendChild(this.label);
     }
-    this.on('submitDone', () => {
-      this.loading = false;
-      this.disabled = false;
-    }, true);
-    this.on('error', () => {
-      this.loading = false;
-    }, true);
+    if (this.component.action === 'submit') {
+      this.on('submitButton', () => {
+        this.loading = true;
+        this.disabled = true;
+      }, true);
+      this.on('submitDone', () => {
+        this.loading = false;
+        this.disabled = false;
+      }, true);
+      this.on('error', () => {
+        this.loading = false;
+      }, true);
+    }
     this.addEventListener(this.element, 'click', (event) => {
       switch (this.component.action) {
         case 'submit':
-          this.loading = true;
-          this.disabled = true;
           event.preventDefault();
           event.stopPropagation();
           this.emit('submitButton');
