@@ -1710,6 +1710,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#row",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-row",
+    "src/components/base/Base.js~BaseComponent#row",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#selectoptions",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-selectOptions",
     "src/components/base/Base.js~BaseComponent#selectOptions",
@@ -2064,6 +2070,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/container/container.js~containercomponent#constructor",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-constructor-constructor",
+    "src/components/container/Container.js~ContainerComponent#constructor",
+    "method"
+  ],
+  [
     "src/components/container/container.js~containercomponent#element",
     "class/src/components/container/Container.js~ContainerComponent.html#instance-member-element",
     "src/components/container/Container.js~ContainerComponent#element",
@@ -2080,6 +2092,12 @@ window.esdocSearchIndex = [
     "class/src/components/container/Container.js~ContainerComponent.html#instance-method-setValue",
     "src/components/container/Container.js~ContainerComponent#setValue",
     "method"
+  ],
+  [
+    "src/components/container/container.js~containercomponent#type",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-member-type",
+    "src/components/container/Container.js~ContainerComponent#type",
+    "member"
   ],
   [
     "src/components/container/container.js~containercomponent#value",
@@ -2208,6 +2226,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#constructor",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-constructor-constructor",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#constructor",
+    "method"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#defaultvalue",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-get-defaultValue",
     "src/components/datagrid/DataGrid.js~DataGridComponent#defaultValue",
@@ -2241,6 +2265,12 @@ window.esdocSearchIndex = [
     "src/components/datagrid/datagrid.js~datagridcomponent#tbody",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-tbody",
     "src/components/datagrid/DataGrid.js~DataGridComponent#tbody",
+    "member"
+  ],
+  [
+    "src/components/datagrid/datagrid.js~datagridcomponent#type",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-member-type",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#type",
     "member"
   ],
   [
@@ -3607,13 +3637,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
@@ -3709,13 +3739,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#src",
-    "class/src/formio.form.js~FormioForm.html#instance-get-src",
+    "class/src/formio.form.js~FormioForm.html#instance-set-src",
     "src/formio.form.js~FormioForm#src",
     "member"
   ],
   [
     "src/formio.form.js~formioform#src",
-    "class/src/formio.form.js~FormioForm.html#instance-set-src",
+    "class/src/formio.form.js~FormioForm.html#instance-get-src",
     "src/formio.form.js~FormioForm#src",
     "member"
   ],

@@ -140,9 +140,15 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/DataGrid.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _each from &apos;lodash/each&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
+import _clone from &apos;lodash/clone&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
 import { FormioComponents } from &apos;../Components&apos;;
 export class DataGridComponent extends FormioComponents {
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.type = &apos;datagrid&apos;;
+  }
+
   build() {
     this.createElement();
     this.createLabel(this.element);
@@ -216,7 +222,10 @@ export class DataGridComponent extends FormioComponents {
       _each(this.component.components, (col) =&gt; {
         let column = _cloneDeep(col);
         column.label = false;
-        let comp = components.create(column, this.options, row);
+        column.row = this.row + &apos;-&apos; + index;
+        let options = _clone(this.options);
+        options.name += &apos;[&apos; + index + &apos;]&apos;;
+        let comp = components.create(column, options, row);
         if (row.hasOwnProperty(column.key)) {
           comp.setValue(row[column.key]);
         }

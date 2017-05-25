@@ -320,7 +320,12 @@ export class FormioForm extends FormioComponents {
     classNames += &apos; formio-form&apos;;
     this.addClass(this.element, classNames);
     this.loading = true;
-    this.ready.then(() =&gt; (this.loading = false));
+    this.ready.then(
+      () =&gt; (this.loading = false),
+      () =&gt; (this.loading = false)
+    ).catch(
+      () =&gt; (this.loading = false)
+    );
     this.elementResolve(element);
   }
 
@@ -358,9 +363,19 @@ export class FormioForm extends FormioComponents {
       this.options.formio = this.formio;
     }
 
-    this.formio.loadForm().then((form) =&gt; this.setForm(form));
+    this.formio.loadForm().then(
+      (form) =&gt; this.setForm(form),
+      (err) =&gt; this.formReadyReject(err)
+    ).catch(
+      (err) =&gt; this.formReadyReject(err)
+    );
     if (this.formio.submissionId) {
-      this.onSubmission = this.formio.loadSubmission().then((submission) =&gt; this.setSubmission(submission));
+      this.onSubmission = this.formio.loadSubmission().then(
+        (submission) =&gt; this.setSubmission(submission),
+        (err) =&gt; this.submissionReadyReject(err)
+      ).catch(
+        (err) =&gt; this.submissionReadyReject(err)
+      );
     }
   }
 
@@ -452,7 +467,12 @@ export class FormioForm extends FormioComponents {
     }
 
     if (this.onFormBuild) {
-      return this.onFormBuild.then(() =&gt; this.createForm(form));
+      return this.onFormBuild.then(
+        () =&gt; this.createForm(form),
+        (err) =&gt; this.formReadyReject(err)
+      ).catch(
+        (err) =&gt; this.formReadyReject(err)
+      );
     }
 
     // Set the form object.
@@ -520,6 +540,8 @@ export class FormioForm extends FormioComponents {
         this.submissionReadyResolve();
       },
       (err) =&gt; this.submissionReadyReject(err)
+    ).catch(
+      (err) =&gt; this.submissionReadyReject(err)
     );
   }
 
@@ -558,7 +580,11 @@ export class FormioForm extends FormioComponents {
         this.submissionReadyResolve();
       }
       this.onFormBuild = null;
-    }, (err) =&gt; this.formReadyReject(err));
+    },
+      (err) =&gt; this.formReadyReject(err)
+    ).catch(
+      (err) =&gt; this.formReadyReject(err)
+    );
   }
 
   /**
