@@ -4,14 +4,32 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-### Added
+## 2.8.3
+### Fixed
+ - Bad binding with radio buttons in datagrids.
+ - Issue where custom classes would not get applied to checkboxes.
+ - Default values applied to datagrids and containers.
+ - Issue where the loader would continue to be present during an error on load.
 
-### Changed
+### Added
+ - Custom event triggers for custom event buttons.
+
+## 2.8.2
+### Fixed
+ - Submit button handler.
+
+## 2.8.1
+### Fixed
+ - Fixed the json form select dropdown.
+ - Fixed issues with button events and form submissions.
+
+## 2.8.0
+### Added
+ - Support for multi-page form workflows.
 
 ### Fixed
-
-### Removed
+ - Data grid select lists
+ - Checkbox inputs to not use class when no label is present.
 
 ## 2.7.3
 ### Changed
