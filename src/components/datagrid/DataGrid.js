@@ -1,8 +1,14 @@
 import _each from 'lodash/each';
 import _cloneDeep from 'lodash/cloneDeep';
+import _clone from 'lodash/clone';
 import _isArray from 'lodash/isArray';
 import { FormioComponents } from '../Components';
 export class DataGridComponent extends FormioComponents {
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.type = 'datagrid';
+  }
+
   build() {
     this.createElement();
     this.createLabel(this.element);
@@ -76,7 +82,10 @@ export class DataGridComponent extends FormioComponents {
       _each(this.component.components, (col) => {
         let column = _cloneDeep(col);
         column.label = false;
-        let comp = components.create(column, this.options, row);
+        column.row = this.row + '-' + index;
+        let options = _clone(this.options);
+        options.name += '[' + index + ']';
+        let comp = components.create(column, options, row);
         if (row.hasOwnProperty(column.key)) {
           comp.setValue(row[column.key]);
         }
