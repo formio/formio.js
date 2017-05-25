@@ -110,6 +110,7 @@ export class FormioComponents extends BaseComponent {
     element = element || this.element;
     data = data || this.data;
     let components = require('./index');
+    component.row = this.row;
     let comp = components.create(component, this.options, data);
     this.components.push(comp);
     this.setHidden(comp);

@@ -30,28 +30,21 @@ form.form = {
             input: true
           },
           {
-            label: 'Gender',
-            key: 'gender',
-            type: 'select',
+            label: "Gender",
+            key: "gender",
+            type: "radio",
+            inputType: "radio",
             input: true,
-            data: {
-              values: [
-                {
-                  value: 'male',
-                  label: 'Male'
-                },
-                {
-                  value: 'female',
-                  label: 'Female'
-                },
-                {
-                  value: 'other',
-                  label: 'Other'
-                }
-              ]
-            },
-            dataSrc: 'values',
-            template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>'
+            values: [
+              {
+                label: "Male",
+                value: "male"
+              },
+              {
+                label: "Female",
+                value: "female"
+              }
+            ]
           },
           {
             type: 'checkbox',
@@ -88,10 +81,10 @@ form.form = {
               mousewheel: true,
               arrowkeys: true
             },
-            "conditional": {
-              "eq": "true",
-              "when": "dependant",
-              "show": "true"
+            conditional: {
+              eq: "true",
+              when: "dependant",
+              show: "true"
             }
           }
         ]
@@ -131,28 +124,21 @@ form.form = {
                 input: true
               },
               {
-                label: 'Gender',
-                key: 'gender',
-                type: 'select',
+                label: "Gender",
+                key: "gender",
+                type: "radio",
+                inputType: "radio",
                 input: true,
-                data: {
-                  values: [
-                    {
-                      value: 'male',
-                      label: 'Male'
-                    },
-                    {
-                      value: 'female',
-                      label: 'Female'
-                    },
-                    {
-                      value: 'other',
-                      label: 'Other'
-                    }
-                  ]
-                },
-                dataSrc: 'values',
-                template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>'
+                values: [
+                  {
+                    label: "Male",
+                    value: "male"
+                  },
+                  {
+                    label: "Female",
+                    value: "female"
+                  }
+                ]
               },
               {
                 type: 'checkbox',
@@ -189,10 +175,10 @@ form.form = {
                   mousewheel: true,
                   arrowkeys: true
                 },
-                "conditional": {
-                  "eq": "true",
-                  "when": "dependant",
-                  "show": "true"
+                conditional: {
+                  eq: "true",
+                  when: "dependant",
+                  show: "true"
                 }
               }
             

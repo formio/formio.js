@@ -2,6 +2,11 @@ import { FormioComponents } from '../Components';
 import _isObject from 'lodash/isObject';
 import _each from 'lodash/each';
 export class ContainerComponent extends FormioComponents {
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.type = 'container';
+  }
+
   build() {
     this.element = this.ce('element', 'div', {
       class: 'formio-container-component'

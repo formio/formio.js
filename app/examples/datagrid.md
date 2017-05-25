@@ -98,6 +98,28 @@ form.form = {
       }
     ]
 };
+
+// Provide a default submission.
+form.submission = {
+  data: {
+    children: [
+      {
+        firstName: 'Joe',
+        lastName: 'Smith',
+        gender: 'male',
+        dependant: true,
+        birthdate: '1982-05-18'
+      },
+      {
+        firstName: 'Mary',
+        lastName: 'Smith',
+        gender: 'female',
+        dependant: false,
+        birthdate: '1979-02-17'
+      }
+    ]
+  }
+};
 ````
 
 <h3>Result</h3>
@@ -154,7 +176,8 @@ form.form = {
             label: 'Dependant',
             key: 'dependant',
             inputType: 'checkbox',
-            input: true
+            input: true,
+            customClass: "mycustomcheckboxclass"
           },
           {
             label: 'Birthdate',
@@ -193,6 +216,26 @@ form.form = {
         ]
       }
     ]
+};
+form.submission = {
+  data: {
+    children: [
+      {
+        firstName: 'Joe',
+        lastName: 'Smith',
+        gender: 'male',
+        dependant: true,
+        birthdate: '1982-05-18'
+      },
+      {
+        firstName: 'Mary',
+        lastName: 'Smith',
+        gender: 'female',
+        dependant: false,
+        birthdate: '1979-02-17'
+      }
+    ]
+  }
 };
 </script>
 </div>

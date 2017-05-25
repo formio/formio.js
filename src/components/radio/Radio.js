@@ -24,7 +24,7 @@ export class RadioComponent extends BaseComponent {
       });
 
       // Determine the attributes for this input.
-      let inputId = this.inputId + '-' + value.value;
+      let inputId = this.component.key + this.row + '-' + value.value;
       this.info.attr.id = inputId;
       this.info.attr.value = value.value;
       label.setAttribute('for', this.info.attr.id);

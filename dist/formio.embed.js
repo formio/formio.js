@@ -206,6 +206,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       element = element || this.element;
       data = data || this.data;
       var components = require('./index');
+      component.row = this.row;
       var comp = components.create(component, this.options, data);
       this.components.push(comp);
       this.setHidden(comp);
@@ -1498,6 +1499,13 @@ var BaseComponent = function () {
      * @type {*}
      */
     this.value = null;
+
+    /**
+     * The row path of this component.
+     * @type {number}
+     */
+    this.row = component ? component.row : '';
+    this.row = this.row || '';
 
     /**
      * Determines if this component is disabled, or not.
@@ -2906,6 +2914,12 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
             break;
           case 'event':
             _this2.events.emit(_this2.component.event, _this2.data);
+            _this2.events.emit('customEvent', {
+              type: _this2.component.event,
+              component: _this2.component,
+              data: _this2.data,
+              event: event
+            });
             break;
           case 'reset':
             _this2.emit('resetForm');
@@ -3045,12 +3059,9 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   }, {
     key: 'createElement',
     value: function createElement() {
-      var className = 'form-group';
+      var className = this.className;
       if (this.component.label) {
         className += ' checkbox';
-      }
-      if (this.component.validate && this.component.validate.required) {
-        className += ' required';
       }
       this.element = this.ce('element', 'div', {
         id: this.id,
@@ -3328,10 +3339,13 @@ function _inherits(subClass, superClass) {
 var ContainerComponent = exports.ContainerComponent = function (_FormioComponents) {
   _inherits(ContainerComponent, _FormioComponents);
 
-  function ContainerComponent() {
+  function ContainerComponent(component, options, data) {
     _classCallCheck(this, ContainerComponent);
 
-    return _possibleConstructorReturn(this, (ContainerComponent.__proto__ || Object.getPrototypeOf(ContainerComponent)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (ContainerComponent.__proto__ || Object.getPrototypeOf(ContainerComponent)).call(this, component, options, data));
+
+    _this.type = 'container';
+    return _this;
   }
 
   _createClass(ContainerComponent, [{
@@ -3566,6 +3580,10 @@ var _cloneDeep2 = require('lodash/cloneDeep');
 
 var _cloneDeep3 = _interopRequireDefault(_cloneDeep2);
 
+var _clone2 = require('lodash/clone');
+
+var _clone3 = _interopRequireDefault(_clone2);
+
 var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
@@ -3597,10 +3615,13 @@ function _inherits(subClass, superClass) {
 var DataGridComponent = exports.DataGridComponent = function (_FormioComponents) {
   _inherits(DataGridComponent, _FormioComponents);
 
-  function DataGridComponent() {
+  function DataGridComponent(component, options, data) {
     _classCallCheck(this, DataGridComponent);
 
-    return _possibleConstructorReturn(this, (DataGridComponent.__proto__ || Object.getPrototypeOf(DataGridComponent)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (DataGridComponent.__proto__ || Object.getPrototypeOf(DataGridComponent)).call(this, component, options, data));
+
+    _this.type = 'datagrid';
+    return _this;
   }
 
   _createClass(DataGridComponent, [{
@@ -3680,7 +3701,10 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         (0, _each3.default)(_this3.component.components, function (col) {
           var column = (0, _cloneDeep3.default)(col);
           column.label = false;
-          var comp = components.create(column, _this3.options, row);
+          column.row = _this3.row + '-' + index;
+          var options = (0, _clone3.default)(_this3.options);
+          options.name += '[' + index + ']';
+          var comp = components.create(column, options, row);
           if (row.hasOwnProperty(column.key)) {
             comp.setValue(row[column.key]);
           } else if (comp.type === 'components') {
@@ -3799,7 +3823,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   return DataGridComponent;
 }(_Components.FormioComponents);
 
-},{"../Components":1,"../index":21,"lodash/cloneDeep":218,"lodash/each":223,"lodash/isArray":231}],13:[function(require,module,exports){
+},{"../Components":1,"../index":21,"lodash/clone":217,"lodash/cloneDeep":218,"lodash/each":223,"lodash/isArray":231}],13:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5614,7 +5638,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
         });
 
         // Determine the attributes for this input.
-        var inputId = _this2.inputId + '-' + value.value;
+        var inputId = _this2.component.key + _this2.row + '-' + value.value;
         _this2.info.attr.id = inputId;
         _this2.info.attr.value = value.value;
         label.setAttribute('for', _this2.info.attr.id);
@@ -7199,6 +7223,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       this.loading = true;
       this.ready.then(function () {
         return _this2.loading = false;
+      }, function () {
+        return _this2.loading = false;
+      }).catch(function () {
+        return _this2.loading = false;
       });
       this.elementResolve(element);
     }
@@ -7255,6 +7283,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       if (this.onFormBuild) {
         return this.onFormBuild.then(function () {
           return _this3.createForm(form);
+        }, function (err) {
+          return _this3.formReadyReject(err);
+        }).catch(function (err) {
+          return _this3.formReadyReject(err);
         });
       }
 
@@ -7286,6 +7318,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         _this4.setValue(submission);
         _this4.submissionReadyResolve();
       }, function (err) {
+        return _this4.submissionReadyReject(err);
+      }).catch(function (err) {
         return _this4.submissionReadyReject(err);
       });
     }
@@ -7332,6 +7366,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         }
         _this5.onFormBuild = null;
       }, function (err) {
+        return _this5.formReadyReject(err);
+      }).catch(function (err) {
         return _this5.formReadyReject(err);
       });
     }
@@ -7634,10 +7670,18 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 
       this.formio.loadForm().then(function (form) {
         return _this10.setForm(form);
+      }, function (err) {
+        return _this10.formReadyReject(err);
+      }).catch(function (err) {
+        return _this10.formReadyReject(err);
       });
       if (this.formio.submissionId) {
         this.onSubmission = this.formio.loadSubmission().then(function (submission) {
           return _this10.setSubmission(submission);
+        }, function (err) {
+          return _this10.submissionReadyReject(err);
+        }).catch(function (err) {
+          return _this10.submissionReadyReject(err);
         });
       }
     }

@@ -109,6 +109,13 @@ export class BaseComponent {
     this.value = null;
 
     /**
+     * The row path of this component.
+     * @type {number}
+     */
+    this.row = component ? component.row : '';
+    this.row = this.row || '';
+
+    /**
      * Determines if this component is disabled, or not.
      *
      * @type {boolean}
