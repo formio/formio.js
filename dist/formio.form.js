@@ -3376,7 +3376,9 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
       }
       this.value = value;
       (0, _each3.default)(this.components, function (component) {
-        if (value.hasOwnProperty(component.component.key)) {
+        if (component.type === 'components') {
+          component.setValue(value, noUpdate, noValidate);
+        } else if (value.hasOwnProperty(component.component.key)) {
           component.setValue(value[component.component.key], noUpdate, noValidate);
         }
       });
@@ -3629,10 +3631,11 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function build() {
       this.createElement();
       this.createLabel(this.element);
-      this.addNewValue();
+      if (!this.data.hasOwnProperty(this.component.key)) {
+        this.addNewValue();
+      }
       this.visibleColumns = true;
       this.buildTable();
-      this.visibleColumns = {};
     }
   }, {
     key: 'buildTable',
@@ -3741,6 +3744,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
 
       var show = _get(DataGridComponent.prototype.__proto__ || Object.getPrototypeOf(DataGridComponent.prototype), 'checkConditions', this).call(this, data);
       var rebuild = false;
+      if (this.visibleColumns === true) {
+        this.visibleColumns = {};
+      }
       (0, _each3.default)(this.component.components, function (col) {
         var showColumn = false;
         (0, _each3.default)(_this4.rows, function (comps) {
@@ -3784,10 +3790,11 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           return;
         }
         (0, _each3.default)(row, function (col, key) {
-          if (!value[index].hasOwnProperty(key)) {
-            return;
+          if (col.type === 'components') {
+            col.setValue(value[index], noUpdate, noValidate);
+          } else if (value[index].hasOwnProperty(key)) {
+            col.setValue(value[index][key], noUpdate, noValidate);
           }
-          col.setValue(value[index][key], noUpdate, noValidate);
         });
       });
     }
