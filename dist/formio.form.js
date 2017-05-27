@@ -2880,6 +2880,9 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       if (this.component.block) {
         info.attr.class += ' btn-block';
       }
+      if (this.component.customClass) {
+        info.attr.class += ' ' + this.component.customClass;
+      }
       return info;
     }
   }, {
@@ -2914,7 +2917,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
             break;
           case 'event':
             _this2.events.emit(_this2.component.event, _this2.data);
-            _this2.events.emit('customEvent', {
+            _this2.emit('customEvent', {
               type: _this2.component.event,
               component: _this2.component,
               data: _this2.data,
