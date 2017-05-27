@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.8.5
+### Fixed
+ - Issue where the custom events were not firing properly on buttons.
+ 
+### Added
+ - Custom classes to the button component.
+
 ## 2.8.4
 ### Fixed
  - Issue where submission binding with columns in datagrids was not working.

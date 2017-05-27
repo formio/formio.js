@@ -8,6 +8,9 @@ export class ButtonComponent extends BaseComponent {
     if (this.component.block) {
       info.attr.class += ' btn-block';
     }
+    if (this.component.customClass) {
+      info.attr.class += ' ' + this.component.customClass;
+    }
     return info;
   }
 
@@ -61,7 +64,7 @@ export class ButtonComponent extends BaseComponent {
           break;
         case 'event':
           this.events.emit(this.component.event, this.data);
-          this.events.emit('customEvent', {
+          this.emit('customEvent', {
             type: this.component.event,
             component: this.component,
             data: this.data,
