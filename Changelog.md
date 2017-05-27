@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issue where submission binding with columns in datagrids was not working.
  - Fixed issue where adding another item to datagrid would clear out rows.
+ - Problem where datagrid rows would add going between wizard pages.
 
 ### Added
  - CSS classes to wizard navigation buttons.
