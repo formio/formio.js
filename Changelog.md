@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.8.4
+### Fixed
+ - Issue where submission binding with columns in datagrids was not working.
+ - Fixed issue where adding another item to datagrid would clear out rows.
+
+### Added
+ - CSS classes to wizard navigation buttons.
+
 ## 2.8.3
 ### Fixed
  - Bad binding with radio buttons in datagrids.
