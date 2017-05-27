@@ -12,10 +12,11 @@ export class DataGridComponent extends FormioComponents {
   build() {
     this.createElement();
     this.createLabel(this.element);
-    this.addNewValue();
+    if (!this.data.hasOwnProperty(this.component.key)) {
+      this.addNewValue();
+    }
     this.visibleColumns = true;
     this.buildTable();
-    this.visibleColumns = {};
   }
 
   buildTable(data) {
@@ -120,6 +121,9 @@ export class DataGridComponent extends FormioComponents {
   checkConditions(data) {
     let show = super.checkConditions(data);
     let rebuild = false;
+    if (this.visibleColumns === true) {
+      this.visibleColumns = {};
+    }
     _each(this.component.components, (col) => {
       let showColumn = false;
       _each(this.rows, (comps) => {
@@ -165,10 +169,12 @@ export class DataGridComponent extends FormioComponents {
         return;
       }
       _each(row, (col, key) => {
-        if (!value[index].hasOwnProperty(key)) {
-          return;
+        if (col.type === 'components') {
+          col.setValue(value[index], noUpdate, noValidate);
         }
-        col.setValue(value[index][key], noUpdate, noValidate);
+        else if (value[index].hasOwnProperty(key)) {
+          col.setValue(value[index][key], noUpdate, noValidate);
+        }
       });
     });
   }

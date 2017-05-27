@@ -240,7 +240,7 @@ export class FormioWizard extends FormioForm {
       let buttonWrapper = this.ce('wizardNavButton', 'li');
       let buttonProp = button.name + 'Button';
       this[buttonProp] = this.ce(buttonProp, 'button', {
-        class: button.class
+        class: button.class + ' btn-wizard-nav-' + button.name
       });
       this[buttonProp].appendChild(this.text(this.t(button.name)));
       this.addEventListener(this[buttonProp], 'click', (event) => {
