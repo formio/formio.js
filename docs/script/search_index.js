@@ -102,6 +102,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/formio.factory.js~formiofactory",
+    "variable/index.html#static-variable-FormioFactory",
+    "<span>FormioFactory</span> <span class=\"search-result-import-path\">formiojs/src/formio.factory.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/formio.form.js~formioform",
     "class/src/formio.form.js~FormioForm.html",
     "<span>FormioForm</span> <span class=\"search-result-import-path\">formiojs/src/formio.form.js</span>",
@@ -1495,13 +1501,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -3525,6 +3531,12 @@ window.esdocSearchIndex = [
     "src/formio.embed.js",
     "file/src/formio.embed.js.html",
     "src/formio.embed.js",
+    "file"
+  ],
+  [
+    "src/formio.factory.js",
+    "file/src/formio.factory.js.html",
+    "src/formio.factory.js",
     "file"
   ],
   [

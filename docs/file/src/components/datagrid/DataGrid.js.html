@@ -35,6 +35,7 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioFactory">FormioFactory</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
@@ -152,10 +153,11 @@ export class DataGridComponent extends FormioComponents {
   build() {
     this.createElement();
     this.createLabel(this.element);
-    this.addNewValue();
+    if (!this.data.hasOwnProperty(this.component.key)) {
+      this.addNewValue();
+    }
     this.visibleColumns = true;
     this.buildTable();
-    this.visibleColumns = {};
   }
 
   buildTable(data) {
@@ -260,6 +262,9 @@ export class DataGridComponent extends FormioComponents {
   checkConditions(data) {
     let show = super.checkConditions(data);
     let rebuild = false;
+    if (this.visibleColumns === true) {
+      this.visibleColumns = {};
+    }
     _each(this.component.components, (col) =&gt; {
       let showColumn = false;
       _each(this.rows, (comps) =&gt; {
@@ -305,10 +310,12 @@ export class DataGridComponent extends FormioComponents {
         return;
       }
       _each(row, (col, key) =&gt; {
-        if (!value[index].hasOwnProperty(key)) {
-          return;
+        if (col.type === &apos;components&apos;) {
+          col.setValue(value[index], noUpdate, noValidate);
         }
-        col.setValue(value[index][key], noUpdate, noValidate);
+        else if (value[index].hasOwnProperty(key)) {
+          col.setValue(value[index][key], noUpdate, noValidate);
+        }
       });
     });
   }

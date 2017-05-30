@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "2.8.3",
+  "version": "2.8.6",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "build/formio.js",
   "files": [
@@ -9,7 +9,8 @@
     "utils.js",
     "wizard.js",
     "form.js",
-    "embed.js"
+    "embed.js",
+    "factory.js"
   ],
   "scripts": {
     "prepublish": "gulp build",
