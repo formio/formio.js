@@ -39,7 +39,7 @@ export const FormioFactory = {
       return (new Formio(form)).loadForm().then((formObj) => FormioFactory.factory(element, formObj, options));
     }
     else {
-      return Promise.resolve(Factory.factory(element, form, options));
+      return Promise.resolve(FormioFactory.factory(element, form, options));
     }
   }
 };
