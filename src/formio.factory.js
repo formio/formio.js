@@ -1,7 +1,7 @@
 "use strict";
 import Promise from "native-promise-only";
-import { FormioWizard } from './formio.wizard';
-import { FormioForm } from './formio.form';
+import FormioWizard from './formio.wizard';
+import FormioForm from './formio.form';
 import Formio from './formio';
 export const FormioFactory = {
 
@@ -36,7 +36,7 @@ export const FormioFactory = {
    */
   createForm: (element, form, options) => {
     if (typeof form === 'string') {
-      return (new Formio(form)).loadForm().then((formObj) => Factory.factory(element, formObj, options));
+      return (new Formio(form)).loadForm().then((formObj) => FormioFactory.factory(element, formObj, options));
     }
     else {
       return Promise.resolve(Factory.factory(element, form, options));
