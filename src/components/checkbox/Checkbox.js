@@ -48,15 +48,15 @@ export class CheckBoxComponent extends BaseComponent {
     });
 
     // Create the SPAN around the textNode for better style hooks
-    this.labelText = this.ce('span', 'span');
+    this.labelSpan = this.ce('labelSpan', 'span');
 
     if (this.info.attr.id) {
       this.label.setAttribute('for', this.info.attr.id);
     }
     this.addInput(input, this.label);
     if (!this.options.inputsOnly) {
-      this.labelText.appendChild(this.text(this.component.label));
-      this.label.appendChild(this.labelText);
+      this.labelSpan.appendChild(this.text(this.component.label));
+      this.label.appendChild(this.labelSpan);
     }
     container.appendChild(this.label);
   }
