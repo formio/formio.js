@@ -23,6 +23,9 @@ export class RadioComponent extends BaseComponent {
         class: 'control-label'
       });
 
+      // Create the SPAN around the textNode for better style hooks
+      let labelText = this.ce('span', 'span');
+
       // Determine the attributes for this input.
       let inputId = this.component.key + this.row + '-' + value.value;
       this.info.attr.id = inputId;
@@ -35,8 +38,12 @@ export class RadioComponent extends BaseComponent {
         input.setAttribute(key, value);
       });
       this.addInput(input, label);
-      label.appendChild(document.createTextNode(value.label));
+      
+      labelText.appendChild(this.text(value.label));
+      
       labelWrapper.appendChild(label);
+      labelWrapper.appendChild(labelText)
+      
       inputGroup.appendChild(labelWrapper);
     });
     container.appendChild(inputGroup);
