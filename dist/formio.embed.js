@@ -3080,12 +3080,17 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       this.label = this.ce('label', 'label', {
         class: 'control-label'
       });
+
+      // Create the SPAN around the textNode for better style hooks
+      this.labelSpan = this.ce('labelSpan', 'span');
+
       if (this.info.attr.id) {
         this.label.setAttribute('for', this.info.attr.id);
       }
       this.addInput(input, this.label);
       if (!this.options.inputsOnly) {
-        this.label.appendChild(document.createTextNode(this.component.label));
+        this.labelSpan.appendChild(this.text(this.component.label));
+        this.label.appendChild(this.labelSpan);
       }
       container.appendChild(this.label);
     }
@@ -5647,6 +5652,9 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
           class: 'control-label'
         });
 
+        // Create the SPAN around the textNode for better style hooks
+        var labelSpan = _this2.ce('labelSpan', 'span');
+
         // Determine the attributes for this input.
         var inputId = _this2.component.key + _this2.row + '-' + value.value;
         _this2.info.attr.id = inputId;
@@ -5659,8 +5667,12 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
           input.setAttribute(key, value);
         });
         _this2.addInput(input, label);
-        label.appendChild(document.createTextNode(value.label));
+
+        labelSpan.appendChild(_this2.text(value.label));
+
         labelWrapper.appendChild(label);
+        labelWrapper.appendChild(labelSpan);
+
         inputGroup.appendChild(labelWrapper);
       });
       container.appendChild(inputGroup);
