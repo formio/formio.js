@@ -10,9 +10,19 @@ describe('Checkbox Component', function() {
       for (let i=0; i < inputs.length; i++) {
         assert.equal(inputs[i].name, 'data[' + comps.comp1.key + ']');
       }
+      Harness.testElements(component, 'span', 1);
       done();
+      
     });
   });
+
+  it('Span should have correct text label', function(done) {
+    Harness.testCreate(CheckBoxComponent, comps.comp1).then((component) => {
+      let spans = component.element.querySelectorAll('span');
+      assert.equal(spans[0].innerHTML, 'Check me');
+      done();
+    });
+  }); 
 
   it('Should be able to set and get data', function(done) {
     Harness.testCreate(CheckBoxComponent, comps.comp1).then((component) => {
