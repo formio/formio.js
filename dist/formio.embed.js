@@ -5959,7 +5959,11 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           break;
         case 'json':
           try {
-            this.setItems(JSON.parse(this.component.data.json));
+            if (typeof this.component.data.json == 'string') {
+              this.setItems(JSON.parse(this.component.data.json));
+            } else {
+              this.setItems(this.component.data.json);
+            }
           } catch (err) {
             console.warn('Unable to parse JSON for ' + this.component.key);
           }
@@ -6165,10 +6169,19 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
     key: 'setValue',
     value: function setValue(value, noUpdate, noValidate) {
       this.value = value;
-      value = (0, _isArray3.default)(value) ? value : [value];
+      var tempValue = [];
+
       (0, _each3.default)(this.inputs, function (input) {
-        input.checked = value.indexOf(input.value) !== -1;
+        if ((0, _isArray3.default)(value)) {
+          input.checked = value.indexOf(input.value) !== -1;
+        } else {
+          input.checked = value[input.value] == undefined ? false : value[input.value];
+          tempValue.push(input.value);
+        }
       });
+
+      value = (0, _isArray3.default)(value) ? value : tempValue;
+
       if (!noUpdate) {
         this.updateValue(noValidate);
       }

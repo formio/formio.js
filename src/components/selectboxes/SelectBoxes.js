@@ -31,12 +31,23 @@ export class SelectBoxesComponent extends RadioComponent {
    */
   setValue(value, noUpdate, noValidate) {
     this.value = value;
-    value = _isArray(value) ? value : [value];
+    let tempValue = [];
+
     _each(this.inputs, (input) => {
-      input.checked = (value.indexOf(input.value) !== -1);
+      if (_isArray(value)) {
+        input.checked = (value.indexOf(input.value) !== -1);
+      }
+      else {
+        input.checked = value[input.value] == undefined ? false : value[input.value];
+        tempValue.push(input.value);
+      }
     });
+
+    value = _isArray(value) ? value : tempValue;
+
     if (!noUpdate) {
       this.updateValue(noValidate);
     }
+
   }
 }

@@ -112,7 +112,12 @@ export class SelectComponent extends BaseComponent {
         break;
       case 'json':
         try {
-          this.setItems(JSON.parse(this.component.data.json));
+          if (typeof this.component.data.json == 'string') {
+            this.setItems(JSON.parse(this.component.data.json));
+          }
+          else {
+            this.setItems(this.component.data.json);
+          }
         }
         catch (err) {
           console.warn('Unable to parse JSON for ' + this.component.key);
