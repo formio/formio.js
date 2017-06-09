@@ -8,8 +8,7 @@ weight: 222
 In addition to data grid input, you can also place panels inside the data grid to provide dynamic "add another" sections.
 
 ```js
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       label: 'Children',
@@ -98,15 +97,14 @@ form.form = {
       ]
     }
   ]
-};
+});
 ````
 
 <h3>Result</h3>
 <div class='well'>
 <div id='formio'></div>
 <script type='text/javascript'>
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
       {
         label: 'Children',
@@ -195,6 +193,6 @@ form.form = {
         ]
       }
     ]
-};
+});
 </script>
 </div>

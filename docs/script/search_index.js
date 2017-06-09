@@ -102,12 +102,6 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "formiojs/src/formio.factory.js~formiofactory",
-    "variable/index.html#static-variable-FormioFactory",
-    "<span>FormioFactory</span> <span class=\"search-result-import-path\">formiojs/src/formio.factory.js</span>",
-    "variable"
-  ],
-  [
     "formiojs/src/formio.form.js~formioform",
     "class/src/formio.form.js~FormioForm.html",
     "<span>FormioForm</span> <span class=\"search-result-import-path\">formiojs/src/formio.form.js</span>",
@@ -1501,13 +1495,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -1983,6 +1977,12 @@ window.esdocSearchIndex = [
     "src/components/checkbox/checkbox.js~checkboxcomponent#label",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-label",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#label",
+    "member"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#labelspan",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-labelSpan",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#labelSpan",
     "member"
   ],
   [
@@ -3534,12 +3534,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/formio.factory.js",
-    "file/src/formio.factory.js.html",
-    "src/formio.factory.js",
-    "file"
-  ],
-  [
     "src/formio.form.js",
     "file/src/formio.form.js.html",
     "src/formio.form.js",
@@ -3751,25 +3745,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#src",
-    "class/src/formio.form.js~FormioForm.html#instance-set-src",
-    "src/formio.form.js~FormioForm#src",
-    "member"
-  ],
-  [
-    "src/formio.form.js~formioform#src",
     "class/src/formio.form.js~FormioForm.html#instance-get-src",
     "src/formio.form.js~FormioForm#src",
     "member"
   ],
   [
-    "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
-    "src/formio.form.js~FormioForm#submission",
+    "src/formio.form.js~formioform#src",
+    "class/src/formio.form.js~FormioForm.html#instance-set-src",
+    "src/formio.form.js~FormioForm#src",
     "member"
   ],
   [
     "src/formio.form.js~formioform#submission",
     "class/src/formio.form.js~FormioForm.html#instance-get-submission",
+    "src/formio.form.js~FormioForm#submission",
+    "member"
+  ],
+  [
+    "src/formio.form.js~formioform#submission",
+    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
@@ -3813,6 +3807,12 @@ window.esdocSearchIndex = [
     "src/formio.form.spec.js",
     "file/src/formio.form.spec.js.html",
     "src/formio.form.spec.js",
+    "file"
+  ],
+  [
+    "src/formio.full.js",
+    "file/src/formio.full.js.html",
+    "src/formio.full.js",
     "file"
   ],
   [

@@ -9,19 +9,19 @@ weight: 10
 Every form within Form.io within [Form.io](https://form.io) can be rendered within this library using the Embed URL of that form. You can then provide the ```src``` parameter of the Form renderer to show the form within your page.
 
 ```html
+<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
+<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
 <div id="formio"></div>
 ```
 
 ```js
-var form = new FormioForm(document.getElementById('formio'));
-form.src = 'https://examples.form.io/example';
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
 ```
 
 <h3>Result</h3>
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-var form = new FormioForm(document.getElementById('formio'));
-form.src = 'https://examples.form.io/example';
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
 </script>
 </div>

@@ -35,7 +35,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioFactory">FormioFactory</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
@@ -148,6 +147,40 @@ import _each from &apos;lodash/each&apos;;
 import _clone from &apos;lodash/clone&apos;;
 import _assign from &apos;lodash/assign&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
+
+/**
+ * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+ *
+ * This is needed for PhantomJS.
+ */
+if (!Function.prototype.bind) {
+  Function.prototype.bind = function(oThis) {
+    if (typeof this !== &apos;function&apos;) {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError(&apos;Function.prototype.bind - what is trying to be bound is not callable&apos;);
+    }
+
+    var aArgs   = Array.prototype.slice.call(arguments, 1),
+      fToBind = this,
+      fNOP    = function() {},
+      fBound  = function() {
+        return fToBind.apply(this instanceof fNOP
+            ? this
+            : oThis,
+          aArgs.concat(Array.prototype.slice.call(arguments)));
+      };
+
+    if (this.prototype) {
+      // Function.prototype doesn&apos;t have a prototype property
+      fNOP.prototype = this.prototype;
+    }
+    fBound.prototype = new fNOP();
+
+    return fBound;
+  };
+}
+
 let getOptions = function(options) {
   options = options || {};
   if (!options.events) {

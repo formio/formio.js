@@ -35,7 +35,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioFactory">FormioFactory</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
@@ -164,6 +163,9 @@ export class RadioComponent extends BaseComponent {
         class: &apos;control-label&apos;
       });
 
+      // Create the SPAN around the textNode for better style hooks
+      let labelSpan = this.ce(&apos;labelSpan&apos;, &apos;span&apos;);
+
       // Determine the attributes for this input.
       let inputId = this.component.key + this.row + &apos;-&apos; + value.value;
       this.info.attr.id = inputId;
@@ -176,8 +178,12 @@ export class RadioComponent extends BaseComponent {
         input.setAttribute(key, value);
       });
       this.addInput(input, label);
-      label.appendChild(document.createTextNode(value.label));
+      
+      labelSpan.appendChild(this.text(value.label));
+      
       labelWrapper.appendChild(label);
+      labelWrapper.appendChild(labelSpan)
+      
       inputGroup.appendChild(labelWrapper);
     });
     container.appendChild(inputGroup);

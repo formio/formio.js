@@ -9,9 +9,14 @@ This demonstration illustrates how the **Form Component** can be used to create 
 workflows. Each page within the workflow can decide how to navigate to the next form based upon the
 user input within the workflow.
 
+```html
+<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
+<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
+<div id="workflow"></div>
+```
+
 ```js
-var workflow = new FormioWizard(document.getElementById('workflow'));
-workflow.src = 'https://examples.form.io/multiform';
+Formio.createForm(document.getElementById('workflow'), 'https://examples.form.io/multiform');
 ```
 
 This workflow is a form that uses Form components to bring in multiple forms into a single dynamic workflow. This form
@@ -190,8 +195,8 @@ workflow.form = {
 <div class="well">
   <div id="workflow"></div>
   <script type="text/javascript">
-  var workflow = new FormioWizard(document.getElementById('workflow'));
-  workflow.form = {
+  Formio.createForm(document.getElementById('workflow'), {
+    display: 'wizard',
     components: [
       {
         type: 'hidden',
@@ -355,9 +360,10 @@ workflow.form = {
         ]
       }
     ]
-  };
-  workflow.on('submit', function(submission) {
-    console.log(submission);
+  }).then(function(workflow) {
+    workflow.on('submit', function(submission) {
+      console.log(submission);
+    });
   });
   </script>
 </div>

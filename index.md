@@ -21,12 +21,11 @@ section: home
 <html>
   <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.form.css">
-    <script src="https://unpkg.com/formiojs@latest/dist/formio.form.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
+    <script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
     <script type="text/javascript">
       window.onload = function() {
-        var form = new FormioForm(document.getElementById('formio'));
-        form.src = 'https://examples.form.io/example';
+        Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
       };
     </script>
   </head>

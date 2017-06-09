@@ -35,7 +35,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioFactory">FormioFactory</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
@@ -187,12 +186,17 @@ export class CheckBoxComponent extends BaseComponent {
     this.label = this.ce(&apos;label&apos;, &apos;label&apos;, {
       class: &apos;control-label&apos;
     });
+
+    // Create the SPAN around the textNode for better style hooks
+    this.labelSpan = this.ce(&apos;labelSpan&apos;, &apos;span&apos;);
+
     if (this.info.attr.id) {
       this.label.setAttribute(&apos;for&apos;, this.info.attr.id);
     }
     this.addInput(input, this.label);
     if (!this.options.inputsOnly) {
-      this.label.appendChild(document.createTextNode(this.component.label));
+      this.labelSpan.appendChild(this.text(this.component.label));
+      this.label.appendChild(this.labelSpan);
     }
     container.appendChild(this.label);
   }

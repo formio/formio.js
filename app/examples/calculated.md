@@ -10,8 +10,7 @@ You can use [JSON Logic](http://jsonlogic.com) to create complex calculated valu
 <div class="row">
   <div class="col col-sm-7">
 <pre>
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       type: 'textfield',
@@ -62,7 +61,7 @@ form.form = {
       }
     }
   ]
-};
+});
 </pre>
   </div>
   <div class="col col-sm-5">
@@ -70,8 +69,7 @@ form.form = {
   <div class="well">
   <div id="formio"></div>
   <script type="text/javascript">
-  var form = new FormioForm(document.getElementById('formio'));
-  form.form = {
+  Formio.createForm(document.getElementById('formio'), {
     components: [
       {
         type: 'textfield',
@@ -122,7 +120,7 @@ form.form = {
         }
       }
     ]
-  };
+  });
   </script>
   </div>
   </div>

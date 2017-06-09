@@ -10,8 +10,7 @@ Here is a large form which includes all fields with many different configuration
 <div class="well">
   <div id="formio"></div>
   <script type="text/javascript">
-  var form = new FormioForm(document.getElementById('formio'));
-  form.form = {
+  Formio.createForm(document.getElementById('formio'), {
     components: [
       {
           input: true,
@@ -1154,7 +1153,7 @@ Here is a large form which includes all fields with many different configuration
           theme: 'primary',
           type: 'button'
       }
-  ]
-  };
-  </script>
-  </div>
+    ]
+  });
+</script>
+</div>

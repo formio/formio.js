@@ -9,12 +9,13 @@ weight: 0
 You can create a form with the simple JSON schema as follows.
 
 ```html
+<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
+<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
 <div id="formio"></formio>
 ```
 
 ```js
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       type: 'textfield',
@@ -37,9 +38,10 @@ form.form = {
       theme: 'primary'
     }
   ]
-};
-form.on('submit', function(submission) {
-  console.log(submission);
+}).then(function(form) {
+  form.on('submit', function(submission) {
+    console.log(submission);
+  });
 });
 ```
 
@@ -47,8 +49,7 @@ form.on('submit', function(submission) {
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       type: 'textfield',
@@ -71,9 +72,10 @@ form.form = {
       theme: 'primary'
     }
   ]
-};
-form.on('submit', function(submission) {
-  console.log(submission);
+}).then(function(form) {
+  form.on('submit', function(submission) {
+    console.log(submission);
+  });
 });
 </script>
 </div>

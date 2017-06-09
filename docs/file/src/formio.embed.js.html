@@ -35,7 +35,6 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioFactory">FormioFactory</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/address</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
@@ -139,7 +138,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.embed.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import FormioForm from &apos;./formio.form.js&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { Formio } from &apos;./formio.full&apos;;
 let query = {};
 var scripts = document.getElementsByTagName(&apos;script&apos;);
 var thisScript = scripts[ scripts.length - 1 ];
@@ -151,7 +150,7 @@ queryString.replace(/\?/g, &apos;&amp;&apos;).split(&quot;&amp;&quot;).forEach(f
   query[item.split(&quot;=&quot;)[0]] = item.split(&quot;=&quot;)[1] &amp;&amp; decodeURIComponent(item.split(&quot;=&quot;)[1]);
 });
 query.styles = query.styles || (scriptSrc + &apos;/formio.form.min.css&apos;);
-FormioForm.embed(query);
+Formio.embedForm(query);
 </code></pre>
 
 </div>

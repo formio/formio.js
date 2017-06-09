@@ -7,9 +7,17 @@ weight: 30
 ### JSON Powered Forms
 All forms that are rendered within this framework are JSON powered forms.
 
-```js
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+```html
+<link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
+<script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
+<div id="formio"></div>
+```
+
+<div class="row">
+<div class="col col-sm-6">
+
+<pre>
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       type: 'textfield',
@@ -117,19 +125,16 @@ form.form = {
       theme: 'primary'
     }
   ]
-};
-```
+});
+</pre>
 
-```html
-<div id="formio"></div>
-```
-
-### Result
+</div>
+<div class="col col-sm-6">
+<h3>Result</h3>
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       type: 'textfield',
@@ -150,7 +155,7 @@ form.form = {
       key: 'select',
       label: 'Favorite Color',
       placeholder: 'Select your favorite color',
-      template: '<span>\{\{ item.label \}\}</span>',
+      template: '<span>{% raw %}{{ item.label }}{% endraw %}</span>',
       multiple: true,
       dataSrc: 'values',
       input: true,
@@ -237,7 +242,10 @@ form.form = {
       theme: 'primary'
     }
   ]
-};
+});
 </script>
 </div>
+</div>
+</div>
+
 

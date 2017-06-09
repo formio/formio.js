@@ -11,8 +11,7 @@ The Select component allows you to connect to external data sources as well as p
 In addition, you can also make each of the selects conditional based on the values provided from previous select lists. For example, you could set up a Make + Model select dropdown selection, where the Model is dependent on the Make selection. This can be done with the following JSON configurations.
 
 ```js
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       type: 'select',
@@ -56,15 +55,14 @@ form.form = {
       selectValues: 'Results'
     }
   ]
-};
+});
 ```
 
 <h3>Result</h3>
 <div class='well'>
 <div id='formio'></div>
 <script type='text/javascript'>
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       type: 'select',
@@ -104,6 +102,6 @@ form.form = {
       selectValues: 'Results'
     }
   ]
-};
+});
 </script>
 </div>
