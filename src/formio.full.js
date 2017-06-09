@@ -40,3 +40,7 @@ Formio.createForm = (element, form, options) => {
     return Promise.resolve(Formio.formFactory(element, form, options));
   }
 };
+
+exports.Formio = Formio;
+exports.FormioForm = FormioForm;
+exports.FormioWizard = FormioWizard;

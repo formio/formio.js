@@ -7922,6 +7922,10 @@ _formio6.default.createForm = function (element, form, options) {
   }
 };
 
+exports.Formio = _formio6.default;
+exports.FormioForm = _formio4.default;
+exports.FormioWizard = _formio2.default;
+
 },{"./formio":39,"./formio.form":37,"./formio.wizard":40,"native-promise-only":259}],39:[function(require,module,exports){
 (function (global){
 'use strict';

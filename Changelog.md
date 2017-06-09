@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.9.1
+### Fixed
+ - The import process so that it is reverse compatible.
+
+### Added
+ - Formio.full CSS.
+
 ## 2.9.0
 ### Changed
  - Removed the formio-factory file in exchange of formio.full.min.js.

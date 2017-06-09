@@ -12,8 +12,12 @@ module.exports = function(gulp, plugins) {
       .pipe(plugins.concat('formio.form.css'))
       .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
       .pipe(gulp.dest('dist/'))
+      .pipe(plugins.rename('formio.full.css'))
+      .pipe(gulp.dest('dist/'))
       .pipe(plugins.rename('formio.form.min.css'))
       .pipe(plugins.cleanCSS({compatibility: 'ie8'}))
+      .pipe(gulp.dest('dist/'))
+      .pipe(plugins.rename('formio.full.min.css'))
       .pipe(gulp.dest('dist/'));
   };
 };
