@@ -2,6 +2,8 @@
 const _get = require('lodash/get');
 import jsonLogic from 'json-logic-js';
 module.exports = {
+  jsonLogic, // Share
+
   /**
    * Determine if a component is a layout component or not.
    *
