@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.9.2
 ### Fixed
  - Other reverse compatible issues.
+ - The embed code to also work with Wizards.
 
 ## 2.9.1
 ### Fixed

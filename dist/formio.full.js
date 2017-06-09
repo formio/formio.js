@@ -7922,6 +7922,23 @@ _formio6.default.createForm = function (element, form, options) {
   }
 };
 
+/**
+ * Embed this form within the current page.
+ * @param embed
+ */
+_formio6.default.embedForm = function (embed) {
+  if (!embed || !embed.src) {
+    return null;
+  }
+  var id = embed.id || 'formio-' + Math.random().toString(36).substring(7);
+  var className = embed.class || 'formio-form-wrapper';
+  var code = embed.styles ? '<link rel="stylesheet" href="' + embed.styles + '">' : '';
+  code += '<div id="' + id + '" class="' + className + '"></div>';
+  document.write(code);
+  var formElement = document.getElementById(id);
+  return _formio6.default.createForm(formElement, embed.src);
+};
+
 exports.Formio = _formio6.default;
 exports.FormioForm = _formio4.default;
 exports.FormioWizard = _formio2.default;
