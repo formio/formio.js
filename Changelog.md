@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.9.0
+### Changed
+ - Removed the formio-factory file in exchange of formio.full.min.js.
+ - Attached createForm method to main Formio object.
+
 ## 2.8.8
 ### Added a formio factory to the dist folder.
 
