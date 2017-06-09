@@ -23,12 +23,11 @@ The following is a simple example on how to render a form within your HTML appli
 <html>
   <head>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://unpkg.com/formiojs@2.3.4/dist/formio.form.min.css'>
-    <script src='https://unpkg.com/formiojs@2.3.4/dist/formio.form.min.js'></script>
+    <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
+    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
     <script type='text/javascript'>
       window.onload = function() {
-        var form = new FormioForm(document.getElementById('formio'));
-        form.src = 'https://examples.form.io/example';
+        Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
       };
     </script>
   </head>
@@ -45,8 +44,7 @@ This will render the following form within your application.
 You can also render JSON directly instead of referencing the embed URL from Form.io.
 
 ```js
-var form = new FormioForm(document.getElementById('formio'));
-form.form = {
+Formio.createForm(document.getElementById('formio'), {
   components: [
     {
       type: 'textfield',
@@ -69,24 +67,25 @@ form.form = {
       theme: 'primary'
     }
   ]
-};
+});
 ```
 
 This will render the JSON schema of the form within your application.
 
 ## Wizard Rendering
-This library can also be used to render a form wizard within your application using the Wizard library.
+This library can also be used to render a form wizard within your application using the same method as rendering a form.
+The determiniation on whether it should render as a wizard or not is based on the **display** property of the form schema 
+being set to ```wizard```.
 
 ```html
 <html>
   <head>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://unpkg.com/formiojs@2.3.4/dist/formio.wizard.min.css'>
-    <script src='https://unpkg.com/formiojs@2.3.4/dist/formio.form.min.js'></script>
+    <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
+    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
     <script type='text/javascript'>
       window.onload = function() {
-        var form = new FormioWizard(document.getElementById('formio'));
-        form.src = 'https://examples.form.io/wizard';
+        Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/wizard');
       };
     </script>
   </head>
@@ -114,7 +113,7 @@ In addition to having a Form Renderer within this application, you can also use 
 ```html
 <html>
   <head>
-    <script src='https://unpkg.com/formiojs@2.3.4/dist/formio.min.js'></script>
+    <script src='https://unpkg.com/formiojs@latest/dist/formio.min.js'></script>
     <script type='text/javascript'>
       var formio = new Formio('https://examples.form.io/example');
       formio.loadForm().then(function(form) {
