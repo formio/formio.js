@@ -155,12 +155,11 @@
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&apos;&gt;
-    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@2.3.4/dist/formio.form.min.css&apos;&gt;
-    &lt;script src=&apos;https://unpkg.com/formiojs@2.3.4/dist/formio.form.min.js&apos;&gt;&lt;/script&gt;
+    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.css&apos;&gt;
+    &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
       window.onload = function() {
-        var form = new FormioForm(document.getElementById(&apos;formio&apos;));
-        form.src = &apos;https://examples.form.io/example&apos;;
+        Formio.createForm(document.getElementById(&apos;formio&apos;), &apos;https://examples.form.io/example&apos;);
       };
     &lt;/script&gt;
   &lt;/head&gt;
@@ -172,8 +171,7 @@
 <p>This will render the following form within your application.</p>
 <p><img src="https://monosnap.com/file/iOZ1yB0wPntJLWQwyhdt7ucToLHEfF.png" alt="Alt text"></p>
 <p>You can also render JSON directly instead of referencing the embed URL from Form.io.</p>
-<pre><code class="lang-js"><code class="source-code prettyprint">var form = new FormioForm(document.getElementById(&apos;formio&apos;));
-form.form = {
+<pre><code class="lang-js"><code class="source-code prettyprint">Formio.createForm(document.getElementById(&apos;formio&apos;), {
   components: [
     {
       type: &apos;textfield&apos;,
@@ -196,20 +194,21 @@ form.form = {
       theme: &apos;primary&apos;
     }
   ]
-};</code>
+});</code>
 </code></pre>
 <p>This will render the JSON schema of the form within your application.</p>
 <h2 id="wizard-rendering">Wizard Rendering</h2>
-<p>This library can also be used to render a form wizard within your application using the Wizard library.</p>
+<p>This library can also be used to render a form wizard within your application using the same method as rendering a form.
+The determiniation on whether it should render as a wizard or not is based on the <strong>display</strong> property of the form schema 
+being set to <code>wizard</code>.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
     &lt;link rel=&apos;stylesheet&apos; href=&apos;https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css&apos;&gt;
-    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@2.3.4/dist/formio.wizard.min.css&apos;&gt;
-    &lt;script src=&apos;https://unpkg.com/formiojs@2.3.4/dist/formio.form.min.js&apos;&gt;&lt;/script&gt;
+    &lt;link rel=&apos;stylesheet&apos; href=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.css&apos;&gt;
+    &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.full.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
       window.onload = function() {
-        var form = new FormioWizard(document.getElementById(&apos;formio&apos;));
-        form.src = &apos;https://examples.form.io/wizard&apos;;
+        Formio.createForm(document.getElementById(&apos;formio&apos;), &apos;https://examples.form.io/wizard&apos;);
       };
     &lt;/script&gt;
   &lt;/head&gt;
@@ -229,7 +228,7 @@ form.form = {
 <p>In addition to having a Form Renderer within this application, you can also use this library as a JavaScript SDK in your application. For example, to load a Form, and then submit that form you could do the following within your JavaScript.</p>
 <pre><code class="lang-html"><code class="source-code prettyprint">&lt;html&gt;
   &lt;head&gt;
-    &lt;script src=&apos;https://unpkg.com/formiojs@2.3.4/dist/formio.min.js&apos;&gt;&lt;/script&gt;
+    &lt;script src=&apos;https://unpkg.com/formiojs@latest/dist/formio.min.js&apos;&gt;&lt;/script&gt;
     &lt;script type=&apos;text/javascript&apos;&gt;
       var formio = new Formio(&apos;https://examples.form.io/example&apos;);
       formio.loadForm().then(function(form) {
