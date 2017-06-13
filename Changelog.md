@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.9.4
+### Changed
+ - Upgraded all dependencies to latest versions.
+
 ## 2.9.3
 ### Fixed
  - Ensure the full.js is in the npm build.
