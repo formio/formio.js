@@ -9709,6 +9709,8 @@ function _interopRequireDefault(obj) {
 var _get = require('lodash/get');
 
 module.exports = {
+  jsonLogic: _jsonLogicJs2.default, // Share
+
   /**
    * Determine if a component is a layout component or not.
    *
