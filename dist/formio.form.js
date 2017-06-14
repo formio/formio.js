@@ -1515,6 +1515,11 @@ var BaseComponent = function () {
     this._disabled = false;
 
     /**
+     * Determines if this component is visible, or not.
+     */
+    this._visible = true;
+
+    /**
      * If this input has been input and provided value.
      *
      * @type {boolean}
@@ -2287,6 +2292,7 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
+      this._visible = _show;
       var element = this.getElement();
       if (element) {
         if (_show && !this.component.hidden) {
@@ -2705,6 +2711,9 @@ var BaseComponent = function () {
     key: 'visible',
     set: function set(visible) {
       this.show(visible);
+    },
+    get: function get() {
+      return this._visible;
     }
   }, {
     key: 'errors',
@@ -2728,7 +2737,11 @@ var BaseComponent = function () {
       // Disable all input.
       (0, _each3.default)(this.inputs, function (input) {
         input.disabled = disabled;
-        input.setAttribute('disabled', 'disabled');
+        if (disabled) {
+          input.setAttribute('disabled', 'disabled');
+        } else {
+          input.removeAttribute('disabled');
+        }
       });
     }
   }]);

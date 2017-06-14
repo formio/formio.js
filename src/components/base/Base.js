@@ -123,6 +123,11 @@ export class BaseComponent {
     this._disabled = false;
 
     /**
+     * Determines if this component is visible, or not.
+     */
+    this._visible = true;
+
+    /**
      * If this input has been input and provided value.
      *
      * @type {boolean}
@@ -841,6 +846,7 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
+    this._visible = show;
     let element = this.getElement();
     if (element) {
       if (show && !this.component.hidden) {
@@ -859,6 +865,10 @@ export class BaseComponent {
 
   set visible(visible) {
     this.show(visible);
+  }
+
+  get visible() {
+    return this._visible;
   }
 
   onChange(noValidate) {
@@ -1107,7 +1117,12 @@ export class BaseComponent {
     // Disable all input.
     _each(this.inputs, (input) => {
       input.disabled = disabled;
-      input.setAttribute('disabled', 'disabled');
+      if (disabled) {
+        input.setAttribute('disabled', 'disabled');
+      }
+      else {
+        input.removeAttribute('disabled');
+      }
     });
   }
 

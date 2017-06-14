@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.9.5
+### Fixed
+ - Issue where if you try to re-enable disabled fields, it wasn't working.
+ - Added a getter for the visible state of fields.
+
 ## 2.9.4
 ### Changed
  - Upgraded all dependencies to latest versions.
