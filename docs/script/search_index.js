@@ -1807,6 +1807,12 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "src/components/base/Base.js~BaseComponent#visible",
+    "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#visible",
     "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
@@ -3643,13 +3649,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
