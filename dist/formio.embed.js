@@ -7364,6 +7364,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 
       // Set the form object.
       this._form = form;
+      this.emit('formLoad', form);
 
       // Create the form.
       return this.createForm(form);

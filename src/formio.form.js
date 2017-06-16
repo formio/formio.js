@@ -371,6 +371,7 @@ export class FormioForm extends FormioComponents {
 
     // Set the form object.
     this._form = form;
+    this.emit('formLoad', form);
 
     // Create the form.
     return this.createForm(form);
