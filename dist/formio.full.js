@@ -9062,6 +9062,10 @@ var _formio3 = require('./formio');
 
 var _formio4 = _interopRequireDefault(_formio3);
 
+var _utils = require('./utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
 var _each = require('lodash/each');
 
 var _each2 = _interopRequireDefault(_each);
@@ -9104,6 +9108,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
 
     var _this = _possibleConstructorReturn(this, (FormioWizard.__proto__ || Object.getPrototypeOf(FormioWizard)).call(this, element, options));
 
+    _this.wizard = null;
     _this.pages = [];
     _this.page = 0;
     _this.history = [];
@@ -9245,26 +9250,41 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       return this.getPage(this.page);
     }
   }, {
-    key: 'setForm',
-    value: function setForm(form) {
+    key: 'buildPages',
+    value: function buildPages(form) {
       var _this5 = this;
 
       this.pages = [];
       (0, _each2.default)(form.components, function (component) {
         if (component.type === 'panel') {
-          _this5.pages.push(component);
+          // Ensure that this page can be seen.
+          if (_utils2.default.checkCondition(component, _this5.data, _this5.data)) {
+            _this5.pages.push(component);
+          }
         } else if (component.key) {
           _this5.allComponents[component.key] = _this5.addComponent(component, _this5.element, _this5.data);
         }
       });
+      this.buildWizardHeader();
+      this.buildWizardNav();
+    }
+  }, {
+    key: 'setForm',
+    value: function setForm(form) {
+      this.wizard = form;
+      this.buildPages(this.wizard);
       return this.setPage(this.page);
     }
   }, {
     key: 'build',
     value: function build() {
-      this.createWizardHeader();
+      var _this6 = this;
+
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'build', this).call(this);
-      this.createWizardNav();
+      this.formReady.then(function () {
+        _this6.buildWizardHeader();
+        _this6.buildWizardNav();
+      });
     }
   }, {
     key: 'hasButton',
@@ -9282,94 +9302,136 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       return true;
     }
   }, {
-    key: 'createWizardHeader',
-    value: function createWizardHeader() {
-      var _this6 = this;
+    key: 'buildWizardHeader',
+    value: function buildWizardHeader() {
+      var _this7 = this;
 
       var currentPage = this.currentPage();
       currentPage.breadcrumb = currentPage.breadcrumb || 'default';
       if (currentPage.breadcrumb.toLowerCase() === 'none') {
         return;
       }
+
+      if (this.wizardHeader) {
+        this.wizardHeader.innerHTML = '';
+      }
+
       this.wizardHeader = this.ce('wizardHeader', 'ul', {
         class: 'pagination'
       });
 
+      // Add the header to the beginning.
+      if (this.element.parentNode) {
+        this.element.parentNode.insertBefore(this.wizardHeader, this.element);
+      }
+
       var showHistory = currentPage.breadcrumb.toLowerCase() === 'history';
       (0, _each2.default)(this.pages, function (page, i) {
         // See if this page is in our history.
-        if (showHistory && _this6.page !== i && _this6.history.indexOf(i) === -1) {
+        if (showHistory && _this7.page !== i && _this7.history.indexOf(i) === -1) {
           return;
         }
 
-        var pageButton = _this6.ce('pageButton', 'li', {
-          class: i === _this6.page ? 'active' : '',
-          style: i === _this6.page ? '' : 'cursor: pointer;'
+        var pageButton = _this7.ce('pageButton', 'li', {
+          class: i === _this7.page ? 'active' : '',
+          style: i === _this7.page ? '' : 'cursor: pointer;'
         });
 
         // Navigate to the page as they click on it.
-        if (_this6.page !== i) {
-          _this6.addEventListener(pageButton, 'click', function (event) {
+        if (_this7.page !== i) {
+          _this7.addEventListener(pageButton, 'click', function (event) {
             event.preventDefault();
-            _this6.setPage(i);
+            _this7.setPage(i);
           });
         }
 
-        var pageLabel = _this6.ce('pageLabel', 'span');
-        var pageTitle = i === _this6.page || showHistory ? page.title : i + 1;
-        if (!pageTitle) {
-          pageTitle = i + 1;
+        var pageLabel = _this7.ce('pageLabel', 'span');
+        var pageTitle = page.title;
+        if (currentPage.breadcrumb.toLowerCase() === 'condensed') {
+          pageTitle = i === _this7.page || showHistory ? page.title : i + 1;
+          if (!pageTitle) {
+            pageTitle = i + 1;
+          }
         }
-        pageLabel.appendChild(_this6.text(pageTitle));
-        pageButton.appendChild(pageLabel);
-        _this6.wizardHeader.appendChild(pageButton);
-      });
 
-      this.element.appendChild(this.wizardHeader);
+        pageLabel.appendChild(_this7.text(pageTitle));
+        pageButton.appendChild(pageLabel);
+        _this7.wizardHeader.appendChild(pageButton);
+      });
+    }
+  }, {
+    key: 'pageId',
+    value: function pageId(page) {
+      if (page.key) {
+        return page.key;
+      } else if (page.components && page.components.length > 0) {
+        return this.pageId(page.components[0]);
+      } else {
+        return page.title;
+      }
     }
   }, {
     key: 'onSubmissionChange',
     value: function onSubmissionChange(changed) {
+      var _this8 = this;
+
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'onSubmissionChange', this).call(this, changed);
+
+      // Only rebuild if there is a new page.
+      var pageIndex = 0;
+      var rebuild = false;
+      (0, _each2.default)(this.wizard.components, function (component) {
+        if (component.type === 'panel' && _utils2.default.checkCondition(component, _this8.data, _this8.data)) {
+          if (_this8.pages && _this8.pages[pageIndex] && _this8.pageId(_this8.pages[pageIndex]) !== _this8.pageId(component)) {
+            rebuild = true;
+            return false;
+          }
+          pageIndex++;
+        }
+      });
+
+      if (rebuild) {
+        this.setForm(this.wizard);
+      }
 
       // Update Wizard Nav
       var nextPage = this.getNextPage(this.submission.data, this.page);
       if (this._nextPage != nextPage) {
         this.element.removeChild(this.wizardNav);
-        this.createWizardNav();
+        this.buildWizardNav();
         this.emit('updateWizardNav', { oldpage: this._nextPage, newpage: nextPage, submission: this.submission });
         this._nextPage = nextPage;
       }
     }
   }, {
-    key: 'createWizardNav',
-    value: function createWizardNav() {
-      var _this7 = this;
+    key: 'buildWizardNav',
+    value: function buildWizardNav() {
+      var _this9 = this;
 
+      if (this.wizardNav) {
+        this.wizardNav.innerHTML = '';
+      }
       this.wizardNav = this.ce('wizardNav', 'ul', {
         class: 'list-inline'
       });
-
+      this.element.appendChild(this.wizardNav);
       (0, _each2.default)([{ name: 'cancel', method: 'cancel', class: 'btn btn-default' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
-        if (!_this7.hasButton(button.name)) {
+        if (!_this9.hasButton(button.name)) {
           return;
         }
-        var buttonWrapper = _this7.ce('wizardNavButton', 'li');
+        var buttonWrapper = _this9.ce('wizardNavButton', 'li');
         var buttonProp = button.name + 'Button';
-        _this7[buttonProp] = _this7.ce(buttonProp, 'button', {
+        _this9[buttonProp] = _this9.ce(buttonProp, 'button', {
           class: button.class + ' btn-wizard-nav-' + button.name
         });
-        _this7[buttonProp].appendChild(_this7.text(_this7.t(button.name)));
-        _this7.addEventListener(_this7[buttonProp], 'click', function (event) {
+        _this9[buttonProp].appendChild(_this9.text(_this9.t(button.name)));
+        _this9.addEventListener(_this9[buttonProp], 'click', function (event) {
           event.preventDefault();
-          _this7[button.method]();
+          _this9[button.method]();
         });
-        buttonWrapper.appendChild(_this7[buttonProp]);
-        _this7.wizardNav.appendChild(buttonWrapper);
+        buttonWrapper.appendChild(_this9[buttonProp]);
+        _this9.wizardNav.appendChild(buttonWrapper);
       });
-
-      // Add the wizard navigation
-      this.element.appendChild(this.wizardNav);
     }
   }, {
     key: 'getComponents',
@@ -9393,7 +9455,7 @@ FormioWizard.setAppUrl = _formio4.default.setAppUrl;
 module.exports = global.FormioWizard = FormioWizard;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./formio":39,"./formio.form":37,"json-logic-js":67,"lodash/clone":218,"lodash/each":224,"native-promise-only":259}],41:[function(require,module,exports){
+},{"./formio":39,"./formio.form":37,"./utils":47,"json-logic-js":67,"lodash/clone":218,"lodash/each":224,"native-promise-only":259}],41:[function(require,module,exports){
 'use strict';
 
 module.exports = {
