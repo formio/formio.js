@@ -202,6 +202,16 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
+  /**
+   * Ouput this select dropdown as a string value.
+   * @return {*}
+   */
+  asString(value) {
+    value = value || this.getValue();
+    value = (typeof value !== 'object') ? {label: value} : value;
+    return this.itemTemplate(value);
+  }
+
   destroy() {
     if (this.choices) {
       this.choices.destroy();

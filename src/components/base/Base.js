@@ -1100,6 +1100,14 @@ export class BaseComponent {
   }
 
   /**
+   * Prints out the value of this component as a string value.
+   */
+  asString(value) {
+    value = value || this.getValue();
+    return _isArray(value) ? value.join(', ') : value.toString();
+  }
+
+  /**
    * Return if the component is disabled.
    * @return {boolean}
    */

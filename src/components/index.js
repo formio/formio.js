@@ -65,7 +65,7 @@ module.exports = {
   survey: SurveyComponent,
   well: WellComponent,
   gmap: GmapComponent,
-  create: function(component, options, data) {
+  create: function(component, options, data, nobuild) {
     let comp = null;
     if (!component.type) {
       return null;
@@ -76,7 +76,9 @@ module.exports = {
     else {
       comp = new UnknownComponent(component, options, data);
     }
-    comp.build();
+    if (!nobuild) {
+      comp.build();
+    }
     return comp;
   }
 };

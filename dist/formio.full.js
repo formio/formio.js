@@ -2552,6 +2552,17 @@ var BaseComponent = function () {
     }
 
     /**
+     * Prints out the value of this component as a string value.
+     */
+
+  }, {
+    key: 'asString',
+    value: function asString(value) {
+      value = value || this.getValue();
+      return (0, _isArray3.default)(value) ? value.join(', ') : value.toString();
+    }
+
+    /**
      * Return if the component is disabled.
      * @return {boolean}
      */
@@ -5239,7 +5250,7 @@ module.exports = {
   survey: _Survey.SurveyComponent,
   well: _Well.WellComponent,
   gmap: _Gmap.GmapComponent,
-  create: function create(component, options, data) {
+  create: function create(component, options, data, nobuild) {
     var comp = null;
     if (!component.type) {
       return null;
@@ -5248,7 +5259,9 @@ module.exports = {
     } else {
       comp = new _Unknown.UnknownComponent(component, options, data);
     }
-    comp.build();
+    if (!nobuild) {
+      comp.build();
+    }
     return comp;
   }
 };
@@ -5764,12 +5777,18 @@ var ResourceComponent = exports.ResourceComponent = function (_SelectComponent) 
 },{"../select/Select":28}],28:[function(require,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.SelectComponent = undefined;
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -5850,12 +5869,12 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof2(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
@@ -6059,6 +6078,19 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (!noUpdate) {
         this.updateValue(noValidate);
       }
+    }
+
+    /**
+     * Ouput this select dropdown as a string value.
+     * @return {*}
+     */
+
+  }, {
+    key: 'asString',
+    value: function asString(value) {
+      value = value || this.getValue();
+      value = (typeof value === 'undefined' ? 'undefined' : _typeof(value)) !== 'object' ? { label: value } : value;
+      return this.itemTemplate(value);
     }
   }, {
     key: 'destroy',
