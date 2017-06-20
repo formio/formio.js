@@ -190,7 +190,7 @@ export class SelectComponent extends BaseComponent {
 
         // If it is not found, then add it.
         if (!foundChoice) {
-          this.choices._addChoice(false, false, value, value);
+          this.choices._addChoice(false, false, this.itemValue(value), this.itemTemplate(value));
         }
       }
 
