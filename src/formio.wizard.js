@@ -2,12 +2,14 @@
 import Promise from "native-promise-only";
 import FormioForm from './formio.form';
 import Formio from './formio';
+import FormioUtils from './utils';
 import each from 'lodash/each';
 import clone from 'lodash/clone';
 import jsonLogic from 'json-logic-js';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
+    this.wizard = null;
     this.pages = [];
     this.page = 0;
     this.history = [];
@@ -134,23 +136,35 @@ export class FormioWizard extends FormioForm {
     return this.getPage(this.page);
   }
 
-  setForm(form) {
+  buildPages(form) {
     this.pages = [];
     each(form.components, (component) => {
       if (component.type === 'panel') {
-        this.pages.push(component);
+        // Ensure that this page can be seen.
+        if (FormioUtils.checkCondition(component, this.data, this.data)) {
+          this.pages.push(component);
+        }
       }
       else if (component.key) {
         this.allComponents[component.key] = this.addComponent(component, this.element, this.data);
       }
     });
+    this.buildWizardHeader();
+    this.buildWizardNav();
+  }
+
+  setForm(form) {
+    this.wizard = form;
+    this.buildPages(this.wizard);
     return this.setPage(this.page);
   }
 
   build() {
-    this.createWizardHeader();
     super.build();
-    this.createWizardNav();
+    this.formReady.then(() => {
+      this.buildWizardHeader();
+      this.buildWizardNav();
+    });
   }
 
   hasButton(name) {
@@ -167,15 +181,25 @@ export class FormioWizard extends FormioForm {
     return true;
   }
 
-  createWizardHeader() {
+  buildWizardHeader() {
     let currentPage = this.currentPage();
     currentPage.breadcrumb = currentPage.breadcrumb || 'default';
     if (currentPage.breadcrumb.toLowerCase() === 'none') {
       return;
     }
+
+    if (this.wizardHeader) {
+      this.wizardHeader.innerHTML = '';
+    }
+
     this.wizardHeader = this.ce('wizardHeader', 'ul', {
       class: 'pagination'
     });
+
+    // Add the header to the beginning.
+    if (this.element.parentNode) {
+      this.element.parentNode.insertBefore(this.wizardHeader, this.element);
+    }
 
     let showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
     each(this.pages, (page, i) => {
@@ -198,36 +222,80 @@ export class FormioWizard extends FormioForm {
       }
 
       let pageLabel = this.ce('pageLabel', 'span');
-      let pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
-      if (!pageTitle) {
-        pageTitle = (i + 1);
+      let pageTitle = page.title;
+      if (currentPage.breadcrumb.toLowerCase() === 'condensed') {
+        pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
+        if (!pageTitle) {
+          pageTitle = (i + 1);
+        }
       }
+
       pageLabel.appendChild(this.text(pageTitle));
       pageButton.appendChild(pageLabel);
       this.wizardHeader.appendChild(pageButton);
     });
+  }
 
-    this.element.appendChild(this.wizardHeader);
+  pageId(page) {
+    if (page.key) {
+      return page.key;
+    }
+    else if (
+      page.components &&
+      page.components.length > 0
+    ) {
+      return this.pageId(page.components[0]);
+    }
+    else {
+      return page.title;
+    }
   }
 
   onSubmissionChange(changed) {
     super.onSubmissionChange(changed);
 
+    // Only rebuild if there is a new page.
+    let pageIndex = 0;
+    let rebuild = false;
+    each(this.wizard.components, (component) => {
+      if (
+        (component.type === 'panel') &&
+        (FormioUtils.checkCondition(component, this.data, this.data))
+      ) {
+        if (
+          this.pages &&
+          this.pages[pageIndex] &&
+          this.pageId(this.pages[pageIndex]) !== this.pageId(component)
+        ) {
+          rebuild = true;
+          return false;
+        }
+        pageIndex++;
+      }
+    });
+
+    if (rebuild) {
+      this.setForm(this.wizard);
+    }
+
     // Update Wizard Nav
     let nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage != nextPage) {
       this.element.removeChild(this.wizardNav);
-      this.createWizardNav();
+      this.buildWizardNav();
       this.emit('updateWizardNav', {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
       this._nextPage = nextPage;
     }
   }
 
-  createWizardNav() {
+  buildWizardNav() {
+    if (this.wizardNav) {
+      this.wizardNav.innerHTML = '';
+    }
     this.wizardNav = this.ce('wizardNav', 'ul', {
       class: 'list-inline'
     });
-
+    this.element.appendChild(this.wizardNav);
     each([
       {name: 'cancel',    method: 'cancel',   class: 'btn btn-default'},
       {name: 'previous',  method: 'prevPage', class: 'btn btn-primary'},
@@ -250,9 +318,6 @@ export class FormioWizard extends FormioForm {
       buttonWrapper.appendChild(this[buttonProp]);
       this.wizardNav.appendChild(buttonWrapper);
     });
-
-    // Add the wizard navigation
-    this.element.appendChild(this.wizardNav);
   }
 
   getComponents() {
