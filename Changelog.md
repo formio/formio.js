@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.9.9
+### Added
+ - Support for conditional wizards.
+
 ## 2.9.8
 ### Added
  - A way to print out the text of a component with a value.
