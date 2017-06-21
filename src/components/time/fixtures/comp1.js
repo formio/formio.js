@@ -11,6 +11,7 @@ export const component = {
   "persistent": true,
   "unique": false,
   "protected": false,
+  "format": "HH:mm",
   "defaultValue": "",
   "suffix": "",
   "prefix": "",
