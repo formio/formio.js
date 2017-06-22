@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.9.10
+### Changed
+ - Upgraded jsonLogic library to 1.1.2.
+ - Removed the unnecessary embed method in formio.form.js. Use formio.full.js to bring it back in. 
+
 ### Fixed
  - Issue with the multi-page forms where the conditions would not apply properly.
 

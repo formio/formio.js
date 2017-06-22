@@ -129,6 +129,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/time</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/time/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/unknown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -315,13 +318,6 @@ export class FormioForm extends FormioComponents {
        */
       this.submissionReadyReject = reject;
     });
-
-    /**
-     * Triggers a new submission change after a certain debounce interval.
-     *
-     * @type {function} - Call then when you wish to trigger a submission change.
-     */
-    this.triggerSubmissionChange = _debounce(this.onSubmissionChange.bind(this), 10);
 
     /**
      * Promise to trigger when the element for this form is established.
@@ -511,6 +507,7 @@ export class FormioForm extends FormioComponents {
 
     // Set the form object.
     this._form = form;
+    this.emit(&apos;formLoad&apos;, form);
 
     // Create the form.
     return this.createForm(form);
@@ -610,10 +607,8 @@ export class FormioForm extends FormioComponents {
     }
     return this.onFormBuild = this.render().then(() =&gt; {
       this.formReadyResolve();
-      if (!this.onSubmission) {
-        this.submissionReadyResolve();
-      }
       this.onFormBuild = null;
+      this.setSubmission(this._submission);
     },
       (err) =&gt; this.formReadyReject(err)
     ).catch(
@@ -631,7 +626,7 @@ export class FormioForm extends FormioComponents {
       return this.localize().then(() =&gt; {
         this.build();
         this.on(&apos;resetForm&apos;, () =&gt; this.reset(), true);
-        this.on(&apos;componentChange&apos;, (changed) =&gt; this.triggerSubmissionChange(changed), true);
+        this.on(&apos;componentChange&apos;, (changed) =&gt; this.onSubmissionChange(changed), true);
         this.on(&apos;refreshData&apos;, () =&gt; this.updateValue());
         this.emit(&apos;render&apos;);
       });
@@ -754,7 +749,8 @@ export class FormioForm extends FormioComponents {
    * @param {boolean} changed.validate - If the change needs to be validated.
    */
   onSubmissionChange(changed) {
-    let value = _clone(this.submission);
+    this._submission = this.submission;
+    let value = _clone(this._submission);
     value.changed = changed;
     this.checkData(value.data, !changed.validate);
     this.emit(&apos;change&apos;, value);

@@ -7983,26 +7983,6 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 FormioForm.setBaseUrl = _formio2.default.setBaseUrl;
 FormioForm.setApiUrl = _formio2.default.setApiUrl;
 FormioForm.setAppUrl = _formio2.default.setAppUrl;
-
-/**
- * Embed this form within the current page.
- * @param embed
- */
-FormioForm.embed = function (embed) {
-  if (!embed || !embed.src) {
-    return null;
-  }
-  var id = embed.id || 'formio-' + Math.random().toString(36).substring(7);
-  var className = embed.class || 'formio-form-wrapper';
-  var code = embed.styles ? '<link rel="stylesheet" href="' + embed.styles + '">' : '';
-  code += '<div id="' + id + '" class="' + className + '"></div>';
-  document.write(code);
-  var formElement = document.getElementById(id);
-  var form = new FormioForm(formElement);
-  form.src = embed.src;
-  return form;
-};
-
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -15473,6 +15453,11 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     };
   }
 
+  /**
+   * Return an array that contains no duplicates (original not modified)
+   * @param  {array} array   Original reference array
+   * @return {array}         New array with no duplicates
+   */
   function arrayUnique(array) {
     var a = [];
     for (var i=0, l=array.length; i<l; i++) {
@@ -15545,7 +15530,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
         return a - b;
       }
     },
-    "/": function(a, b) { return a / b; },
+    "/": function(a, b) {
+      return a / b;
+    },
     "min": function() {
       return Math.min.apply(this, arguments);
     },
@@ -15562,6 +15549,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
       var sub_props = String(a).split(".");
       var data = this;
       for(var i = 0; i < sub_props.length; i++) {
+        if(data === null) {
+          return not_found;
+        }
         // Descending into data
         data = data[sub_props[i]];
         if(data === undefined) {
@@ -15629,12 +15619,12 @@ http://ricostacruz.com/cheatsheets/umdjs.html
   };
 
 
-  jsonLogic.get_operator = function(logic){
+  jsonLogic.get_operator = function(logic) {
     return Object.keys(logic)[0];
   };
 
-  jsonLogic.get_values = function(logic){
-    return logic[ jsonLogic.get_operator(logic) ];
+  jsonLogic.get_values = function(logic) {
+    return logic[jsonLogic.get_operator(logic)];
   };
 
   jsonLogic.apply = function(logic, data) {
@@ -15761,56 +15751,64 @@ http://ricostacruz.com/cheatsheets/umdjs.html
   };
 
 
-  jsonLogic.rule_like = function(rule, pattern){
-		//console.log("Is ". JSON.stringify(rule) . " like " . JSON.stringify(pattern) . "?");
-	  if(pattern === rule){ return true; } //TODO : Deep object equivalency?
-	  if(pattern === "@"){ return true; } //Wildcard!
-	  if(pattern === "number"){ return (typeof rule === 'number'); }
-	  if(pattern === "string"){ return (typeof rule === 'string'); }
-	  if(pattern === "array"){
-      //!logic test might be superfluous in JavaScript
+  jsonLogic.rule_like = function(rule, pattern) {
+    // console.log("Is ". JSON.stringify(rule) . " like " . JSON.stringify(pattern) . "?");
+    if(pattern === rule) {
+      return true;
+    } // TODO : Deep object equivalency?
+    if(pattern === "@") {
+      return true;
+    } // Wildcard!
+    if(pattern === "number") {
+      return (typeof rule === "number");
+    }
+    if(pattern === "string") {
+      return (typeof rule === "string");
+    }
+    if(pattern === "array") {
+      // !logic test might be superfluous in JavaScript
       return Array.isArray(rule) && ! jsonLogic.is_logic(rule);
     }
 
-	  if(jsonLogic.is_logic(pattern)){
-	    if(jsonLogic.is_logic(rule)){
-	      var pattern_op = jsonLogic.get_operator(pattern);
+    if(jsonLogic.is_logic(pattern)) {
+      if(jsonLogic.is_logic(rule)) {
+        var pattern_op = jsonLogic.get_operator(pattern);
         var rule_op = jsonLogic.get_operator(rule);
 
-	      if(pattern_op === "@" || pattern_op === rule_op){
-					//echo "\nOperators match, go deeper\n";
-	        return jsonLogic.rule_like(
-						jsonLogic.get_values(rule, false),
-						jsonLogic.get_values(pattern, false)
-					);
-	      }
+        if(pattern_op === "@" || pattern_op === rule_op) {
+        // echo "\nOperators match, go deeper\n";
+          return jsonLogic.rule_like(
+            jsonLogic.get_values(rule, false),
+            jsonLogic.get_values(pattern, false)
+          );
+        }
+      }
+      return false; // pattern is logic, rule isn't, can't be eq
+    }
 
-	    }
-	    return false; //pattern is logic, rule isn't, can't be eq
-	  }
+    if(Array.isArray(pattern)) {
+      if(Array.isArray(rule)) {
+        if(pattern.length !== rule.length) {
+          return false;
+        }
+        /*
+          Note, array order MATTERS, because we're using this array test logic to consider arguments, where order can matter. (e.g., + is commutative, but '-' or 'if' or 'var' are NOT)
+        */
+        for(var i = 0; i < pattern.length; i += 1) {
+          // If any fail, we fail
+          if( ! jsonLogic.rule_like(rule[i], pattern[i])) {
+            return false;
+          }
+        }
+        return true; // If they *all* passed, we pass
+      }else{
+        return false; // Pattern is array, rule isn't
+      }
+    }
 
-	  if(Array.isArray(pattern)){
-	    if(Array.isArray(rule)){
-	      if(pattern.length !== rule.length){ return false; }
-				/*
-					Note, array order MATTERS, because we're using this array test logic to consider arguments, where order can matter. (e.g., + is commutative, but '-' or 'if' or 'var' are NOT)
-				*/
-	      for(var i = 0 ; i < pattern.length ; i += 1){
-	        //If any fail, we fail
-	        if( ! jsonLogic.rule_like(rule[i], pattern[i])){ return false; }
-	      }
-	      return true; //If they *all* passed, we pass
-	    }else{
-	      return false; //Pattern is array, rule isn't
-	    }
-
-	  }
-
-		//Not logic, not array, not a === match for rule.
-		return false;
-	};
-
-
+    // Not logic, not array, not a === match for rule.
+    return false;
+  };
 
   return jsonLogic;
 }));

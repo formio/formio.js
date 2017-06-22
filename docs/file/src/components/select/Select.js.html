@@ -129,6 +129,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/time</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/time/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/unknown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -330,7 +333,7 @@ export class SelectComponent extends BaseComponent {
 
         // If it is not found, then add it.
         if (!foundChoice) {
-          this.choices._addChoice(false, false, value, value);
+          this.choices._addChoice(false, false, this.itemValue(value), this.itemTemplate(value));
         }
       }
 
@@ -340,6 +343,16 @@ export class SelectComponent extends BaseComponent {
     if (!noUpdate) {
       this.updateValue(noValidate);
     }
+  }
+
+  /**
+   * Ouput this select dropdown as a string value.
+   * @return {*}
+   */
+  asString(value) {
+    value = value || this.getValue();
+    value = (typeof value !== &apos;object&apos;) ? {label: value} : value;
+    return this.itemTemplate(value);
   }
 
   destroy() {

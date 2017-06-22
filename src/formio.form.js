@@ -700,24 +700,4 @@ export class FormioForm extends FormioComponents {
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;
 FormioForm.setAppUrl = Formio.setAppUrl;
-
-/**
- * Embed this form within the current page.
- * @param embed
- */
-FormioForm.embed = function(embed) {
-  if (!embed || !embed.src) {
-    return null;
-  }
-  let id = embed.id || 'formio-' + Math.random().toString(36).substring(7);
-  let className = embed.class || 'formio-form-wrapper';
-  let code = embed.styles ? '<link rel="stylesheet" href="' + embed.styles + '">' : '';
-  code += '<div id="' + id + '" class="' + className + '"></div>';
-  document.write(code);
-  let formElement = document.getElementById(id);
-  let form = new FormioForm(formElement);
-  form.src = embed.src;
-  return form;
-};
-
 module.exports = global.FormioForm = FormioForm;
