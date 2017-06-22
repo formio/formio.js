@@ -11,6 +11,7 @@ import { FormComponent } from './form/Form';
 import { TextFieldComponent } from './textfield/TextField';
 import { PhoneNumberComponent } from './phonenumber/PhoneNumber';
 import { EmailComponent } from './email/Email';
+import { TimeComponent } from './time/Time';
 import { CheckBoxComponent } from './checkbox/Checkbox';
 import { CurrencyComponent } from './currency/Currency';
 import { FieldsetComponent } from './fieldset/Fieldset';
@@ -45,6 +46,7 @@ module.exports = {
   textfield: TextFieldComponent,
   phoneNumber: PhoneNumberComponent,
   email: EmailComponent,
+  time: TimeComponent,
   checkbox: CheckBoxComponent,
   currency: CurrencyComponent,
   fieldset: FieldsetComponent,
