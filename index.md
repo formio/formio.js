@@ -37,5 +37,10 @@ section: home
 
 ### Result
 <div class="well">
-<script src="{{ site.baseUrl }}/dist/formio.embed.min.js?src=https://examples.form.io/example"></script>
+<div id="formio"></formio>
+<script type="text/javascript">
+  window.onload = function() {
+    Formio.createForm(document.getElementById('formio'), 'https://mifqnbymjreyftv.form.io/location');
+  };
+</script>
 </div>

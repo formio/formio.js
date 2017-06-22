@@ -7264,13 +7264,6 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     });
 
     /**
-     * Triggers a new submission change after a certain debounce interval.
-     *
-     * @type {function} - Call then when you wish to trigger a submission change.
-     */
-    _this.triggerSubmissionChange = (0, _debounce3.default)(_this.onSubmissionChange.bind(_this), 10);
-
-    /**
      * Promise to trigger when the element for this form is established.
      *
      * @type {Promise}
@@ -7448,10 +7441,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
       return this.onFormBuild = this.render().then(function () {
         _this5.formReadyResolve();
-        if (!_this5.onSubmission) {
-          _this5.submissionReadyResolve();
-        }
         _this5.onFormBuild = null;
+        _this5.setSubmission(_this5._submission);
       }, function (err) {
         return _this5.formReadyReject(err);
       }).catch(function (err) {
@@ -7477,7 +7468,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
             return _this6.reset();
           }, true);
           _this6.on('componentChange', function (changed) {
-            return _this6.triggerSubmissionChange(changed);
+            return _this6.onSubmissionChange(changed);
           }, true);
           _this6.on('refreshData', function () {
             return _this6.updateValue();
@@ -7624,7 +7615,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: "onSubmissionChange",
     value: function onSubmissionChange(changed) {
-      var value = (0, _clone3.default)(this.submission);
+      this._submission = this.submission;
+      var value = (0, _clone3.default)(this._submission);
       value.changed = changed;
       this.checkData(value.data, !changed.validate);
       this.emit('change', value);
