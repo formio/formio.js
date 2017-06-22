@@ -249,12 +249,11 @@ export class FormioForm extends FormioComponents {
       return;
     }
     this._src = value;
-    this.formio = new Formio(value);
+    this.formio = this.options.formio = new Formio(value);
 
     if (this.type === 'form') {
       // Set the options source so this can be passed to other components.
       this.options.src = value;
-      this.options.formio = this.formio;
     }
 
     this.formio.loadForm().then(
@@ -271,6 +270,28 @@ export class FormioForm extends FormioComponents {
         (err) => this.submissionReadyReject(err)
       );
     }
+  }
+
+  /**
+   * Get the embed source of the form.
+   *
+   * @returns {string}
+   */
+  get url() {
+    return this._src;
+  }
+
+  /**
+   * Set the form source but don't initialize the form and submission from the url.
+   *
+   * @param {string} value - The value of the form embed url.
+   */
+  set url(value) {
+    if (!value || typeof value !== 'string') {
+      return;
+    }
+    this._src = value;
+    this.formio = this.options.formio = new Formio(value);
   }
 
   /**

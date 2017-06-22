@@ -13,30 +13,84 @@ export class FileComponent extends BaseComponent {
     };
   }
 
+  getValue() {
+    return this.data[this.component.key];
+  }
+
+  setValue(value) {
+    return this.data[this.component.key] = value;
+  }
+
   build() {
+    // Set default to empty array.
+    this.setValue([]);
+
     this.createElement();
     this.createLabel(this.element);
     this.errorContainer = this.element;
     this.createErrorElement();
-    this.buildList(this.element);
+    this.listContainer = this.buildList();
+    this.element.appendChild(this.listContainer);
     this.buildUpload(this.element);
     this.addWarnings(this.element);
     this.buildUploadStatusList(this.element);
   }
 
-  buildList(container) {
+  refreshList() {
+    const newList = this.buildList();
+    this.element.replaceChild(newList, this.listContainer);
+    this.listContainer = newList;
+  }
+
+  buildList() {
     if (this.component.image) {
-      container.appendChild(this.buildImageList());
+      return this.buildImageList();
     }
     else {
-      container.appendChild(this.buildFileList());
+      return this.buildFileList();
     }
   }
 
   buildFileList() {
-    let list = this.ce('filelist', 'div');
-    list.innerHTML = 'File List';
-    return list;
+    console.log(this.data[this.component.key]);
+    return this.ce('filelist', 'ul', {class: 'list-group list-group-striped'}, [
+      this.ce('fileheader', 'li', {class: 'list-group-item list-group-header hidden-xs hidden-sm'},
+        this.ce('fileheaderrow', 'div', {class: 'row'},
+          [
+            this.ce('deletecol', 'div', {class: 'col-md-1'}),
+            this.ce('filecol', 'div', {class: 'col-md-9'},
+              this.ce('bold', 'strong', {}, 'File Name')
+            ),
+            this.ce('sizecol', 'div', {class: 'col-md-2'},
+              this.ce('bold', 'strong', {}, 'Size')
+            )
+          ]
+        )
+      ),
+      this.data[this.component.key].map((fileInfo, index) => this.createFileListItem(fileInfo, index))
+    ]);
+  }
+
+  createFileListItem(fileInfo, index) {
+    return this.ce('fileinforow', 'li', {class: 'list-group-item'},
+      this.ce('fileheaderrow', 'div', {class: 'row'},
+        [
+          this.ce('deletecol', 'div', {class: 'col-md-1'},
+            this.ce('deleteSpan', 'span', {class: 'glyphicon glyphicon-remove'}, null, {
+              click: event => {
+                event.preventDefault();
+                this.data[this.component.key].splice(index, 1);
+                this.refreshList();
+                this.triggerChange();
+
+              }
+            })
+          ),
+          this.ce('filecol', 'div', {class: 'col-md-9'}, 'File Name'),
+          this.ce('sizecol', 'div', {class: 'col-md-2'}, this.fileSize(fileInfo.size))
+        ]
+      )
+    )
   }
 
   buildImageList() {
@@ -46,37 +100,48 @@ export class FileComponent extends BaseComponent {
   }
 
   buildUpload(container) {
-    let wrapper = this.ce('uploadwrapper', 'div');
-    let upload = this.ce('upload', 'div', {
-      class: 'fileSelector'
-    });
-    upload.ondragover = function () { this.className = 'fileSelector hover'; return false; };
-    upload.ondragend = function () { this.className = 'fileSelector'; return false; };
-    upload.ondrop = event => {
-      upload.className = 'fileSelector';
-      event.preventDefault();
-      this.upload(event.dataTransfer.files);
-    }
-    upload.appendChild(this.ce('icon', 'i', {class: 'glyphicon glyphicon-cloud-upload'}));
-    upload.appendChild(this.text(' Drop files to attach, or '));
-    let browse = this.ce('browse', 'a');
-    browse.innerHTML = 'browse';
-    this.addEventListener(browse, 'click', event => {
-      event.preventDefault();
-      // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
-      // a click event on it.
-      let input = this.ce('fileinput', 'input', {type: 'file'});
-      // Trigger a click event on the input.
-      if (typeof input.trigger === 'function') {
-        input.trigger('click');
-      }
-      else {
-        input.click();
-      }
-      input.addEventListener('change', () => {this.upload(input.files)});
-    });
-    upload.appendChild(browse);
-    wrapper.appendChild(upload);
+    const element = this;
+    let upload, input;
+    let wrapper = this.ce('uploadwrapper', 'div', {},
+      upload = this.ce('upload', 'div', {class: 'fileSelector'}, [
+          this.ce('icon', 'i', {class: 'glyphicon glyphicon-cloud-upload'}),
+          this.text(' Drop files to attach, or '),
+          this.ce('browse', 'a', false, 'browse', {
+            click: event => {
+              event.preventDefault();
+              // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+              // a click event on it.
+              let input = this.ce('fileinput', 'input', {type: 'file'});
+              // Trigger a click event on the input.
+              if (typeof input.trigger === 'function') {
+                input.trigger('click');
+              }
+              else {
+                input.click();
+              }
+              input.addEventListener('change', () => {this.upload(input.files)});
+            }
+          })
+        ],
+        {
+          dragover: function (event) {
+            this.className = 'fileSelector fileDragOver';
+            event.preventDefault();
+          },
+          dragleave: function (event) {
+            this.className = 'fileSelector';
+            event.preventDefault();
+          },
+          drop: function(event) {
+            this.className = 'fileSelector';
+            event.preventDefault();
+            element.upload(event.dataTransfer.files);
+            return false;
+          }
+        }
+      )
+    );
+    this.uploadContainer = wrapper;
     container.appendChild(wrapper);
   }
 
@@ -119,33 +184,37 @@ export class FileComponent extends BaseComponent {
   };
 
   createUploadStatus(fileUpload) {
-    const container = this.ce('uploadstatus', 'div', {class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '')});
-    const row1 = this.ce('filerow', 'div', {class: 'row'});
-    container.appendChild(row1);
-    const fileCell = this.ce('filecell', 'div', {class: 'fileName control-label col-sm-10'});
-    row1.appendChild(fileCell);
-    fileCell.appendChild(this.text(fileUpload.name));
-    const remove = this.ce('removefile', 'span', {class: 'glyphicon glyphicon-remove'});
-    remove.addEventListener('click', () => {this.uploadStatusList.removeChild(container)});
-    fileCell.appendChild(remove);
-    const sizeCell = this.ce('sizecell', 'div', {class: 'fileSize control-label col-sm-2 text-right'});
-    row1.appendChild(sizeCell);
-    sizeCell.appendChild(this.text(this.fileSize(fileUpload.size)));
-    const row2 = this.ce('statusrow', 'div', {class: 'row'});
-    container.appendChild(row2);
-    const col = this.ce('progresscell', 'div', {class: 'col-sm-12'});
-    row2.appendChild(col);
-    if (fileUpload.status === 'progress') {
-      const progressCell = this.ce('progresscell', 'div', {class: 'progess'});
-      col.appendChild(progressCell);
-    }
-    else {
-      const messageCell = this.ce('messagecell', 'div', {class: 'bg-' + fileUpload.status});
-      messageCell.appendChild(this.text(fileUpload.message));
-      col.appendChild(messageCell);
-    }
-
-    return container;
+    let container;
+    return container = this.ce('uploadstatus', 'div', {class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '')}, [
+      this.ce('filerow', 'div', {class: 'row'}, [
+          this.ce('filecell', 'div', {class: 'fileName control-label col-sm-10'}, [
+            fileUpload.name,
+            this.ce('removefile', 'span', {class: 'glyphicon glyphicon-remove'}, undefined, {
+              click: () => {this.uploadStatusList.removeChild(container)}
+            })
+          ]),
+          this.ce('sizecell', 'div', {class: 'fileSize control-label col-sm-2 text-right'}, this.fileSize(fileUpload.size))
+        ]),
+      this.ce('statusrow', 'div', {class: 'row'}, [
+        this.ce('progresscell', 'div', {class: 'col-sm-12'}, [
+          (fileUpload.status === 'progress' ?
+            this.ce('progresscell', 'div', {class: 'progress'},
+              this.ce('progressbar', 'div', {
+                class: 'progress-bar',
+                role: 'progressbar',
+                'aria-valuenow': fileUpload.progress,
+                'ariah-valuemin': 0,
+                'ariah-valuemax': 100,
+                style: 'width:' + fileUpload.progress + '%'
+              },
+                this.ce('srprogress', 'span', {class: 'sr-only'}, fileUpload.progress + '% Complete')
+              )
+            ) :
+            this.ce('messagecell', 'div', {class: 'bg-' + fileUpload.status}, fileUpload.message)
+          )
+        ])
+      ])
+    ]);
   }
 
   upload(files) {
@@ -162,8 +231,8 @@ export class FileComponent extends BaseComponent {
         };
         const dir = this.interpolate(this.component.dir || '', {data: this.data, row: this.row});
         let formio = null;
-        if (this.formio) {
-          formio = this.formio;
+        if (this.options.formio) {
+          formio = this.options.formio;
         }
         else {
           fileUpload.status = 'error';
@@ -184,18 +253,13 @@ export class FileComponent extends BaseComponent {
           }, this.component.url)
           .then(fileInfo => {
             this.uploadStatusList.removeChild(uploadStatus);
-            // Ensure that the file component is an array.
-            //if (
-            //  !this.data[this.component.key] ||
-            //  !(this.data[this.component.key] instanceof Array)
-            //) {
-            //  this.data[this.component.key] = [];
-            //}
-            //this.data[this.component.key].push(fileInfo);
+            this.data[this.component.key].push(fileInfo);
+            this.refreshList();
+            this.triggerChange();
           })
           .catch(response => {
             fileUpload.status = 'error';
-            fileUpload.message = response.data;
+            fileUpload.message = response;
             delete fileUpload.progress;
             const originalStatus = uploadStatus;
             uploadStatus = this.createUploadStatus(fileUpload);

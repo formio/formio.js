@@ -708,7 +708,7 @@ export class BaseComponent {
     if ('addEventListener' in obj){
       obj.addEventListener(evt, func, false);
     } else if ('attachEvent' in obj) {
-      obj.attachEvent('on'+evt, func);
+      obj.attachEvent('on' + evt, func);
     }
   }
 
@@ -735,10 +735,12 @@ export class BaseComponent {
    * @param {string} name - The name of the element to create, for templating purposes.
    * @param {string} type - The type of element to create
    * @param {Object} attr - The element attributes to add to the created element.
+   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
+   * @param {Object} events - A key value list of events to attach to the element.
    *
    * @return {HTMLElement} - The created element.
    */
-  ce(name, type, attr) {
+  ce(name, type, attr, children = null, events = {}) {
     // Allow for template overrides.
     let element = document.createElement(type);
     let compType = this.component.type || this.type;
@@ -765,6 +767,29 @@ export class BaseComponent {
     if (attr) {
       this.attr(element, attr);
     }
+
+    // Attach events.
+    Object.keys(events).forEach(event => {
+      this.addEventListener(element, event, events[event]);
+    });
+
+    // Append different types of children.
+    const appendChild = child => {
+      if (Array.isArray(child)) {
+        child.forEach(oneChild => {
+          appendChild(oneChild);
+        });
+      }
+      else if (child instanceof HTMLElement || child instanceof Text) {
+        element.appendChild(child);
+      }
+      else if (child) {
+        element.appendChild(this.text(child.toString()));
+      }
+    };
+
+    appendChild(children);
+
     return element;
   }
 
