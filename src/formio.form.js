@@ -177,13 +177,6 @@ export class FormioForm extends FormioComponents {
     });
 
     /**
-     * Triggers a new submission change after a certain debounce interval.
-     *
-     * @type {function} - Call then when you wish to trigger a submission change.
-     */
-    this.triggerSubmissionChange = _debounce(this.onSubmissionChange.bind(this), 10);
-
-    /**
      * Promise to trigger when the element for this form is established.
      *
      * @type {Promise}
@@ -471,10 +464,8 @@ export class FormioForm extends FormioComponents {
     }
     return this.onFormBuild = this.render().then(() => {
       this.formReadyResolve();
-      if (!this.onSubmission) {
-        this.submissionReadyResolve();
-      }
       this.onFormBuild = null;
+      this.setSubmission(this._submission);
     },
       (err) => this.formReadyReject(err)
     ).catch(
@@ -492,7 +483,7 @@ export class FormioForm extends FormioComponents {
       return this.localize().then(() => {
         this.build();
         this.on('resetForm', () => this.reset(), true);
-        this.on('componentChange', (changed) => this.triggerSubmissionChange(changed), true);
+        this.on('componentChange', (changed) => this.onSubmissionChange(changed), true);
         this.on('refreshData', () => this.updateValue());
         this.emit('render');
       });
@@ -615,7 +606,8 @@ export class FormioForm extends FormioComponents {
    * @param {boolean} changed.validate - If the change needs to be validated.
    */
   onSubmissionChange(changed) {
-    let value = _clone(this.submission);
+    this._submission = this.submission;
+    let value = _clone(this._submission);
     value.changed = changed;
     this.checkData(value.data, !changed.validate);
     this.emit('change', value);
@@ -638,6 +630,7 @@ export class FormioForm extends FormioComponents {
    */
   reset() {
     // Reset the submission data.
+    this.data = this.value = {};
     this.setSubmission({data: {}});
   }
 
@@ -708,24 +701,4 @@ export class FormioForm extends FormioComponents {
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;
 FormioForm.setAppUrl = Formio.setAppUrl;
-
-/**
- * Embed this form within the current page.
- * @param embed
- */
-FormioForm.embed = function(embed) {
-  if (!embed || !embed.src) {
-    return null;
-  }
-  let id = embed.id || 'formio-' + Math.random().toString(36).substring(7);
-  let className = embed.class || 'formio-form-wrapper';
-  let code = embed.styles ? '<link rel="stylesheet" href="' + embed.styles + '">' : '';
-  code += '<div id="' + id + '" class="' + className + '"></div>';
-  document.write(code);
-  let formElement = document.getElementById(id);
-  let form = new FormioForm(formElement);
-  form.src = embed.src;
-  return form;
-};
-
 module.exports = global.FormioForm = FormioForm;

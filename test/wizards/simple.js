@@ -297,9 +297,7 @@ module.exports = {
           // Check start page
           assert.deepEqual(form.data, {
             a: '',
-            b: '',
-            c: '',
-            d: ''
+            b: ''
           });
           assert.equal(form.page, 0);
           Harness.testElements(form, 'input[type="text"]', 2);
@@ -406,7 +404,10 @@ module.exports = {
               a: 'a',
               b: 'b',
               c: 'c',
-              d: ''
+              d: '',
+              e: '',
+              f: '',
+              g: ''
             });
           });
         })

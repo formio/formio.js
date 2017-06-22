@@ -129,6 +129,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/time</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/time/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/unknown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -151,6 +154,7 @@ import { FormComponent } from &apos;./form/Form&apos;;
 import { TextFieldComponent } from &apos;./textfield/TextField&apos;;
 import { PhoneNumberComponent } from &apos;./phonenumber/PhoneNumber&apos;;
 import { EmailComponent } from &apos;./email/Email&apos;;
+import { TimeComponent } from &apos;./time/Time&apos;;
 import { CheckBoxComponent } from &apos;./checkbox/Checkbox&apos;;
 import { CurrencyComponent } from &apos;./currency/Currency&apos;;
 import { FieldsetComponent } from &apos;./fieldset/Fieldset&apos;;
@@ -185,6 +189,7 @@ module.exports = {
   textfield: TextFieldComponent,
   phoneNumber: PhoneNumberComponent,
   email: EmailComponent,
+  time: TimeComponent,
   checkbox: CheckBoxComponent,
   currency: CurrencyComponent,
   fieldset: FieldsetComponent,
@@ -205,7 +210,7 @@ module.exports = {
   survey: SurveyComponent,
   well: WellComponent,
   gmap: GmapComponent,
-  create: function(component, options, data) {
+  create: function(component, options, data, nobuild) {
     let comp = null;
     if (!component.type) {
       return null;
@@ -216,7 +221,9 @@ module.exports = {
     else {
       comp = new UnknownComponent(component, options, data);
     }
-    comp.build();
+    if (!nobuild) {
+      comp.build();
+    }
     return comp;
   }
 };

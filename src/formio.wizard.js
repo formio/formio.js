@@ -13,17 +13,13 @@ export class FormioWizard extends FormioForm {
     this.pages = [];
     this.page = 0;
     this.history = [];
-    this.allComponents = {};
     this._nextPage = 1;
   }
 
   setPage(num) {
     if (num >= 0 && num < this.pages.length) {
       this.page = num;
-      return super.setForm(this.currentPage()).then(() => {
-        // Save the components for when we finally submit.
-        this.allComponents[this.page] = clone(this.components);
-      });
+      return super.setForm(this.currentPage());
     }
     return Promise.reject('Page not found');
   }
@@ -145,9 +141,6 @@ export class FormioWizard extends FormioForm {
           this.pages.push(component);
         }
       }
-      else if (component.key) {
-        this.allComponents[component.key] = this.addComponent(component, this.element, this.data);
-      }
     });
     this.buildWizardHeader();
     this.buildWizardNav();
@@ -254,22 +247,26 @@ export class FormioWizard extends FormioForm {
   onSubmissionChange(changed) {
     super.onSubmissionChange(changed);
 
-    // Only rebuild if there is a new page.
+    // Only rebuild if there is a page change.
     let pageIndex = 0;
     let rebuild = false;
     each(this.wizard.components, (component) => {
-      if (
-        (component.type === 'panel') &&
-        (FormioUtils.checkCondition(component, this.data, this.data))
-      ) {
-        if (
-          this.pages &&
-          this.pages[pageIndex] &&
-          this.pageId(this.pages[pageIndex]) !== this.pageId(component)
-        ) {
+      if (component.type !== 'panel') {
+        return;
+      }
+
+      if (FormioUtils.hasCondition(component)) {
+        let hasPage = this.pages && this.pages[pageIndex] && (this.pageId(this.pages[pageIndex]) === this.pageId(component));
+        let shouldShow = FormioUtils.checkCondition(component, this.data, this.data);
+        if ((shouldShow && !hasPage) || (!shouldShow && hasPage)) {
           rebuild = true;
           return false;
         }
+        if (shouldShow) {
+          pageIndex++;
+        }
+      }
+      else {
         pageIndex++;
       }
     });
@@ -318,15 +315,6 @@ export class FormioWizard extends FormioForm {
       buttonWrapper.appendChild(this[buttonProp]);
       this.wizardNav.appendChild(buttonWrapper);
     });
-  }
-
-  getComponents() {
-    // Set the components based on all components.
-    let components = [];
-    each(this.allComponents, (comps) => {
-      components = components.concat(comps);
-    });
-    return components;
   }
 }
 

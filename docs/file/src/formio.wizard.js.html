@@ -129,6 +129,9 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/textfield/TextField.js~TextFieldComponent.html">TextFieldComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/textfield/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/time</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/time/Time.js~TimeComponent.html">TimeComponent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/time/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/unknown</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/unknown/Unknown.js~UnknownComponent.html">UnknownComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/well/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -142,26 +145,24 @@
 import Promise from &quot;native-promise-only&quot;;
 import FormioForm from &apos;./formio.form&apos;;
 import Formio from &apos;./formio&apos;;
+import FormioUtils from &apos;./utils&apos;;
 import each from &apos;lodash/each&apos;;
 import clone from &apos;lodash/clone&apos;;
 import jsonLogic from &apos;json-logic-js&apos;;
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
+    this.wizard = null;
     this.pages = [];
     this.page = 0;
     this.history = [];
-    this.allComponents = {};
     this._nextPage = 1;
   }
 
   setPage(num) {
     if (num &gt;= 0 &amp;&amp; num &lt; this.pages.length) {
       this.page = num;
-      return super.setForm(this.currentPage()).then(() =&gt; {
-        // Save the components for when we finally submit.
-        this.allComponents[this.page] = clone(this.components);
-      });
+      return super.setForm(this.currentPage());
     }
     return Promise.reject(&apos;Page not found&apos;);
   }
@@ -274,23 +275,32 @@ export class FormioWizard extends FormioForm {
     return this.getPage(this.page);
   }
 
-  setForm(form) {
+  buildPages(form) {
     this.pages = [];
     each(form.components, (component) =&gt; {
       if (component.type === &apos;panel&apos;) {
-        this.pages.push(component);
-      }
-      else if (component.key) {
-        this.allComponents[component.key] = this.addComponent(component, this.element, this.data);
+        // Ensure that this page can be seen.
+        if (FormioUtils.checkCondition(component, this.data, this.data)) {
+          this.pages.push(component);
+        }
       }
     });
+    this.buildWizardHeader();
+    this.buildWizardNav();
+  }
+
+  setForm(form) {
+    this.wizard = form;
+    this.buildPages(this.wizard);
     return this.setPage(this.page);
   }
 
   build() {
-    this.createWizardHeader();
     super.build();
-    this.createWizardNav();
+    this.formReady.then(() =&gt; {
+      this.buildWizardHeader();
+      this.buildWizardNav();
+    });
   }
 
   hasButton(name) {
@@ -307,15 +317,25 @@ export class FormioWizard extends FormioForm {
     return true;
   }
 
-  createWizardHeader() {
+  buildWizardHeader() {
     let currentPage = this.currentPage();
     currentPage.breadcrumb = currentPage.breadcrumb || &apos;default&apos;;
     if (currentPage.breadcrumb.toLowerCase() === &apos;none&apos;) {
       return;
     }
+
+    if (this.wizardHeader) {
+      this.wizardHeader.innerHTML = &apos;&apos;;
+    }
+
     this.wizardHeader = this.ce(&apos;wizardHeader&apos;, &apos;ul&apos;, {
       class: &apos;pagination&apos;
     });
+
+    // Add the header to the beginning.
+    if (this.element.parentNode) {
+      this.element.parentNode.insertBefore(this.wizardHeader, this.element);
+    }
 
     let showHistory = (currentPage.breadcrumb.toLowerCase() === &apos;history&apos;);
     each(this.pages, (page, i) =&gt; {
@@ -338,36 +358,84 @@ export class FormioWizard extends FormioForm {
       }
 
       let pageLabel = this.ce(&apos;pageLabel&apos;, &apos;span&apos;);
-      let pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
-      if (!pageTitle) {
-        pageTitle = (i + 1);
+      let pageTitle = page.title;
+      if (currentPage.breadcrumb.toLowerCase() === &apos;condensed&apos;) {
+        pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
+        if (!pageTitle) {
+          pageTitle = (i + 1);
+        }
       }
+
       pageLabel.appendChild(this.text(pageTitle));
       pageButton.appendChild(pageLabel);
       this.wizardHeader.appendChild(pageButton);
     });
+  }
 
-    this.element.appendChild(this.wizardHeader);
+  pageId(page) {
+    if (page.key) {
+      return page.key;
+    }
+    else if (
+      page.components &amp;&amp;
+      page.components.length &gt; 0
+    ) {
+      return this.pageId(page.components[0]);
+    }
+    else {
+      return page.title;
+    }
   }
 
   onSubmissionChange(changed) {
     super.onSubmissionChange(changed);
 
+    // Only rebuild if there is a page change.
+    let pageIndex = 0;
+    let rebuild = false;
+    each(this.wizard.components, (component) =&gt; {
+      if (component.type !== &apos;panel&apos;) {
+        return;
+      }
+
+      if (FormioUtils.hasCondition(component)) {
+        let hasPage = this.pages &amp;&amp; this.pages[pageIndex] &amp;&amp; (this.pageId(this.pages[pageIndex]) === this.pageId(component));
+        let shouldShow = FormioUtils.checkCondition(component, this.data, this.data);
+        if ((shouldShow &amp;&amp; !hasPage) || (!shouldShow &amp;&amp; hasPage)) {
+          rebuild = true;
+          return false;
+        }
+        if (shouldShow) {
+          pageIndex++;
+        }
+      }
+      else {
+        pageIndex++;
+      }
+    });
+
+    if (rebuild) {
+      this.setForm(this.wizard);
+    }
+
     // Update Wizard Nav
     let nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage != nextPage) {
       this.element.removeChild(this.wizardNav);
-      this.createWizardNav();
+      this.buildWizardNav();
       this.emit(&apos;updateWizardNav&apos;, {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
       this._nextPage = nextPage;
     }
   }
 
-  createWizardNav() {
+  buildWizardNav() {
+    if (this.wizardNav) {
+      this.wizardNav.innerHTML = &apos;&apos;;
+    }
     this.wizardNav = this.ce(&apos;wizardNav&apos;, &apos;ul&apos;, {
       class: &apos;list-inline&apos;
     });
-
+    this.element.appendChild(this.wizardNav);
     each([
       {name: &apos;cancel&apos;,    method: &apos;cancel&apos;,   class: &apos;btn btn-default&apos;},
       {name: &apos;previous&apos;,  method: &apos;prevPage&apos;, class: &apos;btn btn-primary&apos;},
@@ -390,18 +458,6 @@ export class FormioWizard extends FormioForm {
       buttonWrapper.appendChild(this[buttonProp]);
       this.wizardNav.appendChild(buttonWrapper);
     });
-
-    // Add the wizard navigation
-    this.element.appendChild(this.wizardNav);
-  }
-
-  getComponents() {
-    // Set the components based on all components.
-    let components = [];
-    each(this.allComponents, (comps) =&gt; {
-      components = components.concat(comps);
-    });
-    return components;
   }
 }
 
