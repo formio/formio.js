@@ -52,7 +52,6 @@ export class FileComponent extends BaseComponent {
   }
 
   buildFileList() {
-    console.log(this.data[this.component.key]);
     return this.ce('filelist', 'ul', {class: 'list-group list-group-striped'}, [
       this.ce('fileheader', 'li', {class: 'list-group-item list-group-header hidden-xs hidden-sm'},
         this.ce('fileheaderrow', 'div', {class: 'row'},
@@ -86,16 +85,40 @@ export class FileComponent extends BaseComponent {
               }
             })
           ),
-          this.ce('filecol', 'div', {class: 'col-md-9'}, 'File Name'),
+          this.ce('filecol', 'div', {class: 'col-md-9'}, this.createFileLink(fileInfo)),
           this.ce('sizecol', 'div', {class: 'col-md-2'}, this.fileSize(fileInfo.size))
         ]
       )
     )
   }
 
+  createFileLink(file) {
+    return this.ce('filelink', 'a', {href: file.url, target: '_blank'}, file.name, {
+      click: this.getFile.bind(this, file)
+    });
+  }
+
+  getFile(fileInfo, event)  {
+    if (!this.options.formio) {
+      return alert('File URL not set');
+    }
+    this.options.formio
+      .downloadFile(fileInfo).then(function(file) {
+        if (file) {
+          window.open(file.url, '_blank');
+        }
+      })
+      .catch(function(response) {
+        // Is alert the best way to do this?
+        // User is expecting an immediate notification due to attempting to download a file.
+        alert(response);
+      });
+    event.preventDefault();
+  }
+
   buildImageList() {
     let list = this.ce('imagelist', 'div');
-    list.innerHTML = 'Image List';
+    list.innerHTML = 'Image list coming soon...';
     return list;
   }
 
