@@ -7748,6 +7748,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     key: "reset",
     value: function reset() {
       // Reset the submission data.
+      this.data = this.value = {};
       this.setSubmission({ data: {} });
     }
 

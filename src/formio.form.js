@@ -630,6 +630,7 @@ export class FormioForm extends FormioComponents {
    */
   reset() {
     // Reset the submission data.
+    this.data = this.value = {};
     this.setSubmission({data: {}});
   }
 
