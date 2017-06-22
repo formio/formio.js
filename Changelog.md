@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issue with the multi-page forms where the conditions would not apply properly.
 
+### Added
+ - Time Component
+
 ## 2.9.9
 ### Added
  - Support for conditional wizards.
