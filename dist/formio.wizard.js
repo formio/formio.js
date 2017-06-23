@@ -3948,6 +3948,8 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+var momentModule = require('moment');
+
 var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   _inherits(DateTimeComponent, _BaseComponent);
 
@@ -3969,6 +3971,28 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       info.changeEvent = 'input';
       this.component.suffix = true;
       return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'build', this).call(this);
+
+      // See if a default date is set.
+      if (this.component.defaultDate) {
+        var defaultDate = new Date(this.component.defaultDate);
+        if (!defaultDate || isNaN(defaultDate.getDate())) {
+          try {
+            var moment = momentModule;
+            defaultDate = new Date(eval(this.component.defaultDate));
+          } catch (e) {
+            defaultDate = '';
+          }
+        }
+
+        if (defaultDate && !isNaN(defaultDate.getDate())) {
+          this.setValue(defaultDate);
+        }
+      }
     }
 
     // This select component can handle multiple items on its own.
@@ -4096,7 +4120,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   return DateTimeComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"flatpickr":50,"lodash/each":224,"lodash/get":227}],14:[function(require,module,exports){
+},{"../base/Base":4,"flatpickr":50,"lodash/each":224,"lodash/get":227,"moment":258}],14:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
