@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+[Unreleased]
+
+### Added
+ - Custom class capabilities to all components.
+ - defaultDate to the Date/Time component.
+
 ## 2.9.10
 ### Changed
  - Upgraded jsonLogic library to 1.1.2.
