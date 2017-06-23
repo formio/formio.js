@@ -86,15 +86,19 @@ export class FileComponent extends BaseComponent {
       this.ce('fileheaderrow', 'div', {class: 'row'},
         [
           this.ce('deletecol', 'div', {class: 'col-md-1'},
-            this.ce('deleteSpan', 'span', {class: 'glyphicon glyphicon-remove'}, null, {
-              click: event => {
-                event.preventDefault();
-                this.data[this.component.key].splice(index, 1);
-                this.refreshDOM();
-                this.triggerChange();
+            (
+              !this.disabled ?
+                this.ce('deleteSpan', 'span', {class: 'glyphicon glyphicon-remove'}, null, {
+                  click: event => {
+                    event.preventDefault();
+                    this.data[this.component.key].splice(index, 1);
+                    this.refreshDOM();
+                    this.triggerChange();
 
-              }
-            })
+                  }
+                }) :
+                null
+            )
           ),
           this.ce('filecol', 'div', {class: 'col-md-9'}, this.createFileLink(fileInfo)),
           this.ce('sizecol', 'div', {class: 'col-md-2'}, this.fileSize(fileInfo.size))
@@ -110,9 +114,39 @@ export class FileComponent extends BaseComponent {
   }
 
   buildImageList() {
-    let list = this.ce('imagelist', 'div');
-    list.innerHTML = 'Image list coming soon...';
-    return list;
+    return this.ce('imagelist', 'div', {},
+      this.data[this.component.key].map((fileInfo, index) => this.createImageListItem(fileInfo, index))
+    );
+  }
+
+  createImageListItem(fileInfo, index) {
+    let image;
+    if (this.options.formio) {
+      this.options.formio.downloadFile(fileInfo)
+        .then(result => {
+          image.src = result.url;
+        });
+    }
+    return this.ce('imageinforow', 'div', {},
+      this.ce('span', 'span', {},
+        [
+          image = this.ce('filecol', 'img', {src: '', alt: fileInfo.name, style: 'width:' + this.component.imageSize + 'px'}),
+          (
+            !this.disabled ?
+              this.ce('deleteSpan', 'span', {class: 'glyphicon glyphicon-remove'}, null, {
+                click: event => {
+                  event.preventDefault();
+                  this.data[this.component.key].splice(index, 1);
+                  this.refreshDOM();
+                  this.triggerChange();
+
+                }
+              }) :
+              null
+          )
+        ]
+      )
+    );
   }
 
   buildUpload() {
@@ -238,6 +272,10 @@ export class FileComponent extends BaseComponent {
   }
 
   upload(files) {
+    // Only allow one upload if not multiple.
+    if (!this.component.multiple) {
+      files = Array.prototype.slice.call(files, 0, 1);
+    }
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       Array.prototype.forEach.call(files, file => {
