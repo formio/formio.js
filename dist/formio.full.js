@@ -3384,7 +3384,7 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
     key: 'build',
     value: function build() {
       this.element = this.ce('element', 'div', {
-        class: 'formio-container-component'
+        class: 'formio-container-component ' + this.component.customClass
       });
       if (!this.data[this.component.key]) {
         this.data[this.component.key] = {};
@@ -3476,7 +3476,7 @@ var ContentComponent = exports.ContentComponent = function (_BaseComponent) {
     key: 'build',
     value: function build() {
       this.element = this.ce('element', 'div', {
-        class: 'form-group'
+        class: 'form-group ' + this.component.customClass
       });
       this.element.innerHTML = this.interpolate(this.component.html, { data: this.data });
     }
@@ -3948,6 +3948,8 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+var momentModule = require('moment');
+
 var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   _inherits(DateTimeComponent, _BaseComponent);
 
@@ -3969,6 +3971,28 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       info.changeEvent = 'input';
       this.component.suffix = true;
       return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'build', this).call(this);
+
+      // See if a default date is set.
+      if (this.component.defaultDate) {
+        var defaultDate = new Date(this.component.defaultDate);
+        if (!defaultDate || isNaN(defaultDate.getDate())) {
+          try {
+            var moment = momentModule;
+            defaultDate = new Date(eval(this.component.defaultDate));
+          } catch (e) {
+            defaultDate = '';
+          }
+        }
+
+        if (defaultDate && !isNaN(defaultDate.getDate())) {
+          this.setValue(defaultDate);
+        }
+      }
     }
 
     // This select component can handle multiple items on its own.
@@ -4096,7 +4120,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   return DateTimeComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"flatpickr":51,"lodash/each":225,"lodash/get":228}],14:[function(require,module,exports){
+},{"../base/Base":4,"flatpickr":51,"lodash/each":225,"lodash/get":228,"moment":259}],14:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4546,7 +4570,7 @@ var FieldsetComponent = exports.FieldsetComponent = function (_FormioComponents)
     value: function build() {
       this.element = this.ce('element', 'fieldset', {
         id: this.id,
-        class: this.className + ' form-group'
+        class: this.className + ' form-group ' + this.component.customClass
       });
       if (this.component.legend) {
         var legend = this.ce('legend', 'legend');
@@ -5438,7 +5462,7 @@ var PanelComponent = exports.PanelComponent = function (_FormioComponents) {
     key: 'build',
     value: function build() {
       this.element = this.ce('element', 'div', {
-        class: 'panel panel-' + this.component.theme
+        class: 'panel panel-' + this.component.theme + ' ' + this.component.customClass
       });
       if (this.component.title) {
         var heading = this.ce('heading', 'div', {
@@ -7103,7 +7127,7 @@ var WellComponent = exports.WellComponent = function (_FormioComponents) {
   _createClass(WellComponent, [{
     key: 'className',
     get: function get() {
-      return 'well formio-component formio-component-well';
+      return 'well formio-component formio-component-well ' + this.component.customClass;
     }
   }]);
 

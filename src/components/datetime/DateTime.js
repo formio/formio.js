@@ -2,6 +2,7 @@ import { BaseComponent } from '../base/Base';
 import Flatpickr from 'flatpickr';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
+const momentModule = require('moment');
 export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -15,6 +16,28 @@ export class DateTimeComponent extends BaseComponent {
     info.changeEvent = 'input';
     this.component.suffix = true;
     return info;
+  }
+
+  build() {
+    super.build();
+
+    // See if a default date is set.
+    if (this.component.defaultDate) {
+      var defaultDate = new Date(this.component.defaultDate);
+      if (!defaultDate || isNaN(defaultDate.getDate())) {
+        try {
+          let moment = momentModule;
+          defaultDate = new Date(eval(this.component.defaultDate));
+        }
+        catch (e) {
+          defaultDate = '';
+        }
+      }
+
+      if (defaultDate && !isNaN(defaultDate.getDate())) {
+        this.setValue(defaultDate);
+      }
+    }
   }
 
   // This select component can handle multiple items on its own.
