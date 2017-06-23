@@ -3384,7 +3384,7 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
     key: 'build',
     value: function build() {
       this.element = this.ce('element', 'div', {
-        class: 'formio-container-component'
+        class: 'formio-container-component ' + this.component.customClass
       });
       if (!this.data[this.component.key]) {
         this.data[this.component.key] = {};
@@ -3476,7 +3476,7 @@ var ContentComponent = exports.ContentComponent = function (_BaseComponent) {
     key: 'build',
     value: function build() {
       this.element = this.ce('element', 'div', {
-        class: 'form-group'
+        class: 'form-group ' + this.component.customClass
       });
       this.element.innerHTML = this.interpolate(this.component.html, { data: this.data });
     }
@@ -4546,7 +4546,7 @@ var FieldsetComponent = exports.FieldsetComponent = function (_FormioComponents)
     value: function build() {
       this.element = this.ce('element', 'fieldset', {
         id: this.id,
-        class: this.className + ' form-group'
+        class: this.className + ' form-group ' + this.component.customClass
       });
       if (this.component.legend) {
         var legend = this.ce('legend', 'legend');
@@ -5438,7 +5438,7 @@ var PanelComponent = exports.PanelComponent = function (_FormioComponents) {
     key: 'build',
     value: function build() {
       this.element = this.ce('element', 'div', {
-        class: 'panel panel-' + this.component.theme
+        class: 'panel panel-' + this.component.theme + ' ' + this.component.customClass
       });
       if (this.component.title) {
         var heading = this.ce('heading', 'div', {
@@ -7103,7 +7103,7 @@ var WellComponent = exports.WellComponent = function (_FormioComponents) {
   _createClass(WellComponent, [{
     key: 'className',
     get: function get() {
-      return 'well formio-component formio-component-well';
+      return 'well formio-component formio-component-well ' + this.component.customClass;
     }
   }]);
 

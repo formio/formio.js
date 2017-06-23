@@ -3,7 +3,7 @@ export class FieldsetComponent extends FormioComponents {
   build() {
     this.element = this.ce('element', 'fieldset', {
       id: this.id,
-      class: this.className + ' form-group'
+      class: this.className + ' form-group ' + this.component.customClass
     });
     if (this.component.legend) {
       let legend = this.ce('legend', 'legend');

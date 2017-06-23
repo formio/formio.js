@@ -2,7 +2,7 @@ import { FormioComponents } from '../Components';
 export class PanelComponent extends FormioComponents {
   build() {
     this.element = this.ce('element', 'div', {
-      class: 'panel panel-' + this.component.theme
+      class: 'panel panel-' + this.component.theme + ' ' + this.component.customClass
     });
     if (this.component.title) {
       let heading = this.ce('heading', 'div', {
