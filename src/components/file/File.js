@@ -18,7 +18,8 @@ export class FileComponent extends BaseComponent {
   }
 
   setValue(value) {
-    return this.data[this.component.key] = value;
+    this.data[this.component.key] = value;
+    this.refreshDOM();
   }
 
   build() {
@@ -31,15 +32,25 @@ export class FileComponent extends BaseComponent {
     this.createErrorElement();
     this.listContainer = this.buildList();
     this.element.appendChild(this.listContainer);
-    this.buildUpload(this.element);
+    this.uploadContainer = this.buildUpload();
+    this.element.appendChild(this.uploadContainer);
     this.addWarnings(this.element);
     this.buildUploadStatusList(this.element);
   }
 
-  refreshList() {
-    const newList = this.buildList();
-    this.element.replaceChild(newList, this.listContainer);
-    this.listContainer = newList;
+  refreshDOM() {
+    // Don't refresh before the initial render.
+    if (this.listContainer && this.uploadContainer) {
+      // Refresh file list.
+      const newList = this.buildList();
+      this.element.replaceChild(newList, this.listContainer);
+      this.listContainer = newList;
+
+      // Refresh upload container.
+      const newUpload = this.buildUpload();
+      this.element.replaceChild(newUpload, this.uploadContainer);
+      this.uploadContainer = newUpload;
+    }
   }
 
   buildList() {
@@ -79,7 +90,7 @@ export class FileComponent extends BaseComponent {
               click: event => {
                 event.preventDefault();
                 this.data[this.component.key].splice(index, 1);
-                this.refreshList();
+                this.refreshDOM();
                 this.triggerChange();
 
               }
@@ -98,74 +109,60 @@ export class FileComponent extends BaseComponent {
     });
   }
 
-  getFile(fileInfo, event)  {
-    if (!this.options.formio) {
-      return alert('File URL not set');
-    }
-    this.options.formio
-      .downloadFile(fileInfo).then(function(file) {
-        if (file) {
-          window.open(file.url, '_blank');
-        }
-      })
-      .catch(function(response) {
-        // Is alert the best way to do this?
-        // User is expecting an immediate notification due to attempting to download a file.
-        alert(response);
-      });
-    event.preventDefault();
-  }
-
   buildImageList() {
     let list = this.ce('imagelist', 'div');
     list.innerHTML = 'Image list coming soon...';
     return list;
   }
 
-  buildUpload(container) {
+  buildUpload() {
+    // Drop event must change this pointer so need a reference to parent this.
     const element = this;
-    let upload, input;
-    let wrapper = this.ce('uploadwrapper', 'div', {},
-      upload = this.ce('upload', 'div', {class: 'fileSelector'}, [
-          this.ce('icon', 'i', {class: 'glyphicon glyphicon-cloud-upload'}),
-          this.text(' Drop files to attach, or '),
-          this.ce('browse', 'a', false, 'browse', {
-            click: event => {
-              event.preventDefault();
-              // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
-              // a click event on it.
-              let input = this.ce('fileinput', 'input', {type: 'file'});
-              // Trigger a click event on the input.
-              if (typeof input.trigger === 'function') {
-                input.trigger('click');
+    // If this is disabled or a single value with a value, don't show the upload div.
+    return this.ce('uploadwrapper', 'div', {},
+      (
+        (!this.disabled && (this.component.multiple || this.data[this.component.key].length === 0)) ?
+          this.ce('upload', 'div', {class: 'fileSelector'},
+            [
+              this.ce('icon', 'i', {class: 'glyphicon glyphicon-cloud-upload'}),
+              this.text(' Drop files to attach, or '),
+              this.ce('browse', 'a', false, 'browse', {
+                click: event => {
+                  event.preventDefault();
+                  // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+                  // a click event on it.
+                  let input = this.ce('fileinput', 'input', {type: 'file'});
+                  // Trigger a click event on the input.
+                  if (typeof input.trigger === 'function') {
+                    input.trigger('click');
+                  }
+                  else {
+                    input.click();
+                  }
+                  input.addEventListener('change', () => {this.upload(input.files)});
+                }
+              })
+            ],
+            {
+              dragover: function (event) {
+                this.className = 'fileSelector fileDragOver';
+                event.preventDefault();
+              },
+              dragleave: function (event) {
+                this.className = 'fileSelector';
+                event.preventDefault();
+              },
+              drop: function(event) {
+                this.className = 'fileSelector';
+                event.preventDefault();
+                element.upload(event.dataTransfer.files);
+                return false;
               }
-              else {
-                input.click();
-              }
-              input.addEventListener('change', () => {this.upload(input.files)});
             }
-          })
-        ],
-        {
-          dragover: function (event) {
-            this.className = 'fileSelector fileDragOver';
-            event.preventDefault();
-          },
-          dragleave: function (event) {
-            this.className = 'fileSelector';
-            event.preventDefault();
-          },
-          drop: function(event) {
-            this.className = 'fileSelector';
-            event.preventDefault();
-            element.upload(event.dataTransfer.files);
-            return false;
-          }
-        }
+          ) :
+          this.ce('uploadwrapper', 'div')
       )
     );
-    this.uploadContainer = wrapper;
-    container.appendChild(wrapper);
   }
 
   buildUploadStatusList(container) {
@@ -226,8 +223,8 @@ export class FileComponent extends BaseComponent {
                 class: 'progress-bar',
                 role: 'progressbar',
                 'aria-valuenow': fileUpload.progress,
-                'ariah-valuemin': 0,
-                'ariah-valuemax': 100,
+                'aria-valuemin': 0,
+                'aria-valuemax': 100,
                 style: 'width:' + fileUpload.progress + '%'
               },
                 this.ce('srprogress', 'span', {class: 'sr-only'}, fileUpload.progress + '% Complete')
@@ -277,7 +274,7 @@ export class FileComponent extends BaseComponent {
           .then(fileInfo => {
             this.uploadStatusList.removeChild(uploadStatus);
             this.data[this.component.key].push(fileInfo);
-            this.refreshList();
+            this.refreshDOM();
             this.triggerChange();
           })
           .catch(response => {
@@ -291,5 +288,23 @@ export class FileComponent extends BaseComponent {
         }
       });
     }
+  }
+
+  getFile(fileInfo, event)  {
+    if (!this.options.formio) {
+      return alert('File URL not set');
+    }
+    this.options.formio
+      .downloadFile(fileInfo).then(function(file) {
+        if (file) {
+          window.open(file.url, '_blank');
+        }
+      })
+      .catch(function(response) {
+        // Is alert the best way to do this?
+        // User is expecting an immediate notification due to attempting to download a file.
+        alert(response);
+      });
+    event.preventDefault();
   }
 }
