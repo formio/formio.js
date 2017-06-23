@@ -135,3 +135,18 @@ td > .form-group {
 .choices__input {
   padding: 2px;
 }
+
+.formio-component-file .fileSelector {
+  padding: 15px;
+  border: 2px dashed #ddd;
+  text-align: center;
+}
+
+.formio-component-file .fileSelector.fileDragOver {
+  border-color: #127abe;
+}
+
+.formio-component-file .fileSelector .glyphicon {
+  font-size: 20px;
+  margin-right: 5px;
+}
