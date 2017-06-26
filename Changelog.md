@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.10.1
+### Fixed
+ - Issue where form would crash if choices was not present.
+
 ## 2.10.0
 
 ### Added
