@@ -175,6 +175,9 @@ export class SelectComponent extends BaseComponent {
   }
 
   getValue() {
+    if (!this.choices) {
+      return;
+    }
     return this.choices.getValue(true);
   }
 
