@@ -389,7 +389,9 @@ export class BaseComponent {
         try {
           let row = this.data;
           let data = this.data;
-          defaultValue = eval('(function(data, row) { var value = "";' + this.component.customDefaultValue.toString() + '; return value; })(data, row)');
+          let value = '';
+          eval(this.component.customDefaultValue.toString());
+          defaultValue = value;
         }
         catch (e) {
           defaultValue = null;
@@ -1007,9 +1009,10 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
+        let value = [];
         let row = this.data;
-        let val = eval('var value = [];' + this.component.calculateValue.toString() + '; return value;');
-        this.setValue(val);
+        eval(this.component.calculateValue.toString());
+        this.setValue(value);
       }
       catch (e) {
         /* eslint-disable no-console */

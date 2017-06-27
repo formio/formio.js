@@ -125,7 +125,7 @@ export class SelectComponent extends BaseComponent {
         break;
       case 'resource':
         try {
-          this.loadItems(Formio.getAppUrl() + '/form/' + this.component.data.resource + '/submission');
+          this.loadItems(Formio.getProjectUrl() + '/form/' + this.component.data.resource + '/submission');
         }
         catch (err) {
           console.warn('Unable to load resources for ' + this.component.key);
