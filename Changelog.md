@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.11.1
+### Fixed
+ - Issue with including handlebars in other libraries with webpack.
+
 ## 2.11.0
 ### Added
  - Now using Handlebars as the template interpolator.

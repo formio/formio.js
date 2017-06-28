@@ -1,7 +1,7 @@
 'use strict';
 const _get = require('lodash/get');
 import jsonLogic from 'json-logic-js';
-import {compile} from 'handlebars';
+import { compile } from 'handlebars/dist/handlebars';
 
 module.exports = {
   jsonLogic, // Share
