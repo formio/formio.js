@@ -1,5 +1,6 @@
 'use strict';
 const _get = require('lodash/get');
+const _clone = require('lodash/clone');
 import jsonLogic from 'json-logic-js';
 import { compile } from 'handlebars/dist/handlebars';
 
@@ -49,7 +50,11 @@ module.exports = {
 
       // Keep track of parent references.
       if (parent) {
-        component.parent = parent;
+        // Ensure we don't create infinite JSON structures.
+        component.parent = _clone(parent);
+        delete component.parent.components;
+        delete component.parent.columns;
+        delete component.parent.rows;
       }
 
       if (includeAll || component.tree || (!hasColumns && !hasRows && !hasComps)) {

@@ -9805,6 +9805,7 @@ function _interopRequireDefault(obj) {
 }
 
 var _get = require('lodash/get');
+var _clone = require('lodash/clone');
 
 module.exports = {
   jsonLogic: _jsonLogicJs2.default, // Share
@@ -9848,7 +9849,11 @@ module.exports = {
 
       // Keep track of parent references.
       if (parent) {
-        component.parent = parent;
+        // Ensure we don't create infinite JSON structures.
+        component.parent = _clone(parent);
+        delete component.parent.components;
+        delete component.parent.columns;
+        delete component.parent.rows;
       }
 
       if (includeAll || component.tree || !hasColumns && !hasRows && !hasComps) {
@@ -10064,7 +10069,7 @@ module.exports = {
   }
 };
 
-},{"handlebars/dist/handlebars":52,"json-logic-js":80,"lodash/get":240}],48:[function(require,module,exports){
+},{"handlebars/dist/handlebars":52,"json-logic-js":80,"lodash/clone":231,"lodash/get":240}],48:[function(require,module,exports){
 (function (process,__filename){
 /** vim: et:ts=4:sw=4:sts=4
  * @license amdefine 1.0.1 Copyright (c) 2011-2016, The Dojo Foundation All Rights Reserved.
