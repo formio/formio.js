@@ -2468,9 +2468,10 @@ var BaseComponent = function () {
       // If this is a string, then use eval to evalulate it.
       if (typeof this.component.calculateValue === 'string') {
         try {
+          var value = [];
           var row = this.data;
-          var val = eval('var value = [];' + this.component.calculateValue.toString() + '; return value;');
-          this.setValue(val);
+          eval(this.component.calculateValue.toString());
+          this.setValue(value);
         } catch (e) {
           /* eslint-disable no-console */
           console.warn('An error occurred calculating a value for ' + this.component.key, e);
@@ -2478,11 +2479,11 @@ var BaseComponent = function () {
         }
       } else {
         try {
-          var _val = _jsonLogicJs2.default.apply(this.component.calculateValue, {
+          var val = _jsonLogicJs2.default.apply(this.component.calculateValue, {
             data: data,
             row: this.data
           });
-          this.setValue(_val);
+          this.setValue(val);
         } catch (err) {
           /* eslint-disable no-console */
           console.warn('An error occurred calculating a value for ' + this.component.key, e);
@@ -2718,7 +2719,9 @@ var BaseComponent = function () {
           try {
             var row = this.data;
             var data = this.data;
-            defaultValue = eval('(function(data, row) { var value = "";' + this.component.customDefaultValue.toString() + '; return value; })(data, row)');
+            var value = '';
+            eval(this.component.customDefaultValue.toString());
+            defaultValue = value;
           } catch (e) {
             defaultValue = null;
             /* eslint-disable no-console */
@@ -6433,7 +6436,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           break;
         case 'resource':
           try {
-            this.loadItems(_formio2.default.getAppUrl() + '/form/' + this.component.data.resource + '/submission');
+            this.loadItems(_formio2.default.getProjectUrl() + '/form/' + this.component.data.resource + '/submission');
           } catch (err) {
             console.warn('Unable to load resources for ' + this.component.key);
           }
@@ -8261,17 +8264,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     , set: function set(value) {
       var _this10 = this;
 
-      if (!value || typeof value !== 'string') {
-        return;
-      }
-      this._src = value;
-      this.formio = this.options.formio = new _formio2.default(value);
-
-      if (this.type === 'form') {
-        // Set the options source so this can be passed to other components.
-        this.options.src = value;
-      }
-
+      this.url = value;
       this.formio.loadForm().then(function (form) {
         return _this10.setForm(form);
       }, function (err) {
@@ -8314,6 +8307,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
       this._src = value;
       this.formio = this.options.formio = new _formio2.default(value);
+
+      if (this.type === 'form') {
+        // Set the options source so this can be passed to other components.
+        this.options.src = value;
+      }
     }
 
     /**

@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.11.0
+### Added
+ - Now using Handlebars as the template interpolator.
+
+### Fixed
+ - Issue where the eval code for calculatedValues and defaultValues was causing an error.
+ - Removed deprecated getAppUrl within the Resource compoennt.
+ 
+### Changed
+ - Changed the this.src setter to use the this.url for reduced code duplication.
+
 ## 2.10.1
 ### Fixed
  - Issue where form would crash if choices was not present.
