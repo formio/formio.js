@@ -93,6 +93,12 @@ export class FormioForm extends FormioComponents {
     this._form = null;
 
     /**
+     * Determines if this form should submit the API on submit.
+     * @type {boolean}
+     */
+    this.nosubmit = false;
+
+    /**
      * The Formio instance for this form.
      * @type {Formio}
      */
@@ -239,6 +245,7 @@ export class FormioForm extends FormioComponents {
    */
   set src(value) {
     this.url = value;
+    this.nosubmit = false;
     this.formio.loadForm().then(
       (form) => this.setForm(form),
       (err) => this.formReadyReject(err)
@@ -274,6 +281,7 @@ export class FormioForm extends FormioComponents {
       return;
     }
     this._src = value;
+    this.nosubmit = true;
     this.formio = this.options.formio = new Formio(value);
 
     if (this.type === 'form') {
@@ -667,7 +675,7 @@ export class FormioForm extends FormioComponents {
       this.checkValidity(submission.data, true)
     ) {
       this.loading = true;
-      if (!this.formio) {
+      if (this.nosubmit || !this.formio) {
         return this.onSubmit(submission, false);
       }
       return this.formio.saveSubmission(submission)

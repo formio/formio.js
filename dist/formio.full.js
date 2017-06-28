@@ -7708,6 +7708,12 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     _this._form = null;
 
     /**
+     * Determines if this form should submit the API on submit.
+     * @type {boolean}
+     */
+    _this.nosubmit = false;
+
+    /**
      * The Formio instance for this form.
      * @type {Formio}
      */
@@ -8193,7 +8199,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var submission = this.submission;
       if (submission && submission.data && this.checkValidity(submission.data, true)) {
         this.loading = true;
-        if (!this.formio) {
+        if (this.nosubmit || !this.formio) {
           return this.onSubmit(submission, false);
         }
         return this.formio.saveSubmission(submission).then(function (result) {
@@ -8265,6 +8271,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var _this10 = this;
 
       this.url = value;
+      this.nosubmit = false;
       this.formio.loadForm().then(function (form) {
         return _this10.setForm(form);
       }, function (err) {
@@ -8306,6 +8313,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         return;
       }
       this._src = value;
+      this.nosubmit = true;
       this.formio = this.options.formio = new _formio2.default(value);
 
       if (this.type === 'form') {
