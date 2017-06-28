@@ -48,8 +48,10 @@ module.exports = {
    *   Whether or not to include layout components.
    * @param {String} path
    *   The current data path of the element. Example: data.user.firstName
+   * @param {Object} parent
+   *   The parent object.
    */
-  eachComponent: function eachComponent(components, fn, includeAll, path) {
+  eachComponent: function eachComponent(components, fn, includeAll, path, parent) {
     if (!components) return;
     path = path || '';
     components.forEach(function (component) {
@@ -58,6 +60,9 @@ module.exports = {
       var hasComps = component.components && Array.isArray(component.components);
       var noRecurse = false;
       var newPath = component.key ? path ? path + '.' + component.key : component.key : '';
+
+      // Keep track of parent references.
+      component.parent = parent;
 
       if (includeAll || component.tree || !hasColumns && !hasRows && !hasComps) {
         noRecurse = fn(component, newPath);
@@ -73,14 +78,16 @@ module.exports = {
       if (!noRecurse) {
         if (hasColumns) {
           component.columns.forEach(function (column) {
-            eachComponent(column.components, fn, includeAll, subPath());
+            eachComponent(column.components, fn, includeAll, subPath(), component);
           });
         } else if (hasRows) {
-          [].concat.apply([], component.rows).forEach(function (row) {
-            eachComponent(row.components, fn, includeAll, subPath());
+          component.rows.forEach(function (row) {
+            row.forEach(function (column) {
+              eachComponent(column.components, fn, includeAll, subPath(), component);
+            });
           });
         } else if (hasComps) {
-          eachComponent(component.components, fn, includeAll, subPath());
+          eachComponent(component.components, fn, includeAll, subPath(), component);
         }
       }
     });

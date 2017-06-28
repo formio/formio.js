@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.11.3
+### Added
+ - The ability for eachComponents to reference its parent component.
+
 ## 2.11.2
 ### Fixed
  - An issue where if you set the url of the form, it should not submit to API.
