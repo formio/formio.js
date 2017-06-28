@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.11.6
+### Fixed
+ - Another instance where infinite JSON structures could occur with eachComponent.
+
 ## 2.11.5
 ### Fixed
  - Issue where the parent property could create infinite JSON structures.

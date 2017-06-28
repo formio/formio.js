@@ -9852,6 +9852,7 @@ module.exports = {
         // Ensure we don't create infinite JSON structures.
         component.parent = _clone(parent);
         delete component.parent.components;
+        delete component.parent.componentMap;
         delete component.parent.columns;
         delete component.parent.rows;
       }
