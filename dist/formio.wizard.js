@@ -10281,7 +10281,9 @@ module.exports = {
       var newPath = component.key ? path ? path + '.' + component.key : component.key : '';
 
       // Keep track of parent references.
-      component.parent = parent;
+      if (parent) {
+        component.parent = parent;
+      }
 
       if (includeAll || component.tree || !hasColumns && !hasRows && !hasComps) {
         noRecurse = fn(component, newPath);
@@ -10297,16 +10299,16 @@ module.exports = {
       if (!noRecurse) {
         if (hasColumns) {
           component.columns.forEach(function (column) {
-            eachComponent(column.components, fn, includeAll, subPath(), component);
+            eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null);
           });
         } else if (hasRows) {
           component.rows.forEach(function (row) {
             row.forEach(function (column) {
-              eachComponent(column.components, fn, includeAll, subPath(), component);
+              eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null);
             });
           });
         } else if (hasComps) {
-          eachComponent(component.components, fn, includeAll, subPath(), component);
+          eachComponent(component.components, fn, includeAll, subPath(), parent ? component : null);
         }
       }
     });

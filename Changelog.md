@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.11.4
+### Changed
+ - Do not introduce the parent property on eachComponent unless a root is provided.
+
 ## 2.11.3
 ### Added
  - The ability for eachComponents to reference its parent component.
