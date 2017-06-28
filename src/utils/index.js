@@ -1,6 +1,8 @@
 'use strict';
 const _get = require('lodash/get');
 import jsonLogic from 'json-logic-js';
+import {compile} from 'handlebars';
+
 module.exports = {
   jsonLogic, // Share
 
@@ -236,9 +238,7 @@ module.exports = {
    * @returns {XML|string|*|void}
    */
   interpolate: function(string, data) {
-    return string.replace(/\{\{\s*([^\s]*)\s*\}\}/g, function(match, token) {
-      return _get(data, token);
-    });
+    return compile(string)(data);
   },
 
   /**
