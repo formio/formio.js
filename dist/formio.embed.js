@@ -8282,17 +8282,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     , set: function set(value) {
       var _this10 = this;
 
-      if (!value || typeof value !== 'string') {
-        return;
-      }
-      this._src = value;
-      this.formio = this.options.formio = new _formio2.default(value);
-
-      if (this.type === 'form') {
-        // Set the options source so this can be passed to other components.
-        this.options.src = value;
-      }
-
+      this.url = value;
       this.formio.loadForm().then(function (form) {
         return _this10.setForm(form);
       }, function (err) {
@@ -8335,6 +8325,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
       this._src = value;
       this.formio = this.options.formio = new _formio2.default(value);
+
+      if (this.type === 'form') {
+        // Set the options source so this can be passed to other components.
+        this.options.src = value;
+      }
     }
 
     /**

@@ -238,17 +238,7 @@ export class FormioForm extends FormioComponents {
    * form.src = 'https://examples.form.io/example';
    */
   set src(value) {
-    if (!value || typeof value !== 'string') {
-      return;
-    }
-    this._src = value;
-    this.formio = this.options.formio = new Formio(value);
-
-    if (this.type === 'form') {
-      // Set the options source so this can be passed to other components.
-      this.options.src = value;
-    }
-
+    this.url = value;
     this.formio.loadForm().then(
       (form) => this.setForm(form),
       (err) => this.formReadyReject(err)
@@ -285,6 +275,11 @@ export class FormioForm extends FormioComponents {
     }
     this._src = value;
     this.formio = this.options.formio = new Formio(value);
+
+    if (this.type === 'form') {
+      // Set the options source so this can be passed to other components.
+      this.options.src = value;
+    }
   }
 
   /**

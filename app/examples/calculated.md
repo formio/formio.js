@@ -26,7 +26,7 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'b',
       input: true,
       inputType: 'text',
-      defaultValue: '20'
+      customDefaultValue: 'value = 20;'
     },
     {
       type: 'textfield',
@@ -34,7 +34,7 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'multiple',
       input: true,
       inputType: 'text',
-      calculatedDefault: {
+      customDefaultValue: {
         "+": [
           {var: 'data.a'},
           {var: 'data.b'}
@@ -85,7 +85,7 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'b',
         input: true,
         inputType: 'text',
-        defaultValue: '20'
+        customDefaultValue: 'value = 20;'
       },
       {
         type: 'textfield',
