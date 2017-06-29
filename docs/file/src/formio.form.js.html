@@ -78,6 +78,7 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/file</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -236,6 +237,12 @@ export class FormioForm extends FormioComponents {
     this._form = null;
 
     /**
+     * Determines if this form should submit the API on submit.
+     * @type {boolean}
+     */
+    this.nosubmit = false;
+
+    /**
      * The Formio instance for this form.
      * @type {Formio}
      */
@@ -381,18 +388,8 @@ export class FormioForm extends FormioComponents {
    * form.src = &apos;https://examples.form.io/example&apos;;
    */
   set src(value) {
-    if (!value || typeof value !== &apos;string&apos;) {
-      return;
-    }
-    this._src = value;
-    this.formio = new Formio(value);
-
-    if (this.type === &apos;form&apos;) {
-      // Set the options source so this can be passed to other components.
-      this.options.src = value;
-      this.options.formio = this.formio;
-    }
-
+    this.url = value;
+    this.nosubmit = false;
     this.formio.loadForm().then(
       (form) =&gt; this.setForm(form),
       (err) =&gt; this.formReadyReject(err)
@@ -406,6 +403,34 @@ export class FormioForm extends FormioComponents {
       ).catch(
         (err) =&gt; this.submissionReadyReject(err)
       );
+    }
+  }
+
+  /**
+   * Get the embed source of the form.
+   *
+   * @returns {string}
+   */
+  get url() {
+    return this._src;
+  }
+
+  /**
+   * Set the form source but don&apos;t initialize the form and submission from the url.
+   *
+   * @param {string} value - The value of the form embed url.
+   */
+  set url(value) {
+    if (!value || typeof value !== &apos;string&apos;) {
+      return;
+    }
+    this._src = value;
+    this.nosubmit = true;
+    this.formio = this.options.formio = new Formio(value);
+
+    if (this.type === &apos;form&apos;) {
+      // Set the options source so this can be passed to other components.
+      this.options.src = value;
     }
   }
 
@@ -773,6 +798,7 @@ export class FormioForm extends FormioComponents {
    */
   reset() {
     // Reset the submission data.
+    this.data = this.value = {};
     this.setSubmission({data: {}});
   }
 
@@ -793,7 +819,7 @@ export class FormioForm extends FormioComponents {
       this.checkValidity(submission.data, true)
     ) {
       this.loading = true;
-      if (!this.formio) {
+      if (this.nosubmit || !this.formio) {
         return this.onSubmit(submission, false);
       }
       return this.formio.saveSubmission(submission)
@@ -843,26 +869,6 @@ export class FormioForm extends FormioComponents {
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;
 FormioForm.setAppUrl = Formio.setAppUrl;
-
-/**
- * Embed this form within the current page.
- * @param embed
- */
-FormioForm.embed = function(embed) {
-  if (!embed || !embed.src) {
-    return null;
-  }
-  let id = embed.id || &apos;formio-&apos; + Math.random().toString(36).substring(7);
-  let className = embed.class || &apos;formio-form-wrapper&apos;;
-  let code = embed.styles ? &apos;&lt;link rel=&quot;stylesheet&quot; href=&quot;&apos; + embed.styles + &apos;&quot;&gt;&apos; : &apos;&apos;;
-  code += &apos;&lt;div id=&quot;&apos; + id + &apos;&quot; class=&quot;&apos; + className + &apos;&quot;&gt;&lt;/div&gt;&apos;;
-  document.write(code);
-  let formElement = document.getElementById(id);
-  let form = new FormioForm(formElement);
-  form.src = embed.src;
-  return form;
-};
-
 module.exports = global.FormioForm = FormioForm;
 </code></pre>
 

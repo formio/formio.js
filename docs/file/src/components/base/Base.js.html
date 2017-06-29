@@ -78,6 +78,7 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/file</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -435,6 +436,7 @@ export class BaseComponent {
     if (!this.createWrapper()) {
       this.createInput(this.element);
     }
+    this.createDescription(this.element);
 
     // Disable if needed.
     if (this.options.readOnly || this.component.disabled) {
@@ -532,7 +534,9 @@ export class BaseComponent {
         try {
           let row = this.data;
           let data = this.data;
-          defaultValue = eval(&apos;(function(data, row) { var value = &quot;&quot;;&apos; + this.component.customDefaultValue.toString() + &apos;; return value; })(data, row)&apos;);
+          let value = &apos;&apos;;
+          eval(this.component.customDefaultValue.toString());
+          defaultValue = value;
         }
         catch (e) {
           defaultValue = null;
@@ -695,6 +699,21 @@ export class BaseComponent {
   }
 
   /**
+   * Creates the description block for this input field.
+   * @param container
+   */
+  createDescription(container) {
+    if (!this.component.description) {
+      return;
+    }
+    this.description = this.ce(&apos;description&apos;, &apos;div&apos;, {
+      class: &apos;help-block&apos;
+    });
+    this.description.appendChild(this.text(this.component.description));
+    container.appendChild(this.description);
+  }
+
+  /**
    * Creates a new error element to hold the errors of this element.
    */
   createErrorElement() {
@@ -851,7 +870,7 @@ export class BaseComponent {
     if (&apos;addEventListener&apos; in obj){
       obj.addEventListener(evt, func, false);
     } else if (&apos;attachEvent&apos; in obj) {
-      obj.attachEvent(&apos;on&apos;+evt, func);
+      obj.attachEvent(&apos;on&apos; + evt, func);
     }
   }
 
@@ -878,10 +897,12 @@ export class BaseComponent {
    * @param {string} name - The name of the element to create, for templating purposes.
    * @param {string} type - The type of element to create
    * @param {Object} attr - The element attributes to add to the created element.
+   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
+   * @param {Object} events - A key value list of events to attach to the element.
    *
    * @return {HTMLElement} - The created element.
    */
-  ce(name, type, attr) {
+  ce(name, type, attr, children = null, events = {}) {
     // Allow for template overrides.
     let element = document.createElement(type);
     let compType = this.component.type || this.type;
@@ -908,6 +929,29 @@ export class BaseComponent {
     if (attr) {
       this.attr(element, attr);
     }
+
+    // Attach events.
+    Object.keys(events).forEach(event =&gt; {
+      this.addEventListener(element, event, events[event]);
+    });
+
+    // Append different types of children.
+    const appendChild = child =&gt; {
+      if (Array.isArray(child)) {
+        child.forEach(oneChild =&gt; {
+          appendChild(oneChild);
+        });
+      }
+      else if (child instanceof HTMLElement || child instanceof Text) {
+        element.appendChild(child);
+      }
+      else if (child) {
+        element.appendChild(this.text(child.toString()));
+      }
+    };
+
+    appendChild(children);
+
     return element;
   }
 
@@ -1125,9 +1169,10 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === &apos;string&apos;) {
       try {
+        let value = [];
         let row = this.data;
-        let val = eval(&apos;var value = [];&apos; + this.component.calculateValue.toString() + &apos;; return value;&apos;);
-        this.setValue(val);
+        eval(this.component.calculateValue.toString());
+        this.setValue(value);
       }
       catch (e) {
         /* eslint-disable no-console */
@@ -1383,13 +1428,42 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       BaseComponent.externalLibraries[name].resolve(plugin);
     }
     else {
-      // Add the script to the top page.
-      let script = document.createElement(&apos;script&apos;);
-      script.setAttribute(&apos;src&apos;, src);
-      script.setAttribute(&apos;type&apos;, &apos;text/javascript&apos;);
-      script.setAttribute(&apos;defer&apos;, true);
-      script.setAttribute(&apos;async&apos;, true);
-      document.getElementsByTagName(&apos;head&apos;)[0].appendChild(script);
+      src = _isArray(src) ? src : [src];
+      src.forEach((lib) =&gt; {
+        let attrs = {};
+        let elementType = &apos;&apos;;
+        if (typeof lib === &apos;string&apos;) {
+          lib = {
+            type: &apos;script&apos;,
+            src: lib
+          };
+        }
+        switch (lib.type) {
+          case &apos;script&apos;:
+            elementType = &apos;script&apos;;
+            attrs = {
+              src: lib.src,
+              type: &apos;text/javascript&apos;,
+              defer: true,
+              async: true
+            };
+            break;
+          case &apos;styles&apos;:
+            elementType = &apos;link&apos;;
+            attrs = {
+              href: lib.src,
+              rel: &apos;stylesheet&apos;
+            };
+            break;
+        }
+
+        // Add the script to the top page.
+        let script = document.createElement(elementType);
+        for (let attr in attrs) {
+          script.setAttribute(attr, attrs[attr]);
+        }
+        document.getElementsByTagName(&apos;head&apos;)[0].appendChild(script);
+      });
 
       // if no callback is provided, then check periodically for the script.
       if (polling) {
