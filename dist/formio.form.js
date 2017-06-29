@@ -2832,13 +2832,42 @@ BaseComponent.requireLibrary = function (name, property, src, polling) {
     if (plugin) {
       BaseComponent.externalLibraries[name].resolve(plugin);
     } else {
-      // Add the script to the top page.
-      var script = document.createElement('script');
-      script.setAttribute('src', src);
-      script.setAttribute('type', 'text/javascript');
-      script.setAttribute('defer', true);
-      script.setAttribute('async', true);
-      document.getElementsByTagName('head')[0].appendChild(script);
+      src = (0, _isArray3.default)(src) ? src : [src];
+      src.forEach(function (lib) {
+        var attrs = {};
+        var elementType = '';
+        if (typeof lib === 'string') {
+          lib = {
+            type: 'script',
+            src: lib
+          };
+        }
+        switch (lib.type) {
+          case 'script':
+            elementType = 'script';
+            attrs = {
+              src: lib.src,
+              type: 'text/javascript',
+              defer: true,
+              async: true
+            };
+            break;
+          case 'styles':
+            elementType = 'link';
+            attrs = {
+              href: lib.src,
+              rel: 'stylesheet'
+            };
+            break;
+        }
+
+        // Add the script to the top page.
+        var script = document.createElement(elementType);
+        for (var attr in attrs) {
+          script.setAttribute(attr, attrs[attr]);
+        }
+        document.getElementsByTagName('head')[0].appendChild(script);
+      });
 
       // if no callback is provided, then check periodically for the script.
       if (polling) {
@@ -7209,6 +7238,8 @@ var _get = function get(object, property, receiver) {
 
 var _TextField = require('../textfield/TextField');
 
+var _Base = require('../base/Base');
+
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -7237,6 +7268,101 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
   }
 
   _createClass(TextAreaComponent, [{
+    key: 'wysiwygDefault',
+    value: function wysiwygDefault() {
+      return {
+        theme: 'snow',
+        modules: {
+          toolbar: [[{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'font': [] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }], ['blockquote', 'code-block'], ['link', 'image', 'video', 'formula', 'source']]
+        }
+      };
+    }
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      var _this2 = this;
+
+      if (!this.component.wysiwyg) {
+        return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'createInput', this).call(this, container);
+      }
+
+      // Normalize the configurations.
+      if (this.component.wysiwyg.toolbarGroups) {
+        console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
+        this.component.wysiwyg = this.wysiwygDefault();
+      }
+      if (typeof this.component.wysiwyg === 'boolean') {
+        this.component.wysiwyg = this.wysiwygDefault();
+      }
+
+      // Add the input.
+      this.input = this.ce('input', 'div', {
+        class: 'formio-wysiwyg-editor'
+      });
+      container.appendChild(this.input);
+
+      // Lazy load the quill css.
+      _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.2.6/quill.' + this.component.wysiwyg.theme + '.css' }], true);
+
+      // Lazy load the quill library.
+      this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.2.6/quill.min.js', true).then(function () {
+        _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        var txtArea = document.createElement('textarea');
+        txtArea.setAttribute('class', 'quill-source-code');
+        _this2.quill.addContainer('ql-custom').appendChild(txtArea);
+        document.querySelector('.ql-source').addEventListener('click', function () {
+          if (txtArea.style.display === 'inherit') {
+            _this2.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+          }
+          txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
+        });
+        /** END CODEBLOCK **/
+
+        _this2.quill.on('text-change', function () {
+          txtArea.value = _this2.quill.root.innerHTML;
+          _this2.updateValue(true);
+        });
+
+        if (_this2.options.readOnly || _this2.component.disabled) {
+          _this2.quill.disable();
+        }
+
+        return _this2.quill;
+      });
+
+      return this.input;
+    }
+  }, {
+    key: 'setValue',
+    value: function setValue(value, noUpdate, noValidate) {
+      var _this3 = this;
+
+      if (!this.component.wysiwyg) {
+        return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'setValue', this).call(this, value, noUpdate, noValidate);
+      }
+
+      this.quillReady.then(function (quill) {
+        quill.clipboard.dangerouslyPasteHTML(value);
+        if (!noUpdate) {
+          _this3.updateValue(noValidate);
+        }
+      });
+    }
+  }, {
+    key: 'getValue',
+    value: function getValue() {
+      if (!this.component.wysiwyg) {
+        return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this);
+      }
+
+      if (this.quill) {
+        return this.quill.root.innerHTML;
+      }
+    }
+  }, {
     key: 'elementInfo',
     value: function elementInfo() {
       var info = _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'elementInfo', this).call(this);
@@ -7251,7 +7377,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
   return TextAreaComponent;
 }(_TextField.TextFieldComponent);
 
-},{"../textfield/TextField":35}],35:[function(require,module,exports){
+},{"../base/Base":4,"../textfield/TextField":35}],35:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };

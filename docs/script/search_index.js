@@ -84,6 +84,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/components/file/file.js~filecomponent",
+    "class/src/components/file/File.js~FileComponent.html",
+    "<span>FileComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/file/File.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/form/form.js~formcomponent",
     "class/src/components/form/Form.js~FormComponent.html",
     "<span>FormComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/form/Form.js</span>",
@@ -1470,6 +1476,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#createdescription",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-createDescription",
+    "src/components/base/Base.js~BaseComponent#createDescription",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#createelement",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-createElement",
     "src/components/base/Base.js~BaseComponent#createElement",
@@ -1509,6 +1521,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#defaultvalue",
     "class/src/components/base/Base.js~BaseComponent.html#instance-get-defaultValue",
     "src/components/base/Base.js~BaseComponent#defaultValue",
+    "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#description",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-description",
+    "src/components/base/Base.js~BaseComponent#description",
     "member"
   ],
   [
@@ -2358,6 +2376,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datetime/datetime.js~datetimecomponent#build",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-build",
+    "src/components/datetime/DateTime.js~DateTimeComponent#build",
+    "method"
+  ],
+  [
     "src/components/datetime/datetime.js~datetimecomponent#config",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-config",
     "src/components/datetime/DateTime.js~DateTimeComponent#config",
@@ -2626,6 +2650,156 @@ window.esdocSearchIndex = [
     "file/src/components/fieldset/fixtures/index.js.html",
     "src/components/fieldset/fixtures/index.js",
     "file"
+  ],
+  [
+    "src/components/file/file.js",
+    "file/src/components/file/File.js.html",
+    "src/components/file/File.js",
+    "file"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#addwarnings",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-addWarnings",
+    "src/components/file/File.js~FileComponent#addWarnings",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#build",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-build",
+    "src/components/file/File.js~FileComponent#build",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#buildfilelist",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-buildFileList",
+    "src/components/file/File.js~FileComponent#buildFileList",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#buildimagelist",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-buildImageList",
+    "src/components/file/File.js~FileComponent#buildImageList",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#buildlist",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-buildList",
+    "src/components/file/File.js~FileComponent#buildList",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#buildupload",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-buildUpload",
+    "src/components/file/File.js~FileComponent#buildUpload",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#builduploadstatuslist",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-buildUploadStatusList",
+    "src/components/file/File.js~FileComponent#buildUploadStatusList",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#classname",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-className",
+    "src/components/file/File.js~FileComponent#className",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#constructor",
+    "class/src/components/file/File.js~FileComponent.html#instance-constructor-constructor",
+    "src/components/file/File.js~FileComponent#constructor",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#createfilelink",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-createFileLink",
+    "src/components/file/File.js~FileComponent#createFileLink",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#createfilelistitem",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-createFileListItem",
+    "src/components/file/File.js~FileComponent#createFileListItem",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#createimagelistitem",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-createImageListItem",
+    "src/components/file/File.js~FileComponent#createImageListItem",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#createuploadstatus",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-createUploadStatus",
+    "src/components/file/File.js~FileComponent#createUploadStatus",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#errorcontainer",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-errorContainer",
+    "src/components/file/File.js~FileComponent#errorContainer",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#filesize",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-fileSize",
+    "src/components/file/File.js~FileComponent#fileSize",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#getfile",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-getFile",
+    "src/components/file/File.js~FileComponent#getFile",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#getvalue",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-getValue",
+    "src/components/file/File.js~FileComponent#getValue",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#listcontainer",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-listContainer",
+    "src/components/file/File.js~FileComponent#listContainer",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#refreshdom",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-refreshDOM",
+    "src/components/file/File.js~FileComponent#refreshDOM",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#setvalue",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-setValue",
+    "src/components/file/File.js~FileComponent#setValue",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#support",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-support",
+    "src/components/file/File.js~FileComponent#support",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#upload",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-upload",
+    "src/components/file/File.js~FileComponent#upload",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#uploadcontainer",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-uploadContainer",
+    "src/components/file/File.js~FileComponent#uploadContainer",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#uploadstatuslist",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-uploadStatusList",
+    "src/components/file/File.js~FileComponent#uploadStatusList",
+    "member"
   ],
   [
     "src/components/form/form.js",
@@ -3462,9 +3636,51 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#createinput",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-createInput",
+    "src/components/textarea/TextArea.js~TextAreaComponent#createInput",
+    "method"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent#elementinfo",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-elementInfo",
     "src/components/textarea/TextArea.js~TextAreaComponent#elementInfo",
+    "method"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#getvalue",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-getValue",
+    "src/components/textarea/TextArea.js~TextAreaComponent#getValue",
+    "method"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#input",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-input",
+    "src/components/textarea/TextArea.js~TextAreaComponent#input",
+    "member"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#quill",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-quill",
+    "src/components/textarea/TextArea.js~TextAreaComponent#quill",
+    "member"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#quillready",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-quillReady",
+    "src/components/textarea/TextArea.js~TextAreaComponent#quillReady",
+    "member"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#setvalue",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-setValue",
+    "src/components/textarea/TextArea.js~TextAreaComponent#setValue",
+    "method"
+  ],
+  [
+    "src/components/textarea/textarea.js~textareacomponent#wysiwygdefault",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-wysiwygDefault",
+    "src/components/textarea/TextArea.js~TextAreaComponent#wysiwygDefault",
     "method"
   ],
   [
@@ -3654,6 +3870,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.form.js~formioform#data",
+    "class/src/formio.form.js~FormioForm.html#instance-member-data",
+    "src/formio.form.js~FormioForm#data",
+    "member"
+  ],
+  [
     "src/formio.form.js~formioform#element",
     "class/src/formio.form.js~FormioForm.html#instance-member-element",
     "src/formio.form.js~FormioForm#element",
@@ -3729,6 +3951,12 @@ window.esdocSearchIndex = [
     "src/formio.form.js~formioform#loading",
     "class/src/formio.form.js~FormioForm.html#instance-set-loading",
     "src/formio.form.js~FormioForm#loading",
+    "member"
+  ],
+  [
+    "src/formio.form.js~formioform#nosubmit",
+    "class/src/formio.form.js~FormioForm.html#instance-member-nosubmit",
+    "src/formio.form.js~FormioForm#nosubmit",
     "member"
   ],
   [
@@ -3873,6 +4101,18 @@ window.esdocSearchIndex = [
     "src/formio.form.js~formioform#type",
     "class/src/formio.form.js~FormioForm.html#instance-member-type",
     "src/formio.form.js~FormioForm#type",
+    "member"
+  ],
+  [
+    "src/formio.form.js~formioform#url",
+    "class/src/formio.form.js~FormioForm.html#instance-get-url",
+    "src/formio.form.js~FormioForm#url",
+    "member"
+  ],
+  [
+    "src/formio.form.js~formioform#url",
+    "class/src/formio.form.js~FormioForm.html#instance-set-url",
+    "src/formio.form.js~FormioForm#url",
     "member"
   ],
   [

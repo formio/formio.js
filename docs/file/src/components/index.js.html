@@ -78,6 +78,7 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/file</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -175,6 +176,7 @@ import { SelectBoxesComponent } from &apos;./selectboxes/SelectBoxes&apos;;
 import { SurveyComponent } from &apos;./survey/Survey&apos;;
 import { WellComponent } from &apos;./well/Well&apos;;
 import { GmapComponent } from &apos;./gmap/Gmap&apos;;
+import { FileComponent } from &apos;./file/File&apos;;
 module.exports = {
   address: AddressComponent,
   base: BaseComponent,
@@ -210,6 +212,7 @@ module.exports = {
   survey: SurveyComponent,
   well: WellComponent,
   gmap: GmapComponent,
+  file: FileComponent,
   create: function(component, options, data, nobuild) {
     let comp = null;
     if (!component.type) {

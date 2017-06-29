@@ -78,6 +78,7 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/file</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -143,7 +144,10 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/utils/index.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 const _get = require(&apos;lodash/get&apos;);
+const _clone = require(&apos;lodash/clone&apos;);
 import jsonLogic from &apos;json-logic-js&apos;;
+import { compile } from &apos;handlebars/dist/handlebars&apos;;
+
 module.exports = {
   jsonLogic, // Share
 
@@ -175,8 +179,10 @@ module.exports = {
    *   Whether or not to include layout components.
    * @param {String} path
    *   The current data path of the element. Example: data.user.firstName
+   * @param {Object} parent
+   *   The parent object.
    */
-  eachComponent: function eachComponent(components, fn, includeAll, path) {
+  eachComponent: function eachComponent(components, fn, includeAll, path, parent) {
     if (!components) return;
     path = path || &apos;&apos;;
     components.forEach(function(component) {
@@ -185,6 +191,16 @@ module.exports = {
       var hasComps = component.components &amp;&amp; Array.isArray(component.components);
       var noRecurse = false;
       var newPath = component.key ? (path ? (path + &apos;.&apos; + component.key) : component.key) : &apos;&apos;;
+
+      // Keep track of parent references.
+      if (parent) {
+        // Ensure we don&apos;t create infinite JSON structures.
+        component.parent = _clone(parent);
+        delete component.parent.components;
+        delete component.parent.componentMap;
+        delete component.parent.columns;
+        delete component.parent.rows;
+      }
 
       if (includeAll || component.tree || (!hasColumns &amp;&amp; !hasRows &amp;&amp; !hasComps)) {
         noRecurse = fn(component, newPath);
@@ -200,18 +216,20 @@ module.exports = {
       if (!noRecurse) {
         if (hasColumns) {
           component.columns.forEach(function(column) {
-            eachComponent(column.components, fn, includeAll, subPath());
+            eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null);
           });
         }
 
         else if (hasRows) {
-          [].concat.apply([], component.rows).forEach(function(row) {
-            eachComponent(row.components, fn, includeAll, subPath());
+          component.rows.forEach(function(row) {
+            row.forEach((column) =&gt; {
+              eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null);
+            });
           });
         }
 
         else if (hasComps) {
-          eachComponent(component.components, fn, includeAll, subPath());
+          eachComponent(component.components, fn, includeAll, subPath(), parent ? component : null);
         }
       }
     });
@@ -379,8 +397,28 @@ module.exports = {
    * @returns {XML|string|*|void}
    */
   interpolate: function(string, data) {
-    return string.replace(/\{\{\s*([^\s]*)\s*\}\}/g, function(match, token) {
-      return _get(data, token);
+    return compile(string)(data);
+  },
+
+  /**
+   * Make a filename guaranteed to be unique.
+   * @param name
+   * @returns {string}
+   */
+  uniqueName: function(name) {
+    var parts = name.toLowerCase().replace(/[^0-9a-z\.]/g, &apos;&apos;).split(&apos;.&apos;);
+    var fileName = parts[0];
+    var ext = &apos;&apos;;
+    if (parts.length &gt; 1) {
+      ext = &apos;.&apos; + parts[(parts.length - 1)];
+    }
+    return fileName.substr(0, 10) + &apos;-&apos; + this.guid() + ext;
+  },
+
+  guid: function() {
+    return &apos;xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx&apos;.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c === &apos;x&apos; ? r : (r&amp;0x3|0x8);
+      return v.toString(16);
     });
   }
 };

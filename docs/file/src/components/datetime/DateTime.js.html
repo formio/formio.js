@@ -78,6 +78,7 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/fieldset/Fieldset.js~FieldsetComponent.html">FieldsetComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/fieldset/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/file</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/form/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -145,6 +146,7 @@
 import Flatpickr from &apos;flatpickr&apos;;
 import _get from &apos;lodash/get&apos;;
 import _each from &apos;lodash/each&apos;;
+const momentModule = require(&apos;moment&apos;);
 export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -158,6 +160,28 @@ export class DateTimeComponent extends BaseComponent {
     info.changeEvent = &apos;input&apos;;
     this.component.suffix = true;
     return info;
+  }
+
+  build() {
+    super.build();
+
+    // See if a default date is set.
+    if (this.component.defaultDate) {
+      var defaultDate = new Date(this.component.defaultDate);
+      if (!defaultDate || isNaN(defaultDate.getDate())) {
+        try {
+          let moment = momentModule;
+          defaultDate = new Date(eval(this.component.defaultDate));
+        }
+        catch (e) {
+          defaultDate = &apos;&apos;;
+        }
+      }
+
+      if (defaultDate &amp;&amp; !isNaN(defaultDate.getDate())) {
+        this.setValue(defaultDate);
+      }
+    }
   }
 
   // This select component can handle multiple items on its own.

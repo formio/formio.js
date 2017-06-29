@@ -17,6 +17,33 @@
   min-height: 80px;
 }
 
+.formio-wysiwyg-editor {
+  min-height: 200px;
+  background-color: #fff;
+}
+
+.ql-source:after {
+  content: "[source]";
+}
+
+.quill-source-code {
+  width: 100%;
+  margin: 0px;
+  background: rgb(29, 29, 29);
+  box-sizing: border-box;
+  color: rgb(204, 204, 204);
+  font-size: 15px;
+  outline: none;
+  padding: 20px;
+  line-height: 24px;
+  font-family: Consolas, Menlo, Monaco, "Courier New", monospace;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border: none;
+  display:none;
+}
+
 .form-group.required .control-label:after {
   content:" *";
   color:red;
