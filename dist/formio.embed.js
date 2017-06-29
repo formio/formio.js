@@ -7274,7 +7274,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         theme: 'snow',
         modules: {
           toolbar: [[{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'font': [] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }], ['blockquote', 'code-block'], ['link', 'image', 'video', 'formula', 'showHtml']]
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'font': [] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }], ['blockquote', 'code-block'], ['link', 'image', 'video', 'formula', 'source']]
         }
       };
     }
@@ -7313,7 +7313,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         var txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
         _this2.quill.addContainer('ql-custom').appendChild(txtArea);
-        document.querySelector('.ql-showHtml').addEventListener('click', function () {
+        document.querySelector('.ql-source').addEventListener('click', function () {
           if (txtArea.style.display === 'inherit') {
             _this2.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
           }

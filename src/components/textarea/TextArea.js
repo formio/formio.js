@@ -13,7 +13,7 @@ export class TextAreaComponent extends TextFieldComponent {
           [{ 'color': [] }, { 'background': [] }],
           [{'list': 'ordered'}, {'list': 'bullet'}, { 'indent': '-1'}, { 'indent': '+1' }, { 'align': [] }],
           ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'showHtml']
+          ['link', 'image', 'video', 'formula', 'source']
         ]
       }
     };
@@ -53,11 +53,11 @@ export class TextAreaComponent extends TextFieldComponent {
         var txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
         this.quill.addContainer('ql-custom').appendChild(txtArea);
-        document.querySelector('.ql-showHtml').addEventListener('click', () => {
+        document.querySelector('.ql-source').addEventListener('click', () => {
           if (txtArea.style.display === 'inherit') {
             this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
           }
-          txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
+          txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
         });
         /** END CODEBLOCK **/
 
