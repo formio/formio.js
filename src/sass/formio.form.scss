@@ -3,6 +3,11 @@
   min-height: 80px;
 }
 
+.formio-wysiwyg-editor {
+  min-height: 200px;
+  background-color: #fff;
+}
+
 .form-group.required .control-label:after {
   content:" *";
   color:red;

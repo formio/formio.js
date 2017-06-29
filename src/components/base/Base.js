@@ -1284,13 +1284,42 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       BaseComponent.externalLibraries[name].resolve(plugin);
     }
     else {
-      // Add the script to the top page.
-      let script = document.createElement('script');
-      script.setAttribute('src', src);
-      script.setAttribute('type', 'text/javascript');
-      script.setAttribute('defer', true);
-      script.setAttribute('async', true);
-      document.getElementsByTagName('head')[0].appendChild(script);
+      src = _isArray(src) ? src : [src];
+      src.forEach((lib) => {
+        let attrs = {};
+        let elementType = '';
+        if (typeof lib === 'string') {
+          lib = {
+            type: 'script',
+            src: lib
+          };
+        }
+        switch (lib.type) {
+          case 'script':
+            elementType = 'script';
+            attrs = {
+              src: lib.src,
+              type: 'text/javascript',
+              defer: true,
+              async: true
+            };
+            break;
+          case 'styles':
+            elementType = 'link';
+            attrs = {
+              href: lib.src,
+              rel: 'stylesheet'
+            };
+            break;
+        }
+
+        // Add the script to the top page.
+        let script = document.createElement(elementType);
+        for (let attr in attrs) {
+          script.setAttribute(attr, attrs[attr]);
+        }
+        document.getElementsByTagName('head')[0].appendChild(script);
+      });
 
       // if no callback is provided, then check periodically for the script.
       if (polling) {
