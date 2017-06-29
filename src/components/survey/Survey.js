@@ -45,6 +45,7 @@ export class SurveyComponent extends BaseComponent {
     });
     this.table.appendChild(tbody);
     this.element.appendChild(this.table);
+    this.createDescription(this.element);
     if (this.options.readOnly) {
       this.disabled = true;
     }

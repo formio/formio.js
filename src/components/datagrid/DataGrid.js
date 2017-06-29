@@ -17,6 +17,7 @@ export class DataGridComponent extends FormioComponents {
     }
     this.visibleColumns = true;
     this.buildTable();
+    this.createDescription(this.element);
   }
 
   buildTable(data) {

@@ -292,6 +292,7 @@ export class BaseComponent {
     if (!this.createWrapper()) {
       this.createInput(this.element);
     }
+    this.createDescription(this.element);
 
     // Disable if needed.
     if (this.options.readOnly || this.component.disabled) {
@@ -551,6 +552,21 @@ export class BaseComponent {
     }
     this.label.appendChild(this.text(this.component.label));
     container.appendChild(this.label);
+  }
+
+  /**
+   * Creates the description block for this input field.
+   * @param container
+   */
+  createDescription(container) {
+    if (!this.component.description) {
+      return;
+    }
+    this.description = this.ce('description', 'div', {
+      class: 'help-block'
+    });
+    this.description.appendChild(this.text(this.component.description));
+    container.appendChild(this.description);
   }
 
   /**
