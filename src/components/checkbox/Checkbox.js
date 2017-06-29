@@ -23,6 +23,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.label) {
       this.addInput(this.input, this.element);
     }
+    this.createDescription(this.element);
     if (this.options.readOnly) {
       this.disabled = true;
     }

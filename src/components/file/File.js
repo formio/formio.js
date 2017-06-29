@@ -36,6 +36,7 @@ export class FileComponent extends BaseComponent {
     this.element.appendChild(this.uploadContainer);
     this.addWarnings(this.element);
     this.buildUploadStatusList(this.element);
+    this.createDescription(this.element);
   }
 
   refreshDOM() {

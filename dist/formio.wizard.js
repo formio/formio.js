@@ -1710,6 +1710,7 @@ var BaseComponent = function () {
       if (!this.createWrapper()) {
         this.createInput(this.element);
       }
+      this.createDescription(this.element);
 
       // Disable if needed.
       if (this.options.readOnly || this.component.disabled) {
@@ -1947,6 +1948,24 @@ var BaseComponent = function () {
       }
       this.label.appendChild(this.text(this.component.label));
       container.appendChild(this.label);
+    }
+
+    /**
+     * Creates the description block for this input field.
+     * @param container
+     */
+
+  }, {
+    key: 'createDescription',
+    value: function createDescription(container) {
+      if (!this.component.description) {
+        return;
+      }
+      this.description = this.ce('description', 'div', {
+        class: 'help-block'
+      });
+      this.description.appendChild(this.text(this.component.description));
+      container.appendChild(this.description);
     }
 
     /**
@@ -3110,6 +3129,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       if (!this.label) {
         this.addInput(this.input, this.element);
       }
+      this.createDescription(this.element);
       if (this.options.readOnly) {
         this.disabled = true;
       }
@@ -3699,6 +3719,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
       this.visibleColumns = true;
       this.buildTable();
+      this.createDescription(this.element);
     }
   }, {
     key: 'buildTable',
@@ -4711,6 +4732,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       this.element.appendChild(this.uploadContainer);
       this.addWarnings(this.element);
       this.buildUploadStatusList(this.element);
+      this.createDescription(this.element);
     }
   }, {
     key: 'refreshDOM',
@@ -6991,6 +7013,7 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
       });
       this.table.appendChild(tbody);
       this.element.appendChild(this.table);
+      this.createDescription(this.element);
       if (this.options.readOnly) {
         this.disabled = true;
       }

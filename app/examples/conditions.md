@@ -15,6 +15,7 @@ Formio.createForm(document.getElementById('formio'), {
     {
       "type": "textfield",
       "label": "Type \"Show\"",
+      "description": "Must be exact, and case sensitive.",
       "key": "typeShow",
       "input": true,
       "inputType": "text",
@@ -38,6 +39,7 @@ Formio.createForm(document.getElementById('formio'), {
     {
       "type": "textfield",
       "label": "Type \"Me\"",
+      "description": "Must be exact, and case sensitive.",
       "key": "typeMe",
       "input": true,
       "inputType": "text",
@@ -71,6 +73,7 @@ Formio.createForm(document.getElementById('formio'), {
     {
       "type": "textfield",
       "label": "Type \"The\"",
+      "description": "Must be exact, and case sensitive.",
       "key": "typeThe",
       "input": true,
       "inputType": "text",
@@ -106,6 +109,7 @@ Formio.createForm(document.getElementById('formio'), {
       "input": true,
       "inputType": "text",
       "label": "Type \"Monkey!\"",
+      "description": "Don't forget the '!'.",
       "key": "typeMonkey",
       "validate": {
         "json": {
@@ -176,6 +180,7 @@ Formio.createForm(document.getElementById('formio'), {
       {
         "type": "textfield",
         "label": "Type \"Show\"",
+        "description": "Must be exact, and case sensitive.",
         "key": "typeShow",
         "input": true,
         "inputType": "text",
@@ -199,6 +204,7 @@ Formio.createForm(document.getElementById('formio'), {
       {
         "type": "textfield",
         "label": "Type \"Me\"",
+        "description": "Must be exact, and case sensitive.",
         "key": "typeMe",
         "input": true,
         "inputType": "text",
@@ -232,6 +238,7 @@ Formio.createForm(document.getElementById('formio'), {
       {
         "type": "textfield",
         "label": "Type \"The\"",
+        "description": "Must be exact, and case sensitive.",
         "key": "typeThe",
         "input": true,
         "inputType": "text",
@@ -267,6 +274,7 @@ Formio.createForm(document.getElementById('formio'), {
         "input": true,
         "inputType": "text",
         "label": "Type \"Monkey!\"",
+        "description": "Don't forget the '!'.",
         "key": "typeMonkey",
         "validate": {
           "json": {
