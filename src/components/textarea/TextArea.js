@@ -13,7 +13,7 @@ export class TextAreaComponent extends TextFieldComponent {
           [{ 'color': [] }, { 'background': [] }],
           [{'list': 'ordered'}, {'list': 'bullet'}, { 'indent': '-1'}, { 'indent': '+1' }, { 'align': [] }],
           ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula']
+          ['link', 'image', 'video', 'formula', 'showHtml']
         ]
       }
     };
@@ -48,7 +48,23 @@ export class TextAreaComponent extends TextFieldComponent {
     this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.2.6/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(this.input, this.component.wysiwyg);
-        this.quill.on('text-change', () => this.updateValue(true));
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        var txtArea = document.createElement('textarea');
+        txtArea.setAttribute('class', 'quill-source-code');
+        this.quill.addContainer('ql-custom').appendChild(txtArea);
+        document.querySelector('.ql-showHtml').addEventListener('click', () => {
+          if (txtArea.style.display === 'inherit') {
+            this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+          }
+          txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
+        });
+        /** END CODEBLOCK **/
+
+        this.quill.on('text-change', () => {
+          txtArea.value = this.quill.root.innerHTML;
+          this.updateValue(true);
+        });
 
         if (this.options.readOnly || this.component.disabled) {
           this.quill.disable();

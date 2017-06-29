@@ -7274,7 +7274,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         theme: 'snow',
         modules: {
           toolbar: [[{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'font': [] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }], ['blockquote', 'code-block'], ['link', 'image', 'video', 'formula']]
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'font': [] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }], ['blockquote', 'code-block'], ['link', 'image', 'video', 'formula', 'showHtml']]
         }
       };
     }
@@ -7308,8 +7308,22 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       // Lazy load the quill library.
       this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.2.6/quill.min.js', true).then(function () {
         _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        var txtArea = document.createElement('textarea');
+        txtArea.setAttribute('class', 'quill-source-code');
+        _this2.quill.addContainer('ql-custom').appendChild(txtArea);
+        document.querySelector('.ql-showHtml').addEventListener('click', function () {
+          if (txtArea.style.display === 'inherit') {
+            _this2.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+          }
+          txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
+        });
+        /** END CODEBLOCK **/
+
         _this2.quill.on('text-change', function () {
-          return _this2.updateValue(true);
+          txtArea.value = _this2.quill.root.innerHTML;
+          _this2.updateValue(true);
         });
 
         if (_this2.options.readOnly || _this2.component.disabled) {
