@@ -6414,7 +6414,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       (0, _each3.default)(items, function (item) {
 
         // Add the choice to the select list.
-        _this2.choices._addChoice(_this2.itemValue(item), _this2.itemTemplate(item), false, false);
+        _this2.choices._addChoice(_this2.itemValue(item), _this2.itemTemplate(item));
       });
 
       // If a value is provided, then select it.
@@ -6544,7 +6544,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
           // If it is not found, then add it.
           if (!foundChoice) {
-            this.choices._addChoice(false, false, this.itemValue(value), this.itemTemplate(value));
+            this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
           }
         }
 
