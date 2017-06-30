@@ -56,7 +56,7 @@ export class SelectComponent extends BaseComponent {
     _each(items, (item) => {
 
       // Add the choice to the select list.
-      this.choices._addChoice(false, false, this.itemValue(item), this.itemTemplate(item));
+      this.choices._addChoice(this.itemValue(item), this.itemTemplate(item), false, false);
     });
 
     // If a value is provided, then select it.
