@@ -56,7 +56,7 @@ export class SelectComponent extends BaseComponent {
     _each(items, (item) => {
 
       // Add the choice to the select list.
-      this.choices._addChoice(false, false, this.itemValue(item), this.itemTemplate(item));
+      this.choices._addChoice(this.itemValue(item), this.itemTemplate(item));
     });
 
     // If a value is provided, then select it.
@@ -193,7 +193,7 @@ export class SelectComponent extends BaseComponent {
 
         // If it is not found, then add it.
         if (!foundChoice) {
-          this.choices._addChoice(false, false, this.itemValue(value), this.itemTemplate(value));
+          this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
         }
       }
 
