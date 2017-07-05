@@ -42,9 +42,6 @@ export class ButtonComponent extends BaseComponent {
       this.label = this.text(this.component.label);
       this.element.appendChild(this.label);
     }
-    if (this.component.customScript) {
-        this.customScript = this.text(this.component.customScript);
-    }
     if (this.component.action === 'submit') {
       this.on('submitButton', () => {
         this.loading = true;
@@ -76,9 +73,6 @@ export class ButtonComponent extends BaseComponent {
           break;
         case 'reset':
           this.emit('resetForm');
-          break;
-        case 'script':
-          eval(this.component.customScript);
           break;
         case 'oauth':
           console.log('OAuth currently not supported.');
