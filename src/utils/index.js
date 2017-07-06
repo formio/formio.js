@@ -254,11 +254,16 @@ module.exports = {
    */
   interpolate: function(string, data) {
     const templateSettings = {
-      evaluate: /\{\{(.+?)\}\}/g,
-      interpolate: /\{\{=(.+?)\}\}/g,
-      escape: /\{\{-(.+?)\}\}/g
+      evaluate: /\{\%(.+?)\%\}/g,
+      interpolate: /\{\{(.+?)\}\}/g,
+      escape: /\{\{\{(.+?)\}\}\}/g
     };
-    return compile(string, templateSettings)(data);
+    try {
+      return compile(string, templateSettings)(data);
+    }
+    catch (err) {
+      console.warn('Error interpolating template', err, string, data);
+    }
   },
 
   /**
