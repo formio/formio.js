@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Replace Handlebars templating with lodash.
 
+## 2.11.8
+### Fixed
+ - Issue where choices.js changed internal api that we rely on.
+
 ## 2.11.7
 ### Added
  - Description support for fields.
