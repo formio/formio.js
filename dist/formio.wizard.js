@@ -205,9 +205,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     value: function addComponent(component, element, data) {
       element = element || this.element;
       data = data || this.data;
-      var components = require('./index');
       component.row = this.row;
-      var comp = components.create(component, this.options, data);
+      var comp = FormioComponents.registry.create(component, this.options, data);
       this.components.push(comp);
       this.setHidden(comp);
       element.appendChild(comp.getElement());
@@ -471,6 +470,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
   return FormioComponents;
 }(_Base.BaseComponent);
+
+FormioComponents.registry = require('./index');
 
 },{"./base/Base":4,"./index":22,"lodash/assign":231,"lodash/clone":232,"lodash/each":238,"lodash/remove":266,"native-promise-only":273}],2:[function(require,module,exports){
 'use strict';
@@ -7748,6 +7749,10 @@ var _eventemitter = require("eventemitter2");
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
+var _index = require("./components/index");
+
+var _index2 = _interopRequireDefault(_index);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -8583,10 +8588,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 FormioForm.setBaseUrl = _formio2.default.setBaseUrl;
 FormioForm.setApiUrl = _formio2.default.setApiUrl;
 FormioForm.setAppUrl = _formio2.default.setAppUrl;
+FormioForm.components = _index2.default;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":40,"eventemitter2":51,"lodash/assign":231,"lodash/clone":232,"lodash/debounce":235,"lodash/each":238,"native-promise-only":273}],40:[function(require,module,exports){
+},{"./components/Components":1,"./components/index":22,"./formio":40,"eventemitter2":51,"lodash/assign":231,"lodash/clone":232,"lodash/debounce":235,"lodash/each":238,"native-promise-only":273}],40:[function(require,module,exports){
 (function (global){
 'use strict';
 

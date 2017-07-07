@@ -5,7 +5,6 @@ import _remove from 'lodash/remove';
 import _assign from 'lodash/assign';
 import Promise from "native-promise-only";
 import { BaseComponent } from './base/Base';
-import Components from './index';
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -319,5 +318,4 @@ export class FormioComponents extends BaseComponent {
   }
 }
 
-// Create a component registry.
-FormioComponents.registry = Components;
+FormioComponents.registry = require('./index');

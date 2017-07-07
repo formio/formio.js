@@ -205,9 +205,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     value: function addComponent(component, element, data) {
       element = element || this.element;
       data = data || this.data;
-      var components = require('./index');
       component.row = this.row;
-      var comp = components.create(component, this.options, data);
+      var comp = FormioComponents.registry.create(component, this.options, data);
       this.components.push(comp);
       this.setHidden(comp);
       element.appendChild(comp.getElement());
@@ -471,6 +470,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
   return FormioComponents;
 }(_Base.BaseComponent);
+
+FormioComponents.registry = require('./index');
 
 },{"./base/Base":4,"./index":22,"lodash/assign":232,"lodash/clone":233,"lodash/each":239,"lodash/remove":267,"native-promise-only":274}],2:[function(require,module,exports){
 'use strict';
@@ -7748,6 +7749,10 @@ var _eventemitter = require("eventemitter2");
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
+var _index = require("./components/index");
+
+var _index2 = _interopRequireDefault(_index);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -8583,10 +8588,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 FormioForm.setBaseUrl = _formio2.default.setBaseUrl;
 FormioForm.setApiUrl = _formio2.default.setApiUrl;
 FormioForm.setAppUrl = _formio2.default.setAppUrl;
+FormioForm.components = _index2.default;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":41,"eventemitter2":52,"lodash/assign":232,"lodash/clone":233,"lodash/debounce":236,"lodash/each":239,"native-promise-only":274}],40:[function(require,module,exports){
+},{"./components/Components":1,"./components/index":22,"./formio":41,"eventemitter2":52,"lodash/assign":232,"lodash/clone":233,"lodash/debounce":236,"lodash/each":239,"native-promise-only":274}],40:[function(require,module,exports){
 "use strict";
 
 var _nativePromiseOnly = require("native-promise-only");
@@ -8600,6 +8606,8 @@ var _formio2 = _interopRequireDefault(_formio);
 var _formio3 = require("./formio.form");
 
 var _formio4 = _interopRequireDefault(_formio3);
+
+var _Components = require("./components/Components");
 
 var _formio5 = require("./formio");
 
@@ -8663,11 +8671,21 @@ _formio6.default.embedForm = function (embed) {
   return _formio6.default.createForm(formElement, embed.src);
 };
 
+/**
+ * Register a new component into the component registry.
+ *
+ * @param name
+ * @param component
+ */
+_formio6.default.registerComponent = function (name, component) {
+  _Components.FormioComponents.registry[name] = component;
+};
+
 exports.Formio = _formio6.default;
 exports.FormioForm = _formio4.default;
 exports.FormioWizard = _formio2.default;
 
-},{"./formio":41,"./formio.form":39,"./formio.wizard":42,"native-promise-only":274}],41:[function(require,module,exports){
+},{"./components/Components":1,"./formio":41,"./formio.form":39,"./formio.wizard":42,"native-promise-only":274}],41:[function(require,module,exports){
 (function (global){
 'use strict';
 
