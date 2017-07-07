@@ -185,7 +185,7 @@ export class FormioWizard extends FormioForm {
       this.wizardHeader.innerHTML = '';
     }
 
-    this.wizardHeader = this.ce('wizardHeader', 'ul', {
+    this.wizardHeader = this.ce('ul', {
       class: 'pagination'
     });
 
@@ -201,7 +201,7 @@ export class FormioWizard extends FormioForm {
         return;
       }
 
-      let pageButton = this.ce('pageButton', 'li', {
+      let pageButton = this.ce('li', {
         class: (i === this.page) ? 'active' : '',
         style: (i === this.page) ? '' : 'cursor: pointer;'
       });
@@ -214,7 +214,7 @@ export class FormioWizard extends FormioForm {
         });
       }
 
-      let pageLabel = this.ce('pageLabel', 'span');
+      let pageLabel = this.ce('span');
       let pageTitle = page.title;
       if (currentPage.breadcrumb.toLowerCase() === 'condensed') {
         pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
@@ -289,7 +289,7 @@ export class FormioWizard extends FormioForm {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = '';
     }
-    this.wizardNav = this.ce('wizardNav', 'ul', {
+    this.wizardNav = this.ce('ul', {
       class: 'list-inline'
     });
     this.element.appendChild(this.wizardNav);
@@ -302,9 +302,9 @@ export class FormioWizard extends FormioForm {
       if (!this.hasButton(button.name)) {
         return;
       }
-      let buttonWrapper = this.ce('wizardNavButton', 'li');
+      let buttonWrapper = this.ce('li');
       let buttonProp = button.name + 'Button';
-      this[buttonProp] = this.ce(buttonProp, 'button', {
+      this[buttonProp] = this.ce('button', {
         class: button.class + ' btn-wizard-nav-' + button.name
       });
       this[buttonProp].appendChild(this.text(this.t(button.name)));

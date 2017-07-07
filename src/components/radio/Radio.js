@@ -10,21 +10,21 @@ export class RadioComponent extends BaseComponent {
   }
 
   createInput(container) {
-    let inputGroup = this.ce('inputGroup', 'div', {
+    let inputGroup = this.ce('div', {
       class: 'input-group'
     });
     let inputType = this.component.inputType;
     _each(this.component.values, (value) => {
       var wrapperClass = (this.component.inline ? inputType + '-inline' : inputType);
-      let labelWrapper = this.ce('labelWrapper', 'div', {
+      let labelWrapper = this.ce('div', {
         class: wrapperClass
       });
-      let label = this.ce('label', 'label', {
+      let label = this.ce('label', {
         class: 'control-label'
       });
 
       // Create the SPAN around the textNode for better style hooks
-      let labelSpan = this.ce('labelSpan', 'span');
+      let labelSpan = this.ce('span');
 
       // Determine the attributes for this input.
       let inputId = this.component.key + this.row + '-' + value.value;
@@ -33,7 +33,7 @@ export class RadioComponent extends BaseComponent {
       label.setAttribute('for', this.info.attr.id);
 
       // Create the input.
-      let input = this.ce('input', 'input');
+      let input = this.ce('input');
       _each(this.info.attr, function(value, key) {
         input.setAttribute(key, value);
       });

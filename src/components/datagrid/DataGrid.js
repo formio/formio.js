@@ -33,17 +33,17 @@ export class DataGridComponent extends FormioComponents {
         tableClass += 'table-' + prop + ' ';
       }
     });
-    this.tableElement = this.ce('element', 'table', {
+    this.tableElement = this.ce('table', {
       class: tableClass
     });
 
-    let thead = this.ce('header', 'thead');
+    let thead = this.ce('thead');
 
     // Build the header.
-    let tr = this.ce('headerRow', 'tr');
+    let tr = this.ce('tr');
     _each(this.component.components, (comp) => {
       if ((this.visibleColumns === true) || (this.visibleColumns[comp.key])) {
-        let th = this.ce('headerColumn', 'th');
+        let th = this.ce('th');
         if (comp.validate && comp.validate.required) {
           th.setAttribute('class', 'field-required');
         }
@@ -54,13 +54,13 @@ export class DataGridComponent extends FormioComponents {
         tr.appendChild(th);
       }
     });
-    let th = this.ce('headerExtra', 'th');
+    let th = this.ce('th');
     tr.appendChild(th);
     thead.appendChild(tr);
     this.tableElement.appendChild(thead);
 
     // Create the table body.
-    this.tbody = this.ce('table', 'tbody');
+    this.tbody = this.ce('tbody');
 
     // Build the rows.
     this.buildRows(data);
@@ -79,7 +79,7 @@ export class DataGridComponent extends FormioComponents {
     this.tbody.innerHTML = '';
     this.rows = [];
     _each(this.data[this.component.key], (row, index) => {
-      let tr = this.ce('tableRow', 'tr');
+      let tr = this.ce('tr');
       let cols = {};
       _each(this.component.components, (col) => {
         let column = _cloneDeep(col);
@@ -96,22 +96,22 @@ export class DataGridComponent extends FormioComponents {
         }
         cols[column.key] = comp;
         if ((this.visibleColumns === true) || this.visibleColumns[col.key]) {
-          let td = this.ce('tableColumn', 'td');
+          let td = this.ce('td');
           td.appendChild(comp.element);
           tr.appendChild(td);
           comp.checkConditions(data);
         }
       });
       this.rows.push(cols);
-      let td = this.ce('tableRemoveRow', 'td');
+      let td = this.ce('td');
       td.appendChild(this.removeButton(index));
       tr.appendChild(td);
       this.tbody.appendChild(tr);
     });
 
     // Add the add button.
-    let tr = this.ce('tableAddRow', 'tr');
-    let td = this.ce('tableAddColumn', 'td', {
+    let tr = this.ce('tr');
+    let td = this.ce('td', {
       colspan: (this.component.components.length + 1)
     });
     td.appendChild(this.addButton());

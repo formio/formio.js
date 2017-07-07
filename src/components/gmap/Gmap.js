@@ -15,13 +15,13 @@ export class GmapComponent extends BaseComponent {
   }
 
   build() {
-    this.element = this.ce('element', 'div', {
+    this.element = this.ce('div', {
       class: 'map-container'
     });
     this.initGoogleMap();
     this.input = this.createInput(this.element);
     this.addInput(this.input, this.element);
-    let gmapElement = this.ce('gmapElement', 'div', {
+    let gmapElement = this.ce('div', {
       id: this.component.map.gmapId,
       style: "min-height: 300px; height: calc(100vh - 600px);"
     });

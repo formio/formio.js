@@ -34,7 +34,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (this.component.label) {
       className += ' checkbox';
     }
-    this.element = this.ce('element', 'div', {
+    this.element = this.ce('div', {
       id: this.id,
       class: className
     });
@@ -44,12 +44,12 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.label) {
       return null;
     }
-    this.label = this.ce('label', 'label', {
+    this.label = this.ce('label', {
       class: 'control-label'
     });
 
     // Create the SPAN around the textNode for better style hooks
-    this.labelSpan = this.ce('labelSpan', 'span');
+    this.labelSpan = this.ce('span');
 
     if (this.info.attr.id) {
       this.label.setAttribute('for', this.info.attr.id);
@@ -66,7 +66,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.input) {
       return;
     }
-    let input = this.ce('input', this.info.type, this.info.attr);
+    let input = this.ce(this.info.type, this.info.attr);
     this.errorContainer = container;
     return input;
   }
