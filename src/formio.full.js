@@ -2,6 +2,7 @@
 import Promise from "native-promise-only";
 import FormioWizard from './formio.wizard';
 import FormioForm from './formio.form';
+import { FormioComponents } from './components/Components';
 import Formio from './formio';
 
 /**
@@ -56,6 +57,16 @@ Formio.embedForm = function(embed) {
   document.write(code);
   let formElement = document.getElementById(id);
   return Formio.createForm(formElement, embed.src);
+};
+
+/**
+ * Register a new component into the component registry.
+ *
+ * @param name
+ * @param component
+ */
+Formio.registerComponent = function(name, component) {
+  FormioComponents.registry[name] = component;
 };
 
 exports.Formio = Formio;

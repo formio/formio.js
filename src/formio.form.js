@@ -7,6 +7,7 @@ import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _assign from 'lodash/assign';
 import EventEmitter from 'eventemitter2';
+import Components from './components/index';
 
 /**
  * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
@@ -725,4 +726,5 @@ export class FormioForm extends FormioComponents {
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;
 FormioForm.setAppUrl = Formio.setAppUrl;
+FormioForm.components = Components;
 module.exports = global.FormioForm = FormioForm;
