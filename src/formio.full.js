@@ -2,8 +2,8 @@
 import Promise from "native-promise-only";
 import FormioWizard from './formio.wizard';
 import FormioForm from './formio.form';
-import Formio from './formio';
 import { FormioComponents } from './components/Components';
+import Formio from './formio';
 
 /**
  * Provided a form object, this will return the form instance.

@@ -8620,11 +8620,11 @@ var _formio3 = require("./formio.form");
 
 var _formio4 = _interopRequireDefault(_formio3);
 
+var _Components = require("./components/Components");
+
 var _formio5 = require("./formio");
 
 var _formio6 = _interopRequireDefault(_formio5);
-
-var _Components = require("./components/Components");
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
