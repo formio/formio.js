@@ -2,7 +2,6 @@
 import Promise from "native-promise-only";
 import Formio from './formio';
 import { FormioComponents } from './components/Components';
-import _debounce from 'lodash/debounce';
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _assign from 'lodash/assign';

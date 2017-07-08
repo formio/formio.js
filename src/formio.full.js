@@ -3,6 +3,7 @@ import Promise from "native-promise-only";
 import FormioWizard from './formio.wizard';
 import FormioForm from './formio.form';
 import Formio from './formio';
+import { FormioComponents } from './components/Components';
 
 /**
  * Provided a form object, this will return the form instance.
@@ -56,6 +57,16 @@ Formio.embedForm = function(embed) {
   document.write(code);
   let formElement = document.getElementById(id);
   return Formio.createForm(formElement, embed.src);
+};
+
+/**
+ * Register a new component.
+ *
+ * @param type {string} - The type of the component.
+ * @param component {function} - The constructor function of the component.
+ */
+FormioForm.registerComponent = Formio.registerComponent = function(type, component) {
+  FormioComponents.customComponents[type] = component;
 };
 
 exports.Formio = Formio;
