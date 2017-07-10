@@ -44,7 +44,7 @@
   display:none;
 }
 
-.form-group.required .control-label:after {
+.field-required:after {
   content:" *";
   color:red;
 }

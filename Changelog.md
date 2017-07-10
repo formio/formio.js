@@ -4,10 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 2.12.0
+### Added
+ - A register component method to register custom components.
+
 ### Changed
  - Remove templating from ce function.
  - Replace Handlebars templating with lodash.
+ 
+### Fixed
+ - An issue with the select boxes component that showed required astrix on all options.
 
 ## 2.11.8
 ### Fixed

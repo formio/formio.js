@@ -9,4 +9,13 @@ describe('SelectBoxes Component', function() {
       done();
     });
   });
+
+  it('Should build a required SelectBoxes component', function(done) {
+    Harness.testCreate(SelectBoxesComponent, comps.comp2).then((component) => {
+      Harness.testElements(component, 'input[type="checkbox"]', 8);
+      Harness.testElements(component, 'label.control-label > span', 8);
+      Harness.testElements(component, 'label.control-label.field-required', 1);
+      done();
+    });
+  });
 });

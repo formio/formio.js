@@ -38,12 +38,11 @@ export class RadioComponent extends BaseComponent {
         input.setAttribute(key, value);
       });
       this.addInput(input, label);
-      
+
       labelSpan.appendChild(this.text(value.label));
-      
+      label.appendChild(labelSpan);
       labelWrapper.appendChild(label);
-      labelWrapper.appendChild(labelSpan)
-      
+
       inputGroup.appendChild(labelWrapper);
     });
     container.appendChild(inputGroup);
