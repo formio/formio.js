@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 ### Changed
+ - Remove templating from ce function.
  - Replace Handlebars templating with lodash.
 
 ## 2.11.8

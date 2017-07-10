@@ -317,10 +317,10 @@ export class FormioForm extends FormioComponents {
     if (this._loading !== loading) {
       this._loading = loading;
       if (!this.loader && loading) {
-        this.loader = this.ce('loaderWrapper', 'div', {
+        this.loader = this.ce('div', {
           class: 'loader-wrapper'
         });
-        let spinner = this.ce('loader', 'div', {
+        let spinner = this.ce('div', {
           class: 'loader text-center'
         });
         this.loader.appendChild(spinner);
@@ -535,7 +535,7 @@ export class FormioForm extends FormioComponents {
       catch(err) {}
     }
     if (message) {
-      this.alert = this.ce('alert-' + type, 'div', {
+      this.alert = this.ce('div', {
         class: 'alert alert-' + type,
         role: 'alert'
       });

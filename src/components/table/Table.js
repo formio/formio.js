@@ -2,7 +2,7 @@ import _each from 'lodash/each';
 import { FormioComponents } from '../Components';
 export class TableComponent extends FormioComponents {
   build() {
-    this.element = this.ce('element', 'div', {
+    this.element = this.ce('div', {
       class: 'table-responsive'
     });
 
@@ -12,16 +12,16 @@ export class TableComponent extends FormioComponents {
         tableClass += 'table-' + prop + ' ';
       }
     });
-    let table = this.ce('table', 'table', {
+    let table = this.ce('table', {
       class: tableClass
     });
 
     // Build the header.
     if (this.component.header && this.component.header.length) {
-      let thead = this.ce('header', 'thead');
-      let thr = this.ce('headerRow', 'tr');
+      let thead = this.ce('thead');
+      let thr = this.ce('tr');
       _each(this.component.header, (header) => {
-        let th = this.ce('headerColumn', 'th');
+        let th = this.ce('th');
         th.appendChild(this.text(header));
         thr.appendChild(th);
       });
@@ -30,11 +30,11 @@ export class TableComponent extends FormioComponents {
     }
 
     // Build the body.
-    let tbody = this.ce('table', 'tbody');
+    let tbody = this.ce('tbody');
     _each(this.component.rows, (row) => {
-      let tr = this.ce('tableRow', 'tr');
+      let tr = this.ce('tr');
       _each(row, (column) => {
-        let td = this.ce('tableColumn', 'td');
+        let td = this.ce('td');
         _each(column.components, (comp) => {
           this.addComponent(comp, td);
         });
