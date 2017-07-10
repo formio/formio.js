@@ -1940,8 +1940,12 @@ var BaseComponent = function () {
       if (!this.component.label || this.options.inputsOnly) {
         return;
       }
+      var className = 'control-label';
+      if (this.component.input && this.component.validate && this.component.validate.required) {
+        className += ' field-required';
+      }
       this.label = this.ce('label', 'label', {
-        class: 'control-label'
+        class: className
       });
       if (this.info.attr.id) {
         this.label.setAttribute('for', this.info.attr.id);
@@ -6168,9 +6172,8 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
         _this2.addInput(input, label);
 
         labelSpan.appendChild(_this2.text(value.label));
-
+        label.appendChild(labelSpan);
         labelWrapper.appendChild(label);
-        labelWrapper.appendChild(labelSpan);
 
         inputGroup.appendChild(labelWrapper);
       });

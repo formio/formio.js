@@ -544,8 +544,12 @@ export class BaseComponent {
     if (!this.component.label || this.options.inputsOnly) {
       return;
     }
+    let className = 'control-label';
+    if (this.component.input && this.component.validate && this.component.validate.required) {
+      className += ' field-required';
+    }
     this.label = this.ce('label', 'label', {
-      class: 'control-label'
+      class: className
     });
     if (this.info.attr.id) {
       this.label.setAttribute('for', this.info.attr.id);
