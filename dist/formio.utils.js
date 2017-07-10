@@ -622,6 +622,9 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     operations[name] = code;
   };
 
+  jsonLogic.rm_operation = function(name) {
+    delete operations[name];
+  };
 
   jsonLogic.rule_like = function(rule, pattern) {
     // console.log("Is ". JSON.stringify(rule) . " like " . JSON.stringify(pattern) . "?");
