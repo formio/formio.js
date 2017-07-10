@@ -26,7 +26,7 @@ export class SignatureComponent extends BaseComponent {
   }
 
   getSignatureImage() {
-    let image = this.ce('image', 'img', {
+    let image = this.ce('img', {
       style: ('width: ' + this.component.width + ';height: ' + this.component.height)
     });
     image.setAttribute('src', this.value);
@@ -53,13 +53,13 @@ export class SignatureComponent extends BaseComponent {
     this.element.setAttribute('class', classNames);
 
     this.input = this.createInput(this.element);
-    let padBody = this.ce('pad', 'div', {
+    let padBody = this.ce('div', {
       class: 'signature-pad-body',
       style: ('width: ' + this.component.width + ';height: ' + this.component.height)
     });
 
     // Create the refresh button.
-    let refresh = this.ce('refresh', 'a', {
+    let refresh = this.ce('a', {
       class: 'btn btn-sm btn-default signature-pad-refresh'
     });
     let refreshIcon = this.getIcon('refresh');
@@ -67,7 +67,7 @@ export class SignatureComponent extends BaseComponent {
     padBody.appendChild(refresh);
 
     // The signature canvas.
-    let canvas = this.ce('canvas', 'canvas', {
+    let canvas = this.ce('canvas', {
       class: 'signature-pad-canvas',
       height: this.component.height
     });
@@ -76,7 +76,7 @@ export class SignatureComponent extends BaseComponent {
 
     // Add the footer.
     if (this.component.footer) {
-      let footer = this.ce('footer', 'div', {
+      let footer = this.ce('div', {
         class: 'signature-pad-footer'
       });
       footer.appendChild(this.text(this.component.footer));

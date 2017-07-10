@@ -239,7 +239,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The icon element.
    */
   getIcon(name) {
-    return this.ce(name + 'Icon', 'i', {
+    return this.ce('i', {
       class: 'glyphicon glyphicon-' + name
     });
   }
@@ -338,7 +338,7 @@ export class BaseComponent {
    * @returns {HTMLElement}
    */
   createElement() {
-    this.element = this.ce('element', 'div', {
+    this.element = this.ce('div', {
       id: this.id,
       class: this.className
     });
@@ -360,10 +360,10 @@ export class BaseComponent {
       return false;
     }
     else {
-      let table = this.ce('wrapper', 'table', {
+      let table = this.ce('table', {
         class: 'table table-bordered'
       });
-      this.tbody = this.ce('wrapperBody', 'tbody');
+      this.tbody = this.ce('tbody');
       table.appendChild(this.tbody);
 
       // Add a default value.
@@ -461,18 +461,18 @@ export class BaseComponent {
     this.inputs = [];
     this.tbody.innerHTML = '';
     _each(this.data[this.component.key], (value, index) => {
-      let tr = this.ce('row', 'tr');
-      let td = this.ce('column', 'td');
+      let tr = this.ce('tr');
+      let td = this.ce('td');
       this.createInput(td);
       tr.appendChild(td);
-      let tdAdd = this.ce('columnAdd', 'td');
+      let tdAdd = this.ce('td');
       tdAdd.appendChild(this.removeButton(index));
       tr.appendChild(tdAdd);
       this.tbody.appendChild(tr);
     });
 
-    let tr = this.ce('rowAdd', 'tr');
-    let td = this.ce('addRowColumn', 'td', {
+    let tr = this.ce('tr');
+    let td = this.ce('td', {
       colspan: '2'
     });
     td.appendChild(this.addButton());
@@ -488,7 +488,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The "Add New" button html element.
    */
   addButton() {
-    let addButton = this.ce('addButton', 'a', {
+    let addButton = this.ce('a', {
       class: 'btn btn-primary'
     });
     this.addEventListener(addButton, 'click', (event) => {
@@ -496,7 +496,7 @@ export class BaseComponent {
       this.addValue();
     });
 
-    let addIcon = this.ce('addIcon', 'span', {
+    let addIcon = this.ce('span', {
       class: 'glyphicon glyphicon-plus'
     });
     addButton.appendChild(addIcon);
@@ -518,7 +518,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The html element of the remove button.
    */
   removeButton(index) {
-    let removeButton = this.ce('removeButton', 'button', {
+    let removeButton = this.ce('button', {
       type: 'button',
       class: 'btn btn-default',
       tabindex: '-1'
@@ -529,7 +529,7 @@ export class BaseComponent {
       this.removeValue(index);
     });
 
-    let removeIcon = this.ce('removeIcon', 'span', {
+    let removeIcon = this.ce('span', {
       class: 'glyphicon glyphicon-remove-circle'
     });
     removeButton.appendChild(removeIcon);
@@ -548,7 +548,7 @@ export class BaseComponent {
     if (this.component.input && this.component.validate && this.component.validate.required) {
       className += ' field-required';
     }
-    this.label = this.ce('label', 'label', {
+    this.label = this.ce('label', {
       class: className
     });
     if (this.info.attr.id) {
@@ -566,7 +566,7 @@ export class BaseComponent {
     if (!this.component.description) {
       return;
     }
-    this.description = this.ce('description', 'div', {
+    this.description = this.ce('div', {
       class: 'help-block'
     });
     this.description.appendChild(this.text(this.component.description));
@@ -580,7 +580,7 @@ export class BaseComponent {
     if (!this.errorContainer) {
       return;
     }
-    this.errorElement = this.ce('errors', 'div', {
+    this.errorElement = this.ce('div', {
       class: 'formio-errors'
     });
     this.errorContainer.appendChild(this.errorElement);
@@ -596,7 +596,7 @@ export class BaseComponent {
   addPrefix(input, inputGroup) {
     let prefix = null;
     if (this.component.prefix) {
-      prefix = this.ce('prefix', 'div', {
+      prefix = this.ce('div', {
         class: 'input-group-addon'
       });
       prefix.appendChild(this.text(this.component.prefix));
@@ -615,7 +615,7 @@ export class BaseComponent {
   addSuffix(input, inputGroup) {
     let suffix = null;
     if (this.component.suffix) {
-      suffix = this.ce('suffix', 'div', {
+      suffix = this.ce('div', {
         class: 'input-group-addon'
       });
       suffix.appendChild(this.text(this.component.suffix));
@@ -634,7 +634,7 @@ export class BaseComponent {
   addInputGroup(input, container) {
     let inputGroup = null;
     if (this.component.prefix || this.component.suffix) {
-      inputGroup = this.ce('inputGroup', 'div', {
+      inputGroup = this.ce('div', {
         class: 'input-group'
       });
       container.appendChild(inputGroup);
@@ -705,7 +705,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - Either the input or the group that contains the input.
    */
   createInput(container) {
-    let input = this.ce('input', this.info.type, this.info.attr);
+    let input = this.ce(this.info.type, this.info.attr);
     this.setInputMask(input);
     let inputGroup = this.addInputGroup(input, container);
     this.addPrefix(input, inputGroup);
@@ -754,46 +754,22 @@ export class BaseComponent {
   /**
    * Alias for document.createElement.
    *
-   * @param {string} name - The name of the element to create, for templating purposes.
+   * DEPRECATED - @param {string} name - The name of the element to create, for templating purposes.
    * @param {string} type - The type of element to create
    * @param {Object} attr - The element attributes to add to the created element.
    * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
-   * @param {Object} events - A key value list of events to attach to the element.
+   * DEPRECATED - @param {Object} events - A key value list of events to attach to the element.
    *
    * @return {HTMLElement} - The created element.
    */
-  ce(name, type, attr, children = null, events = {}) {
-    // Allow for template overrides.
+  ce(type, attr, children = null, events = {}) {
+    // Create the element.
     let element = document.createElement(type);
-    let compType = this.component.type || this.type;
-    if (
-      this.options &&
-      this.options.template &&
-      (
-        (this.options.template[compType] && this.options.template[compType][name]) ||
-        (this.options.template.global && this.options.template.global[name])
-      )
-    ) {
-      let template = _get(this.options, 'template.' + compType + '.' + name) || _get(this.options, 'template.global.' + name);
-      if (typeof template === 'function') {
-        let returnElement = template(this, type, attr, element);
-        if (returnElement) {
-          return returnElement;
-        }
-      }
-      else {
-        // Assign the attributes.
-        _assign(attr, template);
-      }
-    }
+
+    // Add attributes.
     if (attr) {
       this.attr(element, attr);
     }
-
-    // Attach events.
-    Object.keys(events).forEach(event => {
-      this.addEventListener(element, event, events[event]);
-    });
 
     // Append different types of children.
     const appendChild = child => {
@@ -832,7 +808,14 @@ export class BaseComponent {
   attr(element, attr) {
     _each(attr, function (value, key) {
       if (typeof value !== 'undefined') {
-        element.setAttribute(key, value);
+        if (key.indexOf('on') === 0) {
+          // If this is an event, add a listener.
+          this.addEventListener(element, key.substr(2).toLowerCase(), value);
+        }
+        else {
+          // Otherwise it is just an attribute.
+          element.setAttribute(key, value);
+        }
       }
     });
   }
@@ -878,7 +861,7 @@ export class BaseComponent {
    */
   addInputError(message) {
     if (this.errorElement) {
-      let errorMessage = this.ce('errorMessage', 'p', {
+      let errorMessage = this.ce('p', {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));
@@ -1190,7 +1173,7 @@ export class BaseComponent {
       if (defaultValue !== undefined && (option.value === defaultValue)) {
         attrs.selected = 'selected';
       }
-      let optionElement = this.ce(tag, 'option', attrs);
+      let optionElement = this.ce('option', attrs);
       optionElement.appendChild(this.text(option.label));
       select.appendChild(optionElement);
     });

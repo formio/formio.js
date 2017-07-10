@@ -34,7 +34,7 @@ export class TextAreaComponent extends TextFieldComponent {
     }
 
     // Add the input.
-    this.input = this.ce('input', 'div', {
+    this.input = this.ce('div', {
       class: 'formio-wysiwyg-editor'
     });
     container.appendChild(this.input);

@@ -101,7 +101,7 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   addSuffix(input, inputGroup) {
-    let suffix = this.ce('suffix', 'span', {
+    let suffix = this.ce('span', {
       class: 'input-group-addon'
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));

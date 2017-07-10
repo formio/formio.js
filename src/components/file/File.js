@@ -64,16 +64,16 @@ export class FileComponent extends BaseComponent {
   }
 
   buildFileList() {
-    return this.ce('filelist', 'ul', {class: 'list-group list-group-striped'}, [
-      this.ce('fileheader', 'li', {class: 'list-group-item list-group-header hidden-xs hidden-sm'},
-        this.ce('fileheaderrow', 'div', {class: 'row'},
+    return this.ce('ul', {class: 'list-group list-group-striped'}, [
+      this.ce('li', {class: 'list-group-item list-group-header hidden-xs hidden-sm'},
+        this.ce('div', {class: 'row'},
           [
-            this.ce('deletecol', 'div', {class: 'col-md-1'}),
-            this.ce('filecol', 'div', {class: 'col-md-9'},
-              this.ce('bold', 'strong', {}, 'File Name')
+            this.ce('div', {class: 'col-md-1'}),
+            this.ce('div', {class: 'col-md-9'},
+              this.ce('strong', {}, 'File Name')
             ),
-            this.ce('sizecol', 'div', {class: 'col-md-2'},
-              this.ce('bold', 'strong', {}, 'Size')
+            this.ce('div', {class: 'col-md-2'},
+              this.ce('strong', {}, 'Size')
             )
           ]
         )
@@ -83,14 +83,15 @@ export class FileComponent extends BaseComponent {
   }
 
   createFileListItem(fileInfo, index) {
-    return this.ce('fileinforow', 'li', {class: 'list-group-item'},
-      this.ce('fileheaderrow', 'div', {class: 'row'},
+    return this.ce('li', {class: 'list-group-item'},
+      this.ce('div', {class: 'row'},
         [
-          this.ce('deletecol', 'div', {class: 'col-md-1'},
+          this.ce('div', {class: 'col-md-1'},
             (
               !this.disabled ?
-                this.ce('deleteSpan', 'span', {class: 'glyphicon glyphicon-remove'}, null, {
-                  click: event => {
+                this.ce('span', {
+                  class: 'glyphicon glyphicon-remove',
+                  onClick: event => {
                     event.preventDefault();
                     this.data[this.component.key].splice(index, 1);
                     this.refreshDOM();
@@ -101,21 +102,22 @@ export class FileComponent extends BaseComponent {
                 null
             )
           ),
-          this.ce('filecol', 'div', {class: 'col-md-9'}, this.createFileLink(fileInfo)),
-          this.ce('sizecol', 'div', {class: 'col-md-2'}, this.fileSize(fileInfo.size))
+          this.ce('div', {class: 'col-md-9'}, this.createFileLink(fileInfo)),
+          this.ce('div', {class: 'col-md-2'}, this.fileSize(fileInfo.size))
         ]
       )
     )
   }
 
   createFileLink(file) {
-    return this.ce('filelink', 'a', {href: file.url, target: '_blank'}, file.name, {
-      click: this.getFile.bind(this, file)
-    });
+    return this.ce('a', {
+      href: file.url, target: '_blank',
+      onClick: this.getFile.bind(this, file)
+    }, file.name);
   }
 
   buildImageList() {
-    return this.ce('imagelist', 'div', {},
+    return this.ce('div', {},
       this.data[this.component.key].map((fileInfo, index) => this.createImageListItem(fileInfo, index))
     );
   }
@@ -128,19 +130,19 @@ export class FileComponent extends BaseComponent {
           image.src = result.url;
         });
     }
-    return this.ce('imageinforow', 'div', {},
-      this.ce('span', 'span', {},
+    return this.ce('div', {},
+      this.ce('span', {},
         [
-          image = this.ce('filecol', 'img', {src: '', alt: fileInfo.name, style: 'width:' + this.component.imageSize + 'px'}),
+          image = this.ce('img', {src: '', alt: fileInfo.name, style: 'width:' + this.component.imageSize + 'px'}),
           (
             !this.disabled ?
-              this.ce('deleteSpan', 'span', {class: 'glyphicon glyphicon-remove'}, null, {
-                click: event => {
+              this.ce('span', {
+                class: 'glyphicon glyphicon-remove',
+                onClick: event => {
                   event.preventDefault();
                   this.data[this.component.key].splice(index, 1);
                   this.refreshDOM();
                   this.triggerChange();
-
                 }
               }) :
               null
@@ -154,19 +156,38 @@ export class FileComponent extends BaseComponent {
     // Drop event must change this pointer so need a reference to parent this.
     const element = this;
     // If this is disabled or a single value with a value, don't show the upload div.
-    return this.ce('uploadwrapper', 'div', {},
+    return this.ce('div', {},
       (
         (!this.disabled && (this.component.multiple || this.data[this.component.key].length === 0)) ?
-          this.ce('upload', 'div', {class: 'fileSelector'},
+          this.ce('div', {
+            class: 'fileSelector',
+            onDragover: function (event) {
+              this.className = 'fileSelector fileDragOver';
+              event.preventDefault();
+            },
+            onDragleave: function (event) {
+              this.className = 'fileSelector';
+              event.preventDefault();
+            },
+            onDrop: function(event) {
+              this.className = 'fileSelector';
+              event.preventDefault();
+              element.upload(event.dataTransfer.files);
+              return false;
+            }
+          },
             [
-              this.ce('icon', 'i', {class: 'glyphicon glyphicon-cloud-upload'}),
+              this.ce('i', {class: 'glyphicon glyphicon-cloud-upload'}),
               this.text(' Drop files to attach, or '),
-              this.ce('browse', 'a', false, 'browse', {
-                click: event => {
+              this.ce('a', {
+                onClick: event => {
                   event.preventDefault();
                   // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
                   // a click event on it.
-                  let input = this.ce('fileinput', 'input', {type: 'file'});
+                  let input = this.ce('input', {
+                    type: 'file',
+                    onChange: () => {this.upload(input.files)}
+                  });
                   // Trigger a click event on the input.
                   if (typeof input.trigger === 'function') {
                     input.trigger('click');
@@ -174,60 +195,43 @@ export class FileComponent extends BaseComponent {
                   else {
                     input.click();
                   }
-                  input.addEventListener('change', () => {this.upload(input.files)});
                 }
-              })
-            ],
-            {
-              dragover: function (event) {
-                this.className = 'fileSelector fileDragOver';
-                event.preventDefault();
-              },
-              dragleave: function (event) {
-                this.className = 'fileSelector';
-                event.preventDefault();
-              },
-              drop: function(event) {
-                this.className = 'fileSelector';
-                event.preventDefault();
-                element.upload(event.dataTransfer.files);
-                return false;
-              }
-            }
+              }, 'browse')
+            ]
           ) :
-          this.ce('uploadwrapper', 'div')
+          this.ce('div')
       )
     );
   }
 
   buildUploadStatusList(container) {
-    let list = this.ce('uploadlist', 'div');
+    let list = this.ce('div');
     this.uploadStatusList = list;
     container.appendChild(list);
   }
 
   addWarnings(container) {
     let hasWarnings = false;
-    let warnings = this.ce('warnings', 'div', {class: 'alert alert-warning'});
+    let warnings = this.ce('div', {class: 'alert alert-warning'});
     if (!this.component.storage) {
       hasWarnings = true;
-      warnings.appendChild(this.ce('nostorage', 'p').appendChild(this.text('No storage has been set for this field. File uploads are disabled until storage is set up.')));
+      warnings.appendChild(this.ce('p').appendChild(this.text('No storage has been set for this field. File uploads are disabled until storage is set up.')));
     }
     if (!this.support.dnd) {
       hasWarnings = true;
-      warnings.appendChild(this.ce('nodnd', 'p').appendChild(this.text('FFile Drag/Drop is not supported for this browser.')));
+      warnings.appendChild(this.ce('p').appendChild(this.text('FFile Drag/Drop is not supported for this browser.')));
     }
     if (!this.support.filereader) {
       hasWarnings = true;
-      warnings.appendChild(this.ce('nofilereader', 'p').appendChild(this.text('File API & FileReader API not supported.')));
+      warnings.appendChild(this.ce('p').appendChild(this.text('File API & FileReader API not supported.')));
     }
     if (!this.support.formdata) {
       hasWarnings = true;
-      warnings.appendChild(this.ce('noformdata', 'p').appendChild(this.text('XHR2\'s FormData is not supported.')));
+      warnings.appendChild(this.ce('p').appendChild(this.text('XHR2\'s FormData is not supported.')));
     }
     if (!this.support.progress) {
       hasWarnings = true;
-      warnings.appendChild(this.ce('noprogress', 'p').appendChild(this.text('XHR2\'s upload progress isn\'t supported.')));
+      warnings.appendChild(this.ce('p').appendChild(this.text('XHR2\'s upload progress isn\'t supported.')));
     }
     if (hasWarnings) {
       container.appendChild(warnings);
@@ -240,21 +244,22 @@ export class FileComponent extends BaseComponent {
 
   createUploadStatus(fileUpload) {
     let container;
-    return container = this.ce('uploadstatus', 'div', {class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '')}, [
-      this.ce('filerow', 'div', {class: 'row'}, [
-          this.ce('filecell', 'div', {class: 'fileName control-label col-sm-10'}, [
+    return container = this.ce('div', {class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '')}, [
+      this.ce('div', {class: 'row'}, [
+          this.ce('div', {class: 'fileName control-label col-sm-10'}, [
             fileUpload.name,
-            this.ce('removefile', 'span', {class: 'glyphicon glyphicon-remove'}, undefined, {
-              click: () => {this.uploadStatusList.removeChild(container)}
+            this.ce('span', {
+              class: 'glyphicon glyphicon-remove',
+              onClick: () => {this.uploadStatusList.removeChild(container)}
             })
           ]),
-          this.ce('sizecell', 'div', {class: 'fileSize control-label col-sm-2 text-right'}, this.fileSize(fileUpload.size))
+          this.ce('div', {class: 'fileSize control-label col-sm-2 text-right'}, this.fileSize(fileUpload.size))
         ]),
-      this.ce('statusrow', 'div', {class: 'row'}, [
-        this.ce('progresscell', 'div', {class: 'col-sm-12'}, [
+      this.ce('div', {class: 'row'}, [
+        this.ce('div', {class: 'col-sm-12'}, [
           (fileUpload.status === 'progress' ?
-            this.ce('progresscell', 'div', {class: 'progress'},
-              this.ce('progressbar', 'div', {
+            this.ce('div', {class: 'progress'},
+              this.ce('div', {
                 class: 'progress-bar',
                 role: 'progressbar',
                 'aria-valuenow': fileUpload.progress,
@@ -262,10 +267,10 @@ export class FileComponent extends BaseComponent {
                 'aria-valuemax': 100,
                 style: 'width:' + fileUpload.progress + '%'
               },
-                this.ce('srprogress', 'span', {class: 'sr-only'}, fileUpload.progress + '% Complete')
+                this.ce('span', {class: 'sr-only'}, fileUpload.progress + '% Complete')
               )
             ) :
-            this.ce('messagecell', 'div', {class: 'bg-' + fileUpload.status}, fileUpload.message)
+            this.ce('div', {class: 'bg-' + fileUpload.status}, fileUpload.message)
           )
         ])
       ])

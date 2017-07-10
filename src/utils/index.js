@@ -1,8 +1,8 @@
 'use strict';
-const _get = require('lodash/get');
-const _clone = require('lodash/clone');
+import _clone from 'lodash/clone';
+import _get from 'lodash/get';
+import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
-import { compile } from 'handlebars/dist/handlebars';
 
 module.exports = {
   jsonLogic, // Share
@@ -253,7 +253,17 @@ module.exports = {
    * @returns {XML|string|*|void}
    */
   interpolate: function(string, data) {
-    return compile(string)(data);
+    const templateSettings = {
+      evaluate: /\{\%(.+?)\%\}/g,
+      interpolate: /\{\{(.+?)\}\}/g,
+      escape: /\{\{\{(.+?)\}\}\}/g
+    };
+    try {
+      return compile(string, templateSettings)(data);
+    }
+    catch (err) {
+      console.warn('Error interpolating template', err, string, data);
+    }
   },
 
   /**

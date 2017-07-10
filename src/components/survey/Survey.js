@@ -4,16 +4,16 @@ export class SurveyComponent extends BaseComponent {
   build() {
     this.createElement();
     this.createLabel(this.element);
-    this.table = this.ce('table', 'table', {
+    this.table = this.ce('table', {
       class: 'table table-striped table-bordered'
     });
 
     // Build header.
-    let thead = this.ce('header', 'thead');
-    let thr = this.ce('headerRow', 'tr');
-    thr.appendChild(this.ce('headerColumn', 'td'));
+    let thead = this.ce('thead');
+    let thr = this.ce('tr');
+    thr.appendChild(this.ce('td'));
     _each(this.component.values, (value) => {
-      let th = this.ce('headerColumn', 'th', {
+      let th = this.ce('th', {
         style: 'text-align: center;'
       });
       th.appendChild(this.text(value.label));
@@ -22,17 +22,17 @@ export class SurveyComponent extends BaseComponent {
     thead.appendChild(thr);
     this.table.appendChild(thead);
     // Build the body.
-    let tbody = this.ce('table', 'tbody');
+    let tbody = this.ce('tbody');
     _each(this.component.questions, (question) => {
-      let tr = this.ce('tableRow', 'tr');
-      let td = this.ce('questionColumn', 'td');
+      let tr = this.ce('tr');
+      let td = this.ce('td');
       td.appendChild(this.text(question.label));
       tr.appendChild(td);
       _each(this.component.values, (value) => {
-        let td = this.ce('valueColumn', 'td', {
+        let td = this.ce('td', {
           style: 'text-align: center;'
         });
-        let input = this.ce('input', 'input', {
+        let input = this.ce('input', {
           type: 'radio',
           name: 'data[' + this.component.key + '][' + question.value + ']',
           value: value.value,
