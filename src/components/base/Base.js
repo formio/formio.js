@@ -143,6 +143,10 @@ export class BaseComponent {
     this.options.name = this.options.name || 'data';
 
     /**
+     * The Input script instance for this component.
+     */
+    this.customScript = null;
+    /**
      * The validators that are assigned to this component.
      * @type {[string]}
      */
