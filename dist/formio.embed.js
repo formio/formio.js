@@ -205,9 +205,12 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     value: function addComponent(component, element, data) {
       element = element || this.element;
       data = data || this.data;
-      var components = require('./index');
       component.row = this.row;
-      var comp = components.create(component, this.options, data);
+      if (!this.options.components) {
+        this.options.components = require('./index');
+        (0, _assign3.default)(this.options.components, FormioComponents.customComponents);
+      }
+      var comp = this.options.components.create(component, this.options, data);
       this.components.push(comp);
       this.setHidden(comp);
       element.appendChild(comp.getElement());
@@ -471,6 +474,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
   return FormioComponents;
 }(_Base.BaseComponent);
+
+FormioComponents.customComponents = {};
 
 },{"./base/Base":4,"./index":22,"lodash/assign":233,"lodash/clone":234,"lodash/each":240,"lodash/remove":268,"native-promise-only":275}],2:[function(require,module,exports){
 'use strict';
@@ -7746,10 +7751,6 @@ var _formio2 = _interopRequireDefault(_formio);
 
 var _Components = require("./components/Components");
 
-var _debounce2 = require("lodash/debounce");
-
-var _debounce3 = _interopRequireDefault(_debounce2);
-
 var _each2 = require("lodash/each");
 
 var _each3 = _interopRequireDefault(_each2);
@@ -8604,7 +8605,7 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":42,"eventemitter2":53,"lodash/assign":233,"lodash/clone":234,"lodash/debounce":237,"lodash/each":240,"native-promise-only":275}],41:[function(require,module,exports){
+},{"./components/Components":1,"./formio":42,"eventemitter2":53,"lodash/assign":233,"lodash/clone":234,"lodash/each":240,"native-promise-only":275}],41:[function(require,module,exports){
 "use strict";
 
 var _nativePromiseOnly = require("native-promise-only");
@@ -8618,6 +8619,8 @@ var _formio2 = _interopRequireDefault(_formio);
 var _formio3 = require("./formio.form");
 
 var _formio4 = _interopRequireDefault(_formio3);
+
+var _Components = require("./components/Components");
 
 var _formio5 = require("./formio");
 
@@ -8681,11 +8684,21 @@ _formio6.default.embedForm = function (embed) {
   return _formio6.default.createForm(formElement, embed.src);
 };
 
+/**
+ * Register a new component.
+ *
+ * @param type {string} - The type of the component.
+ * @param component {function} - The constructor function of the component.
+ */
+_formio4.default.registerComponent = _formio6.default.registerComponent = function (type, component) {
+  _Components.FormioComponents.customComponents[type] = component;
+};
+
 exports.Formio = _formio6.default;
 exports.FormioForm = _formio4.default;
 exports.FormioWizard = _formio2.default;
 
-},{"./formio":42,"./formio.form":40,"./formio.wizard":43,"native-promise-only":275}],42:[function(require,module,exports){
+},{"./components/Components":1,"./formio":42,"./formio.form":40,"./formio.wizard":43,"native-promise-only":275}],42:[function(require,module,exports){
 (function (global){
 'use strict';
 

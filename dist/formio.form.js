@@ -205,9 +205,12 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     value: function addComponent(component, element, data) {
       element = element || this.element;
       data = data || this.data;
-      var components = require('./index');
       component.row = this.row;
-      var comp = components.create(component, this.options, data);
+      if (!this.options.components) {
+        this.options.components = require('./index');
+        (0, _assign3.default)(this.options.components, FormioComponents.customComponents);
+      }
+      var comp = this.options.components.create(component, this.options, data);
       this.components.push(comp);
       this.setHidden(comp);
       element.appendChild(comp.getElement());
@@ -471,6 +474,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
   return FormioComponents;
 }(_Base.BaseComponent);
+
+FormioComponents.customComponents = {};
 
 },{"./base/Base":4,"./index":22,"lodash/assign":230,"lodash/clone":231,"lodash/each":237,"lodash/remove":265,"native-promise-only":272}],2:[function(require,module,exports){
 'use strict';
@@ -7728,10 +7733,6 @@ var _formio2 = _interopRequireDefault(_formio);
 
 var _Components = require("./components/Components");
 
-var _debounce2 = require("lodash/debounce");
-
-var _debounce3 = _interopRequireDefault(_debounce2);
-
 var _each2 = require("lodash/each");
 
 var _each3 = _interopRequireDefault(_each2);
@@ -8586,7 +8587,7 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":40,"eventemitter2":50,"lodash/assign":230,"lodash/clone":231,"lodash/debounce":234,"lodash/each":237,"native-promise-only":272}],40:[function(require,module,exports){
+},{"./components/Components":1,"./formio":40,"eventemitter2":50,"lodash/assign":230,"lodash/clone":231,"lodash/each":237,"native-promise-only":272}],40:[function(require,module,exports){
 (function (global){
 'use strict';
 

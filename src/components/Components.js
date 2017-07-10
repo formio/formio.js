@@ -5,6 +5,7 @@ import _remove from 'lodash/remove';
 import _assign from 'lodash/assign';
 import Promise from "native-promise-only";
 import { BaseComponent } from './base/Base';
+
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -109,9 +110,12 @@ export class FormioComponents extends BaseComponent {
   addComponent(component, element, data) {
     element = element || this.element;
     data = data || this.data;
-    let components = require('./index');
     component.row = this.row;
-    let comp = components.create(component, this.options, data);
+    if (!this.options.components) {
+      this.options.components = require('./index');
+      _assign(this.options.components, FormioComponents.customComponents);
+    }
+    let comp = this.options.components.create(component, this.options, data);
     this.components.push(comp);
     this.setHidden(comp);
     element.appendChild(comp.getElement());
@@ -318,3 +322,5 @@ export class FormioComponents extends BaseComponent {
     });
   }
 }
+
+FormioComponents.customComponents = {};
