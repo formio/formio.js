@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.12.1
+### Changed
+ - Upgrade Choices to 2.8.7
+ - Upgrade Flatpickr to 3.0.6
+ - Upgrade json-logic-js to 1.1.3
+
+### Added
+ - A new findComponents method for locating components based on search queries.
+
 ## 2.12.0
 ### Added
  - A register component method to register custom components.
