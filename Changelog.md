@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.12.2
+### Changed
+ - Allow the FormioUtils to be globally accessible.
+
 ## 2.12.1
 ### Changed
  - Upgrade Choices to 2.8.7

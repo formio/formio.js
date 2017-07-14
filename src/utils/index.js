@@ -4,7 +4,7 @@ import _get from 'lodash/get';
 import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
 
-module.exports = {
+const FormioUtils = {
   jsonLogic, // Share
 
   /**
@@ -104,7 +104,7 @@ module.exports = {
    */
   getComponent: function getComponent(components, key) {
     var result;
-    module.exports.eachComponent(components, function(component) {
+    FormioUtils.eachComponent(components, function(component) {
       if (component.key === key) {
         result = component;
       }
@@ -121,7 +121,7 @@ module.exports = {
    */
   findComponents: function findComponents(components, query) {
     var results = [];
-    module.exports.eachComponent(components, function(component) {
+    FormioUtils.eachComponent(components, function(component) {
       var matches = false;
       for (var search in query) {
         matches = (_get(component, search) === query[search]);
@@ -149,7 +149,7 @@ module.exports = {
    */
   flattenComponents: function flattenComponents(components, includeAll) {
     var flattened = {};
-    module.exports.eachComponent(components, function(component, path) {
+    FormioUtils.eachComponent(components, function(component, path) {
       flattened[path] = component;
     }, includeAll);
     return flattened;
@@ -312,3 +312,5 @@ module.exports = {
     });
   }
 };
+
+module.exports = global.FormioUtils = FormioUtils;
