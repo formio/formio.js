@@ -52,6 +52,21 @@ describe('eachComponent', function() {
     expect(paths).to.deep.equal(testPaths);
   });
 
+  it('Should be able to find all textfield components', function() {
+    var comps = utils.findComponents(components, {type: 'textfield'});
+    expect(comps.length).to.equal(6);
+  });
+
+  it('Should be able to find components with special properties.', function() {
+    var components3 = require('./fixtures/components3.json');
+    var comps = utils.findComponents(components3, {'properties.path': 'a'});
+    expect(comps.length).to.equal(4);
+    expect(comps[0].key).to.equal('b');
+    expect(comps[1].key).to.equal('e');
+    expect(comps[2].key).to.equal('j');
+    expect(comps[3].key).to.equal('m');
+  });
+
   it('Should be able to generate paths based on component types', function() {
     var components = require('./fixtures/components2.json');
     var paths = [
