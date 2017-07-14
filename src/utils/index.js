@@ -113,6 +113,30 @@ module.exports = {
   },
 
   /**
+   * Finds a component provided a query of properties of that component.
+   *
+   * @param components
+   * @param query
+   * @return {*}
+   */
+  findComponents: function findComponents(components, query) {
+    var results = [];
+    module.exports.eachComponent(components, function(component) {
+      var matches = false;
+      for (var search in query) {
+        matches = (_get(component, search) === query[search]);
+        if (!matches) {
+          break;
+        }
+      }
+      if (matches) {
+        results.push(component);
+      }
+    }, true);
+    return results;
+  },
+
+  /**
    * Flatten the form components for data manipulation.
    *
    * @param {Object} components
