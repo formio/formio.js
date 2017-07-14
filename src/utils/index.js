@@ -92,21 +92,46 @@ const FormioUtils = {
   },
 
   /**
+   * Matches if a component matches the query.
+   *
+   * @param component
+   * @param query
+   * @return {boolean}
+   */
+  matchComponent: function(component, query) {
+    if (typeof query === 'string') {
+      return component.key === query;
+    }
+    else {
+      var matches = false;
+      for (var search in query) {
+        matches = (_get(component, search) === query[search]);
+        if (!matches) {
+          break;
+        }
+      }
+      return matches;
+    }
+  },
+
+  /**
    * Get a component by its key
    *
    * @param {Object} components
    *   The components to iterate.
-   * @param {String} key
-   *   The key of the component to get.
+   * @param {String|Object} key
+   *   The key of the component to get, or a query of the component to search.
    *
    * @returns {Object}
    *   The component that matches the given key, or undefined if not found.
    */
   getComponent: function getComponent(components, key) {
     var result;
-    FormioUtils.eachComponent(components, function(component) {
-      if (component.key === key) {
+    FormioUtils.eachComponent(components, function(component, path) {
+      if (FormioUtils.matchComponent(component, key)) {
+        component.path = path;
         result = component;
+        return true;
       }
     });
     return result;
@@ -121,15 +146,9 @@ const FormioUtils = {
    */
   findComponents: function findComponents(components, query) {
     var results = [];
-    FormioUtils.eachComponent(components, function(component) {
-      var matches = false;
-      for (var search in query) {
-        matches = (_get(component, search) === query[search]);
-        if (!matches) {
-          break;
-        }
-      }
-      if (matches) {
+    FormioUtils.eachComponent(components, function(component, path) {
+      if (FormioUtils.matchComponent(component, query)) {
+        component.path = path;
         results.push(component);
       }
     }, true);

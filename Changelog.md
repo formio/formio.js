@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.12.3
+### Added
+ - Ability to pass a query to getComponent.
+
 ## 2.12.2
 ### Changed
  - Allow the FormioUtils to be globally accessible.
