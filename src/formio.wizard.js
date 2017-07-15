@@ -4,8 +4,6 @@ import FormioForm from './formio.form';
 import Formio from './formio';
 import FormioUtils from './utils';
 import each from 'lodash/each';
-import clone from 'lodash/clone';
-import jsonLogic from 'json-logic-js';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
@@ -51,7 +49,7 @@ export class FormioWizard extends FormioForm {
         }
         // Or use JSON Logic.
         else {
-          let result = jsonLogic.apply(form.nextPage, {
+          let result = FormioUtils.jsonLogic.apply(form.nextPage, {
             data: data,
             page: page,
             form: form

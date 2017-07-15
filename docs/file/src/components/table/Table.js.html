@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -146,7 +147,7 @@
 import { FormioComponents } from &apos;../Components&apos;;
 export class TableComponent extends FormioComponents {
   build() {
-    this.element = this.ce(&apos;element&apos;, &apos;div&apos;, {
+    this.element = this.ce(&apos;div&apos;, {
       class: &apos;table-responsive&apos;
     });
 
@@ -156,16 +157,16 @@ export class TableComponent extends FormioComponents {
         tableClass += &apos;table-&apos; + prop + &apos; &apos;;
       }
     });
-    let table = this.ce(&apos;table&apos;, &apos;table&apos;, {
+    let table = this.ce(&apos;table&apos;, {
       class: tableClass
     });
 
     // Build the header.
     if (this.component.header &amp;&amp; this.component.header.length) {
-      let thead = this.ce(&apos;header&apos;, &apos;thead&apos;);
-      let thr = this.ce(&apos;headerRow&apos;, &apos;tr&apos;);
+      let thead = this.ce(&apos;thead&apos;);
+      let thr = this.ce(&apos;tr&apos;);
       _each(this.component.header, (header) =&gt; {
-        let th = this.ce(&apos;headerColumn&apos;, &apos;th&apos;);
+        let th = this.ce(&apos;th&apos;);
         th.appendChild(this.text(header));
         thr.appendChild(th);
       });
@@ -174,11 +175,11 @@ export class TableComponent extends FormioComponents {
     }
 
     // Build the body.
-    let tbody = this.ce(&apos;table&apos;, &apos;tbody&apos;);
+    let tbody = this.ce(&apos;tbody&apos;);
     _each(this.component.rows, (row) =&gt; {
-      let tr = this.ce(&apos;tableRow&apos;, &apos;tr&apos;);
+      let tr = this.ce(&apos;tr&apos;);
       _each(row, (column) =&gt; {
-        let td = this.ce(&apos;tableColumn&apos;, &apos;td&apos;);
+        let td = this.ce(&apos;td&apos;);
         _each(column.components, (comp) =&gt; {
           this.addComponent(comp, td);
         });

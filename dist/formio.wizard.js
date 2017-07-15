@@ -9771,14 +9771,6 @@ var _each = require('lodash/each');
 
 var _each2 = _interopRequireDefault(_each);
 
-var _clone = require('lodash/clone');
-
-var _clone2 = _interopRequireDefault(_clone);
-
-var _jsonLogicJs = require('json-logic-js');
-
-var _jsonLogicJs2 = _interopRequireDefault(_jsonLogicJs);
-
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -9854,7 +9846,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
           }
           // Or use JSON Logic.
           else {
-              var result = _jsonLogicJs2.default.apply(form.nextPage, {
+              var result = _utils2.default.jsonLogic.apply(form.nextPage, {
                 data: data,
                 page: page,
                 form: form
@@ -10148,7 +10140,7 @@ FormioWizard.setAppUrl = _formio4.default.setAppUrl;
 module.exports = global.FormioWizard = FormioWizard;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./formio":40,"./formio.form":39,"./utils":48,"json-logic-js":68,"lodash/clone":229,"lodash/each":236,"native-promise-only":275}],42:[function(require,module,exports){
+},{"./formio":40,"./formio.form":39,"./utils":48,"lodash/each":236,"native-promise-only":275}],42:[function(require,module,exports){
 'use strict';
 
 module.exports = {

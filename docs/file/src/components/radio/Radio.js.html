@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -154,21 +155,21 @@ export class RadioComponent extends BaseComponent {
   }
 
   createInput(container) {
-    let inputGroup = this.ce(&apos;inputGroup&apos;, &apos;div&apos;, {
+    let inputGroup = this.ce(&apos;div&apos;, {
       class: &apos;input-group&apos;
     });
     let inputType = this.component.inputType;
     _each(this.component.values, (value) =&gt; {
       var wrapperClass = (this.component.inline ? inputType + &apos;-inline&apos; : inputType);
-      let labelWrapper = this.ce(&apos;labelWrapper&apos;, &apos;div&apos;, {
+      let labelWrapper = this.ce(&apos;div&apos;, {
         class: wrapperClass
       });
-      let label = this.ce(&apos;label&apos;, &apos;label&apos;, {
+      let label = this.ce(&apos;label&apos;, {
         class: &apos;control-label&apos;
       });
 
       // Create the SPAN around the textNode for better style hooks
-      let labelSpan = this.ce(&apos;labelSpan&apos;, &apos;span&apos;);
+      let labelSpan = this.ce(&apos;span&apos;);
 
       // Determine the attributes for this input.
       let inputId = this.component.key + this.row + &apos;-&apos; + value.value;
@@ -177,17 +178,16 @@ export class RadioComponent extends BaseComponent {
       label.setAttribute(&apos;for&apos;, this.info.attr.id);
 
       // Create the input.
-      let input = this.ce(&apos;input&apos;, &apos;input&apos;);
+      let input = this.ce(&apos;input&apos;);
       _each(this.info.attr, function(value, key) {
         input.setAttribute(key, value);
       });
       this.addInput(input, label);
-      
+
       labelSpan.appendChild(this.text(value.label));
-      
+      label.appendChild(labelSpan);
       labelWrapper.appendChild(label);
-      labelWrapper.appendChild(labelSpan)
-      
+
       inputGroup.appendChild(labelWrapper);
     });
     container.appendChild(inputGroup);

@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -146,60 +147,50 @@
 import _each from &apos;lodash/each&apos;;
 import _has from &apos;lodash/has&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
-import jsonLogic from &apos;json-logic-js&apos;;
+import FormioUtils from &apos;../utils/index&apos;;
 export var Validator = {
   get: _get,
   each: _each,
   has: _has,
-  boolValue: function(value) {
-    if (typeof value === &apos;boolean&apos;) {
-      return value;
+  checkValidator: function(component, validator, setting, value, data) {
+    // Make sure this component isn&apos;t conditionally disabled.
+    if (!FormioUtils.checkCondition(component.component, data, component.data)) {
+      return &apos;&apos;;
     }
-    else if (typeof value === &apos;string&apos;) {
-      return (value.toLowerCase() === &apos;true&apos;);
-    }
-    else {
-      return !!value;
-    }
-  },
-  empty: function(value) {
-    return value == null || value.length === 0;
-  },
-  name: function(component) {
-    return component.label || component.placeholder || component.key;
-  },
-  checkValidator: function(validator, component, setting, value, data, row, t) {
-    let result = validator.check.call(this, component, setting, value, data, row);
+
+    let result = validator.check.call(this, component, setting, value, data);
     if (typeof result === &apos;string&apos;) {
       return result;
     }
     if (!result) {
-      return validator.message.call(this, component, setting, t);
+      return validator.message.call(this, component, setting);
     }
     return &apos;&apos;;
   },
-  validate: function(validator, component, value, data, row, t) {
-    if (validator.key &amp;&amp; _has(component, validator.key)) {
-      let setting = this.get(component, validator.key);
-      return this.checkValidator(validator, component, setting, value, data, row, t);
+  validate: function(component, validator, value, data) {
+    if (validator.key &amp;&amp; _has(component.component, validator.key)) {
+      let setting = this.get(component.component, validator.key);
+      return this.checkValidator(component, validator, setting, value, data);
     }
-    return this.checkValidator(validator, component, null, value, data, row, t);
+    return this.checkValidator(component, validator, null, value, data);
   },
-  check: function(validators, component, value, data, row, t) {
+  check: function(component, data) {
     let result = &apos;&apos;;
-    _each(validators, (name) =&gt; {
+    let value = component.getRawValue();
+    data = data || component.data;
+    _each(component.validators, (name) =&gt; {
       if (this.validators.hasOwnProperty(name)) {
         let validator = this.validators[name];
-        if (component.multiple &amp;&amp; _isArray(value)) {
+        if (component.component.multiple &amp;&amp; _isArray(value)) {
           _each(value, (val) =&gt; {
-            result = this.validate(validator, component, val, data, row, t);
+            result = this.validate(component, validator, val, data);
             if (result) {
               return false;
             }
           });
         }
         else {
-          result = this.validate(validator, component, value, data, row, t);
+          result = this.validate(component, validator, value, data);
         }
         if (result) {
           return false;
@@ -211,22 +202,21 @@ export var Validator = {
   validators: {
     required: {
       key: &apos;validate.required&apos;,
-      message: function(component, setting, t) {
-        return t(&apos;required&apos;, {field: this.name(component)});
+      message: function(component, setting) {
+        return component.t(&apos;required&apos;, {field: component.name});
       },
       check: function(component, setting, value) {
-        let required = Validator.boolValue(setting);
-        if (!required) {
+        if (!FormioUtils.boolValue(setting)) {
           return true;
         }
-        return !Validator.empty(value);
+        return !component.isEmpty(value);
       }
     },
     minLength: {
       key: &apos;validate.minLength&apos;,
-      message: function(component, setting, t) {
-        return t(&apos;minLength&apos;, {
-          field: this.name(component),
+      message: function(component, setting) {
+        return component.t(&apos;minLength&apos;, {
+          field: component.name,
           length: (setting - 1)
         });
       },
@@ -240,9 +230,9 @@ export var Validator = {
     },
     maxLength: {
       key: &apos;validate.maxLength&apos;,
-      message: function(component, setting, t) {
-        return t(&apos;maxLength&apos;, {
-          field: this.name(component),
+      message: function(component, setting) {
+        return component.t(&apos;maxLength&apos;, {
+          field: component.name,
           length: (setting + 1)
         });
       },
@@ -255,9 +245,9 @@ export var Validator = {
       }
     },
     email: {
-      message: function(component, setting, t) {
-        return t(&apos;invalid_email&apos;, {
-          field: this.name(component)
+      message: function(component, setting) {
+        return component.t(&apos;invalid_email&apos;, {
+          field: component.name
         });
       },
       check: function(component, setting, value) {
@@ -267,9 +257,9 @@ export var Validator = {
       }
     },
     date: {
-      message: function(component, setting, t) {
-        return t(&apos;invalid_date&apos;, {
-          field: this.name(component)
+      message: function(component, setting) {
+        return component.t(&apos;invalid_date&apos;, {
+          field: component.name
         });
       },
       check: function(component, setting, value) {
@@ -278,9 +268,9 @@ export var Validator = {
     },
     pattern: {
       key: &apos;validate.pattern&apos;,
-      message: function(component, setting, t) {
-        return t(&apos;pattern&apos;, {
-          field: this.name(component)
+      message: function(component, setting) {
+        return component.t(&apos;pattern&apos;, {
+          field: component.name
         });
       },
       check: function(component, setting, value) {
@@ -295,15 +285,15 @@ export var Validator = {
     },
     json: {
       key: &apos;validate.json&apos;,
-      check: function(component, setting, value, data, row) {
+      check: function(component, setting, value, data) {
         if (!setting) {
           return true;
         }
         let valid = true;
         try {
-          valid = jsonLogic.apply(setting, {
+          valid = FormioUtils.jsonLogic.apply(setting, {
             data: data,
-            row: row
+            row: component.data
           });
         }
         catch (err) {
@@ -314,16 +304,17 @@ export var Validator = {
     },
     custom: {
       key: &apos;validate.custom&apos;,
-      message: function(component, setting, t) {
-        return t(&apos;custom&apos;, {
-          field: this.name(component)
+      message: function(component) {
+        return component.t(&apos;custom&apos;, {
+          field: component.name
         });
       },
-      check: function(component, setting, value, data, row) {
+      check: function(component, setting, value, data) {
         if (!setting) {
           return true;
         }
         var valid = true;
+        var row = component.data;
         let custom = setting;
         /*eslint-disable no-unused-vars */
         var input = value;

@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -177,17 +178,17 @@ export class DataGridComponent extends FormioComponents {
         tableClass += &apos;table-&apos; + prop + &apos; &apos;;
       }
     });
-    this.tableElement = this.ce(&apos;element&apos;, &apos;table&apos;, {
+    this.tableElement = this.ce(&apos;table&apos;, {
       class: tableClass
     });
 
-    let thead = this.ce(&apos;header&apos;, &apos;thead&apos;);
+    let thead = this.ce(&apos;thead&apos;);
 
     // Build the header.
-    let tr = this.ce(&apos;headerRow&apos;, &apos;tr&apos;);
+    let tr = this.ce(&apos;tr&apos;);
     _each(this.component.components, (comp) =&gt; {
       if ((this.visibleColumns === true) || (this.visibleColumns[comp.key])) {
-        let th = this.ce(&apos;headerColumn&apos;, &apos;th&apos;);
+        let th = this.ce(&apos;th&apos;);
         if (comp.validate &amp;&amp; comp.validate.required) {
           th.setAttribute(&apos;class&apos;, &apos;field-required&apos;);
         }
@@ -198,13 +199,13 @@ export class DataGridComponent extends FormioComponents {
         tr.appendChild(th);
       }
     });
-    let th = this.ce(&apos;headerExtra&apos;, &apos;th&apos;);
+    let th = this.ce(&apos;th&apos;);
     tr.appendChild(th);
     thead.appendChild(tr);
     this.tableElement.appendChild(thead);
 
     // Create the table body.
-    this.tbody = this.ce(&apos;table&apos;, &apos;tbody&apos;);
+    this.tbody = this.ce(&apos;tbody&apos;);
 
     // Build the rows.
     this.buildRows(data);
@@ -223,7 +224,7 @@ export class DataGridComponent extends FormioComponents {
     this.tbody.innerHTML = &apos;&apos;;
     this.rows = [];
     _each(this.data[this.component.key], (row, index) =&gt; {
-      let tr = this.ce(&apos;tableRow&apos;, &apos;tr&apos;);
+      let tr = this.ce(&apos;tr&apos;);
       let cols = {};
       _each(this.component.components, (col) =&gt; {
         let column = _cloneDeep(col);
@@ -240,22 +241,22 @@ export class DataGridComponent extends FormioComponents {
         }
         cols[column.key] = comp;
         if ((this.visibleColumns === true) || this.visibleColumns[col.key]) {
-          let td = this.ce(&apos;tableColumn&apos;, &apos;td&apos;);
+          let td = this.ce(&apos;td&apos;);
           td.appendChild(comp.element);
           tr.appendChild(td);
           comp.checkConditions(data);
         }
       });
       this.rows.push(cols);
-      let td = this.ce(&apos;tableRemoveRow&apos;, &apos;td&apos;);
+      let td = this.ce(&apos;td&apos;);
       td.appendChild(this.removeButton(index));
       tr.appendChild(td);
       this.tbody.appendChild(tr);
     });
 
     // Add the add button.
-    let tr = this.ce(&apos;tableAddRow&apos;, &apos;tr&apos;);
-    let td = this.ce(&apos;tableAddColumn&apos;, &apos;td&apos;, {
+    let tr = this.ce(&apos;tr&apos;);
+    let td = this.ce(&apos;td&apos;, {
       colspan: (this.component.components.length + 1)
     });
     td.appendChild(this.addButton());

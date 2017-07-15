@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -168,7 +169,7 @@ export class CheckBoxComponent extends BaseComponent {
       this.addInput(this.input, this.element);
     }
     this.createDescription(this.element);
-    if (this.options.readOnly) {
+    if (this.options.readOnly || this.component.disabled) {
       this.disabled = true;
     }
   }
@@ -178,7 +179,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (this.component.label) {
       className += &apos; checkbox&apos;;
     }
-    this.element = this.ce(&apos;element&apos;, &apos;div&apos;, {
+    this.element = this.ce(&apos;div&apos;, {
       id: this.id,
       class: className
     });
@@ -188,12 +189,12 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.label) {
       return null;
     }
-    this.label = this.ce(&apos;label&apos;, &apos;label&apos;, {
+    this.label = this.ce(&apos;label&apos;, {
       class: &apos;control-label&apos;
     });
 
     // Create the SPAN around the textNode for better style hooks
-    this.labelSpan = this.ce(&apos;labelSpan&apos;, &apos;span&apos;);
+    this.labelSpan = this.ce(&apos;span&apos;);
 
     if (this.info.attr.id) {
       this.label.setAttribute(&apos;for&apos;, this.info.attr.id);
@@ -210,7 +211,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.input) {
       return;
     }
-    let input = this.ce(&apos;input&apos;, this.info.type, this.info.attr);
+    let input = this.ce(this.info.type, this.info.attr);
     this.errorContainer = container;
     return input;
   }

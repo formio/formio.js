@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -148,8 +149,6 @@ import FormioForm from &apos;./formio.form&apos;;
 import Formio from &apos;./formio&apos;;
 import FormioUtils from &apos;./utils&apos;;
 import each from &apos;lodash/each&apos;;
-import clone from &apos;lodash/clone&apos;;
-import jsonLogic from &apos;json-logic-js&apos;;
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
@@ -195,7 +194,7 @@ export class FormioWizard extends FormioForm {
         }
         // Or use JSON Logic.
         else {
-          let result = jsonLogic.apply(form.nextPage, {
+          let result = FormioUtils.jsonLogic.apply(form.nextPage, {
             data: data,
             page: page,
             form: form
@@ -329,7 +328,7 @@ export class FormioWizard extends FormioForm {
       this.wizardHeader.innerHTML = &apos;&apos;;
     }
 
-    this.wizardHeader = this.ce(&apos;wizardHeader&apos;, &apos;ul&apos;, {
+    this.wizardHeader = this.ce(&apos;ul&apos;, {
       class: &apos;pagination&apos;
     });
 
@@ -345,7 +344,7 @@ export class FormioWizard extends FormioForm {
         return;
       }
 
-      let pageButton = this.ce(&apos;pageButton&apos;, &apos;li&apos;, {
+      let pageButton = this.ce(&apos;li&apos;, {
         class: (i === this.page) ? &apos;active&apos; : &apos;&apos;,
         style: (i === this.page) ? &apos;&apos; : &apos;cursor: pointer;&apos;
       });
@@ -358,7 +357,7 @@ export class FormioWizard extends FormioForm {
         });
       }
 
-      let pageLabel = this.ce(&apos;pageLabel&apos;, &apos;span&apos;);
+      let pageLabel = this.ce(&apos;span&apos;);
       let pageTitle = page.title;
       if (currentPage.breadcrumb.toLowerCase() === &apos;condensed&apos;) {
         pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
@@ -433,7 +432,7 @@ export class FormioWizard extends FormioForm {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = &apos;&apos;;
     }
-    this.wizardNav = this.ce(&apos;wizardNav&apos;, &apos;ul&apos;, {
+    this.wizardNav = this.ce(&apos;ul&apos;, {
       class: &apos;list-inline&apos;
     });
     this.element.appendChild(this.wizardNav);
@@ -446,9 +445,9 @@ export class FormioWizard extends FormioForm {
       if (!this.hasButton(button.name)) {
         return;
       }
-      let buttonWrapper = this.ce(&apos;wizardNavButton&apos;, &apos;li&apos;);
+      let buttonWrapper = this.ce(&apos;li&apos;);
       let buttonProp = button.name + &apos;Button&apos;;
-      this[buttonProp] = this.ce(buttonProp, &apos;button&apos;, {
+      this[buttonProp] = this.ce(&apos;button&apos;, {
         class: button.class + &apos; btn-wizard-nav-&apos; + button.name
       });
       this[buttonProp].appendChild(this.text(this.t(button.name)));

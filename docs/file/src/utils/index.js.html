@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -143,13 +144,31 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/utils/index.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
-const _get = require(&apos;lodash/get&apos;);
-const _clone = require(&apos;lodash/clone&apos;);
+import _clone from &apos;lodash/clone&apos;;
+import _get from &apos;lodash/get&apos;;
+import compile from &apos;lodash/template&apos;;
 import jsonLogic from &apos;json-logic-js&apos;;
-import { compile } from &apos;handlebars/dist/handlebars&apos;;
 
-module.exports = {
+const FormioUtils = {
   jsonLogic, // Share
+
+  /**
+   * Determines the boolean value of a setting.
+   *
+   * @param value
+   * @return {boolean}
+   */
+  boolValue: function(value) {
+    if (typeof value === &apos;boolean&apos;) {
+      return value;
+    }
+    else if (typeof value === &apos;string&apos;) {
+      return (value.toLowerCase() === &apos;true&apos;);
+    }
+    else {
+      return !!value;
+    }
+  },
 
   /**
    * Determine if a component is a layout component or not.
@@ -236,24 +255,67 @@ module.exports = {
   },
 
   /**
+   * Matches if a component matches the query.
+   *
+   * @param component
+   * @param query
+   * @return {boolean}
+   */
+  matchComponent: function(component, query) {
+    if (typeof query === &apos;string&apos;) {
+      return component.key === query;
+    }
+    else {
+      var matches = false;
+      for (var search in query) {
+        matches = (_get(component, search) === query[search]);
+        if (!matches) {
+          break;
+        }
+      }
+      return matches;
+    }
+  },
+
+  /**
    * Get a component by its key
    *
    * @param {Object} components
    *   The components to iterate.
-   * @param {String} key
-   *   The key of the component to get.
+   * @param {String|Object} key
+   *   The key of the component to get, or a query of the component to search.
    *
    * @returns {Object}
    *   The component that matches the given key, or undefined if not found.
    */
   getComponent: function getComponent(components, key) {
     var result;
-    module.exports.eachComponent(components, function(component) {
-      if (component.key === key) {
+    FormioUtils.eachComponent(components, function(component, path) {
+      if (FormioUtils.matchComponent(component, key)) {
+        component.path = path;
         result = component;
+        return true;
       }
     });
     return result;
+  },
+
+  /**
+   * Finds a component provided a query of properties of that component.
+   *
+   * @param components
+   * @param query
+   * @return {*}
+   */
+  findComponents: function findComponents(components, query) {
+    var results = [];
+    FormioUtils.eachComponent(components, function(component, path) {
+      if (FormioUtils.matchComponent(component, query)) {
+        component.path = path;
+        results.push(component);
+      }
+    }, true);
+    return results;
   },
 
   /**
@@ -269,7 +331,7 @@ module.exports = {
    */
   flattenComponents: function flattenComponents(components, includeAll) {
     var flattened = {};
-    module.exports.eachComponent(components, function(component, path) {
+    FormioUtils.eachComponent(components, function(component, path) {
       flattened[path] = component;
     }, includeAll);
     return flattened;
@@ -397,7 +459,17 @@ module.exports = {
    * @returns {XML|string|*|void}
    */
   interpolate: function(string, data) {
-    return compile(string)(data);
+    const templateSettings = {
+      evaluate: /\{\%(.+?)\%\}/g,
+      interpolate: /\{\{(.+?)\}\}/g,
+      escape: /\{\{\{(.+?)\}\}\}/g
+    };
+    try {
+      return compile(string, templateSettings)(data);
+    }
+    catch (err) {
+      console.warn(&apos;Error interpolating template&apos;, err, string, data);
+    }
   },
 
   /**
@@ -422,6 +494,8 @@ module.exports = {
     });
   }
 };
+
+module.exports = global.FormioUtils = FormioUtils;
 </code></pre>
 
 </div>

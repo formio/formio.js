@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -161,7 +162,7 @@ export class ButtonComponent extends BaseComponent {
   set loading(loading) {
     this._loading = loading;
     if (!this.loader &amp;&amp; loading) {
-      this.loader = this.ce(&apos;buttonLoader&apos;, &apos;i&apos;, {
+      this.loader = this.ce(&apos;i&apos;, {
         class: &apos;glyphicon glyphicon-refresh glyphicon-spin button-icon-right&apos;
       });
     }
@@ -181,7 +182,7 @@ export class ButtonComponent extends BaseComponent {
   }
 
   build() {
-    this.element = this.ce(&apos;element&apos;, this.info.type, this.info.attr);
+    this.element = this.ce(this.info.type, this.info.attr);
     if (this.component.label) {
       this.label = this.text(this.component.label);
       this.element.appendChild(this.label);

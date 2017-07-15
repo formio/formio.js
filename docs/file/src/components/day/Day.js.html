@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -183,16 +184,16 @@ export class DayComponent extends BaseComponent {
   }
 
   createDayInput() {
-    let dayColumn = this.ce(&apos;dayColumn&apos;, &apos;div&apos;, {
+    let dayColumn = this.ce(&apos;div&apos;, {
       class: &apos;form-group col col-xs-3&apos;
     });
-    let dayLabel = this.ce(&apos;dayLabel&apos;, &apos;label&apos;, {
+    let dayLabel = this.ce(&apos;label&apos;, {
       for: this.component.key + &apos;-day&apos;,
       class: _get(this.component, &apos;fields.day.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     dayLabel.appendChild(this.text(this.t(&apos;day&apos;)));
     dayColumn.appendChild(dayLabel);
-    this.dayInput = this.ce(&apos;dayInput&apos;, &apos;input&apos;, {
+    this.dayInput = this.ce(&apos;input&apos;, {
       class: &apos;form-control&apos;,
       type: &apos;number&apos;,
       step: &apos;1&apos;,
@@ -207,16 +208,16 @@ export class DayComponent extends BaseComponent {
   }
 
   createMonthInput() {
-    let monthColumn = this.ce(&apos;monthColumn&apos;, &apos;div&apos;, {
+    let monthColumn = this.ce(&apos;div&apos;, {
       class: &apos;form-group col col-xs-4&apos;
     });
-    let monthLabel = this.ce(&apos;monthLabel&apos;, &apos;label&apos;, {
+    let monthLabel = this.ce(&apos;label&apos;, {
       for: this.component.key + &apos;-month&apos;,
       class: _get(this.component, &apos;fields.month.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     monthLabel.appendChild(this.text(this.t(&apos;month&apos;)));
     monthColumn.appendChild(monthLabel);
-    this.monthInput = this.ce(&apos;monthInput&apos;, &apos;select&apos;, {
+    this.monthInput = this.ce(&apos;select&apos;, {
       class: &apos;form-control&apos;,
       id: this.component.key + &apos;-month&apos;
     });
@@ -236,16 +237,16 @@ export class DayComponent extends BaseComponent {
   }
 
   createYearInput() {
-    let yearColumn = this.ce(&apos;yearColumn&apos;, &apos;div&apos;, {
+    let yearColumn = this.ce(&apos;div&apos;, {
       class: &apos;form-group col col-xs-5&apos;
     });
-    let yearLabel = this.ce(&apos;yearLabel&apos;, &apos;label&apos;, {
+    let yearLabel = this.ce(&apos;label&apos;, {
       for: this.component.key + &apos;-year&apos;,
       class: _get(this.component, &apos;fields.year.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     yearLabel.appendChild(this.text(this.t(&apos;year&apos;)));
     yearColumn.appendChild(yearLabel);
-    this.yearInput = this.ce(&apos;yearInput&apos;, &apos;input&apos;, {
+    this.yearInput = this.ce(&apos;input&apos;, {
       class: &apos;form-control&apos;,
       type: &apos;number&apos;,
       step: &apos;1&apos;,
@@ -259,8 +260,21 @@ export class DayComponent extends BaseComponent {
     return yearColumn;
   }
 
+  set disabled(disabled) {
+    super.disabled = disabled;
+    if (disabled) {
+      this.yearInput.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+      this.monthInput.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+      this.dayInput.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+    } else {
+      this.yearInput.removeAttribute(&apos;disabled&apos;);
+      this.monthInput.removeAttribute(&apos;disabled&apos;);
+      this.dayInput.removeAttribute(&apos;disabled&apos;);
+    }
+  }
+
   createInput(container) {
-    let inputGroup = this.ce(&apos;inputGroup&apos;, &apos;div&apos;, {
+    let inputGroup = this.ce(&apos;div&apos;, {
       class: &apos;input-group row&apos;
     });
 
@@ -282,7 +296,7 @@ export class DayComponent extends BaseComponent {
       inputGroup.appendChild(yearColumn);
     }
 
-    let input = this.ce(&apos;input&apos;, this.info.type, this.info.attr);
+    let input = this.ce(this.info.type, this.info.attr);
     this.addInput(input, inputGroup);
     this.errorContainer = container;
     container.appendChild(inputGroup);
