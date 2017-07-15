@@ -115,6 +115,19 @@ export class DayComponent extends BaseComponent {
     return yearColumn;
   }
 
+  set disabled(disabled) {
+    super.disabled = disabled;
+    if (disabled) {
+      this.yearInput.setAttribute('disabled', 'disabled');
+      this.monthInput.setAttribute('disabled', 'disabled');
+      this.dayInput.setAttribute('disabled', 'disabled');
+    } else {
+      this.yearInput.removeAttribute('disabled');
+      this.monthInput.removeAttribute('disabled');
+      this.dayInput.removeAttribute('disabled');
+    }
+  }
+
   createInput(container) {
     let inputGroup = this.ce('div', {
       class: 'input-group row'
