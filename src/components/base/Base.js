@@ -1060,14 +1060,7 @@ export class BaseComponent {
       return true;
     }
 
-    let message = Validator.check(
-      this.validators,
-      this.component,
-      this.getRawValue(),
-      data || this.data,
-      this.data,
-      this.t.bind(this)
-    );
+    let message = Validator.check(this, data);
     this.setCustomValidity(message);
 
     // No message, returns true
@@ -1076,6 +1069,10 @@ export class BaseComponent {
 
   getRawValue() {
     return this.data[this.component.key];
+  }
+
+  isEmpty(value) {
+    return value == null || value.length === 0;
   }
 
   get errors() {
