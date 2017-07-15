@@ -14,14 +14,21 @@ export class AddressComponent extends TextFieldComponent {
       src += '&region=' + component.map.region;
     }
     BaseComponent.requireLibrary('googleMaps', 'google.maps.places', src);
+
+    // Keep track of the full addresses.
+    this.addresses = [];
   }
 
   setValueAt(index, value) {
-    this.value = value;
+    if (value === null || value === undefined) {
+      value = this.defaultValue;
+    }
+    this.addresses[index] = value;
+    this.inputs[index].value = value.formatted_address;
   }
 
   getValueAt(index) {
-    return this.value;
+    return this.addresses[index];
   }
 
   /**
