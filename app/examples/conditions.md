@@ -165,6 +165,13 @@ Formio.createForm(document.getElementById('formio'), {
           ]
         }
       }
+    },
+    {
+      "key": "submit",
+      "type": "button",
+      "action": "submit",
+      "label": "Submit",
+      "theme": "primary"
     }
   ]
 });
@@ -330,6 +337,13 @@ Formio.createForm(document.getElementById('formio'), {
             ]
           }
         }
+      },
+      {
+        "key": "submit",
+        "type": "button",
+        "action": "submit",
+        "label": "Submit",
+        "theme": "primary"
       }
     ]
   });

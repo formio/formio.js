@@ -486,7 +486,7 @@ export class BaseComponent {
       tr.appendChild(tdAdd);
       this.tbody.appendChild(tr);
     });
-    
+
     let tr = this.ce('tr');
     let td = this.ce('td', {
       colspan: '2'
@@ -875,7 +875,7 @@ export class BaseComponent {
    * Add a new input error to this element.
    * @param message
    */
-  addInputError(message) {
+  addInputError(message, dirty) {
     if (!message) {
       return;
     }
@@ -890,7 +890,7 @@ export class BaseComponent {
 
     // Add error classes
     this.addClass(this.element, 'has-error');
-    if (this.options.highlightErrors) {
+    if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'alert alert-danger');
     }
   }
@@ -1071,7 +1071,7 @@ export class BaseComponent {
     }
 
     let message = Validator.check(this, data);
-    this.setCustomValidity(message);
+    this.setCustomValidity(message, dirty);
 
     // No message, returns true
     return message ? false : true;
@@ -1093,7 +1093,7 @@ export class BaseComponent {
     return FormioUtils.interpolate(string, data);
   }
 
-  setCustomValidity(message) {
+  setCustomValidity(message, dirty) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
       try {
@@ -1112,14 +1112,14 @@ export class BaseComponent {
       };
       this.emit('componentError', this.error);
       this.createErrorElement();
-      this.addInputError(message);
+      this.addInputError(message, dirty);
     }
     else {
       this.error = null;
     }
     _each(this.inputs, (input) => {
       if (typeof input.setCustomValidity === 'function') {
-        input.setCustomValidity(message);
+        input.setCustomValidity(message, dirty);
       }
     });
   }

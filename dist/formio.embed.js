@@ -2320,7 +2320,7 @@ var BaseComponent = function () {
 
   }, {
     key: 'addInputError',
-    value: function addInputError(message) {
+    value: function addInputError(message, dirty) {
       if (!message) {
         return;
       }
@@ -2335,7 +2335,7 @@ var BaseComponent = function () {
 
       // Add error classes
       this.addClass(this.element, 'has-error');
-      if (this.options.highlightErrors) {
+      if (dirty && this.options.highlightErrors) {
         this.addClass(this.element, 'alert alert-danger');
       }
     }
@@ -2529,7 +2529,7 @@ var BaseComponent = function () {
       }
 
       var message = _Validator.Validator.check(this, data);
-      this.setCustomValidity(message);
+      this.setCustomValidity(message, dirty);
 
       // No message, returns true
       return message ? false : true;
@@ -2551,7 +2551,7 @@ var BaseComponent = function () {
     }
   }, {
     key: 'setCustomValidity',
-    value: function setCustomValidity(message) {
+    value: function setCustomValidity(message, dirty) {
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
         try {
@@ -2569,13 +2569,13 @@ var BaseComponent = function () {
         };
         this.emit('componentError', this.error);
         this.createErrorElement();
-        this.addInputError(message);
+        this.addInputError(message, dirty);
       } else {
         this.error = null;
       }
       (0, _each3.default)(this.inputs, function (input) {
         if (typeof input.setCustomValidity === 'function') {
-          input.setCustomValidity(message);
+          input.setCustomValidity(message, dirty);
         }
       });
     }
