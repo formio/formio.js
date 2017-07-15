@@ -231,6 +231,20 @@ export class FormioForm extends FormioComponents {
   }
 
   /**
+   * Loads the submission if applicable.
+   */
+  loadSubmission() {
+    if (this.formio.submissionId) {
+      this.onSubmission = this.formio.loadSubmission().then(
+        (submission) => this.setSubmission(submission),
+        (err) => this.submissionReadyReject(err)
+      ).catch(
+        (err) => this.submissionReadyReject(err)
+      );
+    }
+  }
+
+  /**
    * Set the Form source, which is typically the Form.io embed URL.
    *
    * @param {string} value - The value of the form embed url.
@@ -251,14 +265,7 @@ export class FormioForm extends FormioComponents {
     ).catch(
       (err) => this.formReadyReject(err)
     );
-    if (this.formio.submissionId) {
-      this.onSubmission = this.formio.loadSubmission().then(
-        (submission) => this.setSubmission(submission),
-        (err) => this.submissionReadyReject(err)
-      ).catch(
-        (err) => this.submissionReadyReject(err)
-      );
-    }
+    this.loadSubmission();
   }
 
   /**
