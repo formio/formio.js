@@ -326,6 +326,20 @@ export class BaseComponent {
   }
 
   /**
+   * Build the custom style from the layout values
+   * @return {string} - The custom style
+   */
+  get customStyle() {
+    let customCSS = '';
+    _each(this.component.style, function(value, key) {
+        if (value !== '') {
+          customCSS += key + ':' + value + ';';
+        }
+    });
+    return customCSS;
+  }
+
+  /**
    * Returns the outside wrapping element of this component.
    * @returns {HTMLElement}
    */
@@ -340,7 +354,8 @@ export class BaseComponent {
   createElement() {
     this.element = this.ce('div', {
       id: this.id,
-      class: this.className
+      class: this.className,
+      style: this.customStyle
     });
 
     if (this.element) {
