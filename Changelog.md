@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.13.0
+### Fixed
+ - Issue where Selectboxes was not storing the correct data structure.
+ - The disabled states on all components.
+ - Issue where Formio.createForm was not establishing the formio object on src load.
+ - Problem where conditionally hidden components were still validating when they shouldn't.
+ - Issues with auto-population for conditionally hidden components.
+ - Auto population for the Address component.
+
+### Added
+ - Component error highlights when an error occurs during invalidation.
+ - Custom styles capability.
+ 
+### Changed
+ - All instances of jsonLogic to use the FormioUtils.jsonLogic so that it can be extended.
+
 ## 2.12.3
 ### Added
  - Ability to pass a query to getComponent.

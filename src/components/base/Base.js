@@ -4,10 +4,9 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _debounce from 'lodash/debounce';
 import _isArray from 'lodash/isArray';
-import _assign from 'lodash/assign';
 import _clone from 'lodash/clone';
+import _defaults from 'lodash/defaults';
 import i18next from 'i18next';
-import jsonLogic from 'json-logic-js';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
 
@@ -36,7 +35,9 @@ export class BaseComponent {
      * The options for this component.
      * @type {{}}
      */
-    this.options = _clone(options) || {};
+    this.options = _defaults(_clone(options), {
+      highlightErrors: true
+    });
 
     /**
      * The i18n configuration for this component.
@@ -418,7 +419,7 @@ export class BaseComponent {
       }
       else {
         try {
-          defaultValue = jsonLogic.apply(this.component.customDefaultValue, {
+          defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
             data: this.data,
             row: this.data
           });
@@ -485,7 +486,7 @@ export class BaseComponent {
       tr.appendChild(tdAdd);
       this.tbody.appendChild(tr);
     });
-    
+
     let tr = this.ce('tr');
     let td = this.ce('td', {
       colspan: '2'
@@ -821,7 +822,7 @@ export class BaseComponent {
    * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
-    _each(attr, function (value, key) {
+    _each(attr, (value, key) => {
       if (typeof value !== 'undefined') {
         if (key.indexOf('on') === 0) {
           // If this is an event, add a listener.
@@ -874,14 +875,23 @@ export class BaseComponent {
    * Add a new input error to this element.
    * @param message
    */
-  addInputError(message) {
+  addInputError(message, dirty) {
+    if (!message) {
+      return;
+    }
+
     if (this.errorElement) {
       let errorMessage = this.ce('p', {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));
       this.errorElement.appendChild(errorMessage);
-      this.addClass(this.element, 'has-error');
+    }
+
+    // Add error classes
+    this.addClass(this.element, 'has-error');
+    if (dirty && this.options.highlightErrors) {
+      this.addClass(this.element, 'alert alert-danger');
     }
   }
 
@@ -1040,7 +1050,7 @@ export class BaseComponent {
     }
     else {
       try {
-        let val = jsonLogic.apply(this.component.calculateValue, {
+        let val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
           data: data,
           row: this.data
         });
@@ -1060,15 +1070,8 @@ export class BaseComponent {
       return true;
     }
 
-    let message = Validator.check(
-      this.validators,
-      this.component,
-      this.getRawValue(),
-      data || this.data,
-      this.data,
-      this.t.bind(this)
-    );
-    this.setCustomValidity(message);
+    let message = Validator.check(this, data);
+    this.setCustomValidity(message, dirty);
 
     // No message, returns true
     return message ? false : true;
@@ -1076,6 +1079,10 @@ export class BaseComponent {
 
   getRawValue() {
     return this.data[this.component.key];
+  }
+
+  isEmpty(value) {
+    return value == null || value.length === 0;
   }
 
   get errors() {
@@ -1086,7 +1093,7 @@ export class BaseComponent {
     return FormioUtils.interpolate(string, data);
   }
 
-  setCustomValidity(message) {
+  setCustomValidity(message, dirty) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
       try {
@@ -1095,6 +1102,9 @@ export class BaseComponent {
       catch (err) {}
     }
     this.removeClass(this.element, 'has-error');
+    if (this.options.highlightErrors) {
+      this.removeClass(this.element, 'alert alert-danger');
+    }
     if (message) {
       this.error = {
         component: this.component,
@@ -1102,14 +1112,14 @@ export class BaseComponent {
       };
       this.emit('componentError', this.error);
       this.createErrorElement();
-      this.addInputError(message);
+      this.addInputError(message, dirty);
     }
     else {
       this.error = null;
     }
     _each(this.inputs, (input) => {
       if (typeof input.setCustomValidity === 'function') {
-        input.setCustomValidity(message);
+        input.setCustomValidity(message, dirty);
       }
     });
   }

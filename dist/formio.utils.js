@@ -34,6 +34,22 @@ var FormioUtils = {
   jsonLogic: _jsonLogicJs2.default, // Share
 
   /**
+   * Determines the boolean value of a setting.
+   *
+   * @param value
+   * @return {boolean}
+   */
+  boolValue: function boolValue(value) {
+    if (typeof value === 'boolean') {
+      return value;
+    } else if (typeof value === 'string') {
+      return value.toLowerCase() === 'true';
+    } else {
+      return !!value;
+    }
+  },
+
+  /**
    * Determine if a component is a layout component or not.
    *
    * @param {Object} component

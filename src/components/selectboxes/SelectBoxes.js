@@ -14,36 +14,53 @@ export class SelectBoxesComponent extends RadioComponent {
     return info;
   }
 
-  getValue() {
-    let value = [];
-    _each(this.inputs, (input) => {
-      if (input.checked) {
-        value.push(input.value);
+  /**
+   * Only empty if the values are all false.
+   *
+   * @param value
+   * @return {boolean}
+   */
+  isEmpty(value) {
+    let empty = true;
+    for (let key in value) {
+      if (value[key]) {
+        empty = false;
+        break;
       }
+    }
+
+    return empty;
+  }
+
+  getValue() {
+    let value = {};
+    _each(this.inputs, (input) => {
+      value[input.value] = !!input.checked;
     });
     return value;
   }
-
 
   /**
    * Set the value of this component.
    * @param value
    */
   setValue(value, noUpdate, noValidate) {
-    this.value = value;
-    let tempValue = [];
+    if (_isArray(value)) {
+      this.value = {};
+      _each(value, (val) => {
+        this.value[val] = true;
+      });
+    }
+    else {
+      this.value = value;
+    }
 
     _each(this.inputs, (input) => {
-      if (_isArray(value)) {
-        input.checked = (value.indexOf(input.value) !== -1);
+      if (this.value[input.value] == undefined) {
+        this.value[input.value] = false;
       }
-      else {
-        input.checked = value[input.value] == undefined ? false : value[input.value];
-        tempValue.push(input.value);
-      }
+      input.checked = !!this.value[input.value];
     });
-
-    value = _isArray(value) ? value : tempValue;
 
     if (!noUpdate) {
       this.updateValue(noValidate);

@@ -172,15 +172,50 @@ module.exports = {
         {
           component: 'typeShow',
           message: 'You must type "Show"'
-        },
+        }
+      ], done);
+    },
+    'Test validation errors on typeMe field': (form, done) => {
+      Harness.testErrors(form, {data: {
+        typeShow: 'Show',
+        typeMe: ''
+      }}, [
         {
           component: 'typeMe',
           message: 'You must type "Me"'
-        },
+        }
+      ], done);
+    },
+    'Test validation errors on typeMe field': (form, done) => {
+      Harness.testErrors(form, {data: {
+        typeShow: 'Show',
+        typeMe: 'me'
+      }}, [
+        {
+          component: 'typeMe',
+          message: 'You must type "Me"'
+        }
+      ], done);
+    },
+    'Test validation errors on typeThe field': (form, done) => {
+      Harness.testErrors(form, {data: {
+        typeShow: 'Show',
+        typeMe: 'Me',
+        typeThe: 'the'
+      }}, [
         {
           component: 'typeThe',
           message: 'You must type "The"'
-        },
+        }
+      ], done);
+    },
+    'Test validation errors on typeMonkey field': (form, done) => {
+      Harness.testErrors(form, {data: {
+        typeShow: 'Show',
+        typeMe: 'Me',
+        typeThe: 'The',
+        typeMonkey: 'Monkey'
+      }}, [
         {
           component: 'typeMonkey',
           message: 'You must type "Monkey!"'

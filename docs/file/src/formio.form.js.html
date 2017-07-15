@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -146,7 +147,6 @@
 import Promise from &quot;native-promise-only&quot;;
 import Formio from &apos;./formio&apos;;
 import { FormioComponents } from &apos;./components/Components&apos;;
-import _debounce from &apos;lodash/debounce&apos;;
 import _each from &apos;lodash/each&apos;;
 import _clone from &apos;lodash/clone&apos;;
 import _assign from &apos;lodash/assign&apos;;
@@ -376,6 +376,20 @@ export class FormioForm extends FormioComponents {
   }
 
   /**
+   * Loads the submission if applicable.
+   */
+  loadSubmission() {
+    if (this.formio.submissionId) {
+      this.onSubmission = this.formio.loadSubmission().then(
+        (submission) =&gt; this.setSubmission(submission),
+        (err) =&gt; this.submissionReadyReject(err)
+      ).catch(
+        (err) =&gt; this.submissionReadyReject(err)
+      );
+    }
+  }
+
+  /**
    * Set the Form source, which is typically the Form.io embed URL.
    *
    * @param {string} value - The value of the form embed url.
@@ -396,14 +410,7 @@ export class FormioForm extends FormioComponents {
     ).catch(
       (err) =&gt; this.formReadyReject(err)
     );
-    if (this.formio.submissionId) {
-      this.onSubmission = this.formio.loadSubmission().then(
-        (submission) =&gt; this.setSubmission(submission),
-        (err) =&gt; this.submissionReadyReject(err)
-      ).catch(
-        (err) =&gt; this.submissionReadyReject(err)
-      );
-    }
+    this.loadSubmission();
   }
 
   /**
@@ -461,10 +468,10 @@ export class FormioForm extends FormioComponents {
     if (this._loading !== loading) {
       this._loading = loading;
       if (!this.loader &amp;&amp; loading) {
-        this.loader = this.ce(&apos;loaderWrapper&apos;, &apos;div&apos;, {
+        this.loader = this.ce(&apos;div&apos;, {
           class: &apos;loader-wrapper&apos;
         });
-        let spinner = this.ce(&apos;loader&apos;, &apos;div&apos;, {
+        let spinner = this.ce(&apos;div&apos;, {
           class: &apos;loader text-center&apos;
         });
         this.loader.appendChild(spinner);
@@ -679,7 +686,7 @@ export class FormioForm extends FormioComponents {
       catch(err) {}
     }
     if (message) {
-      this.alert = this.ce(&apos;alert-&apos; + type, &apos;div&apos;, {
+      this.alert = this.ce(&apos;div&apos;, {
         class: &apos;alert alert-&apos; + type,
         role: &apos;alert&apos;
       });

@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -208,16 +209,16 @@ export class FileComponent extends BaseComponent {
   }
 
   buildFileList() {
-    return this.ce(&apos;filelist&apos;, &apos;ul&apos;, {class: &apos;list-group list-group-striped&apos;}, [
-      this.ce(&apos;fileheader&apos;, &apos;li&apos;, {class: &apos;list-group-item list-group-header hidden-xs hidden-sm&apos;},
-        this.ce(&apos;fileheaderrow&apos;, &apos;div&apos;, {class: &apos;row&apos;},
+    return this.ce(&apos;ul&apos;, {class: &apos;list-group list-group-striped&apos;}, [
+      this.ce(&apos;li&apos;, {class: &apos;list-group-item list-group-header hidden-xs hidden-sm&apos;},
+        this.ce(&apos;div&apos;, {class: &apos;row&apos;},
           [
-            this.ce(&apos;deletecol&apos;, &apos;div&apos;, {class: &apos;col-md-1&apos;}),
-            this.ce(&apos;filecol&apos;, &apos;div&apos;, {class: &apos;col-md-9&apos;},
-              this.ce(&apos;bold&apos;, &apos;strong&apos;, {}, &apos;File Name&apos;)
+            this.ce(&apos;div&apos;, {class: &apos;col-md-1&apos;}),
+            this.ce(&apos;div&apos;, {class: &apos;col-md-9&apos;},
+              this.ce(&apos;strong&apos;, {}, &apos;File Name&apos;)
             ),
-            this.ce(&apos;sizecol&apos;, &apos;div&apos;, {class: &apos;col-md-2&apos;},
-              this.ce(&apos;bold&apos;, &apos;strong&apos;, {}, &apos;Size&apos;)
+            this.ce(&apos;div&apos;, {class: &apos;col-md-2&apos;},
+              this.ce(&apos;strong&apos;, {}, &apos;Size&apos;)
             )
           ]
         )
@@ -227,14 +228,15 @@ export class FileComponent extends BaseComponent {
   }
 
   createFileListItem(fileInfo, index) {
-    return this.ce(&apos;fileinforow&apos;, &apos;li&apos;, {class: &apos;list-group-item&apos;},
-      this.ce(&apos;fileheaderrow&apos;, &apos;div&apos;, {class: &apos;row&apos;},
+    return this.ce(&apos;li&apos;, {class: &apos;list-group-item&apos;},
+      this.ce(&apos;div&apos;, {class: &apos;row&apos;},
         [
-          this.ce(&apos;deletecol&apos;, &apos;div&apos;, {class: &apos;col-md-1&apos;},
+          this.ce(&apos;div&apos;, {class: &apos;col-md-1&apos;},
             (
               !this.disabled ?
-                this.ce(&apos;deleteSpan&apos;, &apos;span&apos;, {class: &apos;glyphicon glyphicon-remove&apos;}, null, {
-                  click: event =&gt; {
+                this.ce(&apos;span&apos;, {
+                  class: &apos;glyphicon glyphicon-remove&apos;,
+                  onClick: event =&gt; {
                     event.preventDefault();
                     this.data[this.component.key].splice(index, 1);
                     this.refreshDOM();
@@ -245,21 +247,22 @@ export class FileComponent extends BaseComponent {
                 null
             )
           ),
-          this.ce(&apos;filecol&apos;, &apos;div&apos;, {class: &apos;col-md-9&apos;}, this.createFileLink(fileInfo)),
-          this.ce(&apos;sizecol&apos;, &apos;div&apos;, {class: &apos;col-md-2&apos;}, this.fileSize(fileInfo.size))
+          this.ce(&apos;div&apos;, {class: &apos;col-md-9&apos;}, this.createFileLink(fileInfo)),
+          this.ce(&apos;div&apos;, {class: &apos;col-md-2&apos;}, this.fileSize(fileInfo.size))
         ]
       )
     )
   }
 
   createFileLink(file) {
-    return this.ce(&apos;filelink&apos;, &apos;a&apos;, {href: file.url, target: &apos;_blank&apos;}, file.name, {
-      click: this.getFile.bind(this, file)
-    });
+    return this.ce(&apos;a&apos;, {
+      href: file.url, target: &apos;_blank&apos;,
+      onClick: this.getFile.bind(this, file)
+    }, file.name);
   }
 
   buildImageList() {
-    return this.ce(&apos;imagelist&apos;, &apos;div&apos;, {},
+    return this.ce(&apos;div&apos;, {},
       this.data[this.component.key].map((fileInfo, index) =&gt; this.createImageListItem(fileInfo, index))
     );
   }
@@ -272,19 +275,19 @@ export class FileComponent extends BaseComponent {
           image.src = result.url;
         });
     }
-    return this.ce(&apos;imageinforow&apos;, &apos;div&apos;, {},
-      this.ce(&apos;span&apos;, &apos;span&apos;, {},
+    return this.ce(&apos;div&apos;, {},
+      this.ce(&apos;span&apos;, {},
         [
-          image = this.ce(&apos;filecol&apos;, &apos;img&apos;, {src: &apos;&apos;, alt: fileInfo.name, style: &apos;width:&apos; + this.component.imageSize + &apos;px&apos;}),
+          image = this.ce(&apos;img&apos;, {src: &apos;&apos;, alt: fileInfo.name, style: &apos;width:&apos; + this.component.imageSize + &apos;px&apos;}),
           (
             !this.disabled ?
-              this.ce(&apos;deleteSpan&apos;, &apos;span&apos;, {class: &apos;glyphicon glyphicon-remove&apos;}, null, {
-                click: event =&gt; {
+              this.ce(&apos;span&apos;, {
+                class: &apos;glyphicon glyphicon-remove&apos;,
+                onClick: event =&gt; {
                   event.preventDefault();
                   this.data[this.component.key].splice(index, 1);
                   this.refreshDOM();
                   this.triggerChange();
-
                 }
               }) :
               null
@@ -298,19 +301,38 @@ export class FileComponent extends BaseComponent {
     // Drop event must change this pointer so need a reference to parent this.
     const element = this;
     // If this is disabled or a single value with a value, don&apos;t show the upload div.
-    return this.ce(&apos;uploadwrapper&apos;, &apos;div&apos;, {},
+    return this.ce(&apos;div&apos;, {},
       (
         (!this.disabled &amp;&amp; (this.component.multiple || this.data[this.component.key].length === 0)) ?
-          this.ce(&apos;upload&apos;, &apos;div&apos;, {class: &apos;fileSelector&apos;},
+          this.ce(&apos;div&apos;, {
+            class: &apos;fileSelector&apos;,
+            onDragover: function (event) {
+              this.className = &apos;fileSelector fileDragOver&apos;;
+              event.preventDefault();
+            },
+            onDragleave: function (event) {
+              this.className = &apos;fileSelector&apos;;
+              event.preventDefault();
+            },
+            onDrop: function(event) {
+              this.className = &apos;fileSelector&apos;;
+              event.preventDefault();
+              element.upload(event.dataTransfer.files);
+              return false;
+            }
+          },
             [
-              this.ce(&apos;icon&apos;, &apos;i&apos;, {class: &apos;glyphicon glyphicon-cloud-upload&apos;}),
+              this.ce(&apos;i&apos;, {class: &apos;glyphicon glyphicon-cloud-upload&apos;}),
               this.text(&apos; Drop files to attach, or &apos;),
-              this.ce(&apos;browse&apos;, &apos;a&apos;, false, &apos;browse&apos;, {
-                click: event =&gt; {
+              this.ce(&apos;a&apos;, {
+                onClick: event =&gt; {
                   event.preventDefault();
                   // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
                   // a click event on it.
-                  let input = this.ce(&apos;fileinput&apos;, &apos;input&apos;, {type: &apos;file&apos;});
+                  let input = this.ce(&apos;input&apos;, {
+                    type: &apos;file&apos;,
+                    onChange: () =&gt; {this.upload(input.files)}
+                  });
                   // Trigger a click event on the input.
                   if (typeof input.trigger === &apos;function&apos;) {
                     input.trigger(&apos;click&apos;);
@@ -318,60 +340,43 @@ export class FileComponent extends BaseComponent {
                   else {
                     input.click();
                   }
-                  input.addEventListener(&apos;change&apos;, () =&gt; {this.upload(input.files)});
                 }
-              })
-            ],
-            {
-              dragover: function (event) {
-                this.className = &apos;fileSelector fileDragOver&apos;;
-                event.preventDefault();
-              },
-              dragleave: function (event) {
-                this.className = &apos;fileSelector&apos;;
-                event.preventDefault();
-              },
-              drop: function(event) {
-                this.className = &apos;fileSelector&apos;;
-                event.preventDefault();
-                element.upload(event.dataTransfer.files);
-                return false;
-              }
-            }
+              }, &apos;browse&apos;)
+            ]
           ) :
-          this.ce(&apos;uploadwrapper&apos;, &apos;div&apos;)
+          this.ce(&apos;div&apos;)
       )
     );
   }
 
   buildUploadStatusList(container) {
-    let list = this.ce(&apos;uploadlist&apos;, &apos;div&apos;);
+    let list = this.ce(&apos;div&apos;);
     this.uploadStatusList = list;
     container.appendChild(list);
   }
 
   addWarnings(container) {
     let hasWarnings = false;
-    let warnings = this.ce(&apos;warnings&apos;, &apos;div&apos;, {class: &apos;alert alert-warning&apos;});
+    let warnings = this.ce(&apos;div&apos;, {class: &apos;alert alert-warning&apos;});
     if (!this.component.storage) {
       hasWarnings = true;
-      warnings.appendChild(this.ce(&apos;nostorage&apos;, &apos;p&apos;).appendChild(this.text(&apos;No storage has been set for this field. File uploads are disabled until storage is set up.&apos;)));
+      warnings.appendChild(this.ce(&apos;p&apos;).appendChild(this.text(&apos;No storage has been set for this field. File uploads are disabled until storage is set up.&apos;)));
     }
     if (!this.support.dnd) {
       hasWarnings = true;
-      warnings.appendChild(this.ce(&apos;nodnd&apos;, &apos;p&apos;).appendChild(this.text(&apos;FFile Drag/Drop is not supported for this browser.&apos;)));
+      warnings.appendChild(this.ce(&apos;p&apos;).appendChild(this.text(&apos;FFile Drag/Drop is not supported for this browser.&apos;)));
     }
     if (!this.support.filereader) {
       hasWarnings = true;
-      warnings.appendChild(this.ce(&apos;nofilereader&apos;, &apos;p&apos;).appendChild(this.text(&apos;File API &amp; FileReader API not supported.&apos;)));
+      warnings.appendChild(this.ce(&apos;p&apos;).appendChild(this.text(&apos;File API &amp; FileReader API not supported.&apos;)));
     }
     if (!this.support.formdata) {
       hasWarnings = true;
-      warnings.appendChild(this.ce(&apos;noformdata&apos;, &apos;p&apos;).appendChild(this.text(&apos;XHR2\&apos;s FormData is not supported.&apos;)));
+      warnings.appendChild(this.ce(&apos;p&apos;).appendChild(this.text(&apos;XHR2\&apos;s FormData is not supported.&apos;)));
     }
     if (!this.support.progress) {
       hasWarnings = true;
-      warnings.appendChild(this.ce(&apos;noprogress&apos;, &apos;p&apos;).appendChild(this.text(&apos;XHR2\&apos;s upload progress isn\&apos;t supported.&apos;)));
+      warnings.appendChild(this.ce(&apos;p&apos;).appendChild(this.text(&apos;XHR2\&apos;s upload progress isn\&apos;t supported.&apos;)));
     }
     if (hasWarnings) {
       container.appendChild(warnings);
@@ -384,21 +389,22 @@ export class FileComponent extends BaseComponent {
 
   createUploadStatus(fileUpload) {
     let container;
-    return container = this.ce(&apos;uploadstatus&apos;, &apos;div&apos;, {class: &apos;file&apos; + (fileUpload.status === &apos;error&apos; ? &apos; has-error&apos; : &apos;&apos;)}, [
-      this.ce(&apos;filerow&apos;, &apos;div&apos;, {class: &apos;row&apos;}, [
-          this.ce(&apos;filecell&apos;, &apos;div&apos;, {class: &apos;fileName control-label col-sm-10&apos;}, [
+    return container = this.ce(&apos;div&apos;, {class: &apos;file&apos; + (fileUpload.status === &apos;error&apos; ? &apos; has-error&apos; : &apos;&apos;)}, [
+      this.ce(&apos;div&apos;, {class: &apos;row&apos;}, [
+          this.ce(&apos;div&apos;, {class: &apos;fileName control-label col-sm-10&apos;}, [
             fileUpload.name,
-            this.ce(&apos;removefile&apos;, &apos;span&apos;, {class: &apos;glyphicon glyphicon-remove&apos;}, undefined, {
-              click: () =&gt; {this.uploadStatusList.removeChild(container)}
+            this.ce(&apos;span&apos;, {
+              class: &apos;glyphicon glyphicon-remove&apos;,
+              onClick: () =&gt; {this.uploadStatusList.removeChild(container)}
             })
           ]),
-          this.ce(&apos;sizecell&apos;, &apos;div&apos;, {class: &apos;fileSize control-label col-sm-2 text-right&apos;}, this.fileSize(fileUpload.size))
+          this.ce(&apos;div&apos;, {class: &apos;fileSize control-label col-sm-2 text-right&apos;}, this.fileSize(fileUpload.size))
         ]),
-      this.ce(&apos;statusrow&apos;, &apos;div&apos;, {class: &apos;row&apos;}, [
-        this.ce(&apos;progresscell&apos;, &apos;div&apos;, {class: &apos;col-sm-12&apos;}, [
+      this.ce(&apos;div&apos;, {class: &apos;row&apos;}, [
+        this.ce(&apos;div&apos;, {class: &apos;col-sm-12&apos;}, [
           (fileUpload.status === &apos;progress&apos; ?
-            this.ce(&apos;progresscell&apos;, &apos;div&apos;, {class: &apos;progress&apos;},
-              this.ce(&apos;progressbar&apos;, &apos;div&apos;, {
+            this.ce(&apos;div&apos;, {class: &apos;progress&apos;},
+              this.ce(&apos;div&apos;, {
                 class: &apos;progress-bar&apos;,
                 role: &apos;progressbar&apos;,
                 &apos;aria-valuenow&apos;: fileUpload.progress,
@@ -406,10 +412,10 @@ export class FileComponent extends BaseComponent {
                 &apos;aria-valuemax&apos;: 100,
                 style: &apos;width:&apos; + fileUpload.progress + &apos;%&apos;
               },
-                this.ce(&apos;srprogress&apos;, &apos;span&apos;, {class: &apos;sr-only&apos;}, fileUpload.progress + &apos;% Complete&apos;)
+                this.ce(&apos;span&apos;, {class: &apos;sr-only&apos;}, fileUpload.progress + &apos;% Complete&apos;)
               )
             ) :
-            this.ce(&apos;messagecell&apos;, &apos;div&apos;, {class: &apos;bg-&apos; + fileUpload.status}, fileUpload.message)
+            this.ce(&apos;div&apos;, {class: &apos;bg-&apos; + fileUpload.status}, fileUpload.message)
           )
         ])
       ])

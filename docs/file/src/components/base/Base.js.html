@@ -114,6 +114,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/signature/Signature.js~SignatureComponent.html">SignatureComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/signature/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -148,10 +149,9 @@ import _get from &apos;lodash/get&apos;;
 import _each from &apos;lodash/each&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
-import _assign from &apos;lodash/assign&apos;;
 import _clone from &apos;lodash/clone&apos;;
+import _defaults from &apos;lodash/defaults&apos;;
 import i18next from &apos;i18next&apos;;
-import jsonLogic from &apos;json-logic-js&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 import { Validator } from &apos;../Validator&apos;;
 
@@ -180,7 +180,9 @@ export class BaseComponent {
      * The options for this component.
      * @type {{}}
      */
-    this.options = _clone(options) || {};
+    this.options = _defaults(_clone(options), {
+      highlightErrors: true
+    });
 
     /**
      * The i18n configuration for this component.
@@ -383,7 +385,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The icon element.
    */
   getIcon(name) {
-    return this.ce(name + &apos;Icon&apos;, &apos;i&apos;, {
+    return this.ce(&apos;i&apos;, {
       class: &apos;glyphicon glyphicon-&apos; + name
     });
   }
@@ -470,6 +472,20 @@ export class BaseComponent {
   }
 
   /**
+   * Build the custom style from the layout values
+   * @return {string} - The custom style
+   */
+  get customStyle() {
+    let customCSS = &apos;&apos;;
+    _each(this.component.style, function(value, key) {
+        if (value !== &apos;&apos;) {
+          customCSS += key + &apos;:&apos; + value + &apos;;&apos;;
+        }
+    });
+    return customCSS;
+  }
+
+  /**
    * Returns the outside wrapping element of this component.
    * @returns {HTMLElement}
    */
@@ -482,9 +498,10 @@ export class BaseComponent {
    * @returns {HTMLElement}
    */
   createElement() {
-    this.element = this.ce(&apos;element&apos;, &apos;div&apos;, {
+    this.element = this.ce(&apos;div&apos;, {
       id: this.id,
-      class: this.className
+      class: this.className,
+      style: this.customStyle
     });
 
     if (this.element) {
@@ -504,10 +521,10 @@ export class BaseComponent {
       return false;
     }
     else {
-      let table = this.ce(&apos;wrapper&apos;, &apos;table&apos;, {
+      let table = this.ce(&apos;table&apos;, {
         class: &apos;table table-bordered&apos;
       });
-      this.tbody = this.ce(&apos;wrapperBody&apos;, &apos;tbody&apos;);
+      this.tbody = this.ce(&apos;tbody&apos;);
       table.appendChild(this.tbody);
 
       // Add a default value.
@@ -547,7 +564,7 @@ export class BaseComponent {
       }
       else {
         try {
-          defaultValue = jsonLogic.apply(this.component.customDefaultValue, {
+          defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
             data: this.data,
             row: this.data
           });
@@ -605,24 +622,24 @@ export class BaseComponent {
     this.inputs = [];
     this.tbody.innerHTML = &apos;&apos;;
     _each(this.data[this.component.key], (value, index) =&gt; {
-      let tr = this.ce(&apos;row&apos;, &apos;tr&apos;);
-      let td = this.ce(&apos;column&apos;, &apos;td&apos;);
+      let tr = this.ce(&apos;tr&apos;);
+      let td = this.ce(&apos;td&apos;);
       this.createInput(td);
       tr.appendChild(td);
-      let tdAdd = this.ce(&apos;columnAdd&apos;, &apos;td&apos;);
+      let tdAdd = this.ce(&apos;td&apos;);
       tdAdd.appendChild(this.removeButton(index));
       tr.appendChild(tdAdd);
       this.tbody.appendChild(tr);
     });
-
-    let tr = this.ce(&apos;rowAdd&apos;, &apos;tr&apos;);
-    let td = this.ce(&apos;addRowColumn&apos;, &apos;td&apos;, {
+    
+    let tr = this.ce(&apos;tr&apos;);
+    let td = this.ce(&apos;td&apos;, {
       colspan: &apos;2&apos;
     });
     td.appendChild(this.addButton());
     tr.appendChild(td);
     this.tbody.appendChild(tr);
-    if (this.options.readOnly) {
+    if (this.options.readOnly || this.component.disabled) {
       this.disabled = true;
     }
   }
@@ -632,7 +649,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The &quot;Add New&quot; button html element.
    */
   addButton() {
-    let addButton = this.ce(&apos;addButton&apos;, &apos;a&apos;, {
+    let addButton = this.ce(&apos;a&apos;, {
       class: &apos;btn btn-primary&apos;
     });
     this.addEventListener(addButton, &apos;click&apos;, (event) =&gt; {
@@ -640,7 +657,7 @@ export class BaseComponent {
       this.addValue();
     });
 
-    let addIcon = this.ce(&apos;addIcon&apos;, &apos;span&apos;, {
+    let addIcon = this.ce(&apos;span&apos;, {
       class: &apos;glyphicon glyphicon-plus&apos;
     });
     addButton.appendChild(addIcon);
@@ -662,7 +679,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The html element of the remove button.
    */
   removeButton(index) {
-    let removeButton = this.ce(&apos;removeButton&apos;, &apos;button&apos;, {
+    let removeButton = this.ce(&apos;button&apos;, {
       type: &apos;button&apos;,
       class: &apos;btn btn-default&apos;,
       tabindex: &apos;-1&apos;
@@ -673,7 +690,7 @@ export class BaseComponent {
       this.removeValue(index);
     });
 
-    let removeIcon = this.ce(&apos;removeIcon&apos;, &apos;span&apos;, {
+    let removeIcon = this.ce(&apos;span&apos;, {
       class: &apos;glyphicon glyphicon-remove-circle&apos;
     });
     removeButton.appendChild(removeIcon);
@@ -688,8 +705,12 @@ export class BaseComponent {
     if (!this.component.label || this.options.inputsOnly) {
       return;
     }
-    this.label = this.ce(&apos;label&apos;, &apos;label&apos;, {
-      class: &apos;control-label&apos;
+    let className = &apos;control-label&apos;;
+    if (this.component.input &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
+      className += &apos; field-required&apos;;
+    }
+    this.label = this.ce(&apos;label&apos;, {
+      class: className
     });
     if (this.info.attr.id) {
       this.label.setAttribute(&apos;for&apos;, this.info.attr.id);
@@ -706,7 +727,7 @@ export class BaseComponent {
     if (!this.component.description) {
       return;
     }
-    this.description = this.ce(&apos;description&apos;, &apos;div&apos;, {
+    this.description = this.ce(&apos;div&apos;, {
       class: &apos;help-block&apos;
     });
     this.description.appendChild(this.text(this.component.description));
@@ -720,7 +741,7 @@ export class BaseComponent {
     if (!this.errorContainer) {
       return;
     }
-    this.errorElement = this.ce(&apos;errors&apos;, &apos;div&apos;, {
+    this.errorElement = this.ce(&apos;div&apos;, {
       class: &apos;formio-errors&apos;
     });
     this.errorContainer.appendChild(this.errorElement);
@@ -736,7 +757,7 @@ export class BaseComponent {
   addPrefix(input, inputGroup) {
     let prefix = null;
     if (this.component.prefix) {
-      prefix = this.ce(&apos;prefix&apos;, &apos;div&apos;, {
+      prefix = this.ce(&apos;div&apos;, {
         class: &apos;input-group-addon&apos;
       });
       prefix.appendChild(this.text(this.component.prefix));
@@ -755,7 +776,7 @@ export class BaseComponent {
   addSuffix(input, inputGroup) {
     let suffix = null;
     if (this.component.suffix) {
-      suffix = this.ce(&apos;suffix&apos;, &apos;div&apos;, {
+      suffix = this.ce(&apos;div&apos;, {
         class: &apos;input-group-addon&apos;
       });
       suffix.appendChild(this.text(this.component.suffix));
@@ -774,7 +795,7 @@ export class BaseComponent {
   addInputGroup(input, container) {
     let inputGroup = null;
     if (this.component.prefix || this.component.suffix) {
-      inputGroup = this.ce(&apos;inputGroup&apos;, &apos;div&apos;, {
+      inputGroup = this.ce(&apos;div&apos;, {
         class: &apos;input-group&apos;
       });
       container.appendChild(inputGroup);
@@ -845,7 +866,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - Either the input or the group that contains the input.
    */
   createInput(container) {
-    let input = this.ce(&apos;input&apos;, this.info.type, this.info.attr);
+    let input = this.ce(this.info.type, this.info.attr);
     this.setInputMask(input);
     let inputGroup = this.addInputGroup(input, container);
     this.addPrefix(input, inputGroup);
@@ -894,46 +915,22 @@ export class BaseComponent {
   /**
    * Alias for document.createElement.
    *
-   * @param {string} name - The name of the element to create, for templating purposes.
+   * DEPRECATED - @param {string} name - The name of the element to create, for templating purposes.
    * @param {string} type - The type of element to create
    * @param {Object} attr - The element attributes to add to the created element.
    * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
-   * @param {Object} events - A key value list of events to attach to the element.
+   * DEPRECATED - @param {Object} events - A key value list of events to attach to the element.
    *
    * @return {HTMLElement} - The created element.
    */
-  ce(name, type, attr, children = null, events = {}) {
-    // Allow for template overrides.
+  ce(type, attr, children = null, events = {}) {
+    // Create the element.
     let element = document.createElement(type);
-    let compType = this.component.type || this.type;
-    if (
-      this.options &amp;&amp;
-      this.options.template &amp;&amp;
-      (
-        (this.options.template[compType] &amp;&amp; this.options.template[compType][name]) ||
-        (this.options.template.global &amp;&amp; this.options.template.global[name])
-      )
-    ) {
-      let template = _get(this.options, &apos;template.&apos; + compType + &apos;.&apos; + name) || _get(this.options, &apos;template.global.&apos; + name);
-      if (typeof template === &apos;function&apos;) {
-        let returnElement = template(this, type, attr, element);
-        if (returnElement) {
-          return returnElement;
-        }
-      }
-      else {
-        // Assign the attributes.
-        _assign(attr, template);
-      }
-    }
+
+    // Add attributes.
     if (attr) {
       this.attr(element, attr);
     }
-
-    // Attach events.
-    Object.keys(events).forEach(event =&gt; {
-      this.addEventListener(element, event, events[event]);
-    });
 
     // Append different types of children.
     const appendChild = child =&gt; {
@@ -970,9 +967,16 @@ export class BaseComponent {
    * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
-    _each(attr, function (value, key) {
+    _each(attr, (value, key) =&gt; {
       if (typeof value !== &apos;undefined&apos;) {
-        element.setAttribute(key, value);
+        if (key.indexOf(&apos;on&apos;) === 0) {
+          // If this is an event, add a listener.
+          this.addEventListener(element, key.substr(2).toLowerCase(), value);
+        }
+        else {
+          // Otherwise it is just an attribute.
+          element.setAttribute(key, value);
+        }
       }
     });
   }
@@ -1017,13 +1021,22 @@ export class BaseComponent {
    * @param message
    */
   addInputError(message) {
+    if (!message) {
+      return;
+    }
+
     if (this.errorElement) {
-      let errorMessage = this.ce(&apos;errorMessage&apos;, &apos;p&apos;, {
+      let errorMessage = this.ce(&apos;p&apos;, {
         class: &apos;help-block&apos;
       });
       errorMessage.appendChild(this.text(message));
       this.errorElement.appendChild(errorMessage);
-      this.addClass(this.element, &apos;has-error&apos;);
+    }
+
+    // Add error classes
+    this.addClass(this.element, &apos;has-error&apos;);
+    if (this.options.highlightErrors) {
+      this.addClass(this.element, &apos;alert alert-danger&apos;);
     }
   }
 
@@ -1182,7 +1195,7 @@ export class BaseComponent {
     }
     else {
       try {
-        let val = jsonLogic.apply(this.component.calculateValue, {
+        let val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
           data: data,
           row: this.data
         });
@@ -1202,14 +1215,7 @@ export class BaseComponent {
       return true;
     }
 
-    let message = Validator.check(
-      this.validators,
-      this.component,
-      this.getRawValue(),
-      data || this.data,
-      this.data,
-      this.t.bind(this)
-    );
+    let message = Validator.check(this, data);
     this.setCustomValidity(message);
 
     // No message, returns true
@@ -1218,6 +1224,10 @@ export class BaseComponent {
 
   getRawValue() {
     return this.data[this.component.key];
+  }
+
+  isEmpty(value) {
+    return value == null || value.length === 0;
   }
 
   get errors() {
@@ -1237,6 +1247,9 @@ export class BaseComponent {
       catch (err) {}
     }
     this.removeClass(this.element, &apos;has-error&apos;);
+    if (this.options.highlightErrors) {
+      this.removeClass(this.element, &apos;alert alert-danger&apos;);
+    }
     if (message) {
       this.error = {
         component: this.component,
@@ -1330,7 +1343,7 @@ export class BaseComponent {
       if (defaultValue !== undefined &amp;&amp; (option.value === defaultValue)) {
         attrs.selected = &apos;selected&apos;;
       }
-      let optionElement = this.ce(tag, &apos;option&apos;, attrs);
+      let optionElement = this.ce(&apos;option&apos;, attrs);
       optionElement.appendChild(this.text(option.label));
       select.appendChild(optionElement);
     });
