@@ -798,7 +798,9 @@ var AddressComponent = exports.AddressComponent = function (_TextFieldComponent)
         value = this.defaultValue;
       }
       this.addresses[index] = value;
-      this.inputs[index].value = value.formatted_address;
+      if (value && value.formatted_address) {
+        this.inputs[index].value = value.formatted_address;
+      }
     }
   }, {
     key: 'getValueAt',

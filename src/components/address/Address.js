@@ -24,7 +24,9 @@ export class AddressComponent extends TextFieldComponent {
       value = this.defaultValue;
     }
     this.addresses[index] = value;
-    this.inputs[index].value = value.formatted_address;
+    if (value && value.formatted_address) {
+      this.inputs[index].value = value.formatted_address;
+    }
   }
 
   getValueAt(index) {
