@@ -35,8 +35,15 @@ export class SignatureComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
-    this.element.innerHTML = '';
-    this.element.appendChild(this.getSignatureImage());
+    if (this.signaturePad) {
+      if (disabled){
+        this.signaturePad.off();
+        this.refresh.classList.add('disabled');
+      } else {
+        this.signaturePad.on();
+        this.refresh.classList.remove('disabled');
+      }
+    }
   }
 
   destroy() {
@@ -59,12 +66,12 @@ export class SignatureComponent extends BaseComponent {
     });
 
     // Create the refresh button.
-    let refresh = this.ce('a', {
+    this.refresh = this.ce('a', {
       class: 'btn btn-sm btn-default signature-pad-refresh'
     });
     let refreshIcon = this.getIcon('refresh');
-    refresh.appendChild(refreshIcon);
-    padBody.appendChild(refresh);
+    this.refresh.appendChild(refreshIcon);
+    padBody.appendChild(this.refresh);
 
     // The signature canvas.
     let canvas = this.ce('canvas', {
@@ -90,7 +97,7 @@ export class SignatureComponent extends BaseComponent {
       penColor: this.component.penColor,
       backgroundColor: this.component.backgroundColor
     });
-    refresh.addEventListener("click", (event) => {
+    this.refresh.addEventListener("click", (event) => {
       event.preventDefault();
       this.signaturePad.clear();
     });
@@ -109,7 +116,7 @@ export class SignatureComponent extends BaseComponent {
       setTimeout(checkWidth.bind(this), 200);
     }.bind(this), 200);
 
-    if (this.options.readOnly) {
+    if (this.options.readOnly || this.component.disabled) {
       this.disabled = true;
     }
   }

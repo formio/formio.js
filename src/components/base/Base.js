@@ -470,7 +470,7 @@ export class BaseComponent {
       tr.appendChild(tdAdd);
       this.tbody.appendChild(tr);
     });
-
+    
     let tr = this.ce('tr');
     let td = this.ce('td', {
       colspan: '2'
@@ -478,7 +478,7 @@ export class BaseComponent {
     td.appendChild(this.addButton());
     tr.appendChild(td);
     this.tbody.appendChild(tr);
-    if (this.options.readOnly) {
+    if (this.options.readOnly || this.component.disabled) {
       this.disabled = true;
     }
   }
