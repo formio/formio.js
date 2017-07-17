@@ -206,6 +206,15 @@ export class SelectComponent extends BaseComponent {
   }
 
   /**
+   * Select component will contain one input when flagged as multiple.
+   * 
+   * @return {boolean}
+   */
+  isMultiple(value) {
+    return false;
+  }
+
+  /**
    * Ouput this select dropdown as a string value.
    * @return {*}
    */
