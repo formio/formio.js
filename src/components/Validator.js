@@ -36,7 +36,7 @@ export var Validator = {
     _each(component.validators, (name) => {
       if (this.validators.hasOwnProperty(name)) {
         let validator = this.validators[name];
-        if (component.isMultiple(value)) {
+        if (component.validateMultiple(value)) {
           _each(value, (val) => {
             result = this.validate(component, validator, val, data);
             if (result) {

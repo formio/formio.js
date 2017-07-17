@@ -1086,11 +1086,11 @@ export class BaseComponent {
   }
 
   /**
-   * Check if a component is multiple
+   * Check if a component is eligible for multiple validation
    * 
    * @return {boolean}
    */
-  isMultiple(value) {
+  validateMultiple(value) {
     return this.component.multiple && _isArray(value);
   }
 

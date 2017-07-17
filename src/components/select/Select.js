@@ -206,11 +206,12 @@ export class SelectComponent extends BaseComponent {
   }
 
   /**
-   * Select component will contain one input when flagged as multiple.
+   * Check if a component is eligible for multiple validation
    * 
    * @return {boolean}
    */
-  isMultiple(value) {
+  validateMultiple(value) {
+    // Select component will contain one input when flagged as multiple.
     return false;
   }
 
