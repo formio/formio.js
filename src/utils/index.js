@@ -1,6 +1,11 @@
 'use strict';
 import _clone from 'lodash/clone';
 import _get from 'lodash/get';
+import _isString from 'lodash/isString';
+import _round from 'lodash/round';
+import _pad from 'lodash/pad';
+import _chunk from 'lodash/chunk';
+import _isNaN from 'lodash/isNaN';
 import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
 
@@ -203,6 +208,87 @@ const FormioUtils = {
     return (component.hasOwnProperty('customConditional') && component.customConditional) ||
       (component.hasOwnProperty('conditional') && component.conditional && component.conditional.when) ||
       (component.hasOwnProperty('conditional') && component.conditional && component.conditional.json);
+  },
+
+  /**
+   * Extension of standard #parseFloat(value) function, that also clears input string.
+   *
+   * @param {any} value
+   *   The value to parse.
+   *
+   * @returns {Number}
+   *   Parsed value.
+   */
+  parseFloat: function(value) {
+    return parseFloat(_isString(value)
+      ? value.replace(/[^\de.+-]/gi, '')
+      : value);
+  },
+
+  /**
+   * Formats provided value in way how Currency component uses it.
+   *
+   * @param {any} value
+   *   The value to format.
+   *
+   * @returns {String}
+   *   Value formatted for Currency component.
+   */
+  formatAsCurrency: function(value) {
+    var parsedValue = this.parseFloat(value);
+
+    if (_isNaN(parsedValue)) {
+      return '';
+    }
+
+    var parts = _round(parsedValue, 2)
+      .toString()
+      .split('.');
+    parts[0] = _chunk(Array.from(parts[0]).reverse(), 3)
+      .reverse()
+      .map(function(part) {
+        return part
+          .reverse()
+          .join('');
+      })
+      .join(',');
+    parts[1] = _pad(parts[1], 2, '0');
+    return parts.join('.');
+  },
+
+  /**
+   * Checks the calculated value for a provided component and data.
+   *
+   * @param {Object} component
+   *   The component to check for the calculated value.
+   * @param {Object} submission
+   *   A submission object.
+   * @param data
+   *   The full submission data.
+   */
+  checkCalculated: function(component, submission, data) {
+    // Process calculated value stuff if present.
+    if (component.calculateValue) {
+      if (typeof component.calculateValue === 'string') {
+        try {
+          data[component.key] = eval('(function(data, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, this)');
+        }
+        catch (e) {
+          console.warn('An error occurred calculating a value for ' + component.key, e);
+        }
+      }
+      else {
+        try {
+          data[component.key] = formioUtils.jsonLogic.apply(component.calculateValue, {
+            data: submission ? submission.data : data,
+            row: data
+          });
+        }
+        catch (e) {
+          console.warn('An error occurred calculating a value for ' + component.key, e);
+        }
+      }
+    }
   },
 
   /**
