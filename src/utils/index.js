@@ -235,13 +235,13 @@ const FormioUtils = {
    *   Value formatted for Currency component.
    */
   formatAsCurrency: function(value) {
-    var parsedValue = this.parseFloat(value);
+    const parsedValue = this.parseFloat(value);
 
     if (_isNaN(parsedValue)) {
       return '';
     }
 
-    var parts = _round(parsedValue, 2)
+    const parts = _round(parsedValue, 2)
       .toString()
       .split('.');
     parts[0] = _chunk(Array.from(parts[0]).reverse(), 3)
@@ -271,7 +271,8 @@ const FormioUtils = {
     if (component.calculateValue) {
       if (typeof component.calculateValue === 'string') {
         try {
-          data[component.key] = eval('(function(data, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, this)');
+          const util = this;
+          data[component.key] = eval('(function(data, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, util)');
         }
         catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
