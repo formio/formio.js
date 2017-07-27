@@ -1,4 +1,6 @@
 import { BaseComponent } from '../base/Base';
+import FormioUtils from '../../utils';
+
 export class ButtonComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
@@ -70,6 +72,22 @@ export class ButtonComponent extends BaseComponent {
             data: this.data,
             event: event
           });
+          break;
+        case 'custom':
+          var parent = this.parent;
+          while (parent.parent) {
+            parent = parent.parent;
+          }
+          var components = FormioUtils.flattenComponents(parent.components, true);
+          var data = this.data;
+          try {
+            eval(this.component.custom.toString());
+          }
+          catch (e) {
+            /* eslint-disable no-console */
+            console.warn('An error occurred evaluating custom logic for ' + this.key, e);
+            /* eslint-enable no-console */
+          }
           break;
         case 'reset':
           this.emit('resetForm');
