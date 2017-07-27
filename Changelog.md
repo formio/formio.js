@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.13.1
+### Added
+ - A way to determine if a user is able to submit a form before they do.
+ - A delete api call when a file is deleted.
+ - A way to upload base64 file uploads.
+  
+### Changed
+ - Refactored the http requests to have less Promises and more streamlined.
+ - Wait for the form to load before loading the submission.
+ 
+### Fixed
+ - Fixed some issues with multi-select field validation.
+
 ## 2.13.0
 ### Fixed
  - Issue where Selectboxes was not storing the correct data structure.
