@@ -402,11 +402,26 @@ export class Formio {
     ]).then(function(results) {
       var form = results.shift();
       var user = results.shift();
+      var access = results.shift();
+
+      // Get the anonymous and admin roles.
+      var anonRole = {};
+      var adminRole = {};
+      for (var roleName in access.roles) {
+        var role = access.roles[roleName];
+        if (role.default) {
+          anonRole = role;
+        }
+        if (role.admin) {
+          adminRole = role;
+        }
+      }
+
       var canSubmit = false;
       var canSubmitAnonymously = false;
 
       // If the user is an admin, then they can submit this form.
-      if (user && (user.roles.indexOf(Formio.adminRole._id) !== -1)) {
+      if (user && (user.roles.indexOf(adminRole._id) !== -1)) {
         return true;
       }
 
@@ -415,7 +430,7 @@ export class Formio {
         if (subRole.type === 'create_all' || subRole.type === 'create_own') {
           for (var j in subRole.roles) {
             // Check if anonymous is allowed.
-            if (Formio.anonRole._id === subRole.roles[j]) {
+            if (anonRole._id === subRole.roles[j]) {
               canSubmitAnonymously = true;
             }
             // Check if the logged in user has the appropriate role.
@@ -601,10 +616,18 @@ export class Formio {
             headers[key] = item;
           });
 
-          return result;
+          // Return the result with the headers.
+          return {
+            result: result,
+            headers: headers
+          };
         });
       })
       .then(function(result) {
+        if (opts.getHeaders) {
+          return result;
+        }
+
         // Shallow copy result so modifications don't end up in cache
         if(Array.isArray(result)) {
           var resultCopy = result.map(copy);
@@ -807,18 +830,7 @@ export class Formio {
   }
 
   static accessInfo() {
-    return Formio.makeStaticRequest(Formio.projectUrl + '/access').then(function(access) {
-      for (var roleName in access.roles) {
-        var role = access.roles[roleName];
-        if (role.default) {
-          Formio.anonRole = role;
-        }
-        if (role.admin) {
-          Formio.adminRole = role;
-        }
-      }
-      return access;
-    });
+    return Formio.makeStaticRequest(Formio.projectUrl + '/access');
   }
 
   static currentUser() {
@@ -994,8 +1006,6 @@ Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.adminRole = {};
-Formio.anonRole = {};
 Formio.providers = require('./providers');
 Formio.events = new EventEmitter({
   wildcard: false,

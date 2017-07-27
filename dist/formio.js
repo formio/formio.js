@@ -450,11 +450,26 @@ var Formio = function () {
       return Promise.all([this.loadForm(), Formio.currentUser(), Formio.accessInfo()]).then(function (results) {
         var form = results.shift();
         var user = results.shift();
+        var access = results.shift();
+
+        // Get the anonymous and admin roles.
+        var anonRole = {};
+        var adminRole = {};
+        for (var roleName in access.roles) {
+          var role = access.roles[roleName];
+          if (role.default) {
+            anonRole = role;
+          }
+          if (role.admin) {
+            adminRole = role;
+          }
+        }
+
         var canSubmit = false;
         var canSubmitAnonymously = false;
 
         // If the user is an admin, then they can submit this form.
-        if (user && user.roles.indexOf(Formio.adminRole._id) !== -1) {
+        if (user && user.roles.indexOf(adminRole._id) !== -1) {
           return true;
         }
 
@@ -463,7 +478,7 @@ var Formio = function () {
           if (subRole.type === 'create_all' || subRole.type === 'create_own') {
             for (var j in subRole.roles) {
               // Check if anonymous is allowed.
-              if (Formio.anonRole._id === subRole.roles[j]) {
+              if (anonRole._id === subRole.roles[j]) {
                 canSubmitAnonymously = true;
               }
               // Check if the logged in user has the appropriate role.
@@ -643,9 +658,17 @@ var Formio = function () {
             headers[key] = item;
           });
 
-          return result;
+          // Return the result with the headers.
+          return {
+            result: result,
+            headers: headers
+          };
         });
       }).then(function (result) {
+        if (opts.getHeaders) {
+          return result;
+        }
+
         // Shallow copy result so modifications don't end up in cache
         if (Array.isArray(result)) {
           var resultCopy = result.map(copy);
@@ -869,18 +892,7 @@ var Formio = function () {
   }, {
     key: 'accessInfo',
     value: function accessInfo() {
-      return Formio.makeStaticRequest(Formio.projectUrl + '/access').then(function (access) {
-        for (var roleName in access.roles) {
-          var role = access.roles[roleName];
-          if (role.default) {
-            Formio.anonRole = role;
-          }
-          if (role.admin) {
-            Formio.adminRole = role;
-          }
-        }
-        return access;
-      });
+      return Formio.makeStaticRequest(Formio.projectUrl + '/access');
     }
   }, {
     key: 'currentUser',
@@ -1072,8 +1084,6 @@ Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.adminRole = {};
-Formio.anonRole = {};
 Formio.providers = require('./providers');
 Formio.events = new EventEmitter({
   wildcard: false,
@@ -1083,14 +1093,57 @@ Formio.events = new EventEmitter({
 module.exports = global.Formio = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./providers":2,"eventemitter2":7,"native-promise-only":8,"shallow-copy":9,"whatwg-fetch":10}],2:[function(require,module,exports){
+},{"./providers":2,"eventemitter2":8,"native-promise-only":9,"shallow-copy":10,"whatwg-fetch":11}],2:[function(require,module,exports){
 'use strict';
 
 module.exports = {
   storage: require('./storage')
 };
 
-},{"./storage":4}],3:[function(require,module,exports){
+},{"./storage":5}],3:[function(require,module,exports){
+'use strict';
+
+var Promise = require('native-promise-only');
+var base64 = function base64() {
+  return {
+    title: 'Base64',
+    name: 'base64',
+    uploadFile: function uploadFile(file, fileName) {
+      var _this = this;
+
+      var reader = new FileReader();
+
+      return new Promise(function (resolve, reject) {
+        reader.onload = function (event) {
+          var url = event.target.result;
+          resolve({
+            storage: 'base64',
+            name: fileName,
+            url: url,
+            size: file.size,
+            type: file.type,
+            data: url.replace('data:' + file.type + ';base64,', '')
+          });
+        };
+
+        reader.onerror = function () {
+          return reject(_this);
+        };
+
+        reader.readAsDataURL(file);
+      });
+    },
+    downloadFile: function downloadFile(file) {
+      // Return the original as there is nothing to do.
+      return Promise.resolve(file);
+    }
+  };
+};
+
+base64.title = 'Base64';
+module.exports = base64;
+
+},{"native-promise-only":9}],4:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -1162,16 +1215,17 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 module.exports = dropbox;
 
-},{"native-promise-only":8}],4:[function(require,module,exports){
+},{"native-promise-only":9}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = {
+  base64: require('./base64'),
   dropbox: require('./dropbox.js'),
   s3: require('./s3.js'),
   url: require('./url.js')
 };
 
-},{"./dropbox.js":3,"./s3.js":5,"./url.js":6}],5:[function(require,module,exports){
+},{"./base64":3,"./dropbox.js":4,"./s3.js":6,"./url.js":7}],6:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -1286,7 +1340,7 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 module.exports = s3;
 
-},{"native-promise-only":8}],6:[function(require,module,exports){
+},{"native-promise-only":9}],7:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -1365,7 +1419,7 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"native-promise-only":8}],7:[function(require,module,exports){
+},{"native-promise-only":9}],8:[function(require,module,exports){
 /*!
  * EventEmitter2
  * https://github.com/hij1nx/EventEmitter2
@@ -2089,7 +2143,7 @@ module.exports = url;
   }
 }();
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (global){
 /*! Native Promise Only
     v0.8.1 (c) Kyle Simpson
@@ -2466,7 +2520,7 @@ module.exports = url;
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = function (obj) {
     if (!obj || typeof obj !== 'object') return obj;
     
@@ -2503,7 +2557,7 @@ var isArray = Array.isArray || function (xs) {
     return {}.toString.call(xs) === '[object Array]';
 };
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 (function(self) {
   'use strict';
 
