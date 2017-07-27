@@ -101,7 +101,10 @@ export class SelectComponent extends BaseComponent {
     // Make the request.
     Formio.request(url, null, null, headers, options)
       .then((response) => this.setItems(response))
-      .catch(() => console.warn('Unable to load resources for ' + this.component.key))
+      .catch((err) => {
+        this.events.emit('formio.error', err);
+        console.warn('Unable to load resources for ' + this.component.key);
+      })
   }
 
   updateItems() {
@@ -188,6 +191,12 @@ export class SelectComponent extends BaseComponent {
         // Search for the choice.
         const choices = this.choices.store.getChoices();
         const foundChoice = choices.find((choice) => {
+          // For resources we may have two different instances of the same resource
+          // Unify them so we don't have two copies of the same thing in the dropdown
+          // and so the correct resource gets selected in the first place
+          if (choice.value._id && value._id && choice.value._id === value._id) {
+            value = choice.value;
+          }
           return choice.value === value;
         });
 
@@ -203,6 +212,16 @@ export class SelectComponent extends BaseComponent {
     if (!noUpdate) {
       this.updateValue(noValidate);
     }
+  }
+
+  /**
+   * Check if a component is eligible for multiple validation
+   * 
+   * @return {boolean}
+   */
+  validateMultiple(value) {
+    // Select component will contain one input when flagged as multiple.
+    return false;
   }
 
   /**
