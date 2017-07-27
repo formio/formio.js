@@ -101,7 +101,10 @@ export class SelectComponent extends BaseComponent {
     // Make the request.
     Formio.request(url, null, null, headers, options)
       .then((response) => this.setItems(response))
-      .catch(() => console.warn('Unable to load resources for ' + this.component.key))
+      .catch((err) => {
+        this.events.emit('formio.error', err);
+        console.warn('Unable to load resources for ' + this.component.key);
+      })
   }
 
   updateItems() {
