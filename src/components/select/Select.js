@@ -206,6 +206,16 @@ export class SelectComponent extends BaseComponent {
   }
 
   /**
+   * Check if a component is eligible for multiple validation
+   * 
+   * @return {boolean}
+   */
+  validateMultiple(value) {
+    // Select component will contain one input when flagged as multiple.
+    return false;
+  }
+
+  /**
    * Ouput this select dropdown as a string value.
    * @return {*}
    */

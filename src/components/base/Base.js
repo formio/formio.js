@@ -1085,6 +1085,15 @@ export class BaseComponent {
     return value == null || value.length === 0;
   }
 
+  /**
+   * Check if a component is eligible for multiple validation
+   * 
+   * @return {boolean}
+   */
+  validateMultiple(value) {
+    return this.component.multiple && _isArray(value);
+  }
+
   get errors() {
     return this.error ? [this.error] : [];
   }
