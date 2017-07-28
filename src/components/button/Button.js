@@ -78,7 +78,7 @@ export class ButtonComponent extends BaseComponent {
           while (parent.parent) {
             parent = parent.parent;
           }
-          var components = FormioUtils.flattenComponents(parent.components, true);
+          var components = FormioUtils.flattenComponents(parent.component.components, true);
           var data = this.data;
           try {
             eval(this.component.custom.toString());

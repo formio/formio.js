@@ -32,12 +32,6 @@ export class BaseComponent {
     this.id = (component && component.id) ? component.id : Math.random().toString(36).substring(7);
 
     /**
-     * The API key of this component.  FormioUtils.eachComponent needs it to formulate the path.
-     * @type {string}
-     */
-    this.key = (component && component.key) ? component.key : '';
-
-    /**
      * The options for this component.
      * @type {{}}
      */
