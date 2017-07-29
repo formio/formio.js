@@ -5,10 +5,8 @@ export class ColumnsComponent extends FormioComponents {
     return 'row';
   }
   addComponents() {
-    let colWidth = Math.floor(12 / this.component.columns.length);
     _each(this.component.columns, (column) => {
       column.type = 'column';
-      column.colWidth = colWidth;
       this.addComponent(column, this.element, this.data);
     });
   }
