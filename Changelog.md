@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Allow plugins to modify request options before they are sent.
+
 ## 2.13.1
 ### Added
  - A way to determine if a user is able to submit a form before they do.
