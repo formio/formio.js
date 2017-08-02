@@ -81,7 +81,7 @@ export class ResourceComponent extends SelectComponent {
 
     // Add Resource button
     if (this.component.addResource) {
-      input.parentElement.parentElement.parentElement.appendChild(this.addButton());
+      container.appendChild(this.addButton());
     }
   }
 }
