@@ -20,7 +20,7 @@ export class CheckBoxComponent extends BaseComponent {
     this.createElement();
     this.input = this.createInput(this.element);
     this.createLabel(this.element, this.input);
-    if (!this.label) {
+    if (!this.labelElement) {
       this.addInput(this.input, this.element);
     }
     this.createDescription(this.element);
@@ -44,7 +44,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.label) {
       return null;
     }
-    this.label = this.ce('label', {
+    this.labelElement = this.ce('label', {
       class: 'control-label'
     });
 
@@ -52,14 +52,14 @@ export class CheckBoxComponent extends BaseComponent {
     this.labelSpan = this.ce('span');
 
     if (this.info.attr.id) {
-      this.label.setAttribute('for', this.info.attr.id);
+      this.labelElement.setAttribute('for', this.info.attr.id);
     }
-    this.addInput(input, this.label);
+    this.addInput(input, this.labelElement);
     if (!this.options.inputsOnly) {
       this.labelSpan.appendChild(this.text(this.component.label));
-      this.label.appendChild(this.labelSpan);
+      this.labelElement.appendChild(this.labelSpan);
     }
-    container.appendChild(this.label);
+    container.appendChild(this.labelElement);
   }
 
   createInput(container) {
