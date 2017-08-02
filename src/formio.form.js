@@ -260,12 +260,15 @@ export class FormioForm extends FormioComponents {
     this.url = value;
     this.nosubmit = false;
     this.formio.loadForm().then(
-      (form) => this.setForm(form),
+      (form) => {
+        var setForm = this.setForm(form);
+        this.loadSubmission();
+        return setForm;
+      },
       (err) => this.formReadyReject(err)
     ).catch(
       (err) => this.formReadyReject(err)
     );
-    this.loadSubmission();
   }
 
   /**
