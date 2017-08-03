@@ -600,6 +600,10 @@ var Formio = function () {
       }
 
       var requestToken = headers.get('x-jwt-token');
+
+      // Allow plugins to alter the options.
+      options = Formio.pluginAlter('requestOptions', options, url);
+
       var requestPromise = fetch(url, options).then(function (response) {
         if (!response.ok) {
           if (response.status === 440) {
