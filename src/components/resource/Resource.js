@@ -77,11 +77,28 @@ export class ResourceComponent extends SelectComponent {
   }
 
   addInput(input, container) {
-    super.addInput(input, container, true);
-
     // Add Resource button
     if (this.component.addResource) {
-      container.appendChild(this.addButton());
+      var table    = this.ce('table', {
+        class: 'table table-bordered'
+      });
+      var template = '<tbody>' +
+                       '<tr>' +
+                         '<td id="select">' +
+                         '</td>' +
+                       '</tr>' +
+                       '<tr>' +
+                         '<td id="button" colspan="2">' +
+                         '</td>' +
+                       '</tr>' +
+                     '</tbody>';
+      container.appendChild(table);
+      table.innerHTML = template;
+      table.querySelector("#button").appendChild(this.addButton());
+      super.addInput(input, table.querySelector("#select"), true);
+    }
+    else {
+      super.addInput(input, container, true);
     }
   }
 }
