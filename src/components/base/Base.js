@@ -77,7 +77,7 @@ export class BaseComponent {
      * The HTMLElement that is assigned to the label of this component.
      * @type {null}
      */
-    this.label = null;
+    this.labelElement = null;
 
     /**
      * The HTMLElement for which the errors are rendered for this component (usually underneath the component).
@@ -407,6 +407,7 @@ export class BaseComponent {
           let row = this.data;
           let data = this.data;
           let value = '';
+          let component = this;
           eval(this.component.customDefaultValue.toString());
           defaultValue = value;
         }
@@ -564,14 +565,14 @@ export class BaseComponent {
     if (this.component.input && this.component.validate && this.component.validate.required) {
       className += ' field-required';
     }
-    this.label = this.ce('label', {
+    this.labelElement = this.ce('label', {
       class: className
     });
     if (this.info.attr.id) {
-      this.label.setAttribute('for', this.info.attr.id);
+      this.labelElement.setAttribute('for', this.info.attr.id);
     }
-    this.label.appendChild(this.text(this.component.label));
-    container.appendChild(this.label);
+    this.labelElement.appendChild(this.text(this.component.label));
+    container.appendChild(this.labelElement);
   }
 
   /**
@@ -1039,6 +1040,7 @@ export class BaseComponent {
       try {
         let value = [];
         let row = this.data;
+        let component = this;
         eval(this.component.calculateValue.toString());
         this.setValue(value);
       }
@@ -1062,6 +1064,38 @@ export class BaseComponent {
         /* eslint-enable no-console */
       }
     }
+  }
+
+  /**
+   * Get this component's label text.
+   *
+   */
+  get label() {
+    return this.component.label;
+  }
+
+  /**
+   * Set this component's label text and render it.
+   *
+   * @param value - The new label text.
+   */
+  set label(value) {
+    this.component.label = value;
+    if (this.labelElement) {
+      this.labelElement.innerText = value;
+    }
+  }
+
+  /**
+   * Get FormioForm element at the root of this component tree.
+   *
+   */
+  getRoot() {
+    var parent = this.parent;
+    while (parent.parent) {
+      parent = parent.parent;
+    }
+    return parent;
   }
 
   checkValidity(data, dirty) {
