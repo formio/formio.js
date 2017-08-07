@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## 2.13.4
+### Added
+ - Resource modal to add new resources inline within form.
+ - Custom scripts to be executed on button click.
+
 ## 2.13.2
 ### Added
  - Allow plugins to modify request options before they are sent.
