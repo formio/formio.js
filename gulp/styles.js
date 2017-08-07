@@ -4,6 +4,7 @@ module.exports = function(gulp, plugins) {
     return gulp.src([
       './node_modules/flatpickr/dist/flatpickr.min.css',
       './node_modules/choices.js/assets/styles/css/choices.min.css',
+      './node_modules/dialog-polyfill/dialog-polyfill.css',
       './src/sass/formio.form.scss'
     ])
       .pipe(sassFilter)
