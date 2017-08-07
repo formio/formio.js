@@ -187,8 +187,10 @@ td > .form-group {
   position: fixed;
   top: 50%;
   transform: translate(0, -50%);
+  border-radius: 5px;
 }
 
 .formio-dialog-close {
   cursor: pointer;
+  margin-bottom: 10px;
 }
