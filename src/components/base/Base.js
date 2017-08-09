@@ -530,6 +530,14 @@ export class BaseComponent {
   }
 
   /**
+   * Returns the error label for this component.
+   * @return {*}
+   */
+  get errorLabel() {
+    return this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key;
+  }
+
+  /**
    * Creates a new "remove" row button and returns the html element of that button.
    * @param {number} index - The index of the row that should be removed.
    * @returns {HTMLElement} - The html element of the remove button.
@@ -1121,7 +1129,7 @@ export class BaseComponent {
 
   /**
    * Check if a component is eligible for multiple validation
-   * 
+   *
    * @return {boolean}
    */
   validateMultiple(value) {
