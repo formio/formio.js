@@ -1050,7 +1050,7 @@ export class BaseComponent {
         let row = this.data;
         let component = this;
         eval(this.component.calculateValue.toString());
-        this.setValue(value);
+        this.setValue(value, true);
       }
       catch (e) {
         /* eslint-disable no-console */
@@ -1064,7 +1064,7 @@ export class BaseComponent {
           data: data,
           row: this.data
         });
-        this.setValue(val);
+        this.setValue(val, true);
       }
       catch (err) {
         /* eslint-disable no-console */

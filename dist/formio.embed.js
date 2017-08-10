@@ -2502,7 +2502,7 @@ var BaseComponent = function () {
           var row = this.data;
           var component = this;
           eval(this.component.calculateValue.toString());
-          this.setValue(value);
+          this.setValue(value, true);
         } catch (e) {
           /* eslint-disable no-console */
           console.warn('An error occurred calculating a value for ' + this.component.key, e);
@@ -2514,7 +2514,7 @@ var BaseComponent = function () {
             data: data,
             row: this.data
           });
-          this.setValue(val);
+          this.setValue(val, true);
         } catch (err) {
           /* eslint-disable no-console */
           console.warn('An error occurred calculating a value for ' + this.component.key, e);
