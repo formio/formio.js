@@ -208,3 +208,15 @@ describe('getValue', function() {
     expect(utils.getValue(submission1, 'animalname')).to.be.equal(submission1.data.mycontainer.animalname);
   });
 });
+
+describe('formatAsCurrency', function() {
+  it('should be able to format Float value for Currency component', function() {
+    expect(utils.formatAsCurrency(123.4)).to.be.equal('123.40');
+    expect(utils.formatAsCurrency(12345678.9)).to.be.equal('12,345,678.90');
+    expect(utils.formatAsCurrency(12345678.915)).to.be.equal('12,345,678.92');
+  });
+
+  it('should be able to format String value for Currency component', function() {
+    expect(utils.formatAsCurrency('12345678.915')).to.be.equal('12,345,678.92');
+  });
+});
