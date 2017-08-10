@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Added
  - Add error labels.
+ - Exposed ```util``` for Calculated Value.
+ - ```parseFloat``` extension on FormioUtils.
+ - ```formatAsCurrency``` function on FormioUtils.
 
 ### Fixed
  - An issue where an infinite loop would trigger for calculatedValue's.
