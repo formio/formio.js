@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+ - Add error labels.
+
+### Fixed
+ - An issue where an infinite loop would trigger for calculatedValue's.
 
 ## 2.13.4
 ### Added

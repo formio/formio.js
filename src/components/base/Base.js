@@ -530,6 +530,14 @@ export class BaseComponent {
   }
 
   /**
+   * Returns the error label for this component.
+   * @return {*}
+   */
+  get errorLabel() {
+    return this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key;
+  }
+
+  /**
    * Creates a new "remove" row button and returns the html element of that button.
    * @param {number} index - The index of the row that should be removed.
    * @returns {HTMLElement} - The html element of the remove button.
@@ -1038,11 +1046,12 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
+        let noUpdate = false;
         let value = [];
         let row = this.data;
         let component = this;
         eval(this.component.calculateValue.toString());
-        this.setValue(value);
+        this.setValue(value, noUpdate);
       }
       catch (e) {
         /* eslint-disable no-console */
@@ -1121,7 +1130,7 @@ export class BaseComponent {
 
   /**
    * Check if a component is eligible for multiple validation
-   * 
+   *
    * @return {boolean}
    */
   validateMultiple(value) {
