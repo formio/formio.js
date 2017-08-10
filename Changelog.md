@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Add error labels.
 
+### Fixed
+ - An issue where an infinite loop would trigger for calculatedValue's.
+
 ## 2.13.4
 ### Added
  - Resource modal to add new resources inline within form.
