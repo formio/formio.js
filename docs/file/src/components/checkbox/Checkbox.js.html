@@ -165,7 +165,7 @@ export class CheckBoxComponent extends BaseComponent {
     this.createElement();
     this.input = this.createInput(this.element);
     this.createLabel(this.element, this.input);
-    if (!this.label) {
+    if (!this.labelElement) {
       this.addInput(this.input, this.element);
     }
     this.createDescription(this.element);
@@ -189,7 +189,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.label) {
       return null;
     }
-    this.label = this.ce(&apos;label&apos;, {
+    this.labelElement = this.ce(&apos;label&apos;, {
       class: &apos;control-label&apos;
     });
 
@@ -197,14 +197,14 @@ export class CheckBoxComponent extends BaseComponent {
     this.labelSpan = this.ce(&apos;span&apos;);
 
     if (this.info.attr.id) {
-      this.label.setAttribute(&apos;for&apos;, this.info.attr.id);
+      this.labelElement.setAttribute(&apos;for&apos;, this.info.attr.id);
     }
-    this.addInput(input, this.label);
+    this.addInput(input, this.labelElement);
     if (!this.options.inputsOnly) {
       this.labelSpan.appendChild(this.text(this.component.label));
-      this.label.appendChild(this.labelSpan);
+      this.labelElement.appendChild(this.labelSpan);
     }
-    container.appendChild(this.label);
+    container.appendChild(this.labelElement);
   }
 
   createInput(container) {
@@ -234,7 +234,8 @@ export class CheckBoxComponent extends BaseComponent {
     return !!this.inputs[index].checked;
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     this.value = value;
     if (!this.input) {
       return;
@@ -255,9 +256,7 @@ export class CheckBoxComponent extends BaseComponent {
       this.input.value = 0;
       this.input.checked = 0;
     }
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
+    this.updateValue(flags);
   }
 }
 </code></pre>

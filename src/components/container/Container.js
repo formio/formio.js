@@ -25,21 +25,20 @@ export class ContainerComponent extends FormioComponents {
     return value;
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     if (!value || !_isObject(value)) {
       return;
     }
     this.value = value;
     _each(this.components, (component) => {
       if (component.type === 'components') {
-        component.setValue(value, noUpdate, noValidate);
+        component.setValue(value, flags);
       }
       else if (value.hasOwnProperty(component.component.key)) {
-        component.setValue(value[component.component.key], noUpdate, noValidate);
+        component.setValue(value[component.component.key], flags);
       }
     });
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
+    this.updateValue(flags);
   }
 }

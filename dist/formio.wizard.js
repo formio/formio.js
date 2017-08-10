@@ -309,9 +309,9 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     }
   }, {
     key: 'updateValue',
-    value: function updateValue(noValidate) {
+    value: function updateValue(flags) {
       (0, _each3.default)(this.components, function (comp) {
-        return comp.updateValue(noValidate);
+        return comp.updateValue(flags);
       });
     }
 
@@ -320,17 +320,21 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
      * a submission once it has been changed.
      *
      * @param data
-     * @param noValidate
+     * @param flags
      */
 
   }, {
     key: 'checkData',
-    value: function checkData(data, noValidate) {
+    value: function checkData(data, flags) {
+      flags = flags || {};
+      if (flags.noCheck) {
+        return;
+      }
       (0, _each3.default)(this.getComponents(), function (comp) {
         if (comp.type !== 'formcomponent') {
           comp.checkConditions(data);
           comp.calculateValue(data);
-          if (!noValidate) {
+          if (!flags.noValidate) {
             comp.checkValidity(data);
           }
         }
@@ -433,10 +437,11 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
       if (!value) {
         return;
       }
+      flags = this.getFlags.apply(this, arguments);
       this.value = value;
       (0, _each3.default)(this.getComponents(), function (component) {
         if (component.type === 'button') {
@@ -444,11 +449,12 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         }
 
         if (component.type === 'components') {
-          component.setValue(value, noUpdate, noValidate);
+          component.setValue(value, flags);
         } else if (value && value.hasOwnProperty(component.component.key)) {
-          component.setValue(value[component.component.key], noUpdate);
+          component.setValue(value[component.component.key], flags);
         } else if (component.component.input) {
-          component.setValue(null, noUpdate, true);
+          flags.noValidate = true;
+          component.setValue(null, flags);
         }
       });
     }
@@ -2191,11 +2197,10 @@ var BaseComponent = function () {
     /**
      * Alias for document.createElement.
      *
-     * DEPRECATED - @param {string} name - The name of the element to create, for templating purposes.
      * @param {string} type - The type of element to create
      * @param {Object} attr - The element attributes to add to the created element.
      * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
-     * DEPRECATED - @param {Object} events - A key value list of events to attach to the element.
+     * @param {Object} events
      *
      * @return {HTMLElement} - The created element.
      */
@@ -2316,7 +2321,9 @@ var BaseComponent = function () {
 
     /**
      * Add a new input error to this element.
+     *
      * @param message
+     * @param dirty
      */
 
   }, {
@@ -2367,15 +2374,16 @@ var BaseComponent = function () {
     }
   }, {
     key: 'onChange',
-    value: function onChange(noValidate) {
-      if (!noValidate) {
+    value: function onChange(flags) {
+      flags = flags || {};
+      if (!flags.noValidate) {
         this.pristine = false;
       }
       if (this.events) {
         this.emit('componentChange', {
           component: this.component,
           value: this.value,
-          validate: !noValidate
+          flags: flags
         });
       }
     }
@@ -2415,7 +2423,7 @@ var BaseComponent = function () {
      *
      * @param input
      * @param container
-     * @param name
+     * @param noSet
      */
 
   }, {
@@ -2430,7 +2438,9 @@ var BaseComponent = function () {
 
       // Reset the values of the inputs.
       if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {
-        this.setValue(this.data[this.component.key], true);
+        this.setValue(this.data[this.component.key], {
+          noUpdate: true
+        });
       }
     }
 
@@ -2465,7 +2475,11 @@ var BaseComponent = function () {
     }
   }, {
     key: 'updateValue',
-    value: function updateValue(noValidate) {
+    value: function updateValue(flags) {
+      flags = flags || {};
+      if (flags.noUpdate) {
+        return;
+      }
       var value = this.data[this.component.key];
       var falsey = !value && value !== null && value !== undefined;
       this.data[this.component.key] = this.getValue();
@@ -2475,10 +2489,10 @@ var BaseComponent = function () {
       }
       if (falsey) {
         if (!!this.data[this.component.key]) {
-          this.triggerChange(noValidate);
+          this.triggerChange(flags);
         }
       } else {
-        this.triggerChange(noValidate);
+        this.triggerChange(flags);
       }
     }
 
@@ -2498,12 +2512,13 @@ var BaseComponent = function () {
       // If this is a string, then use eval to evalulate it.
       if (typeof this.component.calculateValue === 'string') {
         try {
-          var noUpdate = false;
           var value = [];
           var row = this.data;
           var component = this;
           eval(this.component.calculateValue.toString());
-          this.setValue(value, noUpdate);
+          this.setValue(value, {
+            noCheck: true
+          });
         } catch (e) {
           /* eslint-disable no-console */
           console.warn('An error occurred calculating a value for ' + this.component.key, e);
@@ -2515,7 +2530,9 @@ var BaseComponent = function () {
             data: data,
             row: this.data
           });
-          this.setValue(val);
+          this.setValue(val, {
+            noCheck: true
+          });
         } catch (err) {
           /* eslint-disable no-console */
           console.warn('An error occurred calculating a value for ' + this.component.key, e);
@@ -2630,15 +2647,26 @@ var BaseComponent = function () {
       }
       this.inputs[index].value = value;
     }
+  }, {
+    key: 'getFlags',
+    value: function getFlags() {
+      return typeof arguments[1] === 'boolean' ? {
+        noUpdate: arguments[1],
+        noValidate: arguments[2]
+      } : arguments[1] || {};
+    }
 
     /**
      * Set the value of this component.
+     *
      * @param value
+     * @param flags
      */
 
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
+      flags = this.getFlags.apply(this, arguments);
       if (!this.component.input) {
         return;
       }
@@ -2647,9 +2675,7 @@ var BaseComponent = function () {
       for (var i in this.inputs) {
         this.setValueAt(i, isArray ? value[i] : value);
       }
-      if (!noUpdate) {
-        this.updateValue(noValidate);
-      }
+      this.updateValue(flags);
     }
 
     /**
@@ -3366,7 +3392,8 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
+      flags = this.getFlags.apply(this, arguments);
       this.value = value;
       if (!this.input) {
         return;
@@ -3384,9 +3411,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         this.input.value = 0;
         this.input.checked = 0;
       }
-      if (!noUpdate) {
-        this.updateValue(noValidate);
-      }
+      this.updateValue(flags);
     }
   }]);
 
@@ -3620,21 +3645,20 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
+      flags = this.getFlags.apply(this, arguments);
       if (!value || !(0, _isObject3.default)(value)) {
         return;
       }
       this.value = value;
       (0, _each3.default)(this.components, function (component) {
         if (component.type === 'components') {
-          component.setValue(value, noUpdate, noValidate);
+          component.setValue(value, flags);
         } else if (value.hasOwnProperty(component.component.key)) {
-          component.setValue(value[component.component.key], noUpdate, noValidate);
+          component.setValue(value[component.component.key], flags);
         }
       });
-      if (!noUpdate) {
-        this.updateValue(noValidate);
-      }
+      this.updateValue(flags);
     }
   }]);
 
@@ -4021,7 +4045,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
+      flags = this.getFlags.apply(this, arguments);
       if (!value) {
         return;
       }
@@ -4042,9 +4067,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         }
         (0, _each3.default)(row, function (col, key) {
           if (col.type === 'components') {
-            col.setValue(value[index], noUpdate, noValidate);
+            col.setValue(value[index], flags);
           } else if (value[index].hasOwnProperty(key)) {
-            col.setValue(value[index][key], noUpdate, noValidate);
+            col.setValue(value[index][key], flags);
           }
         });
       });
@@ -5385,9 +5410,10 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     }
   }, {
     key: 'setValue',
-    value: function setValue(submission, noUpdate, noValidate) {
+    value: function setValue(submission, flags) {
       var _this2 = this;
 
+      flags = this.getFlags.apply(this, arguments);
       if (!submission) {
         this.data[this.component.key] = this._submission = { data: {} };
         return;
@@ -5395,7 +5421,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
       if (submission.data) {
         this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
-        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, noUpdate, noValidate);
+        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
       } else if (submission._id) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
@@ -5512,8 +5538,10 @@ var GmapComponent = exports.GmapComponent = function (_BaseComponent) {
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate) {
-      _get(GmapComponent.prototype.__proto__ || Object.getPrototypeOf(GmapComponent.prototype), 'setValue', this).call(this, value, noUpdate, true);
+    value: function setValue(value, flags) {
+      flags = this.getFlags.apply(this, arguments);
+      flags.noValidate = true;
+      _get(GmapComponent.prototype.__proto__ || Object.getPrototypeOf(GmapComponent.prototype), 'setValue', this).call(this, value, flags);
     }
   }, {
     key: 'addInput',
@@ -6819,7 +6847,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
+      flags = this.getFlags.apply(this, arguments);
       this.value = value;
       if (value && this.choices) {
         if (this.choices.store) {
@@ -6844,14 +6873,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         // Now set the value.
         this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
       }
-      if (!noUpdate) {
-        this.updateValue(noValidate);
-      }
+      this.updateValue(flags);
     }
 
     /**
      * Check if a component is eligible for multiple validation
-     * 
+     *
      * @return {boolean}
      */
 
@@ -7020,14 +7047,17 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
 
     /**
      * Set the value of this component.
+     *
      * @param value
+     * @param flags
      */
 
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
       var _this2 = this;
 
+      flags = this.getFlags.apply(this, arguments);
       if ((0, _isArray3.default)(value)) {
         this.value = {};
         (0, _each3.default)(value, function (val) {
@@ -7044,9 +7074,7 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
         input.checked = !!_this2.value[input.value];
       });
 
-      if (!noUpdate) {
-        this.updateValue(noValidate);
-      }
+      this.updateValue(flags);
     }
   }]);
 
@@ -7158,9 +7186,10 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate, noSign) {
-      _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'setValue', this).call(this, value, noUpdate, noValidate);
-      if (!noSign && this.signaturePad) {
+    value: function setValue(value, flags) {
+      flags = this.getFlags.apply(this, arguments);
+      _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'setValue', this).call(this, value, flags);
+      if (!flags.noSign && this.signaturePad) {
         this.signaturePad.fromDataURL(value);
       }
     }
@@ -7234,7 +7263,9 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
         _this2.signaturePad.clear();
       });
       this.signaturePad.onEnd = function () {
-        return _this2.setValue(_this2.signaturePad.toDataURL(), false, false, true);
+        return _this2.setValue(_this2.signaturePad.toDataURL(), {
+          noSign: true
+        });
       };
 
       // Ensure the signature is always the size of its container.
@@ -7385,9 +7416,10 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
       var _this3 = this;
 
+      flags = this.getFlags.apply(this, arguments);
       if (!value) {
         return;
       }
@@ -7400,9 +7432,7 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
           }
         });
       });
-      if (!noUpdate) {
-        this.updateValue(noValidate);
-      }
+      this.updateValue(flags);
     }
   }, {
     key: 'getValue',
@@ -7673,18 +7703,16 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
     }
   }, {
     key: 'setValue',
-    value: function setValue(value, noUpdate, noValidate) {
+    value: function setValue(value, flags) {
       var _this3 = this;
 
       if (!this.component.wysiwyg) {
-        return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'setValue', this).call(this, value, noUpdate, noValidate);
+        return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'setValue', this).call(this, value, flags);
       }
 
       this.quillReady.then(function (quill) {
         quill.clipboard.dangerouslyPasteHTML(value);
-        if (!noUpdate) {
-          _this3.updateValue(noValidate);
-        }
+        _this3.updateValue(flags);
       });
     }
   }, {
@@ -8453,9 +8481,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     }
   }, {
     key: "setValue",
-    value: function setValue(submission, noUpdate, noValidate) {
+    value: function setValue(submission, flags) {
       this._submission = submission || { data: {} };
-      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), "setValue", this).call(this, this._submission.data, noUpdate, noValidate);
+      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), "setValue", this).call(this, this._submission.data, flags);
     }
   }, {
     key: "getValue",
@@ -8657,7 +8685,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * @param {Object} changed - The changed value that triggered this event.
      * @param {Object} changed.component - The component that was changed.
      * @param {*} changed.value - The new value of the changed component.
-     * @param {boolean} changed.validate - If the change needs to be validated.
+     * @param {boolean} changed.flags - The flags to apply to this update.
      */
 
   }, {
@@ -8666,7 +8694,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       this._submission = this.submission;
       var value = (0, _clone3.default)(this._submission);
       value.changed = changed;
-      this.checkData(value.data, !changed.validate);
+      this.checkData(value.data, changed.flags);
       this.emit('change', value);
     }
 
@@ -9866,6 +9894,8 @@ var Formio = function () {
      * Attach an HTML form to Form.io.
      *
      * @param form
+     * @param options
+     * @param done
      */
 
   }, {
@@ -10197,7 +10227,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
 
       // Validate the form builed, before go to the next page
       if (this.checkValidity(this.submission.data, true)) {
-        this.checkData(this.submission.data, true);
+        this.checkData(this.submission.data, {
+          noValidate: true
+        });
         return this.beforeNext().then(function () {
           _this2.history.push(_this2.page);
           return _this2.setPage(_this2.getNextPage(_this2.submission.data, _this2.page)).then(function () {

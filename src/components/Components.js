@@ -193,8 +193,8 @@ export class FormioComponents extends BaseComponent {
     _each(this.component.components, (component) => this.addComponent(component, element, data));
   }
 
-  updateValue(noValidate) {
-    _each(this.components, (comp) => comp.updateValue(noValidate));
+  updateValue(flags) {
+    _each(this.components, (comp) => comp.updateValue(flags));
   }
 
   /**
@@ -202,14 +202,18 @@ export class FormioComponents extends BaseComponent {
    * a submission once it has been changed.
    *
    * @param data
-   * @param noValidate
+   * @param flags
    */
-  checkData(data, noValidate) {
+  checkData(data, flags) {
+    flags = flags || {};
+    if (flags.noCheck) {
+      return;
+    }
     _each(this.getComponents(), (comp) => {
       if (comp.type !== 'formcomponent') {
         comp.checkConditions(data);
         comp.calculateValue(data);
-        if (!noValidate) {
+        if (!flags.noValidate) {
           comp.checkValidity(data);
         }
       }
@@ -301,10 +305,11 @@ export class FormioComponents extends BaseComponent {
     return this.data;
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
     if (!value) {
       return;
     }
+    flags = this.getFlags.apply(this, arguments);
     this.value = value;
     _each(this.getComponents(), (component) => {
       if (component.type === 'button') {
@@ -312,13 +317,14 @@ export class FormioComponents extends BaseComponent {
       }
 
       if (component.type === 'components') {
-        component.setValue(value, noUpdate, noValidate);
+        component.setValue(value, flags);
       }
       else if (value && value.hasOwnProperty(component.component.key)) {
-        component.setValue(value[component.component.key], noUpdate);
+        component.setValue(value[component.component.key], flags);
       }
       else if (component.component.input) {
-        component.setValue(null, noUpdate, true);
+        flags.noValidate = true;
+        component.setValue(null, flags);
       }
     });
   }

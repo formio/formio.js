@@ -98,7 +98,8 @@ export class FormComponent extends FormioForm {
     this.checkConditions(this.getValue());
   }
 
-  setValue(submission, noUpdate, noValidate) {
+  setValue(submission, flags) {
+    flags = this.getFlags.apply(this, arguments);
     if (!submission) {
       this.data[this.component.key] = this._submission = {data: {}};
       return;
@@ -106,7 +107,7 @@ export class FormComponent extends FormioForm {
 
     if (submission.data) {
       this._submission = _merge(this.data[this.component.key], submission);
-      return super.setValue(submission, noUpdate, noValidate);
+      return super.setValue(submission, flags);
     }
     else if (submission._id) {
       this.formio.submissionId = submission._id;

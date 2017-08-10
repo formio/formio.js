@@ -222,7 +222,7 @@ export class BaseComponent {
      * The HTMLElement that is assigned to the label of this component.
      * @type {null}
      */
-    this.label = null;
+    this.labelElement = null;
 
     /**
      * The HTMLElement for which the errors are rendered for this component (usually underneath the component).
@@ -552,6 +552,7 @@ export class BaseComponent {
           let row = this.data;
           let data = this.data;
           let value = &apos;&apos;;
+          let component = this;
           eval(this.component.customDefaultValue.toString());
           defaultValue = value;
         }
@@ -631,7 +632,7 @@ export class BaseComponent {
       tr.appendChild(tdAdd);
       this.tbody.appendChild(tr);
     });
-    
+
     let tr = this.ce(&apos;tr&apos;);
     let td = this.ce(&apos;td&apos;, {
       colspan: &apos;2&apos;
@@ -674,6 +675,14 @@ export class BaseComponent {
   }
 
   /**
+   * Returns the error label for this component.
+   * @return {*}
+   */
+  get errorLabel() {
+    return this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key;
+  }
+
+  /**
    * Creates a new &quot;remove&quot; row button and returns the html element of that button.
    * @param {number} index - The index of the row that should be removed.
    * @returns {HTMLElement} - The html element of the remove button.
@@ -709,14 +718,14 @@ export class BaseComponent {
     if (this.component.input &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
       className += &apos; field-required&apos;;
     }
-    this.label = this.ce(&apos;label&apos;, {
+    this.labelElement = this.ce(&apos;label&apos;, {
       class: className
     });
     if (this.info.attr.id) {
-      this.label.setAttribute(&apos;for&apos;, this.info.attr.id);
+      this.labelElement.setAttribute(&apos;for&apos;, this.info.attr.id);
     }
-    this.label.appendChild(this.text(this.component.label));
-    container.appendChild(this.label);
+    this.labelElement.appendChild(this.text(this.component.label));
+    container.appendChild(this.labelElement);
   }
 
   /**
@@ -915,11 +924,10 @@ export class BaseComponent {
   /**
    * Alias for document.createElement.
    *
-   * DEPRECATED - @param {string} name - The name of the element to create, for templating purposes.
    * @param {string} type - The type of element to create
    * @param {Object} attr - The element attributes to add to the created element.
    * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
-   * DEPRECATED - @param {Object} events - A key value list of events to attach to the element.
+   * @param {Object} events
    *
    * @return {HTMLElement} - The created element.
    */
@@ -1018,9 +1026,11 @@ export class BaseComponent {
 
   /**
    * Add a new input error to this element.
+   *
    * @param message
+   * @param dirty
    */
-  addInputError(message) {
+  addInputError(message, dirty) {
     if (!message) {
       return;
     }
@@ -1035,7 +1045,7 @@ export class BaseComponent {
 
     // Add error classes
     this.addClass(this.element, &apos;has-error&apos;);
-    if (this.options.highlightErrors) {
+    if (dirty &amp;&amp; this.options.highlightErrors) {
       this.addClass(this.element, &apos;alert alert-danger&apos;);
     }
   }
@@ -1071,15 +1081,16 @@ export class BaseComponent {
     return this._visible;
   }
 
-  onChange(noValidate) {
-    if (!noValidate) {
+  onChange(flags) {
+    flags = flags || {};
+    if (!flags.noValidate) {
       this.pristine = false;
     }
     if (this.events) {
       this.emit(&apos;componentChange&apos;, {
         component: this.component,
         value: this.value,
-        validate: !noValidate
+        flags: flags
       });
     }
   }
@@ -1109,7 +1120,7 @@ export class BaseComponent {
    *
    * @param input
    * @param container
-   * @param name
+   * @param noSet
    */
   addInput(input, container, noSet) {
     if (input &amp;&amp; container) {
@@ -1121,7 +1132,9 @@ export class BaseComponent {
 
     // Reset the values of the inputs.
     if (!noSet &amp;&amp; this.data &amp;&amp; this.data.hasOwnProperty(this.component.key)) {
-      this.setValue(this.data[this.component.key], true);
+      this.setValue(this.data[this.component.key], {
+        noUpdate: true
+      });
     }
   }
 
@@ -1151,7 +1164,11 @@ export class BaseComponent {
     return values;
   }
 
-  updateValue(noValidate) {
+  updateValue(flags) {
+    flags = flags || {};
+    if (flags.noUpdate) {
+      return;
+    }
     let value = this.data[this.component.key];
     let falsey = !value &amp;&amp; (value !== null) &amp;&amp; (value !== undefined);
     this.data[this.component.key] = this.getValue();
@@ -1161,11 +1178,11 @@ export class BaseComponent {
     }
     if (falsey) {
       if (!!this.data[this.component.key]) {
-        this.triggerChange(noValidate);
+        this.triggerChange(flags);
       }
     }
     else {
-      this.triggerChange(noValidate);
+      this.triggerChange(flags);
     }
   }
 
@@ -1184,8 +1201,11 @@ export class BaseComponent {
       try {
         let value = [];
         let row = this.data;
+        let component = this;
         eval(this.component.calculateValue.toString());
-        this.setValue(value);
+        this.setValue(value, {
+          noCheck: true
+        });
       }
       catch (e) {
         /* eslint-disable no-console */
@@ -1199,7 +1219,9 @@ export class BaseComponent {
           data: data,
           row: this.data
         });
-        this.setValue(val);
+        this.setValue(val, {
+          noCheck: true
+        });
       }
       catch (err) {
         /* eslint-disable no-console */
@@ -1209,6 +1231,38 @@ export class BaseComponent {
     }
   }
 
+  /**
+   * Get this component&apos;s label text.
+   *
+   */
+  get label() {
+    return this.component.label;
+  }
+
+  /**
+   * Set this component&apos;s label text and render it.
+   *
+   * @param value - The new label text.
+   */
+  set label(value) {
+    this.component.label = value;
+    if (this.labelElement) {
+      this.labelElement.innerText = value;
+    }
+  }
+
+  /**
+   * Get FormioForm element at the root of this component tree.
+   *
+   */
+  getRoot() {
+    var parent = this.parent;
+    while (parent.parent) {
+      parent = parent.parent;
+    }
+    return parent;
+  }
+
   checkValidity(data, dirty) {
     // No need to check for errors if there is no input or if it is pristine.
     if (!this.component.input || (!dirty &amp;&amp; this.pristine)) {
@@ -1216,7 +1270,7 @@ export class BaseComponent {
     }
 
     let message = Validator.check(this, data);
-    this.setCustomValidity(message);
+    this.setCustomValidity(message, dirty);
 
     // No message, returns true
     return message ? false : true;
@@ -1230,6 +1284,15 @@ export class BaseComponent {
     return value == null || value.length === 0;
   }
 
+  /**
+   * Check if a component is eligible for multiple validation
+   *
+   * @return {boolean}
+   */
+  validateMultiple(value) {
+    return this.component.multiple &amp;&amp; _isArray(value);
+  }
+
   get errors() {
     return this.error ? [this.error] : [];
   }
@@ -1238,7 +1301,7 @@ export class BaseComponent {
     return FormioUtils.interpolate(string, data);
   }
 
-  setCustomValidity(message) {
+  setCustomValidity(message, dirty) {
     if (this.errorElement &amp;&amp; this.errorContainer) {
       this.errorElement.innerHTML = &apos;&apos;;
       try {
@@ -1257,14 +1320,14 @@ export class BaseComponent {
       };
       this.emit(&apos;componentError&apos;, this.error);
       this.createErrorElement();
-      this.addInputError(message);
+      this.addInputError(message, dirty);
     }
     else {
       this.error = null;
     }
     _each(this.inputs, (input) =&gt; {
       if (typeof input.setCustomValidity === &apos;function&apos;) {
-        input.setCustomValidity(message);
+        input.setCustomValidity(message, dirty);
       }
     });
   }
@@ -1282,11 +1345,21 @@ export class BaseComponent {
     this.inputs[index].value = value;
   }
 
+  getFlags() {
+    return (typeof arguments[1] === &apos;boolean&apos;) ? {
+      noUpdate: arguments[1],
+      noValidate: arguments[2]
+    } : (arguments[1] || {});
+  }
+
   /**
    * Set the value of this component.
+   *
    * @param value
+   * @param flags
    */
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     if (!this.component.input) {
       return;
     }
@@ -1295,9 +1368,7 @@ export class BaseComponent {
     for (let i in this.inputs) {
       this.setValueAt(i, isArray ? value[i] : value);
     }
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
+    this.updateValue(flags);
   }
 
   /**

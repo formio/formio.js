@@ -871,6 +871,8 @@ export class Formio {
    * Attach an HTML form to Form.io.
    *
    * @param form
+   * @param options
+   * @param done
    */
   static form(form, options, done) {
     // Fix the parameters.

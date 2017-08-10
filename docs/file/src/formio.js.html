@@ -538,6 +538,66 @@ export class Formio {
     return Formio.pluginAlter(&apos;wrapFileRequestPromise&apos;, request, requestArgs);
   }
 
+  // Determine if the user can submit the form.
+  canSubmit() {
+    return Promise.all([
+      this.loadForm(),
+      Formio.currentUser(),
+      Formio.accessInfo()
+    ]).then(function(results) {
+      var form = results.shift();
+      var user = results.shift();
+      var access = results.shift();
+
+      // Get the anonymous and admin roles.
+      var anonRole = {};
+      var adminRole = {};
+      for (var roleName in access.roles) {
+        var role = access.roles[roleName];
+        if (role.default) {
+          anonRole = role;
+        }
+        if (role.admin) {
+          adminRole = role;
+        }
+      }
+
+      var canSubmit = false;
+      var canSubmitAnonymously = false;
+
+      // If the user is an admin, then they can submit this form.
+      if (user &amp;&amp; (user.roles.indexOf(adminRole._id) !== -1)) {
+        return true;
+      }
+
+      for (var i in form.submissionAccess) {
+        var subRole = form.submissionAccess[i];
+        if (subRole.type === &apos;create_all&apos; || subRole.type === &apos;create_own&apos;) {
+          for (var j in subRole.roles) {
+            // Check if anonymous is allowed.
+            if (anonRole._id === subRole.roles[j]) {
+              canSubmitAnonymously = true;
+            }
+            // Check if the logged in user has the appropriate role.
+            if (user &amp;&amp; (user.roles.indexOf(subRole.roles[j]) !== -1)) {
+              canSubmit = true;
+              break;
+            }
+          }
+          if (canSubmit) {
+            break;
+          }
+        }
+      }
+      // If their user cannot submit, but anonymous can, then delete token and allow submission.
+      if (!canSubmit &amp;&amp; canSubmitAnonymously) {
+        canSubmit = true;
+        Formio.setUser(null);
+      }
+      return canSubmit;
+    });
+  }
+
   static getUrlParts(url) {
     var regex = &apos;^(http[s]?:\\/\\/)&apos;;
     if (this.base &amp;&amp; url.indexOf(this.base) === 0) {
@@ -599,139 +659,122 @@ export class Formio {
       opts = {};
     }
 
+    // Generate a cachekey.
     var cacheKey = btoa(url);
 
-    return new Promise(function(resolve, reject) {
-      // Get the cached promise to save multiple loads.
-      if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
-        return resolve(Formio.cache[cacheKey]);
-      }
+    // Get the cached promise to save multiple loads.
+    if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
+      return Formio.cache[cacheKey];
+    }
 
-      var requestToken = &apos;&apos;;
-      resolve(new Promise(function(resolve, reject) {
-        // Set up and fetch request
-        var headers = header || new Headers({
-            &apos;Accept&apos;: &apos;application/json&apos;,
-            &apos;Content-type&apos;: &apos;application/json; charset=UTF-8&apos;
-          });
-        var token = Formio.getToken();
-        if (token &amp;&amp; !opts.noToken) {
-          headers.append(&apos;x-jwt-token&apos;, token);
-        }
+    // Set up and fetch request
+    var headers = header || new Headers({
+        &apos;Accept&apos;: &apos;application/json&apos;,
+        &apos;Content-type&apos;: &apos;application/json; charset=UTF-8&apos;
+      });
+    var token = Formio.getToken();
+    if (token &amp;&amp; !opts.noToken) {
+      headers.append(&apos;x-jwt-token&apos;, token);
+    }
 
-        var options = {
-          method: method,
-          headers: headers,
-          mode: &apos;cors&apos;
-        };
-        if (data) {
-          options.body = JSON.stringify(data);
-        }
+    var options = {
+      method: method,
+      headers: headers,
+      mode: &apos;cors&apos;
+    };
+    if (data) {
+      options.body = JSON.stringify(data);
+    }
 
-        requestToken = headers.get(&apos;x-jwt-token&apos;);
-        resolve(fetch(url, options));
-      })
-        .catch(function(err) {
-          err.message = &apos;Could not connect to API server (&apos; + err.message + &apos;)&apos;;
-          err.networkError = true;
-          throw err;
-        })
-        .then(function(response) {
-          if (!response.ok) {
-            if (response.status === 440) {
-              Formio.setToken(null);
-              Formio.events.emit(&apos;formio.sessionExpired&apos;, response.body);
-            }
-            else if (response.status === 401) {
-              Formio.events.emit(&apos;formio.unauthorized&apos;, response.body);
-            }
-            // Parse and return the error as a rejected promise to reject this promise
-            return (response.headers.get(&apos;content-type&apos;).indexOf(&apos;application/json&apos;) !== -1 ?
-              response.json() : response.text())
-              .then(function(error){
-                throw error;
-              });
-          }
+    var requestToken = headers.get(&apos;x-jwt-token&apos;);
 
-          // Handle fetch results
-          var token = response.headers.get(&apos;x-jwt-token&apos;);
+    // Allow plugins to alter the options.
+    options = Formio.pluginAlter(&apos;requestOptions&apos;, options, url);
 
-          // In some strange cases, the fetch library will return an x-jwt-token without sending
-          // one to the server. This has even been debugged on the server to verify that no token
-          // was introduced with the request, but the response contains a token. This is an Invalid
-          // case where we do not send an x-jwt-token and get one in return for any GET request.
-          var tokenIntroduced = false;
-          if (
-            (method === &apos;GET&apos;) &amp;&amp;
-            !requestToken &amp;&amp;
-            token &amp;&amp;
-            (url.indexOf(&apos;token=&apos;) === -1) &amp;&amp;
-            (url.indexOf(&apos;x-jwt-token=&apos; === -1))
-          ) {
-            console.warn(&apos;Token was introduced in request.&apos;);
-            tokenIntroduced = true;
-          }
-
-          if (
-            response.status &gt;= 200 &amp;&amp;
-            response.status &lt; 300 &amp;&amp;
-            token &amp;&amp;
-            token !== &apos;&apos; &amp;&amp;
-            !tokenIntroduced
-          ) {
-            Formio.setToken(token);
-          }
-          // 204 is no content. Don&apos;t try to .json() it.
-          if (response.status === 204) {
-            return {};
-          }
-          return (response.headers.get(&apos;content-type&apos;).indexOf(&apos;application/json&apos;) !== -1
-              ? response.json()
-              : response.text()
-          ).then(function(result) {
-            // Add some content-range metadata to the result here
-            var range = response.headers.get(&apos;content-range&apos;);
-            if (range &amp;&amp; typeof result === &apos;object&apos;) {
-              range = range.split(&apos;/&apos;);
-              if(range[0] !== &apos;*&apos;) {
-                var skipLimit = range[0].split(&apos;-&apos;);
-                result.skip = Number(skipLimit[0]);
-                result.limit = skipLimit[1] - skipLimit[0] + 1;
-              }
-              result.serverCount = range[1] === &apos;*&apos; ? range[1] : Number(range[1]);
-            }
-
-            if (!opts.getHeaders) {
-              return result;
-            }
-
-            var headers = {};
-            response.headers.forEach(function(item, key) {
-              headers[key] = item;
-            });
-
-            return new Promise(function(resolve, reject) {
-              resolve({result: result, headers: headers});
-            });
-          });
-        })
-        .catch(function(err) {
-          if (err === &apos;Bad Token&apos;) {
+    var requestPromise = fetch(url, options)
+      .then(function(response) {
+        if (!response.ok) {
+          if (response.status === 440) {
             Formio.setToken(null);
-            Formio.events.emit(&apos;formio.badToken&apos;, err);
+            Formio.events.emit(&apos;formio.sessionExpired&apos;, response.body);
           }
-          if (Formio.cache.hasOwnProperty(cacheKey)) {
-            // Remove failed promises from cache
-            delete Formio.cache[cacheKey];
+          else if (response.status === 401) {
+            Formio.events.emit(&apos;formio.unauthorized&apos;, response.body);
           }
-          // Propagate error so client can handle accordingly
-          throw err;
-        }));
-    })
+          // Parse and return the error as a rejected promise to reject this promise
+          return (response.headers.get(&apos;content-type&apos;).indexOf(&apos;application/json&apos;) !== -1 ?
+            response.json() : response.text())
+            .then(function(error){
+              throw error;
+            });
+        }
+
+        // Handle fetch results
+        var token = response.headers.get(&apos;x-jwt-token&apos;);
+
+        // In some strange cases, the fetch library will return an x-jwt-token without sending
+        // one to the server. This has even been debugged on the server to verify that no token
+        // was introduced with the request, but the response contains a token. This is an Invalid
+        // case where we do not send an x-jwt-token and get one in return for any GET request.
+        var tokenIntroduced = false;
+        if (
+          (method === &apos;GET&apos;) &amp;&amp;
+          !requestToken &amp;&amp;
+          token &amp;&amp;
+          (url.indexOf(&apos;token=&apos;) === -1) &amp;&amp;
+          (url.indexOf(&apos;x-jwt-token=&apos; === -1))
+        ) {
+          console.warn(&apos;Token was introduced in request.&apos;);
+          tokenIntroduced = true;
+        }
+
+        if (
+          response.status &gt;= 200 &amp;&amp;
+          response.status &lt; 300 &amp;&amp;
+          token &amp;&amp;
+          token !== &apos;&apos; &amp;&amp;
+          !tokenIntroduced
+        ) {
+          Formio.setToken(token);
+        }
+        // 204 is no content. Don&apos;t try to .json() it.
+        if (response.status === 204) {
+          return {};
+        }
+
+        var getResult = (response.headers.get(&apos;content-type&apos;).indexOf(&apos;application/json&apos;) !== -1) ? response.json() : response.text();
+        return getResult.then(function(result) {
+          // Add some content-range metadata to the result here
+          var range = response.headers.get(&apos;content-range&apos;);
+          if (range &amp;&amp; typeof result === &apos;object&apos;) {
+            range = range.split(&apos;/&apos;);
+            if(range[0] !== &apos;*&apos;) {
+              var skipLimit = range[0].split(&apos;-&apos;);
+              result.skip = Number(skipLimit[0]);
+              result.limit = skipLimit[1] - skipLimit[0] + 1;
+            }
+            result.serverCount = range[1] === &apos;*&apos; ? range[1] : Number(range[1]);
+          }
+
+          if (!opts.getHeaders) {
+            return result;
+          }
+
+          var headers = {};
+          response.headers.forEach(function(item, key) {
+            headers[key] = item;
+          });
+
+          // Return the result with the headers.
+          return {
+            result: result,
+            headers: headers
+          };
+        });
+      })
       .then(function(result) {
-        // Save the cache
-        if (method === &apos;GET&apos;) {
-          Formio.cache[cacheKey] = Promise.resolve(result);
+        if (opts.getHeaders) {
+          return result;
         }
 
         // Shallow copy result so modifications don&apos;t end up in cache
@@ -743,7 +786,31 @@ export class Formio {
           return resultCopy;
         }
         return copy(result);
+      })
+      .catch(function(err) {
+        if (err === &apos;Bad Token&apos;) {
+          Formio.setToken(null);
+          Formio.events.emit(&apos;formio.badToken&apos;, err);
+        }
+        if (err.message) {
+          err.message = &apos;Could not connect to API server (&apos; + err.message + &apos;)&apos;;
+          err.networkError = true;
+        }
+        if (Formio.cache.hasOwnProperty(cacheKey)) {
+          // Remove failed promises from cache
+          delete Formio.cache[cacheKey];
+        }
+        // Propagate error so client can handle accordingly
+        throw err;
       });
+
+    // Cache the request promise.
+    if (method === &apos;GET&apos;) {
+      Formio.cache[cacheKey] = requestPromise;
+    }
+
+    // Return the request promise.
+    return requestPromise;
   }
 
   static setToken(token) {
@@ -911,6 +978,10 @@ export class Formio {
     }, value);
   }
 
+  static accessInfo() {
+    return Formio.makeStaticRequest(Formio.projectUrl + &apos;/access&apos;);
+  }
+
   static currentUser() {
     var url = Formio.baseUrl + &apos;/current&apos;;
     var user = this.getUser();
@@ -945,6 +1016,8 @@ export class Formio {
    * Attach an HTML form to Form.io.
    *
    * @param form
+   * @param options
+   * @param done
    */
   static form(form, options, done) {
     // Fix the parameters.

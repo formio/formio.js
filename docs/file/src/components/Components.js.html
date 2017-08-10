@@ -261,6 +261,7 @@ export class FormioComponents extends BaseComponent {
       _assign(this.options.components, FormioComponents.customComponents);
     }
     let comp = this.options.components.create(component, this.options, data);
+    comp.parent = this;
     this.components.push(comp);
     this.setHidden(comp);
     element.appendChild(comp.getElement());
@@ -337,8 +338,8 @@ export class FormioComponents extends BaseComponent {
     _each(this.component.components, (component) =&gt; this.addComponent(component, element, data));
   }
 
-  updateValue(noValidate) {
-    _each(this.components, (comp) =&gt; comp.updateValue(noValidate));
+  updateValue(flags) {
+    _each(this.components, (comp) =&gt; comp.updateValue(flags));
   }
 
   /**
@@ -346,14 +347,18 @@ export class FormioComponents extends BaseComponent {
    * a submission once it has been changed.
    *
    * @param data
-   * @param noValidate
+   * @param flags
    */
-  checkData(data, noValidate) {
+  checkData(data, flags) {
+    flags = flags || {};
+    if (flags.noCheck) {
+      return;
+    }
     _each(this.getComponents(), (comp) =&gt; {
       if (comp.type !== &apos;formcomponent&apos;) {
         comp.checkConditions(data);
         comp.calculateValue(data);
-        if (!noValidate) {
+        if (!flags.noValidate) {
           comp.checkValidity(data);
         }
       }
@@ -445,10 +450,11 @@ export class FormioComponents extends BaseComponent {
     return this.data;
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
     if (!value) {
       return;
     }
+    flags = this.getFlags.apply(this, arguments);
     this.value = value;
     _each(this.getComponents(), (component) =&gt; {
       if (component.type === &apos;button&apos;) {
@@ -456,13 +462,14 @@ export class FormioComponents extends BaseComponent {
       }
 
       if (component.type === &apos;components&apos;) {
-        component.setValue(value, noUpdate, noValidate);
+        component.setValue(value, flags);
       }
       else if (value &amp;&amp; value.hasOwnProperty(component.component.key)) {
-        component.setValue(value[component.component.key], noUpdate);
+        component.setValue(value[component.component.key], flags);
       }
       else if (component.component.input) {
-        component.setValue(null, noUpdate, true);
+        flags.noValidate = true;
+        component.setValue(null, flags);
       }
     });
   }

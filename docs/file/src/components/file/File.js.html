@@ -237,6 +237,9 @@ export class FileComponent extends BaseComponent {
                 this.ce(&apos;span&apos;, {
                   class: &apos;glyphicon glyphicon-remove&apos;,
                   onClick: event =&gt; {
+                    if (this.component.storage === &apos;url&apos;) {
+                      this.options.formio.makeRequest(&apos;&apos;, this.data[this.component.key][index].url, &apos;delete&apos;);
+                    }
                     event.preventDefault();
                     this.data[this.component.key].splice(index, 1);
                     this.refreshDOM();
@@ -284,6 +287,9 @@ export class FileComponent extends BaseComponent {
               this.ce(&apos;span&apos;, {
                 class: &apos;glyphicon glyphicon-remove&apos;,
                 onClick: event =&gt; {
+                  if (this.component.storage === &apos;url&apos;) {
+                    this.options.formio.makeRequest(&apos;&apos;, this.data[this.component.key][index].url, &apos;delete&apos;);
+                  }
                   event.preventDefault();
                   this.data[this.component.key].splice(index, 1);
                   this.refreshDOM();
