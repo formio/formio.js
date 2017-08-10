@@ -466,9 +466,9 @@ export class FormioForm extends FormioComponents {
     );
   }
 
-  setValue(submission, noUpdate, noValidate) {
+  setValue(submission, flags) {
     this._submission = submission || {data: {}};
-    return super.setValue(this._submission.data, noUpdate, noValidate);
+    return super.setValue(this._submission.data, flags);
   }
 
   getValue() {
@@ -636,13 +636,13 @@ export class FormioForm extends FormioComponents {
    * @param {Object} changed - The changed value that triggered this event.
    * @param {Object} changed.component - The component that was changed.
    * @param {*} changed.value - The new value of the changed component.
-   * @param {boolean} changed.validate - If the change needs to be validated.
+   * @param {boolean} changed.flags - The flags to apply to this update.
    */
   onSubmissionChange(changed) {
     this._submission = this.submission;
     let value = _clone(this._submission);
     value.changed = changed;
-    this.checkData(value.data, !changed.validate);
+    this.checkData(value.data, changed.flags);
     this.emit('change', value);
   }
 

@@ -81,7 +81,9 @@ export class FormioWizard extends FormioForm {
   nextPage() {
     // Validate the form builed, before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
-      this.checkData(this.submission.data, true);
+      this.checkData(this.submission.data, {
+        noValidate: true
+      });
       return this.beforeNext().then(() => {
         this.history.push(this.page);
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {

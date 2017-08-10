@@ -146,7 +146,12 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { FormioComponents } from &apos;../Components&apos;;
 export class ColumnComponent extends FormioComponents {
   get className() {
-    return &apos;col col-sm-&apos; + this.component.colWidth;
+      var comp   = this.component;
+      var width  = &apos; col-sm-&apos;        + (comp.width  ? comp.width  : 6);
+      var offset = &apos; col-sm-offset-&apos; + (comp.offset ? comp.offset : 0);  
+      var push   = &apos; col-sm-push-&apos;   + (comp.push   ? comp.push   : 0);  
+      var pull   = &apos; col-sm-pull-&apos;   + (comp.pull   ? comp.pull   : 0);  
+      return &apos;col&apos; + width + offset + push + pull;
   }
 }
 </code></pre>

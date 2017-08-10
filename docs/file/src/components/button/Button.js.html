@@ -144,6 +144,9 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/button/Button.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
+import FormioUtils from &apos;../../utils&apos;;
+import _each from &apos;lodash/each&apos;;
+
 export class ButtonComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
@@ -184,8 +187,8 @@ export class ButtonComponent extends BaseComponent {
   build() {
     this.element = this.ce(this.info.type, this.info.attr);
     if (this.component.label) {
-      this.label = this.text(this.component.label);
-      this.element.appendChild(this.label);
+      this.labelElement = this.text(this.component.label);
+      this.element.appendChild(this.labelElement);
     }
     if (this.component.action === &apos;submit&apos;) {
       this.on(&apos;submitButton&apos;, () =&gt; {
@@ -215,6 +218,30 @@ export class ButtonComponent extends BaseComponent {
             data: this.data,
             event: event
           });
+          break;
+        case &apos;custom&apos;:
+          // Get the FormioForm at the root of this component&apos;s tree
+          var form       = this.getRoot();
+          // Get the form&apos;s flattened schema components
+          var flattened  = FormioUtils.flattenComponents(form.component.components, true);
+          // Create object containing the corresponding HTML element components
+          var components = {};
+          _each(flattened, function(component, key) {
+            var element = form.getComponent(key);
+            if (element) {
+              components[key] = element;
+            }
+          });
+          // Make data available to script
+          var data = this.data;
+          try {
+            eval(this.component.custom.toString());
+          }
+          catch (e) {
+            /* eslint-disable no-console */
+            console.warn(&apos;An error occurred evaluating custom logic for &apos; + this.key, e);
+            /* eslint-enable no-console */
+          }
           break;
         case &apos;reset&apos;:
           this.emit(&apos;resetForm&apos;);

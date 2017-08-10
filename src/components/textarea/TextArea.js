@@ -76,16 +76,14 @@ export class TextAreaComponent extends TextFieldComponent {
     return this.input;
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
     if (!this.component.wysiwyg) {
-      return super.setValue(value, noUpdate, noValidate);
+      return super.setValue(value, flags);
     }
 
     this.quillReady.then((quill) => {
       quill.clipboard.dangerouslyPasteHTML(value);
-      if (!noUpdate) {
-        this.updateValue(noValidate);
-      }
+      this.updateValue(flags);
     });
   }
 

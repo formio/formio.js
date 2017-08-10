@@ -42,9 +42,12 @@ export class SelectBoxesComponent extends RadioComponent {
 
   /**
    * Set the value of this component.
+   *
    * @param value
+   * @param flags
    */
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     if (_isArray(value)) {
       this.value = {};
       _each(value, (val) => {
@@ -62,9 +65,6 @@ export class SelectBoxesComponent extends RadioComponent {
       input.checked = !!this.value[input.value];
     });
 
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
-
+    this.updateValue(flags);
   }
 }

@@ -184,7 +184,8 @@ export class SelectComponent extends BaseComponent {
     return this.choices.getValue(true);
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     this.value = value;
     if (value && this.choices) {
       if (this.choices.store) {
@@ -209,14 +210,12 @@ export class SelectComponent extends BaseComponent {
       // Now set the value.
       this.choices.setValueByChoice(_isArray(value) ? value : [value]);
     }
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
+    this.updateValue(flags);
   }
 
   /**
    * Check if a component is eligible for multiple validation
-   * 
+   *
    * @return {boolean}
    */
   validateMultiple(value) {

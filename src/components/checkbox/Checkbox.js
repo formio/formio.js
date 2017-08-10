@@ -89,7 +89,8 @@ export class CheckBoxComponent extends BaseComponent {
     return !!this.inputs[index].checked;
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     this.value = value;
     if (!this.input) {
       return;
@@ -110,8 +111,6 @@ export class CheckBoxComponent extends BaseComponent {
       this.input.value = 0;
       this.input.checked = 0;
     }
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
+    this.updateValue(flags);
   }
 }

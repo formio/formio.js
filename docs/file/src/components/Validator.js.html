@@ -181,7 +181,7 @@ export var Validator = {
     _each(component.validators, (name) =&gt; {
       if (this.validators.hasOwnProperty(name)) {
         let validator = this.validators[name];
-        if (component.component.multiple &amp;&amp; _isArray(value)) {
+        if (component.validateMultiple(value)) {
           _each(value, (val) =&gt; {
             result = this.validate(component, validator, val, data);
             if (result) {
@@ -203,7 +203,7 @@ export var Validator = {
     required: {
       key: &apos;validate.required&apos;,
       message: function(component, setting) {
-        return component.t(&apos;required&apos;, {field: component.name});
+        return component.t(&apos;required&apos;, {field: component.errorLabel});
       },
       check: function(component, setting, value) {
         if (!FormioUtils.boolValue(setting)) {
@@ -216,7 +216,7 @@ export var Validator = {
       key: &apos;validate.minLength&apos;,
       message: function(component, setting) {
         return component.t(&apos;minLength&apos;, {
-          field: component.name,
+          field: component.errorLabel,
           length: (setting - 1)
         });
       },
@@ -232,7 +232,7 @@ export var Validator = {
       key: &apos;validate.maxLength&apos;,
       message: function(component, setting) {
         return component.t(&apos;maxLength&apos;, {
-          field: component.name,
+          field: component.errorLabel,
           length: (setting + 1)
         });
       },
@@ -247,7 +247,7 @@ export var Validator = {
     email: {
       message: function(component, setting) {
         return component.t(&apos;invalid_email&apos;, {
-          field: component.name
+          field: component.errorLabel
         });
       },
       check: function(component, setting, value) {
@@ -259,7 +259,7 @@ export var Validator = {
     date: {
       message: function(component, setting) {
         return component.t(&apos;invalid_date&apos;, {
-          field: component.name
+          field: component.errorLabel
         });
       },
       check: function(component, setting, value) {
@@ -270,7 +270,7 @@ export var Validator = {
       key: &apos;validate.pattern&apos;,
       message: function(component, setting) {
         return component.t(&apos;pattern&apos;, {
-          field: component.name
+          field: component.errorLabel
         });
       },
       check: function(component, setting, value) {
@@ -306,7 +306,7 @@ export var Validator = {
       key: &apos;validate.custom&apos;,
       message: function(component) {
         return component.t(&apos;custom&apos;, {
-          field: component.name
+          field: component.errorLabel
         });
       },
       check: function(component, setting, value, data) {

@@ -934,6 +934,8 @@ var Formio = function () {
      * Attach an HTML form to Form.io.
      *
      * @param form
+     * @param options
+     * @param done
      */
 
   }, {

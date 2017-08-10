@@ -18,9 +18,10 @@ export class SignatureComponent extends BaseComponent {
     return info;
   }
 
-  setValue(value, noUpdate, noValidate, noSign) {
-    super.setValue(value, noUpdate, noValidate);
-    if (!noSign && this.signaturePad) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
+    super.setValue(value, flags);
+    if (!flags.noSign && this.signaturePad) {
       this.signaturePad.fromDataURL(value);
     }
   }
@@ -101,7 +102,9 @@ export class SignatureComponent extends BaseComponent {
       event.preventDefault();
       this.signaturePad.clear();
     });
-    this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), false, false, true);
+    this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
+      noSign: true
+    });
 
     // Ensure the signature is always the size of its container.
     let currentWidth = 0;

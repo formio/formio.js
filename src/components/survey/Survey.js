@@ -51,7 +51,8 @@ export class SurveyComponent extends BaseComponent {
     }
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     if (!value) {
       return;
     }
@@ -64,9 +65,7 @@ export class SurveyComponent extends BaseComponent {
         }
       });
     });
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
+    this.updateValue(flags);
   }
 
   getValue() {

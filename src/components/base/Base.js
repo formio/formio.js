@@ -779,11 +779,10 @@ export class BaseComponent {
   /**
    * Alias for document.createElement.
    *
-   * DEPRECATED - @param {string} name - The name of the element to create, for templating purposes.
    * @param {string} type - The type of element to create
    * @param {Object} attr - The element attributes to add to the created element.
    * @param {Various} children - Child elements. Can be a DOM Element, string or array of both.
-   * DEPRECATED - @param {Object} events - A key value list of events to attach to the element.
+   * @param {Object} events
    *
    * @return {HTMLElement} - The created element.
    */
@@ -882,7 +881,9 @@ export class BaseComponent {
 
   /**
    * Add a new input error to this element.
+   *
    * @param message
+   * @param dirty
    */
   addInputError(message, dirty) {
     if (!message) {
@@ -935,15 +936,16 @@ export class BaseComponent {
     return this._visible;
   }
 
-  onChange(noValidate) {
-    if (!noValidate) {
+  onChange(flags) {
+    flags = flags || {};
+    if (!flags.noValidate) {
       this.pristine = false;
     }
     if (this.events) {
       this.emit('componentChange', {
         component: this.component,
         value: this.value,
-        validate: !noValidate
+        flags: flags
       });
     }
   }
@@ -973,7 +975,7 @@ export class BaseComponent {
    *
    * @param input
    * @param container
-   * @param name
+   * @param noSet
    */
   addInput(input, container, noSet) {
     if (input && container) {
@@ -985,7 +987,9 @@ export class BaseComponent {
 
     // Reset the values of the inputs.
     if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {
-      this.setValue(this.data[this.component.key], true);
+      this.setValue(this.data[this.component.key], {
+        noUpdate: true
+      });
     }
   }
 
@@ -1015,7 +1019,11 @@ export class BaseComponent {
     return values;
   }
 
-  updateValue(noValidate) {
+  updateValue(flags) {
+    flags = flags || {};
+    if (flags.noUpdate) {
+      return;
+    }
     let value = this.data[this.component.key];
     let falsey = !value && (value !== null) && (value !== undefined);
     this.data[this.component.key] = this.getValue();
@@ -1025,11 +1033,11 @@ export class BaseComponent {
     }
     if (falsey) {
       if (!!this.data[this.component.key]) {
-        this.triggerChange(noValidate);
+        this.triggerChange(flags);
       }
     }
     else {
-      this.triggerChange(noValidate);
+      this.triggerChange(flags);
     }
   }
 
@@ -1046,12 +1054,13 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
-        let noUpdate = false;
         let value = [];
         let row = this.data;
         let component = this;
         eval(this.component.calculateValue.toString());
-        this.setValue(value, noUpdate);
+        this.setValue(value, {
+          noCheck: true
+        });
       }
       catch (e) {
         /* eslint-disable no-console */
@@ -1065,7 +1074,9 @@ export class BaseComponent {
           data: data,
           row: this.data
         });
-        this.setValue(val);
+        this.setValue(val, {
+          noCheck: true
+        });
       }
       catch (err) {
         /* eslint-disable no-console */
@@ -1189,11 +1200,21 @@ export class BaseComponent {
     this.inputs[index].value = value;
   }
 
+  getFlags() {
+    return (typeof arguments[1] === 'boolean') ? {
+      noUpdate: arguments[1],
+      noValidate: arguments[2]
+    } : (arguments[1] || {});
+  }
+
   /**
    * Set the value of this component.
+   *
    * @param value
+   * @param flags
    */
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     if (!this.component.input) {
       return;
     }
@@ -1202,9 +1223,7 @@ export class BaseComponent {
     for (let i in this.inputs) {
       this.setValueAt(i, isArray ? value[i] : value);
     }
-    if (!noUpdate) {
-      this.updateValue(noValidate);
-    }
+    this.updateValue(flags);
   }
 
   /**

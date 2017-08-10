@@ -144,6 +144,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/resource/Resource.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { SelectComponent } from &apos;../select/Select&apos;;
+import dialogPolyfill from &apos;dialog-polyfill&apos;;
 export class ResourceComponent extends SelectComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -151,6 +152,99 @@ export class ResourceComponent extends SelectComponent {
     this.component.data = {
       resource: this.component.resource
     };
+  }
+
+  /**
+   * Creates a new button to add a resource instance
+   * @returns {HTMLElement} - The &quot;Add Resource&quot; button html element.
+   */
+  addButton() {
+    let addButton = this.ce(&apos;a&apos;, {
+      class: &apos;btn btn-primary&apos;
+    });
+    let addIcon   = this.ce(&apos;span&apos;, {
+      class: &apos;glyphicon glyphicon-plus&apos;
+    });
+    addButton.appendChild(addIcon);
+    addButton.appendChild(this.text(&apos; &apos; + (this.component.addResourceLabel || &apos;Add Resource&apos;)));
+
+    this.addEventListener(addButton, &apos;click&apos;, (event) =&gt; {
+      event.preventDefault();
+
+      // HTML for dialog
+      var template = &apos;&lt;div class=&quot;row&quot;&gt;&apos; +
+                       &apos;&lt;div class=&quot;col-sm-12&quot;&gt;&apos; +
+                         &apos;&lt;b id=&quot;close&quot; class=&quot;formio-dialog-close pull-right&quot;&gt;X&lt;/b&gt;&apos; +
+                       &apos;&lt;/div&gt;&apos; +
+                     &apos;&lt;/div&gt;&apos; +
+                     &apos;&lt;div class=&quot;row&quot;&gt;&apos; +
+                       &apos;&lt;div class=&quot;col-sm-12&quot;&gt;&apos; +
+                         &apos;&lt;div class=&quot;panel panel-default&quot;&gt;&apos; +
+                           &apos;&lt;div class=&quot;panel-heading&quot;&gt;&apos; +
+                             &apos;&lt;h3 class=&quot;panel-title&quot;&gt;&apos; + (this.component.addResourceLabel || &apos;Add Resource&apos;) + &apos;&lt;/h3&gt;&apos; +
+                           &apos;&lt;/div&gt;&apos; +
+                           &apos;&lt;div class=&quot;panel-body&quot;&gt;&apos; +
+                             &apos;&lt;div id=&quot;formio&quot;&gt;&lt;/div&gt;&apos; +
+                           &apos;&lt;/div&gt;&apos; +
+                         &apos;&lt;/div&gt;&apos; +
+                       &apos;&lt;/div&gt;&apos; +
+                     &apos;&lt;/div&gt;&apos;;
+
+      this.dialog = this.ce(&apos;dialog&apos;, {
+        class: &apos;formio-dialog&apos;
+      });
+      this.dialog.innerHTML = template;
+      addButton.ownerDocument.body.appendChild(this.dialog);
+      dialogPolyfill.registerDialog(this.dialog);
+
+      var self  = this;
+      var close = this.dialog.querySelector(&apos;#close&apos;);
+      var form  = new FormioForm(this.dialog.querySelector(&apos;#formio&apos;));
+
+      close.onclick = function () {
+        self.dialog.close();
+		  };
+
+		  form.on(&apos;submit&apos;, (submission) =&gt; {
+        self.setValue(submission);
+        self.dialog.close();
+		  });
+      form.src = Formio.getBaseUrl() + &apos;/form/&apos; + self.component.resource;
+
+      this.dialog.onclose = function () {
+        self.dialog.parentElement.removeChild(self.dialog);
+      };
+
+      this.dialog.showModal();
+    });
+
+    return addButton;
+  }
+
+  addInput(input, container) {
+    // Add Resource button
+    if (this.component.addResource) {
+      var table    = this.ce(&apos;table&apos;, {
+        class: &apos;table table-bordered&apos;
+      });
+      var template = &apos;&lt;tbody&gt;&apos; +
+                       &apos;&lt;tr&gt;&apos; +
+                         &apos;&lt;td id=&quot;select&quot;&gt;&apos; +
+                         &apos;&lt;/td&gt;&apos; +
+                       &apos;&lt;/tr&gt;&apos; +
+                       &apos;&lt;tr&gt;&apos; +
+                         &apos;&lt;td id=&quot;button&quot; colspan=&quot;2&quot;&gt;&apos; +
+                         &apos;&lt;/td&gt;&apos; +
+                       &apos;&lt;/tr&gt;&apos; +
+                     &apos;&lt;/tbody&gt;&apos;;
+      container.appendChild(table);
+      table.innerHTML = template;
+      table.querySelector(&quot;#button&quot;).appendChild(this.addButton());
+      super.addInput(input, table.querySelector(&quot;#select&quot;), true);
+    }
+    else {
+      super.addInput(input, container, true);
+    }
   }
 }
 </code></pre>

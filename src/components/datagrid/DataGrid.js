@@ -150,7 +150,8 @@ export class DataGridComponent extends FormioComponents {
     return show;
   }
 
-  setValue(value, noUpdate, noValidate) {
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
     if (!value) {
       return;
     }
@@ -171,10 +172,10 @@ export class DataGridComponent extends FormioComponents {
       }
       _each(row, (col, key) => {
         if (col.type === 'components') {
-          col.setValue(value[index], noUpdate, noValidate);
+          col.setValue(value[index], flags);
         }
         else if (value[index].hasOwnProperty(key)) {
-          col.setValue(value[index][key], noUpdate, noValidate);
+          col.setValue(value[index][key], flags);
         }
       });
     });
