@@ -77,7 +77,7 @@ export class BaseComponent {
      * The HTMLElement that is assigned to the label of this component.
      * @type {null}
      */
-    this.label = null;
+    this.labelElement = null;
 
     /**
      * The HTMLElement for which the errors are rendered for this component (usually underneath the component).
@@ -407,6 +407,7 @@ export class BaseComponent {
           let row = this.data;
           let data = this.data;
           let value = '';
+          let component = this;
           eval(this.component.customDefaultValue.toString());
           defaultValue = value;
         }
@@ -529,6 +530,14 @@ export class BaseComponent {
   }
 
   /**
+   * Returns the error label for this component.
+   * @return {*}
+   */
+  get errorLabel() {
+    return this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key;
+  }
+
+  /**
    * Creates a new "remove" row button and returns the html element of that button.
    * @param {number} index - The index of the row that should be removed.
    * @returns {HTMLElement} - The html element of the remove button.
@@ -564,14 +573,14 @@ export class BaseComponent {
     if (this.component.input && this.component.validate && this.component.validate.required) {
       className += ' field-required';
     }
-    this.label = this.ce('label', {
+    this.labelElement = this.ce('label', {
       class: className
     });
     if (this.info.attr.id) {
-      this.label.setAttribute('for', this.info.attr.id);
+      this.labelElement.setAttribute('for', this.info.attr.id);
     }
-    this.label.appendChild(this.text(this.component.label));
-    container.appendChild(this.label);
+    this.labelElement.appendChild(this.text(this.component.label));
+    container.appendChild(this.labelElement);
   }
 
   /**
@@ -1037,10 +1046,12 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
+        let noUpdate = false;
         let value = [];
         let row = this.data;
+        let component = this;
         eval(this.component.calculateValue.toString());
-        this.setValue(value);
+        this.setValue(value, noUpdate);
       }
       catch (e) {
         /* eslint-disable no-console */
@@ -1064,6 +1075,38 @@ export class BaseComponent {
     }
   }
 
+  /**
+   * Get this component's label text.
+   *
+   */
+  get label() {
+    return this.component.label;
+  }
+
+  /**
+   * Set this component's label text and render it.
+   *
+   * @param value - The new label text.
+   */
+  set label(value) {
+    this.component.label = value;
+    if (this.labelElement) {
+      this.labelElement.innerText = value;
+    }
+  }
+
+  /**
+   * Get FormioForm element at the root of this component tree.
+   *
+   */
+  getRoot() {
+    var parent = this.parent;
+    while (parent.parent) {
+      parent = parent.parent;
+    }
+    return parent;
+  }
+
   checkValidity(data, dirty) {
     // No need to check for errors if there is no input or if it is pristine.
     if (!this.component.input || (!dirty && this.pristine)) {
@@ -1083,6 +1126,15 @@ export class BaseComponent {
 
   isEmpty(value) {
     return value == null || value.length === 0;
+  }
+
+  /**
+   * Check if a component is eligible for multiple validation
+   *
+   * @return {boolean}
+   */
+  validateMultiple(value) {
+    return this.component.multiple && _isArray(value);
   }
 
   get errors() {

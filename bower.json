@@ -1,7 +1,7 @@
 {
   "name": "formiojs",
   "description": "Common js library for client side interaction with <form.io>",
-  "version": "2.13.0",
+  "version": "2.13.4",
   "main": "dist/formio.min.js",
   "license": "MIT",
   "homepage": "https://github.com/formio/formio.js",
@@ -14,6 +14,7 @@
   ],
   "dependencies": {
     "choices.js": "^2.8.7",
+    "dialog-polyfill": "^0.4.8",
     "eventemitter2": "^4.1.0",
     "flatpickr": "^3.0.5-1",
     "i18next": "^8.3.0",

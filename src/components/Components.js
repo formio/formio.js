@@ -116,6 +116,7 @@ export class FormioComponents extends BaseComponent {
       _assign(this.options.components, FormioComponents.customComponents);
     }
     let comp = this.options.components.create(component, this.options, data);
+    comp.parent = this;
     this.components.push(comp);
     this.setHidden(comp);
     element.appendChild(comp.getElement());

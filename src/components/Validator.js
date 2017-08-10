@@ -36,7 +36,7 @@ export var Validator = {
     _each(component.validators, (name) => {
       if (this.validators.hasOwnProperty(name)) {
         let validator = this.validators[name];
-        if (component.component.multiple && _isArray(value)) {
+        if (component.validateMultiple(value)) {
           _each(value, (val) => {
             result = this.validate(component, validator, val, data);
             if (result) {
@@ -58,7 +58,7 @@ export var Validator = {
     required: {
       key: 'validate.required',
       message: function(component, setting) {
-        return component.t('required', {field: component.name});
+        return component.t('required', {field: component.errorLabel});
       },
       check: function(component, setting, value) {
         if (!FormioUtils.boolValue(setting)) {
@@ -71,7 +71,7 @@ export var Validator = {
       key: 'validate.minLength',
       message: function(component, setting) {
         return component.t('minLength', {
-          field: component.name,
+          field: component.errorLabel,
           length: (setting - 1)
         });
       },
@@ -87,7 +87,7 @@ export var Validator = {
       key: 'validate.maxLength',
       message: function(component, setting) {
         return component.t('maxLength', {
-          field: component.name,
+          field: component.errorLabel,
           length: (setting + 1)
         });
       },
@@ -102,7 +102,7 @@ export var Validator = {
     email: {
       message: function(component, setting) {
         return component.t('invalid_email', {
-          field: component.name
+          field: component.errorLabel
         });
       },
       check: function(component, setting, value) {
@@ -114,7 +114,7 @@ export var Validator = {
     date: {
       message: function(component, setting) {
         return component.t('invalid_date', {
-          field: component.name
+          field: component.errorLabel
         });
       },
       check: function(component, setting, value) {
@@ -125,7 +125,7 @@ export var Validator = {
       key: 'validate.pattern',
       message: function(component, setting) {
         return component.t('pattern', {
-          field: component.name
+          field: component.errorLabel
         });
       },
       check: function(component, setting, value) {
@@ -161,7 +161,7 @@ export var Validator = {
       key: 'validate.custom',
       message: function(component) {
         return component.t('custom', {
-          field: component.name
+          field: component.errorLabel
         });
       },
       check: function(component, setting, value, data) {

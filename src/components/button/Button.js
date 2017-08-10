@@ -1,4 +1,7 @@
 import { BaseComponent } from '../base/Base';
+import FormioUtils from '../../utils';
+import _each from 'lodash/each';
+
 export class ButtonComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
@@ -39,8 +42,8 @@ export class ButtonComponent extends BaseComponent {
   build() {
     this.element = this.ce(this.info.type, this.info.attr);
     if (this.component.label) {
-      this.label = this.text(this.component.label);
-      this.element.appendChild(this.label);
+      this.labelElement = this.text(this.component.label);
+      this.element.appendChild(this.labelElement);
     }
     if (this.component.action === 'submit') {
       this.on('submitButton', () => {
@@ -70,6 +73,30 @@ export class ButtonComponent extends BaseComponent {
             data: this.data,
             event: event
           });
+          break;
+        case 'custom':
+          // Get the FormioForm at the root of this component's tree
+          var form       = this.getRoot();
+          // Get the form's flattened schema components
+          var flattened  = FormioUtils.flattenComponents(form.component.components, true);
+          // Create object containing the corresponding HTML element components
+          var components = {};
+          _each(flattened, function(component, key) {
+            var element = form.getComponent(key);
+            if (element) {
+              components[key] = element;
+            }
+          });
+          // Make data available to script
+          var data = this.data;
+          try {
+            eval(this.component.custom.toString());
+          }
+          catch (e) {
+            /* eslint-disable no-console */
+            console.warn('An error occurred evaluating custom logic for ' + this.key, e);
+            /* eslint-enable no-console */
+          }
           break;
         case 'reset':
           this.emit('resetForm');

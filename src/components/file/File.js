@@ -92,6 +92,9 @@ export class FileComponent extends BaseComponent {
                 this.ce('span', {
                   class: 'glyphicon glyphicon-remove',
                   onClick: event => {
+                    if (this.component.storage === 'url') {
+                      this.options.formio.makeRequest('', this.data[this.component.key][index].url, 'delete');
+                    }
                     event.preventDefault();
                     this.data[this.component.key].splice(index, 1);
                     this.refreshDOM();
@@ -139,6 +142,9 @@ export class FileComponent extends BaseComponent {
               this.ce('span', {
                 class: 'glyphicon glyphicon-remove',
                 onClick: event => {
+                  if (this.component.storage === 'url') {
+                    this.options.formio.makeRequest('', this.data[this.component.key][index].url, 'delete');
+                  }
                   event.preventDefault();
                   this.data[this.component.key].splice(index, 1);
                   this.refreshDOM();
