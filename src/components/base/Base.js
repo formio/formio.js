@@ -1046,11 +1046,12 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
+        let noUpdate = false;
         let value = [];
         let row = this.data;
         let component = this;
         eval(this.component.calculateValue.toString());
-        this.setValue(value, true);
+        this.setValue(value, noUpdate);
       }
       catch (e) {
         /* eslint-disable no-console */
@@ -1064,7 +1065,7 @@ export class BaseComponent {
           data: data,
           row: this.data
         });
-        this.setValue(val, true);
+        this.setValue(val);
       }
       catch (err) {
         /* eslint-disable no-console */

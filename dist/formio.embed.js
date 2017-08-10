@@ -2498,11 +2498,12 @@ var BaseComponent = function () {
       // If this is a string, then use eval to evalulate it.
       if (typeof this.component.calculateValue === 'string') {
         try {
+          var noUpdate = false;
           var value = [];
           var row = this.data;
           var component = this;
           eval(this.component.calculateValue.toString());
-          this.setValue(value, true);
+          this.setValue(value, noUpdate);
         } catch (e) {
           /* eslint-disable no-console */
           console.warn('An error occurred calculating a value for ' + this.component.key, e);
@@ -2514,7 +2515,7 @@ var BaseComponent = function () {
             data: data,
             row: this.data
           });
-          this.setValue(val, true);
+          this.setValue(val);
         } catch (err) {
           /* eslint-disable no-console */
           console.warn('An error occurred calculating a value for ' + this.component.key, e);
