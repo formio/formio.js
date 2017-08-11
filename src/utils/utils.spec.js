@@ -209,6 +209,12 @@ describe('getValue', function() {
   });
 });
 
+describe('parseFloat', function() {
+  it('should clear input and parse value', function() {
+    expect(utils.parseFloat('12,345,678.90')).to.be.equal(12345678.90);
+  });
+});
+
 describe('formatAsCurrency', function() {
   it('should be able to format Float value for Currency component', function() {
     expect(utils.formatAsCurrency(123.4)).to.be.equal('123.40');
