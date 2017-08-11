@@ -11277,7 +11277,7 @@ var FormioUtils = {
         }
       } else {
         try {
-          data[component.key] = formioUtils.jsonLogic.apply(component.calculateValue, {
+          data[component.key] = FormioUtils.jsonLogic.apply(component.calculateValue, {
             data: submission ? submission.data : data,
             row: data
           });
