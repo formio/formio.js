@@ -434,51 +434,41 @@ var Formio = function () {
 
   }, {
     key: 'getDownloadUrl',
-    value: function getDownloadUrl() {
+    value: function getDownloadUrl(form) {
       var _this2 = this;
 
       if (!this.submissionId) {
         return Promise.resolve('');
       }
 
-      return this.getProjectId().then(function (projectId) {
-        return _this2.getFormId().then(function (formId) {
-          var download = '';
-          download = Formio.baseUrl;
-          if (projectId) {
-            download += '/project/' + projectId;
+      if (!form) {
+        // Make sure to load the form first.
+        return this.loadForm().then(function (_form) {
+          if (!_form) {
+            return '';
           }
-          download += '/form/' + formId;
-          download += '/submission/' + _this2.submissionId;
-          download += '/download';
-          return new Promise(function (resolve, reject) {
-            _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
-              download += '?token=' + tempToken.key;
-              resolve(download);
-            }, function () {
-              resolve(download);
-            }).catch(reject);
-          });
+          return _this2.getDownloadUrl(_form);
         });
-      });
+      }
 
-      return this.getFormId().then(function (formId) {
-        var download = '';
-        download = Formio.baseUrl;
-        if (_this2.projectId) {
-          download += '/project/' + _this2.projectId;
-        }
-        download += '/form/' + formId;
-        download += '/submission/' + _this2.submissionId;
-        download += '/download';
-        return new Promise(function (resolve, reject) {
-          _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
-            download += '?token=' + tempToken.key;
-            resolve(download);
-          }, function () {
-            resolve(download);
-          }).catch(reject);
-        });
+      var download = '';
+      download = Formio.baseUrl;
+      if (form.project) {
+        download += '/project/' + form.project;
+      }
+      download += '/form/' + form._id;
+      download += '/submission/' + this.submissionId;
+      download += '/download';
+      if (form.settings && form.settings.pdf) {
+        download += '/' + form.settings.pdf.id;
+      }
+      return new Promise(function (resolve, reject) {
+        _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
+          download += '?token=' + tempToken.key;
+          resolve(download);
+        }, function () {
+          resolve(download);
+        }).catch(reject);
       });
     }
   }, {
@@ -1030,7 +1020,7 @@ var Formio = function () {
 
   }, {
     key: 'form',
-    value: function form(_form, options, done) {
+    value: function form(_form2, options, done) {
       // Fix the parameters.
       if (!done && typeof options === 'function') {
         done = options;
@@ -1043,15 +1033,15 @@ var Formio = function () {
       options = options || {};
 
       // IF they provide a jquery object, then select the element.
-      if (_form.jquery) {
-        _form = _form[0];
+      if (_form2.jquery) {
+        _form2 = _form2[0];
       }
-      if (!_form) {
+      if (!_form2) {
         return done('Invalid Form');
       }
 
       var getAction = function getAction() {
-        return options.form || _form.getAttribute('action');
+        return options.form || _form2.getAttribute('action');
       };
 
       /**
@@ -1087,7 +1077,7 @@ var Formio = function () {
         };
 
         // Get the form data from this form.
-        var formData = new FormData(_form);
+        var formData = new FormData(_form2);
         var entries = formData.entries();
         var entry = null;
         while (entry = entries.next().value) {
@@ -1111,10 +1101,10 @@ var Formio = function () {
       };
 
       // Attach formio to the provided form.
-      if (_form.attachEvent) {
-        _form.attachEvent('submit', submit);
+      if (_form2.attachEvent) {
+        _form2.attachEvent('submit', submit);
       } else {
-        _form.addEventListener('submit', submit);
+        _form2.addEventListener('submit', submit);
       }
 
       return {

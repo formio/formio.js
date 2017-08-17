@@ -377,50 +377,39 @@ export class Formio {
    *
    * @return {*}
    */
-  getDownloadUrl() {
+  getDownloadUrl(form) {
     if (!this.submissionId) {
       return Promise.resolve('');
     }
 
-    return this.getProjectId()
-      .then((projectId) => this.getFormId()
-      .then((formId) => {
-        let download = '';
-        download = Formio.baseUrl;
-        if (projectId) {
-          download += '/project/' + projectId;
+    if (!form) {
+      // Make sure to load the form first.
+      return this.loadForm().then((_form) => {
+        if (!_form) {
+          return '';
         }
-        download += '/form/' + formId;
-        download += '/submission/' + this.submissionId;
-        download += '/download';
-        return new Promise((resolve, reject) => {
-          this.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then((tempToken) => {
-            download += '?token=' + tempToken.key;
-            resolve(download);
-          }, () => {
-            resolve(download);
-          }).catch(reject);
-        });
-      }));
-
-
-    return this.getFormId().then((formId) => {
-      let download = '';
-      download = Formio.baseUrl;
-      if (this.projectId) {
-        download += '/project/' + this.projectId;
-      }
-      download += '/form/' + formId;
-      download += '/submission/' + this.submissionId;
-      download += '/download';
-      return new Promise((resolve, reject) => {
-        this.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then((tempToken) => {
-          download += '?token=' + tempToken.key;
-          resolve(download);
-        }, () => {
-          resolve(download);
-        }).catch(reject);
+        return this.getDownloadUrl(_form);
       });
+    }
+
+    let download = '';
+    download = Formio.baseUrl;
+    if (form.project) {
+      download += '/project/' + form.project;
+    }
+    download += '/form/' + form._id;
+    download += '/submission/' + this.submissionId;
+    download += '/download';
+    if (form.settings && form.settings.pdf) {
+      download += '/' + form.settings.pdf.id;
+    }
+    return new Promise((resolve, reject) => {
+      this.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then((tempToken) => {
+        download += '?token=' + tempToken.key;
+        resolve(download);
+      }, () => {
+        resolve(download);
+      }).catch(reject);
     });
   }
 

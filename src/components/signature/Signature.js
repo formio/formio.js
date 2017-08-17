@@ -21,7 +21,7 @@ export class SignatureComponent extends BaseComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     super.setValue(value, flags);
-    if (!flags.noSign && this.signaturePad) {
+    if (value && !flags.noSign && this.signaturePad) {
       this.signaturePad.fromDataURL(value);
     }
   }
