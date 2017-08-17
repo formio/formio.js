@@ -2195,6 +2195,28 @@ var BaseComponent = function () {
     }
 
     /**
+     * Append different types of children.
+     *
+     * @param child
+     */
+
+  }, {
+    key: 'appendChild',
+    value: function appendChild(element, child) {
+      var _this6 = this;
+
+      if (Array.isArray(child)) {
+        child.forEach(function (oneChild) {
+          _this6.appendChild(element, oneChild);
+        });
+      } else if (child instanceof HTMLElement || child instanceof Text) {
+        element.appendChild(child);
+      } else if (child) {
+        element.appendChild(this.text(child.toString()));
+      }
+    }
+
+    /**
      * Alias for document.createElement.
      *
      * @param {string} type - The type of element to create
@@ -2208,8 +2230,6 @@ var BaseComponent = function () {
   }, {
     key: 'ce',
     value: function ce(type, attr) {
-      var _this6 = this;
-
       var children = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
       var events = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
@@ -2221,21 +2241,8 @@ var BaseComponent = function () {
         this.attr(element, attr);
       }
 
-      // Append different types of children.
-      var appendChild = function appendChild(child) {
-        if (Array.isArray(child)) {
-          child.forEach(function (oneChild) {
-            appendChild(oneChild);
-          });
-        } else if (child instanceof HTMLElement || child instanceof Text) {
-          element.appendChild(child);
-        } else if (child) {
-          element.appendChild(_this6.text(child.toString()));
-        }
-      };
-
-      appendChild(children);
-
+      // Append the children.
+      this.appendChild(element, children);
       return element;
     }
 
@@ -2248,7 +2255,7 @@ var BaseComponent = function () {
   }, {
     key: 'text',
     value: function text(_text) {
-      return document.createTextNode(_text);
+      return document.createTextNode(this.t(_text));
     }
 
     /**
@@ -8130,6 +8137,9 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+// Initialize the available forms.
+_formio2.default.forms = {};
+
 /**
  * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
  *
@@ -8204,12 +8214,15 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   function FormioForm(element, options) {
     _classCallCheck(this, FormioForm);
 
+    // Keep track of all available forms globally.
+    var _this = _possibleConstructorReturn(this, (FormioForm.__proto__ || Object.getPrototypeOf(FormioForm)).call(this, null, getOptions(options)));
+
+    _formio2.default.forms[_this.id] = _this;
+
     /**
      * The type of this element.
      * @type {string}
      */
-    var _this = _possibleConstructorReturn(this, (FormioForm.__proto__ || Object.getPrototypeOf(FormioForm)).call(this, null, getOptions(options)));
-
     _this.type = 'form';
     _this._src = '';
     _this._loading = false;
@@ -9332,6 +9345,40 @@ var Formio = function () {
     value: function actionInfo(name) {
       return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
     }
+  }, {
+    key: 'isObjectId',
+    value: function isObjectId(id) {
+      var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+      return checkForHexRegExp.test(id);
+    }
+  }, {
+    key: 'getProjectId',
+    value: function getProjectId() {
+      if (!this.projectId) {
+        return Promise.resolve('');
+      }
+      if (this.isObjectId(this.projectId)) {
+        return Promise.resolve(this.projectId);
+      } else {
+        return this.loadProject().then(function (project) {
+          return project._id;
+        });
+      }
+    }
+  }, {
+    key: 'getFormId',
+    value: function getFormId() {
+      if (!this.formId) {
+        return Promise.resolve('');
+      }
+      if (this.isObjectId(this.formId)) {
+        return Promise.resolve(this.formId);
+      } else {
+        return this.loadForm().then(function (form) {
+          return form._id;
+        });
+      }
+    }
 
     /**
      * Returns a temporary authentication token for single purpose token generation.
@@ -9349,6 +9396,62 @@ var Formio = function () {
           'x-expire': expire,
           'x-allow': allowed
         })
+      });
+    }
+
+    /**
+     * Get a download url for a submission PDF of this submission.
+     *
+     * @return {*}
+     */
+
+  }, {
+    key: 'getDownloadUrl',
+    value: function getDownloadUrl() {
+      var _this2 = this;
+
+      if (!this.submissionId) {
+        return Promise.resolve('');
+      }
+
+      return this.getProjectId().then(function (projectId) {
+        return _this2.getFormId().then(function (formId) {
+          var download = '';
+          download = Formio.baseUrl;
+          if (projectId) {
+            download += '/project/' + projectId;
+          }
+          download += '/form/' + formId;
+          download += '/submission/' + _this2.submissionId;
+          download += '/download';
+          return new Promise(function (resolve, reject) {
+            _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
+              download += '?token=' + tempToken.key;
+              resolve(download);
+            }, function () {
+              resolve(download);
+            }).catch(reject);
+          });
+        });
+      });
+
+      return this.getFormId().then(function (formId) {
+        var download = '';
+        download = Formio.baseUrl;
+        if (_this2.projectId) {
+          download += '/project/' + _this2.projectId;
+        }
+        download += '/form/' + formId;
+        download += '/submission/' + _this2.submissionId;
+        download += '/download';
+        return new Promise(function (resolve, reject) {
+          _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
+            download += '?token=' + tempToken.key;
+            resolve(download);
+          }, function () {
+            resolve(download);
+          }).catch(reject);
+        });
       });
     }
   }, {

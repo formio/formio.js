@@ -7,6 +7,9 @@ import _clone from 'lodash/clone';
 import _assign from 'lodash/assign';
 import EventEmitter from 'eventemitter2';
 
+// Initialize the available forms.
+Formio.forms = {};
+
 /**
  * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
  *
@@ -80,6 +83,9 @@ export class FormioForm extends FormioComponents {
    */
   constructor(element, options) {
     super(null, getOptions(options));
+
+    // Keep track of all available forms globally.
+    Formio.forms[this.id] = this;
 
     /**
      * The type of this element.
