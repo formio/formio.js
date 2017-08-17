@@ -21,8 +21,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/w
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-Formio.setBaseUrl('http://localhost:3000');
-Formio.createForm(document.getElementById('formio'), 'http://keyvzthomiwnebz.localhost:3000/w42', {
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/w4', {
   zoom: '-20'
 });
 </script>
