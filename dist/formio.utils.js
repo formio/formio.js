@@ -286,6 +286,18 @@ var FormioUtils = {
   },
 
   /**
+   * Escapes RegEx characters in provided String value.
+   *
+   * @param {String} value
+   *   String for escaping RegEx characters.
+   * @returns {string}
+   *   String with escaped RegEx characters.
+   */
+  escapeRegExCharacters: function escapeRegExCharacters(value) {
+    return value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+  },
+
+  /**
    * Checks the calculated value for a provided component and data.
    *
    * @param {Object} component

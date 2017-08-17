@@ -1,6 +1,7 @@
 "use strict";
 import Promise from "native-promise-only";
 import FormioWizard from './formio.wizard';
+import FormioPDF from './formio.pdf';
 import FormioForm from './formio.form';
 import { FormioComponents } from './components/Components';
 import Formio from './formio';
@@ -16,6 +17,9 @@ Formio.formFactory = (element, form, options) => {
   let instance = null;
   if (form.display === 'wizard') {
     instance = new FormioWizard(element, options);
+  }
+  else if (form.display === 'pdf') {
+    instance = new FormioPDF(element, options);
   }
   else {
     instance = new FormioForm(element, options);

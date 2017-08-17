@@ -777,6 +777,25 @@ export class BaseComponent {
   }
 
   /**
+   * Append different types of children.
+   *
+   * @param child
+   */
+  appendChild(element, child) {
+    if (Array.isArray(child)) {
+      child.forEach(oneChild => {
+        this.appendChild(element, oneChild);
+      });
+    }
+    else if (child instanceof HTMLElement || child instanceof Text) {
+      element.appendChild(child);
+    }
+    else if (child) {
+      element.appendChild(this.text(child.toString()));
+    }
+  }
+
+  /**
    * Alias for document.createElement.
    *
    * @param {string} type - The type of element to create
@@ -795,23 +814,8 @@ export class BaseComponent {
       this.attr(element, attr);
     }
 
-    // Append different types of children.
-    const appendChild = child => {
-      if (Array.isArray(child)) {
-        child.forEach(oneChild => {
-          appendChild(oneChild);
-        });
-      }
-      else if (child instanceof HTMLElement || child instanceof Text) {
-        element.appendChild(child);
-      }
-      else if (child) {
-        element.appendChild(this.text(child.toString()));
-      }
-    };
-
-    appendChild(children);
-
+    // Append the children.
+    this.appendChild(element, children);
     return element;
   }
 
@@ -821,7 +825,7 @@ export class BaseComponent {
    * @returns {Text}
    */
   text(text) {
-    return document.createTextNode(text);
+    return document.createTextNode(this.t(text));
   }
 
   /**

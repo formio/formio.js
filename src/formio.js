@@ -323,6 +323,39 @@ export class Formio {
     return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
   }
 
+  isObjectId(id) {
+    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    return checkForHexRegExp.test(id);
+  }
+
+  getProjectId() {
+    if (!this.projectId) {
+      return Promise.resolve('');
+    }
+    if (this.isObjectId(this.projectId)) {
+      return Promise.resolve(this.projectId);
+    }
+    else {
+      return this.loadProject().then((project) => {
+        return project._id;
+      });
+    }
+  }
+
+  getFormId() {
+    if (!this.formId) {
+      return Promise.resolve('');
+    }
+    if (this.isObjectId(this.formId)) {
+      return Promise.resolve(this.formId);
+    }
+    else {
+      return this.loadForm().then((form) => {
+        return form._id;
+      });
+    }
+  }
+
   /**
    * Returns a temporary authentication token for single purpose token generation.
    */
@@ -336,6 +369,58 @@ export class Formio {
         'x-expire': expire,
         'x-allow': allowed
       })
+    });
+  }
+
+  /**
+   * Get a download url for a submission PDF of this submission.
+   *
+   * @return {*}
+   */
+  getDownloadUrl() {
+    if (!this.submissionId) {
+      return Promise.resolve('');
+    }
+
+    return this.getProjectId()
+      .then((projectId) => this.getFormId()
+      .then((formId) => {
+        let download = '';
+        download = Formio.baseUrl;
+        if (projectId) {
+          download += '/project/' + projectId;
+        }
+        download += '/form/' + formId;
+        download += '/submission/' + this.submissionId;
+        download += '/download';
+        return new Promise((resolve, reject) => {
+          this.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then((tempToken) => {
+            download += '?token=' + tempToken.key;
+            resolve(download);
+          }, () => {
+            resolve(download);
+          }).catch(reject);
+        });
+      }));
+
+
+    return this.getFormId().then((formId) => {
+      let download = '';
+      download = Formio.baseUrl;
+      if (this.projectId) {
+        download += '/project/' + this.projectId;
+      }
+      download += '/form/' + formId;
+      download += '/submission/' + this.submissionId;
+      download += '/download';
+      return new Promise((resolve, reject) => {
+        this.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then((tempToken) => {
+          download += '?token=' + tempToken.key;
+          resolve(download);
+        }, () => {
+          resolve(download);
+        }).catch(reject);
+      });
     });
   }
 

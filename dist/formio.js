@@ -372,6 +372,40 @@ var Formio = function () {
     value: function actionInfo(name) {
       return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
     }
+  }, {
+    key: 'isObjectId',
+    value: function isObjectId(id) {
+      var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+      return checkForHexRegExp.test(id);
+    }
+  }, {
+    key: 'getProjectId',
+    value: function getProjectId() {
+      if (!this.projectId) {
+        return Promise.resolve('');
+      }
+      if (this.isObjectId(this.projectId)) {
+        return Promise.resolve(this.projectId);
+      } else {
+        return this.loadProject().then(function (project) {
+          return project._id;
+        });
+      }
+    }
+  }, {
+    key: 'getFormId',
+    value: function getFormId() {
+      if (!this.formId) {
+        return Promise.resolve('');
+      }
+      if (this.isObjectId(this.formId)) {
+        return Promise.resolve(this.formId);
+      } else {
+        return this.loadForm().then(function (form) {
+          return form._id;
+        });
+      }
+    }
 
     /**
      * Returns a temporary authentication token for single purpose token generation.
@@ -389,6 +423,62 @@ var Formio = function () {
           'x-expire': expire,
           'x-allow': allowed
         })
+      });
+    }
+
+    /**
+     * Get a download url for a submission PDF of this submission.
+     *
+     * @return {*}
+     */
+
+  }, {
+    key: 'getDownloadUrl',
+    value: function getDownloadUrl() {
+      var _this2 = this;
+
+      if (!this.submissionId) {
+        return Promise.resolve('');
+      }
+
+      return this.getProjectId().then(function (projectId) {
+        return _this2.getFormId().then(function (formId) {
+          var download = '';
+          download = Formio.baseUrl;
+          if (projectId) {
+            download += '/project/' + projectId;
+          }
+          download += '/form/' + formId;
+          download += '/submission/' + _this2.submissionId;
+          download += '/download';
+          return new Promise(function (resolve, reject) {
+            _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
+              download += '?token=' + tempToken.key;
+              resolve(download);
+            }, function () {
+              resolve(download);
+            }).catch(reject);
+          });
+        });
+      });
+
+      return this.getFormId().then(function (formId) {
+        var download = '';
+        download = Formio.baseUrl;
+        if (_this2.projectId) {
+          download += '/project/' + _this2.projectId;
+        }
+        download += '/form/' + formId;
+        download += '/submission/' + _this2.submissionId;
+        download += '/download';
+        return new Promise(function (resolve, reject) {
+          _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
+            download += '?token=' + tempToken.key;
+            resolve(download);
+          }, function () {
+            resolve(download);
+          }).catch(reject);
+        });
       });
     }
   }, {
