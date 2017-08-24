@@ -17,7 +17,7 @@ module.exports = {
       key: 'panel1',
       input: false,
       title: 'Page 1',
-      nextPage: 'if (data.a == "goTo2") { page = 2; } else { page = 1; }',
+      nextPage: 'if (data.a == "goTo2") { next = 2; } else { next = 1; }',
       theme: 'default',
       components: [{
         input: true,
@@ -68,7 +68,7 @@ module.exports = {
       input: false,
       title: 'Page 2',
       theme: 'default',
-      nextPage: 'if (data.c == "directSubmit") { page = null; } else { page = 2 }',
+      nextPage: 'if (data.c == "directSubmit") { next = null; } else { next = 2 }',
       components: [{
         input: true,
         tableView: true,
