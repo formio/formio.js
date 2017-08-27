@@ -1483,7 +1483,7 @@ var BaseComponent = function () {
      * The i18n configuration for this component.
      */
     var i18n = require('../../i18n');
-    if (options.i18n) {
+    if (options && options.i18n) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
         i18n = options.i18n;
