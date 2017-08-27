@@ -1,7 +1,7 @@
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _has from 'lodash/has';
-import _isArray from 'lodash/isArray';
+import _isNumber from 'lodash/isNumber';
 import FormioUtils from '../utils/index';
 export var Validator = {
   get: _get,
@@ -65,6 +65,38 @@ export var Validator = {
           return true;
         }
         return !component.isEmpty(value);
+      }
+    },
+    min: {
+      key: 'validate.min',
+      message: function(component, setting) {
+        return component.t('min', {
+          field: component.errorLabel,
+          min: parseFloat(setting)
+        });
+      },
+      check: function(component, setting, value) {
+        let min = parseFloat(setting);
+        if (!min || (!_isNumber(value))) {
+          return true;
+        }
+        return parseFloat(value) >= min;
+      }
+    },
+    max: {
+      key: 'validate.max',
+      message: function(component, setting) {
+        return component.t('max', {
+          field: component.errorLabel,
+          max: parseFloat(setting)
+        });
+      },
+      check: function(component, setting, value) {
+        let max = parseFloat(setting);
+        if (!max || (!_isNumber(value))) {
+          return true;
+        }
+        return parseFloat(value) <= max;
       }
     },
     minLength: {
