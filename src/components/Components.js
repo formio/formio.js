@@ -267,6 +267,8 @@ export class FormioComponents extends BaseComponent {
     super.destroy(all);
     let components = _clone(this.components);
     _each(components, (comp) => this.removeComponent(comp, this.components));
+    this.components = [];
+    this.hidden = [];
   }
 
   set disabled(disabled) {

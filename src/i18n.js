@@ -8,6 +8,8 @@ module.exports = {
         required: '{{field}} is required',
         minLength: '{{field}} must be longer than {{length}} characters.',
         maxLength: '{{field}} must be shorter than {{length}} characters.',
+        min: '{{field}} cannot be less than {{min}}.',
+        max: '{{field}} cannot be greater than {{max}}.',
         invalid_email: '{{field}} must be a valid email.',
         invalid_regex: '{{field}} does not match the pattern {{regex}}.',
         invalid_date: '{{field}} is not a valid date.',

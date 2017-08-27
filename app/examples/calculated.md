@@ -13,20 +13,30 @@ You can use [JSON Logic](http://jsonlogic.com) to create complex calculated valu
 Formio.createForm(document.getElementById('formio'), {
   components: [
     {
-      type: 'textfield',
+      type: 'number',
       label: 'A',
       key: 'a',
       input: true,
       inputType: 'text',
-      defaultValue: '10'
+      defaultValue: '10',
+      validate: {
+        min: 2,
+        max: 100,
+        step: 1
+      }
     },
     {
-      type: 'textfield',
+      type: 'number',
       label: 'B',
       key: 'b',
       input: true,
       inputType: 'text',
-      customDefaultValue: 'value = 20;'
+      customDefaultValue: 'value = 20;',
+      validate: {
+        min: 2,
+        max: 100,
+        step: 1
+      }
     },
     {
       type: 'textfield',
@@ -72,20 +82,30 @@ Formio.createForm(document.getElementById('formio'), {
   Formio.createForm(document.getElementById('formio'), {
     components: [
       {
-        type: 'textfield',
+        type: 'number',
         label: 'A',
         key: 'a',
         input: true,
         inputType: 'text',
-        defaultValue: '10'
+        defaultValue: '10',
+        validate: {
+          min: 2,
+          max: 100,
+          step: 1
+        }
       },
       {
-        type: 'textfield',
+        type: 'number',
         label: 'B',
         key: 'b',
         input: true,
         inputType: 'text',
-        customDefaultValue: 'value = 20;'
+        customDefaultValue: 'value = 20;',
+        validate: {
+          min: 2,
+          max: 100,
+          step: 1
+        }
       },
       {
         type: 'textfield',

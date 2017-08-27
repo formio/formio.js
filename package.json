@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "2.14.2",
+  "version": "2.15.0",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "build/formio.js",
   "files": [
@@ -26,11 +26,18 @@
   "contributors": [
     {
       "name": "Travis Tidwell",
+      "github": "https://github.com/travist",
       "email": "travis@form.io"
     },
     {
       "name": "Randall Knutson",
+      "github": "https://github.com/randallknutson",
       "email": "randall@form.io"
+    },
+    {
+      "name": "Doug Lee",
+      "github": "https://github.com/douglaselee",
+      "email": "douglaselee@comcast.net"
     },
     {
       "name": "Eric Alter",
@@ -57,7 +64,7 @@
     "moment": "^2.18.1",
     "native-promise-only": "^0.8.1",
     "shallow-copy": "0.0.1",
-    "signature_pad": "^2.2.1",
+    "signature_pad": "^2.3.0",
     "text-mask-all": "github:text-mask/text-mask",
     "whatwg-fetch": "^2.0.3"
   },
