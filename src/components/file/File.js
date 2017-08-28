@@ -125,10 +125,6 @@ export class FileComponent extends BaseComponent {
     );
   }
 
-  /**
-   * Get the file service.
-   * @return {*}
-   */
   get fileService() {
     return this.options.fileService || this.options.formio;
   }

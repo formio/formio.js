@@ -5111,12 +5111,6 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         return _this4.createImageListItem(fileInfo, index);
       }));
     }
-
-    /**
-     * Get the file service.
-     * @return {*}
-     */
-
   }, {
     key: 'createImageListItem',
     value: function createImageListItem(fileInfo, index) {
