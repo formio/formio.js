@@ -9635,19 +9635,14 @@ var Formio = function () {
         });
       }
 
-      var download = '';
-      download = Formio.baseUrl;
-      if (form.project) {
-        download += '/project/' + form.project;
-      }
-      download += '/form/' + form._id;
-      download += '/submission/' + this.submissionId;
-      download += '/download';
-      if (form.settings && form.settings.pdf) {
-        download += '/' + form.settings.pdf.id;
-      }
+      var apiUrl = '/project/' + form.project;
+      apiUrl += '/form/' + form._id;
+      apiUrl += '/submission/' + this.submissionId;
+      apiUrl += '/download';
+
+      var download = Formio.baseUrl + apiUrl;
       return new Promise(function (resolve, reject) {
-        _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
+        _this2.getTempToken(3600, 'GET:' + apiUrl).then(function (tempToken) {
           download += '?token=' + tempToken.key;
           resolve(download);
         }, function () {
