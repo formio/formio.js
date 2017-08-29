@@ -9737,12 +9737,15 @@ var Formio = function () {
         options.body = JSON.stringify(data);
       }
 
-      var requestToken = headers.get('x-jwt-token');
-
       // Allow plugins to alter the options.
       options = Formio.pluginAlter('requestOptions', options, url);
 
+      var requestToken = options.headers.get('x-jwt-token');
+
       var requestPromise = fetch(url, options).then(function (response) {
+        // Allow plugins to respond.
+        response = Formio.pluginAlter('requestResponse', response, Formio);
+
         if (!response.ok) {
           if (response.status === 440) {
             Formio.setToken(null);

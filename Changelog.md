@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - Ability to respond to ajax requests in a plugin.
+
 ## 2.15.1
 ### Added
  - Ability to introduce custom file service classes.
