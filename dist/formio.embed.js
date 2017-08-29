@@ -408,6 +408,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       (0, _each3.default)(components, function (comp) {
         return _this5.removeComponent(comp, _this5.components);
       });
+      this.components = [];
+      this.hidden = [];
     }
   }, {
     key: 'setHidden',
@@ -504,9 +506,9 @@ var _has2 = require('lodash/has');
 
 var _has3 = _interopRequireDefault(_has2);
 
-var _isArray2 = require('lodash/isArray');
+var _isNumber2 = require('lodash/isNumber');
 
-var _isArray3 = _interopRequireDefault(_isArray2);
+var _isNumber3 = _interopRequireDefault(_isNumber2);
 
 var _index = require('../utils/index');
 
@@ -579,6 +581,38 @@ var Validator = exports.Validator = {
           return true;
         }
         return !component.isEmpty(value);
+      }
+    },
+    min: {
+      key: 'validate.min',
+      message: function message(component, setting) {
+        return component.t('min', {
+          field: component.errorLabel,
+          min: parseFloat(setting)
+        });
+      },
+      check: function check(component, setting, value) {
+        var min = parseFloat(setting);
+        if (!min || !(0, _isNumber3.default)(value)) {
+          return true;
+        }
+        return parseFloat(value) >= min;
+      }
+    },
+    max: {
+      key: 'validate.max',
+      message: function message(component, setting) {
+        return component.t('max', {
+          field: component.errorLabel,
+          max: parseFloat(setting)
+        });
+      },
+      check: function check(component, setting, value) {
+        var max = parseFloat(setting);
+        if (!max || !(0, _isNumber3.default)(value)) {
+          return true;
+        }
+        return parseFloat(value) <= max;
       }
     },
     minLength: {
@@ -706,7 +740,7 @@ var Validator = exports.Validator = {
   }
 };
 
-},{"../utils/index":53,"lodash/each":254,"lodash/get":258,"lodash/has":259,"lodash/isArray":263}],3:[function(require,module,exports){
+},{"../utils/index":53,"lodash/each":254,"lodash/get":258,"lodash/has":259,"lodash/isNumber":272}],3:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -1373,6 +1407,10 @@ var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
 
+var _assign2 = require('lodash/assign');
+
+var _assign3 = _interopRequireDefault(_assign2);
+
 var _debounce2 = require('lodash/debounce');
 
 var _debounce3 = _interopRequireDefault(_debounce2);
@@ -1444,7 +1482,23 @@ var BaseComponent = function () {
     /**
      * The i18n configuration for this component.
      */
-    this.options.i18n = this.options.i18n || require('../../locals/en');
+    var i18n = require('../../i18n');
+    if (options && options.i18n) {
+      // Support legacy way of doing translations.
+      if (options.i18n.resources) {
+        i18n = options.i18n;
+      } else {
+        (0, _each3.default)(options.i18n, function (lang, code) {
+          if (!i18n.resources[code]) {
+            i18n.resources[code] = { translation: lang };
+          } else {
+            (0, _assign3.default)(i18n.resources[code].translation, lang);
+          }
+        });
+      }
+    }
+
+    this.options.i18n = i18n;
 
     /**
      * The events that are triggered for the whole FormioForm object.
@@ -1593,9 +1647,20 @@ var BaseComponent = function () {
   _createClass(BaseComponent, [{
     key: 't',
     value: function t(text, params) {
-      var message = _i18next2.default.t(text, params);
-      return message;
+      params = params || {};
+      params.component = this.component;
+      return _i18next2.default.t(text, params);
     }
+
+    /**
+     * Sets the language for this form.
+     *
+     * @param lang
+     * @return {*}
+     */
+
+  }, {
+    key: 'on',
 
     /**
      * Register for a new event within this component.
@@ -1615,9 +1680,6 @@ var BaseComponent = function () {
      * @param {function} cb - The callback handler to handle this event.
      * @param {boolean} internal - This is an internal event handler.
      */
-
-  }, {
-    key: 'on',
     value: function on(event, cb, internal) {
       if (!this.events) {
         return;
@@ -2170,6 +2232,12 @@ var BaseComponent = function () {
       } else if ('attachEvent' in obj) {
         obj.attachEvent('on' + evt, func);
       }
+    }
+  }, {
+    key: 'redraw',
+    value: function redraw() {
+      this.clear();
+      this.build();
     }
 
     /**
@@ -2774,28 +2842,41 @@ var BaseComponent = function () {
   }, {
     key: 'elementInfo',
     value: function elementInfo() {
-      var _this11 = this;
-
       var attributes = {
         name: this.options.name,
         type: this.component.inputType || 'text',
         class: 'form-control'
       };
-      (0, _each3.default)({
-        tabindex: 'tabindex',
-        placeholder: 'placeholder'
-      }, function (path, prop) {
-        var attrValue = (0, _get3.default)(_this11.component, path);
-        if (attrValue) {
-          attributes[prop] = attrValue;
-        }
-      });
+
+      if (this.component.placeholder) {
+        attributes.placeholder = this.t(this.component.placeholder);
+      }
+
+      if (this.component.tabindex) {
+        attributes.tabindex = this.component.tabindex;
+      }
+
       return {
         type: 'input',
         component: this.component,
         changeEvent: 'change',
         attr: attributes
       };
+    }
+  }, {
+    key: 'language',
+    set: function set(lang) {
+      var _this11 = this;
+
+      return new _nativePromiseOnly2.default(function (resolve, reject) {
+        _i18next2.default.changeLanguage(lang, function (err) {
+          if (err) {
+            return reject(err);
+          }
+          _this11.redraw();
+          resolve();
+        });
+      });
     }
   }, {
     key: 'className',
@@ -2870,7 +2951,7 @@ var BaseComponent = function () {
   }, {
     key: 'name',
     get: function get() {
-      return this.component.label || this.component.placeholder || this.component.key;
+      return this.t(this.component.label || this.component.placeholder || this.component.key);
     }
 
     /**
@@ -2881,7 +2962,7 @@ var BaseComponent = function () {
   }, {
     key: 'errorLabel',
     get: function get() {
-      return this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key;
+      return this.t(this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key);
     }
   }, {
     key: 'visible',
@@ -3027,7 +3108,7 @@ BaseComponent.libraryReady = function (name) {
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
 
-},{"../../locals/en":45,"../../utils":53,"../Validator":2,"i18next":73,"lodash/clone":247,"lodash/debounce":250,"lodash/defaults":251,"lodash/each":254,"lodash/get":258,"lodash/isArray":263,"native-promise-only":300,"text-mask-all/vanilla":304}],5:[function(require,module,exports){
+},{"../../i18n":45,"../../utils":53,"../Validator":2,"i18next":73,"lodash/assign":243,"lodash/clone":247,"lodash/debounce":250,"lodash/defaults":251,"lodash/each":254,"lodash/get":258,"lodash/isArray":263,"native-promise-only":300,"text-mask-all/vanilla":304}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5036,8 +5117,10 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       var _this5 = this;
 
       var image = void 0;
-      if (this.options.formio) {
-        this.options.formio.downloadFile(fileInfo).then(function (result) {
+
+      var fileService = this.fileService;
+      if (fileService) {
+        fileService.downloadFile(fileInfo).then(function (result) {
           image.src = result.url;
         });
       }
@@ -5180,19 +5263,17 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             message: 'Starting upload'
           };
           var dir = _this8.interpolate(_this8.component.dir || '', { data: _this8.data, row: _this8.row });
-          var formio = null;
-          if (_this8.options.formio) {
-            formio = _this8.options.formio;
-          } else {
+          var fileService = _this8.fileService;
+          if (!fileService) {
             fileUpload.status = 'error';
-            fileUpload.message = 'File Upload URL not provided.';
+            fileUpload.message = 'File Service not provided.';
           }
 
           var uploadStatus = _this8.createUploadStatus(fileUpload);
           _this8.uploadStatusList.appendChild(uploadStatus);
 
-          if (formio) {
-            formio.uploadFile(_this8.component.storage, file, fileName, dir, function (evt) {
+          if (fileService) {
+            fileService.uploadFile(_this8.component.storage, file, fileName, dir, function (evt) {
               fileUpload.status = 'progress';
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
               delete fileUpload.message;
@@ -5219,10 +5300,11 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   }, {
     key: 'getFile',
     value: function getFile(fileInfo, event) {
-      if (!this.options.formio) {
-        return alert('File URL not set');
+      var fileService = this.fileService;
+      if (!fileService) {
+        return alert('File Service not provided');
       }
-      this.options.formio.downloadFile(fileInfo).then(function (file) {
+      fileService.downloadFile(fileInfo).then(function (file) {
         if (file) {
           window.open(file.url, '_blank');
         }
@@ -5232,6 +5314,11 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         alert(response);
       });
       event.preventDefault();
+    }
+  }, {
+    key: 'fileService',
+    get: function get() {
+      return this.options.fileService || this.options.formio;
     }
   }]);
 
@@ -6012,10 +6099,13 @@ function _inherits(subClass, superClass) {
 var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
   _inherits(NumberComponent, _BaseComponent);
 
-  function NumberComponent() {
+  function NumberComponent(component, options, data) {
     _classCallCheck(this, NumberComponent);
 
-    return _possibleConstructorReturn(this, (NumberComponent.__proto__ || Object.getPrototypeOf(NumberComponent)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (NumberComponent.__proto__ || Object.getPrototypeOf(NumberComponent)).call(this, component, options, data));
+
+    _this.validators = _this.validators.concat(['min', 'max']);
+    return _this;
   }
 
   _createClass(NumberComponent, [{
@@ -8218,7 +8308,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
    * @param {Object} options - The options to create a new form instance.
    * @param {boolean} options.readOnly - Set this form to readOnly
    * @param {boolean} options.noAlerts - Set to true to disable the alerts dialog.
-   * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/src/locals/en.js
+   * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
    *
    * @example
@@ -9545,19 +9635,14 @@ var Formio = function () {
         });
       }
 
-      var download = '';
-      download = Formio.baseUrl;
-      if (form.project) {
-        download += '/project/' + form.project;
-      }
-      download += '/form/' + form._id;
-      download += '/submission/' + this.submissionId;
-      download += '/download';
-      if (form.settings && form.settings.pdf) {
-        download += '/' + form.settings.pdf.id;
-      }
+      var apiUrl = '/project/' + form.project;
+      apiUrl += '/form/' + form._id;
+      apiUrl += '/submission/' + this.submissionId;
+      apiUrl += '/download';
+
+      var download = Formio.baseUrl + apiUrl;
       return new Promise(function (resolve, reject) {
-        _this2.getTempToken(3600, 'GET:' + download.replace(Formio.baseUrl, '')).then(function (tempToken) {
+        _this2.getTempToken(3600, 'GET:' + apiUrl).then(function (tempToken) {
           download += '?token=' + tempToken.key;
           resolve(download);
         }, function () {
@@ -10956,6 +11041,8 @@ module.exports = {
         required: '{{field}} is required',
         minLength: '{{field}} must be longer than {{length}} characters.',
         maxLength: '{{field}} must be shorter than {{length}} characters.',
+        min: '{{field}} cannot be less than {{min}}.',
+        max: '{{field}} cannot be greater than {{max}}.',
         invalid_email: '{{field}} must be a valid email.',
         invalid_regex: '{{field}} does not match the pattern {{regex}}.',
         invalid_date: '{{field}} is not a valid date.',

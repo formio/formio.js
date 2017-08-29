@@ -2,6 +2,7 @@ import maskInput from 'text-mask-all/vanilla';
 import Promise from "native-promise-only";
 import _get from 'lodash/get';
 import _each from 'lodash/each';
+import _assign from 'lodash/assign';
 import _debounce from 'lodash/debounce';
 import _isArray from 'lodash/isArray';
 import _clone from 'lodash/clone';
@@ -42,7 +43,25 @@ export class BaseComponent {
     /**
      * The i18n configuration for this component.
      */
-    this.options.i18n = this.options.i18n || require('../../locals/en');
+    let i18n = require('../../i18n');
+    if (options && options.i18n) {
+      // Support legacy way of doing translations.
+      if (options.i18n.resources) {
+        i18n = options.i18n;
+      }
+      else {
+        _each(options.i18n, (lang, code) => {
+          if (!i18n.resources[code]) {
+            i18n.resources[code] = {translation: lang};
+          }
+          else {
+            _assign(i18n.resources[code].translation, lang);
+          }
+        });
+      }
+    }
+
+    this.options.i18n = i18n;
 
     /**
      * The events that are triggered for the whole FormioForm object.
@@ -188,8 +207,27 @@ export class BaseComponent {
    * @param {Object} params - The i18n parameters to use for translation.
    */
   t(text, params) {
-    let message = i18next.t(text, params);
-    return message;
+    params = params || {};
+    params.component = this.component;
+    return i18next.t(text, params);
+  }
+
+  /**
+   * Sets the language for this form.
+   *
+   * @param lang
+   * @return {*}
+   */
+  set language(lang) {
+    return new Promise((resolve, reject) => {
+      i18next.changeLanguage(lang, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        this.redraw();
+        resolve();
+      });
+    });
   }
 
   /**
@@ -526,7 +564,7 @@ export class BaseComponent {
    * @returns {string} - The name of the component.
    */
   get name() {
-    return this.component.label || this.component.placeholder || this.component.key;
+    return this.t(this.component.label || this.component.placeholder || this.component.key);
   }
 
   /**
@@ -534,7 +572,7 @@ export class BaseComponent {
    * @return {*}
    */
   get errorLabel() {
-    return this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key;
+    return this.t(this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key);
   }
 
   /**
@@ -757,6 +795,11 @@ export class BaseComponent {
     } else if ('attachEvent' in obj) {
       obj.attachEvent('on' + evt, func);
     }
+  }
+
+  redraw() {
+    this.clear();
+    this.build();
   }
 
   /**
@@ -1332,15 +1375,15 @@ export class BaseComponent {
       type: this.component.inputType || 'text',
       class: 'form-control'
     };
-    _each({
-      tabindex: 'tabindex',
-      placeholder: 'placeholder'
-    }, (path, prop) => {
-      let attrValue = _get(this.component, path);
-      if (attrValue) {
-        attributes[prop] = attrValue;
-      }
-    });
+
+    if (this.component.placeholder) {
+      attributes.placeholder = this.t(this.component.placeholder);
+    }
+
+    if (this.component.tabindex) {
+      attributes.tabindex = this.component.tabindex;
+    }
+
     return {
       type: 'input',
       component: this.component,

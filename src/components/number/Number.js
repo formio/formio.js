@@ -1,5 +1,10 @@
 import { BaseComponent } from '../base/Base';
 export class NumberComponent extends BaseComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.validators = this.validators.concat(['min', 'max']);
+  }
+
   elementInfo() {
     let info = super.elementInfo();
     info.type = 'input';

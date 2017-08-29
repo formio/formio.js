@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Ability to respond to ajax requests in a plugin.
 
+## 2.15.1
+### Added
+ - Ability to introduce custom file service classes.
+
+### Fixed
+ - The PDF download url logic to return the correct download url.
+
+## 2.15.0
+### Added
+ - Better multi-language support.
+ - Min and Max validation checks for number fields.
+
 ## 2.14.1
 ### Fixed
  - Some minor crashes with the PDF renderings.
