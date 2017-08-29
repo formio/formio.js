@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.15.1
+### Added
+ - Ability to introduce custom file service classes.
+
+### Fixed
+ - The PDF download url logic to return the correct download url.
+
 ## 2.15.0
 ### Added
  - Better multi-language support.
