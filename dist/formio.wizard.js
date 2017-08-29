@@ -9652,12 +9652,15 @@ var Formio = function () {
         options.body = JSON.stringify(data);
       }
 
-      var requestToken = headers.get('x-jwt-token');
-
       // Allow plugins to alter the options.
       options = Formio.pluginAlter('requestOptions', options, url);
 
+      var requestToken = options.headers.get('x-jwt-token');
+
       var requestPromise = fetch(url, options).then(function (response) {
+        // Allow plugins to respond.
+        response = Formio.pluginAlter('requestResponse', response, Formio);
+
         if (!response.ok) {
           if (response.status === 440) {
             Formio.setToken(null);
@@ -29965,7 +29968,7 @@ var isArray = Array.isArray || function (xs) {
 
 },{}],298:[function(require,module,exports){
 /*!
- * Signature Pad v2.2.1
+ * Signature Pad v2.3.0
  * https://github.com/szimek/signature_pad
  *
  * Copyright 2017 Szymon Nowak
@@ -30084,6 +30087,7 @@ function SignaturePad(canvas, options) {
   this.minWidth = opts.minWidth || 0.5;
   this.maxWidth = opts.maxWidth || 2.5;
   this.throttle = 'throttle' in opts ? opts.throttle : 16; // in miliseconds
+  this.minDistance = opts.minDistance || 5;
 
   if (this.throttle) {
     this._strokeMoveUpdate = throttle(SignaturePad.prototype._strokeUpdate, this.throttle);
@@ -30234,21 +30238,27 @@ SignaturePad.prototype._strokeUpdate = function (event) {
   var y = event.clientY;
 
   var point = this._createPoint(x, y);
+  var lastPointGroup = this._data[this._data.length - 1];
+  var lastPoint = lastPointGroup && lastPointGroup[lastPointGroup.length - 1];
+  var isLastPointTooClose = lastPoint && point.distanceTo(lastPoint) < this.minDistance;
 
-  var _addPoint = this._addPoint(point),
-      curve = _addPoint.curve,
-      widths = _addPoint.widths;
+  // Skip this point if it's too close to the previous one
+  if (!(lastPoint && isLastPointTooClose)) {
+    var _addPoint = this._addPoint(point),
+        curve = _addPoint.curve,
+        widths = _addPoint.widths;
 
-  if (curve && widths) {
-    this._drawCurve(curve, widths.start, widths.end);
+    if (curve && widths) {
+      this._drawCurve(curve, widths.start, widths.end);
+    }
+
+    this._data[this._data.length - 1].push({
+      x: point.x,
+      y: point.y,
+      time: point.time,
+      color: this.penColor
+    });
   }
-
-  this._data[this._data.length - 1].push({
-    x: point.x,
-    y: point.y,
-    time: point.time,
-    color: this.penColor
-  });
 };
 
 SignaturePad.prototype._strokeEnd = function (event) {
