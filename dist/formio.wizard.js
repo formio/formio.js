@@ -5117,8 +5117,10 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       var _this5 = this;
 
       var image = void 0;
-      if (this.options.formio) {
-        this.options.formio.downloadFile(fileInfo).then(function (result) {
+
+      var fileService = this.fileService;
+      if (fileService) {
+        fileService.downloadFile(fileInfo).then(function (result) {
           image.src = result.url;
         });
       }
@@ -5261,19 +5263,17 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             message: 'Starting upload'
           };
           var dir = _this8.interpolate(_this8.component.dir || '', { data: _this8.data, row: _this8.row });
-          var formio = null;
-          if (_this8.options.formio) {
-            formio = _this8.options.formio;
-          } else {
+          var fileService = _this8.fileService;
+          if (!fileService) {
             fileUpload.status = 'error';
-            fileUpload.message = 'File Upload URL not provided.';
+            fileUpload.message = 'File Service not provided.';
           }
 
           var uploadStatus = _this8.createUploadStatus(fileUpload);
           _this8.uploadStatusList.appendChild(uploadStatus);
 
-          if (formio) {
-            formio.uploadFile(_this8.component.storage, file, fileName, dir, function (evt) {
+          if (fileService) {
+            fileService.uploadFile(_this8.component.storage, file, fileName, dir, function (evt) {
               fileUpload.status = 'progress';
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
               delete fileUpload.message;
@@ -5300,10 +5300,11 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   }, {
     key: 'getFile',
     value: function getFile(fileInfo, event) {
-      if (!this.options.formio) {
-        return alert('File URL not set');
+      var fileService = this.fileService;
+      if (!fileService) {
+        return alert('File Service not provided');
       }
-      this.options.formio.downloadFile(fileInfo).then(function (file) {
+      fileService.downloadFile(fileInfo).then(function (file) {
         if (file) {
           window.open(file.url, '_blank');
         }
@@ -5313,6 +5314,11 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         alert(response);
       });
       event.preventDefault();
+    }
+  }, {
+    key: 'fileService',
+    get: function get() {
+      return this.options.fileService || this.options.formio;
     }
   }]);
 
