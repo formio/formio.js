@@ -782,7 +782,7 @@ export class Formio {
         this.token = localStorage.getItem('formioToken') || '';
       }
       else {
-        cookies.get('formioToken');
+        this.token = cookies.get('formioToken');
       }
       return this.token;
     }
