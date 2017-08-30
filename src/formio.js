@@ -7,6 +7,7 @@ var Promise = require("native-promise-only");
 require('whatwg-fetch');
 var EventEmitter = require('eventemitter2').EventEmitter2;
 var copy = require('shallow-copy');
+var cookies = require('browser-cookies');
 
 /**
  * The Formio interface class.
@@ -748,7 +749,12 @@ export class Formio {
       Formio.setUser(null);
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem('formioToken');
+        if (typeof(Storage) !== "undefined") {
+          return localStorage.removeItem('formioToken');
+        }
+        else {
+          return cookies.erase('formioToken');
+        }
       }
       catch(err) {
         return;
@@ -756,7 +762,12 @@ export class Formio {
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem('formioToken', token);
+      if (typeof(Storage) !== "undefined") {
+        localStorage.setItem('formioToken', token);
+      }
+      else {
+        cookies.set('formioToken', token);
+      }
     }
     catch(err) {
       // Do nothing.
@@ -767,9 +778,13 @@ export class Formio {
   static getToken() {
     if (this.token) { return this.token; }
     try {
-      var token = localStorage.getItem('formioToken') || '';
-      this.token = token;
-      return token;
+      if (typeof(Storage) !== "undefined") {
+        this.token = localStorage.getItem('formioToken') || '';
+      }
+      else {
+        cookies.get('formioToken');
+      }
+      return this.token;
     }
     catch (e) {
       return '';
@@ -781,7 +796,12 @@ export class Formio {
       this.setToken(null);
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem('formioUser');
+        if (typeof(Storage) !== "undefined") {
+          return localStorage.removeItem('formioUser');
+        }
+        else {
+          return cookies.erase('formioUser');
+        }
       }
       catch(err) {
         return;
@@ -789,7 +809,12 @@ export class Formio {
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem('formioUser', JSON.stringify(user));
+      if (typeof(Storage) !== "undefined") {
+        localStorage.setItem('formioUser', JSON.stringify(user));
+      }
+      else {
+        cookies.set('formioUser', JSON.stringify(user));
+      }
     }
     catch(err) {
       // Do nothing.
@@ -798,7 +823,12 @@ export class Formio {
 
   static getUser() {
     try {
-      return JSON.parse(localStorage.getItem('formioUser') || null);
+      if (typeof(Storage) !== "undefined") {
+        return JSON.parse(localStorage.getItem('formioUser') || null);
+      }
+      else {
+        return JSON.parse(cookies.get('formioUser'));
+      }
     }
     catch (e) {
       return;
