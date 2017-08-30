@@ -340,7 +340,7 @@ export class BaseComponent {
 
     // Set default values.
     let defaultValue = this.defaultValue;
-    if (defaultValue) {
+    if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
       this.setValue(defaultValue);
     }
   }
