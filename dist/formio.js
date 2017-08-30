@@ -38,6 +38,7 @@ var Promise = require("native-promise-only");
 require('whatwg-fetch');
 var EventEmitter = require('eventemitter2').EventEmitter2;
 var copy = require('shallow-copy');
+var cookies = require('browser-cookies');
 
 /**
  * The Formio interface class.
@@ -797,14 +798,22 @@ var Formio = function () {
         Formio.setUser(null);
         // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
         try {
-          return localStorage.removeItem('formioToken');
+          if (typeof Storage !== "undefined") {
+            return localStorage.removeItem('formioToken');
+          } else {
+            return cookies.erase('formioToken');
+          }
         } catch (err) {
           return;
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        localStorage.setItem('formioToken', token);
+        if (typeof Storage !== "undefined") {
+          localStorage.setItem('formioToken', token);
+        } else {
+          cookies.set('formioToken', token);
+        }
       } catch (err) {
         // Do nothing.
       }
@@ -817,9 +826,12 @@ var Formio = function () {
         return this.token;
       }
       try {
-        var token = localStorage.getItem('formioToken') || '';
-        this.token = token;
-        return token;
+        if (typeof Storage !== "undefined") {
+          this.token = localStorage.getItem('formioToken') || '';
+        } else {
+          this.token = cookies.get('formioToken');
+        }
+        return this.token;
       } catch (e) {
         return '';
       }
@@ -831,14 +843,22 @@ var Formio = function () {
         this.setToken(null);
         // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
         try {
-          return localStorage.removeItem('formioUser');
+          if (typeof Storage !== "undefined") {
+            return localStorage.removeItem('formioUser');
+          } else {
+            return cookies.erase('formioUser');
+          }
         } catch (err) {
           return;
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        localStorage.setItem('formioUser', JSON.stringify(user));
+        if (typeof Storage !== "undefined") {
+          localStorage.setItem('formioUser', JSON.stringify(user));
+        } else {
+          cookies.set('formioUser', JSON.stringify(user));
+        }
       } catch (err) {
         // Do nothing.
       }
@@ -847,7 +867,11 @@ var Formio = function () {
     key: 'getUser',
     value: function getUser() {
       try {
-        return JSON.parse(localStorage.getItem('formioUser') || null);
+        if (typeof Storage !== "undefined") {
+          return JSON.parse(localStorage.getItem('formioUser') || null);
+        } else {
+          return JSON.parse(cookies.get('formioUser'));
+        }
       } catch (e) {
         return;
       }
@@ -1177,7 +1201,7 @@ Formio.events = new EventEmitter({
 module.exports = global.Formio = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./providers":2,"eventemitter2":8,"native-promise-only":9,"shallow-copy":10,"whatwg-fetch":11}],2:[function(require,module,exports){
+},{"./providers":2,"browser-cookies":8,"eventemitter2":9,"native-promise-only":10,"shallow-copy":11,"whatwg-fetch":12}],2:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1227,7 +1251,7 @@ var base64 = function base64() {
 base64.title = 'Base64';
 module.exports = base64;
 
-},{"native-promise-only":9}],4:[function(require,module,exports){
+},{"native-promise-only":10}],4:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -1299,7 +1323,7 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 module.exports = dropbox;
 
-},{"native-promise-only":9}],5:[function(require,module,exports){
+},{"native-promise-only":10}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1424,7 +1448,7 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 module.exports = s3;
 
-},{"native-promise-only":9}],7:[function(require,module,exports){
+},{"native-promise-only":10}],7:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -1503,7 +1527,102 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"native-promise-only":9}],8:[function(require,module,exports){
+},{"native-promise-only":10}],8:[function(require,module,exports){
+exports.defaults = {};
+
+exports.set = function(name, value, options) {
+  // Retrieve options and defaults
+  var opts = options || {};
+  var defaults = exports.defaults;
+
+  // Apply default value for unspecified options
+  var expires  = opts.expires  || defaults.expires;
+  var domain   = opts.domain   || defaults.domain;
+  var path     = opts.path     !== undefined ? opts.path     : (defaults.path !== undefined ? defaults.path : '/');
+  var secure   = opts.secure   !== undefined ? opts.secure   : defaults.secure;
+  var httponly = opts.httponly !== undefined ? opts.httponly : defaults.httponly;
+
+  // Determine cookie expiration date
+  // If succesful the result will be a valid Date, otherwise it will be an invalid Date or false(ish)
+  var expDate = expires ? new Date(
+      // in case expires is an integer, it should specify the number of days till the cookie expires
+      typeof expires === 'number' ? new Date().getTime() + (expires * 864e5) :
+      // else expires should be either a Date object or in a format recognized by Date.parse()
+      expires
+  ) : '';
+
+  // Set cookie
+  document.cookie = name.replace(/[^+#$&^`|]/g, encodeURIComponent)                // Encode cookie name
+  .replace('(', '%28')
+  .replace(')', '%29') +
+  '=' + value.replace(/[^+#$&/:<-\[\]-}]/g, encodeURIComponent) +                  // Encode cookie value (RFC6265)
+  (expDate && expDate.getTime() >= 0 ? ';expires=' + expDate.toUTCString() : '') + // Add expiration date
+  (domain   ? ';domain=' + domain : '') +                                          // Add domain
+  (path     ? ';path='   + path   : '') +                                          // Add path
+  (secure   ? ';secure'           : '') +                                          // Add secure option
+  (httponly ? ';httponly'         : '');                                           // Add httponly option
+};
+
+exports.get = function(name) {
+  var cookies = document.cookie.split(';');
+
+  // Iterate all cookies
+  for(var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    var cookieLength = cookie.length;
+
+    // Determine separator index ("name=value")
+    var separatorIndex = cookie.indexOf('=');
+
+    // IE<11 emits the equal sign when the cookie value is empty
+    separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
+
+    var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
+
+    // Return cookie value if the name matches
+    if (cookie_name === name) {
+      return decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
+    }
+  }
+
+  // Return `null` as the cookie was not found
+  return null;
+};
+
+exports.erase = function(name, options) {
+  exports.set(name, '', {
+    expires:  -1,
+    domain:   options && options.domain,
+    path:     options && options.path,
+    secure:   0,
+    httponly: 0}
+  );
+};
+
+exports.all = function() {
+  var all = {};
+  var cookies = document.cookie.split(';');
+
+  // Iterate all cookies
+  for(var i = 0; i < cookies.length; i++) {
+	  var cookie = cookies[i];
+    var cookieLength = cookie.length;
+
+	  // Determine separator index ("name=value")
+	  var separatorIndex = cookie.indexOf('=');
+
+	  // IE<11 emits the equal sign when the cookie value is empty
+	  separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
+
+    // add the cookie name and value to the `all` object
+	  var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
+	  all[cookie_name] = decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
+	}
+
+  return all;
+};
+
+},{}],9:[function(require,module,exports){
 /*!
  * EventEmitter2
  * https://github.com/hij1nx/EventEmitter2
@@ -2227,7 +2346,7 @@ module.exports = url;
   }
 }();
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (global){
 /*! Native Promise Only
     v0.8.1 (c) Kyle Simpson
@@ -2604,7 +2723,7 @@ module.exports = url;
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = function (obj) {
     if (!obj || typeof obj !== 'object') return obj;
     
@@ -2641,7 +2760,7 @@ var isArray = Array.isArray || function (xs) {
     return {}.toString.call(xs) === '[object Array]';
 };
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 (function(self) {
   'use strict';
 
