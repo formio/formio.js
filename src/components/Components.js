@@ -250,6 +250,11 @@ export class FormioComponents extends BaseComponent {
     return Promise.all(ops);
   }
 
+  onResize(scale) {
+    super.onResize(scale);
+    _each(this.getComponents(), (comp) => comp.onResize(scale));
+  }
+
   calculateValue(data) {
     super.calculateValue(data);
     _each(this.getComponents(), (comp) => comp.calculateValue(data));

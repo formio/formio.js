@@ -975,6 +975,8 @@ export class BaseComponent {
     return show;
   }
 
+  onResize(scale) {}
+
   set visible(visible) {
     this.show(visible);
   }
