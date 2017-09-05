@@ -6774,9 +6774,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     if (_this.component.refreshOn) {
       _this.on('change', function (event) {
         if (_this.component.refreshOn === 'data') {
-          _this.updateItems();
+          _this.refreshItems();
         } else if (event.changed.component.key === _this.component.refreshOn) {
-          _this.updateItems();
+          _this.refreshItems();
         }
       });
     }
@@ -6784,6 +6784,14 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }
 
   _createClass(SelectComponent, [{
+    key: 'refreshItems',
+    value: function refreshItems() {
+      this.updateItems();
+      if (this.component.clearOnRefresh) {
+        this.setValue(null);
+      }
+    }
+  }, {
     key: 'elementInfo',
     value: function elementInfo() {
       var info = _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'elementInfo', this).call(this);
@@ -6947,8 +6955,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     value: function setValue(value, flags) {
       flags = this.getFlags.apply(this, arguments);
       this.value = value;
-      if (value && this.choices) {
-        if (this.choices.store) {
+      if (this.choices) {
+        if (value && this.choices.store) {
           // Search for the choice.
           var choices = this.choices.store.getChoices();
           var foundChoice = choices.find(function (choice) {
@@ -6968,7 +6976,11 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         }
 
         // Now set the value.
-        this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
+        if (value) {
+          this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
+        } else {
+          this.choices.removeActiveItems();
+        }
       }
       this.updateValue(flags);
     }
