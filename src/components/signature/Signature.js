@@ -3,6 +3,8 @@ import { BaseComponent } from '../base/Base';
 export class SignatureComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
+    this.scale = 1;
+    this.currentWidth = 0;
     if (!this.component.width) {
       this.component.width = '100%';
     }
@@ -34,6 +36,11 @@ export class SignatureComponent extends BaseComponent {
     return image;
   }
 
+  onResize(scale) {
+    this.scale = scale;
+    this.checkSize(true);
+  }
+
   set disabled(disabled) {
     super.disabled = disabled;
     if (this.signaturePad) {
@@ -54,6 +61,20 @@ export class SignatureComponent extends BaseComponent {
     }
   }
 
+  checkSize(force) {
+    if (force || (this.padBody.offsetWidth !== this.currentWidth)) {
+      this.currentWidth = this.padBody.offsetWidth;
+      this.canvas.width = this.currentWidth * this.scale;
+      this.canvas.height = this.padBody.offsetHeight * this.scale;
+      let ctx = this.canvas.getContext("2d");
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale((1 / this.scale), (1 / this.scale));
+      ctx.fillStyle = this.signaturePad.backgroundColor;
+      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.signaturePad.clear();
+    }
+  }
+
   build() {
     this.element = this.createElement();
     let classNames = this.element.getAttribute('class');
@@ -61,7 +82,7 @@ export class SignatureComponent extends BaseComponent {
     this.element.setAttribute('class', classNames);
 
     this.input = this.createInput(this.element);
-    let padBody = this.ce('div', {
+    this.padBody = this.ce('div', {
       class: 'signature-pad-body',
       style: ('width: ' + this.component.width + ';height: ' + this.component.height)
     });
@@ -72,15 +93,15 @@ export class SignatureComponent extends BaseComponent {
     });
     let refreshIcon = this.getIcon('refresh');
     this.refresh.appendChild(refreshIcon);
-    padBody.appendChild(this.refresh);
+    this.padBody.appendChild(this.refresh);
 
     // The signature canvas.
-    let canvas = this.ce('canvas', {
+    this.canvas = this.ce('canvas', {
       class: 'signature-pad-canvas',
       height: this.component.height
     });
-    padBody.appendChild(canvas);
-    this.element.appendChild(padBody);
+    this.padBody.appendChild(this.canvas);
+    this.element.appendChild(this.padBody);
 
     // Add the footer.
     if (this.component.footer) {
@@ -92,7 +113,7 @@ export class SignatureComponent extends BaseComponent {
     }
 
     // Create the signature pad.
-    this.signaturePad = new SignaturePad(canvas, {
+    this.signaturePad = new SignaturePad(this.canvas, {
       minWidth: this.component.minWidth,
       maxWidth: this.component.maxWidth,
       penColor: this.component.penColor,
@@ -107,15 +128,8 @@ export class SignatureComponent extends BaseComponent {
     });
 
     // Ensure the signature is always the size of its container.
-    let currentWidth = 0;
     setTimeout(function checkWidth() {
-      if (padBody.offsetWidth !== currentWidth) {
-        currentWidth = padBody.offsetWidth;
-        canvas.width = currentWidth;
-        let ctx = canvas.getContext("2d");
-        ctx.fillStyle = this.signaturePad.backgroundColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+      this.checkSize();
       setTimeout(checkWidth.bind(this), 200);
     }.bind(this), 200);
 

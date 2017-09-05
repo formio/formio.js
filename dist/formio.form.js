@@ -382,6 +382,14 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       return _nativePromiseOnly2.default.all(ops);
     }
   }, {
+    key: 'onResize',
+    value: function onResize(scale) {
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'onResize', this).call(this, scale);
+      (0, _each3.default)(this.getComponents(), function (comp) {
+        return comp.onResize(scale);
+      });
+    }
+  }, {
     key: 'calculateValue',
     value: function calculateValue(data) {
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'calculateValue', this).call(this, data);
@@ -2447,6 +2455,9 @@ var BaseComponent = function () {
       }
       return _show;
     }
+  }, {
+    key: 'onResize',
+    value: function onResize(scale) {}
   }, {
     key: 'onChange',
     value: function onChange(flags) {
@@ -7276,6 +7287,8 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
 
     var _this = _possibleConstructorReturn(this, (SignatureComponent.__proto__ || Object.getPrototypeOf(SignatureComponent)).call(this, component, options, data));
 
+    _this.scale = 1;
+    _this.currentWidth = 0;
     if (!_this.component.width) {
       _this.component.width = '100%';
     }
@@ -7312,11 +7325,32 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       return image;
     }
   }, {
+    key: 'onResize',
+    value: function onResize(scale) {
+      this.scale = scale;
+      this.checkSize(true);
+    }
+  }, {
     key: 'destroy',
     value: function destroy() {
       _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'destroy', this).call(this);
       if (this.signaturePad) {
         this.signaturePad.off();
+      }
+    }
+  }, {
+    key: 'checkSize',
+    value: function checkSize(force) {
+      if (force || this.padBody.offsetWidth !== this.currentWidth) {
+        this.currentWidth = this.padBody.offsetWidth;
+        this.canvas.width = this.currentWidth * this.scale;
+        this.canvas.height = this.padBody.offsetHeight * this.scale;
+        var ctx = this.canvas.getContext("2d");
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(1 / this.scale, 1 / this.scale);
+        ctx.fillStyle = this.signaturePad.backgroundColor;
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.signaturePad.clear();
       }
     }
   }, {
@@ -7330,7 +7364,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       this.element.setAttribute('class', classNames);
 
       this.input = this.createInput(this.element);
-      var padBody = this.ce('div', {
+      this.padBody = this.ce('div', {
         class: 'signature-pad-body',
         style: 'width: ' + this.component.width + ';height: ' + this.component.height
       });
@@ -7341,15 +7375,15 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       });
       var refreshIcon = this.getIcon('refresh');
       this.refresh.appendChild(refreshIcon);
-      padBody.appendChild(this.refresh);
+      this.padBody.appendChild(this.refresh);
 
       // The signature canvas.
-      var canvas = this.ce('canvas', {
+      this.canvas = this.ce('canvas', {
         class: 'signature-pad-canvas',
         height: this.component.height
       });
-      padBody.appendChild(canvas);
-      this.element.appendChild(padBody);
+      this.padBody.appendChild(this.canvas);
+      this.element.appendChild(this.padBody);
 
       // Add the footer.
       if (this.component.footer) {
@@ -7361,7 +7395,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       }
 
       // Create the signature pad.
-      this.signaturePad = new _signature_pad2.default(canvas, {
+      this.signaturePad = new _signature_pad2.default(this.canvas, {
         minWidth: this.component.minWidth,
         maxWidth: this.component.maxWidth,
         penColor: this.component.penColor,
@@ -7378,15 +7412,8 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       };
 
       // Ensure the signature is always the size of its container.
-      var currentWidth = 0;
       setTimeout(function checkWidth() {
-        if (padBody.offsetWidth !== currentWidth) {
-          currentWidth = padBody.offsetWidth;
-          canvas.width = currentWidth;
-          var ctx = canvas.getContext("2d");
-          ctx.fillStyle = this.signaturePad.backgroundColor;
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
+        this.checkSize();
         setTimeout(checkWidth.bind(this), 200);
       }.bind(this), 200);
 
