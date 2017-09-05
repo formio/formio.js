@@ -1657,6 +1657,7 @@ var BaseComponent = function () {
     value: function t(text, params) {
       params = params || {};
       params.component = this.component;
+      params.nsSeparator = '::';
       return _i18next2.default.t(text, params);
     }
 
