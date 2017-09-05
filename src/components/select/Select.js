@@ -13,12 +13,19 @@ export class SelectComponent extends BaseComponent {
     if (this.component.refreshOn) {
       this.on('change', (event) => {
         if (this.component.refreshOn === 'data') {
-          this.updateItems();
+          this.refreshItems();
         }
         else if (event.changed.component.key === this.component.refreshOn) {
-          this.updateItems();
+          this.refreshItems();
         }
       });
+    }
+  }
+
+  refreshItems() {
+    this.updateItems();
+    if (this.component.clearOnRefresh) {
+      this.setValue(null);
     }
   }
 
@@ -187,8 +194,8 @@ export class SelectComponent extends BaseComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     this.value = value;
-    if (value && this.choices) {
-      if (this.choices.store) {
+    if (this.choices) {
+      if (value && this.choices.store) {
         // Search for the choice.
         const choices = this.choices.store.getChoices();
         const foundChoice = choices.find((choice) => {
@@ -208,7 +215,12 @@ export class SelectComponent extends BaseComponent {
       }
 
       // Now set the value.
-      this.choices.setValueByChoice(_isArray(value) ? value : [value]);
+      if (value) {
+        this.choices.setValueByChoice(_isArray(value) ? value : [value]);
+      }
+      else {
+        this.choices.removeActiveItems();
+      }
     }
     this.updateValue(flags);
   }
