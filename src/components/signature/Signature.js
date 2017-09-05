@@ -37,6 +37,7 @@ export class SignatureComponent extends BaseComponent {
   }
 
   onResize(scale) {
+    this.scale = scale;
     this.checkSize(true);
   }
 
@@ -62,13 +63,14 @@ export class SignatureComponent extends BaseComponent {
 
   checkSize(force) {
     if (force || (this.padBody.offsetWidth !== this.currentWidth)) {
-      this.canvas.width = this.currentWidth = this.padBody.offsetWidth;
-      this.canvas.height = this.padBody.offsetHeight;
+      this.currentWidth = this.padBody.offsetWidth;
+      this.canvas.width = this.currentWidth * this.scale;
+      this.canvas.height = this.padBody.offsetHeight * this.scale;
       let ctx = this.canvas.getContext("2d");
-      ctx.scale(this.scale, this.scale);
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale((1 / this.scale), (1 / this.scale));
       ctx.fillStyle = this.signaturePad.backgroundColor;
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
       this.signaturePad.clear();
     }
   }
