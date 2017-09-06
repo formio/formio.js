@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Set lang attribute on all input elements based on current language. This helps with number localization.
 
+### Fixed
+ - Colon in field name.
+
 ## 2.16.0
 ### Added
  - Cookie fallback for storing tokens and user values.

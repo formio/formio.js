@@ -209,6 +209,7 @@ export class BaseComponent {
   t(text, params) {
     params = params || {};
     params.component = this.component;
+    params.nsSeparator = '::';
     return i18next.t(text, params);
   }
 
@@ -974,6 +975,8 @@ export class BaseComponent {
     }
     return show;
   }
+
+  onResize(scale) {}
 
   set visible(visible) {
     this.show(visible);
