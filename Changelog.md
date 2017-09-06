@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+ - Set lang attribute on all input elements based on current language. This helps with number localization.
 
 ## 2.16.0
 ### Added
