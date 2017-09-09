@@ -33,6 +33,9 @@ export class SelectComponent extends BaseComponent {
     let info = super.elementInfo();
     info.type = 'select';
     info.changeEvent = 'change';
+    if (info.attr.placeholder) {
+      delete info.attr.placeholder;
+    }
     return info;
   }
 
@@ -154,10 +157,7 @@ export class SelectComponent extends BaseComponent {
     if (this.component.multiple) {
       input.setAttribute('multiple', true);
     }
-    var self = this;
     this.choices = new Choices(input, {
-      placeholder: !!this.component.placeholder,
-      placeholderValue: this.component.placeholder,
       removeItemButton: true,
       itemSelectText: '',
       classNames: {
@@ -165,6 +165,31 @@ export class SelectComponent extends BaseComponent {
         containerInner: 'form-control'
       }
     });
+
+    // Create a pseudo-placeholder.
+    if (
+      this.component.placeholder &&
+      !this.choices.placeholderElement
+    ) {
+      this.placeholder = this.ce('span', {
+        class: 'formio-placeholder'
+      }, [
+        this.text(this.component.placeholder)
+      ]);
+
+      // Prepend the placeholder.
+      this.choices.containerInner.insertBefore(this.placeholder, this.choices.containerInner.firstChild);
+      input.addEventListener('addItem', () => {
+        this.placeholder.style.visibility = 'hidden';
+      }, false);
+      input.addEventListener('removeItem', () => {
+        let value = this.getValue();
+        if (!value || !value.length) {
+          this.placeholder.style.visibility = 'visible';
+        }
+      }, false);
+    }
+
     if (this.disabled) {
       this.choices.disable();
     }
@@ -216,7 +241,7 @@ export class SelectComponent extends BaseComponent {
 
       // Now set the value.
       if (value) {
-        this.choices.setValueByChoice(_isArray(value) ? value : [value]);
+        setTimeout(() => this.choices.setValueByChoice(_isArray(value) ? value : [value]), 10);
       }
       else {
         this.choices.removeActiveItems();
