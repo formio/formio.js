@@ -1376,8 +1376,9 @@ export class BaseComponent {
     let attributes = {
       name: this.options.name,
       type: this.component.inputType || 'text',
-      class: 'form-control'
-    };
+      class: 'form-control',
+      lang: i18next.language
+  };
 
     if (this.component.placeholder) {
       attributes.placeholder = this.t(this.component.placeholder);
