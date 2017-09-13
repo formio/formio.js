@@ -2857,7 +2857,8 @@ var BaseComponent = function () {
       var attributes = {
         name: this.options.name,
         type: this.component.inputType || 'text',
-        class: 'form-control'
+        class: 'form-control',
+        lang: _i18next2.default.language
       };
 
       if (this.component.placeholder) {
