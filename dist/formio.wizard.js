@@ -6809,6 +6809,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       var info = _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'select';
       info.changeEvent = 'change';
+      if (info.attr.placeholder) {
+        delete info.attr.placeholder;
+      }
       return info;
     }
   }, {
@@ -6934,14 +6937,13 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'addInput',
     value: function addInput(input, container) {
+      var _this4 = this;
+
       _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'addInput', this).call(this, input, container, true);
       if (this.component.multiple) {
         input.setAttribute('multiple', true);
       }
-      var self = this;
       this.choices = new _choices2.default(input, {
-        placeholder: !!this.component.placeholder,
-        placeholderValue: this.component.placeholder,
         removeItemButton: true,
         itemSelectText: '',
         classNames: {
@@ -6949,6 +6951,26 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           containerInner: 'form-control'
         }
       });
+
+      // Create a pseudo-placeholder.
+      if (this.component.placeholder && !this.choices.placeholderElement) {
+        this.placeholder = this.ce('span', {
+          class: 'formio-placeholder'
+        }, [this.text(this.component.placeholder)]);
+
+        // Prepend the placeholder.
+        this.choices.containerInner.insertBefore(this.placeholder, this.choices.containerInner.firstChild);
+        input.addEventListener('addItem', function () {
+          _this4.placeholder.style.visibility = 'hidden';
+        }, false);
+        input.addEventListener('removeItem', function () {
+          var value = _this4.getValue();
+          if (!value || !value.length) {
+            _this4.placeholder.style.visibility = 'visible';
+          }
+        }, false);
+      }
+
       if (this.disabled) {
         this.choices.disable();
       }
@@ -6965,6 +6987,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'setValue',
     value: function setValue(value, flags) {
+      var _this5 = this;
+
       flags = this.getFlags.apply(this, arguments);
       this.value = value;
       if (this.choices) {
@@ -6989,7 +7013,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
         // Now set the value.
         if (value) {
-          this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
+          setTimeout(function () {
+            return _this5.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
+          }, 10);
         } else {
           this.choices.removeActiveItems();
         }
