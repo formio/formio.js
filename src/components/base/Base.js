@@ -601,7 +601,7 @@ export class BaseComponent {
   }
 
   /**
-   * Create the HTML element for the label of this comonent.
+   * Create the HTML element for the label of this component.
    * @param {HTMLElement} container - The containing element that will comtain this label.
    */
   createLabel(container) {
@@ -619,7 +619,23 @@ export class BaseComponent {
       this.labelElement.setAttribute('for', this.info.attr.id);
     }
     this.labelElement.appendChild(this.text(this.component.label));
+    createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
+  }
+
+  /**
+   * Create the HTML element for the tooltip of this component.
+   * @param {HTMLElement} container - The containing element that will comtain this tooltip.
+   */
+  createTooltip(container) {
+    if (!this.component.tooltip) {
+      return;
+    }
+    this.tooltip = this.ce('i', {
+      class: 'glyphicon glyphicon-question-sign text-muted'
+    });
+    container.appendChild(this.text(' '));
+    container.appendChild(this.tooltip);
   }
 
   /**
