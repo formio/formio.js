@@ -11538,7 +11538,7 @@ var FormioUtils = {
         return null;
       }
 
-      if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && !(data instanceof Array)) {
+      if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && !(data instanceof Array) && data !== null) {
         if (data.hasOwnProperty(key)) {
           return data[key];
         }
