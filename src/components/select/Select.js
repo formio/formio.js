@@ -137,15 +137,23 @@ export class SelectComponent extends BaseComponent {
         }
         break;
       case 'resource':
+        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : Formio.getProjectUrl() + '/form';
+        resourceUrl += ('/' + this.component.data.resource + '/submission');
+
         try {
-          this.loadItems(Formio.getProjectUrl() + '/form/' + this.component.data.resource + '/submission');
+          this.loadItems(resourceUrl);
         }
         catch (err) {
           console.warn('Unable to load resources for ' + this.component.key);
         }
         break;
       case 'url':
-        this.loadItems(this.component.data.url, null, new Headers(), {
+        let url = this.component.data.url;
+        if (url.substr(0, 1) === '/') {
+          url = Formio.getBaseUrl() + this.component.data.url;
+        }
+
+        this.loadItems(url, null, new Headers(), {
           noToken: true
         });
         break;
