@@ -1658,6 +1658,9 @@ var BaseComponent = function () {
       params = params || {};
       params.component = this.component;
       params.nsSeparator = '::';
+      params.keySeparator = '.|.';
+      params.pluralSeparator = '._.';
+      params.contextSeparator = '._.';
       return _i18next2.default.t(text, params);
     }
 
@@ -6922,14 +6925,22 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           }
           break;
         case 'resource':
+          var resourceUrl = this.options.formio ? this.options.formio.formsUrl : _formio2.default.getProjectUrl() + '/form';
+          resourceUrl += '/' + this.component.data.resource + '/submission';
+
           try {
-            this.loadItems(_formio2.default.getProjectUrl() + '/form/' + this.component.data.resource + '/submission');
+            this.loadItems(resourceUrl);
           } catch (err) {
             console.warn('Unable to load resources for ' + this.component.key);
           }
           break;
         case 'url':
-          this.loadItems(this.component.data.url, null, new Headers(), {
+          var url = this.component.data.url;
+          if (url.substr(0, 1) === '/') {
+            url = _formio2.default.getBaseUrl() + this.component.data.url;
+          }
+
+          this.loadItems(url, null, new Headers(), {
             noToken: true
           });
           break;
