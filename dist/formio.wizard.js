@@ -1658,6 +1658,9 @@ var BaseComponent = function () {
       params = params || {};
       params.component = this.component;
       params.nsSeparator = '::';
+      params.keySeparator = '.|.';
+      params.pluralSeparator = '._.';
+      params.contextSeparator = '._.';
       return _i18next2.default.t(text, params);
     }
 
@@ -2857,7 +2860,8 @@ var BaseComponent = function () {
       var attributes = {
         name: this.options.name,
         type: this.component.inputType || 'text',
-        class: 'form-control'
+        class: 'form-control',
+        lang: _i18next2.default.language
       };
 
       if (this.component.placeholder) {
@@ -11545,7 +11549,7 @@ var FormioUtils = {
         return null;
       }
 
-      if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && !(data instanceof Array)) {
+      if ((typeof data === 'undefined' ? 'undefined' : _typeof(data)) === 'object' && !(data instanceof Array) && data !== null) {
         if (data.hasOwnProperty(key)) {
           return data[key];
         }

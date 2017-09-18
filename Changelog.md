@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## 2.17.1
+### Fixed
+ - Don't try to access properties of null in getValue.
+
+## 2.17.0
+### Added
+ - Set lang attribute on all input elements based on current language. This helps with number localization.
+ - Added better placeholder support for select dropdowns.
+
+## 2.16.1
 ### Fixed
  - Colon in field name.
 

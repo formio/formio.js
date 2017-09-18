@@ -210,6 +210,9 @@ export class BaseComponent {
     params = params || {};
     params.component = this.component;
     params.nsSeparator = '::';
+    params.keySeparator = '.|.';
+    params.pluralSeparator = '._.';
+    params.contextSeparator = '._.';
     return i18next.t(text, params);
   }
 
@@ -1376,8 +1379,9 @@ export class BaseComponent {
     let attributes = {
       name: this.options.name,
       type: this.component.inputType || 'text',
-      class: 'form-control'
-    };
+      class: 'form-control',
+      lang: i18next.language
+  };
 
     if (this.component.placeholder) {
       attributes.placeholder = this.t(this.component.placeholder);

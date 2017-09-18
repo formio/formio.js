@@ -384,7 +384,7 @@ const FormioUtils = {
         return null;
       }
 
-      if (typeof data === 'object' && !(data instanceof Array)) {
+      if (typeof data === 'object' && !(data instanceof Array) && data !== null) {
         if (data.hasOwnProperty(key)) {
           return data[key];
         }
