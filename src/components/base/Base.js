@@ -763,7 +763,7 @@ export class BaseComponent {
       }
     });
     _each(this.eventHandlers, (handler) => {
-      window.removeEventListener(handler.event, handler.func);
+      window.removeEventListener(handler.type, handler.func);
     });
   }
 
