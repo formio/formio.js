@@ -109,6 +109,7 @@ export class SignatureComponent extends BaseComponent {
         class: 'signature-pad-footer'
       });
       footer.appendChild(this.text(this.component.footer));
+      this.createTooltip(footer);
       this.element.appendChild(footer);
     }
 

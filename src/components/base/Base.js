@@ -10,6 +10,7 @@ import _defaults from 'lodash/defaults';
 import i18next from 'i18next';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
+import Tooltip from 'tooltip.js';
 
 i18next.initialized = false;
 
@@ -604,8 +605,8 @@ export class BaseComponent {
   }
 
   /**
-   * Create the HTML element for the label of this comonent.
-   * @param {HTMLElement} container - The containing element that will comtain this label.
+   * Create the HTML element for the label of this component.
+   * @param {HTMLElement} container - The containing element that will contain this label.
    */
   createLabel(container) {
     if (!this.component.label || this.options.inputsOnly) {
@@ -622,7 +623,31 @@ export class BaseComponent {
       this.labelElement.setAttribute('for', this.info.attr.id);
     }
     this.labelElement.appendChild(this.text(this.component.label));
+    this.createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
+  }
+
+  /**
+   * Create the HTML element for the tooltip of this component.
+   * @param {HTMLElement} container - The containing element that will contain this tooltip.
+   */
+  createTooltip(container) {
+    if (!this.component.tooltip) {
+      return;
+    }
+    this.tooltip = this.ce('i', {
+      class: 'glyphicon glyphicon-question-sign text-muted'
+    });
+    container.appendChild(this.text(' '));
+    container.appendChild(this.tooltip);
+
+    new Tooltip(this.tooltip, {
+      delay: {
+        hide: 100
+      },
+      placement: 'right',
+      title: this.component.tooltip
+    });
   }
 
   /**

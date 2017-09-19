@@ -12,6 +12,7 @@ export class PanelComponent extends FormioComponents {
         class: 'panel-title'
       });
       title.appendChild(this.text(this.component.title));
+      this.createTooltip(title);
       heading.appendChild(title);
       this.element.appendChild(heading);
     }

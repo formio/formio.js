@@ -213,3 +213,15 @@ td > .form-group {
 .inline-form-button {
   margin-right: 10px;
 }
+
+.tooltip {
+  opacity: 1;
+}
+
+.tooltip[x-placement="right"] .tooltip-arrow {
+  border-right: 5px solid black;
+}
+
+.tooltip[x-placement="right"] .tooltip-inner {
+  margin-left: 8px;
+}
