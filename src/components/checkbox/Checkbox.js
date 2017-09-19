@@ -59,6 +59,7 @@ export class CheckBoxComponent extends BaseComponent {
       this.labelSpan.appendChild(this.text(this.component.label));
       this.labelElement.appendChild(this.labelSpan);
     }
+    this.createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
   }
 
