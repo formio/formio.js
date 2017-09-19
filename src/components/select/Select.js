@@ -171,7 +171,8 @@ export class SelectComponent extends BaseComponent {
       classNames: {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
-      }
+      },
+      shouldSort: false
     });
 
     // Create a pseudo-placeholder.
