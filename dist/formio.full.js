@@ -6986,7 +6986,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         classNames: {
           containerOuter: 'choices form-group formio-choices',
           containerInner: 'form-control'
-        }
+        },
+        shouldSort: false
       });
 
       // Create a pseudo-placeholder.
