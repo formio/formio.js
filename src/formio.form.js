@@ -251,19 +251,13 @@ export class FormioForm extends FormioComponents {
   }
 
   /**
-   * Set the Form source, which is typically the Form.io embed URL.
+   * Set the src of the form renderer.
    *
-   * @param {string} value - The value of the form embed url.
-   *
-   * @example
-   * let form = new FormioForm(document.getElementById('formio'));
-   * form.formReady.then(() => {
-   *   console.log('The form is formReady!');
-   * });
-   * form.src = 'https://examples.form.io/example';
+   * @param value
+   * @param options
    */
-  set src(value) {
-    this.url = value;
+  setSrc(value, options) {
+    this.setUrl(value, options);
     this.nosubmit = false;
     this.formio.loadForm().then(
       (form) => {
@@ -278,6 +272,22 @@ export class FormioForm extends FormioComponents {
   }
 
   /**
+   * Set the Form source, which is typically the Form.io embed URL.
+   *
+   * @param {string} value - The value of the form embed url.
+   *
+   * @example
+   * let form = new FormioForm(document.getElementById('formio'));
+   * form.formReady.then(() => {
+   *   console.log('The form is formReady!');
+   * });
+   * form.src = 'https://examples.form.io/example';
+   */
+  set src(value) {
+    this.setSrc(value);
+  }
+
+  /**
    * Get the embed source of the form.
    *
    * @returns {string}
@@ -287,22 +297,32 @@ export class FormioForm extends FormioComponents {
   }
 
   /**
-   * Set the form source but don't initialize the form and submission from the url.
+   * Sets the url of the form renderer.
    *
-   * @param {string} value - The value of the form embed url.
+   * @param value
+   * @param options
    */
-  set url(value) {
+  setUrl(value, options) {
     if (!value || typeof value !== 'string') {
       return;
     }
     this._src = value;
     this.nosubmit = true;
-    this.formio = this.options.formio = new Formio(value);
+    this.formio = this.options.formio = new Formio(value, options);
 
     if (this.type === 'form') {
       // Set the options source so this can be passed to other components.
       this.options.src = value;
     }
+  }
+
+  /**
+   * Set the form source but don't initialize the form and submission from the url.
+   *
+   * @param {string} value - The value of the form embed url.
+   */
+  set url(value) {
+    this.setUrl(value);
   }
 
   /**

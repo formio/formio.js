@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.17.3
+### Fixed
+ - Issue with the form component not loading subforms for view pages.
+ - Issue where HTML components were not interpolating the text.
+ - Use handler.type instead of undefined handler.event property
+
+### Changed
+ - The default sort of the Choices library to not sort by default.
+
 ## 2.17.2
 ### Fixed
  - Issues with translations and certain strings that contains special characters.

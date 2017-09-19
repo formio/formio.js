@@ -5385,6 +5385,10 @@ var _utils = require('../../utils');
 
 var _utils2 = _interopRequireDefault(_utils);
 
+var _formio3 = require('../../formio');
+
+var _formio4 = _interopRequireDefault(_formio3);
+
 var _merge2 = require('lodash/merge');
 
 var _merge3 = _interopRequireDefault(_merge2);
@@ -5423,10 +5427,20 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     _this.component = component;
     _this.submitted = false;
     _this.data = data;
+    var srcOptions = {};
 
     // Make sure that if reference is provided, the form must submit.
     if (_this.component.reference) {
       _this.component.submit = true;
+    }
+
+    if (!component.src && !_this.options.formio && component.form) {
+      component.src = _formio4.default.getBaseUrl();
+      if (component.project) {
+        component.src += '/project/' + component.project;
+        srcOptions.project = component.src;
+      }
+      component.src += '/form/' + component.form;
     }
 
     // Build the source based on the root src path.
@@ -5444,7 +5458,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
     // Set the src if the property is provided in the JSON.
     if (component.src) {
-      _this.src = component.src;
+      _this.setSrc(component.src, srcOptions);
     }
 
     // Directly set the submission if it isn't a reference.
@@ -5555,7 +5569,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   return FormComponent;
 }(_formio2.default);
 
-},{"../../formio.form":39,"../../utils":48,"lodash/merge":279}],19:[function(require,module,exports){
+},{"../../formio":40,"../../formio.form":39,"../../utils":48,"lodash/merge":279}],19:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5910,6 +5924,11 @@ var HTMLComponent = exports.HTMLComponent = function (_BaseComponent) {
   }
 
   _createClass(HTMLComponent, [{
+    key: 'setHTML',
+    value: function setHTML() {
+      this.element.innerHTML = this.interpolate(this.component.content, { data: this.data, row: this.row });
+    }
+  }, {
     key: 'build',
     value: function build() {
       var _this2 = this;
@@ -5923,7 +5942,13 @@ var HTMLComponent = exports.HTMLComponent = function (_BaseComponent) {
         }
       });
       if (this.component.content) {
-        this.element.innerHTML = this.component.content;
+        this.setHTML();
+      }
+
+      if (this.component.refreshOnChange) {
+        this.on('componentChange', function () {
+          return _this2.setHTML();
+        });
       }
     }
   }]);
@@ -8566,6 +8591,31 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     }
 
     /**
+     * Set the src of the form renderer.
+     *
+     * @param value
+     * @param options
+     */
+
+  }, {
+    key: "setSrc",
+    value: function setSrc(value, options) {
+      var _this4 = this;
+
+      this.setUrl(value, options);
+      this.nosubmit = false;
+      this.formio.loadForm().then(function (form) {
+        var setForm = _this4.setForm(form);
+        _this4.loadSubmission();
+        return setForm;
+      }, function (err) {
+        return _this4.formReadyReject(err);
+      }).catch(function (err) {
+        return _this4.formReadyReject(err);
+      });
+    }
+
+    /**
      * Set the Form source, which is typically the Form.io embed URL.
      *
      * @param {string} value - The value of the form embed url.
@@ -8576,6 +8626,35 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      *   console.log('The form is formReady!');
      * });
      * form.src = 'https://examples.form.io/example';
+     */
+
+  }, {
+    key: "setUrl",
+
+    /**
+     * Sets the url of the form renderer.
+     *
+     * @param value
+     * @param options
+     */
+    value: function setUrl(value, options) {
+      if (!value || typeof value !== 'string') {
+        return;
+      }
+      this._src = value;
+      this.nosubmit = true;
+      this.formio = this.options.formio = new _formio2.default(value, options);
+
+      if (this.type === 'form') {
+        // Set the options source so this can be passed to other components.
+        this.options.src = value;
+      }
+    }
+
+    /**
+     * Set the form source but don't initialize the form and submission from the url.
+     *
+     * @param {string} value - The value of the form embed url.
      */
 
   }, {
@@ -8615,7 +8694,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * @returns {*}
      */
     value: function setForm(form) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (form.display === 'wizard') {
         console.warn('You need to instantiate the FormioWizard class to use this form as a wizard.');
@@ -8623,11 +8702,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 
       if (this.onFormBuild) {
         return this.onFormBuild.then(function () {
-          return _this4.createForm(form);
+          return _this5.createForm(form);
         }, function (err) {
-          return _this4.formReadyReject(err);
+          return _this5.formReadyReject(err);
         }).catch(function (err) {
-          return _this4.formReadyReject(err);
+          return _this5.formReadyReject(err);
         });
       }
 
@@ -8654,15 +8733,15 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * @return {Promise.<TResult>}
      */
     value: function setSubmission(submission) {
-      var _this5 = this;
+      var _this6 = this;
 
       return this.onSubmission = this.formReady.then(function () {
-        _this5.setValue(submission);
-        _this5.submissionReadyResolve();
+        _this6.setValue(submission);
+        _this6.submissionReadyResolve();
       }, function (err) {
-        return _this5.submissionReadyReject(err);
+        return _this6.submissionReadyReject(err);
       }).catch(function (err) {
-        return _this5.submissionReadyReject(err);
+        return _this6.submissionReadyReject(err);
       });
     }
   }, {
@@ -8691,7 +8770,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: "createForm",
     value: function createForm(form) {
-      var _this6 = this;
+      var _this7 = this;
 
       /**
        * {@link BaseComponent.component}
@@ -8702,13 +8781,13 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         this.component = form;
       }
       return this.onFormBuild = this.render().then(function () {
-        _this6.formReadyResolve();
-        _this6.onFormBuild = null;
-        _this6.setSubmission(_this6._submission);
+        _this7.formReadyResolve();
+        _this7.onFormBuild = null;
+        _this7.setSubmission(_this7._submission);
       }, function (err) {
-        return _this6.formReadyReject(err);
+        return _this7.formReadyReject(err);
       }).catch(function (err) {
-        return _this6.formReadyReject(err);
+        return _this7.formReadyReject(err);
       });
     }
 
@@ -8720,22 +8799,22 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: "render",
     value: function render() {
-      var _this7 = this;
+      var _this8 = this;
 
       return this.onElement.then(function () {
-        _this7.clear();
-        return _this7.localize().then(function () {
-          _this7.build();
-          _this7.on('resetForm', function () {
-            return _this7.reset();
+        _this8.clear();
+        return _this8.localize().then(function () {
+          _this8.build();
+          _this8.on('resetForm', function () {
+            return _this8.reset();
           }, true);
-          _this7.on('componentChange', function (changed) {
-            return _this7.onSubmissionChange(changed);
+          _this8.on('componentChange', function (changed) {
+            return _this8.onSubmissionChange(changed);
           }, true);
-          _this7.on('refreshData', function () {
-            return _this7.updateValue();
+          _this8.on('refreshData', function () {
+            return _this8.updateValue();
           });
-          _this7.emit('render');
+          _this8.emit('render');
         });
       });
     }
@@ -8782,10 +8861,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: "build",
     value: function build() {
-      var _this8 = this;
+      var _this9 = this;
 
       this.on('submitButton', function () {
-        return _this8.submit();
+        return _this9.submit();
       }, true);
       this.addComponents();
       this.checkConditions(this.getValue());
@@ -8922,7 +9001,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: "executeSubmit",
     value: function executeSubmit() {
-      var _this9 = this;
+      var _this10 = this;
 
       var submission = this.submission;
       if (submission && submission.data && this.checkValidity(submission.data, true)) {
@@ -8931,11 +9010,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
           return this.onSubmit(submission, false);
         }
         return this.formio.saveSubmission(submission).then(function (result) {
-          return _this9.onSubmit(result, true);
+          return _this10.onSubmit(result, true);
         }, function (err) {
-          return _this9.onSubmissionError(err);
+          return _this10.onSubmissionError(err);
         }).catch(function (err) {
-          return _this9.onSubmissionError(err);
+          return _this10.onSubmissionError(err);
         });
       } else {
         this.showErrors();
@@ -8966,11 +9045,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: "submit",
     value: function submit(before) {
-      var _this10 = this;
+      var _this11 = this;
 
       if (!before) {
         return this.beforeSubmit().then(function () {
-          return _this10.executeSubmit();
+          return _this11.executeSubmit();
         });
       } else {
         return this.executeSubmit();
@@ -8982,19 +9061,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       return this._src;
     },
     set: function set(value) {
-      var _this11 = this;
-
-      this.url = value;
-      this.nosubmit = false;
-      this.formio.loadForm().then(function (form) {
-        var setForm = _this11.setForm(form);
-        _this11.loadSubmission();
-        return setForm;
-      }, function (err) {
-        return _this11.formReadyReject(err);
-      }).catch(function (err) {
-        return _this11.formReadyReject(err);
-      });
+      this.setSrc(value);
     }
 
     /**
@@ -9007,26 +9074,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     key: "url",
     get: function get() {
       return this._src;
-    }
-
-    /**
-     * Set the form source but don't initialize the form and submission from the url.
-     *
-     * @param {string} value - The value of the form embed url.
-     */
-
-    , set: function set(value) {
-      if (!value || typeof value !== 'string') {
-        return;
-      }
-      this._src = value;
-      this.nosubmit = true;
-      this.formio = this.options.formio = new _formio2.default(value);
-
-      if (this.type === 'form') {
-        // Set the options source so this can be passed to other components.
-        this.options.src = value;
-      }
+    },
+    set: function set(value) {
+      this.setUrl(value);
     }
 
     /**
