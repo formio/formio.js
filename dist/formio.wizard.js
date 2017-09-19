@@ -331,12 +331,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         return;
       }
       (0, _each3.default)(this.getComponents(), function (comp) {
-        if (comp.type !== 'formcomponent') {
-          comp.checkConditions(data);
-          comp.calculateValue(data);
-          if (!flags.noValidate) {
-            comp.checkValidity(data);
-          }
+        comp.checkConditions(data);
+        comp.calculateValue(data);
+        if (!flags.noValidate) {
+          comp.checkValidity(data);
         }
       });
     }
@@ -5477,11 +5475,16 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     }
 
     // Build the source based on the root src path.
-    if (!component.src && component.path && _this.options.formio) {
-      var rootSrc = _this.options.formio.formUrl;
-      var parts = rootSrc.split('/');
-      parts.pop();
-      component.src = parts.join('/') + '/' + component.path;
+    if (!component.src && _this.options.formio) {
+      var rootSrc = _this.options.formio.formsUrl;
+      if (component.path) {
+        var parts = rootSrc.split('/');
+        parts.pop();
+        component.src = parts.join('/') + '/' + component.path;
+      }
+      if (component.form) {
+        component.src = rootSrc + '/' + component.form;
+      }
     }
 
     // Add the source to this actual submission if the component is a reference.

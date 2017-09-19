@@ -30,11 +30,16 @@ export class FormComponent extends FormioForm {
     }
 
     // Build the source based on the root src path.
-    if (!component.src && component.path && this.options.formio) {
-      let rootSrc = this.options.formio.formUrl;
-      let parts = rootSrc.split('/');
-      parts.pop();
-      component.src = parts.join('/') + '/' + component.path;
+    if (!component.src && this.options.formio) {
+      let rootSrc = this.options.formio.formsUrl;
+      if (component.path) {
+        let parts = rootSrc.split('/');
+        parts.pop();
+        component.src = parts.join('/') + '/' + component.path;
+      }
+      if (component.form) {
+        component.src = rootSrc + '/' + component.form;
+      }
     }
 
     // Add the source to this actual submission if the component is a reference.

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.17.4
+### Fixed
+ - Issue where calculated values were not getting triggered on form component.
+ - Issue where the forms would not load within the form component.
+
 ## 2.17.3
 ### Added
  - Tooltip feature onto the fields within the rendered form.

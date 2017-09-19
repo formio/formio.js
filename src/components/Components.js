@@ -210,12 +210,10 @@ export class FormioComponents extends BaseComponent {
       return;
     }
     _each(this.getComponents(), (comp) => {
-      if (comp.type !== 'formcomponent') {
-        comp.checkConditions(data);
-        comp.calculateValue(data);
-        if (!flags.noValidate) {
-          comp.checkValidity(data);
-        }
+      comp.checkConditions(data);
+      comp.calculateValue(data);
+      if (!flags.noValidate) {
+        comp.checkValidity(data);
       }
     });
   }
