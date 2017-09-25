@@ -8641,7 +8641,14 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var _this5 = this;
 
       return this.onSubmission = this.formReady.then(function () {
-        _this5.setValue(submission);
+        // Don't do updates as values are set.
+        _this5.setValue(submission, {
+          noUpdate: true
+        });
+        // Once all values are set, trigger change.
+        _this5.submissionReady.then(function () {
+          _this5.triggerChange();
+        });
         _this5.submissionReadyResolve();
       }, function (err) {
         return _this5.submissionReadyReject(err);
