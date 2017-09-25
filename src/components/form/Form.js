@@ -1,5 +1,6 @@
 import FormioForm from '../../formio.form';
 import FormioUtils from '../../utils';
+import Formio from '../../formio';
 import _merge from 'lodash/merge';
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
@@ -8,18 +9,37 @@ export class FormComponent extends FormioForm {
     this.component = component;
     this.submitted = false;
     this.data = data;
+    let srcOptions = {};
 
     // Make sure that if reference is provided, the form must submit.
     if (this.component.reference) {
       this.component.submit = true;
     }
 
+    if (
+      !component.src &&
+      !this.options.formio &&
+      component.form
+    ) {
+      component.src = Formio.getBaseUrl();
+      if (component.project) {
+        component.src += '/project/' + component.project;
+        srcOptions.project = component.src;
+      }
+      component.src += '/form/' + component.form;
+    }
+
     // Build the source based on the root src path.
-    if (!component.src && component.path && this.options.formio) {
-      let rootSrc = this.options.formio.formUrl;
-      let parts = rootSrc.split('/');
-      parts.pop();
-      component.src = parts.join('/') + '/' + component.path;
+    if (!component.src && this.options.formio) {
+      let rootSrc = this.options.formio.formsUrl;
+      if (component.path) {
+        let parts = rootSrc.split('/');
+        parts.pop();
+        component.src = parts.join('/') + '/' + component.path;
+      }
+      if (component.form) {
+        component.src = rootSrc + '/' + component.form;
+      }
     }
 
     // Add the source to this actual submission if the component is a reference.
@@ -29,7 +49,7 @@ export class FormComponent extends FormioForm {
 
     // Set the src if the property is provided in the JSON.
     if (component.src) {
-      this.src = component.src;
+      this.setSrc(component.src, srcOptions);
     }
 
     // Directly set the submission if it isn't a reference.

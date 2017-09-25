@@ -4,7 +4,30 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 2.17.4
+### Fixed
+ - Issue where calculated values were not getting triggered on form component.
+ - Issue where the forms would not load within the form component.
+
+## 2.17.3
+### Added
+ - Tooltip feature onto the fields within the rendered form.
+
+### Fixed
+ - Issue with the form component not loading subforms for view pages.
+ - Issue where HTML components were not interpolating the text.
+ - Use handler.type instead of undefined handler.event property
+
+### Changed
+ - The default sort of the Choices library to not sort by default.
+
+## 2.17.2
+### Fixed
+ - Issues with translations and certain strings that contains special characters.
+ - Issues with the Select drop down pulling the wrong url to send the request off to.
+ 
+### Added
+ - Mask input fields when set.
 
 ### Fixed
  - Performance when using conditional logic. checkConditionals called too many times on submission set.
