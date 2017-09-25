@@ -8793,7 +8793,14 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var _this6 = this;
 
       return this.onSubmission = this.formReady.then(function () {
-        _this6.setValue(submission);
+        // Don't do updates as values are set.
+        _this6.setValue(submission, {
+          noUpdate: true
+        });
+        // Once all values are set, trigger change.
+        _this6.submissionReady.then(function () {
+          _this6.triggerChange();
+        });
         _this6.submissionReadyResolve();
       }, function (err) {
         return _this6.submissionReadyReject(err);
@@ -18465,11 +18472,8 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     },
     "var": function(a, b) {
       var not_found = (b === undefined) ? null : b;
-      var data = this;
-      if(typeof a === "undefined" || a==="" || a===null) {
-        return data;
-      }
       var sub_props = String(a).split(".");
+      var data = this;
       for(var i = 0; i < sub_props.length; i++) {
         if(data === null) {
           return not_found;
@@ -18521,17 +18525,17 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 
   jsonLogic.is_logic = function(logic) {
     return (
-      typeof logic === "object" && // An object
-      logic !== null && // but not null
-      ! Array.isArray(logic) && // and not an array
-      Object.keys(logic).length === 1 // with exactly one key
+      logic !== null && typeof logic === "object" && ! Array.isArray(logic)
     );
   };
 
   /*
   This helper will defer to the JsonLogic spec as a tie-breaker when different language interpreters define different behavior for the truthiness of primitives.  E.g., PHP considers empty arrays to be falsy, but Javascript considers them to be truthy. JsonLogic, as an ecosystem, needs one consistent answer.
 
-  Spec and rationale here: http://jsonlogic.com/truthy
+  Literal | JS    |  PHP  |  JsonLogic
+  --------+-------+-------+---------------
+  []      | true  | false | false
+  "0"     | true  | false | true
   */
   jsonLogic.truthy = function(value) {
     if(Array.isArray(value) && value.length === 0) {
@@ -18567,7 +18571,6 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     var values = logic[op];
     var i;
     var current;
-    var scopedLogic, scopedData, filtered, initial;
 
     // easy syntax for unary operators, like {"var" : "x"} instead of strict {"var" : ["x"]}
     if( ! Array.isArray(values)) {
@@ -18612,75 +18615,8 @@ http://ricostacruz.com/cheatsheets/umdjs.html
         }
       }
       return current; // Last
-
-
-
-
-    }else if(op === 'filter'){
-      scopedData = jsonLogic.apply(values[0], data);
-      scopedLogic = values[1];
-
-      if ( ! Array.isArray(scopedData)) {
-          return [];
-      }
-      // Return only the elements from the array in the first argument,
-      // that return truthy when passed to the logic in the second argument.
-      // For parity with JavaScript, reindex the returned array
-      return scopedData.filter(function(datum){
-          return jsonLogic.truthy( jsonLogic.apply(scopedLogic, datum));
-      });
-  }else if(op === 'map'){
-      scopedData = jsonLogic.apply(values[0], data);
-      scopedLogic = values[1];
-
-      if ( ! Array.isArray(scopedData)) {
-          return [];
-      }
-
-      return scopedData.map(function(datum){
-          return jsonLogic.apply(scopedLogic, datum);
-      });
-
-  }else if(op === 'reduce'){
-      scopedData = jsonLogic.apply(values[0], data);
-      scopedLogic = values[1];
-      initial = typeof values[2] !== 'undefined' ? values[2] : null;
-
-      if ( ! Array.isArray(scopedData)) {
-          return initial;
-      }
-
-      return scopedData.reduce(
-          function(accumulator, current){
-              return jsonLogic.apply(
-                  scopedLogic,
-                  {'current':current, 'accumulator':accumulator}
-              );
-          },
-          initial
-      );
-
-    }else if(op === "all") {
-      scopedData = jsonLogic.apply(values[0], data);
-      scopedLogic = values[1];
-      // All of an empty set is false. Note, some and none have correct fallback after the for loop
-      if( ! scopedData.length) {
-        return false;
-      }
-      for(i=0; i < scopedData.length; i+=1) {
-        if( ! jsonLogic.truthy( jsonLogic.apply(scopedLogic, scopedData[i]) )) {
-          return false; // First falsy, short circuit
-        }
-      }
-      return true; // All were truthy
-    }else if(op === "none") {
-      filtered = jsonLogic.apply({'filter' : values}, data);
-      return filtered.length === 0;
-
-    }else if(op === "some") {
-      filtered = jsonLogic.apply({'filter' : values}, data);
-      return filtered.length > 0;
     }
+
 
     // Everyone else gets immediate depth-first recursion
     values = values.map(function(val) {
@@ -33232,7 +33168,7 @@ var isArray = Array.isArray || function (xs) {
 
 },{}],304:[function(require,module,exports){
 /*!
- * Signature Pad v2.3.2
+ * Signature Pad v2.3.0
  * https://github.com/szimek/signature_pad
  *
  * Copyright 2017 Szymon Nowak
@@ -33351,7 +33287,7 @@ function SignaturePad(canvas, options) {
   this.minWidth = opts.minWidth || 0.5;
   this.maxWidth = opts.maxWidth || 2.5;
   this.throttle = 'throttle' in opts ? opts.throttle : 16; // in miliseconds
-  this.minDistance = 'minDistance' in opts ? opts.minDistance : 5;
+  this.minDistance = opts.minDistance || 5;
 
   if (this.throttle) {
     this._strokeMoveUpdate = throttle(SignaturePad.prototype._strokeUpdate, this.throttle);
@@ -33726,12 +33662,7 @@ SignaturePad.prototype._fromData = function (pointGroups, drawCurve, drawDot) {
 
         if (j === 0) {
           // First point in a group. Nothing to draw yet.
-
-          // All points in the group have the same color, so it's enough to set
-          // penColor just at the beginning.
-          this.penColor = color;
           this._reset();
-
           this._addPoint(point);
         } else if (j !== group.length - 1) {
           // Middle point in a group.

@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Mask input fields when set.
 
+### Fixed
+ - Performance when using conditional logic. checkConditionals called too many times on submission set.
+
 ## 2.17.1
 ### Fixed
  - Don't try to access properties of null in getValue.
