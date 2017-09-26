@@ -87,6 +87,8 @@ export class DateTimeComponent extends BaseComponent {
       defaultDate: _get(this.component, 'defaultDate', ''),
       hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
+      minDate: _get(this.component, 'datePicker.minDate'),
+      maxDate: _get(this.component, 'datePicker.maxDate'),
       onChange: () => this.onChange()
     };
   }
