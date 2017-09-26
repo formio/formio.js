@@ -4350,36 +4350,26 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       this.component.suffix = true;
       return info;
     }
-  }, {
-    key: 'build',
-    value: function build() {
-      _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'build', this).call(this);
 
-      // See if a default date is set.
-      if (this.component.defaultDate) {
-        var defaultDate = new Date(this.component.defaultDate);
-        if (!defaultDate || isNaN(defaultDate.getDate())) {
-          try {
-            var moment = momentModule;
-            defaultDate = new Date(eval(this.component.defaultDate));
-          } catch (e) {
-            defaultDate = '';
-          }
-        }
-
-        if (defaultDate && !isNaN(defaultDate.getDate())) {
-          this.setValue(defaultDate);
-        }
-      }
-    }
-
-    // This select component can handle multiple items on its own.
+    /**
+     * Get the default date for the calendar.
+     * @return {*}
+     */
 
   }, {
     key: 'createWrapper',
+
+    // This select component can handle multiple items on its own.
     value: function createWrapper() {
       return false;
     }
+
+    /**
+     * Convert the format from the angular-datepicker module.
+     * @param format
+     * @return {string|XML|*}
+     */
+
   }, {
     key: 'convertFormat',
     value: function convertFormat(format) {
@@ -4414,9 +4404,13 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     key: 'addSuffix',
     value: function addSuffix(input, inputGroup) {
       var suffix = this.ce('span', {
-        class: 'input-group-addon'
+        class: 'input-group-addon',
+        style: 'cursor: pointer'
       });
       suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
+      this.addEventListener(suffix, 'click', function (event) {
+        input.calendar.toggle();
+      });
       inputGroup.appendChild(suffix);
       return suffix;
     }
@@ -4431,8 +4425,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     value: function getDate(value) {
       var timestamp = parseInt(value, 10);
       if (!timestamp) {
-        // Just default to today.
-        return new Date();
+        return null;
       }
       return new Date(timestamp * 1000);
     }
@@ -4451,15 +4444,48 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
-      return this.getDate(this.inputs[index].value).toISOString();
+      if (!this.inputs[index] || !this.inputs[index].calendar) {
+        return '';
+      }
+
+      var dates = this.inputs[index].calendar.selectedDates;
+      if (!dates || !dates.length) {
+        return '';
+      }
+
+      return dates[0].toISOString();
     }
   }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
-      if (this.inputs[index].calendar) {
+      if (value && this.inputs[index].calendar) {
         var date = value ? new Date(value) : new Date();
-        this.inputs[index].calendar.setDate(date);
+        this.inputs[index].calendar.setDate(date, false);
       }
+    }
+  }, {
+    key: 'defaultDate',
+    get: function get() {
+      if (!this.component.defaultDate) {
+        return null;
+      }
+
+      var defaultDate = new Date(this.component.defaultDate);
+      if (!defaultDate || isNaN(defaultDate.getDate())) {
+        try {
+          var moment = momentModule;
+          defaultDate = new Date(eval(this.component.defaultDate));
+        } catch (e) {
+          defaultDate = null;
+        }
+      }
+
+      // Ensure this is a date.
+      if (defaultDate && isNaN(defaultDate.getDate())) {
+        defaultDate = null;
+      }
+
+      return defaultDate;
     }
   }, {
     key: 'config',
@@ -4475,9 +4501,11 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         noCalendar: !(0, _get4.default)(this.component, 'enableDate', true),
         altFormat: this.convertFormat((0, _get4.default)(this.component, 'format', '')),
         dateFormat: 'U',
-        defaultDate: (0, _get4.default)(this.component, 'defaultDate', ''),
+        defaultDate: this.defaultDate,
         hourIncrement: (0, _get4.default)(this.component, 'timePicker.hourStep', 1),
         minuteIncrement: (0, _get4.default)(this.component, 'timePicker.minuteStep', 5),
+        minDate: (0, _get4.default)(this.component, 'datePicker.minDate'),
+        maxDate: (0, _get4.default)(this.component, 'datePicker.maxDate'),
         onChange: function onChange() {
           return _this2.onChange();
         }
@@ -6967,9 +6995,19 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         console.warn('Unable to load resources for ' + _this3.component.key);
       });
     }
+
+    /**
+     * Get the request headers for this select dropdown.
+     */
+
   }, {
     key: 'updateItems',
     value: function updateItems() {
+      if (!this.component.data) {
+        console.warn('Select component ' + this.component.key + ' does not have data configuration.');
+        return;
+      }
+
       switch (this.component.dataSrc) {
         case 'values':
           this.component.valueProperty = 'value';
@@ -6991,7 +7029,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           resourceUrl += '/' + this.component.data.resource + '/submission';
 
           try {
-            this.loadItems(resourceUrl);
+            this.loadItems(resourceUrl, null, this.requestHeaders);
           } catch (err) {
             console.warn('Unable to load resources for ' + this.component.key);
           }
@@ -7002,7 +7040,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
             url = _formio2.default.getBaseUrl() + this.component.data.url;
           }
 
-          this.loadItems(url, null, new Headers(), {
+          this.loadItems(url, null, this.requestHeaders, {
             noToken: true
           });
           break;
@@ -7129,6 +7167,27 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (this.choices) {
         this.choices.destroy();
       }
+    }
+  }, {
+    key: 'requestHeaders',
+    get: function get() {
+      // Create the headers object.
+      var headers = new Headers();
+
+      // Add custom headers to the url.
+      if (this.component.data && this.component.data.headers) {
+        try {
+          (0, _each3.default)(this.component.data.headers, function (header) {
+            if (header.key) {
+              headers.set(header.key, header.value);
+            }
+          });
+        } catch (err) {
+          console.warn(err.message);
+        }
+      }
+
+      return headers;
     }
   }, {
     key: 'disabled',
