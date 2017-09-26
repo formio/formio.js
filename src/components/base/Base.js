@@ -327,6 +327,10 @@ export class BaseComponent {
     return Promise.resolve(true);
   }
 
+  get isDisabled() {
+    return (this.options.readOnly || this.component.disabled);
+  }
+
   /**
    * Builds the component.
    */
@@ -339,7 +343,7 @@ export class BaseComponent {
     this.createDescription(this.element);
 
     // Disable if needed.
-    if (this.options.readOnly || this.component.disabled) {
+    if (this.isDisabled) {
       this.disabled = true;
     }
 
@@ -525,20 +529,27 @@ export class BaseComponent {
       let td = this.ce('td');
       this.createInput(td);
       tr.appendChild(td);
-      let tdAdd = this.ce('td');
-      tdAdd.appendChild(this.removeButton(index));
-      tr.appendChild(tdAdd);
+
+      if (!this.isDisabled) {
+        let tdAdd = this.ce('td');
+        tdAdd.appendChild(this.removeButton(index));
+        tr.appendChild(tdAdd);
+      }
+
       this.tbody.appendChild(tr);
     });
 
-    let tr = this.ce('tr');
-    let td = this.ce('td', {
-      colspan: '2'
-    });
-    td.appendChild(this.addButton());
-    tr.appendChild(td);
-    this.tbody.appendChild(tr);
-    if (this.options.readOnly || this.component.disabled) {
+    if (!this.isDisabled) {
+      let tr = this.ce('tr');
+      let td = this.ce('td', {
+        colspan: '2'
+      });
+      td.appendChild(this.addButton());
+      tr.appendChild(td);
+      this.tbody.appendChild(tr);
+    }
+
+    if (this.isDisabled) {
       this.disabled = true;
     }
   }
