@@ -7,6 +7,7 @@ export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
+    this.closedOn = 0;
   }
 
   elementInfo() {
@@ -100,7 +101,8 @@ export class DateTimeComponent extends BaseComponent {
       minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
       minDate: _get(this.component, 'datePicker.minDate'),
       maxDate: _get(this.component, 'datePicker.maxDate'),
-      onChange: () => this.onChange()
+      onChange: () => this.onChange(),
+      onClose: () => (this.closedOn = Date.now())
     };
   }
 
@@ -119,8 +121,11 @@ export class DateTimeComponent extends BaseComponent {
       style: 'cursor: pointer'
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
-    this.addEventListener(suffix, 'click', (event) => {
-      input.calendar.toggle();
+    this.addEventListener(suffix, 'click', () => {
+      // Make sure the calendar is not already open and that it did not just close (like from blur event).
+      if (!input.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+        input.calendar.open();
+      }
     });
     inputGroup.appendChild(suffix);
     return suffix;
