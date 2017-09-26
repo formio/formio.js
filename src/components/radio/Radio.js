@@ -46,6 +46,7 @@ export class RadioComponent extends BaseComponent {
       inputGroup.appendChild(labelWrapper);
     });
     container.appendChild(inputGroup);
+    this.errorContainer = container;
   }
 
   getValue() {
