@@ -36,7 +36,12 @@ export class ButtonComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
-    this.element.disable = disabled;
+    if (disabled) {
+      this.element.setAttribute('disabled', 'disabled');
+    }
+    else {
+      this.element.removeAttribute('disabled');
+    }
   }
 
   build() {

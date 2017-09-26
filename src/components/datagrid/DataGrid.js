@@ -54,8 +54,13 @@ export class DataGridComponent extends FormioComponents {
         tr.appendChild(th);
       }
     });
-    let th = this.ce('th');
-    tr.appendChild(th);
+
+    // Add the remove column if it is not disabled.
+    if (!this.isDisabled) {
+      let th = this.ce('th');
+      tr.appendChild(th);
+    }
+
     thead.appendChild(tr);
     this.tableElement.appendChild(thead);
 
@@ -103,20 +108,27 @@ export class DataGridComponent extends FormioComponents {
         }
       });
       this.rows.push(cols);
-      let td = this.ce('td');
-      td.appendChild(this.removeButton(index));
-      tr.appendChild(td);
+
+      // Add the remove column if not disabled.
+      if (!this.isDisabled) {
+        let td = this.ce('td');
+        td.appendChild(this.removeButton(index));
+        tr.appendChild(td);
+      }
+
       this.tbody.appendChild(tr);
     });
 
-    // Add the add button.
-    let tr = this.ce('tr');
-    let td = this.ce('td', {
-      colspan: (this.component.components.length + 1)
-    });
-    td.appendChild(this.addButton());
-    tr.appendChild(td);
-    this.tbody.appendChild(tr);
+    // Add the add button if not disabled.
+    if (!this.isDisabled) {
+      let tr = this.ce('tr');
+      let td = this.ce('td', {
+        colspan: (this.component.components.length + 1)
+      });
+      td.appendChild(this.addButton());
+      tr.appendChild(td);
+      this.tbody.appendChild(tr);
+    }
   }
 
   checkConditions(data) {

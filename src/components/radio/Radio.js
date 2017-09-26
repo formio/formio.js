@@ -46,6 +46,7 @@ export class RadioComponent extends BaseComponent {
       inputGroup.appendChild(labelWrapper);
     });
     container.appendChild(inputGroup);
+    this.errorContainer = container;
   }
 
   getValue() {
@@ -53,6 +54,15 @@ export class RadioComponent extends BaseComponent {
     _each(this.inputs, (input) => {
       if (input.checked) {
         value = input.value;
+        if (value === 'true') {
+          value = true;
+        }
+        else if (value === 'false') {
+          value = false;
+        }
+        else if (!isNaN(parseInt(value, 10)) && isFinite(value)) {
+          value = parseInt(value, 10);
+        }
       }
     });
     return value;

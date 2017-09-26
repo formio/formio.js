@@ -1784,13 +1784,12 @@ var BaseComponent = function () {
     value: function beforeSubmit() {
       return _nativePromiseOnly2.default.resolve(true);
     }
+  }, {
+    key: 'build',
 
     /**
      * Builds the component.
      */
-
-  }, {
-    key: 'build',
     value: function build() {
       this.createElement();
       this.createLabel(this.element);
@@ -1800,7 +1799,7 @@ var BaseComponent = function () {
       this.createDescription(this.element);
 
       // Disable if needed.
-      if (this.options.readOnly || this.component.disabled) {
+      if (this.isDisabled) {
         this.disabled = true;
       }
 
@@ -1939,20 +1938,27 @@ var BaseComponent = function () {
         var td = _this2.ce('td');
         _this2.createInput(td);
         tr.appendChild(td);
-        var tdAdd = _this2.ce('td');
-        tdAdd.appendChild(_this2.removeButton(index));
-        tr.appendChild(tdAdd);
+
+        if (!_this2.isDisabled) {
+          var tdAdd = _this2.ce('td');
+          tdAdd.appendChild(_this2.removeButton(index));
+          tr.appendChild(tdAdd);
+        }
+
         _this2.tbody.appendChild(tr);
       });
 
-      var tr = this.ce('tr');
-      var td = this.ce('td', {
-        colspan: '2'
-      });
-      td.appendChild(this.addButton());
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
-      if (this.options.readOnly || this.component.disabled) {
+      if (!this.isDisabled) {
+        var tr = this.ce('tr');
+        var td = this.ce('td', {
+          colspan: '2'
+        });
+        td.appendChild(this.addButton());
+        tr.appendChild(td);
+        this.tbody.appendChild(tr);
+      }
+
+      if (this.isDisabled) {
         this.disabled = true;
       }
     }
@@ -2924,6 +2930,11 @@ var BaseComponent = function () {
       });
     }
   }, {
+    key: 'isDisabled',
+    get: function get() {
+      return this.options.readOnly || this.component.disabled;
+    }
+  }, {
     key: 'className',
     get: function get() {
       var className = this.component.input ? 'form-group has-feedback ' : '';
@@ -3354,7 +3365,11 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     key: 'disabled',
     set: function set(disabled) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
-      this.element.disable = disabled;
+      if (disabled) {
+        this.element.setAttribute('disabled', 'disabled');
+      } else {
+        this.element.removeAttribute('disabled');
+      }
     }
   }]);
 
@@ -4073,19 +4088,24 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       var tr = this.ce('tr');
       (0, _each3.default)(this.component.components, function (comp) {
         if (_this2.visibleColumns === true || _this2.visibleColumns[comp.key]) {
-          var _th = _this2.ce('th');
+          var th = _this2.ce('th');
           if (comp.validate && comp.validate.required) {
-            _th.setAttribute('class', 'field-required');
+            th.setAttribute('class', 'field-required');
           }
           var title = comp.label || comp.title;
           if (title) {
-            _th.appendChild(_this2.text(title));
+            th.appendChild(_this2.text(title));
           }
-          tr.appendChild(_th);
+          tr.appendChild(th);
         }
       });
-      var th = this.ce('th');
-      tr.appendChild(th);
+
+      // Add the remove column if it is not disabled.
+      if (!this.isDisabled) {
+        var th = this.ce('th');
+        tr.appendChild(th);
+      }
+
       thead.appendChild(tr);
       this.tableElement.appendChild(thead);
 
@@ -4124,27 +4144,34 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           }
           cols[column.key] = comp;
           if (_this3.visibleColumns === true || _this3.visibleColumns[col.key]) {
-            var _td = _this3.ce('td');
-            _td.appendChild(comp.element);
-            tr.appendChild(_td);
+            var td = _this3.ce('td');
+            td.appendChild(comp.element);
+            tr.appendChild(td);
             comp.checkConditions(data);
           }
         });
         _this3.rows.push(cols);
-        var td = _this3.ce('td');
-        td.appendChild(_this3.removeButton(index));
-        tr.appendChild(td);
+
+        // Add the remove column if not disabled.
+        if (!_this3.isDisabled) {
+          var td = _this3.ce('td');
+          td.appendChild(_this3.removeButton(index));
+          tr.appendChild(td);
+        }
+
         _this3.tbody.appendChild(tr);
       });
 
-      // Add the add button.
-      var tr = this.ce('tr');
-      var td = this.ce('td', {
-        colspan: this.component.components.length + 1
-      });
-      td.appendChild(this.addButton());
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
+      // Add the add button if not disabled.
+      if (!this.isDisabled) {
+        var tr = this.ce('tr');
+        var td = this.ce('td', {
+          colspan: this.component.components.length + 1
+        });
+        td.appendChild(this.addButton());
+        tr.appendChild(td);
+        this.tbody.appendChild(tr);
+      }
     }
   }, {
     key: 'checkConditions',
@@ -4337,6 +4364,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     var _this = _possibleConstructorReturn(this, (DateTimeComponent.__proto__ || Object.getPrototypeOf(DateTimeComponent)).call(this, component, options, data));
 
     _this.validators.push('date');
+    _this.closedOn = 0;
     return _this;
   }
 
@@ -4403,13 +4431,18 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'addSuffix',
     value: function addSuffix(input, inputGroup) {
+      var _this2 = this;
+
       var suffix = this.ce('span', {
         class: 'input-group-addon',
         style: 'cursor: pointer'
       });
       suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
-      this.addEventListener(suffix, 'click', function (event) {
-        input.calendar.toggle();
+      this.addEventListener(suffix, 'click', function () {
+        // Make sure the calendar is not already open and that it did not just close (like from blur event).
+        if (!input.calendar.isOpen && Date.now() - _this2.closedOn > 200) {
+          input.calendar.open();
+        }
       });
       inputGroup.appendChild(suffix);
       return suffix;
@@ -4490,7 +4523,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'config',
     get: function get() {
-      var _this2 = this;
+      var _this3 = this;
 
       return {
         altInput: true,
@@ -4507,7 +4540,10 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         minDate: (0, _get4.default)(this.component, 'datePicker.minDate'),
         maxDate: (0, _get4.default)(this.component, 'datePicker.maxDate'),
         onChange: function onChange() {
-          return _this2.onChange();
+          return _this3.onChange();
+        },
+        onClose: function onClose() {
+          return _this3.closedOn = Date.now();
         }
       };
     }
@@ -4517,6 +4553,11 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       _set(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'disabled', disabled, this);
       (0, _each3.default)(this.inputs, function (input) {
         if (input.calendar) {
+          if (disabled) {
+            input.calendar._input.setAttribute('disabled', 'disabled');
+          } else {
+            input.calendar._input.removeAttribute('disabled');
+          }
           input.calendar.redraw();
         }
       });
@@ -6584,6 +6625,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
         inputGroup.appendChild(labelWrapper);
       });
       container.appendChild(inputGroup);
+      this.errorContainer = container;
     }
   }, {
     key: 'getValue',
@@ -6592,6 +6634,13 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       (0, _each3.default)(this.inputs, function (input) {
         if (input.checked) {
           value = input.value;
+          if (value === 'true') {
+            value = true;
+          } else if (value === 'false') {
+            value = false;
+          } else if (!isNaN(parseInt(value, 10)) && isFinite(value)) {
+            value = parseInt(value, 10);
+          }
         }
       });
       return value;
@@ -6838,6 +6887,10 @@ var _get3 = require('lodash/get');
 
 var _get4 = _interopRequireDefault(_get3);
 
+var _debounce2 = require('lodash/debounce');
+
+var _debounce3 = _interopRequireDefault(_debounce2);
+
 var _isEmpty2 = require('lodash/isEmpty');
 
 var _isEmpty3 = _interopRequireDefault(_isEmpty2);
@@ -6874,9 +6927,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   function SelectComponent(component, options, data) {
     _classCallCheck(this, SelectComponent);
 
-    // If they wish to refresh on a value, then add that here.
+    // Trigger an update.
     var _this = _possibleConstructorReturn(this, (SelectComponent.__proto__ || Object.getPrototypeOf(SelectComponent)).call(this, component, options, data));
 
+    _this.triggerUpdate = (0, _debounce3.default)(_this.updateItems.bind(_this), 200);
+
+    // If they wish to refresh on a value, then add that here.
     if (_this.component.refreshOn) {
       _this.on('change', function (event) {
         if (_this.component.refreshOn === 'data') {
@@ -6892,7 +6948,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   _createClass(SelectComponent, [{
     key: 'refreshItems',
     value: function refreshItems() {
-      this.updateItems();
+      this.triggerUpdate();
       if (this.component.clearOnRefresh) {
         this.setValue(null);
       }
@@ -6952,7 +7008,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     }
   }, {
     key: 'loadItems',
-    value: function loadItems(url, input, headers, options) {
+    value: function loadItems(url, search, headers, options) {
       var _this3 = this;
 
       var query = this.component.dataSrc === 'url' ? {} : {
@@ -6967,8 +7023,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       });
 
       // Add search capability.
-      if (this.component.searchField && input) {
-        query[this.component.searchField] = input;
+      if (this.component.searchField && search) {
+        query[this.component.searchField] = search;
       }
 
       // Add filter capability
@@ -7002,7 +7058,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
   }, {
     key: 'updateItems',
-    value: function updateItems() {
+    value: function updateItems(searchInput) {
       if (!this.component.data) {
         console.warn('Select component ' + this.component.key + ' does not have data configuration.');
         return;
@@ -7029,7 +7085,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           resourceUrl += '/' + this.component.data.resource + '/submission';
 
           try {
-            this.loadItems(resourceUrl, null, this.requestHeaders);
+            this.loadItems(resourceUrl, searchInput, this.requestHeaders);
           } catch (err) {
             console.warn('Unable to load resources for ' + this.component.key);
           }
@@ -7040,7 +7096,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
             url = _formio2.default.getBaseUrl() + this.component.data.url;
           }
 
-          this.loadItems(url, null, this.requestHeaders, {
+          this.loadItems(url, searchInput, this.requestHeaders, {
             noToken: true
           });
           break;
@@ -7065,6 +7121,13 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         shouldSort: false
       });
 
+      // If a search field is provided, then add an event listener to update items on search.
+      if (this.component.searchField) {
+        input.addEventListener('search', function (event) {
+          return _this4.triggerUpdate(event.detail.value);
+        });
+      }
+
       // Create a pseudo-placeholder.
       if (this.component.placeholder && !this.choices.placeholderElement) {
         this.placeholder = this.ce('span', {
@@ -7087,7 +7150,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (this.disabled) {
         this.choices.disable();
       }
-      this.updateItems();
+      this.triggerUpdate();
     }
   }, {
     key: 'getValue',
@@ -7207,7 +7270,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   return SelectComponent;
 }(_Base.BaseComponent);
 
-},{"../../formio":42,"../base/Base":4,"choices.js":55,"lodash/each":255,"lodash/get":259,"lodash/isArray":264,"lodash/isEmpty":268}],30:[function(require,module,exports){
+},{"../../formio":42,"../base/Base":4,"choices.js":55,"lodash/debounce":251,"lodash/each":255,"lodash/get":259,"lodash/isArray":264,"lodash/isEmpty":268}],30:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -7338,6 +7401,7 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
     value: function setValue(value, flags) {
       var _this2 = this;
 
+      value = value || {};
       flags = this.getFlags.apply(this, arguments);
       if ((0, _isArray3.default)(value)) {
         this.value = {};
