@@ -32,34 +32,34 @@ Formio.createForm(document.getElementById('formio'), {
       input: true
     },
     {
-      "type": "select",
-      "label": "Favorite Things",
-      "key": "favoriteThings",
-      "placeholder": "These are a few of your favorite things...",
-      "data": {
-        "values": [
+      type: "select",
+      label: "Favorite Things",
+      key: "favoriteThings",
+      placeholder: "These are a few of your favorite things...",
+      data: {
+        values: [
           {
-            "value": "raindropsOnRoses",
-            "label": "Raindrops on roses"
+            value: "raindropsOnRoses",
+            label: "Raindrops on roses"
           },
           {
-            "value": "whiskersOnKittens",
-            "label": "Whiskers on Kittens"
+            value: "whiskersOnKittens",
+            label: "Whiskers on Kittens"
           },
           {
-            "value": "brightCopperKettles",
-            "label": "Bright Copper Kettles"
+            value: "brightCopperKettles",
+            label: "Bright Copper Kettles"
           },
           {
-            "value": "warmWoolenMittens",
-            "label": "Warm Woolen Mittens"
+            value: "warmWoolenMittens",
+            label: "Warm Woolen Mittens"
           }
         ]
       },
-      "dataSrc": "values",
-      "template": "<span>{% raw %}{{ item.label }}{% endraw %}</span>",
-      "multiple": true,
-      "input": true
+      dataSrc: "values",
+      template: "<span>{% raw %}{{ item.label }}{% endraw %}</span>",
+      multiple: true,
+      input: true
     },
     {
       type: 'button',
@@ -96,34 +96,34 @@ Formio.createForm(document.getElementById('formio'), {
       input: true
     },
     {
-      "type": "select",
-      "label": "Favorite Things",
-      "key": "favoriteThings",
-      "placeholder": "These are a few of your favorite things...",
-      "data": {
-        "values": [
+      type: "select",
+      label: "Favorite Things",
+      key: "favoriteThings",
+      placeholder: "These are a few of your favorite things...",
+      data: {
+        values: [
           {
-            "value": "raindropsOnRoses",
-            "label": "Raindrops on roses"
+            value: "raindropsOnRoses",
+            label: "Raindrops on roses"
           },
           {
-            "value": "whiskersOnKittens",
-            "label": "Whiskers on Kittens"
+            value: "whiskersOnKittens",
+            label: "Whiskers on Kittens"
           },
           {
-            "value": "brightCopperKettles",
-            "label": "Bright Copper Kettles"
+            value: "brightCopperKettles",
+            label: "Bright Copper Kettles"
           },
           {
-            "value": "warmWoolenMittens",
-            "label": "Warm Woolen Mittens"
+            value: "warmWoolenMittens",
+            label: "Warm Woolen Mittens"
           }
         ]
       },
-      "dataSrc": "values",
-      "template": "<span>\{\{ item.label \}\}</span>",
-      "multiple": true,
-      "input": true
+      dataSrc: "values",
+      template: "<span>\{\{ item.label \}\}</span>",
+      multiple: true,
+      input: true
     },
     {
       type: 'button',

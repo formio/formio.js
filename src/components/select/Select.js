@@ -117,7 +117,36 @@ export class SelectComponent extends BaseComponent {
       })
   }
 
+  /**
+   * Get the request headers for this select dropdown.
+   */
+  get requestHeaders() {
+    // Create the headers object.
+    let headers = new Headers();
+
+    // Add custom headers to the url.
+    if (this.component.data && this.component.data.headers) {
+      try {
+        _each(this.component.data.headers, (header) => {
+          if (header.key) {
+            headers.set(header.key, header.value);
+          }
+        });
+      }
+      catch (err) {
+        console.warn(err.message);
+      }
+    }
+
+    return headers;
+  }
+
   updateItems() {
+    if (!this.component.data) {
+      console.warn('Select component ' + this.component.key + ' does not have data configuration.');
+      return;
+    }
+
     switch(this.component.dataSrc) {
       case 'values':
         this.component.valueProperty = 'value';
@@ -141,7 +170,7 @@ export class SelectComponent extends BaseComponent {
         resourceUrl += ('/' + this.component.data.resource + '/submission');
 
         try {
-          this.loadItems(resourceUrl);
+          this.loadItems(resourceUrl, null, this.requestHeaders);
         }
         catch (err) {
           console.warn('Unable to load resources for ' + this.component.key);
@@ -153,7 +182,7 @@ export class SelectComponent extends BaseComponent {
           url = Formio.getBaseUrl() + this.component.data.url;
         }
 
-        this.loadItems(url, null, new Headers(), {
+        this.loadItems(url, null, this.requestHeaders, {
           noToken: true
         });
         break;

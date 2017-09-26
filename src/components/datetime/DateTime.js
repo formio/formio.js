@@ -18,26 +18,32 @@ export class DateTimeComponent extends BaseComponent {
     return info;
   }
 
-  build() {
-    super.build();
+  /**
+   * Get the default date for the calendar.
+   * @return {*}
+   */
+  get defaultDate() {
+    if (!this.component.defaultDate) {
+      return null;
+    }
 
-    // See if a default date is set.
-    if (this.component.defaultDate) {
-      var defaultDate = new Date(this.component.defaultDate);
-      if (!defaultDate || isNaN(defaultDate.getDate())) {
-        try {
-          let moment = momentModule;
-          defaultDate = new Date(eval(this.component.defaultDate));
-        }
-        catch (e) {
-          defaultDate = '';
-        }
+    let defaultDate = new Date(this.component.defaultDate);
+    if (!defaultDate || isNaN(defaultDate.getDate())) {
+      try {
+        let moment = momentModule;
+        defaultDate = new Date(eval(this.component.defaultDate));
       }
-
-      if (defaultDate && !isNaN(defaultDate.getDate())) {
-        this.setValue(defaultDate);
+      catch (e) {
+        defaultDate = null;
       }
     }
+
+    // Ensure this is a date.
+    if (defaultDate && isNaN(defaultDate.getDate())) {
+      defaultDate = null;
+    }
+
+    return defaultDate;
   }
 
   // This select component can handle multiple items on its own.
@@ -45,6 +51,11 @@ export class DateTimeComponent extends BaseComponent {
     return false;
   }
 
+  /**
+   * Convert the format from the angular-datepicker module.
+   * @param format
+   * @return {string|XML|*}
+   */
   convertFormat(format) {
     // Year conversion.
     format = format.replace(/y/g, 'Y');
@@ -84,9 +95,11 @@ export class DateTimeComponent extends BaseComponent {
       noCalendar: !_get(this.component, 'enableDate', true),
       altFormat: this.convertFormat(_get(this.component, 'format', '')),
       dateFormat: 'U',
-      defaultDate: _get(this.component, 'defaultDate', ''),
+      defaultDate: this.defaultDate,
       hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
+      minDate: _get(this.component, 'datePicker.minDate'),
+      maxDate: _get(this.component, 'datePicker.maxDate'),
       onChange: () => this.onChange()
     };
   }
@@ -102,9 +115,13 @@ export class DateTimeComponent extends BaseComponent {
 
   addSuffix(input, inputGroup) {
     let suffix = this.ce('span', {
-      class: 'input-group-addon'
+      class: 'input-group-addon',
+      style: 'cursor: pointer'
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
+    this.addEventListener(suffix, 'click', (event) => {
+      input.calendar.toggle();
+    });
     inputGroup.appendChild(suffix);
     return suffix;
   }
@@ -117,8 +134,7 @@ export class DateTimeComponent extends BaseComponent {
   getDate(value) {
     let timestamp = parseInt(value, 10);
     if (!timestamp) {
-      // Just default to today.
-      return (new Date());
+      return null;
     }
     return (new Date(timestamp * 1000));
   }
@@ -135,13 +151,22 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getValueAt(index) {
-    return this.getDate(this.inputs[index].value).toISOString();
+    if (!this.inputs[index] || !this.inputs[index].calendar) {
+      return '';
+    }
+
+    let dates = this.inputs[index].calendar.selectedDates;
+    if (!dates || !dates.length) {
+      return '';
+    }
+
+    return dates[0].toISOString();
   }
 
   setValueAt(index, value) {
-    if (this.inputs[index].calendar) {
+    if (value && this.inputs[index].calendar) {
       let date = value ? new Date(value) : new Date();
-      this.inputs[index].calendar.setDate(date);
+      this.inputs[index].calendar.setDate(date, false);
     }
   }
 }
