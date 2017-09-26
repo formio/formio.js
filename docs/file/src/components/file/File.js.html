@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -270,10 +271,16 @@ export class FileComponent extends BaseComponent {
     );
   }
 
+  get fileService() {
+    return this.options.fileService || this.options.formio;
+  }
+
   createImageListItem(fileInfo, index) {
     let image;
-    if (this.options.formio) {
-      this.options.formio.downloadFile(fileInfo)
+
+    let fileService = this.fileService;
+    if (fileService) {
+      fileService.downloadFile(fileInfo)
         .then(result =&gt; {
           image.src = result.url;
         });
@@ -445,20 +452,17 @@ export class FileComponent extends BaseComponent {
           message: &apos;Starting upload&apos;
         };
         const dir = this.interpolate(this.component.dir || &apos;&apos;, {data: this.data, row: this.row});
-        let formio = null;
-        if (this.options.formio) {
-          formio = this.options.formio;
-        }
-        else {
+        const fileService = this.fileService;
+        if (!fileService) {
           fileUpload.status = &apos;error&apos;;
-          fileUpload.message = &apos;File Upload URL not provided.&apos;;
+          fileUpload.message = &apos;File Service not provided.&apos;;
         }
 
         let uploadStatus = this.createUploadStatus(fileUpload);
         this.uploadStatusList.appendChild(uploadStatus);
 
-        if (formio) {
-          formio.uploadFile(this.component.storage, file, fileName, dir, evt =&gt; {
+        if (fileService) {
+          fileService.uploadFile(this.component.storage, file, fileName, dir, evt =&gt; {
             fileUpload.status = &apos;progress&apos;;
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
@@ -466,35 +470,35 @@ export class FileComponent extends BaseComponent {
             uploadStatus = this.createUploadStatus(fileUpload);
             this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
           }, this.component.url)
-          .then(fileInfo =&gt; {
-            this.uploadStatusList.removeChild(uploadStatus);
-            this.data[this.component.key].push(fileInfo);
-            this.refreshDOM();
-            this.triggerChange();
-          })
-          .catch(response =&gt; {
-            fileUpload.status = &apos;error&apos;;
-            fileUpload.message = response;
-            delete fileUpload.progress;
-            const originalStatus = uploadStatus;
-            uploadStatus = this.createUploadStatus(fileUpload);
-            this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
-          });
+            .then(fileInfo =&gt; {
+              this.uploadStatusList.removeChild(uploadStatus);
+              this.data[this.component.key].push(fileInfo);
+              this.refreshDOM();
+              this.triggerChange();
+            })
+            .catch(response =&gt; {
+              fileUpload.status = &apos;error&apos;;
+              fileUpload.message = response;
+              delete fileUpload.progress;
+              const originalStatus = uploadStatus;
+              uploadStatus = this.createUploadStatus(fileUpload);
+              this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+            });
         }
       });
     }
   }
 
   getFile(fileInfo, event)  {
-    if (!this.options.formio) {
-      return alert(&apos;File URL not set&apos;);
+    const fileService = this.fileService;
+    if (!fileService) {
+      return alert(&apos;File Service not provided&apos;);
     }
-    this.options.formio
-      .downloadFile(fileInfo).then(function(file) {
-        if (file) {
-          window.open(file.url, &apos;_blank&apos;);
-        }
-      })
+    fileService.downloadFile(fileInfo).then(function(file) {
+      if (file) {
+        window.open(file.url, &apos;_blank&apos;);
+      }
+    })
       .catch(function(response) {
         // Is alert the best way to do this?
         // User is expecting an immediate notification due to attempting to download a file.

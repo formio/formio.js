@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -146,6 +147,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
 import Promise from &quot;native-promise-only&quot;;
 import FormioWizard from &apos;./formio.wizard&apos;;
+import FormioPDF from &apos;./formio.pdf&apos;;
 import FormioForm from &apos;./formio.form&apos;;
 import { FormioComponents } from &apos;./components/Components&apos;;
 import Formio from &apos;./formio&apos;;
@@ -161,6 +163,9 @@ Formio.formFactory = (element, form, options) =&gt; {
   let instance = null;
   if (form.display === &apos;wizard&apos;) {
     instance = new FormioWizard(element, options);
+  }
+  else if (form.display === &apos;pdf&apos;) {
+    instance = new FormioPDF(element, options);
   }
   else {
     instance = new FormioForm(element, options);

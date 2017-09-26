@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -351,6 +352,24 @@ describe(&apos;getValue&apos;, function() {
 
   it(&apos;should be able to get a value from a container&apos;, function() {
     expect(utils.getValue(submission1, &apos;animalname&apos;)).to.be.equal(submission1.data.mycontainer.animalname);
+  });
+});
+
+describe(&apos;parseFloat&apos;, function() {
+  it(&apos;should clear input and parse value&apos;, function() {
+    expect(utils.parseFloat(&apos;12,345,678.90&apos;)).to.be.equal(12345678.90);
+  });
+});
+
+describe(&apos;formatAsCurrency&apos;, function() {
+  it(&apos;should be able to format Float value for Currency component&apos;, function() {
+    expect(utils.formatAsCurrency(123.4)).to.be.equal(&apos;123.40&apos;);
+    expect(utils.formatAsCurrency(12345678.9)).to.be.equal(&apos;12,345,678.90&apos;);
+    expect(utils.formatAsCurrency(12345678.915)).to.be.equal(&apos;12,345,678.92&apos;);
+  });
+
+  it(&apos;should be able to format String value for Currency component&apos;, function() {
+    expect(utils.formatAsCurrency(&apos;12345678.915&apos;)).to.be.equal(&apos;12,345,678.92&apos;);
   });
 });
 </code></pre>

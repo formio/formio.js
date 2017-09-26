@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -146,6 +147,11 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 import _clone from &apos;lodash/clone&apos;;
 import _get from &apos;lodash/get&apos;;
+import _isString from &apos;lodash/isString&apos;;
+import _round from &apos;lodash/round&apos;;
+import _pad from &apos;lodash/pad&apos;;
+import _chunk from &apos;lodash/chunk&apos;;
+import _isNaN from &apos;lodash/isNaN&apos;;
 import compile from &apos;lodash/template&apos;;
 import jsonLogic from &apos;json-logic-js&apos;;
 
@@ -351,6 +357,100 @@ const FormioUtils = {
   },
 
   /**
+   * Extension of standard #parseFloat(value) function, that also clears input string.
+   *
+   * @param {any} value
+   *   The value to parse.
+   *
+   * @returns {Number}
+   *   Parsed value.
+   */
+  parseFloat: function(value) {
+    return parseFloat(_isString(value)
+      ? value.replace(/[^\de.+-]/gi, &apos;&apos;)
+      : value);
+  },
+
+  /**
+   * Formats provided value in way how Currency component uses it.
+   *
+   * @param {any} value
+   *   The value to format.
+   *
+   * @returns {String}
+   *   Value formatted for Currency component.
+   */
+  formatAsCurrency: function(value) {
+    const parsedValue = this.parseFloat(value);
+
+    if (_isNaN(parsedValue)) {
+      return &apos;&apos;;
+    }
+
+    const parts = _round(parsedValue, 2)
+      .toString()
+      .split(&apos;.&apos;);
+    parts[0] = _chunk(Array.from(parts[0]).reverse(), 3)
+      .reverse()
+      .map(function(part) {
+        return part
+          .reverse()
+          .join(&apos;&apos;);
+      })
+      .join(&apos;,&apos;);
+    parts[1] = _pad(parts[1], 2, &apos;0&apos;);
+    return parts.join(&apos;.&apos;);
+  },
+
+  /**
+   * Escapes RegEx characters in provided String value.
+   *
+   * @param {String} value
+   *   String for escaping RegEx characters.
+   * @returns {string}
+   *   String with escaped RegEx characters.
+   */
+  escapeRegExCharacters: function(value) {
+    return value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, &quot;\\$&amp;&quot;);
+  },
+
+  /**
+   * Checks the calculated value for a provided component and data.
+   *
+   * @param {Object} component
+   *   The component to check for the calculated value.
+   * @param {Object} submission
+   *   A submission object.
+   * @param data
+   *   The full submission data.
+   */
+  checkCalculated: function(component, submission, data) {
+    // Process calculated value stuff if present.
+    if (component.calculateValue) {
+      if (typeof component.calculateValue === &apos;string&apos;) {
+        try {
+          const util = this;
+          data[component.key] = eval(&apos;(function(data, util) { var value = [];&apos; + component.calculateValue.toString() + &apos;; return value; })(data, util)&apos;);
+        }
+        catch (e) {
+          console.warn(&apos;An error occurred calculating a value for &apos; + component.key, e);
+        }
+      }
+      else {
+        try {
+          data[component.key] = FormioUtils.jsonLogic.apply(component.calculateValue, {
+            data: submission ? submission.data : data,
+            row: data
+          });
+        }
+        catch (e) {
+          console.warn(&apos;An error occurred calculating a value for &apos; + component.key, e);
+        }
+      }
+    }
+  },
+
+  /**
    * Checks the conditions for a provided component and data.
    *
    * @param component
@@ -430,7 +530,7 @@ const FormioUtils = {
         return null;
       }
 
-      if (typeof data === &apos;object&apos; &amp;&amp; !(data instanceof Array)) {
+      if (typeof data === &apos;object&apos; &amp;&amp; !(data instanceof Array) &amp;&amp; data !== null) {
         if (data.hasOwnProperty(key)) {
           return data[key];
         }

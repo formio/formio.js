@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -146,6 +147,10 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
 import _each from &apos;lodash/each&apos;;
 export class HTMLComponent extends BaseComponent {
+  setHTML() {
+    this.element.innerHTML = this.interpolate(this.component.content, {data: this.data, row: this.row});
+  }
+
   build() {
     this.element = this.ce(this.component.tag, {
       class: this.component.className
@@ -156,7 +161,11 @@ export class HTMLComponent extends BaseComponent {
       }
     });
     if (this.component.content) {
-      this.element.innerHTML = this.component.content;
+      this.setHTML();
+    }
+
+    if (this.component.refreshOnChange) {
+      this.on(&apos;componentChange&apos;, () =&gt; this.setHTML());
     }
   }
 }

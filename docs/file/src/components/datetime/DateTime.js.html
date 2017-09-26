@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -163,26 +164,32 @@ export class DateTimeComponent extends BaseComponent {
     return info;
   }
 
-  build() {
-    super.build();
+  /**
+   * Get the default date for the calendar.
+   * @return {*}
+   */
+  get defaultDate() {
+    if (!this.component.defaultDate) {
+      return null;
+    }
 
-    // See if a default date is set.
-    if (this.component.defaultDate) {
-      var defaultDate = new Date(this.component.defaultDate);
-      if (!defaultDate || isNaN(defaultDate.getDate())) {
-        try {
-          let moment = momentModule;
-          defaultDate = new Date(eval(this.component.defaultDate));
-        }
-        catch (e) {
-          defaultDate = &apos;&apos;;
-        }
+    let defaultDate = new Date(this.component.defaultDate);
+    if (!defaultDate || isNaN(defaultDate.getDate())) {
+      try {
+        let moment = momentModule;
+        defaultDate = new Date(eval(this.component.defaultDate));
       }
-
-      if (defaultDate &amp;&amp; !isNaN(defaultDate.getDate())) {
-        this.setValue(defaultDate);
+      catch (e) {
+        defaultDate = null;
       }
     }
+
+    // Ensure this is a date.
+    if (defaultDate &amp;&amp; isNaN(defaultDate.getDate())) {
+      defaultDate = null;
+    }
+
+    return defaultDate;
   }
 
   // This select component can handle multiple items on its own.
@@ -190,6 +197,11 @@ export class DateTimeComponent extends BaseComponent {
     return false;
   }
 
+  /**
+   * Convert the format from the angular-datepicker module.
+   * @param format
+   * @return {string|XML|*}
+   */
   convertFormat(format) {
     // Year conversion.
     format = format.replace(/y/g, &apos;Y&apos;);
@@ -229,9 +241,11 @@ export class DateTimeComponent extends BaseComponent {
       noCalendar: !_get(this.component, &apos;enableDate&apos;, true),
       altFormat: this.convertFormat(_get(this.component, &apos;format&apos;, &apos;&apos;)),
       dateFormat: &apos;U&apos;,
-      defaultDate: _get(this.component, &apos;defaultDate&apos;, &apos;&apos;),
+      defaultDate: this.defaultDate,
       hourIncrement: _get(this.component, &apos;timePicker.hourStep&apos;, 1),
       minuteIncrement: _get(this.component, &apos;timePicker.minuteStep&apos;, 5),
+      minDate: _get(this.component, &apos;datePicker.minDate&apos;),
+      maxDate: _get(this.component, &apos;datePicker.maxDate&apos;),
       onChange: () =&gt; this.onChange()
     };
   }
@@ -247,9 +261,13 @@ export class DateTimeComponent extends BaseComponent {
 
   addSuffix(input, inputGroup) {
     let suffix = this.ce(&apos;span&apos;, {
-      class: &apos;input-group-addon&apos;
+      class: &apos;input-group-addon&apos;,
+      style: &apos;cursor: pointer&apos;
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? &apos;calendar&apos; : &apos;time&apos;));
+    this.addEventListener(suffix, &apos;click&apos;, (event) =&gt; {
+      input.calendar.toggle();
+    });
     inputGroup.appendChild(suffix);
     return suffix;
   }
@@ -262,8 +280,7 @@ export class DateTimeComponent extends BaseComponent {
   getDate(value) {
     let timestamp = parseInt(value, 10);
     if (!timestamp) {
-      // Just default to today.
-      return (new Date());
+      return null;
     }
     return (new Date(timestamp * 1000));
   }
@@ -280,13 +297,22 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getValueAt(index) {
-    return this.getDate(this.inputs[index].value).toISOString();
+    if (!this.inputs[index] || !this.inputs[index].calendar) {
+      return &apos;&apos;;
+    }
+
+    let dates = this.inputs[index].calendar.selectedDates;
+    if (!dates || !dates.length) {
+      return &apos;&apos;;
+    }
+
+    return dates[0].toISOString();
   }
 
   setValueAt(index, value) {
-    if (this.inputs[index].calendar) {
+    if (value &amp;&amp; this.inputs[index].calendar) {
       let date = value ? new Date(value) : new Date();
-      this.inputs[index].calendar.setDate(date);
+      this.inputs[index].calendar.setDate(date, false);
     }
   }
 }

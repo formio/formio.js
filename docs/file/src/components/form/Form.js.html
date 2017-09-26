@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -145,6 +146,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/form/Form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import FormioForm from &apos;../../formio.form&apos;;
 import FormioUtils from &apos;../../utils&apos;;
+import Formio from &apos;../../formio&apos;;
 import _merge from &apos;lodash/merge&apos;;
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
@@ -153,18 +155,37 @@ export class FormComponent extends FormioForm {
     this.component = component;
     this.submitted = false;
     this.data = data;
+    let srcOptions = {};
 
     // Make sure that if reference is provided, the form must submit.
     if (this.component.reference) {
       this.component.submit = true;
     }
 
+    if (
+      !component.src &amp;&amp;
+      !this.options.formio &amp;&amp;
+      component.form
+    ) {
+      component.src = Formio.getBaseUrl();
+      if (component.project) {
+        component.src += &apos;/project/&apos; + component.project;
+        srcOptions.project = component.src;
+      }
+      component.src += &apos;/form/&apos; + component.form;
+    }
+
     // Build the source based on the root src path.
-    if (!component.src &amp;&amp; component.path &amp;&amp; this.options.formio) {
-      let rootSrc = this.options.formio.formUrl;
-      let parts = rootSrc.split(&apos;/&apos;);
-      parts.pop();
-      component.src = parts.join(&apos;/&apos;) + &apos;/&apos; + component.path;
+    if (!component.src &amp;&amp; this.options.formio) {
+      let rootSrc = this.options.formio.formsUrl;
+      if (component.path) {
+        let parts = rootSrc.split(&apos;/&apos;);
+        parts.pop();
+        component.src = parts.join(&apos;/&apos;) + &apos;/&apos; + component.path;
+      }
+      if (component.form) {
+        component.src = rootSrc + &apos;/&apos; + component.form;
+      }
     }
 
     // Add the source to this actual submission if the component is a reference.
@@ -174,7 +195,7 @@ export class FormComponent extends FormioForm {
 
     // Set the src if the property is provided in the JSON.
     if (component.src) {
-      this.src = component.src;
+      this.setSrc(component.src, srcOptions);
     }
 
     // Directly set the submission if it isn&apos;t a reference.

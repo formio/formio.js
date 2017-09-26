@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -147,6 +148,7 @@
 import Promise from &quot;native-promise-only&quot;;
 import _get from &apos;lodash/get&apos;;
 import _each from &apos;lodash/each&apos;;
+import _assign from &apos;lodash/assign&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
 import _clone from &apos;lodash/clone&apos;;
@@ -154,6 +156,7 @@ import _defaults from &apos;lodash/defaults&apos;;
 import i18next from &apos;i18next&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 import { Validator } from &apos;../Validator&apos;;
+import Tooltip from &apos;tooltip.js&apos;;
 
 i18next.initialized = false;
 
@@ -187,7 +190,25 @@ export class BaseComponent {
     /**
      * The i18n configuration for this component.
      */
-    this.options.i18n = this.options.i18n || require(&apos;../../locals/en&apos;);
+    let i18n = require(&apos;../../i18n&apos;);
+    if (options &amp;&amp; options.i18n) {
+      // Support legacy way of doing translations.
+      if (options.i18n.resources) {
+        i18n = options.i18n;
+      }
+      else {
+        _each(options.i18n, (lang, code) =&gt; {
+          if (!i18n.resources[code]) {
+            i18n.resources[code] = {translation: lang};
+          }
+          else {
+            _assign(i18n.resources[code].translation, lang);
+          }
+        });
+      }
+    }
+
+    this.options.i18n = i18n;
 
     /**
      * The events that are triggered for the whole FormioForm object.
@@ -333,8 +354,31 @@ export class BaseComponent {
    * @param {Object} params - The i18n parameters to use for translation.
    */
   t(text, params) {
-    let message = i18next.t(text, params);
-    return message;
+    params = params || {};
+    params.component = this.component;
+    params.nsSeparator = &apos;::&apos;;
+    params.keySeparator = &apos;.|.&apos;;
+    params.pluralSeparator = &apos;._.&apos;;
+    params.contextSeparator = &apos;._.&apos;;
+    return i18next.t(text, params);
+  }
+
+  /**
+   * Sets the language for this form.
+   *
+   * @param lang
+   * @return {*}
+   */
+  set language(lang) {
+    return new Promise((resolve, reject) =&gt; {
+      i18next.changeLanguage(lang, (err) =&gt; {
+        if (err) {
+          return reject(err);
+        }
+        this.redraw();
+        resolve();
+      });
+    });
   }
 
   /**
@@ -447,7 +491,7 @@ export class BaseComponent {
 
     // Set default values.
     let defaultValue = this.defaultValue;
-    if (defaultValue) {
+    if (!this.data.hasOwnProperty(this.component.key) &amp;&amp; defaultValue) {
       this.setValue(defaultValue);
     }
   }
@@ -671,7 +715,7 @@ export class BaseComponent {
    * @returns {string} - The name of the component.
    */
   get name() {
-    return this.component.label || this.component.placeholder || this.component.key;
+    return this.t(this.component.label || this.component.placeholder || this.component.key);
   }
 
   /**
@@ -679,7 +723,7 @@ export class BaseComponent {
    * @return {*}
    */
   get errorLabel() {
-    return this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key;
+    return this.t(this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key);
   }
 
   /**
@@ -707,8 +751,8 @@ export class BaseComponent {
   }
 
   /**
-   * Create the HTML element for the label of this comonent.
-   * @param {HTMLElement} container - The containing element that will comtain this label.
+   * Create the HTML element for the label of this component.
+   * @param {HTMLElement} container - The containing element that will contain this label.
    */
   createLabel(container) {
     if (!this.component.label || this.options.inputsOnly) {
@@ -725,7 +769,31 @@ export class BaseComponent {
       this.labelElement.setAttribute(&apos;for&apos;, this.info.attr.id);
     }
     this.labelElement.appendChild(this.text(this.component.label));
+    this.createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
+  }
+
+  /**
+   * Create the HTML element for the tooltip of this component.
+   * @param {HTMLElement} container - The containing element that will contain this tooltip.
+   */
+  createTooltip(container) {
+    if (!this.component.tooltip) {
+      return;
+    }
+    this.tooltip = this.ce(&apos;i&apos;, {
+      class: &apos;glyphicon glyphicon-question-sign text-muted&apos;
+    });
+    container.appendChild(this.text(&apos; &apos;));
+    container.appendChild(this.tooltip);
+
+    new Tooltip(this.tooltip, {
+      delay: {
+        hide: 100
+      },
+      placement: &apos;right&apos;,
+      title: this.component.tooltip
+    });
   }
 
   /**
@@ -904,6 +972,11 @@ export class BaseComponent {
     }
   }
 
+  redraw() {
+    this.clear();
+    this.build();
+  }
+
   /**
    * Remove all event handlers.
    */
@@ -919,6 +992,25 @@ export class BaseComponent {
     _each(this.eventHandlers, (handler) =&gt; {
       window.removeEventListener(handler.event, handler.func);
     });
+  }
+
+  /**
+   * Append different types of children.
+   *
+   * @param child
+   */
+  appendChild(element, child) {
+    if (Array.isArray(child)) {
+      child.forEach(oneChild =&gt; {
+        this.appendChild(element, oneChild);
+      });
+    }
+    else if (child instanceof HTMLElement || child instanceof Text) {
+      element.appendChild(child);
+    }
+    else if (child) {
+      element.appendChild(this.text(child.toString()));
+    }
   }
 
   /**
@@ -940,23 +1032,8 @@ export class BaseComponent {
       this.attr(element, attr);
     }
 
-    // Append different types of children.
-    const appendChild = child =&gt; {
-      if (Array.isArray(child)) {
-        child.forEach(oneChild =&gt; {
-          appendChild(oneChild);
-        });
-      }
-      else if (child instanceof HTMLElement || child instanceof Text) {
-        element.appendChild(child);
-      }
-      else if (child) {
-        element.appendChild(this.text(child.toString()));
-      }
-    };
-
-    appendChild(children);
-
+    // Append the children.
+    this.appendChild(element, children);
     return element;
   }
 
@@ -966,7 +1043,7 @@ export class BaseComponent {
    * @returns {Text}
    */
   text(text) {
-    return document.createTextNode(text);
+    return document.createTextNode(this.t(text));
   }
 
   /**
@@ -1072,6 +1149,8 @@ export class BaseComponent {
     }
     return show;
   }
+
+  onResize(scale) {}
 
   set visible(visible) {
     this.show(visible);
@@ -1471,17 +1550,18 @@ export class BaseComponent {
     let attributes = {
       name: this.options.name,
       type: this.component.inputType || &apos;text&apos;,
-      class: &apos;form-control&apos;
-    };
-    _each({
-      tabindex: &apos;tabindex&apos;,
-      placeholder: &apos;placeholder&apos;
-    }, (path, prop) =&gt; {
-      let attrValue = _get(this.component, path);
-      if (attrValue) {
-        attributes[prop] = attrValue;
-      }
-    });
+      class: &apos;form-control&apos;,
+      lang: i18next.language
+  };
+
+    if (this.component.placeholder) {
+      attributes.placeholder = this.t(this.component.placeholder);
+    }
+
+    if (this.component.tabindex) {
+      attributes.tabindex = this.component.tabindex;
+    }
+
     return {
       type: &apos;input&apos;,
       component: this.component,

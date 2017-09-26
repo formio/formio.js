@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -146,7 +147,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _get from &apos;lodash/get&apos;;
 import _each from &apos;lodash/each&apos;;
 import _has from &apos;lodash/has&apos;;
-import _isArray from &apos;lodash/isArray&apos;;
+import _isNumber from &apos;lodash/isNumber&apos;;
 import FormioUtils from &apos;../utils/index&apos;;
 export var Validator = {
   get: _get,
@@ -210,6 +211,38 @@ export var Validator = {
           return true;
         }
         return !component.isEmpty(value);
+      }
+    },
+    min: {
+      key: &apos;validate.min&apos;,
+      message: function(component, setting) {
+        return component.t(&apos;min&apos;, {
+          field: component.errorLabel,
+          min: parseFloat(setting)
+        });
+      },
+      check: function(component, setting, value) {
+        let min = parseFloat(setting);
+        if (!min || (!_isNumber(value))) {
+          return true;
+        }
+        return parseFloat(value) &gt;= min;
+      }
+    },
+    max: {
+      key: &apos;validate.max&apos;,
+      message: function(component, setting) {
+        return component.t(&apos;max&apos;, {
+          field: component.errorLabel,
+          max: parseFloat(setting)
+        });
+      },
+      check: function(component, setting, value) {
+        let max = parseFloat(setting);
+        if (!max || (!_isNumber(value))) {
+          return true;
+        }
+        return parseFloat(value) &lt;= max;
       }
     },
     minLength: {

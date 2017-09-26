@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -152,6 +153,7 @@ var Promise = require(&quot;native-promise-only&quot;);
 require(&apos;whatwg-fetch&apos;);
 var EventEmitter = require(&apos;eventemitter2&apos;).EventEmitter2;
 var copy = require(&apos;shallow-copy&apos;);
+var cookies = require(&apos;browser-cookies&apos;);
 
 /**
  * The Formio interface class.
@@ -468,6 +470,39 @@ export class Formio {
     return this.makeRequest(&apos;actionInfo&apos;, this.formUrl + &apos;/actions/&apos; + name);
   }
 
+  isObjectId(id) {
+    var checkForHexRegExp = new RegExp(&quot;^[0-9a-fA-F]{24}$&quot;);
+    return checkForHexRegExp.test(id);
+  }
+
+  getProjectId() {
+    if (!this.projectId) {
+      return Promise.resolve(&apos;&apos;);
+    }
+    if (this.isObjectId(this.projectId)) {
+      return Promise.resolve(this.projectId);
+    }
+    else {
+      return this.loadProject().then((project) =&gt; {
+        return project._id;
+      });
+    }
+  }
+
+  getFormId() {
+    if (!this.formId) {
+      return Promise.resolve(&apos;&apos;);
+    }
+    if (this.isObjectId(this.formId)) {
+      return Promise.resolve(this.formId);
+    }
+    else {
+      return this.loadForm().then((form) =&gt; {
+        return form._id;
+      });
+    }
+  }
+
   /**
    * Returns a temporary authentication token for single purpose token generation.
    */
@@ -481,6 +516,42 @@ export class Formio {
         &apos;x-expire&apos;: expire,
         &apos;x-allow&apos;: allowed
       })
+    });
+  }
+
+  /**
+   * Get a download url for a submission PDF of this submission.
+   *
+   * @return {*}
+   */
+  getDownloadUrl(form) {
+    if (!this.submissionId) {
+      return Promise.resolve(&apos;&apos;);
+    }
+
+    if (!form) {
+      // Make sure to load the form first.
+      return this.loadForm().then((_form) =&gt; {
+        if (!_form) {
+          return &apos;&apos;;
+        }
+        return this.getDownloadUrl(_form);
+      });
+    }
+
+    let apiUrl = &apos;/project/&apos; + form.project;
+    apiUrl += &apos;/form/&apos; + form._id;
+    apiUrl += &apos;/submission/&apos; + this.submissionId;
+    apiUrl += &apos;/download&apos;;
+
+    let download = Formio.baseUrl + apiUrl;
+    return new Promise((resolve, reject) =&gt; {
+      this.getTempToken(3600, &apos;GET:&apos; + apiUrl).then((tempToken) =&gt; {
+        download += &apos;?token=&apos; + tempToken.key;
+        resolve(download);
+      }, () =&gt; {
+        resolve(download);
+      }).catch(reject);
     });
   }
 
@@ -686,13 +757,16 @@ export class Formio {
       options.body = JSON.stringify(data);
     }
 
-    var requestToken = headers.get(&apos;x-jwt-token&apos;);
-
     // Allow plugins to alter the options.
     options = Formio.pluginAlter(&apos;requestOptions&apos;, options, url);
 
+    var requestToken = options.headers.get(&apos;x-jwt-token&apos;);
+
     var requestPromise = fetch(url, options)
       .then(function(response) {
+        // Allow plugins to respond.
+        response = Formio.pluginAlter(&apos;requestResponse&apos;, response, Formio);
+
         if (!response.ok) {
           if (response.status === 440) {
             Formio.setToken(null);
@@ -821,7 +895,12 @@ export class Formio {
       Formio.setUser(null);
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(&apos;formioToken&apos;);
+        if (typeof(Storage) !== &quot;undefined&quot;) {
+          return localStorage.removeItem(&apos;formioToken&apos;);
+        }
+        else {
+          return cookies.erase(&apos;formioToken&apos;);
+        }
       }
       catch(err) {
         return;
@@ -829,7 +908,12 @@ export class Formio {
     }
     // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem(&apos;formioToken&apos;, token);
+      if (typeof(Storage) !== &quot;undefined&quot;) {
+        localStorage.setItem(&apos;formioToken&apos;, token);
+      }
+      else {
+        cookies.set(&apos;formioToken&apos;, token);
+      }
     }
     catch(err) {
       // Do nothing.
@@ -840,9 +924,13 @@ export class Formio {
   static getToken() {
     if (this.token) { return this.token; }
     try {
-      var token = localStorage.getItem(&apos;formioToken&apos;) || &apos;&apos;;
-      this.token = token;
-      return token;
+      if (typeof(Storage) !== &quot;undefined&quot;) {
+        this.token = localStorage.getItem(&apos;formioToken&apos;) || &apos;&apos;;
+      }
+      else {
+        this.token = cookies.get(&apos;formioToken&apos;);
+      }
+      return this.token;
     }
     catch (e) {
       return &apos;&apos;;
@@ -854,7 +942,12 @@ export class Formio {
       this.setToken(null);
       // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
       try {
-        return localStorage.removeItem(&apos;formioUser&apos;);
+        if (typeof(Storage) !== &quot;undefined&quot;) {
+          return localStorage.removeItem(&apos;formioUser&apos;);
+        }
+        else {
+          return cookies.erase(&apos;formioUser&apos;);
+        }
       }
       catch(err) {
         return;
@@ -862,7 +955,12 @@ export class Formio {
     }
     // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
     try {
-      localStorage.setItem(&apos;formioUser&apos;, JSON.stringify(user));
+      if (typeof(Storage) !== &quot;undefined&quot;) {
+        localStorage.setItem(&apos;formioUser&apos;, JSON.stringify(user));
+      }
+      else {
+        cookies.set(&apos;formioUser&apos;, JSON.stringify(user));
+      }
     }
     catch(err) {
       // Do nothing.
@@ -871,7 +969,12 @@ export class Formio {
 
   static getUser() {
     try {
-      return JSON.parse(localStorage.getItem(&apos;formioUser&apos;) || null);
+      if (typeof(Storage) !== &quot;undefined&quot;) {
+        return JSON.parse(localStorage.getItem(&apos;formioUser&apos;) || null);
+      }
+      else {
+        return JSON.parse(cookies.get(&apos;formioUser&apos;));
+      }
     }
     catch (e) {
       return;

@@ -34,6 +34,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html">FormioForm</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
@@ -158,12 +159,19 @@ export class SelectComponent extends BaseComponent {
     if (this.component.refreshOn) {
       this.on(&apos;change&apos;, (event) =&gt; {
         if (this.component.refreshOn === &apos;data&apos;) {
-          this.updateItems();
+          this.refreshItems();
         }
         else if (event.changed.component.key === this.component.refreshOn) {
-          this.updateItems();
+          this.refreshItems();
         }
       });
+    }
+  }
+
+  refreshItems() {
+    this.updateItems();
+    if (this.component.clearOnRefresh) {
+      this.setValue(null);
     }
   }
 
@@ -171,6 +179,9 @@ export class SelectComponent extends BaseComponent {
     let info = super.elementInfo();
     info.type = &apos;select&apos;;
     info.changeEvent = &apos;change&apos;;
+    if (info.attr.placeholder) {
+      delete info.attr.placeholder;
+    }
     return info;
   }
 
@@ -252,7 +263,36 @@ export class SelectComponent extends BaseComponent {
       })
   }
 
+  /**
+   * Get the request headers for this select dropdown.
+   */
+  get requestHeaders() {
+    // Create the headers object.
+    let headers = new Headers();
+
+    // Add custom headers to the url.
+    if (this.component.data &amp;&amp; this.component.data.headers) {
+      try {
+        _each(this.component.data.headers, (header) =&gt; {
+          if (header.key) {
+            headers.set(header.key, header.value);
+          }
+        });
+      }
+      catch (err) {
+        console.warn(err.message);
+      }
+    }
+
+    return headers;
+  }
+
   updateItems() {
+    if (!this.component.data) {
+      console.warn(&apos;Select component &apos; + this.component.key + &apos; does not have data configuration.&apos;);
+      return;
+    }
+
     switch(this.component.dataSrc) {
       case &apos;values&apos;:
         this.component.valueProperty = &apos;value&apos;;
@@ -272,15 +312,23 @@ export class SelectComponent extends BaseComponent {
         }
         break;
       case &apos;resource&apos;:
+        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : Formio.getProjectUrl() + &apos;/form&apos;;
+        resourceUrl += (&apos;/&apos; + this.component.data.resource + &apos;/submission&apos;);
+
         try {
-          this.loadItems(Formio.getProjectUrl() + &apos;/form/&apos; + this.component.data.resource + &apos;/submission&apos;);
+          this.loadItems(resourceUrl, null, this.requestHeaders);
         }
         catch (err) {
           console.warn(&apos;Unable to load resources for &apos; + this.component.key);
         }
         break;
       case &apos;url&apos;:
-        this.loadItems(this.component.data.url, null, new Headers(), {
+        let url = this.component.data.url;
+        if (url.substr(0, 1) === &apos;/&apos;) {
+          url = Formio.getBaseUrl() + this.component.data.url;
+        }
+
+        this.loadItems(url, null, this.requestHeaders, {
           noToken: true
         });
         break;
@@ -292,17 +340,40 @@ export class SelectComponent extends BaseComponent {
     if (this.component.multiple) {
       input.setAttribute(&apos;multiple&apos;, true);
     }
-    var self = this;
     this.choices = new Choices(input, {
-      placeholder: !!this.component.placeholder,
-      placeholderValue: this.component.placeholder,
       removeItemButton: true,
       itemSelectText: &apos;&apos;,
       classNames: {
         containerOuter: &apos;choices form-group formio-choices&apos;,
         containerInner: &apos;form-control&apos;
-      }
+      },
+      shouldSort: false
     });
+
+    // Create a pseudo-placeholder.
+    if (
+      this.component.placeholder &amp;&amp;
+      !this.choices.placeholderElement
+    ) {
+      this.placeholder = this.ce(&apos;span&apos;, {
+        class: &apos;formio-placeholder&apos;
+      }, [
+        this.text(this.component.placeholder)
+      ]);
+
+      // Prepend the placeholder.
+      this.choices.containerInner.insertBefore(this.placeholder, this.choices.containerInner.firstChild);
+      input.addEventListener(&apos;addItem&apos;, () =&gt; {
+        this.placeholder.style.visibility = &apos;hidden&apos;;
+      }, false);
+      input.addEventListener(&apos;removeItem&apos;, () =&gt; {
+        let value = this.getValue();
+        if (!value || !value.length) {
+          this.placeholder.style.visibility = &apos;visible&apos;;
+        }
+      }, false);
+    }
+
     if (this.disabled) {
       this.choices.disable();
     }
@@ -332,8 +403,8 @@ export class SelectComponent extends BaseComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     this.value = value;
-    if (value &amp;&amp; this.choices) {
-      if (this.choices.store) {
+    if (this.choices) {
+      if (value &amp;&amp; this.choices.store) {
         // Search for the choice.
         const choices = this.choices.store.getChoices();
         const foundChoice = choices.find((choice) =&gt; {
@@ -353,7 +424,12 @@ export class SelectComponent extends BaseComponent {
       }
 
       // Now set the value.
-      this.choices.setValueByChoice(_isArray(value) ? value : [value]);
+      if (value) {
+        setTimeout(() =&gt; this.choices.setValueByChoice(_isArray(value) ? value : [value]), 10);
+      }
+      else {
+        this.choices.removeActiveItems();
+      }
     }
     this.updateValue(flags);
   }
