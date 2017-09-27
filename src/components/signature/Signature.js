@@ -134,7 +134,7 @@ export class SignatureComponent extends BaseComponent {
       setTimeout(checkWidth.bind(this), 200);
     }.bind(this), 200);
 
-    if (this.options.readOnly || this.component.disabled) {
+    if (this.shouldDisable) {
       this.disabled = true;
     }
   }

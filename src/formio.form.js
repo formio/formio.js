@@ -668,7 +668,8 @@ export class FormioForm extends FormioComponents {
     this._submission = this.submission;
     let value = _clone(this._submission);
     value.changed = changed;
-    this.checkData(value.data, changed.flags);
+    value.isValid = this.checkData(value.data, changed.flags);
+    this.pristine = false;
     this.emit('change', value);
   }
 

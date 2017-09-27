@@ -100,6 +100,25 @@ export class FormioComponents extends BaseComponent {
   }
 
   /**
+   * Create a new component and add it to the components array.
+   *
+   * @param component
+   * @param data
+   */
+  createComponent(component, options, data) {
+    if (!this.options.components) {
+      this.options.components = require('./index');
+      _assign(this.options.components, FormioComponents.customComponents);
+    }
+    let comp = this.options.components.create(component, options, data, true);
+    comp.parent = this;
+    comp.root = this.root || this;
+    comp.build();
+    this.components.push(comp);
+    return comp;
+  }
+
+  /**
    * Add a new component to the components array.
    *
    * @param {Object} component - The component JSON schema to add.
@@ -111,13 +130,7 @@ export class FormioComponents extends BaseComponent {
     element = element || this.element;
     data = data || this.data;
     component.row = this.row;
-    if (!this.options.components) {
-      this.options.components = require('./index');
-      _assign(this.options.components, FormioComponents.customComponents);
-    }
-    let comp = this.options.components.create(component, this.options, data);
-    comp.parent = this;
-    this.components.push(comp);
+    let comp = this.createComponent(component, this.options, data);
     this.setHidden(comp);
     element.appendChild(comp.getElement());
     return comp;
@@ -206,6 +219,7 @@ export class FormioComponents extends BaseComponent {
    */
   checkData(data, flags) {
     flags = flags || {};
+    let valid = true;
     if (flags.noCheck) {
       return;
     }
@@ -213,9 +227,10 @@ export class FormioComponents extends BaseComponent {
       comp.checkConditions(data);
       comp.calculateValue(data);
       if (!flags.noValidate) {
-        comp.checkValidity(data);
+        valid &= comp.checkValidity(data);
       }
     });
+    return valid;
   }
 
   checkConditions(data) {
@@ -258,11 +273,15 @@ export class FormioComponents extends BaseComponent {
     _each(this.getComponents(), (comp) => comp.calculateValue(data));
   }
 
+  isValid(data, dirty) {
+    let valid = super.isValid(data, dirty);
+    _each(this.getComponents(), (comp) => (valid &= comp.isValid(data, dirty)));
+    return valid;
+  }
+
   checkValidity(data, dirty) {
     let check = super.checkValidity(data, dirty);
-    _each(this.getComponents(), (comp) => {
-      check &= comp.checkValidity(data, dirty);
-    });
+    _each(this.getComponents(), (comp) => (check &= comp.checkValidity(data, dirty)));
     return check;
   }
 

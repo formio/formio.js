@@ -59,6 +59,11 @@ export class ButtonComponent extends BaseComponent {
         this.loading = false;
         this.disabled = false;
       }, true);
+      this.on('change', (value) => {
+        console.log(this.root);
+        this.loading = false;
+        this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
+      }, true);
       this.on('error', () => {
         this.loading = false;
       }, true);
@@ -111,7 +116,7 @@ export class ButtonComponent extends BaseComponent {
           break;
       }
     });
-    if (this.options.readOnly) {
+    if (this.shouldDisable) {
       this.disabled = true;
     }
   }

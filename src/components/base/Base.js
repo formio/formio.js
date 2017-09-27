@@ -156,6 +156,20 @@ export class BaseComponent {
     this.pristine = true;
 
     /**
+     * Points to the parent component.
+     *
+     * @type {BaseComponent}
+     */
+    this.parent = null;
+
+    /**
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {BaseComponent}
+     */
+    this.root = this;
+
+    /**
      * The Input mask instance for this component.
      * @type {InputMask}
      */
@@ -327,7 +341,7 @@ export class BaseComponent {
     return Promise.resolve(true);
   }
 
-  get isDisabled() {
+  get shouldDisable() {
     return (this.options.readOnly || this.component.disabled);
   }
 
@@ -343,7 +357,7 @@ export class BaseComponent {
     this.createDescription(this.element);
 
     // Disable if needed.
-    if (this.isDisabled) {
+    if (this.shouldDisable) {
       this.disabled = true;
     }
 
@@ -530,7 +544,7 @@ export class BaseComponent {
       this.createInput(td);
       tr.appendChild(td);
 
-      if (!this.isDisabled) {
+      if (!this.shouldDisable) {
         let tdAdd = this.ce('td');
         tdAdd.appendChild(this.removeButton(index));
         tr.appendChild(tdAdd);
@@ -539,7 +553,7 @@ export class BaseComponent {
       this.tbody.appendChild(tr);
     });
 
-    if (!this.isDisabled) {
+    if (!this.shouldDisable) {
       let tr = this.ce('tr');
       let td = this.ce('td', {
         colspan: '2'
@@ -549,7 +563,7 @@ export class BaseComponent {
       this.tbody.appendChild(tr);
     }
 
-    if (this.isDisabled) {
+    if (this.shouldDisable) {
       this.disabled = true;
     }
   }
@@ -1200,23 +1214,39 @@ export class BaseComponent {
    *
    */
   getRoot() {
-    var parent = this.parent;
-    while (parent.parent) {
-      parent = parent.parent;
+    return this.root;
+  }
+
+  /**
+   * Returns the invalid message, or empty string if the component is valid.
+   *
+   * @param data
+   * @param dirty
+   * @return {*}
+   */
+  invalidMessage(data, dirty) {
+    // No need to check for errors if there is no input or if it is pristine.
+    if (!this.component.input || (!dirty && this.pristine)) {
+      return '';
     }
-    return parent;
+
+    return Validator.check(this, data);
+  }
+
+  /**
+   * Returns if the component is valid or not.
+   *
+   * @param data
+   * @param dirty
+   * @return {boolean}
+   */
+  isValid(data, dirty) {
+    return !this.invalidMessage(data, dirty);
   }
 
   checkValidity(data, dirty) {
-    // No need to check for errors if there is no input or if it is pristine.
-    if (!this.component.input || (!dirty && this.pristine)) {
-      return true;
-    }
-
-    let message = Validator.check(this, data);
+    let message = this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
-
-    // No message, returns true
     return message ? false : true;
   }
 
@@ -1337,6 +1367,11 @@ export class BaseComponent {
    * @param {boolean} disabled
    */
   set disabled(disabled) {
+    // Do not allow a component to be disabled if it should be always...
+    if (!disabled && this.shouldDisable) {
+      return;
+    }
+
     this._disabled = disabled;
     // Disable all input.
     _each(this.inputs, (input) => {

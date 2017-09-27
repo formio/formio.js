@@ -56,7 +56,7 @@ export class DataGridComponent extends FormioComponents {
     });
 
     // Add the remove column if it is not disabled.
-    if (!this.isDisabled) {
+    if (!this.shouldDisable) {
       let th = this.ce('th');
       tr.appendChild(th);
     }
@@ -80,9 +80,9 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildRows(data) {
-    let components = require('../index');
     this.tbody.innerHTML = '';
     this.rows = [];
+    this.components = [];
     _each(this.data[this.component.key], (row, index) => {
       let tr = this.ce('tr');
       let cols = {};
@@ -92,7 +92,7 @@ export class DataGridComponent extends FormioComponents {
         column.row = this.row + '-' + index;
         let options = _clone(this.options);
         options.name += '[' + index + ']';
-        let comp = components.create(column, options, row);
+        let comp = this.createComponent(column, options, row);
         if (row.hasOwnProperty(column.key)) {
           comp.setValue(row[column.key]);
         }
@@ -110,7 +110,7 @@ export class DataGridComponent extends FormioComponents {
       this.rows.push(cols);
 
       // Add the remove column if not disabled.
-      if (!this.isDisabled) {
+      if (!this.shouldDisable) {
         let td = this.ce('td');
         td.appendChild(this.removeButton(index));
         tr.appendChild(td);
@@ -120,7 +120,7 @@ export class DataGridComponent extends FormioComponents {
     });
 
     // Add the add button if not disabled.
-    if (!this.isDisabled) {
+    if (!this.shouldDisable) {
       let tr = this.ce('tr');
       let td = this.ce('td', {
         colspan: (this.component.components.length + 1)
