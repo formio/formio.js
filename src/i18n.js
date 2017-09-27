@@ -6,6 +6,7 @@ module.exports = {
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
         required: '{{field}} is required',
+        pattern: '{{field}} does not match the pattern {{pattern}}',
         minLength: '{{field}} must be longer than {{length}} characters.',
         maxLength: '{{field}} must be shorter than {{length}} characters.',
         min: '{{field}} cannot be less than {{min}}.',

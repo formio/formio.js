@@ -157,7 +157,8 @@ export var Validator = {
       key: 'validate.pattern',
       message: function(component, setting) {
         return component.t('pattern', {
-          field: component.errorLabel
+          field: component.errorLabel,
+          pattern: setting
         });
       },
       check: function(component, setting, value) {
