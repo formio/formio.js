@@ -192,6 +192,28 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     }
 
     /**
+     * Create a new component and add it to the components array.
+     *
+     * @param component
+     * @param data
+     */
+
+  }, {
+    key: 'createComponent',
+    value: function createComponent(component, options, data) {
+      if (!this.options.components) {
+        this.options.components = require('./index');
+        (0, _assign3.default)(this.options.components, FormioComponents.customComponents);
+      }
+      var comp = this.options.components.create(component, options, data, true);
+      comp.parent = this;
+      comp.root = this.root || this;
+      comp.build();
+      this.components.push(comp);
+      return comp;
+    }
+
+    /**
      * Add a new component to the components array.
      *
      * @param {Object} component - The component JSON schema to add.
@@ -206,13 +228,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       element = element || this.element;
       data = data || this.data;
       component.row = this.row;
-      if (!this.options.components) {
-        this.options.components = require('./index');
-        (0, _assign3.default)(this.options.components, FormioComponents.customComponents);
-      }
-      var comp = this.options.components.create(component, this.options, data);
-      comp.parent = this;
-      this.components.push(comp);
+      var comp = this.createComponent(component, this.options, data);
       this.setHidden(comp);
       element.appendChild(comp.getElement());
       return comp;
@@ -327,6 +343,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'checkData',
     value: function checkData(data, flags) {
       flags = flags || {};
+      var valid = true;
       if (flags.noCheck) {
         return;
       }
@@ -334,9 +351,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         comp.checkConditions(data);
         comp.calculateValue(data);
         if (!flags.noValidate) {
-          comp.checkValidity(data);
+          valid &= comp.checkValidity(data);
         }
       });
+      return valid;
     }
   }, {
     key: 'checkConditions',
@@ -396,11 +414,20 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       });
     }
   }, {
+    key: 'isValid',
+    value: function isValid(data, dirty) {
+      var valid = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'isValid', this).call(this, data, dirty);
+      (0, _each3.default)(this.getComponents(), function (comp) {
+        return valid &= comp.isValid(data, dirty);
+      });
+      return valid;
+    }
+  }, {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
       var check = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkValidity', this).call(this, data, dirty);
       (0, _each3.default)(this.getComponents(), function (comp) {
-        check &= comp.checkValidity(data, dirty);
+        return check &= comp.checkValidity(data, dirty);
       });
       return check;
     }
@@ -679,7 +706,8 @@ var Validator = exports.Validator = {
       key: 'validate.pattern',
       message: function message(component, setting) {
         return component.t('pattern', {
-          field: component.errorLabel
+          field: component.errorLabel,
+          pattern: setting
         });
       },
       check: function check(component, setting, value) {
@@ -1602,6 +1630,20 @@ var BaseComponent = function () {
     this.pristine = true;
 
     /**
+     * Points to the parent component.
+     *
+     * @type {BaseComponent}
+     */
+    this.parent = null;
+
+    /**
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {BaseComponent}
+     */
+    this.root = this;
+
+    /**
      * The Input mask instance for this component.
      * @type {InputMask}
      */
@@ -1799,7 +1841,7 @@ var BaseComponent = function () {
       this.createDescription(this.element);
 
       // Disable if needed.
-      if (this.isDisabled) {
+      if (this.shouldDisable) {
         this.disabled = true;
       }
 
@@ -1939,7 +1981,7 @@ var BaseComponent = function () {
         _this2.createInput(td);
         tr.appendChild(td);
 
-        if (!_this2.isDisabled) {
+        if (!_this2.shouldDisable) {
           var tdAdd = _this2.ce('td');
           tdAdd.appendChild(_this2.removeButton(index));
           tr.appendChild(tdAdd);
@@ -1948,7 +1990,7 @@ var BaseComponent = function () {
         _this2.tbody.appendChild(tr);
       });
 
-      if (!this.isDisabled) {
+      if (!this.shouldDisable) {
         var tr = this.ce('tr');
         var td = this.ce('td', {
           colspan: '2'
@@ -1958,7 +2000,7 @@ var BaseComponent = function () {
         this.tbody.appendChild(tr);
       }
 
-      if (this.isDisabled) {
+      if (this.shouldDisable) {
         this.disabled = true;
       }
     }
@@ -2187,15 +2229,18 @@ var BaseComponent = function () {
         return mask;
       }
       var maskArray = [];
+      maskArray.numeric = true;
       for (var i = 0; i < mask.length; i++) {
         switch (mask[i]) {
           case '9':
             maskArray.push(/\d/);
             break;
           case 'A':
+            maskArray.numeric = false;
             maskArray.push(/[a-zA-Z]/);
             break;
           case '*':
+            maskArray.numeric = false;
             maskArray.push(/[a-zA-Z0-9]/);
             break;
           default:
@@ -2234,6 +2279,9 @@ var BaseComponent = function () {
           inputElement: input,
           mask: mask
         });
+        if (mask.numeric) {
+          input.setAttribute('pattern', "\\d*");
+        }
         if (!this.component.placeholder) {
           input.setAttribute('placeholder', this.maskPlaceholder(mask));
         }
@@ -2679,24 +2727,46 @@ var BaseComponent = function () {
      *
      */
     value: function getRoot() {
-      var parent = this.parent;
-      while (parent.parent) {
-        parent = parent.parent;
+      return this.root;
+    }
+
+    /**
+     * Returns the invalid message, or empty string if the component is valid.
+     *
+     * @param data
+     * @param dirty
+     * @return {*}
+     */
+
+  }, {
+    key: 'invalidMessage',
+    value: function invalidMessage(data, dirty) {
+      // No need to check for errors if there is no input or if it is pristine.
+      if (!this.component.input || !dirty && this.pristine) {
+        return '';
       }
-      return parent;
+
+      return _Validator.Validator.check(this, data);
+    }
+
+    /**
+     * Returns if the component is valid or not.
+     *
+     * @param data
+     * @param dirty
+     * @return {boolean}
+     */
+
+  }, {
+    key: 'isValid',
+    value: function isValid(data, dirty) {
+      return !this.invalidMessage(data, dirty);
     }
   }, {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
-      // No need to check for errors if there is no input or if it is pristine.
-      if (!this.component.input || !dirty && this.pristine) {
-        return true;
-      }
-
-      var message = _Validator.Validator.check(this, data);
+      var message = this.invalidMessage(data, dirty);
       this.setCustomValidity(message, dirty);
-
-      // No message, returns true
       return message ? false : true;
     }
   }, {
@@ -2930,7 +3000,7 @@ var BaseComponent = function () {
       });
     }
   }, {
-    key: 'isDisabled',
+    key: 'shouldDisable',
     get: function get() {
       return this.options.readOnly || this.component.disabled;
     }
@@ -3064,6 +3134,11 @@ var BaseComponent = function () {
      */
 
     , set: function set(disabled) {
+      // Do not allow a component to be disabled if it should be always...
+      if (!disabled && this.shouldDisable) {
+        return;
+      }
+
       this._disabled = disabled;
       // Disable all input.
       (0, _each3.default)(this.inputs, function (input) {
@@ -3289,6 +3364,10 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
           _this2.loading = false;
           _this2.disabled = false;
         }, true);
+        this.on('change', function (value) {
+          _this2.loading = false;
+          _this2.disabled = _this2.component.disableOnInvalid && !_this2.root.isValid(value.data, true);
+        }, true);
         this.on('error', function () {
           _this2.loading = false;
         }, true);
@@ -3340,7 +3419,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
             break;
         }
       });
-      if (this.options.readOnly) {
+      if (this.shouldDisable) {
         this.disabled = true;
       }
     }
@@ -3356,7 +3435,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       if (this.loader) {
         if (loading) {
           this.element.appendChild(this.loader);
-        } else {
+        } else if (this.element.contains(this.loader)) {
           this.element.removeChild(this.loader);
         }
       }
@@ -3468,7 +3547,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         this.addInput(this.input, this.element);
       }
       this.createDescription(this.element);
-      if (this.options.readOnly || this.component.disabled) {
+      if (this.shouldDisable) {
         this.disabled = true;
       }
     }
@@ -4101,7 +4180,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       });
 
       // Add the remove column if it is not disabled.
-      if (!this.isDisabled) {
+      if (!this.shouldDisable) {
         var th = this.ce('th');
         tr.appendChild(th);
       }
@@ -4124,9 +4203,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function buildRows(data) {
       var _this3 = this;
 
-      var components = require('../index');
       this.tbody.innerHTML = '';
       this.rows = [];
+      this.components = [];
       (0, _each3.default)(this.data[this.component.key], function (row, index) {
         var tr = _this3.ce('tr');
         var cols = {};
@@ -4136,7 +4215,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           column.row = _this3.row + '-' + index;
           var options = (0, _clone3.default)(_this3.options);
           options.name += '[' + index + ']';
-          var comp = components.create(column, options, row);
+          var comp = _this3.createComponent(column, options, row);
           if (row.hasOwnProperty(column.key)) {
             comp.setValue(row[column.key]);
           } else if (comp.type === 'components') {
@@ -4153,7 +4232,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         _this3.rows.push(cols);
 
         // Add the remove column if not disabled.
-        if (!_this3.isDisabled) {
+        if (!_this3.shouldDisable) {
           var td = _this3.ce('td');
           td.appendChild(_this3.removeButton(index));
           tr.appendChild(td);
@@ -4163,7 +4242,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       });
 
       // Add the add button if not disabled.
-      if (!this.isDisabled) {
+      if (!this.shouldDisable) {
         var tr = this.ce('tr');
         var td = this.ce('td', {
           colspan: this.component.components.length + 1
@@ -4267,7 +4346,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   return DataGridComponent;
 }(_Components.FormioComponents);
 
-},{"../Components":1,"../index":22,"lodash/clone":248,"lodash/cloneDeep":249,"lodash/each":255,"lodash/isArray":264}],13:[function(require,module,exports){
+},{"../Components":1,"lodash/clone":248,"lodash/cloneDeep":249,"lodash/each":255,"lodash/isArray":264}],13:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4377,6 +4456,38 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       info.changeEvent = 'input';
       this.component.suffix = true;
       return info;
+    }
+
+    /**
+     * Return a translated date setting.
+     *
+     * @param date
+     * @return {*}
+     */
+
+  }, {
+    key: 'getDateSetting',
+    value: function getDateSetting(date) {
+      if (!date) {
+        return null;
+      }
+
+      var dateSetting = new Date(date);
+      if (!dateSetting || isNaN(dateSetting.getDate())) {
+        try {
+          var moment = momentModule;
+          dateSetting = new Date(eval(date));
+        } catch (e) {
+          dateSetting = null;
+        }
+      }
+
+      // Ensure this is a date.
+      if (dateSetting && isNaN(dateSetting.getDate())) {
+        dateSetting = null;
+      }
+
+      return dateSetting;
     }
 
     /**
@@ -4499,26 +4610,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'defaultDate',
     get: function get() {
-      if (!this.component.defaultDate) {
-        return null;
-      }
-
-      var defaultDate = new Date(this.component.defaultDate);
-      if (!defaultDate || isNaN(defaultDate.getDate())) {
-        try {
-          var moment = momentModule;
-          defaultDate = new Date(eval(this.component.defaultDate));
-        } catch (e) {
-          defaultDate = null;
-        }
-      }
-
-      // Ensure this is a date.
-      if (defaultDate && isNaN(defaultDate.getDate())) {
-        defaultDate = null;
-      }
-
-      return defaultDate;
+      return this.getDateSetting(this.component.defaultDate);
     }
   }, {
     key: 'config',
@@ -4537,8 +4629,8 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         defaultDate: this.defaultDate,
         hourIncrement: (0, _get4.default)(this.component, 'timePicker.hourStep', 1),
         minuteIncrement: (0, _get4.default)(this.component, 'timePicker.minuteStep', 5),
-        minDate: (0, _get4.default)(this.component, 'datePicker.minDate'),
-        maxDate: (0, _get4.default)(this.component, 'datePicker.maxDate'),
+        minDate: this.getDateSetting((0, _get4.default)(this.component, 'datePicker.minDate')),
+        maxDate: this.getDateSetting((0, _get4.default)(this.component, 'datePicker.maxDate')),
         onChange: function onChange() {
           return _this3.onChange();
         },
@@ -7004,6 +7096,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       // If a value is provided, then select it.
       if (this.value) {
         this.setValue(this.value, true);
+      } else {
+        // If a default value is provided then select it.
+        var defaultValue = this.defaultValue;
+        if (defaultValue) {
+          this.setValue(defaultValue);
+        }
       }
     }
   }, {
@@ -7643,7 +7741,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
         setTimeout(checkWidth.bind(this), 200);
       }.bind(this), 200);
 
-      if (this.options.readOnly || this.component.disabled) {
+      if (this.shouldDisable) {
         this.disabled = true;
       }
     }
@@ -7772,7 +7870,7 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
       this.table.appendChild(tbody);
       this.element.appendChild(this.table);
       this.createDescription(this.element);
-      if (this.options.readOnly || this.component.disabled) {
+      if (this.shouldDisable) {
         this.disabled = true;
       }
     }
@@ -8916,7 +9014,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var _this6 = this;
 
       return this.onSubmission = this.formReady.then(function () {
-        _this6.setValue(submission);
+        _this6.setValue(submission, {
+          noUpdate: true
+        });
+        _this6.triggerChange();
         _this6.submissionReadyResolve();
       }, function (err) {
         return _this6.submissionReadyReject(err);
@@ -9139,7 +9240,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       this._submission = this.submission;
       var value = (0, _clone3.default)(this._submission);
       value.changed = changed;
-      this.checkData(value.data, changed.flags);
+      value.isValid = this.checkData(value.data, changed.flags);
+      this.pristine = false;
       this.emit('change', value);
     }
 
@@ -11358,6 +11460,7 @@ module.exports = {
         complete: 'Submission Complete',
         error: 'Please fix the following errors before submitting.',
         required: '{{field}} is required',
+        pattern: '{{field}} does not match the pattern {{pattern}}',
         minLength: '{{field}} must be longer than {{length}} characters.',
         maxLength: '{{field}} must be shorter than {{length}} characters.',
         min: '{{field}} cannot be less than {{min}}.',

@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Fixed the validity checks and button disabled states.
  - Fixed the error message on regular expression settings.
  - Issue with the default values not working on Select dropdowns.
+ - Fixed the input mask to show only number pads on all numeric inputs.
+ - Performance when using conditional logic. checkConditionals called too many times on submission set.
 
 ### Added
  - Ability to handle dynamic min and max dates.

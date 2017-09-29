@@ -28,7 +28,7 @@ export class ButtonComponent extends BaseComponent {
       if (loading) {
         this.element.appendChild(this.loader);
       }
-      else {
+      else if (this.element.contains(this.loader)) {
         this.element.removeChild(this.loader);
       }
     }
