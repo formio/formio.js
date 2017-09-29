@@ -8999,7 +8999,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         _this6.setValue(submission, {
           noUpdate: true
         });
-        _this6.triggerChange();
+        _this6.updateValue({
+          noValidate: true
+        });
         _this6.submissionReadyResolve();
       }, function (err) {
         return _this6.submissionReadyReject(err);
