@@ -193,6 +193,7 @@ export class SelectBoxesComponent extends RadioComponent {
    * @param flags
    */
   setValue(value, flags) {
+    value = value || {};
     flags = this.getFlags.apply(this, arguments);
     if (_isArray(value)) {
       this.value = {};

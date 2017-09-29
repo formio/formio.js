@@ -149,11 +149,15 @@ import Choices from &apos;choices.js&apos;;
 import Formio from &apos;../../formio&apos;;
 import _each from &apos;lodash/each&apos;;
 import _get from &apos;lodash/get&apos;;
+import _debounce from &apos;lodash/debounce&apos;;
 import _isEmpty from &apos;lodash/isEmpty&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
+
+    // Trigger an update.
+    this.triggerUpdate = _debounce(this.updateItems.bind(this), 200);
 
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {
@@ -169,7 +173,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   refreshItems() {
-    this.updateItems();
+    this.triggerUpdate();
     if (this.component.clearOnRefresh) {
       this.setValue(null);
     }
@@ -219,9 +223,16 @@ export class SelectComponent extends BaseComponent {
     if (this.value) {
       this.setValue(this.value, true);
     }
+    else {
+      // If a default value is provided then select it.
+      let defaultValue = this.defaultValue;
+      if (defaultValue) {
+        this.setValue(defaultValue);
+      }
+    }
   }
 
-  loadItems(url, input, headers, options) {
+  loadItems(url, search, headers, options) {
     let query = (this.component.dataSrc === &apos;url&apos;) ? {} : {
       limit: 100,
       skip: 0
@@ -234,8 +245,8 @@ export class SelectComponent extends BaseComponent {
     });
 
     // Add search capability.
-    if (this.component.searchField &amp;&amp; input) {
-      query[this.component.searchField] = input;
+    if (this.component.searchField &amp;&amp; search) {
+      query[this.component.searchField] = search;
     }
 
     // Add filter capability
@@ -287,7 +298,7 @@ export class SelectComponent extends BaseComponent {
     return headers;
   }
 
-  updateItems() {
+  updateItems(searchInput) {
     if (!this.component.data) {
       console.warn(&apos;Select component &apos; + this.component.key + &apos; does not have data configuration.&apos;);
       return;
@@ -316,7 +327,7 @@ export class SelectComponent extends BaseComponent {
         resourceUrl += (&apos;/&apos; + this.component.data.resource + &apos;/submission&apos;);
 
         try {
-          this.loadItems(resourceUrl, null, this.requestHeaders);
+          this.loadItems(resourceUrl, searchInput, this.requestHeaders);
         }
         catch (err) {
           console.warn(&apos;Unable to load resources for &apos; + this.component.key);
@@ -328,7 +339,7 @@ export class SelectComponent extends BaseComponent {
           url = Formio.getBaseUrl() + this.component.data.url;
         }
 
-        this.loadItems(url, null, this.requestHeaders, {
+        this.loadItems(url, searchInput, this.requestHeaders, {
           noToken: true
         });
         break;
@@ -349,6 +360,11 @@ export class SelectComponent extends BaseComponent {
       },
       shouldSort: false
     });
+
+    // If a search field is provided, then add an event listener to update items on search.
+    if (this.component.searchField) {
+      input.addEventListener(&apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
+    }
 
     // Create a pseudo-placeholder.
     if (
@@ -377,7 +393,7 @@ export class SelectComponent extends BaseComponent {
     if (this.disabled) {
       this.choices.disable();
     }
-    this.updateItems();
+    this.triggerUpdate();
   }
 
   set disabled(disabled) {

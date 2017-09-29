@@ -302,6 +302,20 @@ export class BaseComponent {
     this.pristine = true;
 
     /**
+     * Points to the parent component.
+     *
+     * @type {BaseComponent}
+     */
+    this.parent = null;
+
+    /**
+     * Points to the root component, usually the FormComponent.
+     *
+     * @type {BaseComponent}
+     */
+    this.root = this;
+
+    /**
      * The Input mask instance for this component.
      * @type {InputMask}
      */
@@ -473,6 +487,10 @@ export class BaseComponent {
     return Promise.resolve(true);
   }
 
+  get shouldDisable() {
+    return (this.options.readOnly || this.component.disabled);
+  }
+
   /**
    * Builds the component.
    */
@@ -485,7 +503,7 @@ export class BaseComponent {
     this.createDescription(this.element);
 
     // Disable if needed.
-    if (this.options.readOnly || this.component.disabled) {
+    if (this.shouldDisable) {
       this.disabled = true;
     }
 
@@ -671,20 +689,27 @@ export class BaseComponent {
       let td = this.ce(&apos;td&apos;);
       this.createInput(td);
       tr.appendChild(td);
-      let tdAdd = this.ce(&apos;td&apos;);
-      tdAdd.appendChild(this.removeButton(index));
-      tr.appendChild(tdAdd);
+
+      if (!this.shouldDisable) {
+        let tdAdd = this.ce(&apos;td&apos;);
+        tdAdd.appendChild(this.removeButton(index));
+        tr.appendChild(tdAdd);
+      }
+
       this.tbody.appendChild(tr);
     });
 
-    let tr = this.ce(&apos;tr&apos;);
-    let td = this.ce(&apos;td&apos;, {
-      colspan: &apos;2&apos;
-    });
-    td.appendChild(this.addButton());
-    tr.appendChild(td);
-    this.tbody.appendChild(tr);
-    if (this.options.readOnly || this.component.disabled) {
+    if (!this.shouldDisable) {
+      let tr = this.ce(&apos;tr&apos;);
+      let td = this.ce(&apos;td&apos;, {
+        colspan: &apos;2&apos;
+      });
+      td.appendChild(this.addButton());
+      tr.appendChild(td);
+      this.tbody.appendChild(tr);
+    }
+
+    if (this.shouldDisable) {
       this.disabled = true;
     }
   }
@@ -890,15 +915,18 @@ export class BaseComponent {
       return mask;
     }
     let maskArray = [];
+    maskArray.numeric = true;
     for (let i=0; i &lt; mask.length; i++) {
       switch (mask[i]) {
         case &apos;9&apos;:
           maskArray.push(/\d/);
           break;
         case &apos;A&apos;:
+          maskArray.numeric = false;
           maskArray.push(/[a-zA-Z]/);
           break;
         case &apos;*&apos;:
+          maskArray.numeric = false;
           maskArray.push(/[a-zA-Z0-9]/);
           break;
         default:
@@ -931,6 +959,9 @@ export class BaseComponent {
         inputElement: input,
         mask: mask
       });
+      if (mask.numeric) {
+        input.setAttribute(&apos;pattern&apos;, &quot;\\d*&quot;);
+      }
       if (!this.component.placeholder) {
         input.setAttribute(&apos;placeholder&apos;, this.maskPlaceholder(mask));
       }
@@ -1335,23 +1366,39 @@ export class BaseComponent {
    *
    */
   getRoot() {
-    var parent = this.parent;
-    while (parent.parent) {
-      parent = parent.parent;
+    return this.root;
+  }
+
+  /**
+   * Returns the invalid message, or empty string if the component is valid.
+   *
+   * @param data
+   * @param dirty
+   * @return {*}
+   */
+  invalidMessage(data, dirty) {
+    // No need to check for errors if there is no input or if it is pristine.
+    if (!this.component.input || (!dirty &amp;&amp; this.pristine)) {
+      return &apos;&apos;;
     }
-    return parent;
+
+    return Validator.check(this, data);
+  }
+
+  /**
+   * Returns if the component is valid or not.
+   *
+   * @param data
+   * @param dirty
+   * @return {boolean}
+   */
+  isValid(data, dirty) {
+    return !this.invalidMessage(data, dirty);
   }
 
   checkValidity(data, dirty) {
-    // No need to check for errors if there is no input or if it is pristine.
-    if (!this.component.input || (!dirty &amp;&amp; this.pristine)) {
-      return true;
-    }
-
-    let message = Validator.check(this, data);
+    let message = this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
-
-    // No message, returns true
     return message ? false : true;
   }
 
@@ -1472,6 +1519,11 @@ export class BaseComponent {
    * @param {boolean} disabled
    */
   set disabled(disabled) {
+    // Do not allow a component to be disabled if it should be always...
+    if (!disabled &amp;&amp; this.shouldDisable) {
+      return;
+    }
+
     this._disabled = disabled;
     // Disable all input.
     _each(this.inputs, (input) =&gt; {

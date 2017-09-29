@@ -303,7 +303,8 @@ export var Validator = {
       key: &apos;validate.pattern&apos;,
       message: function(component, setting) {
         return component.t(&apos;pattern&apos;, {
-          field: component.errorLabel
+          field: component.errorLabel,
+          pattern: setting
         });
       },
       check: function(component, setting, value) {
