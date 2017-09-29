@@ -77,6 +77,13 @@ export class SelectComponent extends BaseComponent {
     if (this.value) {
       this.setValue(this.value, true);
     }
+    else {
+      // If a default value is provided then select it.
+      let defaultValue = this.defaultValue;
+      if (defaultValue) {
+        this.setValue(defaultValue);
+      }
+    }
   }
 
   loadItems(url, search, headers, options) {

@@ -483,7 +483,12 @@ export class FormioForm extends FormioComponents {
   setSubmission(submission) {
     return this.onSubmission = this.formReady.then(
       () => {
-        this.setValue(submission);
+        this.setValue(submission, {
+          noUpdate: true
+        });
+        this.updateValue({
+          noValidate: true
+        });
         this.submissionReadyResolve();
       },
       (err) => this.submissionReadyReject(err)

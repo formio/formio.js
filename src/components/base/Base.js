@@ -769,15 +769,18 @@ export class BaseComponent {
       return mask;
     }
     let maskArray = [];
+    maskArray.numeric = true;
     for (let i=0; i < mask.length; i++) {
       switch (mask[i]) {
         case '9':
           maskArray.push(/\d/);
           break;
         case 'A':
+          maskArray.numeric = false;
           maskArray.push(/[a-zA-Z]/);
           break;
         case '*':
+          maskArray.numeric = false;
           maskArray.push(/[a-zA-Z0-9]/);
           break;
         default:
@@ -810,6 +813,9 @@ export class BaseComponent {
         inputElement: input,
         mask: mask
       });
+      if (mask.numeric) {
+        input.setAttribute('pattern', "\\d*");
+      }
       if (!this.component.placeholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
       }
