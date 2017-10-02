@@ -86,7 +86,10 @@ const FormioUtils = {
       }
 
       var subPath = function() {
-        if (component.key && ((component.type === 'datagrid') || (component.type === 'container'))) {
+        if (component.key &&
+          (component.type === 'datagrid' ||
+           component.type === 'container' ||
+           component.type === 'editgrid')) {
           return newPath;
         }
         return path;
@@ -95,20 +98,20 @@ const FormioUtils = {
       if (!noRecurse) {
         if (hasColumns) {
           component.columns.forEach(function(column) {
-            eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null);
+            eachComponent(column.components, fn, includeAll, subPath(), component);
           });
         }
 
         else if (hasRows) {
           component.rows.forEach(function(row) {
             row.forEach((column) => {
-              eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null);
+              eachComponent(column.components, fn, includeAll, subPath(), component);
             });
           });
         }
 
         else if (hasComps) {
-          eachComponent(component.components, fn, includeAll, subPath(), parent ? component : null);
+          eachComponent(component.components, fn, includeAll, subPath(), component);
         }
       }
     });
