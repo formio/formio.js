@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Issue where conditionally visible components should also force parents visible. 
+ - Allow email components to be valid if pristine and empty.
+
 ## 2.18.0
 ### Fixed
  - Fixed the validity checks and button disabled states.

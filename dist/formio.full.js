@@ -78,7 +78,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
+var FormioComponents = function (_BaseComponent) {
   _inherits(FormioComponents, _BaseComponent);
 
   function FormioComponents(component, options, data) {
@@ -357,6 +357,29 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       return valid;
     }
   }, {
+    key: 'show',
+    value: function show(_show, force) {
+      if (!force) {
+        return _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'show', this).call(this, _show, force);
+      }
+
+      if (!_show) {
+        // If they do not wish to show the parent, then ensure that no
+        // child components are visible before hiding...
+        var show = false;
+        (0, _each3.default)(this.getComponents(), function (comp) {
+          show |= comp.visible;
+        });
+        if (!show) {
+          return _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'show', this).call(this, show, force);
+        }
+      } else {
+        return _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'show', this).call(this, _show, force);
+      }
+
+      return _show;
+    }
+  }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
       var show = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
@@ -516,6 +539,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
   return FormioComponents;
 }(_Base.BaseComponent);
+
+exports.FormioComponents = FormioComponents;
 
 FormioComponents.customComponents = {};
 
@@ -689,7 +714,9 @@ var Validator = exports.Validator = {
       check: function check(component, setting, value) {
         // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(value);
+
+        // Allow emails to be valid if the component is pristine and no value is provided.
+        return component.pristine && !value || re.test(value);
       }
     },
     date: {
@@ -2486,7 +2513,11 @@ var BaseComponent = function () {
   }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
-      return this.show(_utils2.default.checkCondition(this.component, this.data, data));
+      if (!_utils2.default.hasCondition(this.component)) {
+        return this.show(true);
+      }
+
+      return this.show(_utils2.default.checkCondition(this.component, this.data, data), true);
     }
 
     /**
@@ -2526,7 +2557,12 @@ var BaseComponent = function () {
 
   }, {
     key: 'show',
-    value: function show(_show) {
+    value: function show(_show, force) {
+      // Execute only if visibility changes.
+      if (!_show === !this._visible) {
+        return _show;
+      }
+
       this._visible = _show;
       var element = this.getElement();
       if (element) {
@@ -2539,6 +2575,11 @@ var BaseComponent = function () {
           element.style.visibility = 'hidden';
           element.style.position = 'absolute';
         }
+      }
+
+      // Make sure that all parents share visibility.
+      if (force && this.parent) {
+        this.parent.show(_show, true);
       }
       return _show;
     }
