@@ -65,6 +65,13 @@ export class BaseComponent {
     this.options.i18n = i18n;
 
     /**
+     * Determines if this component has a condition assigned to it.
+     * @type {null}
+     * @private
+     */
+    this._hasCondition = null;
+
+    /**
      * The events that are triggered for the whole FormioForm object.
      */
     this.events = this.options.events;
@@ -980,14 +987,28 @@ export class BaseComponent {
   }
 
   /**
+   * Determines if this component has a condition defined.
+   *
+   * @return {null}
+   */
+  hasCondition() {
+    if (this._hasCondition !== null) {
+      return this._hasCondition;
+    }
+
+    this._hasCondition = FormioUtils.hasCondition(this.component);
+    return this._hasCondition;
+  }
+
+  /**
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    if (!FormioUtils.hasCondition(this.component)) {
+    if (!this.hasCondition()) {
       return this.show(true);
     }
 
-    return this.show(FormioUtils.checkCondition(this.component, this.data, data), true);
+    return this.show(FormioUtils.checkCondition(this.component, this.data, data));
   }
 
   /**
@@ -1021,7 +1042,7 @@ export class BaseComponent {
    *
    * @param show
    */
-  show(show, force) {
+  show(show) {
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
@@ -1042,10 +1063,13 @@ export class BaseComponent {
       }
     }
 
-    // Make sure that all parents share visibility.
-    if (force && this.parent) {
-      this.parent.show(show, true);
+
+    if (!show && this.component.clearOnHide) {
+      this.setValue(null, {
+        noValidate: true
+      });
     }
+
     return show;
   }
 
