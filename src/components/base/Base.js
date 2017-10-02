@@ -983,7 +983,11 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    return this.show(FormioUtils.checkCondition(this.component, this.data, data));
+    if (!FormioUtils.hasCondition(this.component)) {
+      return this.show(true);
+    }
+
+    return this.show(FormioUtils.checkCondition(this.component, this.data, data), true);
   }
 
   /**
@@ -1017,7 +1021,12 @@ export class BaseComponent {
    *
    * @param show
    */
-  show(show) {
+  show(show, force) {
+    // Execute only if visibility changes.
+    if (!show === !this._visible) {
+      return show;
+    }
+
     this._visible = show;
     let element = this.getElement();
     if (element) {
@@ -1031,6 +1040,11 @@ export class BaseComponent {
         element.style.visibility = 'hidden';
         element.style.position = 'absolute';
       }
+    }
+
+    // Make sure that all parents share visibility.
+    if (force && this.parent) {
+      this.parent.show(show, true);
     }
     return show;
   }

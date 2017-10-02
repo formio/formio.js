@@ -233,6 +233,29 @@ export class FormioComponents extends BaseComponent {
     return valid;
   }
 
+  show(show, force) {
+    if (!force) {
+      return super.show(show, force);
+    }
+
+    if (!show) {
+      // If they do not wish to show the parent, then ensure that no
+      // child components are visible before hiding...
+      let show = false;
+      _each(this.getComponents(), (comp) => {
+        show |= comp.visible;
+      });
+      if (!show) {
+        return super.show(show, force);
+      }
+    }
+    else {
+      return super.show(show, force);
+    }
+
+    return show;
+  }
+
   checkConditions(data) {
     let show = super.checkConditions(data);
     _each(this.getComponents(), (comp) => {
