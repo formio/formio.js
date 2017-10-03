@@ -50,6 +50,7 @@ export class DataGridComponent extends FormioComponents {
         let title = comp.label || comp.title;
         if (title) {
           th.appendChild(this.text(title));
+          this.createTooltip(th, comp);
         }
         tr.appendChild(th);
       }

@@ -663,8 +663,9 @@ export class BaseComponent {
    * Create the HTML element for the tooltip of this component.
    * @param {HTMLElement} container - The containing element that will contain this tooltip.
    */
-  createTooltip(container) {
-    if (!this.component.tooltip) {
+  createTooltip(container, component) {
+    component = component || this.component;
+    if (!component.tooltip) {
       return;
     }
     this.tooltip = this.ce('i', {
@@ -672,13 +673,13 @@ export class BaseComponent {
     });
     container.appendChild(this.text(' '));
     container.appendChild(this.tooltip);
-
     new Tooltip(this.tooltip, {
       delay: {
         hide: 100
       },
       placement: 'right',
-      title: this.component.tooltip
+      html: true,
+      title: component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
     });
   }
 
