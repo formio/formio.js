@@ -634,7 +634,11 @@ export class FormioForm extends FormioComponents {
    */
   onSubmit(submission, saved) {
     this.loading = false;
-    this.setValue(submission);
+    this.setPristine(true);
+    this.setValue(submission, {
+      noValidate: true,
+      noCheck: true
+    });
     this.setAlert('success', '<p>' + this.t('complete') + '</p>');
     this.emit('submit', submission);
     if (saved) {

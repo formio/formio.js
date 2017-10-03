@@ -301,6 +301,11 @@ export class FormioComponents extends BaseComponent {
     return check;
   }
 
+  setPristine(pristine) {
+    super.setPristine(pristine);
+    _each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
+  }
+
   destroy(all) {
     super.destroy(all);
     let components = _clone(this.components);

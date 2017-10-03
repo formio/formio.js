@@ -505,6 +505,15 @@ export class BaseComponent {
   }
 
   /**
+   * Sets the pristine flag for this component.
+   *
+   * @param pristine {boolean} - TRUE to make pristine, FALSE not pristine.
+   */
+  setPristine(pristine) {
+    this.pristine = pristine;
+  }
+
+  /**
    * Adds a new empty value to the data array.
    */
   addNewValue() {
