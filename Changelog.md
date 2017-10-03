@@ -10,9 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Allow email components to be valid if pristine and empty.
  - Issue where clearOnHide flag was not working. 
  - Issue where tooltips were not showing up on DataGrids
+ - Issue where a form would invalidate after a successful submit.
+ - Problem with setting a radio button with boolean values.
 
 ### Added
  - Support for HTML within tooltips.
+ - Ability to provide custom error messages per component using an errors property on each component.
 
 ### Changed
  - Convert line feeds into <br/> statements for tooltips.
