@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issue where conditionally visible components should also force parents visible. 
  - Allow email components to be valid if pristine and empty.
+ - Issue where clearOnHide flag was not working. 
+ - Issue where tooltips were not showing up on DataGrids
+
+### Added
+ - Support for HTML within tooltips.
+
+### Changed
+ - Convert line feeds into <br/> statements for tooltips.
 
 ## 2.18.0
 ### Fixed
