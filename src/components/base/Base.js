@@ -622,6 +622,15 @@ export class BaseComponent {
   }
 
   /**
+   * Get the error message provided a certain type of error.
+   * @param type
+   * @return {*}
+   */
+  errorMessage(type) {
+    return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
+  }
+
+  /**
    * Creates a new "remove" row button and returns the html element of that button.
    * @param {number} index - The index of the row that should be removed.
    * @returns {HTMLElement} - The html element of the remove button.
