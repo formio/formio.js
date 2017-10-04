@@ -78,7 +78,7 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var FormioComponents = function (_BaseComponent) {
+var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   _inherits(FormioComponents, _BaseComponent);
 
   function FormioComponents(component, options, data) {
@@ -357,35 +357,28 @@ var FormioComponents = function (_BaseComponent) {
       return valid;
     }
   }, {
-    key: 'show',
-    value: function show(_show, force) {
-      if (!force) {
-        return _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'show', this).call(this, _show, force);
-      }
-
-      if (!_show) {
-        // If they do not wish to show the parent, then ensure that no
-        // child components are visible before hiding...
-        var show = false;
-        (0, _each3.default)(this.getComponents(), function (comp) {
-          show |= comp.visible;
-        });
-        if (!show) {
-          return _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'show', this).call(this, show, force);
-        }
-      } else {
-        return _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'show', this).call(this, _show, force);
-      }
-
-      return _show;
-    }
-  }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
-      var show = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
+      var forceShow = false;
+      var show = false;
       (0, _each3.default)(this.getComponents(), function (comp) {
-        show |= comp.checkConditions(data);
+        var compShow = comp.checkConditions(data);
+        forceShow |= comp.hasCondition() && compShow;
+        show |= compShow;
       });
+
+      // If any child has conditions set and are visible, then force the show.
+      if (forceShow) {
+        return this.show(true);
+      }
+
+      // If no child components are visible, then hide.
+      if (!show) {
+        return this.show(false);
+      }
+
+      // Show if it explicitely says so.
+      show |= _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
       return show;
     }
 
@@ -539,8 +532,6 @@ var FormioComponents = function (_BaseComponent) {
 
   return FormioComponents;
 }(_Base.BaseComponent);
-
-exports.FormioComponents = FormioComponents;
 
 FormioComponents.customComponents = {};
 
@@ -1566,6 +1557,13 @@ var BaseComponent = function () {
     this.options.i18n = i18n;
 
     /**
+     * Determines if this component has a condition assigned to it.
+     * @type {null}
+     * @private
+     */
+    this._hasCondition = null;
+
+    /**
      * The events that are triggered for the whole FormioForm object.
      */
     this.events = this.options.events;
@@ -2125,8 +2123,9 @@ var BaseComponent = function () {
 
   }, {
     key: 'createTooltip',
-    value: function createTooltip(container) {
-      if (!this.component.tooltip) {
+    value: function createTooltip(container, component) {
+      component = component || this.component;
+      if (!component.tooltip) {
         return;
       }
       this.tooltip = this.ce('i', {
@@ -2134,13 +2133,13 @@ var BaseComponent = function () {
       });
       container.appendChild(this.text(' '));
       container.appendChild(this.tooltip);
-
       new _tooltip2.default(this.tooltip, {
         delay: {
           hide: 100
         },
         placement: 'right',
-        title: this.component.tooltip
+        html: true,
+        title: component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
       });
     }
 
@@ -2507,17 +2506,34 @@ var BaseComponent = function () {
     }
 
     /**
+     * Determines if this component has a condition defined.
+     *
+     * @return {null}
+     */
+
+  }, {
+    key: 'hasCondition',
+    value: function hasCondition() {
+      if (this._hasCondition !== null) {
+        return this._hasCondition;
+      }
+
+      this._hasCondition = _utils2.default.hasCondition(this.component);
+      return this._hasCondition;
+    }
+
+    /**
      * Check for conditionals and hide/show the element based on those conditions.
      */
 
   }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
-      if (!_utils2.default.hasCondition(this.component)) {
+      if (!this.hasCondition()) {
         return this.show(true);
       }
 
-      return this.show(_utils2.default.checkCondition(this.component, this.data, data), true);
+      return this.show(_utils2.default.checkCondition(this.component, this.data, data));
     }
 
     /**
@@ -2557,7 +2573,7 @@ var BaseComponent = function () {
 
   }, {
     key: 'show',
-    value: function show(_show, force) {
+    value: function show(_show) {
       // Execute only if visibility changes.
       if (!_show === !this._visible) {
         return _show;
@@ -2577,10 +2593,12 @@ var BaseComponent = function () {
         }
       }
 
-      // Make sure that all parents share visibility.
-      if (force && this.parent) {
-        this.parent.show(_show, true);
+      if (!_show && this.component.clearOnHide) {
+        this.setValue(null, {
+          noValidate: true
+        });
       }
+
       return _show;
     }
   }, {
@@ -4215,6 +4233,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           var title = comp.label || comp.title;
           if (title) {
             th.appendChild(_this2.text(title));
+            _this2.createTooltip(th, comp);
           }
           tr.appendChild(th);
         }
@@ -11196,7 +11215,7 @@ var FormioUtils = {
       }
 
       var subPath = function subPath() {
-        if (component.key && (component.type === 'datagrid' || component.type === 'container')) {
+        if (component.key && (component.type === 'datagrid' || component.type === 'container' || component.type === 'editgrid' || component.tree)) {
           return newPath;
         }
         return path;
@@ -11310,7 +11329,7 @@ var FormioUtils = {
    * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
    */
   hasCondition: function hasCondition(component) {
-    return component.hasOwnProperty('customConditional') && component.customConditional || component.hasOwnProperty('conditional') && component.conditional && component.conditional.when || component.hasOwnProperty('conditional') && component.conditional && component.conditional.json;
+    return component.hasOwnProperty('customConditional') && component.customConditional || component.hasOwnProperty('conditional') && component.conditional && component.conditional.when || component.hasOwnProperty('conditional') && component.conditional && component.conditional.json ? true : false;
   },
 
   /**
@@ -17941,11 +17960,8 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     },
     "var": function(a, b) {
       var not_found = (b === undefined) ? null : b;
-      var data = this;
-      if(typeof a === "undefined" || a==="" || a===null) {
-        return data;
-      }
       var sub_props = String(a).split(".");
+      var data = this;
       for(var i = 0; i < sub_props.length; i++) {
         if(data === null) {
           return not_found;
@@ -17997,17 +18013,17 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 
   jsonLogic.is_logic = function(logic) {
     return (
-      typeof logic === "object" && // An object
-      logic !== null && // but not null
-      ! Array.isArray(logic) && // and not an array
-      Object.keys(logic).length === 1 // with exactly one key
+      logic !== null && typeof logic === "object" && ! Array.isArray(logic)
     );
   };
 
   /*
   This helper will defer to the JsonLogic spec as a tie-breaker when different language interpreters define different behavior for the truthiness of primitives.  E.g., PHP considers empty arrays to be falsy, but Javascript considers them to be truthy. JsonLogic, as an ecosystem, needs one consistent answer.
 
-  Spec and rationale here: http://jsonlogic.com/truthy
+  Literal | JS    |  PHP  |  JsonLogic
+  --------+-------+-------+---------------
+  []      | true  | false | false
+  "0"     | true  | false | true
   */
   jsonLogic.truthy = function(value) {
     if(Array.isArray(value) && value.length === 0) {
@@ -18043,7 +18059,6 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     var values = logic[op];
     var i;
     var current;
-    var scopedLogic, scopedData, filtered, initial;
 
     // easy syntax for unary operators, like {"var" : "x"} instead of strict {"var" : ["x"]}
     if( ! Array.isArray(values)) {
@@ -18088,75 +18103,8 @@ http://ricostacruz.com/cheatsheets/umdjs.html
         }
       }
       return current; // Last
-
-
-
-
-    }else if(op === 'filter'){
-      scopedData = jsonLogic.apply(values[0], data);
-      scopedLogic = values[1];
-
-      if ( ! Array.isArray(scopedData)) {
-          return [];
-      }
-      // Return only the elements from the array in the first argument,
-      // that return truthy when passed to the logic in the second argument.
-      // For parity with JavaScript, reindex the returned array
-      return scopedData.filter(function(datum){
-          return jsonLogic.truthy( jsonLogic.apply(scopedLogic, datum));
-      });
-  }else if(op === 'map'){
-      scopedData = jsonLogic.apply(values[0], data);
-      scopedLogic = values[1];
-
-      if ( ! Array.isArray(scopedData)) {
-          return [];
-      }
-
-      return scopedData.map(function(datum){
-          return jsonLogic.apply(scopedLogic, datum);
-      });
-
-  }else if(op === 'reduce'){
-      scopedData = jsonLogic.apply(values[0], data);
-      scopedLogic = values[1];
-      initial = typeof values[2] !== 'undefined' ? values[2] : null;
-
-      if ( ! Array.isArray(scopedData)) {
-          return initial;
-      }
-
-      return scopedData.reduce(
-          function(accumulator, current){
-              return jsonLogic.apply(
-                  scopedLogic,
-                  {'current':current, 'accumulator':accumulator}
-              );
-          },
-          initial
-      );
-
-    }else if(op === "all") {
-      scopedData = jsonLogic.apply(values[0], data);
-      scopedLogic = values[1];
-      // All of an empty set is false. Note, some and none have correct fallback after the for loop
-      if( ! scopedData.length) {
-        return false;
-      }
-      for(i=0; i < scopedData.length; i+=1) {
-        if( ! jsonLogic.truthy( jsonLogic.apply(scopedLogic, scopedData[i]) )) {
-          return false; // First falsy, short circuit
-        }
-      }
-      return true; // All were truthy
-    }else if(op === "none") {
-      filtered = jsonLogic.apply({'filter' : values}, data);
-      return filtered.length === 0;
-
-    }else if(op === "some") {
-      filtered = jsonLogic.apply({'filter' : values}, data);
-      return filtered.length > 0;
     }
+
 
     // Everyone else gets immediate depth-first recursion
     values = values.map(function(val) {
@@ -32708,7 +32656,7 @@ var isArray = Array.isArray || function (xs) {
 
 },{}],299:[function(require,module,exports){
 /*!
- * Signature Pad v2.3.2
+ * Signature Pad v2.3.0
  * https://github.com/szimek/signature_pad
  *
  * Copyright 2017 Szymon Nowak
@@ -32827,7 +32775,7 @@ function SignaturePad(canvas, options) {
   this.minWidth = opts.minWidth || 0.5;
   this.maxWidth = opts.maxWidth || 2.5;
   this.throttle = 'throttle' in opts ? opts.throttle : 16; // in miliseconds
-  this.minDistance = 'minDistance' in opts ? opts.minDistance : 5;
+  this.minDistance = opts.minDistance || 5;
 
   if (this.throttle) {
     this._strokeMoveUpdate = throttle(SignaturePad.prototype._strokeUpdate, this.throttle);
@@ -33202,12 +33150,7 @@ SignaturePad.prototype._fromData = function (pointGroups, drawCurve, drawDot) {
 
         if (j === 0) {
           // First point in a group. Nothing to draw yet.
-
-          // All points in the group have the same color, so it's enough to set
-          // penColor just at the beginning.
-          this.penColor = color;
           this._reset();
-
           this._addPoint(point);
         } else if (j !== group.length - 1) {
           // Middle point in a group.
