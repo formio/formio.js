@@ -4702,20 +4702,30 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         style: 'cursor: pointer'
       });
       suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
+      var calendar = this.getCalendar(input);
       this.addEventListener(suffix, 'click', function () {
         // Make sure the calendar is not already open and that it did not just close (like from blur event).
-        if (!input.calendar.isOpen && Date.now() - _this2.closedOn > 200) {
-          input.calendar.open();
+        if (!calendar.isOpen && Date.now() - _this2.closedOn > 200) {
+          calendar.open();
         }
       });
       inputGroup.appendChild(suffix);
       return suffix;
     }
+
+    /**
+     * Get the calendar or create an instance of one.
+     * @param input
+     * @return {Flatpickr|flatpickr}
+     */
+
   }, {
-    key: 'addInput',
-    value: function addInput(input, container, name) {
-      _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'addInput', this).call(this, input, container, name);
-      input.calendar = new _flatpickr2.default(input, this.config);
+    key: 'getCalendar',
+    value: function getCalendar(input) {
+      if (!input.calendar) {
+        input.calendar = new _flatpickr2.default(input, this.config);
+      }
+      return input.calendar;
     }
   }, {
     key: 'getDate',
@@ -4741,11 +4751,11 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
-      if (!this.inputs[index] || !this.inputs[index].calendar) {
+      if (!this.inputs[index]) {
         return '';
       }
 
-      var dates = this.inputs[index].calendar.selectedDates;
+      var dates = this.getCalendar(this.inputs[index]).selectedDates;
       if (!dates || !dates.length) {
         return '';
       }
@@ -4755,9 +4765,9 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
-      if (value && this.inputs[index].calendar) {
+      if (value) {
         var date = value ? new Date(value) : new Date();
-        this.inputs[index].calendar.setDate(date, false);
+        this.getCalendar(this.inputs[index]).setDate(date, false);
       }
     }
   }, {
@@ -4795,15 +4805,18 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'disabled',
     set: function set(disabled) {
+      var _this4 = this;
+
       _set(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'disabled', disabled, this);
       (0, _each3.default)(this.inputs, function (input) {
-        if (input.calendar) {
+        var calendar = _this4.getCalendar(input);
+        if (calendar) {
           if (disabled) {
-            input.calendar._input.setAttribute('disabled', 'disabled');
+            calendar._input.setAttribute('disabled', 'disabled');
           } else {
-            input.calendar._input.removeAttribute('disabled');
+            calendar._input.removeAttribute('disabled');
           }
-          input.calendar.redraw();
+          calendar.redraw();
         }
       });
     }

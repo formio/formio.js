@@ -4702,20 +4702,30 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         style: 'cursor: pointer'
       });
       suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
+      var calendar = this.getCalendar(input);
       this.addEventListener(suffix, 'click', function () {
         // Make sure the calendar is not already open and that it did not just close (like from blur event).
-        if (!input.calendar.isOpen && Date.now() - _this2.closedOn > 200) {
-          input.calendar.open();
+        if (!calendar.isOpen && Date.now() - _this2.closedOn > 200) {
+          calendar.open();
         }
       });
       inputGroup.appendChild(suffix);
       return suffix;
     }
+
+    /**
+     * Get the calendar or create an instance of one.
+     * @param input
+     * @return {Flatpickr|flatpickr}
+     */
+
   }, {
-    key: 'addInput',
-    value: function addInput(input, container, name) {
-      _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'addInput', this).call(this, input, container, name);
-      input.calendar = new _flatpickr2.default(input, this.config);
+    key: 'getCalendar',
+    value: function getCalendar(input) {
+      if (!input.calendar) {
+        input.calendar = new _flatpickr2.default(input, this.config);
+      }
+      return input.calendar;
     }
   }, {
     key: 'getDate',
@@ -4741,11 +4751,11 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
-      if (!this.inputs[index] || !this.inputs[index].calendar) {
+      if (!this.inputs[index]) {
         return '';
       }
 
-      var dates = this.inputs[index].calendar.selectedDates;
+      var dates = this.getCalendar(this.inputs[index]).selectedDates;
       if (!dates || !dates.length) {
         return '';
       }
@@ -4755,9 +4765,9 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
-      if (value && this.inputs[index].calendar) {
+      if (value) {
         var date = value ? new Date(value) : new Date();
-        this.inputs[index].calendar.setDate(date, false);
+        this.getCalendar(this.inputs[index]).setDate(date, false);
       }
     }
   }, {
@@ -4795,15 +4805,18 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'disabled',
     set: function set(disabled) {
+      var _this4 = this;
+
       _set(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'disabled', disabled, this);
       (0, _each3.default)(this.inputs, function (input) {
-        if (input.calendar) {
+        var calendar = _this4.getCalendar(input);
+        if (calendar) {
           if (disabled) {
-            input.calendar._input.setAttribute('disabled', 'disabled');
+            calendar._input.setAttribute('disabled', 'disabled');
           } else {
-            input.calendar._input.removeAttribute('disabled');
+            calendar._input.removeAttribute('disabled');
           }
-          input.calendar.redraw();
+          calendar.redraw();
         }
       });
     }
@@ -11427,11 +11440,11 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     }
   }, {
     key: 'hasButton',
-    value: function hasButton(name) {
+    value: function hasButton(name, nextPage) {
       if (name === 'previous') {
         return this.page > 0;
       }
-      var nextPage = this.getNextPage(this.submission.data, this.page);
+      nextPage = nextPage === undefined ? this.getNextPage(this.submission.data, this.page) : nextPage;
       if (name === 'next') {
         return nextPage !== null && nextPage < this.pages.length;
       }
@@ -11547,14 +11560,14 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       var nextPage = this.getNextPage(this.submission.data, this.page);
       if (this._nextPage != nextPage) {
         this.element.removeChild(this.wizardNav);
-        this.buildWizardNav();
+        this.buildWizardNav(nextPage);
         this.emit('updateWizardNav', { oldpage: this._nextPage, newpage: nextPage, submission: this.submission });
         this._nextPage = nextPage;
       }
     }
   }, {
     key: 'buildWizardNav',
-    value: function buildWizardNav() {
+    value: function buildWizardNav(nextPage) {
       var _this8 = this;
 
       if (this.wizardNav) {
@@ -11565,7 +11578,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       });
       this.element.appendChild(this.wizardNav);
       (0, _each2.default)([{ name: 'cancel', method: 'cancel', class: 'btn btn-default' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
-        if (!_this8.hasButton(button.name)) {
+        if (!_this8.hasButton(button.name, nextPage)) {
           return;
         }
         var buttonWrapper = _this8.ce('li');
