@@ -207,7 +207,15 @@ export class FormioComponents extends BaseComponent {
   }
 
   updateValue(flags) {
-    _each(this.components, (comp) => comp.updateValue(flags));
+    let changed = false;
+    _each(this.components, (comp) => {
+      changed |= comp.updateValue(flags);
+    });
+    return changed;
+  }
+
+  hasChanged() {
+    return false;
   }
 
   /**
@@ -223,13 +231,29 @@ export class FormioComponents extends BaseComponent {
     if (flags.noCheck) {
       return;
     }
+
+    // Update the value.
+    let changed = this.updateValue({
+      noUpdateEvent: true
+    });
+
+    // Iterate through all components and check conditions, and calculate values.
     _each(this.getComponents(), (comp) => {
+      changed |= comp.calculateValue(data, {
+        noUpdateEvent: true
+      });
       comp.checkConditions(data);
-      comp.calculateValue(data);
       if (!flags.noValidate) {
         valid &= comp.checkValidity(data);
       }
     });
+
+    // Trigger the change if the values changed.
+    if (changed) {
+      this.triggerChange(flags);
+    }
+
+    // Return if the value is valid.
     return valid;
   }
 
@@ -284,21 +308,33 @@ export class FormioComponents extends BaseComponent {
     _each(this.getComponents(), (comp) => comp.onResize(scale));
   }
 
-  calculateValue(data) {
-    super.calculateValue(data);
-    _each(this.getComponents(), (comp) => comp.calculateValue(data));
+  calculateValue(data, flags) {
+    let changed = super.calculateValue(data, flags);
+    _each(this.getComponents(), (comp) => {
+      changed |= comp.calculateValue(data, flags);
+    });
+    return changed;
   }
 
   isValid(data, dirty) {
     let valid = super.isValid(data, dirty);
-    _each(this.getComponents(), (comp) => (valid &= comp.isValid(data, dirty)));
+    _each(this.getComponents(), (comp) => {
+      valid &= comp.isValid(data, dirty);
+    });
     return valid;
   }
 
   checkValidity(data, dirty) {
     let check = super.checkValidity(data, dirty);
-    _each(this.getComponents(), (comp) => (check &= comp.checkValidity(data, dirty)));
+    _each(this.getComponents(), (comp) => {
+      check &= comp.checkValidity(data, dirty);
+    });
     return check;
+  }
+
+  setPristine(pristine) {
+    super.setPristine(pristine);
+    _each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
   }
 
   destroy(all) {
@@ -347,9 +383,10 @@ export class FormioComponents extends BaseComponent {
 
   setValue(value, flags) {
     if (!value) {
-      return;
+      return false;
     }
     flags = this.getFlags.apply(this, arguments);
+    let changed = false;
     this.value = value;
     _each(this.getComponents(), (component) => {
       if (component.type === 'button') {
@@ -357,16 +394,17 @@ export class FormioComponents extends BaseComponent {
       }
 
       if (component.type === 'components') {
-        component.setValue(value, flags);
+        changed |= component.setValue(value, flags);
       }
       else if (value && value.hasOwnProperty(component.component.key)) {
-        component.setValue(value[component.component.key], flags);
+        changed |= component.setValue(value[component.component.key], flags);
       }
       else if (component.component.input) {
         flags.noValidate = true;
-        component.setValue(null, flags);
+        changed |= component.setValue(null, flags);
       }
     });
+    return changed;
   }
 }
 

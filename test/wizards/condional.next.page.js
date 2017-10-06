@@ -413,6 +413,23 @@ module.exports = {
               c: 'directSubmit',
               d: '',
             });
+
+            // Should show a submit button instead of next button
+            let buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
+            let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+            assert.deepEqual(buttonsText, buttonsToValid);
+            form.submit().then((submission) => {
+              // Check submission
+              assert.deepEqual(submission.data, {
+                a: 'a',
+                b: 'b',
+                c: 'directSubmit',
+                d: '',
+              });
+
+              // Call done.
+              done();
+            });
           });
 
           // Write data
@@ -425,49 +442,8 @@ module.exports = {
           Harness.testSubmission(form, {
             data: wizardData
           });
-
-          // Add delay to wait for the componentsChange event
-          return new Promise(resolve => setTimeout(resolve, 250));
         })
-        .then(() => {
-          // Should show a submit button instead of next button
-          let buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
-          assert.deepEqual(buttonsText, buttonsToValid);
-        })
-
-
-        .then(() => {
-          // Check submit event
-          form.on('submit', (submission) => {
-            assert.deepEqual(submission.data, {
-            a: 'a',
-            b: 'b',
-            c: 'directSubmit',
-            d: '',
-            });
-          });
-          // Submit
-          return form.submit();
-        })
-        .then((submission) => {
-          // Check submission
-          assert.deepEqual(submission.data, {
-            a: 'a',
-            b: 'b',
-            c: 'directSubmit',
-            d: '',
-          });
-        })
-        .catch((error) => {
-          // Should returns a success
-          done(error);
-        })
-
-        // Call done
-        .then(() => {
-          done();
-        })
+        .catch(done);
     }
   }
 };

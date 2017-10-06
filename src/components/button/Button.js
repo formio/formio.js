@@ -49,6 +49,7 @@ export class ButtonComponent extends BaseComponent {
     if (this.component.label) {
       this.labelElement = this.text(this.component.label);
       this.element.appendChild(this.labelElement);
+      this.createTooltip(this.element, null, 'glyphicon glyphicon-question-sign');
     }
     if (this.component.action === 'submit') {
       this.on('submitButton', () => {
