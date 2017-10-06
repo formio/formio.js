@@ -108,11 +108,8 @@ export class FormComponent extends FormioForm {
     // Add components using the data of the submission.
     this.addComponents(this.element, this.data[this.component.key].data);
 
-    // Set default values.
-    let defaultValue = this.defaultValue;
-    if (defaultValue) {
-      this.setValue(defaultValue);
-    }
+    // Restore default values.
+    this.restoreValue();
 
     // Check conditions for this form.
     this.checkConditions(this.getValue());

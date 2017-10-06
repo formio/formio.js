@@ -24,6 +24,7 @@ export class CheckBoxComponent extends BaseComponent {
       this.addInput(this.input, this.element);
     }
     this.createDescription(this.element);
+    this.restoreValue();
     if (this.shouldDisable) {
       this.disabled = true;
     }

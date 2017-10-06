@@ -95,10 +95,10 @@ export class ResourceComponent extends SelectComponent {
       container.appendChild(table);
       table.innerHTML = template;
       table.querySelector("#button").appendChild(this.addButton());
-      super.addInput(input, table.querySelector("#select"), true);
+      super.addInput(input, table.querySelector("#select"));
     }
     else {
-      super.addInput(input, container, true);
+      super.addInput(input, container);
     }
   }
 }

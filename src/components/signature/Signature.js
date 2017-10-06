@@ -134,6 +134,9 @@ export class SignatureComponent extends BaseComponent {
       setTimeout(checkWidth.bind(this), 200);
     }.bind(this), 200);
 
+    // Restore values.
+    this.restoreValue();
+
     if (this.shouldDisable) {
       this.disabled = true;
     }

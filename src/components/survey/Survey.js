@@ -46,6 +46,7 @@ export class SurveyComponent extends BaseComponent {
     this.table.appendChild(tbody);
     this.element.appendChild(this.table);
     this.createDescription(this.element);
+    this.restoreValue();
     if (this.shouldDisable) {
       this.disabled = true;
     }
