@@ -86,7 +86,15 @@ const FormioUtils = {
       }
 
       var subPath = function() {
-        if (component.key && ((component.type === 'datagrid') || (component.type === 'container'))) {
+        if (
+          component.key &&
+          (
+            (component.type === 'datagrid') ||
+            (component.type === 'container') ||
+            (component.type === 'editgrid') ||
+            component.tree
+          )
+        ) {
           return newPath;
         }
         return path;

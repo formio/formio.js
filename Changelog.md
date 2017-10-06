@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
+ - Add Editgrid and custom components to recursive tree.
  - Issue where conditionally visible components should also force parents visible. 
  - Allow email components to be valid if pristine and empty.
  - Issue where clearOnHide flag was not working. 
