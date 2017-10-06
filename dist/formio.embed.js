@@ -7438,6 +7438,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (this.value) {
+        return this.value;
+      }
       if (!this.choices) {
         return;
       }

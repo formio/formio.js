@@ -264,6 +264,9 @@ export class SelectComponent extends BaseComponent {
   }
 
   getValue() {
+    if (this.value) {
+      return this.value;
+    }
     if (!this.choices) {
       return;
     }
