@@ -483,12 +483,12 @@ export class FormioForm extends FormioComponents {
   setSubmission(submission) {
     return this.onSubmission = this.formReady.then(
       () => {
-        this.setValue(submission, {
-          noUpdate: true
-        });
-        this.updateValue({
-          noValidate: true
-        });
+        // If nothing changed, still trigger an update.
+        if (!this.setValue(submission)) {
+          this.triggerChange({
+            noValidate: true
+          });
+        }
         this.submissionReadyResolve();
       },
       (err) => this.submissionReadyReject(err)
@@ -547,7 +547,6 @@ export class FormioForm extends FormioComponents {
       return this.localize().then(() => {
         this.build();
         this.on('resetForm', () => this.reset(), true);
-        this.on('componentChange', (changed) => this.onSubmissionChange(changed), true);
         this.on('refreshData', () => this.updateValue());
         this.emit('render');
       });
@@ -666,19 +665,17 @@ export class FormioForm extends FormioComponents {
   }
 
   /**
-   * Called when the submission has changed in value.
+   * Trigger the change event for this form.
    *
-   * @param {Object} changed - The changed value that triggered this event.
-   * @param {Object} changed.component - The component that was changed.
-   * @param {*} changed.value - The new value of the changed component.
-   * @param {boolean} changed.flags - The flags to apply to this update.
+   * @param changed
+   * @param flags
    */
-  onSubmissionChange(changed) {
+  onChange(flags, changed) {
+    super.onChange(flags, true);
     this._submission = this.submission;
     let value = _clone(this._submission);
     value.changed = changed;
-    value.isValid = this.checkData(value.data, changed.flags);
-    this.pristine = false;
+    value.isValid = this.checkData(value.data, flags);
     this.emit('change', value);
   }
 

@@ -27,7 +27,7 @@ export class FormioWizard extends FormioForm {
     // Check conditional nextPage
     if (form) {
       let page = ++currentPage;
-      if(form.nextPage) {
+      if (form.nextPage) {
         // Allow for script execution.
         if (typeof form.nextPage === 'string') {
           try {
@@ -246,8 +246,8 @@ export class FormioWizard extends FormioForm {
     }
   }
 
-  onSubmissionChange(changed) {
-    super.onSubmissionChange(changed);
+  onChange(flags, changed) {
+    super.onChange(flags, changed);
 
     // Only rebuild if there is a page change.
     let pageIndex = 0;
