@@ -1908,11 +1908,8 @@ var BaseComponent = function () {
         this.disabled = true;
       }
 
-      // Set default values.
-      var defaultValue = this.defaultValue;
-      if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
-        this.setValue(defaultValue);
-      }
+      // Restore the value.
+      this.restoreValue();
     }
 
     /**
@@ -2020,6 +2017,7 @@ var BaseComponent = function () {
     value: function addValue() {
       this.addNewValue();
       this.buildRows();
+      this.restoreValue();
     }
 
     /**
@@ -2733,20 +2731,13 @@ var BaseComponent = function () {
 
   }, {
     key: 'addInput',
-    value: function addInput(input, container, noSet) {
+    value: function addInput(input, container) {
       if (input && container) {
         this.inputs.push(input);
         input = container.appendChild(input);
       }
       this.addInputEventListener(input);
       this.addInputSubmitListener(input);
-
-      // Reset the values of the inputs.
-      if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {
-        this.setValue(this.data[this.component.key], {
-          noUpdateEvent: true
-        });
-      }
     }
 
     /**
@@ -2810,6 +2801,27 @@ var BaseComponent = function () {
         this.triggerChange(flags);
       }
       return changed;
+    }
+
+    /**
+     * Restore the value of a control.
+     */
+
+  }, {
+    key: 'restoreValue',
+    value: function restoreValue() {
+      if (this.data && this.data.hasOwnProperty(this.component.key)) {
+        this.setValue(this.data[this.component.key], {
+          noUpdateEvent: true
+        });
+      } else {
+        var defaultValue = this.defaultValue;
+        if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
+          this.setValue(defaultValue, {
+            noUpdateEvent: true
+          });
+        }
+      }
     }
 
     /**
@@ -3699,6 +3711,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         this.addInput(this.input, this.element);
       }
       this.createDescription(this.element);
+      this.restoreValue();
       if (this.shouldDisable) {
         this.disabled = true;
       }
@@ -5886,11 +5899,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       // Add components using the data of the submission.
       this.addComponents(this.element, this.data[this.component.key].data);
 
-      // Set default values.
-      var defaultValue = this.defaultValue;
-      if (defaultValue) {
-        this.setValue(defaultValue);
-      }
+      // Restore default values.
+      this.restoreValue();
 
       // Check conditions for this form.
       this.checkConditions(this.getValue());
@@ -7070,9 +7080,9 @@ var ResourceComponent = exports.ResourceComponent = function (_SelectComponent) 
         container.appendChild(table);
         table.innerHTML = template;
         table.querySelector("#button").appendChild(this.addButton());
-        _get(ResourceComponent.prototype.__proto__ || Object.getPrototypeOf(ResourceComponent.prototype), 'addInput', this).call(this, input, table.querySelector("#select"), true);
+        _get(ResourceComponent.prototype.__proto__ || Object.getPrototypeOf(ResourceComponent.prototype), 'addInput', this).call(this, input, table.querySelector("#select"));
       } else {
-        _get(ResourceComponent.prototype.__proto__ || Object.getPrototypeOf(ResourceComponent.prototype), 'addInput', this).call(this, input, container, true);
+        _get(ResourceComponent.prototype.__proto__ || Object.getPrototypeOf(ResourceComponent.prototype), 'addInput', this).call(this, input, container);
       }
     }
   }]);
@@ -7380,7 +7390,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     value: function addInput(input, container) {
       var _this4 = this;
 
-      _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'addInput', this).call(this, input, container, true);
+      _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'addInput', this).call(this, input, container);
       if (this.component.multiple) {
         input.setAttribute('multiple', true);
       }
@@ -7436,8 +7446,6 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'setValue',
     value: function setValue(value, flags) {
-      var _this5 = this;
-
       flags = this.getFlags.apply(this, arguments);
       this.value = value;
       if (this.choices) {
@@ -7462,9 +7470,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
         // Now set the value.
         if (value) {
-          setTimeout(function () {
-            return _this5.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
-          }, 10);
+          this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
         } else {
           this.choices.removeActiveItems();
         }
@@ -7916,6 +7922,9 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
         setTimeout(checkWidth.bind(this), 200);
       }.bind(this), 200);
 
+      // Restore values.
+      this.restoreValue();
+
       if (this.shouldDisable) {
         this.disabled = true;
       }
@@ -8045,6 +8054,7 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
       this.table.appendChild(tbody);
       this.element.appendChild(this.table);
       this.createDescription(this.element);
+      this.restoreValue();
       if (this.shouldDisable) {
         this.disabled = true;
       }
