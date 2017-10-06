@@ -162,11 +162,11 @@ export class FormioWizard extends FormioForm {
     });
   }
 
-  hasButton(name) {
+  hasButton(name, nextPage) {
     if (name === 'previous') {
       return (this.page > 0);
     }
-    let nextPage = this.getNextPage(this.submission.data, this.page);
+    nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
     if (name === 'next') {
       return (nextPage !== null) && (nextPage < this.pages.length);
     }
@@ -281,13 +281,13 @@ export class FormioWizard extends FormioForm {
     let nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage != nextPage) {
       this.element.removeChild(this.wizardNav);
-      this.buildWizardNav();
+      this.buildWizardNav(nextPage);
       this.emit('updateWizardNav', {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
       this._nextPage = nextPage;
     }
   }
 
-  buildWizardNav() {
+  buildWizardNav(nextPage) {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = '';
     }
@@ -301,7 +301,7 @@ export class FormioWizard extends FormioForm {
       {name: 'next',      method: 'nextPage', class: 'btn btn-primary'},
       {name: 'submit',    method: 'submit',   class: 'btn btn-primary'}
     ], (button) => {
-      if (!this.hasButton(button.name)) {
+      if (!this.hasButton(button.name, nextPage)) {
         return;
       }
       let buttonWrapper = this.ce('li');
