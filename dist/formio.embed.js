@@ -395,11 +395,6 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         return this.show(true);
       }
 
-      // If no child components are visible, then hide.
-      if (!show) {
-        return this.show(false);
-      }
-
       // Show if it explicitely says so.
       show |= _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
       return show;

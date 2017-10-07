@@ -271,11 +271,6 @@ export class FormioComponents extends BaseComponent {
       return this.show(true);
     }
 
-    // If no child components are visible, then hide.
-    if (!show) {
-      return this.show(false);
-    }
-
     // Show if it explicitely says so.
     show |= super.checkConditions(data);
     return show;
