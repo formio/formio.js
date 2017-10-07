@@ -11,7 +11,7 @@ export class FormioWizard extends FormioForm {
     this.pages = [];
     this.page = 0;
     this.history = [];
-    this._nextPage = 1;
+    this._nextPage = 0;
   }
 
   setPage(num) {

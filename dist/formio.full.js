@@ -11281,7 +11281,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     _this.pages = [];
     _this.page = 0;
     _this.history = [];
-    _this._nextPage = 1;
+    _this._nextPage = 0;
     return _this;
   }
 
