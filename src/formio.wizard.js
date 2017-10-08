@@ -4,6 +4,7 @@ import FormioForm from './formio.form';
 import Formio from './formio';
 import FormioUtils from './utils';
 import each from 'lodash/each';
+import clone from 'lodash/clone';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
@@ -16,9 +17,12 @@ export class FormioWizard extends FormioForm {
   }
 
   setPage(num) {
-    if (num >= 0 && num < this.pages.length) {
+    if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
       return super.setForm(this.currentPage());
+    }
+    else if (this.wizard.full) {
+      return super.setForm(this.getWizard());
     }
     return Promise.reject('Page not found');
   }
@@ -138,6 +142,20 @@ export class FormioWizard extends FormioForm {
       return this.addGlobalComponents(this.pages[pageNum]);
     }
     return this.pages.length ? this.addGlobalComponents(this.pages[0]) : {components: this.globalComponents};
+  }
+
+  getWizard() {
+    let pageIndex = 0;
+    let page = null;
+    let wizard = clone(this.wizard);
+    wizard.components = [];
+    do {
+      page = this.getPage(pageIndex);
+      if (page) {
+        wizard.components.push(page);
+      }
+    } while (pageIndex = this.getNextPage(this.submission.data, pageIndex));
+    return this.addGlobalComponents(wizard);
   }
 
   currentPage() {
