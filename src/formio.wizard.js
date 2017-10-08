@@ -141,7 +141,7 @@ export class FormioWizard extends FormioForm {
     if ((pageNum >= 0) && (pageNum < this.pages.length)) {
       return this.addGlobalComponents(this.pages[pageNum]);
     }
-    return this.pages.length ? this.addGlobalComponents(this.pages[0]) : {components: this.globalComponents};
+    return null;
   }
 
   getWizard() {
@@ -155,7 +155,15 @@ export class FormioWizard extends FormioForm {
         wizard.components.push(page);
       }
     } while (pageIndex = this.getNextPage(this.submission.data, pageIndex));
-    return this.addGlobalComponents(wizard);
+
+    // Add all other components.
+    each(this.wizard.components, (component) => {
+      if (component.type !== 'panel') {
+        wizard.components.push(component);
+      }
+    });
+
+    return wizard;
   }
 
   currentPage() {
@@ -181,6 +189,9 @@ export class FormioWizard extends FormioForm {
   }
 
   setForm(form) {
+    if (!form) {
+      return;
+    }
     this.wizard = form;
     this.buildPages(this.wizard);
     return this.setPage(this.page);
@@ -209,14 +220,18 @@ export class FormioWizard extends FormioForm {
   }
 
   buildWizardHeader() {
+    if (this.wizardHeader) {
+      this.wizardHeader.innerHTML = '';
+    }
+
     let currentPage = this.currentPage();
-    currentPage.breadcrumb = currentPage.breadcrumb || 'default';
-    if (currentPage.breadcrumb.toLowerCase() === 'none') {
+    if (!currentPage || this.wizard.full) {
       return;
     }
 
-    if (this.wizardHeader) {
-      this.wizardHeader.innerHTML = '';
+    currentPage.breadcrumb = currentPage.breadcrumb || 'default';
+    if (currentPage.breadcrumb.toLowerCase() === 'none') {
+      return;
     }
 
     this.wizardHeader = this.ce('ul', {
@@ -224,9 +239,7 @@ export class FormioWizard extends FormioForm {
     });
 
     // Add the header to the beginning.
-    if (this.element.parentNode) {
-      this.element.parentNode.insertBefore(this.wizardHeader, this.element);
-    }
+    this.prepend(this.wizardHeader);
 
     let showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
     each(this.pages, (page, i) => {
@@ -322,6 +335,9 @@ export class FormioWizard extends FormioForm {
   buildWizardNav(nextPage) {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = '';
+    }
+    if (this.wizard.full) {
+      return;
     }
     this.wizardNav = this.ce('ul', {
       class: 'list-inline'
