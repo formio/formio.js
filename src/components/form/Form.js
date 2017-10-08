@@ -58,6 +58,18 @@ export class FormComponent extends FormioForm {
     }
   }
 
+  checkValidity(data) {
+    return super.checkValidity(data[this.component.key] ? data[this.component.key].data : {});
+  }
+
+  checkConditions(data) {
+    return super.checkConditions(data[this.component.key] ? data[this.component.key].data : {});
+  }
+
+  calculateValue(data, flags) {
+    return super.calculateValue(data[this.component.key] ? data[this.component.key].data : {}, flags);
+  }
+
   /**
    * Submit the form before the next page is triggered.
    */
@@ -101,17 +113,18 @@ export class FormComponent extends FormioForm {
       }
     });
 
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {data: {}};
-    }
+    // Set the submission data.
+    let submissionData = this.data[this.component.key] ? this.data[this.component.key].data : {};
 
     // Add components using the data of the submission.
-    this.addComponents(this.element, this.data[this.component.key].data);
+    this.addComponents(this.element, submissionData);
 
-    // Set default values.
-    let defaultValue = this.defaultValue;
-    if (defaultValue) {
-      this.setValue(defaultValue);
+    // Restore default values.
+    this.restoreValue();
+
+    // Set the value if it is not set already.
+    if (!this.data[this.component.key]) {
+      this.data[this.component.key] = {data: {}};
     }
 
     // Check conditions for this form.
@@ -126,8 +139,8 @@ export class FormComponent extends FormioForm {
     }
 
     if (submission.data) {
-      this._submission = _merge(this.data[this.component.key], submission);
-      return super.setValue(submission, flags);
+      this.data[this.component.key] = this._submission = _merge(this.data[this.component.key], submission);
+      return super.setValue(this.data, flags);
     }
     else if (submission._id) {
       this.formio.submissionId = submission._id;

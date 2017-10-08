@@ -23,6 +23,7 @@ This workflow is a form that uses Form components to bring in multiple forms int
 may look something like the following.
 
 ```js
+{% raw %}
 var workflow = new FormioWizard(document.getElementById('workflow'));
 workflow.form = {
   components: [
@@ -161,40 +162,27 @@ workflow.form = {
           input: false,
           html: `<h2>Are you sure you wish to submit?</h3>
           <ul>
-            <li><strong>Page A</strong> --> \{\{ data.a.data.nextPage \}\}</li>
-            <li><strong>Page B</strong> --> \{\{ data.b.data.nextPage \}\}</li>
-            <li><strong>Page C</strong> --> \{\{ data.c.data.nextPage \}\}</li>
-            <li><strong>Page D</strong> --> \{\{ data.d.data.nextPage \}\}</li>
-            <li><strong>Page E</strong> --> \{\{ data.e.data.nextPage \}\}</li>
+            {% if (data.a) { %}<li><strong>Page A</strong> --> {{ data.a.data.nextPage }}</li>{% } %}
+            {% if (data.b) { %}<li><strong>Page B</strong> --> {{ data.b.data.nextPage }}</li>{% } %}
+            {% if (data.c) { %}<li><strong>Page C</strong> --> {{ data.c.data.nextPage }}</li>{% } %}
+            {% if (data.d) { %}<li><strong>Page D</strong> --> {{ data.d.data.nextPage }}</li>{% } %}
+            {% if (data.e) { %}<li><strong>Page E</strong> --> {{ data.e.data.nextPage }}</li>{% } %}
           </ul>`,
           type: 'content',
           key: 'areyousure'
         }
       ]
-    },
-    {
-      type: 'panel',
-      key: 'stop',
-      title: 'Stop',
-      breadcrumb: 'history',
-      components: [
-        {
-          input: false,
-          html: `<h2>You cannot complete this form at this time.</h3>
-          <p>Please contact customer support.</p>`,
-          type: 'content',
-          key: 'stopcontent'
-        }
-      ]
     }
   ]
 };
+{% endraw %}
 ```
 
 <h3>Result</h3>
 <div class="well">
   <div id="workflow"></div>
   <script type="text/javascript">
+  {% raw %}
   Formio.createForm(document.getElementById('workflow'), {
     display: 'wizard',
     components: [
@@ -333,29 +321,14 @@ workflow.form = {
             input: false,
             html: `<h2>Are you sure you wish to submit?</h3>
             <ul>
-              <li><strong>Page A</strong> --> \{\{ data.a.data.nextPage \}\}</li>
-              <li><strong>Page B</strong> --> \{\{ data.b.data.nextPage \}\}</li>
-              <li><strong>Page C</strong> --> \{\{ data.c.data.nextPage \}\}</li>
-              <li><strong>Page D</strong> --> \{\{ data.d.data.nextPage \}\}</li>
-              <li><strong>Page E</strong> --> \{\{ data.e.data.nextPage \}\}</li>
+              {% if (data.a) { %}<li><strong>Page A</strong> --> {{ data.a.data.nextPage }}</li>{% } %}
+              {% if (data.b) { %}<li><strong>Page B</strong> --> {{ data.b.data.nextPage }}</li>{% } %}
+              {% if (data.c) { %}<li><strong>Page C</strong> --> {{ data.c.data.nextPage }}</li>{% } %}
+              {% if (data.d) { %}<li><strong>Page D</strong> --> {{ data.d.data.nextPage }}</li>{% } %}
+              {% if (data.e) { %}<li><strong>Page E</strong> --> {{ data.e.data.nextPage }}</li>{% } %}
             </ul>`,
             type: 'content',
             key: 'areyousure'
-          }
-        ]
-      },
-      {
-        type: 'panel',
-        key: 'stop',
-        title: 'Stop',
-        breadcrumb: 'history',
-        components: [
-          {
-            input: false,
-            html: `<h2>You cannot complete this form at this time.</h3>
-            <p>Please contact customer support.</p>`,
-            type: 'content',
-            key: 'stopcontent'
           }
         ]
       }
@@ -365,5 +338,6 @@ workflow.form = {
       console.log(submission);
     });
   });
+  {% endraw %}
   </script>
 </div>

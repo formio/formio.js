@@ -395,11 +395,6 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         return this.show(true);
       }
 
-      // If no child components are visible, then hide.
-      if (!show) {
-        return this.show(false);
-      }
-
       // Show if it explicitely says so.
       show |= _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
       return show;
@@ -1908,11 +1903,8 @@ var BaseComponent = function () {
         this.disabled = true;
       }
 
-      // Set default values.
-      var defaultValue = this.defaultValue;
-      if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
-        this.setValue(defaultValue);
-      }
+      // Restore the value.
+      this.restoreValue();
     }
 
     /**
@@ -2020,6 +2012,7 @@ var BaseComponent = function () {
     value: function addValue() {
       this.addNewValue();
       this.buildRows();
+      this.restoreValue();
     }
 
     /**
@@ -2733,20 +2726,13 @@ var BaseComponent = function () {
 
   }, {
     key: 'addInput',
-    value: function addInput(input, container, noSet) {
+    value: function addInput(input, container) {
       if (input && container) {
         this.inputs.push(input);
         input = container.appendChild(input);
       }
       this.addInputEventListener(input);
       this.addInputSubmitListener(input);
-
-      // Reset the values of the inputs.
-      if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {
-        this.setValue(this.data[this.component.key], {
-          noUpdateEvent: true
-        });
-      }
     }
 
     /**
@@ -2810,6 +2796,27 @@ var BaseComponent = function () {
         this.triggerChange(flags);
       }
       return changed;
+    }
+
+    /**
+     * Restore the value of a control.
+     */
+
+  }, {
+    key: 'restoreValue',
+    value: function restoreValue() {
+      if (this.data && this.data.hasOwnProperty(this.component.key)) {
+        this.setValue(this.data[this.component.key], {
+          noUpdateEvent: true
+        });
+      } else {
+        var defaultValue = this.defaultValue;
+        if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
+          this.setValue(defaultValue, {
+            noUpdateEvent: true
+          });
+        }
+      }
     }
 
     /**
@@ -3094,8 +3101,12 @@ var BaseComponent = function () {
   }, {
     key: 'prepend',
     value: function prepend(element) {
-      if (this.element && this.element.firstChild) {
-        this.element.insertBefore(element, this.element.firstChild);
+      if (this.element) {
+        if (this.element.firstChild) {
+          this.element.insertBefore(element, this.element.firstChild);
+        } else {
+          this.element.appendChild(element);
+        }
       }
     }
   }, {
@@ -3699,6 +3710,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         this.addInput(this.input, this.element);
       }
       this.createDescription(this.element);
+      this.restoreValue();
       if (this.shouldDisable) {
         this.disabled = true;
       }
@@ -5831,11 +5843,27 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     return _this;
   }
 
-  /**
-   * Submit the form before the next page is triggered.
-   */
-
   _createClass(FormComponent, [{
+    key: 'checkValidity',
+    value: function checkValidity(data) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, data[this.component.key] ? data[this.component.key].data : {});
+    }
+  }, {
+    key: 'checkConditions',
+    value: function checkConditions(data) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, data[this.component.key] ? data[this.component.key].data : {});
+    }
+  }, {
+    key: 'calculateValue',
+    value: function calculateValue(data, flags) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'calculateValue', this).call(this, data[this.component.key] ? data[this.component.key].data : {}, flags);
+    }
+
+    /**
+     * Submit the form before the next page is triggered.
+     */
+
+  }, {
     key: 'beforeNext',
     value: function beforeNext() {
       // If we wish to submit the form on next page, then do that here.
@@ -5879,17 +5907,18 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         }
       });
 
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = { data: {} };
-      }
+      // Set the submission data.
+      var submissionData = this.data[this.component.key] ? this.data[this.component.key].data : {};
 
       // Add components using the data of the submission.
-      this.addComponents(this.element, this.data[this.component.key].data);
+      this.addComponents(this.element, submissionData);
 
-      // Set default values.
-      var defaultValue = this.defaultValue;
-      if (defaultValue) {
-        this.setValue(defaultValue);
+      // Restore default values.
+      this.restoreValue();
+
+      // Set the value if it is not set already.
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = { data: {} };
       }
 
       // Check conditions for this form.
@@ -5907,8 +5936,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       }
 
       if (submission.data) {
-        this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
-        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
+        this.data[this.component.key] = this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
+        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, this.data, flags);
       } else if (submission._id) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
@@ -7070,9 +7099,9 @@ var ResourceComponent = exports.ResourceComponent = function (_SelectComponent) 
         container.appendChild(table);
         table.innerHTML = template;
         table.querySelector("#button").appendChild(this.addButton());
-        _get(ResourceComponent.prototype.__proto__ || Object.getPrototypeOf(ResourceComponent.prototype), 'addInput', this).call(this, input, table.querySelector("#select"), true);
+        _get(ResourceComponent.prototype.__proto__ || Object.getPrototypeOf(ResourceComponent.prototype), 'addInput', this).call(this, input, table.querySelector("#select"));
       } else {
-        _get(ResourceComponent.prototype.__proto__ || Object.getPrototypeOf(ResourceComponent.prototype), 'addInput', this).call(this, input, container, true);
+        _get(ResourceComponent.prototype.__proto__ || Object.getPrototypeOf(ResourceComponent.prototype), 'addInput', this).call(this, input, container);
       }
     }
   }]);
@@ -7380,7 +7409,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     value: function addInput(input, container) {
       var _this4 = this;
 
-      _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'addInput', this).call(this, input, container, true);
+      _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'addInput', this).call(this, input, container);
       if (this.component.multiple) {
         input.setAttribute('multiple', true);
       }
@@ -7428,6 +7457,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (this.value) {
+        return this.value;
+      }
       if (!this.choices) {
         return;
       }
@@ -7436,8 +7468,6 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'setValue',
     value: function setValue(value, flags) {
-      var _this5 = this;
-
       flags = this.getFlags.apply(this, arguments);
       this.value = value;
       if (this.choices) {
@@ -7462,9 +7492,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
         // Now set the value.
         if (value) {
-          setTimeout(function () {
-            return _this5.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
-          }, 10);
+          this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
         } else {
           this.choices.removeActiveItems();
         }
@@ -7916,6 +7944,9 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
         setTimeout(checkWidth.bind(this), 200);
       }.bind(this), 200);
 
+      // Restore values.
+      this.restoreValue();
+
       if (this.shouldDisable) {
         this.disabled = true;
       }
@@ -8045,6 +8076,7 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
       this.table.appendChild(tbody);
       this.element.appendChild(this.table);
       this.createDescription(this.element);
+      this.restoreValue();
       if (this.shouldDisable) {
         this.disabled = true;
       }
@@ -10434,24 +10466,16 @@ var Formio = function () {
         Formio.setUser(null);
         // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
         try {
-          if (typeof Storage !== "undefined") {
-            return localStorage.removeItem('formioToken');
-          } else {
-            return cookies.erase('formioToken');
-          }
+          return localStorage.removeItem('formioToken');
         } catch (err) {
-          return;
+          return cookies.erase('formioToken');
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        if (typeof Storage !== "undefined") {
-          localStorage.setItem('formioToken', token);
-        } else {
-          cookies.set('formioToken', token);
-        }
+        localStorage.setItem('formioToken', token);
       } catch (err) {
-        // Do nothing.
+        cookies.set('formioToken', token);
       }
       return Formio.currentUser(); // Run this so user is updated if null
     }
@@ -10462,14 +10486,10 @@ var Formio = function () {
         return this.token;
       }
       try {
-        if (typeof Storage !== "undefined") {
-          this.token = localStorage.getItem('formioToken') || '';
-        } else {
-          this.token = cookies.get('formioToken');
-        }
+        this.token = localStorage.getItem('formioToken') || '';
         return this.token;
       } catch (e) {
-        return '';
+        this.token = cookies.get('formioToken');
       }
     }
   }, {
@@ -10479,37 +10499,25 @@ var Formio = function () {
         this.setToken(null);
         // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
         try {
-          if (typeof Storage !== "undefined") {
-            return localStorage.removeItem('formioUser');
-          } else {
-            return cookies.erase('formioUser');
-          }
+          return localStorage.removeItem('formioUser');
         } catch (err) {
-          return;
+          return cookies.erase('formioUser');
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        if (typeof Storage !== "undefined") {
-          localStorage.setItem('formioUser', JSON.stringify(user));
-        } else {
-          cookies.set('formioUser', JSON.stringify(user));
-        }
+        localStorage.setItem('formioUser', JSON.stringify(user));
       } catch (err) {
-        // Do nothing.
+        cookies.set('formioUser', JSON.stringify(user));
       }
     }
   }, {
     key: 'getUser',
     value: function getUser() {
       try {
-        if (typeof Storage !== "undefined") {
-          return JSON.parse(localStorage.getItem('formioUser') || null);
-        } else {
-          return JSON.parse(cookies.get('formioUser'));
-        }
+        return JSON.parse(localStorage.getItem('formioUser') || null);
       } catch (e) {
-        return;
+        return JSON.parse(cookies.get('formioUser'));
       }
     }
   }, {
@@ -10991,7 +10999,7 @@ var dropbox = function dropbox(formio) {
       try {
         token = localStorage.getItem('formioToken');
       } catch (e) {
-        // Swallow error.
+        token = cookies.get('formioToken');
       }
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
@@ -11101,7 +11109,7 @@ var s3 = function s3(formio) {
         try {
           token = localStorage.getItem('formioToken');
         } catch (e) {
-          // swallow error.
+          token = cookies.get('formioToken');
         }
         if (token) {
           pre.setRequestHeader('x-jwt-token', token);
@@ -11189,7 +11197,13 @@ var url = function url(formio) {
         };
 
         xhr.open('POST', url);
-        var token = localStorage.getItem('formioToken');
+        var token = false;
+        try {
+          token = localStorage.getItem('formioToken');
+        } catch (err) {
+          token = cookies.get('formioToken');
+        }
+
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -18040,6 +18054,14 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     },
     "cat": function() {
       return Array.prototype.join.call(arguments, "");
+    },
+    "substr":function(source, start, end) {
+      if(end < 0){
+        // JavaScript doesn't support negative end, this emulates PHP behavior
+        var temp = String(source).substr(start);
+        return temp.substr(0, temp.length + end);
+      }
+      return String(source).substr(start, end);
     },
     "+": function() {
       return Array.prototype.reduce.call(arguments, function(a, b) {

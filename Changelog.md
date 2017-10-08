@@ -4,8 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## 2.19.0
 ### Fixed
+ - Performance issues with large forms with conditionals.
+ - Issue with select list not saving values accross pages.
+ - Fixed issue with prepend not working if no firstChild is provided.
+ - Loader from not showing up.
+ - Issue with the form component not validating correctly.
+ - Issue where the DateTime component calendar would not show up.
  - Better fallback for cookie support if localStorage is disabled or not present.
  - Add Editgrid and custom components to recursive tree.
  - Issue where conditionally visible components should also force parents visible. 
@@ -17,10 +23,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
  - Support for HTML within tooltips.
+ - Added a way to render the full wizard with conditional pages.
  - Ability to provide custom error messages per component using an errors property on each component.
 
 ### Changed
  - Convert line feeds into <br/> statements for tooltips.
+ - Wizard to allow for hidden fields to be passed through all pages.
 
 ## 2.18.0
 ### Fixed

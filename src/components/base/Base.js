@@ -369,11 +369,8 @@ export class BaseComponent {
       this.disabled = true;
     }
 
-    // Set default values.
-    let defaultValue = this.defaultValue;
-    if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
-      this.setValue(defaultValue);
-    }
+    // Restore the value.
+    this.restoreValue();
   }
 
   /**
@@ -533,6 +530,7 @@ export class BaseComponent {
   addValue() {
     this.addNewValue();
     this.buildRows();
+    this.restoreValue();
   }
 
   /**
@@ -1154,20 +1152,13 @@ export class BaseComponent {
    * @param container
    * @param noSet
    */
-  addInput(input, container, noSet) {
+  addInput(input, container) {
     if (input && container) {
       this.inputs.push(input);
       input = container.appendChild(input);
     }
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
-
-    // Reset the values of the inputs.
-    if (!noSet && this.data && this.data.hasOwnProperty(this.component.key)) {
-      this.setValue(this.data[this.component.key], {
-        noUpdateEvent: true
-      });
-    }
   }
 
   /**
@@ -1221,6 +1212,25 @@ export class BaseComponent {
       this.triggerChange(flags);
     }
     return changed;
+  }
+
+  /**
+   * Restore the value of a control.
+   */
+  restoreValue() {
+    if (this.data && this.data.hasOwnProperty(this.component.key)) {
+      this.setValue(this.data[this.component.key], {
+        noUpdateEvent: true
+      });
+    }
+    else {
+      let defaultValue = this.defaultValue;
+      if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
+        this.setValue(defaultValue, {
+          noUpdateEvent: true
+        });
+      }
+    }
   }
 
   /**
@@ -1519,8 +1529,13 @@ export class BaseComponent {
   }
 
   prepend(element) {
-    if (this.element && this.element.firstChild) {
-      this.element.insertBefore(element, this.element.firstChild);
+    if (this.element) {
+      if (this.element.firstChild) {
+        this.element.insertBefore(element, this.element.firstChild);
+      }
+      else {
+        this.element.appendChild(element);
+      }
     }
   }
 

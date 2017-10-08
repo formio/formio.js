@@ -201,7 +201,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   addInput(input, container) {
-    super.addInput(input, container, true);
+    super.addInput(input, container);
     if (this.component.multiple) {
       input.setAttribute('multiple', true);
     }
@@ -264,6 +264,9 @@ export class SelectComponent extends BaseComponent {
   }
 
   getValue() {
+    if (this.value) {
+      return this.value;
+    }
     if (!this.choices) {
       return;
     }
@@ -295,7 +298,7 @@ export class SelectComponent extends BaseComponent {
 
       // Now set the value.
       if (value) {
-        setTimeout(() => this.choices.setValueByChoice(_isArray(value) ? value : [value]), 10);
+        this.choices.setValueByChoice(_isArray(value) ? value : [value])
       }
       else {
         this.choices.removeActiveItems();

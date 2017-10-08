@@ -21,9 +21,15 @@ Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/c
 This wizard will render conditionally based on the data input from the first page.
 
 <h3>Result</h3>
+<label><input type="checkbox" id="showfull" /> Show full wizard</label>
 <div class="well">
   <div id="wizard"></div>
   <script type="text/javascript">
-  Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/conditionalwizard');
+  Formio.createForm(document.getElementById('wizard'), 'https://examples.form.io/conditionalwizard').then(function(wizard) {
+    document.getElementById('showfull').addEventListener('click', function(event) {
+      wizard.wizard.full = event.target.checked;
+      wizard.setForm(wizard.wizard);
+    });
+  });
   </script>
 </div>

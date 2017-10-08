@@ -4,20 +4,25 @@ import FormioForm from './formio.form';
 import Formio from './formio';
 import FormioUtils from './utils';
 import each from 'lodash/each';
+import clone from 'lodash/clone';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
     this.wizard = null;
     this.pages = [];
+    this.globalComponents = [];
     this.page = 0;
     this.history = [];
-    this._nextPage = 1;
+    this._nextPage = 0;
   }
 
   setPage(num) {
-    if (num >= 0 && num < this.pages.length) {
+    if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
       return super.setForm(this.currentPage());
+    }
+    else if (this.wizard.full) {
+      return super.setForm(this.getWizard());
     }
     return Promise.reject('Page not found');
   }
@@ -123,11 +128,42 @@ export class FormioWizard extends FormioForm {
     return pageIndex;
   }
 
+  addGlobalComponents(page) {
+    // If there are non-page components, then add them here. This is helpful to allow for hidden fields that
+    // can propogate between pages.
+    if (this.globalComponents.length) {
+      page.components = this.globalComponents.concat(page.components);
+    }
+    return page;
+  }
+
   getPage(pageNum) {
     if ((pageNum >= 0) && (pageNum < this.pages.length)) {
-      return this.pages[pageNum];
+      return this.addGlobalComponents(this.pages[pageNum]);
     }
-    return this.pages.length ? this.pages[0] : {components: []};
+    return null;
+  }
+
+  getWizard() {
+    let pageIndex = 0;
+    let page = null;
+    let wizard = clone(this.wizard);
+    wizard.components = [];
+    do {
+      page = this.getPage(pageIndex);
+      if (page) {
+        wizard.components.push(page);
+      }
+    } while (pageIndex = this.getNextPage(this.submission.data, pageIndex));
+
+    // Add all other components.
+    each(this.wizard.components, (component) => {
+      if (component.type !== 'panel') {
+        wizard.components.push(component);
+      }
+    });
+
+    return wizard;
   }
 
   currentPage() {
@@ -143,12 +179,19 @@ export class FormioWizard extends FormioForm {
           this.pages.push(component);
         }
       }
+      else if (component.type === 'hidden') {
+        // Global components are hidden components that can propagate between pages.
+        this.globalComponents.push(component);
+      }
     });
     this.buildWizardHeader();
     this.buildWizardNav();
   }
 
   setForm(form) {
+    if (!form) {
+      return;
+    }
     this.wizard = form;
     this.buildPages(this.wizard);
     return this.setPage(this.page);
@@ -177,14 +220,18 @@ export class FormioWizard extends FormioForm {
   }
 
   buildWizardHeader() {
+    if (this.wizardHeader) {
+      this.wizardHeader.innerHTML = '';
+    }
+
     let currentPage = this.currentPage();
-    currentPage.breadcrumb = currentPage.breadcrumb || 'default';
-    if (currentPage.breadcrumb.toLowerCase() === 'none') {
+    if (!currentPage || this.wizard.full) {
       return;
     }
 
-    if (this.wizardHeader) {
-      this.wizardHeader.innerHTML = '';
+    currentPage.breadcrumb = currentPage.breadcrumb || 'default';
+    if (currentPage.breadcrumb.toLowerCase() === 'none') {
+      return;
     }
 
     this.wizardHeader = this.ce('ul', {
@@ -192,9 +239,7 @@ export class FormioWizard extends FormioForm {
     });
 
     // Add the header to the beginning.
-    if (this.element.parentNode) {
-      this.element.parentNode.insertBefore(this.wizardHeader, this.element);
-    }
+    this.prepend(this.wizardHeader);
 
     let showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
     each(this.pages, (page, i) => {
@@ -290,6 +335,9 @@ export class FormioWizard extends FormioForm {
   buildWizardNav(nextPage) {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = '';
+    }
+    if (this.wizard.full) {
+      return;
     }
     this.wizardNav = this.ce('ul', {
       class: 'list-inline'
