@@ -3101,8 +3101,12 @@ var BaseComponent = function () {
   }, {
     key: 'prepend',
     value: function prepend(element) {
-      if (this.element && this.element.firstChild) {
-        this.element.insertBefore(element, this.element.firstChild);
+      if (this.element) {
+        if (this.element.firstChild) {
+          this.element.insertBefore(element, this.element.firstChild);
+        } else {
+          this.element.appendChild(element);
+        }
       }
     }
   }, {
@@ -5839,11 +5843,27 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     return _this;
   }
 
-  /**
-   * Submit the form before the next page is triggered.
-   */
-
   _createClass(FormComponent, [{
+    key: 'checkValidity',
+    value: function checkValidity(data) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, data[this.component.key] ? data[this.component.key].data : {});
+    }
+  }, {
+    key: 'checkConditions',
+    value: function checkConditions(data) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, data[this.component.key] ? data[this.component.key].data : {});
+    }
+  }, {
+    key: 'calculateValue',
+    value: function calculateValue(data, flags) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'calculateValue', this).call(this, data[this.component.key] ? data[this.component.key].data : {}, flags);
+    }
+
+    /**
+     * Submit the form before the next page is triggered.
+     */
+
+  }, {
     key: 'beforeNext',
     value: function beforeNext() {
       // If we wish to submit the form on next page, then do that here.
@@ -5887,15 +5907,19 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         }
       });
 
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = { data: {} };
-      }
+      // Set the submission data.
+      var submissionData = this.data[this.component.key] ? this.data[this.component.key].data : {};
 
       // Add components using the data of the submission.
-      this.addComponents(this.element, this.data[this.component.key].data);
+      this.addComponents(this.element, submissionData);
 
       // Restore default values.
       this.restoreValue();
+
+      // Set the value if it is not set already.
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = { data: {} };
+      }
 
       // Check conditions for this form.
       this.checkConditions(this.getValue());
@@ -5912,8 +5936,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       }
 
       if (submission.data) {
-        this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
-        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
+        this.data[this.component.key] = this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
+        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, this.data, flags);
       } else if (submission._id) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
@@ -11274,6 +11298,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
 
     _this.wizard = null;
     _this.pages = [];
+    _this.globalComponents = [];
     _this.page = 0;
     _this.history = [];
     _this._nextPage = 0;
@@ -11399,12 +11424,22 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       return pageIndex;
     }
   }, {
+    key: 'addGlobalComponents',
+    value: function addGlobalComponents(page) {
+      // If there are non-page components, then add them here. This is helpful to allow for hidden fields that
+      // can propogate between pages.
+      if (this.globalComponents.length) {
+        page.components = this.globalComponents.concat(page.components);
+      }
+      return page;
+    }
+  }, {
     key: 'getPage',
     value: function getPage(pageNum) {
       if (pageNum >= 0 && pageNum < this.pages.length) {
-        return this.pages[pageNum];
+        return this.addGlobalComponents(this.pages[pageNum]);
       }
-      return this.pages.length ? this.pages[0] : { components: [] };
+      return this.pages.length ? this.addGlobalComponents(this.pages[0]) : { components: this.globalComponents };
     }
   }, {
     key: 'currentPage',
@@ -11423,6 +11458,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
           if (_utils2.default.checkCondition(component, _this4.data, _this4.data)) {
             _this4.pages.push(component);
           }
+        } else if (component.type === 'hidden') {
+          // Global components are hidden components that can propagate between pages.
+          _this4.globalComponents.push(component);
         }
       });
       this.buildWizardHeader();

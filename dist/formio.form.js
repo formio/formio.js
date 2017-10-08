@@ -3101,8 +3101,12 @@ var BaseComponent = function () {
   }, {
     key: 'prepend',
     value: function prepend(element) {
-      if (this.element && this.element.firstChild) {
-        this.element.insertBefore(element, this.element.firstChild);
+      if (this.element) {
+        if (this.element.firstChild) {
+          this.element.insertBefore(element, this.element.firstChild);
+        } else {
+          this.element.appendChild(element);
+        }
       }
     }
   }, {
@@ -5839,11 +5843,27 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     return _this;
   }
 
-  /**
-   * Submit the form before the next page is triggered.
-   */
-
   _createClass(FormComponent, [{
+    key: 'checkValidity',
+    value: function checkValidity(data) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, data[this.component.key] ? data[this.component.key].data : {});
+    }
+  }, {
+    key: 'checkConditions',
+    value: function checkConditions(data) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, data[this.component.key] ? data[this.component.key].data : {});
+    }
+  }, {
+    key: 'calculateValue',
+    value: function calculateValue(data, flags) {
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'calculateValue', this).call(this, data[this.component.key] ? data[this.component.key].data : {}, flags);
+    }
+
+    /**
+     * Submit the form before the next page is triggered.
+     */
+
+  }, {
     key: 'beforeNext',
     value: function beforeNext() {
       // If we wish to submit the form on next page, then do that here.
@@ -5887,15 +5907,19 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         }
       });
 
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = { data: {} };
-      }
+      // Set the submission data.
+      var submissionData = this.data[this.component.key] ? this.data[this.component.key].data : {};
 
       // Add components using the data of the submission.
-      this.addComponents(this.element, this.data[this.component.key].data);
+      this.addComponents(this.element, submissionData);
 
       // Restore default values.
       this.restoreValue();
+
+      // Set the value if it is not set already.
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = { data: {} };
+      }
 
       // Check conditions for this form.
       this.checkConditions(this.getValue());
@@ -5912,8 +5936,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       }
 
       if (submission.data) {
-        this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
-        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
+        this.data[this.component.key] = this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
+        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, this.data, flags);
       } else if (submission._id) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
