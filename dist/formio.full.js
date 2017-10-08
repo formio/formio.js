@@ -11266,6 +11266,10 @@ var _each = require('lodash/each');
 
 var _each2 = _interopRequireDefault(_each);
 
+var _clone = require('lodash/clone');
+
+var _clone2 = _interopRequireDefault(_clone);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -11308,9 +11312,11 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   _createClass(FormioWizard, [{
     key: 'setPage',
     value: function setPage(num) {
-      if (num >= 0 && num < this.pages.length) {
+      if (!this.wizard.full && num >= 0 && num < this.pages.length) {
         this.page = num;
         return _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'setForm', this).call(this, this.currentPage());
+      } else if (this.wizard.full) {
+        return _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'setForm', this).call(this, this.getWizard());
       }
       return _nativePromiseOnly2.default.reject('Page not found');
     }
@@ -11439,7 +11445,30 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       if (pageNum >= 0 && pageNum < this.pages.length) {
         return this.addGlobalComponents(this.pages[pageNum]);
       }
-      return this.pages.length ? this.addGlobalComponents(this.pages[0]) : { components: this.globalComponents };
+      return null;
+    }
+  }, {
+    key: 'getWizard',
+    value: function getWizard() {
+      var pageIndex = 0;
+      var page = null;
+      var wizard = (0, _clone2.default)(this.wizard);
+      wizard.components = [];
+      do {
+        page = this.getPage(pageIndex);
+        if (page) {
+          wizard.components.push(page);
+        }
+      } while (pageIndex = this.getNextPage(this.submission.data, pageIndex));
+
+      // Add all other components.
+      (0, _each2.default)(this.wizard.components, function (component) {
+        if (component.type !== 'panel') {
+          wizard.components.push(component);
+        }
+      });
+
+      return wizard;
     }
   }, {
     key: 'currentPage',
@@ -11469,6 +11498,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'setForm',
     value: function setForm(form) {
+      if (!form) {
+        return;
+      }
       this.wizard = form;
       this.buildPages(this.wizard);
       return this.setPage(this.page);
@@ -11504,14 +11536,18 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     value: function buildWizardHeader() {
       var _this6 = this;
 
+      if (this.wizardHeader) {
+        this.wizardHeader.innerHTML = '';
+      }
+
       var currentPage = this.currentPage();
-      currentPage.breadcrumb = currentPage.breadcrumb || 'default';
-      if (currentPage.breadcrumb.toLowerCase() === 'none') {
+      if (!currentPage || this.wizard.full) {
         return;
       }
 
-      if (this.wizardHeader) {
-        this.wizardHeader.innerHTML = '';
+      currentPage.breadcrumb = currentPage.breadcrumb || 'default';
+      if (currentPage.breadcrumb.toLowerCase() === 'none') {
+        return;
       }
 
       this.wizardHeader = this.ce('ul', {
@@ -11519,9 +11555,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       });
 
       // Add the header to the beginning.
-      if (this.element.parentNode) {
-        this.element.parentNode.insertBefore(this.wizardHeader, this.element);
-      }
+      this.prepend(this.wizardHeader);
 
       var showHistory = currentPage.breadcrumb.toLowerCase() === 'history';
       (0, _each2.default)(this.pages, function (page, i) {
@@ -11619,6 +11653,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       if (this.wizardNav) {
         this.wizardNav.innerHTML = '';
       }
+      if (this.wizard.full) {
+        return;
+      }
       this.wizardNav = this.ce('ul', {
         class: 'list-inline'
       });
@@ -11653,7 +11690,7 @@ FormioWizard.setAppUrl = _formio4.default.setAppUrl;
 module.exports = global.FormioWizard = FormioWizard;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./formio":41,"./formio.form":39,"./utils":52,"lodash/each":254,"native-promise-only":301}],44:[function(require,module,exports){
+},{"./formio":41,"./formio.form":39,"./utils":52,"lodash/clone":247,"lodash/each":254,"native-promise-only":301}],44:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -18861,6 +18898,14 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     },
     "cat": function() {
       return Array.prototype.join.call(arguments, "");
+    },
+    "substr":function(source, start, end) {
+      if(end < 0){
+        // JavaScript doesn't support negative end, this emulates PHP behavior
+        var temp = String(source).substr(start);
+        return temp.substr(0, temp.length + end);
+      }
+      return String(source).substr(start, end);
     },
     "+": function() {
       return Array.prototype.reduce.call(arguments, function(a, b) {
