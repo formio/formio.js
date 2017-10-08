@@ -10569,24 +10569,16 @@ var Formio = function () {
         Formio.setUser(null);
         // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
         try {
-          if (typeof Storage !== "undefined") {
-            return localStorage.removeItem('formioToken');
-          } else {
-            return cookies.erase('formioToken');
-          }
+          return localStorage.removeItem('formioToken');
         } catch (err) {
-          return;
+          return cookies.erase('formioToken');
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        if (typeof Storage !== "undefined") {
-          localStorage.setItem('formioToken', token);
-        } else {
-          cookies.set('formioToken', token);
-        }
+        localStorage.setItem('formioToken', token);
       } catch (err) {
-        // Do nothing.
+        cookies.set('formioToken', token);
       }
       return Formio.currentUser(); // Run this so user is updated if null
     }
@@ -10597,14 +10589,10 @@ var Formio = function () {
         return this.token;
       }
       try {
-        if (typeof Storage !== "undefined") {
-          this.token = localStorage.getItem('formioToken') || '';
-        } else {
-          this.token = cookies.get('formioToken');
-        }
+        this.token = localStorage.getItem('formioToken') || '';
         return this.token;
       } catch (e) {
-        return '';
+        this.token = cookies.get('formioToken');
       }
     }
   }, {
@@ -10614,37 +10602,25 @@ var Formio = function () {
         this.setToken(null);
         // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
         try {
-          if (typeof Storage !== "undefined") {
-            return localStorage.removeItem('formioUser');
-          } else {
-            return cookies.erase('formioUser');
-          }
+          return localStorage.removeItem('formioUser');
         } catch (err) {
-          return;
+          return cookies.erase('formioUser');
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
-        if (typeof Storage !== "undefined") {
-          localStorage.setItem('formioUser', JSON.stringify(user));
-        } else {
-          cookies.set('formioUser', JSON.stringify(user));
-        }
+        localStorage.setItem('formioUser', JSON.stringify(user));
       } catch (err) {
-        // Do nothing.
+        cookies.set('formioUser', JSON.stringify(user));
       }
     }
   }, {
     key: 'getUser',
     value: function getUser() {
       try {
-        if (typeof Storage !== "undefined") {
-          return JSON.parse(localStorage.getItem('formioUser') || null);
-        } else {
-          return JSON.parse(cookies.get('formioUser'));
-        }
+        return JSON.parse(localStorage.getItem('formioUser') || null);
       } catch (e) {
-        return;
+        return JSON.parse(cookies.get('formioUser'));
       }
     }
   }, {
@@ -11849,7 +11825,7 @@ var dropbox = function dropbox(formio) {
       try {
         token = localStorage.getItem('formioToken');
       } catch (e) {
-        // Swallow error.
+        token = cookies.get('formioToken');
       }
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
@@ -11959,7 +11935,7 @@ var s3 = function s3(formio) {
         try {
           token = localStorage.getItem('formioToken');
         } catch (e) {
-          // swallow error.
+          token = cookies.get('formioToken');
         }
         if (token) {
           pre.setRequestHeader('x-jwt-token', token);
@@ -12047,7 +12023,13 @@ var url = function url(formio) {
         };
 
         xhr.open('POST', url);
-        var token = localStorage.getItem('formioToken');
+        var token = false;
+        try {
+          token = localStorage.getItem('formioToken');
+        } catch (err) {
+          token = cookies.get('formioToken');
+        }
+
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
