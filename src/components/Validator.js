@@ -58,7 +58,7 @@ export var Validator = {
     required: {
       key: 'validate.required',
       message: function(component, setting) {
-        return component.t('required', {field: component.errorLabel});
+        return component.t(component.errorMessage('required'), {field: component.errorLabel});
       },
       check: function(component, setting, value) {
         if (!FormioUtils.boolValue(setting)) {
@@ -70,7 +70,7 @@ export var Validator = {
     min: {
       key: 'validate.min',
       message: function(component, setting) {
-        return component.t('min', {
+        return component.t(component.errorMessage('min'), {
           field: component.errorLabel,
           min: parseFloat(setting)
         });
@@ -86,7 +86,7 @@ export var Validator = {
     max: {
       key: 'validate.max',
       message: function(component, setting) {
-        return component.t('max', {
+        return component.t(component.errorMessage('max'), {
           field: component.errorLabel,
           max: parseFloat(setting)
         });
@@ -102,7 +102,7 @@ export var Validator = {
     minLength: {
       key: 'validate.minLength',
       message: function(component, setting) {
-        return component.t('minLength', {
+        return component.t(component.errorMessage('minLength'), {
           field: component.errorLabel,
           length: (setting - 1)
         });
@@ -118,7 +118,7 @@ export var Validator = {
     maxLength: {
       key: 'validate.maxLength',
       message: function(component, setting) {
-        return component.t('maxLength', {
+        return component.t(component.errorMessage('maxLength'), {
           field: component.errorLabel,
           length: (setting + 1)
         });
@@ -133,7 +133,7 @@ export var Validator = {
     },
     email: {
       message: function(component, setting) {
-        return component.t('invalid_email', {
+        return component.t(component.errorMessage('invalid_email'), {
           field: component.errorLabel
         });
       },
@@ -147,7 +147,7 @@ export var Validator = {
     },
     date: {
       message: function(component, setting) {
-        return component.t('invalid_date', {
+        return component.t(component.errorMessage('invalid_date'), {
           field: component.errorLabel
         });
       },
@@ -158,7 +158,7 @@ export var Validator = {
     pattern: {
       key: 'validate.pattern',
       message: function(component, setting) {
-        return component.t('pattern', {
+        return component.t(component.errorMessage('pattern'), {
           field: component.errorLabel,
           pattern: setting
         });
@@ -195,7 +195,7 @@ export var Validator = {
     custom: {
       key: 'validate.custom',
       message: function(component) {
-        return component.t('custom', {
+        return component.t(component.errorMessage('custom'), {
           field: component.errorLabel
         });
       },

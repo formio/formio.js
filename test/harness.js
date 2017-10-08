@@ -36,7 +36,7 @@ export const Harness = {
         else {
           // Should be visible.
           assert(!comp.element.hidden, 'Element is hidden');
-          assert.equal(comp.element.style.visibility, 'visible');
+          assert((comp.element.style.visibility === '') || (comp.element.style.visibility === 'visible'), 'Element must be visible');
         }
       });
       done();

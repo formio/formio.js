@@ -59,7 +59,7 @@ var dropbox = function(formio) {
         token = localStorage.getItem('formioToken');
       }
       catch (e) {
-        // Swallow error.
+        token = cookies.get('formioToken');
       }
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
