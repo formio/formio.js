@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Fixed
+ - Better fallback for cookie support if localStorage is disabled or not present.
  - Add Editgrid and custom components to recursive tree.
  - Issue where conditionally visible components should also force parents visible. 
  - Allow email components to be valid if pristine and empty.

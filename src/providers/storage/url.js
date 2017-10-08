@@ -59,7 +59,14 @@ var url = function(formio) {
         }
 
         xhr.open('POST', url);
-        var token = localStorage.getItem('formioToken');
+        var token = false;
+        try {
+          token = localStorage.getItem('formioToken');
+        }
+        catch(err) {
+          token = cookies.get('formioToken');
+        }
+
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
