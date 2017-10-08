@@ -1529,8 +1529,13 @@ export class BaseComponent {
   }
 
   prepend(element) {
-    if (this.element && this.element.firstChild) {
-      this.element.insertBefore(element, this.element.firstChild);
+    if (this.element) {
+      if (this.element.firstChild) {
+        this.element.insertBefore(element, this.element.firstChild);
+      }
+      else {
+        this.element.appendChild(element);
+      }
     }
   }
 
