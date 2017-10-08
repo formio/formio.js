@@ -9,6 +9,7 @@ export class FormioWizard extends FormioForm {
     super(element, options);
     this.wizard = null;
     this.pages = [];
+    this.globalComponents = [];
     this.page = 0;
     this.history = [];
     this._nextPage = 0;
@@ -123,11 +124,20 @@ export class FormioWizard extends FormioForm {
     return pageIndex;
   }
 
+  addGlobalComponents(page) {
+    // If there are non-page components, then add them here. This is helpful to allow for hidden fields that
+    // can propogate between pages.
+    if (this.globalComponents.length) {
+      page.components = this.globalComponents.concat(page.components);
+    }
+    return page;
+  }
+
   getPage(pageNum) {
     if ((pageNum >= 0) && (pageNum < this.pages.length)) {
-      return this.pages[pageNum];
+      return this.addGlobalComponents(this.pages[pageNum]);
     }
-    return this.pages.length ? this.pages[0] : {components: []};
+    return this.pages.length ? this.addGlobalComponents(this.pages[0]) : {components: this.globalComponents};
   }
 
   currentPage() {
@@ -142,6 +152,10 @@ export class FormioWizard extends FormioForm {
         if (FormioUtils.checkCondition(component, this.data, this.data)) {
           this.pages.push(component);
         }
+      }
+      else if (component.type === 'hidden') {
+        // Global components are hidden components that can propagate between pages.
+        this.globalComponents.push(component);
       }
     });
     this.buildWizardHeader();
