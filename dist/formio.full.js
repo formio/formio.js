@@ -9233,8 +9233,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       if (!this._submission.data) {
         this._submission.data = {};
       }
-      (0, _merge3.default)(this._submission.data, (0, _assign3.default)(this.data, _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), "getValue", this).call(this)));
-      return this._submission;
+      var submission = (0, _clone3.default)(this._submission);
+      submission.data = this.data;
+      (0, _merge3.default)(this._submission.data, submission.data);
+      return submission;
     }
 
     /**
@@ -9460,7 +9462,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     key: "reset",
     value: function reset() {
       // Reset the submission data.
-      this.data = this.value = {};
+      this._submission.data = this.data = this.value = {};
       this.setSubmission({ data: {} });
     }
 
@@ -11632,7 +11634,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
 
       if (this.wizardNav) {
         this.wizardNav.innerHTML = '';
-        this.element.removeChild(this.wizardNav);
+        if (this.element.contains(this.wizardNav)) {
+          this.element.removeChild(this.wizardNav);
+        }
       }
       if (this.wizard.full) {
         return;

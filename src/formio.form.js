@@ -508,8 +508,10 @@ export class FormioForm extends FormioComponents {
     if (!this._submission.data) {
       this._submission.data = {};
     }
-    _merge(this._submission.data, _assign(this.data, super.getValue()));
-    return this._submission;
+    let submission = _clone(this._submission);
+    submission.data = this.data;
+    _merge(this._submission.data, submission.data);
+    return submission;
   }
 
   /**
@@ -698,7 +700,7 @@ export class FormioForm extends FormioComponents {
    */
   reset() {
     // Reset the submission data.
-    this.data = this.value = {};
+    this._submission.data = this.data = this.value = {};
     this.setSubmission({data: {}});
   }
 
