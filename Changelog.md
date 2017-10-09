@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.19.1
+### Fixed
+ - Problem with multi-form workflows showing the submission not showing all data.
+
+### Changed
+ - Changed debounce to 100ms to make forms seem faster.
+
+### Added
+ - Redirect capabilities within the embed code.
+
 ## 2.19.0
 ### Fixed
  - Performance issues with large forms with conditionals.
