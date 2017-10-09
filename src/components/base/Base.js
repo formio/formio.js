@@ -195,7 +195,7 @@ export class BaseComponent {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
-    this.triggerChange = _debounce(this.onChange.bind(this), 200);
+    this.triggerChange = _debounce(this.onChange.bind(this), 100);
 
     /**
      * An array of event handlers so that the destry command can deregister them.

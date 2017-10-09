@@ -325,7 +325,6 @@ export class FormioWizard extends FormioForm {
     // Update Wizard Nav
     let nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage != nextPage) {
-      this.element.removeChild(this.wizardNav);
       this.buildWizardNav(nextPage);
       this.emit('updateWizardNav', {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
       this._nextPage = nextPage;
@@ -335,6 +334,9 @@ export class FormioWizard extends FormioForm {
   buildWizardNav(nextPage) {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = '';
+      if (this.element.contains(this.wizardNav)) {
+        this.element.removeChild(this.wizardNav);
+      }
     }
     if (this.wizard.full) {
       return;

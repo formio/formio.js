@@ -5,6 +5,7 @@ import { FormioComponents } from './components/Components';
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _assign from 'lodash/assign';
+import _merge from 'lodash/merge';
 import EventEmitter from 'eventemitter2';
 
 // Initialize the available forms.
@@ -498,7 +499,8 @@ export class FormioForm extends FormioComponents {
   }
 
   setValue(submission, flags) {
-    this._submission = submission || {data: {}};
+    submission = submission || {data: {}};
+    _merge(this._submission, submission);
     return super.setValue(this._submission.data, flags);
   }
 
@@ -506,8 +508,10 @@ export class FormioForm extends FormioComponents {
     if (!this._submission.data) {
       this._submission.data = {};
     }
-    this._submission.data = _assign(this.data, super.getValue());
-    return this._submission;
+    let submission = _clone(this._submission);
+    submission.data = this.data;
+    _merge(this._submission.data, submission.data);
+    return submission;
   }
 
   /**
@@ -672,7 +676,7 @@ export class FormioForm extends FormioComponents {
    */
   onChange(flags, changed) {
     super.onChange(flags, true);
-    this._submission = this.submission;
+    _merge(this._submission, this.submission);
     let value = _clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
@@ -696,7 +700,7 @@ export class FormioForm extends FormioComponents {
    */
   reset() {
     // Reset the submission data.
-    this.data = this.value = {};
+    this._submission.data = this.data = this.value = {};
     this.setSubmission({data: {}});
   }
 

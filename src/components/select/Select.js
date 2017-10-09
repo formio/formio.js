@@ -11,7 +11,7 @@ export class SelectComponent extends BaseComponent {
     super(component, options, data);
 
     // Trigger an update.
-    this.triggerUpdate = _debounce(this.updateItems.bind(this), 200);
+    this.triggerUpdate = _debounce(this.updateItems.bind(this), 100);
 
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {

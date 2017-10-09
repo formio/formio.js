@@ -10,4 +10,38 @@ queryString.replace(/\?/g, '&').split("&").forEach(function(item) {
   query[item.split("=")[0]] = item.split("=")[1] && decodeURIComponent(item.split("=")[1]);
 });
 query.styles = query.styles || (scriptSrc + '/formio.form.min.css');
-Formio.embedForm(query);
+Formio.embedForm(query).then((instance) => {
+  instance.on('submit', (submission) => {
+    var returnUrl = query.return || query.redirect;
+
+    // Allow form based configuration for return url.
+    if (
+      !returnUrl &&
+      (
+        instance._form &&
+        instance._form.settings &&
+        (
+          instance._form.settings.returnUrl ||
+          instance._form.settings.redirect
+        )
+      )
+    ) {
+      returnUrl = instance._form.settings.returnUrl || instance._form.settings.redirect;
+    }
+
+    if (returnUrl) {
+      let formSrc = instance.formio ? instance.formio.formUrl : '';
+      var hasQuery = !!returnUrl.match(/\?/);
+      var isOrigin = returnUrl.indexOf(location.origin) === 0;
+      returnUrl += hasQuery ? '&' : '?';
+      returnUrl += 'sub=' + submission._id;
+      if (!isOrigin && formSrc) {
+        returnUrl += '&form=' + encodeURIComponent(formSrc);
+      }
+      window.location.href = returnUrl;
+      if (isOrigin) {
+        window.location.reload();
+      }
+    }
+  });
+});
