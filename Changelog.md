@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.19.2
 ### Fixed
  - Form component to allow recursive loading and setting a submission value.
+ 
+### Changed
+ - Upgraded moment to 2.19.0
 
 ## 2.19.1
 ### Fixed

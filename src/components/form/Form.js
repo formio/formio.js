@@ -3,18 +3,10 @@ import FormioUtils from '../../utils';
 import Formio from '../../formio';
 import _merge from 'lodash/merge';
 import _isEmpty from 'lodash/isEmpty';
-import EventEmitter from 'eventemitter2';
 
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
     super(null, options);
-
-    // Register our own event emitters.
-    this.events = new EventEmitter({
-      wildcard: false,
-      maxListeners: 0
-    });
-
     this.type = 'formcomponent';
     this.component = component;
     this.submitted = false;
