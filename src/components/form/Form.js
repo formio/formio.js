@@ -2,6 +2,7 @@ import FormioForm from '../../formio.form';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
 import _merge from 'lodash/merge';
+import _isEmpty from 'lodash/isEmpty';
 import EventEmitter from 'eventemitter2';
 
 export class FormComponent extends FormioForm {
@@ -151,7 +152,7 @@ export class FormComponent extends FormioForm {
       return;
     }
 
-    if (submission.data) {
+    if (!_isEmpty(submission.data)) {
       _merge(this.data[this.component.key], submission);
       return super.setValue(submission, flags);
     }
