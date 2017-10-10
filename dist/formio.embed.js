@@ -5763,6 +5763,14 @@ var _merge2 = require('lodash/merge');
 
 var _merge3 = _interopRequireDefault(_merge2);
 
+var _isEmpty2 = require('lodash/isEmpty');
+
+var _isEmpty3 = _interopRequireDefault(_isEmpty2);
+
+var _eventemitter = require('eventemitter2');
+
+var _eventemitter2 = _interopRequireDefault(_eventemitter);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -5791,7 +5799,13 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   function FormComponent(component, options, data) {
     _classCallCheck(this, FormComponent);
 
+    // Register our own event emitters.
     var _this = _possibleConstructorReturn(this, (FormComponent.__proto__ || Object.getPrototypeOf(FormComponent)).call(this, null, options));
+
+    _this.events = new _eventemitter2.default({
+      wildcard: false,
+      maxListeners: 0
+    });
 
     _this.type = 'formcomponent';
     _this.component = component;
@@ -5807,7 +5821,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     if (!component.src && !_this.options.formio && component.form) {
       component.src = _formio4.default.getBaseUrl();
       if (component.project) {
-        component.src += '/project/' + component.project;
+        // Check to see if it is a MongoID.
+        if (_utils2.default.isMongoId(component.project)) {
+          component.src += '/project';
+        }
+        component.src += '/' + component.project;
         srcOptions.project = component.src;
       }
       component.src += '/form/' + component.form;
@@ -5935,9 +5953,9 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         return;
       }
 
-      if (submission.data) {
-        this.data[this.component.key] = this._submission = (0, _merge3.default)(this.data[this.component.key], submission);
-        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, this.data, flags);
+      if (!(0, _isEmpty3.default)(submission.data)) {
+        (0, _merge3.default)(this.data[this.component.key], submission);
+        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
       } else if (submission._id) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
@@ -5961,7 +5979,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   return FormComponent;
 }(_formio2.default);
 
-},{"../../formio":42,"../../formio.form":40,"../../utils":53,"lodash/merge":285}],19:[function(require,module,exports){
+},{"../../formio":42,"../../formio.form":40,"../../utils":53,"eventemitter2":57,"lodash/isEmpty":268,"lodash/merge":285}],19:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -12166,6 +12184,15 @@ var FormioUtils = {
     } else {
       return !!value;
     }
+  },
+
+  /**
+   * Check to see if an ID is a mongoID.
+   * @param text
+   * @return {Array|{index: number, input: string}|Boolean|*}
+   */
+  isMongoId: function isMongoId(text) {
+    return text.toString().match(/^[0-9a-fA-F]{24}$/);
   },
 
   /**

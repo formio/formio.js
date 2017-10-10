@@ -70,6 +70,15 @@ var FormioUtils = {
   },
 
   /**
+   * Check to see if an ID is a mongoID.
+   * @param text
+   * @return {Array|{index: number, input: string}|Boolean|*}
+   */
+  isMongoId: function isMongoId(text) {
+    return text.toString().match(/^[0-9a-fA-F]{24}$/);
+  },
+
+  /**
    * Determine if a component is a layout component or not.
    *
    * @param {Object} component
