@@ -151,6 +151,7 @@ import { FormioComponents } from &apos;./components/Components&apos;;
 import _each from &apos;lodash/each&apos;;
 import _clone from &apos;lodash/clone&apos;;
 import _assign from &apos;lodash/assign&apos;;
+import _merge from &apos;lodash/merge&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 
 // Initialize the available forms.
@@ -629,12 +630,12 @@ export class FormioForm extends FormioComponents {
   setSubmission(submission) {
     return this.onSubmission = this.formReady.then(
       () =&gt; {
-        this.setValue(submission, {
-          noUpdate: true
-        });
-        this.updateValue({
-          noValidate: true
-        });
+        // If nothing changed, still trigger an update.
+        if (!this.setValue(submission)) {
+          this.triggerChange({
+            noValidate: true
+          });
+        }
         this.submissionReadyResolve();
       },
       (err) =&gt; this.submissionReadyReject(err)
@@ -644,7 +645,8 @@ export class FormioForm extends FormioComponents {
   }
 
   setValue(submission, flags) {
-    this._submission = submission || {data: {}};
+    submission = submission || {data: {}};
+    _merge(this._submission, submission);
     return super.setValue(this._submission.data, flags);
   }
 
@@ -652,8 +654,10 @@ export class FormioForm extends FormioComponents {
     if (!this._submission.data) {
       this._submission.data = {};
     }
-    this._submission.data = _assign(this.data, super.getValue());
-    return this._submission;
+    let submission = _clone(this._submission);
+    submission.data = this.data;
+    _merge(this._submission.data, submission.data);
+    return submission;
   }
 
   /**
@@ -693,7 +697,6 @@ export class FormioForm extends FormioComponents {
       return this.localize().then(() =&gt; {
         this.build();
         this.on(&apos;resetForm&apos;, () =&gt; this.reset(), true);
-        this.on(&apos;componentChange&apos;, (changed) =&gt; this.onSubmissionChange(changed), true);
         this.on(&apos;refreshData&apos;, () =&gt; this.updateValue());
         this.emit(&apos;render&apos;);
       });
@@ -780,7 +783,11 @@ export class FormioForm extends FormioComponents {
    */
   onSubmit(submission, saved) {
     this.loading = false;
-    this.setValue(submission);
+    this.setPristine(true);
+    this.setValue(submission, {
+      noValidate: true,
+      noCheck: true
+    });
     this.setAlert(&apos;success&apos;, &apos;&lt;p&gt;&apos; + this.t(&apos;complete&apos;) + &apos;&lt;/p&gt;&apos;);
     this.emit(&apos;submit&apos;, submission);
     if (saved) {
@@ -808,19 +815,17 @@ export class FormioForm extends FormioComponents {
   }
 
   /**
-   * Called when the submission has changed in value.
+   * Trigger the change event for this form.
    *
-   * @param {Object} changed - The changed value that triggered this event.
-   * @param {Object} changed.component - The component that was changed.
-   * @param {*} changed.value - The new value of the changed component.
-   * @param {boolean} changed.flags - The flags to apply to this update.
+   * @param changed
+   * @param flags
    */
-  onSubmissionChange(changed) {
-    this._submission = this.submission;
+  onChange(flags, changed) {
+    super.onChange(flags, true);
+    _merge(this._submission, this.submission);
     let value = _clone(this._submission);
     value.changed = changed;
-    value.isValid = this.checkData(value.data, changed.flags);
-    this.pristine = false;
+    value.isValid = this.checkData(value.data, flags);
     this.emit(&apos;change&apos;, value);
   }
 
@@ -841,7 +846,7 @@ export class FormioForm extends FormioComponents {
    */
   reset() {
     // Reset the submission data.
-    this.data = this.value = {};
+    this._submission.data = this.data = this.value = {};
     this.setSubmission({data: {}});
   }
 

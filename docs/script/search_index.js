@@ -1104,6 +1104,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/components.js~formiocomponents#haschanged",
+    "class/src/components/Components.js~FormioComponents.html#instance-method-hasChanged",
+    "src/components/Components.js~FormioComponents#hasChanged",
+    "method"
+  ],
+  [
     "src/components/components.js~formiocomponents#hidden",
     "class/src/components/Components.js~FormioComponents.html#instance-member-hidden",
     "src/components/Components.js~FormioComponents#hidden",
@@ -1149,6 +1155,12 @@ window.esdocSearchIndex = [
     "src/components/components.js~formiocomponents#sethidden",
     "class/src/components/Components.js~FormioComponents.html#instance-method-setHidden",
     "src/components/Components.js~FormioComponents#setHidden",
+    "method"
+  ],
+  [
+    "src/components/components.js~formiocomponents#setpristine",
+    "class/src/components/Components.js~FormioComponents.html#instance-method-setPristine",
+    "src/components/Components.js~FormioComponents#setPristine",
     "method"
   ],
   [
@@ -1585,13 +1597,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -1636,6 +1648,12 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-get-errorLabel",
     "src/components/base/Base.js~BaseComponent#errorLabel",
     "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#errormessage",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-errorMessage",
+    "src/components/base/Base.js~BaseComponent#errorMessage",
+    "method"
   ],
   [
     "src/components/base/base.js~basecomponent#errors",
@@ -1710,6 +1728,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#haschanged",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-hasChanged",
+    "src/components/base/Base.js~BaseComponent#hasChanged",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#hascondition",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-hasCondition",
+    "src/components/base/Base.js~BaseComponent#hasCondition",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#id",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-id",
     "src/components/base/Base.js~BaseComponent#id",
@@ -1759,13 +1789,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -1872,6 +1902,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#restorevalue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-restoreValue",
+    "src/components/base/Base.js~BaseComponent#restoreValue",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#root",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-root",
     "src/components/base/Base.js~BaseComponent#root",
@@ -1899,6 +1935,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#setinputmask",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-setInputMask",
     "src/components/base/Base.js~BaseComponent#setInputMask",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#setpristine",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-setPristine",
+    "src/components/base/Base.js~BaseComponent#setPristine",
     "method"
   ],
   [
@@ -2514,12 +2556,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#addinput",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-addInput",
-    "src/components/datetime/DateTime.js~DateTimeComponent#addInput",
-    "method"
-  ],
-  [
     "src/components/datetime/datetime.js~datetimecomponent#addsuffix",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-addSuffix",
     "src/components/datetime/DateTime.js~DateTimeComponent#addSuffix",
@@ -2571,6 +2607,12 @@ window.esdocSearchIndex = [
     "src/components/datetime/datetime.js~datetimecomponent#elementinfo",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-elementInfo",
     "src/components/datetime/DateTime.js~DateTimeComponent#elementInfo",
+    "method"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent#getcalendar",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getCalendar",
+    "src/components/datetime/DateTime.js~DateTimeComponent#getCalendar",
     "method"
   ],
   [
@@ -2997,6 +3039,24 @@ window.esdocSearchIndex = [
     "src/components/form/form.js~formcomponent#build",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-build",
     "src/components/form/Form.js~FormComponent#build",
+    "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#calculatevalue",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-calculateValue",
+    "src/components/form/Form.js~FormComponent#calculateValue",
+    "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#checkconditions",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-checkConditions",
+    "src/components/form/Form.js~FormComponent#checkConditions",
+    "method"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#checkvalidity",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-checkValidity",
+    "src/components/form/Form.js~FormComponent#checkValidity",
     "method"
   ],
   [
@@ -4164,12 +4224,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/formio.form.js~formioform#data",
-    "class/src/formio.form.js~FormioForm.html#instance-member-data",
-    "src/formio.form.js~FormioForm#data",
-    "member"
-  ],
-  [
     "src/formio.form.js~formioform#element",
     "class/src/formio.form.js~FormioForm.html#instance-member-element",
     "src/formio.form.js~FormioForm#element",
@@ -4189,13 +4243,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#form",
-    "class/src/formio.form.js~FormioForm.html#instance-get-form",
+    "class/src/formio.form.js~FormioForm.html#instance-set-form",
     "src/formio.form.js~FormioForm#form",
     "member"
   ],
   [
     "src/formio.form.js~formioform#form",
-    "class/src/formio.form.js~FormioForm.html#instance-set-form",
+    "class/src/formio.form.js~FormioForm.html#instance-get-form",
     "src/formio.form.js~FormioForm#form",
     "member"
   ],
@@ -4260,6 +4314,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.form.js~formioform#onchange",
+    "class/src/formio.form.js~FormioForm.html#instance-method-onChange",
+    "src/formio.form.js~FormioForm#onChange",
+    "method"
+  ],
+  [
     "src/formio.form.js~formioform#onelement",
     "class/src/formio.form.js~FormioForm.html#instance-member-onElement",
     "src/formio.form.js~FormioForm#onElement",
@@ -4278,12 +4338,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/formio.form.js~formioform#onsubmissionchange",
-    "class/src/formio.form.js~FormioForm.html#instance-method-onSubmissionChange",
-    "src/formio.form.js~FormioForm#onSubmissionChange",
-    "method"
-  ],
-  [
     "src/formio.form.js~formioform#onsubmissionerror",
     "class/src/formio.form.js~FormioForm.html#instance-method-onSubmissionError",
     "src/formio.form.js~FormioForm#onSubmissionError",
@@ -4294,12 +4348,6 @@ window.esdocSearchIndex = [
     "class/src/formio.form.js~FormioForm.html#instance-method-onSubmit",
     "src/formio.form.js~FormioForm#onSubmit",
     "method"
-  ],
-  [
-    "src/formio.form.js~formioform#pristine",
-    "class/src/formio.form.js~FormioForm.html#instance-member-pristine",
-    "src/formio.form.js~FormioForm#pristine",
-    "member"
   ],
   [
     "src/formio.form.js~formioform#ready",
@@ -4381,13 +4429,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
@@ -5070,6 +5118,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.wizard.js~formiowizard#addglobalcomponents",
+    "class/src/formio.wizard.js~FormioWizard.html#instance-method-addGlobalComponents",
+    "src/formio.wizard.js~FormioWizard#addGlobalComponents",
+    "method"
+  ],
+  [
     "src/formio.wizard.js~formiowizard#build",
     "class/src/formio.wizard.js~FormioWizard.html#instance-method-build",
     "src/formio.wizard.js~FormioWizard#build",
@@ -5136,6 +5190,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.wizard.js~formiowizard#getwizard",
+    "class/src/formio.wizard.js~FormioWizard.html#instance-method-getWizard",
+    "src/formio.wizard.js~FormioWizard#getWizard",
+    "method"
+  ],
+  [
+    "src/formio.wizard.js~formiowizard#globalcomponents",
+    "class/src/formio.wizard.js~FormioWizard.html#instance-member-globalComponents",
+    "src/formio.wizard.js~FormioWizard#globalComponents",
+    "member"
+  ],
+  [
     "src/formio.wizard.js~formiowizard#hasbutton",
     "class/src/formio.wizard.js~FormioWizard.html#instance-method-hasButton",
     "src/formio.wizard.js~FormioWizard#hasButton",
@@ -5154,9 +5220,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/formio.wizard.js~formiowizard#onsubmissionchange",
-    "class/src/formio.wizard.js~FormioWizard.html#instance-method-onSubmissionChange",
-    "src/formio.wizard.js~FormioWizard#onSubmissionChange",
+    "src/formio.wizard.js~formiowizard#onchange",
+    "class/src/formio.wizard.js~FormioWizard.html#instance-method-onChange",
+    "src/formio.wizard.js~FormioWizard#onChange",
     "method"
   ],
   [

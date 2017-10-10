@@ -144,13 +144,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FormioForm} from &apos;<span><a href="file/src/formio.form.js.html#lineNumber65">formiojs/src/formio.form.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FormioForm} from &apos;<span><a href="file/src/formio.form.js.html#lineNumber66">formiojs/src/formio.form.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/formio.form.js.html#lineNumber65">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/formio.form.js.html#lineNumber66">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -275,33 +275,6 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
           
           
           <span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html#instance-member-component">component</a></span></span><span data-ice="signature">: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          <span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html#instance-member-data">data</a></span></span><span data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -727,33 +700,6 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
         
         <div data-ice="description"><p>Promise that is triggered when the submission is done loading.</p>
 </div>
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          <span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html#instance-member-pristine">pristine</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
       </div>
     </td>
     <td>
@@ -1255,13 +1201,13 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html#instance-method-onSubmissionChange">onSubmissionChange</a></span></span><span data-ice="signature">(changed: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>)</span>
+          <span data-ice="name"><span><a href="class/src/formio.form.js~FormioForm.html#instance-method-onChange">onChange</a></span></span><span data-ice="signature">(changed: <span>*</span>, flags: <span>*</span>)</span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>Called when the submission has changed in value.</p>
+        <div data-ice="description"><p>Trigger the change event for this form.</p>
 </div>
       </div>
     </td>
@@ -3325,7 +3271,7 @@ to perform special async functions.</p>
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-calculateValue">calculateValue</a></span></span><span data-ice="signature">(data: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-calculateValue">calculateValue</a></span></span><span data-ice="signature">(data: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -3743,6 +3689,34 @@ to perform special async functions.</p>
         <p>
           
           
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-errorMessage">errorMessage</a></span></span><span data-ice="signature">(type: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Get the error message provided a certain type of error.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-getElement">getElement</a></span></span><span data-ice="signature">(): <span>HTMLElement</span></span>
         </p>
       </div>
@@ -3964,6 +3938,62 @@ to perform special async functions.</p>
         <p>
           
           
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-hasChanged">hasChanged</a></span></span><span data-ice="signature">(before: <span>*</span>, after: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Determine if the value of this component has changed.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-hasCondition">hasCondition</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Determines if this component has a condition defined.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-interpolate">interpolate</a></span></span><span data-ice="signature">(string: <span>*</span>, data: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -4158,7 +4188,7 @@ to perform special async functions.</p>
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-onChange">onChange</a></span></span><span data-ice="signature">(flags: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-onChange">onChange</a></span></span><span data-ice="signature">(flags: <span>*</span>, fromRoot: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -4377,6 +4407,34 @@ to perform special async functions.</p>
         <p>
           
           
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-restoreValue">restoreValue</a></span></span><span data-ice="signature">()</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Restore the value of a control.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-selectOptions">selectOptions</a></span></span><span data-ice="signature">(select: <span>*</span>, tag: <span>*</span>, options: <span>*</span>, defaultValue: <span>*</span>)</span>
         </p>
       </div>
@@ -4459,6 +4517,34 @@ to perform special async functions.</p>
         <p>
           
           
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-setPristine">setPristine</a></span></span><span data-ice="signature">(pristine: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Sets the pristine flag for this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-setSelectValue">setSelectValue</a></span></span><span data-ice="signature">(select: <span>*</span>, value: <span>*</span>)</span>
         </p>
       </div>
@@ -4486,7 +4572,7 @@ to perform special async functions.</p>
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-setValue">setValue</a></span></span><span data-ice="signature">(value: <span>*</span>, flags: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-setValue">setValue</a></span></span><span data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
         </p>
       </div>
       <div>
@@ -4626,13 +4712,14 @@ to perform special async functions.</p>
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-updateValue">updateValue</a></span></span><span data-ice="signature">(flags: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-updateValue">updateValue</a></span></span><span data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Update a value of this component.</p>
+</div>
       </div>
     </td>
     <td>
@@ -4988,7 +5075,7 @@ to perform special async functions.</p>
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-calculateValue">calculateValue</a></span></span><span data-ice="signature">(data: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-calculateValue">calculateValue</a></span></span><span data-ice="signature">(data: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5320,6 +5407,33 @@ within other container based components.</p>
         <p>
           
           
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-hasChanged">hasChanged</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
           <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-hideComponents">hideComponents</a></span></span><span data-ice="signature">(hidden: <span>*</span>)</span>
         </p>
       </div>
@@ -5512,7 +5626,7 @@ within other container based components.</p>
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-setValue">setValue</a></span></span><span data-ice="signature">(value: <span>*</span>, flags: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-setPristine">setPristine</a></span></span><span data-ice="signature">(pristine: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -5539,7 +5653,34 @@ within other container based components.</p>
         <p>
           
           
-          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-updateValue">updateValue</a></span></span><span data-ice="signature">(flags: <span>*</span>)</span>
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-setValue">setValue</a></span></span><span data-ice="signature">(value: <span>*</span>, flags: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          <span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-updateValue">updateValue</a></span></span><span data-ice="signature">(flags: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -5573,7 +5714,7 @@ within other container based components.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber84">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber85">source</a></span></span>
     </span>
   </h3>
 
@@ -5683,7 +5824,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber122">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber123">source</a></span></span>
     </span>
   </h3>
 
@@ -5727,7 +5868,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber527">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber531">source</a></span></span>
     </span>
   </h3>
 
@@ -5738,50 +5879,6 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
 </div>
 
   <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-member-component">BaseComponent#component</a></span></div>
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-data">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span data-ice="name">data</span><span data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber698">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  <div data-ice="description"><p>The data object in which this component resides.</p>
-</div>
-
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-member-data">BaseComponent#data</a></span></div>
 
   <div data-ice="properties">
 </div>
@@ -5815,7 +5912,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber216">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber217">source</a></span></span>
     </span>
   </h3>
 
@@ -5859,7 +5956,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber201">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber202">source</a></span></span>
     </span>
   </h3>
 
@@ -5903,7 +6000,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber447">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber448">source</a></span></span>
     </span>
   </h3>
 
@@ -5947,7 +6044,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber437">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber438">source</a></span></span>
     </span>
   </h3>
 
@@ -6004,7 +6101,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber147">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber148">source</a></span></span>
     </span>
   </h3>
 
@@ -6059,7 +6156,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber160">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber161">source</a></span></span>
     </span>
   </h3>
 
@@ -6103,7 +6200,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber153">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber154">source</a></span></span>
     </span>
   </h3>
 
@@ -6147,7 +6244,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber110">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber111">source</a></span></span>
     </span>
   </h3>
 
@@ -6191,7 +6288,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber116">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber117">source</a></span></span>
     </span>
   </h3>
 
@@ -6235,7 +6332,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber342">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber343">source</a></span></span>
     </span>
   </h3>
 
@@ -6292,7 +6389,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber351">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber352">source</a></span></span>
     </span>
   </h3>
 
@@ -6336,7 +6433,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber104">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber105">source</a></span></span>
     </span>
   </h3>
 
@@ -6380,7 +6477,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber195">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber196">source</a></span></span>
     </span>
   </h3>
 
@@ -6424,7 +6521,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber134">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber135">source</a></span></span>
     </span>
   </h3>
 
@@ -6468,7 +6565,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber128">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber129">source</a></span></span>
     </span>
   </h3>
 
@@ -6479,50 +6576,6 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
 </div>
 
   
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-pristine">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span data-ice="name">pristine</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber677">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  <div data-ice="description"><p>If this input has been input and provided value.</p>
-</div>
-
-  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-member-pristine">BaseComponent#pristine</a></span></div>
 
   <div data-ice="properties">
 </div>
@@ -6556,7 +6609,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber333">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber334">source</a></span></span>
     </span>
   </h3>
 
@@ -6613,7 +6666,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber235">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber236">source</a></span></span>
     </span>
   </h3>
 
@@ -6669,7 +6722,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber286">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber287">source</a></span></span>
     </span>
   </h3>
 
@@ -6724,7 +6777,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber456">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber457">source</a></span></span>
     </span>
   </h3>
 
@@ -6780,7 +6833,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber474">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber475">source</a></span></span>
     </span>
   </h3>
 
@@ -6837,7 +6890,7 @@ form.submission = {data: {
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber174">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber175">source</a></span></span>
     </span>
   </h3>
 
@@ -6892,7 +6945,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber187">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber188">source</a></span></span>
     </span>
   </h3>
 
@@ -6936,7 +6989,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber180">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber181">source</a></span></span>
     </span>
   </h3>
 
@@ -6980,7 +7033,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber94">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber95">source</a></span></span>
     </span>
   </h3>
 
@@ -7024,7 +7077,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber324">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber325">source</a></span></span>
     </span>
   </h3>
 
@@ -7068,7 +7121,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber295">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber296">source</a></span></span>
     </span>
   </h3>
 
@@ -7127,7 +7180,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber593">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber596">source</a></span></span>
     </span>
   </h3>
 
@@ -7171,7 +7224,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber707">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber712">source</a></span></span>
     </span>
   </h3>
 
@@ -7215,7 +7268,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber519">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber523">source</a></span></span>
     </span>
   </h3>
 
@@ -7288,7 +7341,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber711">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber716">source</a></span></span>
     </span>
   </h3>
 
@@ -7343,7 +7396,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber505">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber507">source</a></span></span>
     </span>
   </h3>
 
@@ -7398,7 +7451,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber242">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber243">source</a></span></span>
     </span>
   </h3>
 
@@ -7431,28 +7484,28 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-onSubmissionChange">
+  <h3 data-ice="anchor" id="instance-method-onChange">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span data-ice="name">onSubmissionChange</span><span data-ice="signature">(changed: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>)</span>
+    <span data-ice="name">onChange</span><span data-ice="signature">(changed: <span>*</span>, flags: <span>*</span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber672">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber677">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Called when the submission has changed in value.</p>
+  <div data-ice="description"><p>Trigger the change event for this form.</p>
 </div>
 
-  
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-onChange">BaseComponent#onChange</a></span></div>
 
   <div data-ice="properties"><div data-ice="properties">
   <h4 data-ice="title">Params:</h4>
@@ -7464,31 +7517,15 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">changed</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The changed value that triggered this event.</p>
-</td>
-    </tr>
-<tr data-ice="property" data-depth="1">
-      <td data-ice="name" data-depth="1">changed.component</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The component that was changed.</p>
-</td>
-    </tr>
-<tr data-ice="property" data-depth="1">
-      <td data-ice="name" data-depth="1">changed.value</td>
       <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The new value of the changed component.</p>
-</td>
+      <td data-ice="description"></td>
     </tr>
-<tr data-ice="property" data-depth="1">
-      <td data-ice="name" data-depth="1">changed.flags</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">flags</td>
+      <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"><p>The flags to apply to this update.</p>
-</td>
+      <td data-ice="description"></td>
     </tr>
 </tbody>
   </table>
@@ -7524,7 +7561,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber651">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber658">source</a></span></span>
     </span>
   </h3>
 
@@ -7585,7 +7622,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber635">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber638">source</a></span></span>
     </span>
   </h3>
 
@@ -7666,7 +7703,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber544">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber548">source</a></span></span>
     </span>
   </h3>
 
@@ -7722,7 +7759,7 @@ form.src = &apos;https://examples.form.io/example&apos;;</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber696">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber701">source</a></span></span>
     </span>
   </h3>
 
@@ -7782,7 +7819,7 @@ setTimeout(() =&gt; form.reset(), 2000);</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber563">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber566">source</a></span></span>
     </span>
   </h3>
 
@@ -7850,7 +7887,7 @@ setTimeout(() =&gt; form.reset(), 2000);</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber211">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber212">source</a></span></span>
     </span>
   </h3>
 
@@ -7911,7 +7948,7 @@ setTimeout(() =&gt; form.reset(), 2000);</code></pre>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber410">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber411">source</a></span></span>
     </span>
   </h3>
 
@@ -8015,7 +8052,7 @@ form.setForm({
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber259">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber260">source</a></span></span>
     </span>
   </h3>
 
@@ -8081,7 +8118,7 @@ form.setForm({
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber483">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber484">source</a></span></span>
     </span>
   </h3>
 
@@ -8153,7 +8190,7 @@ form.setForm({
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber305">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber306">source</a></span></span>
     </span>
   </h3>
 
@@ -8219,7 +8256,7 @@ form.setForm({
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber500">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber501">source</a></span></span>
     </span>
   </h3>
 
@@ -8297,7 +8334,7 @@ form.setForm({
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber605">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber608">source</a></span></span>
     </span>
   </h3>
 
@@ -8370,7 +8407,7 @@ form.setForm({
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber756">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.form.js.html#lineNumber761">source</a></span></span>
     </span>
   </h3>
 

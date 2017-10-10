@@ -216,7 +216,18 @@ export class RadioComponent extends BaseComponent {
 
   setValueAt(index, value) {
     if (this.inputs &amp;&amp; this.inputs[index]) {
-      this.inputs[index].checked = (this.inputs[index].value === value);
+      let inputValue = this.inputs[index].value;
+      if (inputValue === &apos;true&apos;) {
+        inputValue = true;
+      }
+      else if (inputValue === &apos;false&apos;) {
+        inputValue = false;
+      }
+      else if (!isNaN(parseInt(inputValue, 10)) &amp;&amp; isFinite(inputValue)) {
+        inputValue = parseInt(inputValue, 10);
+      }
+
+      this.inputs[index].checked = (inputValue === value);
     }
   }
 }

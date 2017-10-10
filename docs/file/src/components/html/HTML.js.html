@@ -165,7 +165,7 @@ export class HTMLComponent extends BaseComponent {
     }
 
     if (this.component.refreshOnChange) {
-      this.on(&apos;componentChange&apos;, () =&gt; this.setHTML());
+      this.on(&apos;change&apos;, () =&gt; this.setHTML());
     }
   }
 }

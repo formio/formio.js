@@ -156,7 +156,41 @@ queryString.replace(/\?/g, &apos;&amp;&apos;).split(&quot;&amp;&quot;).forEach(f
   query[item.split(&quot;=&quot;)[0]] = item.split(&quot;=&quot;)[1] &amp;&amp; decodeURIComponent(item.split(&quot;=&quot;)[1]);
 });
 query.styles = query.styles || (scriptSrc + &apos;/formio.form.min.css&apos;);
-Formio.embedForm(query);
+Formio.embedForm(query).then((instance) =&gt; {
+  instance.on(&apos;submit&apos;, (submission) =&gt; {
+    var returnUrl = query.return || query.redirect;
+
+    // Allow form based configuration for return url.
+    if (
+      !returnUrl &amp;&amp;
+      (
+        instance._form &amp;&amp;
+        instance._form.settings &amp;&amp;
+        (
+          instance._form.settings.returnUrl ||
+          instance._form.settings.redirect
+        )
+      )
+    ) {
+      returnUrl = instance._form.settings.returnUrl || instance._form.settings.redirect;
+    }
+
+    if (returnUrl) {
+      let formSrc = instance.formio ? instance.formio.formUrl : &apos;&apos;;
+      var hasQuery = !!returnUrl.match(/\?/);
+      var isOrigin = returnUrl.indexOf(location.origin) === 0;
+      returnUrl += hasQuery ? &apos;&amp;&apos; : &apos;?&apos;;
+      returnUrl += &apos;sub=&apos; + submission._id;
+      if (!isOrigin &amp;&amp; formSrc) {
+        returnUrl += &apos;&amp;form=&apos; + encodeURIComponent(formSrc);
+      }
+      window.location.href = returnUrl;
+      if (isOrigin) {
+        window.location.reload();
+      }
+    }
+  });
+});
 </code></pre>
 
 </div>

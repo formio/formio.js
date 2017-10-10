@@ -150,20 +150,25 @@ import FormioForm from &apos;./formio.form&apos;;
 import Formio from &apos;./formio&apos;;
 import FormioUtils from &apos;./utils&apos;;
 import each from &apos;lodash/each&apos;;
+import clone from &apos;lodash/clone&apos;;
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
     this.wizard = null;
     this.pages = [];
+    this.globalComponents = [];
     this.page = 0;
     this.history = [];
-    this._nextPage = 1;
+    this._nextPage = 0;
   }
 
   setPage(num) {
-    if (num &gt;= 0 &amp;&amp; num &lt; this.pages.length) {
+    if (!this.wizard.full &amp;&amp; num &gt;= 0 &amp;&amp; num &lt; this.pages.length) {
       this.page = num;
       return super.setForm(this.currentPage());
+    }
+    else if (this.wizard.full) {
+      return super.setForm(this.getWizard());
     }
     return Promise.reject(&apos;Page not found&apos;);
   }
@@ -173,7 +178,7 @@ export class FormioWizard extends FormioForm {
     // Check conditional nextPage
     if (form) {
       let page = ++currentPage;
-      if(form.nextPage) {
+      if (form.nextPage) {
         // Allow for script execution.
         if (typeof form.nextPage === &apos;string&apos;) {
           try {
@@ -269,11 +274,42 @@ export class FormioWizard extends FormioForm {
     return pageIndex;
   }
 
+  addGlobalComponents(page) {
+    // If there are non-page components, then add them here. This is helpful to allow for hidden fields that
+    // can propogate between pages.
+    if (this.globalComponents.length) {
+      page.components = this.globalComponents.concat(page.components);
+    }
+    return page;
+  }
+
   getPage(pageNum) {
     if ((pageNum &gt;= 0) &amp;&amp; (pageNum &lt; this.pages.length)) {
-      return this.pages[pageNum];
+      return this.addGlobalComponents(this.pages[pageNum]);
     }
-    return this.pages.length ? this.pages[0] : {components: []};
+    return null;
+  }
+
+  getWizard() {
+    let pageIndex = 0;
+    let page = null;
+    let wizard = clone(this.wizard);
+    wizard.components = [];
+    do {
+      page = this.getPage(pageIndex);
+      if (page) {
+        wizard.components.push(page);
+      }
+    } while (pageIndex = this.getNextPage(this.submission.data, pageIndex));
+
+    // Add all other components.
+    each(this.wizard.components, (component) =&gt; {
+      if (component.type !== &apos;panel&apos;) {
+        wizard.components.push(component);
+      }
+    });
+
+    return wizard;
   }
 
   currentPage() {
@@ -289,12 +325,19 @@ export class FormioWizard extends FormioForm {
           this.pages.push(component);
         }
       }
+      else if (component.type === &apos;hidden&apos;) {
+        // Global components are hidden components that can propagate between pages.
+        this.globalComponents.push(component);
+      }
     });
     this.buildWizardHeader();
     this.buildWizardNav();
   }
 
   setForm(form) {
+    if (!form) {
+      return;
+    }
     this.wizard = form;
     this.buildPages(this.wizard);
     return this.setPage(this.page);
@@ -308,11 +351,11 @@ export class FormioWizard extends FormioForm {
     });
   }
 
-  hasButton(name) {
+  hasButton(name, nextPage) {
     if (name === &apos;previous&apos;) {
       return (this.page &gt; 0);
     }
-    let nextPage = this.getNextPage(this.submission.data, this.page);
+    nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
     if (name === &apos;next&apos;) {
       return (nextPage !== null) &amp;&amp; (nextPage &lt; this.pages.length);
     }
@@ -323,14 +366,18 @@ export class FormioWizard extends FormioForm {
   }
 
   buildWizardHeader() {
+    if (this.wizardHeader) {
+      this.wizardHeader.innerHTML = &apos;&apos;;
+    }
+
     let currentPage = this.currentPage();
-    currentPage.breadcrumb = currentPage.breadcrumb || &apos;default&apos;;
-    if (currentPage.breadcrumb.toLowerCase() === &apos;none&apos;) {
+    if (!currentPage || this.wizard.full) {
       return;
     }
 
-    if (this.wizardHeader) {
-      this.wizardHeader.innerHTML = &apos;&apos;;
+    currentPage.breadcrumb = currentPage.breadcrumb || &apos;default&apos;;
+    if (currentPage.breadcrumb.toLowerCase() === &apos;none&apos;) {
+      return;
     }
 
     this.wizardHeader = this.ce(&apos;ul&apos;, {
@@ -338,9 +385,7 @@ export class FormioWizard extends FormioForm {
     });
 
     // Add the header to the beginning.
-    if (this.element.parentNode) {
-      this.element.parentNode.insertBefore(this.wizardHeader, this.element);
-    }
+    this.prepend(this.wizardHeader);
 
     let showHistory = (currentPage.breadcrumb.toLowerCase() === &apos;history&apos;);
     each(this.pages, (page, i) =&gt; {
@@ -392,8 +437,8 @@ export class FormioWizard extends FormioForm {
     }
   }
 
-  onSubmissionChange(changed) {
-    super.onSubmissionChange(changed);
+  onChange(flags, changed) {
+    super.onChange(flags, changed);
 
     // Only rebuild if there is a page change.
     let pageIndex = 0;
@@ -426,16 +471,21 @@ export class FormioWizard extends FormioForm {
     // Update Wizard Nav
     let nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage != nextPage) {
-      this.element.removeChild(this.wizardNav);
-      this.buildWizardNav();
+      this.buildWizardNav(nextPage);
       this.emit(&apos;updateWizardNav&apos;, {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
       this._nextPage = nextPage;
     }
   }
 
-  buildWizardNav() {
+  buildWizardNav(nextPage) {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = &apos;&apos;;
+      if (this.element.contains(this.wizardNav)) {
+        this.element.removeChild(this.wizardNav);
+      }
+    }
+    if (this.wizard.full) {
+      return;
     }
     this.wizardNav = this.ce(&apos;ul&apos;, {
       class: &apos;list-inline&apos;
@@ -447,7 +497,7 @@ export class FormioWizard extends FormioForm {
       {name: &apos;next&apos;,      method: &apos;nextPage&apos;, class: &apos;btn btn-primary&apos;},
       {name: &apos;submit&apos;,    method: &apos;submit&apos;,   class: &apos;btn btn-primary&apos;}
     ], (button) =&gt; {
-      if (!this.hasButton(button.name)) {
+      if (!this.hasButton(button.name, nextPage)) {
         return;
       }
       let buttonWrapper = this.ce(&apos;li&apos;);

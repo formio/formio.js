@@ -157,7 +157,7 @@ export class SelectComponent extends BaseComponent {
     super(component, options, data);
 
     // Trigger an update.
-    this.triggerUpdate = _debounce(this.updateItems.bind(this), 200);
+    this.triggerUpdate = _debounce(this.updateItems.bind(this), 100);
 
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {
@@ -347,7 +347,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   addInput(input, container) {
-    super.addInput(input, container, true);
+    super.addInput(input, container);
     if (this.component.multiple) {
       input.setAttribute(&apos;multiple&apos;, true);
     }
@@ -410,6 +410,9 @@ export class SelectComponent extends BaseComponent {
   }
 
   getValue() {
+    if (this.value) {
+      return this.value;
+    }
     if (!this.choices) {
       return;
     }
@@ -441,7 +444,7 @@ export class SelectComponent extends BaseComponent {
 
       // Now set the value.
       if (value) {
-        setTimeout(() =&gt; this.choices.setValueByChoice(_isArray(value) ? value : [value]), 10);
+        this.choices.setValueByChoice(_isArray(value) ? value : [value])
       }
       else {
         this.choices.removeActiveItems();

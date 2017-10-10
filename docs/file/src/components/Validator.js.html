@@ -204,7 +204,7 @@ export var Validator = {
     required: {
       key: &apos;validate.required&apos;,
       message: function(component, setting) {
-        return component.t(&apos;required&apos;, {field: component.errorLabel});
+        return component.t(component.errorMessage(&apos;required&apos;), {field: component.errorLabel});
       },
       check: function(component, setting, value) {
         if (!FormioUtils.boolValue(setting)) {
@@ -216,7 +216,7 @@ export var Validator = {
     min: {
       key: &apos;validate.min&apos;,
       message: function(component, setting) {
-        return component.t(&apos;min&apos;, {
+        return component.t(component.errorMessage(&apos;min&apos;), {
           field: component.errorLabel,
           min: parseFloat(setting)
         });
@@ -232,7 +232,7 @@ export var Validator = {
     max: {
       key: &apos;validate.max&apos;,
       message: function(component, setting) {
-        return component.t(&apos;max&apos;, {
+        return component.t(component.errorMessage(&apos;max&apos;), {
           field: component.errorLabel,
           max: parseFloat(setting)
         });
@@ -248,7 +248,7 @@ export var Validator = {
     minLength: {
       key: &apos;validate.minLength&apos;,
       message: function(component, setting) {
-        return component.t(&apos;minLength&apos;, {
+        return component.t(component.errorMessage(&apos;minLength&apos;), {
           field: component.errorLabel,
           length: (setting - 1)
         });
@@ -264,7 +264,7 @@ export var Validator = {
     maxLength: {
       key: &apos;validate.maxLength&apos;,
       message: function(component, setting) {
-        return component.t(&apos;maxLength&apos;, {
+        return component.t(component.errorMessage(&apos;maxLength&apos;), {
           field: component.errorLabel,
           length: (setting + 1)
         });
@@ -279,19 +279,21 @@ export var Validator = {
     },
     email: {
       message: function(component, setting) {
-        return component.t(&apos;invalid_email&apos;, {
+        return component.t(component.errorMessage(&apos;invalid_email&apos;), {
           field: component.errorLabel
         });
       },
       check: function(component, setting, value) {
         // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         var re = /^(([^&lt;&gt;()\[\]\\.,;:\s@&quot;]+(\.[^&lt;&gt;()\[\]\\.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(value);
+
+        // Allow emails to be valid if the component is pristine and no value is provided.
+        return (component.pristine &amp;&amp; !value) || re.test(value);
       }
     },
     date: {
       message: function(component, setting) {
-        return component.t(&apos;invalid_date&apos;, {
+        return component.t(component.errorMessage(&apos;invalid_date&apos;), {
           field: component.errorLabel
         });
       },
@@ -302,7 +304,7 @@ export var Validator = {
     pattern: {
       key: &apos;validate.pattern&apos;,
       message: function(component, setting) {
-        return component.t(&apos;pattern&apos;, {
+        return component.t(component.errorMessage(&apos;pattern&apos;), {
           field: component.errorLabel,
           pattern: setting
         });
@@ -339,7 +341,7 @@ export var Validator = {
     custom: {
       key: &apos;validate.custom&apos;,
       message: function(component) {
-        return component.t(&apos;custom&apos;, {
+        return component.t(component.errorMessage(&apos;custom&apos;), {
           field: component.errorLabel
         });
       },

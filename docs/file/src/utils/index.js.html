@@ -177,6 +177,15 @@ const FormioUtils = {
   },
 
   /**
+   * Check to see if an ID is a mongoID.
+   * @param text
+   * @return {Array|{index: number, input: string}|Boolean|*}
+   */
+  isMongoId: function(text) {
+    return text.toString().match(/^[0-9a-fA-F]{24}$/);
+  },
+
+  /**
    * Determine if a component is a layout component or not.
    *
    * @param {Object} component
@@ -232,7 +241,15 @@ const FormioUtils = {
       }
 
       var subPath = function() {
-        if (component.key &amp;&amp; ((component.type === &apos;datagrid&apos;) || (component.type === &apos;container&apos;))) {
+        if (
+          component.key &amp;&amp;
+          (
+            (component.type === &apos;datagrid&apos;) ||
+            (component.type === &apos;container&apos;) ||
+            (component.type === &apos;editgrid&apos;) ||
+            component.tree
+          )
+        ) {
           return newPath;
         }
         return path;
@@ -351,9 +368,11 @@ const FormioUtils = {
    * @returns {boolean} - TRUE - This component has a conditional, FALSE - No conditional provided.
    */
   hasCondition: function(component) {
-    return (component.hasOwnProperty(&apos;customConditional&apos;) &amp;&amp; component.customConditional) ||
+    return (
+      (component.hasOwnProperty(&apos;customConditional&apos;) &amp;&amp; component.customConditional) ||
       (component.hasOwnProperty(&apos;conditional&apos;) &amp;&amp; component.conditional &amp;&amp; component.conditional.when) ||
-      (component.hasOwnProperty(&apos;conditional&apos;) &amp;&amp; component.conditional &amp;&amp; component.conditional.json);
+      (component.hasOwnProperty(&apos;conditional&apos;) &amp;&amp; component.conditional &amp;&amp; component.conditional.json)
+    ) ? true : false;
   },
 
   /**

@@ -265,14 +265,15 @@ export class DateTimeComponent extends BaseComponent {
   set disabled(disabled) {
     super.disabled = disabled;
     _each(this.inputs, (input) =&gt; {
-      if (input.calendar) {
+      let calendar = this.getCalendar(input);
+      if (calendar) {
         if (disabled) {
-          input.calendar._input.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
+          calendar._input.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
         }
         else {
-          input.calendar._input.removeAttribute(&apos;disabled&apos;);
+          calendar._input.removeAttribute(&apos;disabled&apos;);
         }
-        input.calendar.redraw();
+        calendar.redraw();
       }
     });
   }
@@ -283,19 +284,27 @@ export class DateTimeComponent extends BaseComponent {
       style: &apos;cursor: pointer&apos;
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? &apos;calendar&apos; : &apos;time&apos;));
+    let calendar = this.getCalendar(input);
     this.addEventListener(suffix, &apos;click&apos;, () =&gt; {
       // Make sure the calendar is not already open and that it did not just close (like from blur event).
-      if (!input.calendar.isOpen &amp;&amp; ((Date.now() - this.closedOn) &gt; 200)) {
-        input.calendar.open();
+      if (!calendar.isOpen &amp;&amp; ((Date.now() - this.closedOn) &gt; 200)) {
+        calendar.open();
       }
     });
     inputGroup.appendChild(suffix);
     return suffix;
   }
 
-  addInput(input, container, name) {
-    super.addInput(input, container, name);
-    input.calendar = new Flatpickr(input, this.config);
+  /**
+   * Get the calendar or create an instance of one.
+   * @param input
+   * @return {Flatpickr|flatpickr}
+   */
+  getCalendar(input) {
+    if (!input.calendar) {
+      input.calendar = new Flatpickr(input, this.config);
+    }
+    return input.calendar;
   }
 
   getDate(value) {
@@ -318,11 +327,11 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getValueAt(index) {
-    if (!this.inputs[index] || !this.inputs[index].calendar) {
+    if (!this.inputs[index]) {
       return &apos;&apos;;
     }
 
-    let dates = this.inputs[index].calendar.selectedDates;
+    let dates = this.getCalendar(this.inputs[index]).selectedDates;
     if (!dates || !dates.length) {
       return &apos;&apos;;
     }
@@ -331,9 +340,9 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
-    if (value &amp;&amp; this.inputs[index].calendar) {
+    if (value) {
       let date = value ? new Date(value) : new Date();
-      this.inputs[index].calendar.setDate(date, false);
+      this.getCalendar(this.inputs[index]).setDate(date, false);
     }
   }
 }

@@ -205,7 +205,7 @@ var dropbox = function(formio) {
         token = localStorage.getItem(&apos;formioToken&apos;);
       }
       catch (e) {
-        // Swallow error.
+        token = cookies.get(&apos;formioToken&apos;);
       }
       file.url = formio.formUrl + &apos;/storage/dropbox?path_lower=&apos; + file.path_lower + (token ? &apos;&amp;x-jwt-token=&apos; + token : &apos;&apos;);
       return Promise.resolve(file);

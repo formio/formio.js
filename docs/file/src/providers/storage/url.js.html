@@ -205,7 +205,14 @@ var url = function(formio) {
         }
 
         xhr.open(&apos;POST&apos;, url);
-        var token = localStorage.getItem(&apos;formioToken&apos;);
+        var token = false;
+        try {
+          token = localStorage.getItem(&apos;formioToken&apos;);
+        }
+        catch(err) {
+          token = cookies.get(&apos;formioToken&apos;);
+        }
+
         if (token) {
           xhr.setRequestHeader(&apos;x-jwt-token&apos;, token);
         }

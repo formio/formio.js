@@ -233,7 +233,7 @@ var s3 = function(formio) {
           token = localStorage.getItem(&apos;formioToken&apos;);
         }
         catch (e) {
-          // swallow error.
+          token = cookies.get(&apos;formioToken&apos;);
         }
         if (token) {
           pre.setRequestHeader(&apos;x-jwt-token&apos;, token);
