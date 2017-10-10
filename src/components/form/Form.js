@@ -2,6 +2,8 @@ import FormioForm from '../../formio.form';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
 import _merge from 'lodash/merge';
+import _isEmpty from 'lodash/isEmpty';
+
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
     super(null, options);
@@ -23,7 +25,11 @@ export class FormComponent extends FormioForm {
     ) {
       component.src = Formio.getBaseUrl();
       if (component.project) {
-        component.src += '/project/' + component.project;
+        // Check to see if it is a MongoID.
+        if (FormioUtils.isMongoId(component.project)) {
+          component.src += '/project';
+        }
+        component.src += '/' + component.project;
         srcOptions.project = component.src;
       }
       component.src += '/form/' + component.form;
@@ -138,9 +144,9 @@ export class FormComponent extends FormioForm {
       return;
     }
 
-    if (submission.data) {
-      this.data[this.component.key] = this._submission = _merge(this.data[this.component.key], submission);
-      return super.setValue(this.data, flags);
+    if (!_isEmpty(submission.data)) {
+      _merge(this.data[this.component.key], submission);
+      return super.setValue(submission, flags);
     }
     else if (submission._id) {
       this.formio.submissionId = submission._id;
