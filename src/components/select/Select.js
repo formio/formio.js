@@ -212,7 +212,8 @@ export class SelectComponent extends BaseComponent {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
       },
-      shouldSort: false
+      shouldSort: false,
+      position: 'bottom'
     });
 
     // If a search field is provided, then add an event listener to update items on search.
