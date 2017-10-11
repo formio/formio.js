@@ -7785,7 +7785,7 @@ var _get = function get(object, property, receiver) {
   }
 };
 
-var _signature_pad = require('signature_pad');
+var _signature_pad = require('signature_pad/dist/signature_pad.js');
 
 var _signature_pad2 = _interopRequireDefault(_signature_pad);
 
@@ -7978,7 +7978,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
   return SignatureComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"signature_pad":305}],32:[function(require,module,exports){
+},{"../base/Base":4,"signature_pad/dist/signature_pad.js":305}],32:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
