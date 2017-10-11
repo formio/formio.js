@@ -1,4 +1,4 @@
-import SignaturePad from 'signature_pad';
+import SignaturePad from 'signature_pad/dist/signature_pad.js'
 import { BaseComponent } from '../base/Base';
 export class SignatureComponent extends BaseComponent {
   constructor(component, options, data) {

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.19.3
+### Fixed
+ - Downgraded moment to 2.18.x to fix an import issue with Webpack.
+ - Changed the SignaturePad module to directly include the library to fix React app issues.
+
 ## 2.19.2
 ### Fixed
  - Form component to allow recursive loading and setting a submission value.
