@@ -19,10 +19,6 @@ export class NumberComponent extends BaseComponent {
     }
   }
 
-  build() {
-    super.build();
-  }
-
   getFormatOptions() {
     return {
       style: 'decimal',
