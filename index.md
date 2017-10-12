@@ -39,11 +39,8 @@ section: home
 <div class="well">
 <div id="formio"></formio>
 <script type="text/javascript">
-  window.onload = function() {
-    Formio.createForm(document.getElementById('formio'), 'https://yovlkwmqqoabchc.test-form.io/number', {i18n: {lng: 'fr', resources: {}}}).then(function(formio) {
-      formio.submission = { data: {number: 100.33}};
-      formio.events.onAny(console.log);
-    });
+ window.onload = function() {
+    Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
   };
 </script>
 </div>
