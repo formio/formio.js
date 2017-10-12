@@ -7,7 +7,6 @@ describe('DataGrid Component', function() {
   it('Should build a data grid component', function(done) {
     Harness.testCreate(DataGridComponent, comps.comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 3);
-      //Harness.testElements(component, 'input[type="number"]', 1);
       done();
     });
   });

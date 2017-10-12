@@ -11,6 +11,13 @@ export class NumberComponent extends BaseComponent {
 
     this.decimalSeparator = (12345.6789).toLocaleString(i18next.language).match(/345(.*)67/)[1];
     this.thousandsSeparator = (12345.6789).toLocaleString(i18next.language).match(/12(.*)345/)[1];
+
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    let decimalLimit = 20;
+    if (this.component.validate && this.component.validate.step && this.component.validate.step !== 'any') {
+      decimalLimit = this.component.validate.step.split('.')[1].length;
+    }
+    this.decimalLimit = _get(this.component, 'decimalLimit', decimalLimit);
   }
 
   build() {
@@ -21,7 +28,7 @@ export class NumberComponent extends BaseComponent {
     return {
       style: 'decimal',
       useGrouping: true,
-      maximumFractionDigits: 20
+      maximumFractionDigits: this.decimalLimit
     };
   }
 
@@ -54,7 +61,7 @@ export class NumberComponent extends BaseComponent {
         suffix: '',
         thousandsSeparatorSymbol: _get(this.component, 'thousandsSeparator', this.thousandsSeparator),
         decimalSymbol: _get(this.component, 'decimalSymbol', this.decimalSeparator),
-        decimalLimit: null,
+        decimalLimit: this.decimalLimit,
         allowNegative: _get(this.component, 'allowNegative', true),
         allowDecimal: _get(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer))
       })
@@ -66,17 +73,6 @@ export class NumberComponent extends BaseComponent {
     info.attr.type = 'text';
     info.attr.inputmode = 'numeric';
     info.changeEvent = 'input';
-    if (this.component.validate) {
-      if (this.component.validate.min !== '') {
-        info.attr.min = this.component.validate.min;
-      }
-      if (this.component.validate.max !== '') {
-        info.attr.max = this.component.validate.max;
-      }
-      if (this.component.step !== '') {
-        info.attr.step = this.component.validate.step;
-      }
-    }
     return info;
   }
 

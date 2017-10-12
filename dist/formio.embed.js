@@ -4167,6 +4167,10 @@ var _createClass = function () {
   };
 }();
 
+var _i18next = require('i18next');
+
+var _i18next2 = _interopRequireDefault(_i18next);
+
 var _vanilla = require('text-mask-all/vanilla');
 
 var _vanilla2 = _interopRequireDefault(_vanilla);
@@ -4206,10 +4210,20 @@ function _inherits(subClass, superClass) {
 var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) {
   _inherits(CurrencyComponent, _NumberComponent);
 
-  function CurrencyComponent() {
+  function CurrencyComponent(component, options, data) {
     _classCallCheck(this, CurrencyComponent);
 
-    return _possibleConstructorReturn(this, (CurrencyComponent.__proto__ || Object.getPrototypeOf(CurrencyComponent)).apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, (CurrencyComponent.__proto__ || Object.getPrototypeOf(CurrencyComponent)).call(this, component, options, data));
+
+    _this.currency = _this.component.currency || 'USD';
+    _this.decimalLimit = _this.component.decimalLimit || 2;
+
+    // Get the prefix and suffix from the localized string.
+    var regex = '(.*)?100(' + (_this.decimalSeparator === '.' ? '\.' : _this.decimalSeparator) + '0{' + _this.decimalLimit + '})?(.*)?';
+    var parts = 100 .toLocaleString(_i18next2.default.language, _this.getFormatOptions()).match(new RegExp(regex));
+    _this.prefix = parts[1] || '';
+    _this.suffix = parts[3] || '';
+    return _this;
   }
 
   _createClass(CurrencyComponent, [{
@@ -4217,9 +4231,9 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
     value: function getFormatOptions() {
       return {
         style: 'currency',
-        currency: 'USD',
+        currency: this.currency,
         useGrouping: true,
-        maximumFractionDigits: 2
+        maximumFractionDigits: this.decimalLimit
       };
     }
   }, {
@@ -4231,12 +4245,12 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
         _this2.inputMask = (0, _vanilla2.default)({
           inputElement: input,
           mask: (0, _createNumberMask2.default)({
-            prefix: '',
-            suffix: '',
+            prefix: _this2.prefix,
+            suffix: _this2.suffix,
             thousandsSeparatorSymbol: (0, _get3.default)(_this2.component, 'thousandsSeparator', _this2.thousandsSeparator),
             decimalSymbol: (0, _get3.default)(_this2.component, 'decimalSymbol', _this2.decimalSeparator),
-            decimalLimit: 2,
-            allowNegative: (0, _get3.default)(_this2.component, 'allowNegative', false),
+            decimalLimit: _this2.decimalLimit,
+            allowNegative: (0, _get3.default)(_this2.component, 'allowNegative', true),
             allowDecimal: (0, _get3.default)(_this2.component, 'allowDecimal', true)
           })
         });
@@ -4247,7 +4261,7 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
   return CurrencyComponent;
 }(_Number.NumberComponent);
 
-},{"../number/Number":23,"lodash/get":259,"text-mask-all/addons/dist/createNumberMask":306,"text-mask-all/vanilla":307}],12:[function(require,module,exports){
+},{"../number/Number":23,"i18next":74,"lodash/get":259,"text-mask-all/addons/dist/createNumberMask":306,"text-mask-all/vanilla":307}],12:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -6602,12 +6616,15 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
 
     _this.validators = _this.validators.concat(['min', 'max']);
 
-    console.log('language', _i18next2.default.language);
-    _this.localize().then(function () {
-      console.log('after lang', _i18next2.default.language);
-    });
     _this.decimalSeparator = 12345.6789.toLocaleString(_i18next2.default.language).match(/345(.*)67/)[1];
     _this.thousandsSeparator = 12345.6789.toLocaleString(_i18next2.default.language).match(/12(.*)345/)[1];
+
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    var decimalLimit = 20;
+    if (_this.component.validate && _this.component.validate.step && _this.component.validate.step !== 'any') {
+      decimalLimit = _this.component.validate.step.split('.')[1].length;
+    }
+    _this.decimalLimit = (0, _get4.default)(_this.component, 'decimalLimit', decimalLimit);
     return _this;
   }
 
@@ -6622,7 +6639,7 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
       return {
         style: 'decimal',
         useGrouping: true,
-        maximumFractionDigits: 20
+        maximumFractionDigits: this.decimalLimit
       };
     }
   }, {
@@ -6657,7 +6674,7 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
           suffix: '',
           thousandsSeparatorSymbol: (0, _get4.default)(this.component, 'thousandsSeparator', this.thousandsSeparator),
           decimalSymbol: (0, _get4.default)(this.component, 'decimalSymbol', this.decimalSeparator),
-          decimalLimit: null,
+          decimalLimit: this.decimalLimit,
           allowNegative: (0, _get4.default)(this.component, 'allowNegative', true),
           allowDecimal: (0, _get4.default)(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer))
         })
@@ -6670,17 +6687,6 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
       info.attr.type = 'text';
       info.attr.inputmode = 'numeric';
       info.changeEvent = 'input';
-      if (this.component.validate) {
-        if (this.component.validate.min !== '') {
-          info.attr.min = this.component.validate.min;
-        }
-        if (this.component.validate.max !== '') {
-          info.attr.max = this.component.validate.max;
-        }
-        if (this.component.step !== '') {
-          info.attr.step = this.component.validate.step;
-        }
-      }
       return info;
     }
   }, {
