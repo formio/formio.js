@@ -205,6 +205,7 @@ export class SelectComponent extends BaseComponent {
     if (this.component.multiple) {
       input.setAttribute('multiple', true);
     }
+    var tabIndex = input.tabIndex;
     this.choices = new Choices(input, {
       removeItemButton: true,
       itemSelectText: '',
@@ -215,6 +216,7 @@ export class SelectComponent extends BaseComponent {
       shouldSort: false,
       position: 'bottom'
     });
+    this.choices.itemList.tabIndex = tabIndex;
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
