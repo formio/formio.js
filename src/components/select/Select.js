@@ -213,8 +213,7 @@ export class SelectComponent extends BaseComponent {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
       },
-      shouldSort: false,
-      position: 'bottom'
+      shouldSort: false
     });
     this.choices.itemList.tabIndex = tabIndex;
 
