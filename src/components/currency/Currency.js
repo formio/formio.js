@@ -3,6 +3,7 @@ import maskInput from 'text-mask-all/vanilla';
 import createNumberMask from 'text-mask-all/addons/dist/createNumberMask';
 import _get from 'lodash/get';
 import { NumberComponent } from '../number/Number';
+
 export class CurrencyComponent extends NumberComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -22,7 +23,7 @@ export class CurrencyComponent extends NumberComponent {
       style: 'currency',
       currency: this.currency,
       useGrouping: true,
-      maximumFractionDigits: this.decimalLimit
+      maximumFractionDigits: _get(this.component, 'decimalLimit', this.decimalLimit)
     };
   }
 
@@ -34,7 +35,7 @@ export class CurrencyComponent extends NumberComponent {
         suffix: this.suffix,
         thousandsSeparatorSymbol: _get(this.component, 'thousandsSeparator', this.thousandsSeparator),
         decimalSymbol: _get(this.component, 'decimalSymbol', this.decimalSeparator),
-        decimalLimit: this.decimalLimit,
+        decimalLimit: _get(this.component, 'decimalLimit', this.decimalLimit),
         allowNegative: _get(this.component, 'allowNegative', true),
         allowDecimal: _get(this.component, 'allowDecimal', true)
       })
