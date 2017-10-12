@@ -27,19 +27,17 @@ export class CurrencyComponent extends NumberComponent {
   }
 
   setInputMask(input) {
-    this.localize().then(() => {
-      this.inputMask = maskInput({
-        inputElement: input,
-        mask: createNumberMask({
-          prefix: this.prefix,
-          suffix: this.suffix,
-          thousandsSeparatorSymbol: _get(this.component, 'thousandsSeparator', this.thousandsSeparator),
-          decimalSymbol: _get(this.component, 'decimalSymbol', this.decimalSeparator),
-          decimalLimit: this.decimalLimit,
-          allowNegative: _get(this.component, 'allowNegative', true),
-          allowDecimal: _get(this.component, 'allowDecimal', true)
-        })
-      });
+    this.inputMask = maskInput({
+      inputElement: input,
+      mask: createNumberMask({
+        prefix: this.prefix,
+        suffix: this.suffix,
+        thousandsSeparatorSymbol: _get(this.component, 'thousandsSeparator', this.thousandsSeparator),
+        decimalSymbol: _get(this.component, 'decimalSymbol', this.decimalSeparator),
+        decimalLimit: this.decimalLimit,
+        allowNegative: _get(this.component, 'allowNegative', true),
+        allowDecimal: _get(this.component, 'allowDecimal', true)
+      })
     });
   }
 }
