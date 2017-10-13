@@ -772,7 +772,12 @@ export class FormioForm extends FormioComponents {
 // Used to trigger a resize.
 Formio.onResize = () => _each(Formio.forms, (instance) => instance.onResize());
 Formio.triggerResize = _debounce(Formio.onResize.bind(Formio), 100);
-window.addEventListener("resize", (event) => Formio.triggerResize(event));
+if ('addEventListener' in window) {
+  window.addEventListener('resize', (event) => Formio.triggerResize(event), false);
+} else if ('attachEvent' in window) {
+  window.attachEvent('onresize', (event) => Formio.triggerResize(event));
+}
+
 
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;
