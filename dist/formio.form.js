@@ -433,10 +433,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     }
   }, {
     key: 'onResize',
-    value: function onResize(scale) {
-      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'onResize', this).call(this, scale);
+    value: function onResize() {
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'onResize', this).call(this);
       (0, _each3.default)(this.getComponents(), function (comp) {
-        return comp.onResize(scale);
+        return comp.onResize();
       });
     }
   }, {
@@ -2661,7 +2661,7 @@ var BaseComponent = function () {
     }
   }, {
     key: 'onResize',
-    value: function onResize(scale) {}
+    value: function onResize() {}
   }, {
     key: 'onChange',
     value: function onChange(flags, fromRoot) {
@@ -5795,7 +5795,10 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   function FormComponent(component, options, data) {
     _classCallCheck(this, FormComponent);
 
+    // Ensure this component does not make it to the global forms array.
     var _this = _possibleConstructorReturn(this, (FormComponent.__proto__ || Object.getPrototypeOf(FormComponent)).call(this, null, options));
+
+    delete _formio4.default.forms[_this.id];
 
     _this.type = 'formcomponent';
     _this.component = component;
@@ -7860,9 +7863,11 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     }
   }, {
     key: 'onResize',
-    value: function onResize(scale) {
-      this.scale = scale;
+    value: function onResize() {
+      // Get the scale of the canvas.
+      this.scale = Math.max(window.devicePixelRatio || 1, 1);
       this.checkSize(true);
+      this.setValue(this.getValue());
     }
   }, {
     key: 'destroy',
@@ -8780,13 +8785,13 @@ var _clone2 = require("lodash/clone");
 
 var _clone3 = _interopRequireDefault(_clone2);
 
-var _assign2 = require("lodash/assign");
-
-var _assign3 = _interopRequireDefault(_assign2);
-
 var _merge2 = require("lodash/merge");
 
 var _merge3 = _interopRequireDefault(_merge2);
+
+var _debounce2 = require("lodash/debounce");
+
+var _debounce3 = _interopRequireDefault(_debounce2);
 
 var _eventemitter = require("eventemitter2");
 
@@ -9292,6 +9297,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         _this8.clear();
         return _this8.localize().then(function () {
           _this8.build();
+          _this8.onResize();
           _this8.on('resetForm', function () {
             return _this8.reset();
           }, true);
@@ -9675,13 +9681,28 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   return FormioForm;
 }(_Components.FormioComponents);
 
+// Used to trigger a resize.
+
+
+_formio2.default.onResize = function () {
+  return (0, _each3.default)(_formio2.default.forms, function (instance) {
+    return instance.onResize();
+  });
+};
+_formio2.default.triggerResize = (0, _debounce3.default)(_formio2.default.onResize, 200);
+if ('addEventListener' in window) {
+  window.addEventListener('resize', _formio2.default.triggerResize, false);
+} else if ('attachEvent' in window) {
+  window.attachEvent('onresize', _formio2.default.triggerResize);
+}
+
 FormioForm.setBaseUrl = _formio2.default.setBaseUrl;
 FormioForm.setApiUrl = _formio2.default.setApiUrl;
 FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":40,"eventemitter2":52,"lodash/assign":239,"lodash/clone":243,"lodash/each":250,"lodash/merge":280,"native-promise-only":297}],40:[function(require,module,exports){
+},{"./components/Components":1,"./formio":40,"eventemitter2":52,"lodash/clone":243,"lodash/debounce":246,"lodash/each":250,"lodash/merge":280,"native-promise-only":297}],40:[function(require,module,exports){
 (function (global){
 'use strict';
 
