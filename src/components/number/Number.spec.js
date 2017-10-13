@@ -1,4 +1,5 @@
 'use strict';
+import _merge from 'lodash/merge';
 import { NumberComponent } from './Number';
 import { components as comps } from './fixtures/index';
 import { Harness } from '../../../test/harness';
@@ -6,6 +7,20 @@ describe('Number Component', function() {
   it('Should build an number component', function(done) {
     Harness.testCreate(NumberComponent, comps.comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
+      done();
+    });
+  });
+  it('Should limit decimals using step', function(done) {
+    Harness.testCreate(NumberComponent, _merge(comps.comp2, {
+      validate: {
+        step: '001'
+      }
+    })).then((component) => {
+
+      Harness.testSetInput(component, 123456789.123456789, 123456789.123, '123,456,789.123');
+      Harness.testSetInput(component, -123456789.123456789, -123456789.123, '-123,456,789.123');
+      Harness.testSetInput(component, '123456789.123456789', 123456789.123, '123,456,789.123');
+      Harness.testSetInput(component, '-123456789.123456789', -123456789.123, '-123,456,789.123');
       done();
     });
   });
