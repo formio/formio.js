@@ -770,7 +770,7 @@ export class FormioForm extends FormioComponents {
 }
 
 // Used to trigger a resize.
-Formio.onResize = () => _each(Formio.forms, (instance) => instance.onResize());
+Formio.onResize = (scale) => _each(Formio.forms, (instance) => instance.onResize(scale));
 Formio.triggerResize = _debounce(Formio.onResize, 200);
 if ('addEventListener' in window) {
   window.addEventListener('resize', Formio.triggerResize, false);

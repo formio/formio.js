@@ -3,7 +3,6 @@ import { BaseComponent } from '../base/Base';
 export class SignatureComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
-    this.scale = 1;
     this.currentWidth = 0;
     if (!this.component.width) {
       this.component.width = '100%';
@@ -24,6 +23,7 @@ export class SignatureComponent extends BaseComponent {
     flags = this.getFlags.apply(this, arguments);
     super.setValue(value, flags);
     if (value && !flags.noSign && this.signaturePad) {
+      this.checkSize(true, Math.max(window.devicePixelRatio || 1, 1));
       this.signaturePad.fromDataURL(value);
     }
   }
@@ -36,10 +36,10 @@ export class SignatureComponent extends BaseComponent {
     return image;
   }
 
-  onResize() {
-    // Get the scale of the canvas.
-    this.scale = Math.max(window.devicePixelRatio || 1, 1);
-    this.checkSize(true);
+  onResize(scale) {
+    if (scale) {
+      this.checkSize(true, scale);
+    }
     this.setValue(this.getValue());
   }
 
@@ -63,14 +63,15 @@ export class SignatureComponent extends BaseComponent {
     }
   }
 
-  checkSize(force) {
+  checkSize(force, scale) {
+    scale = scale || 1;
     if (force || (this.padBody.offsetWidth !== this.currentWidth)) {
       this.currentWidth = this.padBody.offsetWidth;
-      this.canvas.width = this.currentWidth * this.scale;
-      this.canvas.height = this.padBody.offsetHeight * this.scale;
+      this.canvas.width = this.currentWidth * scale;
+      this.canvas.height = this.padBody.offsetHeight * scale;
       let ctx = this.canvas.getContext("2d");
       ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale((1 / this.scale), (1 / this.scale));
+      ctx.scale((1 / scale), (1 / scale));
       ctx.fillStyle = this.signaturePad.backgroundColor;
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       this.signaturePad.clear();

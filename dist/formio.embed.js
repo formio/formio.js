@@ -433,10 +433,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     }
   }, {
     key: 'onResize',
-    value: function onResize() {
-      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'onResize', this).call(this);
+    value: function onResize(scale) {
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'onResize', this).call(this, scale);
       (0, _each3.default)(this.getComponents(), function (comp) {
-        return comp.onResize();
+        return comp.onResize(scale);
       });
     }
   }, {
@@ -7985,7 +7985,6 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
 
     var _this = _possibleConstructorReturn(this, (SignatureComponent.__proto__ || Object.getPrototypeOf(SignatureComponent)).call(this, component, options, data));
 
-    _this.scale = 1;
     _this.currentWidth = 0;
     if (!_this.component.width) {
       _this.component.width = '100%';
@@ -8010,6 +8009,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       flags = this.getFlags.apply(this, arguments);
       _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'setValue', this).call(this, value, flags);
       if (value && !flags.noSign && this.signaturePad) {
+        this.checkSize(true, Math.max(window.devicePixelRatio || 1, 1));
         this.signaturePad.fromDataURL(value);
       }
     }
@@ -8024,10 +8024,10 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     }
   }, {
     key: 'onResize',
-    value: function onResize() {
-      // Get the scale of the canvas.
-      this.scale = Math.max(window.devicePixelRatio || 1, 1);
-      this.checkSize(true);
+    value: function onResize(scale) {
+      if (scale) {
+        this.checkSize(true, scale);
+      }
       this.setValue(this.getValue());
     }
   }, {
@@ -8040,14 +8040,15 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     }
   }, {
     key: 'checkSize',
-    value: function checkSize(force) {
+    value: function checkSize(force, scale) {
+      scale = scale || 1;
       if (force || this.padBody.offsetWidth !== this.currentWidth) {
         this.currentWidth = this.padBody.offsetWidth;
-        this.canvas.width = this.currentWidth * this.scale;
-        this.canvas.height = this.padBody.offsetHeight * this.scale;
+        this.canvas.width = this.currentWidth * scale;
+        this.canvas.height = this.padBody.offsetHeight * scale;
         var ctx = this.canvas.getContext("2d");
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(1 / this.scale, 1 / this.scale);
+        ctx.scale(1 / scale, 1 / scale);
         ctx.fillStyle = this.signaturePad.backgroundColor;
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.signaturePad.clear();
@@ -9887,9 +9888,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 // Used to trigger a resize.
 
 
-_formio2.default.onResize = function () {
+_formio2.default.onResize = function (scale) {
   return (0, _each3.default)(_formio2.default.forms, function (instance) {
-    return instance.onResize();
+    return instance.onResize(scale);
   });
 };
 _formio2.default.triggerResize = (0, _debounce3.default)(_formio2.default.onResize, 200);
