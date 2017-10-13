@@ -8,12 +8,12 @@ export class NumberComponent extends BaseComponent {
     super(component, options, data);
     this.validators = this.validators.concat(['min', 'max']);
 
-    this.decimalSeparator = (12345.6789).toLocaleString(this.options.i18n.lng).match(/345(.*)67/)[1];
-    this.thousandsSeparator = (12345.6789).toLocaleString(this.options.i18n.lng).match(/12(.*)345/)[1];
+    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || (12345.6789).toLocaleString(this.options.i18n.lng).match(/345(.*)67/)[1];
+    this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || (12345.6789).toLocaleString(this.options.i18n.lng).match(/12(.*)345/)[1];
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     this.decimalLimit = 20;
-    if (this.component.validate && this.component.validate.step && this.component.validate.step !== 'any') {
+    if (this.component.validate && this.component.validate.step && this.component.validate.step !== 'any' && this.component.validate.step.split('.').length > 1) {
       this.decimalLimit = this.component.validate.step.split('.')[1].length;
     }
   }
