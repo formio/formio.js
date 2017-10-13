@@ -1,5 +1,6 @@
 'use strict';
 import assert from 'power-assert';
+import _merge from 'lodash/merge';
 import { BaseComponent } from './Base';
 import { Harness } from '../../../test/harness';
 import { components as comps } from './fixtures/index';
@@ -15,9 +16,9 @@ describe('Base Component', function() {
   });
 
   it('Should provide required validation', function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {required: true}
-    }).then((component) => Harness.testComponent(component, {
+    })).then((component) => Harness.testComponent(component, {
       bad: {
         value: '',
         field: 'firstName',
@@ -30,9 +31,9 @@ describe('Base Component', function() {
   });
 
   it('Should provide minLength validation', function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {minLength: 2}
-    }).then((component) => Harness.testComponent(component, {
+    })).then((component) => Harness.testComponent(component, {
       bad: {
         value: 't',
         field: 'firstName',
@@ -45,9 +46,9 @@ describe('Base Component', function() {
   });
 
   it('Should provide maxLength validation', function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {maxLength: 5}
-    }).then((component) => Harness.testComponent(component, {
+    })).then((component) => Harness.testComponent(component, {
       bad: {
         value: 'testte',
         field: 'firstName',
@@ -60,9 +61,11 @@ describe('Base Component', function() {
   });
 
   it('Should provide custom validation', function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
-      validate: {custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'}
-    }).then((component) => Harness.testComponent(component, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
+      validate: {
+        custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
+      }
+    })).then((component) => Harness.testComponent(component, {
       bad: {
         value: 'Joe',
         field: 'firstName',
@@ -75,20 +78,22 @@ describe('Base Component', function() {
   });
 
   it('Should provide json validation', function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
-      validate: {json: {
-        "if": [
-          {
-            "===": [
-              {var: "data.firstName"},
-              "Joe"
-            ]
-          },
-          true,
-          "You must be Joe"
-        ]
-      }}
-    }).then((component) => Harness.testComponent(component, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
+      validate: {
+        json: {
+          "if": [
+            {
+              "===": [
+                {var: "data.firstName"},
+                "Joe"
+              ]
+            },
+            true,
+            "You must be Joe"
+          ]
+        }
+      }
+    })).then((component) => Harness.testComponent(component, {
       bad: {
         value: 'Tom',
         field: 'firstName',

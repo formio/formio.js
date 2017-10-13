@@ -6,8 +6,7 @@ import { Harness } from '../../../test/harness';
 describe('DataGrid Component', function() {
   it('Should build a data grid component', function(done) {
     Harness.testCreate(DataGridComponent, comps.comp1).then((component) => {
-      Harness.testElements(component, 'input[type="text"]', 2);
-      Harness.testElements(component, 'input[type="number"]', 1);
+      Harness.testElements(component, 'input[type="text"]', 3);
       done();
     });
   });
