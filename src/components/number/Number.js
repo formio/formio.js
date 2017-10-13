@@ -1,4 +1,3 @@
-import i18next from 'i18next';
 import maskInput from 'text-mask-all/vanilla';
 import _get from 'lodash/get';
 import createNumberMask from 'text-mask-all/addons/dist/createNumberMask';
@@ -9,8 +8,8 @@ export class NumberComponent extends BaseComponent {
     super(component, options, data);
     this.validators = this.validators.concat(['min', 'max']);
 
-    this.decimalSeparator = (12345.6789).toLocaleString(i18next.language).match(/345(.*)67/)[1];
-    this.thousandsSeparator = (12345.6789).toLocaleString(i18next.language).match(/12(.*)345/)[1];
+    this.decimalSeparator = (12345.6789).toLocaleString(this.options.i18n.lng).match(/345(.*)67/)[1];
+    this.thousandsSeparator = (12345.6789).toLocaleString(this.options.i18n.lng).match(/12(.*)345/)[1];
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     this.decimalLimit = 20;
@@ -28,12 +27,22 @@ export class NumberComponent extends BaseComponent {
   }
 
   formatNumber(value) {
+    // If not a number, return empty string.
+    if (isNaN(value)) {
+      return '';
+    }
+
     // If empty string, zero or other, don't format.
     if (!value) {
       return value;
     }
 
-    return value.toLocaleString(i18next.language, this.getFormatOptions());
+    if (this.component.validate && this.component.validate.integer) {
+      return parseInt(value, 10).toLocaleString(this.options.i18n.lng, this.getFormatOptions());
+    }
+    else {
+      return parseFloat(value).toLocaleString(this.options.i18n.lng, this.getFormatOptions());
+    }
   }
 
   parseNumber(value) {
@@ -86,6 +95,7 @@ export class NumberComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
+    console.log(value, this.formatNumber(value));
     this.inputs[index].value = this.formatNumber(value);
   }
 }

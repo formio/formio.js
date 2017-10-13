@@ -1580,7 +1580,7 @@ export class BaseComponent {
       name: this.options.name,
       type: this.component.inputType || 'text',
       class: 'form-control',
-      lang: i18next.language
+      lang: this.options.i18n.lng
   };
 
     if (this.component.placeholder) {

@@ -1,4 +1,3 @@
-import i18next from 'i18next';
 import maskInput from 'text-mask-all/vanilla';
 import createNumberMask from 'text-mask-all/addons/dist/createNumberMask';
 import _get from 'lodash/get';
@@ -13,7 +12,7 @@ export class CurrencyComponent extends NumberComponent {
 
     // Get the prefix and suffix from the localized string.
     const regex = '(.*)?100(' + (this.decimalSeparator === '.' ? '\.' : this.decimalSeparator) + '0{' + this.decimalLimit + '})?(.*)?';
-    const parts = (100).toLocaleString(i18next.language, this.getFormatOptions()).match(new RegExp(regex));
+    const parts = (100).toLocaleString(this.options.i18n.lng, this.getFormatOptions()).match(new RegExp(regex));
     this.prefix = parts[1] || '';
     this.suffix = parts[3] || '';
   }
