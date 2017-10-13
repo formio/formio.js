@@ -11,9 +11,9 @@ describe('Number Component', function() {
     });
   });
   it('Should limit decimals using step', function(done) {
-    Harness.testCreate(NumberComponent, _merge(comps.comp2, {
+    Harness.testCreate(NumberComponent, _merge({}, comps.comp2, {
       validate: {
-        step: '001'
+        step: '0.001'
       }
     })).then((component) => {
 
