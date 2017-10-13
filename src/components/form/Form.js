@@ -7,6 +7,10 @@ import _isEmpty from 'lodash/isEmpty';
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
     super(null, options);
+
+    // Ensure this component does not make it to the global forms array.
+    delete Formio.forms[this.id];
+
     this.type = 'formcomponent';
     this.component = component;
     this.submitted = false;

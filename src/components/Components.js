@@ -298,9 +298,9 @@ export class FormioComponents extends BaseComponent {
     return Promise.all(ops);
   }
 
-  onResize(scale) {
-    super.onResize(scale);
-    _each(this.getComponents(), (comp) => comp.onResize(scale));
+  onResize() {
+    super.onResize();
+    _each(this.getComponents(), (comp) => comp.onResize());
   }
 
   calculateValue(data, flags) {

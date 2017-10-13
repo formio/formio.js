@@ -36,15 +36,17 @@ export class SignatureComponent extends BaseComponent {
     return image;
   }
 
-  onResize(scale) {
-    this.scale = scale;
+  onResize() {
+    // Get the scale of the canvas.
+    this.scale = Math.max(window.devicePixelRatio || 1, 1);
     this.checkSize(true);
+    this.setValue(this.getValue());
   }
 
   set disabled(disabled) {
     super.disabled = disabled;
     if (this.signaturePad) {
-      if (disabled){
+      if (disabled) {
         this.signaturePad.off();
         this.refresh.classList.add('disabled');
       } else {
