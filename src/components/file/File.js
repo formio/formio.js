@@ -33,6 +33,8 @@ export class FileComponent extends BaseComponent {
     this.listContainer = this.buildList();
     this.element.appendChild(this.listContainer);
     this.uploadContainer = this.buildUpload();
+    this.hiddenFileInputElement = this.buildHiddenFileInput();
+    this.element.appendChild(this.hiddenFileInputElement);
     this.element.appendChild(this.uploadContainer);
     this.addWarnings(this.element);
     this.buildUploadStatusList(this.element);
@@ -80,6 +82,15 @@ export class FileComponent extends BaseComponent {
       ),
       this.data[this.component.key].map((fileInfo, index) => this.createFileListItem(fileInfo, index))
     ]);
+  }
+
+  buildHiddenFileInput() {
+    // Input needs to be in DOM and "visible" (opacity 0 is fine) for IE to display file dialog.
+    return this.ce('input', {
+      type: 'file',
+      style: 'opacity: 0; position: absolute;',
+      onChange: () => {this.upload(this.hiddenFileInputElement.files)}
+    });
   }
 
   createFileListItem(fileInfo, index) {
@@ -196,16 +207,11 @@ export class FileComponent extends BaseComponent {
                   event.preventDefault();
                   // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
                   // a click event on it.
-                  let input = this.ce('input', {
-                    type: 'file',
-                    onChange: () => {this.upload(input.files)}
-                  });
-                  // Trigger a click event on the input.
-                  if (typeof input.trigger === 'function') {
-                    input.trigger('click');
+                  if (typeof this.hiddenFileInputElement.trigger === 'function') {
+                    this.hiddenFileInputElement.trigger('click');
                   }
                   else {
-                    input.click();
+                    this.hiddenFileInputElement.click();
                   }
                 }
               }, 'browse')
