@@ -12,6 +12,7 @@ describe('Number Component', function() {
   it('Should format numbers for USA locale', function(done) {
     Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: 'en-US', resources: {}}}).then((component) => {
       Harness.testSetInput(component, null, null, '');
+      Harness.testSetInput(component, undefined, null, '');
       Harness.testSetInput(component, '', null, '');
       Harness.testSetInput(component, {}, null, '');
       Harness.testSetInput(component, [], null, '');

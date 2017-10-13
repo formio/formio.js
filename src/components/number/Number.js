@@ -95,7 +95,6 @@ export class NumberComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
-    console.log(value, this.formatNumber(value));
     this.inputs[index].value = this.formatNumber(value);
   }
 }
