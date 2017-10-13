@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.20.0
+### Added
+ - Much better i18n support for Number and Currency components.
+
+### Fixed
+ - Added file input to DOM as a hidden item to fix issue with IE
+ - Select component to respect tab index
+ - Resize issues with Signature component so they scale according to devicePixelRatio.
+ 
+### Changed
+ - Force dropdowns to open only downwards
+
 ## 2.19.3
 ### Fixed
  - Downgraded moment to 2.18.x to fix an import issue with Webpack.
