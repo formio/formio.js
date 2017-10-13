@@ -48,6 +48,12 @@ export const Harness = {
     }
     return elements;
   },
+  testElementAttribute: function(element, attribute, expected) {
+    if (element !== undefined && element.getAttribute(attribute)) {
+      assert.equal(expected, element.getAttribute(attribute));
+    }
+    return element;
+  },
   testSetGet: function(component, value) {
     component.setValue(value);
     assert.deepEqual(component.getValue(), value);
