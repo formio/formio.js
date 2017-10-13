@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Changed
  - Force dropdowns to open only downwards
+ - Upgrade moment to 2.19.1 since they fixed React bug (https://github.com/moment/moment/issues/4216)
 
 ## 2.19.3
 ### Fixed
