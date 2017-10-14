@@ -13,8 +13,15 @@ export class NumberComponent extends BaseComponent {
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     this.decimalLimit = 20;
-    if (this.component.validate && this.component.validate.step && this.component.validate.step !== 'any' && this.component.validate.step.split('.').length > 1) {
-      this.decimalLimit = this.component.validate.step.split('.')[1].length;
+    if (
+      this.component.validate &&
+      this.component.validate.step &&
+      this.component.validate.step !== 'any'
+    ) {
+      var parts = this.component.validate.step.toString().split('.');
+      if (parts.length > 1) {
+        this.decimalLimit = parts[1].length;
+      }
     }
   }
 

@@ -6665,8 +6665,11 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     _this.decimalLimit = 20;
-    if (_this.component.validate && _this.component.validate.step && _this.component.validate.step !== 'any' && _this.component.validate.step.split('.').length > 1) {
-      _this.decimalLimit = _this.component.validate.step.split('.')[1].length;
+    if (_this.component.validate && _this.component.validate.step && _this.component.validate.step !== 'any') {
+      var parts = _this.component.validate.step.toString().split('.');
+      if (parts.length > 1) {
+        _this.decimalLimit = parts[1].length;
+      }
     }
     return _this;
   }
