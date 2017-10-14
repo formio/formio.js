@@ -37,7 +37,7 @@ section: home
 
 ### Result
 <div class="well">
-<div id="formio"></formio>
+<div id="formio"></div>
 <script type="text/javascript">
   window.onload = function() {
     Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');

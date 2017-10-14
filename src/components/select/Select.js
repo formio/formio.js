@@ -214,7 +214,7 @@ export class SelectComponent extends BaseComponent {
         containerInner: 'form-control'
       },
       shouldSort: false,
-      position: 'bottom'
+      position: (this.component.dropdown || 'auto')
     });
     this.choices.itemList.tabIndex = tabIndex;
 

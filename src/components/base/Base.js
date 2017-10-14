@@ -1120,7 +1120,7 @@ export class BaseComponent {
     return show;
   }
 
-  onResize(scale) {}
+  onResize() {}
 
   set visible(visible) {
     this.show(visible);

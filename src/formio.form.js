@@ -4,8 +4,8 @@ import Formio from './formio';
 import { FormioComponents } from './components/Components';
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
-import _assign from 'lodash/assign';
 import _merge from 'lodash/merge';
+import _debounce from 'lodash/debounce';
 import EventEmitter from 'eventemitter2';
 
 // Initialize the available forms.
@@ -550,6 +550,7 @@ export class FormioForm extends FormioComponents {
       this.clear();
       return this.localize().then(() => {
         this.build();
+        this.onResize();
         this.on('resetForm', () => this.reset(), true);
         this.on('refreshData', () => this.updateValue());
         this.emit('render');
@@ -767,6 +768,16 @@ export class FormioForm extends FormioComponents {
     }
   }
 }
+
+// Used to trigger a resize.
+Formio.onResize = (scale) => _each(Formio.forms, (instance) => instance.onResize(scale));
+Formio.triggerResize = _debounce(Formio.onResize, 200);
+if ('addEventListener' in window) {
+  window.addEventListener('resize', () => Formio.triggerResize(), false);
+} else if ('attachEvent' in window) {
+  window.attachEvent('onresize', () => Formio.triggerResize());
+}
+
 
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;
