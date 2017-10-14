@@ -4,6 +4,7 @@ export class SignatureComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.currentWidth = 0;
+    this.scale = 1;
     if (!this.component.width) {
       this.component.width = '100%';
     }
@@ -64,14 +65,14 @@ export class SignatureComponent extends BaseComponent {
   }
 
   checkSize(force, scale) {
-    scale = scale || 1;
     if (force || (this.padBody.offsetWidth !== this.currentWidth)) {
+      this.scale = force ? scale : this.scale;
       this.currentWidth = this.padBody.offsetWidth;
-      this.canvas.width = this.currentWidth * scale;
-      this.canvas.height = this.padBody.offsetHeight * scale;
+      this.canvas.width = this.currentWidth * this.scale;
+      this.canvas.height = this.padBody.offsetHeight * this.scale;
       let ctx = this.canvas.getContext("2d");
       ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.scale((1 / scale), (1 / scale));
+      ctx.scale((1 / this.scale), (1 / this.scale));
       ctx.fillStyle = this.signaturePad.backgroundColor;
       ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
       this.signaturePad.clear();
@@ -108,12 +109,12 @@ export class SignatureComponent extends BaseComponent {
 
     // Add the footer.
     if (this.component.footer) {
-      let footer = this.ce('div', {
+      this.signatureFooter = this.ce('div', {
         class: 'signature-pad-footer'
       });
-      footer.appendChild(this.text(this.component.footer));
-      this.createTooltip(footer);
-      this.element.appendChild(footer);
+      this.signatureFooter.appendChild(this.text(this.component.footer));
+      this.createTooltip(this.signatureFooter);
+      this.element.appendChild(this.signatureFooter);
     }
 
     // Create the signature pad.

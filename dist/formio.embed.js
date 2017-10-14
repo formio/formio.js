@@ -7986,6 +7986,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     var _this = _possibleConstructorReturn(this, (SignatureComponent.__proto__ || Object.getPrototypeOf(SignatureComponent)).call(this, component, options, data));
 
     _this.currentWidth = 0;
+    _this.scale = 1;
     if (!_this.component.width) {
       _this.component.width = '100%';
     }
@@ -8041,14 +8042,14 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
   }, {
     key: 'checkSize',
     value: function checkSize(force, scale) {
-      scale = scale || 1;
       if (force || this.padBody.offsetWidth !== this.currentWidth) {
+        this.scale = force ? scale : this.scale;
         this.currentWidth = this.padBody.offsetWidth;
-        this.canvas.width = this.currentWidth * scale;
-        this.canvas.height = this.padBody.offsetHeight * scale;
+        this.canvas.width = this.currentWidth * this.scale;
+        this.canvas.height = this.padBody.offsetHeight * this.scale;
         var ctx = this.canvas.getContext("2d");
         ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(1 / scale, 1 / scale);
+        ctx.scale(1 / this.scale, 1 / this.scale);
         ctx.fillStyle = this.signaturePad.backgroundColor;
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         this.signaturePad.clear();
@@ -8088,12 +8089,12 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
 
       // Add the footer.
       if (this.component.footer) {
-        var footer = this.ce('div', {
+        this.signatureFooter = this.ce('div', {
           class: 'signature-pad-footer'
         });
-        footer.appendChild(this.text(this.component.footer));
-        this.createTooltip(footer);
-        this.element.appendChild(footer);
+        this.signatureFooter.appendChild(this.text(this.component.footer));
+        this.createTooltip(this.signatureFooter);
+        this.element.appendChild(this.signatureFooter);
       }
 
       // Create the signature pad.
@@ -9895,9 +9896,13 @@ _formio2.default.onResize = function (scale) {
 };
 _formio2.default.triggerResize = (0, _debounce3.default)(_formio2.default.onResize, 200);
 if ('addEventListener' in window) {
-  window.addEventListener('resize', _formio2.default.triggerResize, false);
+  window.addEventListener('resize', function () {
+    return _formio2.default.triggerResize();
+  }, false);
 } else if ('attachEvent' in window) {
-  window.attachEvent('onresize', _formio2.default.triggerResize);
+  window.attachEvent('onresize', function () {
+    return _formio2.default.triggerResize();
+  });
 }
 
 FormioForm.setBaseUrl = _formio2.default.setBaseUrl;
