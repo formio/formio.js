@@ -532,12 +532,14 @@ var Formio = function () {
         var anonRole = {};
         var adminRole = {};
         for (var roleName in access.roles) {
-          var role = access.roles[roleName];
-          if (role.default) {
-            anonRole = role;
-          }
-          if (role.admin) {
-            adminRole = role;
+          if (access.roles.hasOwnProperty(roleName)) {
+            var role = access.roles[roleName];
+            if (role.default) {
+              anonRole = role;
+            }
+            if (role.admin) {
+              adminRole = role;
+            }
           }
         }
 
@@ -550,21 +552,25 @@ var Formio = function () {
         }
 
         for (var i in form.submissionAccess) {
-          var subRole = form.submissionAccess[i];
-          if (subRole.type === 'create_all' || subRole.type === 'create_own') {
-            for (var j in subRole.roles) {
-              // Check if anonymous is allowed.
-              if (anonRole._id === subRole.roles[j]) {
-                canSubmitAnonymously = true;
+          if (form.submissionAccess.hasOwnProperty(i)) {
+            var subRole = form.submissionAccess[i];
+            if (subRole.type === 'create_all' || subRole.type === 'create_own') {
+              for (var j in subRole.roles) {
+                if (subRole.roles.hasOwnProperty(j)) {
+                  // Check if anonymous is allowed.
+                  if (anonRole._id === subRole.roles[j]) {
+                    canSubmitAnonymously = true;
+                  }
+                  // Check if the logged in user has the appropriate role.
+                  if (user && user.roles.indexOf(subRole.roles[j]) !== -1) {
+                    canSubmit = true;
+                    break;
+                  }
+                }
               }
-              // Check if the logged in user has the appropriate role.
-              if (user && user.roles.indexOf(subRole.roles[j]) !== -1) {
-                canSubmit = true;
+              if (canSubmit) {
                 break;
               }
-            }
-            if (canSubmit) {
-              break;
             }
           }
         }

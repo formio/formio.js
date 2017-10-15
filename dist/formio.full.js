@@ -2783,11 +2783,13 @@ var BaseComponent = function () {
       }
       var values = [];
       for (var i in this.inputs) {
-        if (!this.component.multiple) {
-          this.value = this.getValueAt(i);
-          return this.value;
+        if (this.inputs.hasOwnProperty(i)) {
+          if (!this.component.multiple) {
+            this.value = this.getValueAt(i);
+            return this.value;
+          }
+          values.push(this.getValueAt(i));
         }
-        values.push(this.getValueAt(i));
       }
       this.value = values;
       return values;
@@ -3054,7 +3056,9 @@ var BaseComponent = function () {
       this.value = value;
       var isArray = (0, _isArray3.default)(value);
       for (var i in this.inputs) {
-        this.setValueAt(i, isArray ? value[i] : value);
+        if (this.inputs.hasOwnProperty(i)) {
+          this.setValueAt(i, isArray ? value[i] : value);
+        }
       }
       return this.updateValue(flags);
     }
@@ -4840,10 +4844,12 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     value: function getRawValue() {
       var values = [];
       for (var i in this.inputs) {
-        if (!this.component.multiple) {
-          return this.getDate(this.inputs[i].value);
+        if (this.inputs.hasOwnProperty(i)) {
+          if (!this.component.multiple) {
+            return this.getDate(this.inputs[i].value);
+          }
+          values.push(this.getDate(this.inputs[i].value));
         }
-        values.push(this.getDate(this.inputs[i].value));
       }
       return values;
     }
@@ -7858,7 +7864,7 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
     value: function isEmpty(value) {
       var empty = true;
       for (var key in value) {
-        if (value[key]) {
+        if (value.hasOwnProperty(key) && value[key]) {
           empty = false;
           break;
         }
@@ -10520,12 +10526,14 @@ var Formio = function () {
         var anonRole = {};
         var adminRole = {};
         for (var roleName in access.roles) {
-          var role = access.roles[roleName];
-          if (role.default) {
-            anonRole = role;
-          }
-          if (role.admin) {
-            adminRole = role;
+          if (access.roles.hasOwnProperty(roleName)) {
+            var role = access.roles[roleName];
+            if (role.default) {
+              anonRole = role;
+            }
+            if (role.admin) {
+              adminRole = role;
+            }
           }
         }
 
@@ -10538,21 +10546,25 @@ var Formio = function () {
         }
 
         for (var i in form.submissionAccess) {
-          var subRole = form.submissionAccess[i];
-          if (subRole.type === 'create_all' || subRole.type === 'create_own') {
-            for (var j in subRole.roles) {
-              // Check if anonymous is allowed.
-              if (anonRole._id === subRole.roles[j]) {
-                canSubmitAnonymously = true;
+          if (form.submissionAccess.hasOwnProperty(i)) {
+            var subRole = form.submissionAccess[i];
+            if (subRole.type === 'create_all' || subRole.type === 'create_own') {
+              for (var j in subRole.roles) {
+                if (subRole.roles.hasOwnProperty(j)) {
+                  // Check if anonymous is allowed.
+                  if (anonRole._id === subRole.roles[j]) {
+                    canSubmitAnonymously = true;
+                  }
+                  // Check if the logged in user has the appropriate role.
+                  if (user && user.roles.indexOf(subRole.roles[j]) !== -1) {
+                    canSubmit = true;
+                    break;
+                  }
+                }
               }
-              // Check if the logged in user has the appropriate role.
-              if (user && user.roles.indexOf(subRole.roles[j]) !== -1) {
-                canSubmit = true;
+              if (canSubmit) {
                 break;
               }
-            }
-            if (canSubmit) {
-              break;
             }
           }
         }
@@ -12434,9 +12446,11 @@ var FormioUtils = {
     } else {
       var matches = false;
       for (var search in query) {
-        matches = (0, _get3.default)(component, search) === query[search];
-        if (!matches) {
-          break;
+        if (query.hasOwnProperty(search)) {
+          matches = (0, _get3.default)(component, search) === query[search];
+          if (!matches) {
+            break;
+          }
         }
       }
       return matches;
