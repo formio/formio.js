@@ -4800,12 +4800,14 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       });
       suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
       var calendar = this.getCalendar(input);
-      this.addEventListener(suffix, 'click', function () {
-        // Make sure the calendar is not already open and that it did not just close (like from blur event).
-        if (!calendar.isOpen && Date.now() - _this2.closedOn > 200) {
-          calendar.open();
-        }
-      });
+      if (calendar) {
+        this.addEventListener(suffix, 'click', function () {
+          // Make sure the calendar is not already open and that it did not just close (like from blur event).
+          if (!calendar.isOpen && Date.now() - _this2.closedOn > 200) {
+            calendar.open();
+          }
+        });
+      }
       inputGroup.appendChild(suffix);
       return suffix;
     }
@@ -4819,7 +4821,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'getCalendar',
     value: function getCalendar(input) {
-      if (!input.calendar) {
+      if (!input.calendar && !this.options.noCalendar) {
         input.calendar = new _flatpickr2.default(input, this.config);
       }
       return input.calendar;
@@ -4852,7 +4854,12 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         return '';
       }
 
-      var dates = this.getCalendar(this.inputs[index]).selectedDates;
+      var calendar = this.getCalendar(this.inputs[index]);
+      if (!calendar) {
+        return _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'getValueAt', this).call(this, index);
+      }
+
+      var dates = calendar.selectedDates;
       if (!dates || !dates.length) {
         return '';
       }
@@ -4863,8 +4870,12 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
       if (value) {
-        var date = value ? new Date(value) : new Date();
-        this.getCalendar(this.inputs[index]).setDate(date, false);
+        var calendar = this.getCalendar(this.inputs[index]);
+        if (!calendar) {
+          return _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'setValueAt', this).call(this, index, value);
+        }
+
+        calendar.setDate(value ? new Date(value) : new Date(), false);
       }
     }
   }, {
@@ -14347,7 +14358,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 }();
 
 },{}],58:[function(require,module,exports){
-/* flatpickr v3.1.4, @license MIT */
+/* flatpickr v4.0.4, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -14703,6 +14714,29 @@ var formats = {
     y: function (date) { return String(date.getFullYear()).substring(2); },
 };
 
+"use strict";
+if (typeof Object.assign !== "function") {
+    Object.assign = function (target) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (!target) {
+            throw TypeError("Cannot convert undefined or null to object");
+        }
+        var _loop_1 = function (source) {
+            if (source) {
+                Object.keys(source).forEach(function (key) { return (target[key] = source[key]); });
+            }
+        };
+        for (var _a = 0, args_1 = args; _a < args_1.length; _a++) {
+            var source = args_1[_a];
+            _loop_1(source);
+        }
+        return target;
+    };
+}
+
 function FlatpickrInstance(element, instanceConfig) {
     var self = {};
     self.parseDate = parseDate;
@@ -15043,8 +15077,11 @@ function FlatpickrInstance(element, instanceConfig) {
         var customAppend = self.config.appendTo !== undefined && self.config.appendTo.nodeType;
         if (self.config.inline || self.config.static) {
             self.calendarContainer.classList.add(self.config.inline ? "inline" : "static");
-            if (self.config.inline && !customAppend && self.element.parentNode) {
-                self.element.parentNode.insertBefore(self.calendarContainer, self._input.nextSibling);
+            if (self.config.inline) {
+                if (!customAppend && self.element.parentNode)
+                    self.element.parentNode.insertBefore(self.calendarContainer, self._input.nextSibling);
+                else if (self.config.appendTo !== undefined)
+                    self.config.appendTo.appendChild(self.calendarContainer);
             }
             if (self.config.static) {
                 var wrapper = createElement("div", "flatpickr-wrapper");
@@ -15398,7 +15435,7 @@ function FlatpickrInstance(element, instanceConfig) {
         self.latestSelectedDateObj = undefined;
         self.showTimeInput = false;
         self.redraw();
-        if (triggerChangeEvent === true)
+        if (triggerChangeEvent)
             triggerEvent("onChange");
     }
     function close() {
@@ -15729,7 +15766,7 @@ function FlatpickrInstance(element, instanceConfig) {
             triggerEvent("onOpen");
             return;
         }
-        if (self.isOpen || self._input.disabled || self.config.inline)
+        if (self._input.disabled || self.config.inline)
             return;
         self.isOpen = true;
         self.calendarContainer.classList.add("open");
