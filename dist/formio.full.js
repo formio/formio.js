@@ -9029,45 +9029,6 @@ if (!Function.prototype.bind) {
   };
 }
 
-/**
- * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
- *
- * This is needed for PhantomJS.
- */
-if (typeof Object.assign != 'function') {
-  // Must be writable: true, enumerable: false, configurable: true
-  Object.defineProperty(Object, "assign", {
-    value: function assign(target, varArgs) {
-      // .length of function is 2
-      'use strict';
-
-      if (target == null) {
-        // TypeError if undefined or null
-        throw new TypeError('Cannot convert undefined or null to object');
-      }
-
-      var to = Object(target);
-
-      for (var index = 1; index < arguments.length; index++) {
-        var nextSource = arguments[index];
-
-        if (nextSource != null) {
-          // Skip over if undefined or null
-          for (var nextKey in nextSource) {
-            // Avoid bugs when hasOwnProperty is shadowed
-            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
-              to[nextKey] = nextSource[nextKey];
-            }
-          }
-        }
-      }
-      return to;
-    },
-    writable: true,
-    configurable: true
-  });
-}
-
 var getOptions = function getOptions(options) {
   options = options || {};
   if (!options.events) {
@@ -14355,7 +14316,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 }();
 
 },{}],57:[function(require,module,exports){
-/* flatpickr v3.1.4, @license MIT */
+/* flatpickr v4.0.4, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -14711,6 +14672,29 @@ var formats = {
     y: function (date) { return String(date.getFullYear()).substring(2); },
 };
 
+"use strict";
+if (typeof Object.assign !== "function") {
+    Object.assign = function (target) {
+        var args = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            args[_i - 1] = arguments[_i];
+        }
+        if (!target) {
+            throw TypeError("Cannot convert undefined or null to object");
+        }
+        var _loop_1 = function (source) {
+            if (source) {
+                Object.keys(source).forEach(function (key) { return (target[key] = source[key]); });
+            }
+        };
+        for (var _a = 0, args_1 = args; _a < args_1.length; _a++) {
+            var source = args_1[_a];
+            _loop_1(source);
+        }
+        return target;
+    };
+}
+
 function FlatpickrInstance(element, instanceConfig) {
     var self = {};
     self.parseDate = parseDate;
@@ -15051,8 +15035,11 @@ function FlatpickrInstance(element, instanceConfig) {
         var customAppend = self.config.appendTo !== undefined && self.config.appendTo.nodeType;
         if (self.config.inline || self.config.static) {
             self.calendarContainer.classList.add(self.config.inline ? "inline" : "static");
-            if (self.config.inline && !customAppend && self.element.parentNode) {
-                self.element.parentNode.insertBefore(self.calendarContainer, self._input.nextSibling);
+            if (self.config.inline) {
+                if (!customAppend && self.element.parentNode)
+                    self.element.parentNode.insertBefore(self.calendarContainer, self._input.nextSibling);
+                else if (self.config.appendTo !== undefined)
+                    self.config.appendTo.appendChild(self.calendarContainer);
             }
             if (self.config.static) {
                 var wrapper = createElement("div", "flatpickr-wrapper");
@@ -15406,7 +15393,7 @@ function FlatpickrInstance(element, instanceConfig) {
         self.latestSelectedDateObj = undefined;
         self.showTimeInput = false;
         self.redraw();
-        if (triggerChangeEvent === true)
+        if (triggerChangeEvent)
             triggerEvent("onChange");
     }
     function close() {
@@ -15737,7 +15724,7 @@ function FlatpickrInstance(element, instanceConfig) {
             triggerEvent("onOpen");
             return;
         }
-        if (self.isOpen || self._input.disabled || self.config.inline)
+        if (self._input.disabled || self.config.inline)
             return;
         self.isOpen = true;
         self.calendarContainer.classList.add("open");

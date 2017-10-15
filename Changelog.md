@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.20.1
+### Changed
+ - Upgraded Flatpickr to 4.0.4 to fix crash in IE.
+
 ### Added
- - Shim for Object.assign so that Flatpickr does not crash older browsers.
  - Global option to not show the datepickr for date inputs.
 
 ### Fixed
