@@ -139,12 +139,14 @@ export class DateTimeComponent extends BaseComponent {
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
     let calendar = this.getCalendar(input);
-    this.addEventListener(suffix, 'click', () => {
-      // Make sure the calendar is not already open and that it did not just close (like from blur event).
-      if (!calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
-        calendar.open();
-      }
-    });
+    if (calendar) {
+      this.addEventListener(suffix, 'click', () => {
+        // Make sure the calendar is not already open and that it did not just close (like from blur event).
+        if (!calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+          calendar.open();
+        }
+      });
+    }
     inputGroup.appendChild(suffix);
     return suffix;
   }
@@ -155,7 +157,7 @@ export class DateTimeComponent extends BaseComponent {
    * @return {Flatpickr|flatpickr}
    */
   getCalendar(input) {
-    if (!input.calendar) {
+    if (!input.calendar && !this.options.noCalendar) {
       input.calendar = new Flatpickr(input, this.config);
     }
     return input.calendar;
@@ -185,7 +187,12 @@ export class DateTimeComponent extends BaseComponent {
       return '';
     }
 
-    let dates = this.getCalendar(this.inputs[index]).selectedDates;
+    let calendar = this.getCalendar(this.inputs[index]);
+    if (!calendar) {
+      return super.getValueAt(index);
+    }
+
+    let dates = calendar.selectedDates;
     if (!dates || !dates.length) {
       return '';
     }
@@ -195,8 +202,12 @@ export class DateTimeComponent extends BaseComponent {
 
   setValueAt(index, value) {
     if (value) {
-      let date = value ? new Date(value) : new Date();
-      this.getCalendar(this.inputs[index]).setDate(date, false);
+      let calendar = this.getCalendar(this.inputs[index]);
+      if (!calendar) {
+        return super.setValueAt(index, value);
+      }
+
+      calendar.setDate(value ? new Date(value) : new Date(), false);
     }
   }
 }

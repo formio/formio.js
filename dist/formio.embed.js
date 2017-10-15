@@ -4800,12 +4800,14 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       });
       suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
       var calendar = this.getCalendar(input);
-      this.addEventListener(suffix, 'click', function () {
-        // Make sure the calendar is not already open and that it did not just close (like from blur event).
-        if (!calendar.isOpen && Date.now() - _this2.closedOn > 200) {
-          calendar.open();
-        }
-      });
+      if (calendar) {
+        this.addEventListener(suffix, 'click', function () {
+          // Make sure the calendar is not already open and that it did not just close (like from blur event).
+          if (!calendar.isOpen && Date.now() - _this2.closedOn > 200) {
+            calendar.open();
+          }
+        });
+      }
       inputGroup.appendChild(suffix);
       return suffix;
     }
@@ -4819,7 +4821,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'getCalendar',
     value: function getCalendar(input) {
-      if (!input.calendar) {
+      if (!input.calendar && !this.options.noCalendar) {
         input.calendar = new _flatpickr2.default(input, this.config);
       }
       return input.calendar;
@@ -4852,7 +4854,12 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         return '';
       }
 
-      var dates = this.getCalendar(this.inputs[index]).selectedDates;
+      var calendar = this.getCalendar(this.inputs[index]);
+      if (!calendar) {
+        return _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'getValueAt', this).call(this, index);
+      }
+
+      var dates = calendar.selectedDates;
       if (!dates || !dates.length) {
         return '';
       }
@@ -4863,8 +4870,12 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
       if (value) {
-        var date = value ? new Date(value) : new Date();
-        this.getCalendar(this.inputs[index]).setDate(date, false);
+        var calendar = this.getCalendar(this.inputs[index]);
+        if (!calendar) {
+          return _get2(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'setValueAt', this).call(this, index, value);
+        }
+
+        calendar.setDate(value ? new Date(value) : new Date(), false);
       }
     }
   }, {
@@ -9058,6 +9069,45 @@ if (!Function.prototype.bind) {
 
     return fBound;
   };
+}
+
+/**
+ * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
+ *
+ * This is needed for PhantomJS.
+ */
+if (typeof Object.assign != 'function') {
+  // Must be writable: true, enumerable: false, configurable: true
+  Object.defineProperty(Object, "assign", {
+    value: function assign(target, varArgs) {
+      // .length of function is 2
+      'use strict';
+
+      if (target == null) {
+        // TypeError if undefined or null
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
+
+      var to = Object(target);
+
+      for (var index = 1; index < arguments.length; index++) {
+        var nextSource = arguments[index];
+
+        if (nextSource != null) {
+          // Skip over if undefined or null
+          for (var nextKey in nextSource) {
+            // Avoid bugs when hasOwnProperty is shadowed
+            if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+              to[nextKey] = nextSource[nextKey];
+            }
+          }
+        }
+      }
+      return to;
+    },
+    writable: true,
+    configurable: true
+  });
 }
 
 var getOptions = function getOptions(options) {

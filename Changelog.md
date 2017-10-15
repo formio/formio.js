@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.20.1
+### Added
+ - Shim for Object.assign so that Flatpickr does not crash older browsers.
+ - Global option to not show the datepickr for date inputs.
+
+### Fixed
+ - Issue where a null flatpickr instance would crash renderer.
+
 ## 2.20.0
 ### Added
  - Much better i18n support for Number and Currency components.
