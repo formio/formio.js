@@ -41,11 +41,11 @@ export class TextAreaComponent extends TextFieldComponent {
 
     // Lazy load the quill css.
     BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [
-      {type: 'styles', src: 'https://cdn.quilljs.com/1.2.6/quill.' + this.component.wysiwyg.theme + '.css'}
+      {type: 'styles', src: 'https://cdn.quilljs.com/1.3.3/quill.' + this.component.wysiwyg.theme + '.css'}
     ], true);
 
     // Lazy load the quill library.
-    this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.2.6/quill.min.js', true)
+    this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.3/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(this.input, this.component.wysiwyg);
 

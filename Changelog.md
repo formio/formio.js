@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Changed
  - The Select dropdown api requests to use Formio.makeRequest so that plugins could be used.
+ - Upgrade Quill.js to 1.3.3
 
 ## 2.20.1
 ### Changed
