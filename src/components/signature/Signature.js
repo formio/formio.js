@@ -43,6 +43,7 @@ export class SignatureComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
+    this.showCanvas(!disabled);
     if (this.signaturePad) {
       if (disabled) {
         this.signaturePad.off();
