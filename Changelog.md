@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.20.2
 ### Fixed
  - Issues with using for in statements with arrays pulling in keys we don't want.
+ - The data view of a Signature to show the image of the signature for easy scaling.
+ 
+### Changed
+ - The Select dropdown api requests to use Formio.makeRequest so that plugins could be used.
 
 ## 2.20.1
 ### Changed

@@ -7422,7 +7422,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       _this.on('change', function (event) {
         if (_this.component.refreshOn === 'data') {
           _this.refreshItems();
-        } else if (event.changed.component.key === _this.component.refreshOn) {
+        } else if (event.changed && event.changed.component.key === _this.component.refreshOn) {
           _this.refreshItems();
         }
       });
@@ -7535,7 +7535,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
 
       // Make the request.
-      _formio2.default.request(url, null, null, headers, options).then(function (response) {
+      options.header = headers;
+      _formio2.default.makeRequest(this.options.formio, 'select', url, null, null, options).then(function (response) {
         return _this3.setItems(response);
       }).catch(function (err) {
         _this3.events.emit('formio.error', err);
@@ -8030,26 +8031,21 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       flags = this.getFlags.apply(this, arguments);
       _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'setValue', this).call(this, value, flags);
       if (value && !flags.noSign && this.signaturePad) {
-        this.checkSize(true, Math.max(window.devicePixelRatio || 1, 1));
         this.signaturePad.fromDataURL(value);
+        this.signatureImage.setAttribute('src', value);
+        this.showCanvas(false);
       }
     }
   }, {
-    key: 'getSignatureImage',
-    value: function getSignatureImage() {
-      var image = this.ce('img', {
-        style: 'width: ' + this.component.width + ';height: ' + this.component.height
-      });
-      image.setAttribute('src', this.value);
-      return image;
-    }
-  }, {
-    key: 'onResize',
-    value: function onResize(scale) {
-      if (scale) {
-        this.checkSize(true, scale);
+    key: 'showCanvas',
+    value: function showCanvas(show) {
+      if (show) {
+        this.canvas.style.display = 'inherit';
+        this.signatureImage.style.display = 'none';
+      } else {
+        this.canvas.style.display = 'none';
+        this.signatureImage.style.display = 'inherit';
       }
-      this.setValue(this.getValue());
     }
   }, {
     key: 'destroy',
@@ -8105,6 +8101,12 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
         height: this.component.height
       });
       this.padBody.appendChild(this.canvas);
+
+      this.signatureImage = this.ce('img', {
+        style: 'width: 100%;display: none;'
+      });
+      this.padBody.appendChild(this.signatureImage);
+
       this.element.appendChild(this.padBody);
 
       // Add the footer.
@@ -8126,6 +8128,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       });
       this.refresh.addEventListener("click", function (event) {
         event.preventDefault();
+        _this2.showCanvas(true);
         _this2.signaturePad.clear();
       });
       this.signaturePad.onEnd = function () {
@@ -10257,30 +10260,7 @@ var Formio = function () {
   }, {
     key: 'makeRequest',
     value: function makeRequest(type, url, method, data, opts) {
-      method = (method || 'GET').toUpperCase();
-      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
-        opts = {};
-      }
-
-      var requestArgs = {
-        formio: this,
-        type: type,
-        url: url,
-        method: method,
-        data: data,
-        opts: opts
-      };
-
-      var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
-        return Formio.pluginGet('request', requestArgs).then(function (result) {
-          if (result === null || result === undefined) {
-            return Formio.request(url, method, data, opts.header, opts);
-          }
-          return result;
-        });
-      });
-
-      return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
+      return Formio.makeRequest(this, type, url, method, data, opts);
     }
   }, {
     key: 'loadProject',
@@ -10630,6 +10610,34 @@ var Formio = function () {
       });
 
       return Formio.pluginAlter('wrapStaticRequestPromise', request, requestArgs);
+    }
+  }, {
+    key: 'makeRequest',
+    value: function makeRequest(formio, type, url, method, data, opts) {
+      method = (method || 'GET').toUpperCase();
+      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+        opts = {};
+      }
+
+      var requestArgs = {
+        formio: formio,
+        type: type,
+        url: url,
+        method: method,
+        data: data,
+        opts: opts
+      };
+
+      var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
+        return Formio.pluginGet('request', requestArgs).then(function (result) {
+          if (result === null || result === undefined) {
+            return Formio.request(url, method, data, opts.header, opts);
+          }
+          return result;
+        });
+      });
+
+      return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
     }
   }, {
     key: 'request',
