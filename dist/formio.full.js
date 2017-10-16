@@ -8154,6 +8154,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     key: 'disabled',
     set: function set(disabled) {
       _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disabled', disabled, this);
+      this.showCanvas(!disabled);
       if (this.signaturePad) {
         if (disabled) {
           this.signaturePad.off();
