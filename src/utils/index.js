@@ -145,9 +145,11 @@ const FormioUtils = {
     else {
       var matches = false;
       for (var search in query) {
-        matches = (_get(component, search) === query[search]);
-        if (!matches) {
-          break;
+        if (query.hasOwnProperty(search)) {
+          matches = (_get(component, search) === query[search]);
+          if (!matches) {
+            break;
+          }
         }
       }
       return matches;

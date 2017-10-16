@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.20.2
+### Fixed
+ - Issues with using for in statements with arrays pulling in keys we don't want.
+ - The data view of a Signature to show the image of the signature for easy scaling.
+ 
+### Changed
+ - The Select dropdown api requests to use Formio.makeRequest so that plugins could be used.
+ - Upgrade Quill.js to 1.3.3
+
 ## 2.20.1
 ### Changed
  - Upgraded Flatpickr to 4.0.4 to fix crash in IE.

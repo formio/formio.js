@@ -174,10 +174,12 @@ export class DateTimeComponent extends BaseComponent {
   getRawValue() {
     let values = [];
     for (let i in this.inputs) {
-      if (!this.component.multiple) {
-        return this.getDate(this.inputs[i].value);
+      if (this.inputs.hasOwnProperty(i)) {
+        if (!this.component.multiple) {
+          return this.getDate(this.inputs[i].value);
+        }
+        values.push(this.getDate(this.inputs[i].value));
       }
-      values.push(this.getDate(this.inputs[i].value));
     }
     return values;
   }

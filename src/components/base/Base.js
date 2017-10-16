@@ -1204,11 +1204,13 @@ export class BaseComponent {
     }
     let values = [];
     for (let i in this.inputs) {
-      if (!this.component.multiple) {
-        this.value = this.getValueAt(i);
-        return this.value;
+      if (this.inputs.hasOwnProperty(i)) {
+        if (!this.component.multiple) {
+          this.value = this.getValueAt(i);
+          return this.value;
+        }
+        values.push(this.getValueAt(i));
       }
-      values.push(this.getValueAt(i));
     }
     this.value = values;
     return values;
@@ -1464,7 +1466,9 @@ export class BaseComponent {
     this.value = value;
     let isArray = _isArray(value);
     for (let i in this.inputs) {
-      this.setValueAt(i, isArray ? value[i] : value);
+      if (this.inputs.hasOwnProperty(i)) {
+        this.setValueAt(i, isArray ? value[i] : value);
+      }
     }
     return this.updateValue(flags);
   }

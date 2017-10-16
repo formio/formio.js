@@ -23,7 +23,7 @@ export class SelectBoxesComponent extends RadioComponent {
   isEmpty(value) {
     let empty = true;
     for (let key in value) {
-      if (value[key]) {
+      if (value.hasOwnProperty(key) && value[key]) {
         empty = false;
         break;
       }

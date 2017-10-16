@@ -2783,11 +2783,13 @@ var BaseComponent = function () {
       }
       var values = [];
       for (var i in this.inputs) {
-        if (!this.component.multiple) {
-          this.value = this.getValueAt(i);
-          return this.value;
+        if (this.inputs.hasOwnProperty(i)) {
+          if (!this.component.multiple) {
+            this.value = this.getValueAt(i);
+            return this.value;
+          }
+          values.push(this.getValueAt(i));
         }
-        values.push(this.getValueAt(i));
       }
       this.value = values;
       return values;
@@ -3054,7 +3056,9 @@ var BaseComponent = function () {
       this.value = value;
       var isArray = (0, _isArray3.default)(value);
       for (var i in this.inputs) {
-        this.setValueAt(i, isArray ? value[i] : value);
+        if (this.inputs.hasOwnProperty(i)) {
+          this.setValueAt(i, isArray ? value[i] : value);
+        }
       }
       return this.updateValue(flags);
     }
@@ -4840,10 +4844,12 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     value: function getRawValue() {
       var values = [];
       for (var i in this.inputs) {
-        if (!this.component.multiple) {
-          return this.getDate(this.inputs[i].value);
+        if (this.inputs.hasOwnProperty(i)) {
+          if (!this.component.multiple) {
+            return this.getDate(this.inputs[i].value);
+          }
+          values.push(this.getDate(this.inputs[i].value));
         }
-        values.push(this.getDate(this.inputs[i].value));
       }
       return values;
     }
@@ -7416,7 +7422,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       _this.on('change', function (event) {
         if (_this.component.refreshOn === 'data') {
           _this.refreshItems();
-        } else if (event.changed.component.key === _this.component.refreshOn) {
+        } else if (event.changed && event.changed.component.key === _this.component.refreshOn) {
           _this.refreshItems();
         }
       });
@@ -7529,7 +7535,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
 
       // Make the request.
-      _formio2.default.request(url, null, null, headers, options).then(function (response) {
+      options.header = headers;
+      _formio2.default.makeRequest(this.options.formio, 'select', url, null, null, options).then(function (response) {
         return _this3.setItems(response);
       }).catch(function (err) {
         _this3.events.emit('formio.error', err);
@@ -7858,7 +7865,7 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
     value: function isEmpty(value) {
       var empty = true;
       for (var key in value) {
-        if (value[key]) {
+        if (value.hasOwnProperty(key) && value[key]) {
           empty = false;
           break;
         }
@@ -8024,26 +8031,21 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       flags = this.getFlags.apply(this, arguments);
       _get(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'setValue', this).call(this, value, flags);
       if (value && !flags.noSign && this.signaturePad) {
-        this.checkSize(true, Math.max(window.devicePixelRatio || 1, 1));
         this.signaturePad.fromDataURL(value);
+        this.signatureImage.setAttribute('src', value);
+        this.showCanvas(false);
       }
     }
   }, {
-    key: 'getSignatureImage',
-    value: function getSignatureImage() {
-      var image = this.ce('img', {
-        style: 'width: ' + this.component.width + ';height: ' + this.component.height
-      });
-      image.setAttribute('src', this.value);
-      return image;
-    }
-  }, {
-    key: 'onResize',
-    value: function onResize(scale) {
-      if (scale) {
-        this.checkSize(true, scale);
+    key: 'showCanvas',
+    value: function showCanvas(show) {
+      if (show) {
+        this.canvas.style.display = 'inherit';
+        this.signatureImage.style.display = 'none';
+      } else {
+        this.canvas.style.display = 'none';
+        this.signatureImage.style.display = 'inherit';
       }
-      this.setValue(this.getValue());
     }
   }, {
     key: 'destroy',
@@ -8099,6 +8101,12 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
         height: this.component.height
       });
       this.padBody.appendChild(this.canvas);
+
+      this.signatureImage = this.ce('img', {
+        style: 'width: 100%;display: none;'
+      });
+      this.padBody.appendChild(this.signatureImage);
+
       this.element.appendChild(this.padBody);
 
       // Add the footer.
@@ -8120,6 +8128,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       });
       this.refresh.addEventListener("click", function (event) {
         event.preventDefault();
+        _this2.showCanvas(true);
         _this2.signaturePad.clear();
       });
       this.signaturePad.onEnd = function () {
@@ -8145,6 +8154,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     key: 'disabled',
     set: function set(disabled) {
       _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disabled', disabled, this);
+      this.showCanvas(!disabled);
       if (this.signaturePad) {
         if (disabled) {
           this.signaturePad.off();
@@ -8526,10 +8536,10 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       container.appendChild(this.input);
 
       // Lazy load the quill css.
-      _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.2.6/quill.' + this.component.wysiwyg.theme + '.css' }], true);
+      _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.3/quill.' + this.component.wysiwyg.theme + '.css' }], true);
 
       // Lazy load the quill library.
-      this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.2.6/quill.min.js', true).then(function () {
+      this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.3/quill.min.js', true).then(function () {
         _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
@@ -10293,30 +10303,7 @@ var Formio = function () {
   }, {
     key: 'makeRequest',
     value: function makeRequest(type, url, method, data, opts) {
-      method = (method || 'GET').toUpperCase();
-      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
-        opts = {};
-      }
-
-      var requestArgs = {
-        formio: this,
-        type: type,
-        url: url,
-        method: method,
-        data: data,
-        opts: opts
-      };
-
-      var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
-        return Formio.pluginGet('request', requestArgs).then(function (result) {
-          if (result === null || result === undefined) {
-            return Formio.request(url, method, data, opts.header, opts);
-          }
-          return result;
-        });
-      });
-
-      return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
+      return Formio.makeRequest(this, type, url, method, data, opts);
     }
   }, {
     key: 'loadProject',
@@ -10562,12 +10549,14 @@ var Formio = function () {
         var anonRole = {};
         var adminRole = {};
         for (var roleName in access.roles) {
-          var role = access.roles[roleName];
-          if (role.default) {
-            anonRole = role;
-          }
-          if (role.admin) {
-            adminRole = role;
+          if (access.roles.hasOwnProperty(roleName)) {
+            var role = access.roles[roleName];
+            if (role.default) {
+              anonRole = role;
+            }
+            if (role.admin) {
+              adminRole = role;
+            }
           }
         }
 
@@ -10580,21 +10569,25 @@ var Formio = function () {
         }
 
         for (var i in form.submissionAccess) {
-          var subRole = form.submissionAccess[i];
-          if (subRole.type === 'create_all' || subRole.type === 'create_own') {
-            for (var j in subRole.roles) {
-              // Check if anonymous is allowed.
-              if (anonRole._id === subRole.roles[j]) {
-                canSubmitAnonymously = true;
+          if (form.submissionAccess.hasOwnProperty(i)) {
+            var subRole = form.submissionAccess[i];
+            if (subRole.type === 'create_all' || subRole.type === 'create_own') {
+              for (var j in subRole.roles) {
+                if (subRole.roles.hasOwnProperty(j)) {
+                  // Check if anonymous is allowed.
+                  if (anonRole._id === subRole.roles[j]) {
+                    canSubmitAnonymously = true;
+                  }
+                  // Check if the logged in user has the appropriate role.
+                  if (user && user.roles.indexOf(subRole.roles[j]) !== -1) {
+                    canSubmit = true;
+                    break;
+                  }
+                }
               }
-              // Check if the logged in user has the appropriate role.
-              if (user && user.roles.indexOf(subRole.roles[j]) !== -1) {
-                canSubmit = true;
+              if (canSubmit) {
                 break;
               }
-            }
-            if (canSubmit) {
-              break;
             }
           }
         }
@@ -10660,6 +10653,34 @@ var Formio = function () {
       });
 
       return Formio.pluginAlter('wrapStaticRequestPromise', request, requestArgs);
+    }
+  }, {
+    key: 'makeRequest',
+    value: function makeRequest(formio, type, url, method, data, opts) {
+      method = (method || 'GET').toUpperCase();
+      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+        opts = {};
+      }
+
+      var requestArgs = {
+        formio: formio,
+        type: type,
+        url: url,
+        method: method,
+        data: data,
+        opts: opts
+      };
+
+      var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
+        return Formio.pluginGet('request', requestArgs).then(function (result) {
+          if (result === null || result === undefined) {
+            return Formio.request(url, method, data, opts.header, opts);
+          }
+          return result;
+        });
+      });
+
+      return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
     }
   }, {
     key: 'request',
@@ -12476,9 +12497,11 @@ var FormioUtils = {
     } else {
       var matches = false;
       for (var search in query) {
-        matches = (0, _get3.default)(component, search) === query[search];
-        if (!matches) {
-          break;
+        if (query.hasOwnProperty(search)) {
+          matches = (0, _get3.default)(component, search) === query[search];
+          if (!matches) {
+            break;
+          }
         }
       }
       return matches;

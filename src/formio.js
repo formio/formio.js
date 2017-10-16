@@ -220,32 +220,7 @@ export class Formio {
   }
 
   makeRequest(type, url, method, data, opts) {
-    method = (method || 'GET').toUpperCase();
-    if(!opts || typeof opts !== 'object') {
-      opts = {};
-    }
-
-    var requestArgs = {
-      formio: this,
-      type: type,
-      url: url,
-      method: method,
-      data: data,
-      opts: opts
-    };
-
-    var request = Formio.pluginWait('preRequest', requestArgs)
-      .then(function() {
-        return Formio.pluginGet('request', requestArgs)
-          .then(function(result) {
-            if (result === null || result === undefined) {
-              return Formio.request(url, method, data, opts.header, opts);
-            }
-            return result;
-          });
-      });
-
-    return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
+    return Formio.makeRequest(this, type, url, method, data, opts);
   }
 
   loadProject(query, opts) {
@@ -478,12 +453,14 @@ export class Formio {
       var anonRole = {};
       var adminRole = {};
       for (var roleName in access.roles) {
-        var role = access.roles[roleName];
-        if (role.default) {
-          anonRole = role;
-        }
-        if (role.admin) {
-          adminRole = role;
+        if (access.roles.hasOwnProperty(roleName)) {
+          var role = access.roles[roleName];
+          if (role.default) {
+            anonRole = role;
+          }
+          if (role.admin) {
+            adminRole = role;
+          }
         }
       }
 
@@ -496,21 +473,25 @@ export class Formio {
       }
 
       for (var i in form.submissionAccess) {
-        var subRole = form.submissionAccess[i];
-        if (subRole.type === 'create_all' || subRole.type === 'create_own') {
-          for (var j in subRole.roles) {
-            // Check if anonymous is allowed.
-            if (anonRole._id === subRole.roles[j]) {
-              canSubmitAnonymously = true;
+        if (form.submissionAccess.hasOwnProperty(i)) {
+          var subRole = form.submissionAccess[i];
+          if (subRole.type === 'create_all' || subRole.type === 'create_own') {
+            for (var j in subRole.roles) {
+              if (subRole.roles.hasOwnProperty(j)) {
+                // Check if anonymous is allowed.
+                if (anonRole._id === subRole.roles[j]) {
+                  canSubmitAnonymously = true;
+                }
+                // Check if the logged in user has the appropriate role.
+                if (user && (user.roles.indexOf(subRole.roles[j]) !== -1)) {
+                  canSubmit = true;
+                  break;
+                }
+              }
             }
-            // Check if the logged in user has the appropriate role.
-            if (user && (user.roles.indexOf(subRole.roles[j]) !== -1)) {
-              canSubmit = true;
+            if (canSubmit) {
               break;
             }
-          }
-          if (canSubmit) {
-            break;
           }
         }
       }
@@ -567,6 +548,35 @@ export class Formio {
       });
 
     return Formio.pluginAlter('wrapStaticRequestPromise', request, requestArgs);
+  }
+
+  static makeRequest(formio, type, url, method, data, opts) {
+    method = (method || 'GET').toUpperCase();
+    if(!opts || typeof opts !== 'object') {
+      opts = {};
+    }
+
+    var requestArgs = {
+      formio: formio,
+      type: type,
+      url: url,
+      method: method,
+      data: data,
+      opts: opts
+    };
+
+    var request = Formio.pluginWait('preRequest', requestArgs)
+      .then(function() {
+        return Formio.pluginGet('request', requestArgs)
+          .then(function(result) {
+            if (result === null || result === undefined) {
+              return Formio.request(url, method, data, opts.header, opts);
+            }
+            return result;
+          });
+      });
+
+    return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
   }
 
   static request(url, method, data, header, opts) {
