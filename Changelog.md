@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.20.3
+### Fixed
+ - Problem with cookie fallbacks on file uploads not working.
+
 ## 2.20.2
 ### Fixed
  - Issues with using for in statements with arrays pulling in keys we don't want.

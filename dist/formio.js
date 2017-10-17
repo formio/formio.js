@@ -1242,6 +1242,7 @@ module.exports = base64;
 'use strict';
 
 var Promise = require("native-promise-only");
+var Formio = require('../../formio.js');
 var dropbox = function dropbox(formio) {
   return {
     uploadFile: function uploadFile(file, fileName, dir, progressCallback) {
@@ -1282,12 +1283,7 @@ var dropbox = function dropbox(formio) {
         };
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        var token = false;
-        try {
-          token = localStorage.getItem('formioToken');
-        } catch (e) {
-          // Swallow error.
-        }
+        var token = Formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -1295,12 +1291,7 @@ var dropbox = function dropbox(formio) {
       });
     },
     downloadFile: function downloadFile(file) {
-      var token = false;
-      try {
-        token = localStorage.getItem('formioToken');
-      } catch (e) {
-        token = cookies.get('formioToken');
-      }
+      var token = Formio.getToken();
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
     }
@@ -1310,7 +1301,7 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 module.exports = dropbox;
 
-},{"native-promise-only":10}],5:[function(require,module,exports){
+},{"../../formio.js":1,"native-promise-only":10}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1324,6 +1315,7 @@ module.exports = {
 'use strict';
 
 var Promise = require("native-promise-only");
+var Formio = require('../../formio.js');
 var s3 = function s3(formio) {
   return {
     uploadFile: function uploadFile(file, fileName, dir, progressCallback) {
@@ -1405,12 +1397,7 @@ var s3 = function s3(formio) {
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var token = false;
-        try {
-          token = localStorage.getItem('formioToken');
-        } catch (e) {
-          token = cookies.get('formioToken');
-        }
+        var token = Formio.getToken();
         if (token) {
           pre.setRequestHeader('x-jwt-token', token);
         }
@@ -1435,10 +1422,11 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 module.exports = s3;
 
-},{"native-promise-only":10}],7:[function(require,module,exports){
+},{"../../formio.js":1,"native-promise-only":10}],7:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
+var Formio = require('../../formio.js');
 var url = function url(formio) {
   return {
     title: 'Url',
@@ -1497,13 +1485,7 @@ var url = function url(formio) {
         };
 
         xhr.open('POST', url);
-        var token = false;
-        try {
-          token = localStorage.getItem('formioToken');
-        } catch (err) {
-          token = cookies.get('formioToken');
-        }
-
+        var token = Formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -1520,7 +1502,7 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"native-promise-only":10}],8:[function(require,module,exports){
+},{"../../formio.js":1,"native-promise-only":10}],8:[function(require,module,exports){
 exports.defaults = {};
 
 exports.set = function(name, value, options) {
