@@ -1,5 +1,4 @@
 var Promise = require("native-promise-only");
-var Formio = require('../../formio.js');
 var s3 = function(formio) {
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {
@@ -83,7 +82,7 @@ var s3 = function(formio) {
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var token = Formio.getToken();
+        var token = formio.getToken();
         if (token) {
           pre.setRequestHeader('x-jwt-token', token);
         }

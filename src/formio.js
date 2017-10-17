@@ -333,6 +333,15 @@ export class Formio {
   }
 
   /**
+   * Returns the JWT token for this instance.
+   *
+   * @return {*}
+   */
+  getToken() {
+    return Formio.getToken();
+  }
+
+  /**
    * Returns a temporary authentication token for single purpose token generation.
    */
   getTempToken(expire, allowed) {
@@ -928,7 +937,7 @@ export class Formio {
         method: 'GET'
       })
     }
-    var token = this.getToken();
+    var token = Formio.getToken();
     if (!token) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
         url: url,

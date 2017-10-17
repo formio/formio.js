@@ -1,5 +1,4 @@
 var Promise = require("native-promise-only");
-var Formio = require('../../formio.js');
 var url = function(formio) {
   return {
     title: 'Url',
@@ -60,7 +59,7 @@ var url = function(formio) {
         }
 
         xhr.open('POST', url);
-        var token = Formio.getToken();
+        var token = formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }

@@ -386,6 +386,18 @@ var Formio = function () {
     }
 
     /**
+     * Returns the JWT token for this instance.
+     *
+     * @return {*}
+     */
+
+  }, {
+    key: 'getToken',
+    value: function getToken() {
+      return Formio.getToken();
+    }
+
+    /**
      * Returns a temporary authentication token for single purpose token generation.
      */
 
@@ -998,7 +1010,7 @@ var Formio = function () {
           method: 'GET'
         });
       }
-      var token = this.getToken();
+      var token = Formio.getToken();
       if (!token) {
         return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
           url: url,
@@ -1242,7 +1254,6 @@ module.exports = base64;
 'use strict';
 
 var Promise = require("native-promise-only");
-var Formio = require('../../formio.js');
 var dropbox = function dropbox(formio) {
   return {
     uploadFile: function uploadFile(file, fileName, dir, progressCallback) {
@@ -1283,7 +1294,7 @@ var dropbox = function dropbox(formio) {
         };
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        var token = Formio.getToken();
+        var token = formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -1291,7 +1302,7 @@ var dropbox = function dropbox(formio) {
       });
     },
     downloadFile: function downloadFile(file) {
-      var token = Formio.getToken();
+      var token = formio.getToken();
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
     }
@@ -1301,7 +1312,7 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 module.exports = dropbox;
 
-},{"../../formio.js":1,"native-promise-only":10}],5:[function(require,module,exports){
+},{"native-promise-only":10}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1315,7 +1326,6 @@ module.exports = {
 'use strict';
 
 var Promise = require("native-promise-only");
-var Formio = require('../../formio.js');
 var s3 = function s3(formio) {
   return {
     uploadFile: function uploadFile(file, fileName, dir, progressCallback) {
@@ -1397,7 +1407,7 @@ var s3 = function s3(formio) {
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var token = Formio.getToken();
+        var token = formio.getToken();
         if (token) {
           pre.setRequestHeader('x-jwt-token', token);
         }
@@ -1422,11 +1432,10 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 module.exports = s3;
 
-},{"../../formio.js":1,"native-promise-only":10}],7:[function(require,module,exports){
+},{"native-promise-only":10}],7:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
-var Formio = require('../../formio.js');
 var url = function url(formio) {
   return {
     title: 'Url',
@@ -1485,7 +1494,7 @@ var url = function url(formio) {
         };
 
         xhr.open('POST', url);
-        var token = Formio.getToken();
+        var token = formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -1502,7 +1511,7 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"../../formio.js":1,"native-promise-only":10}],8:[function(require,module,exports){
+},{"native-promise-only":10}],8:[function(require,module,exports){
 exports.defaults = {};
 
 exports.set = function(name, value, options) {

@@ -1,5 +1,4 @@
 var Promise = require("native-promise-only");
-var Formio = require('../../formio.js');
 var dropbox = function(formio) {
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {
@@ -41,7 +40,7 @@ var dropbox = function(formio) {
         }
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        var token = Formio.getToken();
+        var token = formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -49,7 +48,7 @@ var dropbox = function(formio) {
       });
     },
     downloadFile: function(file) {
-      var token = Formio.getToken();
+      var token = formio.getToken();
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
     }
