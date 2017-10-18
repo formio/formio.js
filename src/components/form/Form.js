@@ -100,7 +100,7 @@ export class FormComponent extends FormioForm {
   beforeSubmit() {
     // Ensure we submit the form.
     if (this.component.submit && !this.submitted) {
-      this.submit(true).then(submission => {
+      return this.submit(true).then(submission => {
         // Before we submit, we need to filter out the references.
         this.data[this.component.key] = this.component.reference ? {_id: submission._id, form: submission.form} : submission;
 
