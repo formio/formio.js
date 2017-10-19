@@ -7472,6 +7472,17 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (!this.choices) {
         return;
       }
+
+      // If the items is a string, then parse as JSON.
+      if (typeof items == 'string') {
+        try {
+          items = JSON.parse(items);
+        } catch (err) {
+          console.warn(err.message);
+          items = [];
+        }
+      }
+
       this.choices._clearChoices();
 
       // If they provided select values, then we need to get them instead.
@@ -7562,15 +7573,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           this.setItems(this.component.data.values);
           break;
         case 'json':
-          try {
-            if (typeof this.component.data.json == 'string') {
-              this.setItems(JSON.parse(this.component.data.json));
-            } else {
-              this.setItems(this.component.data.json);
-            }
-          } catch (err) {
-            console.warn('Unable to parse JSON for ' + this.component.key);
-          }
+          this.setItems(this.component.data.json);
           break;
         case 'resource':
           var resourceUrl = this.options.formio ? this.options.formio.formsUrl : _formio2.default.getProjectUrl() + '/form';
