@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.20.3
 ### Fixed
  - Problem with cookie fallbacks on file uploads not working.
+ - Editing nested forms mapped to another resource with save as another resource fails.
+
+### Changed
+ - Now allow the URL of Select dropdowns to simply return strings of JSON and it will parse at runtime.
 
 ## 2.20.2
 ### Fixed
