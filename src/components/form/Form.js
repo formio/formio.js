@@ -98,12 +98,14 @@ export class FormComponent extends FormioForm {
    * Submit the form before the whole form is triggered.
    */
   beforeSubmit() {
-    // Before we submit, we need to filter out the references.
-    this.data[this.component.key] = this.component.reference ? {_id: this._submission._id} : this._submission;
-
     // Ensure we submit the form.
     if (this.component.submit && !this.submitted) {
-      return this.submit(true);
+      return this.submit(true).then(submission => {
+        // Before we submit, we need to filter out the references.
+        this.data[this.component.key] = this.component.reference ? {_id: submission._id, form: submission.form} : submission;
+
+        return this.data[this.component.key];
+      });
     }
     else {
       return super.beforeSubmit();
@@ -146,6 +148,13 @@ export class FormComponent extends FormioForm {
     if (!submission) {
       this.data[this.component.key] = this._submission = {data: {}};
       return;
+    }
+
+    // Set the url of this form to the url for a submission if it exists.
+    if (submission._id) {
+      let submissionUrl = this.options.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;
+      this.setUrl(submissionUrl, this.options);
+      this.nosubmit = false;
     }
 
     if (!_isEmpty(submission.data)) {

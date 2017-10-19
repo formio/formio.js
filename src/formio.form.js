@@ -727,8 +727,7 @@ export class FormioForm extends FormioComponents {
       }
       return this.formio.saveSubmission(submission)
         .then(
-          (result) => this.onSubmit(result, true),
-          (err) => this.onSubmissionError(err)
+          (result) => this.onSubmit(result, true)
         )
         .catch(
           (err) => this.onSubmissionError(err)
