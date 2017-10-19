@@ -6004,12 +6004,16 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'beforeSubmit',
     value: function beforeSubmit() {
-      // Before we submit, we need to filter out the references.
-      this.data[this.component.key] = this.component.reference ? { _id: this._submission._id } : this._submission;
+      var _this2 = this;
 
       // Ensure we submit the form.
       if (this.component.submit && !this.submitted) {
-        return this.submit(true);
+        return this.submit(true).then(function (submission) {
+          // Before we submit, we need to filter out the references.
+          _this2.data[_this2.component.key] = _this2.component.reference ? { _id: submission._id, form: submission.form } : submission;
+
+          return _this2.data[_this2.component.key];
+        });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeSubmit', this).call(this);
       }
@@ -6049,12 +6053,19 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
-      var _this2 = this;
+      var _this3 = this;
 
       flags = this.getFlags.apply(this, arguments);
       if (!submission) {
         this.data[this.component.key] = this._submission = { data: {} };
         return;
+      }
+
+      // Set the url of this form to the url for a submission if it exists.
+      if (submission._id) {
+        var submissionUrl = this.options.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;
+        this.setUrl(submissionUrl, this.options);
+        this.nosubmit = false;
       }
 
       if (!(0, _isEmpty3.default)(submission.data)) {
@@ -6064,11 +6075,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
         return this.formReady.then(function () {
-          _this2._loading = false;
-          _this2.loading = true;
-          return _this2.formio.loadSubmission().then(function (result) {
-            _this2.loading = false;
-            return _this2.setValue(result);
+          _this3._loading = false;
+          _this3.loading = true;
+          return _this3.formio.loadSubmission().then(function (result) {
+            _this3.loading = false;
+            return _this3.setValue(result);
           });
         });
       }
@@ -9694,8 +9705,6 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         }
         return this.formio.saveSubmission(submission).then(function (result) {
           return _this10.onSubmit(result, true);
-        }, function (err) {
-          return _this10.onSubmissionError(err);
         }).catch(function (err) {
           return _this10.onSubmissionError(err);
         });
@@ -14333,7 +14342,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 }();
 
 },{}],57:[function(require,module,exports){
-/* flatpickr v4.0.4, @license MIT */
+/* flatpickr v4.0.5, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -14392,7 +14401,8 @@ var defaults = {
     altFormat: "F j, Y",
     altInput: false,
     altInputClass: "form-control input",
-    animate: window && window.navigator.userAgent.indexOf("MSIE") === -1,
+    animate: typeof window === "object" &&
+        window.navigator.userAgent.indexOf("MSIE") === -1,
     ariaDateFormat: "F j, Y",
     clickOpens: true,
     closeOnSelect: true,
@@ -14512,7 +14522,7 @@ function debounce(func, wait, immediate) {
     return function () {
         var context = this, args = arguments;
         timeout !== null && clearTimeout(timeout);
-        timeout = setTimeout(function () {
+        timeout = window.setTimeout(function () {
             timeout = null;
             if (!immediate)
                 func.apply(context, args);
@@ -16433,7 +16443,8 @@ flatpickr = function (selector, config) {
         return _flatpickr(window.document.querySelectorAll(selector), config);
     return _flatpickr([selector], config);
 };
-window.flatpickr = flatpickr;
+if (typeof window === "object")
+    window.flatpickr = flatpickr;
 flatpickr.defaultConfig = defaults;
 flatpickr.l10ns = {
     en: __assign({}, english),

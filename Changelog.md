@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
  - Now allow the URL of Select dropdowns to simply return strings of JSON and it will parse at runtime.
+ - Upgrade Flatpickr to 4.0.5
 
 ## 2.20.2
 ### Fixed
