@@ -40,13 +40,7 @@ var dropbox = function(formio) {
         }
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        var token = false;
-        try {
-          token = localStorage.getItem('formioToken');
-        }
-        catch (e) {
-          // Swallow error.
-        }
+        var token = formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -54,13 +48,7 @@ var dropbox = function(formio) {
       });
     },
     downloadFile: function(file) {
-      var token = false;
-      try {
-        token = localStorage.getItem('formioToken');
-      }
-      catch (e) {
-        token = cookies.get('formioToken');
-      }
+      var token = formio.getToken();
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
     }

@@ -386,6 +386,18 @@ var Formio = function () {
     }
 
     /**
+     * Returns the JWT token for this instance.
+     *
+     * @return {*}
+     */
+
+  }, {
+    key: 'getToken',
+    value: function getToken() {
+      return Formio.getToken();
+    }
+
+    /**
      * Returns a temporary authentication token for single purpose token generation.
      */
 
@@ -998,7 +1010,7 @@ var Formio = function () {
           method: 'GET'
         });
       }
-      var token = this.getToken();
+      var token = Formio.getToken();
       if (!token) {
         return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
           url: url,
@@ -1282,12 +1294,7 @@ var dropbox = function dropbox(formio) {
         };
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        var token = false;
-        try {
-          token = localStorage.getItem('formioToken');
-        } catch (e) {
-          // Swallow error.
-        }
+        var token = formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
@@ -1295,12 +1302,7 @@ var dropbox = function dropbox(formio) {
       });
     },
     downloadFile: function downloadFile(file) {
-      var token = false;
-      try {
-        token = localStorage.getItem('formioToken');
-      } catch (e) {
-        token = cookies.get('formioToken');
-      }
+      var token = formio.getToken();
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
       return Promise.resolve(file);
     }
@@ -1405,12 +1407,7 @@ var s3 = function s3(formio) {
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var token = false;
-        try {
-          token = localStorage.getItem('formioToken');
-        } catch (e) {
-          token = cookies.get('formioToken');
-        }
+        var token = formio.getToken();
         if (token) {
           pre.setRequestHeader('x-jwt-token', token);
         }
@@ -1497,13 +1494,7 @@ var url = function url(formio) {
         };
 
         xhr.open('POST', url);
-        var token = false;
-        try {
-          token = localStorage.getItem('formioToken');
-        } catch (err) {
-          token = cookies.get('formioToken');
-        }
-
+        var token = formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
