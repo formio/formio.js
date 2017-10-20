@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -147,19 +149,62 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import maskInput from &apos;text-mask-all/vanilla&apos;;
 import createNumberMask from &apos;text-mask-all/addons/dist/createNumberMask&apos;;
 import _get from &apos;lodash/get&apos;;
-import { TextFieldComponent } from &apos;../textfield/TextField&apos;;
-export class CurrencyComponent extends TextFieldComponent {
+import { NumberComponent } from &apos;../number/Number&apos;;
+
+export class CurrencyComponent extends NumberComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+
+    this.currency = this.component.currency || &apos;USD&apos;;
+    this.decimalLimit = this.component.decimalLimit || 2;
+
+    // Get the prefix and suffix from the localized string.
+    const regex = &apos;(.*)?100(&apos; + (this.decimalSeparator === &apos;.&apos; ? &apos;\.&apos; : this.decimalSeparator) + &apos;0{&apos; + this.decimalLimit + &apos;})?(.*)?&apos;;
+    const parts = (100).toLocaleString(this.options.i18n.lng, this.getFormatOptions()).match(new RegExp(regex));
+    this.prefix = parts[1] || &apos;&apos;;
+    this.suffix = parts[3] || &apos;&apos;;
+  }
+
+  getFormatOptions() {
+    return {
+      style: &apos;currency&apos;,
+      currency: this.currency,
+      useGrouping: true,
+      maximumFractionDigits: _get(this.component, &apos;decimalLimit&apos;, this.decimalLimit)
+    };
+  }
+
+  formatNumber(value) {
+    try {
+      // Strip out the prefix and suffix before parsing. This occurs when numbers are from an old renderer.
+      value = value.replace(this.prefix, &apos;&apos;).replace(this.suffix, &apos;&apos;);
+    }
+    catch (e) {
+      // If value doesn&apos;t have a replace method, continue on as before.
+    }
+
+    return super.formatNumber(value);
+  }
+
+  parseNumber(value) {
+    // Strip out the prefix and suffix before parsing.
+    value = value.replace(this.prefix, &apos;&apos;).replace(this.suffix, &apos;&apos;);
+
+    return super.parseNumber(value);
+  }
+
   setInputMask(input) {
     this.inputMask = maskInput({
       inputElement: input,
       mask: createNumberMask({
-        prefix: &apos;&apos;,
-        suffix: &apos;&apos;,
-        thousandsSeparatorSymbol: _get(this.component, &apos;thousandsSeparator&apos;, &apos;,&apos;),
-        decimalSymbol: _get(this.component, &apos;decimalSymbol&apos;, &apos;.&apos;),
-        allowNegative: _get(this.component, &apos;allowNegative&apos;, false),
+        prefix: this.prefix,
+        suffix: this.suffix,
+        thousandsSeparatorSymbol: _get(this.component, &apos;thousandsSeparator&apos;, this.thousandsSeparator),
+        decimalSymbol: _get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
+        decimalLimit: _get(this.component, &apos;decimalLimit&apos;, this.decimalLimit),
+        allowNegative: _get(this.component, &apos;allowNegative&apos;, true),
         allowDecimal: _get(this.component, &apos;allowDecimal&apos;, true)
-      }),
+      })
     });
   }
 }

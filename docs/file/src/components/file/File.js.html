@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -179,6 +181,8 @@ export class FileComponent extends BaseComponent {
     this.listContainer = this.buildList();
     this.element.appendChild(this.listContainer);
     this.uploadContainer = this.buildUpload();
+    this.hiddenFileInputElement = this.buildHiddenFileInput();
+    this.element.appendChild(this.hiddenFileInputElement);
     this.element.appendChild(this.uploadContainer);
     this.addWarnings(this.element);
     this.buildUploadStatusList(this.element);
@@ -226,6 +230,15 @@ export class FileComponent extends BaseComponent {
       ),
       this.data[this.component.key].map((fileInfo, index) =&gt; this.createFileListItem(fileInfo, index))
     ]);
+  }
+
+  buildHiddenFileInput() {
+    // Input needs to be in DOM and &quot;visible&quot; (opacity 0 is fine) for IE to display file dialog.
+    return this.ce(&apos;input&apos;, {
+      type: &apos;file&apos;,
+      style: &apos;opacity: 0; position: absolute;&apos;,
+      onChange: () =&gt; {this.upload(this.hiddenFileInputElement.files)}
+    });
   }
 
   createFileListItem(fileInfo, index) {
@@ -342,16 +355,11 @@ export class FileComponent extends BaseComponent {
                   event.preventDefault();
                   // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
                   // a click event on it.
-                  let input = this.ce(&apos;input&apos;, {
-                    type: &apos;file&apos;,
-                    onChange: () =&gt; {this.upload(input.files)}
-                  });
-                  // Trigger a click event on the input.
-                  if (typeof input.trigger === &apos;function&apos;) {
-                    input.trigger(&apos;click&apos;);
+                  if (typeof this.hiddenFileInputElement.trigger === &apos;function&apos;) {
+                    this.hiddenFileInputElement.trigger(&apos;click&apos;);
                   }
                   else {
-                    input.click();
+                    this.hiddenFileInputElement.click();
                   }
                 }
               }, &apos;browse&apos;)

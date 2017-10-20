@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -152,6 +154,115 @@ describe(&apos;Currency Component&apos;, function() {
   it(&apos;Should build a currency component&apos;, function(done) {
     Harness.testCreate(CurrencyComponent, comps.comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
+      done();
+    });
+  });
+  it(&apos;Should format currency for USA locale&apos;, function(done) {
+    Harness.testCreate(CurrencyComponent, comps.comp1, {i18n: {lng: &apos;en-US&apos;, resources: {}}}).then((component) =&gt; {
+      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, undefined, null, &apos;&apos;);
+      Harness.testSetInput(component, {}, null, &apos;&apos;);
+      Harness.testSetInput(component, [], null, &apos;&apos;);
+      Harness.testSetInput(component, [&apos;&apos;], null, &apos;&apos;);
+      Harness.testSetInput(component, [&apos;1&apos;], 1, &apos;$1.00&apos;);
+      Harness.testSetInput(component, [&apos;$1.00&apos;], 1, &apos;$1.00&apos;);
+      Harness.testSetInput(component, 0, 0, &apos;0&apos;);
+      Harness.testSetInput(component, 1.00, 1, &apos;$1.00&apos;);
+      Harness.testSetInput(component, -1.00, -1, &apos;-$1.00&apos;);
+      Harness.testSetInput(component, 1, 1, &apos;$1.00&apos;);
+      Harness.testSetInput(component, -1, -1, &apos;-$1.00&apos;);
+      Harness.testSetInput(component, 1000, 1000, &apos;$1,000.00&apos;);
+      Harness.testSetInput(component, -1000, -1000, &apos;-$1,000.00&apos;);
+      Harness.testSetInput(component, 1000.01, 1000.01, &apos;$1,000.01&apos;);
+      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-$1,000.01&apos;);
+      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;$1,234,567,890.12&apos;);
+      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-$1,234,567,890.12&apos;);
+      Harness.testSetInput(component, 123456789.123456789, 123456789.12, &apos;$123,456,789.12&apos;);
+      Harness.testSetInput(component, -123456789.123456789, -123456789.12, &apos;-$123,456,789.12&apos;);
+      Harness.testSetInput(component, &apos;0&apos;, 0, &apos;$0.00&apos;);
+      Harness.testSetInput(component, &apos;1.00&apos;, 1, &apos;$1.00&apos;);
+      Harness.testSetInput(component, &apos;-1.00&apos;, -1, &apos;-$1.00&apos;);
+      Harness.testSetInput(component, &apos;1&apos;, 1, &apos;$1.00&apos;);
+      Harness.testSetInput(component, &apos;-1&apos;, -1, &apos;-$1.00&apos;);
+      Harness.testSetInput(component, &apos;1000&apos;, 1000, &apos;$1,000.00&apos;);
+      Harness.testSetInput(component, &apos;-1000&apos;, -1000, &apos;-$1,000.00&apos;);
+      Harness.testSetInput(component, &apos;1000.01&apos;, 1000.01, &apos;$1,000.01&apos;);
+      Harness.testSetInput(component, &apos;-1000.01&apos;, -1000.01, &apos;-$1,000.01&apos;);
+      Harness.testSetInput(component, &apos;1234567890.12&apos;, 1234567890.12, &apos;$1,234,567,890.12&apos;);
+      Harness.testSetInput(component, &apos;-1234567890.12&apos;, -1234567890.12, &apos;-$1,234,567,890.12&apos;);
+      Harness.testSetInput(component, &apos;123456789.123456789&apos;, 123456789.12, &apos;$123,456,789.12&apos;);
+      Harness.testSetInput(component, &apos;-123456789.123456789&apos;, -123456789.12, &apos;-$123,456,789.12&apos;);
+      Harness.testSetInput(component, &apos;$0&apos;, 0, &apos;$0.00&apos;);
+      Harness.testSetInput(component, &apos;$1.00&apos;, 1, &apos;$1.00&apos;);
+      Harness.testSetInput(component, &apos;-$1.00&apos;, -1, &apos;-$1.00&apos;);
+      Harness.testSetInput(component, &apos;$1&apos;, 1, &apos;$1.00&apos;);
+      Harness.testSetInput(component, &apos;-$1&apos;, -1, &apos;-$1.00&apos;);
+      Harness.testSetInput(component, &apos;$1000&apos;, 1000, &apos;$1,000.00&apos;);
+      Harness.testSetInput(component, &apos;-$1000&apos;, -1000, &apos;-$1,000.00&apos;);
+      Harness.testSetInput(component, &apos;$1000.01&apos;, 1000.01, &apos;$1,000.01&apos;);
+      Harness.testSetInput(component, &apos;-$1000.01&apos;, -1000.01, &apos;-$1,000.01&apos;);
+      Harness.testSetInput(component, &apos;$1234567890.12&apos;, 1234567890.12, &apos;$1,234,567,890.12&apos;);
+      Harness.testSetInput(component, &apos;-$1234567890.12&apos;, -1234567890.12, &apos;-$1,234,567,890.12&apos;);
+      Harness.testSetInput(component, &apos;$123456789.123456789&apos;, 123456789.12, &apos;$123,456,789.12&apos;);
+      Harness.testSetInput(component, &apos;-$123456789.123456789&apos;, -123456789.12, &apos;-$123,456,789.12&apos;);
+      done();
+    });
+  });
+  it(&apos;Should format currency for British locale&apos;, function(done) {
+    Harness.testCreate(CurrencyComponent, comps.comp1, {i18n: {lng: &apos;en-GB&apos;, resources: {}}}).then((component) =&gt; {
+      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, 0, 0, &apos;0&apos;);
+      Harness.testSetInput(component, 1.00, 1, &apos;US$1.00&apos;);
+      Harness.testSetInput(component, -1.00, -1, &apos;-US$1.00&apos;);
+      Harness.testSetInput(component, 1,  1, &apos;US$1.00&apos;);
+      Harness.testSetInput(component, -1, -1, &apos;-US$1.00&apos;);
+      Harness.testSetInput(component, 1000, 1000, &apos;US$1,000.00&apos;);
+      Harness.testSetInput(component, -1000, -1000, &apos;-US$1,000.00&apos;);
+      Harness.testSetInput(component, 1000.01, 1000.01, &apos;US$1,000.01&apos;);
+      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-US$1,000.01&apos;);
+      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;US$1,234,567,890.12&apos;);
+      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-US$1,234,567,890.12&apos;);
+      Harness.testSetInput(component, 123456789.123456789, 123456789.12, &apos;US$123,456,789.12&apos;);
+      Harness.testSetInput(component, -123456789.123456789, -123456789.12, &apos;-US$123,456,789.12&apos;);
+      done();
+    });
+  });
+  it(&apos;Should format currency for French locale&apos;, function(done) {
+    Harness.testCreate(CurrencyComponent, comps.comp1, {i18n: {lng: &apos;fr&apos;, resources: {}}}).then((component) =&gt; {
+      // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
+      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, 0, 0, &apos;0&apos;);
+      Harness.testSetInput(component, 1.00, 1, &apos;1,00&#xA0;$US&apos;);
+      Harness.testSetInput(component, -1.00, -1, &apos;-1,00&#xA0;$US&apos;);
+      Harness.testSetInput(component, 1, 1, &apos;1,00&#xA0;$US&apos;);
+      Harness.testSetInput(component, -1, -1, &apos;-1,00&#xA0;$US&apos;);
+      Harness.testSetInput(component, 1000, 1000, &apos;1&#xA0;000,00&#xA0;$US&apos;);
+      Harness.testSetInput(component, -1000, -1000, &apos;-1&#xA0;000,00&#xA0;$US&apos;);
+      Harness.testSetInput(component, 1000.01, 1000.01, &apos;1&#xA0;000,01&#xA0;$US&apos;);
+      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-1&#xA0;000,01&#xA0;$US&apos;);
+      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;1&#xA0;234&#xA0;567&#xA0;890,12&#xA0;$US&apos;);
+      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-1&#xA0;234&#xA0;567&#xA0;890,12&#xA0;$US&apos;);
+      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, &apos;1&#xA0;234&#xA0;567&#xA0;890,12&#xA0;$US&apos;);
+      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, &apos;-1&#xA0;234&#xA0;567&#xA0;890,12&#xA0;$US&apos;);
+      done();
+    });
+  });
+  it(&apos;Should format currency for German locale&apos;, function(done) {
+    Harness.testCreate(CurrencyComponent, comps.comp1, {i18n: {lng: &apos;de&apos;, resources: {}}}).then((component) =&gt; {
+      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, 0, 0, &apos;0&apos;);
+      Harness.testSetInput(component, 1.00, 1.00, &apos;1,00&#xA0;$&apos;);
+      Harness.testSetInput(component, -1.00, -1.00, &apos;-1,00&#xA0;$&apos;);
+      Harness.testSetInput(component, 1, 1, &apos;1,00&#xA0;$&apos;);
+      Harness.testSetInput(component, -1, -1, &apos;-1,00&#xA0;$&apos;);
+      Harness.testSetInput(component, 1000, 1000, &apos;1.000,00&#xA0;$&apos;);
+      Harness.testSetInput(component, -1000, -1000, &apos;-1.000,00&#xA0;$&apos;);
+      Harness.testSetInput(component, 1000.01, 1000.01, &apos;1.000,01&#xA0;$&apos;);
+      Harness.testSetInput(component, -1000.01, -1000.01, &apos;-1.000,01&#xA0;$&apos;);
+      Harness.testSetInput(component, 1234567890.12, 1234567890.12, &apos;1.234.567.890,12&#xA0;$&apos;);
+      Harness.testSetInput(component, -1234567890.12, -1234567890.12, &apos;-1.234.567.890,12&#xA0;$&apos;);
+      Harness.testSetInput(component, 1234567890.123456789, 1234567890.12, &apos;1.234.567.890,12&#xA0;$&apos;);
+      Harness.testSetInput(component, -1234567890.123456789, -1234567890.12, &apos;-1.234.567.890,12&#xA0;$&apos;);
       done();
     });
   });
