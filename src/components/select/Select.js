@@ -99,6 +99,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   loadItems(url, search, headers, options) {
+    options = options || {};
     let query = (this.component.dataSrc === 'url') ? {} : {
       limit: 100,
       skip: 0
