@@ -301,14 +301,16 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
-  getValue(nocache) {
-    if (!nocache && this.value) {
+  getValue(flags) {
+    flags = flags || {};
+    if (!flags.changed && this.value) {
       return this.value;
     }
     if (!this.choices) {
       return;
     }
-    return this.choices.getValue(true);
+    this.value = this.choices.getValue(true);
+    return this.value;
   }
 
   setValue(value, flags) {

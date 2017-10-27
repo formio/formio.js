@@ -1175,7 +1175,7 @@ export class BaseComponent {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.info.changeEvent, () => this.updateValue({changed: true}));
   }
 
   /**
@@ -1241,8 +1241,9 @@ export class BaseComponent {
   updateValue(flags) {
     flags = flags || {};
     let value = this.data[this.component.key];
-    this.data[this.component.key] = this.getValue(true);
-    let changed = this.hasChanged(value, this.data[this.component.key]);
+    this.data[this.component.key] = this.getValue(flags);
+    let changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+    delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
     }

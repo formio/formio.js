@@ -2750,7 +2750,7 @@ var BaseComponent = function () {
       var _this10 = this;
 
       this.addEventListener(input, this.info.changeEvent, function () {
-        return _this10.updateValue();
+        return _this10.updateValue({ changed: true });
       });
     }
 
@@ -2830,8 +2830,9 @@ var BaseComponent = function () {
     value: function updateValue(flags) {
       flags = flags || {};
       var value = this.data[this.component.key];
-      this.data[this.component.key] = this.getValue(true);
-      var changed = this.hasChanged(value, this.data[this.component.key]);
+      this.data[this.component.key] = this.getValue(flags);
+      var changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+      delete flags.changed;
       if (!flags.noUpdateEvent && changed) {
         this.triggerChange(flags);
       }
@@ -7712,14 +7713,16 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     }
   }, {
     key: 'getValue',
-    value: function getValue(nocache) {
-      if (!nocache && this.value) {
+    value: function getValue(flags) {
+      flags = flags || {};
+      if (!flags.changed && this.value) {
         return this.value;
       }
       if (!this.choices) {
         return;
       }
-      return this.choices.getValue(true);
+      this.value = this.choices.getValue(true);
+      return this.value;
     }
   }, {
     key: 'setValue',
