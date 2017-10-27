@@ -127,7 +127,7 @@ export class FileComponent extends BaseComponent {
     return this.ce('a', {
       href: file.url, target: '_blank',
       onClick: this.getFile.bind(this, file)
-    }, file.name);
+    }, file.originalName || file.name);
   }
 
   buildImageList() {
@@ -153,7 +153,7 @@ export class FileComponent extends BaseComponent {
     return this.ce('div', {},
       this.ce('span', {},
         [
-          image = this.ce('img', {src: '', alt: fileInfo.name, style: 'width:' + this.component.imageSize + 'px'}),
+          image = this.ce('img', {src: '', alt: fileInfo.originalName || fileInfo.name, style: 'width:' + this.component.imageSize + 'px'}),
           (
             !this.disabled ?
               this.ce('span', {
@@ -213,7 +213,8 @@ export class FileComponent extends BaseComponent {
                   else {
                     this.hiddenFileInputElement.click();
                   }
-                }
+                },
+                class: 'browse'
               }, 'browse')
             ]
           ) :
@@ -265,7 +266,7 @@ export class FileComponent extends BaseComponent {
     return container = this.ce('div', {class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '')}, [
       this.ce('div', {class: 'row'}, [
           this.ce('div', {class: 'fileName control-label col-sm-10'}, [
-            fileUpload.name,
+            fileUpload.originalName,
             this.ce('span', {
               class: 'glyphicon glyphicon-remove',
               onClick: () => {this.uploadStatusList.removeChild(container)}
@@ -306,6 +307,7 @@ export class FileComponent extends BaseComponent {
         // Get a unique name for this file to keep file collisions from occurring.
         const fileName = FormioUtils.uniqueName(file.name);
         let fileUpload = {
+          originalName: file.name,
           name: fileName,
           size: file.size,
           status: 'info',
@@ -332,6 +334,7 @@ export class FileComponent extends BaseComponent {
           }, this.component.url)
             .then(fileInfo => {
               this.uploadStatusList.removeChild(uploadStatus);
+              fileInfo.originalName = file.name;
               this.data[this.component.key].push(fileInfo);
               this.refreshDOM();
               this.triggerChange();

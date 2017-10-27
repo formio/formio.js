@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problem with duplicate entries showing up in select components when default objects are used.
  - Issue where clearOnHide was too aggressive in when it should clear out data.
 
+### Changed
+ - Display original file name instead of unique name on File component.
+
 ## 2.20.4
 ### Fixed
  - Problem with Resource dropdowns not working due to the unset options variable.
