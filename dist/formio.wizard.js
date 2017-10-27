@@ -5615,7 +5615,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       return this.ce('a', {
         href: file.url, target: '_blank',
         onClick: this.getFile.bind(this, file)
-      }, file.name);
+      }, file.originalName || file.name);
     }
   }, {
     key: 'buildImageList',
@@ -5639,7 +5639,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
           image.src = result.url;
         });
       }
-      return this.ce('div', {}, this.ce('span', {}, [image = this.ce('img', { src: '', alt: fileInfo.name, style: 'width:' + this.component.imageSize + 'px' }), !this.disabled ? this.ce('span', {
+      return this.ce('div', {}, this.ce('span', {}, [image = this.ce('img', { src: '', alt: fileInfo.originalName || fileInfo.name, style: 'width:' + this.component.imageSize + 'px' }), !this.disabled ? this.ce('span', {
         class: 'glyphicon glyphicon-remove',
         onClick: function onClick(event) {
           if (_this6.component.storage === 'url') {
@@ -5686,7 +5686,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
           } else {
             _this7.hiddenFileInputElement.click();
           }
-        }
+        },
+        class: 'browse'
       }, 'browse')]) : this.ce('div'));
     }
   }, {
@@ -5736,7 +5737,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       var _this8 = this;
 
       var container = void 0;
-      return container = this.ce('div', { class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '') }, [this.ce('div', { class: 'row' }, [this.ce('div', { class: 'fileName control-label col-sm-10' }, [fileUpload.name, this.ce('span', {
+      return container = this.ce('div', { class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '') }, [this.ce('div', { class: 'row' }, [this.ce('div', { class: 'fileName control-label col-sm-10' }, [fileUpload.originalName, this.ce('span', {
         class: 'glyphicon glyphicon-remove',
         onClick: function onClick() {
           _this8.uploadStatusList.removeChild(container);
@@ -5765,6 +5766,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
           // Get a unique name for this file to keep file collisions from occurring.
           var fileName = _utils2.default.uniqueName(file.name);
           var fileUpload = {
+            originalName: file.name,
             name: fileName,
             size: file.size,
             status: 'info',
@@ -5790,6 +5792,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
               _this9.uploadStatusList.replaceChild(uploadStatus, originalStatus);
             }, _this9.component.url).then(function (fileInfo) {
               _this9.uploadStatusList.removeChild(uploadStatus);
+              fileInfo.originalName = file.name;
               _this9.data[_this9.component.key].push(fileInfo);
               _this9.refreshDOM();
               _this9.triggerChange();
