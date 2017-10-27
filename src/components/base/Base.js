@@ -1091,6 +1091,12 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
+    // Ensure we stop any pending data clears.
+    if (this.clearPending) {
+      clearTimeout(this.clearPending);
+      this.clearPending = null;
+    }
+
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
@@ -1112,9 +1118,9 @@ export class BaseComponent {
     }
 
     if (!show && this.component.clearOnHide) {
-      this.setValue(null, {
+      this.clearPending = setTimeout(() => this.setValue(null, {
         noValidate: true
-      });
+      }), 200);
     }
 
     return show;
@@ -1235,7 +1241,7 @@ export class BaseComponent {
   updateValue(flags) {
     flags = flags || {};
     let value = this.data[this.component.key];
-    this.data[this.component.key] = this.getValue();
+    this.data[this.component.key] = this.getValue(true);
     let changed = this.hasChanged(value, this.data[this.component.key]);
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);

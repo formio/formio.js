@@ -2660,6 +2660,14 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
+      var _this8 = this;
+
+      // Ensure we stop any pending data clears.
+      if (this.clearPending) {
+        clearTimeout(this.clearPending);
+        this.clearPending = null;
+      }
+
       // Execute only if visibility changes.
       if (!_show === !this._visible) {
         return _show;
@@ -2680,9 +2688,11 @@ var BaseComponent = function () {
       }
 
       if (!_show && this.component.clearOnHide) {
-        this.setValue(null, {
-          noValidate: true
-        });
+        this.clearPending = setTimeout(function () {
+          return _this8.setValue(null, {
+            noValidate: true
+          });
+        }, 200);
       }
 
       return _show;
@@ -2716,14 +2726,14 @@ var BaseComponent = function () {
   }, {
     key: 'addInputSubmitListener',
     value: function addInputSubmitListener(input) {
-      var _this8 = this;
+      var _this9 = this;
 
       this.addEventListener(input, 'keypress', function (event) {
         var key = event.keyCode || event.which;
         if (key == 13) {
           event.preventDefault();
           event.stopPropagation();
-          _this8.emit('submitButton');
+          _this9.emit('submitButton');
         }
       });
     }
@@ -2737,10 +2747,10 @@ var BaseComponent = function () {
   }, {
     key: 'addInputEventListener',
     value: function addInputEventListener(input) {
-      var _this9 = this;
+      var _this10 = this;
 
       this.addEventListener(input, this.info.changeEvent, function () {
-        return _this9.updateValue();
+        return _this10.updateValue();
       });
     }
 
@@ -2820,7 +2830,7 @@ var BaseComponent = function () {
     value: function updateValue(flags) {
       flags = flags || {};
       var value = this.data[this.component.key];
-      this.data[this.component.key] = this.getValue();
+      this.data[this.component.key] = this.getValue(true);
       var changed = this.hasChanged(value, this.data[this.component.key]);
       if (!flags.noUpdateEvent && changed) {
         this.triggerChange(flags);
@@ -3082,7 +3092,7 @@ var BaseComponent = function () {
   }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
-      var _this10 = this;
+      var _this11 = this;
 
       (0, _each3.default)(options, function (option) {
         var attrs = {
@@ -3091,8 +3101,8 @@ var BaseComponent = function () {
         if (defaultValue !== undefined && option.value === defaultValue) {
           attrs.selected = 'selected';
         }
-        var optionElement = _this10.ce('option', attrs);
-        optionElement.appendChild(_this10.text(option.label));
+        var optionElement = _this11.ce('option', attrs);
+        optionElement.appendChild(_this11.text(option.label));
         select.appendChild(optionElement);
       });
     }
@@ -3181,14 +3191,14 @@ var BaseComponent = function () {
   }, {
     key: 'language',
     set: function set(lang) {
-      var _this11 = this;
+      var _this12 = this;
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
         _i18next2.default.changeLanguage(lang, function (err) {
           if (err) {
             return reject(err);
           }
-          _this11.redraw();
+          _this12.redraw();
           resolve();
         });
       });
@@ -7379,6 +7389,10 @@ var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
 
+var _remove2 = require('lodash/remove');
+
+var _remove3 = _interopRequireDefault(_remove2);
+
 var _get3 = require('lodash/get');
 
 var _get4 = _interopRequireDefault(_get3);
@@ -7394,6 +7408,10 @@ var _isEmpty3 = _interopRequireDefault(_isEmpty2);
 var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
+
+var _isEqual2 = require('lodash/isEqual');
+
+var _isEqual3 = _interopRequireDefault(_isEqual2);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -7500,6 +7518,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (this.component.selectValues) {
         items = (0, _get4.default)(items, this.component.selectValues);
       }
+
+      // Add the currently selected choices if they don't already exist.
+      var currentChoices = (0, _isArray3.default)(this.value) ? this.value : [this.value];
+      (0, _each3.default)(currentChoices, function (choice) {
+        _this2.addCurrentChoices(choice, items);
+      });
 
       // Iterate through each of the items.
       (0, _each3.default)(items, function (item) {
@@ -7663,9 +7687,33 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       this.triggerUpdate();
     }
   }, {
+    key: 'addCurrentChoices',
+    value: function addCurrentChoices(value, items) {
+      if (value && items.length) {
+        var found = false;
+
+        // Iterate through all elements and remove the ones that are found.
+        (0, _remove3.default)(items, function (choice) {
+          // For resources we may have two different instances of the same resource
+          // Unify them so we don't have two copies of the same thing in the dropdown
+          // and so the correct resource gets selected in the first place
+          if (choice._id && value._id && choice._id === value._id) {
+            return true;
+          }
+          found = (0, _isEqual3.default)(choice, value);
+          return found;
+        });
+
+        // If it is not found, then add it.
+        if (!found) {
+          this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
+        }
+      }
+    }
+  }, {
     key: 'getValue',
-    value: function getValue() {
-      if (this.value) {
+    value: function getValue(nocache) {
+      if (!nocache && this.value) {
         return this.value;
       }
       if (!this.choices) {
@@ -7679,25 +7727,6 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       flags = this.getFlags.apply(this, arguments);
       this.value = value;
       if (this.choices) {
-        if (value && this.choices.store) {
-          // Search for the choice.
-          var choices = this.choices.store.getChoices();
-          var foundChoice = choices.find(function (choice) {
-            // For resources we may have two different instances of the same resource
-            // Unify them so we don't have two copies of the same thing in the dropdown
-            // and so the correct resource gets selected in the first place
-            if (choice.value._id && value._id && choice.value._id === value._id) {
-              value = choice.value;
-            }
-            return choice.value === value;
-          });
-
-          // If it is not found, then add it.
-          if (!foundChoice) {
-            this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
-          }
-        }
-
         // Now set the value.
         if (value) {
           this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
@@ -7779,7 +7808,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   return SelectComponent;
 }(_Base.BaseComponent);
 
-},{"../../formio":42,"../base/Base":4,"choices.js":54,"lodash/debounce":249,"lodash/each":253,"lodash/get":257,"lodash/isArray":262,"lodash/isEmpty":266}],30:[function(require,module,exports){
+},{"../../formio":42,"../base/Base":4,"choices.js":54,"lodash/debounce":249,"lodash/each":253,"lodash/get":257,"lodash/isArray":262,"lodash/isEmpty":266,"lodash/isEqual":267,"lodash/remove":288}],30:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };

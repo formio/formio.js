@@ -22,14 +22,18 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example').then((form) => {
-  form.on('change', function(value) {
-      console.log(value);
-  });
-
-  form.on('submit', function(submission) {
-    console.log(submission);
-  });
+Formio.createForm(document.getElementById('formio'), 'https://mdretsgbmufzzju.form.io/wizard').then(function(instance) {
+  instance.submission = {
+    data: {
+      page1Options: 'b',
+      ActivityType: {
+        "Description": "Test Description for CABLE TV",
+        "ReimbursementPercentage": 10,
+        "ActivityName": "CABLE TV",
+        "ActivityId": 12
+      }
+    }
+  };
 });
 </script>
 </div>

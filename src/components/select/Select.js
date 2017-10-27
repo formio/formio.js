@@ -2,10 +2,12 @@ import { BaseComponent } from '../base/Base';
 import Choices from 'choices.js';
 import Formio from '../../formio';
 import _each from 'lodash/each';
+import _remove from 'lodash/remove';
 import _get from 'lodash/get';
 import _debounce from 'lodash/debounce';
 import _isEmpty from 'lodash/isEmpty';
 import _isArray from 'lodash/isArray';
+import _isEqual from 'lodash/isEqual';
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -77,6 +79,12 @@ export class SelectComponent extends BaseComponent {
     if (this.component.selectValues) {
       items = _get(items, this.component.selectValues);
     }
+
+    // Add the currently selected choices if they don't already exist.
+    let currentChoices = _isArray(this.value) ? this.value : [this.value];
+    _each(currentChoices, (choice) => {
+      this.addCurrentChoices(choice, items);
+    });
 
     // Iterate through each of the items.
     _each(items, (item) => {
@@ -270,8 +278,31 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
-  getValue() {
-    if (this.value) {
+  addCurrentChoices(value, items) {
+    if (value && items.length) {
+      let found = false;
+
+      // Iterate through all elements and remove the ones that are found.
+      _remove(items, (choice) => {
+        // For resources we may have two different instances of the same resource
+        // Unify them so we don't have two copies of the same thing in the dropdown
+        // and so the correct resource gets selected in the first place
+        if (choice._id && value._id && choice._id === value._id) {
+          return true;
+        }
+        found = _isEqual(choice, value);
+        return found;
+      });
+
+      // If it is not found, then add it.
+      if (!found) {
+        this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
+      }
+    }
+  }
+
+  getValue(nocache) {
+    if (!nocache && this.value) {
       return this.value;
     }
     if (!this.choices) {
@@ -284,25 +315,6 @@ export class SelectComponent extends BaseComponent {
     flags = this.getFlags.apply(this, arguments);
     this.value = value;
     if (this.choices) {
-      if (value && this.choices.store) {
-        // Search for the choice.
-        const choices = this.choices.store.getChoices();
-        const foundChoice = choices.find((choice) => {
-          // For resources we may have two different instances of the same resource
-          // Unify them so we don't have two copies of the same thing in the dropdown
-          // and so the correct resource gets selected in the first place
-          if (choice.value._id && value._id && choice.value._id === value._id) {
-            value = choice.value;
-          }
-          return choice.value === value;
-        });
-
-        // If it is not found, then add it.
-        if (!foundChoice) {
-          this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
-        }
-      }
-
       // Now set the value.
       if (value) {
         this.choices.setValueByChoice(_isArray(value) ? value : [value])

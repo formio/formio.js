@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.20.5
+### Fixed
+ - Problem with Select compoenents not updating values within a wizard.
+ - Issue with setting default object values of select components.
+ - Problem with duplicate entries showing up in select components when default objects are used.
+ - Issue where clearOnHide was too aggressive in when it should clear out data.
+
 ## 2.20.4
 ### Fixed
  - Problem with Resource dropdowns not working due to the unset options variable.
