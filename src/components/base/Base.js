@@ -1091,6 +1091,12 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
+    // Ensure we stop any pending data clears.
+    if (this.clearPending) {
+      clearTimeout(this.clearPending);
+      this.clearPending = null;
+    }
+
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
@@ -1112,9 +1118,9 @@ export class BaseComponent {
     }
 
     if (!show && this.component.clearOnHide) {
-      this.setValue(null, {
+      this.clearPending = setTimeout(() => this.setValue(null, {
         noValidate: true
-      });
+      }), 200);
     }
 
     return show;
@@ -1169,7 +1175,7 @@ export class BaseComponent {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.info.changeEvent, () => this.updateValue({changed: true}));
   }
 
   /**
@@ -1235,8 +1241,9 @@ export class BaseComponent {
   updateValue(flags) {
     flags = flags || {};
     let value = this.data[this.component.key];
-    this.data[this.component.key] = this.getValue();
-    let changed = this.hasChanged(value, this.data[this.component.key]);
+    this.data[this.component.key] = this.getValue(flags);
+    let changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+    delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
     }
