@@ -44,3 +44,7 @@ section: home
   };
 </script>
 </div>
+
+### JSFiddle
+To play around with this renderer, we recommend using JSFiddle. Here is an example you can fork and use as a sandbox.
+<script async src="//jsfiddle.net/travistidwell/v38du9y1/3/embed/"></script>
