@@ -1025,11 +1025,11 @@ describe(&apos;Test Formio.js capabilities&apos;, () =&gt; {
         var mock = test.mock();
         if (mock instanceof Array) {
           _.each(mock, (_mock) =&gt; {
-            fetchMock.mock(_mock.url, _mock.method, _mock.response);
+            fetchMock.mock(_mock.url, _mock.response, {method: _mock.method});
           });
         }
         else {
-          fetchMock.mock(mock.url, mock.method, mock.response);
+          fetchMock.mock(mock.url, mock.response, {method: mock.method});
         }
       }
       Promise.resolve()

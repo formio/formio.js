@@ -1524,6 +1524,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#clearpending",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-clearPending",
+    "src/components/base/Base.js~BaseComponent#clearPending",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#component",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-component",
     "src/components/base/Base.js~BaseComponent#component",
@@ -1807,13 +1813,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -2053,13 +2059,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -3690,6 +3696,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/select/select.js~selectcomponent#addcurrentchoices",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addCurrentChoices",
+    "src/components/select/Select.js~SelectComponent#addCurrentChoices",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#addinput",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-addInput",
     "src/components/select/Select.js~SelectComponent#addInput",
@@ -4567,25 +4579,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#src",
-    "class/src/formio.form.js~FormioForm.html#instance-get-src",
-    "src/formio.form.js~FormioForm#src",
-    "member"
-  ],
-  [
-    "src/formio.form.js~formioform#src",
     "class/src/formio.form.js~FormioForm.html#instance-set-src",
     "src/formio.form.js~FormioForm#src",
     "member"
   ],
   [
-    "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
-    "src/formio.form.js~FormioForm#submission",
+    "src/formio.form.js~formioform#src",
+    "class/src/formio.form.js~FormioForm.html#instance-get-src",
+    "src/formio.form.js~FormioForm#src",
     "member"
   ],
   [
     "src/formio.form.js~formioform#submission",
     "class/src/formio.form.js~FormioForm.html#instance-get-submission",
+    "src/formio.form.js~FormioForm#submission",
+    "member"
+  ],
+  [
+    "src/formio.form.js~formioform#submission",
+    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
