@@ -685,7 +685,11 @@ export class BaseComponent {
    * @param {HTMLElement} container - The containing element that will contain this label.
    */
   createLabel(container) {
-    if (!this.component.label || this.options.inputsOnly) {
+    if (
+      !this.component.label ||
+      this.component.hideLabel ||
+      this.options.inputsOnly
+    ) {
       return;
     }
     let className = 'control-label';

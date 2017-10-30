@@ -612,7 +612,7 @@ export class Formio {
     }
 
     // Set up and fetch request
-    var headers = header || new Headers({
+    var headers = header || new Headers(opts.headers || {
         'Accept': 'application/json',
         'Content-type': 'application/json; charset=UTF-8'
       });
@@ -1098,6 +1098,7 @@ export class Formio {
 }
 
 // Define all the static properties.
+Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;

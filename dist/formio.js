@@ -680,7 +680,7 @@ var Formio = function () {
       }
 
       // Set up and fetch request
-      var headers = header || new Headers({
+      var headers = header || new Headers(opts.headers || {
         'Accept': 'application/json',
         'Content-type': 'application/json; charset=UTF-8'
       });
@@ -1186,6 +1186,7 @@ var Formio = function () {
 
 
 exports.Formio = Formio;
+Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;
