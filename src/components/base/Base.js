@@ -707,6 +707,56 @@ export class BaseComponent {
     container.appendChild(this.labelElement);
   }
 
+  addShortcutToLabel(label, shortcut) {
+    if (!label) {
+      label = this.component.label;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    if (!shortcut || !/^[A-Za-z]$/.test(shortcut)) {
+      return label;
+    }
+
+    const match = label.match(new RegExp(shortcut, 'i'));
+    
+    if (!match) {
+      return label;
+    }
+
+    const char = match[0];
+    const index = match.index + 1;
+    const lowLineCombinator = '\u0332';
+
+    return label.substring(0, index) + lowLineCombinator + label.substring(index);
+  }
+
+  addShortcut(element, shortcut) {
+    if (!element) {
+      element = this.labelElement;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    this.root.addShortcut(element, shortcut);
+  }
+
+  removeShortcut(element, shortcut) {
+    if (!element) {
+      element = this.labelElement;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    this.root.removeShortcut(element, shortcut);
+  }
+
   /**
    * Create the HTML element for the tooltip of this component.
    * @param {HTMLElement} container - The containing element that will contain this tooltip.

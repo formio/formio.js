@@ -6,6 +6,8 @@ import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _merge from 'lodash/merge';
 import _debounce from 'lodash/debounce';
+import _remove from 'lodash/remove';
+import _capitalize from 'lodash/capitalize';
 import EventEmitter from 'eventemitter2';
 
 // Initialize the available forms.
@@ -202,6 +204,8 @@ export class FormioForm extends FormioComponents {
       this.elementResolve = resolve;
       this.setElement(element);
     });
+
+    this.shortcuts = [];
   }
 
   /**
@@ -213,6 +217,11 @@ export class FormioForm extends FormioComponents {
     if (!element) {
       return;
     }
+
+    if (this.element) {
+      this.element.removeEventListener('keydown', this.executeShortcuts.bind(this));
+    }
+    element.addEventListener('keydown', this.executeShortcuts.bind(this));
 
     this.element = element;
     var classNames = this.element.getAttribute('class');
@@ -226,6 +235,68 @@ export class FormioForm extends FormioComponents {
       () => (this.loading = false)
     );
     this.elementResolve(element);
+  }
+
+  executeShortcuts(event) {
+    const ctrl = event.ctrlKey || event.metaKey;
+    const keyCode = event.keyCode;
+    let char = '';
+    
+    if (65 <= keyCode && keyCode <= 90) {
+      char = String.fromCharCode(keyCode);
+    } else if (keyCode === 13) {
+      char = 'Enter';
+    } else if (keyCode === 27) {
+      char = 'Esc';
+    }
+
+    _each(this.shortcuts, (shortcut) => {
+      if (shortcut.ctrl && !ctrl) {
+        return;
+      }
+      
+      if (shortcut.shortcut === char) {
+        shortcut.element.click();
+        event.preventDefault();
+      }
+    });
+  }
+
+  addShortcut(element, shortcut) {
+    if (!shortcut || !/^([A-Z]|Enter|Esc)$/i.test(shortcut)) {
+      return;
+    }
+
+    shortcut = _capitalize(shortcut);
+
+    if (shortcut === 'Enter' || shortcut === 'Esc') {
+      // Restrict Enter and Esc only for buttons
+      if (element.tagName !== 'BUTTON') {
+        return;
+      }
+
+      this.shortcuts.push({
+        shortcut,
+        element
+      });
+    } else {
+      this.shortcuts.push({
+        ctrl: true,
+        shortcut,
+        element
+      });
+    }
+  }
+
+  removeShortcut(element, shortcut) {
+    if (!shortcut || !/^([A-Z]|Enter|Esc)$/i.test(shortcut)) {
+      return;
+    }
+
+    _remove(this.shortcuts, {
+      shortcut,
+      element
+    });
   }
 
   /**
@@ -760,7 +831,23 @@ export class FormioForm extends FormioComponents {
    */
   submit(before) {
     if (!before) {
-      return this.beforeSubmit().then(() => this.executeSubmit());
+      const { beforeSubmit } = this.options;
+      return this.beforeSubmit()
+        .then(() => {
+          if (beforeSubmit) {
+            return new Promise((resolve, reject) => beforeSubmit(this.submission, (err, result) => {
+              if (err) {
+                return reject(err);
+              }
+
+              return resolve(result || true);
+            }));
+          } else {
+            return Promise.resolve(true);
+          }
+        })
+        .then(() => this.executeSubmit())
+        .catch(this.showErrors.bind(this));
     }
     else {
       return this.executeSubmit();
