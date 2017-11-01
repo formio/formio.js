@@ -775,8 +775,7 @@ export class FormioForm extends FormioComponents {
             return Promise.resolve(true);
           }
         })
-        .then(() => this.executeSubmit())
-        .catch(this.showErrors.bind(this));
+        .then(() => this.executeSubmit(), this.showErrors.bind(this));
     }
     else {
       return this.executeSubmit();
