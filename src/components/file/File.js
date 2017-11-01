@@ -296,6 +296,87 @@ export class FileComponent extends BaseComponent {
     ]);
   }
 
+  globStringToRegex(str) {
+    var regexp = '', excludes = [];
+    if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
+      regexp = str.substring(1, str.length - 1);
+    } else {
+      var split = str.split(',');
+      if (split.length > 1) {
+        for (var i = 0; i < split.length; i++) {
+          var r = this.globStringToRegex(split[i]);
+          if (r.regexp) {
+            regexp += '(' + r.regexp + ')';
+            if (i < split.length - 1) {
+              regexp += '|';
+            }
+          } else {
+            excludes = excludes.concat(r.excludes);
+          }
+        }
+      } else {
+        if (str.indexOf('!') === 0) {
+          excludes.push('^((?!' + this.globStringToRegex(str.substring(1)).regexp + ').)*$');
+        } else {
+          if (str.indexOf('.') === 0) {
+            str = '*' + str;
+          }
+          regexp = '^' + str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&') + '$';
+          regexp = regexp.replace(/\\\*/g, '.*').replace(/\\\?/g, '.');
+        }
+      }
+    }
+    return {regexp: regexp, excludes: excludes};
+  }
+
+  translateScalars(str) {
+    if (typeof str === 'string') {
+      if (str.search(/kb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1024);
+      } else if (str.search(/mb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1048576);
+      } else if (str.search(/gb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1073741824);
+      } else if (str.search(/b/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1));
+      } else if (str.search(/s/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1));
+      } else if (str.search(/m/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1) * 60);
+      } else if (str.search(/h/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1) * 3600);
+      }
+    }
+    return str;
+  };
+
+  validatePattern(file, val) {
+    if (!val) {
+      return true;
+    }
+    var pattern = this.globStringToRegex(val), valid = true;
+    if (pattern.regexp && pattern.regexp.length) {
+      var regexp = new RegExp(pattern.regexp, 'i');
+      valid = (file.type != null && regexp.test(file.type)) ||
+        (file.name != null && regexp.test(file.name));
+    }
+    var len = pattern.excludes.length;
+    while (len--) {
+      var exclude = new RegExp(pattern.excludes[len], 'i');
+      valid = valid && (file.type == null || exclude.test(file.type)) &&
+        (file.name == null || exclude.test(file.name));
+    }
+    return valid;
+  };
+
+  validateMinSize(file, val) {
+    return file.size + 0.1 >= this.translateScalars(val);
+  };
+
+  validateMaxSize(file, val) {
+    return file.size - 0.1 <= this.translateScalars(val);
+  };
+
   upload(files) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
@@ -304,6 +385,21 @@ export class FileComponent extends BaseComponent {
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       Array.prototype.forEach.call(files, file => {
+        // Check file pattern
+        if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
+          return;
+        }
+
+        // Check file minimum size
+        if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
+          return;
+        }
+
+        // Check file maximum size
+        if (this.component.fileMaxSize && !this.validateMaxSize(file, this.component.fileMaxSize)) {
+          return;
+        }
+
         // Get a unique name for this file to keep file collisions from occurring.
         const fileName = FormioUtils.uniqueName(file.name);
         let fileUpload = {
