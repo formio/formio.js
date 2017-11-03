@@ -237,7 +237,19 @@ export class FormioForm extends FormioComponents {
     this.elementResolve(element);
   }
 
+  keyboardCatchableElement(element) {
+    return [
+      'INPUT',
+      'TEXTAREA'
+    ].indexOf(element.nodeName) === -1;
+  }
+
   executeShortcuts(event) {
+    const { target } = event;
+    if (!this.keyboardCatchableElement(target)) {
+      return;
+    }
+
     const ctrl = event.ctrlKey || event.metaKey;
     const keyCode = event.keyCode;
     let char = '';
