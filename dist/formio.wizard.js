@@ -8971,6 +8971,12 @@ var WellComponent = exports.WellComponent = function (_FormioComponents) {
 (function (global){
 "use strict";
 
+/**
+ * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+ *
+ * This is needed for PhantomJS.
+ */
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
@@ -9004,33 +9010,33 @@ var _get = function get(object, property, receiver) {
   }
 };
 
-var _nativePromiseOnly = require("native-promise-only");
+var _nativePromiseOnly = require('native-promise-only');
 
 var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
 
-var _formio = require("./formio");
+var _formio = require('./formio');
 
 var _formio2 = _interopRequireDefault(_formio);
 
-var _Components = require("./components/Components");
+var _Components = require('./components/Components');
 
-var _each2 = require("lodash/each");
+var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
 
-var _clone2 = require("lodash/clone");
+var _clone2 = require('lodash/clone');
 
 var _clone3 = _interopRequireDefault(_clone2);
 
-var _merge2 = require("lodash/merge");
+var _merge2 = require('lodash/merge');
 
 var _merge3 = _interopRequireDefault(_merge2);
 
-var _debounce2 = require("lodash/debounce");
+var _debounce2 = require('lodash/debounce');
 
 var _debounce3 = _interopRequireDefault(_debounce2);
 
-var _eventemitter = require("eventemitter2");
+var _eventemitter = require('eventemitter2');
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
@@ -9056,14 +9062,6 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-// Initialize the available forms.
-_formio2.default.forms = {};
-
-/**
- * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
- *
- * This is needed for PhantomJS.
- */
 if (!Function.prototype.bind) {
   Function.prototype.bind = function (oThis) {
     if (typeof this !== 'function') {
@@ -9088,6 +9086,9 @@ if (!Function.prototype.bind) {
     return fBound;
   };
 }
+
+// Initialize the available forms.
+_formio2.default.forms = {};
 
 var getOptions = function getOptions(options) {
   options = options || {};
@@ -9262,7 +9263,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
    */
 
   _createClass(FormioForm, [{
-    key: "setElement",
+    key: 'setElement',
     value: function setElement(element) {
       var _this2 = this;
 
@@ -9292,7 +9293,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "loadSubmission",
+    key: 'loadSubmission',
 
     /**
      * Loads the submission if applicable.
@@ -9319,7 +9320,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "setSrc",
+    key: 'setSrc',
     value: function setSrc(value, options) {
       var _this4 = this;
 
@@ -9350,7 +9351,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "setUrl",
+    key: 'setUrl',
 
     /**
      * Sets the url of the form renderer.
@@ -9379,7 +9380,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "setForm",
+    key: 'setForm',
 
     /**
      * Sets the JSON schema for the form to be rendered.
@@ -9446,7 +9447,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "setSubmission",
+    key: 'setSubmission',
 
     /**
      * Sets a submission and returns the promise when it is ready.
@@ -9471,14 +9472,14 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       });
     }
   }, {
-    key: "setValue",
+    key: 'setValue',
     value: function setValue(submission, flags) {
       submission = submission || { data: {} };
       (0, _merge3.default)(this._submission, submission);
-      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), "setValue", this).call(this, this._submission.data, flags);
+      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this._submission.data, flags);
     }
   }, {
-    key: "getValue",
+    key: 'getValue',
     value: function getValue() {
       if (!this._submission.data) {
         this._submission.data = {};
@@ -9497,7 +9498,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "createForm",
+    key: 'createForm',
     value: function createForm(form) {
       var _this7 = this;
 
@@ -9526,7 +9527,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       var _this8 = this;
 
@@ -9554,7 +9555,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "setAlert",
+    key: 'setAlert',
     value: function setAlert(type, message) {
       if (this.options.noAlerts) {
         if (!message) {
@@ -9586,7 +9587,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "build",
+    key: 'build',
     value: function build() {
       var _this9 = this;
 
@@ -9605,7 +9606,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "showErrors",
+    key: 'showErrors',
     value: function showErrors(error) {
       this.loading = false;
       var errors = this.errors;
@@ -9638,7 +9639,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "onSubmit",
+    key: 'onSubmit',
     value: function onSubmit(submission, saved) {
       this.loading = false;
       this.setPristine(true);
@@ -9661,7 +9662,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "onSubmissionError",
+    key: 'onSubmissionError',
     value: function onSubmissionError(error) {
       if (!error) {
         return;
@@ -9683,9 +9684,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "onChange",
+    key: 'onChange',
     value: function onChange(flags, changed) {
-      _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), "onChange", this).call(this, flags, true);
+      _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'onChange', this).call(this, flags, true);
       (0, _merge3.default)(this._submission, this.submission);
       var value = (0, _clone3.default)(this._submission);
       value.changed = changed;
@@ -9710,7 +9711,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "reset",
+    key: 'reset',
     value: function reset() {
       // Reset the submission data.
       this._submission.data = this.data = this.value = {};
@@ -9724,12 +9725,12 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "cancel",
+    key: 'cancel',
     value: function cancel() {
       this.reset();
     }
   }, {
-    key: "executeSubmit",
+    key: 'executeSubmit',
     value: function executeSubmit() {
       var _this10 = this;
 
@@ -9771,7 +9772,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "submit",
+    key: 'submit',
     value: function submit(before) {
       var _this11 = this;
 
@@ -9784,7 +9785,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
     }
   }, {
-    key: "src",
+    key: 'src',
     get: function get() {
       return this._src;
     },
@@ -9799,7 +9800,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "url",
+    key: 'url',
     get: function get() {
       return this._src;
     },
@@ -9814,7 +9815,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "ready",
+    key: 'ready',
     get: function get() {
       var _this12 = this;
 
@@ -9830,7 +9831,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "loading",
+    key: 'loading',
     get: function get() {
       return this._loading;
     }
@@ -9865,7 +9866,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
     }
   }, {
-    key: "form",
+    key: 'form',
     get: function get() {
       return this._form;
     }
@@ -9888,7 +9889,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      */
 
   }, {
-    key: "submission",
+    key: 'submission',
     get: function get() {
       return this.getValue();
     }

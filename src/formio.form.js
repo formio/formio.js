@@ -1,15 +1,4 @@
 "use strict";
-import Promise from "native-promise-only";
-import Formio from './formio';
-import { FormioComponents } from './components/Components';
-import _each from 'lodash/each';
-import _clone from 'lodash/clone';
-import _merge from 'lodash/merge';
-import _debounce from 'lodash/debounce';
-import EventEmitter from 'eventemitter2';
-
-// Initialize the available forms.
-Formio.forms = {};
 
 /**
  * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
@@ -29,8 +18,8 @@ if (!Function.prototype.bind) {
       fNOP    = function() {},
       fBound  = function() {
         return fToBind.apply(this instanceof fNOP
-            ? this
-            : oThis,
+          ? this
+          : oThis,
           aArgs.concat(Array.prototype.slice.call(arguments)));
       };
 
@@ -43,6 +32,18 @@ if (!Function.prototype.bind) {
     return fBound;
   };
 }
+
+import Promise from "native-promise-only";
+import Formio from './formio';
+import { FormioComponents } from './components/Components';
+import _each from 'lodash/each';
+import _clone from 'lodash/clone';
+import _merge from 'lodash/merge';
+import _debounce from 'lodash/debounce';
+import EventEmitter from 'eventemitter2';
+
+// Initialize the available forms.
+Formio.forms = {};
 
 let getOptions = function(options) {
   options = options || {};
