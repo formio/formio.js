@@ -734,6 +734,11 @@ export class BaseComponent {
   }
 
   addShortcut(element, shortcut) {
+    // Avoid infinite recursion.
+    if (this.root === this) {
+      return;
+    }
+
     if (!element) {
       element = this.labelElement;
     }
@@ -746,6 +751,11 @@ export class BaseComponent {
   }
 
   removeShortcut(element, shortcut) {
+    // Avoid infinite recursion.
+    if (this.root === this) {
+      return;
+    }
+
     if (!element) {
       element = this.labelElement;
     }
