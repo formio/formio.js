@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.21.3
+### Added
+ - A more robust way to determine if the form is completely loaded and ready.
+
 ## 2.21.2
 ### Fixed
  - Fixed the pdf generation by moving bind polyfill before dependant libraries.
