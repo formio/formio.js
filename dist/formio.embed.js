@@ -514,6 +514,15 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       return this.data;
     }
   }, {
+    key: 'whenReady',
+    value: function whenReady() {
+      var promises = [];
+      (0, _each3.default)(this.getComponents(), function (component) {
+        promises.push(component.whenReady());
+      });
+      return _nativePromiseOnly2.default.all(promises);
+    }
+  }, {
     key: 'setValue',
     value: function setValue(value, flags) {
       if (!value) {
@@ -3046,6 +3055,11 @@ var BaseComponent = function () {
         noUpdateEvent: arguments[1],
         noValidate: arguments[2]
       } : arguments[1] || {};
+    }
+  }, {
+    key: 'whenReady',
+    value: function whenReady() {
+      return _nativePromiseOnly2.default.resolve();
     }
 
     /**
@@ -5976,6 +5990,10 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     if (data[component.key] && !_this.component.reference) {
       _this.setSubmission(data[component.key]);
     }
+
+    _this.readyPromise = new Promise(function (resolve) {
+      _this.readyResolve = resolve;
+    });
     return _this;
   }
 
@@ -6065,13 +6083,23 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       this.checkConditions(this.getValue());
     }
   }, {
+    key: 'whenReady',
+    value: function whenReady() {
+      var _this3 = this;
+
+      return this.ready.then(function () {
+        return _this3.readyPromise;
+      });
+    }
+  }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
-      var _this3 = this;
+      var _this4 = this;
 
       flags = this.getFlags.apply(this, arguments);
       if (!submission) {
         this.data[this.component.key] = this._submission = { data: {} };
+        this.readyResolve();
         return;
       }
 
@@ -6082,20 +6110,27 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.nosubmit = false;
       }
 
-      if (!(0, _isEmpty3.default)(submission.data)) {
+      if (!(0, _isEmpty3.default)(submission.data) || flags.noload) {
         (0, _merge3.default)(this.data[this.component.key], submission);
-        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
+        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
+        this.readyResolve();
+        return superValue;
       } else if (submission._id) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
-        return this.formReady.then(function () {
-          _this3._loading = false;
-          _this3.loading = true;
-          return _this3.formio.loadSubmission().then(function (result) {
-            _this3.loading = false;
-            return _this3.setValue(result);
+        this.formReady.then(function () {
+          _this4._loading = false;
+          _this4.loading = true;
+          _this4.formio.loadSubmission().then(function (result) {
+            _this4.loading = false;
+            _this4.setValue(result, {
+              noload: true
+            });
           });
         });
+
+        // Assume value has changed.
+        return true;
       }
     }
   }, {

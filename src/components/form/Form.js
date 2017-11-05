@@ -66,6 +66,10 @@ export class FormComponent extends FormioForm {
     if (data[component.key] && !this.component.reference) {
       this.setSubmission(data[component.key]);
     }
+
+    this.readyPromise = new Promise((resolve) => {
+      this.readyResolve = resolve;
+    });
   }
 
   checkValidity(data) {
@@ -143,10 +147,15 @@ export class FormComponent extends FormioForm {
     this.checkConditions(this.getValue());
   }
 
+  whenReady() {
+    return this.ready.then(() => this.readyPromise);
+  }
+
   setValue(submission, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!submission) {
       this.data[this.component.key] = this._submission = {data: {}};
+      this.readyResolve();
       return;
     }
 
@@ -157,21 +166,28 @@ export class FormComponent extends FormioForm {
       this.nosubmit = false;
     }
 
-    if (!_isEmpty(submission.data)) {
+    if (!_isEmpty(submission.data) || flags.noload) {
       _merge(this.data[this.component.key], submission);
-      return super.setValue(submission, flags);
+      let superValue = super.setValue(submission, flags);
+      this.readyResolve();
+      return superValue;
     }
     else if (submission._id) {
       this.formio.submissionId = submission._id;
       this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
-      return this.formReady.then(() => {
+      this.formReady.then(() => {
         this._loading = false;
         this.loading = true;
-        return this.formio.loadSubmission().then((result) => {
+        this.formio.loadSubmission().then((result) => {
           this.loading = false;
-          return this.setValue(result);
+          this.setValue(result, {
+            noload: true
+          });
         });
       });
+
+      // Assume value has changed.
+      return true;
     }
   }
 
