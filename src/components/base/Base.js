@@ -1521,6 +1521,10 @@ export class BaseComponent {
     } : (arguments[1] || {});
   }
 
+  whenReady() {
+    return Promise.resolve();
+  }
+
   /**
    * Set the value of this component.
    *
