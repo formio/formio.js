@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Display custom validation error message. 
 
+## 2.21.3
+### Added
+ - A more robust way to determine if the form is completely loaded and ready.
+
+## 2.21.2
+### Fixed
+ - Fixed the pdf generation by moving bind polyfill before dependant libraries.
+
 ## 2.21.1
 ### Added
  - A way for the components to hide their labels and have them set using the hideLabel option.

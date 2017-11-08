@@ -2,10 +2,6 @@
 (function (global){
 'use strict';
 
-// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
-// duck-punch the global Promise definition which messes up Angular 2 since it
-// also duck-punches the global Promise definition. For now, keep native-promise-only.
-
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
@@ -34,6 +30,10 @@ function _classCallCheck(instance, Constructor) {
   }
 }
 
+require('./formio.polyfill');
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
 var Promise = require("native-promise-only");
 require('whatwg-fetch');
 var EventEmitter = require('eventemitter2').EventEmitter2;
@@ -1201,14 +1201,48 @@ Formio.events = new EventEmitter({
 module.exports = global.Formio = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./providers":2,"browser-cookies":8,"eventemitter2":9,"native-promise-only":10,"shallow-copy":12,"whatwg-fetch":13}],2:[function(require,module,exports){
+},{"./formio.polyfill":2,"./providers":3,"browser-cookies":9,"eventemitter2":10,"native-promise-only":11,"shallow-copy":13,"whatwg-fetch":14}],2:[function(require,module,exports){
+"use strict";
+
+/**
+ * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+ *
+ * This is needed for PhantomJS.
+ */
+
+if (!Function.prototype.bind) {
+  Function.prototype.bind = function (oThis) {
+    if (typeof this !== 'function') {
+      // closest thing possible to the ECMAScript 5
+      // internal IsCallable function
+      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+    }
+
+    var aArgs = Array.prototype.slice.call(arguments, 1),
+        fToBind = this,
+        fNOP = function fNOP() {},
+        fBound = function fBound() {
+      return fToBind.apply(this instanceof fNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+    };
+
+    if (this.prototype) {
+      // Function.prototype doesn't have a prototype property
+      fNOP.prototype = this.prototype;
+    }
+    fBound.prototype = new fNOP();
+
+    return fBound;
+  };
+}
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 module.exports = {
   storage: require('./storage')
 };
 
-},{"./storage":5}],3:[function(require,module,exports){
+},{"./storage":6}],4:[function(require,module,exports){
 'use strict';
 
 var Promise = require('native-promise-only');
@@ -1251,7 +1285,7 @@ var base64 = function base64() {
 base64.title = 'Base64';
 module.exports = base64;
 
-},{"native-promise-only":10}],4:[function(require,module,exports){
+},{"native-promise-only":11}],5:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -1313,7 +1347,7 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 module.exports = dropbox;
 
-},{"native-promise-only":10}],5:[function(require,module,exports){
+},{"native-promise-only":11}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1323,7 +1357,7 @@ module.exports = {
   url: require('./url.js')
 };
 
-},{"./base64":3,"./dropbox.js":4,"./s3.js":6,"./url.js":7}],6:[function(require,module,exports){
+},{"./base64":4,"./dropbox.js":5,"./s3.js":7,"./url.js":8}],7:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -1433,7 +1467,7 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 module.exports = s3;
 
-},{"native-promise-only":10}],7:[function(require,module,exports){
+},{"native-promise-only":11}],8:[function(require,module,exports){
 'use strict';
 
 var Promise = require("native-promise-only");
@@ -1512,7 +1546,7 @@ var url = function url(formio) {
 url.title = 'Url';
 module.exports = url;
 
-},{"native-promise-only":10}],8:[function(require,module,exports){
+},{"native-promise-only":11}],9:[function(require,module,exports){
 exports.defaults = {};
 
 exports.set = function(name, value, options) {
@@ -1607,7 +1641,7 @@ exports.all = function() {
   return all;
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (process){
 /*!
  * EventEmitter2
@@ -2387,7 +2421,7 @@ exports.all = function() {
 }();
 
 }).call(this,require('_process'))
-},{"_process":11}],10:[function(require,module,exports){
+},{"_process":12}],11:[function(require,module,exports){
 (function (global){
 /*! Native Promise Only
     v0.8.1 (c) Kyle Simpson
@@ -2764,7 +2798,7 @@ exports.all = function() {
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -2950,7 +2984,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 module.exports = function (obj) {
     if (!obj || typeof obj !== 'object') return obj;
     
@@ -2987,7 +3021,7 @@ var isArray = Array.isArray || function (xs) {
     return {}.toString.call(xs) === '[object Array]';
 };
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 (function(self) {
   'use strict';
 
