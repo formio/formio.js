@@ -376,6 +376,14 @@ export class FormioComponents extends BaseComponent {
     return this.data;
   }
 
+  whenReady() {
+    let promises = [];
+    _each(this.getComponents(), (component) => {
+      promises.push(component.whenReady());
+    });
+    return Promise.all(promises);
+  }
+
   setValue(value, flags) {
     if (!value) {
       return false;
