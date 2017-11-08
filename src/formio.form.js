@@ -238,10 +238,19 @@ export class FormioForm extends FormioComponents {
   }
 
   keyboardCatchableElement(element) {
-    return [
-      'INPUT',
-      'TEXTAREA'
-    ].indexOf(element.nodeName) === -1;
+    if (element.nodeName === 'TEXTAREA') {
+      return false;
+    }
+
+    if (element.nodeName === 'INPUT') {
+      return [
+        'text',
+        'email',
+        'password'
+      ].indexOf(element.type) === -1;
+    }
+
+    return true;
   }
 
   executeShortcuts(event) {
