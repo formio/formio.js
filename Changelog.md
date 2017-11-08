@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - 'inputAdded' config method.
+
 ## 2.21.1
 ### Added
  - A way for the components to hide their labels and have them set using the hideLabel option.
