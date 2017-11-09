@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Display custom validation error message. 
+ - Ability to inject form data into the error messages.
 
 ## 2.21.3
 ### Added
