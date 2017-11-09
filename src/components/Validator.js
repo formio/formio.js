@@ -55,7 +55,9 @@ export const Validator = {
 
     const customErrorMessage = _get(component, 'component.validate.customMessage');
     if (result && customErrorMessage) {
-      result = component.t(customErrorMessage);
+      result = component.t(customErrorMessage, {
+        data: component.data
+      });
     }
 
     return result;
@@ -64,7 +66,10 @@ export const Validator = {
     required: {
       key: 'validate.required',
       message(component, setting) {
-        return component.t(component.errorMessage('required'), {field: component.errorLabel});
+        return component.t(component.errorMessage('required'), {
+          field: component.errorLabel,
+          data: component.data
+        });
       },
       check(component, setting, value) {
         if (!FormioUtils.boolValue(setting)) {
@@ -78,7 +83,8 @@ export const Validator = {
       message(component, setting) {
         return component.t(component.errorMessage('min'), {
           field: component.errorLabel,
-          min: parseFloat(setting)
+          min: parseFloat(setting),
+          data: component.data
         });
       },
       check(component, setting, value) {
@@ -94,7 +100,8 @@ export const Validator = {
       message(component, setting) {
         return component.t(component.errorMessage('max'), {
           field: component.errorLabel,
-          max: parseFloat(setting)
+          max: parseFloat(setting),
+          data: component.data
         });
       },
       check(component, setting, value) {
@@ -110,7 +117,8 @@ export const Validator = {
       message(component, setting) {
         return component.t(component.errorMessage('minLength'), {
           field: component.errorLabel,
-          length: (setting - 1)
+          length: (setting - 1),
+          data: component.data
         });
       },
       check(component, setting, value) {
@@ -126,7 +134,8 @@ export const Validator = {
       message(component, setting) {
         return component.t(component.errorMessage('maxLength'), {
           field: component.errorLabel,
-          length: (setting + 1)
+          length: (setting + 1),
+          data: component.data
         });
       },
       check(component, setting, value) {
@@ -140,7 +149,8 @@ export const Validator = {
     email: {
       message(component, setting) {
         return component.t(component.errorMessage('invalid_email'), {
-          field: component.errorLabel
+          field: component.errorLabel,
+          data: component.data
         });
       },
       check(component, setting, value) {
@@ -154,7 +164,8 @@ export const Validator = {
     date: {
       message(component, setting) {
         return component.t(component.errorMessage('invalid_date'), {
-          field: component.errorLabel
+          field: component.errorLabel,
+          data: component.data
         });
       },
       check(component, setting, value) {
@@ -166,7 +177,8 @@ export const Validator = {
       message(component, setting) {
         return component.t(_get(component, 'component.validate.patternMessage', component.errorMessage('pattern'), {
           field: component.errorLabel,
-          pattern: setting
+          pattern: setting,
+          data: component.data
         }));
       },
       check(component, setting, value) {
@@ -202,7 +214,8 @@ export const Validator = {
       key: 'validate.custom',
       message(component) {
         return component.t(component.errorMessage('custom'), {
-          field: component.errorLabel
+          field: component.errorLabel,
+          data: component.data
         });
       },
       check(component, setting, value, data) {
