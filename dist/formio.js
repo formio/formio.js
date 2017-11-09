@@ -845,6 +845,7 @@ var Formio = function () {
         return this.token;
       } catch (e) {
         this.token = cookies.get('formioToken');
+        return this.token;
       }
     }
   }, {
