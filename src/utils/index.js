@@ -101,11 +101,16 @@ const FormioUtils = {
             (component.type === 'datagrid') ||
             (component.type === 'container') ||
             (component.type === 'editgrid') ||
-            (component.type === 'form') ||
             component.tree
           )
         ) {
           return newPath;
+        }
+        else if (
+          component.key &&
+          component.type === 'form'
+        ) {
+          return newPath + '.data'
         }
         return path;
       };
