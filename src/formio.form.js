@@ -827,7 +827,6 @@ export class FormioForm extends FormioComponents {
    */
   submit(before) {
     if (!before) {
-      const { beforeSubmit } = this.options;
       return this.beforeSubmit().then(() => this.executeSubmit());
     }
     else {
