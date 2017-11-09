@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 ### Added
+ - 'beforeSubmit' hook to configuration.
  - Display custom validation error message. 
  - Ability to inject form data into the error messages.
 
