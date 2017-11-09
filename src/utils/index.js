@@ -101,6 +101,7 @@ const FormioUtils = {
             (component.type === 'datagrid') ||
             (component.type === 'container') ||
             (component.type === 'editgrid') ||
+            (component.type === 'form') ||
             component.tree
           )
         ) {
