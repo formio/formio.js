@@ -792,6 +792,7 @@ export class Formio {
     }
     catch (e) {
       this.token = cookies.get('formioToken');
+      return this.token;
     }
   }
 
