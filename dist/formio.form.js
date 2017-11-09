@@ -1619,7 +1619,11 @@ var BaseComponent = function () {
       options.i18nReady = true;
     }
 
-    this.options.i18n = options.i18n || i18n;
+    if (options && options.i18n) {
+      this.options.i18n = options.i18n;
+    } else {
+      this.options.i18n = i18n;
+    }
 
     /**
      * Determines if this component has a condition assigned to it.
