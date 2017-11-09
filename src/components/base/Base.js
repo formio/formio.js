@@ -46,7 +46,7 @@ export class BaseComponent {
      * The i18n configuration for this component.
      */
     let i18n = require('../../i18n');
-    if (options && options.i18n) {
+    if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
         i18n = options.i18n;
@@ -61,9 +61,12 @@ export class BaseComponent {
           }
         });
       }
+
+      options.i18n = i18n;
+      options.i18nReady = true;
     }
 
-    this.options.i18n = i18n;
+    this.options.i18n = options.i18n || i18n;
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -1132,6 +1135,31 @@ export class BaseComponent {
 
   onResize() {}
 
+  /**
+   * Allow for options to hook into the functionality of this renderer.
+   * @return {*}
+   */
+  hook() {
+    var name = arguments[0];
+    var fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
+    if (
+      this.options &&
+      this.options.hooks &&
+      this.options.hooks[name]
+    ) {
+      return this.options.hooks[name].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+    else {
+      // If this is an async hook instead of a sync.
+      if (fn) {
+        return fn(null, arguments[1]);
+      }
+      else {
+        return arguments[1];
+      }
+    }
+  }
+
   set visible(visible) {
     this.show(visible);
   }
@@ -1194,6 +1222,7 @@ export class BaseComponent {
       this.inputs.push(input);
       input = container.appendChild(input);
     }
+    this.hook('input', input, container);
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
   }

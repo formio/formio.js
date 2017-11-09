@@ -681,28 +681,37 @@ export class FormioForm extends FormioComponents {
   }
 
   executeSubmit() {
-    let submission = this.submission;
-    if (
-      submission &&
-      submission.data &&
-      this.checkValidity(submission.data, true)
-    ) {
-      this.loading = true;
-      if (this.nosubmit || !this.formio) {
-        return this.onSubmit(submission, false);
-      }
-      return this.formio.saveSubmission(submission)
-        .then(
-          (result) => this.onSubmit(result, true)
-        )
-        .catch(
-          (err) => this.onSubmissionError(err)
-        );
-    }
-    else {
-      this.showErrors();
-      return Promise.reject('Invalid Submission');
-    }
+    return new Promise((resolve, reject) => {
+      let submission = this.submission || {};
+      this.hook('beforeSubmit', submission, (err) => {
+        if (err) {
+          this.showErrors(err);
+          return reject(err.message || err);
+        }
+
+        if (
+          submission &&
+          submission.data &&
+          this.checkValidity(submission.data, true)
+        ) {
+          this.loading = true;
+          if (this.nosubmit || !this.formio) {
+            return this.onSubmit(submission, false);
+          }
+          return this.formio.saveSubmission(submission)
+            .then(
+              (result) => this.onSubmit(result, true)
+            )
+            .catch(
+              (err) => this.onSubmissionError(err)
+            );
+        }
+        else {
+          this.showErrors();
+          return Promise.reject('Invalid Submission');
+        }
+      });
+    });
   }
 
   /**
@@ -726,22 +735,7 @@ export class FormioForm extends FormioComponents {
    */
   submit(before) {
     if (!before) {
-      const { beforeSubmit } = this.options;
-      return this.beforeSubmit()
-        .then(() => {
-          if (beforeSubmit) {
-            return new Promise((resolve, reject) => beforeSubmit(this.submission, (err, result) => {
-              if (err) {
-                return reject(err);
-              }
-
-              return resolve(result || true);
-            }));
-          } else {
-            return Promise.resolve(true);
-          }
-        })
-        .then(() => this.executeSubmit(), this.showErrors.bind(this));
+      return this.beforeSubmit().then(() => this.executeSubmit());
     }
     else {
       return this.executeSubmit();
