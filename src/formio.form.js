@@ -726,7 +726,22 @@ export class FormioForm extends FormioComponents {
    */
   submit(before) {
     if (!before) {
-      return this.beforeSubmit().then(() => this.executeSubmit());
+      const { beforeSubmit } = this.options;
+      return this.beforeSubmit()
+        .then(() => {
+          if (beforeSubmit) {
+            return new Promise((resolve, reject) => beforeSubmit(this.submission, (err, result) => {
+              if (err) {
+                return reject(err);
+              }
+
+              return resolve(result || true);
+            }));
+          } else {
+            return Promise.resolve(true);
+          }
+        })
+        .then(() => this.executeSubmit(), this.showErrors.bind(this));
     }
     else {
       return this.executeSubmit();
