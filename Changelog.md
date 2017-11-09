@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - 'beforeSubmit' hook to configuration.
+ - Display custom validation error message. 
 
 ## 2.21.3
 ### Added
