@@ -1211,7 +1211,7 @@ export class BaseComponent {
   }
 
   /**
-   * Add a new input to this comonent.
+   * Add a new input to this component.
    *
    * @param input
    * @param container
@@ -1221,6 +1221,9 @@ export class BaseComponent {
     if (input && container) {
       this.inputs.push(input);
       input = container.appendChild(input);
+      if (this.options.inputAdded) {
+        this.options.inputAdded(this, input);
+      }
     }
     this.hook('input', input, container);
     this.addInputEventListener(input);
