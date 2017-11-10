@@ -46,7 +46,7 @@ export class BaseComponent {
      * The i18n configuration for this component.
      */
     let i18n = require('../../i18n');
-    if (options && options.i18n) {
+    if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
         i18n = options.i18n;
@@ -61,9 +61,17 @@ export class BaseComponent {
           }
         });
       }
+
+      options.i18n = i18n;
+      options.i18nReady = true;
     }
 
-    this.options.i18n = i18n;
+    if (options && options.i18n) {
+      this.options.i18n = options.i18n;
+    }
+    else {
+      this.options.i18n = i18n;
+    }
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -685,7 +693,11 @@ export class BaseComponent {
    * @param {HTMLElement} container - The containing element that will contain this label.
    */
   createLabel(container) {
-    if (!this.component.label || this.options.inputsOnly) {
+    if (
+      !this.component.label ||
+      this.component.hideLabel ||
+      this.options.inputsOnly
+    ) {
       return;
     }
     let className = 'control-label';
@@ -1091,6 +1103,12 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
+    // Ensure we stop any pending data clears.
+    if (this.clearPending) {
+      clearTimeout(this.clearPending);
+      this.clearPending = null;
+    }
+
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
@@ -1112,15 +1130,40 @@ export class BaseComponent {
     }
 
     if (!show && this.component.clearOnHide) {
-      this.setValue(null, {
+      this.clearPending = setTimeout(() => this.setValue(null, {
         noValidate: true
-      });
+      }), 200);
     }
 
     return show;
   }
 
   onResize() {}
+
+  /**
+   * Allow for options to hook into the functionality of this renderer.
+   * @return {*}
+   */
+  hook() {
+    var name = arguments[0];
+    var fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
+    if (
+      this.options &&
+      this.options.hooks &&
+      this.options.hooks[name]
+    ) {
+      return this.options.hooks[name].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+    else {
+      // If this is an async hook instead of a sync.
+      if (fn) {
+        return fn(null, arguments[1]);
+      }
+      else {
+        return arguments[1];
+      }
+    }
+  }
 
   set visible(visible) {
     this.show(visible);
@@ -1169,7 +1212,7 @@ export class BaseComponent {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
+    this.addEventListener(input, this.info.changeEvent, () => this.updateValue({changed: true}));
   }
 
   /**
@@ -1184,6 +1227,7 @@ export class BaseComponent {
       this.inputs.push(input);
       input = container.appendChild(input);
     }
+    this.hook('input', input, container);
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
   }
@@ -1235,8 +1279,9 @@ export class BaseComponent {
   updateValue(flags) {
     flags = flags || {};
     let value = this.data[this.component.key];
-    this.data[this.component.key] = this.getValue();
-    let changed = this.hasChanged(value, this.data[this.component.key]);
+    this.data[this.component.key] = this.getValue(flags);
+    let changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+    delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
     }
@@ -1448,6 +1493,10 @@ export class BaseComponent {
       noUpdateEvent: arguments[1],
       noValidate: arguments[2]
     } : (arguments[1] || {});
+  }
+
+  whenReady() {
+    return Promise.resolve();
   }
 
   /**

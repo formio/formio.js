@@ -1,5 +1,5 @@
 'use strict';
-
+require('./formio.polyfill');
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
@@ -612,7 +612,7 @@ export class Formio {
     }
 
     // Set up and fetch request
-    var headers = header || new Headers({
+    var headers = header || new Headers(opts.headers || {
         'Accept': 'application/json',
         'Content-type': 'application/json; charset=UTF-8'
       });
@@ -792,6 +792,7 @@ export class Formio {
     }
     catch (e) {
       this.token = cookies.get('formioToken');
+      return this.token;
     }
   }
 
@@ -1098,6 +1099,7 @@ export class Formio {
 }
 
 // Define all the static properties.
+Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;

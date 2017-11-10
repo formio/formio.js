@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -153,6 +155,10 @@ import _isEmpty from &apos;lodash/isEmpty&apos;;
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
     super(null, options);
+
+    // Ensure this component does not make it to the global forms array.
+    delete Formio.forms[this.id];
+
     this.type = &apos;formcomponent&apos;;
     this.component = component;
     this.submitted = false;
@@ -240,12 +246,14 @@ export class FormComponent extends FormioForm {
    * Submit the form before the whole form is triggered.
    */
   beforeSubmit() {
-    // Before we submit, we need to filter out the references.
-    this.data[this.component.key] = this.component.reference ? {_id: this._submission._id} : this._submission;
-
     // Ensure we submit the form.
     if (this.component.submit &amp;&amp; !this.submitted) {
-      return this.submit(true);
+      return this.submit(true).then(submission =&gt; {
+        // Before we submit, we need to filter out the references.
+        this.data[this.component.key] = this.component.reference ? {_id: submission._id, form: submission.form} : submission;
+
+        return this.data[this.component.key];
+      });
     }
     else {
       return super.beforeSubmit();
@@ -288,6 +296,13 @@ export class FormComponent extends FormioForm {
     if (!submission) {
       this.data[this.component.key] = this._submission = {data: {}};
       return;
+    }
+
+    // Set the url of this form to the url for a submission if it exists.
+    if (submission._id) {
+      let submissionUrl = this.options.formio.formsUrl + &apos;/&apos; + submission.form + &apos;/submission/&apos; + submission._id;
+      this.setUrl(submissionUrl, this.options);
+      this.nosubmit = false;
     }
 
     if (!_isEmpty(submission.data)) {

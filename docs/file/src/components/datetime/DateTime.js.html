@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -285,12 +287,14 @@ export class DateTimeComponent extends BaseComponent {
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? &apos;calendar&apos; : &apos;time&apos;));
     let calendar = this.getCalendar(input);
-    this.addEventListener(suffix, &apos;click&apos;, () =&gt; {
-      // Make sure the calendar is not already open and that it did not just close (like from blur event).
-      if (!calendar.isOpen &amp;&amp; ((Date.now() - this.closedOn) &gt; 200)) {
-        calendar.open();
-      }
-    });
+    if (calendar) {
+      this.addEventListener(suffix, &apos;click&apos;, () =&gt; {
+        // Make sure the calendar is not already open and that it did not just close (like from blur event).
+        if (!calendar.isOpen &amp;&amp; ((Date.now() - this.closedOn) &gt; 200)) {
+          calendar.open();
+        }
+      });
+    }
     inputGroup.appendChild(suffix);
     return suffix;
   }
@@ -301,7 +305,7 @@ export class DateTimeComponent extends BaseComponent {
    * @return {Flatpickr|flatpickr}
    */
   getCalendar(input) {
-    if (!input.calendar) {
+    if (!input.calendar &amp;&amp; !this.options.noCalendar) {
       input.calendar = new Flatpickr(input, this.config);
     }
     return input.calendar;
@@ -318,10 +322,12 @@ export class DateTimeComponent extends BaseComponent {
   getRawValue() {
     let values = [];
     for (let i in this.inputs) {
-      if (!this.component.multiple) {
-        return this.getDate(this.inputs[i].value);
+      if (this.inputs.hasOwnProperty(i)) {
+        if (!this.component.multiple) {
+          return this.getDate(this.inputs[i].value);
+        }
+        values.push(this.getDate(this.inputs[i].value));
       }
-      values.push(this.getDate(this.inputs[i].value));
     }
     return values;
   }
@@ -331,7 +337,12 @@ export class DateTimeComponent extends BaseComponent {
       return &apos;&apos;;
     }
 
-    let dates = this.getCalendar(this.inputs[index]).selectedDates;
+    let calendar = this.getCalendar(this.inputs[index]);
+    if (!calendar) {
+      return super.getValueAt(index);
+    }
+
+    let dates = calendar.selectedDates;
     if (!dates || !dates.length) {
       return &apos;&apos;;
     }
@@ -341,8 +352,12 @@ export class DateTimeComponent extends BaseComponent {
 
   setValueAt(index, value) {
     if (value) {
-      let date = value ? new Date(value) : new Date();
-      this.getCalendar(this.inputs[index]).setDate(date, false);
+      let calendar = this.getCalendar(this.inputs[index]);
+      if (!calendar) {
+        return super.setValueAt(index, value);
+      }
+
+      calendar.setDate(value ? new Date(value) : new Date(), false);
     }
   }
 }

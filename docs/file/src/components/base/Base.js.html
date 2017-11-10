@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -454,6 +456,33 @@ export class BaseComponent {
     return this.ce(&apos;i&apos;, {
       class: &apos;glyphicon glyphicon-&apos; + name
     });
+  }
+
+  getBrowserLanguage() {
+    var nav = window.navigator,
+      browserLanguagePropertyKeys = [&apos;language&apos;, &apos;browserLanguage&apos;, &apos;systemLanguage&apos;, &apos;userLanguage&apos;],
+      i,
+      language;
+
+    // support for HTML 5.1 &quot;navigator.languages&quot;
+    if (Array.isArray(nav.languages)) {
+      for (i = 0; i &lt; nav.languages.length; i++) {
+        language = nav.languages[i];
+        if (language &amp;&amp; language.length) {
+          return language;
+        }
+      }
+    }
+
+    // support for other well known properties in browsers
+    for (i = 0; i &lt; browserLanguagePropertyKeys.length; i++) {
+      language = nav[browserLanguagePropertyKeys[i]];
+      if (language &amp;&amp; language.length) {
+        return language;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -1210,6 +1239,12 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
+    // Ensure we stop any pending data clears.
+    if (this.clearPending) {
+      clearTimeout(this.clearPending);
+      this.clearPending = null;
+    }
+
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
@@ -1231,15 +1266,15 @@ export class BaseComponent {
     }
 
     if (!show &amp;&amp; this.component.clearOnHide) {
-      this.setValue(null, {
+      this.clearPending = setTimeout(() =&gt; this.setValue(null, {
         noValidate: true
-      });
+      }), 200);
     }
 
     return show;
   }
 
-  onResize(scale) {}
+  onResize() {}
 
   set visible(visible) {
     this.show(visible);
@@ -1288,7 +1323,7 @@ export class BaseComponent {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () =&gt; this.updateValue());
+    this.addEventListener(input, this.info.changeEvent, () =&gt; this.updateValue({changed: true}));
   }
 
   /**
@@ -1323,11 +1358,13 @@ export class BaseComponent {
     }
     let values = [];
     for (let i in this.inputs) {
-      if (!this.component.multiple) {
-        this.value = this.getValueAt(i);
-        return this.value;
+      if (this.inputs.hasOwnProperty(i)) {
+        if (!this.component.multiple) {
+          this.value = this.getValueAt(i);
+          return this.value;
+        }
+        values.push(this.getValueAt(i));
       }
-      values.push(this.getValueAt(i));
     }
     this.value = values;
     return values;
@@ -1352,8 +1389,9 @@ export class BaseComponent {
   updateValue(flags) {
     flags = flags || {};
     let value = this.data[this.component.key];
-    this.data[this.component.key] = this.getValue();
-    let changed = this.hasChanged(value, this.data[this.component.key]);
+    this.data[this.component.key] = this.getValue(flags);
+    let changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+    delete flags.changed;
     if (!flags.noUpdateEvent &amp;&amp; changed) {
       this.triggerChange(flags);
     }
@@ -1583,7 +1621,9 @@ export class BaseComponent {
     this.value = value;
     let isArray = _isArray(value);
     for (let i in this.inputs) {
-      this.setValueAt(i, isArray ? value[i] : value);
+      if (this.inputs.hasOwnProperty(i)) {
+        this.setValueAt(i, isArray ? value[i] : value);
+      }
     }
     return this.updateValue(flags);
   }
@@ -1699,7 +1739,7 @@ export class BaseComponent {
       name: this.options.name,
       type: this.component.inputType || &apos;text&apos;,
       class: &apos;form-control&apos;,
-      lang: i18next.language
+      lang: this.options.i18n.lng
   };
 
     if (this.component.placeholder) {

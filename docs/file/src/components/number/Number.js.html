@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -144,29 +146,92 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/number/Number.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import maskInput from &apos;text-mask-all/vanilla&apos;;
+import _get from &apos;lodash/get&apos;;
+import createNumberMask from &apos;text-mask-all/addons/dist/createNumberMask&apos;;
+import { BaseComponent } from &apos;../base/Base&apos;;
+
 export class NumberComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators = this.validators.concat([&apos;min&apos;, &apos;max&apos;]);
+
+    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || (12345.6789).toLocaleString(this.options.i18n.lng).match(/345(.*)67/)[1];
+    this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || (12345.6789).toLocaleString(this.options.i18n.lng).match(/12(.*)345/)[1];
+
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    this.decimalLimit = 20;
+    if (
+      this.component.validate &amp;&amp;
+      this.component.validate.step &amp;&amp;
+      this.component.validate.step !== &apos;any&apos;
+    ) {
+      var parts = this.component.validate.step.toString().split(&apos;.&apos;);
+      if (parts.length &gt; 1) {
+        this.decimalLimit = parts[1].length;
+      }
+    }
+  }
+
+  getFormatOptions() {
+    return {
+      style: &apos;decimal&apos;,
+      useGrouping: true,
+      maximumFractionDigits: _get(this.component, &apos;decimalLimit&apos;, this.decimalLimit)
+    };
+  }
+
+  formatNumber(value) {
+    // If not a number, return empty string.
+    if (isNaN(value)) {
+      return &apos;&apos;;
+    }
+
+    // If empty string, zero or other, don&apos;t format.
+    if (!value) {
+      return value;
+    }
+
+    if (this.component.validate &amp;&amp; this.component.validate.integer) {
+      return parseInt(value, 10).toLocaleString(this.options.i18n.lng, this.getFormatOptions());
+    }
+    else {
+      return parseFloat(value).toLocaleString(this.options.i18n.lng, this.getFormatOptions());
+    }
+  }
+
+  parseNumber(value) {
+    // Remove thousands separators and convert decimal separator to dot.
+    value = value.split(this.thousandsSeparator).join(&apos;&apos;).replace(this.decimalSeparator, &apos;.&apos;);
+
+    if (this.component.validate &amp;&amp; this.component.validate.integer) {
+      return parseInt(value, 10);
+    }
+    else {
+      return parseFloat(value);
+    }
+  }
+
+  setInputMask(input) {
+    this.inputMask = maskInput({
+      inputElement: input,
+      mask: createNumberMask({
+        prefix: &apos;&apos;,
+        suffix: &apos;&apos;,
+        thousandsSeparatorSymbol: _get(this.component, &apos;thousandsSeparator&apos;, this.thousandsSeparator),
+        decimalSymbol: _get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
+        decimalLimit: _get(this.component, &apos;decimalLimit&apos;, this.decimalLimit),
+        allowNegative: _get(this.component, &apos;allowNegative&apos;, true),
+        allowDecimal: _get(this.component, &apos;allowDecimal&apos;, !(this.component.validate &amp;&amp; this.component.validate.integer))
+      })
+    });
   }
 
   elementInfo() {
     let info = super.elementInfo();
-    info.type = &apos;input&apos;;
-    info.attr.type = &apos;number&apos;;
+    info.attr.type = &apos;text&apos;;
+    info.attr.inputmode = &apos;numeric&apos;;
     info.changeEvent = &apos;input&apos;;
-    if (this.component.validate) {
-      if (this.component.validate.min !== &apos;&apos;) {
-        info.attr.min = this.component.validate.min;
-      }
-      if (this.component.validate.max !== &apos;&apos;) {
-        info.attr.max = this.component.validate.max;
-      }
-      if (this.component.step !== &apos;&apos;) {
-        info.attr.step = this.component.validate.step;
-      }
-    }
     return info;
   }
 
@@ -174,26 +239,18 @@ export class NumberComponent extends BaseComponent {
     if (!this.inputs.length || !this.inputs[index]) {
       return null;
     }
+
     let val = this.inputs[index].value;
+
     if (!val) {
       return null;
     }
 
-    if (this.component.validate &amp;&amp; this.component.validate.integer) {
-      return parseInt(val, 10);
-    }
-    else {
-      return parseFloat(val);
-    }
+    return this.parseNumber(val);
   }
 
   setValueAt(index, value) {
-    if (this.component.validate &amp;&amp; this.component.validate.integer) {
-      this.inputs[index].value = parseInt(value, 10);
-    }
-    else {
-      this.inputs[index].value = parseFloat(value);
-    }
+    this.inputs[index].value = this.formatNumber(value);
   }
 }
 </code></pre>

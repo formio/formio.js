@@ -4,6 +4,48 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Fixed an issue where the token-cookie fallback was not returning the token
+
+### Added
+ - A new hook system that allows to easily create hooks within the renderer.
+ - 'beforeSubmit' hook to configuration.
+ - 'input' hook to call when new inputs are added.
+ - Display custom validation error message. 
+ - Ability to inject form data into the error messages.
+
+## 2.21.3
+### Added
+ - A more robust way to determine if the form is completely loaded and ready.
+
+## 2.21.2
+### Fixed
+ - Fixed the pdf generation by moving bind polyfill before dependant libraries.
+
+## 2.21.1
+### Added
+ - A way for the components to hide their labels and have them set using the hideLabel option.
+ - A way to pass in headers to a request in JSON format.
+
+## 2.21.0
+### Changed
+ - Upgraded all dependencies
+
+## 2.20.5
+### Fixed
+ - Problem with Select compoenents not updating values within a wizard.
+ - Issue with setting default object values of select components.
+ - Problem with duplicate entries showing up in select components when default objects are used.
+ - Issue where clearOnHide was too aggressive in when it should clear out data.
+
+### Changed
+ - Display original file name instead of unique name on File component.
+
+## 2.20.4
+### Fixed
+ - Problem with Resource dropdowns not working due to the unset options variable.
+
 ## 2.20.3
 ### Fixed
  - Problem with cookie fallbacks on file uploads not working.

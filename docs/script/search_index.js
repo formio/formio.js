@@ -360,6 +360,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "formiojs/src/components/number/fixtures/comp2.js~component",
+    "variable/index.html#static-variable-component",
+    "<span>component</span> <span class=\"search-result-import-path\">formiojs/src/components/number/fixtures/comp2.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/components/panel/fixtures/comp1.js~component",
     "variable/index.html#static-variable-component",
     "<span>component</span> <span class=\"search-result-import-path\">formiojs/src/components/panel/fixtures/comp1.js</span>",
@@ -393,6 +399,12 @@ window.esdocSearchIndex = [
     "formiojs/src/components/select/fixtures/comp1.js~component",
     "variable/index.html#static-variable-component",
     "<span>component</span> <span class=\"search-result-import-path\">formiojs/src/components/select/fixtures/comp1.js</span>",
+    "variable"
+  ],
+  [
+    "formiojs/src/components/select/fixtures/comp2.js~component",
+    "variable/index.html#static-variable-component",
+    "<span>component</span> <span class=\"search-result-import-path\">formiojs/src/components/select/fixtures/comp2.js</span>",
     "variable"
   ],
   [
@@ -1512,6 +1524,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#clearpending",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-clearPending",
+    "src/components/base/Base.js~BaseComponent#clearPending",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#component",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-component",
     "src/components/base/Base.js~BaseComponent#component",
@@ -1678,6 +1696,12 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-events",
     "src/components/base/Base.js~BaseComponent#events",
     "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#getbrowserlanguage",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-getBrowserLanguage",
+    "src/components/base/Base.js~BaseComponent#getBrowserLanguage",
+    "method"
   ],
   [
     "src/components/base/base.js~basecomponent#getelement",
@@ -2035,13 +2059,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -2406,9 +2430,51 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/currency/currency.js~currencycomponent#constructor",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-constructor-constructor",
+    "src/components/currency/Currency.js~CurrencyComponent#constructor",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#currency",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-currency",
+    "src/components/currency/Currency.js~CurrencyComponent#currency",
+    "member"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#decimallimit",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-decimalLimit",
+    "src/components/currency/Currency.js~CurrencyComponent#decimalLimit",
+    "member"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#formatnumber",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-formatNumber",
+    "src/components/currency/Currency.js~CurrencyComponent#formatNumber",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#getformatoptions",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-getFormatOptions",
+    "src/components/currency/Currency.js~CurrencyComponent#getFormatOptions",
+    "method"
+  ],
+  [
     "src/components/currency/currency.js~currencycomponent#inputmask",
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-inputMask",
     "src/components/currency/Currency.js~CurrencyComponent#inputMask",
+    "member"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#parsenumber",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-parseNumber",
+    "src/components/currency/Currency.js~CurrencyComponent#parseNumber",
+    "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#prefix",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-prefix",
+    "src/components/currency/Currency.js~CurrencyComponent#prefix",
     "member"
   ],
   [
@@ -2416,6 +2482,12 @@ window.esdocSearchIndex = [
     "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-method-setInputMask",
     "src/components/currency/Currency.js~CurrencyComponent#setInputMask",
     "method"
+  ],
+  [
+    "src/components/currency/currency.js~currencycomponent#suffix",
+    "class/src/components/currency/Currency.js~CurrencyComponent.html#instance-member-suffix",
+    "src/components/currency/Currency.js~CurrencyComponent#suffix",
+    "member"
   ],
   [
     "src/components/currency/currency.spec.js",
@@ -2886,6 +2958,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#buildhiddenfileinput",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-buildHiddenFileInput",
+    "src/components/file/File.js~FileComponent#buildHiddenFileInput",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#buildimagelist",
     "class/src/components/file/File.js~FileComponent.html#instance-method-buildImageList",
     "src/components/file/File.js~FileComponent#buildImageList",
@@ -2974,6 +3052,12 @@ window.esdocSearchIndex = [
     "class/src/components/file/File.js~FileComponent.html#instance-method-getValue",
     "src/components/file/File.js~FileComponent#getValue",
     "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#hiddenfileinputelement",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-hiddenFileInputElement",
+    "src/components/file/File.js~FileComponent#hiddenFileInputElement",
+    "member"
   ],
   [
     "src/components/file/file.js~filecomponent#listcontainer",
@@ -3087,6 +3171,12 @@ window.esdocSearchIndex = [
     "src/components/form/form.js~formcomponent#loading",
     "class/src/components/form/Form.js~FormComponent.html#instance-member-loading",
     "src/components/form/Form.js~FormComponent#loading",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#nosubmit",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-nosubmit",
+    "src/components/form/Form.js~FormComponent#nosubmit",
     "member"
   ],
   [
@@ -3312,9 +3402,33 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/number/number.js~numbercomponent#decimallimit",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-member-decimalLimit",
+    "src/components/number/Number.js~NumberComponent#decimalLimit",
+    "member"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#decimalseparator",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-member-decimalSeparator",
+    "src/components/number/Number.js~NumberComponent#decimalSeparator",
+    "member"
+  ],
+  [
     "src/components/number/number.js~numbercomponent#elementinfo",
     "class/src/components/number/Number.js~NumberComponent.html#instance-method-elementInfo",
     "src/components/number/Number.js~NumberComponent#elementInfo",
+    "method"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#formatnumber",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-formatNumber",
+    "src/components/number/Number.js~NumberComponent#formatNumber",
+    "method"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#getformatoptions",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-getFormatOptions",
+    "src/components/number/Number.js~NumberComponent#getFormatOptions",
     "method"
   ],
   [
@@ -3324,10 +3438,34 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/number/number.js~numbercomponent#inputmask",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-member-inputMask",
+    "src/components/number/Number.js~NumberComponent#inputMask",
+    "member"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#parsenumber",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-parseNumber",
+    "src/components/number/Number.js~NumberComponent#parseNumber",
+    "method"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#setinputmask",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-method-setInputMask",
+    "src/components/number/Number.js~NumberComponent#setInputMask",
+    "method"
+  ],
+  [
     "src/components/number/number.js~numbercomponent#setvalueat",
     "class/src/components/number/Number.js~NumberComponent.html#instance-method-setValueAt",
     "src/components/number/Number.js~NumberComponent#setValueAt",
     "method"
+  ],
+  [
+    "src/components/number/number.js~numbercomponent#thousandsseparator",
+    "class/src/components/number/Number.js~NumberComponent.html#instance-member-thousandsSeparator",
+    "src/components/number/Number.js~NumberComponent#thousandsSeparator",
+    "member"
   ],
   [
     "src/components/number/number.js~numbercomponent#validators",
@@ -3345,6 +3483,12 @@ window.esdocSearchIndex = [
     "src/components/number/fixtures/comp1.js",
     "file/src/components/number/fixtures/comp1.js.html",
     "src/components/number/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/components/number/fixtures/comp2.js",
+    "file/src/components/number/fixtures/comp2.js.html",
+    "src/components/number/fixtures/comp2.js",
     "file"
   ],
   [
@@ -3552,6 +3696,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/select/select.js~selectcomponent#addcurrentchoices",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addCurrentChoices",
+    "src/components/select/Select.js~SelectComponent#addCurrentChoices",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#addinput",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-addInput",
     "src/components/select/Select.js~SelectComponent#addInput",
@@ -3690,6 +3840,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/select/fixtures/comp2.js",
+    "file/src/components/select/fixtures/comp2.js.html",
+    "src/components/select/fixtures/comp2.js",
+    "file"
+  ],
+  [
     "src/components/select/fixtures/index.js",
     "file/src/components/select/fixtures/index.js.html",
     "src/components/select/fixtures/index.js",
@@ -3822,22 +3978,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/signature/signature.js~signaturecomponent#getsignatureimage",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-getSignatureImage",
-    "src/components/signature/Signature.js~SignatureComponent#getSignatureImage",
-    "method"
-  ],
-  [
     "src/components/signature/signature.js~signaturecomponent#input",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-input",
     "src/components/signature/Signature.js~SignatureComponent#input",
     "member"
-  ],
-  [
-    "src/components/signature/signature.js~signaturecomponent#onresize",
-    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-onResize",
-    "src/components/signature/Signature.js~SignatureComponent#onResize",
-    "method"
   ],
   [
     "src/components/signature/signature.js~signaturecomponent#padbody",
@@ -3862,6 +4006,24 @@ window.esdocSearchIndex = [
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-setValue",
     "src/components/signature/Signature.js~SignatureComponent#setValue",
     "method"
+  ],
+  [
+    "src/components/signature/signature.js~signaturecomponent#showcanvas",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-showCanvas",
+    "src/components/signature/Signature.js~SignatureComponent#showCanvas",
+    "method"
+  ],
+  [
+    "src/components/signature/signature.js~signaturecomponent#signaturefooter",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-signatureFooter",
+    "src/components/signature/Signature.js~SignatureComponent#signatureFooter",
+    "member"
+  ],
+  [
+    "src/components/signature/signature.js~signaturecomponent#signatureimage",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-signatureImage",
+    "src/components/signature/Signature.js~SignatureComponent#signatureImage",
+    "member"
   ],
   [
     "src/components/signature/signature.js~signaturecomponent#signaturepad",
@@ -4417,25 +4579,25 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#src",
-    "class/src/formio.form.js~FormioForm.html#instance-get-src",
-    "src/formio.form.js~FormioForm#src",
-    "member"
-  ],
-  [
-    "src/formio.form.js~formioform#src",
     "class/src/formio.form.js~FormioForm.html#instance-set-src",
     "src/formio.form.js~FormioForm#src",
     "member"
   ],
   [
-    "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
-    "src/formio.form.js~FormioForm#submission",
+    "src/formio.form.js~formioform#src",
+    "class/src/formio.form.js~FormioForm.html#instance-get-src",
+    "src/formio.form.js~FormioForm#src",
     "member"
   ],
   [
     "src/formio.form.js~formioform#submission",
     "class/src/formio.form.js~FormioForm.html#instance-get-submission",
+    "src/formio.form.js~FormioForm#submission",
+    "member"
+  ],
+  [
+    "src/formio.form.js~formioform#submission",
+    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
@@ -4659,6 +4821,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio#gettemptoken",
     "class/src/formio.js~Formio.html#instance-method-getTempToken",
     "src/formio.js~Formio#getTempToken",
+    "method"
+  ],
+  [
+    "src/formio.js~formio#gettoken",
+    "class/src/formio.js~Formio.html#instance-method-getToken",
+    "src/formio.js~Formio#getToken",
     "method"
   ],
   [
@@ -4917,6 +5085,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio.logout",
     "class/src/formio.js~Formio.html#static-method-logout",
     "src/formio.js~Formio.logout",
+    "method"
+  ],
+  [
+    "src/formio.js~formio.makerequest",
+    "class/src/formio.js~Formio.html#static-method-makeRequest",
+    "src/formio.js~Formio.makeRequest",
     "method"
   ],
   [

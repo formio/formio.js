@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -146,6 +148,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/base/Base.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 import assert from &apos;power-assert&apos;;
+import _merge from &apos;lodash/merge&apos;;
 import { BaseComponent } from &apos;./Base&apos;;
 import { Harness } from &apos;../../../test/harness&apos;;
 import { components as comps } from &apos;./fixtures/index&apos;;
@@ -161,9 +164,9 @@ describe(&apos;Base Component&apos;, function() {
   });
 
   it(&apos;Should provide required validation&apos;, function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {required: true}
-    }).then((component) =&gt; Harness.testComponent(component, {
+    })).then((component) =&gt; Harness.testComponent(component, {
       bad: {
         value: &apos;&apos;,
         field: &apos;firstName&apos;,
@@ -176,9 +179,9 @@ describe(&apos;Base Component&apos;, function() {
   });
 
   it(&apos;Should provide minLength validation&apos;, function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {minLength: 2}
-    }).then((component) =&gt; Harness.testComponent(component, {
+    })).then((component) =&gt; Harness.testComponent(component, {
       bad: {
         value: &apos;t&apos;,
         field: &apos;firstName&apos;,
@@ -191,9 +194,9 @@ describe(&apos;Base Component&apos;, function() {
   });
 
   it(&apos;Should provide maxLength validation&apos;, function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {maxLength: 5}
-    }).then((component) =&gt; Harness.testComponent(component, {
+    })).then((component) =&gt; Harness.testComponent(component, {
       bad: {
         value: &apos;testte&apos;,
         field: &apos;firstName&apos;,
@@ -206,9 +209,11 @@ describe(&apos;Base Component&apos;, function() {
   });
 
   it(&apos;Should provide custom validation&apos;, function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
-      validate: {custom: &apos;valid = (input !== &quot;Joe&quot;) ? true : &quot;You cannot be Joe&quot;&apos;}
-    }).then((component) =&gt; Harness.testComponent(component, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
+      validate: {
+        custom: &apos;valid = (input !== &quot;Joe&quot;) ? true : &quot;You cannot be Joe&quot;&apos;
+      }
+    })).then((component) =&gt; Harness.testComponent(component, {
       bad: {
         value: &apos;Joe&apos;,
         field: &apos;firstName&apos;,
@@ -221,20 +226,22 @@ describe(&apos;Base Component&apos;, function() {
   });
 
   it(&apos;Should provide json validation&apos;, function(done) {
-    Harness.testCreate(BaseComponent, comps.comp1, {
-      validate: {json: {
-        &quot;if&quot;: [
-          {
-            &quot;===&quot;: [
-              {var: &quot;data.firstName&quot;},
-              &quot;Joe&quot;
-            ]
-          },
-          true,
-          &quot;You must be Joe&quot;
-        ]
-      }}
-    }).then((component) =&gt; Harness.testComponent(component, {
+    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
+      validate: {
+        json: {
+          &quot;if&quot;: [
+            {
+              &quot;===&quot;: [
+                {var: &quot;data.firstName&quot;},
+                &quot;Joe&quot;
+              ]
+            },
+            true,
+            &quot;You must be Joe&quot;
+          ]
+        }
+      }
+    })).then((component) =&gt; Harness.testComponent(component, {
       bad: {
         value: &apos;Tom&apos;,
         field: &apos;firstName&apos;,

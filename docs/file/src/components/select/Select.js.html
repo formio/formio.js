@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -148,10 +150,12 @@
 import Choices from &apos;choices.js&apos;;
 import Formio from &apos;../../formio&apos;;
 import _each from &apos;lodash/each&apos;;
+import _remove from &apos;lodash/remove&apos;;
 import _get from &apos;lodash/get&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
 import _isEmpty from &apos;lodash/isEmpty&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
+import _isEqual from &apos;lodash/isEqual&apos;;
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -165,7 +169,7 @@ export class SelectComponent extends BaseComponent {
         if (this.component.refreshOn === &apos;data&apos;) {
           this.refreshItems();
         }
-        else if (event.changed.component.key === this.component.refreshOn) {
+        else if (event.changed &amp;&amp; (event.changed.component.key === this.component.refreshOn)) {
           this.refreshItems();
         }
       });
@@ -205,12 +209,30 @@ export class SelectComponent extends BaseComponent {
     if (!this.choices) {
       return;
     }
+
+    // If the items is a string, then parse as JSON.
+    if (typeof items == &apos;string&apos;) {
+      try {
+        items = JSON.parse(items);
+      }
+      catch (err) {
+        console.warn(err.message);
+        items = [];
+      }
+    }
+
     this.choices._clearChoices();
 
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
       items = _get(items, this.component.selectValues);
     }
+
+    // Add the currently selected choices if they don&apos;t already exist.
+    let currentChoices = _isArray(this.value) ? this.value : [this.value];
+    _each(currentChoices, (choice) =&gt; {
+      this.addCurrentChoices(choice, items);
+    });
 
     // Iterate through each of the items.
     _each(items, (item) =&gt; {
@@ -233,6 +255,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   loadItems(url, search, headers, options) {
+    options = options || {};
     let query = (this.component.dataSrc === &apos;url&apos;) ? {} : {
       limit: 100,
       skip: 0
@@ -266,12 +289,13 @@ export class SelectComponent extends BaseComponent {
     }
 
     // Make the request.
-    Formio.request(url, null, null, headers, options)
+    options.header = headers;
+    Formio.makeRequest(this.options.formio, &apos;select&apos;, url, null, null, options)
       .then((response) =&gt; this.setItems(response))
       .catch((err) =&gt; {
         this.events.emit(&apos;formio.error&apos;, err);
         console.warn(&apos;Unable to load resources for &apos; + this.component.key);
-      })
+      });
   }
 
   /**
@@ -310,17 +334,7 @@ export class SelectComponent extends BaseComponent {
         this.setItems(this.component.data.values);
         break;
       case &apos;json&apos;:
-        try {
-          if (typeof this.component.data.json == &apos;string&apos;) {
-            this.setItems(JSON.parse(this.component.data.json));
-          }
-          else {
-            this.setItems(this.component.data.json);
-          }
-        }
-        catch (err) {
-          console.warn(&apos;Unable to parse JSON for &apos; + this.component.key);
-        }
+        this.setItems(this.component.data.json);
         break;
       case &apos;resource&apos;:
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : Formio.getProjectUrl() + &apos;/form&apos;;
@@ -351,6 +365,7 @@ export class SelectComponent extends BaseComponent {
     if (this.component.multiple) {
       input.setAttribute(&apos;multiple&apos;, true);
     }
+    var tabIndex = input.tabIndex;
     this.choices = new Choices(input, {
       removeItemButton: true,
       itemSelectText: &apos;&apos;,
@@ -358,8 +373,10 @@ export class SelectComponent extends BaseComponent {
         containerOuter: &apos;choices form-group formio-choices&apos;,
         containerInner: &apos;form-control&apos;
       },
-      shouldSort: false
+      shouldSort: false,
+      position: (this.component.dropdown || &apos;auto&apos;)
     });
+    this.choices.itemList.tabIndex = tabIndex;
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
@@ -409,39 +426,45 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
-  getValue() {
-    if (this.value) {
+  addCurrentChoices(value, items) {
+    if (value &amp;&amp; items.length) {
+      let found = false;
+
+      // Iterate through all elements and remove the ones that are found.
+      _remove(items, (choice) =&gt; {
+        // For resources we may have two different instances of the same resource
+        // Unify them so we don&apos;t have two copies of the same thing in the dropdown
+        // and so the correct resource gets selected in the first place
+        if (choice._id &amp;&amp; value._id &amp;&amp; choice._id === value._id) {
+          return true;
+        }
+        found = _isEqual(choice, value);
+        return found;
+      });
+
+      // If it is not found, then add it.
+      if (!found) {
+        this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
+      }
+    }
+  }
+
+  getValue(flags) {
+    flags = flags || {};
+    if (!flags.changed &amp;&amp; this.value) {
       return this.value;
     }
     if (!this.choices) {
       return;
     }
-    return this.choices.getValue(true);
+    this.value = this.choices.getValue(true);
+    return this.value;
   }
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     this.value = value;
     if (this.choices) {
-      if (value &amp;&amp; this.choices.store) {
-        // Search for the choice.
-        const choices = this.choices.store.getChoices();
-        const foundChoice = choices.find((choice) =&gt; {
-          // For resources we may have two different instances of the same resource
-          // Unify them so we don&apos;t have two copies of the same thing in the dropdown
-          // and so the correct resource gets selected in the first place
-          if (choice.value._id &amp;&amp; value._id &amp;&amp; choice.value._id === value._id) {
-            value = choice.value;
-          }
-          return choice.value === value;
-        });
-
-        // If it is not found, then add it.
-        if (!foundChoice) {
-          this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
-        }
-      }
-
       // Now set the value.
       if (value) {
         this.choices.setValueByChoice(_isArray(value) ? value : [value])

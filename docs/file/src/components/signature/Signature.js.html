@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -144,13 +146,13 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/signature/Signature.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import SignaturePad from &apos;signature_pad&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import SignaturePad from &apos;signature_pad/dist/signature_pad.js&apos;
 import { BaseComponent } from &apos;../base/Base&apos;;
 export class SignatureComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
-    this.scale = 1;
     this.currentWidth = 0;
+    this.scale = 1;
     if (!this.component.width) {
       this.component.width = &apos;100%&apos;;
     }
@@ -171,26 +173,27 @@ export class SignatureComponent extends BaseComponent {
     super.setValue(value, flags);
     if (value &amp;&amp; !flags.noSign &amp;&amp; this.signaturePad) {
       this.signaturePad.fromDataURL(value);
+      this.signatureImage.setAttribute(&apos;src&apos;, value);
+      this.showCanvas(false);
     }
   }
 
-  getSignatureImage() {
-    let image = this.ce(&apos;img&apos;, {
-      style: (&apos;width: &apos; + this.component.width + &apos;;height: &apos; + this.component.height)
-    });
-    image.setAttribute(&apos;src&apos;, this.value);
-    return image;
-  }
-
-  onResize(scale) {
-    this.scale = scale;
-    this.checkSize(true);
+  showCanvas(show) {
+    if (show) {
+      this.canvas.style.display = &apos;inherit&apos;;
+      this.signatureImage.style.display = &apos;none&apos;;
+    }
+    else {
+      this.canvas.style.display = &apos;none&apos;;
+      this.signatureImage.style.display = &apos;inherit&apos;;
+    }
   }
 
   set disabled(disabled) {
     super.disabled = disabled;
+    this.showCanvas(!disabled);
     if (this.signaturePad) {
-      if (disabled){
+      if (disabled) {
         this.signaturePad.off();
         this.refresh.classList.add(&apos;disabled&apos;);
       } else {
@@ -207,8 +210,9 @@ export class SignatureComponent extends BaseComponent {
     }
   }
 
-  checkSize(force) {
+  checkSize(force, scale) {
     if (force || (this.padBody.offsetWidth !== this.currentWidth)) {
+      this.scale = force ? scale : this.scale;
       this.currentWidth = this.padBody.offsetWidth;
       this.canvas.width = this.currentWidth * this.scale;
       this.canvas.height = this.padBody.offsetHeight * this.scale;
@@ -247,16 +251,22 @@ export class SignatureComponent extends BaseComponent {
       height: this.component.height
     });
     this.padBody.appendChild(this.canvas);
+
+    this.signatureImage = this.ce(&apos;img&apos;, {
+      style: (&apos;width: 100%;display: none;&apos;)
+    });
+    this.padBody.appendChild(this.signatureImage);
+
     this.element.appendChild(this.padBody);
 
     // Add the footer.
     if (this.component.footer) {
-      let footer = this.ce(&apos;div&apos;, {
+      this.signatureFooter = this.ce(&apos;div&apos;, {
         class: &apos;signature-pad-footer&apos;
       });
-      footer.appendChild(this.text(this.component.footer));
-      this.createTooltip(footer);
-      this.element.appendChild(footer);
+      this.signatureFooter.appendChild(this.text(this.component.footer));
+      this.createTooltip(this.signatureFooter);
+      this.element.appendChild(this.signatureFooter);
     }
 
     // Create the signature pad.
@@ -268,6 +278,7 @@ export class SignatureComponent extends BaseComponent {
     });
     this.refresh.addEventListener(&quot;click&quot;, (event) =&gt; {
       event.preventDefault();
+      this.showCanvas(true);
       this.signaturePad.clear();
     });
     this.signaturePad.onEnd = () =&gt; this.setValue(this.signaturePad.toDataURL(), {

@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -150,8 +152,8 @@ import Formio from &apos;./formio&apos;;
 import { FormioComponents } from &apos;./components/Components&apos;;
 import _each from &apos;lodash/each&apos;;
 import _clone from &apos;lodash/clone&apos;;
-import _assign from &apos;lodash/assign&apos;;
 import _merge from &apos;lodash/merge&apos;;
+import _debounce from &apos;lodash/debounce&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 
 // Initialize the available forms.
@@ -696,6 +698,7 @@ export class FormioForm extends FormioComponents {
       this.clear();
       return this.localize().then(() =&gt; {
         this.build();
+        this.onResize();
         this.on(&apos;resetForm&apos;, () =&gt; this.reset(), true);
         this.on(&apos;refreshData&apos;, () =&gt; this.updateValue());
         this.emit(&apos;render&apos;);
@@ -872,8 +875,7 @@ export class FormioForm extends FormioComponents {
       }
       return this.formio.saveSubmission(submission)
         .then(
-          (result) =&gt; this.onSubmit(result, true),
-          (err) =&gt; this.onSubmissionError(err)
+          (result) =&gt; this.onSubmit(result, true)
         )
         .catch(
           (err) =&gt; this.onSubmissionError(err)
@@ -913,6 +915,16 @@ export class FormioForm extends FormioComponents {
     }
   }
 }
+
+// Used to trigger a resize.
+Formio.onResize = (scale) =&gt; _each(Formio.forms, (instance) =&gt; instance.onResize(scale));
+Formio.triggerResize = _debounce(Formio.onResize, 200);
+if (&apos;addEventListener&apos; in window) {
+  window.addEventListener(&apos;resize&apos;, () =&gt; Formio.triggerResize(), false);
+} else if (&apos;attachEvent&apos; in window) {
+  window.attachEvent(&apos;onresize&apos;, () =&gt; Formio.triggerResize());
+}
+
 
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;

@@ -94,6 +94,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/number/Number.js~NumberComponent.html">NumberComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/number/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/panel/Panel.js~PanelComponent.html">PanelComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/panel/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -112,6 +113,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/select/Select.js~SelectComponent.html">SelectComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/select/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html">SelectBoxesComponent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">components/selectboxes/fixtures</div><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -366,32 +368,7 @@ export class Formio {
   }
 
   makeRequest(type, url, method, data, opts) {
-    method = (method || &apos;GET&apos;).toUpperCase();
-    if(!opts || typeof opts !== &apos;object&apos;) {
-      opts = {};
-    }
-
-    var requestArgs = {
-      formio: this,
-      type: type,
-      url: url,
-      method: method,
-      data: data,
-      opts: opts
-    };
-
-    var request = Formio.pluginWait(&apos;preRequest&apos;, requestArgs)
-      .then(function() {
-        return Formio.pluginGet(&apos;request&apos;, requestArgs)
-          .then(function(result) {
-            if (result === null || result === undefined) {
-              return Formio.request(url, method, data, opts.header, opts);
-            }
-            return result;
-          });
-      });
-
-    return Formio.pluginAlter(&apos;wrapRequestPromise&apos;, request, requestArgs);
+    return Formio.makeRequest(this, type, url, method, data, opts);
   }
 
   loadProject(query, opts) {
@@ -501,6 +478,15 @@ export class Formio {
         return form._id;
       });
     }
+  }
+
+  /**
+   * Returns the JWT token for this instance.
+   *
+   * @return {*}
+   */
+  getToken() {
+    return Formio.getToken();
   }
 
   /**
@@ -624,12 +610,14 @@ export class Formio {
       var anonRole = {};
       var adminRole = {};
       for (var roleName in access.roles) {
-        var role = access.roles[roleName];
-        if (role.default) {
-          anonRole = role;
-        }
-        if (role.admin) {
-          adminRole = role;
+        if (access.roles.hasOwnProperty(roleName)) {
+          var role = access.roles[roleName];
+          if (role.default) {
+            anonRole = role;
+          }
+          if (role.admin) {
+            adminRole = role;
+          }
         }
       }
 
@@ -642,21 +630,25 @@ export class Formio {
       }
 
       for (var i in form.submissionAccess) {
-        var subRole = form.submissionAccess[i];
-        if (subRole.type === &apos;create_all&apos; || subRole.type === &apos;create_own&apos;) {
-          for (var j in subRole.roles) {
-            // Check if anonymous is allowed.
-            if (anonRole._id === subRole.roles[j]) {
-              canSubmitAnonymously = true;
+        if (form.submissionAccess.hasOwnProperty(i)) {
+          var subRole = form.submissionAccess[i];
+          if (subRole.type === &apos;create_all&apos; || subRole.type === &apos;create_own&apos;) {
+            for (var j in subRole.roles) {
+              if (subRole.roles.hasOwnProperty(j)) {
+                // Check if anonymous is allowed.
+                if (anonRole._id === subRole.roles[j]) {
+                  canSubmitAnonymously = true;
+                }
+                // Check if the logged in user has the appropriate role.
+                if (user &amp;&amp; (user.roles.indexOf(subRole.roles[j]) !== -1)) {
+                  canSubmit = true;
+                  break;
+                }
+              }
             }
-            // Check if the logged in user has the appropriate role.
-            if (user &amp;&amp; (user.roles.indexOf(subRole.roles[j]) !== -1)) {
-              canSubmit = true;
+            if (canSubmit) {
               break;
             }
-          }
-          if (canSubmit) {
-            break;
           }
         }
       }
@@ -713,6 +705,35 @@ export class Formio {
       });
 
     return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, request, requestArgs);
+  }
+
+  static makeRequest(formio, type, url, method, data, opts) {
+    method = (method || &apos;GET&apos;).toUpperCase();
+    if(!opts || typeof opts !== &apos;object&apos;) {
+      opts = {};
+    }
+
+    var requestArgs = {
+      formio: formio,
+      type: type,
+      url: url,
+      method: method,
+      data: data,
+      opts: opts
+    };
+
+    var request = Formio.pluginWait(&apos;preRequest&apos;, requestArgs)
+      .then(function() {
+        return Formio.pluginGet(&apos;request&apos;, requestArgs)
+          .then(function(result) {
+            if (result === null || result === undefined) {
+              return Formio.request(url, method, data, opts.header, opts);
+            }
+            return result;
+          });
+      });
+
+    return Formio.pluginAlter(&apos;wrapRequestPromise&apos;, request, requestArgs);
   }
 
   static request(url, method, data, header, opts) {
@@ -1064,7 +1085,7 @@ export class Formio {
         method: &apos;GET&apos;
       })
     }
-    var token = this.getToken();
+    var token = Formio.getToken();
     if (!token) {
       return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(null), {
         url: url,
