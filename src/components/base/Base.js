@@ -8,6 +8,7 @@ import _isArray from 'lodash/isArray';
 import _clone from 'lodash/clone';
 import _defaults from 'lodash/defaults';
 import _isEqual from 'lodash/isEqual';
+import _isUndefined from 'lodash/isUndefined';
 import i18next from 'i18next';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
@@ -393,9 +394,16 @@ export class BaseComponent {
    */
   build() {
     this.createElement();
-    this.createLabel(this.element);
+
+    const labelAtBottom = this.component.labelPosition === 'bottom';
+    if (!labelAtBottom) {
+      this.createLabel(this.element);
+    }
     if (!this.createWrapper()) {
       this.createInput(this.element);
+    }
+    if (labelAtBottom) {
+      this.createLabel(this.element);
     }
     this.createDescription(this.element);
 
@@ -688,6 +696,51 @@ export class BaseComponent {
     return removeButton;
   }
 
+  labelOnTheLeft(position) {
+    return [
+      'left-left',
+      'left-right'
+    ].indexOf(position) !== -1;
+  }
+
+  labelOnTheRight(position) {
+    return [
+      'right-left',
+      'right-right'
+    ].indexOf(position) !== -1;
+  }
+
+  rightAlignedLabel(position) {
+    return [
+      'left-right',
+      'right-right'
+    ].indexOf(position) !== -1;
+  }
+
+  labelOnTheLeftOrRight(position) {
+    return this.labelOnTheLeft(position) || this.labelOnTheRight(position);
+  }
+
+  getLabelWidth() {
+    if (_isUndefined(this.component.labelWidth)) {
+      this.component.labelWidth = 30;
+    }
+
+    return this.component.labelWidth;
+  }
+
+  getLabelMargin() {
+    if (_isUndefined(this.component.labelMargin)) {
+      this.component.labelMargin = 3;
+    }
+
+    return this.component.labelMargin;
+  }
+
+  setInputWidth(input) {
+    input.style.width = `${100 - this.getLabelWidth() - this.getLabelMargin()}%`;
+  }
+
   /**
    * Create the HTML element for the label of this component.
    * @param {HTMLElement} container - The containing element that will contain this label.
@@ -701,11 +754,36 @@ export class BaseComponent {
       return;
     }
     let className = 'control-label';
+    let style = '';
+
+    const { 
+      labelPosition
+    } = this.component;
+
+    // Determine label styles/classes depending on position.
+    if (labelPosition === 'bottom') {
+      className += ' control-label--bottom';
+    } else if (labelPosition && labelPosition !== 'top') {
+      const labelWidth = this.getLabelWidth();
+      const labelMargin = this.getLabelMargin();
+
+      // Label is on the left or right.
+      if (this.labelOnTheLeft(labelPosition)) {
+        style += `float: left; width: ${labelWidth}%; margin-right: ${labelMargin}%; `;
+      } else if (this.labelOnTheRight(labelPosition)) {
+        style += `float: right; width: ${labelWidth}%; margin-left: ${labelMargin}%; `;
+      }
+      if (this.rightAlignedLabel(labelPosition)) {
+        style += 'text-align: right; ';
+      }
+    }
+
     if (this.component.input && this.component.validate && this.component.validate.required) {
       className += ' field-required';
     }
     this.labelElement = this.ce('label', {
-      class: className
+      class: className,
+      style
     });
     if (this.info.attr.id) {
       this.labelElement.setAttribute('for', this.info.attr.id);
@@ -900,6 +978,11 @@ export class BaseComponent {
     this.addInput(input, inputGroup || container);
     this.addSuffix(input, inputGroup);
     this.errorContainer = container;
+
+    if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
+      this.setInputWidth(inputGroup || input);
+    }
+
     return inputGroup || input;
   }
 
