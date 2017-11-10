@@ -3,10 +3,14 @@ import { BaseComponent } from '../base/Base';
 export class SurveyComponent extends BaseComponent {
   build() {
     this.createElement();
-    this.createLabel(this.element);
+    const labelAtTheBottom = this.component.labelPosition === 'bottom';
+    if (!labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
     this.table = this.ce('table', {
       class: 'table table-striped table-bordered'
     });
+    this.setInputStyles(this.table);
 
     // Build header.
     let thead = this.ce('thead');
@@ -45,6 +49,9 @@ export class SurveyComponent extends BaseComponent {
     });
     this.table.appendChild(tbody);
     this.element.appendChild(this.table);
+    if (labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
     this.createDescription(this.element);
     this.restoreValue();
     if (this.shouldDisable) {

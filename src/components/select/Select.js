@@ -229,6 +229,7 @@ export class SelectComponent extends BaseComponent {
       position: (this.component.dropdown || 'auto')
     });
     this.choices.itemList.tabIndex = tabIndex;
+    this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {

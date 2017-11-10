@@ -395,14 +395,14 @@ export class BaseComponent {
   build() {
     this.createElement();
 
-    const labelAtBottom = this.component.labelPosition === 'bottom';
-    if (!labelAtBottom) {
+    const labelAtTheBottom = this.component.labelPosition === 'bottom';
+    if (!labelAtTheBottom) {
       this.createLabel(this.element);
     }
     if (!this.createWrapper()) {
       this.createInput(this.element);
     }
-    if (labelAtBottom) {
+    if (labelAtTheBottom) {
       this.createLabel(this.element);
     }
     this.createDescription(this.element);
@@ -737,8 +737,17 @@ export class BaseComponent {
     return this.component.labelMargin;
   }
 
-  setInputWidth(input) {
-    input.style.width = `${100 - this.getLabelWidth() - this.getLabelMargin()}%`;
+  setInputStyles(input) {
+    if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
+      const totalLabelWidth = this.getLabelWidth() + this.getLabelMargin();
+      input.style.width = `${100 - totalLabelWidth}%`;
+  
+      if (this.labelOnTheLeft(this.component.labelPosition)) {
+        input.style.marginLeft = `${totalLabelWidth}%`
+      } else {
+        input.style.marginRight = `${totalLabelWidth}%`
+      }
+    }
   }
 
   /**
@@ -978,11 +987,7 @@ export class BaseComponent {
     this.addInput(input, inputGroup || container);
     this.addSuffix(input, inputGroup);
     this.errorContainer = container;
-
-    if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
-      this.setInputWidth(inputGroup || input);
-    }
-
+    this.setInputStyles(inputGroup || input);
     return inputGroup || input;
   }
 
