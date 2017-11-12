@@ -5,8 +5,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
+
+## 2.22.0
 ### Fixed
  - Fixed an issue where the token-cookie fallback was not returning the token
+ - Forms not recusing properly in eachComponent function.
 
 ### Added
  - Possibility to add shortcuts.

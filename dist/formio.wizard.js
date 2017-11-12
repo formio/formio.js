@@ -12315,6 +12315,8 @@ var FormioUtils = {
       var subPath = function subPath() {
         if (component.key && (component.type === 'datagrid' || component.type === 'container' || component.type === 'editgrid' || component.tree)) {
           return newPath;
+        } else if (component.key && component.type === 'form') {
+          return newPath + '.data';
         }
         return path;
       };
@@ -34439,7 +34441,7 @@ return SignaturePad;
 },{}],305:[function(require,module,exports){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.1.6
+ * @version 1.1.7
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -34591,6 +34593,7 @@ var Tooltip = function () {
 
     // set initial state
     this._isOpen = false;
+    this._popperOptions = {};
 
     // set event listeners
     this._setEventListeners(reference, events, options);
@@ -34666,8 +34669,8 @@ var Tooltip = function () {
 
       // add title to tooltip
       var titleNode = tooltipGenerator.querySelector(this.innerSelector);
-      if (title.nodeType === 1) {
-        // if title is a node, append it only if allowHtml is true
+      if (title.nodeType === 1 || title.nodeType === 11) {
+        // if title is a element node or document fragment, append it only if allowHtml is true
         allowHtml && titleNode.appendChild(title);
       } else if (isFunction(title)) {
         // if title is a function, call it and set innerText or innerHtml depending by `allowHtml` value
@@ -34685,7 +34688,8 @@ var Tooltip = function () {
     key: '_show',
     value: function _show(reference, options) {
       // don't show if it's already visible
-      if (this._isOpen) {
+      // or if it's not being showed
+      if (this._isOpen && !this._isOpening) {
         return this;
       }
       this._isOpen = true;
@@ -34717,23 +34721,26 @@ var Tooltip = function () {
 
       this._append(tooltipNode, container);
 
-      var popperOptions = _extends({}, options.popperOptions, {
+      this._popperOptions = _extends({}, options.popperOptions, {
         placement: options.placement
       });
 
-      popperOptions.modifiers = _extends({}, popperOptions.modifiers, {
+      this._popperOptions.modifiers = _extends({}, this._popperOptions.modifiers, {
         arrow: {
           element: this.arrowSelector
+        },
+        offset: {
+          offset: options.offset
         }
       });
 
       if (options.boundariesElement) {
-        popperOptions.modifiers.preventOverflow = {
+        this._popperOptions.modifiers.preventOverflow = {
           boundariesElement: options.boundariesElement
         };
       }
 
-      this.popperInstance = new Popper(reference, tooltipNode, popperOptions);
+      this.popperInstance = new Popper(reference, tooltipNode, this._popperOptions);
 
       this._tooltipNode = tooltipNode;
 
@@ -34837,7 +34844,7 @@ var Tooltip = function () {
       // schedule show tooltip
       directEvents.forEach(function (event) {
         var func = function func(evt) {
-          if (_this2._isOpen === true) {
+          if (_this2._isOpening === true) {
             return;
           }
           evt.usedByTooltip = true;
@@ -34864,9 +34871,10 @@ var Tooltip = function () {
     value: function _scheduleShow(reference, delay, options /*, evt */) {
       var _this3 = this;
 
+      this._isOpening = true;
       // defaults to 0
       var computedDelay = delay && delay.show || delay || 0;
-      window.setTimeout(function () {
+      this._showTimeout = window.setTimeout(function () {
         return _this3._show(reference, options);
       }, computedDelay);
     }
@@ -34875,9 +34883,11 @@ var Tooltip = function () {
     value: function _scheduleHide(reference, delay, options, evt) {
       var _this4 = this;
 
+      this._isOpening = false;
       // defaults to 0
       var computedDelay = delay && delay.hide || delay || 0;
       window.setTimeout(function () {
+        window.clearTimeout(_this4._showTimeout);
         if (_this4._isOpen === false) {
           return;
         }
@@ -34949,10 +34959,10 @@ var _initialiseProps = function _initialiseProps() {
   this._events = [];
 
   this._setTooltipNodeEvent = function (evt, reference, delay, options) {
-    var relatedreference = evt.relatedreference || evt.toElement;
+    var relatedreference = evt.relatedreference || evt.toElement || evt.relatedTarget;
 
     var callback = function callback(evt2) {
-      var relatedreference2 = evt2.relatedreference || evt2.toElement;
+      var relatedreference2 = evt2.relatedreference || evt2.toElement || evt2.relatedTarget;
 
       // Remove event listener after call
       _this5._tooltipNode.removeEventListener(evt.type, callback);
