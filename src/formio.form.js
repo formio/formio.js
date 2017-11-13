@@ -228,7 +228,7 @@ export class FormioForm extends FormioComponents {
     const ctrl = event.ctrlKey || event.metaKey;
     const keyCode = event.keyCode;
     let char = '';
-    
+
     if (65 <= keyCode && keyCode <= 90) {
       char = String.fromCharCode(keyCode);
     } else if (keyCode === 13) {
@@ -241,7 +241,7 @@ export class FormioForm extends FormioComponents {
       if (shortcut.ctrl && !ctrl) {
         return;
       }
-      
+
       if (shortcut.shortcut === char) {
         shortcut.element.click();
         event.preventDefault();
@@ -724,7 +724,7 @@ export class FormioForm extends FormioComponents {
       error = {message: error};
     }
 
-    this.showErrors(error);
+    return this.showErrors(error);
   }
 
   /**
@@ -788,14 +788,17 @@ export class FormioForm extends FormioComponents {
         ) {
           this.loading = true;
           if (this.nosubmit || !this.formio) {
-            return this.onSubmit(submission, false);
+            return resolve(this.onSubmit(submission, false));
           }
           return this.formio.saveSubmission(submission)
             .then(
-              (result) => this.onSubmit(result, true)
+              (result) => resolve(this.onSubmit(result, true))
             )
             .catch(
-              (err) => this.onSubmissionError(err)
+              (err) => {
+                this.onSubmissionError(err);
+                reject(err);
+              }
             );
         }
         else {
