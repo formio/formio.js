@@ -46,8 +46,9 @@ export class ButtonComponent extends BaseComponent {
 
   build() {
     this.element = this.ce(this.info.type, this.info.attr);
+    this.addShortcut(this.element);
     if (this.component.label) {
-      this.labelElement = this.text(this.component.label);
+      this.labelElement = this.text(this.addShortcutToLabel());
       this.element.appendChild(this.labelElement);
       this.createTooltip(this.element, null, 'glyphicon glyphicon-question-sign');
     }
@@ -119,5 +120,10 @@ export class ButtonComponent extends BaseComponent {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+  }
+
+  destroy() {
+    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
+    this.removeShortcut(this.element);
   }
 }

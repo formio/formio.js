@@ -5,6 +5,8 @@ import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _merge from 'lodash/merge';
 import _debounce from 'lodash/debounce';
+import _remove from 'lodash/remove';
+import _capitalize from 'lodash/capitalize';
 import EventEmitter from 'eventemitter2';
 
 // Initialize the available forms.
@@ -168,6 +170,8 @@ export class FormioForm extends FormioComponents {
       this.elementResolve = resolve;
       this.setElement(element);
     });
+
+    this.shortcuts = [];
   }
 
   /**
@@ -179,6 +183,11 @@ export class FormioForm extends FormioComponents {
     if (!element) {
       return;
     }
+
+    if (this.element) {
+      this.element.removeEventListener('keydown', this.executeShortcuts.bind(this));
+    }
+    element.addEventListener('keydown', this.executeShortcuts.bind(this));
 
     this.element = element;
     var classNames = this.element.getAttribute('class');
@@ -192,6 +201,89 @@ export class FormioForm extends FormioComponents {
       () => (this.loading = false)
     );
     this.elementResolve(element);
+  }
+
+  keyboardCatchableElement(element) {
+    if (element.nodeName === 'TEXTAREA') {
+      return false;
+    }
+
+    if (element.nodeName === 'INPUT') {
+      return [
+        'text',
+        'email',
+        'password'
+      ].indexOf(element.type) === -1;
+    }
+
+    return true;
+  }
+
+  executeShortcuts(event) {
+    const { target } = event;
+    if (!this.keyboardCatchableElement(target)) {
+      return;
+    }
+
+    const ctrl = event.ctrlKey || event.metaKey;
+    const keyCode = event.keyCode;
+    let char = '';
+
+    if (65 <= keyCode && keyCode <= 90) {
+      char = String.fromCharCode(keyCode);
+    } else if (keyCode === 13) {
+      char = 'Enter';
+    } else if (keyCode === 27) {
+      char = 'Esc';
+    }
+
+    _each(this.shortcuts, (shortcut) => {
+      if (shortcut.ctrl && !ctrl) {
+        return;
+      }
+
+      if (shortcut.shortcut === char) {
+        shortcut.element.click();
+        event.preventDefault();
+      }
+    });
+  }
+
+  addShortcut(element, shortcut) {
+    if (!shortcut || !/^([A-Z]|Enter|Esc)$/i.test(shortcut)) {
+      return;
+    }
+
+    shortcut = _capitalize(shortcut);
+
+    if (shortcut === 'Enter' || shortcut === 'Esc') {
+      // Restrict Enter and Esc only for buttons
+      if (element.tagName !== 'BUTTON') {
+        return;
+      }
+
+      this.shortcuts.push({
+        shortcut,
+        element
+      });
+    } else {
+      this.shortcuts.push({
+        ctrl: true,
+        shortcut,
+        element
+      });
+    }
+  }
+
+  removeShortcut(element, shortcut) {
+    if (!shortcut || !/^([A-Z]|Enter|Esc)$/i.test(shortcut)) {
+      return;
+    }
+
+    _remove(this.shortcuts, {
+      shortcut,
+      element
+    });
   }
 
   /**
@@ -632,7 +724,7 @@ export class FormioForm extends FormioComponents {
       error = {message: error};
     }
 
-    this.showErrors(error);
+    return this.showErrors(error);
   }
 
   /**
@@ -696,19 +788,22 @@ export class FormioForm extends FormioComponents {
         ) {
           this.loading = true;
           if (this.nosubmit || !this.formio) {
-            return this.onSubmit(submission, false);
+            return resolve(this.onSubmit(submission, false));
           }
           return this.formio.saveSubmission(submission)
             .then(
-              (result) => this.onSubmit(result, true)
+              (result) => resolve(this.onSubmit(result, true))
             )
             .catch(
-              (err) => this.onSubmissionError(err)
+              (err) => {
+                this.onSubmissionError(err);
+                reject(err);
+              }
             );
         }
         else {
           this.showErrors();
-          return Promise.reject('Invalid Submission');
+          return reject('Invalid Submission');
         }
       });
     });

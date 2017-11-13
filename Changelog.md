@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Forms not recusing properly in eachComponent function.
 
 ### Added
+ - Possibility to add shortcuts.
  - A new hook system that allows to easily create hooks within the renderer.
  - 'beforeSubmit' hook to configuration.
  - 'input' hook to call when new inputs are added.

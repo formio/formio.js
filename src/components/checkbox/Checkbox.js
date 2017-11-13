@@ -48,6 +48,7 @@ export class CheckBoxComponent extends BaseComponent {
     this.labelElement = this.ce('label', {
       class: 'control-label'
     });
+    this.addShortcut();
 
     // Create the SPAN around the textNode for better style hooks
     this.labelSpan = this.ce('span');
@@ -57,7 +58,7 @@ export class CheckBoxComponent extends BaseComponent {
     }
     this.addInput(input, this.labelElement);
     if (!this.options.inputsOnly) {
-      this.labelSpan.appendChild(this.text(this.component.label));
+      this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
       this.labelElement.appendChild(this.labelSpan);
     }
     this.createTooltip(this.labelElement);
@@ -118,5 +119,10 @@ export class CheckBoxComponent extends BaseComponent {
       this.input.checked = 0;
     }
     this.updateValue(flags);
+  }
+
+  destroy() {
+    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
+    this.removeShortcut();
   }
 }
