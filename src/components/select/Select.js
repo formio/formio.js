@@ -8,6 +8,7 @@ import _debounce from 'lodash/debounce';
 import _isEmpty from 'lodash/isEmpty';
 import _isArray from 'lodash/isArray';
 import _isEqual from 'lodash/isEqual';
+import _cloneDeep from 'lodash/cloneDeep';
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -146,7 +147,7 @@ export class SelectComponent extends BaseComponent {
       .then((response) => this.setItems(response))
       .catch((err) => {
         this.events.emit('formio.error', err);
-        console.warn('Unable to load resources for ' + this.component.key);
+        console.warn(`Unable to load resources for ${this.component.key}`);
       });
   }
 
@@ -174,9 +175,20 @@ export class SelectComponent extends BaseComponent {
     return headers;
   }
 
+  updateCustomItems() {
+    const data = _cloneDeep(this.data);
+    const row = _cloneDeep(this.row);
+    try {
+      this.setItems(eval(`(function(data, row) { var values = [];${this.component.data.custom.toString()}; return values; })(data, row)`));
+    }
+    catch (error) {
+      this.setItems([]);
+    }
+  }
+
   updateItems(searchInput) {
     if (!this.component.data) {
-      console.warn('Select component ' + this.component.key + ' does not have data configuration.');
+      console.warn(`Select component ${this.component.key} does not have data configuration.`);
       return;
     }
 
@@ -188,15 +200,18 @@ export class SelectComponent extends BaseComponent {
       case 'json':
         this.setItems(this.component.data.json);
         break;
+      case 'custom':
+        this.updateCustomItems();
+        break;
       case 'resource':
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : Formio.getProjectUrl() + '/form';
-        resourceUrl += ('/' + this.component.data.resource + '/submission');
+        resourceUrl += (`/${this.component.data.resource}/submission`);
 
         try {
           this.loadItems(resourceUrl, searchInput, this.requestHeaders);
         }
         catch (err) {
-          console.warn('Unable to load resources for ' + this.component.key);
+          console.warn(`Unable to load resources for ${this.component.key}`);
         }
         break;
       case 'url':
@@ -234,6 +249,12 @@ export class SelectComponent extends BaseComponent {
     if (this.component.searchField) {
       input.addEventListener('search', (event) => this.triggerUpdate(event.detail.value));
     }
+
+    input.addEventListener('showDropdown', () => {
+      if (this.component.dataSrc === 'custom') {
+        this.updateCustomItems();
+      }
+    });
 
     // Create a pseudo-placeholder.
     if (

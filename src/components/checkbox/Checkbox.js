@@ -73,17 +73,21 @@ export class CheckBoxComponent extends BaseComponent {
     return input;
   }
 
+  updateValueByName() {
+    this.data[this.component.name] = this.component.value;
+  }
+
   addInputEventListener(input) {
     this.addEventListener(input, this.info.changeEvent, () => {
       // If this input has a "name", then its other input elements are elsewhere on
       // the form. To get the correct submission object, we need to refresh the whole
       // data object.
       if (this.component.name) {
+        this.updateValueByName();
         this.emit('refreshData');
       }
-      else {
-        this.updateValue();
-      }
+
+      this.updateValue();
     });
   }
 
