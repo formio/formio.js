@@ -3940,6 +3940,11 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       return input;
     }
   }, {
+    key: 'updateValueByName',
+    value: function updateValueByName() {
+      this.data[this.component.name] = this.component.value;
+    }
+  }, {
     key: 'addInputEventListener',
     value: function addInputEventListener(input) {
       var _this2 = this;
@@ -3949,10 +3954,11 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         // the form. To get the correct submission object, we need to refresh the whole
         // data object.
         if (_this2.component.name) {
+          _this2.updateValueByName();
           _this2.emit('refreshData');
-        } else {
-          _this2.updateValue();
         }
+
+        _this2.updateValue();
       });
     }
   }, {
@@ -7687,6 +7693,10 @@ var _isEqual2 = require('lodash/isEqual');
 
 var _isEqual3 = _interopRequireDefault(_isEqual2);
 
+var _cloneDeep2 = require('lodash/cloneDeep');
+
+var _cloneDeep3 = _interopRequireDefault(_cloneDeep2);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -7870,6 +7880,17 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
      */
 
   }, {
+    key: 'updateCustomItems',
+    value: function updateCustomItems() {
+      var data = (0, _cloneDeep3.default)(this.data);
+      var row = (0, _cloneDeep3.default)(this.row);
+      try {
+        this.setItems(eval('(function(data, row) { var values = [];' + this.component.data.custom.toString() + '; return values; })(data, row)'));
+      } catch (error) {
+        this.setItems([]);
+      }
+    }
+  }, {
     key: 'updateItems',
     value: function updateItems(searchInput) {
       if (!this.component.data) {
@@ -7884,6 +7905,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           break;
         case 'json':
           this.setItems(this.component.data.json);
+          break;
+        case 'custom':
+          this.updateCustomItems();
           break;
         case 'resource':
           var resourceUrl = this.options.formio ? this.options.formio.formsUrl : _formio2.default.getProjectUrl() + '/form';
@@ -7935,6 +7959,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           return _this4.triggerUpdate(event.detail.value);
         });
       }
+
+      input.addEventListener('showDropdown', function () {
+        if (_this4.component.dataSrc === 'custom') {
+          _this4.updateCustomItems();
+        }
+      });
 
       // Create a pseudo-placeholder.
       if (this.component.placeholder && !this.choices.placeholderElement) {
@@ -8084,7 +8114,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   return SelectComponent;
 }(_Base.BaseComponent);
 
-},{"../../formio":40,"../base/Base":4,"choices.js":51,"lodash/debounce":248,"lodash/each":252,"lodash/get":256,"lodash/isArray":261,"lodash/isEmpty":265,"lodash/isEqual":266,"lodash/remove":287}],30:[function(require,module,exports){
+},{"../../formio":40,"../base/Base":4,"choices.js":51,"lodash/cloneDeep":246,"lodash/debounce":248,"lodash/each":252,"lodash/get":256,"lodash/isArray":261,"lodash/isEmpty":265,"lodash/isEqual":266,"lodash/remove":287}],30:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -10011,7 +10041,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         error = { message: error };
       }
 
-      this.showErrors(error);
+      return this.showErrors(error);
     }
 
     /**
@@ -10083,16 +10113,17 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
           if (submission && submission.data && _this10.checkValidity(submission.data, true)) {
             _this10.loading = true;
             if (_this10.nosubmit || !_this10.formio) {
-              return _this10.onSubmit(submission, false);
+              return resolve(_this10.onSubmit(submission, false));
             }
             return _this10.formio.saveSubmission(submission).then(function (result) {
-              return _this10.onSubmit(result, true);
+              return resolve(_this10.onSubmit(result, true));
             }).catch(function (err) {
-              return _this10.onSubmissionError(err);
+              _this10.onSubmissionError(err);
+              reject(err);
             });
           } else {
             _this10.showErrors();
-            return _nativePromiseOnly2.default.reject('Invalid Submission');
+            return reject('Invalid Submission');
           }
         });
       });
