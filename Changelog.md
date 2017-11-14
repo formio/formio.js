@@ -4,7 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 2.22.1
+### Fixed
+ - A promise issue with executeSubmit method in FormioForm
+
 ### Added
  - Custom data source to Select component.
 
