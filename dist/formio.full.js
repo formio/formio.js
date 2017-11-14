@@ -1763,6 +1763,9 @@ var BaseComponent = function () {
      */
     this.eventHandlers = [];
 
+    // To force this component to be invalid.
+    this.invalid = false;
+
     /**
      * An array of the event listeners so that the destroy command can deregister them.
      * @type {Array}
@@ -3084,7 +3087,7 @@ var BaseComponent = function () {
   }, {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
-      var message = this.invalidMessage(data, dirty);
+      var message = this.invalid || this.invalidMessage(data, dirty);
       this.setCustomValidity(message, dirty);
       return message ? false : true;
     }
@@ -9334,6 +9337,10 @@ var _remove2 = require('lodash/remove');
 
 var _remove3 = _interopRequireDefault(_remove2);
 
+var _isArray2 = require('lodash/isArray');
+
+var _isArray3 = _interopRequireDefault(_isArray2);
+
 var _capitalize2 = require('lodash/capitalize');
 
 var _capitalize3 = _interopRequireDefault(_capitalize2);
@@ -9979,7 +9986,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       this.loading = false;
       var errors = this.errors;
       if (error) {
-        errors.push(error);
+        if ((0, _isArray3.default)(error)) {
+          errors = errors.concat(error);
+        } else {
+          errors.push(error);
+        }
       }
       if (!errors.length) {
         this.setAlert(false);
@@ -10320,7 +10331,7 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":41,"eventemitter2":57,"lodash/capitalize":247,"lodash/clone":249,"lodash/debounce":252,"lodash/each":256,"lodash/merge":286,"lodash/remove":291,"native-promise-only":304}],40:[function(require,module,exports){
+},{"./components/Components":1,"./formio":41,"eventemitter2":57,"lodash/capitalize":247,"lodash/clone":249,"lodash/debounce":252,"lodash/each":256,"lodash/isArray":265,"lodash/merge":286,"lodash/remove":291,"native-promise-only":304}],40:[function(require,module,exports){
 "use strict";
 
 var _nativePromiseOnly = require("native-promise-only");

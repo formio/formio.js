@@ -211,6 +211,9 @@ export class BaseComponent {
      */
     this.eventHandlers = [];
 
+    // To force this component to be invalid.
+    this.invalid = false;
+
     /**
      * An array of the event listeners so that the destroy command can deregister them.
      * @type {Array}
@@ -729,7 +732,7 @@ export class BaseComponent {
     }
 
     const match = label.match(new RegExp(shortcut, 'i'));
-    
+
     if (!match) {
       return label;
     }
@@ -1474,7 +1477,7 @@ export class BaseComponent {
   }
 
   checkValidity(data, dirty) {
-    let message = this.invalidMessage(data, dirty);
+    let message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }

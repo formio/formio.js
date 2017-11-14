@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.22.2
+### Added
+ - The ability to pass an array of errors to the error handler to show more than one.
+ - The ability to make independent components invalid.
+
 ## 2.22.1
 ### Fixed
  - A promise issue with executeSubmit method in FormioForm

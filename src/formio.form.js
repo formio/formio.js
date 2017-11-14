@@ -6,6 +6,7 @@ import _clone from 'lodash/clone';
 import _merge from 'lodash/merge';
 import _debounce from 'lodash/debounce';
 import _remove from 'lodash/remove';
+import _isArray from 'lodash/isArray';
 import _capitalize from 'lodash/capitalize';
 import EventEmitter from 'eventemitter2';
 
@@ -668,7 +669,12 @@ export class FormioForm extends FormioComponents {
     this.loading = false;
     let errors = this.errors;
     if (error) {
-      errors.push(error);
+      if (_isArray(error)) {
+        errors = errors.concat(error);
+      }
+      else {
+        errors.push(error);
+      }
     }
     if (!errors.length) {
       this.setAlert(false);
