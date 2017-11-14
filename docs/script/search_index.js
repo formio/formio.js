@@ -1200,6 +1200,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/components.js~formiocomponents#whenready",
+    "class/src/components/Components.js~FormioComponents.html#instance-method-whenReady",
+    "src/components/Components.js~FormioComponents#whenReady",
+    "method"
+  ],
+  [
     "src/components/components.spec.js",
     "file/src/components/Components.spec.js.html",
     "src/components/Components.spec.js",
@@ -1425,6 +1431,18 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#addprefix",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-addPrefix",
     "src/components/base/Base.js~BaseComponent#addPrefix",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#addshortcut",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-addShortcut",
+    "src/components/base/Base.js~BaseComponent#addShortcut",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#addshortcuttolabel",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-addShortcutToLabel",
+    "src/components/base/Base.js~BaseComponent#addShortcutToLabel",
     "method"
   ],
   [
@@ -1764,6 +1782,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#hook",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-hook",
+    "src/components/base/Base.js~BaseComponent#hook",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#id",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-id",
     "src/components/base/Base.js~BaseComponent#id",
@@ -1813,13 +1837,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -1917,6 +1941,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#removeclass",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeClass",
     "src/components/base/Base.js~BaseComponent#removeClass",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#removeshortcut",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeShortcut",
+    "src/components/base/Base.js~BaseComponent#removeShortcut",
     "method"
   ],
   [
@@ -2070,6 +2100,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#whenready",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-whenReady",
+    "src/components/base/Base.js~BaseComponent#whenReady",
+    "method"
+  ],
+  [
     "src/components/base/base.spec.js",
     "file/src/components/base/Base.spec.js.html",
     "src/components/base/Base.spec.js",
@@ -2103,6 +2139,12 @@ window.esdocSearchIndex = [
     "src/components/button/button.js~buttoncomponent#build",
     "class/src/components/button/Button.js~ButtonComponent.html#instance-method-build",
     "src/components/button/Button.js~ButtonComponent#build",
+    "method"
+  ],
+  [
+    "src/components/button/button.js~buttoncomponent#destroy",
+    "class/src/components/button/Button.js~ButtonComponent.html#instance-method-destroy",
+    "src/components/button/Button.js~ButtonComponent#destroy",
     "method"
   ],
   [
@@ -2196,6 +2238,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#destroy",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-destroy",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#destroy",
+    "method"
+  ],
+  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#disabled",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-disabled",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#disabled",
@@ -2247,6 +2295,12 @@ window.esdocSearchIndex = [
     "src/components/checkbox/checkbox.js~checkboxcomponent#setvalue",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-setValue",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#setValue",
+    "method"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#updatevaluebyname",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-updateValueByName",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#updateValueByName",
     "method"
   ],
   [
@@ -3054,6 +3108,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#globstringtoregex",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-globStringToRegex",
+    "src/components/file/File.js~FileComponent#globStringToRegex",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#hiddenfileinputelement",
     "class/src/components/file/File.js~FileComponent.html#instance-member-hiddenFileInputElement",
     "src/components/file/File.js~FileComponent#hiddenFileInputElement",
@@ -3084,6 +3144,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/file/file.js~filecomponent#translatescalars",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-translateScalars",
+    "src/components/file/File.js~FileComponent#translateScalars",
+    "method"
+  ],
+  [
     "src/components/file/file.js~filecomponent#upload",
     "class/src/components/file/File.js~FileComponent.html#instance-method-upload",
     "src/components/file/File.js~FileComponent#upload",
@@ -3100,6 +3166,24 @@ window.esdocSearchIndex = [
     "class/src/components/file/File.js~FileComponent.html#instance-member-uploadStatusList",
     "src/components/file/File.js~FileComponent#uploadStatusList",
     "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#validatemaxsize",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-validateMaxSize",
+    "src/components/file/File.js~FileComponent#validateMaxSize",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#validateminsize",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-validateMinSize",
+    "src/components/file/File.js~FileComponent#validateMinSize",
+    "method"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#validatepattern",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-validatePattern",
+    "src/components/file/File.js~FileComponent#validatePattern",
+    "method"
   ],
   [
     "src/components/form/form.js",
@@ -3180,6 +3264,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/form/form.js~formcomponent#readypromise",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-readyPromise",
+    "src/components/form/Form.js~FormComponent#readyPromise",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#readyresolve",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-readyResolve",
+    "src/components/form/Form.js~FormComponent#readyResolve",
+    "member"
+  ],
+  [
     "src/components/form/form.js~formcomponent#setvalue",
     "class/src/components/form/Form.js~FormComponent.html#instance-method-setValue",
     "src/components/form/Form.js~FormComponent#setValue",
@@ -3196,6 +3292,12 @@ window.esdocSearchIndex = [
     "class/src/components/form/Form.js~FormComponent.html#instance-member-type",
     "src/components/form/Form.js~FormComponent#type",
     "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#whenready",
+    "class/src/components/form/Form.js~FormComponent.html#instance-method-whenReady",
+    "src/components/form/Form.js~FormComponent#whenReady",
+    "method"
   ],
   [
     "src/components/form/form.spec.js",
@@ -3600,6 +3702,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/radio/radio.js~radiocomponent#destroy",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-destroy",
+    "src/components/radio/Radio.js~RadioComponent#destroy",
+    "method"
+  ],
+  [
     "src/components/radio/radio.js~radiocomponent#elementinfo",
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-elementInfo",
     "src/components/radio/Radio.js~RadioComponent#elementInfo",
@@ -3808,6 +3916,12 @@ window.esdocSearchIndex = [
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-triggerUpdate",
     "src/components/select/Select.js~SelectComponent#triggerUpdate",
     "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#updatecustomitems",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-updateCustomItems",
+    "src/components/select/Select.js~SelectComponent#updateCustomItems",
+    "method"
   ],
   [
     "src/components/select/select.js~selectcomponent#updateitems",
@@ -4350,6 +4464,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/formio.form.js~formioform#addshortcut",
+    "class/src/formio.form.js~FormioForm.html#instance-method-addShortcut",
+    "src/formio.form.js~FormioForm#addShortcut",
+    "method"
+  ],
+  [
     "src/formio.form.js~formioform#alert",
     "class/src/formio.form.js~FormioForm.html#instance-member-alert",
     "src/formio.form.js~FormioForm#alert",
@@ -4398,6 +4518,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.form.js~formioform#executeshortcuts",
+    "class/src/formio.form.js~FormioForm.html#instance-method-executeShortcuts",
+    "src/formio.form.js~FormioForm#executeShortcuts",
+    "method"
+  ],
+  [
     "src/formio.form.js~formioform#executesubmit",
     "class/src/formio.form.js~FormioForm.html#instance-method-executeSubmit",
     "src/formio.form.js~FormioForm#executeSubmit",
@@ -4443,6 +4569,12 @@ window.esdocSearchIndex = [
     "src/formio.form.js~formioform#getvalue",
     "class/src/formio.form.js~FormioForm.html#instance-method-getValue",
     "src/formio.form.js~FormioForm#getValue",
+    "method"
+  ],
+  [
+    "src/formio.form.js~formioform#keyboardcatchableelement",
+    "class/src/formio.form.js~FormioForm.html#instance-method-keyboardCatchableElement",
+    "src/formio.form.js~FormioForm#keyboardCatchableElement",
     "method"
   ],
   [
@@ -4518,6 +4650,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.form.js~formioform#removeshortcut",
+    "class/src/formio.form.js~FormioForm.html#instance-method-removeShortcut",
+    "src/formio.form.js~FormioForm#removeShortcut",
+    "method"
+  ],
+  [
     "src/formio.form.js~formioform#render",
     "class/src/formio.form.js~FormioForm.html#instance-method-render",
     "src/formio.form.js~FormioForm#render",
@@ -4572,6 +4710,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.form.js~formioform#shortcuts",
+    "class/src/formio.form.js~FormioForm.html#instance-member-shortcuts",
+    "src/formio.form.js~FormioForm#shortcuts",
+    "member"
+  ],
+  [
     "src/formio.form.js~formioform#showerrors",
     "class/src/formio.form.js~FormioForm.html#instance-method-showErrors",
     "src/formio.form.js~FormioForm#showErrors",
@@ -4591,13 +4735,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
@@ -5272,6 +5416,12 @@ window.esdocSearchIndex = [
     "class/src/formio.pdf.js~FormioPDF.html#instance-member-zoomOut",
     "src/formio.pdf.js~FormioPDF#zoomOut",
     "member"
+  ],
+  [
+    "src/formio.polyfill.js",
+    "file/src/formio.polyfill.js.html",
+    "src/formio.polyfill.js",
+    "file"
   ],
   [
     "src/formio.spec.js",

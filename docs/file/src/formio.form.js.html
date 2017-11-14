@@ -146,51 +146,19 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.form.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Formio from &apos;./formio&apos;;
 import Promise from &quot;native-promise-only&quot;;
-import Formio from &apos;./formio&apos;;
 import { FormioComponents } from &apos;./components/Components&apos;;
 import _each from &apos;lodash/each&apos;;
 import _clone from &apos;lodash/clone&apos;;
 import _merge from &apos;lodash/merge&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
+import _remove from &apos;lodash/remove&apos;;
+import _capitalize from &apos;lodash/capitalize&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 
 // Initialize the available forms.
 Formio.forms = {};
-
-/**
- * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
- *
- * This is needed for PhantomJS.
- */
-if (!Function.prototype.bind) {
-  Function.prototype.bind = function(oThis) {
-    if (typeof this !== &apos;function&apos;) {
-      // closest thing possible to the ECMAScript 5
-      // internal IsCallable function
-      throw new TypeError(&apos;Function.prototype.bind - what is trying to be bound is not callable&apos;);
-    }
-
-    var aArgs   = Array.prototype.slice.call(arguments, 1),
-      fToBind = this,
-      fNOP    = function() {},
-      fBound  = function() {
-        return fToBind.apply(this instanceof fNOP
-            ? this
-            : oThis,
-          aArgs.concat(Array.prototype.slice.call(arguments)));
-      };
-
-    if (this.prototype) {
-      // Function.prototype doesn&apos;t have a prototype property
-      fNOP.prototype = this.prototype;
-    }
-    fBound.prototype = new fNOP();
-
-    return fBound;
-  };
-}
 
 let getOptions = function(options) {
   options = options || {};
@@ -350,6 +318,8 @@ export class FormioForm extends FormioComponents {
       this.elementResolve = resolve;
       this.setElement(element);
     });
+
+    this.shortcuts = [];
   }
 
   /**
@@ -361,6 +331,11 @@ export class FormioForm extends FormioComponents {
     if (!element) {
       return;
     }
+
+    if (this.element) {
+      this.element.removeEventListener(&apos;keydown&apos;, this.executeShortcuts.bind(this));
+    }
+    element.addEventListener(&apos;keydown&apos;, this.executeShortcuts.bind(this));
 
     this.element = element;
     var classNames = this.element.getAttribute(&apos;class&apos;);
@@ -374,6 +349,89 @@ export class FormioForm extends FormioComponents {
       () =&gt; (this.loading = false)
     );
     this.elementResolve(element);
+  }
+
+  keyboardCatchableElement(element) {
+    if (element.nodeName === &apos;TEXTAREA&apos;) {
+      return false;
+    }
+
+    if (element.nodeName === &apos;INPUT&apos;) {
+      return [
+        &apos;text&apos;,
+        &apos;email&apos;,
+        &apos;password&apos;
+      ].indexOf(element.type) === -1;
+    }
+
+    return true;
+  }
+
+  executeShortcuts(event) {
+    const { target } = event;
+    if (!this.keyboardCatchableElement(target)) {
+      return;
+    }
+
+    const ctrl = event.ctrlKey || event.metaKey;
+    const keyCode = event.keyCode;
+    let char = &apos;&apos;;
+
+    if (65 &lt;= keyCode &amp;&amp; keyCode &lt;= 90) {
+      char = String.fromCharCode(keyCode);
+    } else if (keyCode === 13) {
+      char = &apos;Enter&apos;;
+    } else if (keyCode === 27) {
+      char = &apos;Esc&apos;;
+    }
+
+    _each(this.shortcuts, (shortcut) =&gt; {
+      if (shortcut.ctrl &amp;&amp; !ctrl) {
+        return;
+      }
+
+      if (shortcut.shortcut === char) {
+        shortcut.element.click();
+        event.preventDefault();
+      }
+    });
+  }
+
+  addShortcut(element, shortcut) {
+    if (!shortcut || !/^([A-Z]|Enter|Esc)$/i.test(shortcut)) {
+      return;
+    }
+
+    shortcut = _capitalize(shortcut);
+
+    if (shortcut === &apos;Enter&apos; || shortcut === &apos;Esc&apos;) {
+      // Restrict Enter and Esc only for buttons
+      if (element.tagName !== &apos;BUTTON&apos;) {
+        return;
+      }
+
+      this.shortcuts.push({
+        shortcut,
+        element
+      });
+    } else {
+      this.shortcuts.push({
+        ctrl: true,
+        shortcut,
+        element
+      });
+    }
+  }
+
+  removeShortcut(element, shortcut) {
+    if (!shortcut || !/^([A-Z]|Enter|Esc)$/i.test(shortcut)) {
+      return;
+    }
+
+    _remove(this.shortcuts, {
+      shortcut,
+      element
+    });
   }
 
   /**
@@ -814,7 +872,7 @@ export class FormioForm extends FormioComponents {
       error = {message: error};
     }
 
-    this.showErrors(error);
+    return this.showErrors(error);
   }
 
   /**
@@ -863,28 +921,40 @@ export class FormioForm extends FormioComponents {
   }
 
   executeSubmit() {
-    let submission = this.submission;
-    if (
-      submission &amp;&amp;
-      submission.data &amp;&amp;
-      this.checkValidity(submission.data, true)
-    ) {
-      this.loading = true;
-      if (this.nosubmit || !this.formio) {
-        return this.onSubmit(submission, false);
-      }
-      return this.formio.saveSubmission(submission)
-        .then(
-          (result) =&gt; this.onSubmit(result, true)
-        )
-        .catch(
-          (err) =&gt; this.onSubmissionError(err)
-        );
-    }
-    else {
-      this.showErrors();
-      return Promise.reject(&apos;Invalid Submission&apos;);
-    }
+    return new Promise((resolve, reject) =&gt; {
+      let submission = this.submission || {};
+      this.hook(&apos;beforeSubmit&apos;, submission, (err) =&gt; {
+        if (err) {
+          this.showErrors(err);
+          return reject(err.message || err);
+        }
+
+        if (
+          submission &amp;&amp;
+          submission.data &amp;&amp;
+          this.checkValidity(submission.data, true)
+        ) {
+          this.loading = true;
+          if (this.nosubmit || !this.formio) {
+            return resolve(this.onSubmit(submission, false));
+          }
+          return this.formio.saveSubmission(submission)
+            .then(
+              (result) =&gt; resolve(this.onSubmit(result, true))
+            )
+            .catch(
+              (err) =&gt; {
+                this.onSubmissionError(err);
+                reject(err);
+              }
+            );
+        }
+        else {
+          this.showErrors();
+          return reject(&apos;Invalid Submission&apos;);
+        }
+      });
+    });
   }
 
   /**

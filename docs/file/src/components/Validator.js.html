@@ -151,17 +151,17 @@ import _each from &apos;lodash/each&apos;;
 import _has from &apos;lodash/has&apos;;
 import _isNumber from &apos;lodash/isNumber&apos;;
 import FormioUtils from &apos;../utils/index&apos;;
-export var Validator = {
+export const Validator = {
   get: _get,
   each: _each,
   has: _has,
-  checkValidator: function(component, validator, setting, value, data) {
+  checkValidator(component, validator, setting, value, data) {
     // Make sure this component isn&apos;t conditionally disabled.
     if (!FormioUtils.checkCondition(component.component, data, component.data)) {
       return &apos;&apos;;
     }
 
-    let result = validator.check.call(this, component, setting, value, data);
+    const result = validator.check.call(this, component, setting, value, data);
     if (typeof result === &apos;string&apos;) {
       return result;
     }
@@ -170,20 +170,20 @@ export var Validator = {
     }
     return &apos;&apos;;
   },
-  validate: function(component, validator, value, data) {
+  validate(component, validator, value, data) {
     if (validator.key &amp;&amp; _has(component.component, validator.key)) {
-      let setting = this.get(component.component, validator.key);
+      const setting = this.get(component.component, validator.key);
       return this.checkValidator(component, validator, setting, value, data);
     }
     return this.checkValidator(component, validator, null, value, data);
   },
-  check: function(component, data) {
+  check(component, data) {
     let result = &apos;&apos;;
-    let value = component.getRawValue();
+    const value = component.getRawValue();
     data = data || component.data;
     _each(component.validators, (name) =&gt; {
       if (this.validators.hasOwnProperty(name)) {
-        let validator = this.validators[name];
+        const validator = this.validators[name];
         if (component.validateMultiple(value)) {
           _each(value, (val) =&gt; {
             result = this.validate(component, validator, val, data);
@@ -200,15 +200,26 @@ export var Validator = {
         }
       }
     });
+
+    const customErrorMessage = _get(component, &apos;component.validate.customMessage&apos;);
+    if (result &amp;&amp; customErrorMessage) {
+      result = component.t(customErrorMessage, {
+        data: component.data
+      });
+    }
+
     return result;
   },
   validators: {
     required: {
       key: &apos;validate.required&apos;,
-      message: function(component, setting) {
-        return component.t(component.errorMessage(&apos;required&apos;), {field: component.errorLabel});
+      message(component, setting) {
+        return component.t(component.errorMessage(&apos;required&apos;), {
+          field: component.errorLabel,
+          data: component.data
+        });
       },
-      check: function(component, setting, value) {
+      check(component, setting, value) {
         if (!FormioUtils.boolValue(setting)) {
           return true;
         }
@@ -217,14 +228,15 @@ export var Validator = {
     },
     min: {
       key: &apos;validate.min&apos;,
-      message: function(component, setting) {
+      message(component, setting) {
         return component.t(component.errorMessage(&apos;min&apos;), {
           field: component.errorLabel,
-          min: parseFloat(setting)
+          min: parseFloat(setting),
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
-        let min = parseFloat(setting);
+      check(component, setting, value) {
+        const min = parseFloat(setting);
         if (!min || (!_isNumber(value))) {
           return true;
         }
@@ -233,14 +245,15 @@ export var Validator = {
     },
     max: {
       key: &apos;validate.max&apos;,
-      message: function(component, setting) {
+      message(component, setting) {
         return component.t(component.errorMessage(&apos;max&apos;), {
           field: component.errorLabel,
-          max: parseFloat(setting)
+          max: parseFloat(setting),
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
-        let max = parseFloat(setting);
+      check(component, setting, value) {
+        const max = parseFloat(setting);
         if (!max || (!_isNumber(value))) {
           return true;
         }
@@ -249,14 +262,15 @@ export var Validator = {
     },
     minLength: {
       key: &apos;validate.minLength&apos;,
-      message: function(component, setting) {
+      message(component, setting) {
         return component.t(component.errorMessage(&apos;minLength&apos;), {
           field: component.errorLabel,
-          length: (setting - 1)
+          length: (setting - 1),
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
-        let minLength = parseInt(setting, 10);
+      check(component, setting, value) {
+        const minLength = parseInt(setting, 10);
         if (!minLength || (typeof value !== &apos;string&apos;)) {
           return true;
         }
@@ -265,14 +279,15 @@ export var Validator = {
     },
     maxLength: {
       key: &apos;validate.maxLength&apos;,
-      message: function(component, setting) {
+      message(component, setting) {
         return component.t(component.errorMessage(&apos;maxLength&apos;), {
           field: component.errorLabel,
-          length: (setting + 1)
+          length: (setting + 1),
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
-        let maxLength = parseInt(setting, 10);
+      check(component, setting, value) {
+        const maxLength = parseInt(setting, 10);
         if (!maxLength || (typeof value !== &apos;string&apos;)) {
           return true;
         }
@@ -280,50 +295,53 @@ export var Validator = {
       }
     },
     email: {
-      message: function(component, setting) {
+      message(component, setting) {
         return component.t(component.errorMessage(&apos;invalid_email&apos;), {
-          field: component.errorLabel
+          field: component.errorLabel,
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
+      check(component, setting, value) {
         // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-        var re = /^(([^&lt;&gt;()\[\]\\.,;:\s@&quot;]+(\.[^&lt;&gt;()\[\]\\.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const re = /^(([^&lt;&gt;()\[\]\\.,;:\s@&quot;]+(\.[^&lt;&gt;()\[\]\\.,;:\s@&quot;]+)*)|(&quot;.+&quot;))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         // Allow emails to be valid if the component is pristine and no value is provided.
         return (component.pristine &amp;&amp; !value) || re.test(value);
       }
     },
     date: {
-      message: function(component, setting) {
+      message(component, setting) {
         return component.t(component.errorMessage(&apos;invalid_date&apos;), {
-          field: component.errorLabel
+          field: component.errorLabel,
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
+      check(component, setting, value) {
         return (value !== &apos;Invalid date&apos;);
       }
     },
     pattern: {
       key: &apos;validate.pattern&apos;,
-      message: function(component, setting) {
-        return component.t(component.errorMessage(&apos;pattern&apos;), {
+      message(component, setting) {
+        return component.t(_get(component, &apos;component.validate.patternMessage&apos;, component.errorMessage(&apos;pattern&apos;), {
           field: component.errorLabel,
-          pattern: setting
-        });
+          pattern: setting,
+          data: component.data
+        }));
       },
-      check: function(component, setting, value) {
-        let pattern = setting;
+      check(component, setting, value) {
+        const pattern = setting;
         if (!pattern) {
           return true;
         }
-        let regexStr = &apos;^&apos; + pattern + &apos;$&apos;;
-        let regex = new RegExp(regexStr);
+        const regexStr = &apos;^&apos; + pattern + &apos;$&apos;;
+        const regex = new RegExp(regexStr);
         return regex.test(value);
       }
     },
     json: {
       key: &apos;validate.json&apos;,
-      check: function(component, setting, value, data) {
+      check(component, setting, value, data) {
         if (!setting) {
           return true;
         }
@@ -342,12 +360,13 @@ export var Validator = {
     },
     custom: {
       key: &apos;validate.custom&apos;,
-      message: function(component) {
+      message(component) {
         return component.t(component.errorMessage(&apos;custom&apos;), {
-          field: component.errorLabel
+          field: component.errorLabel,
+          data: component.data
         });
       },
-      check: function(component, setting, value, data) {
+      check(component, setting, value, data) {
         if (!setting) {
           return true;
         }
@@ -357,7 +376,7 @@ export var Validator = {
         /*eslint-disable no-unused-vars */
         var input = value;
         /*eslint-enable no-unused-vars */
-        custom = custom.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
+        custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) =&gt; {
           if ($2.indexOf(&apos;data.&apos;) === 0) {
             return _get(data, $2.replace(&apos;data.&apos;, &apos;&apos;));
           }

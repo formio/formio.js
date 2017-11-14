@@ -196,6 +196,7 @@ export class CheckBoxComponent extends BaseComponent {
     this.labelElement = this.ce(&apos;label&apos;, {
       class: &apos;control-label&apos;
     });
+    this.addShortcut();
 
     // Create the SPAN around the textNode for better style hooks
     this.labelSpan = this.ce(&apos;span&apos;);
@@ -205,7 +206,7 @@ export class CheckBoxComponent extends BaseComponent {
     }
     this.addInput(input, this.labelElement);
     if (!this.options.inputsOnly) {
-      this.labelSpan.appendChild(this.text(this.component.label));
+      this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
       this.labelElement.appendChild(this.labelSpan);
     }
     this.createTooltip(this.labelElement);
@@ -221,17 +222,21 @@ export class CheckBoxComponent extends BaseComponent {
     return input;
   }
 
+  updateValueByName() {
+    this.data[this.component.name] = this.component.value;
+  }
+
   addInputEventListener(input) {
     this.addEventListener(input, this.info.changeEvent, () =&gt; {
       // If this input has a &quot;name&quot;, then its other input elements are elsewhere on
       // the form. To get the correct submission object, we need to refresh the whole
       // data object.
       if (this.component.name) {
+        this.updateValueByName();
         this.emit(&apos;refreshData&apos;);
       }
-      else {
-        this.updateValue();
-      }
+
+      this.updateValue();
     });
   }
 
@@ -262,6 +267,11 @@ export class CheckBoxComponent extends BaseComponent {
       this.input.checked = 0;
     }
     this.updateValue(flags);
+  }
+
+  destroy() {
+    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
+    this.removeShortcut();
   }
 }
 </code></pre>

@@ -171,6 +171,8 @@ export class RadioComponent extends BaseComponent {
         class: &apos;control-label&apos;
       });
 
+      this.addShortcut(label, value.shortcut);
+
       // Create the SPAN around the textNode for better style hooks
       let labelSpan = this.ce(&apos;span&apos;);
 
@@ -187,7 +189,7 @@ export class RadioComponent extends BaseComponent {
       });
       this.addInput(input, label);
 
-      labelSpan.appendChild(this.text(value.label));
+      labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
       label.appendChild(labelSpan);
       labelWrapper.appendChild(label);
 
@@ -231,6 +233,10 @@ export class RadioComponent extends BaseComponent {
 
       this.inputs[index].checked = (inputValue === value);
     }
+  }
+
+  destroy() {
+    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
   }
 }
 </code></pre>
