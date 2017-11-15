@@ -221,7 +221,7 @@ export class BaseComponent {
     if (this.component) {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
-        this.options.name += '[' + this.component.key + ']';
+        this.options.name += `[${this.component.key}]`;
       }
 
       /**
@@ -288,7 +288,7 @@ export class BaseComponent {
     if (!this.events) {
       return;
     }
-    let type = 'formio.' + event;
+    let type = `formio.${event}`;
     this.eventListeners.push({
       type: type,
       listener: cb,
@@ -304,7 +304,7 @@ export class BaseComponent {
    * @param {Object} data - The data to emit with the handler.
    */
   emit(event, data) {
-    this.events.emit('formio.' + event, data);
+    this.events.emit(`formio.${event}`, data);
   }
 
   /**
@@ -315,7 +315,7 @@ export class BaseComponent {
    */
   getIcon(name) {
     return this.ce('i', {
-      class: 'glyphicon glyphicon-' + name
+      class: `glyphicon glyphicon-${name}`
     });
   }
 
@@ -422,9 +422,9 @@ export class BaseComponent {
    */
   get className() {
     let className = this.component.input ? 'form-group has-feedback ' : '';
-    className += 'formio-component formio-component-' + this.component.type + ' ';
+    className += `formio-component formio-component-${this.component.type} `;
     if (this.component.key) {
-      className += 'formio-component-' + this.component.key + ' ';
+      className += `formio-component-${this.component.key} `;
     }
     if (this.component.customClass) {
       className += this.component.customClass;
@@ -443,7 +443,7 @@ export class BaseComponent {
     let customCSS = '';
     _each(this.component.style, function(value, key) {
         if (value !== '') {
-          customCSS += key + ':' + value + ';';
+          customCSS += `${key}:${value};`;
         }
     });
     return customCSS;
@@ -525,7 +525,7 @@ export class BaseComponent {
         catch (e) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn('An error occurred getting default value for ' + this.component.key, e);
+          console.warn(`An error occurred getting default value for ${this.component.key}`, e);
           /* eslint-enable no-console */
         }
       }
@@ -539,7 +539,7 @@ export class BaseComponent {
         catch (err) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn('An error occurred calculating a value for ' + this.component.key, e);
+          console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
           /* eslint-enable no-console */
         }
       }
@@ -1008,7 +1008,7 @@ export class BaseComponent {
     if ('addEventListener' in obj){
       obj.addEventListener(evt, func, false);
     } else if ('attachEvent' in obj) {
-      obj.attachEvent('on' + evt, func);
+      obj.attachEvent(`on${evt}`, func);
     }
   }
 
@@ -1116,7 +1116,7 @@ export class BaseComponent {
    */
   addClass(element, className) {
     var cls = element.getAttribute('class');
-    cls += (' ' + className);
+    cls += ` ${className}`;
     element.setAttribute('class', cls);
   }
 
@@ -1424,7 +1424,7 @@ export class BaseComponent {
       }
       catch (e) {
         /* eslint-disable no-console */
-        console.warn('An error occurred calculating a value for ' + this.component.key, e);
+        console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
         changed = false;
         /* eslint-enable no-console */
       }
@@ -1439,7 +1439,7 @@ export class BaseComponent {
       }
       catch (err) {
         /* eslint-disable no-console */
-        console.warn('An error occurred calculating a value for ' + this.component.key, e);
+        console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
         changed = false;
         /* eslint-enable no-console */
       }
@@ -1752,8 +1752,10 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       BaseComponent.externalLibraries[name].reject = reject;
     });
 
-    if (!polling && !window[name + 'Callback']) {
-      window[name + 'Callback'] = function() {
+    const callbackName = `${name}Callback`;
+
+    if (!polling && !window[callbackName]) {
+      window[callbackName] = function() {
         this.resolve();
       }.bind(BaseComponent.externalLibraries[name]);
     }
@@ -1827,5 +1829,5 @@ BaseComponent.libraryReady = function(name) {
     return BaseComponent.externalLibraries[name].ready;
   }
 
-  return Promise.reject(name + ' library was not required.');
+  return Promise.reject(`${name} library was not required.`);
 };

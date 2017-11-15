@@ -15,7 +15,7 @@ export class RadioComponent extends BaseComponent {
     });
     let inputType = this.component.inputType;
     _each(this.component.values, (value) => {
-      var wrapperClass = (this.component.inline ? inputType + '-inline' : inputType);
+      var wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
       let labelWrapper = this.ce('div', {
         class: wrapperClass
       });
@@ -27,7 +27,7 @@ export class RadioComponent extends BaseComponent {
       let labelSpan = this.ce('span');
 
       // Determine the attributes for this input.
-      let inputId = this.component.key + this.row + '-' + value.value;
+      let inputId = `${this.component.key}${this.row}-${value.value}`;
       this.info.attr.id = inputId;
       this.info.attr.value = value.value;
       label.setAttribute('for', this.info.attr.id);

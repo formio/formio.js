@@ -7,7 +7,7 @@ export class CheckBoxComponent extends BaseComponent {
     info.attr.type = this.component.inputType;
     info.attr.class = '';
     if (this.component.name) {
-      info.attr.name = 'data[' + this.component.name + ']';
+      info.attr.name = `data[${this.component.name}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
     return info;

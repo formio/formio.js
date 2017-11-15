@@ -44,8 +44,10 @@ export class DayComponent extends BaseComponent {
       class: 'form-group col col-xs-3'
     });
 
+    const id = `${this.component.key}-day`;
+
     const dayLabel = this.ce('label', {
-      for: this.component.key + '-day',
+      for: id,
       class: _get(this.component, 'fields.day.required', false) ? 'field-required' : ''
     });
     dayLabel.appendChild(this.text(this.t('day')));
@@ -62,7 +64,7 @@ export class DayComponent extends BaseComponent {
       min: '1',
       max: '31',
       placeholder: _get(this.component, 'fields.day.placeholder', ''),
-      id: this.component.key + '-day'
+      id
     });
     this.addEventListener(this.dayInput, 'change', () => this.updateValue());
     dayInputWrapper.appendChild(this.dayInput);
@@ -81,8 +83,10 @@ export class DayComponent extends BaseComponent {
       class: 'form-group col col-xs-4'
     });
 
+    const id = `${this.component.key}-month`;
+
     const monthLabel = this.ce('label', {
-      for: this.component.key + '-month',
+      for: id,
       class: _get(this.component, 'fields.month.required', false) ? 'field-required' : ''
     });
     monthLabel.appendChild(this.text(this.t('month')));
@@ -94,7 +98,7 @@ export class DayComponent extends BaseComponent {
     const monthInputWrapper = this.ce('div');
     this.monthInput = this.ce('select', {
       class: 'form-control',
-      id: this.component.key + '-month'
+      id
     });
     this.selectOptions(this.monthInput, 'monthOption', this.months);
     const self = this;
@@ -123,8 +127,10 @@ export class DayComponent extends BaseComponent {
       class: 'form-group col col-xs-5'
     });
 
+    const id = `${this.component.key}-year`;
+
     const yearLabel = this.ce('label', {
-      for: this.component.key + '-year',
+      for: id,
       class: _get(this.component, 'fields.year.required', false) ? 'field-required' : ''
     });
     yearLabel.appendChild(this.text(this.t('year')));
@@ -141,7 +147,7 @@ export class DayComponent extends BaseComponent {
       min: '1',
       placeholder: _get(this.component, 'fields.year.placeholder', ''),
       value: (new Date().getFullYear()),
-      id: this.component.key + '-year'
+      id
     });
     this.addEventListener(this.yearInput, 'change', () => this.updateValue());
     yearInputWrapper.appendChild(this.yearInput);
