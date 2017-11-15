@@ -369,7 +369,7 @@ const FormioUtils = {
         return value[cond.eq].toString() === cond.show.toString();
       }
       // FOR-179 - Check for multiple values.
-      if (value instanceof Array && value.indexOf(cond.eq) !== -1) {
+      if (value instanceof Array && value.includes(cond.eq)) {
         return (cond.show.toString() === 'true');
       }
 

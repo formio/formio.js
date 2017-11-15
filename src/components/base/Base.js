@@ -702,21 +702,21 @@ export class BaseComponent {
     return [
       'left-left',
       'left-right'
-    ].indexOf(position) !== -1;
+    ].includes(position);
   }
 
   labelOnTheRight(position) {
     return [
       'right-left',
       'right-right'
-    ].indexOf(position) !== -1;
+    ].includes(position);
   }
 
   rightAlignedLabel(position) {
     return [
       'left-right',
       'right-right'
-    ].indexOf(position) !== -1;
+    ].includes(position);
   }
 
   labelOnTheLeftOrRight(position) {
@@ -743,7 +743,7 @@ export class BaseComponent {
     if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
       const totalLabelWidth = this.getLabelWidth() + this.getLabelMargin();
       input.style.width = `${100 - totalLabelWidth}%`;
-  
+
       if (this.labelOnTheLeft(this.component.labelPosition)) {
         input.style.marginLeft = `${totalLabelWidth}%`
       } else {
@@ -767,7 +767,7 @@ export class BaseComponent {
     let className = 'control-label';
     let style = '';
 
-    const { 
+    const {
       labelPosition
     } = this.component;
 
