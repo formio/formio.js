@@ -194,7 +194,7 @@ export class BaseComponent {
      * The i18n configuration for this component.
      */
     let i18n = require(&apos;../../i18n&apos;);
-    if (options &amp;&amp; options.i18n) {
+    if (options &amp;&amp; options.i18n &amp;&amp; !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
         i18n = options.i18n;
@@ -209,9 +209,17 @@ export class BaseComponent {
           }
         });
       }
+
+      options.i18n = i18n;
+      options.i18nReady = true;
     }
 
-    this.options.i18n = i18n;
+    if (options &amp;&amp; options.i18n) {
+      this.options.i18n = options.i18n;
+    }
+    else {
+      this.options.i18n = i18n;
+    }
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -833,7 +841,11 @@ export class BaseComponent {
    * @param {HTMLElement} container - The containing element that will contain this label.
    */
   createLabel(container) {
-    if (!this.component.label || this.options.inputsOnly) {
+    if (
+      !this.component.label ||
+      this.component.hideLabel ||
+      this.options.inputsOnly
+    ) {
       return;
     }
     let className = &apos;control-label&apos;;
@@ -849,6 +861,66 @@ export class BaseComponent {
     this.labelElement.appendChild(this.text(this.component.label));
     this.createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
+  }
+
+  addShortcutToLabel(label, shortcut) {
+    if (!label) {
+      label = this.component.label;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    if (!shortcut || !/^[A-Za-z]$/.test(shortcut)) {
+      return label;
+    }
+
+    const match = label.match(new RegExp(shortcut, &apos;i&apos;));
+    
+    if (!match) {
+      return label;
+    }
+
+    const char = match[0];
+    const index = match.index + 1;
+    const lowLineCombinator = &apos;\u0332&apos;;
+
+    return label.substring(0, index) + lowLineCombinator + label.substring(index);
+  }
+
+  addShortcut(element, shortcut) {
+    // Avoid infinite recursion.
+    if (this.root === this) {
+      return;
+    }
+
+    if (!element) {
+      element = this.labelElement;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    this.root.addShortcut(element, shortcut);
+  }
+
+  removeShortcut(element, shortcut) {
+    // Avoid infinite recursion.
+    if (this.root === this) {
+      return;
+    }
+
+    if (!element) {
+      element = this.labelElement;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    this.root.removeShortcut(element, shortcut);
   }
 
   /**
@@ -1276,6 +1348,31 @@ export class BaseComponent {
 
   onResize() {}
 
+  /**
+   * Allow for options to hook into the functionality of this renderer.
+   * @return {*}
+   */
+  hook() {
+    var name = arguments[0];
+    var fn = (typeof arguments[arguments.length - 1] === &apos;function&apos;) ? arguments[arguments.length - 1] : null;
+    if (
+      this.options &amp;&amp;
+      this.options.hooks &amp;&amp;
+      this.options.hooks[name]
+    ) {
+      return this.options.hooks[name].apply(this, Array.prototype.slice.call(arguments, 1));
+    }
+    else {
+      // If this is an async hook instead of a sync.
+      if (fn) {
+        return fn(null, arguments[1]);
+      }
+      else {
+        return arguments[1];
+      }
+    }
+  }
+
   set visible(visible) {
     this.show(visible);
   }
@@ -1338,6 +1435,7 @@ export class BaseComponent {
       this.inputs.push(input);
       input = container.appendChild(input);
     }
+    this.hook(&apos;input&apos;, input, container);
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
   }
@@ -1603,6 +1701,10 @@ export class BaseComponent {
       noUpdateEvent: arguments[1],
       noValidate: arguments[2]
     } : (arguments[1] || {});
+  }
+
+  whenReady() {
+    return Promise.resolve();
   }
 
   /**

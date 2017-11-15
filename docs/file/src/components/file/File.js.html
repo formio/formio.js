@@ -444,6 +444,87 @@ export class FileComponent extends BaseComponent {
     ]);
   }
 
+  globStringToRegex(str) {
+    var regexp = &apos;&apos;, excludes = [];
+    if (str.length &gt; 2 &amp;&amp; str[0] === &apos;/&apos; &amp;&amp; str[str.length - 1] === &apos;/&apos;) {
+      regexp = str.substring(1, str.length - 1);
+    } else {
+      var split = str.split(&apos;,&apos;);
+      if (split.length &gt; 1) {
+        for (var i = 0; i &lt; split.length; i++) {
+          var r = this.globStringToRegex(split[i]);
+          if (r.regexp) {
+            regexp += &apos;(&apos; + r.regexp + &apos;)&apos;;
+            if (i &lt; split.length - 1) {
+              regexp += &apos;|&apos;;
+            }
+          } else {
+            excludes = excludes.concat(r.excludes);
+          }
+        }
+      } else {
+        if (str.indexOf(&apos;!&apos;) === 0) {
+          excludes.push(&apos;^((?!&apos; + this.globStringToRegex(str.substring(1)).regexp + &apos;).)*$&apos;);
+        } else {
+          if (str.indexOf(&apos;.&apos;) === 0) {
+            str = &apos;*&apos; + str;
+          }
+          regexp = &apos;^&apos; + str.replace(new RegExp(&apos;[.\\\\+*?\\[\\^\\]$(){}=!&lt;&gt;|:\\-]&apos;, &apos;g&apos;), &apos;\\$&amp;&apos;) + &apos;$&apos;;
+          regexp = regexp.replace(/\\\*/g, &apos;.*&apos;).replace(/\\\?/g, &apos;.&apos;);
+        }
+      }
+    }
+    return {regexp: regexp, excludes: excludes};
+  }
+
+  translateScalars(str) {
+    if (typeof str === &apos;string&apos;) {
+      if (str.search(/kb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1024);
+      } else if (str.search(/mb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1048576);
+      } else if (str.search(/gb/i) === str.length - 2) {
+        return parseFloat(str.substring(0, str.length - 2) * 1073741824);
+      } else if (str.search(/b/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1));
+      } else if (str.search(/s/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1));
+      } else if (str.search(/m/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1) * 60);
+      } else if (str.search(/h/i) === str.length - 1) {
+        return parseFloat(str.substring(0, str.length - 1) * 3600);
+      }
+    }
+    return str;
+  };
+
+  validatePattern(file, val) {
+    if (!val) {
+      return true;
+    }
+    var pattern = this.globStringToRegex(val), valid = true;
+    if (pattern.regexp &amp;&amp; pattern.regexp.length) {
+      var regexp = new RegExp(pattern.regexp, &apos;i&apos;);
+      valid = (file.type != null &amp;&amp; regexp.test(file.type)) ||
+        (file.name != null &amp;&amp; regexp.test(file.name));
+    }
+    var len = pattern.excludes.length;
+    while (len--) {
+      var exclude = new RegExp(pattern.excludes[len], &apos;i&apos;);
+      valid = valid &amp;&amp; (file.type == null || exclude.test(file.type)) &amp;&amp;
+        (file.name == null || exclude.test(file.name));
+    }
+    return valid;
+  };
+
+  validateMinSize(file, val) {
+    return file.size + 0.1 &gt;= this.translateScalars(val);
+  };
+
+  validateMaxSize(file, val) {
+    return file.size - 0.1 &lt;= this.translateScalars(val);
+  };
+
   upload(files) {
     // Only allow one upload if not multiple.
     if (!this.component.multiple) {
@@ -452,6 +533,21 @@ export class FileComponent extends BaseComponent {
     if (this.component.storage &amp;&amp; files &amp;&amp; files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       Array.prototype.forEach.call(files, file =&gt; {
+        // Check file pattern
+        if (this.component.filePattern &amp;&amp; !this.validatePattern(file, this.component.filePattern)) {
+          return;
+        }
+
+        // Check file minimum size
+        if (this.component.fileMinSize &amp;&amp; !this.validateMinSize(file, this.component.fileMinSize)) {
+          return;
+        }
+
+        // Check file maximum size
+        if (this.component.fileMaxSize &amp;&amp; !this.validateMaxSize(file, this.component.fileMaxSize)) {
+          return;
+        }
+
         // Get a unique name for this file to keep file collisions from occurring.
         const fileName = FormioUtils.uniqueName(file.name);
         let fileUpload = {

@@ -91,6 +91,7 @@ export class CheckBoxComponent extends BaseComponent {
     this.labelElement = this.ce('label', {
       class: 'control-label'
     });
+    this.addShortcut();
 
     const labelOnTheTopOrOnTheLeft = this.labelOnTheTopOrLeft();
 
@@ -107,10 +108,11 @@ export class CheckBoxComponent extends BaseComponent {
       this.labelElement.appendChild(this.labelSpan);
     }
     this.addInput(input, this.labelElement);
+
     if (!this.options.inputsOnly && !labelOnTheTopOrOnTheLeft) {
       this.setInputLabelStyle(this.labelElement);
       this.setInputStyle(input);
-      this.labelSpan.appendChild(this.text(this.component.label));
+      this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
       this.labelElement.appendChild(this.labelSpan);
     }
     this.createTooltip(this.labelElement);
@@ -126,17 +128,21 @@ export class CheckBoxComponent extends BaseComponent {
     return input;
   }
 
+  updateValueByName() {
+    this.data[this.component.name] = this.component.value;
+  }
+
   addInputEventListener(input) {
     this.addEventListener(input, this.info.changeEvent, () => {
       // If this input has a "name", then its other input elements are elsewhere on
       // the form. To get the correct submission object, we need to refresh the whole
       // data object.
       if (this.component.name) {
+        this.updateValueByName();
         this.emit('refreshData');
       }
-      else {
-        this.updateValue();
-      }
+
+      this.updateValue();
     });
   }
 
@@ -167,5 +173,10 @@ export class CheckBoxComponent extends BaseComponent {
       this.input.checked = 0;
     }
     this.updateValue(flags);
+  }
+
+  destroy() {
+    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
+    this.removeShortcut();
   }
 }

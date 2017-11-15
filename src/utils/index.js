@@ -106,6 +106,12 @@ const FormioUtils = {
         ) {
           return newPath;
         }
+        else if (
+          component.key &&
+          component.type === 'form'
+        ) {
+          return newPath + '.data'
+        }
         return path;
       };
 

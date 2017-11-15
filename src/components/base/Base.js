@@ -212,6 +212,9 @@ export class BaseComponent {
      */
     this.eventHandlers = [];
 
+    // To force this component to be invalid.
+    this.invalid = false;
+
     /**
      * An array of the event listeners so that the destroy command can deregister them.
      * @type {Array}
@@ -801,6 +804,66 @@ export class BaseComponent {
     this.labelElement.appendChild(this.text(this.component.label));
     this.createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
+  }
+
+  addShortcutToLabel(label, shortcut) {
+    if (!label) {
+      label = this.component.label;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    if (!shortcut || !/^[A-Za-z]$/.test(shortcut)) {
+      return label;
+    }
+
+    const match = label.match(new RegExp(shortcut, 'i'));
+
+    if (!match) {
+      return label;
+    }
+
+    const char = match[0];
+    const index = match.index + 1;
+    const lowLineCombinator = '\u0332';
+
+    return label.substring(0, index) + lowLineCombinator + label.substring(index);
+  }
+
+  addShortcut(element, shortcut) {
+    // Avoid infinite recursion.
+    if (this.root === this) {
+      return;
+    }
+
+    if (!element) {
+      element = this.labelElement;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    this.root.addShortcut(element, shortcut);
+  }
+
+  removeShortcut(element, shortcut) {
+    // Avoid infinite recursion.
+    if (this.root === this) {
+      return;
+    }
+
+    if (!element) {
+      element = this.labelElement;
+    }
+
+    if (!shortcut) {
+      shortcut = this.component.shortcut;
+    }
+
+    this.root.removeShortcut(element, shortcut);
   }
 
   /**
@@ -1501,7 +1564,7 @@ export class BaseComponent {
   }
 
   checkValidity(data, dirty) {
-    let message = this.invalidMessage(data, dirty);
+    let message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }

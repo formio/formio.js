@@ -7,10 +7,26 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Possibility to specify label position for component and for options for Checkboxes and Radio components.
+
+## 2.22.2
+### Added
+ - The ability to pass an array of errors to the error handler to show more than one.
+ - The ability to make independent components invalid.
+
+## 2.22.1
 ### Fixed
- - Fixed an issue where the token-cookie fallback was not returning the token
+ - A promise issue with executeSubmit method in FormioForm
 
 ### Added
+ - Custom data source to Select component.
+
+## 2.22.0
+### Fixed
+ - Fixed an issue where the token-cookie fallback was not returning the token
+ - Forms not recusing properly in eachComponent function.
+
+### Added
+ - Possibility to add shortcuts.
  - A new hook system that allows to easily create hooks within the renderer.
  - 'beforeSubmit' hook to configuration.
  - 'input' hook to call when new inputs are added.
