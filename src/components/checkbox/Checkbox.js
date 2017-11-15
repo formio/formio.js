@@ -88,8 +88,14 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.label) {
       return null;
     }
+
+    let className = 'control-label';
+    if (this.component.input && this.component.validate && this.component.validate.required) {
+      className += ' field-required';
+    }
+
     this.labelElement = this.ce('label', {
-      class: 'control-label'
+      class: className
     });
     this.addShortcut();
 
@@ -173,6 +179,14 @@ export class CheckBoxComponent extends BaseComponent {
       this.input.checked = 0;
     }
     this.updateValue(flags);
+  }
+
+  getRawValue() {
+    if (this.component.name) {
+      return this.data[this.component.name];
+    }
+
+    return super.getRawValue();
   }
 
   destroy() {
