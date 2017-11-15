@@ -280,3 +280,14 @@ td > .form-group {
 .tooltip[x-placement="right"] .tooltip-inner {
   margin-left: 8px;
 }
+
+.control-label--bottom {
+  margin-bottom: 0;
+  margin-top: 5px;
+}
+
+.checkbox-inline label,
+.radio-inline label {
+  font-weight: 400;
+  cursor: pointer;
+}
