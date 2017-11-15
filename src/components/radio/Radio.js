@@ -1,8 +1,9 @@
 import { BaseComponent } from '../base/Base';
 import _each from 'lodash/each';
+import _assign from 'lodash/assign';
 export class RadioComponent extends BaseComponent {
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.class = '';
@@ -10,43 +11,97 @@ export class RadioComponent extends BaseComponent {
   }
 
   createInput(container) {
-    let inputGroup = this.ce('div', {
+    const inputGroup = this.ce('div', {
       class: 'input-group'
     });
-    let inputType = this.component.inputType;
+    const inputType = this.component.inputType;
+    const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
+
     _each(this.component.values, (value) => {
-      var wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
-      let labelWrapper = this.ce('div', {
+      const wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
+      const labelWrapper = this.ce('div', {
         class: wrapperClass
       });
-      let label = this.ce('label', {
+      const label = this.ce('label', {
         class: 'control-label'
       });
 
       // Create the SPAN around the textNode for better style hooks
-      let labelSpan = this.ce('span');
+      const labelSpan = this.ce('span');
 
       // Determine the attributes for this input.
-      let inputId = `${this.component.key}${this.row}-${value.value}`;
+      const inputId = `${this.component.key}${this.row}-${value.value}`;
       this.info.attr.id = inputId;
       this.info.attr.value = value.value;
       label.setAttribute('for', this.info.attr.id);
 
       // Create the input.
-      let input = this.ce('input');
+      const input = this.ce('input');
       _each(this.info.attr, function(value, key) {
         input.setAttribute(key, value);
       });
+
+      if (labelOnTheTopOrOnTheLeft) {
+        label.appendChild(labelSpan);
+      }
+
+      this.setInputLabelStyle(label);
+      this.setInputStyle(input);
+
       this.addInput(input, label);
 
       labelSpan.appendChild(this.text(value.label));
-      label.appendChild(labelSpan);
+      if (!labelOnTheTopOrOnTheLeft) {
+        label.appendChild(labelSpan);
+      }
       labelWrapper.appendChild(label);
 
       inputGroup.appendChild(labelWrapper);
     });
     container.appendChild(inputGroup);
     this.errorContainer = container;
+  }
+
+  optionsLabelOnTheTopOrLeft() {
+    return ['top', 'left'].includes(this.component.optionsLabelPosition);
+  }
+
+  optionsLabelOnTheTopOrBottom() {
+    return ['top', 'bottom'].includes(this.component.optionsLabelPosition);
+  }
+
+  setInputLabelStyle(label) {
+    if (this.component.optionsLabelPosition === 'left') {
+      _assign(label.style, {
+        textAlign: 'center',
+        paddingLeft: 0,
+      });
+    }
+
+    if (this.optionsLabelOnTheTopOrBottom()) {
+      _assign(label.style, {
+        display: 'block',
+        textAlign: 'center',
+        paddingLeft: 0,
+      });
+    }
+  }
+
+  setInputStyle(input) {
+    if (this.component.optionsLabelPosition === 'left') {
+      _assign(input.style, {
+        position: 'initial',
+        marginLeft: '7px'
+      });
+    }
+
+    if (this.optionsLabelOnTheTopOrBottom()) {
+      _assign(input.style, {
+        width: '100%',
+        position: 'initial',
+        marginLeft: 0
+      });
+    }
   }
 
   getValue() {
