@@ -1,4 +1,5 @@
 import { BaseComponent } from '../base/Base';
+import _assign from 'lodash/assign';
 export class CheckBoxComponent extends BaseComponent {
   elementInfo() {
     let info = super.elementInfo();
@@ -41,6 +42,48 @@ export class CheckBoxComponent extends BaseComponent {
     });
   }
 
+  labelOnTheTopOrLeft() {
+    return ['top', 'left'].includes(this.component.labelPosition);
+  }
+
+  labelOnTheTopOrBottom() {
+    return ['top', 'bottom'].includes(this.component.labelPosition);
+  }
+
+  setInputLabelStyle(label) {
+    if (this.component.labelPosition === 'left') {
+      _assign(label.style, {
+        textAlign: 'center',
+        paddingLeft: 0,
+      });
+    }
+
+    if (this.labelOnTheTopOrBottom()) {
+      _assign(label.style, {
+        display: 'block',
+        textAlign: 'center',
+        paddingLeft: 0,
+      });
+    }
+  }
+
+  setInputStyle(input) {
+    if (this.component.labelPosition === 'left') {
+      _assign(input.style, {
+        position: 'initial',
+        marginLeft: '7px'
+      });
+    }
+
+    if (this.labelOnTheTopOrBottom()) {
+      _assign(input.style, {
+        width: '100%',
+        position: 'initial',
+        marginLeft: 0
+      });
+    }
+  }
+
   createLabel(container, input) {
     if (!this.component.label) {
       return null;
@@ -49,14 +92,24 @@ export class CheckBoxComponent extends BaseComponent {
       class: 'control-label'
     });
 
+    const labelOnTheTopOrOnTheLeft = this.labelOnTheTopOrLeft();
+
     // Create the SPAN around the textNode for better style hooks
     this.labelSpan = this.ce('span');
 
     if (this.info.attr.id) {
       this.labelElement.setAttribute('for', this.info.attr.id);
     }
+    if (!this.options.inputsOnly && labelOnTheTopOrOnTheLeft) {
+      this.setInputLabelStyle(this.labelElement);
+      this.setInputStyle(input);
+      this.labelSpan.appendChild(this.text(this.component.label));
+      this.labelElement.appendChild(this.labelSpan);
+    }
     this.addInput(input, this.labelElement);
-    if (!this.options.inputsOnly) {
+    if (!this.options.inputsOnly && !labelOnTheTopOrOnTheLeft) {
+      this.setInputLabelStyle(this.labelElement);
+      this.setInputStyle(input);
       this.labelSpan.appendChild(this.text(this.component.label));
       this.labelElement.appendChild(this.labelSpan);
     }
