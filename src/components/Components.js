@@ -352,7 +352,7 @@ export class FormioComponents extends BaseComponent {
       component.visible = false;
     }
     else {
-      component.visible = (!this.hidden || (this.hidden.indexOf(component.component.key) === -1));
+      component.visible = (!this.hidden || !this.hidden.includes(component.component.key));
     }
   }
 

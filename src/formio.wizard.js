@@ -244,7 +244,7 @@ export class FormioWizard extends FormioForm {
     let showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
     each(this.pages, (page, i) => {
       // See if this page is in our history.
-      if (showHistory && ((this.page !== i) && (this.history.indexOf(i) === -1))) {
+      if (showHistory && ((this.page !== i) && !this.history.includes(i))) {
         return;
       }
 

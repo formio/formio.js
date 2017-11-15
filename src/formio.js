@@ -134,7 +134,7 @@ export class Formio {
       }
       else {
         // Get project id from subdomain.
-        if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.indexOf('localhost') !== -1)) {
+        if (hostparts.length > 2 && (hostparts[2].split('.').length > 2 || hostName.includes('localhost'))) {
           this.projectUrl = hostName;
           this.projectId = hostparts[2].split('.')[0];
         }
@@ -196,7 +196,7 @@ export class Formio {
     var _url = type + 'Url';
     var method = (this[_id] || data._id) ? 'put' : 'post';
     var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
-    if (!this[_id] && data._id && (method === 'put') && (reqUrl.indexOf(data._id) === -1)) {
+    if (!this[_id] && data._id && (method === 'put') && !reqUrl.includes(data._id)) {
       reqUrl += '/' + data._id;
     }
     Formio.cache = {};
@@ -477,7 +477,7 @@ export class Formio {
       var canSubmitAnonymously = false;
 
       // If the user is an admin, then they can submit this form.
-      if (user && (user.roles.indexOf(adminRole._id) !== -1)) {
+      if (user && user.roles.includes(adminRole._id)) {
         return true;
       }
 
@@ -492,7 +492,7 @@ export class Formio {
                   canSubmitAnonymously = true;
                 }
                 // Check if the logged in user has the appropriate role.
-                if (user && (user.roles.indexOf(subRole.roles[j]) !== -1)) {
+                if (user && user.roles.includes(subRole.roles[j])) {
                   canSubmit = true;
                   break;
                 }
@@ -649,11 +649,12 @@ export class Formio {
             Formio.events.emit('formio.unauthorized', response.body);
           }
           // Parse and return the error as a rejected promise to reject this promise
-          return (response.headers.get('content-type').indexOf('application/json') !== -1 ?
-            response.json() : response.text())
-            .then(function(error){
-              throw error;
-            });
+          return (response.headers.get('content-type').includes('application/json')
+            ? response.json()
+            : response.text())
+              .then(function(error){
+                throw error;
+              });
         }
 
         // Handle fetch results
@@ -668,8 +669,8 @@ export class Formio {
           (method === 'GET') &&
           !requestToken &&
           token &&
-          (url.indexOf('token=') === -1) &&
-          (url.indexOf('x-jwt-token=' === -1))
+          !url.includes('token=') &&
+          !url.includes('x-jwt-token=')
         ) {
           console.warn('Token was introduced in request.');
           tokenIntroduced = true;
@@ -689,7 +690,7 @@ export class Formio {
           return {};
         }
 
-        var getResult = (response.headers.get('content-type').indexOf('application/json') !== -1) ? response.json() : response.text();
+        var getResult = response.headers.get('content-type').includes('application/json') ? response.json() : response.text();
         return getResult.then(function(result) {
           // Add some content-range metadata to the result here
           var range = response.headers.get('content-range');
@@ -1061,7 +1062,7 @@ export class Formio {
   static fieldData(data, component) {
     if (!data) { return ''; }
     if (!component || !component.key) { return data; }
-    if (component.key.indexOf('.') !== -1) {
+    if (component.key.includes('.')) {
       var value = data;
       var parts = component.key.split('.');
       var key = '';

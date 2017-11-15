@@ -128,7 +128,7 @@ export class SelectComponent extends BaseComponent {
     // Add filter capability
     if (this.component.filter) {
       let filter = this.interpolate(this.component.filter, {data: this.data});
-      url += ((url.indexOf('?') === -1) ? '?' : '&') + filter;
+      url += (!url.includes('?') ? '?' : '&') + filter;
     }
 
     // If they wish to return only some fields.
@@ -244,6 +244,7 @@ export class SelectComponent extends BaseComponent {
       position: (this.component.dropdown || 'auto')
     });
     this.choices.itemList.tabIndex = tabIndex;
+    this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {

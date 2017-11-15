@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - Possibility to specify label position for component and for options for Checkboxes and Radio components.
+
 ## 2.22.2
 ### Added
  - The ability to pass an array of errors to the error handler to show more than one.
@@ -26,7 +30,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - A new hook system that allows to easily create hooks within the renderer.
  - 'beforeSubmit' hook to configuration.
  - 'input' hook to call when new inputs are added.
- - Display custom validation error message. 
+ - Display custom validation error message.
  - Ability to inject form data into the error messages.
 
 ## 2.21.3
@@ -73,7 +77,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issues with using for in statements with arrays pulling in keys we don't want.
  - The data view of a Signature to show the image of the signature for easy scaling.
- 
+
 ### Changed
  - The Select dropdown api requests to use Formio.makeRequest so that plugins could be used.
  - Upgrade Quill.js to 1.3.3
@@ -96,7 +100,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Added file input to DOM as a hidden item to fix issue with IE
  - Select component to respect tab index
  - Resize issues with Signature component so they scale according to devicePixelRatio.
- 
+
 ### Changed
  - Force dropdowns to open only downwards
  - Upgrade moment to 2.19.1 since they fixed React bug (https://github.com/moment/moment/issues/4216)
@@ -109,7 +113,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.19.2
 ### Fixed
  - Form component to allow recursive loading and setting a submission value.
- 
+
 ### Changed
  - Upgraded moment to 2.19.0
 
@@ -133,9 +137,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Issue where the DateTime component calendar would not show up.
  - Better fallback for cookie support if localStorage is disabled or not present.
  - Add Editgrid and custom components to recursive tree.
- - Issue where conditionally visible components should also force parents visible. 
+ - Issue where conditionally visible components should also force parents visible.
  - Allow email components to be valid if pristine and empty.
- - Issue where clearOnHide flag was not working. 
+ - Issue where clearOnHide flag was not working.
  - Issue where tooltips were not showing up on DataGrids
  - Issue where a form would invalidate after a successful submit.
  - Problem with setting a radio button with boolean values.
@@ -200,7 +204,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issues with translations and certain strings that contains special characters.
  - Issues with the Select drop down pulling the wrong url to send the request off to.
- 
+
 ### Added
  - Mask input fields when set.
 
@@ -247,7 +251,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.14.0
 ### Added
  - PDF support
- 
+
 ### Changed
  - Upgraded dependencies
 
@@ -276,11 +280,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - A way to determine if a user is able to submit a form before they do.
  - A delete api call when a file is deleted.
  - A way to upload base64 file uploads.
-  
+
 ### Changed
  - Refactored the http requests to have less Promises and more streamlined.
  - Wait for the form to load before loading the submission.
- 
+
 ### Fixed
  - Fixed some issues with multi-select field validation.
 
@@ -296,7 +300,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Component error highlights when an error occurs during invalidation.
  - Custom styles capability.
- 
+
 ### Changed
  - All instances of jsonLogic to use the FormioUtils.jsonLogic so that it can be extended.
 
@@ -324,7 +328,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
  - Remove templating from ce function.
  - Replace Handlebars templating with lodash.
- 
+
 ### Fixed
  - An issue with the select boxes component that showed required astrix on all options.
 
@@ -368,7 +372,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issue where the eval code for calculatedValues and defaultValues was causing an error.
  - Removed deprecated getAppUrl within the Resource compoennt.
- 
+
 ### Changed
  - Changed the this.src setter to use the this.url for reduced code duplication.
 
@@ -386,7 +390,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.9.10
 ### Changed
  - Upgraded jsonLogic library to 1.1.2.
- - Removed the unnecessary embed method in formio.form.js. Use formio.full.js to bring it back in. 
+ - Removed the unnecessary embed method in formio.form.js. Use formio.full.js to bring it back in.
 
 ### Fixed
  - Issue with the multi-page forms where the conditions would not apply properly.
@@ -410,7 +414,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - An issue where Select components were not selecting the default values properly.
 
 ## 2.9.6
-### Added 
+### Added
  - A formLoad event to fire when the form is done loading.
 
 ## 2.9.5
@@ -449,7 +453,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.8.5
 ### Fixed
  - Issue where the custom events were not firing properly on buttons.
- 
+
 ### Added
  - Custom classes to the button component.
 

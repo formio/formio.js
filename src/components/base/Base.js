@@ -8,6 +8,7 @@ import _isArray from 'lodash/isArray';
 import _clone from 'lodash/clone';
 import _defaults from 'lodash/defaults';
 import _isEqual from 'lodash/isEqual';
+import _isUndefined from 'lodash/isUndefined';
 import i18next from 'i18next';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
@@ -223,7 +224,7 @@ export class BaseComponent {
     if (this.component) {
       this.type = this.component.type;
       if (this.component.input && this.component.key) {
-        this.options.name += '[' + this.component.key + ']';
+        this.options.name += `[${this.component.key}]`;
       }
 
       /**
@@ -290,7 +291,7 @@ export class BaseComponent {
     if (!this.events) {
       return;
     }
-    let type = 'formio.' + event;
+    let type = `formio.${event}`;
     this.eventListeners.push({
       type: type,
       listener: cb,
@@ -306,7 +307,7 @@ export class BaseComponent {
    * @param {Object} data - The data to emit with the handler.
    */
   emit(event, data) {
-    this.events.emit('formio.' + event, data);
+    this.events.emit(`formio.${event}`, data);
   }
 
   /**
@@ -317,19 +318,18 @@ export class BaseComponent {
    */
   getIcon(name) {
     return this.ce('i', {
-      class: 'glyphicon glyphicon-' + name
+      class: `glyphicon glyphicon-${name}`
     });
   }
 
   getBrowserLanguage() {
-    var nav = window.navigator,
-      browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'],
-      i,
-      language;
+    const nav = window.navigator;
+    const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
+    let language;
 
     // support for HTML 5.1 "navigator.languages"
     if (Array.isArray(nav.languages)) {
-      for (i = 0; i < nav.languages.length; i++) {
+      for (let i = 0; i < nav.languages.length; i++) {
         language = nav.languages[i];
         if (language && language.length) {
           return language;
@@ -338,7 +338,7 @@ export class BaseComponent {
     }
 
     // support for other well known properties in browsers
-    for (i = 0; i < browserLanguagePropertyKeys.length; i++) {
+    for (let i = 0; i < browserLanguagePropertyKeys.length; i++) {
       language = nav[browserLanguagePropertyKeys[i]];
       if (language && language.length) {
         return language;
@@ -396,9 +396,16 @@ export class BaseComponent {
    */
   build() {
     this.createElement();
-    this.createLabel(this.element);
+
+    const labelAtTheBottom = this.component.labelPosition === 'bottom';
+    if (!labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
     if (!this.createWrapper()) {
       this.createInput(this.element);
+    }
+    if (labelAtTheBottom) {
+      this.createLabel(this.element);
     }
     this.createDescription(this.element);
 
@@ -417,9 +424,9 @@ export class BaseComponent {
    */
   get className() {
     let className = this.component.input ? 'form-group has-feedback ' : '';
-    className += 'formio-component formio-component-' + this.component.type + ' ';
+    className += `formio-component formio-component-${this.component.type} `;
     if (this.component.key) {
-      className += 'formio-component-' + this.component.key + ' ';
+      className += `formio-component-${this.component.key} `;
     }
     if (this.component.customClass) {
       className += this.component.customClass;
@@ -438,7 +445,7 @@ export class BaseComponent {
     let customCSS = '';
     _each(this.component.style, function(value, key) {
         if (value !== '') {
-          customCSS += key + ':' + value + ';';
+          customCSS += `${key}:${value};`;
         }
     });
     return customCSS;
@@ -494,6 +501,8 @@ export class BaseComponent {
       // Build the rows.
       this.buildRows();
 
+      this.setInputStyles(table);
+
       // Add the table to the element.
       this.append(table);
       return true;
@@ -518,7 +527,7 @@ export class BaseComponent {
         catch (e) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn('An error occurred getting default value for ' + this.component.key, e);
+          console.warn(`An error occurred getting default value for ${this.component.key}`, e);
           /* eslint-enable no-console */
         }
       }
@@ -532,7 +541,7 @@ export class BaseComponent {
         catch (err) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn('An error occurred calculating a value for ' + this.component.key, e);
+          console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
           /* eslint-enable no-console */
         }
       }
@@ -691,6 +700,60 @@ export class BaseComponent {
     return removeButton;
   }
 
+  labelOnTheLeft(position) {
+    return [
+      'left-left',
+      'left-right'
+    ].includes(position);
+  }
+
+  labelOnTheRight(position) {
+    return [
+      'right-left',
+      'right-right'
+    ].includes(position);
+  }
+
+  rightAlignedLabel(position) {
+    return [
+      'left-right',
+      'right-right'
+    ].includes(position);
+  }
+
+  labelOnTheLeftOrRight(position) {
+    return this.labelOnTheLeft(position) || this.labelOnTheRight(position);
+  }
+
+  getLabelWidth() {
+    if (_isUndefined(this.component.labelWidth)) {
+      this.component.labelWidth = 30;
+    }
+
+    return this.component.labelWidth;
+  }
+
+  getLabelMargin() {
+    if (_isUndefined(this.component.labelMargin)) {
+      this.component.labelMargin = 3;
+    }
+
+    return this.component.labelMargin;
+  }
+
+  setInputStyles(input) {
+    if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
+      const totalLabelWidth = this.getLabelWidth() + this.getLabelMargin();
+      input.style.width = `${100 - totalLabelWidth}%`;
+
+      if (this.labelOnTheLeft(this.component.labelPosition)) {
+        input.style.marginLeft = `${totalLabelWidth}%`
+      } else {
+        input.style.marginRight = `${totalLabelWidth}%`
+      }
+    }
+  }
+
   /**
    * Create the HTML element for the label of this component.
    * @param {HTMLElement} container - The containing element that will contain this label.
@@ -704,11 +767,36 @@ export class BaseComponent {
       return;
     }
     let className = 'control-label';
+    let style = '';
+
+    const {
+      labelPosition
+    } = this.component;
+
+    // Determine label styles/classes depending on position.
+    if (labelPosition === 'bottom') {
+      className += ' control-label--bottom';
+    } else if (labelPosition && labelPosition !== 'top') {
+      const labelWidth = this.getLabelWidth();
+      const labelMargin = this.getLabelMargin();
+
+      // Label is on the left or right.
+      if (this.labelOnTheLeft(labelPosition)) {
+        style += `float: left; width: ${labelWidth}%; margin-right: ${labelMargin}%; `;
+      } else if (this.labelOnTheRight(labelPosition)) {
+        style += `float: right; width: ${labelWidth}%; margin-left: ${labelMargin}%; `;
+      }
+      if (this.rightAlignedLabel(labelPosition)) {
+        style += 'text-align: right; ';
+      }
+    }
+
     if (this.component.input && this.component.validate && this.component.validate.required) {
       className += ' field-required';
     }
     this.labelElement = this.ce('label', {
-      class: className
+      class: className,
+      style
     });
     if (this.info.attr.id) {
       this.labelElement.setAttribute('for', this.info.attr.id);
@@ -963,6 +1051,7 @@ export class BaseComponent {
     this.addInput(input, inputGroup || container);
     this.addSuffix(input, inputGroup);
     this.errorContainer = container;
+    this.setInputStyles(inputGroup || input);
     return inputGroup || input;
   }
 
@@ -981,7 +1070,7 @@ export class BaseComponent {
     if ('addEventListener' in obj){
       obj.addEventListener(evt, func, false);
     } else if ('attachEvent' in obj) {
-      obj.attachEvent('on' + evt, func);
+      obj.attachEvent(`on${evt}`, func);
     }
   }
 
@@ -1088,9 +1177,7 @@ export class BaseComponent {
    *   The name of the class to add.
    */
   addClass(element, className) {
-    var cls = element.getAttribute('class');
-    cls += (' ' + className);
-    element.setAttribute('class', cls);
+    element.setAttribute('class', `${element.getAttribute('class')} ${className}`);
   }
 
   /**
@@ -1102,7 +1189,7 @@ export class BaseComponent {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
-    var cls = element.getAttribute('class');
+    let cls = element.getAttribute('class');
     if (cls) {
       cls = cls.replace(className, '');
       element.setAttribute('class', cls);
@@ -1208,8 +1295,8 @@ export class BaseComponent {
    * @return {*}
    */
   hook() {
-    var name = arguments[0];
-    var fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
+    const name = arguments[0];
+    const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
     if (
       this.options &&
       this.options.hooks &&
@@ -1397,7 +1484,7 @@ export class BaseComponent {
       }
       catch (e) {
         /* eslint-disable no-console */
-        console.warn('An error occurred calculating a value for ' + this.component.key, e);
+        console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
         changed = false;
         /* eslint-enable no-console */
       }
@@ -1412,7 +1499,7 @@ export class BaseComponent {
       }
       catch (err) {
         /* eslint-disable no-console */
-        console.warn('An error occurred calculating a value for ' + this.component.key, e);
+        console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
         changed = false;
         /* eslint-enable no-console */
       }
@@ -1725,8 +1812,10 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       BaseComponent.externalLibraries[name].reject = reject;
     });
 
-    if (!polling && !window[name + 'Callback']) {
-      window[name + 'Callback'] = function() {
+    const callbackName = `${name}Callback`;
+
+    if (!polling && !window[callbackName]) {
+      window[callbackName] = function() {
         this.resolve();
       }.bind(BaseComponent.externalLibraries[name]);
     }
@@ -1800,5 +1889,5 @@ BaseComponent.libraryReady = function(name) {
     return BaseComponent.externalLibraries[name].ready;
   }
 
-  return Promise.reject(name + ' library was not required.');
+  return Promise.reject(`${name} library was not required.`);
 };

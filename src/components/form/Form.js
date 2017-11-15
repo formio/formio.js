@@ -53,7 +53,7 @@ export class FormComponent extends FormioForm {
     }
 
     // Add the source to this actual submission if the component is a reference.
-    if (data[component.key] && this.component.reference && (component.src.indexOf('/submission/') === -1)) {
+    if (data[component.key] && this.component.reference && !component.src.includes('/submission/')) {
       component.src += '/submission/' + data[component.key]._id;
     }
 
