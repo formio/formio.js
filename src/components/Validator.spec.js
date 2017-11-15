@@ -3,7 +3,7 @@ import { Validator } from './Validator';
 import { BaseComponent } from './base/Base';
 import assert from 'power-assert';
 describe('Validator Tests', () => {
-  let baseComponent = new BaseComponent({});
+  const baseComponent = new BaseComponent({});
 
   it('Should test for minLength', () => {
     assert.equal(Validator.validators.minLength.check(baseComponent, 5, 'test'), false);

@@ -30,7 +30,7 @@ export class FormioComponents extends BaseComponent {
    * @param {function} cb - Called for every component.
    */
   everyComponent(cb) {
-    let components = this.getComponents();
+    const components = this.getComponents();
     _each(components, (component, index) => {
       if (component.type === 'components') {
         if (component.everyComponent(cb) === false) {
@@ -110,7 +110,7 @@ export class FormioComponents extends BaseComponent {
       this.options.components = require('./index');
       _assign(this.options.components, FormioComponents.customComponents);
     }
-    let comp = this.options.components.create(component, options, data, true);
+    const comp = this.options.components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
     comp.build();
@@ -130,7 +130,7 @@ export class FormioComponents extends BaseComponent {
     element = element || this.element;
     data = data || this.data;
     component.row = this.row;
-    let comp = this.createComponent(component, this.options, data);
+    const comp = this.createComponent(component, this.options, data);
     this.setHidden(comp);
     element.appendChild(comp.getElement());
     return comp;
@@ -144,7 +144,7 @@ export class FormioComponents extends BaseComponent {
    */
   removeComponent(component, components) {
     component.destroy();
-    let element = component.getElement();
+    const element = component.getElement();
     if (element && element.parentNode) {
       element.parentNode.removeChild(element);
     }
@@ -159,7 +159,7 @@ export class FormioComponents extends BaseComponent {
    * @return {null}
    */
   removeComponentByKey(key, cb) {
-    let comp = this.getComponent(key, (component, components) => {
+    const comp = this.getComponent(key, (component, components) => {
       this.removeComponent(component, components);
       if (cb) {
         cb(component, components);
@@ -181,7 +181,7 @@ export class FormioComponents extends BaseComponent {
    * @return {null}
    */
   removeComponentById(id, cb) {
-    let comp = this.getComponentById(id, (component, components) => {
+    const comp = this.getComponentById(id, (component, components) => {
       this.removeComponent(component, components);
       if (cb) {
         cb(component, components);
@@ -261,7 +261,7 @@ export class FormioComponents extends BaseComponent {
     let forceShow = false;
     let show = false;
     _each(this.getComponents(), (comp) => {
-      let compShow = comp.checkConditions(data);
+      const compShow = comp.checkConditions(data);
       forceShow |= (comp.hasCondition() && compShow);
       show |= compShow;
     });
@@ -282,7 +282,7 @@ export class FormioComponents extends BaseComponent {
    * @return {*}
    */
   beforeNext() {
-    var ops = [];
+    const ops = [];
     _each(this.getComponents(), (comp) => ops.push(comp.beforeNext()));
     return Promise.all(ops);
   }
@@ -293,7 +293,7 @@ export class FormioComponents extends BaseComponent {
    * @return {*}
    */
   beforeSubmit() {
-    var ops = [];
+    const ops = [];
     _each(this.getComponents(), (comp) => ops.push(comp.beforeSubmit()));
     return Promise.all(ops);
   }
@@ -334,7 +334,7 @@ export class FormioComponents extends BaseComponent {
 
   destroy(all) {
     super.destroy(all);
-    let components = _clone(this.components);
+    const components = _clone(this.components);
     _each(components, (comp) => this.removeComponent(comp, this.components));
     this.components = [];
     this.hidden = [];
@@ -364,7 +364,7 @@ export class FormioComponents extends BaseComponent {
   get errors() {
     let errors = [];
     _each(this.getComponents(), (comp) => {
-      let compErrors = comp.errors;
+      const compErrors = comp.errors;
       if (compErrors.length) {
         errors = errors.concat(compErrors);
       }
@@ -377,7 +377,7 @@ export class FormioComponents extends BaseComponent {
   }
 
   whenReady() {
-    let promises = [];
+    const promises = [];
     _each(this.getComponents(), (component) => {
       promises.push(component.whenReady());
     });

@@ -186,7 +186,7 @@ export const Validator = {
         if (!pattern) {
           return true;
         }
-        const regexStr = '^' + pattern + '$';
+        const regexStr = `^${pattern}$`;
         const regex = new RegExp(regexStr);
         return regex.test(value);
       }
