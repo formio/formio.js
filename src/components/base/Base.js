@@ -320,14 +320,13 @@ export class BaseComponent {
   }
 
   getBrowserLanguage() {
-    var nav = window.navigator,
-      browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'],
-      i,
-      language;
+    const nav = window.navigator;
+    const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
+    let language;
 
     // support for HTML 5.1 "navigator.languages"
     if (Array.isArray(nav.languages)) {
-      for (i = 0; i < nav.languages.length; i++) {
+      for (let i = 0; i < nav.languages.length; i++) {
         language = nav.languages[i];
         if (language && language.length) {
           return language;
@@ -336,7 +335,7 @@ export class BaseComponent {
     }
 
     // support for other well known properties in browsers
-    for (i = 0; i < browserLanguagePropertyKeys.length; i++) {
+    for (let i = 0; i < browserLanguagePropertyKeys.length; i++) {
       language = nav[browserLanguagePropertyKeys[i]];
       if (language && language.length) {
         return language;
@@ -1115,9 +1114,7 @@ export class BaseComponent {
    *   The name of the class to add.
    */
   addClass(element, className) {
-    var cls = element.getAttribute('class');
-    cls += ` ${className}`;
-    element.setAttribute('class', cls);
+    element.setAttribute('class', `${element.getAttribute('class')} ${className}`);
   }
 
   /**
@@ -1129,7 +1126,7 @@ export class BaseComponent {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
-    var cls = element.getAttribute('class');
+    let cls = element.getAttribute('class');
     if (cls) {
       cls = cls.replace(className, '');
       element.setAttribute('class', cls);
@@ -1235,8 +1232,8 @@ export class BaseComponent {
    * @return {*}
    */
   hook() {
-    var name = arguments[0];
-    var fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
+    const name = arguments[0];
+    const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
     if (
       this.options &&
       this.options.hooks &&
