@@ -52,7 +52,7 @@ export class RadioComponent extends BaseComponent {
 
       this.addInput(input, label);
 
-      labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut))));
+      labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
       if (!labelOnTheTopOrOnTheLeft) {
         label.appendChild(labelSpan);
       }
