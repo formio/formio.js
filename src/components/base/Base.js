@@ -499,6 +499,8 @@ export class BaseComponent {
       // Build the rows.
       this.buildRows();
 
+      this.setInputStyles(table);
+
       // Add the table to the element.
       this.append(table);
       return true;
