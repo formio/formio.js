@@ -2,7 +2,7 @@ import { BaseComponent } from '../base/Base';
 import _assign from 'lodash/assign';
 export class CheckBoxComponent extends BaseComponent {
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.type = this.component.inputType;
@@ -129,7 +129,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.input) {
       return;
     }
-    let input = this.ce(this.info.type, this.info.attr);
+    const input = this.ce(this.info.type, this.info.attr);
     this.errorContainer = container;
     return input;
   }
