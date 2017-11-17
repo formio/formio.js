@@ -55,4 +55,13 @@ describe('Validator Tests', () => {
     assert.equal(Validator.validators.pattern.check(baseComponent, '\\w+@\\w+', 'test@a'), true);
     assert.equal(Validator.validators.pattern.check(baseComponent, '\\w+@\\w+', 'test@example.com'), false);
   });
+
+  it('Should test for json', () => {
+    assert.equal(Validator.validators.json.check(baseComponent, {
+      or: [ { equals: [ { var: 'data.test' }, [ '1', '2', '3' ] ] }, 'Should be false.' ]
+    }, null, { test: [ '1', '2', '3' ] }), true);
+    assert.equal(Validator.validators.json.check(baseComponent, {
+      or: [ { equals: [ { var: 'data.test' }, [ '1', '2', '3' ] ] }, 'Should be false.' ]
+    }, null, { test: [ '1', '2', '4' ] }), 'Should be false.');
+  });
 });
