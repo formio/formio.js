@@ -1,11 +1,11 @@
 'use strict';
+import _ from 'lodash';
 import _clone from 'lodash/clone';
 import _get from 'lodash/get';
 import _round from 'lodash/round';
 import _pad from 'lodash/pad';
 import _chunk from 'lodash/chunk';
 import _isNaN from 'lodash/isNaN';
-import _isEqual from 'lodash/isEqual';
 import _has from 'lodash/has';
 import _last from 'lodash/last';
 import _isBoolean from 'lodash/isBoolean';
@@ -19,7 +19,7 @@ import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
 
 // Configure JsonLogic
-jsonLogic.add_operation('equals', _isEqual);
+jsonLogic.add_operation('_', _);
 
 const FormioUtils = {
   jsonLogic, // Share
@@ -383,8 +383,8 @@ const FormioUtils = {
     }
     else if (component.conditional && component.conditional.json) {
       return jsonLogic.apply(component.conditional.json, {
-        data: data,
-        row: row
+        data,
+        row
       });
     }
 
