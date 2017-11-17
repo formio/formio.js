@@ -6,8 +6,12 @@ import _round from 'lodash/round';
 import _pad from 'lodash/pad';
 import _chunk from 'lodash/chunk';
 import _isNaN from 'lodash/isNaN';
+import _isEqual from 'lodash/isEqual';
 import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
+
+// Configure JsonLogic
+jsonLogic.add_operation('equals', _isEqual);
 
 const FormioUtils = {
   jsonLogic, // Share
