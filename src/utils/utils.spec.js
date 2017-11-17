@@ -1,15 +1,15 @@
 'use strict';
 
 /* eslint-env mocha */
-var expect = require('chai').expect;
-var writtenNumber = require('written-number');
-var utils = require('./index');
-var components = require('./fixtures/components.json');
-var submission1 = require('./fixtures/submission1.json');
+const expect = require('chai').expect;
+const writtenNumber = require('written-number');
+const utils = require('./index');
+const components = require('./fixtures/components.json');
+const submission1 = require('./fixtures/submission1.json');
 
 describe('eachComponent', function() {
   it('should iterate through nested components in the right order', function() {
-    var n = 1;
+    let n = 1;
     utils.eachComponent(components, function(component) {
       expect(component.order).to.equal(n);
       n += 1;
@@ -17,8 +17,8 @@ describe('eachComponent', function() {
   });
 
   it('should include layouts components if provided', function() {
-    var numComps = 0;
-    var numLayout = 0;
+    let numComps = 0;
+    let numLayout = 0;
     utils.eachComponent(components, function(component) {
       if (utils.isLayoutComponent(component)) {
         numLayout++;
@@ -32,7 +32,7 @@ describe('eachComponent', function() {
   });
 
   it('Should provide the paths to all of the components', function() {
-    var paths = [
+    const paths = [
       'one',
       'parent1',
       'two',
@@ -45,7 +45,7 @@ describe('eachComponent', function() {
       'seven',
       'eight'
     ];
-    var testPaths = [];
+    const testPaths = [];
     utils.eachComponent(components, function(component, path) {
       testPaths.push(path);
     }, true);
@@ -53,13 +53,13 @@ describe('eachComponent', function() {
   });
 
   it('Should be able to find all textfield components', function() {
-    var comps = utils.findComponents(components, {type: 'textfield'});
+    const comps = utils.findComponents(components, {type: 'textfield'});
     expect(comps.length).to.equal(6);
   });
 
   it('Should be able to find components with special properties.', function() {
-    var components3 = require('./fixtures/components3.json');
-    var comps = utils.findComponents(components3, {'properties.path': 'a'});
+    const components3 = require('./fixtures/components3.json');
+    const comps = utils.findComponents(components3, {'properties.path': 'a'});
     expect(comps.length).to.equal(4);
     expect(comps[0].key).to.equal('b');
     expect(comps[1].key).to.equal('e');
@@ -68,8 +68,8 @@ describe('eachComponent', function() {
   });
 
   it('Should be able to generate paths based on component types', function() {
-    var components = require('./fixtures/components2.json');
-    var paths = [
+    const components = require('./fixtures/components2.json');
+    const paths = [
       'a',
       'b',
       'c',
@@ -90,7 +90,7 @@ describe('eachComponent', function() {
       'r',
       'submit'
     ];
-    var testPaths = [];
+    const testPaths = [];
     utils.eachComponent(components, function(component, path) {
       testPaths.push(path);
     }, true);
@@ -98,7 +98,7 @@ describe('eachComponent', function() {
   });
 
   it('Should still provide the correct paths when it is not recursive', function() {
-    var paths = [
+    const paths = [
       'a',
       'd',
       'f',
@@ -117,7 +117,7 @@ describe('eachComponent', function() {
       'r',
       'submit'
     ];
-    var testPaths = [];
+    const testPaths = [];
     utils.eachComponent(require('./fixtures/components2.json'), function(component, path) {
       testPaths.push(path);
     });
@@ -125,8 +125,8 @@ describe('eachComponent', function() {
   });
 
   it('should be able to block recursion', function() {
-    var numComps = 0;
-    var numLayout = 0;
+    let numComps = 0;
+    let numLayout = 0;
     utils.eachComponent(components, function(component) {
       if (utils.isLayoutComponent(component)) {
         numLayout++;
@@ -136,7 +136,7 @@ describe('eachComponent', function() {
       }
 
       if (component.type === 'table') {
-        var numInTable = 0;
+        let numInTable = 0;
         [].concat.apply([], component.rows).forEach(function(row) {
           utils.eachComponent(row.components, function() {
             numInTable++;
@@ -153,8 +153,8 @@ describe('eachComponent', function() {
 
 describe('getComponent', function() {
   it('should return the correct components', function() {
-    for (var n = 1; n <= 8; n += 1) {
-      var component = utils.getComponent(components, writtenNumber(n));
+    for (let n = 1; n <= 8; n += 1) {
+      const component = utils.getComponent(components, writtenNumber(n));
       expect(component).not.to.be.null;
       expect(component).not.to.be.undefined;
       expect(component).to.be.an('object');
@@ -164,8 +164,8 @@ describe('getComponent', function() {
   });
 
   it('should work with a different this context', function() {
-    for (var n = 1; n <= 8; n += 1) {
-      var component = utils.getComponent.call({}, components, writtenNumber(n));
+    for (let n = 1; n <= 8; n += 1) {
+      const component = utils.getComponent.call({}, components, writtenNumber(n));
       expect(component).not.to.be.null;
       expect(component).not.to.be.undefined;
       expect(component).to.be.an('object');
@@ -177,9 +177,9 @@ describe('getComponent', function() {
 
 describe('flattenComponents', function() {
   it('should return an object of flattened components', function() {
-    var flattened = utils.flattenComponents(components);
-    for (var n = 1; n <= 8; n += 1) {
-      var component = flattened[writtenNumber(n)];
+    const flattened = utils.flattenComponents(components);
+    for (let n = 1; n <= 8; n += 1) {
+      const component = flattened[writtenNumber(n)];
       expect(component).not.to.be.undefined;
       expect(component).to.be.an('object');
       expect(component.order).to.equal(n);
@@ -188,9 +188,9 @@ describe('flattenComponents', function() {
   });
 
   it('should work with a different this context', function() {
-    var flattened = utils.flattenComponents.call({}, components);
-    for (var n = 1; n <= 8; n += 1) {
-      var component = flattened[writtenNumber(n)];
+    const flattened = utils.flattenComponents.call({}, components);
+    for (let n = 1; n <= 8; n += 1) {
+      const component = flattened[writtenNumber(n)];
       expect(component).not.to.be.undefined;
       expect(component).to.be.an('object');
       expect(component.order).to.equal(n);
