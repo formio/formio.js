@@ -108,6 +108,13 @@ export class SelectComponent extends BaseComponent {
 
   loadItems(url, search, headers, options) {
     options = options || {};
+
+    // Ensure we have a method and remove any body if method is get
+    method = method || 'GET';
+    if (method.toUpperCase() === 'GET') {
+      body = null;
+    }
+    
     let query = (this.component.dataSrc === 'url') ? {} : {
       limit: 100,
       skip: 0
@@ -142,7 +149,7 @@ export class SelectComponent extends BaseComponent {
 
     // Make the request.
     options.header = headers;
-    Formio.makeRequest(this.options.formio, 'select', url, null, null, options)
+    Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => this.setItems(response))
       .catch((err) => {
         this.events.emit('formio.error', err);
@@ -201,13 +208,26 @@ export class SelectComponent extends BaseComponent {
         break;
       case 'url':
         let url = this.component.data.url;
+        let method;
+        let body;
+
         if (url.substr(0, 1) === '/') {
           url = Formio.getBaseUrl() + this.component.data.url;
         }
 
-        this.loadItems(url, searchInput, this.requestHeaders, {
-          noToken: true
-        });
+        if (!this.component.data.method) {
+          method = 'GET';
+        }
+        else {
+          method = this.component.data.method;
+          if (method.toUpperCase() === 'POST') {
+            body = this.component.data.body;
+          }
+          else {
+            body = null
+          }
+        }
+        this.loadItems(url, searchInput, this.requestHeaders, {noToken: true}, method, body);
         break;
     }
   }
