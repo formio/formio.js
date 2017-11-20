@@ -7739,6 +7739,13 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       var _this3 = this;
 
       options = options || {};
+
+      // Ensure we have a method and remove any body if method is get
+      method = method || 'GET';
+      if (method.toUpperCase() === 'GET') {
+        body = null;
+      }
+
       var query = this.component.dataSrc === 'url' ? {} : {
         limit: 100,
         skip: 0
@@ -7773,7 +7780,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
       // Make the request.
       options.header = headers;
-      _formio2.default.makeRequest(this.options.formio, 'select', url, null, null, options).then(function (response) {
+      _formio2.default.makeRequest(this.options.formio, 'select', url, method, body, options).then(function (response) {
         return _this3.setItems(response);
       }).catch(function (err) {
         _this3.events.emit('formio.error', err);
@@ -7813,13 +7820,24 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           break;
         case 'url':
           var url = this.component.data.url;
+          var _method = void 0;
+          var _body = void 0;
+
           if (url.substr(0, 1) === '/') {
             url = _formio2.default.getBaseUrl() + this.component.data.url;
           }
 
-          this.loadItems(url, searchInput, this.requestHeaders, {
-            noToken: true
-          });
+          if (!this.component.data.method) {
+            _method = 'GET';
+          } else {
+            _method = this.component.data.method;
+            if (_method.toUpperCase() === 'POST') {
+              _body = this.component.data.body;
+            } else {
+              _body = null;
+            }
+          }
+          this.loadItems(url, searchInput, this.requestHeaders, { noToken: true }, _method, _body);
           break;
       }
     }
