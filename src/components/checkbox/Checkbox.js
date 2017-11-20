@@ -135,7 +135,14 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   updateValueByName() {
-    this.data[this.component.name] = this.component.value;
+    const component = this.getRoot().getComponent(this.component.name);
+
+    if (component) {
+      component.setValue(this.component.value, { changed: true });
+    }
+    else {
+      this.data[this.component.name] = this.component.value;
+    }
   }
 
   addInputEventListener(input) {
