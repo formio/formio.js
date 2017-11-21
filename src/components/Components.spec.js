@@ -37,7 +37,7 @@ describe('FormioComponents class', () => {
   });
 
   it('Should be able to set data within the components.', () => {
-    let value = {
+    const value = {
       firstName: 'Joe',
       lastName: 'Smith',
       email: 'joe@example.com'
