@@ -228,6 +228,17 @@ describe('formatAsCurrency', () => {
 });
 
 describe('checkCalculated', () => {
+  it('should be able to calculate value based on javascript code', () => {
+    const component = {
+      key: 'sum',
+      calculateValue: 'value = 3'
+    };
+    const data = {};
+
+    utils.checkCalculated(component, null, data);
+    expect(data.sum).to.be.equal(3);
+  });
+
   it('should be able to calculate value based on json logic', () => {
     const component = {
       key: 'sum',
@@ -245,6 +256,18 @@ describe('checkCalculated', () => {
 describe('checkCondition', () => {
   it('should display component by default', () => {
     expect(utils.checkCondition({}, null, {})).to.be.equal(true);
+  });
+
+  it('should be able to calculate condition based on javascript code', () => {
+    const component = {
+      key: 'sum',
+      customConditional: 'show = data.test === 3'
+    };
+    const data1 = { test: 3 };
+    const data2 = { test: 5 };
+
+    expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
+    expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
   });
 
   it('should be able to calculate condition based on json logic', () => {
