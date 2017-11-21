@@ -151,7 +151,7 @@ import { Validator } from &apos;./Validator&apos;;
 import { BaseComponent } from &apos;./base/Base&apos;;
 import assert from &apos;power-assert&apos;;
 describe(&apos;Validator Tests&apos;, () =&gt; {
-  let baseComponent = new BaseComponent({});
+  const baseComponent = new BaseComponent({});
 
   it(&apos;Should test for minLength&apos;, () =&gt; {
     assert.equal(Validator.validators.minLength.check(baseComponent, 5, &apos;test&apos;), false);
@@ -202,6 +202,15 @@ describe(&apos;Validator Tests&apos;, () =&gt; {
     assert.equal(Validator.validators.pattern.check(baseComponent, &apos;\\w+&apos;, &apos;test&apos;), true);
     assert.equal(Validator.validators.pattern.check(baseComponent, &apos;\\w+@\\w+&apos;, &apos;test@a&apos;), true);
     assert.equal(Validator.validators.pattern.check(baseComponent, &apos;\\w+@\\w+&apos;, &apos;test@example.com&apos;), false);
+  });
+
+  it(&apos;Should test for json&apos;, () =&gt; {
+    assert.equal(Validator.validators.json.check(baseComponent, {
+      or: [ { &apos;_.isEqual&apos;: [ { var: &apos;data.test&apos; }, [ &apos;1&apos;, &apos;2&apos;, &apos;3&apos; ] ] }, &apos;Should be false.&apos; ]
+    }, null, { test: [ &apos;1&apos;, &apos;2&apos;, &apos;3&apos; ] }), true);
+    assert.equal(Validator.validators.json.check(baseComponent, {
+      or: [ { &apos;_.isEqual&apos;: [ { var: &apos;data.test&apos; }, [ &apos;1&apos;, &apos;2&apos;, &apos;3&apos; ] ] }, &apos;Should be false.&apos; ]
+    }, null, { test: [ &apos;1&apos;, &apos;2&apos;, &apos;4&apos; ] }), &apos;Should be false.&apos;);
   });
 });
 </code></pre>

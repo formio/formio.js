@@ -156,6 +156,7 @@ import _isArray from &apos;lodash/isArray&apos;;
 import _clone from &apos;lodash/clone&apos;;
 import _defaults from &apos;lodash/defaults&apos;;
 import _isEqual from &apos;lodash/isEqual&apos;;
+import _isUndefined from &apos;lodash/isUndefined&apos;;
 import i18next from &apos;i18next&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 import { Validator } from &apos;../Validator&apos;;
@@ -359,6 +360,9 @@ export class BaseComponent {
      */
     this.eventHandlers = [];
 
+    // To force this component to be invalid.
+    this.invalid = false;
+
     /**
      * An array of the event listeners so that the destroy command can deregister them.
      * @type {Array}
@@ -368,7 +372,7 @@ export class BaseComponent {
     if (this.component) {
       this.type = this.component.type;
       if (this.component.input &amp;&amp; this.component.key) {
-        this.options.name += &apos;[&apos; + this.component.key + &apos;]&apos;;
+        this.options.name += `[${this.component.key}]`;
       }
 
       /**
@@ -435,7 +439,7 @@ export class BaseComponent {
     if (!this.events) {
       return;
     }
-    let type = &apos;formio.&apos; + event;
+    let type = `formio.${event}`;
     this.eventListeners.push({
       type: type,
       listener: cb,
@@ -451,7 +455,7 @@ export class BaseComponent {
    * @param {Object} data - The data to emit with the handler.
    */
   emit(event, data) {
-    this.events.emit(&apos;formio.&apos; + event, data);
+    this.events.emit(`formio.${event}`, data);
   }
 
   /**
@@ -462,19 +466,18 @@ export class BaseComponent {
    */
   getIcon(name) {
     return this.ce(&apos;i&apos;, {
-      class: &apos;glyphicon glyphicon-&apos; + name
+      class: `glyphicon glyphicon-${name}`
     });
   }
 
   getBrowserLanguage() {
-    var nav = window.navigator,
-      browserLanguagePropertyKeys = [&apos;language&apos;, &apos;browserLanguage&apos;, &apos;systemLanguage&apos;, &apos;userLanguage&apos;],
-      i,
-      language;
+    const nav = window.navigator;
+    const browserLanguagePropertyKeys = [&apos;language&apos;, &apos;browserLanguage&apos;, &apos;systemLanguage&apos;, &apos;userLanguage&apos;];
+    let language;
 
     // support for HTML 5.1 &quot;navigator.languages&quot;
     if (Array.isArray(nav.languages)) {
-      for (i = 0; i &lt; nav.languages.length; i++) {
+      for (let i = 0; i &lt; nav.languages.length; i++) {
         language = nav.languages[i];
         if (language &amp;&amp; language.length) {
           return language;
@@ -483,7 +486,7 @@ export class BaseComponent {
     }
 
     // support for other well known properties in browsers
-    for (i = 0; i &lt; browserLanguagePropertyKeys.length; i++) {
+    for (let i = 0; i &lt; browserLanguagePropertyKeys.length; i++) {
       language = nav[browserLanguagePropertyKeys[i]];
       if (language &amp;&amp; language.length) {
         return language;
@@ -541,9 +544,16 @@ export class BaseComponent {
    */
   build() {
     this.createElement();
-    this.createLabel(this.element);
+
+    const labelAtTheBottom = this.component.labelPosition === &apos;bottom&apos;;
+    if (!labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
     if (!this.createWrapper()) {
       this.createInput(this.element);
+    }
+    if (labelAtTheBottom) {
+      this.createLabel(this.element);
     }
     this.createDescription(this.element);
 
@@ -562,9 +572,9 @@ export class BaseComponent {
    */
   get className() {
     let className = this.component.input ? &apos;form-group has-feedback &apos; : &apos;&apos;;
-    className += &apos;formio-component formio-component-&apos; + this.component.type + &apos; &apos;;
+    className += `formio-component formio-component-${this.component.type} `;
     if (this.component.key) {
-      className += &apos;formio-component-&apos; + this.component.key + &apos; &apos;;
+      className += `formio-component-${this.component.key} `;
     }
     if (this.component.customClass) {
       className += this.component.customClass;
@@ -583,7 +593,7 @@ export class BaseComponent {
     let customCSS = &apos;&apos;;
     _each(this.component.style, function(value, key) {
         if (value !== &apos;&apos;) {
-          customCSS += key + &apos;:&apos; + value + &apos;;&apos;;
+          customCSS += `${key}:${value};`;
         }
     });
     return customCSS;
@@ -639,6 +649,8 @@ export class BaseComponent {
       // Build the rows.
       this.buildRows();
 
+      this.setInputStyles(table);
+
       // Add the table to the element.
       this.append(table);
       return true;
@@ -663,7 +675,7 @@ export class BaseComponent {
         catch (e) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn(&apos;An error occurred getting default value for &apos; + this.component.key, e);
+          console.warn(`An error occurred getting default value for ${this.component.key}`, e);
           /* eslint-enable no-console */
         }
       }
@@ -677,7 +689,7 @@ export class BaseComponent {
         catch (err) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn(&apos;An error occurred calculating a value for &apos; + this.component.key, e);
+          console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
           /* eslint-enable no-console */
         }
       }
@@ -739,7 +751,8 @@ export class BaseComponent {
     _each(this.data[this.component.key], (value, index) =&gt; {
       let tr = this.ce(&apos;tr&apos;);
       let td = this.ce(&apos;td&apos;);
-      this.createInput(td);
+      const input = this.createInput(td);
+      input.value = value;
       tr.appendChild(td);
 
       if (!this.shouldDisable) {
@@ -836,6 +849,60 @@ export class BaseComponent {
     return removeButton;
   }
 
+  labelOnTheLeft(position) {
+    return [
+      &apos;left-left&apos;,
+      &apos;left-right&apos;
+    ].includes(position);
+  }
+
+  labelOnTheRight(position) {
+    return [
+      &apos;right-left&apos;,
+      &apos;right-right&apos;
+    ].includes(position);
+  }
+
+  rightAlignedLabel(position) {
+    return [
+      &apos;left-right&apos;,
+      &apos;right-right&apos;
+    ].includes(position);
+  }
+
+  labelOnTheLeftOrRight(position) {
+    return this.labelOnTheLeft(position) || this.labelOnTheRight(position);
+  }
+
+  getLabelWidth() {
+    if (_isUndefined(this.component.labelWidth)) {
+      this.component.labelWidth = 30;
+    }
+
+    return this.component.labelWidth;
+  }
+
+  getLabelMargin() {
+    if (_isUndefined(this.component.labelMargin)) {
+      this.component.labelMargin = 3;
+    }
+
+    return this.component.labelMargin;
+  }
+
+  setInputStyles(input) {
+    if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
+      const totalLabelWidth = this.getLabelWidth() + this.getLabelMargin();
+      input.style.width = `${100 - totalLabelWidth}%`;
+
+      if (this.labelOnTheLeft(this.component.labelPosition)) {
+        input.style.marginLeft = `${totalLabelWidth}%`
+      } else {
+        input.style.marginRight = `${totalLabelWidth}%`
+      }
+    }
+  }
+
   /**
    * Create the HTML element for the label of this component.
    * @param {HTMLElement} container - The containing element that will contain this label.
@@ -849,11 +916,36 @@ export class BaseComponent {
       return;
     }
     let className = &apos;control-label&apos;;
+    let style = &apos;&apos;;
+
+    const {
+      labelPosition
+    } = this.component;
+
+    // Determine label styles/classes depending on position.
+    if (labelPosition === &apos;bottom&apos;) {
+      className += &apos; control-label--bottom&apos;;
+    } else if (labelPosition &amp;&amp; labelPosition !== &apos;top&apos;) {
+      const labelWidth = this.getLabelWidth();
+      const labelMargin = this.getLabelMargin();
+
+      // Label is on the left or right.
+      if (this.labelOnTheLeft(labelPosition)) {
+        style += `float: left; width: ${labelWidth}%; margin-right: ${labelMargin}%; `;
+      } else if (this.labelOnTheRight(labelPosition)) {
+        style += `float: right; width: ${labelWidth}%; margin-left: ${labelMargin}%; `;
+      }
+      if (this.rightAlignedLabel(labelPosition)) {
+        style += &apos;text-align: right; &apos;;
+      }
+    }
+
     if (this.component.input &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
       className += &apos; field-required&apos;;
     }
     this.labelElement = this.ce(&apos;label&apos;, {
-      class: className
+      class: className,
+      style
     });
     if (this.info.attr.id) {
       this.labelElement.setAttribute(&apos;for&apos;, this.info.attr.id);
@@ -877,7 +969,7 @@ export class BaseComponent {
     }
 
     const match = label.match(new RegExp(shortcut, &apos;i&apos;));
-    
+
     if (!match) {
       return label;
     }
@@ -1108,6 +1200,7 @@ export class BaseComponent {
     this.addInput(input, inputGroup || container);
     this.addSuffix(input, inputGroup);
     this.errorContainer = container;
+    this.setInputStyles(inputGroup || input);
     return inputGroup || input;
   }
 
@@ -1126,7 +1219,7 @@ export class BaseComponent {
     if (&apos;addEventListener&apos; in obj){
       obj.addEventListener(evt, func, false);
     } else if (&apos;attachEvent&apos; in obj) {
-      obj.attachEvent(&apos;on&apos; + evt, func);
+      obj.attachEvent(`on${evt}`, func);
     }
   }
 
@@ -1233,9 +1326,7 @@ export class BaseComponent {
    *   The name of the class to add.
    */
   addClass(element, className) {
-    var cls = element.getAttribute(&apos;class&apos;);
-    cls += (&apos; &apos; + className);
-    element.setAttribute(&apos;class&apos;, cls);
+    element.setAttribute(&apos;class&apos;, `${element.getAttribute(&apos;class&apos;)} ${className}`);
   }
 
   /**
@@ -1247,7 +1338,7 @@ export class BaseComponent {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
-    var cls = element.getAttribute(&apos;class&apos;);
+    let cls = element.getAttribute(&apos;class&apos;);
     if (cls) {
       cls = cls.replace(className, &apos;&apos;);
       element.setAttribute(&apos;class&apos;, cls);
@@ -1353,8 +1444,8 @@ export class BaseComponent {
    * @return {*}
    */
   hook() {
-    var name = arguments[0];
-    var fn = (typeof arguments[arguments.length - 1] === &apos;function&apos;) ? arguments[arguments.length - 1] : null;
+    const name = arguments[0];
+    const fn = (typeof arguments[arguments.length - 1] === &apos;function&apos;) ? arguments[arguments.length - 1] : null;
     if (
       this.options &amp;&amp;
       this.options.hooks &amp;&amp;
@@ -1454,7 +1545,7 @@ export class BaseComponent {
     if (!this.component.input) {
       return;
     }
-    let values = [];
+    const values = [];
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
@@ -1486,9 +1577,9 @@ export class BaseComponent {
    */
   updateValue(flags) {
     flags = flags || {};
-    let value = this.data[this.component.key];
+    const value = this.data[this.component.key];
     this.data[this.component.key] = this.getValue(flags);
-    let changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+    const changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
     delete flags.changed;
     if (!flags.noUpdateEvent &amp;&amp; changed) {
       this.triggerChange(flags);
@@ -1542,7 +1633,7 @@ export class BaseComponent {
       }
       catch (e) {
         /* eslint-disable no-console */
-        console.warn(&apos;An error occurred calculating a value for &apos; + this.component.key, e);
+        console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
         changed = false;
         /* eslint-enable no-console */
       }
@@ -1557,7 +1648,7 @@ export class BaseComponent {
       }
       catch (err) {
         /* eslint-disable no-console */
-        console.warn(&apos;An error occurred calculating a value for &apos; + this.component.key, e);
+        console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
         changed = false;
         /* eslint-enable no-console */
       }
@@ -1622,7 +1713,7 @@ export class BaseComponent {
   }
 
   checkValidity(data, dirty) {
-    let message = this.invalidMessage(data, dirty);
+    let message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
@@ -1721,7 +1812,7 @@ export class BaseComponent {
       return false;
     }
     this.value = value;
-    let isArray = _isArray(value);
+    const isArray = _isArray(value);
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
@@ -1804,7 +1895,7 @@ export class BaseComponent {
 
   clear() {
     this.destroy();
-    let element = this.getElement();
+    const element = this.getElement();
     if (element) {
       element.innerHTML = &apos;&apos;;
     }
@@ -1870,8 +1961,10 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       BaseComponent.externalLibraries[name].reject = reject;
     });
 
-    if (!polling &amp;&amp; !window[name + &apos;Callback&apos;]) {
-      window[name + &apos;Callback&apos;] = function() {
+    const callbackName = `${name}Callback`;
+
+    if (!polling &amp;&amp; !window[callbackName]) {
+      window[callbackName] = function() {
         this.resolve();
       }.bind(BaseComponent.externalLibraries[name]);
     }
@@ -1945,7 +2038,7 @@ BaseComponent.libraryReady = function(name) {
     return BaseComponent.externalLibraries[name].ready;
   }
 
-  return Promise.reject(name + &apos; library was not required.&apos;);
+  return Promise.reject(`${name} library was not required.`);
 };
 </code></pre>
 

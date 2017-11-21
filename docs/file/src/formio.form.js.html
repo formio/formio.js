@@ -154,6 +154,7 @@ import _clone from &apos;lodash/clone&apos;;
 import _merge from &apos;lodash/merge&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
 import _remove from &apos;lodash/remove&apos;;
+import _isArray from &apos;lodash/isArray&apos;;
 import _capitalize from &apos;lodash/capitalize&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 
@@ -816,7 +817,12 @@ export class FormioForm extends FormioComponents {
     this.loading = false;
     let errors = this.errors;
     if (error) {
-      errors.push(error);
+      if (_isArray(error)) {
+        errors = errors.concat(error);
+      }
+      else {
+        errors.push(error);
+      }
     }
     if (!errors.length) {
       this.setAlert(false);

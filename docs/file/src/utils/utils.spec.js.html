@@ -149,25 +149,25 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 
 /* eslint-env mocha */
-var expect = require(&apos;chai&apos;).expect;
-var writtenNumber = require(&apos;written-number&apos;);
-var utils = require(&apos;./index&apos;);
-var components = require(&apos;./fixtures/components.json&apos;);
-var submission1 = require(&apos;./fixtures/submission1.json&apos;);
+const expect = require(&apos;chai&apos;).expect;
+const writtenNumber = require(&apos;written-number&apos;);
+const utils = require(&apos;./index&apos;);
+const components = require(&apos;./fixtures/components.json&apos;);
+const submission1 = require(&apos;./fixtures/submission1.json&apos;);
 
-describe(&apos;eachComponent&apos;, function() {
-  it(&apos;should iterate through nested components in the right order&apos;, function() {
-    var n = 1;
-    utils.eachComponent(components, function(component) {
+describe(&apos;eachComponent&apos;, () =&gt; {
+  it(&apos;should iterate through nested components in the right order&apos;, () =&gt; {
+    let n = 1;
+    utils.eachComponent(components, (component) =&gt; {
       expect(component.order).to.equal(n);
       n += 1;
     });
   });
 
-  it(&apos;should include layouts components if provided&apos;, function() {
-    var numComps = 0;
-    var numLayout = 0;
-    utils.eachComponent(components, function(component) {
+  it(&apos;should include layouts components if provided&apos;, () =&gt; {
+    let numComps = 0;
+    let numLayout = 0;
+    utils.eachComponent(components, (component) =&gt; {
       if (utils.isLayoutComponent(component)) {
         numLayout++;
       }
@@ -179,8 +179,8 @@ describe(&apos;eachComponent&apos;, function() {
     expect(numComps).to.be.equal(8);
   });
 
-  it(&apos;Should provide the paths to all of the components&apos;, function() {
-    var paths = [
+  it(&apos;Should provide the paths to all of the components&apos;, () =&gt; {
+    const paths = [
       &apos;one&apos;,
       &apos;parent1&apos;,
       &apos;two&apos;,
@@ -193,21 +193,21 @@ describe(&apos;eachComponent&apos;, function() {
       &apos;seven&apos;,
       &apos;eight&apos;
     ];
-    var testPaths = [];
-    utils.eachComponent(components, function(component, path) {
+    const testPaths = [];
+    utils.eachComponent(components, (component, path) =&gt; {
       testPaths.push(path);
     }, true);
     expect(paths).to.deep.equal(testPaths);
   });
 
-  it(&apos;Should be able to find all textfield components&apos;, function() {
-    var comps = utils.findComponents(components, {type: &apos;textfield&apos;});
+  it(&apos;Should be able to find all textfield components&apos;, () =&gt; {
+    const comps = utils.findComponents(components, {type: &apos;textfield&apos;});
     expect(comps.length).to.equal(6);
   });
 
-  it(&apos;Should be able to find components with special properties.&apos;, function() {
-    var components3 = require(&apos;./fixtures/components3.json&apos;);
-    var comps = utils.findComponents(components3, {&apos;properties.path&apos;: &apos;a&apos;});
+  it(&apos;Should be able to find components with special properties.&apos;, () =&gt; {
+    const components3 = require(&apos;./fixtures/components3.json&apos;);
+    const comps = utils.findComponents(components3, {&apos;properties.path&apos;: &apos;a&apos;});
     expect(comps.length).to.equal(4);
     expect(comps[0].key).to.equal(&apos;b&apos;);
     expect(comps[1].key).to.equal(&apos;e&apos;);
@@ -215,9 +215,9 @@ describe(&apos;eachComponent&apos;, function() {
     expect(comps[3].key).to.equal(&apos;m&apos;);
   });
 
-  it(&apos;Should be able to generate paths based on component types&apos;, function() {
-    var components = require(&apos;./fixtures/components2.json&apos;);
-    var paths = [
+  it(&apos;Should be able to generate paths based on component types&apos;, () =&gt; {
+    const components = require(&apos;./fixtures/components2.json&apos;);
+    const paths = [
       &apos;a&apos;,
       &apos;b&apos;,
       &apos;c&apos;,
@@ -238,15 +238,15 @@ describe(&apos;eachComponent&apos;, function() {
       &apos;r&apos;,
       &apos;submit&apos;
     ];
-    var testPaths = [];
-    utils.eachComponent(components, function(component, path) {
+    const testPaths = [];
+    utils.eachComponent(components, (component, path) =&gt; {
       testPaths.push(path);
     }, true);
     expect(paths).to.deep.equal(testPaths);
   });
 
-  it(&apos;Should still provide the correct paths when it is not recursive&apos;, function() {
-    var paths = [
+  it(&apos;Should still provide the correct paths when it is not recursive&apos;, () =&gt; {
+    const paths = [
       &apos;a&apos;,
       &apos;d&apos;,
       &apos;f&apos;,
@@ -265,17 +265,17 @@ describe(&apos;eachComponent&apos;, function() {
       &apos;r&apos;,
       &apos;submit&apos;
     ];
-    var testPaths = [];
-    utils.eachComponent(require(&apos;./fixtures/components2.json&apos;), function(component, path) {
+    const testPaths = [];
+    utils.eachComponent(require(&apos;./fixtures/components2.json&apos;), (component, path) =&gt; {
       testPaths.push(path);
     });
     expect(paths).to.deep.equal(testPaths);
   });
 
-  it(&apos;should be able to block recursion&apos;, function() {
-    var numComps = 0;
-    var numLayout = 0;
-    utils.eachComponent(components, function(component) {
+  it(&apos;should be able to block recursion&apos;, () =&gt; {
+    let numComps = 0;
+    let numLayout = 0;
+    utils.eachComponent(components, (component) =&gt; {
       if (utils.isLayoutComponent(component)) {
         numLayout++;
       }
@@ -284,9 +284,9 @@ describe(&apos;eachComponent&apos;, function() {
       }
 
       if (component.type === &apos;table&apos;) {
-        var numInTable = 0;
-        [].concat.apply([], component.rows).forEach(function(row) {
-          utils.eachComponent(row.components, function() {
+        let numInTable = 0;
+        [].concat.apply([], component.rows).forEach((row) =&gt; {
+          utils.eachComponent(row.components, () =&gt; {
             numInTable++;
           });
         });
@@ -299,10 +299,10 @@ describe(&apos;eachComponent&apos;, function() {
   });
 });
 
-describe(&apos;getComponent&apos;, function() {
-  it(&apos;should return the correct components&apos;, function() {
-    for (var n = 1; n &lt;= 8; n += 1) {
-      var component = utils.getComponent(components, writtenNumber(n));
+describe(&apos;getComponent&apos;, () =&gt; {
+  it(&apos;should return the correct components&apos;, () =&gt; {
+    for (let n = 1; n &lt;= 8; n += 1) {
+      const component = utils.getComponent(components, writtenNumber(n));
       expect(component).not.to.be.null;
       expect(component).not.to.be.undefined;
       expect(component).to.be.an(&apos;object&apos;);
@@ -311,9 +311,9 @@ describe(&apos;getComponent&apos;, function() {
     }
   });
 
-  it(&apos;should work with a different this context&apos;, function() {
-    for (var n = 1; n &lt;= 8; n += 1) {
-      var component = utils.getComponent.call({}, components, writtenNumber(n));
+  it(&apos;should work with a different this context&apos;, () =&gt; {
+    for (let n = 1; n &lt;= 8; n += 1) {
+      const component = utils.getComponent.call({}, components, writtenNumber(n));
       expect(component).not.to.be.null;
       expect(component).not.to.be.undefined;
       expect(component).to.be.an(&apos;object&apos;);
@@ -323,11 +323,11 @@ describe(&apos;getComponent&apos;, function() {
   });
 });
 
-describe(&apos;flattenComponents&apos;, function() {
-  it(&apos;should return an object of flattened components&apos;, function() {
-    var flattened = utils.flattenComponents(components);
-    for (var n = 1; n &lt;= 8; n += 1) {
-      var component = flattened[writtenNumber(n)];
+describe(&apos;flattenComponents&apos;, () =&gt; {
+  it(&apos;should return an object of flattened components&apos;, () =&gt; {
+    const flattened = utils.flattenComponents(components);
+    for (let n = 1; n &lt;= 8; n += 1) {
+      const component = flattened[writtenNumber(n)];
       expect(component).not.to.be.undefined;
       expect(component).to.be.an(&apos;object&apos;);
       expect(component.order).to.equal(n);
@@ -335,10 +335,10 @@ describe(&apos;flattenComponents&apos;, function() {
     }
   });
 
-  it(&apos;should work with a different this context&apos;, function() {
-    var flattened = utils.flattenComponents.call({}, components);
-    for (var n = 1; n &lt;= 8; n += 1) {
-      var component = flattened[writtenNumber(n)];
+  it(&apos;should work with a different this context&apos;, () =&gt; {
+    const flattened = utils.flattenComponents.call({}, components);
+    for (let n = 1; n &lt;= 8; n += 1) {
+      const component = flattened[writtenNumber(n)];
       expect(component).not.to.be.undefined;
       expect(component).to.be.an(&apos;object&apos;);
       expect(component.order).to.equal(n);
@@ -347,31 +347,71 @@ describe(&apos;flattenComponents&apos;, function() {
   });
 });
 
-describe(&apos;getValue&apos;, function() {
-  it(&apos;should be able to get a simple value&apos;, function() {
+describe(&apos;getValue&apos;, () =&gt; {
+  it(&apos;should be able to get a simple value&apos;, () =&gt; {
     expect(utils.getValue(submission1, &apos;name&apos;)).to.be.equal(submission1.data.name);
   });
 
-  it(&apos;should be able to get a value from a container&apos;, function() {
+  it(&apos;should be able to get a value from a container&apos;, () =&gt; {
     expect(utils.getValue(submission1, &apos;animalname&apos;)).to.be.equal(submission1.data.mycontainer.animalname);
   });
 });
 
-describe(&apos;parseFloat&apos;, function() {
-  it(&apos;should clear input and parse value&apos;, function() {
+describe(&apos;parseFloat&apos;, () =&gt; {
+  it(&apos;should clear input and parse value&apos;, () =&gt; {
     expect(utils.parseFloat(&apos;12,345,678.90&apos;)).to.be.equal(12345678.90);
   });
 });
 
-describe(&apos;formatAsCurrency&apos;, function() {
-  it(&apos;should be able to format Float value for Currency component&apos;, function() {
+describe(&apos;formatAsCurrency&apos;, () =&gt; {
+  it(&apos;should be able to format Float value for Currency component&apos;, () =&gt; {
     expect(utils.formatAsCurrency(123.4)).to.be.equal(&apos;123.40&apos;);
     expect(utils.formatAsCurrency(12345678.9)).to.be.equal(&apos;12,345,678.90&apos;);
     expect(utils.formatAsCurrency(12345678.915)).to.be.equal(&apos;12,345,678.92&apos;);
   });
 
-  it(&apos;should be able to format String value for Currency component&apos;, function() {
+  it(&apos;should be able to format String value for Currency component&apos;, () =&gt; {
     expect(utils.formatAsCurrency(&apos;12345678.915&apos;)).to.be.equal(&apos;12,345,678.92&apos;);
+  });
+});
+
+describe(&apos;checkCalculated&apos;, () =&gt; {
+  it(&apos;should be able to calculate value based on json logic&apos;, () =&gt; {
+    const component = {
+      key: &apos;sum&apos;,
+      calculateValue: {
+        &apos;_.sum&apos;: { var: &apos;data.test&apos; }
+      }
+    };
+    const data = { test: [ 1, 2, 3 ] };
+
+    utils.checkCalculated(component, null, data);
+    expect(data.sum).to.be.equal(6);
+  });
+});
+
+describe(&apos;checkCondition&apos;, () =&gt; {
+  it(&apos;should display component by default&apos;, () =&gt; {
+    expect(utils.checkCondition({}, null, {})).to.be.equal(true);
+  });
+
+  it(&apos;should be able to calculate condition based on json logic&apos;, () =&gt; {
+    const component = {
+      key: &apos;sum&apos;,
+      conditional: {
+        json: {
+          &apos;===&apos;: [
+            { &apos;_.sum&apos;: { var: &apos;data.test&apos; } },
+            6
+          ]
+        }
+      }
+    };
+    const data1 = { test: [ 1, 2, 3 ] };
+    const data2 = { test: [ 1, 2, 4 ] };
+
+    expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
+    expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
   });
 });
 </code></pre>

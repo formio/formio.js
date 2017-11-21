@@ -1,6 +1,6 @@
 {
-  "coverage": "25.06%",
-  "expectCount": 730,
+  "coverage": "24.4%",
+  "expectCount": 750,
   "actualCount": 183,
   "files": {
     "src/components/address/Address.js": {
@@ -20,41 +20,49 @@
       ]
     },
     "src/components/base/Base.js": {
-      "expectCount": 123,
+      "expectCount": 131,
       "actualCount": 91,
       "undocumentLines": [
-        1258,
-        744,
+        1349,
+        836,
+        810,
+        1756,
+        1567,
+        1748,
+        1260,
+        512,
+        903,
+        1054,
+        1590,
+        325,
+        1642,
+        737,
+        729,
+        1573,
+        1396,
+        1594,
+        216,
+        1577,
+        704,
+        725,
+        711,
+        1327,
+        1292,
+        1762,
+        1078,
+        1773,
+        853,
         718,
-        1665,
-        1476,
-        1657,
-        1169,
-        500,
-        811,
-        962,
-        1499,
-        321,
-        1551,
-        1482,
-        1305,
-        1503,
-        1486,
-        1236,
-        1201,
-        1671,
-        985,
-        1682,
-        761,
-        1625,
-        1507,
-        1639,
-        387,
-        788,
-        221,
-        1232,
-        1228,
-        1558
+        1716,
+        1598,
+        745,
+        1730,
+        390,
+        880,
+        225,
+        1323,
+        1319,
+        1649
       ]
     },
     "src/components/button/Button.js": {
@@ -73,27 +81,32 @@
       ]
     },
     "src/components/checkbox/Checkbox.js": {
-      "expectCount": 18,
+      "expectCount": 23,
       "actualCount": 0,
       "undocumentLines": [
-        2,
-        81,
-        16,
-        33,
-        68,
-        44,
-        124,
-        29,
-        38,
         3,
-        73,
-        95,
-        21,
-        48,
-        54,
-        99,
-        77,
-        101
+        148,
+        17,
+        34,
+        128,
+        87,
+        199,
+        30,
+        39,
+        4,
+        133,
+        191,
+        162,
+        22,
+        97,
+        49,
+        45,
+        105,
+        53,
+        70,
+        166,
+        137,
+        168
       ]
     },
     "src/components/columns/Column.js": {
@@ -193,22 +206,24 @@
       ]
     },
     "src/components/day/Day.js": {
-      "expectCount": 18,
+      "expectCount": 20,
       "actualCount": 5,
       "undocumentLines": [
-        5,
         6,
-        41,
-        131,
-        65,
-        94,
-        51,
-        118,
-        11,
-        156,
-        75,
-        19,
-        104
+        7,
+        42,
+        177,
+        81,
+        125,
+        60,
+        164,
+        12,
+        205,
+        99,
+        20,
+        210,
+        232,
+        143
       ]
     },
     "src/components/email/Email.js": {
@@ -230,42 +245,43 @@
       ]
     },
     "src/components/file/File.js": {
-      "expectCount": 33,
+      "expectCount": 34,
       "actualCount": 0,
       "undocumentLines": [
         5,
-        232,
+        242,
         25,
-        68,
-        87,
-        133,
-        59,
-        178,
-        226,
-        188,
-        6,
-        126,
-        96,
+        78,
+        97,
         143,
-        264,
-        31,
-        139,
-        260,
-        451,
-        16,
-        299,
+        69,
+        188,
+        236,
+        198,
+        6,
+        136,
+        106,
+        153,
+        274,
         36,
-        33,
-        44,
+        149,
+        270,
+        461,
+        16,
+        309,
+        41,
+        35,
+        38,
+        54,
         20,
         8,
-        332,
-        380,
-        35,
-        228,
-        376,
-        372,
-        353
+        342,
+        390,
+        40,
+        238,
+        386,
+        382,
+        363
       ]
     },
     "src/components/form/Form.js": {
@@ -301,7 +317,7 @@
         93,
         92,
         88,
-        928,
+        929,
         34,
         298,
         35,
@@ -309,31 +325,31 @@
         294,
         23,
         451,
-        867,
+        868,
         18,
-        932,
+        933,
         177,
         286,
         254,
         234,
         270,
-        874,
+        875,
         424,
-        1061,
+        1062,
         29,
         27,
         28,
-        843,
-        858,
-        835,
+        844,
+        859,
+        836,
         321,
-        893,
+        894,
         307,
-        863,
-        787,
+        864,
+        788,
         516,
-        819,
-        872,
+        820,
+        873,
         185,
         302,
         206,
@@ -345,21 +361,21 @@
         238,
         262,
         274,
-        955,
-        222,
+        956,
         562,
+        222,
         537,
         67,
-        871,
+        872,
         152,
-        921,
-        907,
-        900,
+        922,
+        908,
+        901,
         26,
         25,
         24,
         36,
-        884,
+        885,
         591,
         194,
         282,
@@ -367,16 +383,16 @@
         230,
         266,
         528,
-        839,
-        847,
-        828,
-        853,
-        763,
-        799,
+        840,
+        848,
+        829,
+        854,
+        764,
+        800,
         32,
         31,
         30,
-        766,
+        767,
         396
       ]
     },
@@ -414,16 +430,16 @@
       "expectCount": 55,
       "actualCount": 45,
       "undocumentLines": [
-        252,
-        589,
-        192,
-        222,
-        775,
-        565,
-        206,
-        278,
-        559,
-        174
+        253,
+        590,
+        193,
+        223,
+        781,
+        566,
+        207,
+        279,
+        560,
+        175
       ]
     },
     "src/formio.pdf.js": {
@@ -564,16 +580,20 @@
       ]
     },
     "src/components/radio/Radio.js": {
-      "expectCount": 7,
+      "expectCount": 11,
       "actualCount": 0,
       "undocumentLines": [
-        3,
-        12,
-        90,
         4,
-        51,
-        54,
-        73
+        13,
+        145,
+        5,
+        64,
+        109,
+        71,
+        67,
+        75,
+        92,
+        128
       ]
     },
     "src/components/resource/Resource.js": {
@@ -602,26 +622,26 @@
       "actualCount": 3,
       "undocumentLines": [
         12,
-        302,
-        230,
-        236,
+        323,
+        250,
+        256,
         13,
         49,
-        372,
-        289,
+        393,
+        310,
         39,
-        325,
+        346,
         53,
         57,
         110,
-        264,
+        285,
         32,
         61,
-        337,
+        358,
         17,
-        178,
-        189,
-        333
+        185,
+        196,
+        354
       ]
     },
     "src/components/signature/Signature.js": {
@@ -655,11 +675,11 @@
       "undocumentLines": [
         3,
         4,
-        51,
-        72,
-        55,
-        7,
-        60
+        58,
+        79,
+        62,
+        10,
+        67
       ]
     },
     "src/components/table/Table.js": {
@@ -728,98 +748,7 @@
         3
       ]
     },
-    "src/components/well/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/number/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/selectboxes/fixtures/comp2.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/button/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/html/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/phonenumber/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/password/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/hidden/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/signature/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/survey/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/gmap/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/table/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/resource/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/select/fixtures/comp1.js": {
+    "src/components/textfield/fixtures/comp1.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
@@ -833,133 +762,14 @@
         1
       ]
     },
-    "src/components/textarea/fixtures/comp1.js": {
+    "src/components/button/fixtures/comp1.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
         1
       ]
     },
-    "src/components/email/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/checkbox/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/day/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/textfield/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/panel/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/base/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/columns/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/datetime/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/base/fixtures/comp2.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/time/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/form/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/datagrid/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/selectboxes/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/container/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/select/fixtures/comp2.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/address/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/radio/fixtures/comp1.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        1
-      ]
-    },
-    "src/components/content/fixtures/comp1.js": {
+    "src/components/number/fixtures/comp1.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
@@ -973,6 +783,48 @@
         1
       ]
     },
+    "src/components/survey/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/resource/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/time/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/hidden/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/select/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/datetime/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
     "src/components/currency/fixtures/comp1.js": {
       "expectCount": 1,
       "actualCount": 0,
@@ -980,32 +832,172 @@
         1
       ]
     },
-    "src/components/fieldset/fixtures/index.js": {
+    "src/components/email/fixtures/comp1.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2
+        1
       ]
     },
-    "src/components/base/fixtures/index.js": {
+    "src/components/datagrid/fixtures/comp1.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        3
+        1
       ]
     },
-    "src/components/gmap/fixtures/index.js": {
+    "src/components/form/fixtures/comp1.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2
+        1
       ]
     },
-    "src/components/radio/fixtures/index.js": {
+    "src/components/panel/fixtures/comp1.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
-        2
+        1
+      ]
+    },
+    "src/components/selectboxes/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/gmap/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/checkbox/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/selectboxes/fixtures/comp2.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/table/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/password/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/day/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/textarea/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/columns/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/select/fixtures/comp2.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/base/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/base/fixtures/comp2.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/well/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/radio/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/container/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/address/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/phonenumber/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/signature/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/content/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
+      ]
+    },
+    "src/components/html/fixtures/comp1.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        1
       ]
     },
     "src/components/email/fixtures/index.js": {
@@ -1015,147 +1007,7 @@
         2
       ]
     },
-    "src/components/day/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/html/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/checkbox/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
     "src/components/time/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/selectboxes/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        3
-      ]
-    },
-    "src/components/datetime/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/table/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/hidden/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/phonenumber/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/columns/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/well/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/button/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/password/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/select/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        3
-      ]
-    },
-    "src/components/datagrid/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/signature/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/resource/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/panel/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/container/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/textfield/fixtures/index.js": {
-      "expectCount": 1,
-      "actualCount": 0,
-      "undocumentLines": [
-        2
-      ]
-    },
-    "src/components/address/fixtures/index.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
@@ -1176,7 +1028,133 @@
         2
       ]
     },
-    "src/components/content/fixtures/index.js": {
+    "src/components/phonenumber/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/radio/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/resource/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/day/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/datetime/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/checkbox/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/hidden/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/address/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/password/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/datagrid/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/select/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        3
+      ]
+    },
+    "src/components/textfield/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/columns/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/fieldset/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/button/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/well/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/gmap/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/selectboxes/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        3
+      ]
+    },
+    "src/components/panel/fixtures/index.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
@@ -1190,7 +1168,14 @@
         2
       ]
     },
-    "src/components/currency/fixtures/index.js": {
+    "src/components/html/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/container/fixtures/index.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [
@@ -1198,6 +1183,41 @@
       ]
     },
     "src/components/number/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        3
+      ]
+    },
+    "src/components/table/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/signature/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/content/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/currency/fixtures/index.js": {
+      "expectCount": 1,
+      "actualCount": 0,
+      "undocumentLines": [
+        2
+      ]
+    },
+    "src/components/base/fixtures/index.js": {
       "expectCount": 1,
       "actualCount": 0,
       "undocumentLines": [

@@ -149,6 +149,7 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
 import _get from &apos;lodash/get&apos;;
 import _each from &apos;lodash/each&apos;;
+import _assign from &apos;lodash/assign&apos;;
 import moment from &apos;moment&apos;;
 export class DayComponent extends BaseComponent {
   constructor(component, options, data) {
@@ -157,7 +158,7 @@ export class DayComponent extends BaseComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = &apos;input&apos;;
     info.attr.type = &apos;hidden&apos;;
     info.changeEvent = &apos;change&apos;;
@@ -186,16 +187,24 @@ export class DayComponent extends BaseComponent {
     return this._months;
   }
 
-  createDayInput() {
-    let dayColumn = this.ce(&apos;div&apos;, {
+  createDayInput(subinputAtTheBottom) {
+    const dayColumn = this.ce(&apos;div&apos;, {
       class: &apos;form-group col col-xs-3&apos;
     });
-    let dayLabel = this.ce(&apos;label&apos;, {
-      for: this.component.key + &apos;-day&apos;,
+
+    const id = `${this.component.key}-day`;
+
+    const dayLabel = this.ce(&apos;label&apos;, {
+      for: id,
       class: _get(this.component, &apos;fields.day.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     dayLabel.appendChild(this.text(this.t(&apos;day&apos;)));
-    dayColumn.appendChild(dayLabel);
+    this.setSubinputLabelStyle(dayLabel);
+    if (!subinputAtTheBottom) {
+      dayColumn.appendChild(dayLabel);
+    }
+
+    const dayInputWrapper = this.ce(&apos;div&apos;);
     this.dayInput = this.ce(&apos;input&apos;, {
       class: &apos;form-control&apos;,
       type: &apos;number&apos;,
@@ -203,29 +212,44 @@ export class DayComponent extends BaseComponent {
       min: &apos;1&apos;,
       max: &apos;31&apos;,
       placeholder: _get(this.component, &apos;fields.day.placeholder&apos;, &apos;&apos;),
-      id: this.component.key + &apos;-day&apos;
+      id
     });
     this.addEventListener(this.dayInput, &apos;change&apos;, () =&gt; this.updateValue());
-    dayColumn.appendChild(this.dayInput);
+    dayInputWrapper.appendChild(this.dayInput);
+    this.setSubinputStyle(dayInputWrapper);
+    dayColumn.appendChild(dayInputWrapper);
+
+    if (subinputAtTheBottom) {
+      dayColumn.appendChild(dayLabel);
+    }
+
     return dayColumn;
   }
 
-  createMonthInput() {
-    let monthColumn = this.ce(&apos;div&apos;, {
+  createMonthInput(subinputAtTheBottom) {
+    const monthColumn = this.ce(&apos;div&apos;, {
       class: &apos;form-group col col-xs-4&apos;
     });
-    let monthLabel = this.ce(&apos;label&apos;, {
-      for: this.component.key + &apos;-month&apos;,
+
+    const id = `${this.component.key}-month`;
+
+    const monthLabel = this.ce(&apos;label&apos;, {
+      for: id,
       class: _get(this.component, &apos;fields.month.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     monthLabel.appendChild(this.text(this.t(&apos;month&apos;)));
-    monthColumn.appendChild(monthLabel);
+    this.setSubinputLabelStyle(monthLabel);
+    if (!subinputAtTheBottom) {
+      monthColumn.appendChild(monthLabel);
+    }
+
+    const monthInputWrapper = this.ce(&apos;div&apos;);
     this.monthInput = this.ce(&apos;select&apos;, {
       class: &apos;form-control&apos;,
-      id: this.component.key + &apos;-month&apos;
+      id
     });
     this.selectOptions(this.monthInput, &apos;monthOption&apos;, this.months);
-    let self = this;
+    const self = this;
 
     // Ensure the day limits match up with the months selected.
     this.monthInput.onchange = function() {
@@ -235,20 +259,35 @@ export class DayComponent extends BaseComponent {
       }
       self.updateValue();
     };
-    monthColumn.appendChild(this.monthInput);
+    monthInputWrapper.appendChild(this.monthInput);
+    this.setSubinputStyle(monthInputWrapper);
+    monthColumn.appendChild(monthInputWrapper);
+
+    if (subinputAtTheBottom) {
+      monthColumn.appendChild(monthLabel);
+    }
+
     return monthColumn;
   }
 
-  createYearInput() {
-    let yearColumn = this.ce(&apos;div&apos;, {
+  createYearInput(subinputAtTheBottom) {
+    const yearColumn = this.ce(&apos;div&apos;, {
       class: &apos;form-group col col-xs-5&apos;
     });
-    let yearLabel = this.ce(&apos;label&apos;, {
-      for: this.component.key + &apos;-year&apos;,
+
+    const id = `${this.component.key}-year`;
+
+    const yearLabel = this.ce(&apos;label&apos;, {
+      for: id,
       class: _get(this.component, &apos;fields.year.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     yearLabel.appendChild(this.text(this.t(&apos;year&apos;)));
-    yearColumn.appendChild(yearLabel);
+    this.setSubinputLabelStyle(yearLabel);
+    if (!subinputAtTheBottom) {
+      yearColumn.appendChild(yearLabel);
+    }
+
+    const yearInputWrapper = this.ce(&apos;div&apos;);
     this.yearInput = this.ce(&apos;input&apos;, {
       class: &apos;form-control&apos;,
       type: &apos;number&apos;,
@@ -256,10 +295,17 @@ export class DayComponent extends BaseComponent {
       min: &apos;1&apos;,
       placeholder: _get(this.component, &apos;fields.year.placeholder&apos;, &apos;&apos;),
       value: (new Date().getFullYear()),
-      id: this.component.key + &apos;-year&apos;
+      id
     });
     this.addEventListener(this.yearInput, &apos;change&apos;, () =&gt; this.updateValue());
-    yearColumn.appendChild(this.yearInput);
+    yearInputWrapper.appendChild(this.yearInput);
+    this.setSubinputStyle(yearInputWrapper);
+    yearColumn.appendChild(yearInputWrapper);
+
+    if (subinputAtTheBottom) {
+      yearColumn.appendChild(yearLabel);
+    }
+
     return yearColumn;
   }
 
@@ -277,13 +323,16 @@ export class DayComponent extends BaseComponent {
   }
 
   createInput(container) {
-    let inputGroup = this.ce(&apos;div&apos;, {
-      class: &apos;input-group row&apos;
+    const inputGroup = this.ce(&apos;div&apos;, {
+      class: &apos;input-group row&apos;,
+      style: &apos;width: 100%&apos;
     });
 
-    let dayColumn = this.createDayInput();
-    let monthColumn = this.createMonthInput();
-    let yearColumn = this.createYearInput();
+    const subinputAtTheBottom = this.component.inputsLabelPosition === &apos;bottom&apos;;
+
+    const dayColumn = this.createDayInput(subinputAtTheBottom);
+    const monthColumn = this.createMonthInput(subinputAtTheBottom);
+    const yearColumn = this.createYearInput(subinputAtTheBottom);
 
     // Add the columns to the day select in the right order.
     if (this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
@@ -299,10 +348,48 @@ export class DayComponent extends BaseComponent {
       inputGroup.appendChild(yearColumn);
     }
 
-    let input = this.ce(this.info.type, this.info.attr);
+    const input = this.ce(this.info.type, this.info.attr);
     this.addInput(input, inputGroup);
     this.errorContainer = container;
+    this.setInputStyles(inputGroup);
     container.appendChild(inputGroup);
+  }
+
+  setSubinputLabelStyle(label) {
+    const { inputsLabelPosition } = this.component;
+
+    if (inputsLabelPosition === &apos;left&apos;) {
+      _assign(label.style, {
+        float: &apos;left&apos;,
+        width: &apos;30%&apos;,
+        marginRight: &apos;3%&apos;,
+        textAlign: &apos;left&apos;,
+      });
+    }
+
+    if (inputsLabelPosition === &apos;right&apos;) {
+      _assign(label.style, {
+        float: &apos;right&apos;,
+        width: &apos;30%&apos;,
+        marginLeft: &apos;3%&apos;,
+        textAlign: &apos;right&apos;,
+      });
+    }
+  }
+
+  setSubinputStyle(input) {
+    const { inputsLabelPosition } = this.component;
+
+    if ([ &apos;left&apos;, &apos;right&apos; ].includes(inputsLabelPosition)) {
+      input.style.width = &apos;67%&apos;;
+
+      if (inputsLabelPosition === &apos;left&apos;) {
+        input.style.marginLeft = &apos;33%&apos;;
+      }
+      else {
+        input.style.marginRight = &apos;33%&apos;;
+      }
+    }
   }
 
   /**
@@ -315,7 +402,7 @@ export class DayComponent extends BaseComponent {
     if (!value) {
       return;
     }
-    let parts = value.split(&apos;/&apos;);
+    const parts = value.split(&apos;/&apos;);
     if (this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
       this.dayInput.value = parseInt(parts.shift(), 10);
     }
@@ -356,9 +443,9 @@ export class DayComponent extends BaseComponent {
    * @returns {Date}
    */
   get date() {
-    let day = this.dayInput.value;
-    let month = this.monthInput.value;
-    let year = this.yearInput.value;
+    const day = this.dayInput.value;
+    const month = this.monthInput.value;
+    const year = this.yearInput.value;
     return moment([parseInt(year, 10), (parseInt(month, 10) - 1), parseInt(day, 10)]);
   }
 

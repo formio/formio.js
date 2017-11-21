@@ -255,8 +255,15 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
-  loadItems(url, search, headers, options) {
+  loadItems(url, search, headers, options, method, body) {
     options = options || {};
+
+    // Ensure we have a method and remove any body if method is get
+    method = method || &apos;GET&apos;;
+    if (method.toUpperCase() === &apos;GET&apos;) {
+      body = null;
+    }
+    
     let query = (this.component.dataSrc === &apos;url&apos;) ? {} : {
       limit: 100,
       skip: 0
@@ -276,7 +283,7 @@ export class SelectComponent extends BaseComponent {
     // Add filter capability
     if (this.component.filter) {
       let filter = this.interpolate(this.component.filter, {data: this.data});
-      url += ((url.indexOf(&apos;?&apos;) === -1) ? &apos;?&apos; : &apos;&amp;&apos;) + filter;
+      url += (!url.includes(&apos;?&apos;) ? &apos;?&apos; : &apos;&amp;&apos;) + filter;
     }
 
     // If they wish to return only some fields.
@@ -291,7 +298,7 @@ export class SelectComponent extends BaseComponent {
 
     // Make the request.
     options.header = headers;
-    Formio.makeRequest(this.options.formio, &apos;select&apos;, url, null, null, options)
+    Formio.makeRequest(this.options.formio, &apos;select&apos;, url, method, body, options)
       .then((response) =&gt; this.setItems(response))
       .catch((err) =&gt; {
         this.events.emit(&apos;formio.error&apos;, err);
@@ -364,13 +371,26 @@ export class SelectComponent extends BaseComponent {
         break;
       case &apos;url&apos;:
         let url = this.component.data.url;
+        let method;
+        let body;
+
         if (url.substr(0, 1) === &apos;/&apos;) {
           url = Formio.getBaseUrl() + this.component.data.url;
         }
 
-        this.loadItems(url, searchInput, this.requestHeaders, {
-          noToken: true
-        });
+        if (!this.component.data.method) {
+          method = &apos;GET&apos;;
+        }
+        else {
+          method = this.component.data.method;
+          if (method.toUpperCase() === &apos;POST&apos;) {
+            body = this.component.data.body;
+          }
+          else {
+            body = null
+          }
+        }
+        this.loadItems(url, searchInput, this.requestHeaders, {noToken: true}, method, body);
         break;
     }
   }
@@ -392,6 +412,7 @@ export class SelectComponent extends BaseComponent {
       position: (this.component.dropdown || &apos;auto&apos;)
     });
     this.choices.itemList.tabIndex = tabIndex;
+    this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
