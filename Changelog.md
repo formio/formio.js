@@ -4,8 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 2.23.1
+### Added
+ - Method and POST body to select dropdowns.
+
 ### Fixed
+ - Added custom classes to column components.
  - Checkbox required validation with 'name' options set.
 
 ## 2.23.0
