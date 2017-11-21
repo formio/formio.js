@@ -603,7 +603,8 @@ export class BaseComponent {
     _each(this.data[this.component.key], (value, index) => {
       let tr = this.ce('tr');
       let td = this.ce('td');
-      this.createInput(td);
+      const input = this.createInput(td);
+      input.value = value;
       tr.appendChild(td);
 
       if (!this.shouldDisable) {

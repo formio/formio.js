@@ -1,25 +1,25 @@
 'use strict';
 
 /* eslint-env mocha */
-var expect = require('chai').expect;
-var writtenNumber = require('written-number');
-var utils = require('./index');
-var components = require('./fixtures/components.json');
-var submission1 = require('./fixtures/submission1.json');
+const expect = require('chai').expect;
+const writtenNumber = require('written-number');
+const utils = require('./index');
+const components = require('./fixtures/components.json');
+const submission1 = require('./fixtures/submission1.json');
 
-describe('eachComponent', function() {
-  it('should iterate through nested components in the right order', function() {
-    var n = 1;
-    utils.eachComponent(components, function(component) {
+describe('eachComponent', () => {
+  it('should iterate through nested components in the right order', () => {
+    let n = 1;
+    utils.eachComponent(components, (component) => {
       expect(component.order).to.equal(n);
       n += 1;
     });
   });
 
-  it('should include layouts components if provided', function() {
-    var numComps = 0;
-    var numLayout = 0;
-    utils.eachComponent(components, function(component) {
+  it('should include layouts components if provided', () => {
+    let numComps = 0;
+    let numLayout = 0;
+    utils.eachComponent(components, (component) => {
       if (utils.isLayoutComponent(component)) {
         numLayout++;
       }
@@ -31,8 +31,8 @@ describe('eachComponent', function() {
     expect(numComps).to.be.equal(8);
   });
 
-  it('Should provide the paths to all of the components', function() {
-    var paths = [
+  it('Should provide the paths to all of the components', () => {
+    const paths = [
       'one',
       'parent1',
       'two',
@@ -45,21 +45,21 @@ describe('eachComponent', function() {
       'seven',
       'eight'
     ];
-    var testPaths = [];
-    utils.eachComponent(components, function(component, path) {
+    const testPaths = [];
+    utils.eachComponent(components, (component, path) => {
       testPaths.push(path);
     }, true);
     expect(paths).to.deep.equal(testPaths);
   });
 
-  it('Should be able to find all textfield components', function() {
-    var comps = utils.findComponents(components, {type: 'textfield'});
+  it('Should be able to find all textfield components', () => {
+    const comps = utils.findComponents(components, {type: 'textfield'});
     expect(comps.length).to.equal(6);
   });
 
-  it('Should be able to find components with special properties.', function() {
-    var components3 = require('./fixtures/components3.json');
-    var comps = utils.findComponents(components3, {'properties.path': 'a'});
+  it('Should be able to find components with special properties.', () => {
+    const components3 = require('./fixtures/components3.json');
+    const comps = utils.findComponents(components3, {'properties.path': 'a'});
     expect(comps.length).to.equal(4);
     expect(comps[0].key).to.equal('b');
     expect(comps[1].key).to.equal('e');
@@ -67,9 +67,9 @@ describe('eachComponent', function() {
     expect(comps[3].key).to.equal('m');
   });
 
-  it('Should be able to generate paths based on component types', function() {
-    var components = require('./fixtures/components2.json');
-    var paths = [
+  it('Should be able to generate paths based on component types', () => {
+    const components = require('./fixtures/components2.json');
+    const paths = [
       'a',
       'b',
       'c',
@@ -90,15 +90,15 @@ describe('eachComponent', function() {
       'r',
       'submit'
     ];
-    var testPaths = [];
-    utils.eachComponent(components, function(component, path) {
+    const testPaths = [];
+    utils.eachComponent(components, (component, path) => {
       testPaths.push(path);
     }, true);
     expect(paths).to.deep.equal(testPaths);
   });
 
-  it('Should still provide the correct paths when it is not recursive', function() {
-    var paths = [
+  it('Should still provide the correct paths when it is not recursive', () => {
+    const paths = [
       'a',
       'd',
       'f',
@@ -117,17 +117,17 @@ describe('eachComponent', function() {
       'r',
       'submit'
     ];
-    var testPaths = [];
-    utils.eachComponent(require('./fixtures/components2.json'), function(component, path) {
+    const testPaths = [];
+    utils.eachComponent(require('./fixtures/components2.json'), (component, path) => {
       testPaths.push(path);
     });
     expect(paths).to.deep.equal(testPaths);
   });
 
-  it('should be able to block recursion', function() {
-    var numComps = 0;
-    var numLayout = 0;
-    utils.eachComponent(components, function(component) {
+  it('should be able to block recursion', () => {
+    let numComps = 0;
+    let numLayout = 0;
+    utils.eachComponent(components, (component) => {
       if (utils.isLayoutComponent(component)) {
         numLayout++;
       }
@@ -136,9 +136,9 @@ describe('eachComponent', function() {
       }
 
       if (component.type === 'table') {
-        var numInTable = 0;
-        [].concat.apply([], component.rows).forEach(function(row) {
-          utils.eachComponent(row.components, function() {
+        let numInTable = 0;
+        [].concat.apply([], component.rows).forEach((row) => {
+          utils.eachComponent(row.components, () => {
             numInTable++;
           });
         });
@@ -151,10 +151,10 @@ describe('eachComponent', function() {
   });
 });
 
-describe('getComponent', function() {
-  it('should return the correct components', function() {
-    for (var n = 1; n <= 8; n += 1) {
-      var component = utils.getComponent(components, writtenNumber(n));
+describe('getComponent', () => {
+  it('should return the correct components', () => {
+    for (let n = 1; n <= 8; n += 1) {
+      const component = utils.getComponent(components, writtenNumber(n));
       expect(component).not.to.be.null;
       expect(component).not.to.be.undefined;
       expect(component).to.be.an('object');
@@ -163,9 +163,9 @@ describe('getComponent', function() {
     }
   });
 
-  it('should work with a different this context', function() {
-    for (var n = 1; n <= 8; n += 1) {
-      var component = utils.getComponent.call({}, components, writtenNumber(n));
+  it('should work with a different this context', () => {
+    for (let n = 1; n <= 8; n += 1) {
+      const component = utils.getComponent.call({}, components, writtenNumber(n));
       expect(component).not.to.be.null;
       expect(component).not.to.be.undefined;
       expect(component).to.be.an('object');
@@ -175,11 +175,11 @@ describe('getComponent', function() {
   });
 });
 
-describe('flattenComponents', function() {
-  it('should return an object of flattened components', function() {
-    var flattened = utils.flattenComponents(components);
-    for (var n = 1; n <= 8; n += 1) {
-      var component = flattened[writtenNumber(n)];
+describe('flattenComponents', () => {
+  it('should return an object of flattened components', () => {
+    const flattened = utils.flattenComponents(components);
+    for (let n = 1; n <= 8; n += 1) {
+      const component = flattened[writtenNumber(n)];
       expect(component).not.to.be.undefined;
       expect(component).to.be.an('object');
       expect(component.order).to.equal(n);
@@ -187,10 +187,10 @@ describe('flattenComponents', function() {
     }
   });
 
-  it('should work with a different this context', function() {
-    var flattened = utils.flattenComponents.call({}, components);
-    for (var n = 1; n <= 8; n += 1) {
-      var component = flattened[writtenNumber(n)];
+  it('should work with a different this context', () => {
+    const flattened = utils.flattenComponents.call({}, components);
+    for (let n = 1; n <= 8; n += 1) {
+      const component = flattened[writtenNumber(n)];
       expect(component).not.to.be.undefined;
       expect(component).to.be.an('object');
       expect(component.order).to.equal(n);
@@ -199,30 +199,70 @@ describe('flattenComponents', function() {
   });
 });
 
-describe('getValue', function() {
-  it('should be able to get a simple value', function() {
+describe('getValue', () => {
+  it('should be able to get a simple value', () => {
     expect(utils.getValue(submission1, 'name')).to.be.equal(submission1.data.name);
   });
 
-  it('should be able to get a value from a container', function() {
+  it('should be able to get a value from a container', () => {
     expect(utils.getValue(submission1, 'animalname')).to.be.equal(submission1.data.mycontainer.animalname);
   });
 });
 
-describe('parseFloat', function() {
-  it('should clear input and parse value', function() {
+describe('parseFloat', () => {
+  it('should clear input and parse value', () => {
     expect(utils.parseFloat('12,345,678.90')).to.be.equal(12345678.90);
   });
 });
 
-describe('formatAsCurrency', function() {
-  it('should be able to format Float value for Currency component', function() {
+describe('formatAsCurrency', () => {
+  it('should be able to format Float value for Currency component', () => {
     expect(utils.formatAsCurrency(123.4)).to.be.equal('123.40');
     expect(utils.formatAsCurrency(12345678.9)).to.be.equal('12,345,678.90');
     expect(utils.formatAsCurrency(12345678.915)).to.be.equal('12,345,678.92');
   });
 
-  it('should be able to format String value for Currency component', function() {
+  it('should be able to format String value for Currency component', () => {
     expect(utils.formatAsCurrency('12345678.915')).to.be.equal('12,345,678.92');
+  });
+});
+
+describe('checkCalculated', () => {
+  it('should be able to calculate value based on json logic', () => {
+    const component = {
+      key: 'sum',
+      calculateValue: {
+        '_.sum': { var: 'data.test' }
+      }
+    };
+    const data = { test: [ 1, 2, 3 ] };
+
+    utils.checkCalculated(component, null, data);
+    expect(data.sum).to.be.equal(6);
+  });
+});
+
+describe('checkCondition', () => {
+  it('should display component by default', () => {
+    expect(utils.checkCondition({}, null, {})).to.be.equal(true);
+  });
+
+  it('should be able to calculate condition based on json logic', () => {
+    const component = {
+      key: 'sum',
+      conditional: {
+        json: {
+          '===': [
+            { '_.sum': { var: 'data.test' } },
+            6
+          ]
+        }
+      }
+    };
+    const data1 = { test: [ 1, 2, 3 ] };
+    const data2 = { test: [ 1, 2, 4 ] };
+
+    expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
+    expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
   });
 });

@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.23.1
 ### Added
  - Method and POST body to select dropdowns.
+ - Lodash operator to JsonLogic.
 
 ### Fixed
  - Added custom classes to column components.
