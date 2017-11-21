@@ -18,12 +18,19 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'a',
       input: true,
       inputType: 'text',
-      defaultValue: '10',
+      multiple: true,
+      prefix: '+',
       validate: {
         min: 2,
         max: 100,
         step: 1
       }
+    },
+    {
+      type: 'htmlelement',
+      tag: 'p',
+      className: 'text-center',
+      content: '&mdash;&mdash;&mdash;&mdash; X &mdash;&mdash;&mdash;&mdash;'
     },
     {
       type: 'number',
@@ -31,24 +38,12 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'b',
       input: true,
       inputType: 'text',
-      customDefaultValue: 'value = 20;',
+      multiple: true,
+      prefix: '+',
       validate: {
         min: 2,
         max: 100,
         step: 1
-      }
-    },
-    {
-      type: 'textfield',
-      label: 'Multiple',
-      key: 'multiple',
-      input: true,
-      inputType: 'text',
-      customDefaultValue: {
-        "+": [
-          {var: 'data.a'},
-          {var: 'data.b'}
-        ]
       }
     },
     {
@@ -60,13 +55,8 @@ Formio.createForm(document.getElementById('formio'), {
       disabled: true,
       calculateValue: {
         "*": [
-          {
-            "+": [
-              {var: 'data.a'},
-              {var: 'data.b'}
-            ]
-          },
-          {var: 'data.multiple'}
+          {"_.sum": {var: 'data.a'}},
+          {"_.sum": {var: 'data.b'}}
         ]
       }
     }
@@ -87,12 +77,19 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'a',
         input: true,
         inputType: 'text',
-        defaultValue: '10',
+        multiple: true,
+        prefix: '+',
         validate: {
           min: 2,
           max: 100,
           step: 1
         }
+      },
+      {
+        type: 'htmlelement',
+        tag: 'p',
+        className: 'text-center',
+        content: '&mdash;&mdash;&mdash;&mdash; X &mdash;&mdash;&mdash;&mdash;'
       },
       {
         type: 'number',
@@ -100,24 +97,12 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'b',
         input: true,
         inputType: 'text',
-        customDefaultValue: 'value = 20;',
+        multiple: true,
+        prefix: '+',
         validate: {
           min: 2,
           max: 100,
           step: 1
-        }
-      },
-      {
-        type: 'textfield',
-        label: 'Multiplier',
-        key: 'multiplier',
-        input: true,
-        inputType: 'text',
-        customDefaultValue: {
-          "+": [
-            {var: 'data.a'},
-            {var: 'data.b'}
-          ]
         }
       },
       {
@@ -129,13 +114,8 @@ Formio.createForm(document.getElementById('formio'), {
         disabled: true,
         calculateValue: {
           "*": [
-            {
-              "+": [
-                {var: 'data.a'},
-                {var: 'data.b'}
-              ]
-            },
-            {var: 'data.multiplier'}
+            {"_.sum": {var: 'data.a'}},
+            {"_.sum": {var: 'data.b'}}
           ]
         }
       }
