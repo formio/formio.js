@@ -11624,14 +11624,14 @@ var Formio = function () {
         try {
           return localStorage.removeItem('formioToken');
         } catch (err) {
-          return cookies.erase('formioToken');
+          return cookies.erase('formioToken', { path: '/' });
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         localStorage.setItem('formioToken', token);
       } catch (err) {
-        cookies.set('formioToken', token);
+        cookies.set('formioToken', token, { path: '/' });
       }
       return Formio.currentUser(); // Run this so user is updated if null
     }
@@ -11658,14 +11658,14 @@ var Formio = function () {
         try {
           return localStorage.removeItem('formioUser');
         } catch (err) {
-          return cookies.erase('formioUser');
+          return cookies.erase('formioUser', { path: '/' });
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         localStorage.setItem('formioUser', JSON.stringify(user));
       } catch (err) {
-        cookies.set('formioUser', JSON.stringify(user));
+        cookies.set('formioUser', JSON.stringify(user), { path: '/' });
       }
     }
   }, {
@@ -13473,7 +13473,7 @@ var FormioUtils = {
       if ((0, _isString3.default)(component.calculateValue)) {
         try {
           var util = this;
-          data[component.key] = eval('(function(data, util) { var value = [];\'' + component.calculateValue.toString() + '; return value; })(data, util)');
+          data[component.key] = eval('(function(data, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, util)');
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
@@ -18638,7 +18638,8 @@ var Translator = function (_EventEmitter) {
     var joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
 
     // object
-    if (res && typeof res !== 'string' && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
+    var handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
+    if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
@@ -19207,6 +19208,7 @@ var I18n = function (_EventEmitter) {
       if (l) {
         _this4.language = l;
         _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
+        if (!_this4.translator.language) _this4.translator.changeLanguage(l);
 
         if (_this4.services.languageDetector) _this4.services.languageDetector.cacheUserLanguage(l);
       }

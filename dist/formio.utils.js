@@ -355,7 +355,7 @@ var FormioUtils = {
       if ((0, _isString3.default)(component.calculateValue)) {
         try {
           var util = this;
-          data[component.key] = eval('(function(data, util) { var value = [];\'' + component.calculateValue.toString() + '; return value; })(data, util)');
+          data[component.key] = eval('(function(data, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, util)');
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
