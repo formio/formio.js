@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.23.2
 ### Fixed
  - Path parameter for cookie fallback functions.
+ - Custom calculated values.
 
 ## 2.23.1
 ### Added
