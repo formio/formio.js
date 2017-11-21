@@ -4056,8 +4056,14 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       if (!this.component.label) {
         return null;
       }
+
+      var className = 'control-label';
+      if (this.component.input && this.component.validate && this.component.validate.required) {
+        className += ' field-required';
+      }
+
       this.labelElement = this.ce('label', {
-        class: 'control-label'
+        class: className
       });
       this.addShortcut();
 
@@ -4099,7 +4105,13 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   }, {
     key: 'updateValueByName',
     value: function updateValueByName() {
-      this.data[this.component.name] = this.component.value;
+      var component = this.getRoot().getComponent(this.component.name);
+
+      if (component) {
+        component.setValue(this.component.value, { changed: true });
+      } else {
+        this.data[this.component.name] = this.component.value;
+      }
     }
   }, {
     key: 'addInputEventListener',
@@ -4145,6 +4157,15 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         this.input.checked = 0;
       }
       this.updateValue(flags);
+    }
+  }, {
+    key: 'getRawValue',
+    value: function getRawValue() {
+      if (this.component.name) {
+        return this.data[this.component.name];
+      }
+
+      return _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'getRawValue', this).call(this);
     }
   }, {
     key: 'destroy',
@@ -4291,7 +4312,7 @@ var ColumnsComponent = exports.ColumnsComponent = function (_FormioComponents) {
   }, {
     key: 'className',
     get: function get() {
-      return 'row';
+      return 'row ' + this.component.customClass;
     }
   }]);
 
@@ -8149,10 +8170,17 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     }
   }, {
     key: 'loadItems',
-    value: function loadItems(url, search, headers, options) {
+    value: function loadItems(url, search, headers, options, method, body) {
       var _this3 = this;
 
       options = options || {};
+
+      // Ensure we have a method and remove any body if method is get
+      method = method || 'GET';
+      if (method.toUpperCase() === 'GET') {
+        body = null;
+      }
+
       var query = this.component.dataSrc === 'url' ? {} : {
         limit: 100,
         skip: 0
@@ -8187,7 +8215,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
       // Make the request.
       options.header = headers;
-      _formio2.default.makeRequest(this.options.formio, 'select', url, null, null, options).then(function (response) {
+      _formio2.default.makeRequest(this.options.formio, 'select', url, method, body, options).then(function (response) {
         return _this3.setItems(response);
       }).catch(function (err) {
         _this3.events.emit('formio.error', err);
@@ -8241,13 +8269,24 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           break;
         case 'url':
           var url = this.component.data.url;
+          var method = void 0;
+          var body = void 0;
+
           if (url.substr(0, 1) === '/') {
             url = _formio2.default.getBaseUrl() + this.component.data.url;
           }
 
-          this.loadItems(url, searchInput, this.requestHeaders, {
-            noToken: true
-          });
+          if (!this.component.data.method) {
+            method = 'GET';
+          } else {
+            method = this.component.data.method;
+            if (method.toUpperCase() === 'POST') {
+              body = this.component.data.body;
+            } else {
+              body = null;
+            }
+          }
+          this.loadItems(url, searchInput, this.requestHeaders, { noToken: true }, method, body);
           break;
       }
     }

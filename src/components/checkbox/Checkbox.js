@@ -2,7 +2,7 @@ import { BaseComponent } from '../base/Base';
 import _assign from 'lodash/assign';
 export class CheckBoxComponent extends BaseComponent {
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.type = this.component.inputType;
@@ -88,8 +88,14 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.label) {
       return null;
     }
+
+    let className = 'control-label';
+    if (this.component.input && this.component.validate && this.component.validate.required) {
+      className += ' field-required';
+    }
+
     this.labelElement = this.ce('label', {
-      class: 'control-label'
+      class: className
     });
     this.addShortcut();
 
@@ -123,13 +129,20 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.input) {
       return;
     }
-    let input = this.ce(this.info.type, this.info.attr);
+    const input = this.ce(this.info.type, this.info.attr);
     this.errorContainer = container;
     return input;
   }
 
   updateValueByName() {
-    this.data[this.component.name] = this.component.value;
+    const component = this.getRoot().getComponent(this.component.name);
+
+    if (component) {
+      component.setValue(this.component.value, { changed: true });
+    }
+    else {
+      this.data[this.component.name] = this.component.value;
+    }
   }
 
   addInputEventListener(input) {
@@ -173,6 +186,14 @@ export class CheckBoxComponent extends BaseComponent {
       this.input.checked = 0;
     }
     this.updateValue(flags);
+  }
+
+  getRawValue() {
+    if (this.component.name) {
+      return this.data[this.component.name];
+    }
+
+    return super.getRawValue();
   }
 
   destroy() {
