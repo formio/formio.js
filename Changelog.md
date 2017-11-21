@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.23.2
+### Fixed
+ - Path parameter for cookie fallback functions.
+
 ## 2.23.1
 ### Added
  - Method and POST body to select dropdowns.

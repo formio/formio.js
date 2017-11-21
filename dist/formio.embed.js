@@ -11666,14 +11666,14 @@ var Formio = function () {
         try {
           return localStorage.removeItem('formioToken');
         } catch (err) {
-          return cookies.erase('formioToken');
+          return cookies.erase('formioToken', { path: '/' });
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         localStorage.setItem('formioToken', token);
       } catch (err) {
-        cookies.set('formioToken', token);
+        cookies.set('formioToken', token, { path: '/' });
       }
       return Formio.currentUser(); // Run this so user is updated if null
     }
@@ -11700,14 +11700,14 @@ var Formio = function () {
         try {
           return localStorage.removeItem('formioUser');
         } catch (err) {
-          return cookies.erase('formioUser');
+          return cookies.erase('formioUser', { path: '/' });
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         localStorage.setItem('formioUser', JSON.stringify(user));
       } catch (err) {
-        cookies.set('formioUser', JSON.stringify(user));
+        cookies.set('formioUser', JSON.stringify(user), { path: '/' });
       }
     }
   }, {
