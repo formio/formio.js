@@ -186,7 +186,7 @@ export const Validator = {
         if (!pattern) {
           return true;
         }
-        const regexStr = '^' + pattern + '$';
+        const regexStr = `^${pattern}$`;
         const regex = new RegExp(regexStr);
         return regex.test(value);
       }
@@ -222,11 +222,11 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        var valid = true;
-        var row = component.data;
+        let valid = true;
+        let row = component.data;
         let custom = setting;
         /*eslint-disable no-unused-vars */
-        var input = value;
+        let input = value;
         /*eslint-enable no-unused-vars */
         custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
           if ($2.indexOf('data.') === 0) {

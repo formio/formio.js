@@ -151,10 +151,14 @@ import { BaseComponent } from &apos;../base/Base&apos;;
 export class SurveyComponent extends BaseComponent {
   build() {
     this.createElement();
-    this.createLabel(this.element);
+    const labelAtTheBottom = this.component.labelPosition === &apos;bottom&apos;;
+    if (!labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
     this.table = this.ce(&apos;table&apos;, {
       class: &apos;table table-striped table-bordered&apos;
     });
+    this.setInputStyles(this.table);
 
     // Build header.
     let thead = this.ce(&apos;thead&apos;);
@@ -193,6 +197,9 @@ export class SurveyComponent extends BaseComponent {
     });
     this.table.appendChild(tbody);
     this.element.appendChild(this.table);
+    if (labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
     this.createDescription(this.element);
     this.restoreValue();
     if (this.shouldDisable) {

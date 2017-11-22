@@ -147,15 +147,16 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/checkbox/Checkbox.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
+import _assign from &apos;lodash/assign&apos;;
 export class CheckBoxComponent extends BaseComponent {
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = &apos;input&apos;;
     info.changeEvent = &apos;click&apos;;
     info.attr.type = this.component.inputType;
     info.attr.class = &apos;&apos;;
     if (this.component.name) {
-      info.attr.name = &apos;data[&apos; + this.component.name + &apos;]&apos;;
+      info.attr.name = `data[${this.component.name}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
     return info;
@@ -189,14 +190,64 @@ export class CheckBoxComponent extends BaseComponent {
     });
   }
 
+  labelOnTheTopOrLeft() {
+    return [&apos;top&apos;, &apos;left&apos;].includes(this.component.labelPosition);
+  }
+
+  labelOnTheTopOrBottom() {
+    return [&apos;top&apos;, &apos;bottom&apos;].includes(this.component.labelPosition);
+  }
+
+  setInputLabelStyle(label) {
+    if (this.component.labelPosition === &apos;left&apos;) {
+      _assign(label.style, {
+        textAlign: &apos;center&apos;,
+        paddingLeft: 0,
+      });
+    }
+
+    if (this.labelOnTheTopOrBottom()) {
+      _assign(label.style, {
+        display: &apos;block&apos;,
+        textAlign: &apos;center&apos;,
+        paddingLeft: 0,
+      });
+    }
+  }
+
+  setInputStyle(input) {
+    if (this.component.labelPosition === &apos;left&apos;) {
+      _assign(input.style, {
+        position: &apos;initial&apos;,
+        marginLeft: &apos;7px&apos;
+      });
+    }
+
+    if (this.labelOnTheTopOrBottom()) {
+      _assign(input.style, {
+        width: &apos;100%&apos;,
+        position: &apos;initial&apos;,
+        marginLeft: 0
+      });
+    }
+  }
+
   createLabel(container, input) {
     if (!this.component.label) {
       return null;
     }
+
+    let className = &apos;control-label&apos;;
+    if (this.component.input &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
+      className += &apos; field-required&apos;;
+    }
+
     this.labelElement = this.ce(&apos;label&apos;, {
-      class: &apos;control-label&apos;
+      class: className
     });
     this.addShortcut();
+
+    const labelOnTheTopOrOnTheLeft = this.labelOnTheTopOrLeft();
 
     // Create the SPAN around the textNode for better style hooks
     this.labelSpan = this.ce(&apos;span&apos;);
@@ -204,8 +255,17 @@ export class CheckBoxComponent extends BaseComponent {
     if (this.info.attr.id) {
       this.labelElement.setAttribute(&apos;for&apos;, this.info.attr.id);
     }
+    if (!this.options.inputsOnly &amp;&amp; labelOnTheTopOrOnTheLeft) {
+      this.setInputLabelStyle(this.labelElement);
+      this.setInputStyle(input);
+      this.labelSpan.appendChild(this.text(this.component.label));
+      this.labelElement.appendChild(this.labelSpan);
+    }
     this.addInput(input, this.labelElement);
-    if (!this.options.inputsOnly) {
+
+    if (!this.options.inputsOnly &amp;&amp; !labelOnTheTopOrOnTheLeft) {
+      this.setInputLabelStyle(this.labelElement);
+      this.setInputStyle(input);
       this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
       this.labelElement.appendChild(this.labelSpan);
     }
@@ -217,13 +277,20 @@ export class CheckBoxComponent extends BaseComponent {
     if (!this.component.input) {
       return;
     }
-    let input = this.ce(this.info.type, this.info.attr);
+    const input = this.ce(this.info.type, this.info.attr);
     this.errorContainer = container;
     return input;
   }
 
   updateValueByName() {
-    this.data[this.component.name] = this.component.value;
+    const component = this.getRoot().getComponent(this.component.name);
+
+    if (component) {
+      component.setValue(this.component.value, { changed: true });
+    }
+    else {
+      this.data[this.component.name] = this.component.value;
+    }
   }
 
   addInputEventListener(input) {
@@ -267,6 +334,14 @@ export class CheckBoxComponent extends BaseComponent {
       this.input.checked = 0;
     }
     this.updateValue(flags);
+  }
+
+  getRawValue() {
+    if (this.component.name) {
+      return this.data[this.component.name];
+    }
+
+    return super.getRawValue();
   }
 
   destroy() {

@@ -150,7 +150,7 @@
 import { FormioComponents } from &apos;../Components&apos;;
 export class ColumnsComponent extends FormioComponents {
   get className() {
-    return &apos;row&apos;;
+    return &apos;row &apos; + this.component.customClass;
   }
   addComponents() {
     _each(this.component.columns, (column) =&gt; {

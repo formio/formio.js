@@ -148,9 +148,10 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/radio/Radio.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
 import _each from &apos;lodash/each&apos;;
+import _assign from &apos;lodash/assign&apos;;
 export class RadioComponent extends BaseComponent {
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = &apos;input&apos;;
     info.changeEvent = &apos;click&apos;;
     info.attr.class = &apos;&apos;;
@@ -158,45 +159,99 @@ export class RadioComponent extends BaseComponent {
   }
 
   createInput(container) {
-    let inputGroup = this.ce(&apos;div&apos;, {
+    const inputGroup = this.ce(&apos;div&apos;, {
       class: &apos;input-group&apos;
     });
-    let inputType = this.component.inputType;
+    const inputType = this.component.inputType;
+    const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
+
     _each(this.component.values, (value) =&gt; {
-      var wrapperClass = (this.component.inline ? inputType + &apos;-inline&apos; : inputType);
-      let labelWrapper = this.ce(&apos;div&apos;, {
+      const wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
+      const labelWrapper = this.ce(&apos;div&apos;, {
         class: wrapperClass
       });
-      let label = this.ce(&apos;label&apos;, {
+      const label = this.ce(&apos;label&apos;, {
         class: &apos;control-label&apos;
       });
 
       this.addShortcut(label, value.shortcut);
 
       // Create the SPAN around the textNode for better style hooks
-      let labelSpan = this.ce(&apos;span&apos;);
+      const labelSpan = this.ce(&apos;span&apos;);
 
       // Determine the attributes for this input.
-      let inputId = this.component.key + this.row + &apos;-&apos; + value.value;
+      const inputId = `${this.component.key}${this.row}-${value.value}`;
       this.info.attr.id = inputId;
       this.info.attr.value = value.value;
       label.setAttribute(&apos;for&apos;, this.info.attr.id);
 
       // Create the input.
-      let input = this.ce(&apos;input&apos;);
+      const input = this.ce(&apos;input&apos;);
       _each(this.info.attr, function(value, key) {
         input.setAttribute(key, value);
       });
+
+      if (labelOnTheTopOrOnTheLeft) {
+        label.appendChild(labelSpan);
+      }
+
+      this.setInputLabelStyle(label);
+      this.setInputStyle(input);
+
       this.addInput(input, label);
 
       labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
-      label.appendChild(labelSpan);
+      if (!labelOnTheTopOrOnTheLeft) {
+        label.appendChild(labelSpan);
+      }
       labelWrapper.appendChild(label);
 
       inputGroup.appendChild(labelWrapper);
     });
     container.appendChild(inputGroup);
     this.errorContainer = container;
+  }
+
+  optionsLabelOnTheTopOrLeft() {
+    return [&apos;top&apos;, &apos;left&apos;].includes(this.component.optionsLabelPosition);
+  }
+
+  optionsLabelOnTheTopOrBottom() {
+    return [&apos;top&apos;, &apos;bottom&apos;].includes(this.component.optionsLabelPosition);
+  }
+
+  setInputLabelStyle(label) {
+    if (this.component.optionsLabelPosition === &apos;left&apos;) {
+      _assign(label.style, {
+        textAlign: &apos;center&apos;,
+        paddingLeft: 0,
+      });
+    }
+
+    if (this.optionsLabelOnTheTopOrBottom()) {
+      _assign(label.style, {
+        display: &apos;block&apos;,
+        textAlign: &apos;center&apos;,
+        paddingLeft: 0,
+      });
+    }
+  }
+
+  setInputStyle(input) {
+    if (this.component.optionsLabelPosition === &apos;left&apos;) {
+      _assign(input.style, {
+        position: &apos;initial&apos;,
+        marginLeft: &apos;7px&apos;
+      });
+    }
+
+    if (this.optionsLabelOnTheTopOrBottom()) {
+      _assign(input.style, {
+        width: &apos;100%&apos;,
+        position: &apos;initial&apos;,
+        marginLeft: 0
+      });
+    }
   }
 
   getValue() {

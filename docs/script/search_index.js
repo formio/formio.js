@@ -1633,13 +1633,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -1746,6 +1746,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#getlabelmargin",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-getLabelMargin",
+    "src/components/base/Base.js~BaseComponent#getLabelMargin",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#getlabelwidth",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-getLabelWidth",
+    "src/components/base/Base.js~BaseComponent#getLabelWidth",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#getrawvalue",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-getRawValue",
     "src/components/base/Base.js~BaseComponent#getRawValue",
@@ -1818,6 +1830,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#invalid",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-invalid",
+    "src/components/base/Base.js~BaseComponent#invalid",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#invalidmessage",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-invalidMessage",
     "src/components/base/Base.js~BaseComponent#invalidMessage",
@@ -1837,13 +1855,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -1852,6 +1870,24 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-labelElement",
     "src/components/base/Base.js~BaseComponent#labelElement",
     "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#labelontheleft",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-labelOnTheLeft",
+    "src/components/base/Base.js~BaseComponent#labelOnTheLeft",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#labelontheleftorright",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-labelOnTheLeftOrRight",
+    "src/components/base/Base.js~BaseComponent#labelOnTheLeftOrRight",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#labelontheright",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-labelOnTheRight",
+    "src/components/base/Base.js~BaseComponent#labelOnTheRight",
+    "method"
   ],
   [
     "src/components/base/base.js~basecomponent#language",
@@ -1962,6 +1998,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#rightalignedlabel",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-rightAlignedLabel",
+    "src/components/base/Base.js~BaseComponent#rightAlignedLabel",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#root",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-root",
     "src/components/base/Base.js~BaseComponent#root",
@@ -1989,6 +2031,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#setinputmask",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-setInputMask",
     "src/components/base/Base.js~BaseComponent#setInputMask",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#setinputstyles",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-setInputStyles",
+    "src/components/base/Base.js~BaseComponent#setInputStyles",
     "method"
   ],
   [
@@ -2089,13 +2137,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -2268,6 +2316,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#getrawvalue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-getRawValue",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#getRawValue",
+    "method"
+  ],
+  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#getvalueat",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-getValueAt",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#getValueAt",
@@ -2286,10 +2340,34 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#labelonthetoporbottom",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-labelOnTheTopOrBottom",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#labelOnTheTopOrBottom",
+    "method"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#labelonthetoporleft",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-labelOnTheTopOrLeft",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#labelOnTheTopOrLeft",
+    "method"
+  ],
+  [
     "src/components/checkbox/checkbox.js~checkboxcomponent#labelspan",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-labelSpan",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#labelSpan",
     "member"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#setinputlabelstyle",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-setInputLabelStyle",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#setInputLabelStyle",
+    "method"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#setinputstyle",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-setInputStyle",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#setInputStyle",
+    "method"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#setvalue",
@@ -2886,6 +2964,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/day/day.js~daycomponent#setsubinputlabelstyle",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-setSubinputLabelStyle",
+    "src/components/day/Day.js~DayComponent#setSubinputLabelStyle",
+    "method"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#setsubinputstyle",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-setSubinputStyle",
+    "src/components/day/Day.js~DayComponent#setSubinputStyle",
+    "method"
+  ],
+  [
     "src/components/day/day.js~daycomponent#setvalueat",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-setValueAt",
     "src/components/day/Day.js~DayComponent#setValueAt",
@@ -3117,6 +3207,12 @@ window.esdocSearchIndex = [
     "src/components/file/file.js~filecomponent#hiddenfileinputelement",
     "class/src/components/file/File.js~FileComponent.html#instance-member-hiddenFileInputElement",
     "src/components/file/File.js~FileComponent#hiddenFileInputElement",
+    "member"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#inputscontainer",
+    "class/src/components/file/File.js~FileComponent.html#instance-member-inputsContainer",
+    "src/components/file/File.js~FileComponent#inputsContainer",
     "member"
   ],
   [
@@ -3723,6 +3819,30 @@ window.esdocSearchIndex = [
     "src/components/radio/radio.js~radiocomponent#getvalue",
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-getValue",
     "src/components/radio/Radio.js~RadioComponent#getValue",
+    "method"
+  ],
+  [
+    "src/components/radio/radio.js~radiocomponent#optionslabelonthetoporbottom",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-optionsLabelOnTheTopOrBottom",
+    "src/components/radio/Radio.js~RadioComponent#optionsLabelOnTheTopOrBottom",
+    "method"
+  ],
+  [
+    "src/components/radio/radio.js~radiocomponent#optionslabelonthetoporleft",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-optionsLabelOnTheTopOrLeft",
+    "src/components/radio/Radio.js~RadioComponent#optionsLabelOnTheTopOrLeft",
+    "method"
+  ],
+  [
+    "src/components/radio/radio.js~radiocomponent#setinputlabelstyle",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-setInputLabelStyle",
+    "src/components/radio/Radio.js~RadioComponent#setInputLabelStyle",
+    "method"
+  ],
+  [
+    "src/components/radio/radio.js~radiocomponent#setinputstyle",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-setInputStyle",
+    "src/components/radio/Radio.js~RadioComponent#setInputStyle",
     "method"
   ],
   [

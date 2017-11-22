@@ -603,7 +603,8 @@ export class BaseComponent {
     _each(this.data[this.component.key], (value, index) => {
       let tr = this.ce('tr');
       let td = this.ce('td');
-      this.createInput(td);
+      const input = this.createInput(td);
+      input.value = value;
       tr.appendChild(td);
 
       if (!this.shouldDisable) {
@@ -1396,7 +1397,7 @@ export class BaseComponent {
     if (!this.component.input) {
       return;
     }
-    let values = [];
+    const values = [];
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
@@ -1428,9 +1429,9 @@ export class BaseComponent {
    */
   updateValue(flags) {
     flags = flags || {};
-    let value = this.data[this.component.key];
+    const value = this.data[this.component.key];
     this.data[this.component.key] = this.getValue(flags);
-    let changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+    const changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
     delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
@@ -1663,7 +1664,7 @@ export class BaseComponent {
       return false;
     }
     this.value = value;
-    let isArray = _isArray(value);
+    const isArray = _isArray(value);
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
@@ -1746,7 +1747,7 @@ export class BaseComponent {
 
   clear() {
     this.destroy();
-    let element = this.getElement();
+    const element = this.getElement();
     if (element) {
       element.innerHTML = '';
     }

@@ -174,18 +174,28 @@ export class FileComponent extends BaseComponent {
     // Set default to empty array.
     this.setValue([]);
 
+    const labelAtTheBottom = this.component.labelPosition === &apos;bottom&apos;;
+
     this.createElement();
-    this.createLabel(this.element);
-    this.errorContainer = this.element;
+    if (!labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
+    this.inputsContainer = this.ce(&apos;div&apos;);
+    this.errorContainer = this.inputsContainer;
     this.createErrorElement();
     this.listContainer = this.buildList();
-    this.element.appendChild(this.listContainer);
+    this.inputsContainer.appendChild(this.listContainer);
     this.uploadContainer = this.buildUpload();
     this.hiddenFileInputElement = this.buildHiddenFileInput();
-    this.element.appendChild(this.hiddenFileInputElement);
-    this.element.appendChild(this.uploadContainer);
-    this.addWarnings(this.element);
-    this.buildUploadStatusList(this.element);
+    this.inputsContainer.appendChild(this.hiddenFileInputElement);
+    this.inputsContainer.appendChild(this.uploadContainer);
+    this.addWarnings(this.inputsContainer);
+    this.buildUploadStatusList(this.inputsContainer);
+    this.setInputStyles(this.inputsContainer);
+    this.element.appendChild(this.inputsContainer);
+    if (labelAtTheBottom) {
+      this.createLabel(this.element);
+    }
     this.createDescription(this.element);
   }
 
