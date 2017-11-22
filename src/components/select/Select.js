@@ -89,6 +89,15 @@ export class SelectComponent extends BaseComponent {
 
     // Iterate through each of the items.
     _each(items, (item) => {
+      // Translate the default template
+      var t_template = this.itemTemplate(item).replace(
+        this.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, ""),
+        this.t(this.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, ""))
+      );
+
+      // Add the choice to the select list.
+      this.choices._addChoice(this.itemValue(item), t_template);
+
 
       // Add the choice to the select list.
       this.choices._addChoice(this.itemValue(item), this.itemTemplate(item));
@@ -115,7 +124,7 @@ export class SelectComponent extends BaseComponent {
     if (method.toUpperCase() === 'GET') {
       body = null;
     }
-    
+
     let query = (this.component.dataSrc === 'url') ? {} : {
       limit: 100,
       skip: 0
