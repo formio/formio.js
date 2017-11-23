@@ -170,7 +170,10 @@ export class SelectComponent extends BaseComponent {
       try {
         _each(this.component.data.headers, (header) => {
           if (header.key) {
-            headers.set(header.key, header.value);
+            headers.set(header.key, this.interpolate(header.value, {
+                data: this.data
+              })
+            );
           }
         });
       }
