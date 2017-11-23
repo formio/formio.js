@@ -73,6 +73,9 @@ var Formio = function () {
     this.actionsUrl = '';
     this.actionId = '';
     this.actionUrl = '';
+    this.vsUrl = '';
+    this.vId = '';
+    this.vUrl = '';
     this.query = '';
 
     if (options.hasOwnProperty('base')) {
@@ -179,9 +182,9 @@ var Formio = function () {
 
     // Configure Form urls and form ids.
     if (path.search(/(^|\/)(project|form)($|\/)/) !== -1) {
-      registerItems(['form', ['submission', 'action']], this.projectUrl);
+      registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);
     } else {
-      var subRegEx = new RegExp('\/(submission|action)($|\/.*)');
+      var subRegEx = new RegExp('\/(submission|action|v)($|\/.*)');
       var subs = path.match(subRegEx);
       this.pathType = subs && subs.length > 1 ? subs[1] : '';
       path = path.replace(subRegEx, '');
@@ -189,7 +192,7 @@ var Formio = function () {
       this.formsUrl = this.projectUrl + '/form';
       this.formUrl = this.projectUrl + path;
       this.formId = path.replace(/^\/+|\/+$/g, '');
-      var items = ['submission', 'action'];
+      var items = ['submission', 'action', 'v'];
       for (var i in items) {
         if (items.hasOwnProperty(i)) {
           var item = items[i];
@@ -283,7 +286,32 @@ var Formio = function () {
   }, {
     key: 'loadForm',
     value: function loadForm(query, opts) {
-      return this.load('form', query, opts);
+      var _this2 = this;
+
+      return this.load('form', query, opts).then(function (currentForm) {
+        // Check to see if there isn't a number in vId.
+        if (isNaN(parseInt(_this2.vId))) {
+          return currentForm;
+        }
+        // If a submission already exists but form is marked to load current version of form.
+        if (currentForm.revisions === 'current' && _this2.submissionId) {
+          return currentForm;
+        }
+        // If they specified a revision form, load the revised form components.
+        if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+          query = Formio.serialize(query.params);
+        }
+        if (query) {
+          query = _this2.query ? _this2.query + '&' + query : '?' + query;
+        } else {
+          query = _this2.query;
+        }
+        return _this2.makeRequest('form', _this2.vUrl + query, 'get', null, opts).then(function (revisionForm) {
+          currentForm.components = revisionForm.components;
+          // Using object.assign so we don't cross polinate multiple form loads.
+          return Object.assign({}, currentForm);
+        });
+      });
     }
   }, {
     key: 'saveForm',
@@ -303,11 +331,20 @@ var Formio = function () {
   }, {
     key: 'loadSubmission',
     value: function loadSubmission(query, opts) {
-      return this.load('submission', query, opts);
+      var _this3 = this;
+
+      return this.load('submission', query, opts).then(function (submission) {
+        _this3.vId = submission._fvid;
+        _this3.vUrl = _this3.formUrl + '/v/' + _this3.vId;
+        return submission;
+      });
     }
   }, {
     key: 'saveSubmission',
     value: function saveSubmission(data, opts) {
+      if (!isNaN(parseInt(this.vId))) {
+        data._fvid = this.vId;
+      }
       return this.save('submission', data, opts);
     }
   }, {
@@ -425,7 +462,7 @@ var Formio = function () {
   }, {
     key: 'getDownloadUrl',
     value: function getDownloadUrl(form) {
-      var _this2 = this;
+      var _this4 = this;
 
       if (!this.submissionId) {
         return Promise.resolve('');
@@ -437,7 +474,7 @@ var Formio = function () {
           if (!_form) {
             return '';
           }
-          return _this2.getDownloadUrl(_form);
+          return _this4.getDownloadUrl(_form);
         });
       }
 
@@ -448,7 +485,7 @@ var Formio = function () {
 
       var download = Formio.baseUrl + apiUrl;
       return new Promise(function (resolve, reject) {
-        _this2.getTempToken(3600, 'GET:' + apiUrl).then(function (tempToken) {
+        _this4.getTempToken(3600, 'GET:' + apiUrl).then(function (tempToken) {
           download += '?token=' + tempToken.key;
           resolve(download);
         }, function () {
