@@ -255,7 +255,7 @@ export class FormioWizard extends FormioForm {
       }
 
       // Set clickable based on breadcrumb settings
-      let clickable = this.page === i && this.options.breadcrumbSettings.clickable
+      let clickable = this.page !== i && this.options.breadcrumbSettings.clickable
 
       let pageButton = this.ce('li', {
         class: (i === this.page) ? 'active' : (clickable ? '' : 'disabled'),
