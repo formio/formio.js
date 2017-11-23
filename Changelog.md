@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - File component inside Datagrid component.
+ - Components with label position inside Datagrid component.
+
 ## 2.23.2
 ### Fixed
  - Path parameter for cookie fallback functions.
