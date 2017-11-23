@@ -234,6 +234,12 @@ export class FormioWizard extends FormioForm {
       return;
     }
 
+    // Check for and initlize breadcrumb settings object
+    this.options.breadcrumbSettings = this.options.breadcrumbSettings || {};
+    if(this.options.breadcrumbSettings.clickable === undefined) {
+      this.options.breadcrumbSettings.clickable = true;
+    }
+
     this.wizardHeader = this.ce('ul', {
       class: 'pagination'
     });
@@ -248,13 +254,17 @@ export class FormioWizard extends FormioForm {
         return;
       }
 
+      // Set clickable based on breadcrumb settings
+      let clickable = this.page !== i && this.options.breadcrumbSettings.clickable
+
       let pageButton = this.ce('li', {
-        class: (i === this.page) ? 'active' : '',
-        style: (i === this.page) ? '' : 'cursor: pointer;'
+        class: (i === this.page) ? 'active' : (clickable ? '' : 'disabled'),
+        style: (clickable) ? 'cursor: pointer;' : ''
       });
 
       // Navigate to the page as they click on it.
-      if (this.page !== i) {
+
+      if (clickable) {
         this.addEventListener(pageButton, 'click', (event) => {
           event.preventDefault();
           this.setPage(i);
