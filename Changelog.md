@@ -4,13 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 2.23.3
 ### Fixed
  - File component inside Datagrid component.
  - Components with label position inside Datagrid component.
  
 ### Added
  - Interpolation to the select headers when requests are made.
+ - Option to make the wizard header buttons not clickable.
+ - Translations to the select dropdown elements.
+ - Form version handling
 
 ## 2.23.2
 ### Fixed
