@@ -115,7 +115,7 @@ export class SelectComponent extends BaseComponent {
     if (method.toUpperCase() === 'GET') {
       body = null;
     }
-    
+
     let query = (this.component.dataSrc === 'url') ? {} : {
       limit: 100,
       skip: 0
@@ -171,9 +171,8 @@ export class SelectComponent extends BaseComponent {
         _each(this.component.data.headers, (header) => {
           if (header.key) {
             headers.set(header.key, this.interpolate(header.value, {
-                data: this.data
-              })
-            );
+              data: this.data
+            }));
           }
         });
       }

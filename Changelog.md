@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - File component inside Datagrid component.
  - Components with label position inside Datagrid component.
+ 
+### Added
+ - Interpolation to the select headers when requests are made.
 
 ## 2.23.2
 ### Fixed
