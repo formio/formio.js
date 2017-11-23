@@ -89,9 +89,14 @@ export class SelectComponent extends BaseComponent {
 
     // Iterate through each of the items.
     _each(items, (item) => {
+      // Get the default label from the template
+      var label = this.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, "")
+
+      // Translate the default template
+      var t_template = this.itemTemplate(item).replace(label, this.t(label));
 
       // Add the choice to the select list.
-      this.choices._addChoice(this.itemValue(item), this.itemTemplate(item));
+      this.choices._addChoice(this.itemValue(item), t_template);
     });
 
     // If a value is provided, then select it.
