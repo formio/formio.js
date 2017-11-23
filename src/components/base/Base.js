@@ -743,6 +743,10 @@ export class BaseComponent {
   }
 
   setInputStyles(input) {
+    if (this.labelIsHidden()) {
+      return;
+    }
+
     if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
       const totalLabelWidth = this.getLabelWidth() + this.getLabelMargin();
       input.style.width = `${100 - totalLabelWidth}%`;
@@ -755,16 +759,16 @@ export class BaseComponent {
     }
   }
 
+  labelIsHidden() {
+    return !this.component.label || this.component.hideLabel || this.options.inputsOnly;
+  }
+
   /**
    * Create the HTML element for the label of this component.
    * @param {HTMLElement} container - The containing element that will contain this label.
    */
   createLabel(container) {
-    if (
-      !this.component.label ||
-      this.component.hideLabel ||
-      this.options.inputsOnly
-    ) {
+    if (this.labelIsHidden()) {
       return;
     }
     let className = 'control-label';

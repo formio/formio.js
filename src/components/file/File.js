@@ -56,12 +56,12 @@ export class FileComponent extends BaseComponent {
     if (this.listContainer && this.uploadContainer) {
       // Refresh file list.
       const newList = this.buildList();
-      this.element.replaceChild(newList, this.listContainer);
+      this.inputsContainer.replaceChild(newList, this.listContainer);
       this.listContainer = newList;
 
       // Refresh upload container.
       const newUpload = this.buildUpload();
-      this.element.replaceChild(newUpload, this.uploadContainer);
+      this.inputsContainer.replaceChild(newUpload, this.uploadContainer);
       this.uploadContainer = newUpload;
     }
   }
