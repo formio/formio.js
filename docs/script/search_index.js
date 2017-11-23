@@ -1872,6 +1872,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#labelishidden",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-labelIsHidden",
+    "src/components/base/Base.js~BaseComponent#labelIsHidden",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#labelontheleft",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-labelOnTheLeft",
     "src/components/base/Base.js~BaseComponent#labelOnTheLeft",
@@ -2137,13 +2143,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -4897,13 +4903,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#url",
-    "class/src/formio.form.js~FormioForm.html#instance-set-url",
+    "class/src/formio.form.js~FormioForm.html#instance-get-url",
     "src/formio.form.js~FormioForm#url",
     "member"
   ],
   [
     "src/formio.form.js~formioform#url",
-    "class/src/formio.form.js~FormioForm.html#instance-get-url",
+    "class/src/formio.form.js~FormioForm.html#instance-set-url",
     "src/formio.form.js~FormioForm#url",
     "member"
   ],
@@ -5248,6 +5254,24 @@ window.esdocSearchIndex = [
     "class/src/formio.js~Formio.html#instance-method-uploadFile",
     "src/formio.js~Formio#uploadFile",
     "method"
+  ],
+  [
+    "src/formio.js~formio#vid",
+    "class/src/formio.js~Formio.html#instance-member-vId",
+    "src/formio.js~Formio#vId",
+    "member"
+  ],
+  [
+    "src/formio.js~formio#vurl",
+    "class/src/formio.js~Formio.html#instance-member-vUrl",
+    "src/formio.js~Formio#vUrl",
+    "member"
+  ],
+  [
+    "src/formio.js~formio#vsurl",
+    "class/src/formio.js~Formio.html#instance-member-vsUrl",
+    "src/formio.js~Formio#vsUrl",
+    "member"
   ],
   [
     "src/formio.js~formio.accessinfo",

@@ -181,6 +181,9 @@ export class Formio {
     this.actionsUrl = &apos;&apos;;
     this.actionId = &apos;&apos;;
     this.actionUrl = &apos;&apos;;
+    this.vsUrl = &apos;&apos;;
+    this.vId = &apos;&apos;;
+    this.vUrl = &apos;&apos;;
     this.query = &apos;&apos;;
 
     if (options.hasOwnProperty(&apos;base&apos;)) {
@@ -292,10 +295,10 @@ export class Formio {
 
     // Configure Form urls and form ids.
     if ((path.search(/(^|\/)(project|form)($|\/)/) !== -1)) {
-      registerItems([&apos;form&apos;, [&apos;submission&apos;, &apos;action&apos;]], this.projectUrl);
+      registerItems([&apos;form&apos;, [&apos;submission&apos;, &apos;action&apos;, &apos;v&apos;]], this.projectUrl);
     }
     else {
-      var subRegEx = new RegExp(&apos;\/(submission|action)($|\/.*)&apos;);
+      var subRegEx = new RegExp(&apos;\/(submission|action|v)($|\/.*)&apos;);
       var subs = path.match(subRegEx);
       this.pathType = (subs &amp;&amp; (subs.length &gt; 1)) ? subs[1] : &apos;&apos;;
       path = path.replace(subRegEx, &apos;&apos;);
@@ -303,7 +306,7 @@ export class Formio {
       this.formsUrl = this.projectUrl + &apos;/form&apos;;
       this.formUrl = this.projectUrl + path;
       this.formId = path.replace(/^\/+|\/+$/g, &apos;&apos;);
-      var items = [&apos;submission&apos;, &apos;action&apos;];
+      var items = [&apos;submission&apos;, &apos;action&apos;, &apos;v&apos;];
       for (var i in items) {
         if (items.hasOwnProperty(i)) {
           var item = items[i];
@@ -392,7 +395,33 @@ export class Formio {
   }
 
   loadForm(query, opts) {
-    return this.load(&apos;form&apos;, query, opts);
+    return this.load(&apos;form&apos;, query, opts)
+      .then(currentForm =&gt; {
+        // Check to see if there isn&apos;t a number in vId.
+        if (isNaN(parseInt(this.vId))) {
+          return currentForm;
+        }
+        // If a submission already exists but form is marked to load current version of form.
+        if (currentForm.revisions === &apos;current&apos; &amp;&amp; this.submissionId) {
+          return currentForm;
+        }
+        // If they specified a revision form, load the revised form components.
+        if (query &amp;&amp; typeof query === &apos;object&apos;) {
+          query = Formio.serialize(query.params);
+        }
+        if (query) {
+          query = this.query ? (this.query + &apos;&amp;&apos; + query) : (&apos;?&apos; + query);
+        }
+        else {
+          query = this.query;
+        }
+        return this.makeRequest(&apos;form&apos;, this.vUrl + query, &apos;get&apos;, null, opts)
+          .then(revisionForm =&gt; {
+            currentForm.components = revisionForm.components;
+            // Using object.assign so we don&apos;t cross polinate multiple form loads.
+            return Object.assign({}, currentForm);
+          });
+      });
   }
 
   saveForm(data, opts) {
@@ -408,10 +437,18 @@ export class Formio {
   }
 
   loadSubmission(query, opts) {
-    return this.load(&apos;submission&apos;, query, opts);
+    return this.load(&apos;submission&apos;, query, opts)
+      .then(submission =&gt; {
+        this.vId = submission._fvid;
+        this.vUrl = this.formUrl + &apos;/v/&apos; + this.vId;
+        return submission;
+      });
   }
 
   saveSubmission(data, opts) {
+    if (!isNaN(parseInt(this.vId))) {
+      data._fvid = this.vId;
+    }
     return this.save(&apos;submission&apos;, data, opts);
   }
 
@@ -920,7 +957,7 @@ export class Formio {
         return localStorage.removeItem(&apos;formioToken&apos;);
       }
       catch(err) {
-        return cookies.erase(&apos;formioToken&apos;);
+        return cookies.erase(&apos;formioToken&apos;, { path: &apos;/&apos; });
       }
     }
     // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
@@ -928,13 +965,15 @@ export class Formio {
       localStorage.setItem(&apos;formioToken&apos;, token);
     }
     catch(err) {
-      cookies.set(&apos;formioToken&apos;, token);
+      cookies.set(&apos;formioToken&apos;, token, { path: &apos;/&apos; });
     }
     return Formio.currentUser(); // Run this so user is updated if null
   }
 
   static getToken() {
-    if (this.token) { return this.token; }
+    if (this.token) {
+      return this.token;
+    }
     try {
       this.token = localStorage.getItem(&apos;formioToken&apos;) || &apos;&apos;;
       return this.token;
@@ -953,7 +992,7 @@ export class Formio {
         return localStorage.removeItem(&apos;formioUser&apos;);
       }
       catch(err) {
-        return cookies.erase(&apos;formioUser&apos;);
+        return cookies.erase(&apos;formioUser&apos;, { path: &apos;/&apos; });
       }
     }
     // iOS in private browse mode will throw an error but we can&apos;t detect ahead of time that we are in private mode.
@@ -961,7 +1000,7 @@ export class Formio {
       localStorage.setItem(&apos;formioUser&apos;, JSON.stringify(user));
     }
     catch(err) {
-      cookies.set(&apos;formioUser&apos;, JSON.stringify(user));
+      cookies.set(&apos;formioUser&apos;, JSON.stringify(user), { path: &apos;/&apos; });
     }
   }
 
