@@ -1,11 +1,11 @@
 'use strict';
 
 /* eslint-env mocha */
-const expect = require('chai').expect;
-const writtenNumber = require('written-number');
-const utils = require('./index');
-const components = require('./fixtures/components.json');
-const submission1 = require('./fixtures/submission1.json');
+import { expect } from 'chai';
+import writtenNumber from 'written-number';
+import utils from './index';
+import components from './fixtures/components.json';
+import submission1 from './fixtures/submission1.json';
 
 describe('eachComponent', () => {
   it('should iterate through nested components in the right order', () => {
@@ -287,5 +287,34 @@ describe('checkCondition', () => {
 
     expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
     expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
+  });
+});
+
+describe('getDateSetting', () => {
+  it('should return null if no date provided', () => {
+    expect(utils.getDateSetting()).to.be.equal(null);
+    expect(utils.getDateSetting(null)).to.be.equal(null);
+    expect(utils.getDateSetting(undefined)).to.be.equal(null);
+    expect(utils.getDateSetting(NaN)).to.be.equal(null);
+    expect(utils.getDateSetting('')).to.be.equal(null);
+    expect(utils.getDateSetting('should be invalid')).to.be.equal(null);
+  });
+
+  it('should return valid Date on serialized date provided', () => {
+    const date = new Date(0);
+
+    expect(utils.getDateSetting(date)).to.be.eql(date).but.not.equal(date);
+    expect(utils.getDateSetting(date.valueOf())).to.be.eql(date);
+    expect(utils.getDateSetting(date.toString())).to.be.eql(date);
+    expect(utils.getDateSetting(date.toISOString())).to.be.eql(date);
+  });
+
+  it('should be able to get value using moment APIs', () => {
+    const validMomentExpression = 'moment(0)';
+    const validDate = new Date(0);
+    const invalidMomentExpression = "moment('')";
+
+    expect(utils.getDateSetting(validMomentExpression)).to.be.eql(validDate);
+    expect(utils.getDateSetting(invalidMomentExpression)).to.be.equal(null);
   });
 });
