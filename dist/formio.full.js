@@ -11077,7 +11077,7 @@ var Formio = function () {
 
       return this.load('form', query, opts).then(function (currentForm) {
         // Check to see if there isn't a number in vId.
-        if (isNaN(parseInt(_this2.vId))) {
+        if (!currentForm.revisions || isNaN(parseInt(_this2.vId))) {
           return currentForm;
         }
         // If a submission already exists but form is marked to load current version of form.
