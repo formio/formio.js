@@ -486,14 +486,17 @@ const FormioUtils = {
     }
 
     let dateSetting = new Date(date);
-    if (!FormioUtils.isValidDate(dateSetting)) {
-      try {
-        const moment = momentModule;
-        dateSetting = new Date(eval(date));
-      }
-      catch (e) {
-        dateSetting = null;
-      }
+    if (FormioUtils.isValidDate(dateSetting)) {
+      return dateSetting;
+    }
+
+    try {
+      // Moment constant might be used in eval.
+      const moment = momentModule;
+      dateSetting = new Date(eval(date));
+    }
+    catch (e) {
+      return null;
     }
 
     // Ensure this is a date.
