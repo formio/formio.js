@@ -243,7 +243,7 @@ describe('checkCalculated', () => {
     const component = {
       key: 'sum',
       calculateValue: {
-        '_.sum': { var: 'data.test' }
+        '_sum': { var: 'data.test' }
       }
     };
     const data = { test: [ 1, 2, 3 ] };
@@ -276,7 +276,7 @@ describe('checkCondition', () => {
       conditional: {
         json: {
           '===': [
-            { '_.sum': { var: 'data.test' } },
+            { '_sum': { var: 'data.test' } },
             6
           ]
         }

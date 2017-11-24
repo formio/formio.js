@@ -17,9 +17,10 @@ import _isPlainObject from 'lodash/isPlainObject';
 import _forOwn from 'lodash/forOwn';
 import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
+import { lodashOperators } from './jsonlogic/operators';
 
 // Configure JsonLogic
-jsonLogic.add_operation('_', _);
+lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
 const FormioUtils = {
   jsonLogic, // Share
