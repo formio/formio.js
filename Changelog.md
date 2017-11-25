@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+ - Ability to provide HTML in the description of a form element.
+
 ### Fixed
  - Double submit issue with wizards.
 
