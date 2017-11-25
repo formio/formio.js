@@ -22,7 +22,8 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'firstName',
       label: 'First Name',
       placeholder: 'Enter your first name.',
-      input: true
+      input: true,
+      tooltip: '<a href="https://google.com">This is a test</a>'
     },
     {
       type: 'textfield',
@@ -86,7 +87,9 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'firstName',
       label: 'First Name',
       placeholder: 'Enter your first name.',
-      input: true
+      input: true,
+      tooltip: '<a href="https://google.com">This works</a>',
+      description: '<a href="https://google.com">This also works.</a>'
     },
     {
       type: 'textfield',
