@@ -10,6 +10,7 @@ import _has from 'lodash/has';
 import _last from 'lodash/last';
 import _isBoolean from 'lodash/isBoolean';
 import _isString from 'lodash/isString';
+import _isDate from 'lodash/isDate';
 import _isNil from 'lodash/isNil';
 import _isObject from 'lodash/isObject';
 import _isArray from 'lodash/isArray';
@@ -17,6 +18,7 @@ import _isPlainObject from 'lodash/isPlainObject';
 import _forOwn from 'lodash/forOwn';
 import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
+import momentModule from 'moment';
 
 // Configure JsonLogic
 jsonLogic.add_operation('_', _);
@@ -470,6 +472,42 @@ const FormioUtils = {
         : (r&0x3|0x8);
       return v.toString(16);
     });
+  },
+
+  /**
+   * Return a translated date setting.
+   *
+   * @param date
+   * @return {*}
+   */
+  getDateSetting(date) {
+    if (_isNil(date) || _isNaN(date) || date === '') {
+      return null;
+    }
+
+    let dateSetting = new Date(date);
+    if (FormioUtils.isValidDate(dateSetting)) {
+      return dateSetting;
+    }
+
+    try {
+      // Moment constant might be used in eval.
+      const moment = momentModule;
+      dateSetting = new Date(eval(date));
+    }
+    catch (e) {
+      return null;
+    }
+
+    // Ensure this is a date.
+    if (!FormioUtils.isValidDate(dateSetting)) {
+      dateSetting = null;
+    }
+
+    return dateSetting;
+  },
+  isValidDate(date) {
+    return _isDate(date) && !_isNaN(date.getDate());
   }
 };
 

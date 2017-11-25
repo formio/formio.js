@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Double submit issue with wizards.
+
+## 2.24.2
+### Fixed
+ - Issue loading form after submission when revisions not enabled.
+
+## 2.24.1
+### Fixed
+ - Date min and max settings.
+
 ## 2.24.0
 ### Fixed
  - File component inside Datagrid component.

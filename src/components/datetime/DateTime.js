@@ -2,7 +2,7 @@ import { BaseComponent } from '../base/Base';
 import Flatpickr from 'flatpickr';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
-const momentModule = require('moment');
+import { getDateSetting } from '../../utils';
 export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -20,41 +20,11 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   /**
-   * Return a translated date setting.
-   *
-   * @param date
-   * @return {*}
-   */
-  getDateSetting(date) {
-    if (!date) {
-      return null;
-    }
-
-    let dateSetting = new Date(date);
-    if (!dateSetting || isNaN(dateSetting.getDate())) {
-      try {
-        let moment = momentModule;
-        dateSetting = new Date(eval(date));
-      }
-      catch (e) {
-        dateSetting = null;
-      }
-    }
-
-    // Ensure this is a date.
-    if (dateSetting && isNaN(dateSetting.getDate())) {
-      dateSetting = null;
-    }
-
-    return dateSetting;
-  }
-
-  /**
    * Get the default date for the calendar.
    * @return {*}
    */
   get defaultDate() {
-    return this.getDateSetting(this.component.defaultDate);
+    return getDateSetting(this.component.defaultDate);
   }
 
   // This select component can handle multiple items on its own.
@@ -109,8 +79,8 @@ export class DateTimeComponent extends BaseComponent {
       defaultDate: this.defaultDate,
       hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
-      minDate: this.getDateSetting(_get(this.component, 'datePicker.minDate')),
-      maxDate: this.getDateSetting(_get(this.component, 'datePicker.maxDate')),
+      minDate: getDateSetting(_get(this.component, 'datePicker.minDate')),
+      maxDate: getDateSetting(_get(this.component, 'datePicker.maxDate')),
       onChange: () => this.onChange(),
       onClose: () => (this.closedOn = Date.now())
     };
