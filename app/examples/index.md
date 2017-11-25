@@ -23,14 +23,17 @@ Formio.createForm(document.getElementById('formio'), {
       label: 'First Name',
       placeholder: 'Enter your first name.',
       input: true,
-      tooltip: '<a href="https://google.com">This is a test</a>'
+      tooltip: 'Enter your <strong>First Name</strong>',
+      description: 'Enter your <strong>First Name</strong>'
     },
     {
       type: 'textfield',
       key: 'lastName',
       label: 'Last Name',
       placeholder: 'Enter your last name',
-      input: true
+      input: true,
+      tooltip: 'Enter your <strong>Last Name</strong>',
+      description: 'Enter your <strong>Last Name</strong>'
     },
     {
       type: "select",
@@ -88,15 +91,17 @@ Formio.createForm(document.getElementById('formio'), {
       label: 'First Name',
       placeholder: 'Enter your first name.',
       input: true,
-      tooltip: '<a href="https://google.com">This works</a>',
-      description: '<a href="https://google.com">This also works.</a>'
+      tooltip: 'Enter your <strong>First Name</strong>',
+      description: 'Enter your <strong>First Name</strong>'
     },
     {
       type: 'textfield',
       key: 'lastName',
       label: 'Last Name',
       placeholder: 'Enter your last name',
-      input: true
+      input: true,
+      tooltip: 'Enter your <strong>Last Name</strong>',
+      description: 'Enter your <strong>Last Name</strong>'
     },
     {
       type: "select",
