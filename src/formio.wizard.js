@@ -366,13 +366,25 @@ export class FormioWizard extends FormioForm {
       }
       let buttonWrapper = this.ce('li');
       let buttonProp = button.name + 'Button';
-      this[buttonProp] = this.ce('button', {
+      let buttonElement = this[buttonProp] = this.ce('button', {
         class: button.class + ' btn-wizard-nav-' + button.name
       });
-      this[buttonProp].appendChild(this.text(this.t(button.name)));
+      buttonElement.appendChild(this.text(this.t(button.name)));
       this.addEventListener(this[buttonProp], 'click', (event) => {
         event.preventDefault();
-        this[button.method]();
+
+        // Disable the button until done.
+        buttonElement.setAttribute('disabled', 'disabled');
+        this.setLoading(buttonElement, true);
+
+        // Call the button method, then re-enable the button.
+        this[button.method]().then(() => {
+          buttonElement.removeAttribute('disabled');
+          this.setLoading(buttonElement, false);
+        }).catch(() => {
+          buttonElement.removeAttribute('disabled');
+          this.setLoading(buttonElement, false);
+        });
       });
       buttonWrapper.appendChild(this[buttonProp]);
       this.wizardNav.appendChild(buttonWrapper);
