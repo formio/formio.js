@@ -18,30 +18,12 @@ export class ButtonComponent extends BaseComponent {
   }
 
   set loading(loading) {
-    this._loading = loading;
-    if (!this.loader && loading) {
-      this.loader = this.ce('i', {
-        class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
-      });
-    }
-    if (this.loader) {
-      if (loading) {
-        this.element.appendChild(this.loader);
-      }
-      else if (this.element.contains(this.loader)) {
-        this.element.removeChild(this.loader);
-      }
-    }
+    this.setLoading(this.element, loading);
   }
 
   set disabled(disabled) {
     super.disabled = disabled;
-    if (disabled) {
-      this.element.setAttribute('disabled', 'disabled');
-    }
-    else {
-      this.element.removeAttribute('disabled');
-    }
+    this.setDisabled(this.element, disabled);
   }
 
   build() {

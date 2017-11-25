@@ -3318,6 +3318,37 @@ var BaseComponent = function () {
      */
 
   }, {
+    key: 'setDisabled',
+    value: function setDisabled(element, disabled) {
+      element.disabled = disabled;
+      if (disabled) {
+        element.setAttribute('disabled', 'disabled');
+      } else {
+        element.removeAttribute('disabled');
+      }
+    }
+  }, {
+    key: 'setLoading',
+    value: function setLoading(element, loading) {
+      if (element.loading === loading) {
+        return;
+      }
+
+      element.loading = loading;
+      if (!element.loader && loading) {
+        element.loader = this.ce('i', {
+          class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
+        });
+      }
+      if (element.loader) {
+        if (loading) {
+          element.appendChild(element.loader);
+        } else if (element.contains(element.loader)) {
+          element.removeChild(element.loader);
+        }
+      }
+    }
+  }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
       var _this11 = this;
@@ -3566,20 +3597,18 @@ var BaseComponent = function () {
      */
 
     , set: function set(disabled) {
+      var _this13 = this;
+
       // Do not allow a component to be disabled if it should be always...
       if (!disabled && this.shouldDisable) {
         return;
       }
 
       this._disabled = disabled;
-      // Disable all input.
+
+      // Disable all inputs.
       (0, _each3.default)(this.inputs, function (input) {
-        input.disabled = disabled;
-        if (disabled) {
-          input.setAttribute('disabled', 'disabled');
-        } else {
-          input.removeAttribute('disabled');
-        }
+        return _this13.setDisabled(input, disabled);
       });
     }
   }]);
@@ -3868,29 +3897,13 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
   }, {
     key: 'loading',
     set: function set(loading) {
-      this._loading = loading;
-      if (!this.loader && loading) {
-        this.loader = this.ce('i', {
-          class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
-        });
-      }
-      if (this.loader) {
-        if (loading) {
-          this.element.appendChild(this.loader);
-        } else if (this.element.contains(this.loader)) {
-          this.element.removeChild(this.loader);
-        }
-      }
+      this.setLoading(this.element, loading);
     }
   }, {
     key: 'disabled',
     set: function set(disabled) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
-      if (disabled) {
-        this.element.setAttribute('disabled', 'disabled');
-      } else {
-        this.element.removeAttribute('disabled');
-      }
+      this.setDisabled(this.element, disabled);
     }
   }]);
 

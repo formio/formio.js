@@ -1705,16 +1705,40 @@ export class BaseComponent {
     }
 
     this._disabled = disabled;
-    // Disable all input.
-    _each(this.inputs, (input) => {
-      input.disabled = disabled;
-      if (disabled) {
-        input.setAttribute('disabled', 'disabled');
+
+    // Disable all inputs.
+    _each(this.inputs, (input) => this.setDisabled(input, disabled));
+  }
+
+  setDisabled(element, disabled) {
+    element.disabled = disabled;
+    if (disabled) {
+      element.setAttribute('disabled', 'disabled');
+    }
+    else {
+      element.removeAttribute('disabled');
+    }
+  }
+
+  setLoading(element, loading) {
+    if (element.loading === loading) {
+      return;
+    }
+
+    element.loading = loading;
+    if (!element.loader && loading) {
+      element.loader = this.ce('i', {
+        class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
+      });
+    }
+    if (element.loader) {
+      if (loading) {
+        element.appendChild(element.loader);
       }
-      else {
-        input.removeAttribute('disabled');
+      else if (element.contains(element.loader)) {
+        element.removeChild(element.loader);
       }
-    });
+    }
   }
 
   selectOptions(select, tag, options, defaultValue) {
