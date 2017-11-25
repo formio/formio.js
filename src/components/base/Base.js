@@ -907,7 +907,7 @@ export class BaseComponent {
     this.description = this.ce('div', {
       class: 'help-block'
     });
-    this.description.appendChild(this.text(this.component.description));
+    this.description.innerHTML = this.t(this.component.description);
     container.appendChild(this.description);
   }
 
