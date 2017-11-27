@@ -214,6 +214,9 @@ export class FormioWizard extends FormioForm {
     if(this.options.buttonSettings.next === undefined) {
       this.options.buttonSettings.next = true;
     }
+    if(this.options.buttonSettings.cancel === undefined) {
+      this.options.buttonSettings.cancel = true;
+    }
 
     if (name === 'previous') {
       return (this.page > 0) && this.options.buttonSettings.previous;
@@ -221,6 +224,9 @@ export class FormioWizard extends FormioForm {
     nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
     if (name === 'next') {
       return (nextPage !== null) && (nextPage < this.pages.length) && this.options.buttonSettings.next;
+    }
+    if (name === 'cancel') {
+      return this.options.buttonSettings.cancel;
     }
     if (name === 'submit') {
       return (nextPage === null) || (this.page === (this.pages.length - 1));
