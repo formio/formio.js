@@ -206,12 +206,21 @@ export class FormioWizard extends FormioForm {
   }
 
   hasButton(name, nextPage) {
+    // Check for and initlize button settings object
+    this.options.buttonSettings = this.options.buttonSettings || {};
+    if(this.options.buttonSettings.previous === undefined) {
+      this.options.buttonSettings.previous = true;
+    }
+    if(this.options.buttonSettings.next === undefined) {
+      this.options.buttonSettings.next = true;
+    }
+
     if (name === 'previous') {
-      return (this.page > 0);
+      return (this.page > 0) && this.options.buttonSettings.previous;
     }
     nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
     if (name === 'next') {
-      return (nextPage !== null) && (nextPage < this.pages.length);
+      return (nextPage !== null) && (nextPage < this.pages.length) && this.options.buttonSettings.next;
     }
     if (name === 'submit') {
       return (nextPage === null) || (this.page === (this.pages.length - 1));
