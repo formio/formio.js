@@ -5,6 +5,7 @@ import Formio from './formio';
 import FormioUtils from './utils';
 import each from 'lodash/each';
 import clone from 'lodash/clone';
+import defaults from 'lodash/defaults';
 export class FormioWizard extends FormioForm {
   constructor(element, options) {
     super(element, options);
@@ -207,16 +208,11 @@ export class FormioWizard extends FormioForm {
 
   hasButton(name, nextPage) {
     // Check for and initlize button settings object
-    this.options.buttonSettings = this.options.buttonSettings || {};
-    if(this.options.buttonSettings.showPrevious === undefined) {
-      this.options.buttonSettings.showPrevious = true;
-    }
-    if(this.options.buttonSettings.showNext === undefined) {
-      this.options.buttonSettings.showNext = true;
-    }
-    if(this.options.buttonSettings.showCancel === undefined) {
-      this.options.buttonSettings.showCancel = true;
-    }
+    this.options.buttonSettings = defaults(this.options.buttonSettings, {
+      showPrevious: true,
+      showNext: true,
+      showCancel: true
+    });
 
     if (name === 'previous') {
       return (this.page > 0) && this.options.buttonSettings.showPrevious;
