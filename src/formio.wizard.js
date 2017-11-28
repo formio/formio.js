@@ -246,10 +246,9 @@ export class FormioWizard extends FormioForm {
     }
 
     // Check for and initlize breadcrumb settings object
-    this.options.breadcrumbSettings = this.options.breadcrumbSettings || {};
-    if(this.options.breadcrumbSettings.clickable === undefined) {
-      this.options.breadcrumbSettings.clickable = true;
-    }
+    this.options.breadcrumbSettings = defaults(this.options.breadcrumbSettings, {
+      clickable: true
+    });
 
     this.wizardHeader = this.ce('ul', {
       class: 'pagination'
