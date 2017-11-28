@@ -208,25 +208,25 @@ export class FormioWizard extends FormioForm {
   hasButton(name, nextPage) {
     // Check for and initlize button settings object
     this.options.buttonSettings = this.options.buttonSettings || {};
-    if(this.options.buttonSettings.previous === undefined) {
-      this.options.buttonSettings.previous = true;
+    if(this.options.buttonSettings.showPrevious === undefined) {
+      this.options.buttonSettings.showPrevious = true;
     }
-    if(this.options.buttonSettings.next === undefined) {
-      this.options.buttonSettings.next = true;
+    if(this.options.buttonSettings.showNext === undefined) {
+      this.options.buttonSettings.showNext = true;
     }
-    if(this.options.buttonSettings.cancel === undefined) {
-      this.options.buttonSettings.cancel = true;
+    if(this.options.buttonSettings.showCancel === undefined) {
+      this.options.buttonSettings.showCancel = true;
     }
 
     if (name === 'previous') {
-      return (this.page > 0) && this.options.buttonSettings.previous;
+      return (this.page > 0) && this.options.buttonSettings.showPrevious;
     }
     nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
     if (name === 'next') {
-      return (nextPage !== null) && (nextPage < this.pages.length) && this.options.buttonSettings.next;
+      return (nextPage !== null) && (nextPage < this.pages.length) && this.options.buttonSettings.showNext;
     }
     if (name === 'cancel') {
-      return this.options.buttonSettings.cancel;
+      return this.options.buttonSettings.showCancel;
     }
     if (name === 'submit') {
       return (nextPage === null) || (this.page === (this.pages.length - 1));
