@@ -2104,6 +2104,7 @@ var BaseComponent = function () {
     value: function removeValue(index) {
       if (this.data.hasOwnProperty(this.component.key)) {
         this.data[this.component.key].splice(index, 1);
+        this.triggerChange();
       }
       this.buildRows();
     }
@@ -14495,7 +14496,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
 }).call(this,require('_process'))
 },{"_process":309}],54:[function(require,module,exports){
-/* flatpickr v4.1.2, @license MIT */
+/* flatpickr v4.1.3, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -15060,7 +15061,7 @@ function FlatpickrInstance(element, instanceConfig) {
         }
         var debouncedResize = debounce(onResize, 50);
         self._debouncedChange = debounce(triggerChange, 300);
-        if (self.config.mode === "range" && self.daysContainer)
+        if (self.config.mode === "range" && self.daysContainer && !/iPhone|iPad|iPod/i.test(navigator.userAgent))
             bind(self.daysContainer, "mouseover", function (e) {
                 return onMouseOver(e.target);
             });
@@ -43815,7 +43816,7 @@ module.exports = upperFirst;
 
 },{"./_createCaseFirst":159}],306:[function(require,module,exports){
 //! moment.js
-//! version : 2.19.2
+//! version : 2.19.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -44475,7 +44476,7 @@ var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
 
 // any word (or two) characters or numbers including two/three word month in arabic.
 // includes scottish gaelic two word and hyphenated months
-var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
 
 
 var regexes = {};
@@ -48294,7 +48295,7 @@ addParseToken('x', function (input, array, config) {
 // Side effect imports
 
 
-hooks.version = '2.19.2';
+hooks.version = '2.19.3';
 
 setHookCallback(createLocal);
 

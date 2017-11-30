@@ -2104,6 +2104,7 @@ var BaseComponent = function () {
     value: function removeValue(index) {
       if (this.data.hasOwnProperty(this.component.key)) {
         this.data[this.component.key].splice(index, 1);
+        this.triggerChange();
       }
       this.buildRows();
     }
@@ -12371,6 +12372,10 @@ var _clone = require('lodash/clone');
 
 var _clone2 = _interopRequireDefault(_clone);
 
+var _defaults = require('lodash/defaults');
+
+var _defaults2 = _interopRequireDefault(_defaults);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -12396,6 +12401,13 @@ function _inherits(subClass, superClass) {
 var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   _inherits(FormioWizard, _FormioForm);
 
+  /**
+   * Constructor for wizard based forms
+   * @param element Dom element to place this wizard.
+   * @param {Object} options Options object, supported options are:
+   *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
+   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not  
+   */
   function FormioWizard(element, options) {
     _classCallCheck(this, FormioWizard);
 
@@ -12620,12 +12632,22 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'hasButton',
     value: function hasButton(name, nextPage) {
+      // Check for and initlize button settings object
+      this.options.buttonSettings = (0, _defaults2.default)(this.options.buttonSettings, {
+        showPrevious: true,
+        showNext: true,
+        showCancel: true
+      });
+
       if (name === 'previous') {
-        return this.page > 0;
+        return this.page > 0 && this.options.buttonSettings.showPrevious;
       }
       nextPage = nextPage === undefined ? this.getNextPage(this.submission.data, this.page) : nextPage;
       if (name === 'next') {
-        return nextPage !== null && nextPage < this.pages.length;
+        return nextPage !== null && nextPage < this.pages.length && this.options.buttonSettings.showNext;
+      }
+      if (name === 'cancel') {
+        return this.options.buttonSettings.showCancel;
       }
       if (name === 'submit') {
         return nextPage === null || this.page === this.pages.length - 1;
@@ -12652,10 +12674,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       }
 
       // Check for and initlize breadcrumb settings object
-      this.options.breadcrumbSettings = this.options.breadcrumbSettings || {};
-      if (this.options.breadcrumbSettings.clickable === undefined) {
-        this.options.breadcrumbSettings.clickable = true;
-      }
+      this.options.breadcrumbSettings = (0, _defaults2.default)(this.options.breadcrumbSettings, {
+        clickable: true
+      });
 
       this.wizardHeader = this.ce('ul', {
         class: 'pagination'
@@ -12815,7 +12836,7 @@ FormioWizard.setAppUrl = _formio4.default.setAppUrl;
 module.exports = global.FormioWizard = FormioWizard;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./formio":41,"./formio.form":39,"./utils":53,"lodash/clone":250,"lodash/each":257,"native-promise-only":311}],45:[function(require,module,exports){
+},{"./formio":41,"./formio.form":39,"./utils":53,"lodash/clone":250,"lodash/defaults":254,"lodash/each":257,"native-promise-only":311}],45:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -15345,7 +15366,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
 }).call(this,require('_process'))
 },{"_process":313}],58:[function(require,module,exports){
-/* flatpickr v4.1.2, @license MIT */
+/* flatpickr v4.1.3, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -15910,7 +15931,7 @@ function FlatpickrInstance(element, instanceConfig) {
         }
         var debouncedResize = debounce(onResize, 50);
         self._debouncedChange = debounce(triggerChange, 300);
-        if (self.config.mode === "range" && self.daysContainer)
+        if (self.config.mode === "range" && self.daysContainer && !/iPhone|iPad|iPod/i.test(navigator.userAgent))
             bind(self.daysContainer, "mouseover", function (e) {
                 return onMouseOver(e.target);
             });
@@ -44665,7 +44686,7 @@ module.exports = upperFirst;
 
 },{"./_createCaseFirst":163}],310:[function(require,module,exports){
 //! moment.js
-//! version : 2.19.2
+//! version : 2.19.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -45325,7 +45346,7 @@ var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
 
 // any word (or two) characters or numbers including two/three word month in arabic.
 // includes scottish gaelic two word and hyphenated months
-var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
 
 
 var regexes = {};
@@ -49144,7 +49165,7 @@ addParseToken('x', function (input, array, config) {
 // Side effect imports
 
 
-hooks.version = '2.19.2';
+hooks.version = '2.19.3';
 
 setHookCallback(createLocal);
 
