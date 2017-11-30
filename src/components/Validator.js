@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _has from 'lodash/has';
@@ -200,8 +201,9 @@ export const Validator = {
         let valid = true;
         try {
           valid = FormioUtils.jsonLogic.apply(setting, {
-            data: data,
-            row: component.data
+            data,
+            row: component.data,
+            _
           });
         }
         catch (err) {

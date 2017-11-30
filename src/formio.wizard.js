@@ -3,6 +3,7 @@ import Promise from "native-promise-only";
 import FormioForm from './formio.form';
 import Formio from './formio';
 import FormioUtils from './utils';
+import _ from 'lodash';
 import each from 'lodash/each';
 import clone from 'lodash/clone';
 export class FormioWizard extends FormioForm {
@@ -57,9 +58,10 @@ export class FormioWizard extends FormioForm {
         // Or use JSON Logic.
         else {
           let result = FormioUtils.jsonLogic.apply(form.nextPage, {
-            data: data,
-            page: page,
-            form: form
+            data,
+            page,
+            form,
+            _
           });
           let newPage = parseInt(result, 10);
           if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {

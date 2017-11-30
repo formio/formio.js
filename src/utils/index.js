@@ -324,7 +324,8 @@ const FormioUtils = {
         try {
           data[component.key] = this.jsonLogic.apply(component.calculateValue, {
             data: submission ? submission.data : data,
-            row: data
+            row: data,
+            _
           });
         }
         catch (e) {
@@ -385,7 +386,8 @@ const FormioUtils = {
     else if (component.conditional && component.conditional.json) {
       return jsonLogic.apply(component.conditional.json, {
         data,
-        row
+        row,
+        _
       });
     }
 

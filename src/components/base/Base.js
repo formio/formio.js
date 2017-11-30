@@ -1,5 +1,6 @@
 import maskInput from 'text-mask-all/vanilla';
 import Promise from "native-promise-only";
+import _ from 'lodash';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _assign from 'lodash/assign';
@@ -535,7 +536,8 @@ export class BaseComponent {
         try {
           defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
             data: this.data,
-            row: this.data
+            row: this.data,
+            _
           });
         }
         catch (err) {
@@ -1493,8 +1495,9 @@ export class BaseComponent {
     else {
       try {
         let val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
-          data: data,
-          row: this.data
+          data,
+          row: this.data,
+          _
         });
         changed = this.setValue(val, flags);
       }
