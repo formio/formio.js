@@ -587,6 +587,7 @@ export class BaseComponent {
   removeValue(index) {
     if (this.data.hasOwnProperty(this.component.key)) {
       this.data[this.component.key].splice(index, 1);
+      this.triggerChange();
     }
     this.buildRows();
   }
