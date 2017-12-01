@@ -16,7 +16,7 @@ Formio.forms = {};
 
 let getOptions = function(options) {
   options = _defaults(options, {
-    submitOnEnter: true
+    submitOnEnter: false
   });
   if (!options.events) {
     options.events = new EventEmitter({

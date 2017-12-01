@@ -3,6 +3,8 @@ import { BaseComponent } from '../base/Base';
 export class TextAreaComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
+
+    // Never submit on enter for text areas.
     this.options.submitOnEnter = false;
   }
 

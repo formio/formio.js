@@ -9218,6 +9218,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
   function TextAreaComponent(component, options, data) {
     _classCallCheck(this, TextAreaComponent);
 
+    // Never submit on enter for text areas.
     var _this = _possibleConstructorReturn(this, (TextAreaComponent.__proto__ || Object.getPrototypeOf(TextAreaComponent)).call(this, component, options, data));
 
     _this.options.submitOnEnter = false;
@@ -9793,7 +9794,7 @@ _formio2.default.forms = {};
 
 var getOptions = function getOptions(options) {
   options = (0, _defaults3.default)(options, {
-    submitOnEnter: true
+    submitOnEnter: false
   });
   if (!options.events) {
     options.events = new _eventemitter2.default({
