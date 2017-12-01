@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.24.5
+### Fixed
+ - Problem where pressing enter in a textarea would submit the form.
+
 ## 2.24.4
 ### Fixed
  - Problem where change event would not get fired when a row is removed from datagrid.

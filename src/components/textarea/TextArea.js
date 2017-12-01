@@ -1,6 +1,11 @@
 import { TextFieldComponent } from '../textfield/TextField';
 import { BaseComponent } from '../base/Base';
 export class TextAreaComponent extends TextFieldComponent {
+  constructor(component, options, data) {
+    super(component, options, data);
+    this.options.submitOnEnter = false;
+  }
+
   wysiwygDefault() {
     return {
       theme: 'snow',

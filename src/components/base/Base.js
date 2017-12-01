@@ -1352,6 +1352,9 @@ export class BaseComponent {
   }
 
   addInputSubmitListener(input) {
+    if (!this.options.submitOnEnter) {
+      return;
+    }
     this.addEventListener(input, 'keypress', (event) => {
       let key = event.keyCode || event.which;
       if (key == 13) {
