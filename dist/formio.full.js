@@ -2950,6 +2950,9 @@ var BaseComponent = function () {
     value: function addInputSubmitListener(input) {
       var _this9 = this;
 
+      if (!this.options.submitOnEnter) {
+        return;
+      }
       this.addEventListener(input, 'keypress', function (event) {
         var key = event.keyCode || event.which;
         if (key == 13) {
@@ -9212,10 +9215,14 @@ function _inherits(subClass, superClass) {
 var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponent) {
   _inherits(TextAreaComponent, _TextFieldComponent);
 
-  function TextAreaComponent() {
+  function TextAreaComponent(component, options, data) {
     _classCallCheck(this, TextAreaComponent);
 
-    return _possibleConstructorReturn(this, (TextAreaComponent.__proto__ || Object.getPrototypeOf(TextAreaComponent)).apply(this, arguments));
+    // Never submit on enter for text areas.
+    var _this = _possibleConstructorReturn(this, (TextAreaComponent.__proto__ || Object.getPrototypeOf(TextAreaComponent)).call(this, component, options, data));
+
+    _this.options.submitOnEnter = false;
+    return _this;
   }
 
   _createClass(TextAreaComponent, [{
@@ -9706,6 +9713,10 @@ var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
 
+var _defaults2 = require('lodash/defaults');
+
+var _defaults3 = _interopRequireDefault(_defaults2);
+
 var _capitalize2 = require('lodash/capitalize');
 
 var _capitalize3 = _interopRequireDefault(_capitalize2);
@@ -9740,7 +9751,9 @@ function _inherits(subClass, superClass) {
 _formio2.default.forms = {};
 
 var getOptions = function getOptions(options) {
-  options = options || {};
+  options = (0, _defaults3.default)(options, {
+    submitOnEnter: false
+  });
   if (!options.events) {
     options.events = new _eventemitter2.default({
       wildcard: false,
@@ -10696,7 +10709,7 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":41,"eventemitter2":57,"lodash/capitalize":248,"lodash/clone":250,"lodash/debounce":253,"lodash/each":257,"lodash/isArray":267,"lodash/merge":293,"lodash/remove":298,"native-promise-only":311}],40:[function(require,module,exports){
+},{"./components/Components":1,"./formio":41,"eventemitter2":57,"lodash/capitalize":248,"lodash/clone":250,"lodash/debounce":253,"lodash/defaults":254,"lodash/each":257,"lodash/isArray":267,"lodash/merge":293,"lodash/remove":298,"native-promise-only":311}],40:[function(require,module,exports){
 "use strict";
 
 var _nativePromiseOnly = require("native-promise-only");

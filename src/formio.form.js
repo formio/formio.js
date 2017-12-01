@@ -7,6 +7,7 @@ import _merge from 'lodash/merge';
 import _debounce from 'lodash/debounce';
 import _remove from 'lodash/remove';
 import _isArray from 'lodash/isArray';
+import _defaults from 'lodash/defaults';
 import _capitalize from 'lodash/capitalize';
 import EventEmitter from 'eventemitter2';
 
@@ -14,7 +15,9 @@ import EventEmitter from 'eventemitter2';
 Formio.forms = {};
 
 let getOptions = function(options) {
-  options = options || {};
+  options = _defaults(options, {
+    submitOnEnter: false
+  });
   if (!options.events) {
     options.events = new EventEmitter({
       wildcard: false,
