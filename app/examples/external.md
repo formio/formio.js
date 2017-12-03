@@ -26,6 +26,10 @@ Formio.createForm(document.getElementById('formio'), {
             label: 'Chevy'
           },
           {
+            value: 'honda',
+            label: 'Honda'
+          },
+          {
             label: 'Ford',
             value: 'ford'
           },
@@ -75,6 +79,10 @@ Formio.createForm(document.getElementById('formio'), {
           {
             label: 'Chevy',
             value: 'chevrolet'
+          },
+          {
+            value: 'honda',
+            label: 'Honda'
           },
           {
             label: 'Ford',

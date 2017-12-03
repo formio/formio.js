@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.24.6
+### Fixed
+ - Major performance problems with the Select component with large datasets.
+
 ## 2.24.5
 ### Fixed
  - Problem where pressing enter in a textarea would submit the form.
