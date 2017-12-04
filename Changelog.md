@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.24.6
+### Changed
+ - Upgraded EventEmitter2 to version 5.0.0
+ - Upgraded flatpickr to 4.1.4
+
 ### Fixed
  - Major performance problems with the Select component with large datasets.
 
