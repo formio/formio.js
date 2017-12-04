@@ -14,8 +14,6 @@ import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
 import Tooltip from 'tooltip.js';
 
-i18next.initialized = false;
-
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
  */
@@ -42,37 +40,6 @@ export class BaseComponent {
     this.options = _defaults(_clone(options), {
       highlightErrors: true
     });
-
-    /**
-     * The i18n configuration for this component.
-     */
-    let i18n = require('../../i18n');
-    if (options && options.i18n && !options.i18nReady) {
-      // Support legacy way of doing translations.
-      if (options.i18n.resources) {
-        i18n = options.i18n;
-      }
-      else {
-        _each(options.i18n, (lang, code) => {
-          if (!i18n.resources[code]) {
-            i18n.resources[code] = {translation: lang};
-          }
-          else {
-            _assign(i18n.resources[code].translation, lang);
-          }
-        });
-      }
-
-      options.i18n = i18n;
-      options.i18nReady = true;
-    }
-
-    if (options && options.i18n) {
-      this.options.i18n = options.i18n;
-    }
-    else {
-      this.options.i18n = i18n;
-    }
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -252,24 +219,6 @@ export class BaseComponent {
   }
 
   /**
-   * Sets the language for this form.
-   *
-   * @param lang
-   * @return {*}
-   */
-  set language(lang) {
-    return new Promise((resolve, reject) => {
-      i18next.changeLanguage(lang, (err) => {
-        if (err) {
-          return reject(err);
-        }
-        this.redraw();
-        resolve();
-      });
-    });
-  }
-
-  /**
    * Register for a new event within this component.
    *
    * @example
@@ -346,25 +295,6 @@ export class BaseComponent {
     }
 
     return null;
-  }
-
-  /**
-   * Perform the localization initialization.
-   * @returns {*}
-   */
-  localize() {
-    if (i18next.initialized) {
-      return Promise.resolve(i18next);
-    }
-    i18next.initialized = true;
-    return new Promise((resolve, reject) => {
-      i18next.init(this.options.i18n, (err, t) => {
-        if (err) {
-          return reject(err);
-        }
-        resolve(i18next);
-      });
-    });
   }
 
   /**
