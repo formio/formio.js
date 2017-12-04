@@ -327,11 +327,10 @@ export class FormioForm extends FormioComponents {
         var setForm = this.setForm(form);
         this.loadSubmission();
         return setForm;
-      },
-      (err) => this.formReadyReject(err)
-    ).catch(
-      (err) => this.formReadyReject(err)
-    );
+      }).catch((err) => {
+        console.warn(err);
+        this.formReadyReject(err);
+      });
   }
 
   /**
@@ -596,11 +595,10 @@ export class FormioForm extends FormioComponents {
       this.formReadyResolve();
       this.onFormBuild = null;
       this.setSubmission(this._submission);
-    },
-      (err) => this.formReadyReject(err)
-    ).catch(
-      (err) => this.formReadyReject(err)
-    );
+    }).catch((err) => {
+      console.warn(err);
+      this.formReadyReject(err);
+    });
   }
 
   /**

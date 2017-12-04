@@ -8055,6 +8055,20 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+// Fix performance issues in Choices by adding a debounce around render method.
+_choices2.default.prototype._render = _choices2.default.prototype.render;
+_choices2.default.prototype.render = function () {
+  var _this = this;
+
+  if (this.renderDebounce) {
+    clearTimeout(this.renderDebounce);
+  }
+
+  this.renderDebounce = setTimeout(function () {
+    return _this._render();
+  }, 100);
+};
+
 var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   _inherits(SelectComponent, _BaseComponent);
 
@@ -8062,21 +8076,21 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     _classCallCheck(this, SelectComponent);
 
     // Trigger an update.
-    var _this = _possibleConstructorReturn(this, (SelectComponent.__proto__ || Object.getPrototypeOf(SelectComponent)).call(this, component, options, data));
+    var _this2 = _possibleConstructorReturn(this, (SelectComponent.__proto__ || Object.getPrototypeOf(SelectComponent)).call(this, component, options, data));
 
-    _this.triggerUpdate = (0, _debounce3.default)(_this.updateItems.bind(_this), 100);
+    _this2.triggerUpdate = (0, _debounce3.default)(_this2.updateItems.bind(_this2), 100);
 
     // If they wish to refresh on a value, then add that here.
-    if (_this.component.refreshOn) {
-      _this.on('change', function (event) {
-        if (_this.component.refreshOn === 'data') {
-          _this.refreshItems();
-        } else if (event.changed && event.changed.component.key === _this.component.refreshOn) {
-          _this.refreshItems();
+    if (_this2.component.refreshOn) {
+      _this2.on('change', function (event) {
+        if (_this2.component.refreshOn === 'data') {
+          _this2.refreshItems();
+        } else if (event.changed && event.changed.component.key === _this2.component.refreshOn) {
+          _this2.refreshItems();
         }
       });
     }
-    return _this;
+    return _this2;
   }
 
   _createClass(SelectComponent, [{
@@ -8116,7 +8130,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'setItems',
     value: function setItems(items) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.choices) {
         return;
@@ -8142,19 +8156,19 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       // Add the currently selected choices if they don't already exist.
       var currentChoices = (0, _isArray3.default)(this.value) ? this.value : [this.value];
       (0, _each3.default)(currentChoices, function (choice) {
-        _this2.addCurrentChoices(choice, items);
+        _this3.addCurrentChoices(choice, items);
       });
 
       // Iterate through each of the items.
       (0, _each3.default)(items, function (item) {
         // Get the default label from the template
-        var label = _this2.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, "");
+        var label = _this3.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, "");
 
         // Translate the default template
-        var t_template = _this2.itemTemplate(item).replace(label, _this2.t(label));
+        var t_template = _this3.itemTemplate(item).replace(label, _this3.t(label));
 
         // Add the choice to the select list.
-        _this2.choices._addChoice(_this2.itemValue(item), t_template);
+        _this3.choices._addChoice(_this3.itemValue(item), t_template);
       });
 
       // If a value is provided, then select it.
@@ -8171,7 +8185,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'loadItems',
     value: function loadItems(url, search, headers, options, method, body) {
-      var _this3 = this;
+      var _this4 = this;
 
       options = options || {};
 
@@ -8216,10 +8230,10 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       // Make the request.
       options.header = headers;
       _formio2.default.makeRequest(this.options.formio, 'select', url, method, body, options).then(function (response) {
-        return _this3.setItems(response);
+        return _this4.setItems(response);
       }).catch(function (err) {
-        _this3.events.emit('formio.error', err);
-        console.warn('Unable to load resources for ' + _this3.component.key);
+        _this4.events.emit('formio.error', err);
+        console.warn('Unable to load resources for ' + _this4.component.key);
       });
     }
 
@@ -8293,7 +8307,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'addInput',
     value: function addInput(input, container) {
-      var _this4 = this;
+      var _this5 = this;
 
       _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'addInput', this).call(this, input, container);
       if (this.component.multiple) {
@@ -8307,22 +8321,24 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           containerOuter: 'choices form-group formio-choices',
           containerInner: 'form-control'
         },
+        searchPlaceholderValue: this.component.placeholder,
         shouldSort: false,
         position: this.component.dropdown || 'auto'
       });
+
       this.choices.itemList.tabIndex = tabIndex;
       this.setInputStyles(this.choices.containerOuter);
 
       // If a search field is provided, then add an event listener to update items on search.
       if (this.component.searchField) {
         input.addEventListener('search', function (event) {
-          return _this4.triggerUpdate(event.detail.value);
+          return _this5.triggerUpdate(event.detail.value);
         });
       }
 
       input.addEventListener('showDropdown', function () {
-        if (_this4.component.dataSrc === 'custom') {
-          _this4.updateCustomItems();
+        if (_this5.component.dataSrc === 'custom') {
+          _this5.updateCustomItems();
         }
       });
 
@@ -8335,12 +8351,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         // Prepend the placeholder.
         this.choices.containerInner.insertBefore(this.placeholder, this.choices.containerInner.firstChild);
         input.addEventListener('addItem', function () {
-          _this4.placeholder.style.visibility = 'hidden';
+          _this5.placeholder.style.visibility = 'hidden';
         }, false);
         input.addEventListener('removeItem', function () {
-          var value = _this4.getValue();
+          var value = _this5.getValue();
           if (!value || !value.length) {
-            _this4.placeholder.style.visibility = 'visible';
+            _this5.placeholder.style.visibility = 'visible';
           }
         }, false);
       }
@@ -8438,7 +8454,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'requestHeaders',
     get: function get() {
-      var _this5 = this;
+      var _this6 = this;
 
       // Create the headers object.
       var headers = new Headers();
@@ -8448,8 +8464,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         try {
           (0, _each3.default)(this.component.data.headers, function (header) {
             if (header.key) {
-              headers.set(header.key, _this5.interpolate(header.value, {
-                data: _this5.data
+              headers.set(header.key, _this6.interpolate(header.value, {
+                data: _this6.data
               }));
             }
           });
@@ -10083,10 +10099,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         var setForm = _this4.setForm(form);
         _this4.loadSubmission();
         return setForm;
-      }, function (err) {
-        return _this4.formReadyReject(err);
       }).catch(function (err) {
-        return _this4.formReadyReject(err);
+        console.warn(err);
+        _this4.formReadyReject(err);
       });
     }
 
@@ -10267,10 +10282,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         _this7.formReadyResolve();
         _this7.onFormBuild = null;
         _this7.setSubmission(_this7._submission);
-      }, function (err) {
-        return _this7.formReadyReject(err);
       }).catch(function (err) {
-        return _this7.formReadyReject(err);
+        console.warn(err);
+        _this7.formReadyReject(err);
       });
     }
 
@@ -14284,7 +14298,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
       this._maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
 
       conf.wildcard && (this.wildcard = conf.wildcard);
-      conf.newListener && (this.newListener = conf.newListener);
+      conf.newListener && (this._newListener = conf.newListener);
+      conf.removeListener && (this._removeListener = conf.removeListener);
       conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
 
       if (this.wildcard) {
@@ -14321,7 +14336,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
   function EventEmitter(conf) {
     this._events = {};
-    this.newListener = false;
+    this._newListener = false;
+    this._removeListener = false;
     this.verboseMemoryLeak = false;
     configure.call(this, conf);
   }
@@ -14558,7 +14574,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
     var type = arguments[0];
 
-    if (type === 'newListener' && !this.newListener) {
+    if (type === 'newListener' && !this._newListener) {
       if (!this._events.newListener) {
         return false;
       }
@@ -14664,7 +14680,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
     var type = arguments[0];
 
-    if (type === 'newListener' && !this.newListener) {
+    if (type === 'newListener' && !this._newListener) {
         if (!this._events.newListener) { return Promise.resolve([false]); }
     }
 
@@ -14805,7 +14821,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
     // To avoid recursion in the case that type == "newListeners"! Before
     // adding it to the listeners, first emit "newListeners".
-    this.emit('newListener', type, listener);
+    if (this._newListener)
+       this.emit('newListener', type, listener);
 
     if (this.wildcard) {
       growListenerTree.call(this, type, listener);
@@ -14896,8 +14913,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
             delete this._events[type];
           }
         }
-
-        this.emit("removeListener", type, listener);
+        if (this._removeListener)
+          this.emit("removeListener", type, listener);
 
         return this;
       }
@@ -14910,8 +14927,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
         else {
           delete this._events[type];
         }
-
-        this.emit("removeListener", type, listener);
+        if (this._removeListener)
+          this.emit("removeListener", type, listener);
       }
     }
 
@@ -14945,14 +14962,17 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
       for(i = 0, l = fns.length; i < l; i++) {
         if(fn === fns[i]) {
           fns.splice(i, 1);
-          this.emit("removeListenerAny", fn);
+          if (this._removeListener)
+            this.emit("removeListenerAny", fn);
           return this;
         }
       }
     } else {
       fns = this._all;
-      for(i = 0, l = fns.length; i < l; i++)
-        this.emit("removeListenerAny", fns[i]);
+      if (this._removeListener) {
+        for(i = 0, l = fns.length; i < l; i++)
+          this.emit("removeListenerAny", fns[i]);
+      }
       this._all = [];
     }
     return this;
@@ -15034,7 +15054,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
 }).call(this,require('_process'))
 },{"_process":310}],55:[function(require,module,exports){
-/* flatpickr v4.1.3, @license MIT */
+/* flatpickr v4.1.4, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -15282,8 +15302,9 @@ var revFormat = {
     J: function (dateObj, day) {
         dateObj.setDate(parseFloat(day));
     },
-    K: function (dateObj, amPM) {
-        dateObj.setHours(dateObj.getHours() % 12 + 12 * int(/pm/i.test(amPM)));
+    K: function (dateObj, amPM, locale) {
+        dateObj.setHours(dateObj.getHours() % 12 +
+            12 * int(new RegExp(locale.amPM[1], "i").test(amPM)));
     },
     M: function (dateObj, shortMonth, locale) {
         dateObj.setMonth(locale.months.shorthand.indexOf(shortMonth));
@@ -15333,7 +15354,7 @@ var tokenRegex = {
     G: "(\\d\\d|\\d)",
     H: "(\\d\\d|\\d)",
     J: "(\\d\\d|\\d)\\w+",
-    K: "(am|AM|Am|aM|pm|PM|Pm|pM)",
+    K: "",
     M: "(\\w+)",
     S: "(\\d\\d|\\d)",
     U: "(.+)",
@@ -15368,7 +15389,7 @@ var formats = {
             ? date.getDate() + locale.ordinal(date.getDate())
             : date.getDate();
     },
-    K: function (date) { return (date.getHours() > 11 ? "PM" : "AM"); },
+    K: function (date, locale) { return locale.amPM[int(date.getHours() > 11)]; },
     M: function (date, locale) {
         return monthToStr(date.getMonth(), true, locale);
     },
@@ -15504,7 +15525,7 @@ function FlatpickrInstance(element, instanceConfig) {
         }
     }
     function ampm2military(hour, amPM) {
-        return hour % 12 + 12 * int(amPM === "PM");
+        return hour % 12 + 12 * int(amPM === self.l10n.amPM[1]);
     }
     function military2ampm(hour) {
         switch (hour % 24) {
@@ -15557,7 +15578,7 @@ function FlatpickrInstance(element, instanceConfig) {
             : hours);
         self.minuteElement.value = pad(minutes);
         if (self.amPM !== undefined)
-            self.amPM.textContent = hours >= 12 ? "PM" : "AM";
+            self.amPM.textContent = self.l10n.amPM[int(hours >= 12)];
         if (self.secondElement !== undefined)
             self.secondElement.value = pad(seconds);
     }
@@ -15599,7 +15620,9 @@ function FlatpickrInstance(element, instanceConfig) {
         }
         var debouncedResize = debounce(onResize, 50);
         self._debouncedChange = debounce(triggerChange, 300);
-        if (self.config.mode === "range" && self.daysContainer && !/iPhone|iPad|iPod/i.test(navigator.userAgent))
+        if (self.config.mode === "range" &&
+            self.daysContainer &&
+            !/iPhone|iPad|iPod/i.test(navigator.userAgent))
             bind(self.daysContainer, "mouseover", function (e) {
                 return onMouseOver(e.target);
             });
@@ -16370,16 +16393,16 @@ function FlatpickrInstance(element, instanceConfig) {
                         self.amPM.focus();
                     }
                     break;
-                case "a":
+                case self.l10n.amPM[0].charAt(0):
                     if (self.amPM !== undefined && e.target === self.amPM) {
-                        self.amPM.textContent = "AM";
+                        self.amPM.textContent = self.l10n.amPM[0];
                         setHoursFromInputs();
                         updateValue();
                     }
                     break;
-                case "p":
+                case self.l10n.amPM[1].charAt(0):
                     if (self.amPM !== undefined && e.target === self.amPM) {
-                        self.amPM.textContent = "PM";
+                        self.amPM.textContent = self.l10n.amPM[1];
                         setHoursFromInputs();
                         updateValue();
                     }
@@ -16595,6 +16618,7 @@ function FlatpickrInstance(element, instanceConfig) {
             : self.config.locale !== "default"
                 ? flatpickr.l10ns[self.config.locale]
                 : undefined);
+        tokenRegex.K = "(" + self.l10n.amPM[0] + "|" + self.l10n.amPM[1] + "|" + self.l10n.amPM[0].toLowerCase() + "|" + self.l10n.amPM[1].toLowerCase() + ")";
     }
     function positionCalendar(positionElement) {
         if (positionElement === void 0) { positionElement = self._positionElement; }
@@ -17070,9 +17094,10 @@ function FlatpickrInstance(element, instanceConfig) {
     function timeWrapper(e) {
         e.preventDefault();
         var isKeyDown = e.type === "keydown", input = e.target;
-        if (self.amPM !== undefined && e.target === self.amPM)
+        if (self.amPM !== undefined && e.target === self.amPM) {
             self.amPM.textContent =
-                self.l10n.amPM[self.amPM.textContent === "AM" ? 1 : 0];
+                self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
+        }
         var min = Number(input.min), max = Number(input.max), step = Number(input.step), curValue = parseInt(input.value, 10), delta = e.delta ||
             (isKeyDown
                 ? e.which === 38 ? 1 : -1
@@ -17099,8 +17124,10 @@ function FlatpickrInstance(element, instanceConfig) {
                 isHourElem &&
                 (step === 1
                     ? newValue + curValue === 23
-                    : Math.abs(newValue - curValue) > step))
-                self.amPM.textContent = self.amPM.textContent === "PM" ? "AM" : "PM";
+                    : Math.abs(newValue - curValue) > step)) {
+                self.amPM.textContent =
+                    self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
+            }
             input.value = pad(newValue);
         }
     }
