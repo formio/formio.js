@@ -1,8 +1,10 @@
+import i18next from 'i18next';
 import assert from 'power-assert';
 import _cloneDeep from 'lodash/cloneDeep';
 import EventEmitter from 'eventemitter2';
 import _merge from 'lodash/merge';
 import _each from 'lodash/each';
+import i18n from '../src/i18n';
 export const Harness = {
   getDate: function() {
     let timestamp = (new Date()).getTime();
@@ -17,10 +19,15 @@ export const Harness = {
         maxListeners: 0
       })
     }, options));
-    return component.localize().then(() => {
-      component.build();
-      assert(!!component.element, 'No ' + component.type + ' element created.');
-      return component;
+    return new Promise((resolve, reject) => {
+      i18next.init(i18n, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        component.build();
+        assert(!!component.element, 'No ' + component.type + ' element created.');
+        return resolve(component);
+      });
     });
   },
   testConditionals: function(form, submission, hidden, done) {
@@ -60,9 +67,13 @@ export const Harness = {
     return component;
   },
   testSetInput: function(component, input, output, visible, index = 0) {
+    console.log('input', input);
+    console.log('output', output, component.getValue());
+    console.log('visible', visible, component.inputs[index].value);
     component.setValue(input);
     assert.deepEqual(component.getValue(), output);
     assert.deepEqual(component.inputs[index].value, visible);
+    console.log('done');
     return component;
   },
   testSubmission: function(form, submission, onChange) {

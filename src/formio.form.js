@@ -91,8 +91,8 @@ export class FormioForm extends FormioComponents {
       this.options.i18n = i18n;
     }
 
-    if (options.language) {
-      this.language = options.language;
+    if (options && options.language) {
+      i18n.lng = options.language;
     }
 
     /**
@@ -221,6 +221,7 @@ export class FormioForm extends FormioComponents {
    * @return {*}
    */
   set language(lang) {
+    this.options.language = lang;
     return new Promise((resolve, reject) => {
       i18next.changeLanguage(lang, (err) => {
         if (err) {
@@ -253,6 +254,7 @@ export class FormioForm extends FormioComponents {
     i18next.initialized = true;
     return new Promise((resolve, reject) => {
       i18next.init(this.options.i18n, (err) => {
+        this.options.language = i18next.language;
         if (err) {
           return reject(err);
         }

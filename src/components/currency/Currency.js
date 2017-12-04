@@ -12,7 +12,7 @@ export class CurrencyComponent extends NumberComponent {
 
     // Get the prefix and suffix from the localized string.
     const regex = '(.*)?100(' + (this.decimalSeparator === '.' ? '\.' : this.decimalSeparator) + '0{' + this.decimalLimit + '})?(.*)?';
-    const parts = (100).toLocaleString(this.options.i18n.lng, this.getFormatOptions()).match(new RegExp(regex));
+    const parts = (100).toLocaleString(options.language, this.getFormatOptions()).match(new RegExp(regex));
     this.prefix = parts[1] || '';
     this.suffix = parts[3] || '';
   }
