@@ -1710,7 +1710,8 @@ exports.all = function() {
       this._maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
 
       conf.wildcard && (this.wildcard = conf.wildcard);
-      conf.newListener && (this.newListener = conf.newListener);
+      conf.newListener && (this._newListener = conf.newListener);
+      conf.removeListener && (this._removeListener = conf.removeListener);
       conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
 
       if (this.wildcard) {
@@ -1747,7 +1748,8 @@ exports.all = function() {
 
   function EventEmitter(conf) {
     this._events = {};
-    this.newListener = false;
+    this._newListener = false;
+    this._removeListener = false;
     this.verboseMemoryLeak = false;
     configure.call(this, conf);
   }
@@ -1984,7 +1986,7 @@ exports.all = function() {
 
     var type = arguments[0];
 
-    if (type === 'newListener' && !this.newListener) {
+    if (type === 'newListener' && !this._newListener) {
       if (!this._events.newListener) {
         return false;
       }
@@ -2090,7 +2092,7 @@ exports.all = function() {
 
     var type = arguments[0];
 
-    if (type === 'newListener' && !this.newListener) {
+    if (type === 'newListener' && !this._newListener) {
         if (!this._events.newListener) { return Promise.resolve([false]); }
     }
 
@@ -2231,7 +2233,8 @@ exports.all = function() {
 
     // To avoid recursion in the case that type == "newListeners"! Before
     // adding it to the listeners, first emit "newListeners".
-    this.emit('newListener', type, listener);
+    if (this._newListener)
+       this.emit('newListener', type, listener);
 
     if (this.wildcard) {
       growListenerTree.call(this, type, listener);
@@ -2322,8 +2325,8 @@ exports.all = function() {
             delete this._events[type];
           }
         }
-
-        this.emit("removeListener", type, listener);
+        if (this._removeListener)
+          this.emit("removeListener", type, listener);
 
         return this;
       }
@@ -2336,8 +2339,8 @@ exports.all = function() {
         else {
           delete this._events[type];
         }
-
-        this.emit("removeListener", type, listener);
+        if (this._removeListener)
+          this.emit("removeListener", type, listener);
       }
     }
 
@@ -2371,14 +2374,17 @@ exports.all = function() {
       for(i = 0, l = fns.length; i < l; i++) {
         if(fn === fns[i]) {
           fns.splice(i, 1);
-          this.emit("removeListenerAny", fn);
+          if (this._removeListener)
+            this.emit("removeListenerAny", fn);
           return this;
         }
       }
     } else {
       fns = this._all;
-      for(i = 0, l = fns.length; i < l; i++)
-        this.emit("removeListenerAny", fns[i]);
+      if (this._removeListener) {
+        for(i = 0, l = fns.length; i < l; i++)
+          this.emit("removeListenerAny", fns[i]);
+      }
       this._all = [];
     }
     return this;
