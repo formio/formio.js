@@ -14523,7 +14523,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
 }).call(this,require('_process'))
 },{"_process":309}],54:[function(require,module,exports){
-/* flatpickr v4.1.3, @license MIT */
+/* flatpickr v4.1.4, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -14771,8 +14771,9 @@ var revFormat = {
     J: function (dateObj, day) {
         dateObj.setDate(parseFloat(day));
     },
-    K: function (dateObj, amPM) {
-        dateObj.setHours(dateObj.getHours() % 12 + 12 * int(/pm/i.test(amPM)));
+    K: function (dateObj, amPM, locale) {
+        dateObj.setHours(dateObj.getHours() % 12 +
+            12 * int(new RegExp(locale.amPM[1], "i").test(amPM)));
     },
     M: function (dateObj, shortMonth, locale) {
         dateObj.setMonth(locale.months.shorthand.indexOf(shortMonth));
@@ -14822,7 +14823,7 @@ var tokenRegex = {
     G: "(\\d\\d|\\d)",
     H: "(\\d\\d|\\d)",
     J: "(\\d\\d|\\d)\\w+",
-    K: "(am|AM|Am|aM|pm|PM|Pm|pM)",
+    K: "",
     M: "(\\w+)",
     S: "(\\d\\d|\\d)",
     U: "(.+)",
@@ -14857,7 +14858,7 @@ var formats = {
             ? date.getDate() + locale.ordinal(date.getDate())
             : date.getDate();
     },
-    K: function (date) { return (date.getHours() > 11 ? "PM" : "AM"); },
+    K: function (date, locale) { return locale.amPM[int(date.getHours() > 11)]; },
     M: function (date, locale) {
         return monthToStr(date.getMonth(), true, locale);
     },
@@ -14993,7 +14994,7 @@ function FlatpickrInstance(element, instanceConfig) {
         }
     }
     function ampm2military(hour, amPM) {
-        return hour % 12 + 12 * int(amPM === "PM");
+        return hour % 12 + 12 * int(amPM === self.l10n.amPM[1]);
     }
     function military2ampm(hour) {
         switch (hour % 24) {
@@ -15046,7 +15047,7 @@ function FlatpickrInstance(element, instanceConfig) {
             : hours);
         self.minuteElement.value = pad(minutes);
         if (self.amPM !== undefined)
-            self.amPM.textContent = hours >= 12 ? "PM" : "AM";
+            self.amPM.textContent = self.l10n.amPM[int(hours >= 12)];
         if (self.secondElement !== undefined)
             self.secondElement.value = pad(seconds);
     }
@@ -15088,7 +15089,9 @@ function FlatpickrInstance(element, instanceConfig) {
         }
         var debouncedResize = debounce(onResize, 50);
         self._debouncedChange = debounce(triggerChange, 300);
-        if (self.config.mode === "range" && self.daysContainer && !/iPhone|iPad|iPod/i.test(navigator.userAgent))
+        if (self.config.mode === "range" &&
+            self.daysContainer &&
+            !/iPhone|iPad|iPod/i.test(navigator.userAgent))
             bind(self.daysContainer, "mouseover", function (e) {
                 return onMouseOver(e.target);
             });
@@ -15859,16 +15862,16 @@ function FlatpickrInstance(element, instanceConfig) {
                         self.amPM.focus();
                     }
                     break;
-                case "a":
+                case self.l10n.amPM[0].charAt(0):
                     if (self.amPM !== undefined && e.target === self.amPM) {
-                        self.amPM.textContent = "AM";
+                        self.amPM.textContent = self.l10n.amPM[0];
                         setHoursFromInputs();
                         updateValue();
                     }
                     break;
-                case "p":
+                case self.l10n.amPM[1].charAt(0):
                     if (self.amPM !== undefined && e.target === self.amPM) {
-                        self.amPM.textContent = "PM";
+                        self.amPM.textContent = self.l10n.amPM[1];
                         setHoursFromInputs();
                         updateValue();
                     }
@@ -16084,6 +16087,7 @@ function FlatpickrInstance(element, instanceConfig) {
             : self.config.locale !== "default"
                 ? flatpickr.l10ns[self.config.locale]
                 : undefined);
+        tokenRegex.K = "(" + self.l10n.amPM[0] + "|" + self.l10n.amPM[1] + "|" + self.l10n.amPM[0].toLowerCase() + "|" + self.l10n.amPM[1].toLowerCase() + ")";
     }
     function positionCalendar(positionElement) {
         if (positionElement === void 0) { positionElement = self._positionElement; }
@@ -16559,9 +16563,10 @@ function FlatpickrInstance(element, instanceConfig) {
     function timeWrapper(e) {
         e.preventDefault();
         var isKeyDown = e.type === "keydown", input = e.target;
-        if (self.amPM !== undefined && e.target === self.amPM)
+        if (self.amPM !== undefined && e.target === self.amPM) {
             self.amPM.textContent =
-                self.l10n.amPM[self.amPM.textContent === "AM" ? 1 : 0];
+                self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
+        }
         var min = Number(input.min), max = Number(input.max), step = Number(input.step), curValue = parseInt(input.value, 10), delta = e.delta ||
             (isKeyDown
                 ? e.which === 38 ? 1 : -1
@@ -16588,8 +16593,10 @@ function FlatpickrInstance(element, instanceConfig) {
                 isHourElem &&
                 (step === 1
                     ? newValue + curValue === 23
-                    : Math.abs(newValue - curValue) > step))
-                self.amPM.textContent = self.amPM.textContent === "PM" ? "AM" : "PM";
+                    : Math.abs(newValue - curValue) > step)) {
+                self.amPM.textContent =
+                    self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
+            }
             input.value = pad(newValue);
         }
     }
