@@ -1569,12 +1569,9 @@ function _classCallCheck(instance, Constructor) {
   }
 }
 
-_i18next2.default.initialized = false;
-
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
  */
-
 var BaseComponent = function () {
   /**
    * Initialize a new BaseComponent.
@@ -1600,34 +1597,6 @@ var BaseComponent = function () {
     this.options = (0, _defaults3.default)((0, _clone3.default)(options), {
       highlightErrors: true
     });
-
-    /**
-     * The i18n configuration for this component.
-     */
-    var i18n = require('../../i18n');
-    if (options && options.i18n && !options.i18nReady) {
-      // Support legacy way of doing translations.
-      if (options.i18n.resources) {
-        i18n = options.i18n;
-      } else {
-        (0, _each3.default)(options.i18n, function (lang, code) {
-          if (!i18n.resources[code]) {
-            i18n.resources[code] = { translation: lang };
-          } else {
-            (0, _assign3.default)(i18n.resources[code].translation, lang);
-          }
-        });
-      }
-
-      options.i18n = i18n;
-      options.i18nReady = true;
-    }
-
-    if (options && options.i18n) {
-      this.options.i18n = options.i18n;
-    } else {
-      this.options.i18n = i18n;
-    }
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -1810,16 +1779,6 @@ var BaseComponent = function () {
     }
 
     /**
-     * Sets the language for this form.
-     *
-     * @param lang
-     * @return {*}
-     */
-
-  }, {
-    key: 'on',
-
-    /**
      * Register for a new event within this component.
      *
      * @example
@@ -1837,6 +1796,9 @@ var BaseComponent = function () {
      * @param {function} cb - The callback handler to handle this event.
      * @param {boolean} internal - This is an internal event handler.
      */
+
+  }, {
+    key: 'on',
     value: function on(event, cb, internal) {
       if (!this.events) {
         return;
@@ -1903,30 +1865,6 @@ var BaseComponent = function () {
       }
 
       return null;
-    }
-
-    /**
-     * Perform the localization initialization.
-     * @returns {*}
-     */
-
-  }, {
-    key: 'localize',
-    value: function localize() {
-      var _this = this;
-
-      if (_i18next2.default.initialized) {
-        return _nativePromiseOnly2.default.resolve(_i18next2.default);
-      }
-      _i18next2.default.initialized = true;
-      return new _nativePromiseOnly2.default(function (resolve, reject) {
-        _i18next2.default.init(_this.options.i18n, function (err, t) {
-          if (err) {
-            return reject(err);
-          }
-          resolve(_i18next2.default);
-        });
-      });
     }
 
     /**
@@ -2115,7 +2053,7 @@ var BaseComponent = function () {
   }, {
     key: 'buildRows',
     value: function buildRows() {
-      var _this2 = this;
+      var _this = this;
 
       if (!this.tbody) {
         return;
@@ -2123,19 +2061,19 @@ var BaseComponent = function () {
       this.inputs = [];
       this.tbody.innerHTML = '';
       (0, _each3.default)(this.data[this.component.key], function (value, index) {
-        var tr = _this2.ce('tr');
-        var td = _this2.ce('td');
-        var input = _this2.createInput(td);
+        var tr = _this.ce('tr');
+        var td = _this.ce('td');
+        var input = _this.createInput(td);
         input.value = value;
         tr.appendChild(td);
 
-        if (!_this2.shouldDisable) {
-          var tdAdd = _this2.ce('td');
-          tdAdd.appendChild(_this2.removeButton(index));
+        if (!_this.shouldDisable) {
+          var tdAdd = _this.ce('td');
+          tdAdd.appendChild(_this.removeButton(index));
           tr.appendChild(tdAdd);
         }
 
-        _this2.tbody.appendChild(tr);
+        _this.tbody.appendChild(tr);
       });
 
       if (!this.shouldDisable) {
@@ -2161,14 +2099,14 @@ var BaseComponent = function () {
   }, {
     key: 'addButton',
     value: function addButton() {
-      var _this3 = this;
+      var _this2 = this;
 
       var addButton = this.ce('a', {
         class: 'btn btn-primary'
       });
       this.addEventListener(addButton, 'click', function (event) {
         event.preventDefault();
-        _this3.addValue();
+        _this2.addValue();
       });
 
       var addIcon = this.ce('span', {
@@ -2205,7 +2143,7 @@ var BaseComponent = function () {
   }, {
     key: 'removeButton',
     value: function removeButton(index) {
-      var _this4 = this;
+      var _this3 = this;
 
       var removeButton = this.ce('button', {
         type: 'button',
@@ -2215,7 +2153,7 @@ var BaseComponent = function () {
 
       this.addEventListener(removeButton, 'click', function (event) {
         event.preventDefault();
-        _this4.removeValue(index);
+        _this3.removeValue(index);
       });
 
       var removeIcon = this.ce('span', {
@@ -2653,14 +2591,14 @@ var BaseComponent = function () {
   }, {
     key: 'destroy',
     value: function destroy(all) {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this.inputMask) {
         this.inputMask.destroy();
       }
       (0, _each3.default)(this.eventListeners, function (listener) {
         if (all || listener.internal) {
-          _this5.events.off(listener.type, listener.listener);
+          _this4.events.off(listener.type, listener.listener);
         }
       });
       (0, _each3.default)(this.eventHandlers, function (handler) {
@@ -2677,11 +2615,11 @@ var BaseComponent = function () {
   }, {
     key: 'appendChild',
     value: function appendChild(element, child) {
-      var _this6 = this;
+      var _this5 = this;
 
       if (Array.isArray(child)) {
         child.forEach(function (oneChild) {
-          _this6.appendChild(element, oneChild);
+          _this5.appendChild(element, oneChild);
         });
       } else if (child instanceof HTMLElement || child instanceof Text) {
         element.appendChild(child);
@@ -2741,13 +2679,13 @@ var BaseComponent = function () {
   }, {
     key: 'attr',
     value: function attr(element, _attr) {
-      var _this7 = this;
+      var _this6 = this;
 
       (0, _each3.default)(_attr, function (value, key) {
         if (typeof value !== 'undefined') {
           if (key.indexOf('on') === 0) {
             // If this is an event, add a listener.
-            _this7.addEventListener(element, key.substr(2).toLowerCase(), value);
+            _this6.addEventListener(element, key.substr(2).toLowerCase(), value);
           } else {
             // Otherwise it is just an attribute.
             element.setAttribute(key, value);
@@ -2859,7 +2797,7 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      var _this8 = this;
+      var _this7 = this;
 
       // Ensure we stop any pending data clears.
       if (this.clearPending) {
@@ -2888,7 +2826,7 @@ var BaseComponent = function () {
 
       if (!_show && this.component.clearOnHide) {
         this.clearPending = setTimeout(function () {
-          return _this8.setValue(null, {
+          return _this7.setValue(null, {
             noValidate: true
           });
         }, 200);
@@ -2947,14 +2885,14 @@ var BaseComponent = function () {
   }, {
     key: 'addInputSubmitListener',
     value: function addInputSubmitListener(input) {
-      var _this9 = this;
+      var _this8 = this;
 
       this.addEventListener(input, 'keypress', function (event) {
         var key = event.keyCode || event.which;
         if (key == 13) {
           event.preventDefault();
           event.stopPropagation();
-          _this9.emit('submitButton');
+          _this8.emit('submitButton');
         }
       });
     }
@@ -2968,10 +2906,10 @@ var BaseComponent = function () {
   }, {
     key: 'addInputEventListener',
     value: function addInputEventListener(input) {
-      var _this10 = this;
+      var _this9 = this;
 
       this.addEventListener(input, this.info.changeEvent, function () {
-        return _this10.updateValue({ changed: true });
+        return _this9.updateValue({ changed: true });
       });
     }
 
@@ -3320,7 +3258,7 @@ var BaseComponent = function () {
   }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
-      var _this11 = this;
+      var _this10 = this;
 
       (0, _each3.default)(options, function (option) {
         var attrs = {
@@ -3329,8 +3267,8 @@ var BaseComponent = function () {
         if (defaultValue !== undefined && option.value === defaultValue) {
           attrs.selected = 'selected';
         }
-        var optionElement = _this11.ce('option', attrs);
-        optionElement.appendChild(_this11.text(option.label));
+        var optionElement = _this10.ce('option', attrs);
+        optionElement.appendChild(_this10.text(option.label));
         select.appendChild(optionElement);
       });
     }
@@ -3398,7 +3336,7 @@ var BaseComponent = function () {
         name: this.options.name,
         type: this.component.inputType || 'text',
         class: 'form-control',
-        lang: this.options.i18n.lng
+        lang: _i18next2.default.language
       };
 
       if (this.component.placeholder) {
@@ -3415,21 +3353,6 @@ var BaseComponent = function () {
         changeEvent: 'change',
         attr: attributes
       };
-    }
-  }, {
-    key: 'language',
-    set: function set(lang) {
-      var _this12 = this;
-
-      return new _nativePromiseOnly2.default(function (resolve, reject) {
-        _i18next2.default.changeLanguage(lang, function (err) {
-          if (err) {
-            return reject(err);
-          }
-          _this12.redraw();
-          resolve();
-        });
-      });
     }
   }, {
     key: 'shouldDisable',
@@ -3673,7 +3596,7 @@ BaseComponent.libraryReady = function (name) {
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
 
-},{"../../i18n":43,"../../utils":50,"../Validator":2,"i18next":70,"lodash/assign":242,"lodash/clone":247,"lodash/debounce":250,"lodash/defaults":251,"lodash/each":254,"lodash/get":259,"lodash/isArray":264,"lodash/isEqual":271,"lodash/isUndefined":284,"native-promise-only":308,"text-mask-all/vanilla":314,"tooltip.js":315}],5:[function(require,module,exports){
+},{"../../utils":50,"../Validator":2,"i18next":70,"lodash/assign":242,"lodash/clone":247,"lodash/debounce":250,"lodash/defaults":251,"lodash/each":254,"lodash/get":259,"lodash/isArray":264,"lodash/isEqual":271,"lodash/isUndefined":284,"native-promise-only":308,"text-mask-all/vanilla":314,"tooltip.js":315}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4545,6 +4468,10 @@ var _get3 = require('lodash/get');
 
 var _get4 = _interopRequireDefault(_get3);
 
+var _i18next = require('i18next');
+
+var _i18next2 = _interopRequireDefault(_i18next);
+
 var _Number = require('../number/Number');
 
 function _interopRequireDefault(obj) {
@@ -4582,7 +4509,7 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
 
     // Get the prefix and suffix from the localized string.
     var regex = '(.*)?100(' + (_this.decimalSeparator === '.' ? '\.' : _this.decimalSeparator) + '0{' + _this.decimalLimit + '})?(.*)?';
-    var parts = 100 .toLocaleString(_this.options.i18n.lng, _this.getFormatOptions()).match(new RegExp(regex));
+    var parts = 100 .toLocaleString(options.language, _this.getFormatOptions()).match(new RegExp(regex));
     _this.prefix = parts[1] || '';
     _this.suffix = parts[3] || '';
     return _this;
@@ -4639,7 +4566,7 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
   return CurrencyComponent;
 }(_Number.NumberComponent);
 
-},{"../number/Number":23,"lodash/get":259,"text-mask-all/addons/dist/createNumberMask":313,"text-mask-all/vanilla":314}],12:[function(require,module,exports){
+},{"../number/Number":23,"i18next":70,"lodash/get":259,"text-mask-all/addons/dist/createNumberMask":313,"text-mask-all/vanilla":314}],12:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -7194,6 +7121,10 @@ var _createNumberMask = require('text-mask-all/addons/dist/createNumberMask');
 
 var _createNumberMask2 = _interopRequireDefault(_createNumberMask);
 
+var _i18next = require('i18next');
+
+var _i18next2 = _interopRequireDefault(_i18next);
+
 var _Base = require('../base/Base');
 
 function _interopRequireDefault(obj) {
@@ -7228,8 +7159,8 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
 
     _this.validators = _this.validators.concat(['min', 'max']);
 
-    _this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || 12345.6789.toLocaleString(_this.options.i18n.lng).match(/345(.*)67/)[1];
-    _this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || 12345.6789.toLocaleString(_this.options.i18n.lng).match(/12(.*)345/)[1];
+    _this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || 12345.6789.toLocaleString(options.language).match(/345(.*)67/)[1];
+    _this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || 12345.6789.toLocaleString(options.language).match(/12(.*)345/)[1];
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     _this.decimalLimit = 20;
@@ -7265,9 +7196,9 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
       }
 
       if (this.component.validate && this.component.validate.integer) {
-        return parseInt(value, 10).toLocaleString(this.options.i18n.lng, this.getFormatOptions());
+        return parseInt(value, 10).toLocaleString(this.options.language, this.getFormatOptions());
       } else {
-        return parseFloat(value).toLocaleString(this.options.i18n.lng, this.getFormatOptions());
+        return parseFloat(value).toLocaleString(this.options.language, this.getFormatOptions());
       }
     }
   }, {
@@ -7332,7 +7263,7 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
   return NumberComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"lodash/get":259,"text-mask-all/addons/dist/createNumberMask":313,"text-mask-all/vanilla":314}],24:[function(require,module,exports){
+},{"../base/Base":4,"i18next":70,"lodash/get":259,"text-mask-all/addons/dist/createNumberMask":313,"text-mask-all/vanilla":314}],24:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -9700,6 +9631,10 @@ var _eventemitter = require('eventemitter2');
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
 
+var _i18next = require('i18next');
+
+var _i18next2 = _interopRequireDefault(_i18next);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -9721,6 +9656,8 @@ function _inherits(subClass, superClass) {
     throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
+
+_i18next2.default.initialized = false;
 
 // Initialize the available forms.
 _formio2.default.forms = {};
@@ -9773,6 +9710,38 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     var _this = _possibleConstructorReturn(this, (FormioForm.__proto__ || Object.getPrototypeOf(FormioForm)).call(this, null, getOptions(options)));
 
     _formio2.default.forms[_this.id] = _this;
+
+    /**
+     * The i18n configuration for this component.
+     */
+    var i18n = require('./i18n');
+    if (options && options.i18n && !options.i18nReady) {
+      // Support legacy way of doing translations.
+      if (options.i18n.resources) {
+        i18n = options.i18n;
+      } else {
+        (0, _each3.default)(options.i18n, function (lang, code) {
+          if (!i18n.resources[code]) {
+            i18n.resources[code] = { translation: lang };
+          } else {
+            _assign(i18n.resources[code].translation, lang);
+          }
+        });
+      }
+
+      options.i18n = i18n;
+      options.i18nReady = true;
+    }
+
+    if (options && options.i18n) {
+      _this.options.i18n = options.i18n;
+    } else {
+      _this.options.i18n = i18n;
+    }
+
+    if (options && options.language) {
+      i18n.lng = options.language;
+    }
 
     /**
      * The type of this element.
@@ -9894,15 +9863,62 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }
 
   /**
-   * Sets the the outside wrapper element of the Form.
+   * Sets the language for this form.
    *
-   * @param {HTMLElement} element - The element to set as the outside wrapper element for this form.
+   * @param lang
+   * @return {*}
    */
 
   _createClass(FormioForm, [{
+    key: 'addLanguage',
+
+    /**
+     * Add a language for translations
+     */
+    value: function addLanguage(code, lang) {
+      var active = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+      _i18next2.default.addResourceBundle(code, 'translation', lang, true, true);
+      if (active) {
+        this.language = code;
+      }
+    }
+
+    /**
+     * Perform the localization initialization.
+     * @returns {*}
+     */
+
+  }, {
+    key: 'localize',
+    value: function localize() {
+      var _this2 = this;
+
+      if (_i18next2.default.initialized) {
+        return _nativePromiseOnly2.default.resolve(_i18next2.default);
+      }
+      _i18next2.default.initialized = true;
+      return new _nativePromiseOnly2.default(function (resolve, reject) {
+        _i18next2.default.init(_this2.options.i18n, function (err) {
+          _this2.options.language = _i18next2.default.language;
+          if (err) {
+            return reject(err);
+          }
+          resolve(_i18next2.default);
+        });
+      });
+    }
+
+    /**
+     * Sets the the outside wrapper element of the Form.
+     *
+     * @param {HTMLElement} element - The element to set as the outside wrapper element for this form.
+     */
+
+  }, {
     key: 'setElement',
     value: function setElement(element) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!element) {
         return;
@@ -9919,11 +9935,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       this.addClass(this.element, classNames);
       this.loading = true;
       this.ready.then(function () {
-        return _this2.loading = false;
+        return _this3.loading = false;
       }, function () {
-        return _this2.loading = false;
+        return _this3.loading = false;
       }).catch(function () {
-        return _this2.loading = false;
+        return _this3.loading = false;
       });
       this.elementResolve(element);
     }
@@ -10025,15 +10041,15 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * Loads the submission if applicable.
      */
     value: function loadSubmission() {
-      var _this3 = this;
+      var _this4 = this;
 
       if (this.formio.submissionId) {
         this.onSubmission = this.formio.loadSubmission().then(function (submission) {
-          return _this3.setSubmission(submission);
+          return _this4.setSubmission(submission);
         }, function (err) {
-          return _this3.submissionReadyReject(err);
+          return _this4.submissionReadyReject(err);
         }).catch(function (err) {
-          return _this3.submissionReadyReject(err);
+          return _this4.submissionReadyReject(err);
         });
       }
     }
@@ -10048,18 +10064,18 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: 'setSrc',
     value: function setSrc(value, options) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.setUrl(value, options);
       this.nosubmit = false;
       this.formio.loadForm().then(function (form) {
-        var setForm = _this4.setForm(form);
-        _this4.loadSubmission();
+        var setForm = _this5.setForm(form);
+        _this5.loadSubmission();
         return setForm;
       }, function (err) {
-        return _this4.formReadyReject(err);
+        return _this5.formReadyReject(err);
       }).catch(function (err) {
-        return _this4.formReadyReject(err);
+        return _this5.formReadyReject(err);
       });
     }
 
@@ -10142,7 +10158,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * @returns {*}
      */
     value: function setForm(form) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (form.display === 'wizard') {
         console.warn('You need to instantiate the FormioWizard class to use this form as a wizard.');
@@ -10150,11 +10166,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 
       if (this.onFormBuild) {
         return this.onFormBuild.then(function () {
-          return _this5.createForm(form);
+          return _this6.createForm(form);
         }, function (err) {
-          return _this5.formReadyReject(err);
+          return _this6.formReadyReject(err);
         }).catch(function (err) {
-          return _this5.formReadyReject(err);
+          return _this6.formReadyReject(err);
         });
       }
 
@@ -10181,20 +10197,20 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * @return {Promise.<TResult>}
      */
     value: function setSubmission(submission) {
-      var _this6 = this;
+      var _this7 = this;
 
       return this.onSubmission = this.formReady.then(function () {
         // If nothing changed, still trigger an update.
-        if (!_this6.setValue(submission)) {
-          _this6.triggerChange({
+        if (!_this7.setValue(submission)) {
+          _this7.triggerChange({
             noValidate: true
           });
         }
-        _this6.submissionReadyResolve();
+        _this7.submissionReadyResolve();
       }, function (err) {
-        return _this6.submissionReadyReject(err);
+        return _this7.submissionReadyReject(err);
       }).catch(function (err) {
-        return _this6.submissionReadyReject(err);
+        return _this7.submissionReadyReject(err);
       });
     }
   }, {
@@ -10226,7 +10242,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: 'createForm',
     value: function createForm(form) {
-      var _this7 = this;
+      var _this8 = this;
 
       /**
        * {@link BaseComponent.component}
@@ -10237,13 +10253,13 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         this.component = form;
       }
       return this.onFormBuild = this.render().then(function () {
-        _this7.formReadyResolve();
-        _this7.onFormBuild = null;
-        _this7.setSubmission(_this7._submission);
+        _this8.formReadyResolve();
+        _this8.onFormBuild = null;
+        _this8.setSubmission(_this8._submission);
       }, function (err) {
-        return _this7.formReadyReject(err);
+        return _this8.formReadyReject(err);
       }).catch(function (err) {
-        return _this7.formReadyReject(err);
+        return _this8.formReadyReject(err);
       });
     }
 
@@ -10255,20 +10271,20 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: 'render',
     value: function render() {
-      var _this8 = this;
+      var _this9 = this;
 
       return this.onElement.then(function () {
-        _this8.clear();
-        return _this8.localize().then(function () {
-          _this8.build();
-          _this8.onResize();
-          _this8.on('resetForm', function () {
-            return _this8.reset();
+        _this9.clear();
+        return _this9.localize().then(function () {
+          _this9.build();
+          _this9.onResize();
+          _this9.on('resetForm', function () {
+            return _this9.reset();
           }, true);
-          _this8.on('refreshData', function () {
-            return _this8.updateValue();
+          _this9.on('refreshData', function () {
+            return _this9.updateValue();
           });
-          _this8.emit('render');
+          _this9.emit('render');
         });
       });
     }
@@ -10315,10 +10331,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: 'build',
     value: function build() {
-      var _this9 = this;
+      var _this10 = this;
 
       this.on('submitButton', function () {
-        return _this9.submit();
+        return _this10.submit();
       }, true);
       this.addComponents();
       this.checkConditions(this.getValue());
@@ -10462,29 +10478,29 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: 'executeSubmit',
     value: function executeSubmit() {
-      var _this10 = this;
+      var _this11 = this;
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
-        var submission = _this10.submission || {};
-        _this10.hook('beforeSubmit', submission, function (err) {
+        var submission = _this11.submission || {};
+        _this11.hook('beforeSubmit', submission, function (err) {
           if (err) {
-            _this10.showErrors(err);
+            _this11.showErrors(err);
             return reject(err.message || err);
           }
 
-          if (submission && submission.data && _this10.checkValidity(submission.data, true)) {
-            _this10.loading = true;
-            if (_this10.nosubmit || !_this10.formio) {
-              return resolve(_this10.onSubmit(submission, false));
+          if (submission && submission.data && _this11.checkValidity(submission.data, true)) {
+            _this11.loading = true;
+            if (_this11.nosubmit || !_this11.formio) {
+              return resolve(_this11.onSubmit(submission, false));
             }
-            return _this10.formio.saveSubmission(submission).then(function (result) {
-              return resolve(_this10.onSubmit(result, true));
+            return _this11.formio.saveSubmission(submission).then(function (result) {
+              return resolve(_this11.onSubmit(result, true));
             }).catch(function (err) {
-              _this10.onSubmissionError(err);
+              _this11.onSubmissionError(err);
               reject(err);
             });
           } else {
-            _this10.showErrors();
+            _this11.showErrors();
             return reject('Invalid Submission');
           }
         });
@@ -10514,15 +10530,31 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: 'submit',
     value: function submit(before) {
-      var _this11 = this;
+      var _this12 = this;
 
       if (!before) {
         return this.beforeSubmit().then(function () {
-          return _this11.executeSubmit();
+          return _this12.executeSubmit();
         });
       } else {
         return this.executeSubmit();
       }
+    }
+  }, {
+    key: 'language',
+    set: function set(lang) {
+      var _this13 = this;
+
+      this.options.language = lang;
+      return new _nativePromiseOnly2.default(function (resolve, reject) {
+        _i18next2.default.changeLanguage(lang, function (err) {
+          if (err) {
+            return reject(err);
+          }
+          _this13.redraw();
+          resolve();
+        });
+      });
     }
   }, {
     key: 'src',
@@ -10557,10 +10589,10 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: 'ready',
     get: function get() {
-      var _this12 = this;
+      var _this14 = this;
 
       return this.formReady.then(function () {
-        return _this12.submissionReady;
+        return _this14.submissionReady;
       });
     }
 
@@ -10682,7 +10714,7 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":40,"eventemitter2":54,"lodash/capitalize":245,"lodash/clone":247,"lodash/debounce":250,"lodash/each":254,"lodash/isArray":264,"lodash/merge":290,"lodash/remove":295,"native-promise-only":308}],40:[function(require,module,exports){
+},{"./components/Components":1,"./formio":40,"./i18n":43,"eventemitter2":54,"i18next":70,"lodash/capitalize":245,"lodash/clone":247,"lodash/debounce":250,"lodash/each":254,"lodash/isArray":264,"lodash/merge":290,"lodash/remove":295,"native-promise-only":308}],40:[function(require,module,exports){
 (function (global){
 'use strict';
 

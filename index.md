@@ -40,7 +40,27 @@ section: home
 <div id="formio"></div>
 <script type="text/javascript">
   window.onload = function() {
-    Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
+      var options = {
+        language: 'de',
+        i18n: {
+          de: {
+            'Number': 'German Number',
+            'Enter your first name': 'French placeholder'
+          },
+          'es': {
+            //'First Name': 'Spanish First Name',
+            'Enter your first name': 'Spanish placeholder'
+          }
+        }
+      }
+
+    Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/components', options)
+      .then(function(form) {
+        form.language = 'de';
+        //form.addLanguage('de', {
+        //  'First Name': 'Spanish First Name  Updated'
+        //}, true);
+      });
   };
 </script>
 </div>
