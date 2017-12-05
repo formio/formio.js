@@ -1,0 +1,250 @@
+[
+  {
+    "name": "FormioComponents#createComponent",
+    "filePath": "src/components/Components.js",
+    "lines": [
+      {
+        "lineNumber": 101,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 102,
+        "line": "   * Create a new component and add it to the components array."
+      },
+      {
+        "lineNumber": 103,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 104,
+        "line": "   * @param component"
+      },
+      {
+        "lineNumber": 105,
+        "line": "   * @param data"
+      },
+      {
+        "lineNumber": 106,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 107,
+        "line": "  createComponent(component, options, data) {"
+      }
+    ],
+    "codeParams": [
+      "component",
+      "options",
+      "data"
+    ],
+    "docParams": [
+      "component",
+      "data"
+    ]
+  },
+  {
+    "name": "BaseComponent#createTooltip",
+    "filePath": "src/components/base/Base.js",
+    "lines": [
+      {
+        "lineNumber": 874,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 875,
+        "line": "   * Create the HTML element for the tooltip of this component."
+      },
+      {
+        "lineNumber": 876,
+        "line": "   * @param {HTMLElement} container - The containing element that will contain this tooltip."
+      },
+      {
+        "lineNumber": 877,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 878,
+        "line": "  createTooltip(container, component, classes) {"
+      }
+    ],
+    "codeParams": [
+      "container",
+      "component",
+      "classes"
+    ],
+    "docParams": [
+      "container"
+    ]
+  },
+  {
+    "name": "BaseComponent#appendChild",
+    "filePath": "src/components/base/Base.js",
+    "lines": [
+      {
+        "lineNumber": 1104,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 1105,
+        "line": "   * Append different types of children."
+      },
+      {
+        "lineNumber": 1106,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1107,
+        "line": "   * @param child"
+      },
+      {
+        "lineNumber": 1108,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1109,
+        "line": "  appendChild(element, child) {"
+      }
+    ],
+    "codeParams": [
+      "element",
+      "child"
+    ],
+    "docParams": [
+      "child"
+    ]
+  },
+  {
+    "name": "BaseComponent#addInput",
+    "filePath": "src/components/base/Base.js",
+    "lines": [
+      {
+        "lineNumber": 1373,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 1374,
+        "line": "   * Add a new input to this comonent."
+      },
+      {
+        "lineNumber": 1375,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1376,
+        "line": "   * @param input"
+      },
+      {
+        "lineNumber": 1377,
+        "line": "   * @param container"
+      },
+      {
+        "lineNumber": 1378,
+        "line": "   * @param noSet"
+      },
+      {
+        "lineNumber": 1379,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1380,
+        "line": "  addInput(input, container) {"
+      }
+    ],
+    "codeParams": [
+      "input",
+      "container"
+    ],
+    "docParams": [
+      "input",
+      "container",
+      "noSet"
+    ]
+  },
+  {
+    "name": "BaseComponent#calculateValue",
+    "filePath": "src/components/base/Base.js",
+    "lines": [
+      {
+        "lineNumber": 1465,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 1466,
+        "line": "   * Perform a calculated value operation."
+      },
+      {
+        "lineNumber": 1467,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1468,
+        "line": "   * @param data - The global data object."
+      },
+      {
+        "lineNumber": 1469,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1470,
+        "line": "   * @return {boolean} - If the value changed during calculation."
+      },
+      {
+        "lineNumber": 1471,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1472,
+        "line": "  calculateValue(data, flags) {"
+      }
+    ],
+    "codeParams": [
+      "data",
+      "flags"
+    ],
+    "docParams": [
+      "data"
+    ]
+  },
+  {
+    "name": "FormioForm#onChange",
+    "filePath": "src/formio.form.js",
+    "lines": [
+      {
+        "lineNumber": 735,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 736,
+        "line": "   * Trigger the change event for this form."
+      },
+      {
+        "lineNumber": 737,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 738,
+        "line": "   * @param changed"
+      },
+      {
+        "lineNumber": 739,
+        "line": "   * @param flags"
+      },
+      {
+        "lineNumber": 740,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 741,
+        "line": "  onChange(flags, changed) {"
+      }
+    ],
+    "codeParams": [
+      "flags",
+      "changed"
+    ],
+    "docParams": [
+      "changed",
+      "flags"
+    ]
+  }
+]

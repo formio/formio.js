@@ -517,6 +517,7 @@ export class BaseComponent {
   removeValue(index) {
     if (this.data.hasOwnProperty(this.component.key)) {
       this.data[this.component.key].splice(index, 1);
+      this.triggerChange();
     }
     this.buildRows();
   }
@@ -837,7 +838,7 @@ export class BaseComponent {
     this.description = this.ce('div', {
       class: 'help-block'
     });
-    this.description.appendChild(this.text(this.component.description));
+    this.description.innerHTML = this.t(this.component.description);
     container.appendChild(this.description);
   }
 
@@ -1281,6 +1282,9 @@ export class BaseComponent {
   }
 
   addInputSubmitListener(input) {
+    if (!this.options.submitOnEnter) {
+      return;
+    }
     this.addEventListener(input, 'keypress', (event) => {
       let key = event.keyCode || event.which;
       if (key == 13) {
@@ -1635,16 +1639,40 @@ export class BaseComponent {
     }
 
     this._disabled = disabled;
-    // Disable all input.
-    _each(this.inputs, (input) => {
-      input.disabled = disabled;
-      if (disabled) {
-        input.setAttribute('disabled', 'disabled');
+
+    // Disable all inputs.
+    _each(this.inputs, (input) => this.setDisabled(input, disabled));
+  }
+
+  setDisabled(element, disabled) {
+    element.disabled = disabled;
+    if (disabled) {
+      element.setAttribute('disabled', 'disabled');
+    }
+    else {
+      element.removeAttribute('disabled');
+    }
+  }
+
+  setLoading(element, loading) {
+    if (element.loading === loading) {
+      return;
+    }
+
+    element.loading = loading;
+    if (!element.loader && loading) {
+      element.loader = this.ce('i', {
+        class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
+      });
+    }
+    if (element.loader) {
+      if (loading) {
+        element.appendChild(element.loader);
       }
-      else {
-        input.removeAttribute('disabled');
+      else if (element.contains(element.loader)) {
+        element.removeChild(element.loader);
       }
-    });
+    }
   }
 
   selectOptions(select, tag, options, defaultValue) {

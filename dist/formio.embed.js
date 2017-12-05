@@ -2104,6 +2104,7 @@ var BaseComponent = function () {
     value: function removeValue(index) {
       if (this.data.hasOwnProperty(this.component.key)) {
         this.data[this.component.key].splice(index, 1);
+        this.triggerChange();
       }
       this.buildRows();
     }
@@ -2441,7 +2442,7 @@ var BaseComponent = function () {
       this.description = this.ce('div', {
         class: 'help-block'
       });
-      this.description.appendChild(this.text(this.component.description));
+      this.description.innerHTML = this.t(this.component.description);
       container.appendChild(this.description);
     }
 
@@ -2949,6 +2950,9 @@ var BaseComponent = function () {
     value: function addInputSubmitListener(input) {
       var _this9 = this;
 
+      if (!this.options.submitOnEnter) {
+        return;
+      }
       this.addEventListener(input, 'keypress', function (event) {
         var key = event.keyCode || event.which;
         if (key == 13) {
@@ -3318,6 +3322,37 @@ var BaseComponent = function () {
      */
 
   }, {
+    key: 'setDisabled',
+    value: function setDisabled(element, disabled) {
+      element.disabled = disabled;
+      if (disabled) {
+        element.setAttribute('disabled', 'disabled');
+      } else {
+        element.removeAttribute('disabled');
+      }
+    }
+  }, {
+    key: 'setLoading',
+    value: function setLoading(element, loading) {
+      if (element.loading === loading) {
+        return;
+      }
+
+      element.loading = loading;
+      if (!element.loader && loading) {
+        element.loader = this.ce('i', {
+          class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
+        });
+      }
+      if (element.loader) {
+        if (loading) {
+          element.appendChild(element.loader);
+        } else if (element.contains(element.loader)) {
+          element.removeChild(element.loader);
+        }
+      }
+    }
+  }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
       var _this11 = this;
@@ -3566,20 +3601,18 @@ var BaseComponent = function () {
      */
 
     , set: function set(disabled) {
+      var _this13 = this;
+
       // Do not allow a component to be disabled if it should be always...
       if (!disabled && this.shouldDisable) {
         return;
       }
 
       this._disabled = disabled;
-      // Disable all input.
+
+      // Disable all inputs.
       (0, _each3.default)(this.inputs, function (input) {
-        input.disabled = disabled;
-        if (disabled) {
-          input.setAttribute('disabled', 'disabled');
-        } else {
-          input.removeAttribute('disabled');
-        }
+        return _this13.setDisabled(input, disabled);
       });
     }
   }]);
@@ -3868,29 +3901,13 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
   }, {
     key: 'loading',
     set: function set(loading) {
-      this._loading = loading;
-      if (!this.loader && loading) {
-        this.loader = this.ce('i', {
-          class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
-        });
-      }
-      if (this.loader) {
-        if (loading) {
-          this.element.appendChild(this.loader);
-        } else if (this.element.contains(this.loader)) {
-          this.element.removeChild(this.loader);
-        }
-      }
+      this.setLoading(this.element, loading);
     }
   }, {
     key: 'disabled',
     set: function set(disabled) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
-      if (disabled) {
-        this.element.setAttribute('disabled', 'disabled');
-      } else {
-        this.element.removeAttribute('disabled');
-      }
+      this.setDisabled(this.element, disabled);
     }
   }]);
 
@@ -8038,6 +8055,20 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+// Fix performance issues in Choices by adding a debounce around render method.
+_choices2.default.prototype._render = _choices2.default.prototype.render;
+_choices2.default.prototype.render = function () {
+  var _this = this;
+
+  if (this.renderDebounce) {
+    clearTimeout(this.renderDebounce);
+  }
+
+  this.renderDebounce = setTimeout(function () {
+    return _this._render();
+  }, 100);
+};
+
 var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   _inherits(SelectComponent, _BaseComponent);
 
@@ -8045,21 +8076,21 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     _classCallCheck(this, SelectComponent);
 
     // Trigger an update.
-    var _this = _possibleConstructorReturn(this, (SelectComponent.__proto__ || Object.getPrototypeOf(SelectComponent)).call(this, component, options, data));
+    var _this2 = _possibleConstructorReturn(this, (SelectComponent.__proto__ || Object.getPrototypeOf(SelectComponent)).call(this, component, options, data));
 
-    _this.triggerUpdate = (0, _debounce3.default)(_this.updateItems.bind(_this), 100);
+    _this2.triggerUpdate = (0, _debounce3.default)(_this2.updateItems.bind(_this2), 100);
 
     // If they wish to refresh on a value, then add that here.
-    if (_this.component.refreshOn) {
-      _this.on('change', function (event) {
-        if (_this.component.refreshOn === 'data') {
-          _this.refreshItems();
-        } else if (event.changed && event.changed.component.key === _this.component.refreshOn) {
-          _this.refreshItems();
+    if (_this2.component.refreshOn) {
+      _this2.on('change', function (event) {
+        if (_this2.component.refreshOn === 'data') {
+          _this2.refreshItems();
+        } else if (event.changed && event.changed.component.key === _this2.component.refreshOn) {
+          _this2.refreshItems();
         }
       });
     }
-    return _this;
+    return _this2;
   }
 
   _createClass(SelectComponent, [{
@@ -8099,7 +8130,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'setItems',
     value: function setItems(items) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.choices) {
         return;
@@ -8125,19 +8156,19 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       // Add the currently selected choices if they don't already exist.
       var currentChoices = (0, _isArray3.default)(this.value) ? this.value : [this.value];
       (0, _each3.default)(currentChoices, function (choice) {
-        _this2.addCurrentChoices(choice, items);
+        _this3.addCurrentChoices(choice, items);
       });
 
       // Iterate through each of the items.
       (0, _each3.default)(items, function (item) {
         // Get the default label from the template
-        var label = _this2.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, "");
+        var label = _this3.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, "");
 
         // Translate the default template
-        var t_template = _this2.itemTemplate(item).replace(label, _this2.t(label));
+        var t_template = _this3.itemTemplate(item).replace(label, _this3.t(label));
 
         // Add the choice to the select list.
-        _this2.choices._addChoice(_this2.itemValue(item), t_template);
+        _this3.choices._addChoice(_this3.itemValue(item), t_template);
       });
 
       // If a value is provided, then select it.
@@ -8154,7 +8185,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'loadItems',
     value: function loadItems(url, search, headers, options, method, body) {
-      var _this3 = this;
+      var _this4 = this;
 
       options = options || {};
 
@@ -8199,10 +8230,10 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       // Make the request.
       options.header = headers;
       _formio2.default.makeRequest(this.options.formio, 'select', url, method, body, options).then(function (response) {
-        return _this3.setItems(response);
+        return _this4.setItems(response);
       }).catch(function (err) {
-        _this3.events.emit('formio.error', err);
-        console.warn('Unable to load resources for ' + _this3.component.key);
+        _this4.events.emit('formio.error', err);
+        console.warn('Unable to load resources for ' + _this4.component.key);
       });
     }
 
@@ -8276,7 +8307,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'addInput',
     value: function addInput(input, container) {
-      var _this4 = this;
+      var _this5 = this;
 
       _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'addInput', this).call(this, input, container);
       if (this.component.multiple) {
@@ -8290,22 +8321,24 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           containerOuter: 'choices form-group formio-choices',
           containerInner: 'form-control'
         },
+        searchPlaceholderValue: this.component.placeholder,
         shouldSort: false,
         position: this.component.dropdown || 'auto'
       });
+
       this.choices.itemList.tabIndex = tabIndex;
       this.setInputStyles(this.choices.containerOuter);
 
       // If a search field is provided, then add an event listener to update items on search.
       if (this.component.searchField) {
         input.addEventListener('search', function (event) {
-          return _this4.triggerUpdate(event.detail.value);
+          return _this5.triggerUpdate(event.detail.value);
         });
       }
 
       input.addEventListener('showDropdown', function () {
-        if (_this4.component.dataSrc === 'custom') {
-          _this4.updateCustomItems();
+        if (_this5.component.dataSrc === 'custom') {
+          _this5.updateCustomItems();
         }
       });
 
@@ -8318,12 +8351,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         // Prepend the placeholder.
         this.choices.containerInner.insertBefore(this.placeholder, this.choices.containerInner.firstChild);
         input.addEventListener('addItem', function () {
-          _this4.placeholder.style.visibility = 'hidden';
+          _this5.placeholder.style.visibility = 'hidden';
         }, false);
         input.addEventListener('removeItem', function () {
-          var value = _this4.getValue();
+          var value = _this5.getValue();
           if (!value || !value.length) {
-            _this4.placeholder.style.visibility = 'visible';
+            _this5.placeholder.style.visibility = 'visible';
           }
         }, false);
       }
@@ -8421,7 +8454,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'requestHeaders',
     get: function get() {
-      var _this5 = this;
+      var _this6 = this;
 
       // Create the headers object.
       var headers = new Headers();
@@ -8431,8 +8464,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         try {
           (0, _each3.default)(this.component.data.headers, function (header) {
             if (header.key) {
-              headers.set(header.key, _this5.interpolate(header.value, {
-                data: _this5.data
+              headers.set(header.key, _this6.interpolate(header.value, {
+                data: _this6.data
               }));
             }
           });
@@ -9198,10 +9231,14 @@ function _inherits(subClass, superClass) {
 var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponent) {
   _inherits(TextAreaComponent, _TextFieldComponent);
 
-  function TextAreaComponent() {
+  function TextAreaComponent(component, options, data) {
     _classCallCheck(this, TextAreaComponent);
 
-    return _possibleConstructorReturn(this, (TextAreaComponent.__proto__ || Object.getPrototypeOf(TextAreaComponent)).apply(this, arguments));
+    // Never submit on enter for text areas.
+    var _this = _possibleConstructorReturn(this, (TextAreaComponent.__proto__ || Object.getPrototypeOf(TextAreaComponent)).call(this, component, options, data));
+
+    _this.options.submitOnEnter = false;
+    return _this;
   }
 
   _createClass(TextAreaComponent, [{
@@ -9734,6 +9771,10 @@ var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
 
+var _defaults2 = require('lodash/defaults');
+
+var _defaults3 = _interopRequireDefault(_defaults2);
+
 var _capitalize2 = require('lodash/capitalize');
 
 var _capitalize3 = _interopRequireDefault(_capitalize2);
@@ -9768,7 +9809,9 @@ function _inherits(subClass, superClass) {
 _formio2.default.forms = {};
 
 var getOptions = function getOptions(options) {
-  options = options || {};
+  options = (0, _defaults3.default)(options, {
+    submitOnEnter: false
+  });
   if (!options.events) {
     options.events = new _eventemitter2.default({
       wildcard: false,
@@ -10098,10 +10141,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         var setForm = _this4.setForm(form);
         _this4.loadSubmission();
         return setForm;
-      }, function (err) {
-        return _this4.formReadyReject(err);
       }).catch(function (err) {
-        return _this4.formReadyReject(err);
+        console.warn(err);
+        _this4.formReadyReject(err);
       });
     }
 
@@ -10282,10 +10324,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         _this7.formReadyResolve();
         _this7.onFormBuild = null;
         _this7.setSubmission(_this7._submission);
-      }, function (err) {
-        return _this7.formReadyReject(err);
       }).catch(function (err) {
-        return _this7.formReadyReject(err);
+        console.warn(err);
+        _this7.formReadyReject(err);
       });
     }
 
@@ -10724,7 +10765,7 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":42,"eventemitter2":58,"lodash/capitalize":249,"lodash/clone":251,"lodash/debounce":254,"lodash/each":258,"lodash/isArray":268,"lodash/merge":294,"lodash/remove":299,"native-promise-only":312}],41:[function(require,module,exports){
+},{"./components/Components":1,"./formio":42,"eventemitter2":58,"lodash/capitalize":249,"lodash/clone":251,"lodash/debounce":254,"lodash/defaults":255,"lodash/each":258,"lodash/isArray":268,"lodash/merge":294,"lodash/remove":299,"native-promise-only":312}],41:[function(require,module,exports){
 "use strict";
 
 var _nativePromiseOnly = require("native-promise-only");
@@ -12400,6 +12441,10 @@ var _clone = require('lodash/clone');
 
 var _clone2 = _interopRequireDefault(_clone);
 
+var _defaults = require('lodash/defaults');
+
+var _defaults2 = _interopRequireDefault(_defaults);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -12425,6 +12470,13 @@ function _inherits(subClass, superClass) {
 var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   _inherits(FormioWizard, _FormioForm);
 
+  /**
+   * Constructor for wizard based forms
+   * @param element Dom element to place this wizard.
+   * @param {Object} options Options object, supported options are:
+   *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
+   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not  
+   */
   function FormioWizard(element, options) {
     _classCallCheck(this, FormioWizard);
 
@@ -12649,12 +12701,22 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
   }, {
     key: 'hasButton',
     value: function hasButton(name, nextPage) {
+      // Check for and initlize button settings object
+      this.options.buttonSettings = (0, _defaults2.default)(this.options.buttonSettings, {
+        showPrevious: true,
+        showNext: true,
+        showCancel: true
+      });
+
       if (name === 'previous') {
-        return this.page > 0;
+        return this.page > 0 && this.options.buttonSettings.showPrevious;
       }
       nextPage = nextPage === undefined ? this.getNextPage(this.submission.data, this.page) : nextPage;
       if (name === 'next') {
-        return nextPage !== null && nextPage < this.pages.length;
+        return nextPage !== null && nextPage < this.pages.length && this.options.buttonSettings.showNext;
+      }
+      if (name === 'cancel') {
+        return this.options.buttonSettings.showCancel;
       }
       if (name === 'submit') {
         return nextPage === null || this.page === this.pages.length - 1;
@@ -12681,10 +12743,9 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
       }
 
       // Check for and initlize breadcrumb settings object
-      this.options.breadcrumbSettings = this.options.breadcrumbSettings || {};
-      if (this.options.breadcrumbSettings.clickable === undefined) {
-        this.options.breadcrumbSettings.clickable = true;
-      }
+      this.options.breadcrumbSettings = (0, _defaults2.default)(this.options.breadcrumbSettings, {
+        clickable: true
+      });
 
       this.wizardHeader = this.ce('ul', {
         class: 'pagination'
@@ -12808,13 +12869,25 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
         }
         var buttonWrapper = _this8.ce('li');
         var buttonProp = button.name + 'Button';
-        _this8[buttonProp] = _this8.ce('button', {
+        var buttonElement = _this8[buttonProp] = _this8.ce('button', {
           class: button.class + ' btn-wizard-nav-' + button.name
         });
-        _this8[buttonProp].appendChild(_this8.text(_this8.t(button.name)));
+        buttonElement.appendChild(_this8.text(_this8.t(button.name)));
         _this8.addEventListener(_this8[buttonProp], 'click', function (event) {
           event.preventDefault();
-          _this8[button.method]();
+
+          // Disable the button until done.
+          buttonElement.setAttribute('disabled', 'disabled');
+          _this8.setLoading(buttonElement, true);
+
+          // Call the button method, then re-enable the button.
+          _this8[button.method]().then(function () {
+            buttonElement.removeAttribute('disabled');
+            _this8.setLoading(buttonElement, false);
+          }).catch(function () {
+            buttonElement.removeAttribute('disabled');
+            _this8.setLoading(buttonElement, false);
+          });
         });
         buttonWrapper.appendChild(_this8[buttonProp]);
         _this8.wizardNav.appendChild(buttonWrapper);
@@ -12832,7 +12905,7 @@ FormioWizard.setAppUrl = _formio4.default.setAppUrl;
 module.exports = global.FormioWizard = FormioWizard;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./formio":42,"./formio.form":40,"./utils":54,"lodash/clone":251,"lodash/each":258,"native-promise-only":312}],46:[function(require,module,exports){
+},{"./formio":42,"./formio.form":40,"./utils":54,"lodash/clone":251,"lodash/defaults":255,"lodash/each":258,"native-promise-only":312}],46:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -14612,7 +14685,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
       this._maxListeners = conf.maxListeners !== undefined ? conf.maxListeners : defaultMaxListeners;
 
       conf.wildcard && (this.wildcard = conf.wildcard);
-      conf.newListener && (this.newListener = conf.newListener);
+      conf.newListener && (this._newListener = conf.newListener);
+      conf.removeListener && (this._removeListener = conf.removeListener);
       conf.verboseMemoryLeak && (this.verboseMemoryLeak = conf.verboseMemoryLeak);
 
       if (this.wildcard) {
@@ -14649,7 +14723,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
   function EventEmitter(conf) {
     this._events = {};
-    this.newListener = false;
+    this._newListener = false;
+    this._removeListener = false;
     this.verboseMemoryLeak = false;
     configure.call(this, conf);
   }
@@ -14886,7 +14961,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
     var type = arguments[0];
 
-    if (type === 'newListener' && !this.newListener) {
+    if (type === 'newListener' && !this._newListener) {
       if (!this._events.newListener) {
         return false;
       }
@@ -14992,7 +15067,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
     var type = arguments[0];
 
-    if (type === 'newListener' && !this.newListener) {
+    if (type === 'newListener' && !this._newListener) {
         if (!this._events.newListener) { return Promise.resolve([false]); }
     }
 
@@ -15133,7 +15208,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
     // To avoid recursion in the case that type == "newListeners"! Before
     // adding it to the listeners, first emit "newListeners".
-    this.emit('newListener', type, listener);
+    if (this._newListener)
+       this.emit('newListener', type, listener);
 
     if (this.wildcard) {
       growListenerTree.call(this, type, listener);
@@ -15224,8 +15300,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
             delete this._events[type];
           }
         }
-
-        this.emit("removeListener", type, listener);
+        if (this._removeListener)
+          this.emit("removeListener", type, listener);
 
         return this;
       }
@@ -15238,8 +15314,8 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
         else {
           delete this._events[type];
         }
-
-        this.emit("removeListener", type, listener);
+        if (this._removeListener)
+          this.emit("removeListener", type, listener);
       }
     }
 
@@ -15273,14 +15349,17 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
       for(i = 0, l = fns.length; i < l; i++) {
         if(fn === fns[i]) {
           fns.splice(i, 1);
-          this.emit("removeListenerAny", fn);
+          if (this._removeListener)
+            this.emit("removeListenerAny", fn);
           return this;
         }
       }
     } else {
       fns = this._all;
-      for(i = 0, l = fns.length; i < l; i++)
-        this.emit("removeListenerAny", fns[i]);
+      if (this._removeListener) {
+        for(i = 0, l = fns.length; i < l; i++)
+          this.emit("removeListenerAny", fns[i]);
+      }
       this._all = [];
     }
     return this;
@@ -15362,7 +15441,7 @@ OTransition:"oTransitionEnd",MozTransition:"transitionend",WebkitTransition:"web
 
 }).call(this,require('_process'))
 },{"_process":314}],59:[function(require,module,exports){
-/* flatpickr v4.0.7, @license MIT */
+/* flatpickr v4.1.4, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -15436,6 +15515,7 @@ var defaults = {
     enable: [],
     enableSeconds: false,
     enableTime: false,
+    errorHandler: console.warn,
     getWeek: getWeek,
     hourIncrement: 1,
     ignoredFocusElements: [],
@@ -15609,8 +15689,9 @@ var revFormat = {
     J: function (dateObj, day) {
         dateObj.setDate(parseFloat(day));
     },
-    K: function (dateObj, amPM) {
-        dateObj.setHours(dateObj.getHours() % 12 + 12 * int(/pm/i.test(amPM)));
+    K: function (dateObj, amPM, locale) {
+        dateObj.setHours(dateObj.getHours() % 12 +
+            12 * int(new RegExp(locale.amPM[1], "i").test(amPM)));
     },
     M: function (dateObj, shortMonth, locale) {
         dateObj.setMonth(locale.months.shorthand.indexOf(shortMonth));
@@ -15660,7 +15741,7 @@ var tokenRegex = {
     G: "(\\d\\d|\\d)",
     H: "(\\d\\d|\\d)",
     J: "(\\d\\d|\\d)\\w+",
-    K: "(am|AM|Am|aM|pm|PM|Pm|pM)",
+    K: "",
     M: "(\\w+)",
     S: "(\\d\\d|\\d)",
     U: "(.+)",
@@ -15695,7 +15776,7 @@ var formats = {
             ? date.getDate() + locale.ordinal(date.getDate())
             : date.getDate();
     },
-    K: function (date) { return (date.getHours() > 11 ? "PM" : "AM"); },
+    K: function (date, locale) { return locale.amPM[int(date.getHours() > 11)]; },
     M: function (date, locale) {
         return monthToStr(date.getMonth(), true, locale);
     },
@@ -15719,7 +15800,6 @@ var formats = {
     y: function (date) { return String(date.getFullYear()).substring(2); },
 };
 
-"use strict";
 if (typeof Object.assign !== "function") {
     Object.assign = function (target) {
         var args = [];
@@ -15807,8 +15887,11 @@ function FlatpickrInstance(element, instanceConfig) {
         return fn.bind(self);
     }
     function updateTime(e) {
-        if (self.config.noCalendar && !self.selectedDates.length) {
-            self.setDate(new Date().setHours(self.config.defaultHour, self.config.defaultMinute, self.config.defaultSeconds), false);
+        if (self.config.noCalendar && self.selectedDates.length === 0) {
+            var minDate = self.config.minDate;
+            self.setDate(new Date().setHours(!minDate ? self.config.defaultHour : minDate.getHours(), !minDate ? self.config.defaultMinute : minDate.getMinutes(), !minDate || !self.config.enableSeconds
+                ? self.config.defaultSeconds
+                : minDate.getSeconds()), false);
             setHoursFromInputs();
             updateValue();
         }
@@ -15829,7 +15912,7 @@ function FlatpickrInstance(element, instanceConfig) {
         }
     }
     function ampm2military(hour, amPM) {
-        return hour % 12 + 12 * int(amPM === "PM");
+        return hour % 12 + 12 * int(amPM === self.l10n.amPM[1]);
     }
     function military2ampm(hour) {
         switch (hour % 24) {
@@ -15882,7 +15965,7 @@ function FlatpickrInstance(element, instanceConfig) {
             : hours);
         self.minuteElement.value = pad(minutes);
         if (self.amPM !== undefined)
-            self.amPM.textContent = hours >= 12 ? "PM" : "AM";
+            self.amPM.textContent = self.l10n.amPM[int(hours >= 12)];
         if (self.secondElement !== undefined)
             self.secondElement.value = pad(seconds);
     }
@@ -15903,7 +15986,9 @@ function FlatpickrInstance(element, instanceConfig) {
         self._handlers.push({ element: element, event: event, handler: handler });
     }
     function onClick(handler) {
-        return function (evt) { return evt.which === 1 && handler(evt); };
+        return function (evt) {
+            evt.which === 1 && handler(evt);
+        };
     }
     function triggerChange() {
         triggerEvent("onChange");
@@ -15922,7 +16007,9 @@ function FlatpickrInstance(element, instanceConfig) {
         }
         var debouncedResize = debounce(onResize, 50);
         self._debouncedChange = debounce(triggerChange, 300);
-        if (self.config.mode === "range" && self.daysContainer)
+        if (self.config.mode === "range" &&
+            self.daysContainer &&
+            !/iPhone|iPad|iPod/i.test(navigator.userAgent))
             bind(self.daysContainer, "mouseover", function (e) {
                 return onMouseOver(e.target);
             });
@@ -16032,8 +16119,8 @@ function FlatpickrInstance(element, instanceConfig) {
             }
         }
         catch (e) {
-            console.error(e.stack);
-            console.warn("Invalid date supplied: " + jumpTo);
+            e.message = "Invalid date supplied: " + jumpTo;
+            self.config.errorHandler(e);
         }
         self.redraw();
     }
@@ -16262,7 +16349,7 @@ function FlatpickrInstance(element, instanceConfig) {
         }
         self.nextMonthNav = createElement("span", "flatpickr-next-month");
         self.nextMonthNav.innerHTML = self.config.nextArrow;
-        self.navigationCurrentMonth = createElement("span", "flatpickr-current-month");
+        self.navigationCurrentMonth = createElement("div", "flatpickr-current-month");
         self.navigationCurrentMonth.appendChild(self.currentMonthElement);
         self.navigationCurrentMonth.appendChild(yearInput);
         monthNavFragment.appendChild(self.prevMonthNav);
@@ -16419,7 +16506,7 @@ function FlatpickrInstance(element, instanceConfig) {
         updateNavigationCurrentMonth();
         if (self.oldCurMonth.firstChild)
             self.oldCurMonth.firstChild.textContent = monthToStr(self.currentMonth - delta, self.config.shorthandCurrentMonth, self.l10n);
-        triggerEvent("onMonthChange");
+        afterDayAnim(function () { return triggerEvent("onMonthChange"); });
         if (from_keyboard &&
             document.activeElement &&
             document.activeElement.$i) {
@@ -16693,16 +16780,16 @@ function FlatpickrInstance(element, instanceConfig) {
                         self.amPM.focus();
                     }
                     break;
-                case "a":
+                case self.l10n.amPM[0].charAt(0):
                     if (self.amPM !== undefined && e.target === self.amPM) {
-                        self.amPM.textContent = "AM";
+                        self.amPM.textContent = self.l10n.amPM[0];
                         setHoursFromInputs();
                         updateValue();
                     }
                     break;
-                case "p":
+                case self.l10n.amPM[1].charAt(0):
                     if (self.amPM !== undefined && e.target === self.amPM) {
-                        self.amPM.textContent = "PM";
+                        self.amPM.textContent = self.l10n.amPM[1];
                         setHoursFromInputs();
                         updateValue();
                     }
@@ -16751,8 +16838,7 @@ function FlatpickrInstance(element, instanceConfig) {
             if (timestamp >= minRangeDate && timestamp <= maxRangeDate)
                 dayElem.classList.add("inRange");
         };
-        for (var i = 0, date = self.days.childNodes[i].dateObj; i < 42; i++,
-            date =
+        for (var i = 0, date = self.days.childNodes[i].dateObj; i < 42; i++, date =
                 self.days.childNodes[i] &&
                     self.days.childNodes[i].dateObj) {
             _loop_1(i, date);
@@ -16913,12 +16999,13 @@ function FlatpickrInstance(element, instanceConfig) {
     function setupLocale() {
         if (typeof self.config.locale !== "object" &&
             typeof flatpickr.l10ns[self.config.locale] === "undefined")
-            console.warn("flatpickr: invalid locale " + self.config.locale);
+            self.config.errorHandler(new Error("flatpickr: invalid locale " + self.config.locale));
         self.l10n = __assign({}, flatpickr.l10ns.default, typeof self.config.locale === "object"
             ? self.config.locale
             : self.config.locale !== "default"
                 ? flatpickr.l10ns[self.config.locale]
                 : undefined);
+        tokenRegex.K = "(" + self.l10n.amPM[0] + "|" + self.l10n.amPM[1] + "|" + self.l10n.amPM[0].toLowerCase() + "|" + self.l10n.amPM[1].toLowerCase() + ")";
     }
     function positionCalendar(positionElement) {
         if (positionElement === void 0) { positionElement = self._positionElement; }
@@ -17063,7 +17150,7 @@ function FlatpickrInstance(element, instanceConfig) {
                     break;
                 case "multiple":
                     dates = inputDate
-                        .split("; ")
+                        .split(self.config.conjunction)
                         .map(function (date) { return self.parseDate(date, format); });
                     break;
                 case "range":
@@ -17075,6 +17162,8 @@ function FlatpickrInstance(element, instanceConfig) {
                     break;
             }
         }
+        else
+            self.config.errorHandler(new Error("Invalid date supplied: " + JSON.stringify(inputDate)));
         self.selectedDates = dates.filter(function (d) { return d instanceof Date && isEnabled(d, false); });
         self.selectedDates.sort(function (a, b) { return a.getTime() - b.getTime(); });
     }
@@ -17217,8 +17306,7 @@ function FlatpickrInstance(element, instanceConfig) {
             }
         }
         if (!(parsedDate instanceof Date)) {
-            console.warn("flatpickr: invalid date " + date_orig);
-            console.info(self.element);
+            self.config.errorHandler(new Error("Invalid date provided: " + date_orig));
             return undefined;
         }
         if (timeless === true)
@@ -17230,7 +17318,7 @@ function FlatpickrInstance(element, instanceConfig) {
             ? element.querySelector("[data-input]")
             : element;
         if (!self.input) {
-            console.warn("Error: invalid input element specified", self.input);
+            self.config.errorHandler(new Error("Invalid input element specified"));
             return;
         }
         self.input._type = self.input.type;
@@ -17281,7 +17369,7 @@ function FlatpickrInstance(element, instanceConfig) {
                 self.input.parentNode.insertBefore(self.mobileInput, self.input.nextSibling);
         }
         catch (_a) { }
-        self.mobileInput.addEventListener("change", function (e) {
+        bind(self.mobileInput, "change", function (e) {
             self.setDate(e.target.value, false, self.mobileFormatStr);
             triggerEvent("onChange");
             triggerEvent("onClose");
@@ -17393,9 +17481,10 @@ function FlatpickrInstance(element, instanceConfig) {
     function timeWrapper(e) {
         e.preventDefault();
         var isKeyDown = e.type === "keydown", input = e.target;
-        if (self.amPM !== undefined && e.target === self.amPM)
+        if (self.amPM !== undefined && e.target === self.amPM) {
             self.amPM.textContent =
-                self.l10n.amPM[self.amPM.textContent === "AM" ? 1 : 0];
+                self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
+        }
         var min = Number(input.min), max = Number(input.max), step = Number(input.step), curValue = parseInt(input.value, 10), delta = e.delta ||
             (isKeyDown
                 ? e.which === 38 ? 1 : -1
@@ -17422,8 +17511,10 @@ function FlatpickrInstance(element, instanceConfig) {
                 isHourElem &&
                 (step === 1
                     ? newValue + curValue === 23
-                    : Math.abs(newValue - curValue) > step))
-                self.amPM.textContent = self.amPM.textContent === "PM" ? "AM" : "PM";
+                    : Math.abs(newValue - curValue) > step)) {
+                self.amPM.textContent =
+                    self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
+            }
             input.value = pad(newValue);
         }
     }
@@ -17446,7 +17537,7 @@ function _flatpickr(nodeList, config) {
             instances.push(node._flatpickr);
         }
         catch (e) {
-            console.warn(e, e.stack);
+            console.error(e);
         }
     }
     return instances.length === 1 ? instances[0] : instances;
@@ -17785,8 +17876,8 @@ var Connector = function (_EventEmitter) {
     });
   };
 
-  Connector.prototype.saveMissing = function saveMissing(languages, namespace, key, fallbackValue) {
-    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue);
+  Connector.prototype.saveMissing = function saveMissing(languages, namespace, key, fallbackValue, isUpdate) {
+    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, { isUpdate: isUpdate });
 
     // write to store to avoid resending
     if (!languages || !languages[0]) return;
@@ -18751,7 +18842,8 @@ var Translator = function (_EventEmitter) {
     var joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
 
     // object
-    if (res && typeof res !== 'string' && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
+    var handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
+    if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
@@ -18790,8 +18882,9 @@ var Translator = function (_EventEmitter) {
       }
 
       // save missing
-      if (_usedKey || usedDefault) {
-        this.logger.log('missingKey', lng, namespace, key, res);
+      var updateMissing = options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
+      if (_usedKey || usedDefault || updateMissing) {
+        this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? options.defaultValue : res);
 
         var lngs = [];
         var fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
@@ -18807,9 +18900,9 @@ var Translator = function (_EventEmitter) {
 
         if (this.options.saveMissing) {
           if (this.options.missingKeyHandler) {
-            this.options.missingKeyHandler(lngs, namespace, key, res);
+            this.options.missingKeyHandler(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
-            this.backendConnector.saveMissing(lngs, namespace, key, res);
+            this.backendConnector.saveMissing(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
           }
         }
 
@@ -18961,6 +19054,7 @@ function get() {
     contextSeparator: '_',
 
     saveMissing: false, // enable to send missing values
+    updateMissing: false, // enable to update default values if different from translated value (only useful on initial development, or when keeping code as source of truth)
     saveMissingTo: 'fallback', // 'current' || 'all'
     missingKeyHandler: false, // function(lng, ns, key, fallbackValue) -> override if prefer on handling
 
@@ -19320,6 +19414,7 @@ var I18n = function (_EventEmitter) {
       if (l) {
         _this4.language = l;
         _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
+        if (!_this4.translator.language) _this4.translator.changeLanguage(l);
 
         if (_this4.services.languageDetector) _this4.services.languageDetector.cacheUserLanguage(l);
       }
@@ -44673,7 +44768,7 @@ module.exports = upperFirst;
 
 },{"./_createCaseFirst":164}],311:[function(require,module,exports){
 //! moment.js
-//! version : 2.19.1
+//! version : 2.19.3
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -45333,7 +45428,7 @@ var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
 
 // any word (or two) characters or numbers including two/three word month in arabic.
 // includes scottish gaelic two word and hyphenated months
-var matchWord = /[0-9]*['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+|[\u0600-\u06FF\/]+(\s*?[\u0600-\u06FF]+){1,2}/i;
+var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
 
 
 var regexes = {};
@@ -45488,7 +45583,7 @@ function get (mom, unit) {
 
 function set$1 (mom, unit, value) {
     if (mom.isValid() && !isNaN(value)) {
-        if (unit === 'FullYear' && isLeapYear(mom.year())) {
+        if (unit === 'FullYear' && isLeapYear(mom.year()) && mom.month() === 1 && mom.date() === 29) {
             mom._d['set' + (mom._isUTC ? 'UTC' : '') + unit](value, mom.month(), daysInMonth(value, mom.month()));
         }
         else {
@@ -46594,10 +46689,11 @@ function defineLocale (name, config) {
 
 function updateLocale(name, config) {
     if (config != null) {
-        var locale, parentConfig = baseConfig;
+        var locale, tmpLocale, parentConfig = baseConfig;
         // MERGE
-        if (locales[name] != null) {
-            parentConfig = locales[name]._config;
+        tmpLocale = loadLocale(name);
+        if (tmpLocale != null) {
+            parentConfig = tmpLocale._config;
         }
         config = mergeConfigs(parentConfig, config);
         locale = new Locale(config);
@@ -49151,7 +49247,7 @@ addParseToken('x', function (input, array, config) {
 // Side effect imports
 
 
-hooks.version = '2.19.1';
+hooks.version = '2.19.3';
 
 setHookCallback(createLocal);
 
@@ -49568,7 +49664,7 @@ return hooks;
 (function (global){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.12.6
+ * @version 1.12.9
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -49596,7 +49692,7 @@ return hooks;
 	(global.Popper = factory());
 }(this, (function () { 'use strict';
 
-var isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
 var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
 var timeoutDuration = 0;
 for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
@@ -49613,7 +49709,7 @@ function microtaskDebounce(fn) {
       return;
     }
     called = true;
-    Promise.resolve().then(function () {
+    window.Promise.resolve().then(function () {
       called = false;
       fn();
     });
@@ -49670,7 +49766,7 @@ function getStyleComputedProperty(element, property) {
     return [];
   }
   // NOTE: 1 DOM access here
-  var css = window.getComputedStyle(element, null);
+  var css = getComputedStyle(element, null);
   return property ? css[property] : css;
 }
 
@@ -49698,7 +49794,7 @@ function getParentNode(element) {
 function getScrollParent(element) {
   // Return body, `getScroll` will take care to get the correct `scrollTop` from it
   if (!element) {
-    return window.document.body;
+    return document.body;
   }
 
   switch (element.nodeName) {
@@ -49740,7 +49836,7 @@ function getOffsetParent(element) {
       return element.ownerDocument.documentElement;
     }
 
-    return window.document.documentElement;
+    return document.documentElement;
   }
 
   // .offsetParent will return the closest TD or TABLE in case
@@ -49787,7 +49883,7 @@ function getRoot(node) {
 function findCommonOffsetParent(element1, element2) {
   // This check is needed to avoid errors in case one of the elements isn't defined for any reason
   if (!element1 || !element1.nodeType || !element2 || !element2.nodeType) {
-    return window.document.documentElement;
+    return document.documentElement;
   }
 
   // Here we make sure to give as "start" the element that comes first in the DOM
@@ -49879,7 +49975,7 @@ function getBordersSize(styles, axis) {
   var sideA = axis === 'x' ? 'Left' : 'Top';
   var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
 
-  return +styles['border' + sideA + 'Width'].split('px')[0] + +styles['border' + sideB + 'Width'].split('px')[0];
+  return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
 }
 
 /**
@@ -49902,9 +49998,9 @@ function getSize(axis, body, html, computedStyle) {
 }
 
 function getWindowSizes() {
-  var body = window.document.body;
-  var html = window.document.documentElement;
-  var computedStyle = isIE10$1() && window.getComputedStyle(html);
+  var body = document.body;
+  var html = document.documentElement;
+  var computedStyle = isIE10$1() && getComputedStyle(html);
 
   return {
     height: getSize('Height', body, html, computedStyle),
@@ -50047,8 +50143,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   var scrollParent = getScrollParent(children);
 
   var styles = getStyleComputedProperty(parent);
-  var borderTopWidth = +styles.borderTopWidth.split('px')[0];
-  var borderLeftWidth = +styles.borderLeftWidth.split('px')[0];
+  var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
+  var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
 
   var offsets = getClientRect({
     top: childrenRect.top - parentRect.top - borderTopWidth,
@@ -50064,8 +50160,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   // differently when margins are applied to it. The margins are included in
   // the box of the documentElement, in the other cases not.
   if (!isIE10 && isHTML) {
-    var marginTop = +styles.marginTop.split('px')[0];
-    var marginLeft = +styles.marginLeft.split('px')[0];
+    var marginTop = parseFloat(styles.marginTop, 10);
+    var marginLeft = parseFloat(styles.marginLeft, 10);
 
     offsets.top -= borderTopWidth - marginTop;
     offsets.bottom -= borderTopWidth - marginTop;
@@ -50144,7 +50240,7 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
     // Handle other cases based on DOM element used as boundaries
     var boundariesNode = void 0;
     if (boundariesElement === 'scrollParent') {
-      boundariesNode = getScrollParent(getParentNode(popper));
+      boundariesNode = getScrollParent(getParentNode(reference));
       if (boundariesNode.nodeName === 'BODY') {
         boundariesNode = popper.ownerDocument.documentElement;
       }
@@ -50270,7 +50366,7 @@ function getReferenceOffsets(state, popper, reference) {
  * @returns {Object} object containing width and height properties
  */
 function getOuterSizes(element) {
-  var styles = window.getComputedStyle(element);
+  var styles = getComputedStyle(element);
   var x = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
   var y = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
   var result = {
@@ -50487,7 +50583,7 @@ function getSupportedPropertyName(property) {
   for (var i = 0; i < prefixes.length - 1; i++) {
     var prefix = prefixes[i];
     var toCheck = prefix ? '' + prefix + upperProp : property;
-    if (typeof window.document.body.style[toCheck] !== 'undefined') {
+    if (typeof document.body.style[toCheck] !== 'undefined') {
       return toCheck;
     }
   }
@@ -50606,7 +50702,7 @@ function removeEventListeners(reference, state) {
  */
 function disableEventListeners() {
   if (this.state.eventsEnabled) {
-    window.cancelAnimationFrame(this.scheduleUpdate);
+    cancelAnimationFrame(this.scheduleUpdate);
     this.state = removeEventListeners(this.reference, this.state);
   }
 }
@@ -50846,6 +50942,8 @@ function isModifierRequired(modifiers, requestingName, requestedName) {
  * @returns {Object} The data object, properly modified
  */
 function arrow(data, options) {
+  var _data$offsets$arrow;
+
   // arrow depends on keepTogether in order to work
   if (!isModifierRequired(data.instance.modifiers, 'arrow', 'keepTogether')) {
     return data;
@@ -50897,22 +50995,23 @@ function arrow(data, options) {
   if (reference[side] + arrowElementSize > popper[opSide]) {
     data.offsets.popper[side] += reference[side] + arrowElementSize - popper[opSide];
   }
+  data.offsets.popper = getClientRect(data.offsets.popper);
 
   // compute center of the popper
   var center = reference[side] + reference[len] / 2 - arrowElementSize / 2;
 
   // Compute the sideValue using the updated popper offsets
   // take popper margin in account because we don't have this info available
-  var popperMarginSide = getStyleComputedProperty(data.instance.popper, 'margin' + sideCapitalized).replace('px', '');
-  var sideValue = center - getClientRect(data.offsets.popper)[side] - popperMarginSide;
+  var css = getStyleComputedProperty(data.instance.popper);
+  var popperMarginSide = parseFloat(css['margin' + sideCapitalized], 10);
+  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width'], 10);
+  var sideValue = center - data.offsets.popper[side] - popperMarginSide - popperBorderSide;
 
   // prevent arrowElement from being placed not contiguously to its popper
   sideValue = Math.max(Math.min(popper[len] - arrowElementSize, sideValue), 0);
 
   data.arrowElement = arrowElement;
-  data.offsets.arrow = {};
-  data.offsets.arrow[side] = Math.round(sideValue);
-  data.offsets.arrow[altSide] = ''; // make sure to unset any eventual altSide value from the DOM node
+  data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
 
   return data;
 }

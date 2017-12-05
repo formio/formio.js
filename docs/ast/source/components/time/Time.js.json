@@ -276,6 +276,7 @@
                     "column": 3
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -294,7 +295,6 @@
                   },
                   "name": "elementInfo"
                 },
-                "static": false,
                 "kind": "method",
                 "id": null,
                 "generator": false,
@@ -614,6 +614,7 @@
                     "column": 3
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -632,7 +633,6 @@
                   },
                   "name": "getValueAt"
                 },
-                "static": false,
                 "kind": "method",
                 "id": null,
                 "generator": false,
@@ -1454,6 +1454,7 @@
                     "column": 3
                   }
                 },
+                "static": false,
                 "computed": false,
                 "key": {
                   "type": "Identifier",
@@ -1472,7 +1473,6 @@
                   },
                   "name": "setValueAt"
                 },
-                "static": false,
                 "kind": "method",
                 "id": null,
                 "generator": false,
@@ -1896,7 +1896,7 @@
         "label": "import",
         "keyword": "import",
         "beforeExpr": false,
-        "startsExpr": false,
+        "startsExpr": true,
         "rightAssociative": false,
         "isLoop": false,
         "isAssign": false,
@@ -2029,7 +2029,7 @@
         "label": "import",
         "keyword": "import",
         "beforeExpr": false,
-        "startsExpr": false,
+        "startsExpr": true,
         "rightAssociative": false,
         "isLoop": false,
         "isAssign": false,

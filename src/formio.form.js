@@ -8,6 +8,7 @@ import _debounce from 'lodash/debounce';
 import _remove from 'lodash/remove';
 import _isArray from 'lodash/isArray';
 import _assign from 'lodash/assign';
+import _defaults from 'lodash/defaults';
 import _capitalize from 'lodash/capitalize';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
@@ -18,7 +19,9 @@ i18next.initialized = false;
 Formio.forms = {};
 
 let getOptions = function(options) {
-  options = options || {};
+  options = _defaults(options, {
+    submitOnEnter: false
+  });
   if (!options.events) {
     options.events = new EventEmitter({
       wildcard: false,
@@ -419,11 +422,10 @@ export class FormioForm extends FormioComponents {
         var setForm = this.setForm(form);
         this.loadSubmission();
         return setForm;
-      },
-      (err) => this.formReadyReject(err)
-    ).catch(
-      (err) => this.formReadyReject(err)
-    );
+      }).catch((err) => {
+        console.warn(err);
+        this.formReadyReject(err);
+      });
   }
 
   /**
@@ -688,11 +690,10 @@ export class FormioForm extends FormioComponents {
       this.formReadyResolve();
       this.onFormBuild = null;
       this.setSubmission(this._submission);
-    },
-      (err) => this.formReadyReject(err)
-    ).catch(
-      (err) => this.formReadyReject(err)
-    );
+    }).catch((err) => {
+      console.warn(err);
+      this.formReadyReject(err);
+    });
   }
 
   /**
