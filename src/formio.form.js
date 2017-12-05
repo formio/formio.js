@@ -7,6 +7,7 @@ import _merge from 'lodash/merge';
 import _debounce from 'lodash/debounce';
 import _remove from 'lodash/remove';
 import _isArray from 'lodash/isArray';
+import _assign from 'lodash/assign';
 import _capitalize from 'lodash/capitalize';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
@@ -92,7 +93,7 @@ export class FormioForm extends FormioComponents {
     }
 
     if (options && options.language) {
-      i18n.lng = options.language;
+      this.setLanguage(options.language);
     }
 
     /**
@@ -218,11 +219,21 @@ export class FormioForm extends FormioComponents {
    * Sets the language for this form.
    *
    * @param lang
-   * @return {*}
+   * @return {Promise}
    */
   set language(lang) {
-    this.options.language = lang;
+    return this.setLanguage(lang)
+  }
+
+  /**
+   * Sets the language for this form.
+   *
+   * @param lang
+   * @return {Promise}
+   */
+  setLanguage(lang) {
     return new Promise((resolve, reject) => {
+      this.options.language = lang;
       i18next.changeLanguage(lang, (err) => {
         if (err) {
           return reject(err);
@@ -235,6 +246,11 @@ export class FormioForm extends FormioComponents {
 
   /**
    * Add a language for translations
+   *
+   * @param code
+   * @param lang
+   * @param active
+   * @return {*}
    */
   addLanguage(code, lang, active = false) {
     i18next.addResourceBundle(code, 'translation', lang, true, true);

@@ -67,13 +67,9 @@ export const Harness = {
     return component;
   },
   testSetInput: function(component, input, output, visible, index = 0) {
-    console.log('input', input);
-    console.log('output', output, component.getValue());
-    console.log('visible', visible, component.inputs[index].value);
     component.setValue(input);
     assert.deepEqual(component.getValue(), output);
     assert.deepEqual(component.inputs[index].value, visible);
-    console.log('done');
     return component;
   },
   testSubmission: function(form, submission, onChange) {
