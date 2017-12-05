@@ -93,7 +93,7 @@ export class FormioForm extends FormioComponents {
     }
 
     if (options && options.language) {
-      this.setLanguage(options.language);
+      this.language = options.language;
     }
 
     /**
@@ -222,16 +222,6 @@ export class FormioForm extends FormioComponents {
    * @return {Promise}
    */
   set language(lang) {
-    return this.setLanguage(lang)
-  }
-
-  /**
-   * Sets the language for this form.
-   *
-   * @param lang
-   * @return {Promise}
-   */
-  setLanguage(lang) {
     return new Promise((resolve, reject) => {
       this.options.language = lang;
       i18next.changeLanguage(lang, (err) => {
