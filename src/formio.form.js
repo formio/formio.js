@@ -93,7 +93,6 @@ export class FormioForm extends FormioComponents {
     }
 
     if (options && options.language) {
-      i18n.lng = options.language;
       this.language = options.language;
     }
 
