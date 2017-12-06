@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.24.7
+### Added
+ - The ability to render Select component as plain select dropdown using widget: 'html5' setting.
+
 ## 2.24.6
 ### Changed
  - Upgraded EventEmitter2 to version 5.0.0
