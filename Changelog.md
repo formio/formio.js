@@ -4,9 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## 2.24.7
+## 2.25.0
 ### Added
  - The ability to render Select component as plain select dropdown using widget: 'html5' setting.
+ - Performance improvements to language selection
+ 
+### Changed
+ - Moved all translation capabilities into FormioForm for performance reasons.
+ 
+### Fixed
+ - Issues with Lodash operators for JSONLogic.
 
 ## 2.24.6
 ### Changed
