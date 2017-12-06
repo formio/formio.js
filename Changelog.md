@@ -4,6 +4,51 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.24.6
+### Changed
+ - Upgraded EventEmitter2 to version 5.0.0
+ - Upgraded flatpickr to 4.1.4
+
+### Fixed
+ - Major performance problems with the Select component with large datasets.
+
+## 2.24.5
+### Fixed
+ - Problem where pressing enter in a textarea would submit the form.
+
+## 2.24.4
+### Fixed
+ - Problem where change event would not get fired when a row is removed from datagrid.
+
+### Added
+ - Options to control the navigation and breadcrumb in wizards.
+
+## 2.24.3
+### Added
+ - Ability to provide HTML in the description of a form element.
+
+### Fixed
+ - Double submit issue with wizards.
+
+## 2.24.2
+### Fixed
+ - Issue loading form after submission when revisions not enabled.
+
+## 2.24.1
+### Fixed
+ - Date min and max settings.
+
+## 2.24.0
+### Fixed
+ - File component inside Datagrid component.
+ - Components with label position inside Datagrid component.
+ 
+### Added
+ - Interpolation to the select headers when requests are made.
+ - Option to make the wizard header buttons not clickable.
+ - Translations to the select dropdown elements.
+ - Form version handling
+
 ## 2.23.2
 ### Fixed
  - Path parameter for cookie fallback functions.

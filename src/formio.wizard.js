@@ -6,7 +6,15 @@ import FormioUtils from './utils';
 import _ from 'lodash';
 import each from 'lodash/each';
 import clone from 'lodash/clone';
+import defaults from 'lodash/defaults';
 export class FormioWizard extends FormioForm {
+  /**
+   * Constructor for wizard based forms
+   * @param element Dom element to place this wizard.
+   * @param {Object} options Options object, supported options are:
+   *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
+   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not  
+   */ 
   constructor(element, options) {
     super(element, options);
     this.wizard = null;
@@ -208,12 +216,22 @@ export class FormioWizard extends FormioForm {
   }
 
   hasButton(name, nextPage) {
+    // Check for and initlize button settings object
+    this.options.buttonSettings = defaults(this.options.buttonSettings, {
+      showPrevious: true,
+      showNext: true,
+      showCancel: true
+    });
+
     if (name === 'previous') {
-      return (this.page > 0);
+      return (this.page > 0) && this.options.buttonSettings.showPrevious;
     }
     nextPage = (nextPage === undefined) ? this.getNextPage(this.submission.data, this.page) : nextPage;
     if (name === 'next') {
-      return (nextPage !== null) && (nextPage < this.pages.length);
+      return (nextPage !== null) && (nextPage < this.pages.length) && this.options.buttonSettings.showNext;
+    }
+    if (name === 'cancel') {
+      return this.options.buttonSettings.showCancel;
     }
     if (name === 'submit') {
       return (nextPage === null) || (this.page === (this.pages.length - 1));
@@ -236,6 +254,11 @@ export class FormioWizard extends FormioForm {
       return;
     }
 
+    // Check for and initlize breadcrumb settings object
+    this.options.breadcrumbSettings = defaults(this.options.breadcrumbSettings, {
+      clickable: true
+    });
+
     this.wizardHeader = this.ce('ul', {
       class: 'pagination'
     });
@@ -250,13 +273,17 @@ export class FormioWizard extends FormioForm {
         return;
       }
 
+      // Set clickable based on breadcrumb settings
+      let clickable = this.page !== i && this.options.breadcrumbSettings.clickable
+
       let pageButton = this.ce('li', {
-        class: (i === this.page) ? 'active' : '',
-        style: (i === this.page) ? '' : 'cursor: pointer;'
+        class: (i === this.page) ? 'active' : (clickable ? '' : 'disabled'),
+        style: (clickable) ? 'cursor: pointer;' : ''
       });
 
       // Navigate to the page as they click on it.
-      if (this.page !== i) {
+
+      if (clickable) {
         this.addEventListener(pageButton, 'click', (event) => {
           event.preventDefault();
           this.setPage(i);
@@ -358,13 +385,25 @@ export class FormioWizard extends FormioForm {
       }
       let buttonWrapper = this.ce('li');
       let buttonProp = button.name + 'Button';
-      this[buttonProp] = this.ce('button', {
+      let buttonElement = this[buttonProp] = this.ce('button', {
         class: button.class + ' btn-wizard-nav-' + button.name
       });
-      this[buttonProp].appendChild(this.text(this.t(button.name)));
+      buttonElement.appendChild(this.text(this.t(button.name)));
       this.addEventListener(this[buttonProp], 'click', (event) => {
         event.preventDefault();
-        this[button.method]();
+
+        // Disable the button until done.
+        buttonElement.setAttribute('disabled', 'disabled');
+        this.setLoading(buttonElement, true);
+
+        // Call the button method, then re-enable the button.
+        this[button.method]().then(() => {
+          buttonElement.removeAttribute('disabled');
+          this.setLoading(buttonElement, false);
+        }).catch(() => {
+          buttonElement.removeAttribute('disabled');
+          this.setLoading(buttonElement, false);
+        });
       });
       buttonWrapper.appendChild(this[buttonProp]);
       this.wizardNav.appendChild(buttonWrapper);

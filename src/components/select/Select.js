@@ -9,6 +9,17 @@ import _isEmpty from 'lodash/isEmpty';
 import _isArray from 'lodash/isArray';
 import _isEqual from 'lodash/isEqual';
 import _cloneDeep from 'lodash/cloneDeep';
+
+// Fix performance issues in Choices by adding a debounce around render method.
+Choices.prototype._render = Choices.prototype.render;
+Choices.prototype.render = function() {
+  if (this.renderDebounce) {
+    clearTimeout(this.renderDebounce);
+  }
+
+  this.renderDebounce = setTimeout(() => this._render(), 100);
+};
+
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -89,9 +100,14 @@ export class SelectComponent extends BaseComponent {
 
     // Iterate through each of the items.
     _each(items, (item) => {
+      // Get the default label from the template
+      var label = this.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, "")
+
+      // Translate the default template
+      var t_template = this.itemTemplate(item).replace(label, this.t(label));
 
       // Add the choice to the select list.
-      this.choices._addChoice(this.itemValue(item), this.itemTemplate(item));
+      this.choices._addChoice(this.itemValue(item), t_template);
     });
 
     // If a value is provided, then select it.
@@ -115,7 +131,7 @@ export class SelectComponent extends BaseComponent {
     if (method.toUpperCase() === 'GET') {
       body = null;
     }
-    
+
     let query = (this.component.dataSrc === 'url') ? {} : {
       limit: 100,
       skip: 0
@@ -170,7 +186,9 @@ export class SelectComponent extends BaseComponent {
       try {
         _each(this.component.data.headers, (header) => {
           if (header.key) {
-            headers.set(header.key, header.value);
+            headers.set(header.key, this.interpolate(header.value, {
+              data: this.data
+            }));
           }
         });
       }
@@ -260,9 +278,11 @@ export class SelectComponent extends BaseComponent {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
       },
+      searchPlaceholderValue: this.component.placeholder,
       shouldSort: false,
       position: (this.component.dropdown || 'auto')
     });
+
     this.choices.itemList.tabIndex = tabIndex;
     this.setInputStyles(this.choices.containerOuter);
 

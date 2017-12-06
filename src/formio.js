@@ -33,6 +33,9 @@ export class Formio {
     this.actionsUrl = '';
     this.actionId = '';
     this.actionUrl = '';
+    this.vsUrl = '';
+    this.vId = '';
+    this.vUrl = '';
     this.query = '';
 
     if (options.hasOwnProperty('base')) {
@@ -144,10 +147,10 @@ export class Formio {
 
     // Configure Form urls and form ids.
     if ((path.search(/(^|\/)(project|form)($|\/)/) !== -1)) {
-      registerItems(['form', ['submission', 'action']], this.projectUrl);
+      registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);
     }
     else {
-      var subRegEx = new RegExp('\/(submission|action)($|\/.*)');
+      var subRegEx = new RegExp('\/(submission|action|v)($|\/.*)');
       var subs = path.match(subRegEx);
       this.pathType = (subs && (subs.length > 1)) ? subs[1] : '';
       path = path.replace(subRegEx, '');
@@ -155,7 +158,7 @@ export class Formio {
       this.formsUrl = this.projectUrl + '/form';
       this.formUrl = this.projectUrl + path;
       this.formId = path.replace(/^\/+|\/+$/g, '');
-      var items = ['submission', 'action'];
+      var items = ['submission', 'action', 'v'];
       for (var i in items) {
         if (items.hasOwnProperty(i)) {
           var item = items[i];
@@ -244,7 +247,33 @@ export class Formio {
   }
 
   loadForm(query, opts) {
-    return this.load('form', query, opts);
+    return this.load('form', query, opts)
+      .then(currentForm => {
+        // Check to see if there isn't a number in vId.
+        if (!currentForm.revisions || isNaN(parseInt(this.vId))) {
+          return currentForm;
+        }
+        // If a submission already exists but form is marked to load current version of form.
+        if (currentForm.revisions === 'current' && this.submissionId) {
+          return currentForm;
+        }
+        // If they specified a revision form, load the revised form components.
+        if (query && typeof query === 'object') {
+          query = Formio.serialize(query.params);
+        }
+        if (query) {
+          query = this.query ? (this.query + '&' + query) : ('?' + query);
+        }
+        else {
+          query = this.query;
+        }
+        return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
+          .then(revisionForm => {
+            currentForm.components = revisionForm.components;
+            // Using object.assign so we don't cross polinate multiple form loads.
+            return Object.assign({}, currentForm);
+          });
+      });
   }
 
   saveForm(data, opts) {
@@ -260,10 +289,18 @@ export class Formio {
   }
 
   loadSubmission(query, opts) {
-    return this.load('submission', query, opts);
+    return this.load('submission', query, opts)
+      .then(submission => {
+        this.vId = submission._fvid;
+        this.vUrl = this.formUrl + '/v/' + this.vId;
+        return submission;
+      });
   }
 
   saveSubmission(data, opts) {
+    if (!isNaN(parseInt(this.vId))) {
+      data._fvid = this.vId;
+    }
     return this.save('submission', data, opts);
   }
 
