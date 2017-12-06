@@ -139,6 +139,9 @@ export class SelectComponent extends BaseComponent {
         this.addCurrentChoices(choice, items);
       });
     }
+    else if (!this.component.multiple) {
+      this.addPlaceholder(this.selectInput);
+    }
 
     // Iterate through each of the items.
     _each(items, (item, index) => {
@@ -308,6 +311,16 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
+  addPlaceholder(input) {
+    if (!this.component.placeholder) {
+      return;
+    }
+    let placeholder = document.createElement('option');
+    placeholder.setAttribute('placeholder', true);
+    placeholder.appendChild(this.text(this.component.placeholder));
+    input.appendChild(placeholder);
+  }
+
   addInput(input, container) {
     super.addInput(input, container);
     if (this.component.multiple) {
@@ -315,6 +328,7 @@ export class SelectComponent extends BaseComponent {
     }
 
     if (this.component.widget === 'html5') {
+      this.triggerUpdate();
       return;
     }
 
@@ -333,14 +347,7 @@ export class SelectComponent extends BaseComponent {
       position: (this.component.dropdown || 'auto')
     };
 
-    // Add the placeholder element for single select options.
-    if (this.component.placeholder && !this.component.multiple) {
-      let placeholder = document.createElement('option');
-      placeholder.setAttribute('placeholder', true);
-      placeholder.appendChild(this.text(this.component.placeholder));
-      input.appendChild(placeholder);
-    }
-
+    this.addPlaceholder(input);
     this.choices = new Choices(input, choicesOptions);
     this.choices.itemList.tabIndex = input.tabIndex;
     this.setInputStyles(this.choices.containerOuter);

@@ -8203,6 +8203,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         (0, _each3.default)(currentChoices, function (choice) {
           _this3.addCurrentChoices(choice, items);
         });
+      } else if (!this.component.multiple) {
+        this.addPlaceholder(this.selectInput);
       }
 
       // Iterate through each of the items.
@@ -8351,6 +8353,17 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
     }
   }, {
+    key: 'addPlaceholder',
+    value: function addPlaceholder(input) {
+      if (!this.component.placeholder) {
+        return;
+      }
+      var placeholder = document.createElement('option');
+      placeholder.setAttribute('placeholder', true);
+      placeholder.appendChild(this.text(this.component.placeholder));
+      input.appendChild(placeholder);
+    }
+  }, {
     key: 'addInput',
     value: function addInput(input, container) {
       var _this5 = this;
@@ -8361,6 +8374,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
 
       if (this.component.widget === 'html5') {
+        this.triggerUpdate();
         return;
       }
 
@@ -8379,14 +8393,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         position: this.component.dropdown || 'auto'
       };
 
-      // Add the placeholder element for single select options.
-      if (this.component.placeholder && !this.component.multiple) {
-        var placeholder = document.createElement('option');
-        placeholder.setAttribute('placeholder', true);
-        placeholder.appendChild(this.text(this.component.placeholder));
-        input.appendChild(placeholder);
-      }
-
+      this.addPlaceholder(input);
       this.choices = new _choices2.default(input, choicesOptions);
       this.choices.itemList.tabIndex = input.tabIndex;
       this.setInputStyles(this.choices.containerOuter);
