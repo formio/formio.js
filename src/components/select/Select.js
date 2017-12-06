@@ -420,10 +420,11 @@ export class SelectComponent extends BaseComponent {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     let hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
+    let hasValue = _isArray(value) ? value.length : value;
     this.value = value;
     if (this.choices) {
       // Now set the value.
-      if (_isArray(value) ? value.length : value) {
+      if (hasValue) {
         this.choices.setValueByChoice(_isArray(value) ? value : [value])
       }
       else if (hasPreviousValue) {
@@ -431,7 +432,7 @@ export class SelectComponent extends BaseComponent {
       }
     }
     else {
-      if (value) {
+      if (hasValue) {
         let values = _isArray(value) ? value : [value];
         _each(this.selectOptions, (selectOption) => {
           if (values.indexOf(selectOption.value) !== -1) {

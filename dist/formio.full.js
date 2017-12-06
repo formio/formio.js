@@ -8080,6 +8080,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
     _this2.triggerUpdate = (0, _debounce3.default)(_this2.updateItems.bind(_this2), 100);
 
+    // Keep track of the select options.
+    _this2.selectOptions = [];
+
     // If they wish to refresh on a value, then add that here.
     if (_this2.component.refreshOn) {
       _this2.on('change', function (event) {
@@ -8107,9 +8110,6 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       var info = _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'select';
       info.changeEvent = 'change';
-      if (info.attr.placeholder) {
-        delete info.attr.placeholder;
-      }
       return info;
     }
   }, {
@@ -8120,7 +8120,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'itemTemplate',
     value: function itemTemplate(data) {
-      return this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
+      var template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
+      var label = template.replace(/<\/?[^>]+(>|$)/g, "");
+      return template.replace(label, this.t(label));
     }
   }, {
     key: 'itemValue',
@@ -8128,13 +8130,49 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       return this.component.valueProperty ? (0, _get4.default)(data, this.component.valueProperty) : data;
     }
   }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      this.selectContainer = container;
+      this.selectInput = _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'createInput', this).call(this, container);
+    }
+
+    /**
+     * Adds an option to the select dropdown.
+     *
+     * @param value
+     * @param label
+     */
+
+  }, {
+    key: 'addOption',
+    value: function addOption(value, label, attr) {
+      var option = {
+        value: value,
+        label: label
+      };
+
+      this.selectOptions.push(option);
+      if (this.choices) {
+        return;
+      }
+
+      option.element = document.createElement('option');
+      if (this.value === option.value) {
+        option.element.setAttribute('selected', 'selected');
+        option.element.selected = 'selected';
+      }
+      option.element.innerHTML = label;
+      if (attr) {
+        (0, _each3.default)(attr, function (value, key) {
+          option.element.setAttribute(key, value);
+        });
+      }
+      this.selectInput.appendChild(option.element);
+    }
+  }, {
     key: 'setItems',
     value: function setItems(items) {
       var _this3 = this;
-
-      if (!this.choices) {
-        return;
-      }
 
       // If the items is a string, then parse as JSON.
       if (typeof items == 'string') {
@@ -8146,30 +8184,38 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         }
       }
 
-      this.choices._clearChoices();
+      if (!this.choices && this.selectInput) {
+        // Detach from DOM and clear input.
+        this.selectContainer.removeChild(this.selectInput);
+        this.selectInput.innerHTML = '';
+      }
+
+      this.selectOptions = [];
 
       // If they provided select values, then we need to get them instead.
       if (this.component.selectValues) {
         items = (0, _get4.default)(items, this.component.selectValues);
       }
 
-      // Add the currently selected choices if they don't already exist.
-      var currentChoices = (0, _isArray3.default)(this.value) ? this.value : [this.value];
-      (0, _each3.default)(currentChoices, function (choice) {
-        _this3.addCurrentChoices(choice, items);
-      });
+      if (this.choices) {
+        // Add the currently selected choices if they don't already exist.
+        var currentChoices = (0, _isArray3.default)(this.value) ? this.value : [this.value];
+        (0, _each3.default)(currentChoices, function (choice) {
+          _this3.addCurrentChoices(choice, items);
+        });
+      }
 
       // Iterate through each of the items.
-      (0, _each3.default)(items, function (item) {
-        // Get the default label from the template
-        var label = _this3.itemTemplate(item).replace(/<\/?[^>]+(>|$)/g, "");
-
-        // Translate the default template
-        var t_template = _this3.itemTemplate(item).replace(label, _this3.t(label));
-
-        // Add the choice to the select list.
-        _this3.choices._addChoice(_this3.itemValue(item), t_template);
+      (0, _each3.default)(items, function (item, index) {
+        _this3.addOption(_this3.itemValue(item), _this3.itemTemplate(item));
       });
+
+      if (this.choices) {
+        this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+      } else {
+        // Re-attach select input.
+        this.selectContainer.appendChild(this.selectInput);
+      }
 
       // If a value is provided, then select it.
       if (this.value) {
@@ -8313,20 +8359,36 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (this.component.multiple) {
         input.setAttribute('multiple', true);
       }
-      var tabIndex = input.tabIndex;
-      this.choices = new _choices2.default(input, {
+
+      if (this.component.widget === 'html5') {
+        return;
+      }
+
+      var placeholderValue = this.t(this.component.placeholder);
+      var choicesOptions = {
         removeItemButton: true,
         itemSelectText: '',
         classNames: {
           containerOuter: 'choices form-group formio-choices',
           containerInner: 'form-control'
         },
-        searchPlaceholderValue: this.component.placeholder,
+        placeholder: !!this.component.placeholder,
+        placeholderValue: placeholderValue,
+        searchPlaceholderValue: placeholderValue,
         shouldSort: false,
         position: this.component.dropdown || 'auto'
-      });
+      };
 
-      this.choices.itemList.tabIndex = tabIndex;
+      // Add the placeholder element for single select options.
+      if (this.component.placeholder && !this.component.multiple) {
+        var placeholder = document.createElement('option');
+        placeholder.setAttribute('placeholder', true);
+        placeholder.appendChild(this.text(this.component.placeholder));
+        input.appendChild(placeholder);
+      }
+
+      this.choices = new _choices2.default(input, choicesOptions);
+      this.choices.itemList.tabIndex = input.tabIndex;
       this.setInputStyles(this.choices.containerOuter);
 
       // If a search field is provided, then add an event listener to update items on search.
@@ -8342,28 +8404,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         }
       });
 
-      // Create a pseudo-placeholder.
-      if (this.component.placeholder && !this.choices.placeholderElement) {
-        this.placeholder = this.ce('span', {
-          class: 'formio-placeholder'
-        }, [this.text(this.component.placeholder)]);
-
-        // Prepend the placeholder.
-        this.choices.containerInner.insertBefore(this.placeholder, this.choices.containerInner.firstChild);
-        input.addEventListener('addItem', function () {
-          _this5.placeholder.style.visibility = 'hidden';
-        }, false);
-        input.addEventListener('removeItem', function () {
-          var value = _this5.getValue();
-          if (!value || !value.length) {
-            _this5.placeholder.style.visibility = 'visible';
-          }
-        }, false);
-      }
-
-      if (this.disabled) {
-        this.choices.disable();
-      }
+      // Force the disabled state with getters and setters.
+      this.disabled = this.disabled;
       this.triggerUpdate();
     }
   }, {
@@ -8386,7 +8428,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
         // If it is not found, then add it.
         if (!found) {
-          this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
+          this.addOption(this.itemValue(value), this.itemTemplate(value));
         }
       }
     }
@@ -8397,23 +8439,47 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (!flags.changed && this.value) {
         return this.value;
       }
-      if (!this.choices) {
-        return;
+      if (this.choices) {
+        this.value = this.choices.getValue(true);
+      } else {
+        var values = [];
+        (0, _each3.default)(this.selectOptions, function (selectOption) {
+          if (selectOption.element.selected) {
+            values.push(selectOption.value);
+          }
+        });
+        this.value = this.component.multiple ? values : values.shift();
       }
-      this.value = this.choices.getValue(true);
       return this.value;
     }
   }, {
     key: 'setValue',
     value: function setValue(value, flags) {
       flags = this.getFlags.apply(this, arguments);
+      var hasPreviousValue = (0, _isArray3.default)(this.value) ? this.value.length : this.value;
+      var hasValue = (0, _isArray3.default)(value) ? value.length : value;
       this.value = value;
       if (this.choices) {
         // Now set the value.
-        if (value) {
+        if (hasValue) {
           this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
-        } else {
+        } else if (hasPreviousValue) {
           this.choices.removeActiveItems();
+        }
+      } else {
+        if (hasValue) {
+          var values = (0, _isArray3.default)(value) ? value : [value];
+          (0, _each3.default)(this.selectOptions, function (selectOption) {
+            if (values.indexOf(selectOption.value) !== -1) {
+              selectOption.element.selected = true;
+              selectOption.element.setAttribute('selected', 'selected');
+            }
+          });
+        } else {
+          (0, _each3.default)(this.selectOptions, function (selectOption) {
+            selectOption.element.selected = false;
+            selectOption.element.removeAttribute('selected');
+          });
         }
       }
       this.updateValue(flags);
