@@ -9905,11 +9905,6 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       _this.options.i18n = i18n;
     }
 
-    if (options && options.language) {
-      i18n.lng = options.language;
-      _this.language = options.language;
-    }
-
     /**
      * The type of this element.
      * @type {string}
@@ -10026,6 +10021,12 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     });
 
     _this.shortcuts = [];
+
+    // Set language after everything is established.
+    if (options && options.language) {
+      i18n.lng = options.language;
+      _this.language = options.language;
+    }
     return _this;
   }
 

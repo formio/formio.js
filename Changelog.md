@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.25.1
+### Fixed
+ - Problem with the FormComponent crashing during a set language within the constructor.
+
 ## 2.25.0
 ### Added
  - The ability to render Select component as plain select dropdown using widget: 'html5' setting.

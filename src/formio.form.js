@@ -95,11 +95,6 @@ export class FormioForm extends FormioComponents {
       this.options.i18n = i18n;
     }
 
-    if (options && options.language) {
-      i18n.lng = options.language;
-      this.language = options.language;
-    }
-
     /**
      * The type of this element.
      * @type {string}
@@ -216,6 +211,12 @@ export class FormioForm extends FormioComponents {
     });
 
     this.shortcuts = [];
+
+    // Set language after everything is established.
+    if (options && options.language) {
+      i18n.lng = options.language;
+      this.language = options.language;
+    }
   }
 
 
