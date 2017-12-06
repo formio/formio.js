@@ -7,9 +7,13 @@ import _merge from 'lodash/merge';
 import _debounce from 'lodash/debounce';
 import _remove from 'lodash/remove';
 import _isArray from 'lodash/isArray';
+import _assign from 'lodash/assign';
 import _defaults from 'lodash/defaults';
 import _capitalize from 'lodash/capitalize';
 import EventEmitter from 'eventemitter2';
+import i18next from 'i18next';
+
+i18next.initialized = false;
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -59,6 +63,42 @@ export class FormioForm extends FormioComponents {
 
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
+
+    /**
+     * The i18n configuration for this component.
+     */
+    let i18n = require('./i18n');
+    if (options && options.i18n && !options.i18nReady) {
+      // Support legacy way of doing translations.
+      if (options.i18n.resources) {
+        i18n = options.i18n;
+      }
+      else {
+        _each(options.i18n, (lang, code) => {
+          if (!i18n.resources[code]) {
+            i18n.resources[code] = {translation: lang};
+          }
+          else {
+            _assign(i18n.resources[code].translation, lang);
+          }
+        });
+      }
+
+      options.i18n = i18n;
+      options.i18nReady = true;
+    }
+
+    if (options && options.i18n) {
+      this.options.i18n = options.i18n;
+    }
+    else {
+      this.options.i18n = i18n;
+    }
+
+    if (options && options.language) {
+      i18n.lng = options.language;
+      this.language = options.language;
+    }
 
     /**
      * The type of this element.
@@ -176,6 +216,61 @@ export class FormioForm extends FormioComponents {
     });
 
     this.shortcuts = [];
+  }
+
+
+  /**
+   * Sets the language for this form.
+   *
+   * @param lang
+   * @return {Promise}
+   */
+  set language(lang) {
+    return new Promise((resolve, reject) => {
+      this.options.language = lang;
+      i18next.changeLanguage(lang, (err) => {
+        if (err) {
+          return reject(err);
+        }
+        this.redraw();
+        resolve();
+      });
+    });
+  }
+
+  /**
+   * Add a language for translations
+   *
+   * @param code
+   * @param lang
+   * @param active
+   * @return {*}
+   */
+  addLanguage(code, lang, active = false) {
+    i18next.addResourceBundle(code, 'translation', lang, true, true);
+    if (active) {
+      this.language = code;
+    }
+  }
+
+  /**
+   * Perform the localization initialization.
+   * @returns {*}
+   */
+  localize() {
+    if (i18next.initialized) {
+      return Promise.resolve(i18next);
+    }
+    i18next.initialized = true;
+    return new Promise((resolve, reject) => {
+      i18next.init(this.options.i18n, (err) => {
+        this.options.language = i18next.language;
+        if (err) {
+          return reject(err);
+        }
+        resolve(i18next);
+      });
+    });
   }
 
   /**

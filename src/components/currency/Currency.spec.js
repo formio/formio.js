@@ -10,7 +10,7 @@ describe('Currency Component', function() {
     });
   });
   it('Should format currency for USA locale', function(done) {
-    Harness.testCreate(CurrencyComponent, comps.comp1, {i18n: {lng: 'en-US', resources: {}}}).then((component) => {
+    Harness.testCreate(CurrencyComponent, comps.comp1, {language: 'en-US'}).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, undefined, null, '');
       Harness.testSetInput(component, {}, null, '');
@@ -61,7 +61,7 @@ describe('Currency Component', function() {
     });
   });
   it('Should format currency for British locale', function(done) {
-    Harness.testCreate(CurrencyComponent, comps.comp1, {i18n: {lng: 'en-GB', resources: {}}}).then((component) => {
+    Harness.testCreate(CurrencyComponent, comps.comp1, {language: 'en-GB'}).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1.00, 1, 'US$1.00');
@@ -80,7 +80,7 @@ describe('Currency Component', function() {
     });
   });
   it('Should format currency for French locale', function(done) {
-    Harness.testCreate(CurrencyComponent, comps.comp1, {i18n: {lng: 'fr', resources: {}}}).then((component) => {
+    Harness.testCreate(CurrencyComponent, comps.comp1, {language: 'fr'}).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
@@ -100,7 +100,7 @@ describe('Currency Component', function() {
     });
   });
   it('Should format currency for German locale', function(done) {
-    Harness.testCreate(CurrencyComponent, comps.comp1, {i18n: {lng: 'de', resources: {}}}).then((component) => {
+    Harness.testCreate(CurrencyComponent, comps.comp1, {language: 'de'}).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1.00, 1.00, '1,00 $');

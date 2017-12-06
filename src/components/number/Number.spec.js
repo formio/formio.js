@@ -25,7 +25,7 @@ describe('Number Component', function() {
     });
   });
   it('Should format numbers for USA locale', function(done) {
-    Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: 'en-US', resources: {}}}).then((component) => {
+    Harness.testCreate(NumberComponent, comps.comp2, {language: 'en-US'}).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, undefined, null, '');
       Harness.testSetInput(component, '', null, '');
@@ -72,7 +72,7 @@ describe('Number Component', function() {
     });
   });
   it('Should format numbers for British locale', function(done) {
-    Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: 'en-GB', resources: {}}}).then((component) => {
+    Harness.testCreate(NumberComponent, comps.comp2, {language: 'en-GB'}).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
@@ -93,7 +93,7 @@ describe('Number Component', function() {
     });
   });
   it('Should format numbers for French locale', function(done) {
-    Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: 'fr', resources: {}}}).then((component) => {
+    Harness.testCreate(NumberComponent, comps.comp2, {language: 'fr'}).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
@@ -115,7 +115,7 @@ describe('Number Component', function() {
     });
   });
   it('Should format numbers for German locale', function(done) {
-    Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: 'de', resources: {}}}).then((component) => {
+    Harness.testCreate(NumberComponent, comps.comp2, {language: 'de'}).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');

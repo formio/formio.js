@@ -44,7 +44,7 @@ Formio.createForm = (element, form, options) => {
       instance.url = form;
       instance.nosubmit = false;
       instance.loadSubmission();
-      return instance;
+      return instance.ready.then(() => instance);
     });
   }
   else {
