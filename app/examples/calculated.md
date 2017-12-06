@@ -55,8 +55,8 @@ Formio.createForm(document.getElementById('formio'), {
       disabled: true,
       calculateValue: {
         "*": [
-          {"_.sum": {var: 'data.a'}},
-          {"_.sum": {var: 'data.b'}}
+          {"_sum": {var: 'data.a'}},
+          {"_sum": {var: 'data.b'}}
         ]
       }
     }
@@ -114,8 +114,8 @@ Formio.createForm(document.getElementById('formio'), {
         disabled: true,
         calculateValue: {
           "*": [
-            {"_.sum": {var: 'data.a'}},
-            {"_.sum": {var: 'data.b'}}
+            {"_sum": {var: 'data.a'}},
+            {"_sum": {var: 'data.b'}}
           ]
         }
       }
