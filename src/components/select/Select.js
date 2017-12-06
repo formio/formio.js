@@ -347,9 +347,10 @@ export class SelectComponent extends BaseComponent {
       position: (this.component.dropdown || 'auto')
     };
 
+    let tabIndex = input.tabIndex;
     this.addPlaceholder(input);
     this.choices = new Choices(input, choicesOptions);
-    this.choices.itemList.tabIndex = input.tabIndex;
+    this.choices.itemList.tabIndex = tabIndex;
     this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
