@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.25.2
+### Fixed
+ - A problem with Select dropdowns where the placeholder was getting included as the select value.
+
 ## 2.25.1
 ### Fixed
  - Problem with the FormComponent crashing during a set language within the constructor.

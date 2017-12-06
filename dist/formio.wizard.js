@@ -8383,6 +8383,11 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
       if (this.choices) {
         this.value = this.choices.getValue(true);
+
+        // Make sure we don't get the placeholder
+        if (!this.component.multiple && this.component.placeholder && this.value === this.t(this.component.placeholder)) {
+          this.value = '';
+        }
       } else {
         var values = [];
         (0, _each3.default)(this.selectOptions, function (selectOption) {

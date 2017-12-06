@@ -412,6 +412,15 @@ export class SelectComponent extends BaseComponent {
     }
     if (this.choices) {
       this.value = this.choices.getValue(true);
+
+      // Make sure we don't get the placeholder
+      if (
+        !this.component.multiple &&
+        this.component.placeholder &&
+        (this.value === this.t(this.component.placeholder))
+      ) {
+        this.value = '';
+      }
     }
     else {
       let values = [];
