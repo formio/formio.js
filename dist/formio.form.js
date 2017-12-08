@@ -10382,8 +10382,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
 
       // Merge submission values.
-      if (this._form) {
-        _utils2.default.eachComponent(this.schema.components, function (component, path) {
+      var schema = this.schema;
+      if (schema) {
+        _utils2.default.eachComponent(schema.components, function (component, path) {
           if ((0, _has3.default)(submission.data, path)) {
             (0, _set3.default)(_this8._submission.data, path, (0, _get4.default)(submission.data, path));
           }

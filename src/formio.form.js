@@ -679,8 +679,9 @@ export class FormioForm extends FormioComponents {
     }
 
     // Merge submission values.
-    if (this._form) {
-      FormioUtils.eachComponent(this.schema.components, (component, path) => {
+    let schema = this.schema;
+    if (schema) {
+      FormioUtils.eachComponent(schema.components, (component, path) => {
         if (_has(submission.data, path)) {
           _set(this._submission.data, path, _get(submission.data, path));
         }
