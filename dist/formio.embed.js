@@ -10644,7 +10644,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     key: 'onChange',
     value: function onChange(flags, changed) {
       _get2(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'onChange', this).call(this, flags, true);
-      this.mergeSubmission(this.submission);
+      this.mergeSubmission(this.submission, true);
       var value = (0, _clone3.default)(this._submission);
       value.changed = changed;
       value.isValid = this.checkData(value.data, flags);

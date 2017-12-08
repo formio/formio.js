@@ -862,7 +862,7 @@ export class FormioForm extends FormioComponents {
    */
   onChange(flags, changed) {
     super.onChange(flags, true);
-    this.mergeSubmission(this.submission);
+    this.mergeSubmission(this.submission, true);
     let value = _clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
