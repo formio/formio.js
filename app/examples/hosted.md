@@ -22,7 +22,7 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-Formio.createForm(document.getElementById('formio'), 'http://urjhtsfbuucfyhj.localhost:3000/wizard').then((form) => {
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example').then((form) => {
   form.on('change', function(value) {
       console.log(value);
   });

@@ -659,7 +659,7 @@ export class FormioForm extends FormioComponents {
 
   /**
    * Merge submission values.
-   * 
+   *
    * @param submission
    * @param all
    */

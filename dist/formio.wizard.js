@@ -10364,7 +10364,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 
     /**
      * Merge submission values.
-     * 
+     *
      * @param submission
      * @param all
      */
