@@ -1,9 +1,10 @@
 import Formio from './formio';
 import Promise from "native-promise-only";
 import { FormioComponents } from './components/Components';
+import _get from 'lodash/get';
+import _set from 'lodash/set';
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
-import _merge from 'lodash/merge';
 import _debounce from 'lodash/debounce';
 import _remove from 'lodash/remove';
 import _isArray from 'lodash/isArray';
@@ -12,6 +13,7 @@ import _defaults from 'lodash/defaults';
 import _capitalize from 'lodash/capitalize';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
+import FormioUtils from './utils';
 
 i18next.initialized = false;
 
@@ -655,9 +657,31 @@ export class FormioForm extends FormioComponents {
     );
   }
 
+  /**
+   * Merge submission values.
+   * 
+   * @param submission
+   * @param all
+   */
+  mergeSubmission(submission, all) {
+    if (all) {
+      // Merge properties except data.
+      _each(submission, (value, key) => {
+        if (key !== 'data') {
+          this._submission[key] = value;
+        }
+      });
+    }
+
+    // Merge submission values.
+    FormioUtils.eachComponent(this.component.components, (component, path) => {
+      _set(this._submission.data, path, _get(submission.data, path));
+    });
+  }
+
   setValue(submission, flags) {
     submission = submission || {data: {}};
-    _merge(this._submission, submission);
+    this.mergeSubmission(submission, true);
     return super.setValue(this._submission.data, flags);
   }
 
@@ -667,7 +691,7 @@ export class FormioForm extends FormioComponents {
     }
     let submission = _clone(this._submission);
     submission.data = this.data;
-    _merge(this._submission.data, submission.data);
+    this.mergeSubmission(submission);
     return submission;
   }
 
@@ -838,7 +862,7 @@ export class FormioForm extends FormioComponents {
    */
   onChange(flags, changed) {
     super.onChange(flags, true);
-    _merge(this._submission, this.submission);
+    this.mergeSubmission(this.submission);
     let value = _clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
