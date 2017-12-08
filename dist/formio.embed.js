@@ -4750,11 +4750,6 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       this.element.appendChild(this.tableElement);
     }
   }, {
-    key: 'removeValue',
-    value: function removeValue(index) {
-      _get(DataGridComponent.prototype.__proto__ || Object.getPrototypeOf(DataGridComponent.prototype), 'removeValue', this).call(this, index);
-    }
-  }, {
     key: 'buildRows',
     value: function buildRows(data) {
       var _this3 = this;

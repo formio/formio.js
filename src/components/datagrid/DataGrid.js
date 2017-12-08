@@ -80,10 +80,6 @@ export class DataGridComponent extends FormioComponents {
     return {};
   }
 
-  removeValue(index) {
-    super.removeValue(index);
-  }
-
   buildRows(data) {
     this.tbody.innerHTML = '';
     this.rows = [];
