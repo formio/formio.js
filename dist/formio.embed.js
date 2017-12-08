@@ -9760,6 +9760,10 @@ var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
 
 var _Components = require('./components/Components');
 
+var _has2 = require('lodash/has');
+
+var _has3 = _interopRequireDefault(_has2);
+
 var _get3 = require('lodash/get');
 
 var _get4 = _interopRequireDefault(_get3);
@@ -10398,6 +10402,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         return _this7.submissionReadyReject(err);
       });
     }
+  }, {
+    key: 'mergeSubmission',
 
     /**
      * Merge submission values.
@@ -10405,9 +10411,6 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * @param submission
      * @param all
      */
-
-  }, {
-    key: 'mergeSubmission',
     value: function mergeSubmission(submission, all) {
       var _this8 = this;
 
@@ -10421,9 +10424,13 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
 
       // Merge submission values.
-      _utils2.default.eachComponent(this.component.components, function (component, path) {
-        (0, _set3.default)(_this8._submission.data, path, (0, _get4.default)(submission.data, path));
-      });
+      if (this._form) {
+        _utils2.default.eachComponent(this.schema.components, function (component, path) {
+          if ((0, _has3.default)(submission.data, path)) {
+            (0, _set3.default)(_this8._submission.data, path, (0, _get4.default)(submission.data, path));
+          }
+        });
+      }
     }
   }, {
     key: 'setValue',
@@ -10895,6 +10902,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     , set: function set(submission) {
       this.setSubmission(submission);
     }
+  }, {
+    key: 'schema',
+    get: function get() {
+      return this._form;
+    }
   }]);
 
   return FormioForm;
@@ -10925,7 +10937,7 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":42,"./i18n":46,"./utils":54,"eventemitter2":59,"i18next":75,"lodash/assign":248,"lodash/capitalize":251,"lodash/clone":253,"lodash/debounce":256,"lodash/defaults":257,"lodash/each":260,"lodash/get":265,"lodash/isArray":270,"lodash/remove":301,"lodash/set":303,"native-promise-only":315}],41:[function(require,module,exports){
+},{"./components/Components":1,"./formio":42,"./i18n":46,"./utils":54,"eventemitter2":59,"i18next":75,"lodash/assign":248,"lodash/capitalize":251,"lodash/clone":253,"lodash/debounce":256,"lodash/defaults":257,"lodash/each":260,"lodash/get":265,"lodash/has":266,"lodash/isArray":270,"lodash/remove":301,"lodash/set":303,"native-promise-only":315}],41:[function(require,module,exports){
 "use strict";
 
 var _nativePromiseOnly = require("native-promise-only");
@@ -12641,7 +12653,7 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
    * @param element Dom element to place this wizard.
    * @param {Object} options Options object, supported options are:
    *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
-   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not  
+   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
    */
   function FormioWizard(element, options) {
     _classCallCheck(this, FormioWizard);
@@ -13059,6 +13071,11 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
         buttonWrapper.appendChild(_this8[buttonProp]);
         _this8.wizardNav.appendChild(buttonWrapper);
       });
+    }
+  }, {
+    key: 'schema',
+    get: function get() {
+      return this.wizard;
     }
   }]);
 

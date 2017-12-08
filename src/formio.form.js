@@ -1,6 +1,7 @@
 import Formio from './formio';
 import Promise from "native-promise-only";
 import { FormioComponents } from './components/Components';
+import _has from 'lodash/has';
 import _get from 'lodash/get';
 import _set from 'lodash/set';
 import _each from 'lodash/each';
@@ -657,6 +658,10 @@ export class FormioForm extends FormioComponents {
     );
   }
 
+  get schema() {
+    return this._form;
+  }
+
   /**
    * Merge submission values.
    *
@@ -674,9 +679,13 @@ export class FormioForm extends FormioComponents {
     }
 
     // Merge submission values.
-    FormioUtils.eachComponent(this.component.components, (component, path) => {
-      _set(this._submission.data, path, _get(submission.data, path));
-    });
+    if (this._form) {
+      FormioUtils.eachComponent(this.schema.components, (component, path) => {
+        if (_has(submission.data, path)) {
+          _set(this._submission.data, path, _get(submission.data, path));
+        }
+      });
+    }
   }
 
   setValue(submission, flags) {

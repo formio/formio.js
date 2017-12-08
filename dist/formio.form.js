@@ -9718,6 +9718,10 @@ var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
 
 var _Components = require('./components/Components');
 
+var _has2 = require('lodash/has');
+
+var _has3 = _interopRequireDefault(_has2);
+
 var _get3 = require('lodash/get');
 
 var _get4 = _interopRequireDefault(_get3);
@@ -10356,6 +10360,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         return _this7.submissionReadyReject(err);
       });
     }
+  }, {
+    key: 'mergeSubmission',
 
     /**
      * Merge submission values.
@@ -10363,9 +10369,6 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * @param submission
      * @param all
      */
-
-  }, {
-    key: 'mergeSubmission',
     value: function mergeSubmission(submission, all) {
       var _this8 = this;
 
@@ -10379,9 +10382,13 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
 
       // Merge submission values.
-      _utils2.default.eachComponent(this.component.components, function (component, path) {
-        (0, _set3.default)(_this8._submission.data, path, (0, _get4.default)(submission.data, path));
-      });
+      if (this._form) {
+        _utils2.default.eachComponent(this.schema.components, function (component, path) {
+          if ((0, _has3.default)(submission.data, path)) {
+            (0, _set3.default)(_this8._submission.data, path, (0, _get4.default)(submission.data, path));
+          }
+        });
+      }
     }
   }, {
     key: 'setValue',
@@ -10853,6 +10860,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     , set: function set(submission) {
       this.setSubmission(submission);
     }
+  }, {
+    key: 'schema',
+    get: function get() {
+      return this._form;
+    }
   }]);
 
   return FormioForm;
@@ -10883,7 +10895,7 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 module.exports = global.FormioForm = FormioForm;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./components/Components":1,"./formio":40,"./i18n":42,"./utils":49,"eventemitter2":54,"i18next":70,"lodash/assign":243,"lodash/capitalize":246,"lodash/clone":248,"lodash/debounce":251,"lodash/defaults":252,"lodash/each":255,"lodash/get":260,"lodash/isArray":265,"lodash/remove":296,"lodash/set":298,"native-promise-only":310}],40:[function(require,module,exports){
+},{"./components/Components":1,"./formio":40,"./i18n":42,"./utils":49,"eventemitter2":54,"i18next":70,"lodash/assign":243,"lodash/capitalize":246,"lodash/clone":248,"lodash/debounce":251,"lodash/defaults":252,"lodash/each":255,"lodash/get":260,"lodash/has":261,"lodash/isArray":265,"lodash/remove":296,"lodash/set":298,"native-promise-only":310}],40:[function(require,module,exports){
 (function (global){
 'use strict';
 
