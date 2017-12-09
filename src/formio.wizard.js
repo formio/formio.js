@@ -13,8 +13,8 @@ export class FormioWizard extends FormioForm {
    * @param element Dom element to place this wizard.
    * @param {Object} options Options object, supported options are:
    *    - breadcrumbSettings.clickable: true (default) determines if the breadcrumb bar is clickable or not
-   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not  
-   */ 
+   *    - buttonSettings.show*(Previous, Next, Cancel): true (default) determines if the button is shown or not
+   */
   constructor(element, options) {
     super(element, options);
     this.wizard = null;
@@ -196,6 +196,10 @@ export class FormioWizard extends FormioForm {
     });
     this.buildWizardHeader();
     this.buildWizardNav();
+  }
+
+  get schema() {
+    return this.wizard;
   }
 
   setForm(form) {

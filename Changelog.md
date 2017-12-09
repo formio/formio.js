@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.25.3
+### Fixed
+ - An issue where data values within a datagrid get messed up when rows are removed.
+
 ## 2.25.2
 ### Fixed
  - A problem with Select dropdowns where the placeholder was getting included as the select value.
