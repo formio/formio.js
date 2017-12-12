@@ -933,6 +933,10 @@ export class BaseComponent {
           maskArray.numeric = false;
           maskArray.push(/[a-zA-Z]/);
           break;
+        case 'a':
+          maskArray.numeric = false;
+          maskArray.push(/[a-z]/);
+          break;
         case '*':
           maskArray.numeric = false;
           maskArray.push(/[a-zA-Z0-9]/);
@@ -1506,6 +1510,11 @@ export class BaseComponent {
   }
 
   checkValidity(data, dirty) {
+    // Force valid if component is conditionally hidden.
+    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+      return true;
+    }
+
     let message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;

@@ -54,6 +54,10 @@ var _nativePromiseOnly = require('native-promise-only');
 
 var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
 
+var _index = require('../utils/index');
+
+var _index2 = _interopRequireDefault(_index);
+
 var _Base = require('./base/Base');
 
 function _interopRequireDefault(obj) {
@@ -460,6 +464,10 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
+      if (!_index2.default.checkCondition(this.component, data, this.data)) {
+        return true;
+      }
+
       var check = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkValidity', this).call(this, data, dirty);
       (0, _each3.default)(this.getComponents(), function (comp) {
         check &= comp.checkValidity(data, dirty);
@@ -573,7 +581,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
 FormioComponents.customComponents = {};
 
-},{"./base/Base":4,"./index":22,"lodash/assign":247,"lodash/clone":252,"lodash/each":259,"lodash/remove":300,"native-promise-only":314}],2:[function(require,module,exports){
+},{"../utils/index":53,"./base/Base":4,"./index":22,"lodash/assign":247,"lodash/clone":252,"lodash/each":259,"lodash/remove":300,"native-promise-only":314}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -614,11 +622,6 @@ var Validator = exports.Validator = {
   each: _each3.default,
   has: _has3.default,
   checkValidator: function checkValidator(component, validator, setting, value, data) {
-    // Make sure this component isn't conditionally disabled.
-    if (!_index2.default.checkCondition(component.component, data, component.data)) {
-      return '';
-    }
-
     var result = validator.check.call(this, component, setting, value, data);
     if (typeof result === 'string') {
       return result;
@@ -2497,6 +2500,10 @@ var BaseComponent = function () {
             maskArray.numeric = false;
             maskArray.push(/[a-zA-Z]/);
             break;
+          case 'a':
+            maskArray.numeric = false;
+            maskArray.push(/[a-z]/);
+            break;
           case '*':
             maskArray.numeric = false;
             maskArray.push(/[a-zA-Z0-9]/);
@@ -3136,6 +3143,11 @@ var BaseComponent = function () {
   }, {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
+      // Force valid if component is conditionally hidden.
+      if (!_utils2.default.checkCondition(this.component, data, this.data)) {
+        return true;
+      }
+
       var message = this.invalid || this.invalidMessage(data, dirty);
       this.setCustomValidity(message, dirty);
       return message ? false : true;
@@ -45033,7 +45045,7 @@ module.exports = upperFirst;
 
 },{"./_createCaseFirst":165}],313:[function(require,module,exports){
 //! moment.js
-//! version : 2.19.3
+//! version : 2.19.4
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -47063,7 +47075,7 @@ function currentDateArray(config) {
 // note: all values past the year are optional and will default to the lowest possible value.
 // [year, month, day , hour, minute, second, millisecond]
 function configFromArray (config) {
-    var i, date, input = [], currentDate, yearToUse;
+    var i, date, input = [], currentDate, expectedWeekday, yearToUse;
 
     if (config._d) {
         return;
@@ -47113,6 +47125,8 @@ function configFromArray (config) {
     }
 
     config._d = (config._useUTC ? createUTCDate : createDate).apply(null, input);
+    expectedWeekday = config._useUTC ? config._d.getUTCDay() : config._d.getDay();
+
     // Apply timezone offset from input. The actual utcOffset can be changed
     // with parseZone.
     if (config._tzm != null) {
@@ -47124,7 +47138,7 @@ function configFromArray (config) {
     }
 
     // check for mismatching day of week
-    if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== config._d.getDay()) {
+    if (config._w && typeof config._w.d !== 'undefined' && config._w.d !== expectedWeekday) {
         getParsingFlags(config).weekdayMismatch = true;
     }
 }
@@ -48700,7 +48714,7 @@ addRegexToken('Do', function (isStrict, locale) {
 
 addParseToken(['D', 'DD'], DATE);
 addParseToken('Do', function (input, array) {
-    array[DATE] = toInt(input.match(match1to2)[0], 10);
+    array[DATE] = toInt(input.match(match1to2)[0]);
 });
 
 // MOMENTS
@@ -49512,7 +49526,7 @@ addParseToken('x', function (input, array, config) {
 // Side effect imports
 
 
-hooks.version = '2.19.3';
+hooks.version = '2.19.4';
 
 setHookCallback(createLocal);
 

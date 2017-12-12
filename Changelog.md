@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.25.4
+### Fixed
+ - Problems where conditionally hidden panels/wells were not making their children not required.
+
+### Added
+ - Ability to provide an input mask where it will force lowercase alphabetical.
+
 ## 2.25.3
 ### Fixed
  - An issue where data values within a datagrid get messed up when rows are removed.
