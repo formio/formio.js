@@ -9,11 +9,6 @@ export const Validator = {
   each: _each,
   has: _has,
   checkValidator(component, validator, setting, value, data) {
-    // Make sure this component isn't conditionally disabled.
-    if (!FormioUtils.checkCondition(component.component, data, component.data)) {
-      return '';
-    }
-
     const result = validator.check.call(this, component, setting, value, data);
     if (typeof result === 'string') {
       return result;
