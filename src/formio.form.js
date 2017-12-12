@@ -1,9 +1,6 @@
 import Formio from './formio';
 import Promise from "native-promise-only";
 import { FormioComponents } from './components/Components';
-import _has from 'lodash/has';
-import _get from 'lodash/get';
-import _set from 'lodash/set';
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _debounce from 'lodash/debounce';
@@ -12,9 +9,9 @@ import _isArray from 'lodash/isArray';
 import _assign from 'lodash/assign';
 import _defaults from 'lodash/defaults';
 import _capitalize from 'lodash/capitalize';
+import _mergeWith from 'lodash/mergeWith';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
-import FormioUtils from './utils';
 
 i18next.initialized = false;
 
@@ -662,36 +659,17 @@ export class FormioForm extends FormioComponents {
     return this._form;
   }
 
-  /**
-   * Merge submission values.
-   *
-   * @param submission
-   * @param all
-   */
-  mergeSubmission(submission, all) {
-    if (all) {
-      // Merge properties except data.
-      _each(submission, (value, key) => {
-        if (key !== 'data') {
-          this._submission[key] = value;
-        }
-      });
-    }
-
-    // Merge submission values.
-    let schema = this.schema;
-    if (schema) {
-      FormioUtils.eachComponent(schema.components, (component, path) => {
-        if (_has(submission.data, path)) {
-          _set(this._submission.data, path, _get(submission.data, path));
-        }
-      });
-    }
+  mergeData(_this, _that) {
+    _mergeWith(_this, _that, (thisValue, thatValue) => {
+      if (_isArray(thisValue)) {
+        return thatValue;
+      }
+    });
   }
 
   setValue(submission, flags) {
     submission = submission || {data: {}};
-    this.mergeSubmission(submission, true);
+    this.mergeData(this._submission, submission);
     return super.setValue(this._submission.data, flags);
   }
 
@@ -701,7 +679,7 @@ export class FormioForm extends FormioComponents {
     }
     let submission = _clone(this._submission);
     submission.data = this.data;
-    this.mergeSubmission(submission);
+    this.mergeData(this._submission.data, submission.data);
     return submission;
   }
 
@@ -872,7 +850,7 @@ export class FormioForm extends FormioComponents {
    */
   onChange(flags, changed) {
     super.onChange(flags, true);
-    this.mergeSubmission(this.submission, true);
+    this.mergeData(this._submission, this.submission);
     let value = _clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);

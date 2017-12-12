@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 2.25.4
 ### Fixed
  - Problems where conditionally hidden panels/wells were not making their children not required.
+ - Issues with setting default values on datagrids.
 
 ### Added
  - Ability to provide an input mask where it will force lowercase alphabetical.
