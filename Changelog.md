@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.25.5
+### Fixed
+ - getDownloadUrl to work with remote environments.
+
 ## 2.25.4
 ### Fixed
  - Problems where conditionally hidden panels/wells were not making their children not required.

@@ -419,7 +419,7 @@ export class Formio {
     apiUrl += '/submission/' + this.submissionId;
     apiUrl += '/download';
 
-    let download = Formio.baseUrl + apiUrl;
+    let download = this.base + apiUrl;
     return new Promise((resolve, reject) => {
       this.getTempToken(3600, 'GET:' + apiUrl).then((tempToken) => {
         download += '?token=' + tempToken.key;

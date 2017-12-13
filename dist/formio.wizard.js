@@ -11359,7 +11359,7 @@ var Formio = function () {
       apiUrl += '/submission/' + this.submissionId;
       apiUrl += '/download';
 
-      var download = Formio.baseUrl + apiUrl;
+      var download = this.base + apiUrl;
       return new Promise(function (resolve, reject) {
         _this4.getTempToken(3600, 'GET:' + apiUrl).then(function (tempToken) {
           download += '?token=' + tempToken.key;
