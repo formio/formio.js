@@ -27,6 +27,10 @@ export class ButtonComponent extends BaseComponent {
   }
 
   build() {
+    if (this.viewOnlyMode()) {
+      return;
+    }
+
     this.element = this.ce(this.info.type, this.info.attr);
     this.addShortcut(this.element);
     if (this.component.label) {
