@@ -396,18 +396,32 @@ export class BaseComponent {
 
   createViewOnlyValue(container) {
     this.valueElement = this.ce('dd');
-    if (this.component.type === 'select') {
-      this.valueElement.innerHTML = this.asString();
-    }
-    else {
-      this.valueElement.appendChild(this.text(_toString(this.getValue()) || '-'));
-    }
+    this.setupValueElement(this.valueElement);
     container.appendChild(this.valueElement);
   }
 
+  setupValueElement(element) {
+    const value = this.text(this.viewOnlyValue || this.defaultViewOnlyValue);
+    element.appendChild(value);
+  }
+
+  get defaultViewOnlyValue() {
+    return '-';
+  }
+
+  get viewOnlyValue() {
+    return _toString(this.getValue());
+  }
+
   updateViewOnlyValue() {
-    this.element.removeChild(this.valueElement);
-    this.createViewOnlyValue(this.element);
+    this.empty(this.valueElement);
+    this.setupValueElement(this.valueElement);
+  }
+
+  empty(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
   }
 
   /**

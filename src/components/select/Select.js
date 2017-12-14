@@ -488,6 +488,14 @@ export class SelectComponent extends BaseComponent {
     return this.itemTemplate(value);
   }
 
+  setupValueElement(element) {
+    element.innerHTML = this.asString();
+  }
+
+  updateViewOnlyValue() {
+    this.setupValueElement(this.valueElement);
+  }
+
   destroy() {
     if (this.choices) {
       this.choices.destroy();
