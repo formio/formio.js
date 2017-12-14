@@ -382,6 +382,7 @@ export class BaseComponent {
   createViewOnlyInput() {
     this.input = this.ce(this.info.type, this.info.attr);
     this.inputs.push(this.input);
+    return this.input;
   }
 
   createViewOnlyLabel(container) {
