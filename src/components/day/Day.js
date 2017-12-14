@@ -180,7 +180,7 @@ export class DayComponent extends BaseComponent {
       style: 'width: 100%'
     });
     const subinputAtTheBottom = this.component.inputsLabelPosition === 'bottom';
-    const [ dayColumn, monthColumn, yearColumn ] = createInputs(subinputAtTheBottom);
+    const [ dayColumn, monthColumn, yearColumn ] = this.createInputs(subinputAtTheBottom);
 
     // Add the columns to the day select in the right order.
     if (this.component.dayFirst && !_get(this.component, 'fields.day.hide', false)) {
