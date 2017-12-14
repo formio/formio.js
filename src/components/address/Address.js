@@ -2,6 +2,7 @@ import { TextFieldComponent } from '../textfield/TextField';
 import { BaseComponent } from '../base/Base';
 import _defaultsDeep from 'lodash/defaultsDeep';
 import _delay from 'lodash/delay';
+import _get from 'lodash/get';
 
 export class AddressComponent extends TextFieldComponent {
   constructor(component, options, data) {
@@ -449,5 +450,10 @@ export class AddressComponent extends TextFieldComponent {
     let info = super.elementInfo();
     info.attr.class += ' address-search';
     return info;
+  }
+
+  get viewOnlyValue() {
+    const value = this.getValue();
+    return _get(value, 'formatted_address', '');
   }
 }
