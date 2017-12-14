@@ -377,10 +377,7 @@ export class BaseComponent {
 
   createViewOnlyInput() {
     let input = this.ce(this.info.type, this.info.attr);
-    this.setInputMask(input);
     this.inputs.push(input);
-    this.addInputEventListener(input);
-    this.addInputSubmitListener(input);
   }
 
   createViewOnlyLabel(container) {
