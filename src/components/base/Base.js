@@ -380,8 +380,8 @@ export class BaseComponent {
   }
 
   createViewOnlyInput() {
-    let input = this.ce(this.info.type, this.info.attr);
-    this.inputs.push(input);
+    this.input = this.ce(this.info.type, this.info.attr);
+    this.inputs.push(this.input);
   }
 
   createViewOnlyLabel(container) {
