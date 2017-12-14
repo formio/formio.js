@@ -28,7 +28,7 @@ export class ButtonComponent extends BaseComponent {
 
   build() {
     if (this.viewOnlyMode()) {
-      return;
+      this.component.hidden = true;
     }
 
     this.element = this.ce(this.info.type, this.info.attr);
