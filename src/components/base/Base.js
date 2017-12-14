@@ -328,10 +328,7 @@ export class BaseComponent {
    */
   build() {
     if (this.viewOnlyMode()) {
-      this.createViewOnlyElement();
-      this.createViewOnlyLabel(this.element);
-      this.createViewOnlyInput();
-      this.createViewOnlyValue(this.element);
+      this.viewOnlyBuild();
     }
     else {
       this.createElement();
@@ -360,6 +357,13 @@ export class BaseComponent {
 
   viewOnlyMode() {
     return this.options.readOnly && this.options.viewAsHtml;
+  }
+
+  viewOnlyBuild() {
+    this.createViewOnlyElement();
+    this.createViewOnlyLabel(this.element);
+    this.createViewOnlyInput();
+    this.createViewOnlyValue(this.element);
   }
 
   createViewOnlyElement() {
