@@ -329,4 +329,9 @@ export class DayComponent extends BaseComponent {
     this.inputs[index].value = this.date.format(this.format);
     return this.inputs[index].value;
   }
+
+  get viewOnlyValue() {
+    const date = this.date;
+    return date.isValid() ? date.format(this.format) : null;
+  }
 }
