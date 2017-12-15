@@ -498,7 +498,7 @@ export class SelectComponent extends BaseComponent {
 
     return _isObject(value)
       ? this.itemTemplate(value)
-      : '';
+      : '-';
   }
 
   setupValueElement(element) {
