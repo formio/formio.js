@@ -136,7 +136,7 @@ export class RadioComponent extends BaseComponent {
     return value;
   }
 
-  get viewOnlyValue() {
+  get view() {
     const value = this.getValue();
 
     if (!_isString(value)) {

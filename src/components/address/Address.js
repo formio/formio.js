@@ -452,7 +452,7 @@ export class AddressComponent extends TextFieldComponent {
     return info;
   }
 
-  get viewOnlyValue() {
+  get view() {
     const value = this.getValue();
     return _get(value, 'formatted_address', '');
   }

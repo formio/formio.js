@@ -200,7 +200,7 @@ export class CheckBoxComponent extends BaseComponent {
     return super.getRawValue();
   }
 
-  get viewOnlyValue() {
+  get view() {
     const value = this.getValue();
     return value ? 'Yes' : 'No';
   }

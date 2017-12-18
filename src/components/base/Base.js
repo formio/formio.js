@@ -403,7 +403,7 @@ export class BaseComponent {
   }
 
   setupValueElement(element) {
-    const value = this.text(this.viewOnlyValue || this.defaultViewOnlyValue);
+    const value = this.text(this.view || this.defaultViewOnlyValue);
     element.appendChild(value);
   }
 
@@ -411,7 +411,7 @@ export class BaseComponent {
     return '-';
   }
 
-  get viewOnlyValue() {
+  get view() {
     return _toString(this.getValue());
   }
 

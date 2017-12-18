@@ -190,7 +190,7 @@ export class DateTimeComponent extends BaseComponent {
     return dates[0].toISOString();
   }
 
-  get viewOnlyValue() {
+  get view() {
     const value = this.getValue();
     return value ? moment(value).format(this.convertFormatToMoment(_get(this.component, 'format', ''))) : null;
   }

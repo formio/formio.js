@@ -162,7 +162,7 @@ export class SignatureComponent extends BaseComponent {
     container.appendChild(this.labelElement);
   }
 
-  get viewOnlyValue() {
+  get view() {
     const value = this.getValue();
     return value ? 'Yes' : 'No';
   }

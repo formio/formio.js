@@ -70,7 +70,7 @@ export class SelectBoxesComponent extends RadioComponent {
     this.updateValue(flags);
   }
 
-  get viewOnlyValue() {
+  get view() {
     const value = this.getValue();
 
     return _(this.component.values || [])
