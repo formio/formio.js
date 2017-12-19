@@ -79,6 +79,9 @@ FormioForm.registerComponent = Formio.registerComponent = function(type, compone
   FormioComponents.customComponents[type] = component;
 };
 
+
+Formio.contrib = require('./contrib');
+
 exports.Formio = Formio;
 exports.FormioForm = FormioForm;
 exports.FormioWizard = FormioWizard;
