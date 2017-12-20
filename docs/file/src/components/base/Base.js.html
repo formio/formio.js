@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -145,6 +146,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/base/Base.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import maskInput from &apos;text-mask-all/vanilla&apos;;
 import Promise from &quot;native-promise-only&quot;;
+import _ from &apos;lodash&apos;;
 import _get from &apos;lodash/get&apos;;
 import _each from &apos;lodash/each&apos;;
 import _assign from &apos;lodash/assign&apos;;
@@ -158,8 +160,6 @@ import i18next from &apos;i18next&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 import { Validator } from &apos;../Validator&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
-
-i18next.initialized = false;
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -187,37 +187,6 @@ export class BaseComponent {
     this.options = _defaults(_clone(options), {
       highlightErrors: true
     });
-
-    /**
-     * The i18n configuration for this component.
-     */
-    let i18n = require(&apos;../../i18n&apos;);
-    if (options &amp;&amp; options.i18n &amp;&amp; !options.i18nReady) {
-      // Support legacy way of doing translations.
-      if (options.i18n.resources) {
-        i18n = options.i18n;
-      }
-      else {
-        _each(options.i18n, (lang, code) =&gt; {
-          if (!i18n.resources[code]) {
-            i18n.resources[code] = {translation: lang};
-          }
-          else {
-            _assign(i18n.resources[code].translation, lang);
-          }
-        });
-      }
-
-      options.i18n = i18n;
-      options.i18nReady = true;
-    }
-
-    if (options &amp;&amp; options.i18n) {
-      this.options.i18n = options.i18n;
-    }
-    else {
-      this.options.i18n = i18n;
-    }
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -388,30 +357,14 @@ export class BaseComponent {
    */
   t(text, params) {
     params = params || {};
+    params.data = this.root ? this.root.data : this.data;
+    params.row = this.data;
     params.component = this.component;
     params.nsSeparator = &apos;::&apos;;
     params.keySeparator = &apos;.|.&apos;;
     params.pluralSeparator = &apos;._.&apos;;
     params.contextSeparator = &apos;._.&apos;;
     return i18next.t(text, params);
-  }
-
-  /**
-   * Sets the language for this form.
-   *
-   * @param lang
-   * @return {*}
-   */
-  set language(lang) {
-    return new Promise((resolve, reject) =&gt; {
-      i18next.changeLanguage(lang, (err) =&gt; {
-        if (err) {
-          return reject(err);
-        }
-        this.redraw();
-        resolve();
-      });
-    });
   }
 
   /**
@@ -491,25 +444,6 @@ export class BaseComponent {
     }
 
     return null;
-  }
-
-  /**
-   * Perform the localization initialization.
-   * @returns {*}
-   */
-  localize() {
-    if (i18next.initialized) {
-      return Promise.resolve(i18next);
-    }
-    i18next.initialized = true;
-    return new Promise((resolve, reject) =&gt; {
-      i18next.init(this.options.i18n, (err, t) =&gt; {
-        if (err) {
-          return reject(err);
-        }
-        resolve(i18next);
-      });
-    });
   }
 
   /**
@@ -680,7 +614,8 @@ export class BaseComponent {
         try {
           defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
             data: this.data,
-            row: this.data
+            row: this.data,
+            _
           });
         }
         catch (err) {
@@ -722,6 +657,7 @@ export class BaseComponent {
   addValue() {
     this.addNewValue();
     this.buildRows();
+	  this.checkConditions(this.root ? this.root.data : this.data);
     this.restoreValue();
   }
 
@@ -1146,6 +1082,10 @@ export class BaseComponent {
           maskArray.numeric = false;
           maskArray.push(/[a-zA-Z]/);
           break;
+        case &apos;a&apos;:
+          maskArray.numeric = false;
+          maskArray.push(/[a-z]/);
+          break;
         case &apos;*&apos;:
           maskArray.numeric = false;
           maskArray.push(/[a-zA-Z0-9]/);
@@ -1497,6 +1437,9 @@ export class BaseComponent {
   }
 
   addInputSubmitListener(input) {
+    if (!this.options.submitOnEnter) {
+      return;
+    }
     this.addEventListener(input, &apos;keypress&apos;, (event) =&gt; {
       let key = event.keyCode || event.which;
       if (key == 13) {
@@ -1643,8 +1586,9 @@ export class BaseComponent {
     else {
       try {
         let val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
-          data: data,
-          row: this.data
+          data,
+          row: this.data,
+          _
         });
         changed = this.setValue(val, flags);
       }
@@ -1715,6 +1659,11 @@ export class BaseComponent {
   }
 
   checkValidity(data, dirty) {
+    // Force valid if component is conditionally hidden.
+    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+      return true;
+    }
+
     let message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
@@ -1958,7 +1907,7 @@ export class BaseComponent {
       name: this.options.name,
       type: this.component.inputType || &apos;text&apos;,
       class: &apos;form-control&apos;,
-      lang: this.options.i18n.lng
+      lang: this.options.language
   };
 
     if (this.component.placeholder) {

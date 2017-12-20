@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -388,7 +389,7 @@ describe(&apos;checkCalculated&apos;, () =&gt; {
     const component = {
       key: &apos;sum&apos;,
       calculateValue: {
-        &apos;_.sum&apos;: { var: &apos;data.test&apos; }
+        &apos;_sum&apos;: { var: &apos;data.test&apos; }
       }
     };
     const data = { test: [ 1, 2, 3 ] };
@@ -421,7 +422,7 @@ describe(&apos;checkCondition&apos;, () =&gt; {
       conditional: {
         json: {
           &apos;===&apos;: [
-            { &apos;_.sum&apos;: { var: &apos;data.test&apos; } },
+            { &apos;_sum&apos;: { var: &apos;data.test&apos; } },
             6
           ]
         }
