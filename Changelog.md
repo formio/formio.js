@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Fixed
  - Caching issue with getTempToken method.
+ - Problem with the "in" operator for JSONLogic crashing with null inputs.
 
 ## 2.25.5
 ### Fixed
