@@ -85,6 +85,7 @@ Formio.createForm(document.getElementById('single-select'), {
         </script>
       </td>
     </tr>
+    <!--
     <tr>
       <td>
         <strong>JSON Values</strong>   
@@ -349,5 +350,6 @@ Formio.createForm(document.getElementById('html5-select'), {
         </script>
       </td>
     </tr>
+    -->
   </tbody>
 </table>

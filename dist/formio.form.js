@@ -8080,8 +8080,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     key: 'itemTemplate',
     value: function itemTemplate(data) {
       // Perform a fast interpretation if we should not use the template.
-      if (!this.useTemplate) {
-        return this.t(data.label);
+      if (data && !this.useTemplate) {
+        return this.t(data.label || data);
       }
       if (typeof data === 'string') {
         return this.t(data);
@@ -8148,7 +8148,6 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           (0, _each3.default)(currentChoices, function (choice) {
             _this3.addCurrentChoices(choice, items);
           });
-          this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         } else if (!this.component.multiple) {
           this.addPlaceholder(this.selectInput);
         }
@@ -8433,24 +8432,22 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'addCurrentChoices',
     value: function addCurrentChoices(value, items) {
+      var _this7 = this;
+
       if (value) {
         var found = false;
-
         if (items && items.length) {
-          // Iterate through all elements and remove the ones that are found.
-          (0, _remove3.default)(items, function (choice) {
-            // For resources we may have two different instances of the same resource
-            // Unify them so we don't have two copies of the same thing in the dropdown
-            // and so the correct resource gets selected in the first place
+          (0, _each3.default)(items, function (choice) {
             if (choice._id && value._id && choice._id === value._id) {
-              return true;
+              found = true;
+              return false;
             }
-            found = (0, _isEqual3.default)(choice, value);
-            return found;
+            found |= (0, _isEqual3.default)(_this7.itemValue(choice), value);
+            return found ? false : true;
           });
         }
 
-        // If it is not found, then add it.
+        // Add the default option if no item is found.
         if (!found) {
           this.addOption(this.itemValue(value), this.itemTemplate(value));
         }
@@ -8495,6 +8492,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (this.choices) {
         // Now set the value.
         if (hasValue) {
+          this.choices.setChoices(this.selectOptions, 'value', 'label', true);
           this.choices.setValueByChoice((0, _isArray3.default)(value) ? value : [value]);
         } else if (hasPreviousValue) {
           this.choices.removeActiveItems();
@@ -8553,7 +8551,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'requestHeaders',
     get: function get() {
-      var _this7 = this;
+      var _this8 = this;
 
       // Create the headers object.
       var headers = new Headers();
@@ -8563,8 +8561,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         try {
           (0, _each3.default)(this.component.data.headers, function (header) {
             if (header.key) {
-              headers.set(header.key, _this7.interpolate(header.value, {
-                data: _this7.data
+              headers.set(header.key, _this8.interpolate(header.value, {
+                data: _this8.data
               }));
             }
           });
