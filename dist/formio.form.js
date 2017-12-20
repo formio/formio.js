@@ -1782,6 +1782,8 @@ var BaseComponent = function () {
     key: 't',
     value: function t(text, params) {
       params = params || {};
+      params.data = this.root ? this.root.data : this.data;
+      params.row = this.data;
       params.component = this.component;
       params.nsSeparator = '::';
       params.keySeparator = '.|.';
@@ -7971,6 +7973,10 @@ var _isArray2 = require('lodash/isArray');
 
 var _isArray3 = _interopRequireDefault(_isArray2);
 
+var _isObject2 = require('lodash/isObject');
+
+var _isObject3 = _interopRequireDefault(_isObject2);
+
 var _isEqual2 = require('lodash/isEqual');
 
 var _isEqual3 = _interopRequireDefault(_isEqual2);
@@ -8029,6 +8035,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     // Keep track of the select options.
     _this2.selectOptions = [];
 
+    // See if this should use the template.
+    _this2.useTemplate = _this2.component.dataSrc !== 'values' && _this2.component.template;
+
+    // If this component has been activated.
+    _this2.activated = false;
+
     // If they wish to refresh on a value, then add that here.
     if (_this2.component.refreshOn) {
       _this2.on('change', function (event) {
@@ -8066,6 +8078,13 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'itemTemplate',
     value: function itemTemplate(data) {
+      // Perform a fast interpretation if we should not use the template.
+      if (!this.useTemplate) {
+        return this.t(data.label);
+      }
+      if (typeof data === 'string') {
+        return this.t(data);
+      }
       var template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
       var label = template.replace(/<\/?[^>]+(>|$)/g, "");
       return template.replace(label, this.t(label));
@@ -8073,7 +8092,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'itemValue',
     value: function itemValue(data) {
-      return this.component.valueProperty ? (0, _get4.default)(data, this.component.valueProperty) : data;
+      return this.component.valueProperty && (0, _isObject3.default)(data) ? (0, _get4.default)(data, this.component.valueProperty) : data;
     }
   }, {
     key: 'createInput',
@@ -8116,9 +8135,28 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       this.selectInput.appendChild(option.element);
     }
   }, {
+    key: 'addValueOptions',
+    value: function addValueOptions(items) {
+      var _this3 = this;
+
+      items = items || [];
+      if (!this.selectOptions.length) {
+        if (this.choices) {
+          // Add the currently selected choices if they don't already exist.
+          var currentChoices = (0, _isArray3.default)(this.value) ? this.value : [this.value];
+          (0, _each3.default)(currentChoices, function (choice) {
+            _this3.addCurrentChoices(choice, items);
+          });
+          this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+        } else if (!this.component.multiple) {
+          this.addPlaceholder(this.selectInput);
+        }
+      }
+    }
+  }, {
     key: 'setItems',
     value: function setItems(items) {
-      var _this3 = this;
+      var _this4 = this;
 
       // If the items is a string, then parse as JSON.
       if (typeof items == 'string') {
@@ -8143,19 +8181,12 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         items = (0, _get4.default)(items, this.component.selectValues);
       }
 
-      if (this.choices) {
-        // Add the currently selected choices if they don't already exist.
-        var currentChoices = (0, _isArray3.default)(this.value) ? this.value : [this.value];
-        (0, _each3.default)(currentChoices, function (choice) {
-          _this3.addCurrentChoices(choice, items);
-        });
-      } else if (!this.component.multiple) {
-        this.addPlaceholder(this.selectInput);
-      }
+      // Add the value options.
+      this.addValueOptions(items);
 
       // Iterate through each of the items.
       (0, _each3.default)(items, function (item, index) {
-        _this3.addOption(_this3.itemValue(item), _this3.itemTemplate(item));
+        _this4.addOption(_this4.itemValue(item), _this4.itemTemplate(item));
       });
 
       if (this.choices) {
@@ -8179,7 +8210,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'loadItems',
     value: function loadItems(url, search, headers, options, method, body) {
-      var _this4 = this;
+      var _this5 = this;
 
       options = options || {};
 
@@ -8224,10 +8255,10 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       // Make the request.
       options.header = headers;
       _formio2.default.makeRequest(this.options.formio, 'select', url, method, body, options).then(function (response) {
-        return _this4.setItems(response);
+        return _this5.setItems(response);
       }).catch(function (err) {
-        _this4.events.emit('formio.error', err);
-        console.warn('Unable to load resources for ' + _this4.component.key);
+        _this5.events.emit('formio.error', err);
+        console.warn('Unable to load resources for ' + _this5.component.key);
       });
     }
 
@@ -8266,6 +8297,10 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           this.updateCustomItems();
           break;
         case 'resource':
+          if (!this.active) {
+            // If we are lazyLoading, wait until activated.
+            return;
+          }
           var resourceUrl = this.options.formio ? this.options.formio.formsUrl : _formio2.default.getProjectUrl() + '/form';
           resourceUrl += '/' + this.component.data.resource + '/submission';
 
@@ -8276,6 +8311,10 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           }
           break;
         case 'url':
+          if (!this.active) {
+            // If we are lazyLoading, wait until activated.
+            return;
+          }
           var url = this.component.data.url;
           var method = void 0;
           var body = void 0;
@@ -8309,10 +8348,32 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       placeholder.appendChild(this.text(this.component.placeholder));
       input.appendChild(placeholder);
     }
+
+    /**
+     * Activate this select control.
+     */
+
+  }, {
+    key: 'activate',
+    value: function activate() {
+      if (this.active) {
+        return;
+      }
+      this.activated = true;
+      if (this.choices) {
+        this.choices.setChoices([{
+          value: '',
+          label: '<span class="glyphicon glyphicon-refresh glyphicon-spin" style="font-size:1.3em;"></span>'
+        }], 'value', 'label', true);
+      } else {
+        this.addOption('', this.t('loading...'));
+      }
+      this.refreshItems();
+    }
   }, {
     key: 'addInput',
     value: function addInput(input, container) {
-      var _this5 = this;
+      var _this6 = this;
 
       _get2(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'addInput', this).call(this, input, container);
       if (this.component.multiple) {
@@ -8321,6 +8382,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
       if (this.component.widget === 'html5') {
         this.triggerUpdate();
+        this.addEventListener(input, 'focus', function () {
+          return _this6.activate();
+        });
         return;
       }
 
@@ -8347,15 +8411,18 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
       // If a search field is provided, then add an event listener to update items on search.
       if (this.component.searchField) {
-        input.addEventListener('search', function (event) {
-          return _this5.triggerUpdate(event.detail.value);
+        this.addEventListener(input, 'search', function (event) {
+          return _this6.triggerUpdate(event.detail.value);
         });
       }
 
-      input.addEventListener('showDropdown', function () {
-        if (_this5.component.dataSrc === 'custom') {
-          _this5.updateCustomItems();
+      this.addEventListener(input, 'showDropdown', function () {
+        if (_this6.component.dataSrc === 'custom') {
+          _this6.updateCustomItems();
         }
+
+        // Activate the control.
+        _this6.activate();
       });
 
       // Force the disabled state with getters and setters.
@@ -8365,20 +8432,22 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'addCurrentChoices',
     value: function addCurrentChoices(value, items) {
-      if (value && items.length) {
+      if (value) {
         var found = false;
 
-        // Iterate through all elements and remove the ones that are found.
-        (0, _remove3.default)(items, function (choice) {
-          // For resources we may have two different instances of the same resource
-          // Unify them so we don't have two copies of the same thing in the dropdown
-          // and so the correct resource gets selected in the first place
-          if (choice._id && value._id && choice._id === value._id) {
-            return true;
-          }
-          found = (0, _isEqual3.default)(choice, value);
-          return found;
-        });
+        if (items && items.length) {
+          // Iterate through all elements and remove the ones that are found.
+          (0, _remove3.default)(items, function (choice) {
+            // For resources we may have two different instances of the same resource
+            // Unify them so we don't have two copies of the same thing in the dropdown
+            // and so the correct resource gets selected in the first place
+            if (choice._id && value._id && choice._id === value._id) {
+              return true;
+            }
+            found = (0, _isEqual3.default)(choice, value);
+            return found;
+          });
+        }
 
         // If it is not found, then add it.
         if (!found) {
@@ -8418,6 +8487,10 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       var hasPreviousValue = (0, _isArray3.default)(this.value) ? this.value.length : this.value;
       var hasValue = (0, _isArray3.default)(value) ? value.length : value;
       this.value = value;
+
+      // Add the value options.
+      this.addValueOptions();
+
       if (this.choices) {
         // Now set the value.
         if (hasValue) {
@@ -8479,7 +8552,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'requestHeaders',
     get: function get() {
-      var _this6 = this;
+      var _this7 = this;
 
       // Create the headers object.
       var headers = new Headers();
@@ -8489,8 +8562,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         try {
           (0, _each3.default)(this.component.data.headers, function (header) {
             if (header.key) {
-              headers.set(header.key, _this6.interpolate(header.value, {
-                data: _this6.data
+              headers.set(header.key, _this7.interpolate(header.value, {
+                data: _this7.data
               }));
             }
           });
@@ -8500,6 +8573,11 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
 
       return headers;
+    }
+  }, {
+    key: 'active',
+    get: function get() {
+      return !this.component.lazyLoad || this.activated;
     }
   }, {
     key: 'disabled',
@@ -8519,7 +8597,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   return SelectComponent;
 }(_Base.BaseComponent);
 
-},{"../../formio":40,"../base/Base":4,"choices.js":52,"lodash/cloneDeep":248,"lodash/debounce":250,"lodash/each":254,"lodash/get":259,"lodash/isArray":264,"lodash/isEmpty":270,"lodash/isEqual":271,"lodash/remove":295}],30:[function(require,module,exports){
+},{"../../formio":40,"../base/Base":4,"choices.js":52,"lodash/cloneDeep":248,"lodash/debounce":250,"lodash/each":254,"lodash/get":259,"lodash/isArray":264,"lodash/isEmpty":270,"lodash/isEqual":271,"lodash/isObject":278,"lodash/remove":295}],30:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -11322,6 +11400,7 @@ var Formio = function () {
         return Promise.reject('You must be authenticated to generate a temporary auth token.');
       }
       return this.makeRequest('tempToken', this.projectUrl + '/token', 'GET', null, {
+        ignoreCache: true,
         header: new Headers({
           'x-expire': expire,
           'x-allow': allowed
@@ -12598,6 +12677,14 @@ _operators.lodashOperators.forEach(function (name) {
   return _jsonLogicJs2.default.add_operation('_' + name, _lodash2.default[name]);
 });
 
+// Fix the "in" operand for jsonlogic.
+// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
+_jsonLogicJs2.default.add_operation('in', function (a, b) {
+  if (!b) return false;
+  if (typeof b.indexOf === "undefined") return false;
+  return b.indexOf(a) !== -1;
+});
+
 var FormioUtils = {
   jsonLogic: _jsonLogicJs2.default, // Share
 
@@ -12936,11 +13023,17 @@ var FormioUtils = {
 
       return value.toString() === cond.eq.toString() === (cond.show.toString() === 'true');
     } else if (component.conditional && component.conditional.json) {
-      return _jsonLogicJs2.default.apply(component.conditional.json, {
-        data: data,
-        row: row,
-        _: _lodash2.default
-      });
+      var retVal = true;
+      try {
+        retVal = _jsonLogicJs2.default.apply(component.conditional.json, {
+          data: data,
+          row: row,
+          _: _lodash2.default
+        });
+      } catch (err) {
+        console.warn('An error occurred in jsonLogic condition for ' + component.key, err);
+        retVal = true;
+      }
     }
 
     // Default to show.

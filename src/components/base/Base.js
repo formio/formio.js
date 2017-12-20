@@ -211,6 +211,8 @@ export class BaseComponent {
    */
   t(text, params) {
     params = params || {};
+    params.data = this.root ? this.root.data : this.data;
+    params.row = this.data;
     params.component = this.component;
     params.nsSeparator = '::';
     params.keySeparator = '.|.';

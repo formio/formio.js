@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.25.6
+### Added
+ - Ability to dynamically alter text based on input data.
+ - Try/catch around the jsLogic for checkconditionals.
+ - LazyLoading for select dropdowns.
+ 
+### Fixed
+ - Caching issue with getTempToken method.
+
 ## 2.25.5
 ### Fixed
  - getDownloadUrl to work with remote environments.

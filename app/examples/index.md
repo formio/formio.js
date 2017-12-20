@@ -129,7 +129,7 @@ Formio.createForm(document.getElementById('formio'), {
         ]
       },
       dataSrc: "values",
-      template: "<span>\{\{ item.label \}\}</span>",
+      template: "<span>{{ item.label }}</span>",
       multiple: true,
       input: true
     },
