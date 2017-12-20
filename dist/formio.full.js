@@ -13916,6 +13916,7 @@ var FormioUtils = {
         console.warn('An error occurred in jsonLogic condition for ' + component.key, err);
         retVal = true;
       }
+      return retVal;
     }
 
     // Default to show.
