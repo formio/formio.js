@@ -2043,6 +2043,7 @@ var BaseComponent = function () {
     value: function addValue() {
       this.addNewValue();
       this.buildRows();
+      this.checkConditions(this.root ? this.root.data : this.data);
       this.restoreValue();
     }
 

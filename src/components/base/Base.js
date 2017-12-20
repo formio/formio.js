@@ -511,7 +511,7 @@ export class BaseComponent {
   addValue() {
     this.addNewValue();
     this.buildRows();
-	this.checkConditions(this.data);
+	  this.checkConditions(this.root ? this.root.data : this.data);
     this.restoreValue();
   }
 
