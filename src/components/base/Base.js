@@ -1170,22 +1170,12 @@ export class BaseComponent {
 					return output;
       }
 
-      //clear value
-      this.setValue(null, {
-        noValidate: true
-      });
-
       if (_has(this.component, 'setDisable')) {
         console.log('setDisable: ', value , ' for: ', this);
         this.component['setDisable'] = !output;
       } else {
         this.disabled = !output;
       }
-      // var value = _set(this, 'setDisable', !output, this);
-      // console.log('setDisable: ', value , ' for: ', this);
-      // if(!value) {
-      //   this.disabled = !output;
-      // }
 
       return output;
     }
