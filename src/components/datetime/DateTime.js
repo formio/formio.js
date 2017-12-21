@@ -2,7 +2,10 @@ import { BaseComponent } from '../base/Base';
 import Flatpickr from 'flatpickr';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
-import { getDateSetting } from '../../utils';
+import {
+  getDateSetting,
+  getLocalDateFormatInfo,
+} from '../../utils';
 export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -11,11 +14,18 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const dateFormatInfo = getLocalDateFormatInfo();
+
+    const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'text';
     info.changeEvent = 'input';
     this.component.suffix = true;
+    info.defaultFormat = {
+      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
+      time: 'h:i K'
+    };
+
     return info;
   }
 
@@ -66,6 +76,20 @@ export class DateTimeComponent extends BaseComponent {
     return format;
   }
 
+  getLocaleFormat() {
+    let format = '';
+
+    if (this.component.enableDate) {
+      format += this.info.defaultFormat.date;
+    }
+
+    if (this.component.enableTime) {
+      format += this.info.defaultFormat.time;
+    }
+
+    return format;
+  }
+
   get config() {
     return {
       altInput: true,
@@ -74,7 +98,9 @@ export class DateTimeComponent extends BaseComponent {
       mode: this.component.multiple ? 'multiple' : 'single',
       enableTime: _get(this.component, 'enableTime', true),
       noCalendar: !_get(this.component, 'enableDate', true),
-      altFormat: this.convertFormat(_get(this.component, 'format', '')),
+      altFormat: this.component.useLocaleSettings
+        ? this.getLocaleFormat()
+        : this.convertFormat(_get(this.component, 'format', '')),
       dateFormat: 'U',
       defaultDate: this.defaultDate,
       hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
@@ -89,7 +115,7 @@ export class DateTimeComponent extends BaseComponent {
   set disabled(disabled) {
     super.disabled = disabled;
     _each(this.inputs, (input) => {
-      let calendar = this.getCalendar(input);
+      const calendar = this.getCalendar(input);
       if (calendar) {
         if (disabled) {
           calendar._input.setAttribute('disabled', 'disabled');
@@ -103,12 +129,12 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   addSuffix(input, inputGroup) {
-    let suffix = this.ce('span', {
+    const suffix = this.ce('span', {
       class: 'input-group-addon',
       style: 'cursor: pointer'
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
-    let calendar = this.getCalendar(input);
+    const calendar = this.getCalendar(input);
     if (calendar) {
       this.addEventListener(suffix, 'click', () => {
         // Make sure the calendar is not already open and that it did not just close (like from blur event).
@@ -134,7 +160,7 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getDate(value) {
-    let timestamp = parseInt(value, 10);
+    const timestamp = parseInt(value, 10);
     if (!timestamp) {
       return null;
     }
@@ -142,7 +168,7 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getRawValue() {
-    let values = [];
+    const values = [];
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
@@ -159,12 +185,12 @@ export class DateTimeComponent extends BaseComponent {
       return '';
     }
 
-    let calendar = this.getCalendar(this.inputs[index]);
+    const calendar = this.getCalendar(this.inputs[index]);
     if (!calendar) {
       return super.getValueAt(index);
     }
 
-    let dates = calendar.selectedDates;
+    const dates = calendar.selectedDates;
     if (!dates || !dates.length) {
       return '';
     }
@@ -174,7 +200,7 @@ export class DateTimeComponent extends BaseComponent {
 
   setValueAt(index, value) {
     if (value) {
-      let calendar = this.getCalendar(this.inputs[index]);
+      const calendar = this.getCalendar(this.inputs[index]);
       if (!calendar) {
         return super.setValueAt(index, value);
       }

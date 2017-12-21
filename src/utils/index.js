@@ -527,6 +527,17 @@ const FormioUtils = {
   },
   isValidDate(date) {
     return _isDate(date) && !_isNaN(date.getDate());
+  },
+  getLocalDateFormatInfo() {
+    const formatInfo = {};
+
+    const day = 21;
+    const exampleDate = new Date(2017, 11, day);
+    const localDateString = exampleDate.toLocaleDateString();
+
+    formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
+
+    return formatInfo;
   }
 };
 
