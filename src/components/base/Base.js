@@ -10,6 +10,7 @@ import _clone from 'lodash/clone';
 import _defaults from 'lodash/defaults';
 import _isEqual from 'lodash/isEqual';
 import _isUndefined from 'lodash/isUndefined';
+import _has from 'lodash/has';
 import i18next from 'i18next';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
@@ -1156,11 +1157,39 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
-    if (!this.hasCondition()) {
-      return this.show(true);
+    let output = false;
+
+    if (this.hasCondition()) {
+      output = FormioUtils.checkCondition(this.component, this.data, data);
+    } else {
+      output = true;
     }
 
-    return this.show(FormioUtils.checkCondition(this.component, this.data, data));
+    if (this.component.conditional && this.component.conditional.disable !== undefined) {
+      if (this.shouldDisable) {
+					return output;
+      }
+
+      //clear value
+      this.setValue(null, {
+        noValidate: true
+      });
+
+      if (_has(this.component, 'setDisable')) {
+        console.log('setDisable: ', value , ' for: ', this);
+        this.component['setDisable'] = !output;
+      } else {
+        this.disabled = !output;
+      }
+      // var value = _set(this, 'setDisable', !output, this);
+      // console.log('setDisable: ', value , ' for: ', this);
+      // if(!value) {
+      //   this.disabled = !output;
+      // }
+
+      return output;
+    }
+    return this.show(output);
   }
 
   /**
