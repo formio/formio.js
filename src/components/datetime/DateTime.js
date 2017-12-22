@@ -4,28 +4,27 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import {
   getDateSetting,
-  getLocalDateFormatInfo,
+  getLocaleDateFormatInfo,
 } from '../../utils';
 export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
     this.closedOn = 0;
+
+    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
+    this.defaultFormat = {
+      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
+      time: 'h:i K'
+    };
   }
 
   elementInfo() {
-    const dateFormatInfo = getLocalDateFormatInfo();
-
     const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'text';
     info.changeEvent = 'input';
     this.component.suffix = true;
-    info.defaultFormat = {
-      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
-      time: 'h:i K'
-    };
-
     return info;
   }
 
@@ -80,11 +79,11 @@ export class DateTimeComponent extends BaseComponent {
     let format = '';
 
     if (this.component.enableDate) {
-      format += this.info.defaultFormat.date;
+      format += this.defaultFormat.date;
     }
 
     if (this.component.enableTime) {
-      format += this.info.defaultFormat.time;
+      format += this.defaultFormat.time;
     }
 
     return format;

@@ -3,25 +3,23 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _assign from 'lodash/assign';
 import moment from 'moment';
-import utils from '../../utils';
+import { getLocaleDateFormatInfo } from '../../utils';
 export class DayComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
+
+    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
     this.dayFirst = this.component.useLocaleSettings
-      ? this.info.dayFirst
+      ? dateFormatInfo.dayFirst
       : this.component.dayFirst;
   }
 
   elementInfo() {
-    const dateFormatInfo = utils.getLocalDateFormatInfo();
-
     const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'hidden';
     info.changeEvent = 'change';
-    info.dayFirst = dateFormatInfo.dayFirst;
-
     return info;
   }
 

@@ -528,12 +528,12 @@ const FormioUtils = {
   isValidDate(date) {
     return _isDate(date) && !_isNaN(date.getDate());
   },
-  getLocalDateFormatInfo() {
+  getLocaleDateFormatInfo(locale) {
     const formatInfo = {};
 
     const day = 21;
     const exampleDate = new Date(2017, 11, day);
-    const localDateString = exampleDate.toLocaleDateString();
+    const localDateString = exampleDate.toLocaleDateString(locale);
 
     formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
 
