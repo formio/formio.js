@@ -12,7 +12,7 @@ Select dropdowns.
 
 <script type="text/javascript">
 var createSelectForm = function(element, select) {
-  Formio.createForm(document.getElementById(element), {
+  return Formio.createForm(document.getElementById(element), {
     components: [
       select
     ]
@@ -21,6 +21,7 @@ var createSelectForm = function(element, select) {
       console.log(event);
       console.log(form.submission);
     });
+    return form;
   });
 };
 </script>

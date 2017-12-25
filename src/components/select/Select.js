@@ -14,6 +14,11 @@ import _cloneDeep from 'lodash/cloneDeep';
 // Fix performance issues in Choices by adding a debounce around render method.
 Choices.prototype._render = Choices.prototype.render;
 Choices.prototype.render = function() {
+  // Do not render destroyed choices widget.
+  if (this.destroyed) {
+    return;
+  }
+
   if (this.renderDebounce) {
     clearTimeout(this.renderDebounce);
   }
@@ -513,10 +518,13 @@ export class SelectComponent extends BaseComponent {
       if (hasValue) {
         let values = _isArray(value) ? value : [value];
         _each(this.selectOptions, (selectOption) => {
-          if (values.indexOf(selectOption.value) !== -1) {
-            selectOption.element.selected = true;
-            selectOption.element.setAttribute('selected', 'selected');
-          }
+          _each(values, (val) => {
+            if (_isEqual(val, selectOption.value)) {
+              selectOption.element.selected = true;
+              selectOption.element.setAttribute('selected', 'selected');
+              return false;
+            }
+          });
         });
       }
       else {
@@ -550,8 +558,11 @@ export class SelectComponent extends BaseComponent {
   }
 
   destroy() {
+    super.destroy();
     if (this.choices) {
+      this.choices.destroyed = true;
       this.choices.destroy();
+      this.choices = null;
     }
   }
 }
