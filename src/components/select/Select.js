@@ -445,6 +445,10 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
+  set setDisable(disabled) {
+    this.disabled = disabled;
+  }
+
   addCurrentChoices(value, items) {
     if (value) {
       let found = false;

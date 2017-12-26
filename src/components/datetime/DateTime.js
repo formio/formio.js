@@ -102,6 +102,10 @@ export class DateTimeComponent extends BaseComponent {
     });
   }
 
+  set setDisable(disabled) {
+    this.disabled = disabled;
+  }
+
   addSuffix(input, inputGroup) {
     let suffix = this.ce('span', {
       class: 'input-group-addon',
