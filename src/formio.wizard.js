@@ -122,9 +122,13 @@ export class FormioWizard extends FormioForm {
   }
 
   cancel() {
-    super.cancel();
-    this.history = [];
-    return this.setPage(0);
+    if(super.cancel()) {
+      this.history = [];
+      return this.setPage(0);
+    }
+    else {
+      return this.setPage();
+    }
   }
 
   getPageIndexByKey(key) {

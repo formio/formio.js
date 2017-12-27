@@ -884,7 +884,13 @@ export class FormioForm extends FormioComponents {
    * @alias reset
    */
   cancel() {
-    this.reset();
+    if(confirm('Are you sure you want to cancel?')) {
+      this.reset();
+      return true
+    }
+    else {
+      return false;
+    }
   }
 
   executeSubmit() {
