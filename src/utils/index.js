@@ -32,22 +32,12 @@ jsonLogic.add_operation('in', function(a, b) {
   return (b.indexOf(a) !== -1);
 });
 
-// Set Minimum Valid Date.
-jsonLogic.add_operation("minDate", function(minDate){
-  return momentModule(minDate).toISOString()
-});
-
-// Set Maximum Valid Date.
-jsonLogic.add_operation("maxDate", function(maxDate){
-  return momentModule(maxDate).toISOString()
-});
-
 // Retrieve Any Date
 jsonLogic.add_operation("getDate", function(date){
   return momentModule(date).toISOString()
 });
 
-// Set Reactive Minimum Date
+// Set Relative Minimum Date
 jsonLogic.add_operation("relativeMinDate", function(relativeMinDate){
   return momentModule().subtract(relativeMinDate, "days").toISOString()
 });
