@@ -394,7 +394,7 @@ export class SelectComponent extends BaseComponent {
 
     let placeholderValue = this.t(this.component.placeholder);
     let choicesOptions = {
-      removeItemButton: true,
+      removeItemButton: this.component.removeItemButton || (this.component.multiple || false),
       itemSelectText: '',
       classNames: {
         containerOuter: 'choices form-group formio-choices',
@@ -404,7 +404,8 @@ export class SelectComponent extends BaseComponent {
       placeholderValue: placeholderValue,
       searchPlaceholderValue: placeholderValue,
       shouldSort: false,
-      position: (this.component.dropdown || 'auto')
+      position: (this.component.dropdown || 'auto'),
+      searchEnabled: this.component.searchEnabled || false
     };
 
     let tabIndex = input.tabIndex;
