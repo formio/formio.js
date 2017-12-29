@@ -9,7 +9,9 @@ import _isEmpty from 'lodash/isEmpty';
 import _isArray from 'lodash/isArray';
 import _isObject from 'lodash/isObject';
 import _isEqual from 'lodash/isEqual';
+import _isString from 'lodash/isString';
 import _cloneDeep from 'lodash/cloneDeep';
+import _find  from 'lodash/find';
 
 // Fix performance issues in Choices by adding a debounce around render method.
 Choices.prototype._render = Choices.prototype.render;
@@ -554,8 +556,26 @@ export class SelectComponent extends BaseComponent {
    */
   asString(value) {
     value = value || this.getValue();
-    value = (typeof value !== 'object') ? {label: value} : value;
-    return this.itemTemplate(value);
+
+    if (this.component.dataSrc === 'values') {
+      value = _find(this.component.data.values, [ 'value', value ]);
+    }
+
+    if (_isString(value)) {
+      return value;
+    }
+
+    return _isObject(value)
+      ? this.itemTemplate(value)
+      : '-';
+  }
+
+  setupValueElement(element) {
+    element.innerHTML = this.asString();
+  }
+
+  updateViewOnlyValue() {
+    this.setupValueElement(this.valueElement);
   }
 
   destroy() {

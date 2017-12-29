@@ -1,6 +1,7 @@
 import { RadioComponent } from '../radio/Radio';
 import _each from 'lodash/each';
 import _isArray from 'lodash/isArray';
+import _ from 'lodash';
 export class SelectBoxesComponent extends RadioComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -67,5 +68,14 @@ export class SelectBoxesComponent extends RadioComponent {
     });
 
     this.updateValue(flags);
+  }
+
+  get view() {
+    const value = this.getValue();
+
+    return _(this.component.values || [])
+      .filter((v) => value[v.value])
+      .map('label')
+      .join(', ');
   }
 }

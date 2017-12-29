@@ -179,12 +179,8 @@ export class DayComponent extends BaseComponent {
       class: 'input-group row',
       style: 'width: 100%'
     });
-
     const subinputAtTheBottom = this.component.inputsLabelPosition === 'bottom';
-
-    const dayColumn = this.createDayInput(subinputAtTheBottom);
-    const monthColumn = this.createMonthInput(subinputAtTheBottom);
-    const yearColumn = this.createYearInput(subinputAtTheBottom);
+    const [ dayColumn, monthColumn, yearColumn ] = this.createInputs(subinputAtTheBottom);
 
     // Add the columns to the day select in the right order.
     if (this.component.dayFirst && !_get(this.component, 'fields.day.hide', false)) {
@@ -205,6 +201,19 @@ export class DayComponent extends BaseComponent {
     this.errorContainer = container;
     this.setInputStyles(inputGroup);
     container.appendChild(inputGroup);
+  }
+
+  createInputs(subinputAtTheBottom) {
+    return [
+      this.createDayInput(subinputAtTheBottom),
+      this.createMonthInput(subinputAtTheBottom),
+      this.createYearInput(subinputAtTheBottom),
+    ];
+  }
+
+  createViewOnlyInput() {
+    super.createViewOnlyInput();
+    this.createInputs();
   }
 
   setSubinputLabelStyle(label) {
@@ -319,5 +328,10 @@ export class DayComponent extends BaseComponent {
   getValueAt(index) {
     this.inputs[index].value = this.date.format(this.format);
     return this.inputs[index].value;
+  }
+
+  get view() {
+    const date = this.date;
+    return date.isValid() ? date.format(this.format) : null;
   }
 }
