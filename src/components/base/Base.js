@@ -10,6 +10,7 @@ import _clone from 'lodash/clone';
 import _defaults from 'lodash/defaults';
 import _isEqual from 'lodash/isEqual';
 import _isUndefined from 'lodash/isUndefined';
+import _toString from 'lodash/toString';
 import i18next from 'i18next';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
@@ -328,27 +329,103 @@ export class BaseComponent {
    * Builds the component.
    */
   build() {
-    this.createElement();
+    if (this.viewOnlyMode()) {
+      this.viewOnlyBuild();
+    }
+    else {
+      this.createElement();
 
-    const labelAtTheBottom = this.component.labelPosition === 'bottom';
-    if (!labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    if (!this.createWrapper()) {
-      this.createInput(this.element);
-    }
-    if (labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    this.createDescription(this.element);
+      const labelAtTheBottom = this.component.labelPosition === 'bottom';
+      if (!labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+      if (!this.createWrapper()) {
+        this.createInput(this.element);
+      }
+      if (labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+      this.createDescription(this.element);
 
-    // Disable if needed.
-    if (this.shouldDisable) {
-      this.disabled = true;
+      // Disable if needed.
+      if (this.shouldDisable) {
+        this.disabled = true;
+      }
+
+      // Restore the value.
+      this.restoreValue();
+    }
+  }
+
+  viewOnlyMode() {
+    return this.options.readOnly && this.options.viewAsHtml;
+  }
+
+  viewOnlyBuild() {
+    this.createViewOnlyElement();
+    this.createViewOnlyLabel(this.element);
+    this.createViewOnlyInput();
+    this.createViewOnlyValue(this.element);
+  }
+
+  createViewOnlyElement() {
+    this.element = this.ce('dl', {
+      id: this.id
+    });
+
+    if (this.element) {
+      // Ensure you can get the component info from the element.
+      this.element.component = this.component;
     }
 
-    // Restore the value.
-    this.restoreValue();
+    return this.element;
+  }
+
+  createViewOnlyInput() {
+    this.input = this.ce(this.info.type, this.info.attr);
+    this.inputs.push(this.input);
+    return this.input;
+  }
+
+  createViewOnlyLabel(container) {
+    if (this.labelIsHidden()) {
+      return;
+    }
+
+    this.labelElement = this.ce('dt');
+    this.labelElement.appendChild(this.text(this.component.label));
+    this.createTooltip(this.labelElement);
+    container.appendChild(this.labelElement);
+  }
+
+  createViewOnlyValue(container) {
+    this.valueElement = this.ce('dd');
+    this.setupValueElement(this.valueElement);
+    container.appendChild(this.valueElement);
+  }
+
+  setupValueElement(element) {
+    const value = this.text(this.view || this.defaultViewOnlyValue);
+    element.appendChild(value);
+  }
+
+  get defaultViewOnlyValue() {
+    return '-';
+  }
+
+  get view() {
+    return _toString(this.getValue());
+  }
+
+  updateViewOnlyValue() {
+    this.empty(this.valueElement);
+    this.setupValueElement(this.valueElement);
+  }
+
+  empty(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
   }
 
   /**
@@ -689,7 +766,8 @@ export class BaseComponent {
 
       if (this.labelOnTheLeft(this.component.labelPosition)) {
         input.style.marginLeft = `${totalLabelWidth}%`
-      } else {
+      }
+      else {
         input.style.marginRight = `${totalLabelWidth}%`
       }
     }
@@ -717,14 +795,16 @@ export class BaseComponent {
     // Determine label styles/classes depending on position.
     if (labelPosition === 'bottom') {
       className += ' control-label--bottom';
-    } else if (labelPosition && labelPosition !== 'top') {
+    }
+    else if (labelPosition && labelPosition !== 'top') {
       const labelWidth = this.getLabelWidth();
       const labelMargin = this.getLabelMargin();
 
       // Label is on the left or right.
       if (this.labelOnTheLeft(labelPosition)) {
         style += `float: left; width: ${labelWidth}%; margin-right: ${labelMargin}%; `;
-      } else if (this.labelOnTheRight(labelPosition)) {
+      }
+      else if (this.labelOnTheRight(labelPosition)) {
         style += `float: right; width: ${labelWidth}%; margin-left: ${labelMargin}%; `;
       }
       if (this.rightAlignedLabel(labelPosition)) {
@@ -1014,7 +1094,8 @@ export class BaseComponent {
     this.eventHandlers.push({type: evt, func: func});
     if ('addEventListener' in obj){
       obj.addEventListener(evt, func, false);
-    } else if ('attachEvent' in obj) {
+    }
+    else if ('attachEvent' in obj) {
       obj.attachEvent(`on${evt}`, func);
     }
   }
@@ -1382,6 +1463,10 @@ export class BaseComponent {
     delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
+
+      if (this.viewOnlyMode()) {
+        this.updateViewOnlyValue();
+      }
     }
     return changed;
   }
