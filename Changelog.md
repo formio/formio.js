@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.25.8
+### Added
+ - Support for JSONLogic dates.
+ - Added 'searchEnabled' option and defaulted it to false, user can enable it with component property
+ - Updated default value for 'removeItemButton' option to multi-select OR false, and if needed user can enable it with the component property
+ - Date formatting based on the locale configuration
+ - viewAsHTML feature.
+ - Confirmation dialog before a form/wizard is canceled.
+
 ## 2.25.7
 ### Fixed
  - Problem with the Select dropdown from re-rendering after it has been destroyed.

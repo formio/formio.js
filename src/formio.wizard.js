@@ -121,8 +121,8 @@ export class FormioWizard extends FormioForm {
     });
   }
 
-  cancel() {
-    if(super.cancel()) {
+  cancel(noconfirm) {
+    if(super.cancel(noconfirm)) {
       this.history = [];
       return this.setPage(0);
     }

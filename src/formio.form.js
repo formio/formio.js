@@ -883,8 +883,8 @@ export class FormioForm extends FormioComponents {
    *
    * @alias reset
    */
-  cancel() {
-    if(confirm('Are you sure you want to cancel?')) {
+  cancel(noconfirm) {
+    if(noconfirm || confirm('Are you sure you want to cancel?')) {
       this.reset();
       return true
     }
