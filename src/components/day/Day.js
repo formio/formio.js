@@ -3,10 +3,16 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _assign from 'lodash/assign';
 import moment from 'moment';
+import { getLocaleDateFormatInfo } from '../../utils';
 export class DayComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
+
+    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
+    this.dayFirst = this.component.useLocaleSettings
+      ? dateFormatInfo.dayFirst
+      : this.component.dayFirst;
   }
 
   elementInfo() {
@@ -183,13 +189,13 @@ export class DayComponent extends BaseComponent {
     const [ dayColumn, monthColumn, yearColumn ] = this.createInputs(subinputAtTheBottom);
 
     // Add the columns to the day select in the right order.
-    if (this.component.dayFirst && !_get(this.component, 'fields.day.hide', false)) {
+    if (this.dayFirst && !_get(this.component, 'fields.day.hide', false)) {
       inputGroup.appendChild(dayColumn)
     }
     if (!_get(this.component, 'fields.month.hide', false)) {
       inputGroup.appendChild(monthColumn);
     }
-    if (!this.component.dayFirst && !_get(this.component, 'fields.day.hide', false)) {
+    if (!this.dayFirst && !_get(this.component, 'fields.day.hide', false)) {
       inputGroup.appendChild(dayColumn);
     }
     if (!_get(this.component, 'fields.year.hide', false)) {
