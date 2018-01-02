@@ -100,52 +100,25 @@ export class ButtonComponent extends BaseComponent {
 
           // Display Alert if OAuth config is missing
           if(!this.component.oauth){
-            // this.addClass(this.element, 'has-error');
-            // this.addClass(this.component, 'has-error');
-            // this.addClass(this.element, 'alert alert-danger');
-            // this.addClass(this.component, 'alert alert-danger');
-            // this.addClass(formio-alerts, 'alert alert-danger');
+            // TODO replace alert with 'has-error' class and reminder to set portal OAuth action
             alert("You must assign this button to an OAuth action before it will work.");
             break;
           }
 
           // Display Alert if oAuth has an error is missing
           if(this.component.oauth.error){
+            // TODO replace alert with 'has-error' class and oauth error message
             alert("The Following Error Has Occured" + this.component.oauth.error);
             break;
           }
 
           oAuthProvider(this).initiate(function(that, results) {
-            console.log(that);
-            console.log(results);
-            console.log(that.events);
-            console.log("================== result!!!");
             that.emit('submitButton', {
               type: "submit",
               component: that.component,
               event: "formio.submit",
               data: results
             });
-
-            // formio.saveSubmission(results)
-            //   .then(function(submission) {
-            //     // Trigger the form submission.
-            //     $scope.$emit('formSubmission', submission);
-            //   });
-
-
-
-            // that.emit('submitButton', results);
-            // that.events.emit("formSubmission", results);
-
-
-
-            // $scope.formio.saveSubmission(submission)
-            //   .then(function(submission) {
-            //     // Trigger the form submission.
-            //     $scope.$emit('formSubmission', submission);
-            //   })
-            //
 
           });
           break;
