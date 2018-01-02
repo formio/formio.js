@@ -14,11 +14,10 @@ export class RadioComponent extends BaseComponent {
     const inputGroup = this.ce('div', {
       class: 'input-group'
     });
-    const inputType = this.component.inputType;
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
 
     _each(this.component.values, (value) => {
-      const wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
+      const wrapperClass = this.optionWrapperClass;
       const labelWrapper = this.ce('div', {
         class: wrapperClass
       });
@@ -39,7 +38,7 @@ export class RadioComponent extends BaseComponent {
 
       // Create the input.
       const input = this.ce('input');
-      _each(this.info.attr, function(value, key) {
+      _each(this.info.attr, function (value, key) {
         input.setAttribute(key, value);
       });
 
@@ -62,6 +61,12 @@ export class RadioComponent extends BaseComponent {
     });
     container.appendChild(inputGroup);
     this.errorContainer = container;
+  }
+
+  get optionWrapperClass() {
+    const inputType = this.component.inputType;
+    const wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
+    return wrapperClass;
   }
 
   optionsLabelOnTheTopOrLeft() {
@@ -140,6 +145,40 @@ export class RadioComponent extends BaseComponent {
 
       this.inputs[index].checked = (inputValue === value);
     }
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+    if (changed) {
+      //add/remove selected option class
+      const value = this.data[this.component.key];
+      const optionSelectedClass = 'radio-selected';
+
+      const inputs = this.inputs;
+      _each(inputs, (input) => {
+        const wrapperClass = this.optionWrapperClass;
+        let wrapper;
+        //find wrapper of this option
+        let ancestor = input.parentElement;
+        while (ancestor) {
+          if (ancestor.classList.contains(wrapperClass)) {
+            wrapper = ancestor;
+            break;
+          } else {
+            ancestor = ancestor.parentElement;
+          }
+        }
+        if (input.value === value) {
+          //add class to container when selected
+          if (wrapper) {
+            wrapper.classList.add(optionSelectedClass);
+          }
+        } else {
+          wrapper.classList.remove(optionSelectedClass);
+        }
+      });
+    }
+    return changed;
   }
 
   destroy() {
