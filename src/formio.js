@@ -243,7 +243,7 @@ export class Formio {
     if (typeof query === 'object') {
       query = '?' + serialize(query.params);
     }
-    return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', {}, opts);
+    return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', null, opts);
   }
 
   loadForm(query, opts) {
@@ -585,14 +585,11 @@ export class Formio {
     if(!opts || (typeof opts !== 'object')) {
       opts = {};
     }
-    if(!data || (typeof data !== 'object')) {
-      data = {};
-    }
 
     var requestArgs = {
       url: url,
       method: method,
-      data: data,
+      data: data || null,
       opts: opts
     };
 

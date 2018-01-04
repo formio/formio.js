@@ -12044,7 +12044,7 @@ var Formio = function () {
       if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
         query = '?' + serialize(query.params);
       }
-      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', {}, opts);
+      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', null, opts);
     }
   }, {
     key: 'getUrlParts',
@@ -12075,14 +12075,11 @@ var Formio = function () {
       if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
         opts = {};
       }
-      if (!data || (typeof data === 'undefined' ? 'undefined' : _typeof(data)) !== 'object') {
-        data = {};
-      }
 
       var requestArgs = {
         url: url,
         method: method,
-        data: data,
+        data: data || null,
         opts: opts
       };
 

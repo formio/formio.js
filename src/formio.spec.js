@@ -540,7 +540,7 @@ describe('Plugins', () => {
         type: type,
         method: method,
         url: formio[type + (method === 'POST' ? 'sUrl' : 'Url')],
-        data: _.startsWith(fnName, 'save') ? testData : {},
+        data: _.startsWith(fnName, 'save') ? testData : null,
         opts: testOpts
       };
 
@@ -703,7 +703,7 @@ describe('Plugins', () => {
       var expectedArgs = {
         url: url,
         method: method,
-        data: {},
+        data: null,
         opts: {}
       };
 
