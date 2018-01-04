@@ -243,7 +243,7 @@ export class Formio {
     if (typeof query === 'object') {
       query = '?' + serialize(query.params);
     }
-    return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query);
+    return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', {}, opts);
   }
 
   loadForm(query, opts) {
@@ -369,6 +369,14 @@ export class Formio {
     }
   }
 
+  currentUser() {
+    return Formio.currentUser(this);
+  }
+
+  accessInfo() {
+    return Formio.accessInfo(this);
+  }
+
   /**
    * Returns the JWT token for this instance.
    *
@@ -489,8 +497,8 @@ export class Formio {
   canSubmit() {
     return Promise.all([
       this.loadForm(),
-      Formio.currentUser(),
-      Formio.accessInfo()
+      this.currentUser(),
+      this.accessInfo()
     ]).then(function(results) {
       var form = results.shift();
       var user = results.shift();
@@ -572,23 +580,40 @@ export class Formio {
     return str.join("&");
   }
 
-  static makeStaticRequest(url, method, data, opts) {
+  static getRequestArgs(formio, type, url, method, data, opts) {
     method = (method || 'GET').toUpperCase();
-    if(!opts || typeof opts !== 'object') {
+    if(!opts || (typeof opts !== 'object')) {
       opts = {};
     }
+    if(!data || (typeof data !== 'object')) {
+      data = {};
+    }
+
     var requestArgs = {
       url: url,
       method: method,
-      data: data
+      data: data,
+      opts: opts
     };
 
+    if (type) {
+      requestArgs.type = type;
+    }
+
+    if (formio) {
+      requestArgs.formio = formio;
+    }
+    return requestArgs;
+  }
+
+  static makeStaticRequest(url, method, data, opts) {
+    var requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);
     var request = Formio.pluginWait('preRequest', requestArgs)
       .then(function() {
         return Formio.pluginGet('staticRequest', requestArgs)
           .then(function(result) {
             if (result === null || result === undefined) {
-              return Formio.request(url, method, data, opts.header, opts);
+              return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
             }
             return result;
           });
@@ -598,26 +623,16 @@ export class Formio {
   }
 
   static makeRequest(formio, type, url, method, data, opts) {
-    method = (method || 'GET').toUpperCase();
-    if(!opts || typeof opts !== 'object') {
-      opts = {};
+    if (!formio) {
+      return Formio.makeStaticRequest(url, method, data, opts);
     }
-
-    var requestArgs = {
-      formio: formio,
-      type: type,
-      url: url,
-      method: method,
-      data: data,
-      opts: opts
-    };
-
+    var requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
     var request = Formio.pluginWait('preRequest', requestArgs)
       .then(function() {
         return Formio.pluginGet('request', requestArgs)
           .then(function(result) {
             if (result === null || result === undefined) {
-              return Formio.request(url, method, data, opts.header, opts);
+              return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
             }
             return result;
           });
@@ -966,38 +981,41 @@ export class Formio {
     }, value);
   }
 
-  static accessInfo() {
-    return Formio.makeStaticRequest(Formio.projectUrl + '/access');
+  static accessInfo(formio) {
+    var projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+    return Formio.makeRequest(formio, 'accessInfo', projectUrl + '/access');
   }
 
-  static currentUser() {
-    var url = Formio.baseUrl + '/current';
+  static currentUser(formio) {
+    var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+    projectUrl += '/current';
     var user = this.getUser();
     if (user) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
-        url: url,
+        url: projectUrl,
         method: 'GET'
       })
     }
     var token = Formio.getToken();
     if (!token) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
-        url: url,
+        url: projectUrl,
         method: 'GET'
       })
     }
-    return Formio.makeStaticRequest(url)
+    return Formio.makeRequest(formio, 'currentUser', projectUrl)
       .then(function(response) {
         Formio.setUser(response);
         return response;
       });
   }
 
-  static logout() {
+  static logout(formio) {
     Formio.setToken(null);
     Formio.setUser(null);
     Formio.clearCache();
-    return Formio.makeStaticRequest(Formio.baseUrl + '/logout');
+    var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+    return Formio.makeRequest(formio, 'logout', projectUrl + '/logout');
   }
 
   /**

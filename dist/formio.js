@@ -421,6 +421,16 @@ var Formio = function () {
         });
       }
     }
+  }, {
+    key: 'currentUser',
+    value: function currentUser() {
+      return Formio.currentUser(this);
+    }
+  }, {
+    key: 'accessInfo',
+    value: function accessInfo() {
+      return Formio.accessInfo(this);
+    }
 
     /**
      * Returns the JWT token for this instance.
@@ -550,7 +560,7 @@ var Formio = function () {
   }, {
     key: 'canSubmit',
     value: function canSubmit() {
-      return Promise.all([this.loadForm(), Formio.currentUser(), Formio.accessInfo()]).then(function (results) {
+      return Promise.all([this.loadForm(), this.currentUser(), this.accessInfo()]).then(function (results) {
         var form = results.shift();
         var user = results.shift();
         var access = results.shift();
@@ -616,7 +626,7 @@ var Formio = function () {
       if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
         query = '?' + serialize(query.params);
       }
-      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query);
+      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', {}, opts);
     }
   }, {
     key: 'getUrlParts',
@@ -641,22 +651,40 @@ var Formio = function () {
       }return str.join("&");
     }
   }, {
-    key: 'makeStaticRequest',
-    value: function makeStaticRequest(url, method, data, opts) {
+    key: 'getRequestArgs',
+    value: function getRequestArgs(formio, type, url, method, data, opts) {
       method = (method || 'GET').toUpperCase();
       if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
         opts = {};
       }
+      if (!data || (typeof data === 'undefined' ? 'undefined' : _typeof(data)) !== 'object') {
+        data = {};
+      }
+
       var requestArgs = {
         url: url,
         method: method,
-        data: data
+        data: data,
+        opts: opts
       };
 
+      if (type) {
+        requestArgs.type = type;
+      }
+
+      if (formio) {
+        requestArgs.formio = formio;
+      }
+      return requestArgs;
+    }
+  }, {
+    key: 'makeStaticRequest',
+    value: function makeStaticRequest(url, method, data, opts) {
+      var requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('staticRequest', requestArgs).then(function (result) {
           if (result === null || result === undefined) {
-            return Formio.request(url, method, data, opts.header, opts);
+            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         });
@@ -667,24 +695,14 @@ var Formio = function () {
   }, {
     key: 'makeRequest',
     value: function makeRequest(formio, type, url, method, data, opts) {
-      method = (method || 'GET').toUpperCase();
-      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
-        opts = {};
+      if (!formio) {
+        return Formio.makeStaticRequest(url, method, data, opts);
       }
-
-      var requestArgs = {
-        formio: formio,
-        type: type,
-        url: url,
-        method: method,
-        data: data,
-        opts: opts
-      };
-
+      var requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('request', requestArgs).then(function (result) {
           if (result === null || result === undefined) {
-            return Formio.request(url, method, data, opts.header, opts);
+            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         });
@@ -1035,39 +1053,42 @@ var Formio = function () {
     }
   }, {
     key: 'accessInfo',
-    value: function accessInfo() {
-      return Formio.makeStaticRequest(Formio.projectUrl + '/access');
+    value: function accessInfo(formio) {
+      var projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+      return Formio.makeRequest(formio, 'accessInfo', projectUrl + '/access');
     }
   }, {
     key: 'currentUser',
-    value: function currentUser() {
-      var url = Formio.baseUrl + '/current';
+    value: function currentUser(formio) {
+      var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+      projectUrl += '/current';
       var user = this.getUser();
       if (user) {
         return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
-          url: url,
+          url: projectUrl,
           method: 'GET'
         });
       }
       var token = Formio.getToken();
       if (!token) {
         return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
-          url: url,
+          url: projectUrl,
           method: 'GET'
         });
       }
-      return Formio.makeStaticRequest(url).then(function (response) {
+      return Formio.makeRequest(formio, 'currentUser', projectUrl).then(function (response) {
         Formio.setUser(response);
         return response;
       });
     }
   }, {
     key: 'logout',
-    value: function logout() {
+    value: function logout(formio) {
       Formio.setToken(null);
       Formio.setUser(null);
       Formio.clearCache();
-      return Formio.makeStaticRequest(Formio.baseUrl + '/logout');
+      var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+      return Formio.makeRequest(formio, 'logout', projectUrl + '/logout');
     }
 
     /**
@@ -1599,7 +1620,6 @@ exports.set = function(name, value, options) {
   var path     = opts.path     !== undefined ? opts.path     : (defaults.path !== undefined ? defaults.path : '/');
   var secure   = opts.secure   !== undefined ? opts.secure   : defaults.secure;
   var httponly = opts.httponly !== undefined ? opts.httponly : defaults.httponly;
-  var samesite = opts.samesite !== undefined ? opts.samesite : defaults.samesite;
 
   // Determine cookie expiration date
   // If succesful the result will be a valid Date, otherwise it will be an invalid Date or false(ish)
@@ -1608,7 +1628,7 @@ exports.set = function(name, value, options) {
       typeof expires === 'number' ? new Date().getTime() + (expires * 864e5) :
       // else expires should be either a Date object or in a format recognized by Date.parse()
       expires
-  ) : 0;
+  ) : '';
 
   // Set cookie
   document.cookie = name.replace(/[^+#$&^`|]/g, encodeURIComponent)                // Encode cookie name
@@ -1616,31 +1636,31 @@ exports.set = function(name, value, options) {
   .replace(')', '%29') +
   '=' + value.replace(/[^+#$&/:<-\[\]-}]/g, encodeURIComponent) +                  // Encode cookie value (RFC6265)
   (expDate && expDate.getTime() >= 0 ? ';expires=' + expDate.toUTCString() : '') + // Add expiration date
-  (domain   ? ';domain=' + domain     : '') +                                      // Add domain
-  (path     ? ';path='   + path       : '') +                                      // Add path
-  (secure   ? ';secure'               : '') +                                      // Add secure option
-  (httponly ? ';httponly'             : '') +                                      // Add httponly option
-  (samesite ? ';samesite=' + samesite : '');                                       // Add samesite option
+  (domain   ? ';domain=' + domain : '') +                                          // Add domain
+  (path     ? ';path='   + path   : '') +                                          // Add path
+  (secure   ? ';secure'           : '') +                                          // Add secure option
+  (httponly ? ';httponly'         : '');                                           // Add httponly option
 };
 
 exports.get = function(name) {
   var cookies = document.cookie.split(';');
-  
+
   // Iterate all cookies
-  while(cookies.length) {
-    var cookie = cookies.pop();
+  for(var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    var cookieLength = cookie.length;
 
     // Determine separator index ("name=value")
     var separatorIndex = cookie.indexOf('=');
 
     // IE<11 emits the equal sign when the cookie value is empty
-    separatorIndex = separatorIndex < 0 ? cookie.length : separatorIndex;
+    separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
 
-    var cookie_name = decodeURIComponent(cookie.slice(0, separatorIndex).replace(/^\s+/, ''));
+    var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
 
     // Return cookie value if the name matches
     if (cookie_name === name) {
-      return decodeURIComponent(cookie.slice(separatorIndex + 1));
+      return decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
     }
   }
 
@@ -1663,19 +1683,20 @@ exports.all = function() {
   var cookies = document.cookie.split(';');
 
   // Iterate all cookies
-  while(cookies.length) {
-    var cookie = cookies.pop();
+  for(var i = 0; i < cookies.length; i++) {
+	  var cookie = cookies[i];
+    var cookieLength = cookie.length;
 
-    // Determine separator index ("name=value")
-    var separatorIndex = cookie.indexOf('=');
+	  // Determine separator index ("name=value")
+	  var separatorIndex = cookie.indexOf('=');
 
-    // IE<11 emits the equal sign when the cookie value is empty
-    separatorIndex = separatorIndex < 0 ? cookie.length : separatorIndex;
+	  // IE<11 emits the equal sign when the cookie value is empty
+	  separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
 
     // add the cookie name and value to the `all` object
-    var cookie_name = decodeURIComponent(cookie.slice(0, separatorIndex).replace(/^\s+/, ''));
-    all[cookie_name] = decodeURIComponent(cookie.slice(separatorIndex + 1));
-  }
+	  var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
+	  all[cookie_name] = decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
+	}
 
   return all;
 };

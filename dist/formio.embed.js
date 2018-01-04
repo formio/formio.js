@@ -11839,6 +11839,16 @@ var Formio = function () {
         });
       }
     }
+  }, {
+    key: 'currentUser',
+    value: function currentUser() {
+      return Formio.currentUser(this);
+    }
+  }, {
+    key: 'accessInfo',
+    value: function accessInfo() {
+      return Formio.accessInfo(this);
+    }
 
     /**
      * Returns the JWT token for this instance.
@@ -11968,7 +11978,7 @@ var Formio = function () {
   }, {
     key: 'canSubmit',
     value: function canSubmit() {
-      return Promise.all([this.loadForm(), Formio.currentUser(), Formio.accessInfo()]).then(function (results) {
+      return Promise.all([this.loadForm(), this.currentUser(), this.accessInfo()]).then(function (results) {
         var form = results.shift();
         var user = results.shift();
         var access = results.shift();
@@ -12034,7 +12044,7 @@ var Formio = function () {
       if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
         query = '?' + serialize(query.params);
       }
-      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query);
+      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', {}, opts);
     }
   }, {
     key: 'getUrlParts',
@@ -12059,22 +12069,40 @@ var Formio = function () {
       }return str.join("&");
     }
   }, {
-    key: 'makeStaticRequest',
-    value: function makeStaticRequest(url, method, data, opts) {
+    key: 'getRequestArgs',
+    value: function getRequestArgs(formio, type, url, method, data, opts) {
       method = (method || 'GET').toUpperCase();
       if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
         opts = {};
       }
+      if (!data || (typeof data === 'undefined' ? 'undefined' : _typeof(data)) !== 'object') {
+        data = {};
+      }
+
       var requestArgs = {
         url: url,
         method: method,
-        data: data
+        data: data,
+        opts: opts
       };
 
+      if (type) {
+        requestArgs.type = type;
+      }
+
+      if (formio) {
+        requestArgs.formio = formio;
+      }
+      return requestArgs;
+    }
+  }, {
+    key: 'makeStaticRequest',
+    value: function makeStaticRequest(url, method, data, opts) {
+      var requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('staticRequest', requestArgs).then(function (result) {
           if (result === null || result === undefined) {
-            return Formio.request(url, method, data, opts.header, opts);
+            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         });
@@ -12085,24 +12113,14 @@ var Formio = function () {
   }, {
     key: 'makeRequest',
     value: function makeRequest(formio, type, url, method, data, opts) {
-      method = (method || 'GET').toUpperCase();
-      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
-        opts = {};
+      if (!formio) {
+        return Formio.makeStaticRequest(url, method, data, opts);
       }
-
-      var requestArgs = {
-        formio: formio,
-        type: type,
-        url: url,
-        method: method,
-        data: data,
-        opts: opts
-      };
-
+      var requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('request', requestArgs).then(function (result) {
           if (result === null || result === undefined) {
-            return Formio.request(url, method, data, opts.header, opts);
+            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         });
@@ -12453,39 +12471,42 @@ var Formio = function () {
     }
   }, {
     key: 'accessInfo',
-    value: function accessInfo() {
-      return Formio.makeStaticRequest(Formio.projectUrl + '/access');
+    value: function accessInfo(formio) {
+      var projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+      return Formio.makeRequest(formio, 'accessInfo', projectUrl + '/access');
     }
   }, {
     key: 'currentUser',
-    value: function currentUser() {
-      var url = Formio.baseUrl + '/current';
+    value: function currentUser(formio) {
+      var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+      projectUrl += '/current';
       var user = this.getUser();
       if (user) {
         return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
-          url: url,
+          url: projectUrl,
           method: 'GET'
         });
       }
       var token = Formio.getToken();
       if (!token) {
         return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
-          url: url,
+          url: projectUrl,
           method: 'GET'
         });
       }
-      return Formio.makeStaticRequest(url).then(function (response) {
+      return Formio.makeRequest(formio, 'currentUser', projectUrl).then(function (response) {
         Formio.setUser(response);
         return response;
       });
     }
   }, {
     key: 'logout',
-    value: function logout() {
+    value: function logout(formio) {
       Formio.setToken(null);
       Formio.setUser(null);
       Formio.clearCache();
-      return Formio.makeStaticRequest(Formio.baseUrl + '/logout');
+      var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+      return Formio.makeRequest(formio, 'logout', projectUrl + '/logout');
     }
 
     /**
@@ -14467,7 +14488,6 @@ exports.set = function(name, value, options) {
   var path     = opts.path     !== undefined ? opts.path     : (defaults.path !== undefined ? defaults.path : '/');
   var secure   = opts.secure   !== undefined ? opts.secure   : defaults.secure;
   var httponly = opts.httponly !== undefined ? opts.httponly : defaults.httponly;
-  var samesite = opts.samesite !== undefined ? opts.samesite : defaults.samesite;
 
   // Determine cookie expiration date
   // If succesful the result will be a valid Date, otherwise it will be an invalid Date or false(ish)
@@ -14476,7 +14496,7 @@ exports.set = function(name, value, options) {
       typeof expires === 'number' ? new Date().getTime() + (expires * 864e5) :
       // else expires should be either a Date object or in a format recognized by Date.parse()
       expires
-  ) : 0;
+  ) : '';
 
   // Set cookie
   document.cookie = name.replace(/[^+#$&^`|]/g, encodeURIComponent)                // Encode cookie name
@@ -14484,31 +14504,31 @@ exports.set = function(name, value, options) {
   .replace(')', '%29') +
   '=' + value.replace(/[^+#$&/:<-\[\]-}]/g, encodeURIComponent) +                  // Encode cookie value (RFC6265)
   (expDate && expDate.getTime() >= 0 ? ';expires=' + expDate.toUTCString() : '') + // Add expiration date
-  (domain   ? ';domain=' + domain     : '') +                                      // Add domain
-  (path     ? ';path='   + path       : '') +                                      // Add path
-  (secure   ? ';secure'               : '') +                                      // Add secure option
-  (httponly ? ';httponly'             : '') +                                      // Add httponly option
-  (samesite ? ';samesite=' + samesite : '');                                       // Add samesite option
+  (domain   ? ';domain=' + domain : '') +                                          // Add domain
+  (path     ? ';path='   + path   : '') +                                          // Add path
+  (secure   ? ';secure'           : '') +                                          // Add secure option
+  (httponly ? ';httponly'         : '');                                           // Add httponly option
 };
 
 exports.get = function(name) {
   var cookies = document.cookie.split(';');
-  
+
   // Iterate all cookies
-  while(cookies.length) {
-    var cookie = cookies.pop();
+  for(var i = 0; i < cookies.length; i++) {
+    var cookie = cookies[i];
+    var cookieLength = cookie.length;
 
     // Determine separator index ("name=value")
     var separatorIndex = cookie.indexOf('=');
 
     // IE<11 emits the equal sign when the cookie value is empty
-    separatorIndex = separatorIndex < 0 ? cookie.length : separatorIndex;
+    separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
 
-    var cookie_name = decodeURIComponent(cookie.slice(0, separatorIndex).replace(/^\s+/, ''));
+    var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
 
     // Return cookie value if the name matches
     if (cookie_name === name) {
-      return decodeURIComponent(cookie.slice(separatorIndex + 1));
+      return decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
     }
   }
 
@@ -14531,19 +14551,20 @@ exports.all = function() {
   var cookies = document.cookie.split(';');
 
   // Iterate all cookies
-  while(cookies.length) {
-    var cookie = cookies.pop();
+  for(var i = 0; i < cookies.length; i++) {
+	  var cookie = cookies[i];
+    var cookieLength = cookie.length;
 
-    // Determine separator index ("name=value")
-    var separatorIndex = cookie.indexOf('=');
+	  // Determine separator index ("name=value")
+	  var separatorIndex = cookie.indexOf('=');
 
-    // IE<11 emits the equal sign when the cookie value is empty
-    separatorIndex = separatorIndex < 0 ? cookie.length : separatorIndex;
+	  // IE<11 emits the equal sign when the cookie value is empty
+	  separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
 
     // add the cookie name and value to the `all` object
-    var cookie_name = decodeURIComponent(cookie.slice(0, separatorIndex).replace(/^\s+/, ''));
-    all[cookie_name] = decodeURIComponent(cookie.slice(separatorIndex + 1));
-  }
+	  var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
+	  all[cookie_name] = decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
+	}
 
   return all;
 };
@@ -18515,8 +18536,8 @@ var Connector = function (_EventEmitter) {
     });
   };
 
-  Connector.prototype.saveMissing = function saveMissing(languages, namespace, key, fallbackValue, isUpdate) {
-    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, { isUpdate: isUpdate });
+  Connector.prototype.saveMissing = function saveMissing(languages, namespace, key, fallbackValue) {
+    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue);
 
     // write to store to avoid resending
     if (!languages || !languages[0]) return;
@@ -19481,8 +19502,7 @@ var Translator = function (_EventEmitter) {
     var joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
 
     // object
-    var handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
-    if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
+    if (res && typeof res !== 'string' && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
@@ -19521,9 +19541,8 @@ var Translator = function (_EventEmitter) {
       }
 
       // save missing
-      var updateMissing = options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
-      if (_usedKey || usedDefault || updateMissing) {
-        this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? options.defaultValue : res);
+      if (_usedKey || usedDefault) {
+        this.logger.log('missingKey', lng, namespace, key, res);
 
         var lngs = [];
         var fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
@@ -19539,9 +19558,9 @@ var Translator = function (_EventEmitter) {
 
         if (this.options.saveMissing) {
           if (this.options.missingKeyHandler) {
-            this.options.missingKeyHandler(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
+            this.options.missingKeyHandler(lngs, namespace, key, res);
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
-            this.backendConnector.saveMissing(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
+            this.backendConnector.saveMissing(lngs, namespace, key, res);
           }
         }
 
@@ -19693,7 +19712,6 @@ function get() {
     contextSeparator: '_',
 
     saveMissing: false, // enable to send missing values
-    updateMissing: false, // enable to update default values if different from translated value (only useful on initial development, or when keeping code as source of truth)
     saveMissingTo: 'fallback', // 'current' || 'all'
     missingKeyHandler: false, // function(lng, ns, key, fallbackValue) -> override if prefer on handling
 
@@ -20053,7 +20071,6 @@ var I18n = function (_EventEmitter) {
       if (l) {
         _this4.language = l;
         _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
-        if (!_this4.translator.language) _this4.translator.changeLanguage(l);
 
         if (_this4.services.languageDetector) _this4.services.languageDetector.cacheUserLanguage(l);
       }
@@ -50477,7 +50494,7 @@ return hooks;
 (function (global){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.12.9
+ * @version 1.12.6
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -50505,7 +50522,7 @@ return hooks;
 	(global.Popper = factory());
 }(this, (function () { 'use strict';
 
-var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+var isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
 var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
 var timeoutDuration = 0;
 for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
@@ -50522,7 +50539,7 @@ function microtaskDebounce(fn) {
       return;
     }
     called = true;
-    window.Promise.resolve().then(function () {
+    Promise.resolve().then(function () {
       called = false;
       fn();
     });
@@ -50579,7 +50596,7 @@ function getStyleComputedProperty(element, property) {
     return [];
   }
   // NOTE: 1 DOM access here
-  var css = getComputedStyle(element, null);
+  var css = window.getComputedStyle(element, null);
   return property ? css[property] : css;
 }
 
@@ -50607,7 +50624,7 @@ function getParentNode(element) {
 function getScrollParent(element) {
   // Return body, `getScroll` will take care to get the correct `scrollTop` from it
   if (!element) {
-    return document.body;
+    return window.document.body;
   }
 
   switch (element.nodeName) {
@@ -50649,7 +50666,7 @@ function getOffsetParent(element) {
       return element.ownerDocument.documentElement;
     }
 
-    return document.documentElement;
+    return window.document.documentElement;
   }
 
   // .offsetParent will return the closest TD or TABLE in case
@@ -50696,7 +50713,7 @@ function getRoot(node) {
 function findCommonOffsetParent(element1, element2) {
   // This check is needed to avoid errors in case one of the elements isn't defined for any reason
   if (!element1 || !element1.nodeType || !element2 || !element2.nodeType) {
-    return document.documentElement;
+    return window.document.documentElement;
   }
 
   // Here we make sure to give as "start" the element that comes first in the DOM
@@ -50788,7 +50805,7 @@ function getBordersSize(styles, axis) {
   var sideA = axis === 'x' ? 'Left' : 'Top';
   var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
 
-  return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
+  return +styles['border' + sideA + 'Width'].split('px')[0] + +styles['border' + sideB + 'Width'].split('px')[0];
 }
 
 /**
@@ -50811,9 +50828,9 @@ function getSize(axis, body, html, computedStyle) {
 }
 
 function getWindowSizes() {
-  var body = document.body;
-  var html = document.documentElement;
-  var computedStyle = isIE10$1() && getComputedStyle(html);
+  var body = window.document.body;
+  var html = window.document.documentElement;
+  var computedStyle = isIE10$1() && window.getComputedStyle(html);
 
   return {
     height: getSize('Height', body, html, computedStyle),
@@ -50956,8 +50973,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   var scrollParent = getScrollParent(children);
 
   var styles = getStyleComputedProperty(parent);
-  var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
-  var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
+  var borderTopWidth = +styles.borderTopWidth.split('px')[0];
+  var borderLeftWidth = +styles.borderLeftWidth.split('px')[0];
 
   var offsets = getClientRect({
     top: childrenRect.top - parentRect.top - borderTopWidth,
@@ -50973,8 +50990,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   // differently when margins are applied to it. The margins are included in
   // the box of the documentElement, in the other cases not.
   if (!isIE10 && isHTML) {
-    var marginTop = parseFloat(styles.marginTop, 10);
-    var marginLeft = parseFloat(styles.marginLeft, 10);
+    var marginTop = +styles.marginTop.split('px')[0];
+    var marginLeft = +styles.marginLeft.split('px')[0];
 
     offsets.top -= borderTopWidth - marginTop;
     offsets.bottom -= borderTopWidth - marginTop;
@@ -51053,7 +51070,7 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
     // Handle other cases based on DOM element used as boundaries
     var boundariesNode = void 0;
     if (boundariesElement === 'scrollParent') {
-      boundariesNode = getScrollParent(getParentNode(reference));
+      boundariesNode = getScrollParent(getParentNode(popper));
       if (boundariesNode.nodeName === 'BODY') {
         boundariesNode = popper.ownerDocument.documentElement;
       }
@@ -51179,7 +51196,7 @@ function getReferenceOffsets(state, popper, reference) {
  * @returns {Object} object containing width and height properties
  */
 function getOuterSizes(element) {
-  var styles = getComputedStyle(element);
+  var styles = window.getComputedStyle(element);
   var x = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
   var y = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
   var result = {
@@ -51396,7 +51413,7 @@ function getSupportedPropertyName(property) {
   for (var i = 0; i < prefixes.length - 1; i++) {
     var prefix = prefixes[i];
     var toCheck = prefix ? '' + prefix + upperProp : property;
-    if (typeof document.body.style[toCheck] !== 'undefined') {
+    if (typeof window.document.body.style[toCheck] !== 'undefined') {
       return toCheck;
     }
   }
@@ -51515,7 +51532,7 @@ function removeEventListeners(reference, state) {
  */
 function disableEventListeners() {
   if (this.state.eventsEnabled) {
-    cancelAnimationFrame(this.scheduleUpdate);
+    window.cancelAnimationFrame(this.scheduleUpdate);
     this.state = removeEventListeners(this.reference, this.state);
   }
 }
@@ -51755,8 +51772,6 @@ function isModifierRequired(modifiers, requestingName, requestedName) {
  * @returns {Object} The data object, properly modified
  */
 function arrow(data, options) {
-  var _data$offsets$arrow;
-
   // arrow depends on keepTogether in order to work
   if (!isModifierRequired(data.instance.modifiers, 'arrow', 'keepTogether')) {
     return data;
@@ -51808,23 +51823,22 @@ function arrow(data, options) {
   if (reference[side] + arrowElementSize > popper[opSide]) {
     data.offsets.popper[side] += reference[side] + arrowElementSize - popper[opSide];
   }
-  data.offsets.popper = getClientRect(data.offsets.popper);
 
   // compute center of the popper
   var center = reference[side] + reference[len] / 2 - arrowElementSize / 2;
 
   // Compute the sideValue using the updated popper offsets
   // take popper margin in account because we don't have this info available
-  var css = getStyleComputedProperty(data.instance.popper);
-  var popperMarginSide = parseFloat(css['margin' + sideCapitalized], 10);
-  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width'], 10);
-  var sideValue = center - data.offsets.popper[side] - popperMarginSide - popperBorderSide;
+  var popperMarginSide = getStyleComputedProperty(data.instance.popper, 'margin' + sideCapitalized).replace('px', '');
+  var sideValue = center - getClientRect(data.offsets.popper)[side] - popperMarginSide;
 
   // prevent arrowElement from being placed not contiguously to its popper
   sideValue = Math.max(Math.min(popper[len] - arrowElementSize, sideValue), 0);
 
   data.arrowElement = arrowElement;
-  data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
+  data.offsets.arrow = {};
+  data.offsets.arrow[side] = Math.round(sideValue);
+  data.offsets.arrow[altSide] = ''; // make sure to unset any eventual altSide value from the DOM node
 
   return data;
 }
