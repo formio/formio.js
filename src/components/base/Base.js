@@ -11,7 +11,6 @@ import _defaults from 'lodash/defaults';
 import _isEqual from 'lodash/isEqual';
 import _isUndefined from 'lodash/isUndefined';
 import _toString from 'lodash/toString';
-import i18next from 'i18next';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
 import Tooltip from 'tooltip.js';
@@ -219,7 +218,8 @@ export class BaseComponent {
     params.keySeparator = '.|.';
     params.pluralSeparator = '._.';
     params.contextSeparator = '._.';
-    return i18next.t(text, params);
+    let translated = this.options.i18next.t(text, params);
+    return translated || text;
   }
 
   /**

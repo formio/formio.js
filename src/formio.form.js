@@ -20,7 +20,8 @@ Formio.forms = {};
 
 let getOptions = function(options) {
   options = _defaults(options, {
-    submitOnEnter: false
+    submitOnEnter: false,
+    i18next: i18next
   });
   if (!options.events) {
     options.events = new EventEmitter({
@@ -680,7 +681,7 @@ export class FormioForm extends FormioComponents {
     let submission = _clone(this._submission);
     submission.data = this.data;
     this.mergeData(this._submission.data, submission.data);
-    return submission;
+    return this._submission;
   }
 
   /**
@@ -765,7 +766,11 @@ export class FormioForm extends FormioComponents {
   build() {
     this.on('submitButton', () => this.submit(), true);
     this.addComponents();
-    this.checkConditions(this.getValue());
+    let submission = this.getValue();
+    this.checkConditions(submission);
+    this.checkData(submission.data, {
+      noValidate: true
+    });
   }
 
   /**

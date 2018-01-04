@@ -1571,10 +1571,6 @@ var _toString2 = require('lodash/toString');
 
 var _toString3 = _interopRequireDefault(_toString2);
 
-var _i18next = require('i18next');
-
-var _i18next2 = _interopRequireDefault(_i18next);
-
 var _utils = require('../../utils');
 
 var _utils2 = _interopRequireDefault(_utils);
@@ -1803,7 +1799,8 @@ var BaseComponent = function () {
       params.keySeparator = '.|.';
       params.pluralSeparator = '._.';
       params.contextSeparator = '._.';
-      return _i18next2.default.t(text, params);
+      var translated = this.options.i18next.t(text, params);
+      return translated || text;
     }
 
     /**
@@ -3759,7 +3756,7 @@ BaseComponent.libraryReady = function (name) {
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
 
-},{"../../utils":49,"../Validator":2,"i18next":70,"lodash":292,"lodash/assign":244,"lodash/clone":249,"lodash/debounce":252,"lodash/defaults":253,"lodash/each":256,"lodash/get":263,"lodash/isArray":268,"lodash/isEqual":275,"lodash/isUndefined":288,"lodash/toString":309,"native-promise-only":312,"text-mask-all/vanilla":318,"tooltip.js":319}],5:[function(require,module,exports){
+},{"../../utils":49,"../Validator":2,"lodash":292,"lodash/assign":244,"lodash/clone":249,"lodash/debounce":252,"lodash/defaults":253,"lodash/each":256,"lodash/get":263,"lodash/isArray":268,"lodash/isEqual":275,"lodash/isUndefined":288,"lodash/toString":309,"native-promise-only":312,"text-mask-all/vanilla":318,"tooltip.js":319}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -3856,6 +3853,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       var info = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'button';
       info.attr.type = this.component.action === 'submit' ? 'submit' : 'button';
+      this.component.theme = this.component.theme || 'default';
       info.attr.class = 'btn btn-' + this.component.theme;
       if (this.component.block) {
         info.attr.class += ' btn-block';
@@ -10193,7 +10191,8 @@ _formio2.default.forms = {};
 
 var getOptions = function getOptions(options) {
   options = (0, _defaults3.default)(options, {
-    submitOnEnter: false
+    submitOnEnter: false,
+    i18next: _i18next2.default
   });
   if (!options.events) {
     options.events = new _eventemitter2.default({
@@ -10775,7 +10774,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var submission = (0, _clone3.default)(this._submission);
       submission.data = this.data;
       this.mergeData(this._submission.data, submission.data);
-      return submission;
+      return this._submission;
     }
 
     /**
@@ -10882,7 +10881,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         return _this11.submit();
       }, true);
       this.addComponents();
-      this.checkConditions(this.getValue());
+      var submission = this.getValue();
+      this.checkConditions(submission);
+      this.checkData(submission.data, {
+        noValidate: true
+      });
     }
 
     /**

@@ -1,4 +1,5 @@
 import _cloneDeep from 'lodash/cloneDeep';
+import _each from 'lodash/each';
 import { BaseComponent } from '../../../components/base/Base';
 import { ButtonComponent } from '../../../components/button/Button';
 
@@ -62,15 +63,10 @@ export class StripeCheckoutComponent extends ButtonComponent {
     }
 
     // Open Checkout with further options:
-    let popupConfiguration = this.component.stripe.popupConfiguration || {};
-
-    if (popupConfiguration.name) {
-      popupConfiguration.name = this.t(popupConfiguration.name);
-    }
-
-    if (popupConfiguration.description) {
-      popupConfiguration.description = this.t(popupConfiguration.description);
-    }
+    let popupConfiguration = _cloneDeep(this.component.stripe.popupConfiguration) || {};
+    _each(popupConfiguration, (value, key) => {
+      popupConfiguration[key] = this.t(value);
+    });
 
     if (this.componentAction === 'submit') {
       // In case of submit, validate the form before opening button
