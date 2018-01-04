@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.26.0
+### Added
+ - New contributed module system with Stripe integration.
+ - A way to pass the formio instance object to the currentUser and accessInfo methods.
+
 ## 2.25.8
 ### Added
  - Support for JSONLogic dates.

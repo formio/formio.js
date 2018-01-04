@@ -1,9 +1,6 @@
-import _isObject from 'lodash/isObject';
-import _isArray from 'lodash/isArray';
 import _cloneDeep from 'lodash/cloneDeep';
-import _each from 'lodash/each';
-import { BaseComponent } from '../../components/base/Base';
-import { ButtonComponent } from '../../components/button/Button';
+import { BaseComponent } from '../../../components/base/Base';
+import { ButtonComponent } from '../../../components/button/Button';
 
 export class StripeCheckoutComponent extends ButtonComponent {
   constructor(component, options, data) {
