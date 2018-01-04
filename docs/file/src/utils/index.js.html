@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -163,10 +164,19 @@ import _isPlainObject from &apos;lodash/isPlainObject&apos;;
 import _forOwn from &apos;lodash/forOwn&apos;;
 import compile from &apos;lodash/template&apos;;
 import jsonLogic from &apos;json-logic-js&apos;;
+import { lodashOperators } from &apos;./jsonlogic/operators&apos;;
 import momentModule from &apos;moment&apos;;
 
 // Configure JsonLogic
-jsonLogic.add_operation(&apos;_&apos;, _);
+lodashOperators.forEach((name) =&gt; jsonLogic.add_operation(`_${name}`, _[name]));
+
+// Fix the &quot;in&quot; operand for jsonlogic.
+// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
+jsonLogic.add_operation(&apos;in&apos;, function(a, b) {
+  if(!b) return false;
+  if(typeof b.indexOf === &quot;undefined&quot;) return false;
+  return (b.indexOf(a) !== -1);
+});
 
 const FormioUtils = {
   jsonLogic, // Share
@@ -470,7 +480,8 @@ const FormioUtils = {
         try {
           data[component.key] = this.jsonLogic.apply(component.calculateValue, {
             data: submission ? submission.data : data,
-            row: data
+            row: data,
+            _
           });
         }
         catch (e) {
@@ -529,10 +540,19 @@ const FormioUtils = {
       return (value.toString() === cond.eq.toString()) === (cond.show.toString() === &apos;true&apos;);
     }
     else if (component.conditional &amp;&amp; component.conditional.json) {
-      return jsonLogic.apply(component.conditional.json, {
-        data,
-        row
-      });
+      let retVal = true;
+      try {
+        retVal = jsonLogic.apply(component.conditional.json, {
+          data,
+          row,
+          _
+        });
+      }
+      catch (err) {
+        console.warn(`An error occurred in jsonLogic condition for ${component.key}`, err);
+        retVal = true;
+      }
+      return retVal;
     }
 
     // Default to show.

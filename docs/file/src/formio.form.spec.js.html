@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -149,6 +150,7 @@ import { Harness } from &apos;../test/harness&apos;;
 import { FormTests } from &apos;../test/forms/index&apos;;
 import assert from &apos;power-assert&apos;;
 import each from &apos;lodash/each&apos;;
+import i18next from &apos;i18next&apos;;
 
 describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   let simpleForm = null;
@@ -184,11 +186,125 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
     }});
   });
 
+  it(&apos;Should translate a form from options&apos;, done =&gt; {
+    let formElement = document.createElement(&apos;div&apos;);
+    let translateForm = new FormioForm(formElement, {
+      language: &apos;es&apos;,
+      i18n: {
+        es: {
+          &apos;Default Label&apos;: &apos;Spanish Label&apos;
+        }
+      }
+    });
+    translateForm.setForm({
+      title: &apos;Translate Form&apos;,
+      components: [
+        {
+          type: &apos;textfield&apos;,
+          label: &apos;Default Label&apos;,
+          key: &apos;myfield&apos;,
+          input: true,
+          inputType: &apos;text&apos;,
+          validate: {}
+        }
+      ]
+    }).then(() =&gt; {
+      let label = formElement.querySelector(&apos;.control-label&apos;);
+      assert.equal(label.innerHTML, &apos;Spanish Label&apos;);
+      done();
+    });
+  });
+
+  it(&apos;Should translate a form after instantiate&apos;, done =&gt; {
+    let formElement = document.createElement(&apos;div&apos;);
+    let translateForm = new FormioForm(formElement, {
+      i18n: {
+        es: {
+          &apos;Default Label&apos;: &apos;Spanish Label&apos;
+        }
+      }
+    });
+    translateForm.setForm({
+      title: &apos;Translate Form&apos;,
+      components: [
+        {
+          type: &apos;textfield&apos;,
+          label: &apos;Default Label&apos;,
+          key: &apos;myfield&apos;,
+          input: true,
+          inputType: &apos;text&apos;,
+          validate: {}
+        }
+      ]
+    }).then(() =&gt; {
+      translateForm.language = &apos;es&apos;;
+      let label = formElement.querySelector(&apos;.control-label&apos;);
+      assert.equal(label.innerHTML, &apos;Spanish Label&apos;);
+      done();
+    });
+  });
+
+  it(&apos;Should add a translation after instantiate&apos;, done =&gt; {
+    let formElement = document.createElement(&apos;div&apos;);
+    let translateForm = new FormioForm(formElement, {
+      i18n: {
+        language: &apos;es&apos;,
+        es: {
+          &apos;Default Label&apos;: &apos;Spanish Label&apos;
+        },
+        fr: {
+          &apos;Default Label&apos;: &apos;French Label&apos;
+        }
+      }
+    });
+    translateForm.setForm({
+      title: &apos;Translate Form&apos;,
+      components: [
+        {
+          type: &apos;textfield&apos;,
+          label: &apos;Default Label&apos;,
+          key: &apos;myfield&apos;,
+          input: true,
+          inputType: &apos;text&apos;,
+          validate: {}
+        }
+      ]
+    }).then(() =&gt; {
+      translateForm.language = &apos;fr&apos;;
+      let label = formElement.querySelector(&apos;.control-label&apos;);
+      assert.equal(label.innerHTML, &apos;French Label&apos;);
+      done();
+    });
+  });
+
+  it(&apos;Should switch a translation after instantiate&apos;, done =&gt; {
+    let formElement = document.createElement(&apos;div&apos;);
+    let translateForm = new FormioForm(formElement);
+    translateForm.setForm({
+      title: &apos;Translate Form&apos;,
+      components: [
+        {
+          type: &apos;textfield&apos;,
+          label: &apos;Default Label&apos;,
+          key: &apos;myfield&apos;,
+          input: true,
+          inputType: &apos;text&apos;,
+          validate: {}
+        }
+      ]
+    }).then(() =&gt; {
+      translateForm.addLanguage(&apos;es&apos;, {&apos;Default Label&apos;: &apos;Spanish Label&apos;}, true);
+      let label = formElement.querySelector(&apos;.control-label&apos;);
+      assert.equal(label.innerHTML, &apos;Spanish Label&apos;);
+      done();
+    });
+  });
+
   each(FormTests, (formTest) =&gt; {
     each(formTest.tests, (formTestTest, title) =&gt; {
       it(title, (done) =&gt; {
         let formElement = document.createElement(&apos;div&apos;);
-        let form = new FormioForm(formElement);
+        let form = new FormioForm(formElement, {language: &apos;en&apos;});
         form.setForm(formTest.form).then(() =&gt; {
           formTestTest(form, done);
         }).catch((error) =&gt; {

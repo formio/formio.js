@@ -93,6 +93,29 @@ _operators.lodashOperators.forEach(function (name) {
   return _jsonLogicJs2.default.add_operation('_' + name, _lodash2.default[name]);
 });
 
+// Fix the "in" operand for jsonlogic.
+// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
+_jsonLogicJs2.default.add_operation('in', function (a, b) {
+  if (!b) return false;
+  if (typeof b.indexOf === "undefined") return false;
+  return b.indexOf(a) !== -1;
+});
+
+// Retrieve Any Date
+_jsonLogicJs2.default.add_operation("getDate", function (date) {
+  return (0, _moment2.default)(date).toISOString();
+});
+
+// Set Relative Minimum Date
+_jsonLogicJs2.default.add_operation("relativeMinDate", function (relativeMinDate) {
+  return (0, _moment2.default)().subtract(relativeMinDate, "days").toISOString();
+});
+
+// Set Relative Maximum Date
+_jsonLogicJs2.default.add_operation("relativeMaxDate", function (relativeMaxDate) {
+  return (0, _moment2.default)().add(relativeMaxDate, "days").toISOString();
+});
+
 var FormioUtils = {
   jsonLogic: _jsonLogicJs2.default, // Share
 
@@ -431,11 +454,18 @@ var FormioUtils = {
 
       return value.toString() === cond.eq.toString() === (cond.show.toString() === 'true');
     } else if (component.conditional && component.conditional.json) {
-      return _jsonLogicJs2.default.apply(component.conditional.json, {
-        data: data,
-        row: row,
-        _: _lodash2.default
-      });
+      var retVal = true;
+      try {
+        retVal = _jsonLogicJs2.default.apply(component.conditional.json, {
+          data: data,
+          row: row,
+          _: _lodash2.default
+        });
+      } catch (err) {
+        console.warn('An error occurred in jsonLogic condition for ' + component.key, err);
+        retVal = true;
+      }
+      return retVal;
     }
 
     // Default to show.
@@ -548,6 +578,17 @@ var FormioUtils = {
   },
   isValidDate: function isValidDate(date) {
     return (0, _isDate3.default)(date) && !(0, _isNaN3.default)(date.getDate());
+  },
+  getLocaleDateFormatInfo: function getLocaleDateFormatInfo(locale) {
+    var formatInfo = {};
+
+    var day = 21;
+    var exampleDate = new Date(2017, 11, day);
+    var localDateString = exampleDate.toLocaleDateString(locale);
+
+    formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
+
+    return formatInfo;
   }
 };
 
@@ -23468,7 +23509,7 @@ module.exports = toString;
 
 },{"./_baseToString":52}],188:[function(require,module,exports){
 //! moment.js
-//! version : 2.19.4
+//! version : 2.20.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
@@ -24128,7 +24169,7 @@ var matchTimestamp = /[+-]?\d+(\.\d{1,3})?/; // 123456789 123456789.123
 
 // any word (or two) characters or numbers including two/three word month in arabic.
 // includes scottish gaelic two word and hyphenated months
-var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
+var matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i;
 
 
 var regexes = {};
@@ -26769,19 +26810,24 @@ function toString () {
     return this.clone().locale('en').format('ddd MMM DD YYYY HH:mm:ss [GMT]ZZ');
 }
 
-function toISOString() {
+function toISOString(keepOffset) {
     if (!this.isValid()) {
         return null;
     }
-    var m = this.clone().utc();
+    var utc = keepOffset !== true;
+    var m = utc ? this.clone().utc() : this;
     if (m.year() < 0 || m.year() > 9999) {
-        return formatMoment(m, 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+        return formatMoment(m, utc ? 'YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYYYY-MM-DD[T]HH:mm:ss.SSSZ');
     }
     if (isFunction(Date.prototype.toISOString)) {
         // native implementation is ~50x faster, use it when we can
-        return this.toDate().toISOString();
+        if (utc) {
+            return this.toDate().toISOString();
+        } else {
+            return new Date(this._d.valueOf()).toISOString().replace('Z', formatMoment(m, 'Z'));
+        }
     }
-    return formatMoment(m, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]');
+    return formatMoment(m, utc ? 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]' : 'YYYY-MM-DD[T]HH:mm:ss.SSSZ');
 }
 
 /**
@@ -27949,7 +27995,7 @@ addParseToken('x', function (input, array, config) {
 // Side effect imports
 
 
-hooks.version = '2.19.4';
+hooks.version = '2.20.1';
 
 setHookCallback(createLocal);
 
@@ -27980,6 +28026,19 @@ hooks.relativeTimeRounding  = getSetRelativeTimeRounding;
 hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
 hooks.calendarFormat        = getCalendarFormat;
 hooks.prototype             = proto;
+
+// currently HTML5 input type only supports 24-hour formats
+hooks.HTML5_FMT = {
+    DATETIME_LOCAL: 'YYYY-MM-DDTHH:mm',             // <input type="datetime-local" />
+    DATETIME_LOCAL_SECONDS: 'YYYY-MM-DDTHH:mm:ss',  // <input type="datetime-local" step="1" />
+    DATETIME_LOCAL_MS: 'YYYY-MM-DDTHH:mm:ss.SSS',   // <input type="datetime-local" step="0.001" />
+    DATE: 'YYYY-MM-DD',                             // <input type="date" />
+    TIME: 'HH:mm',                                  // <input type="time" />
+    TIME_SECONDS: 'HH:mm:ss',                       // <input type="time" step="1" />
+    TIME_MS: 'HH:mm:ss.SSS',                        // <input type="time" step="0.001" />
+    WEEK: 'YYYY-[W]WW',                             // <input type="week" />
+    MONTH: 'YYYY-MM'                                // <input type="month" />
+};
 
 return hooks;
 

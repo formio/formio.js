@@ -24,6 +24,30 @@ import momentModule from 'moment';
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
+// Fix the "in" operand for jsonlogic.
+// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
+jsonLogic.add_operation('in', function(a, b) {
+  if(!b) return false;
+  if(typeof b.indexOf === "undefined") return false;
+  return (b.indexOf(a) !== -1);
+});
+
+// Retrieve Any Date
+jsonLogic.add_operation("getDate", function(date){
+  return momentModule(date).toISOString()
+});
+
+// Set Relative Minimum Date
+jsonLogic.add_operation("relativeMinDate", function(relativeMinDate){
+  return momentModule().subtract(relativeMinDate, "days").toISOString()
+});
+
+// Set Relative Maximum Date
+jsonLogic.add_operation("relativeMaxDate", function(relativeMaxDate){
+  return momentModule().add(relativeMaxDate, "days").toISOString();
+});
+
+
 const FormioUtils = {
   jsonLogic, // Share
 
@@ -386,11 +410,19 @@ const FormioUtils = {
       return (value.toString() === cond.eq.toString()) === (cond.show.toString() === 'true');
     }
     else if (component.conditional && component.conditional.json) {
-      return jsonLogic.apply(component.conditional.json, {
-        data,
-        row,
-        _
-      });
+      let retVal = true;
+      try {
+        retVal = jsonLogic.apply(component.conditional.json, {
+          data,
+          row,
+          _
+        });
+      }
+      catch (err) {
+        console.warn(`An error occurred in jsonLogic condition for ${component.key}`, err);
+        retVal = true;
+      }
+      return retVal;
     }
 
     // Default to show.
@@ -511,6 +543,17 @@ const FormioUtils = {
   },
   isValidDate(date) {
     return _isDate(date) && !_isNaN(date.getDate());
+  },
+  getLocaleDateFormatInfo(locale) {
+    const formatInfo = {};
+
+    const day = 21;
+    const exampleDate = new Date(2017, 11, day);
+    const localDateString = exampleDate.toLocaleDateString(locale);
+
+    formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
+
+    return formatInfo;
   }
 };
 

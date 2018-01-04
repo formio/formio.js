@@ -121,10 +121,14 @@ export class FormioWizard extends FormioForm {
     });
   }
 
-  cancel() {
-    super.cancel();
-    this.history = [];
-    return this.setPage(0);
+  cancel(noconfirm) {
+    if(super.cancel(noconfirm)) {
+      this.history = [];
+      return this.setPage(0);
+    }
+    else {
+      return this.setPage();
+    }
   }
 
   getPageIndexByKey(key) {

@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -148,18 +149,25 @@ import Promise from &quot;native-promise-only&quot;;
 import { FormioComponents } from &apos;./components/Components&apos;;
 import _each from &apos;lodash/each&apos;;
 import _clone from &apos;lodash/clone&apos;;
-import _merge from &apos;lodash/merge&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
 import _remove from &apos;lodash/remove&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
+import _assign from &apos;lodash/assign&apos;;
+import _defaults from &apos;lodash/defaults&apos;;
 import _capitalize from &apos;lodash/capitalize&apos;;
+import _mergeWith from &apos;lodash/mergeWith&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
+import i18next from &apos;i18next&apos;;
+
+i18next.initialized = false;
 
 // Initialize the available forms.
 Formio.forms = {};
 
 let getOptions = function(options) {
-  options = options || {};
+  options = _defaults(options, {
+    submitOnEnter: false
+  });
   if (!options.events) {
     options.events = new EventEmitter({
       wildcard: false,
@@ -201,6 +209,37 @@ export class FormioForm extends FormioComponents {
 
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
+
+    /**
+     * The i18n configuration for this component.
+     */
+    let i18n = require(&apos;./i18n&apos;);
+    if (options &amp;&amp; options.i18n &amp;&amp; !options.i18nReady) {
+      // Support legacy way of doing translations.
+      if (options.i18n.resources) {
+        i18n = options.i18n;
+      }
+      else {
+        _each(options.i18n, (lang, code) =&gt; {
+          if (!i18n.resources[code]) {
+            i18n.resources[code] = {translation: lang};
+          }
+          else {
+            _assign(i18n.resources[code].translation, lang);
+          }
+        });
+      }
+
+      options.i18n = i18n;
+      options.i18nReady = true;
+    }
+
+    if (options &amp;&amp; options.i18n) {
+      this.options.i18n = options.i18n;
+    }
+    else {
+      this.options.i18n = i18n;
+    }
 
     /**
      * The type of this element.
@@ -318,6 +357,67 @@ export class FormioForm extends FormioComponents {
     });
 
     this.shortcuts = [];
+
+    // Set language after everything is established.
+    if (options &amp;&amp; options.language) {
+      i18n.lng = options.language;
+      this.language = options.language;
+    }
+  }
+
+
+  /**
+   * Sets the language for this form.
+   *
+   * @param lang
+   * @return {Promise}
+   */
+  set language(lang) {
+    return new Promise((resolve, reject) =&gt; {
+      this.options.language = lang;
+      i18next.changeLanguage(lang, (err) =&gt; {
+        if (err) {
+          return reject(err);
+        }
+        this.redraw();
+        resolve();
+      });
+    });
+  }
+
+  /**
+   * Add a language for translations
+   *
+   * @param code
+   * @param lang
+   * @param active
+   * @return {*}
+   */
+  addLanguage(code, lang, active = false) {
+    i18next.addResourceBundle(code, &apos;translation&apos;, lang, true, true);
+    if (active) {
+      this.language = code;
+    }
+  }
+
+  /**
+   * Perform the localization initialization.
+   * @returns {*}
+   */
+  localize() {
+    if (i18next.initialized) {
+      return Promise.resolve(i18next);
+    }
+    i18next.initialized = true;
+    return new Promise((resolve, reject) =&gt; {
+      i18next.init(this.options.i18n, (err) =&gt; {
+        this.options.language = i18next.language;
+        if (err) {
+          return reject(err);
+        }
+        resolve(i18next);
+      });
+    });
   }
 
   /**
@@ -469,11 +569,10 @@ export class FormioForm extends FormioComponents {
         var setForm = this.setForm(form);
         this.loadSubmission();
         return setForm;
-      },
-      (err) =&gt; this.formReadyReject(err)
-    ).catch(
-      (err) =&gt; this.formReadyReject(err)
-    );
+      }).catch((err) =&gt; {
+        console.warn(err);
+        this.formReadyReject(err);
+      });
   }
 
   /**
@@ -702,9 +801,21 @@ export class FormioForm extends FormioComponents {
     );
   }
 
+  get schema() {
+    return this._form;
+  }
+
+  mergeData(_this, _that) {
+    _mergeWith(_this, _that, (thisValue, thatValue) =&gt; {
+      if (_isArray(thisValue)) {
+        return thatValue;
+      }
+    });
+  }
+
   setValue(submission, flags) {
     submission = submission || {data: {}};
-    _merge(this._submission, submission);
+    this.mergeData(this._submission, submission);
     return super.setValue(this._submission.data, flags);
   }
 
@@ -714,7 +825,7 @@ export class FormioForm extends FormioComponents {
     }
     let submission = _clone(this._submission);
     submission.data = this.data;
-    _merge(this._submission.data, submission.data);
+    this.mergeData(this._submission.data, submission.data);
     return submission;
   }
 
@@ -738,11 +849,10 @@ export class FormioForm extends FormioComponents {
       this.formReadyResolve();
       this.onFormBuild = null;
       this.setSubmission(this._submission);
-    },
-      (err) =&gt; this.formReadyReject(err)
-    ).catch(
-      (err) =&gt; this.formReadyReject(err)
-    );
+    }).catch((err) =&gt; {
+      console.warn(err);
+      this.formReadyReject(err);
+    });
   }
 
   /**
@@ -886,7 +996,7 @@ export class FormioForm extends FormioComponents {
    */
   onChange(flags, changed) {
     super.onChange(flags, true);
-    _merge(this._submission, this.submission);
+    this.mergeData(this._submission, this.submission);
     let value = _clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);

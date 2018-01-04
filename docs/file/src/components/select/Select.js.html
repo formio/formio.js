@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -152,14 +153,35 @@ import _get from &apos;lodash/get&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
 import _isEmpty from &apos;lodash/isEmpty&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
+import _isObject from &apos;lodash/isObject&apos;;
 import _isEqual from &apos;lodash/isEqual&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
+
+// Fix performance issues in Choices by adding a debounce around render method.
+Choices.prototype._render = Choices.prototype.render;
+Choices.prototype.render = function() {
+  if (this.renderDebounce) {
+    clearTimeout(this.renderDebounce);
+  }
+
+  this.renderDebounce = setTimeout(() =&gt; this._render(), 100);
+};
+
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
 
     // Trigger an update.
     this.triggerUpdate = _debounce(this.updateItems.bind(this), 100);
+
+    // Keep track of the select options.
+    this.selectOptions = [];
+
+    // See if this should use the template.
+    this.useTemplate = (this.component.dataSrc !== &apos;values&apos;) &amp;&amp; this.component.template;
+
+    // If this component has been activated.
+    this.activated = false;
 
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {
@@ -185,9 +207,6 @@ export class SelectComponent extends BaseComponent {
     let info = super.elementInfo();
     info.type = &apos;select&apos;;
     info.changeEvent = &apos;change&apos;;
-    if (info.attr.placeholder) {
-      delete info.attr.placeholder;
-    }
     return info;
   }
 
@@ -196,18 +215,75 @@ export class SelectComponent extends BaseComponent {
   }
 
   itemTemplate(data) {
-    return this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
+    // Perform a fast interpretation if we should not use the template.
+    if (data &amp;&amp; !this.useTemplate) {
+      return this.t(data.label || data);
+    }
+    if (typeof data === &apos;string&apos;) {
+      return this.t(data);
+    }
+    let template = this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
+    var label = template.replace(/&lt;\/?[^&gt;]+(&gt;|$)/g, &quot;&quot;);
+    return template.replace(label, this.t(label));
   }
 
   itemValue(data) {
-    return this.component.valueProperty ? _get(data, this.component.valueProperty) : data;
+    return (this.component.valueProperty &amp;&amp; _isObject(data)) ? _get(data, this.component.valueProperty) : data;
   }
 
-  setItems(items) {
-    if (!this.choices) {
+  createInput(container) {
+    this.selectContainer = container;
+    this.selectInput = super.createInput(container);
+  }
+
+  /**
+   * Adds an option to the select dropdown.
+   *
+   * @param value
+   * @param label
+   */
+  addOption(value, label, attr) {
+    let option = {
+      value: value,
+      label: label
+    };
+
+    this.selectOptions.push(option);
+    if (this.choices) {
       return;
     }
 
+    option.element = document.createElement(&apos;option&apos;);
+    if (this.value === option.value) {
+      option.element.setAttribute(&apos;selected&apos;, &apos;selected&apos;);
+      option.element.selected = &apos;selected&apos;;
+    }
+    option.element.innerHTML = label;
+    if (attr) {
+      _each(attr, (value, key) =&gt; {
+        option.element.setAttribute(key, value);
+      });
+    }
+    this.selectInput.appendChild(option.element);
+  }
+
+  addValueOptions(items) {
+    items = items || [];
+    if (!this.selectOptions.length) {
+      if (this.choices) {
+        // Add the currently selected choices if they don&apos;t already exist.
+        let currentChoices = _isArray(this.value) ? this.value : [this.value];
+        _each(currentChoices, (choice) =&gt; {
+          this.addCurrentChoices(choice, items);
+        });
+      }
+      else if (!this.component.multiple) {
+        this.addPlaceholder(this.selectInput);
+      }
+    }
+  }
+
+  setItems(items) {
     // If the items is a string, then parse as JSON.
     if (typeof items == &apos;string&apos;) {
       try {
@@ -219,30 +295,34 @@ export class SelectComponent extends BaseComponent {
       }
     }
 
-    this.choices._clearChoices();
+    if (!this.choices &amp;&amp; this.selectInput) {
+      // Detach from DOM and clear input.
+      this.selectContainer.removeChild(this.selectInput);
+      this.selectInput.innerHTML = &apos;&apos;;
+    }
+
+    this.selectOptions = [];
 
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
       items = _get(items, this.component.selectValues);
     }
 
-    // Add the currently selected choices if they don&apos;t already exist.
-    let currentChoices = _isArray(this.value) ? this.value : [this.value];
-    _each(currentChoices, (choice) =&gt; {
-      this.addCurrentChoices(choice, items);
-    });
+    // Add the value options.
+    this.addValueOptions(items);
 
     // Iterate through each of the items.
-    _each(items, (item) =&gt; {
-      // Get the default label from the template
-      var label = this.itemTemplate(item).replace(/&lt;\/?[^&gt;]+(&gt;|$)/g, &quot;&quot;)
-
-      // Translate the default template
-      var t_template = this.itemTemplate(item).replace(label, this.t(label));
-
-      // Add the choice to the select list.
-      this.choices._addChoice(this.itemValue(item), t_template);
+    _each(items, (item, index) =&gt; {
+      this.addOption(this.itemValue(item), this.itemTemplate(item));
     });
+
+    if (this.choices) {
+      this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
+    }
+    else {
+      // Re-attach select input.
+      this.selectContainer.appendChild(this.selectInput);
+    }
 
     // If a value is provided, then select it.
     if (this.value) {
@@ -363,6 +443,10 @@ export class SelectComponent extends BaseComponent {
         this.updateCustomItems();
         break;
       case &apos;resource&apos;:
+        if (!this.active) {
+          // If we are lazyLoading, wait until activated.
+          return;
+        }
         let resourceUrl = this.options.formio ? this.options.formio.formsUrl : Formio.getProjectUrl() + &apos;/form&apos;;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
@@ -374,6 +458,10 @@ export class SelectComponent extends BaseComponent {
         }
         break;
       case &apos;url&apos;:
+        if (!this.active) {
+          // If we are lazyLoading, wait until activated.
+          return;
+        }
         let url = this.component.data.url;
         let method;
         let body;
@@ -399,63 +487,89 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
+  addPlaceholder(input) {
+    if (!this.component.placeholder) {
+      return;
+    }
+    let placeholder = document.createElement(&apos;option&apos;);
+    placeholder.setAttribute(&apos;placeholder&apos;, true);
+    placeholder.appendChild(this.text(this.component.placeholder));
+    input.appendChild(placeholder);
+  }
+
+  /**
+   * Activate this select control.
+   */
+  activate() {
+    if (this.active) {
+      return;
+    }
+    this.activated = true;
+    if (this.choices) {
+      this.choices.setChoices([{
+        value: &apos;&apos;,
+        label: &apos;&lt;span class=&quot;glyphicon glyphicon-refresh glyphicon-spin&quot; style=&quot;font-size:1.3em;&quot;&gt;&lt;/span&gt;&apos;
+      }], &apos;value&apos;, &apos;label&apos;, true);
+    }
+    else {
+      this.addOption(&apos;&apos;, this.t(&apos;loading...&apos;));
+    }
+    this.refreshItems();
+  }
+
+  get active() {
+    return !this.component.lazyLoad || this.activated;
+  }
+
   addInput(input, container) {
     super.addInput(input, container);
     if (this.component.multiple) {
       input.setAttribute(&apos;multiple&apos;, true);
     }
-    var tabIndex = input.tabIndex;
-    this.choices = new Choices(input, {
+
+    if (this.component.widget === &apos;html5&apos;) {
+      this.triggerUpdate();
+      this.addEventListener(input, &apos;focus&apos;, () =&gt; this.activate());
+      return;
+    }
+
+    let placeholderValue = this.t(this.component.placeholder);
+    let choicesOptions = {
       removeItemButton: true,
       itemSelectText: &apos;&apos;,
       classNames: {
         containerOuter: &apos;choices form-group formio-choices&apos;,
         containerInner: &apos;form-control&apos;
       },
+      placeholder: !!this.component.placeholder,
+      placeholderValue: placeholderValue,
+      searchPlaceholderValue: placeholderValue,
       shouldSort: false,
       position: (this.component.dropdown || &apos;auto&apos;)
-    });
+    };
+
+    let tabIndex = input.tabIndex;
+    this.addPlaceholder(input);
+    this.choices = new Choices(input, choicesOptions);
     this.choices.itemList.tabIndex = tabIndex;
     this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
-      input.addEventListener(&apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
+      this.addEventListener(input, &apos;search&apos;, (event) =&gt; this.triggerUpdate(event.detail.value));
     }
 
-    input.addEventListener(&apos;showDropdown&apos;, () =&gt; {
+    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; {
       if (this.component.dataSrc === &apos;custom&apos;) {
         this.updateCustomItems();
       }
+
+      // Activate the control.
+      this.activate();
     });
 
-    // Create a pseudo-placeholder.
-    if (
-      this.component.placeholder &amp;&amp;
-      !this.choices.placeholderElement
-    ) {
-      this.placeholder = this.ce(&apos;span&apos;, {
-        class: &apos;formio-placeholder&apos;
-      }, [
-        this.text(this.component.placeholder)
-      ]);
-
-      // Prepend the placeholder.
-      this.choices.containerInner.insertBefore(this.placeholder, this.choices.containerInner.firstChild);
-      input.addEventListener(&apos;addItem&apos;, () =&gt; {
-        this.placeholder.style.visibility = &apos;hidden&apos;;
-      }, false);
-      input.addEventListener(&apos;removeItem&apos;, () =&gt; {
-        let value = this.getValue();
-        if (!value || !value.length) {
-          this.placeholder.style.visibility = &apos;visible&apos;;
-        }
-      }, false);
-    }
-
-    if (this.disabled) {
-      this.choices.disable();
-    }
+    // Force the disabled state with getters and setters.
+    this.disabled = this.disabled;
     this.triggerUpdate();
   }
 
@@ -473,24 +587,22 @@ export class SelectComponent extends BaseComponent {
   }
 
   addCurrentChoices(value, items) {
-    if (value &amp;&amp; items.length) {
+    if (value) {
       let found = false;
+      if (items &amp;&amp; items.length) {
+        _each(items, (choice) =&gt; {
+          if (choice._id &amp;&amp; value._id &amp;&amp; (choice._id === value._id)) {
+            found = true;
+            return false;
+          }
+          found |= _isEqual(this.itemValue(choice), value);
+          return found ? false : true;
+        });
+      }
 
-      // Iterate through all elements and remove the ones that are found.
-      _remove(items, (choice) =&gt; {
-        // For resources we may have two different instances of the same resource
-        // Unify them so we don&apos;t have two copies of the same thing in the dropdown
-        // and so the correct resource gets selected in the first place
-        if (choice._id &amp;&amp; value._id &amp;&amp; choice._id === value._id) {
-          return true;
-        }
-        found = _isEqual(choice, value);
-        return found;
-      });
-
-      // If it is not found, then add it.
+      // Add the default option if no item is found.
       if (!found) {
-        this.choices._addChoice(this.itemValue(value), this.itemTemplate(value));
+        this.addOption(this.itemValue(value), this.itemTemplate(value));
       }
     }
   }
@@ -500,23 +612,64 @@ export class SelectComponent extends BaseComponent {
     if (!flags.changed &amp;&amp; this.value) {
       return this.value;
     }
-    if (!this.choices) {
-      return;
+    if (this.choices) {
+      this.value = this.choices.getValue(true);
+
+      // Make sure we don&apos;t get the placeholder
+      if (
+        !this.component.multiple &amp;&amp;
+        this.component.placeholder &amp;&amp;
+        (this.value === this.t(this.component.placeholder))
+      ) {
+        this.value = &apos;&apos;;
+      }
     }
-    this.value = this.choices.getValue(true);
+    else {
+      let values = [];
+      _each(this.selectOptions, (selectOption) =&gt; {
+        if (selectOption.element.selected) {
+          values.push(selectOption.value);
+        }
+      });
+      this.value = this.component.multiple ? values : values.shift();
+    }
     return this.value;
   }
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
+    let hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
+    let hasValue = _isArray(value) ? value.length : value;
     this.value = value;
+
+    // Add the value options.
+    this.addValueOptions();
+
     if (this.choices) {
       // Now set the value.
-      if (value) {
+      if (hasValue) {
+        this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
         this.choices.setValueByChoice(_isArray(value) ? value : [value])
       }
-      else {
+      else if (hasPreviousValue) {
         this.choices.removeActiveItems();
+      }
+    }
+    else {
+      if (hasValue) {
+        let values = _isArray(value) ? value : [value];
+        _each(this.selectOptions, (selectOption) =&gt; {
+          if (values.indexOf(selectOption.value) !== -1) {
+            selectOption.element.selected = true;
+            selectOption.element.setAttribute(&apos;selected&apos;, &apos;selected&apos;);
+          }
+        });
+      }
+      else {
+        _each(this.selectOptions, (selectOption) =&gt; {
+          selectOption.element.selected = false;
+          selectOption.element.removeAttribute(&apos;selected&apos;);
+        });
       }
     }
     this.updateValue(flags);

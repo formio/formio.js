@@ -2,16 +2,26 @@ import { BaseComponent } from '../base/Base';
 import Flatpickr from 'flatpickr';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
-import { getDateSetting } from '../../utils';
+import {
+  getDateSetting,
+  getLocaleDateFormatInfo,
+} from '../../utils';
+import moment from 'moment';
 export class DateTimeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
     this.closedOn = 0;
+
+    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
+    this.defaultFormat = {
+      date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
+      time: 'h:i K'
+    };
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'text';
     info.changeEvent = 'input';
@@ -33,36 +43,67 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   /**
-   * Convert the format from the angular-datepicker module.
+   * Convert the format from the angular-datepicker module to flatpickr format.
    * @param format
    * @return {string|XML|*}
    */
-  convertFormat(format) {
+  convertFormatToFlatpickr(format) {
+    return format
+      // Year conversion.
+      .replace(/y/g, 'Y')
+      .replace('YYYY', 'Y')
+      .replace('YY', 'y')
+
+      // Month conversion.
+      .replace('MMMM', 'F')
+      .replace(/M/g, 'n')
+      .replace('nnn', 'M')
+      .replace('nn', 'm')
+
+      // Day in month.
+      .replace(/d/g, 'j')
+      .replace('jj', 'd')
+
+      // Day in week.
+      .replace('EEEE', 'l')
+      .replace('EEE', 'D')
+
+      // Hours, minutes, seconds
+      .replace('HH', 'H')
+      .replace('hh', 'h')
+      .replace('mm', 'i')
+      .replace('ss', 'S')
+      .replace(/a/g, 'K');
+  }
+
+  /**
+   * Convert the format from the angular-datepicker module to moment format.
+   * @param format
+   * @return {string}
+   */
+  convertFormatToMoment(format) {
+    return format
     // Year conversion.
-    format = format.replace(/y/g, 'Y');
-    format = format.replace('YYYY', 'Y');
-    format = format.replace('YY', 'y');
-
-    // Month conversion.
-    format = format.replace('MMMM', 'F');
-    format = format.replace(/M/g, 'n');
-    format = format.replace('nnn', 'M');
-    format = format.replace('nn', 'm');
-
+    .replace(/y/g, 'Y')
     // Day in month.
-    format = format.replace(/d/g, 'j');
-    format = format.replace('jj', 'd');
-
+    .replace(/d/g, 'D')
     // Day in week.
-    format = format.replace('EEEE', 'l');
-    format = format.replace('EEE', 'D');
+    .replace(/E/g, 'd')
+    // AM/PM marker
+    .replace(/a/g, 'A');
+  }
 
-    // Hours, minutes, seconds
-    format = format.replace('HH', 'H');
-    format = format.replace('hh', 'h');
-    format = format.replace('mm', 'i');
-    format = format.replace('ss', 'S');
-    format = format.replace(/a/g, 'K');
+  getLocaleFormat() {
+    let format = '';
+
+    if (this.component.enableDate) {
+      format += this.defaultFormat.date;
+    }
+
+    if (this.component.enableTime) {
+      format += this.defaultFormat.time;
+    }
+
     return format;
   }
 
@@ -74,7 +115,9 @@ export class DateTimeComponent extends BaseComponent {
       mode: this.component.multiple ? 'multiple' : 'single',
       enableTime: _get(this.component, 'enableTime', true),
       noCalendar: !_get(this.component, 'enableDate', true),
-      altFormat: this.convertFormat(_get(this.component, 'format', '')),
+      altFormat: this.component.useLocaleSettings
+        ? this.getLocaleFormat()
+        : this.convertFormatToFlatpickr(_get(this.component, 'format', '')),
       dateFormat: 'U',
       defaultDate: this.defaultDate,
       hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
@@ -89,7 +132,7 @@ export class DateTimeComponent extends BaseComponent {
   set disabled(disabled) {
     super.disabled = disabled;
     _each(this.inputs, (input) => {
-      let calendar = this.getCalendar(input);
+      const calendar = this.getCalendar(input);
       if (calendar) {
         if (disabled) {
           calendar._input.setAttribute('disabled', 'disabled');
@@ -103,12 +146,12 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   addSuffix(input, inputGroup) {
-    let suffix = this.ce('span', {
+    const suffix = this.ce('span', {
       class: 'input-group-addon',
       style: 'cursor: pointer'
     });
     suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
-    let calendar = this.getCalendar(input);
+    const calendar = this.getCalendar(input);
     if (calendar) {
       this.addEventListener(suffix, 'click', () => {
         // Make sure the calendar is not already open and that it did not just close (like from blur event).
@@ -134,7 +177,7 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getDate(value) {
-    let timestamp = parseInt(value, 10);
+    const timestamp = parseInt(value, 10);
     if (!timestamp) {
       return null;
     }
@@ -142,7 +185,7 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getRawValue() {
-    let values = [];
+    const values = [];
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
@@ -159,12 +202,12 @@ export class DateTimeComponent extends BaseComponent {
       return '';
     }
 
-    let calendar = this.getCalendar(this.inputs[index]);
+    const calendar = this.getCalendar(this.inputs[index]);
     if (!calendar) {
       return super.getValueAt(index);
     }
 
-    let dates = calendar.selectedDates;
+    const dates = calendar.selectedDates;
     if (!dates || !dates.length) {
       return '';
     }
@@ -172,9 +215,14 @@ export class DateTimeComponent extends BaseComponent {
     return dates[0].toISOString();
   }
 
+  get view() {
+    const value = this.getValue();
+    return value ? moment(value).format(this.convertFormatToMoment(_get(this.component, 'format', ''))) : null;
+  }
+
   setValueAt(index, value) {
     if (value) {
-      let calendar = this.getCalendar(this.inputs[index]);
+      const calendar = this.getCalendar(this.inputs[index]);
       if (!calendar) {
         return super.setValueAt(index, value);
       }

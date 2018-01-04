@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -532,6 +533,7 @@ export class Formio {
       return Promise.reject(&apos;You must be authenticated to generate a temporary auth token.&apos;);
     }
     return this.makeRequest(&apos;tempToken&apos;, this.projectUrl + &apos;/token&apos;, &apos;GET&apos;, null, {
+      ignoreCache: true,
       header: new Headers({
         &apos;x-expire&apos;: expire,
         &apos;x-allow&apos;: allowed
@@ -564,7 +566,7 @@ export class Formio {
     apiUrl += &apos;/submission/&apos; + this.submissionId;
     apiUrl += &apos;/download&apos;;
 
-    let download = Formio.baseUrl + apiUrl;
+    let download = this.base + apiUrl;
     return new Promise((resolve, reject) =&gt; {
       this.getTempToken(3600, &apos;GET:&apos; + apiUrl).then((tempToken) =&gt; {
         download += &apos;?token=&apos; + tempToken.key;

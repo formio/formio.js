@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -153,8 +154,8 @@ export class NumberComponent extends BaseComponent {
     super(component, options, data);
     this.validators = this.validators.concat([&apos;min&apos;, &apos;max&apos;]);
 
-    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || (12345.6789).toLocaleString(this.options.i18n.lng).match(/345(.*)67/)[1];
-    this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || (12345.6789).toLocaleString(this.options.i18n.lng).match(/12(.*)345/)[1];
+    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || (12345.6789).toLocaleString(options.language).match(/345(.*)67/)[1];
+    this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || (12345.6789).toLocaleString(options.language).match(/12(.*)345/)[1];
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     this.decimalLimit = 20;
@@ -190,10 +191,10 @@ export class NumberComponent extends BaseComponent {
     }
 
     if (this.component.validate &amp;&amp; this.component.validate.integer) {
-      return parseInt(value, 10).toLocaleString(this.options.i18n.lng, this.getFormatOptions());
+      return parseInt(value, 10).toLocaleString(this.options.language, this.getFormatOptions());
     }
     else {
-      return parseFloat(value).toLocaleString(this.options.i18n.lng, this.getFormatOptions());
+      return parseFloat(value).toLocaleString(this.options.language, this.getFormatOptions());
     }
   }
 
