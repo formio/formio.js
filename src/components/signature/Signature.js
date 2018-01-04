@@ -78,6 +78,10 @@ export class SignatureComponent extends BaseComponent {
   }
 
   build() {
+    if (this.viewOnlyMode()) {
+      return this.viewOnlyBuild();
+    }
+
     this.element = this.createElement();
     let classNames = this.element.getAttribute('class');
     classNames += ' signature-pad';
@@ -149,5 +153,17 @@ export class SignatureComponent extends BaseComponent {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+  }
+
+  createViewOnlyLabel(container) {
+    this.labelElement = this.ce('dt');
+    this.labelElement.appendChild(this.text(this.component.footer));
+    this.createTooltip(this.labelElement);
+    container.appendChild(this.labelElement);
+  }
+
+  get view() {
+    const value = this.getValue();
+    return value ? 'Yes' : 'No';
   }
 }

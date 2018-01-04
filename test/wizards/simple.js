@@ -287,7 +287,7 @@ module.exports = {
 
         .then(() => {
           // Click on cancel.
-          return form.cancel();
+          return form.cancel(true);
         })
         .catch((error) => {
           // Should returns a success

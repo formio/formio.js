@@ -101,6 +101,21 @@ _jsonLogicJs2.default.add_operation('in', function (a, b) {
   return b.indexOf(a) !== -1;
 });
 
+// Retrieve Any Date
+_jsonLogicJs2.default.add_operation("getDate", function (date) {
+  return (0, _moment2.default)(date).toISOString();
+});
+
+// Set Relative Minimum Date
+_jsonLogicJs2.default.add_operation("relativeMinDate", function (relativeMinDate) {
+  return (0, _moment2.default)().subtract(relativeMinDate, "days").toISOString();
+});
+
+// Set Relative Maximum Date
+_jsonLogicJs2.default.add_operation("relativeMaxDate", function (relativeMaxDate) {
+  return (0, _moment2.default)().add(relativeMaxDate, "days").toISOString();
+});
+
 var FormioUtils = {
   jsonLogic: _jsonLogicJs2.default, // Share
 
@@ -563,6 +578,17 @@ var FormioUtils = {
   },
   isValidDate: function isValidDate(date) {
     return (0, _isDate3.default)(date) && !(0, _isNaN3.default)(date.getDate());
+  },
+  getLocaleDateFormatInfo: function getLocaleDateFormatInfo(locale) {
+    var formatInfo = {};
+
+    var day = 21;
+    var exampleDate = new Date(2017, 11, day);
+    var localDateString = exampleDate.toLocaleDateString(locale);
+
+    formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
+
+    return formatInfo;
   }
 };
 
