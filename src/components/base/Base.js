@@ -14,6 +14,7 @@ import _toString from 'lodash/toString';
 import FormioUtils from '../../utils';
 import { Validator } from '../Validator';
 import Tooltip from 'tooltip.js';
+import i18next from 'i18next';
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -41,6 +42,9 @@ export class BaseComponent {
     this.options = _defaults(_clone(options), {
       highlightErrors: true
     });
+
+    // Use the i18next that is passed in, otherwise use the global version.
+    this.i18next = this.options.i18next || i18next;
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -218,7 +222,7 @@ export class BaseComponent {
     params.keySeparator = '.|.';
     params.pluralSeparator = '._.';
     params.contextSeparator = '._.';
-    let translated = this.options.i18next.t(text, params);
+    let translated = this.i18next.t(text, params);
     return translated || text;
   }
 
@@ -1456,6 +1460,10 @@ export class BaseComponent {
    * @param flags
    */
   updateValue(flags) {
+    if (!this.component.input) {
+      return false;
+    }
+
     flags = flags || {};
     const value = this.data[this.component.key];
     this.data[this.component.key] = this.getValue(flags);

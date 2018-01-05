@@ -1581,6 +1581,10 @@ var _tooltip = require('tooltip.js');
 
 var _tooltip2 = _interopRequireDefault(_tooltip);
 
+var _i18next = require('i18next');
+
+var _i18next2 = _interopRequireDefault(_i18next);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -1619,6 +1623,9 @@ var BaseComponent = function () {
     this.options = (0, _defaults3.default)((0, _clone3.default)(options), {
       highlightErrors: true
     });
+
+    // Use the i18next that is passed in, otherwise use the global version.
+    this.i18next = this.options.i18next || _i18next2.default;
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -1799,7 +1806,7 @@ var BaseComponent = function () {
       params.keySeparator = '.|.';
       params.pluralSeparator = '._.';
       params.contextSeparator = '._.';
-      var translated = this.options.i18next.t(text, params);
+      var translated = this.i18next.t(text, params);
       return translated || text;
     }
 
@@ -3098,6 +3105,10 @@ var BaseComponent = function () {
   }, {
     key: 'updateValue',
     value: function updateValue(flags) {
+      if (!this.component.input) {
+        return false;
+      }
+
       flags = flags || {};
       var value = this.data[this.component.key];
       this.data[this.component.key] = this.getValue(flags);
@@ -3756,7 +3767,7 @@ BaseComponent.libraryReady = function (name) {
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
 
-},{"../../utils":49,"../Validator":2,"lodash":292,"lodash/assign":244,"lodash/clone":249,"lodash/debounce":252,"lodash/defaults":253,"lodash/each":256,"lodash/get":263,"lodash/isArray":268,"lodash/isEqual":275,"lodash/isUndefined":288,"lodash/toString":309,"native-promise-only":312,"text-mask-all/vanilla":320,"tooltip.js":317}],5:[function(require,module,exports){
+},{"../../utils":49,"../Validator":2,"i18next":70,"lodash":292,"lodash/assign":244,"lodash/clone":249,"lodash/debounce":252,"lodash/defaults":253,"lodash/each":256,"lodash/get":263,"lodash/isArray":268,"lodash/isEqual":275,"lodash/isUndefined":288,"lodash/toString":309,"native-promise-only":312,"text-mask-all/vanilla":320,"tooltip.js":317}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -3864,6 +3875,14 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       return info;
     }
   }, {
+    key: 'getValue',
+    value: function getValue() {
+      if (!this.component.input) {
+        return;
+      }
+      return this.clicked;
+    }
+  }, {
     key: 'build',
     value: function build() {
       var _this2 = this;
@@ -3872,6 +3891,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         this.component.hidden = true;
       }
 
+      this.clicked = false;
       this.element = this.ce(this.info.type, this.info.attr);
       this.addShortcut(this.element);
       if (this.component.label) {
@@ -3897,6 +3917,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }, true);
       }
       this.addEventListener(this.element, 'click', function (event) {
+        _this2.clicked = false;
         switch (_this2.component.action) {
           case 'submit':
             event.preventDefault();
