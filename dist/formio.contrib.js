@@ -550,7 +550,7 @@ var BaseComponent = function () {
 
     if (this.component) {
       this.type = this.component.type;
-      if (this.component.input && this.component.key) {
+      if (this.hasInput && this.component.key) {
         this.options.name += '[' + this.component.key + ']';
       }
 
@@ -562,15 +562,15 @@ var BaseComponent = function () {
     }
   }
 
-  /**
-   * Translate a text using the i18n system.
-   *
-   * @param {string} text - The i18n identifier.
-   * @param {Object} params - The i18n parameters to use for translation.
-   */
-
   _createClass(BaseComponent, [{
     key: 't',
+
+    /**
+     * Translate a text using the i18n system.
+     *
+     * @param {string} text - The i18n identifier.
+     * @param {Object} params - The i18n parameters to use for translation.
+     */
     value: function t(text, params) {
       params = params || {};
       params.data = this.root ? this.root.data : this.data;
@@ -1143,7 +1143,7 @@ var BaseComponent = function () {
         }
       }
 
-      if (this.component.input && this.component.validate && this.component.validate.required) {
+      if (this.hasInput && this.component.validate && this.component.validate.required) {
         className += ' field-required';
       }
       this.labelElement = this.ce('label', {
@@ -1839,7 +1839,7 @@ var BaseComponent = function () {
   }, {
     key: 'getValue',
     value: function getValue() {
-      if (!this.component.input) {
+      if (!this.hasInput) {
         return;
       }
       var values = [];
@@ -1879,7 +1879,7 @@ var BaseComponent = function () {
   }, {
     key: 'updateValue',
     value: function updateValue(flags) {
-      if (!this.component.input) {
+      if (!this.hasInput) {
         return false;
       }
 
@@ -1999,7 +1999,7 @@ var BaseComponent = function () {
     key: 'invalidMessage',
     value: function invalidMessage(data, dirty) {
       // No need to check for errors if there is no input or if it is pristine.
-      if (!this.component.input || !dirty && this.pristine) {
+      if (!this.hasInput || !dirty && this.pristine) {
         return '';
       }
 
@@ -2131,7 +2131,7 @@ var BaseComponent = function () {
     key: 'setValue',
     value: function setValue(value, flags) {
       flags = this.getFlags.apply(this, arguments);
-      if (!this.component.input) {
+      if (!this.hasInput) {
         return false;
       }
       this.value = value;
@@ -2291,6 +2291,11 @@ var BaseComponent = function () {
       };
     }
   }, {
+    key: 'hasInput',
+    get: function get() {
+      return this.component.input || this.inputs.length;
+    }
+  }, {
     key: 'shouldDisable',
     get: function get() {
       return this.options.readOnly || this.component.disabled;
@@ -2308,7 +2313,7 @@ var BaseComponent = function () {
   }, {
     key: 'className',
     get: function get() {
-      var className = this.component.input ? 'form-group has-feedback ' : '';
+      var className = this.hasInput ? 'form-group has-feedback ' : '';
       className += 'formio-component formio-component-' + this.component.type + ' ';
       if (this.component.key) {
         className += 'formio-component-' + this.component.key + ' ';
@@ -2316,7 +2321,7 @@ var BaseComponent = function () {
       if (this.component.customClass) {
         className += this.component.customClass;
       }
-      if (this.component.input && this.component.validate && this.component.validate.required) {
+      if (this.hasInput && this.component.validate && this.component.validate.required) {
         className += ' required';
       }
       return className;

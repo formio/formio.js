@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.26.2
+### Fixed
+ - Problem where a component has input should also return true if it has inputs.
+
 ## 2.26.1
 ### Fixed
  - Problems where data keys are added even if component is not set with input.
