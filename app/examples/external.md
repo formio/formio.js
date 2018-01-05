@@ -74,6 +74,7 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'make',
       placeholder: 'Select your make',
       dataSrc: 'values',
+      input: true,
       data: {
         values: [
           {
@@ -101,11 +102,12 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'model',
       placeholder: 'Select your model',
       dataSrc: 'url',
+      input: true,
       data: {
-        url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/\{\{ data.make \}\}?format=json'
+        url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/{% raw %}{{ data.make }}{% endraw %}?format=json'
       },
       valueProperty: 'Model_Name',
-      template: '<span>\{\{ item.Model_Name \}\}</span>',
+      template: '<span>{% raw %}{{ item.Model_Name }}{% endraw %}</span>',
       refreshOn: 'make',
       selectValues: 'Results'
     }

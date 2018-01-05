@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problems where data keys are added even if component is not set with input.
  - Failing tests.
  - Datagrid data merging.
+ 
+### Changed
+ - Upgraded choices.js to 3.0.3 which includes performance fix.
+ - Removed performance hack in Select since 3.0.3 of choices resolves the problem.
 
 ## 2.26.0
 ### Added
