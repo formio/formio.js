@@ -402,6 +402,7 @@ export class SelectComponent extends BaseComponent {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
       },
+      itemComparer: _isEqual,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       searchPlaceholderValue: placeholderValue,
@@ -419,6 +420,8 @@ export class SelectComponent extends BaseComponent {
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
+      this.addEventListener(input, 'stopSearch', (event) => this.triggerUpdate());
+      this.addEventListener(input, 'hideDropdown', (event) => this.triggerUpdate());
     }
 
     this.addEventListener(input, 'showDropdown', () => {
@@ -510,6 +513,7 @@ export class SelectComponent extends BaseComponent {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
+        this.choices.removeActiveItems();
         this.choices.setChoices(this.selectOptions, 'value', 'label', true);
         this.choices.setValueByChoice(_isArray(value) ? value : [value])
       }
