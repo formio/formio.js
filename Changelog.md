@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Problems where data keys are added even if component is not set with input.
  - Failing tests.
+ - Datagrid data merging.
 
 ## 2.26.0
 ### Added
@@ -36,7 +37,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Ability to dynamically alter text based on input data.
  - Try/catch around the jsLogic for checkconditionals.
  - LazyLoading for select dropdowns.
- 
+
 ### Fixed
  - Caching issue with getTempToken method.
  - Problem with the "in" operator for JSONLogic crashing with null inputs.
@@ -69,10 +70,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - The ability to render Select component as plain select dropdown using widget: 'html5' setting.
  - Performance improvements to language selection
- 
+
 ### Changed
  - Moved all translation capabilities into FormioForm for performance reasons.
- 
+
 ### Fixed
  - Issues with Lodash operators for JSONLogic.
 
@@ -114,7 +115,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - File component inside Datagrid component.
  - Components with label position inside Datagrid component.
- 
+
 ### Added
  - Interpolation to the select headers when requests are made.
  - Option to make the wizard header buttons not clickable.
