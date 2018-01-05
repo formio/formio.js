@@ -662,7 +662,7 @@ export class FormioForm extends FormioComponents {
 
   mergeData(_this, _that) {
     _mergeWith(_this, _that, (thisValue, thatValue) => {
-      if (_isArray(thisValue)) {
+      if (_isArray(thisValue) && _isArray(thatValue) && thisValue.length !== thatValue.length) {
         return thatValue;
       }
     });
