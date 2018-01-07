@@ -138,6 +138,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -166,7 +169,8 @@ Formio.forms = {};
 
 let getOptions = function(options) {
   options = _defaults(options, {
-    submitOnEnter: false
+    submitOnEnter: false,
+    i18next: i18next
   });
   if (!options.events) {
     options.events = new EventEmitter({
@@ -807,7 +811,7 @@ export class FormioForm extends FormioComponents {
 
   mergeData(_this, _that) {
     _mergeWith(_this, _that, (thisValue, thatValue) =&gt; {
-      if (_isArray(thisValue)) {
+      if (_isArray(thisValue) &amp;&amp; _isArray(thatValue) &amp;&amp; thisValue.length !== thatValue.length) {
         return thatValue;
       }
     });
@@ -826,7 +830,7 @@ export class FormioForm extends FormioComponents {
     let submission = _clone(this._submission);
     submission.data = this.data;
     this.mergeData(this._submission.data, submission.data);
-    return submission;
+    return this._submission;
   }
 
   /**
@@ -911,7 +915,11 @@ export class FormioForm extends FormioComponents {
   build() {
     this.on(&apos;submitButton&apos;, () =&gt; this.submit(), true);
     this.addComponents();
-    this.checkConditions(this.getValue());
+    let submission = this.getValue();
+    this.checkConditions(submission);
+    this.checkData(submission.data, {
+      noValidate: true
+    });
   }
 
   /**
@@ -1029,12 +1037,23 @@ export class FormioForm extends FormioComponents {
    *
    * @alias reset
    */
-  cancel() {
-    this.reset();
+  cancel(noconfirm) {
+    if(noconfirm || confirm(&apos;Are you sure you want to cancel?&apos;)) {
+      this.reset();
+      return true
+    }
+    else {
+      return false;
+    }
   }
 
   executeSubmit() {
     return new Promise((resolve, reject) =&gt; {
+      // Read-only forms should never submit.
+      if (this.options.readOnly) {
+        return resolve(this.submission);
+      }
+
       let submission = this.submission || {};
       this.hook(&apos;beforeSubmit&apos;, submission, (err) =&gt; {
         if (err) {

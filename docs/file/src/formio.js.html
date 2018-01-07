@@ -138,6 +138,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -389,7 +392,7 @@ export class Formio {
     if (typeof query === &apos;object&apos;) {
       query = &apos;?&apos; + serialize(query.params);
     }
-    return Formio.makeStaticRequest(Formio.baseUrl + &apos;/project&apos; + query);
+    return Formio.makeStaticRequest(Formio.baseUrl + &apos;/project&apos; + query, &apos;GET&apos;, null, opts);
   }
 
   loadForm(query, opts) {
@@ -417,6 +420,10 @@ export class Formio {
           .then(revisionForm =&gt; {
             currentForm.components = revisionForm.components;
             // Using object.assign so we don&apos;t cross polinate multiple form loads.
+            return Object.assign({}, currentForm);
+          })
+          .catch(error =&gt; {
+            // If we couldn&apos;t load the revision, just return the original form.
             return Object.assign({}, currentForm);
           });
       });
@@ -513,6 +520,14 @@ export class Formio {
         return form._id;
       });
     }
+  }
+
+  currentUser() {
+    return Formio.currentUser(this);
+  }
+
+  accessInfo() {
+    return Formio.accessInfo(this);
   }
 
   /**
@@ -635,8 +650,8 @@ export class Formio {
   canSubmit() {
     return Promise.all([
       this.loadForm(),
-      Formio.currentUser(),
-      Formio.accessInfo()
+      this.currentUser(),
+      this.accessInfo()
     ]).then(function(results) {
       var form = results.shift();
       var user = results.shift();
@@ -718,23 +733,37 @@ export class Formio {
     return str.join(&quot;&amp;&quot;);
   }
 
-  static makeStaticRequest(url, method, data, opts) {
+  static getRequestArgs(formio, type, url, method, data, opts) {
     method = (method || &apos;GET&apos;).toUpperCase();
-    if(!opts || typeof opts !== &apos;object&apos;) {
+    if(!opts || (typeof opts !== &apos;object&apos;)) {
       opts = {};
     }
+
     var requestArgs = {
       url: url,
       method: method,
-      data: data
+      data: data || null,
+      opts: opts
     };
 
+    if (type) {
+      requestArgs.type = type;
+    }
+
+    if (formio) {
+      requestArgs.formio = formio;
+    }
+    return requestArgs;
+  }
+
+  static makeStaticRequest(url, method, data, opts) {
+    var requestArgs = Formio.getRequestArgs(null, &apos;&apos;, url, method, data, opts);
     var request = Formio.pluginWait(&apos;preRequest&apos;, requestArgs)
       .then(function() {
         return Formio.pluginGet(&apos;staticRequest&apos;, requestArgs)
           .then(function(result) {
             if (result === null || result === undefined) {
-              return Formio.request(url, method, data, opts.header, opts);
+              return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
             }
             return result;
           });
@@ -744,26 +773,16 @@ export class Formio {
   }
 
   static makeRequest(formio, type, url, method, data, opts) {
-    method = (method || &apos;GET&apos;).toUpperCase();
-    if(!opts || typeof opts !== &apos;object&apos;) {
-      opts = {};
+    if (!formio) {
+      return Formio.makeStaticRequest(url, method, data, opts);
     }
-
-    var requestArgs = {
-      formio: formio,
-      type: type,
-      url: url,
-      method: method,
-      data: data,
-      opts: opts
-    };
-
+    var requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
     var request = Formio.pluginWait(&apos;preRequest&apos;, requestArgs)
       .then(function() {
         return Formio.pluginGet(&apos;request&apos;, requestArgs)
           .then(function(result) {
             if (result === null || result === undefined) {
-              return Formio.request(url, method, data, opts.header, opts);
+              return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
             }
             return result;
           });
@@ -1112,38 +1131,41 @@ export class Formio {
     }, value);
   }
 
-  static accessInfo() {
-    return Formio.makeStaticRequest(Formio.projectUrl + &apos;/access&apos;);
+  static accessInfo(formio) {
+    var projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+    return Formio.makeRequest(formio, &apos;accessInfo&apos;, projectUrl + &apos;/access&apos;);
   }
 
-  static currentUser() {
-    var url = Formio.baseUrl + &apos;/current&apos;;
+  static currentUser(formio) {
+    var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+    projectUrl += &apos;/current&apos;;
     var user = this.getUser();
     if (user) {
       return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(user), {
-        url: url,
+        url: projectUrl,
         method: &apos;GET&apos;
       })
     }
     var token = Formio.getToken();
     if (!token) {
       return Formio.pluginAlter(&apos;wrapStaticRequestPromise&apos;, Promise.resolve(null), {
-        url: url,
+        url: projectUrl,
         method: &apos;GET&apos;
       })
     }
-    return Formio.makeStaticRequest(url)
+    return Formio.makeRequest(formio, &apos;currentUser&apos;, projectUrl)
       .then(function(response) {
         Formio.setUser(response);
         return response;
       });
   }
 
-  static logout() {
+  static logout(formio) {
     Formio.setToken(null);
     Formio.setUser(null);
     Formio.clearCache();
-    return Formio.makeStaticRequest(Formio.baseUrl + &apos;/logout&apos;);
+    var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+    return Formio.makeRequest(formio, &apos;logout&apos;, projectUrl + &apos;/logout&apos;);
   }
 
   /**
