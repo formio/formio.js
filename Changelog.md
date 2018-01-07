@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issue where read-only forms would still try to submit.
  - Problem with read-only wizards triggering beforeSubmit handlers.
+ - Fix issue where submissions made before revisions are made will sometimes cause the form to not load.
  
 ### Changed
  - Upgrade all dependencies
