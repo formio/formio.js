@@ -900,6 +900,11 @@ export class FormioForm extends FormioComponents {
 
   executeSubmit() {
     return new Promise((resolve, reject) => {
+      // Read-only forms should never submit.
+      if (this.options.readOnly) {
+        return resolve(this.submission);
+      }
+
       let submission = this.submission || {};
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {

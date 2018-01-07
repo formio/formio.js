@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.27.0
+### Fixed
+ - Issue where read-only forms would still try to submit.
+ - Problem with read-only wizards triggering beforeSubmit handlers.
+ - Fix issue where submissions made before revisions are made will sometimes cause the form to not load.
+ 
+### Changed
+ - Upgrade all dependencies
+
 ## 2.26.2
 ### Fixed
  - Problem where a component has input should also return true if it has inputs.

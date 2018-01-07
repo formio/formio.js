@@ -24,14 +24,6 @@ import momentModule from 'moment';
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
-// Fix the "in" operand for jsonlogic.
-// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
-jsonLogic.add_operation('in', function(a, b) {
-  if(!b) return false;
-  if(typeof b.indexOf === "undefined") return false;
-  return (b.indexOf(a) !== -1);
-});
-
 // Retrieve Any Date
 jsonLogic.add_operation("getDate", function(date){
   return momentModule(date).toISOString()
