@@ -3772,7 +3772,7 @@ BaseComponent.libraryReady = function (name) {
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
 
-},{"../../utils":53,"../Validator":2,"i18next":74,"lodash":296,"lodash/assign":248,"lodash/clone":253,"lodash/debounce":256,"lodash/defaults":257,"lodash/each":260,"lodash/get":267,"lodash/isArray":272,"lodash/isEqual":279,"lodash/isUndefined":292,"lodash/toString":313,"native-promise-only":316,"text-mask-all/vanilla":324,"tooltip.js":321}],5:[function(require,module,exports){
+},{"../../utils":53,"../Validator":2,"i18next":74,"lodash":296,"lodash/assign":248,"lodash/clone":253,"lodash/debounce":256,"lodash/defaults":257,"lodash/each":260,"lodash/get":267,"lodash/isArray":272,"lodash/isEqual":279,"lodash/isUndefined":292,"lodash/toString":313,"native-promise-only":316,"text-mask-all/vanilla":322,"tooltip.js":323}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4747,7 +4747,7 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
   return CurrencyComponent;
 }(_Number.NumberComponent);
 
-},{"../number/Number":23,"lodash/get":267,"text-mask-all/addons/dist/createNumberMask":323,"text-mask-all/vanilla":324}],12:[function(require,module,exports){
+},{"../number/Number":23,"lodash/get":267,"text-mask-all/addons/dist/createNumberMask":321,"text-mask-all/vanilla":322}],12:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -7531,7 +7531,7 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
   return NumberComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"lodash/get":267,"text-mask-all/addons/dist/createNumberMask":323,"text-mask-all/vanilla":324}],24:[function(require,module,exports){
+},{"../base/Base":4,"lodash/get":267,"text-mask-all/addons/dist/createNumberMask":321,"text-mask-all/vanilla":322}],24:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -12645,7 +12645,7 @@ Formio.events = new EventEmitter({
 module.exports = global.Formio = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./formio.polyfill":43,"./providers":47,"browser-cookies":55,"eventemitter2":58,"native-promise-only":316,"shallow-copy":319,"whatwg-fetch":322}],42:[function(require,module,exports){
+},{"./formio.polyfill":43,"./providers":47,"browser-cookies":55,"eventemitter2":58,"native-promise-only":316,"shallow-copy":319,"whatwg-fetch":324}],42:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -14455,6 +14455,7 @@ exports.set = function(name, value, options) {
   var path     = opts.path     !== undefined ? opts.path     : (defaults.path !== undefined ? defaults.path : '/');
   var secure   = opts.secure   !== undefined ? opts.secure   : defaults.secure;
   var httponly = opts.httponly !== undefined ? opts.httponly : defaults.httponly;
+  var samesite = opts.samesite !== undefined ? opts.samesite : defaults.samesite;
 
   // Determine cookie expiration date
   // If succesful the result will be a valid Date, otherwise it will be an invalid Date or false(ish)
@@ -14463,7 +14464,7 @@ exports.set = function(name, value, options) {
       typeof expires === 'number' ? new Date().getTime() + (expires * 864e5) :
       // else expires should be either a Date object or in a format recognized by Date.parse()
       expires
-  ) : '';
+  ) : 0;
 
   // Set cookie
   document.cookie = name.replace(/[^+#$&^`|]/g, encodeURIComponent)                // Encode cookie name
@@ -14471,31 +14472,31 @@ exports.set = function(name, value, options) {
   .replace(')', '%29') +
   '=' + value.replace(/[^+#$&/:<-\[\]-}]/g, encodeURIComponent) +                  // Encode cookie value (RFC6265)
   (expDate && expDate.getTime() >= 0 ? ';expires=' + expDate.toUTCString() : '') + // Add expiration date
-  (domain   ? ';domain=' + domain : '') +                                          // Add domain
-  (path     ? ';path='   + path   : '') +                                          // Add path
-  (secure   ? ';secure'           : '') +                                          // Add secure option
-  (httponly ? ';httponly'         : '');                                           // Add httponly option
+  (domain   ? ';domain=' + domain     : '') +                                      // Add domain
+  (path     ? ';path='   + path       : '') +                                      // Add path
+  (secure   ? ';secure'               : '') +                                      // Add secure option
+  (httponly ? ';httponly'             : '') +                                      // Add httponly option
+  (samesite ? ';samesite=' + samesite : '');                                       // Add samesite option
 };
 
 exports.get = function(name) {
   var cookies = document.cookie.split(';');
-
+  
   // Iterate all cookies
-  for(var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i];
-    var cookieLength = cookie.length;
+  while(cookies.length) {
+    var cookie = cookies.pop();
 
     // Determine separator index ("name=value")
     var separatorIndex = cookie.indexOf('=');
 
     // IE<11 emits the equal sign when the cookie value is empty
-    separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
+    separatorIndex = separatorIndex < 0 ? cookie.length : separatorIndex;
 
-    var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
+    var cookie_name = decodeURIComponent(cookie.slice(0, separatorIndex).replace(/^\s+/, ''));
 
     // Return cookie value if the name matches
     if (cookie_name === name) {
-      return decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
+      return decodeURIComponent(cookie.slice(separatorIndex + 1));
     }
   }
 
@@ -14518,20 +14519,19 @@ exports.all = function() {
   var cookies = document.cookie.split(';');
 
   // Iterate all cookies
-  for(var i = 0; i < cookies.length; i++) {
-	  var cookie = cookies[i];
-    var cookieLength = cookie.length;
+  while(cookies.length) {
+    var cookie = cookies.pop();
 
-	  // Determine separator index ("name=value")
-	  var separatorIndex = cookie.indexOf('=');
+    // Determine separator index ("name=value")
+    var separatorIndex = cookie.indexOf('=');
 
-	  // IE<11 emits the equal sign when the cookie value is empty
-	  separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
+    // IE<11 emits the equal sign when the cookie value is empty
+    separatorIndex = separatorIndex < 0 ? cookie.length : separatorIndex;
 
     // add the cookie name and value to the `all` object
-	  var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
-	  all[cookie_name] = decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
-	}
+    var cookie_name = decodeURIComponent(cookie.slice(0, separatorIndex).replace(/^\s+/, ''));
+    all[cookie_name] = decodeURIComponent(cookie.slice(separatorIndex + 1));
+  }
 
   return all;
 };
@@ -16068,12 +16068,12 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
 
 }).call(this,require('_process'))
 },{"_process":318}],59:[function(require,module,exports){
-/* flatpickr v4.1.4, @license MIT */
+/* flatpickr v4.2.3, @license MIT */
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.flatpickr = factory());
-}(this, (function () { 'use strict';
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+	typeof define === 'function' && define.amd ? define(['exports'], factory) :
+	(factory((global.flatpickr = {})));
+}(this, (function (exports) { 'use strict';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -16101,146 +16101,6 @@ var __assign = Object.assign || function __assign(t) {
     return t;
 };
 
-function compareDates(date1, date2, timeless) {
-    if (timeless !== false) {
-        return (new Date(date1.getTime()).setHours(0, 0, 0, 0) -
-            new Date(date2.getTime()).setHours(0, 0, 0, 0));
-    }
-    return date1.getTime() - date2.getTime();
-}
-var monthToStr = function (monthNumber, shorthand, locale) { return locale.months[shorthand ? "shorthand" : "longhand"][monthNumber]; };
-var getWeek = function (givenDate) {
-    var onejan = new Date(givenDate.getFullYear(), 0, 1);
-    return Math.ceil(((givenDate.getTime() - onejan.getTime()) / 86400000 +
-        onejan.getDay() +
-        1) /
-        7);
-};
-var duration = {
-    DAY: 86400000,
-};
-
-var defaults = {
-    _disable: [],
-    _enable: [],
-    allowInput: false,
-    altFormat: "F j, Y",
-    altInput: false,
-    altInputClass: "form-control input",
-    animate: typeof window === "object" &&
-        window.navigator.userAgent.indexOf("MSIE") === -1,
-    ariaDateFormat: "F j, Y",
-    clickOpens: true,
-    closeOnSelect: true,
-    conjunction: ", ",
-    dateFormat: "Y-m-d",
-    defaultHour: 12,
-    defaultMinute: 0,
-    defaultSeconds: 0,
-    disable: [],
-    disableMobile: false,
-    enable: [],
-    enableSeconds: false,
-    enableTime: false,
-    errorHandler: console.warn,
-    getWeek: getWeek,
-    hourIncrement: 1,
-    ignoredFocusElements: [],
-    inline: false,
-    locale: "default",
-    minuteIncrement: 5,
-    mode: "single",
-    nextArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M13.207 8.472l-7.854 7.854-0.707-0.707 7.146-7.146-7.146-7.148 0.707-0.707 7.854 7.854z' /></svg>",
-    noCalendar: false,
-    onChange: [],
-    onClose: [],
-    onDayCreate: [],
-    onDestroy: [],
-    onKeyDown: [],
-    onMonthChange: [],
-    onOpen: [],
-    onParseConfig: [],
-    onReady: [],
-    onValueUpdate: [],
-    onYearChange: [],
-    plugins: [],
-    position: "auto",
-    positionElement: undefined,
-    prevArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M5.207 8.471l7.146 7.147-0.707 0.707-7.853-7.854 7.854-7.853 0.707 0.707-7.147 7.146z' /></svg>",
-    shorthandCurrentMonth: false,
-    static: false,
-    time_24hr: false,
-    weekNumbers: false,
-    wrap: false,
-};
-
-var english = {
-    weekdays: {
-        shorthand: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-        longhand: [
-            "Sunday",
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-        ],
-    },
-    months: {
-        shorthand: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec",
-        ],
-        longhand: [
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-        ],
-    },
-    daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-    firstDayOfWeek: 0,
-    ordinal: function (nth) {
-        var s = nth % 100;
-        if (s > 3 && s < 21)
-            return "th";
-        switch (s % 10) {
-            case 1:
-                return "st";
-            case 2:
-                return "nd";
-            case 3:
-                return "rd";
-            default:
-                return "th";
-        }
-    },
-    rangeSeparator: " to ",
-    weekAbbreviation: "Wk",
-    scrollTitle: "Scroll to increment",
-    toggleTitle: "Click to toggle",
-    amPM: ["AM", "PM"],
-};
-
 var pad = function (number) { return ("0" + number).slice(-2); };
 var int = function (bool) { return (bool === true ? 1 : 0); };
 function debounce(func, wait, immediate) {
@@ -16264,41 +16124,6 @@ var arrayify = function (obj) {
 function mouseDelta(e) {
     var delta = e.wheelDelta || -e.deltaY;
     return delta >= 0 ? 1 : -1;
-}
-
-function toggleClass(elem, className, bool) {
-    if (bool === true)
-        return elem.classList.add(className);
-    elem.classList.remove(className);
-}
-function createElement(tag, className, content) {
-    var e = window.document.createElement(tag);
-    className = className || "";
-    content = content || "";
-    e.className = className;
-    if (content !== undefined)
-        e.textContent = content;
-    return e;
-}
-function clearNode(node) {
-    while (node.firstChild)
-        node.removeChild(node.firstChild);
-}
-function findParent(node, condition) {
-    if (condition(node))
-        return node;
-    else if (node.parentNode)
-        return findParent(node.parentNode, condition);
-    return undefined;
-}
-function createNumberInput(inputClassName) {
-    var wrapper = createElement("div", "numInputWrapper"), numInput = createElement("input", "numInput " + inputClassName), arrowUp = createElement("span", "arrowUp"), arrowDown = createElement("span", "arrowDown");
-    numInput.type = "text";
-    numInput.pattern = "\\d*";
-    wrapper.appendChild(numInput);
-    wrapper.appendChild(arrowUp);
-    wrapper.appendChild(arrowDown);
-    return wrapper;
 }
 
 var do_nothing = function () { return undefined; };
@@ -16427,6 +16252,269 @@ var formats = {
     y: function (date) { return String(date.getFullYear()).substring(2); },
 };
 
+var english = {
+    weekdays: {
+        shorthand: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+        longhand: [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+        ],
+    },
+    months: {
+        shorthand: [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+        ],
+        longhand: [
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+        ],
+    },
+    daysInMonth: [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+    firstDayOfWeek: 0,
+    ordinal: function (nth) {
+        var s = nth % 100;
+        if (s > 3 && s < 21)
+            return "th";
+        switch (s % 10) {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
+        }
+    },
+    rangeSeparator: " to ",
+    weekAbbreviation: "Wk",
+    scrollTitle: "Scroll to increment",
+    toggleTitle: "Click to toggle",
+    amPM: ["AM", "PM"],
+};
+
+var createDateFormatter = function (_a) {
+    var _b = _a.config, config = _b === void 0 ? defaults : _b, _c = _a.l10n, l10n = _c === void 0 ? english : _c;
+    return function (dateObj, frmt) {
+        if (config.formatDate !== undefined)
+            return config.formatDate(dateObj, frmt);
+        return frmt
+            .split("")
+            .map(function (c, i, arr) {
+            return formats[c] && arr[i - 1] !== "\\"
+                ? formats[c](dateObj, l10n, config)
+                : c !== "\\" ? c : "";
+        })
+            .join("");
+    };
+};
+var createDateParser = function (_a) {
+    var _b = _a.config, config = _b === void 0 ? defaults : _b, _c = _a.l10n, l10n = _c === void 0 ? english : _c;
+    return function (date, givenFormat, timeless) {
+        if (date !== 0 && !date)
+            return undefined;
+        var parsedDate;
+        var date_orig = date;
+        if (date instanceof Date)
+            parsedDate = new Date(date.getTime());
+        else if (typeof date !== "string" &&
+            date.toFixed !== undefined)
+            parsedDate = new Date(date);
+        else if (typeof date === "string") {
+            var format = givenFormat || (config || defaults).dateFormat;
+            var datestr = String(date).trim();
+            if (datestr === "today") {
+                parsedDate = new Date();
+                timeless = true;
+            }
+            else if (/Z$/.test(datestr) ||
+                /GMT$/.test(datestr))
+                parsedDate = new Date(date);
+            else if (config && config.parseDate)
+                parsedDate = config.parseDate(date, format);
+            else {
+                parsedDate =
+                    !config || !config.noCalendar
+                        ? new Date(new Date().getFullYear(), 0, 1, 0, 0, 0, 0)
+                        : new Date(new Date().setHours(0, 0, 0, 0));
+                var matched = void 0, ops = [];
+                for (var i = 0, matchIndex = 0, regexStr = ""; i < format.length; i++) {
+                    var token = format[i];
+                    var isBackSlash = token === "\\";
+                    var escaped = format[i - 1] === "\\" || isBackSlash;
+                    if (tokenRegex[token] && !escaped) {
+                        regexStr += tokenRegex[token];
+                        var match = new RegExp(regexStr).exec(date);
+                        if (match && (matched = true)) {
+                            ops[token !== "Y" ? "push" : "unshift"]({
+                                fn: revFormat[token],
+                                val: match[++matchIndex],
+                            });
+                        }
+                    }
+                    else if (!isBackSlash)
+                        regexStr += ".";
+                    ops.forEach(function (_a) {
+                        var fn = _a.fn, val = _a.val;
+                        return (parsedDate = fn(parsedDate, val, l10n) || parsedDate);
+                    });
+                }
+                parsedDate = matched ? parsedDate : undefined;
+            }
+        }
+        if (!(parsedDate instanceof Date)) {
+            config.errorHandler(new Error("Invalid date provided: " + date_orig));
+            return undefined;
+        }
+        if (timeless === true)
+            parsedDate.setHours(0, 0, 0, 0);
+        return parsedDate;
+    };
+};
+function compareDates(date1, date2, timeless) {
+    if (timeless === void 0) { timeless = true; }
+    if (timeless !== false) {
+        return (new Date(date1.getTime()).setHours(0, 0, 0, 0) -
+            new Date(date2.getTime()).setHours(0, 0, 0, 0));
+    }
+    return date1.getTime() - date2.getTime();
+}
+
+var monthToStr = function (monthNumber, shorthand, locale) { return locale.months[shorthand ? "shorthand" : "longhand"][monthNumber]; };
+var getWeek = function (givenDate) {
+    var date = new Date(givenDate.getTime());
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+    var week1 = new Date(date.getFullYear(), 0, 4);
+    return (1 +
+        Math.round(((date.getTime() - week1.getTime()) / 86400000 -
+            3 +
+            (week1.getDay() + 6) % 7) /
+            7));
+};
+var duration = {
+    DAY: 86400000,
+};
+
+var defaults = {
+    _disable: [],
+    _enable: [],
+    allowInput: false,
+    altFormat: "F j, Y",
+    altInput: false,
+    altInputClass: "form-control input",
+    animate: typeof window === "object" &&
+        window.navigator.userAgent.indexOf("MSIE") === -1,
+    ariaDateFormat: "F j, Y",
+    clickOpens: true,
+    closeOnSelect: true,
+    conjunction: ", ",
+    dateFormat: "Y-m-d",
+    defaultHour: 12,
+    defaultMinute: 0,
+    defaultSeconds: 0,
+    disable: [],
+    disableMobile: false,
+    enable: [],
+    enableSeconds: false,
+    enableTime: false,
+    errorHandler: console.warn,
+    getWeek: getWeek,
+    hourIncrement: 1,
+    ignoredFocusElements: [],
+    inline: false,
+    locale: "default",
+    minuteIncrement: 5,
+    mode: "single",
+    nextArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M13.207 8.472l-7.854 7.854-0.707-0.707 7.146-7.146-7.146-7.148 0.707-0.707 7.854 7.854z' /></svg>",
+    noCalendar: false,
+    onChange: [],
+    onClose: [],
+    onDayCreate: [],
+    onDestroy: [],
+    onKeyDown: [],
+    onMonthChange: [],
+    onOpen: [],
+    onParseConfig: [],
+    onReady: [],
+    onValueUpdate: [],
+    onYearChange: [],
+    onPreCalendarPosition: [],
+    plugins: [],
+    position: "auto",
+    positionElement: undefined,
+    prevArrow: "<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 17 17'><g></g><path d='M5.207 8.471l7.146 7.147-0.707 0.707-7.853-7.854 7.854-7.853 0.707 0.707-7.147 7.146z' /></svg>",
+    shorthandCurrentMonth: false,
+    static: false,
+    time_24hr: false,
+    weekNumbers: false,
+    wrap: false,
+};
+
+function toggleClass(elem, className, bool) {
+    if (bool === true)
+        return elem.classList.add(className);
+    elem.classList.remove(className);
+}
+function createElement(tag, className, content) {
+    var e = window.document.createElement(tag);
+    className = className || "";
+    content = content || "";
+    e.className = className;
+    if (content !== undefined)
+        e.textContent = content;
+    return e;
+}
+function clearNode(node) {
+    while (node.firstChild)
+        node.removeChild(node.firstChild);
+}
+function findParent(node, condition) {
+    if (condition(node))
+        return node;
+    else if (node.parentNode)
+        return findParent(node.parentNode, condition);
+    return undefined;
+}
+function createNumberInput(inputClassName, opts) {
+    var wrapper = createElement("div", "numInputWrapper"), numInput = createElement("input", "numInput " + inputClassName), arrowUp = createElement("span", "arrowUp"), arrowDown = createElement("span", "arrowDown");
+    numInput.type = "text";
+    numInput.pattern = "\\d*";
+    if (opts !== undefined)
+        for (var key in opts)
+            numInput.setAttribute(key, opts[key]);
+    wrapper.appendChild(numInput);
+    wrapper.appendChild(arrowUp);
+    wrapper.appendChild(arrowDown);
+    return wrapper;
+}
+
 if (typeof Object.assign !== "function") {
     Object.assign = function (target) {
         var args = [];
@@ -16449,10 +16537,10 @@ if (typeof Object.assign !== "function") {
     };
 }
 
+var DEBOUNCED_CHANGE_MS = 300;
 function FlatpickrInstance(element, instanceConfig) {
     var self = {};
-    self.parseDate = parseDate;
-    self.formatDate = formatDate;
+    self.parseDate = createDateParser(self);
     self._animationLoop = [];
     self._handlers = [];
     self._bind = bind;
@@ -16506,8 +16594,10 @@ function FlatpickrInstance(element, instanceConfig) {
             self.calendarContainer.style.width =
                 self.daysContainer.offsetWidth + self.weekWrapper.offsetWidth + "px";
         }
-        if (!self.isMobile)
+        var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+        if (!self.isMobile && isSafari) {
             positionCalendar();
+        }
         triggerEvent("onReady");
     }
     function bindToInstance(fn) {
@@ -16515,19 +16605,16 @@ function FlatpickrInstance(element, instanceConfig) {
     }
     function updateTime(e) {
         if (self.config.noCalendar && self.selectedDates.length === 0) {
-            var minDate = self.config.minDate;
-            self.setDate(new Date().setHours(!minDate ? self.config.defaultHour : minDate.getHours(), !minDate ? self.config.defaultMinute : minDate.getMinutes(), !minDate || !self.config.enableSeconds
-                ? self.config.defaultSeconds
-                : minDate.getSeconds()), false);
+            self.setDate(self.config.minDate !== undefined
+                ? new Date(self.config.minDate.getTime())
+                : new Date().setHours(self.config.defaultHour, self.config.defaultMinute, self.config.defaultSeconds, 0), false);
             setHoursFromInputs();
             updateValue();
         }
         timeWrapper(e);
         if (self.selectedDates.length === 0)
             return;
-        if (!self.minDateHasTime ||
-            e.type !== "input" ||
-            e.target.value.length >= 2) {
+        if (e.type !== "input") {
             setHoursFromInputs();
             updateValue();
         }
@@ -16535,7 +16622,7 @@ function FlatpickrInstance(element, instanceConfig) {
             setTimeout(function () {
                 setHoursFromInputs();
                 updateValue();
-            }, 1000);
+            }, DEBOUNCED_CHANGE_MS);
         }
     }
     function ampm2military(hour, amPM) {
@@ -16558,21 +16645,33 @@ function FlatpickrInstance(element, instanceConfig) {
             : 0;
         if (self.amPM !== undefined)
             hours = ampm2military(hours, self.amPM.textContent);
-        if (self.config.minDate &&
-            self.minDateHasTime &&
-            self.latestSelectedDateObj &&
-            compareDates(self.latestSelectedDateObj, self.config.minDate) === 0) {
-            hours = Math.max(hours, self.config.minDate.getHours());
-            if (hours === self.config.minDate.getHours())
-                minutes = Math.max(minutes, self.config.minDate.getMinutes());
+        var limitMinHours = self.config.minTime !== undefined ||
+            (self.config.minDate &&
+                self.minDateHasTime &&
+                self.latestSelectedDateObj &&
+                compareDates(self.latestSelectedDateObj, self.config.minDate, true) ===
+                    0);
+        var limitMaxHours = self.config.maxTime !== undefined ||
+            (self.config.maxDate &&
+                self.maxDateHasTime &&
+                self.latestSelectedDateObj &&
+                compareDates(self.latestSelectedDateObj, self.config.maxDate, true) ===
+                    0);
+        if (limitMaxHours) {
+            var maxTime = self.config.maxTime !== undefined
+                ? self.config.maxTime
+                : self.config.maxDate;
+            hours = Math.min(hours, maxTime.getHours());
+            if (hours === maxTime.getHours())
+                minutes = Math.min(minutes, maxTime.getMinutes());
         }
-        if (self.config.maxDate &&
-            self.maxDateHasTime &&
-            self.latestSelectedDateObj &&
-            compareDates(self.latestSelectedDateObj, self.config.maxDate) === 0) {
-            hours = Math.min(hours, self.config.maxDate.getHours());
-            if (hours === self.config.maxDate.getHours())
-                minutes = Math.min(minutes, self.config.maxDate.getMinutes());
+        if (limitMinHours) {
+            var minTime = self.config.minTime !== undefined
+                ? self.config.minTime
+                : self.config.minDate;
+            hours = Math.max(hours, minTime.getHours());
+            if (hours === minTime.getHours())
+                minutes = Math.max(minutes, minTime.getMinutes());
         }
         setHours(hours, minutes, seconds);
     }
@@ -16604,12 +16703,12 @@ function FlatpickrInstance(element, instanceConfig) {
                 changeYear(year);
         }
     }
-    function bind(element, event, handler) {
+    function bind(element, event, handler, options) {
         if (event instanceof Array)
-            return event.forEach(function (ev) { return bind(element, ev, handler); });
+            return event.forEach(function (ev) { return bind(element, ev, handler, options); });
         if (element instanceof Array)
-            return element.forEach(function (el) { return bind(el, event, handler); });
-        element.addEventListener(event, handler);
+            return element.forEach(function (el) { return bind(el, event, handler, options); });
+        element.addEventListener(event, handler, options);
         self._handlers.push({ element: element, event: event, handler: handler });
     }
     function onClick(handler) {
@@ -16633,7 +16732,7 @@ function FlatpickrInstance(element, instanceConfig) {
             return;
         }
         var debouncedResize = debounce(onResize, 50);
-        self._debouncedChange = debounce(triggerChange, 300);
+        self._debouncedChange = debounce(triggerChange, DEBOUNCED_CHANGE_MS);
         if (self.config.mode === "range" &&
             self.daysContainer &&
             !/iPhone|iPad|iPod/i.test(navigator.userAgent))
@@ -16648,14 +16747,13 @@ function FlatpickrInstance(element, instanceConfig) {
         if (window.ontouchstart !== undefined)
             bind(window.document.body, "touchstart", documentClick);
         bind(window.document.body, "mousedown", onClick(documentClick));
-        bind(self._input, "blur", documentClick);
+        bind(window.document.body, "focus", documentClick, { capture: true });
         if (self.config.clickOpens === true) {
             bind(self._input, "focus", self.open);
             bind(self._input, "mousedown", onClick(self.open));
         }
         if (self.daysContainer !== undefined) {
-            self.monthNav.addEventListener("wheel", function (e) { return e.preventDefault(); });
-            bind(self.monthNav, "wheel", debounce(onMonthNavScroll, 10));
+            bind(self.monthNav, "wheel", onMonthNavScroll);
             bind(self.monthNav, "mousedown", onClick(onMonthNavClick));
             bind(self.monthNav, ["keyup", "increment"], onYearInput);
             bind(self.daysContainer, "mousedown", onClick(selectDate));
@@ -16672,8 +16770,7 @@ function FlatpickrInstance(element, instanceConfig) {
             };
             bind(self.timeContainer, ["wheel", "input", "increment"], updateTime);
             bind(self.timeContainer, "mousedown", onClick(timeIncrement));
-            bind(self.timeContainer, ["wheel", "increment"], self._debouncedChange);
-            bind(self.timeContainer, "input", triggerChange);
+            bind(self.timeContainer, ["wheel", "input", "increment"], self._debouncedChange, { passive: true });
             bind([self.hourElement, self.minuteElement], ["focus", "click"], selText);
             if (self.secondElement !== undefined)
                 bind(self.secondElement, "focus", function () { return self.secondElement && self.secondElement.select(); });
@@ -16732,7 +16829,7 @@ function FlatpickrInstance(element, instanceConfig) {
     }
     function jumpToDate(jumpDate) {
         var jumpTo = jumpDate !== undefined
-            ? parseDate(jumpDate)
+            ? self.parseDate(jumpDate)
             : self.latestSelectedDateObj ||
                 (self.config.minDate && self.config.minDate > self.now
                     ? self.config.minDate
@@ -16864,9 +16961,7 @@ function FlatpickrInstance(element, instanceConfig) {
         if (self.weekNumbers &&
             className !== "prevMonthDay" &&
             dayNumber % 7 === 1) {
-            self.weekNumbers.insertAdjacentHTML("beforeend", "<span class='disabled flatpickr-day'>" +
-                self.config.getWeek(date) +
-                "</span>");
+            self.weekNumbers.insertAdjacentHTML("beforeend", "<span class='flatpickr-day'>" + self.config.getWeek(date) + "</span>");
         }
         triggerEvent("onDayCreate", dayElement);
         return dayElement;
@@ -16959,17 +17054,13 @@ function FlatpickrInstance(element, instanceConfig) {
         self.prevMonthNav.innerHTML = self.config.prevArrow;
         self.currentMonthElement = createElement("span", "cur-month");
         self.currentMonthElement.title = self.l10n.scrollTitle;
-        var yearInput = createNumberInput("cur-year");
+        var yearInput = createNumberInput("cur-year", { tabindex: "-1" });
         self.currentYearElement = yearInput.childNodes[0];
         self.currentYearElement.title = self.l10n.scrollTitle;
         if (self.config.minDate)
-            self.currentYearElement.min = self.config.minDate
-                .getFullYear()
-                .toString();
+            self.currentYearElement.setAttribute("data-min", self.config.minDate.getFullYear().toString());
         if (self.config.maxDate) {
-            self.currentYearElement.max = self.config.maxDate
-                .getFullYear()
-                .toString();
+            self.currentYearElement.setAttribute("data-max", self.config.maxDate.getFullYear().toString());
             self.currentYearElement.disabled =
                 !!self.config.minDate &&
                     self.config.minDate.getFullYear() === self.config.maxDate.getFullYear();
@@ -17022,12 +17113,12 @@ function FlatpickrInstance(element, instanceConfig) {
         self.minuteElement.value = pad(self.latestSelectedDateObj
             ? self.latestSelectedDateObj.getMinutes()
             : self.config.defaultMinute);
-        self.hourElement.step = self.config.hourIncrement.toString();
-        self.minuteElement.step = self.config.minuteIncrement.toString();
-        self.hourElement.min = self.config.time_24hr ? "0" : "1";
-        self.hourElement.max = self.config.time_24hr ? "23" : "12";
-        self.minuteElement.min = "0";
-        self.minuteElement.max = "59";
+        self.hourElement.setAttribute("data-step", self.config.hourIncrement.toString());
+        self.minuteElement.setAttribute("data-step", self.config.minuteIncrement.toString());
+        self.hourElement.setAttribute("data-min", self.config.time_24hr ? "0" : "1");
+        self.hourElement.setAttribute("data-max", self.config.time_24hr ? "23" : "12");
+        self.minuteElement.setAttribute("data-min", "0");
+        self.minuteElement.setAttribute("data-max", "59");
         self.hourElement.title = self.minuteElement.title = self.l10n.scrollTitle;
         self.timeContainer.appendChild(hourInput);
         self.timeContainer.appendChild(separator);
@@ -17041,9 +17132,9 @@ function FlatpickrInstance(element, instanceConfig) {
             self.secondElement.value = pad(self.latestSelectedDateObj
                 ? self.latestSelectedDateObj.getSeconds()
                 : self.config.defaultSeconds);
-            self.secondElement.step = self.minuteElement.step;
-            self.secondElement.min = self.minuteElement.min;
-            self.secondElement.max = self.minuteElement.max;
+            self.secondElement.setAttribute("data-step", self.minuteElement.getAttribute("data-step"));
+            self.secondElement.setAttribute("data-min", self.minuteElement.getAttribute("data-min"));
+            self.secondElement.setAttribute("data-max", self.minuteElement.getAttribute("data-max"));
             self.timeContainer.appendChild(createElement("span", "flatpickr-time-separator", ":"));
             self.timeContainer.appendChild(secondInput);
         }
@@ -17153,6 +17244,12 @@ function FlatpickrInstance(element, instanceConfig) {
         self.selectedDates = [];
         self.latestSelectedDateObj = undefined;
         self.showTimeInput = false;
+        if (self.config.enableTime) {
+            if (self.config.minDate !== undefined)
+                setHoursFromDate(self.config.minDate);
+            else
+                setHours(self.config.defaultHour, self.config.defaultMinute, self.config.defaultSeconds);
+        }
         self.redraw();
         if (triggerChangeEvent)
             triggerEvent("onChange");
@@ -17248,8 +17345,10 @@ function FlatpickrInstance(element, instanceConfig) {
                     e.relatedTarget &&
                     !isCalendarElem(e.relatedTarget)
                 : !isInput && !isCalendarElement;
-            if (lostFocus &&
-                self.config.ignoredFocusElements.indexOf(e.target) === -1) {
+            var isIgnored = !self.config.ignoredFocusElements.some(function (elem) {
+                return elem.contains(e.target);
+            });
+            if (lostFocus && isIgnored) {
                 self.close();
                 if (self.config.mode === "range" && self.selectedDates.length === 1) {
                     self.clear(false);
@@ -17260,10 +17359,12 @@ function FlatpickrInstance(element, instanceConfig) {
     }
     function changeYear(newYear) {
         if (!newYear ||
-            (self.currentYearElement.min &&
-                newYear < parseInt(self.currentYearElement.min)) ||
-            (self.currentYearElement.max &&
-                newYear > parseInt(self.currentYearElement.max)))
+            (self.currentYearElement.getAttribute("data-min") &&
+                newYear <
+                    parseInt(self.currentYearElement.getAttribute("data-min"))) ||
+            (self.currentYearElement.getAttribute("data-max") &&
+                newYear >
+                    parseInt(self.currentYearElement.getAttribute("data-max"))))
             return;
         var newYearNum = newYear, isNewYear = self.currentYear !== newYearNum;
         self.currentYear = newYearNum || self.currentYear;
@@ -17326,7 +17427,7 @@ function FlatpickrInstance(element, instanceConfig) {
         var allowInput = self.config.allowInput;
         var allowKeydown = self.isOpen && (!allowInput || !isInput);
         var allowInlineKeydown = self.config.inline && isInput && !allowInput;
-        if (e.key === "Enter" && isInput) {
+        if (e.keyCode === 13 && isInput) {
             if (allowInput) {
                 self.setDate(self._input.value, true, e.target === self.altInput
                     ? self.config.altFormat
@@ -17339,28 +17440,28 @@ function FlatpickrInstance(element, instanceConfig) {
         else if (calendarElem || allowKeydown || allowInlineKeydown) {
             var isTimeObj = !!self.timeContainer &&
                 self.timeContainer.contains(e.target);
-            switch (e.key) {
-                case "Enter":
+            switch (e.keyCode) {
+                case 13:
                     if (isTimeObj)
                         updateValue();
                     else
                         selectDate(e);
                     break;
-                case "Escape":
+                case 27:
                     e.preventDefault();
                     self.close();
                     break;
-                case "Backspace":
-                case "Delete":
+                case 8:
+                case 46:
                     if (isInput && !self.config.allowInput)
                         self.clear();
                     break;
-                case "ArrowLeft":
-                case "ArrowRight":
+                case 37:
+                case 39:
                     if (!isTimeObj) {
                         e.preventDefault();
                         if (self.daysContainer) {
-                            var delta_1 = e.key === "ArrowRight" ? 1 : -1;
+                            var delta_1 = e.keyCode === 39 ? 1 : -1;
                             if (!e.ctrlKey)
                                 focusOnDay(e.target.$i, delta_1);
                             else
@@ -17370,10 +17471,10 @@ function FlatpickrInstance(element, instanceConfig) {
                     else if (self.hourElement)
                         self.hourElement.focus();
                     break;
-                case "ArrowUp":
-                case "ArrowDown":
+                case 38:
+                case 40:
                     e.preventDefault();
-                    var delta = e.key === "ArrowDown" ? 1 : -1;
+                    var delta = e.keyCode === 40 ? 1 : -1;
                     if (self.daysContainer && e.target.$i !== undefined) {
                         if (e.ctrlKey) {
                             changeYear(self.currentYear - delta);
@@ -17389,7 +17490,7 @@ function FlatpickrInstance(element, instanceConfig) {
                         self._debouncedChange();
                     }
                     break;
-                case "Tab":
+                case 9:
                     if (e.target === self.hourElement) {
                         e.preventDefault();
                         self.minuteElement.select();
@@ -17407,6 +17508,10 @@ function FlatpickrInstance(element, instanceConfig) {
                         self.amPM.focus();
                     }
                     break;
+                default:
+                    break;
+            }
+            switch (e.key) {
                 case self.l10n.amPM[0].charAt(0):
                     if (self.amPM !== undefined && e.target === self.amPM) {
                         self.amPM.textContent = self.l10n.amPM[0];
@@ -17430,6 +17535,7 @@ function FlatpickrInstance(element, instanceConfig) {
     function onMouseOver(elem) {
         if (self.selectedDates.length !== 1 ||
             !elem.classList.contains("flatpickr-day") ||
+            elem.classList.contains("disabled") ||
             self.minRangeDate === undefined ||
             self.maxRangeDate === undefined)
             return;
@@ -17492,14 +17598,16 @@ function FlatpickrInstance(element, instanceConfig) {
             return;
         var wasOpen = self.isOpen;
         self.isOpen = true;
-        positionCalendar(positionElement);
-        self.calendarContainer.classList.add("open");
-        self._input.classList.add("active");
-        !wasOpen && triggerEvent("onOpen");
+        if (!wasOpen) {
+            self.calendarContainer.classList.add("open");
+            self._input.classList.add("active");
+            triggerEvent("onOpen");
+            positionCalendar(positionElement);
+        }
     }
     function minMaxDateSetter(type) {
         return function (date) {
-            var dateObj = (self.config["_" + type + "Date"] = self.parseDate(date));
+            var dateObj = (self.config["_" + type + "Date"] = self.parseDate(date, self.config.dateFormat));
             var inverseDateObj = self.config["_" + (type === "min" ? "max" : "min") + "Date"];
             if (dateObj !== undefined) {
                 self[type === "min" ? "minDateHasTime" : "maxDateHasTime"] =
@@ -17554,10 +17662,13 @@ function FlatpickrInstance(element, instanceConfig) {
             "onReady",
             "onValueUpdate",
             "onYearChange",
+            "onPreCalendarPosition",
         ];
         self.config = __assign({}, flatpickr.defaultConfig);
         var userConfig = __assign({}, instanceConfig, JSON.parse(JSON.stringify(element.dataset || {})));
         var formats$$1 = {};
+        self.config.parseDate = userConfig.parseDate;
+        self.config.formatDate = userConfig.formatDate;
         Object.defineProperty(self.config, "enable", {
             get: function () { return self.config._enable || []; },
             set: function (dates) {
@@ -17590,6 +17701,17 @@ function FlatpickrInstance(element, instanceConfig) {
         Object.defineProperty(self.config, "maxDate", {
             get: function () { return self.config._maxDate; },
             set: minMaxDateSetter("max"),
+        });
+        var minMaxTimeSetter = function (type) { return function (val) {
+            self.config[type === "min" ? "_minTime" : "_maxTime"] = self.parseDate(val, "H:i");
+        }; };
+        Object.defineProperty(self.config, "minTime", {
+            get: function () { return self.config._minTime; },
+            set: minMaxTimeSetter("min"),
+        });
+        Object.defineProperty(self.config, "maxTime", {
+            get: function () { return self.config._maxTime; },
+            set: minMaxTimeSetter("max"),
         });
         Object.assign(self.config, formats$$1, userConfig);
         for (var i = 0; i < boolOpts.length; i++)
@@ -17633,12 +17755,14 @@ function FlatpickrInstance(element, instanceConfig) {
                 ? flatpickr.l10ns[self.config.locale]
                 : undefined);
         tokenRegex.K = "(" + self.l10n.amPM[0] + "|" + self.l10n.amPM[1] + "|" + self.l10n.amPM[0].toLowerCase() + "|" + self.l10n.amPM[1].toLowerCase() + ")";
+        self.formatDate = createDateFormatter(self);
     }
-    function positionCalendar(positionElement) {
-        if (positionElement === void 0) { positionElement = self._positionElement; }
+    function positionCalendar(customPositionElement) {
         if (self.calendarContainer === undefined)
             return;
-        var calendarHeight = self.calendarContainer.offsetHeight, calendarWidth = self.calendarContainer.offsetWidth, configPos = self.config.position, inputBounds = positionElement.getBoundingClientRect(), distanceFromBottom = window.innerHeight - inputBounds.bottom, showOnTop = configPos === "above" ||
+        triggerEvent("onPreCalendarPosition");
+        var positionElement = customPositionElement || self._positionElement;
+        var calendarHeight = Array.prototype.reduce.call(self.calendarContainer.children, function (acc, child) { return acc + child.offsetHeight; }, 0), calendarWidth = self.calendarContainer.offsetWidth, configPos = self.config.position, inputBounds = positionElement.getBoundingClientRect(), distanceFromBottom = window.innerHeight - inputBounds.bottom, showOnTop = configPos === "above" ||
             (configPos !== "below" &&
                 distanceFromBottom < calendarHeight &&
                 inputBounds.top > calendarHeight);
@@ -17671,6 +17795,13 @@ function FlatpickrInstance(element, instanceConfig) {
         buildWeekdays();
         updateNavigationCurrentMonth();
         buildDays();
+    }
+    function focusAndClose() {
+        self._input.focus();
+        if (window.navigator.userAgent.indexOf("MSIE") === -1)
+            self.close();
+        else
+            setTimeout(self.close, 0);
     }
     function selectDate(e) {
         e.preventDefault();
@@ -17740,7 +17871,6 @@ function FlatpickrInstance(element, instanceConfig) {
             else
                 updateNavigationCurrentMonth();
         }
-        triggerEvent("onChange");
         if (!shouldChangeMonth)
             focusOnDay(target.$i, 0);
         else
@@ -17752,15 +17882,23 @@ function FlatpickrInstance(element, instanceConfig) {
             var range = self.config.mode === "range" &&
                 self.selectedDates.length === 2 &&
                 !self.config.enableTime;
-            if (single || range)
-                self.close();
+            if (single || range) {
+                focusAndClose();
+            }
         }
+        triggerChange();
     }
+    var CALLBACKS = {
+        locale: [setupLocale],
+    };
     function set(option, value) {
         if (option !== null && typeof option === "object")
             Object.assign(self.config, option);
-        else
+        else {
             self.config[option] = value;
+            if (CALLBACKS[option] !== undefined)
+                CALLBACKS[option].forEach(function (x) { return x(); });
+        }
         self.redraw();
         jumpToDate();
     }
@@ -17796,6 +17934,7 @@ function FlatpickrInstance(element, instanceConfig) {
     }
     function setDate(date, triggerChange, format) {
         if (triggerChange === void 0) { triggerChange = false; }
+        if (format === void 0) { format = self.config.dateFormat; }
         if (date !== 0 && !date)
             return self.clear(triggerChange);
         setSelectedDate(date, format);
@@ -17847,6 +17986,10 @@ function FlatpickrInstance(element, instanceConfig) {
         self.currentMonth = initialDate.getMonth();
         if (self.selectedDates.length)
             self.latestSelectedDateObj = self.selectedDates[0];
+        if (self.config.minTime !== undefined)
+            self.config.minTime = self.parseDate(self.config.minTime, "H:i");
+        if (self.config.maxTime !== undefined)
+            self.config.maxTime = self.parseDate(self.config.maxTime, "H:i");
         self.minDateHasTime =
             !!self.config.minDate &&
                 (self.config.minDate.getHours() > 0 ||
@@ -17863,82 +18006,9 @@ function FlatpickrInstance(element, instanceConfig) {
                 self._showTimeInput = bool;
                 if (self.calendarContainer)
                     toggleClass(self.calendarContainer, "showTimeInput", bool);
-                positionCalendar();
+                self.isOpen && positionCalendar();
             },
         });
-    }
-    function formatDate(dateObj, frmt) {
-        if (self.config !== undefined && self.config.formatDate !== undefined)
-            return self.config.formatDate(dateObj, frmt);
-        return frmt
-            .split("")
-            .map(function (c, i, arr) {
-            return formats[c] && arr[i - 1] !== "\\"
-                ? formats[c](dateObj, self.l10n, self.config)
-                : c !== "\\" ? c : "";
-        })
-            .join("");
-    }
-    function parseDate(date, givenFormat, timeless) {
-        if (date !== 0 && !date)
-            return undefined;
-        var parsedDate;
-        var date_orig = date;
-        if (date instanceof Date)
-            parsedDate = new Date(date.getTime());
-        else if (typeof date !== "string" &&
-            date.toFixed !== undefined)
-            parsedDate = new Date(date);
-        else if (typeof date === "string") {
-            var format = givenFormat || (self.config || flatpickr.defaultConfig).dateFormat;
-            var datestr = String(date).trim();
-            if (datestr === "today") {
-                parsedDate = new Date();
-                timeless = true;
-            }
-            else if (/Z$/.test(datestr) ||
-                /GMT$/.test(datestr))
-                parsedDate = new Date(date);
-            else if (self.config && self.config.parseDate)
-                parsedDate = self.config.parseDate(date, format);
-            else {
-                parsedDate =
-                    !self.config || !self.config.noCalendar
-                        ? new Date(new Date().getFullYear(), 0, 1, 0, 0, 0, 0)
-                        : new Date(new Date().setHours(0, 0, 0, 0));
-                var matched = void 0, ops = [];
-                for (var i = 0, matchIndex = 0, regexStr = ""; i < format.length; i++) {
-                    var token = format[i];
-                    var isBackSlash = token === "\\";
-                    var escaped = format[i - 1] === "\\" || isBackSlash;
-                    if (tokenRegex[token] && !escaped) {
-                        regexStr += tokenRegex[token];
-                        var match = new RegExp(regexStr).exec(date);
-                        if (match && (matched = true)) {
-                            ops[token !== "Y" ? "push" : "unshift"]({
-                                fn: revFormat[token],
-                                val: match[++matchIndex],
-                            });
-                        }
-                    }
-                    else if (!isBackSlash)
-                        regexStr += ".";
-                    ops.forEach(function (_a) {
-                        var fn = _a.fn, val = _a.val;
-                        return (parsedDate =
-                            fn(parsedDate, val, self.l10n) || parsedDate);
-                    });
-                }
-                parsedDate = matched ? parsedDate : undefined;
-            }
-        }
-        if (!(parsedDate instanceof Date)) {
-            self.config.errorHandler(new Error("Invalid date provided: " + date_orig));
-            return undefined;
-        }
-        if (timeless === true)
-            parsedDate.setHours(0, 0, 0, 0);
-        return parsedDate;
     }
     function setupInputs() {
         self.input = self.config.wrap
@@ -18112,7 +18182,7 @@ function FlatpickrInstance(element, instanceConfig) {
             self.amPM.textContent =
                 self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
         }
-        var min = Number(input.min), max = Number(input.max), step = Number(input.step), curValue = parseInt(input.value, 10), delta = e.delta ||
+        var min = parseFloat(input.getAttribute("data-min")), max = parseFloat(input.getAttribute("data-max")), step = parseFloat(input.getAttribute("data-step")), curValue = parseInt(input.value, 10), delta = e.delta ||
             (isKeyDown
                 ? e.which === 38 ? 1 : -1
                 : Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY)) || 0);
@@ -18198,6 +18268,9 @@ flatpickr.localize = function (l10n) {
 flatpickr.setDefaults = function (config) {
     flatpickr.defaultConfig = __assign({}, flatpickr.defaultConfig, config);
 };
+flatpickr.parseDate = createDateParser({});
+flatpickr.formatDate = createDateFormatter({});
+flatpickr.compareDates = compareDates;
 if (typeof jQuery !== "undefined") {
     jQuery.fn.flatpickr = function (config) {
         return _flatpickr(this, config);
@@ -18208,7 +18281,9 @@ Date.prototype.fp_incr = function (days) {
 };
 var flatpickr$1 = flatpickr;
 
-return flatpickr$1;
+exports['default'] = flatpickr$1;
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 
@@ -18503,8 +18578,8 @@ var Connector = function (_EventEmitter) {
     });
   };
 
-  Connector.prototype.saveMissing = function saveMissing(languages, namespace, key, fallbackValue) {
-    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue);
+  Connector.prototype.saveMissing = function saveMissing(languages, namespace, key, fallbackValue, isUpdate) {
+    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, { isUpdate: isUpdate });
 
     // write to store to avoid resending
     if (!languages || !languages[0]) return;
@@ -18829,7 +18904,7 @@ var Interpolator = function () {
     clonedOptions.applyPostProcessor = false; // avoid post processing on nested lookup
 
     // if value is something like "myKey": "lorem $(anotherKey, { "count": {{aValueInOptions}} })"
-    function handleHasOptions(key) {
+    function handleHasOptions(key, inheritedOptions) {
       if (key.indexOf(',') < 0) return key;
 
       var p = key.split(',');
@@ -18840,6 +18915,8 @@ var Interpolator = function () {
 
       try {
         clonedOptions = JSON.parse(optionsString);
+
+        if (inheritedOptions) clonedOptions = _extends({}, inheritedOptions, clonedOptions);
       } catch (e) {
         this.logger.error('failed parsing options string in nesting for key ' + key, e);
       }
@@ -18849,7 +18926,7 @@ var Interpolator = function () {
 
     // regular escape on demand
     while (match = this.nestingRegexp.exec(str)) {
-      value = fc(handleHasOptions.call(this, match[1].trim()), clonedOptions);
+      value = fc(handleHasOptions.call(this, match[1].trim(), clonedOptions), clonedOptions);
 
       // is only the nesting key (key1 = '$(key2)') return the value without stringify
       if (value && match[0] === str && typeof value !== 'string') return value;
@@ -19469,7 +19546,8 @@ var Translator = function (_EventEmitter) {
     var joinArrays = options.joinArrays !== undefined ? options.joinArrays : this.options.joinArrays;
 
     // object
-    if (res && typeof res !== 'string' && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
+    var handleAsObject = typeof res !== 'string' && typeof res !== 'boolean' && typeof res !== 'number';
+    if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
         return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
@@ -19508,8 +19586,9 @@ var Translator = function (_EventEmitter) {
       }
 
       // save missing
-      if (_usedKey || usedDefault) {
-        this.logger.log('missingKey', lng, namespace, key, res);
+      var updateMissing = options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
+      if (_usedKey || usedDefault || updateMissing) {
+        this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? options.defaultValue : res);
 
         var lngs = [];
         var fallbackLngs = this.languageUtils.getFallbackCodes(this.options.fallbackLng, options.lng || this.language);
@@ -19525,9 +19604,9 @@ var Translator = function (_EventEmitter) {
 
         if (this.options.saveMissing) {
           if (this.options.missingKeyHandler) {
-            this.options.missingKeyHandler(lngs, namespace, key, res);
+            this.options.missingKeyHandler(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
           } else if (this.backendConnector && this.backendConnector.saveMissing) {
-            this.backendConnector.saveMissing(lngs, namespace, key, res);
+            this.backendConnector.saveMissing(lngs, namespace, key, updateMissing ? options.defaultValue : res, updateMissing);
           }
         }
 
@@ -19679,6 +19758,7 @@ function get() {
     contextSeparator: '_',
 
     saveMissing: false, // enable to send missing values
+    updateMissing: false, // enable to update default values if different from translated value (only useful on initial development, or when keeping code as source of truth)
     saveMissingTo: 'fallback', // 'current' || 'all'
     missingKeyHandler: false, // function(lng, ns, key, fallbackValue) -> override if prefer on handling
 
@@ -20038,6 +20118,7 @@ var I18n = function (_EventEmitter) {
       if (l) {
         _this4.language = l;
         _this4.languages = _this4.services.languageUtils.toResolveHierarchy(l);
+        if (!_this4.translator.language) _this4.translator.changeLanguage(l);
 
         if (_this4.services.languageDetector) _this4.services.languageDetector.cacheUserLanguage(l);
       }
@@ -50461,7 +50542,7 @@ return hooks;
 (function (global){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.12.6
+ * @version 1.12.9
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -50489,7 +50570,7 @@ return hooks;
 	(global.Popper = factory());
 }(this, (function () { 'use strict';
 
-var isBrowser = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
 var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
 var timeoutDuration = 0;
 for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
@@ -50506,7 +50587,7 @@ function microtaskDebounce(fn) {
       return;
     }
     called = true;
-    Promise.resolve().then(function () {
+    window.Promise.resolve().then(function () {
       called = false;
       fn();
     });
@@ -50563,7 +50644,7 @@ function getStyleComputedProperty(element, property) {
     return [];
   }
   // NOTE: 1 DOM access here
-  var css = window.getComputedStyle(element, null);
+  var css = getComputedStyle(element, null);
   return property ? css[property] : css;
 }
 
@@ -50591,7 +50672,7 @@ function getParentNode(element) {
 function getScrollParent(element) {
   // Return body, `getScroll` will take care to get the correct `scrollTop` from it
   if (!element) {
-    return window.document.body;
+    return document.body;
   }
 
   switch (element.nodeName) {
@@ -50633,7 +50714,7 @@ function getOffsetParent(element) {
       return element.ownerDocument.documentElement;
     }
 
-    return window.document.documentElement;
+    return document.documentElement;
   }
 
   // .offsetParent will return the closest TD or TABLE in case
@@ -50680,7 +50761,7 @@ function getRoot(node) {
 function findCommonOffsetParent(element1, element2) {
   // This check is needed to avoid errors in case one of the elements isn't defined for any reason
   if (!element1 || !element1.nodeType || !element2 || !element2.nodeType) {
-    return window.document.documentElement;
+    return document.documentElement;
   }
 
   // Here we make sure to give as "start" the element that comes first in the DOM
@@ -50772,7 +50853,7 @@ function getBordersSize(styles, axis) {
   var sideA = axis === 'x' ? 'Left' : 'Top';
   var sideB = sideA === 'Left' ? 'Right' : 'Bottom';
 
-  return +styles['border' + sideA + 'Width'].split('px')[0] + +styles['border' + sideB + 'Width'].split('px')[0];
+  return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
 }
 
 /**
@@ -50795,9 +50876,9 @@ function getSize(axis, body, html, computedStyle) {
 }
 
 function getWindowSizes() {
-  var body = window.document.body;
-  var html = window.document.documentElement;
-  var computedStyle = isIE10$1() && window.getComputedStyle(html);
+  var body = document.body;
+  var html = document.documentElement;
+  var computedStyle = isIE10$1() && getComputedStyle(html);
 
   return {
     height: getSize('Height', body, html, computedStyle),
@@ -50940,8 +51021,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   var scrollParent = getScrollParent(children);
 
   var styles = getStyleComputedProperty(parent);
-  var borderTopWidth = +styles.borderTopWidth.split('px')[0];
-  var borderLeftWidth = +styles.borderLeftWidth.split('px')[0];
+  var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
+  var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
 
   var offsets = getClientRect({
     top: childrenRect.top - parentRect.top - borderTopWidth,
@@ -50957,8 +51038,8 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   // differently when margins are applied to it. The margins are included in
   // the box of the documentElement, in the other cases not.
   if (!isIE10 && isHTML) {
-    var marginTop = +styles.marginTop.split('px')[0];
-    var marginLeft = +styles.marginLeft.split('px')[0];
+    var marginTop = parseFloat(styles.marginTop, 10);
+    var marginLeft = parseFloat(styles.marginLeft, 10);
 
     offsets.top -= borderTopWidth - marginTop;
     offsets.bottom -= borderTopWidth - marginTop;
@@ -51037,7 +51118,7 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
     // Handle other cases based on DOM element used as boundaries
     var boundariesNode = void 0;
     if (boundariesElement === 'scrollParent') {
-      boundariesNode = getScrollParent(getParentNode(popper));
+      boundariesNode = getScrollParent(getParentNode(reference));
       if (boundariesNode.nodeName === 'BODY') {
         boundariesNode = popper.ownerDocument.documentElement;
       }
@@ -51163,7 +51244,7 @@ function getReferenceOffsets(state, popper, reference) {
  * @returns {Object} object containing width and height properties
  */
 function getOuterSizes(element) {
-  var styles = window.getComputedStyle(element);
+  var styles = getComputedStyle(element);
   var x = parseFloat(styles.marginTop) + parseFloat(styles.marginBottom);
   var y = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
   var result = {
@@ -51380,7 +51461,7 @@ function getSupportedPropertyName(property) {
   for (var i = 0; i < prefixes.length - 1; i++) {
     var prefix = prefixes[i];
     var toCheck = prefix ? '' + prefix + upperProp : property;
-    if (typeof window.document.body.style[toCheck] !== 'undefined') {
+    if (typeof document.body.style[toCheck] !== 'undefined') {
       return toCheck;
     }
   }
@@ -51499,7 +51580,7 @@ function removeEventListeners(reference, state) {
  */
 function disableEventListeners() {
   if (this.state.eventsEnabled) {
-    window.cancelAnimationFrame(this.scheduleUpdate);
+    cancelAnimationFrame(this.scheduleUpdate);
     this.state = removeEventListeners(this.reference, this.state);
   }
 }
@@ -51739,6 +51820,8 @@ function isModifierRequired(modifiers, requestingName, requestedName) {
  * @returns {Object} The data object, properly modified
  */
 function arrow(data, options) {
+  var _data$offsets$arrow;
+
   // arrow depends on keepTogether in order to work
   if (!isModifierRequired(data.instance.modifiers, 'arrow', 'keepTogether')) {
     return data;
@@ -51790,22 +51873,23 @@ function arrow(data, options) {
   if (reference[side] + arrowElementSize > popper[opSide]) {
     data.offsets.popper[side] += reference[side] + arrowElementSize - popper[opSide];
   }
+  data.offsets.popper = getClientRect(data.offsets.popper);
 
   // compute center of the popper
   var center = reference[side] + reference[len] / 2 - arrowElementSize / 2;
 
   // Compute the sideValue using the updated popper offsets
   // take popper margin in account because we don't have this info available
-  var popperMarginSide = getStyleComputedProperty(data.instance.popper, 'margin' + sideCapitalized).replace('px', '');
-  var sideValue = center - getClientRect(data.offsets.popper)[side] - popperMarginSide;
+  var css = getStyleComputedProperty(data.instance.popper);
+  var popperMarginSide = parseFloat(css['margin' + sideCapitalized], 10);
+  var popperBorderSide = parseFloat(css['border' + sideCapitalized + 'Width'], 10);
+  var sideValue = center - data.offsets.popper[side] - popperMarginSide - popperBorderSide;
 
   // prevent arrowElement from being placed not contiguously to its popper
   sideValue = Math.max(Math.min(popper[len] - arrowElementSize, sideValue), 0);
 
   data.arrowElement = arrowElement;
-  data.offsets.arrow = {};
-  data.offsets.arrow[side] = Math.round(sideValue);
-  data.offsets.arrow[altSide] = ''; // make sure to unset any eventual altSide value from the DOM node
+  data.offsets.arrow = (_data$offsets$arrow = {}, defineProperty(_data$offsets$arrow, side, Math.round(sideValue)), defineProperty(_data$offsets$arrow, altSide, ''), _data$offsets$arrow);
 
   return data;
 }
@@ -53739,6 +53823,10 @@ return SignaturePad;
 })));
 
 },{}],321:[function(require,module,exports){
+!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.createNumberMask=t():e.createNumberMask=t()}(this,function(){return function(e){function t(n){if(o[n])return o[n].exports;var i=o[n]={exports:{},id:n,loaded:!1};return e[n].call(i.exports,i,i.exports,t),i.loaded=!0,i.exports}var o={};return t.m=e,t.c=o,t.p="",t(0)}([function(e,t,o){e.exports=o(2)},,function(e,t){"use strict";function o(){function e(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,t=e.length;if(e===l||e[0]===y[0]&&1===t)return y.split(l).concat([v]).concat(g.split(l));if(e===k&&M)return y.split(l).concat(["0",k,v]).concat(g.split(l));var o=e[0]===s&&q;o&&(e=e.toString().substr(1));var c=e.lastIndexOf(k),u=c!==-1,a=void 0,b=void 0,h=void 0;if(e.slice(T*-1)===g&&(e=e.slice(0,T*-1)),u&&(M||$)?(a=e.slice(e.slice(0,R)===y?R:0,c),b=e.slice(c+1,t),b=n(b.replace(f,l))):a=e.slice(0,R)===y?e.slice(R):e,P&&("undefined"==typeof P?"undefined":r(P))===p){var S="."===j?"[.]":""+j,w=(a.match(new RegExp(S,"g"))||[]).length;a=a.slice(0,P+w*Z)}return a=a.replace(f,l),E||(a=a.replace(/^0+(0$|[^0])/,"$1")),a=x?i(a,j):a,h=n(a),(u&&M||$===!0)&&(e[c-1]!==k&&h.push(m),h.push(k,m),b&&(("undefined"==typeof L?"undefined":r(L))===p&&(b=b.slice(0,L)),h=h.concat(b)),$===!0&&e[c-1]===k&&h.push(v)),R>0&&(h=y.split(l).concat(h)),o&&(h.length===R&&h.push(v),h=[d].concat(h)),g.length>0&&(h=h.concat(g.split(l))),h}var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},o=t.prefix,y=void 0===o?c:o,b=t.suffix,g=void 0===b?l:b,h=t.includeThousandsSeparator,x=void 0===h||h,S=t.thousandsSeparatorSymbol,j=void 0===S?u:S,w=t.allowDecimal,M=void 0!==w&&w,N=t.decimalSymbol,k=void 0===N?a:N,D=t.decimalLimit,L=void 0===D?2:D,O=t.requireDecimal,$=void 0!==O&&O,_=t.allowNegative,q=void 0!==_&&_,B=t.allowLeadingZeroes,E=void 0!==B&&B,I=t.integerLimit,P=void 0===I?null:I,R=y&&y.length||0,T=g&&g.length||0,Z=j&&j.length||0;return e.instanceOf="createNumberMask",e}function n(e){return e.split(l).map(function(e){return v.test(e)?v:e})}function i(e,t){return e.replace(/\B(?=(\d{3})+(?!\d))/g,t)}Object.defineProperty(t,"__esModule",{value:!0});var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};t.default=o;var c="$",l="",u=",",a=".",s="-",d=/-/,f=/\D+/g,p="number",v=/\d/,m="[]"}])});
+},{}],322:[function(require,module,exports){
+!function(e,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports.vanillaTextMask=r():e.vanillaTextMask=r()}(this,function(){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var t={};return r.m=e,r.c=t,r.p="",r(0)}([function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r=e.inputElement,t=(0,u.default)(e),n=function(e){var r=e.target.value;return t.update(r)};return r.addEventListener("input",n),t.update(r.value),{textMaskInputElement:t,destroy:function(){r.removeEventListener("input",n)}}}Object.defineProperty(r,"__esModule",{value:!0}),r.conformToMask=void 0,r.maskInput=o;var i=t(2);Object.defineProperty(r,"conformToMask",{enumerable:!0,get:function(){return n(i).default}});var a=t(5),u=n(a);r.default=o},function(e,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.placeholderChar="_"},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:a,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:a,t=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},n=t.guide,u=void 0===n||n,l=t.previousConformedValue,s=void 0===l?a:l,f=t.placeholderChar,d=void 0===f?i.placeholderChar:f,c=t.placeholder,v=void 0===c?(0,o.convertMaskToPlaceholder)(r,d):c,p=t.currentCaretPosition,h=t.keepCharPositions,g=u===!1&&void 0!==s,m=e.length,y=s.length,b=v.length,C=r.length,P=m-y,x=P>0,k=p+(x?-P:0),O=k+Math.abs(P);if(h===!0&&!x){for(var M=a,T=k;T<O;T++)v[T]===d&&(M+=d);e=e.slice(0,k)+M+e.slice(k,m)}for(var w=e.split(a).map(function(e,r){return{char:e,isNew:r>=k&&r<O}}),_=m-1;_>=0;_--){var j=w[_].char;if(j!==d){var V=_>=k&&y===C;j===v[V?_-P:_]&&w.splice(_,1)}}var S=a,E=!1;e:for(var N=0;N<b;N++){var A=v[N];if(A===d){if(w.length>0)for(;w.length>0;){var I=w.shift(),L=I.char,R=I.isNew;if(L===d&&g!==!0){S+=d;continue e}if(r[N].test(L)){if(h===!0&&R!==!1&&s!==a&&u!==!1&&x){for(var J=w.length,q=null,F=0;F<J;F++){var W=w[F];if(W.char!==d&&W.isNew===!1)break;if(W.char===d){q=F;break}}null!==q?(S+=L,w.splice(q,1)):N--}else S+=L;continue e}E=!0}g===!1&&(S+=v.substr(N,b));break}S+=A}if(g&&x===!1){for(var z=null,B=0;B<S.length;B++)v[B]===d&&(z=B);S=null!==z?S.substr(0,z+1):a}return{conformedValue:S,meta:{someCharsRejected:E}}}Object.defineProperty(r,"__esModule",{value:!0}),r.default=n;var o=t(3),i=t(1),a=""},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:u.placeholderChar;if(e.indexOf(r)!==-1)throw new Error("Placeholder character must not be used as part of the mask. Please specify a character that is not present in your mask as your placeholder character.\n\n"+("The placeholder character that was received is: "+JSON.stringify(r)+"\n\n")+("The mask that was received is: "+JSON.stringify(e)));return e.map(function(e){return e instanceof RegExp?r:e}).join("")}function o(e){return"string"==typeof e||e instanceof String}function i(e){return"number"==typeof e&&void 0===e.length&&!isNaN(e)}function a(e){for(var r=[],t=void 0;t=e.indexOf(s),t!==-1;)r.push(t),e.splice(t,1);return{maskWithoutCaretTraps:e,indexes:r}}Object.defineProperty(r,"__esModule",{value:!0}),r.convertMaskToPlaceholder=n,r.isString=o,r.isNumber=i,r.processCaretTraps=a;var u=t(1),l=[],s="[]"},function(e,r){"use strict";function t(e){var r=e.previousConformedValue,t=void 0===r?o:r,i=e.previousPlaceholder,a=void 0===i?o:i,u=e.currentCaretPosition,l=void 0===u?0:u,s=e.conformedValue,f=e.rawValue,d=e.placeholderChar,c=e.placeholder,v=e.indexesOfPipedChars,p=void 0===v?n:v,h=e.caretTrapIndexes,g=void 0===h?n:h;if(0===l)return 0;var m=f.length,y=t.length,b=c.length,C=s.length,P=m-y,x=P>0,k=0===y,O=P>1&&!x&&!k;if(O)return l;var M=x&&(t===s||s===c),T=0,w=void 0,_=void 0;if(M)T=l-P;else{var j=s.toLowerCase(),V=f.toLowerCase(),S=V.substr(0,l).split(o),E=S.filter(function(e){return j.indexOf(e)!==-1});_=E[E.length-1];var N=a.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,A=c.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,I=A!==N,L=void 0!==a[E.length-1]&&void 0!==c[E.length-2]&&a[E.length-1]!==d&&a[E.length-1]!==c[E.length-1]&&a[E.length-1]===c[E.length-2];!x&&(I||L)&&N>0&&c.indexOf(_)>-1&&void 0!==f[l]&&(w=!0,_=f[l]);for(var R=p.map(function(e){return j[e]}),J=R.filter(function(e){return e===_}).length,q=E.filter(function(e){return e===_}).length,F=c.substr(0,c.indexOf(d)).split(o).filter(function(e,r){return e===_&&f[r]!==e}).length,W=F+q+J+(w?1:0),z=0,B=0;B<C;B++){var D=j[B];if(T=B+1,D===_&&z++,z>=W)break}}if(x){for(var G=T,H=T;H<=b;H++)if(c[H]===d&&(G=H),c[H]===d||g.indexOf(H)!==-1||H===b)return G}else if(w){for(var K=T-1;K>=0;K--)if(s[K]===_||g.indexOf(K)!==-1||0===K)return K}else for(var Q=T;Q>=0;Q--)if(c[Q-1]===d||g.indexOf(Q)!==-1||0===Q)return Q}Object.defineProperty(r,"__esModule",{value:!0}),r.default=t;var n=[],o=""},function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r={previousConformedValue:void 0,previousPlaceholder:void 0};return{state:r,update:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:e,o=n.inputElement,s=n.mask,d=n.guide,m=n.pipe,b=n.placeholderChar,C=void 0===b?p.placeholderChar:b,P=n.keepCharPositions,x=void 0!==P&&P,k=n.showMask,O=void 0!==k&&k;if("undefined"==typeof t&&(t=o.value),t!==r.previousConformedValue){("undefined"==typeof s?"undefined":l(s))===y&&void 0!==s.pipe&&void 0!==s.mask&&(m=s.pipe,s=s.mask);var M=void 0,T=void 0;if(s instanceof Array&&(M=(0,v.convertMaskToPlaceholder)(s,C)),s!==!1){var w=a(t),_=o.selectionEnd,j=r.previousConformedValue,V=r.previousPlaceholder,S=void 0;if(("undefined"==typeof s?"undefined":l(s))===h){if(T=s(w,{currentCaretPosition:_,previousConformedValue:j,placeholderChar:C}),T===!1)return;var E=(0,v.processCaretTraps)(T),N=E.maskWithoutCaretTraps,A=E.indexes;T=N,S=A,M=(0,v.convertMaskToPlaceholder)(T,C)}else T=s;var I={previousConformedValue:j,guide:d,placeholderChar:C,pipe:m,placeholder:M,currentCaretPosition:_,keepCharPositions:x},L=(0,c.default)(w,T,I),R=L.conformedValue,J=("undefined"==typeof m?"undefined":l(m))===h,q={};J&&(q=m(R,u({rawValue:w},I)),q===!1?q={value:j,rejected:!0}:(0,v.isString)(q)&&(q={value:q}));var F=J?q.value:R,W=(0,f.default)({previousConformedValue:j,previousPlaceholder:V,conformedValue:F,placeholder:M,rawValue:w,currentCaretPosition:_,placeholderChar:C,indexesOfPipedChars:q.indexesOfPipedChars,caretTrapIndexes:S}),z=F===M&&0===W,B=O?M:g,D=z?B:F;r.previousConformedValue=D,r.previousPlaceholder=M,o.value!==D&&(o.value=D,i(o,W))}}}}}function i(e,r){document.activeElement===e&&(b?C(function(){return e.setSelectionRange(r,r,m)},0):e.setSelectionRange(r,r,m))}function a(e){if((0,v.isString)(e))return e;if((0,v.isNumber)(e))return String(e);if(void 0===e||null===e)return g;throw new Error("The 'value' provided to Text Mask needs to be a string or a number. The value received was:\n\n "+JSON.stringify(e))}Object.defineProperty(r,"__esModule",{value:!0});var u=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=o;var s=t(4),f=n(s),d=t(2),c=n(d),v=t(3),p=t(1),h="function",g="",m="none",y="object",b="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),C="undefined"!=typeof requestAnimationFrame?requestAnimationFrame:setTimeout}])});
+},{}],323:[function(require,module,exports){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
  * @version 1.1.7
@@ -54289,7 +54377,7 @@ return Tooltip;
 })));
 
 
-},{"popper.js":317}],322:[function(require,module,exports){
+},{"popper.js":317}],324:[function(require,module,exports){
 (function(self) {
   'use strict';
 
@@ -54752,8 +54840,4 @@ return Tooltip;
   self.fetch.polyfill = true
 })(typeof self !== 'undefined' ? self : this);
 
-},{}],323:[function(require,module,exports){
-!function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.createNumberMask=t():e.createNumberMask=t()}(this,function(){return function(e){function t(n){if(o[n])return o[n].exports;var i=o[n]={exports:{},id:n,loaded:!1};return e[n].call(i.exports,i,i.exports,t),i.loaded=!0,i.exports}var o={};return t.m=e,t.c=o,t.p="",t(0)}([function(e,t,o){e.exports=o(2)},,function(e,t){"use strict";function o(){function e(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,t=e.length;if(e===l||e[0]===y[0]&&1===t)return y.split(l).concat([v]).concat(h.split(l));if(e===k&&M)return y.split(l).concat(["0",k,v]).concat(h.split(l));var o=e.lastIndexOf(k),c=o!==-1,u=e[0]===s&&q,a=void 0,b=void 0,g=void 0;if(e.slice(T*-1)===h&&(e=e.slice(0,T*-1)),c&&(M||$)?(a=e.slice(e.slice(0,R)===y?R:0,o),b=e.slice(o+1,t),b=n(b.replace(f,l))):a=e.slice(0,R)===y?e.slice(R):e,P&&("undefined"==typeof P?"undefined":r(P))===p){var S="."===j?"[.]":""+j,w=(a.match(new RegExp(S,"g"))||[]).length;a=a.slice(0,P+w*Z)}return a=a.replace(f,l),E||(a=a.replace(/^0+(0$|[^0])/,"$1")),a=x?i(a,j):a,g=n(a),(c&&M||$===!0)&&(e[o-1]!==k&&g.push(m),g.push(k,m),b&&(("undefined"==typeof L?"undefined":r(L))===p&&(b=b.slice(0,L)),g=g.concat(b)),$===!0&&e[o-1]===k&&g.push(v)),R>0&&(g=y.split(l).concat(g)),u&&(g.length===R&&g.push(v),g=[d].concat(g)),h.length>0&&(g=g.concat(h.split(l))),g}var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},o=t.prefix,y=void 0===o?c:o,b=t.suffix,h=void 0===b?l:b,g=t.includeThousandsSeparator,x=void 0===g||g,S=t.thousandsSeparatorSymbol,j=void 0===S?u:S,w=t.allowDecimal,M=void 0!==w&&w,N=t.decimalSymbol,k=void 0===N?a:N,D=t.decimalLimit,L=void 0===D?2:D,O=t.requireDecimal,$=void 0!==O&&O,_=t.allowNegative,q=void 0!==_&&_,B=t.allowLeadingZeroes,E=void 0!==B&&B,I=t.integerLimit,P=void 0===I?null:I,R=y&&y.length||0,T=h&&h.length||0,Z=j&&j.length||0;return e.instanceOf="createNumberMask",e}function n(e){return e.split(l).map(function(e){return v.test(e)?v:e})}function i(e,t){return e.replace(/\B(?=(\d{3})+(?!\d))/g,t)}Object.defineProperty(t,"__esModule",{value:!0});var r="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};t.default=o;var c="$",l="",u=",",a=".",s="-",d=/-/,f=/\D+/g,p="number",v=/\d/,m="[]"}])});
-},{}],324:[function(require,module,exports){
-!function(e,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports.vanillaTextMask=r():e.vanillaTextMask=r()}(this,function(){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var t={};return r.m=e,r.c=t,r.p="",r(0)}([function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r=e.inputElement,t=(0,u.default)(e),n=function(e){var r=e.target.value;return t.update(r)};return r.addEventListener("input",n),t.update(r.value),{textMaskInputElement:t,destroy:function(){r.removeEventListener("input",n)}}}Object.defineProperty(r,"__esModule",{value:!0}),r.conformToMask=void 0,r.maskInput=o;var i=t(2);Object.defineProperty(r,"conformToMask",{enumerable:!0,get:function(){return n(i).default}});var a=t(5),u=n(a);r.default=o},function(e,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.placeholderChar="_"},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:a,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:a,t=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},n=t.guide,u=void 0===n||n,l=t.previousConformedValue,s=void 0===l?a:l,f=t.placeholderChar,d=void 0===f?i.placeholderChar:f,c=t.placeholder,v=void 0===c?(0,o.convertMaskToPlaceholder)(r,d):c,p=t.currentCaretPosition,h=t.keepCharPositions,g=u===!1&&void 0!==s,m=e.length,y=s.length,b=v.length,C=r.length,P=m-y,x=P>0,k=p+(x?-P:0),O=k+Math.abs(P);if(h===!0&&!x){for(var M=a,T=k;T<O;T++)v[T]===d&&(M+=d);e=e.slice(0,k)+M+e.slice(k,m)}for(var w=e.split(a).map(function(e,r){return{char:e,isNew:r>=k&&r<O}}),_=m-1;_>=0;_--){var j=w[_].char;if(j!==d){var V=_>=k&&y===C;j===v[V?_-P:_]&&w.splice(_,1)}}var S=a,E=!1;e:for(var N=0;N<b;N++){var A=v[N];if(A===d){if(w.length>0)for(;w.length>0;){var I=w.shift(),L=I.char,R=I.isNew;if(L===d&&g!==!0){S+=d;continue e}if(r[N].test(L)){if(h===!0&&R!==!1&&s!==a&&u!==!1&&x){for(var J=w.length,q=null,F=0;F<J;F++){var W=w[F];if(W.char!==d&&W.isNew===!1)break;if(W.char===d){q=F;break}}null!==q?(S+=L,w.splice(q,1)):N--}else S+=L;continue e}E=!0}g===!1&&(S+=v.substr(N,b));break}S+=A}if(g&&x===!1){for(var z=null,B=0;B<S.length;B++)v[B]===d&&(z=B);S=null!==z?S.substr(0,z+1):a}return{conformedValue:S,meta:{someCharsRejected:E}}}Object.defineProperty(r,"__esModule",{value:!0}),r.default=n;var o=t(3),i=t(1),a=""},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:u.placeholderChar;if(e.indexOf(r)!==-1)throw new Error("Placeholder character must not be used as part of the mask. Please specify a character that is not present in your mask as your placeholder character.\n\n"+("The placeholder character that was received is: "+JSON.stringify(r)+"\n\n")+("The mask that was received is: "+JSON.stringify(e)));return e.map(function(e){return e instanceof RegExp?r:e}).join("")}function o(e){return"string"==typeof e||e instanceof String}function i(e){return"number"==typeof e&&void 0===e.length&&!isNaN(e)}function a(e){for(var r=[],t=void 0;t=e.indexOf(s),t!==-1;)r.push(t),e.splice(t,1);return{maskWithoutCaretTraps:e,indexes:r}}Object.defineProperty(r,"__esModule",{value:!0}),r.convertMaskToPlaceholder=n,r.isString=o,r.isNumber=i,r.processCaretTraps=a;var u=t(1),l=[],s="[]"},function(e,r){"use strict";function t(e){var r=e.previousConformedValue,t=void 0===r?o:r,i=e.previousPlaceholder,a=void 0===i?o:i,u=e.currentCaretPosition,l=void 0===u?0:u,s=e.conformedValue,f=e.rawValue,d=e.placeholderChar,c=e.placeholder,v=e.indexesOfPipedChars,p=void 0===v?n:v,h=e.caretTrapIndexes,g=void 0===h?n:h;if(0===l)return 0;var m=f.length,y=t.length,b=c.length,C=s.length,P=m-y,x=P>0,k=0===y,O=P>1&&!x&&!k;if(O)return l;var M=x&&(t===s||s===c),T=0,w=void 0,_=void 0;if(M)T=l-P;else{var j=s.toLowerCase(),V=f.toLowerCase(),S=V.substr(0,l).split(o),E=S.filter(function(e){return j.indexOf(e)!==-1});_=E[E.length-1];var N=a.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,A=c.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,I=A!==N,L=void 0!==a[E.length-1]&&void 0!==c[E.length-2]&&a[E.length-1]!==d&&a[E.length-1]!==c[E.length-1]&&a[E.length-1]===c[E.length-2];!x&&(I||L)&&N>0&&c.indexOf(_)>-1&&void 0!==f[l]&&(w=!0,_=f[l]);for(var R=p.map(function(e){return j[e]}),J=R.filter(function(e){return e===_}).length,q=E.filter(function(e){return e===_}).length,F=c.substr(0,c.indexOf(d)).split(o).filter(function(e,r){return e===_&&f[r]!==e}).length,W=F+q+J+(w?1:0),z=0,B=0;B<C;B++){var D=j[B];if(T=B+1,D===_&&z++,z>=W)break}}if(x){for(var G=T,H=T;H<=b;H++)if(c[H]===d&&(G=H),c[H]===d||g.indexOf(H)!==-1||H===b)return G}else if(w){for(var K=T-1;K>=0;K--)if(s[K]===_||g.indexOf(K)!==-1||0===K)return K}else for(var Q=T;Q>=0;Q--)if(c[Q-1]===d||g.indexOf(Q)!==-1||0===Q)return Q}Object.defineProperty(r,"__esModule",{value:!0}),r.default=t;var n=[],o=""},function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r={previousConformedValue:void 0,previousPlaceholder:void 0};return{state:r,update:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:e,o=n.inputElement,s=n.mask,d=n.guide,m=n.pipe,b=n.placeholderChar,C=void 0===b?p.placeholderChar:b,P=n.keepCharPositions,x=void 0!==P&&P,k=n.showMask,O=void 0!==k&&k;if("undefined"==typeof t&&(t=o.value),t!==r.previousConformedValue){("undefined"==typeof s?"undefined":l(s))===y&&void 0!==s.pipe&&void 0!==s.mask&&(m=s.pipe,s=s.mask);var M=void 0,T=void 0;if(s instanceof Array&&(M=(0,v.convertMaskToPlaceholder)(s,C)),s!==!1){var w=a(t),_=o.selectionEnd,j=r.previousConformedValue,V=r.previousPlaceholder,S=void 0;if(("undefined"==typeof s?"undefined":l(s))===h){if(T=s(w,{currentCaretPosition:_,previousConformedValue:j,placeholderChar:C}),T===!1)return;var E=(0,v.processCaretTraps)(T),N=E.maskWithoutCaretTraps,A=E.indexes;T=N,S=A,M=(0,v.convertMaskToPlaceholder)(T,C)}else T=s;var I={previousConformedValue:j,guide:d,placeholderChar:C,pipe:m,placeholder:M,currentCaretPosition:_,keepCharPositions:x},L=(0,c.default)(w,T,I),R=L.conformedValue,J=("undefined"==typeof m?"undefined":l(m))===h,q={};J&&(q=m(R,u({rawValue:w},I)),q===!1?q={value:j,rejected:!0}:(0,v.isString)(q)&&(q={value:q}));var F=J?q.value:R,W=(0,f.default)({previousConformedValue:j,previousPlaceholder:V,conformedValue:F,placeholder:M,rawValue:w,currentCaretPosition:_,placeholderChar:C,indexesOfPipedChars:q.indexesOfPipedChars,caretTrapIndexes:S}),z=F===M&&0===W,B=O?M:g,D=z?B:F;r.previousConformedValue=D,r.previousPlaceholder=M,o.value!==D&&(o.value=D,i(o,W))}}}}}function i(e,r){document.activeElement===e&&(b?C(function(){return e.setSelectionRange(r,r,m)},0):e.setSelectionRange(r,r,m))}function a(e){if((0,v.isString)(e))return e;if((0,v.isNumber)(e))return String(e);if(void 0===e||null===e)return g;throw new Error("The 'value' provided to Text Mask needs to be a string or a number. The value received was:\n\n "+JSON.stringify(e))}Object.defineProperty(r,"__esModule",{value:!0});var u=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=o;var s=t(4),f=n(s),d=t(2),c=n(d),v=t(3),p=t(1),h="function",g="",m="none",y="object",b="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),C="undefined"!=typeof requestAnimationFrame?requestAnimationFrame:setTimeout}])});
 },{}]},{},[40]);

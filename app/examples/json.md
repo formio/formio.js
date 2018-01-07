@@ -95,6 +95,19 @@ Formio.createForm(document.getElementById('formio'), {
       }
     },
     {
+      type: 'datetime', 
+      key: 'dueDate', 
+      label: 'Due Date', 
+      placeholder: 'Enter Due Date',
+      datepickerMode: 'day',
+      enableDate: true,
+      enableTime: true,
+      format: 'yyyy-MM-dd hh:mm a"', 
+      input: true, 
+      tooltip: 'Enter date the item is <strong>due</strong>', 
+      description: 'Enter <strong>Due Date</strong>'
+    },
+    {
       type: 'day',
       key: 'birthdate',
       label: 'Birthdate',
@@ -212,6 +225,19 @@ Formio.createForm(document.getElementById('formio'), {
       }
     },
     {
+      type: 'datetime', 
+      key: 'dueDate', 
+      label: 'Due Date', 
+      placeholder: 'Enter Due Date',
+      datepickerMode: 'day',
+      enableDate: true,
+      enableTime: true,
+      format: 'yyyy-MM-dd hh:mm a"', 
+      input: true, 
+      tooltip: 'Enter date the item is <strong>due</strong>', 
+      description: 'Enter <strong>Due Date</strong>'
+    },
+    {
       type: 'day',
       key: 'birthdate',
       label: 'Birthdate',
@@ -242,6 +268,14 @@ Formio.createForm(document.getElementById('formio'), {
       theme: 'primary'
     }
   ]
+}).then(function(form) {
+  form.on('change', function(changed) {
+    console.log('Changed!', changed);
+  });
+  
+  form.on('submit', function(submission) {
+    console.log('Submitted!', submission);
+  });
 });
 </script>
 </div>

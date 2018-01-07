@@ -1617,6 +1617,7 @@ exports.set = function(name, value, options) {
   var path     = opts.path     !== undefined ? opts.path     : (defaults.path !== undefined ? defaults.path : '/');
   var secure   = opts.secure   !== undefined ? opts.secure   : defaults.secure;
   var httponly = opts.httponly !== undefined ? opts.httponly : defaults.httponly;
+  var samesite = opts.samesite !== undefined ? opts.samesite : defaults.samesite;
 
   // Determine cookie expiration date
   // If succesful the result will be a valid Date, otherwise it will be an invalid Date or false(ish)
@@ -1625,7 +1626,7 @@ exports.set = function(name, value, options) {
       typeof expires === 'number' ? new Date().getTime() + (expires * 864e5) :
       // else expires should be either a Date object or in a format recognized by Date.parse()
       expires
-  ) : '';
+  ) : 0;
 
   // Set cookie
   document.cookie = name.replace(/[^+#$&^`|]/g, encodeURIComponent)                // Encode cookie name
@@ -1633,31 +1634,31 @@ exports.set = function(name, value, options) {
   .replace(')', '%29') +
   '=' + value.replace(/[^+#$&/:<-\[\]-}]/g, encodeURIComponent) +                  // Encode cookie value (RFC6265)
   (expDate && expDate.getTime() >= 0 ? ';expires=' + expDate.toUTCString() : '') + // Add expiration date
-  (domain   ? ';domain=' + domain : '') +                                          // Add domain
-  (path     ? ';path='   + path   : '') +                                          // Add path
-  (secure   ? ';secure'           : '') +                                          // Add secure option
-  (httponly ? ';httponly'         : '');                                           // Add httponly option
+  (domain   ? ';domain=' + domain     : '') +                                      // Add domain
+  (path     ? ';path='   + path       : '') +                                      // Add path
+  (secure   ? ';secure'               : '') +                                      // Add secure option
+  (httponly ? ';httponly'             : '') +                                      // Add httponly option
+  (samesite ? ';samesite=' + samesite : '');                                       // Add samesite option
 };
 
 exports.get = function(name) {
   var cookies = document.cookie.split(';');
-
+  
   // Iterate all cookies
-  for(var i = 0; i < cookies.length; i++) {
-    var cookie = cookies[i];
-    var cookieLength = cookie.length;
+  while(cookies.length) {
+    var cookie = cookies.pop();
 
     // Determine separator index ("name=value")
     var separatorIndex = cookie.indexOf('=');
 
     // IE<11 emits the equal sign when the cookie value is empty
-    separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
+    separatorIndex = separatorIndex < 0 ? cookie.length : separatorIndex;
 
-    var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
+    var cookie_name = decodeURIComponent(cookie.slice(0, separatorIndex).replace(/^\s+/, ''));
 
     // Return cookie value if the name matches
     if (cookie_name === name) {
-      return decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
+      return decodeURIComponent(cookie.slice(separatorIndex + 1));
     }
   }
 
@@ -1680,20 +1681,19 @@ exports.all = function() {
   var cookies = document.cookie.split(';');
 
   // Iterate all cookies
-  for(var i = 0; i < cookies.length; i++) {
-	  var cookie = cookies[i];
-    var cookieLength = cookie.length;
+  while(cookies.length) {
+    var cookie = cookies.pop();
 
-	  // Determine separator index ("name=value")
-	  var separatorIndex = cookie.indexOf('=');
+    // Determine separator index ("name=value")
+    var separatorIndex = cookie.indexOf('=');
 
-	  // IE<11 emits the equal sign when the cookie value is empty
-	  separatorIndex = separatorIndex < 0 ? cookieLength : separatorIndex;
+    // IE<11 emits the equal sign when the cookie value is empty
+    separatorIndex = separatorIndex < 0 ? cookie.length : separatorIndex;
 
     // add the cookie name and value to the `all` object
-	  var cookie_name = decodeURIComponent(cookie.substring(0, separatorIndex).replace(/^\s+/, ''));
-	  all[cookie_name] = decodeURIComponent(cookie.substring(separatorIndex + 1, cookieLength));
-	}
+    var cookie_name = decodeURIComponent(cookie.slice(0, separatorIndex).replace(/^\s+/, ''));
+    all[cookie_name] = decodeURIComponent(cookie.slice(separatorIndex + 1));
+  }
 
   return all;
 };
