@@ -272,6 +272,10 @@ export class Formio {
             currentForm.components = revisionForm.components;
             // Using object.assign so we don't cross polinate multiple form loads.
             return Object.assign({}, currentForm);
+          })
+          .catch(error => {
+            // If we couldn't load the revision, just return the original form.
+            return Object.assign({}, currentForm);
           });
       });
   }
