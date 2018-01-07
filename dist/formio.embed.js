@@ -11079,6 +11079,11 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       var _this12 = this;
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
+        // Read-only forms should never submit.
+        if (_this12.options.readOnly) {
+          return resolve(_this12.submission);
+        }
+
         var submission = _this12.submission || {};
         _this12.hook('beforeSubmit', submission, function (err) {
           if (err) {
@@ -13144,6 +13149,15 @@ var FormioWizard = exports.FormioWizard = function (_FormioForm) {
     value: function nextPage() {
       var _this2 = this;
 
+      // Read-only forms should not worry about validation before going to next page, nor should they submit.
+      if (this.options.readOnly) {
+        this.history.push(this.page);
+        return this.setPage(this.getNextPage(this.submission.data, this.page)).then(function () {
+          _this2._nextPage = _this2.getNextPage(_this2.submission.data, _this2.page);
+          _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+        });
+      }
+
       // Validate the form builed, before go to the next page
       if (this.checkValidity(this.submission.data, true)) {
         this.checkData(this.submission.data, {
@@ -13943,14 +13957,6 @@ function _interopRequireDefault(obj) {
 // Configure JsonLogic
 _operators.lodashOperators.forEach(function (name) {
   return _jsonLogicJs2.default.add_operation('_' + name, _lodash2.default[name]);
-});
-
-// Fix the "in" operand for jsonlogic.
-// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
-_jsonLogicJs2.default.add_operation('in', function (a, b) {
-  if (!b) return false;
-  if (typeof b.indexOf === "undefined") return false;
-  return b.indexOf(a) !== -1;
 });
 
 // Retrieve Any Date
@@ -20566,7 +20572,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
       console.log(a); return a;
     },
     "in": function(a, b) {
-      if(typeof b.indexOf === "undefined") return false;
+      if(!b || typeof b.indexOf === "undefined") return false;
       return (b.indexOf(a) !== -1);
     },
     "cat": function() {

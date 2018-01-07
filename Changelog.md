@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.26.3
+### Fixed
+ - Issue where read-only forms would still try to submit.
+ - Problem with read-only wizards triggering beforeSubmit handlers.
+ 
+### Changed
+ - Upgrade jsonLogic to version 1.2.2 to fix "in" bug.
+
 ## 2.26.2
 ### Fixed
  - Problem where a component has input should also return true if it has inputs.
