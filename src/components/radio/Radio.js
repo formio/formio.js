@@ -19,6 +19,7 @@ export class RadioComponent extends BaseComponent {
       class: 'input-group'
     });
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
+    var wrappers = [];
 
     _each(this.component.values, (value) => {
       const wrapperClass = this.optionWrapperClass;
@@ -62,7 +63,9 @@ export class RadioComponent extends BaseComponent {
       labelWrapper.appendChild(label);
 
       inputGroup.appendChild(labelWrapper);
+      wrappers.push(labelWrapper);
     });
+    this.wrappers = wrappers;
     container.appendChild(inputGroup);
     this.errorContainer = container;
   }
@@ -177,27 +180,14 @@ export class RadioComponent extends BaseComponent {
       const value = this.data[this.component.key];
       const optionSelectedClass = 'radio-selected';
 
-      const inputs = this.inputs;
-      _each(inputs, (input) => {
-        const wrapperClass = this.optionWrapperClass;
-        let wrapper;
-        //find wrapper of this option
-        let ancestor = input.parentElement;
-        while (ancestor) {
-          if (ancestor.classList.contains(wrapperClass)) {
-            wrapper = ancestor;
-            break;
-          } else {
-            ancestor = ancestor.parentElement;
-          }
-        }
+      _each(this.wrappers, (wrapper, index) => {
+        var input = this.inputs[index];
         if (input.value === value) {
           //add class to container when selected
-          if (wrapper) {
-            wrapper.classList.add(optionSelectedClass);
-          }
+          this.addClass(wrapper, optionSelectedClass);
+
         } else {
-          wrapper.classList.remove(optionSelectedClass);
+          this.removeClass(wrapper, optionSelectedClass);
         }
       });
     }
