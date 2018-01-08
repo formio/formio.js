@@ -1,6 +1,10 @@
 import { BaseComponent } from '../base/Base';
 import _each from 'lodash/each';
 import _assign from 'lodash/assign';
+import _get from 'lodash/get';
+import _isString from 'lodash/isString';
+import _toString from 'lodash/toString';
+import _find from 'lodash/find';
 export class RadioComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
@@ -69,6 +73,13 @@ export class RadioComponent extends BaseComponent {
     return wrapperClass;
   }
 
+  createViewOnlyInput() {
+    _each(this.component.values, (value) => {
+      const input = super.createViewOnlyInput();
+      input.value = value.value;
+    });
+  }
+
   optionsLabelOnTheTopOrLeft() {
     return ['top', 'left'].includes(this.component.optionsLabelPosition);
   }
@@ -128,6 +139,18 @@ export class RadioComponent extends BaseComponent {
       }
     });
     return value;
+  }
+
+  get view() {
+    const value = this.getValue();
+
+    if (!_isString(value)) {
+      return _toString(value);
+    }
+
+    const option = _find(this.component.values, (v) => v.value === value);
+
+    return _get(option, 'label');
   }
 
   setValueAt(index, value) {
