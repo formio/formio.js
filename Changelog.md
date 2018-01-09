@@ -4,16 +4,19 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
+## [UNRELEASED]
 ### Added
  - CSS class ('radio-selected') for selected option of Radio component
+
+### Fixed
+ - Select Resource component searching.
 
 ## 2.27.0
 ### Fixed
  - Issue where read-only forms would still try to submit.
  - Problem with read-only wizards triggering beforeSubmit handlers.
  - Fix issue where submissions made before revisions are made will sometimes cause the form to not load.
- 
+
 ### Changed
  - Upgrade all dependencies
 
@@ -26,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problems where data keys are added even if component is not set with input.
  - Failing tests.
  - Datagrid data merging.
- 
+
 ### Changed
  - Upgraded choices.js to 3.0.3 which includes performance fix.
  - Removed performance hack in Select since 3.0.3 of choices resolves the problem.
