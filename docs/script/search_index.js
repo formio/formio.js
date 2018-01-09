@@ -654,6 +654,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "formiojs/src/utils/jsonlogic/operators.js~lodashoperators",
+    "variable/index.html#static-variable-lodashOperators",
+    "<span>lodashOperators</span> <span class=\"search-result-import-path\">formiojs/src/utils/jsonlogic/operators.js</span>",
+    "variable"
+  ],
+  [
     "src/.external-ecmascript.js~array",
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
     "src/.external-ecmascript.js~Array",
@@ -1603,13 +1609,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -1825,13 +1831,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -1863,18 +1869,6 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#labelontheright",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-labelOnTheRight",
     "src/components/base/Base.js~BaseComponent#labelOnTheRight",
-    "method"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#language",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-language",
-    "src/components/base/Base.js~BaseComponent#language",
-    "member"
-  ],
-  [
-    "src/components/base/base.js~basecomponent#localize",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-method-localize",
-    "src/components/base/Base.js~BaseComponent#localize",
     "method"
   ],
   [
@@ -3912,6 +3906,24 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/select/select.js~selectcomponent#activate",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-activate",
+    "src/components/select/Select.js~SelectComponent#activate",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#activated",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-activated",
+    "src/components/select/Select.js~SelectComponent#activated",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#active",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-get-active",
+    "src/components/select/Select.js~SelectComponent#active",
+    "member"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#addcurrentchoices",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-addCurrentChoices",
     "src/components/select/Select.js~SelectComponent#addCurrentChoices",
@@ -3921,6 +3933,24 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#addinput",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-addInput",
     "src/components/select/Select.js~SelectComponent#addInput",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#addoption",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addOption",
+    "src/components/select/Select.js~SelectComponent#addOption",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#addplaceholder",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addPlaceholder",
+    "src/components/select/Select.js~SelectComponent#addPlaceholder",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#addvalueoptions",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-addValueOptions",
+    "src/components/select/Select.js~SelectComponent#addValueOptions",
     "method"
   ],
   [
@@ -3939,6 +3969,12 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#constructor",
     "class/src/components/select/Select.js~SelectComponent.html#instance-constructor-constructor",
     "src/components/select/Select.js~SelectComponent#constructor",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#createinput",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-createInput",
+    "src/components/select/Select.js~SelectComponent#createInput",
     "method"
   ],
   [
@@ -3990,12 +4026,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/select/select.js~selectcomponent#placeholder",
-    "class/src/components/select/Select.js~SelectComponent.html#instance-member-placeholder",
-    "src/components/select/Select.js~SelectComponent#placeholder",
-    "member"
-  ],
-  [
     "src/components/select/select.js~selectcomponent#refreshitems",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-refreshItems",
     "src/components/select/Select.js~SelectComponent#refreshItems",
@@ -4005,6 +4035,24 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#requestheaders",
     "class/src/components/select/Select.js~SelectComponent.html#instance-get-requestHeaders",
     "src/components/select/Select.js~SelectComponent#requestHeaders",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#selectcontainer",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-selectContainer",
+    "src/components/select/Select.js~SelectComponent#selectContainer",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#selectinput",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-selectInput",
+    "src/components/select/Select.js~SelectComponent#selectInput",
+    "member"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#selectoptions",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-selectOptions",
+    "src/components/select/Select.js~SelectComponent#selectOptions",
     "member"
   ],
   [
@@ -4036,6 +4084,12 @@ window.esdocSearchIndex = [
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-updateItems",
     "src/components/select/Select.js~SelectComponent#updateItems",
     "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#usetemplate",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-member-useTemplate",
+    "src/components/select/Select.js~SelectComponent#useTemplate",
+    "member"
   ],
   [
     "src/components/select/select.js~selectcomponent#validatemultiple",
@@ -4374,6 +4428,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#constructor",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-constructor-constructor",
+    "src/components/textarea/TextArea.js~TextAreaComponent#constructor",
+    "method"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent#createinput",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-createInput",
     "src/components/textarea/TextArea.js~TextAreaComponent#createInput",
@@ -4596,6 +4656,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.form.js~formioform#addlanguage",
+    "class/src/formio.form.js~FormioForm.html#instance-method-addLanguage",
+    "src/formio.form.js~FormioForm#addLanguage",
+    "method"
+  ],
+  [
     "src/formio.form.js~formioform#addshortcut",
     "class/src/formio.form.js~FormioForm.html#instance-method-addShortcut",
     "src/formio.form.js~FormioForm#addShortcut",
@@ -4710,6 +4776,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.form.js~formioform#language",
+    "class/src/formio.form.js~FormioForm.html#instance-set-language",
+    "src/formio.form.js~FormioForm#language",
+    "member"
+  ],
+  [
     "src/formio.form.js~formioform#loadsubmission",
     "class/src/formio.form.js~FormioForm.html#instance-method-loadSubmission",
     "src/formio.form.js~FormioForm#loadSubmission",
@@ -4723,15 +4795,27 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
+  ],
+  [
+    "src/formio.form.js~formioform#localize",
+    "class/src/formio.form.js~FormioForm.html#instance-method-localize",
+    "src/formio.form.js~FormioForm#localize",
+    "method"
+  ],
+  [
+    "src/formio.form.js~formioform#mergedata",
+    "class/src/formio.form.js~FormioForm.html#instance-method-mergeData",
+    "src/formio.form.js~FormioForm#mergeData",
+    "method"
   ],
   [
     "src/formio.form.js~formioform#nosubmit",
@@ -4798,6 +4882,12 @@ window.esdocSearchIndex = [
     "class/src/formio.form.js~FormioForm.html#instance-method-reset",
     "src/formio.form.js~FormioForm#reset",
     "method"
+  ],
+  [
+    "src/formio.form.js~formioform#schema",
+    "class/src/formio.form.js~FormioForm.html#instance-get-schema",
+    "src/formio.form.js~FormioForm#schema",
+    "member"
   ],
   [
     "src/formio.form.js~formioform#setalert",
@@ -4909,13 +4999,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#url",
-    "class/src/formio.form.js~FormioForm.html#instance-get-url",
+    "class/src/formio.form.js~FormioForm.html#instance-set-url",
     "src/formio.form.js~FormioForm#url",
     "member"
   ],
   [
     "src/formio.form.js~formioform#url",
-    "class/src/formio.form.js~FormioForm.html#instance-set-url",
+    "class/src/formio.form.js~FormioForm.html#instance-get-url",
     "src/formio.form.js~FormioForm#url",
     "member"
   ],
@@ -5730,6 +5820,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/formio.wizard.js~formiowizard#schema",
+    "class/src/formio.wizard.js~FormioWizard.html#instance-get-schema",
+    "src/formio.wizard.js~FormioWizard#schema",
+    "member"
+  ],
+  [
     "src/formio.wizard.js~formiowizard#setform",
     "class/src/formio.wizard.js~FormioWizard.html#instance-method-setForm",
     "src/formio.wizard.js~FormioWizard#setForm",
@@ -5817,6 +5913,18 @@ window.esdocSearchIndex = [
     "src/utils/index.js",
     "file/src/utils/index.js.html",
     "src/utils/index.js",
+    "file"
+  ],
+  [
+    "src/utils/jsonlogic/operators.js",
+    "file/src/utils/jsonlogic/operators.js.html",
+    "src/utils/jsonlogic/operators.js",
+    "file"
+  ],
+  [
+    "src/utils/jsonlogic/operators.spec.js",
+    "file/src/utils/jsonlogic/operators.spec.js.html",
+    "src/utils/jsonlogic/operators.spec.js",
     "file"
   ],
   [

@@ -138,6 +138,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -170,7 +171,7 @@ describe(&apos;Number Component&apos;, function() {
     });
   });
   it(&apos;Should format numbers for USA locale&apos;, function(done) {
-    Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: &apos;en-US&apos;, resources: {}}}).then((component) =&gt; {
+    Harness.testCreate(NumberComponent, comps.comp2, {language: &apos;en-US&apos;}).then((component) =&gt; {
       Harness.testSetInput(component, null, null, &apos;&apos;);
       Harness.testSetInput(component, undefined, null, &apos;&apos;);
       Harness.testSetInput(component, &apos;&apos;, null, &apos;&apos;);
@@ -217,7 +218,7 @@ describe(&apos;Number Component&apos;, function() {
     });
   });
   it(&apos;Should format numbers for British locale&apos;, function(done) {
-    Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: &apos;en-GB&apos;, resources: {}}}).then((component) =&gt; {
+    Harness.testCreate(NumberComponent, comps.comp2, {language: &apos;en-GB&apos;}).then((component) =&gt; {
       Harness.testSetInput(component, null, null, &apos;&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);
       Harness.testSetInput(component, 1, 1, &apos;1&apos;);
@@ -238,7 +239,7 @@ describe(&apos;Number Component&apos;, function() {
     });
   });
   it(&apos;Should format numbers for French locale&apos;, function(done) {
-    Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: &apos;fr&apos;, resources: {}}}).then((component) =&gt; {
+    Harness.testCreate(NumberComponent, comps.comp2, {language: &apos;fr&apos;}).then((component) =&gt; {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, &apos;&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);
@@ -260,7 +261,7 @@ describe(&apos;Number Component&apos;, function() {
     });
   });
   it(&apos;Should format numbers for German locale&apos;, function(done) {
-    Harness.testCreate(NumberComponent, comps.comp2, {i18n: {lng: &apos;de&apos;, resources: {}}}).then((component) =&gt; {
+    Harness.testCreate(NumberComponent, comps.comp2, {language: &apos;de&apos;}).then((component) =&gt; {
       Harness.testSetInput(component, null, null, &apos;&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);
       Harness.testSetInput(component, 1, 1, &apos;1&apos;);
