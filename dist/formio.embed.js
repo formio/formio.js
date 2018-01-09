@@ -10865,8 +10865,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this._submission.data, flags);
       }
       submission = submission || { data: {} };
-      this.mergeData(this._submission, submission);
-      this.data = this._submission.data;
+      this.mergeData(this.data, submission.data);
+      this._submission.data = this.data;
       return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this._submission.data, flags);
     }
   }, {
