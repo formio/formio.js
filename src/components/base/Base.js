@@ -668,9 +668,32 @@ export class BaseComponent {
     let addIcon = this.ce('span', {
       class: 'glyphicon glyphicon-plus'
     });
+
     addButton.appendChild(addIcon);
     addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
+
     return addButton;
+  }
+
+  /**
+   * Adds a new icon button to  new rows for multiple input elements.
+   * @returns {HTMLElement} - The "+" button html element.
+   */
+  addIconButton(){
+    let addIconButton = this.ce('a', {
+      class: 'btn btn-primary'
+    });
+    this.addEventListener(addIconButton, 'click', (event) => {
+      event.preventDefault();
+      this.addValue();
+    });
+
+    let addIcon = this.ce('span', {
+      class: 'glyphicon glyphicon-plus'
+    });
+
+    addIconButton.appendChild(addIcon);
+    return addIconButton;
   }
 
   /**
