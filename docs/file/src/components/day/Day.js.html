@@ -138,6 +138,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -149,10 +152,16 @@ import _get from &apos;lodash/get&apos;;
 import _each from &apos;lodash/each&apos;;
 import _assign from &apos;lodash/assign&apos;;
 import moment from &apos;moment&apos;;
+import { getLocaleDateFormatInfo } from &apos;../../utils&apos;;
 export class DayComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push(&apos;date&apos;);
+
+    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
+    this.dayFirst = this.component.useLocaleSettings
+      ? dateFormatInfo.dayFirst
+      : this.component.dayFirst;
   }
 
   elementInfo() {
@@ -325,21 +334,17 @@ export class DayComponent extends BaseComponent {
       class: &apos;input-group row&apos;,
       style: &apos;width: 100%&apos;
     });
-
     const subinputAtTheBottom = this.component.inputsLabelPosition === &apos;bottom&apos;;
-
-    const dayColumn = this.createDayInput(subinputAtTheBottom);
-    const monthColumn = this.createMonthInput(subinputAtTheBottom);
-    const yearColumn = this.createYearInput(subinputAtTheBottom);
+    const [ dayColumn, monthColumn, yearColumn ] = this.createInputs(subinputAtTheBottom);
 
     // Add the columns to the day select in the right order.
-    if (this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (this.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
       inputGroup.appendChild(dayColumn)
     }
     if (!_get(this.component, &apos;fields.month.hide&apos;, false)) {
       inputGroup.appendChild(monthColumn);
     }
-    if (!this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (!this.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
       inputGroup.appendChild(dayColumn);
     }
     if (!_get(this.component, &apos;fields.year.hide&apos;, false)) {
@@ -351,6 +356,19 @@ export class DayComponent extends BaseComponent {
     this.errorContainer = container;
     this.setInputStyles(inputGroup);
     container.appendChild(inputGroup);
+  }
+
+  createInputs(subinputAtTheBottom) {
+    return [
+      this.createDayInput(subinputAtTheBottom),
+      this.createMonthInput(subinputAtTheBottom),
+      this.createYearInput(subinputAtTheBottom),
+    ];
+  }
+
+  createViewOnlyInput() {
+    super.createViewOnlyInput();
+    this.createInputs();
   }
 
   setSubinputLabelStyle(label) {
@@ -465,6 +483,11 @@ export class DayComponent extends BaseComponent {
   getValueAt(index) {
     this.inputs[index].value = this.date.format(this.format);
     return this.inputs[index].value;
+  }
+
+  get view() {
+    const date = this.date;
+    return date.isValid() ? date.format(this.format) : null;
   }
 }
 </code></pre>

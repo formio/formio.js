@@ -138,6 +138,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -156,10 +159,11 @@ import _clone from &apos;lodash/clone&apos;;
 import _defaults from &apos;lodash/defaults&apos;;
 import _isEqual from &apos;lodash/isEqual&apos;;
 import _isUndefined from &apos;lodash/isUndefined&apos;;
-import i18next from &apos;i18next&apos;;
+import _toString from &apos;lodash/toString&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 import { Validator } from &apos;../Validator&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
+import i18next from &apos;i18next&apos;;
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -187,6 +191,9 @@ export class BaseComponent {
     this.options = _defaults(_clone(options), {
       highlightErrors: true
     });
+
+    // Use the i18next that is passed in, otherwise use the global version.
+    this.i18next = this.options.i18next || i18next;
 
     /**
      * Determines if this component has a condition assigned to it.
@@ -337,7 +344,7 @@ export class BaseComponent {
 
     if (this.component) {
       this.type = this.component.type;
-      if (this.component.input &amp;&amp; this.component.key) {
+      if (this.hasInput &amp;&amp; this.component.key) {
         this.options.name += `[${this.component.key}]`;
       }
 
@@ -347,6 +354,10 @@ export class BaseComponent {
        */
       this.info = this.elementInfo();
     }
+  }
+
+  get hasInput() {
+    return this.component.input || this.inputs.length;
   }
 
   /**
@@ -364,7 +375,8 @@ export class BaseComponent {
     params.keySeparator = &apos;.|.&apos;;
     params.pluralSeparator = &apos;._.&apos;;
     params.contextSeparator = &apos;._.&apos;;
-    return i18next.t(text, params);
+    let translated = this.i18next.t(text, params);
+    return translated || text;
   }
 
   /**
@@ -474,27 +486,103 @@ export class BaseComponent {
    * Builds the component.
    */
   build() {
-    this.createElement();
+    if (this.viewOnlyMode()) {
+      this.viewOnlyBuild();
+    }
+    else {
+      this.createElement();
 
-    const labelAtTheBottom = this.component.labelPosition === &apos;bottom&apos;;
-    if (!labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    if (!this.createWrapper()) {
-      this.createInput(this.element);
-    }
-    if (labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    this.createDescription(this.element);
+      const labelAtTheBottom = this.component.labelPosition === &apos;bottom&apos;;
+      if (!labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+      if (!this.createWrapper()) {
+        this.createInput(this.element);
+      }
+      if (labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+      this.createDescription(this.element);
 
-    // Disable if needed.
-    if (this.shouldDisable) {
-      this.disabled = true;
+      // Disable if needed.
+      if (this.shouldDisable) {
+        this.disabled = true;
+      }
+
+      // Restore the value.
+      this.restoreValue();
+    }
+  }
+
+  viewOnlyMode() {
+    return this.options.readOnly &amp;&amp; this.options.viewAsHtml;
+  }
+
+  viewOnlyBuild() {
+    this.createViewOnlyElement();
+    this.createViewOnlyLabel(this.element);
+    this.createViewOnlyInput();
+    this.createViewOnlyValue(this.element);
+  }
+
+  createViewOnlyElement() {
+    this.element = this.ce(&apos;dl&apos;, {
+      id: this.id
+    });
+
+    if (this.element) {
+      // Ensure you can get the component info from the element.
+      this.element.component = this.component;
     }
 
-    // Restore the value.
-    this.restoreValue();
+    return this.element;
+  }
+
+  createViewOnlyInput() {
+    this.input = this.ce(this.info.type, this.info.attr);
+    this.inputs.push(this.input);
+    return this.input;
+  }
+
+  createViewOnlyLabel(container) {
+    if (this.labelIsHidden()) {
+      return;
+    }
+
+    this.labelElement = this.ce(&apos;dt&apos;);
+    this.labelElement.appendChild(this.text(this.component.label));
+    this.createTooltip(this.labelElement);
+    container.appendChild(this.labelElement);
+  }
+
+  createViewOnlyValue(container) {
+    this.valueElement = this.ce(&apos;dd&apos;);
+    this.setupValueElement(this.valueElement);
+    container.appendChild(this.valueElement);
+  }
+
+  setupValueElement(element) {
+    const value = this.text(this.view || this.defaultViewOnlyValue);
+    element.appendChild(value);
+  }
+
+  get defaultViewOnlyValue() {
+    return &apos;-&apos;;
+  }
+
+  get view() {
+    return _toString(this.getValue());
+  }
+
+  updateViewOnlyValue() {
+    this.empty(this.valueElement);
+    this.setupValueElement(this.valueElement);
+  }
+
+  empty(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
   }
 
   /**
@@ -502,7 +590,7 @@ export class BaseComponent {
    * @returns {string} - The class name of this component.
    */
   get className() {
-    let className = this.component.input ? &apos;form-group has-feedback &apos; : &apos;&apos;;
+    let className = this.hasInput ? &apos;form-group has-feedback &apos; : &apos;&apos;;
     className += `formio-component formio-component-${this.component.type} `;
     if (this.component.key) {
       className += `formio-component-${this.component.key} `;
@@ -510,7 +598,7 @@ export class BaseComponent {
     if (this.component.customClass) {
       className += this.component.customClass;
     }
-    if (this.component.input &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
+    if (this.hasInput &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
       className += &apos; required&apos;;
     }
     return className;
@@ -835,7 +923,8 @@ export class BaseComponent {
 
       if (this.labelOnTheLeft(this.component.labelPosition)) {
         input.style.marginLeft = `${totalLabelWidth}%`
-      } else {
+      }
+      else {
         input.style.marginRight = `${totalLabelWidth}%`
       }
     }
@@ -863,14 +952,16 @@ export class BaseComponent {
     // Determine label styles/classes depending on position.
     if (labelPosition === &apos;bottom&apos;) {
       className += &apos; control-label--bottom&apos;;
-    } else if (labelPosition &amp;&amp; labelPosition !== &apos;top&apos;) {
+    }
+    else if (labelPosition &amp;&amp; labelPosition !== &apos;top&apos;) {
       const labelWidth = this.getLabelWidth();
       const labelMargin = this.getLabelMargin();
 
       // Label is on the left or right.
       if (this.labelOnTheLeft(labelPosition)) {
         style += `float: left; width: ${labelWidth}%; margin-right: ${labelMargin}%; `;
-      } else if (this.labelOnTheRight(labelPosition)) {
+      }
+      else if (this.labelOnTheRight(labelPosition)) {
         style += `float: right; width: ${labelWidth}%; margin-left: ${labelMargin}%; `;
       }
       if (this.rightAlignedLabel(labelPosition)) {
@@ -878,7 +969,7 @@ export class BaseComponent {
       }
     }
 
-    if (this.component.input &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
+    if (this.hasInput &amp;&amp; this.component.validate &amp;&amp; this.component.validate.required) {
       className += &apos; field-required&apos;;
     }
     this.labelElement = this.ce(&apos;label&apos;, {
@@ -1160,7 +1251,8 @@ export class BaseComponent {
     this.eventHandlers.push({type: evt, func: func});
     if (&apos;addEventListener&apos; in obj){
       obj.addEventListener(evt, func, false);
-    } else if (&apos;attachEvent&apos; in obj) {
+    }
+    else if (&apos;attachEvent&apos; in obj) {
       obj.attachEvent(`on${evt}`, func);
     }
   }
@@ -1487,7 +1579,7 @@ export class BaseComponent {
   }
 
   getValue() {
-    if (!this.component.input) {
+    if (!this.hasInput) {
       return;
     }
     const values = [];
@@ -1521,6 +1613,10 @@ export class BaseComponent {
    * @param flags
    */
   updateValue(flags) {
+    if (!this.hasInput) {
+      return false;
+    }
+
     flags = flags || {};
     const value = this.data[this.component.key];
     this.data[this.component.key] = this.getValue(flags);
@@ -1528,6 +1624,10 @@ export class BaseComponent {
     delete flags.changed;
     if (!flags.noUpdateEvent &amp;&amp; changed) {
       this.triggerChange(flags);
+
+      if (this.viewOnlyMode()) {
+        this.updateViewOnlyValue();
+      }
     }
     return changed;
   }
@@ -1640,7 +1740,7 @@ export class BaseComponent {
    */
   invalidMessage(data, dirty) {
     // No need to check for errors if there is no input or if it is pristine.
-    if (!this.component.input || (!dirty &amp;&amp; this.pristine)) {
+    if (!this.hasInput || (!dirty &amp;&amp; this.pristine)) {
       return &apos;&apos;;
     }
 
@@ -1759,7 +1859,7 @@ export class BaseComponent {
    */
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    if (!this.component.input) {
+    if (!this.hasInput) {
       return false;
     }
     this.value = value;

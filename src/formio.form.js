@@ -662,7 +662,7 @@ export class FormioForm extends FormioComponents {
 
   mergeData(_this, _that) {
     _mergeWith(_this, _that, (thisValue, thatValue) => {
-      if (_isArray(thisValue)) {
+      if (_isArray(thisValue) && _isArray(thatValue) && thisValue.length !== thatValue.length) {
         return thatValue;
       }
     });
@@ -900,6 +900,11 @@ export class FormioForm extends FormioComponents {
 
   executeSubmit() {
     return new Promise((resolve, reject) => {
+      // Read-only forms should never submit.
+      if (this.options.readOnly) {
+        return resolve(this.submission);
+      }
+
       let submission = this.submission || {};
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {

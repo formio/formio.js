@@ -195,7 +195,7 @@ export class BaseComponent {
 
     if (this.component) {
       this.type = this.component.type;
-      if (this.component.input && this.component.key) {
+      if (this.hasInput && this.component.key) {
         this.options.name += `[${this.component.key}]`;
       }
 
@@ -205,6 +205,10 @@ export class BaseComponent {
        */
       this.info = this.elementInfo();
     }
+  }
+
+  get hasInput() {
+    return this.component.input || this.inputs.length;
   }
 
   /**
@@ -437,7 +441,7 @@ export class BaseComponent {
    * @returns {string} - The class name of this component.
    */
   get className() {
-    let className = this.component.input ? 'form-group has-feedback ' : '';
+    let className = this.hasInput ? 'form-group has-feedback ' : '';
     className += `formio-component formio-component-${this.component.type} `;
     if (this.component.key) {
       className += `formio-component-${this.component.key} `;
@@ -445,7 +449,7 @@ export class BaseComponent {
     if (this.component.customClass) {
       className += this.component.customClass;
     }
-    if (this.component.input && this.component.validate && this.component.validate.required) {
+    if (this.hasInput && this.component.validate && this.component.validate.required) {
       className += ' required';
     }
     return className;
@@ -816,7 +820,7 @@ export class BaseComponent {
       }
     }
 
-    if (this.component.input && this.component.validate && this.component.validate.required) {
+    if (this.hasInput && this.component.validate && this.component.validate.required) {
       className += ' field-required';
     }
     this.labelElement = this.ce('label', {
@@ -1426,7 +1430,7 @@ export class BaseComponent {
   }
 
   getValue() {
-    if (!this.component.input) {
+    if (!this.hasInput) {
       return;
     }
     const values = [];
@@ -1460,7 +1464,7 @@ export class BaseComponent {
    * @param flags
    */
   updateValue(flags) {
-    if (!this.component.input) {
+    if (!this.hasInput) {
       return false;
     }
 
@@ -1587,7 +1591,7 @@ export class BaseComponent {
    */
   invalidMessage(data, dirty) {
     // No need to check for errors if there is no input or if it is pristine.
-    if (!this.component.input || (!dirty && this.pristine)) {
+    if (!this.hasInput || (!dirty && this.pristine)) {
       return '';
     }
 
@@ -1706,7 +1710,7 @@ export class BaseComponent {
    */
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    if (!this.component.input) {
+    if (!this.hasInput) {
       return false;
     }
     this.value = value;

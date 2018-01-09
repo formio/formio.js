@@ -138,6 +138,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -170,13 +173,21 @@ import momentModule from &apos;moment&apos;;
 // Configure JsonLogic
 lodashOperators.forEach((name) =&gt; jsonLogic.add_operation(`_${name}`, _[name]));
 
-// Fix the &quot;in&quot; operand for jsonlogic.
-// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
-jsonLogic.add_operation(&apos;in&apos;, function(a, b) {
-  if(!b) return false;
-  if(typeof b.indexOf === &quot;undefined&quot;) return false;
-  return (b.indexOf(a) !== -1);
+// Retrieve Any Date
+jsonLogic.add_operation(&quot;getDate&quot;, function(date){
+  return momentModule(date).toISOString()
 });
+
+// Set Relative Minimum Date
+jsonLogic.add_operation(&quot;relativeMinDate&quot;, function(relativeMinDate){
+  return momentModule().subtract(relativeMinDate, &quot;days&quot;).toISOString()
+});
+
+// Set Relative Maximum Date
+jsonLogic.add_operation(&quot;relativeMaxDate&quot;, function(relativeMaxDate){
+  return momentModule().add(relativeMaxDate, &quot;days&quot;).toISOString();
+});
+
 
 const FormioUtils = {
   jsonLogic, // Share
@@ -673,6 +684,17 @@ const FormioUtils = {
   },
   isValidDate(date) {
     return _isDate(date) &amp;&amp; !_isNaN(date.getDate());
+  },
+  getLocaleDateFormatInfo(locale) {
+    const formatInfo = {};
+
+    const day = 21;
+    const exampleDate = new Date(2017, 11, day);
+    const localDateString = exampleDate.toLocaleDateString(locale);
+
+    formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
+
+    return formatInfo;
   }
 };
 

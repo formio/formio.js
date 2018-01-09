@@ -138,6 +138,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -148,24 +151,15 @@
 import Choices from &apos;choices.js&apos;;
 import Formio from &apos;../../formio&apos;;
 import _each from &apos;lodash/each&apos;;
-import _remove from &apos;lodash/remove&apos;;
 import _get from &apos;lodash/get&apos;;
 import _debounce from &apos;lodash/debounce&apos;;
 import _isEmpty from &apos;lodash/isEmpty&apos;;
 import _isArray from &apos;lodash/isArray&apos;;
 import _isObject from &apos;lodash/isObject&apos;;
 import _isEqual from &apos;lodash/isEqual&apos;;
+import _isString from &apos;lodash/isString&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
-
-// Fix performance issues in Choices by adding a debounce around render method.
-Choices.prototype._render = Choices.prototype.render;
-Choices.prototype.render = function() {
-  if (this.renderDebounce) {
-    clearTimeout(this.renderDebounce);
-  }
-
-  this.renderDebounce = setTimeout(() =&gt; this._render(), 100);
-};
+import _find  from &apos;lodash/find&apos;;
 
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
@@ -535,7 +529,7 @@ export class SelectComponent extends BaseComponent {
 
     let placeholderValue = this.t(this.component.placeholder);
     let choicesOptions = {
-      removeItemButton: true,
+      removeItemButton: this.component.removeItemButton || (this.component.multiple || false),
       itemSelectText: &apos;&apos;,
       classNames: {
         containerOuter: &apos;choices form-group formio-choices&apos;,
@@ -545,7 +539,8 @@ export class SelectComponent extends BaseComponent {
       placeholderValue: placeholderValue,
       searchPlaceholderValue: placeholderValue,
       shouldSort: false,
-      position: (this.component.dropdown || &apos;auto&apos;)
+      position: (this.component.dropdown || &apos;auto&apos;),
+      searchEnabled: this.component.searchEnabled || false
     };
 
     let tabIndex = input.tabIndex;
@@ -659,10 +654,13 @@ export class SelectComponent extends BaseComponent {
       if (hasValue) {
         let values = _isArray(value) ? value : [value];
         _each(this.selectOptions, (selectOption) =&gt; {
-          if (values.indexOf(selectOption.value) !== -1) {
-            selectOption.element.selected = true;
-            selectOption.element.setAttribute(&apos;selected&apos;, &apos;selected&apos;);
-          }
+          _each(values, (val) =&gt; {
+            if (_isEqual(val, selectOption.value)) {
+              selectOption.element.selected = true;
+              selectOption.element.setAttribute(&apos;selected&apos;, &apos;selected&apos;);
+              return false;
+            }
+          });
         });
       }
       else {
@@ -691,13 +689,34 @@ export class SelectComponent extends BaseComponent {
    */
   asString(value) {
     value = value || this.getValue();
-    value = (typeof value !== &apos;object&apos;) ? {label: value} : value;
-    return this.itemTemplate(value);
+
+    if (this.component.dataSrc === &apos;values&apos;) {
+      value = _find(this.component.data.values, [ &apos;value&apos;, value ]);
+    }
+
+    if (_isString(value)) {
+      return value;
+    }
+
+    return _isObject(value)
+      ? this.itemTemplate(value)
+      : &apos;-&apos;;
+  }
+
+  setupValueElement(element) {
+    element.innerHTML = this.asString();
+  }
+
+  updateViewOnlyValue() {
+    this.setupValueElement(this.valueElement);
   }
 
   destroy() {
+    super.destroy();
     if (this.choices) {
+      this.choices.destroyed = true;
       this.choices.destroy();
+      this.choices = null;
     }
   }
 }
