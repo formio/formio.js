@@ -40,7 +40,7 @@ section: home
 <div id="formio"></div>
 <script type="text/javascript">
   window.onload = function() {
-    Formio.createForm(document.getElementById('formio'), 'http://fjzitjuzyqbnnkw.localhost:3000/user/login');
+    Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
   };
 </script>
 </div>

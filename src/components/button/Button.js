@@ -110,7 +110,6 @@ export class ButtonComponent extends BaseComponent {
           this.emit('resetForm');
           break;
         case 'oauth':
-
           // Display Alert if OAuth config is missing
           if(!this.component.oauth){
             this.root.setAlert('danger', 'You must assign this button to an OAuth action before it will work.');
