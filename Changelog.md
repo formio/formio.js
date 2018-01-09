@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Added
+ - CSS class ('radio-selected') for selected option of Radio component
+
 ## 2.27.0
 ### Fixed
  - Issue where read-only forms would still try to submit.
