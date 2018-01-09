@@ -310,6 +310,9 @@ var Formio = function () {
           currentForm.components = revisionForm.components;
           // Using object.assign so we don't cross polinate multiple form loads.
           return Object.assign({}, currentForm);
+        }).catch(function (error) {
+          // If we couldn't load the revision, just return the original form.
+          return Object.assign({}, currentForm);
         });
       });
     }
@@ -420,6 +423,16 @@ var Formio = function () {
           return form._id;
         });
       }
+    }
+  }, {
+    key: 'currentUser',
+    value: function currentUser() {
+      return Formio.currentUser(this);
+    }
+  }, {
+    key: 'accessInfo',
+    value: function accessInfo() {
+      return Formio.accessInfo(this);
     }
 
     /**
@@ -550,7 +563,7 @@ var Formio = function () {
   }, {
     key: 'canSubmit',
     value: function canSubmit() {
-      return Promise.all([this.loadForm(), Formio.currentUser(), Formio.accessInfo()]).then(function (results) {
+      return Promise.all([this.loadForm(), this.currentUser(), this.accessInfo()]).then(function (results) {
         var form = results.shift();
         var user = results.shift();
         var access = results.shift();
@@ -616,7 +629,7 @@ var Formio = function () {
       if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
         query = '?' + serialize(query.params);
       }
-      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query);
+      return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', null, opts);
     }
   }, {
     key: 'getUrlParts',
@@ -641,22 +654,37 @@ var Formio = function () {
       }return str.join("&");
     }
   }, {
-    key: 'makeStaticRequest',
-    value: function makeStaticRequest(url, method, data, opts) {
+    key: 'getRequestArgs',
+    value: function getRequestArgs(formio, type, url, method, data, opts) {
       method = (method || 'GET').toUpperCase();
       if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
         opts = {};
       }
+
       var requestArgs = {
         url: url,
         method: method,
-        data: data
+        data: data || null,
+        opts: opts
       };
 
+      if (type) {
+        requestArgs.type = type;
+      }
+
+      if (formio) {
+        requestArgs.formio = formio;
+      }
+      return requestArgs;
+    }
+  }, {
+    key: 'makeStaticRequest',
+    value: function makeStaticRequest(url, method, data, opts) {
+      var requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('staticRequest', requestArgs).then(function (result) {
           if (result === null || result === undefined) {
-            return Formio.request(url, method, data, opts.header, opts);
+            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         });
@@ -667,24 +695,14 @@ var Formio = function () {
   }, {
     key: 'makeRequest',
     value: function makeRequest(formio, type, url, method, data, opts) {
-      method = (method || 'GET').toUpperCase();
-      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
-        opts = {};
+      if (!formio) {
+        return Formio.makeStaticRequest(url, method, data, opts);
       }
-
-      var requestArgs = {
-        formio: formio,
-        type: type,
-        url: url,
-        method: method,
-        data: data,
-        opts: opts
-      };
-
+      var requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('request', requestArgs).then(function (result) {
           if (result === null || result === undefined) {
-            return Formio.request(url, method, data, opts.header, opts);
+            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
         });
@@ -1035,39 +1053,42 @@ var Formio = function () {
     }
   }, {
     key: 'accessInfo',
-    value: function accessInfo() {
-      return Formio.makeStaticRequest(Formio.projectUrl + '/access');
+    value: function accessInfo(formio) {
+      var projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+      return Formio.makeRequest(formio, 'accessInfo', projectUrl + '/access');
     }
   }, {
     key: 'currentUser',
-    value: function currentUser() {
-      var url = Formio.baseUrl + '/current';
+    value: function currentUser(formio) {
+      var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+      projectUrl += '/current';
       var user = this.getUser();
       if (user) {
         return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
-          url: url,
+          url: projectUrl,
           method: 'GET'
         });
       }
       var token = Formio.getToken();
       if (!token) {
         return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
-          url: url,
+          url: projectUrl,
           method: 'GET'
         });
       }
-      return Formio.makeStaticRequest(url).then(function (response) {
+      return Formio.makeRequest(formio, 'currentUser', projectUrl).then(function (response) {
         Formio.setUser(response);
         return response;
       });
     }
   }, {
     key: 'logout',
-    value: function logout() {
+    value: function logout(formio) {
       Formio.setToken(null);
       Formio.setUser(null);
       Formio.clearCache();
-      return Formio.makeStaticRequest(Formio.baseUrl + '/logout');
+      var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+      return Formio.makeRequest(formio, 'logout', projectUrl + '/logout');
     }
 
     /**

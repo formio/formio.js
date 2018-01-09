@@ -93,14 +93,6 @@ _operators.lodashOperators.forEach(function (name) {
   return _jsonLogicJs2.default.add_operation('_' + name, _lodash2.default[name]);
 });
 
-// Fix the "in" operand for jsonlogic.
-// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
-_jsonLogicJs2.default.add_operation('in', function (a, b) {
-  if (!b) return false;
-  if (typeof b.indexOf === "undefined") return false;
-  return b.indexOf(a) !== -1;
-});
-
 // Retrieve Any Date
 _jsonLogicJs2.default.add_operation("getDate", function (date) {
   return (0, _moment2.default)(date).toISOString();
@@ -703,7 +695,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
       console.log(a); return a;
     },
     "in": function(a, b) {
-      if(typeof b.indexOf === "undefined") return false;
+      if(!b || typeof b.indexOf === "undefined") return false;
       return (b.indexOf(a) !== -1);
     },
     "cat": function() {

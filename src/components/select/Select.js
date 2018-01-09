@@ -2,7 +2,6 @@ import { BaseComponent } from '../base/Base';
 import Choices from 'choices.js';
 import Formio from '../../formio';
 import _each from 'lodash/each';
-import _remove from 'lodash/remove';
 import _get from 'lodash/get';
 import _debounce from 'lodash/debounce';
 import _isEmpty from 'lodash/isEmpty';
@@ -12,21 +11,6 @@ import _isEqual from 'lodash/isEqual';
 import _isString from 'lodash/isString';
 import _cloneDeep from 'lodash/cloneDeep';
 import _find  from 'lodash/find';
-
-// Fix performance issues in Choices by adding a debounce around render method.
-Choices.prototype._render = Choices.prototype.render;
-Choices.prototype.render = function() {
-  // Do not render destroyed choices widget.
-  if (this.destroyed) {
-    return;
-  }
-
-  if (this.renderDebounce) {
-    clearTimeout(this.renderDebounce);
-  }
-
-  this.renderDebounce = setTimeout(() => this._render(), 100);
-};
 
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {

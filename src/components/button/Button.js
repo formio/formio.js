@@ -7,6 +7,7 @@ export class ButtonComponent extends BaseComponent {
     let info = super.elementInfo();
     info.type = 'button';
     info.attr.type = (this.component.action === 'submit') ? 'submit' : 'button';
+    this.component.theme = this.component.theme || 'default';
     info.attr.class = 'btn btn-' + this.component.theme;
     if (this.component.block) {
       info.attr.class += ' btn-block';
@@ -26,11 +27,19 @@ export class ButtonComponent extends BaseComponent {
     this.setDisabled(this.element, disabled);
   }
 
+  getValue() {
+    if (!this.component.input) {
+      return;
+    }
+    return this.clicked;
+  }
+
   build() {
     if (this.viewOnlyMode()) {
       this.component.hidden = true;
     }
 
+    this.clicked = false;
     this.element = this.ce(this.info.type, this.info.attr);
     this.addShortcut(this.element);
     if (this.component.label) {
@@ -56,6 +65,7 @@ export class ButtonComponent extends BaseComponent {
       }, true);
     }
     this.addEventListener(this.element, 'click', (event) => {
+      this.clicked = false;
       switch (this.component.action) {
         case 'submit':
           event.preventDefault();

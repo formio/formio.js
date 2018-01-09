@@ -20,7 +20,8 @@ Formio.forms = {};
 
 let getOptions = function(options) {
   options = _defaults(options, {
-    submitOnEnter: false
+    submitOnEnter: false,
+    i18next: i18next
   });
   if (!options.events) {
     options.events = new EventEmitter({
@@ -661,7 +662,7 @@ export class FormioForm extends FormioComponents {
 
   mergeData(_this, _that) {
     _mergeWith(_this, _that, (thisValue, thatValue) => {
-      if (_isArray(thisValue)) {
+      if (_isArray(thisValue) && _isArray(thatValue) && thisValue.length !== thatValue.length) {
         return thatValue;
       }
     });
@@ -680,7 +681,7 @@ export class FormioForm extends FormioComponents {
     let submission = _clone(this._submission);
     submission.data = this.data;
     this.mergeData(this._submission.data, submission.data);
-    return submission;
+    return this._submission;
   }
 
   /**
@@ -765,7 +766,11 @@ export class FormioForm extends FormioComponents {
   build() {
     this.on('submitButton', () => this.submit(), true);
     this.addComponents();
-    this.checkConditions(this.getValue());
+    let submission = this.getValue();
+    this.checkConditions(submission);
+    this.checkData(submission.data, {
+      noValidate: true
+    });
   }
 
   /**
@@ -895,6 +900,11 @@ export class FormioForm extends FormioComponents {
 
   executeSubmit() {
     return new Promise((resolve, reject) => {
+      // Read-only forms should never submit.
+      if (this.options.readOnly) {
+        return resolve(this.submission);
+      }
+
       let submission = this.submission || {};
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {

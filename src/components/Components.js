@@ -407,7 +407,7 @@ export class FormioComponents extends BaseComponent {
       else if (value && value.hasOwnProperty(component.component.key)) {
         changed |= component.setValue(value[component.component.key], flags);
       }
-      else if (component.component.input) {
+      else if (component.hasInput) {
         flags.noValidate = true;
         changed |= component.setValue(null, flags);
       }

@@ -1,4 +1,6 @@
-import { StripeCheckoutComponent } from './stripeCheckout/StripeCheckout';
+import { StripeCheckoutComponent } from './stripe/checkout/StripeCheckout';
 module.exports = {
-  stripeCheckout: StripeCheckoutComponent
+  stripe: {
+    checkout: StripeCheckoutComponent
+  }
 };
