@@ -279,17 +279,18 @@ Formio.createForm(document.getElementById('lazy-load'), {
         <script type="text/javascript">
           createSelectForm('lazy-load', {
             type: 'select',
-            label: 'Customer',
-            key: 'customer',
-            placeholder: 'Select a customer',
+            label: 'Model',
+            key: 'model',
+            placeholder: 'Select your model',
             dataSrc: 'url',
+            defaultValue: 'Pilot',
             data: {
-              url: 'https://examples.form.io/customer/submission'
+              url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/honda?format=json'
             },
-            valueProperty: 'data.email',
-            searchField: 'data.email',
+            valueProperty: 'Model_Name',
             lazyLoad: true,
-            template: '<span>{% raw %}{{ item.data.firstName }} {{ item.data.lastName }}{% endraw %}</span>'
+            template: '<span>{% raw %}{{ item.Model_Name }}{% endraw %}</span>',
+            selectValues: 'Results'
           });
         </script>
       </td>
