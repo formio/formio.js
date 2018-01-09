@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Problem with default values on wizards.
  - Issue where row is not passed to calculated values.
+ - Select Resource component searching.
 
 ### Added
  - Ability to auto load the initial values for lazyLoad select with search enabled.
@@ -18,7 +19,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Issue where read-only forms would still try to submit.
  - Problem with read-only wizards triggering beforeSubmit handlers.
  - Fix issue where submissions made before revisions are made will sometimes cause the form to not load.
- 
+
 ### Changed
  - Upgrade all dependencies
 
@@ -31,7 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problems where data keys are added even if component is not set with input.
  - Failing tests.
  - Datagrid data merging.
- 
+
 ### Changed
  - Upgraded choices.js to 3.0.3 which includes performance fix.
  - Removed performance hack in Select since 3.0.3 of choices resolves the problem.

@@ -77,6 +77,15 @@
   margin-left: 5px;
 }
 
+.formio-form > button{
+  display: block;
+  margin-bottom: 15px;
+}
+
+.formio-form > button:last-of-type{
+  margin-bottom: 0;
+}
+
 .form-control.flatpickr-input {
   background-color: #fff;
 }
