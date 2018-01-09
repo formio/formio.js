@@ -6629,9 +6629,21 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   function FormComponent(component, options, data) {
     _classCallCheck(this, FormComponent);
 
-    // Ensure this component does not make it to the global forms array.
+    // We need to reset the language so that it will not try to rebuild the form (by setting the language)
+    // before this form component is done rendering. We will set it later.
+    var language = '';
+    if (options && options.language) {
+      language = options.language;
+      options.language = '';
+    }
+
     var _this = _possibleConstructorReturn(this, (FormComponent.__proto__ || Object.getPrototypeOf(FormComponent)).call(this, null, options));
 
+    if (language && options) {
+      options.language = language;
+    }
+
+    // Ensure this component does not make it to the global forms array.
     delete _formio4.default.forms[_this.id];
 
     _this.type = 'formcomponent';
@@ -6689,6 +6701,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     _this.readyPromise = new Promise(function (resolve) {
       _this.readyResolve = resolve;
     });
+
+    // Set language after everything is established.
+    if (options && options.language) {
+      _this.language = options.language;
+    }
     return _this;
   }
 
@@ -6760,19 +6777,19 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         }
       });
 
-      // Set the submission data.
-      var submissionData = this.data[this.component.key] ? this.data[this.component.key].data : {};
+      // Set the data for this form.
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = this.defaultValue;
+        if (!this.data[this.component.key]) {
+          this.data[this.component.key] = { data: {} };
+        }
+      }
 
       // Add components using the data of the submission.
-      this.addComponents(this.element, submissionData);
+      this.addComponents(this.element, this.data[this.component.key].data);
 
       // Restore default values.
       this.restoreValue();
-
-      // Set the value if it is not set already.
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = { data: {} };
-      }
 
       // Check conditions for this form.
       this.checkConditions(this.getValue());
@@ -6807,9 +6824,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
       if (!(0, _isEmpty3.default)(submission.data) || flags.noload) {
         (0, _merge3.default)(this.data[this.component.key], submission);
-        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
         this.readyResolve();
-        return superValue;
+        return true;
       } else if (submission._id) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
@@ -10862,12 +10878,13 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     key: 'setValue',
     value: function setValue(submission, flags) {
       if (!submission) {
-        return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this._submission.data, flags);
+        return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this.data, flags);
       }
       submission = submission || { data: {} };
       this.mergeData(this.data, submission.data);
+      this._submission = submission;
       this._submission.data = this.data;
-      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this._submission.data, flags);
+      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this.data, flags);
     }
   }, {
     key: 'getValue',
