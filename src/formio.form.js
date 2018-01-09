@@ -674,6 +674,7 @@ export class FormioForm extends FormioComponents {
     }
     submission = submission || {data: {}};
     this.mergeData(this._submission, submission);
+    this.data = this._submission.data;
     return super.setValue(this._submission.data, flags);
   }
 
