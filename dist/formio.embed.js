@@ -10902,7 +10902,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       return this.onFormBuild = this.render().then(function () {
         _this9.formReadyResolve();
         _this9.onFormBuild = null;
-        _this9.setSubmission(_this9._submission);
+        _this9.setValue(_this9.submission);
       }).catch(function (err) {
         console.warn(err);
         _this9.formReadyReject(err);

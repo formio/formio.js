@@ -705,7 +705,7 @@ export class FormioForm extends FormioComponents {
     return this.onFormBuild = this.render().then(() => {
       this.formReadyResolve();
       this.onFormBuild = null;
-      this.setSubmission(this._submission);
+      this.setValue(this.submission);
     }).catch((err) => {
       console.warn(err);
       this.formReadyReject(err);
