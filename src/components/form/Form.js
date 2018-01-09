@@ -122,7 +122,6 @@ export class FormComponent extends FormioForm {
       return this.submit(true).then(submission => {
         // Before we submit, we need to filter out the references.
         this.data[this.component.key] = this.component.reference ? {_id: submission._id, form: submission.form} : submission;
-
         return this.data[this.component.key];
       });
     }
@@ -158,8 +157,16 @@ export class FormComponent extends FormioForm {
     // Restore default values.
     this.restoreValue();
 
+    // Get the submission value.
+    let submission = this.getValue();
+
     // Check conditions for this form.
-    this.checkConditions(this.getValue());
+    this.checkConditions(submission);
+
+    // Check the data for default values.
+    this.checkData(submission.data, {
+      noValidate: true
+    });
   }
 
   whenReady() {
@@ -182,7 +189,7 @@ export class FormComponent extends FormioForm {
     }
 
     if (!_isEmpty(submission.data) || flags.noload) {
-      _merge(this.data[this.component.key], submission);
+      super.setValue(submission, flags, this.data[this.component.key].data);
       this.readyResolve();
       return true;
     }

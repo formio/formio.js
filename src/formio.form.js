@@ -668,15 +668,16 @@ export class FormioForm extends FormioComponents {
     });
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags, data) {
+    data = data || this.data;
     if (!submission) {
-      return super.setValue(this.data, flags);
+      return super.setValue(data, flags);
     }
     submission = submission || {data: {}};
-    this.mergeData(this.data, submission.data);
+    this.mergeData(data, submission.data);
     this._submission = submission;
-    this._submission.data = this.data;
-    return super.setValue(this.data, flags);
+    this._submission.data = data;
+    return super.setValue(data, flags);
   }
 
   getValue() {

@@ -6755,7 +6755,6 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         return this.submit(true).then(function (submission) {
           // Before we submit, we need to filter out the references.
           _this2.data[_this2.component.key] = _this2.component.reference ? { _id: submission._id, form: submission.form } : submission;
-
           return _this2.data[_this2.component.key];
         });
       } else {
@@ -6791,8 +6790,16 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       // Restore default values.
       this.restoreValue();
 
+      // Get the submission value.
+      var submission = this.getValue();
+
       // Check conditions for this form.
-      this.checkConditions(this.getValue());
+      this.checkConditions(submission);
+
+      // Check the data for default values.
+      this.checkData(submission.data, {
+        noValidate: true
+      });
     }
   }, {
     key: 'whenReady',
@@ -6823,7 +6830,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       }
 
       if (!(0, _isEmpty3.default)(submission.data) || flags.noload) {
-        (0, _merge3.default)(this.data[this.component.key], submission);
+        _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, this.data[this.component.key].data);
         this.readyResolve();
         return true;
       } else if (submission._id) {
@@ -10876,15 +10883,16 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     }
   }, {
     key: 'setValue',
-    value: function setValue(submission, flags) {
+    value: function setValue(submission, flags, data) {
+      data = data || this.data;
       if (!submission) {
-        return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this.data, flags);
+        return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, data, flags);
       }
       submission = submission || { data: {} };
-      this.mergeData(this.data, submission.data);
+      this.mergeData(data, submission.data);
       this._submission = submission;
-      this._submission.data = this.data;
-      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this.data, flags);
+      this._submission.data = data;
+      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, data, flags);
     }
   }, {
     key: 'getValue',
