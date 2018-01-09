@@ -5,6 +5,8 @@ import _each from 'lodash/each';
 import {
   getDateSetting,
   getLocaleDateFormatInfo,
+  convertFormatToFlatpickr,
+  convertFormatToMoment,
 } from '../../utils';
 import moment from 'moment';
 export class DateTimeComponent extends BaseComponent {
@@ -42,57 +44,6 @@ export class DateTimeComponent extends BaseComponent {
     return false;
   }
 
-  /**
-   * Convert the format from the angular-datepicker module to flatpickr format.
-   * @param format
-   * @return {string|XML|*}
-   */
-  convertFormatToFlatpickr(format) {
-    return format
-      // Year conversion.
-      .replace(/y/g, 'Y')
-      .replace('YYYY', 'Y')
-      .replace('YY', 'y')
-
-      // Month conversion.
-      .replace('MMMM', 'F')
-      .replace(/M/g, 'n')
-      .replace('nnn', 'M')
-      .replace('nn', 'm')
-
-      // Day in month.
-      .replace(/d/g, 'j')
-      .replace('jj', 'd')
-
-      // Day in week.
-      .replace('EEEE', 'l')
-      .replace('EEE', 'D')
-
-      // Hours, minutes, seconds
-      .replace('HH', 'H')
-      .replace('hh', 'h')
-      .replace('mm', 'i')
-      .replace('ss', 'S')
-      .replace(/a/g, 'K');
-  }
-
-  /**
-   * Convert the format from the angular-datepicker module to moment format.
-   * @param format
-   * @return {string}
-   */
-  convertFormatToMoment(format) {
-    return format
-    // Year conversion.
-    .replace(/y/g, 'Y')
-    // Day in month.
-    .replace(/d/g, 'D')
-    // Day in week.
-    .replace(/E/g, 'd')
-    // AM/PM marker
-    .replace(/a/g, 'A');
-  }
-
   getLocaleFormat() {
     let format = '';
 
@@ -117,7 +68,7 @@ export class DateTimeComponent extends BaseComponent {
       noCalendar: !_get(this.component, 'enableDate', true),
       altFormat: this.component.useLocaleSettings
         ? this.getLocaleFormat()
-        : this.convertFormatToFlatpickr(_get(this.component, 'format', '')),
+        : convertFormatToFlatpickr(_get(this.component, 'format', '')),
       dateFormat: 'U',
       defaultDate: this.defaultDate,
       hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
@@ -217,7 +168,7 @@ export class DateTimeComponent extends BaseComponent {
 
   get view() {
     const value = this.getValue();
-    return value ? moment(value).format(this.convertFormatToMoment(_get(this.component, 'format', ''))) : null;
+    return value ? moment(value).format(convertFormatToMoment(_get(this.component, 'format', ''))) : null;
   }
 
   setValueAt(index, value) {
