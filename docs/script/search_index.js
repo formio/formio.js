@@ -198,6 +198,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html",
+    "<span>StripeCheckoutComponent</span> <span class=\"search-result-import-path\">formiojs/src/contrib/stripe/checkout/StripeCheckout.js</span>",
+    "class"
+  ],
+  [
     "formiojs/src/components/survey/survey.js~surveycomponent",
     "class/src/components/survey/Survey.js~SurveyComponent.html",
     "<span>SurveyComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/survey/Survey.js</span>",
@@ -462,6 +468,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "formiojs/src/contrib/stripe/checkout/fixtures/comp1.js~component",
+    "variable/index.html#static-variable-component",
+    "<span>component</span> <span class=\"search-result-import-path\">formiojs/src/contrib/stripe/checkout/fixtures/comp1.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/components/address/fixtures/index.js~components",
     "variable/index.html#static-variable-components",
     "<span>components</span> <span class=\"search-result-import-path\">formiojs/src/components/address/fixtures/index.js</span>",
@@ -651,6 +663,12 @@ window.esdocSearchIndex = [
     "formiojs/src/components/well/fixtures/index.js~components",
     "variable/index.html#static-variable-components",
     "<span>components</span> <span class=\"search-result-import-path\">formiojs/src/components/well/fixtures/index.js</span>",
+    "variable"
+  ],
+  [
+    "formiojs/src/contrib/stripe/checkout/fixtures/index.js~components",
+    "variable/index.html#static-variable-components",
+    "<span>components</span> <span class=\"search-result-import-path\">formiojs/src/contrib/stripe/checkout/fixtures/index.js</span>",
     "variable"
   ],
   [
@@ -1308,6 +1326,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/address/address.js~addresscomponent#view",
+    "class/src/components/address/Address.js~AddressComponent.html#instance-get-view",
+    "src/components/address/Address.js~AddressComponent#view",
+    "member"
+  ],
+  [
     "src/components/address/address.spec.js",
     "file/src/components/address/Address.spec.js.html",
     "src/components/address/Address.spec.js",
@@ -1572,6 +1596,30 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#createviewonlyelement",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-createViewOnlyElement",
+    "src/components/base/Base.js~BaseComponent#createViewOnlyElement",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#createviewonlyinput",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-createViewOnlyInput",
+    "src/components/base/Base.js~BaseComponent#createViewOnlyInput",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#createviewonlylabel",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-createViewOnlyLabel",
+    "src/components/base/Base.js~BaseComponent#createViewOnlyLabel",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#createviewonlyvalue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-createViewOnlyValue",
+    "src/components/base/Base.js~BaseComponent#createViewOnlyValue",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#createwrapper",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-createWrapper",
     "src/components/base/Base.js~BaseComponent#createWrapper",
@@ -1596,6 +1644,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/base/base.js~basecomponent#defaultviewonlyvalue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-defaultViewOnlyValue",
+    "src/components/base/Base.js~BaseComponent#defaultViewOnlyValue",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#description",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-description",
     "src/components/base/Base.js~BaseComponent#description",
@@ -1609,13 +1663,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -1635,6 +1689,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#emit",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-emit",
     "src/components/base/Base.js~BaseComponent#emit",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#empty",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-empty",
+    "src/components/base/Base.js~BaseComponent#empty",
     "method"
   ],
   [
@@ -1770,10 +1830,22 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#hasinput",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-hasInput",
+    "src/components/base/Base.js~BaseComponent#hasInput",
+    "member"
+  ],
+  [
     "src/components/base/base.js~basecomponent#hook",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-hook",
     "src/components/base/Base.js~BaseComponent#hook",
     "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#i18next",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-i18next",
+    "src/components/base/Base.js~BaseComponent#i18next",
+    "member"
   ],
   [
     "src/components/base/base.js~basecomponent#id",
@@ -1785,6 +1857,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#info",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-info",
     "src/components/base/Base.js~BaseComponent#info",
+    "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#input",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-input",
+    "src/components/base/Base.js~BaseComponent#input",
     "member"
   ],
   [
@@ -2046,6 +2124,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#setupvalueelement",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-setupValueElement",
+    "src/components/base/Base.js~BaseComponent#setupValueElement",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#shoulddisable",
     "class/src/components/base/Base.js~BaseComponent.html#instance-get-shouldDisable",
     "src/components/base/Base.js~BaseComponent#shouldDisable",
@@ -2100,6 +2184,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#updateviewonlyvalue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-updateViewOnlyValue",
+    "src/components/base/Base.js~BaseComponent#updateViewOnlyValue",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#validatemultiple",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-validateMultiple",
     "src/components/base/Base.js~BaseComponent#validateMultiple",
@@ -2116,6 +2206,30 @@ window.esdocSearchIndex = [
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-value",
     "src/components/base/Base.js~BaseComponent#value",
     "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#valueelement",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-member-valueElement",
+    "src/components/base/Base.js~BaseComponent#valueElement",
+    "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#view",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-view",
+    "src/components/base/Base.js~BaseComponent#view",
+    "member"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#viewonlybuild",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-viewOnlyBuild",
+    "src/components/base/Base.js~BaseComponent#viewOnlyBuild",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#viewonlymode",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-viewOnlyMode",
+    "src/components/base/Base.js~BaseComponent#viewOnlyMode",
+    "method"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
@@ -2172,6 +2286,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/button/button.js~buttoncomponent#clicked",
+    "class/src/components/button/Button.js~ButtonComponent.html#instance-member-clicked",
+    "src/components/button/Button.js~ButtonComponent#clicked",
+    "member"
+  ],
+  [
     "src/components/button/button.js~buttoncomponent#destroy",
     "class/src/components/button/Button.js~ButtonComponent.html#instance-method-destroy",
     "src/components/button/Button.js~ButtonComponent#destroy",
@@ -2193,6 +2313,12 @@ window.esdocSearchIndex = [
     "src/components/button/button.js~buttoncomponent#elementinfo",
     "class/src/components/button/Button.js~ButtonComponent.html#instance-method-elementInfo",
     "src/components/button/Button.js~ButtonComponent#elementInfo",
+    "method"
+  ],
+  [
+    "src/components/button/button.js~buttoncomponent#getvalue",
+    "class/src/components/button/Button.js~ButtonComponent.html#instance-method-getValue",
+    "src/components/button/Button.js~ButtonComponent#getValue",
     "method"
   ],
   [
@@ -2361,6 +2487,12 @@ window.esdocSearchIndex = [
     "src/components/checkbox/checkbox.js~checkboxcomponent#value",
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-member-value",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#value",
+    "member"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#view",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-view",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#view",
     "member"
   ],
   [
@@ -2760,9 +2892,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/datetime/datetime.js~datetimecomponent#convertformat",
-    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-convertFormat",
-    "src/components/datetime/DateTime.js~DateTimeComponent#convertFormat",
+    "src/components/datetime/datetime.js~datetimecomponent#convertformattoflatpickr",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-convertFormatToFlatpickr",
+    "src/components/datetime/DateTime.js~DateTimeComponent#convertFormatToFlatpickr",
+    "method"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent#convertformattomoment",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-convertFormatToMoment",
+    "src/components/datetime/DateTime.js~DateTimeComponent#convertFormatToMoment",
     "method"
   ],
   [
@@ -2775,6 +2913,12 @@ window.esdocSearchIndex = [
     "src/components/datetime/datetime.js~datetimecomponent#defaultdate",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-defaultDate",
     "src/components/datetime/DateTime.js~DateTimeComponent#defaultDate",
+    "member"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent#defaultformat",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-member-defaultFormat",
+    "src/components/datetime/DateTime.js~DateTimeComponent#defaultFormat",
     "member"
   ],
   [
@@ -2802,6 +2946,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datetime/datetime.js~datetimecomponent#getlocaleformat",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getLocaleFormat",
+    "src/components/datetime/DateTime.js~DateTimeComponent#getLocaleFormat",
+    "method"
+  ],
+  [
     "src/components/datetime/datetime.js~datetimecomponent#getrawvalue",
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-getRawValue",
     "src/components/datetime/DateTime.js~DateTimeComponent#getRawValue",
@@ -2818,6 +2968,12 @@ window.esdocSearchIndex = [
     "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-method-setValueAt",
     "src/components/datetime/DateTime.js~DateTimeComponent#setValueAt",
     "method"
+  ],
+  [
+    "src/components/datetime/datetime.js~datetimecomponent#view",
+    "class/src/components/datetime/DateTime.js~DateTimeComponent.html#instance-get-view",
+    "src/components/datetime/DateTime.js~DateTimeComponent#view",
+    "member"
   ],
   [
     "src/components/datetime/datetime.spec.js",
@@ -2868,9 +3024,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/day/day.js~daycomponent#createinputs",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-createInputs",
+    "src/components/day/Day.js~DayComponent#createInputs",
+    "method"
+  ],
+  [
     "src/components/day/day.js~daycomponent#createmonthinput",
     "class/src/components/day/Day.js~DayComponent.html#instance-method-createMonthInput",
     "src/components/day/Day.js~DayComponent#createMonthInput",
+    "method"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#createviewonlyinput",
+    "class/src/components/day/Day.js~DayComponent.html#instance-method-createViewOnlyInput",
+    "src/components/day/Day.js~DayComponent#createViewOnlyInput",
     "method"
   ],
   [
@@ -2883,6 +3051,12 @@ window.esdocSearchIndex = [
     "src/components/day/day.js~daycomponent#date",
     "class/src/components/day/Day.js~DayComponent.html#instance-get-date",
     "src/components/day/Day.js~DayComponent#date",
+    "member"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#dayfirst",
+    "class/src/components/day/Day.js~DayComponent.html#instance-member-dayFirst",
+    "src/components/day/Day.js~DayComponent#dayFirst",
     "member"
   ],
   [
@@ -2956,6 +3130,12 @@ window.esdocSearchIndex = [
     "class/src/components/day/Day.js~DayComponent.html#instance-method-setValueAt",
     "src/components/day/Day.js~DayComponent#setValueAt",
     "method"
+  ],
+  [
+    "src/components/day/day.js~daycomponent#view",
+    "class/src/components/day/Day.js~DayComponent.html#instance-get-view",
+    "src/components/day/Day.js~DayComponent#view",
+    "member"
   ],
   [
     "src/components/day/day.js~daycomponent#yearinput",
@@ -3780,6 +3960,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/radio/radio.js~radiocomponent#createviewonlyinput",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-createViewOnlyInput",
+    "src/components/radio/Radio.js~RadioComponent#createViewOnlyInput",
+    "method"
+  ],
+  [
     "src/components/radio/radio.js~radiocomponent#destroy",
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-destroy",
     "src/components/radio/Radio.js~RadioComponent#destroy",
@@ -3832,6 +4018,12 @@ window.esdocSearchIndex = [
     "class/src/components/radio/Radio.js~RadioComponent.html#instance-method-setValueAt",
     "src/components/radio/Radio.js~RadioComponent#setValueAt",
     "method"
+  ],
+  [
+    "src/components/radio/radio.js~radiocomponent#view",
+    "class/src/components/radio/Radio.js~RadioComponent.html#instance-get-view",
+    "src/components/radio/Radio.js~RadioComponent#view",
+    "member"
   ],
   [
     "src/components/radio/radio.spec.js",
@@ -4068,6 +4260,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/select/select.js~selectcomponent#setupvalueelement",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-setupValueElement",
+    "src/components/select/Select.js~SelectComponent#setupValueElement",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#triggerupdate",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-triggerUpdate",
     "src/components/select/Select.js~SelectComponent#triggerUpdate",
@@ -4083,6 +4281,12 @@ window.esdocSearchIndex = [
     "src/components/select/select.js~selectcomponent#updateitems",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-updateItems",
     "src/components/select/Select.js~SelectComponent#updateItems",
+    "method"
+  ],
+  [
+    "src/components/select/select.js~selectcomponent#updateviewonlyvalue",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-updateViewOnlyValue",
+    "src/components/select/Select.js~SelectComponent#updateViewOnlyValue",
     "method"
   ],
   [
@@ -4170,6 +4374,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/selectboxes/selectboxes.js~selectboxescomponent#view",
+    "class/src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent.html#instance-get-view",
+    "src/components/selectboxes/SelectBoxes.js~SelectBoxesComponent#view",
+    "member"
+  ],
+  [
     "src/components/selectboxes/selectboxes.spec.js",
     "file/src/components/selectboxes/SelectBoxes.spec.js.html",
     "src/components/selectboxes/SelectBoxes.spec.js",
@@ -4224,6 +4434,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/signature/signature.js~signaturecomponent#createviewonlylabel",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-method-createViewOnlyLabel",
+    "src/components/signature/Signature.js~SignatureComponent#createViewOnlyLabel",
+    "method"
+  ],
+  [
     "src/components/signature/signature.js~signaturecomponent#currentwidth",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-currentWidth",
     "src/components/signature/Signature.js~SignatureComponent#currentWidth",
@@ -4257,6 +4473,12 @@ window.esdocSearchIndex = [
     "src/components/signature/signature.js~signaturecomponent#input",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-input",
     "src/components/signature/Signature.js~SignatureComponent#input",
+    "member"
+  ],
+  [
+    "src/components/signature/signature.js~signaturecomponent#labelelement",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-labelElement",
+    "src/components/signature/Signature.js~SignatureComponent#labelElement",
     "member"
   ],
   [
@@ -4305,6 +4527,12 @@ window.esdocSearchIndex = [
     "src/components/signature/signature.js~signaturecomponent#signaturepad",
     "class/src/components/signature/Signature.js~SignatureComponent.html#instance-member-signaturePad",
     "src/components/signature/Signature.js~SignatureComponent#signaturePad",
+    "member"
+  ],
+  [
+    "src/components/signature/signature.js~signaturecomponent#view",
+    "class/src/components/signature/Signature.js~SignatureComponent.html#instance-get-view",
+    "src/components/signature/Signature.js~SignatureComponent#view",
     "member"
   ],
   [
@@ -4620,6 +4848,114 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/contrib/index.js",
+    "file/src/contrib/index.js.html",
+    "src/contrib/index.js",
+    "file"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js",
+    "file/src/contrib/stripe/checkout/StripeCheckout.js.html",
+    "src/contrib/stripe/checkout/StripeCheckout.js",
+    "file"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#build",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-method-build",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#build",
+    "method"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#componentaction",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-member-componentAction",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#componentAction",
+    "member"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#constructor",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-constructor-constructor",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#constructor",
+    "method"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#disabled",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-member-disabled",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#disabled",
+    "member"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#getvalue",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-method-getValue",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#getValue",
+    "method"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#handler",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-member-handler",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#handler",
+    "member"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#loading",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-member-loading",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#loading",
+    "member"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#onclickbutton",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-method-onClickButton",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#onClickButton",
+    "method"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#ontoken",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-method-onToken",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#onToken",
+    "method"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#setvalue",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-method-setValue",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#setValue",
+    "method"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#stripecheckoutready",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-member-stripeCheckoutReady",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#stripeCheckoutReady",
+    "member"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.js~stripecheckoutcomponent#value",
+    "class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html#instance-member-value",
+    "src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent#value",
+    "member"
+  ],
+  [
+    "src/contrib/stripe/checkout/stripecheckout.spec.js",
+    "file/src/contrib/stripe/checkout/StripeCheckout.spec.js.html",
+    "src/contrib/stripe/checkout/StripeCheckout.spec.js",
+    "file"
+  ],
+  [
+    "src/contrib/stripe/checkout/fixtures/comp1.js",
+    "file/src/contrib/stripe/checkout/fixtures/comp1.js.html",
+    "src/contrib/stripe/checkout/fixtures/comp1.js",
+    "file"
+  ],
+  [
+    "src/contrib/stripe/checkout/fixtures/index.js",
+    "file/src/contrib/stripe/checkout/fixtures/index.js.html",
+    "src/contrib/stripe/checkout/fixtures/index.js",
+    "file"
+  ],
+  [
+    "src/formio.contrib.js",
+    "file/src/formio.contrib.js.html",
+    "src/formio.contrib.js",
+    "file"
+  ],
+  [
     "src/formio.embed.js",
     "file/src/formio.embed.js.html",
     "src/formio.embed.js",
@@ -4795,13 +5131,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
   [
     "src/formio.form.js~formioform#loading",
-    "class/src/formio.form.js~FormioForm.html#instance-get-loading",
+    "class/src/formio.form.js~FormioForm.html#instance-set-loading",
     "src/formio.form.js~FormioForm#loading",
     "member"
   ],
@@ -4957,13 +5293,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
@@ -5064,6 +5400,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.js~formio#accessinfo",
+    "class/src/formio.js~Formio.html#instance-method-accessInfo",
+    "src/formio.js~Formio#accessInfo",
+    "method"
+  ],
+  [
     "src/formio.js~formio#actionid",
     "class/src/formio.js~Formio.html#instance-member-actionId",
     "src/formio.js~Formio#actionId",
@@ -5109,6 +5451,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio#constructor",
     "class/src/formio.js~Formio.html#instance-constructor-constructor",
     "src/formio.js~Formio#constructor",
+    "method"
+  ],
+  [
+    "src/formio.js~formio#currentuser",
+    "class/src/formio.js~Formio.html#instance-method-currentUser",
+    "src/formio.js~Formio#currentUser",
     "method"
   ],
   [
@@ -5433,6 +5781,12 @@ window.esdocSearchIndex = [
     "src/formio.js~formio.getprojecturl",
     "class/src/formio.js~Formio.html#static-method-getProjectUrl",
     "src/formio.js~Formio.getProjectUrl",
+    "method"
+  ],
+  [
+    "src/formio.js~formio.getrequestargs",
+    "class/src/formio.js~Formio.html#static-method-getRequestArgs",
+    "src/formio.js~Formio.getRequestArgs",
     "method"
   ],
   [

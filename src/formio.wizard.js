@@ -96,6 +96,15 @@ export class FormioWizard extends FormioForm {
   }
 
   nextPage() {
+    // Read-only forms should not worry about validation before going to next page, nor should they submit.
+    if (this.options.readOnly) {
+      this.history.push(this.page);
+      return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
+        this._nextPage = this.getNextPage(this.submission.data, this.page);
+        this.emit('nextPage', {page: this.page, submission: this.submission});
+      });
+    }
+
     // Validate the form builed, before go to the next page
     if (this.checkValidity(this.submission.data, true)) {
       this.checkData(this.submission.data, {
@@ -121,10 +130,14 @@ export class FormioWizard extends FormioForm {
     });
   }
 
-  cancel() {
-    super.cancel();
-    this.history = [];
-    return this.setPage(0);
+  cancel(noconfirm) {
+    if(super.cancel(noconfirm)) {
+      this.history = [];
+      return this.setPage(0);
+    }
+    else {
+      return this.setPage();
+    }
   }
 
   getPageIndexByKey(key) {

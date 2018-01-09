@@ -138,6 +138,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -224,6 +227,10 @@ export class SignatureComponent extends BaseComponent {
   }
 
   build() {
+    if (this.viewOnlyMode()) {
+      return this.viewOnlyBuild();
+    }
+
     this.element = this.createElement();
     let classNames = this.element.getAttribute(&apos;class&apos;);
     classNames += &apos; signature-pad&apos;;
@@ -295,6 +302,18 @@ export class SignatureComponent extends BaseComponent {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+  }
+
+  createViewOnlyLabel(container) {
+    this.labelElement = this.ce(&apos;dt&apos;);
+    this.labelElement.appendChild(this.text(this.component.footer));
+    this.createTooltip(this.labelElement);
+    container.appendChild(this.labelElement);
+  }
+
+  get view() {
+    const value = this.getValue();
+    return value ? &apos;Yes&apos; : &apos;No&apos;;
   }
 }
 </code></pre>

@@ -2,24 +2,15 @@ import { BaseComponent } from '../base/Base';
 import Choices from 'choices.js';
 import Formio from '../../formio';
 import _each from 'lodash/each';
-import _remove from 'lodash/remove';
 import _get from 'lodash/get';
 import _debounce from 'lodash/debounce';
 import _isEmpty from 'lodash/isEmpty';
 import _isArray from 'lodash/isArray';
 import _isObject from 'lodash/isObject';
 import _isEqual from 'lodash/isEqual';
+import _isString from 'lodash/isString';
 import _cloneDeep from 'lodash/cloneDeep';
-
-// Fix performance issues in Choices by adding a debounce around render method.
-Choices.prototype._render = Choices.prototype.render;
-Choices.prototype.render = function() {
-  if (this.renderDebounce) {
-    clearTimeout(this.renderDebounce);
-  }
-
-  this.renderDebounce = setTimeout(() => this._render(), 100);
-};
+import _find  from 'lodash/find';
 
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
@@ -389,17 +380,19 @@ export class SelectComponent extends BaseComponent {
 
     let placeholderValue = this.t(this.component.placeholder);
     let choicesOptions = {
-      removeItemButton: true,
+      removeItemButton: this.component.removeItemButton || (this.component.multiple || false),
       itemSelectText: '',
       classNames: {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
       },
+      itemComparer: _isEqual,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       searchPlaceholderValue: placeholderValue,
       shouldSort: false,
-      position: (this.component.dropdown || 'auto')
+      position: (this.component.dropdown || 'auto'),
+      searchEnabled: this.component.searchEnabled || false
     };
 
     let tabIndex = input.tabIndex;
@@ -411,6 +404,7 @@ export class SelectComponent extends BaseComponent {
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
+      this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
 
     this.addEventListener(input, 'showDropdown', () => {
@@ -502,8 +496,10 @@ export class SelectComponent extends BaseComponent {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-        this.choices.setChoices(this.selectOptions, 'value', 'label', true);
-        this.choices.setValueByChoice(_isArray(value) ? value : [value])
+        this.choices
+          .removeActiveItems()
+          .setChoices(this.selectOptions, 'value', 'label', true)
+          .setValueByChoice(_isArray(value) ? value : [value])
       }
       else if (hasPreviousValue) {
         this.choices.removeActiveItems();
@@ -513,10 +509,13 @@ export class SelectComponent extends BaseComponent {
       if (hasValue) {
         let values = _isArray(value) ? value : [value];
         _each(this.selectOptions, (selectOption) => {
-          if (values.indexOf(selectOption.value) !== -1) {
-            selectOption.element.selected = true;
-            selectOption.element.setAttribute('selected', 'selected');
-          }
+          _each(values, (val) => {
+            if (_isEqual(val, selectOption.value)) {
+              selectOption.element.selected = true;
+              selectOption.element.setAttribute('selected', 'selected');
+              return false;
+            }
+          });
         });
       }
       else {
@@ -545,13 +544,34 @@ export class SelectComponent extends BaseComponent {
    */
   asString(value) {
     value = value || this.getValue();
-    value = (typeof value !== 'object') ? {label: value} : value;
-    return this.itemTemplate(value);
+
+    if (this.component.dataSrc === 'values') {
+      value = _find(this.component.data.values, [ 'value', value ]);
+    }
+
+    if (_isString(value)) {
+      return value;
+    }
+
+    return _isObject(value)
+      ? this.itemTemplate(value)
+      : '-';
+  }
+
+  setupValueElement(element) {
+    element.innerHTML = this.asString();
+  }
+
+  updateViewOnlyValue() {
+    this.setupValueElement(this.valueElement);
   }
 
   destroy() {
+    super.destroy();
     if (this.choices) {
+      this.choices.destroyed = true;
       this.choices.destroy();
+      this.choices = null;
     }
   }
 }

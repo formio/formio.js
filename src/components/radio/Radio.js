@@ -1,6 +1,10 @@
 import { BaseComponent } from '../base/Base';
 import _each from 'lodash/each';
 import _assign from 'lodash/assign';
+import _get from 'lodash/get';
+import _isString from 'lodash/isString';
+import _toString from 'lodash/toString';
+import _find from 'lodash/find';
 export class RadioComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
@@ -14,11 +18,11 @@ export class RadioComponent extends BaseComponent {
     const inputGroup = this.ce('div', {
       class: 'input-group'
     });
-    const inputType = this.component.inputType;
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
+    var wrappers = [];
 
     _each(this.component.values, (value) => {
-      const wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
+      const wrapperClass = this.optionWrapperClass;
       const labelWrapper = this.ce('div', {
         class: wrapperClass
       });
@@ -39,7 +43,7 @@ export class RadioComponent extends BaseComponent {
 
       // Create the input.
       const input = this.ce('input');
-      _each(this.info.attr, function(value, key) {
+      _each(this.info.attr, function (value, key) {
         input.setAttribute(key, value);
       });
 
@@ -59,9 +63,24 @@ export class RadioComponent extends BaseComponent {
       labelWrapper.appendChild(label);
 
       inputGroup.appendChild(labelWrapper);
+      wrappers.push(labelWrapper);
     });
+    this.wrappers = wrappers;
     container.appendChild(inputGroup);
     this.errorContainer = container;
+  }
+
+  get optionWrapperClass() {
+    const inputType = this.component.inputType;
+    const wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
+    return wrapperClass;
+  }
+
+  createViewOnlyInput() {
+    _each(this.component.values, (value) => {
+      const input = super.createViewOnlyInput();
+      input.value = value.value;
+    });
   }
 
   optionsLabelOnTheTopOrLeft() {
@@ -125,6 +144,18 @@ export class RadioComponent extends BaseComponent {
     return value;
   }
 
+  get view() {
+    const value = this.getValue();
+
+    if (!_isString(value)) {
+      return _toString(value);
+    }
+
+    const option = _find(this.component.values, (v) => v.value === value);
+
+    return _get(option, 'label');
+  }
+
   setValueAt(index, value) {
     if (this.inputs && this.inputs[index]) {
       let inputValue = this.inputs[index].value;
@@ -140,6 +171,27 @@ export class RadioComponent extends BaseComponent {
 
       this.inputs[index].checked = (inputValue === value);
     }
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+    if (changed) {
+      //add/remove selected option class
+      const value = this.data[this.component.key];
+      const optionSelectedClass = 'radio-selected';
+
+      _each(this.wrappers, (wrapper, index) => {
+        var input = this.inputs[index];
+        if (input.value === value) {
+          //add class to container when selected
+          this.addClass(wrapper, optionSelectedClass);
+
+        } else {
+          this.removeClass(wrapper, optionSelectedClass);
+        }
+      });
+    }
+    return changed;
   }
 
   destroy() {

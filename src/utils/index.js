@@ -24,13 +24,21 @@ import momentModule from 'moment';
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
-// Fix the "in" operand for jsonlogic.
-// We can remove this once https://github.com/jwadhams/json-logic-js/pull/47 is committed.
-jsonLogic.add_operation('in', function(a, b) {
-  if(!b) return false;
-  if(typeof b.indexOf === "undefined") return false;
-  return (b.indexOf(a) !== -1);
+// Retrieve Any Date
+jsonLogic.add_operation("getDate", function(date){
+  return momentModule(date).toISOString()
 });
+
+// Set Relative Minimum Date
+jsonLogic.add_operation("relativeMinDate", function(relativeMinDate){
+  return momentModule().subtract(relativeMinDate, "days").toISOString()
+});
+
+// Set Relative Maximum Date
+jsonLogic.add_operation("relativeMaxDate", function(relativeMaxDate){
+  return momentModule().add(relativeMaxDate, "days").toISOString();
+});
+
 
 const FormioUtils = {
   jsonLogic, // Share
@@ -527,6 +535,66 @@ const FormioUtils = {
   },
   isValidDate(date) {
     return _isDate(date) && !_isNaN(date.getDate());
+  },
+  getLocaleDateFormatInfo(locale) {
+    const formatInfo = {};
+
+    const day = 21;
+    const exampleDate = new Date(2017, 11, day);
+    const localDateString = exampleDate.toLocaleDateString(locale);
+
+    formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
+
+    return formatInfo;
+  },
+  /**
+   * Convert the format from the angular-datepicker module to flatpickr format.
+   * @param format
+   * @return {string}
+   */
+  convertFormatToFlatpickr(format) {
+    return format
+      // Year conversion.
+      .replace(/y/g, 'Y')
+      .replace('YYYY', 'Y')
+      .replace('YY', 'y')
+
+      // Month conversion.
+      .replace('MMMM', 'F')
+      .replace(/M/g, 'n')
+      .replace('nnn', 'M')
+      .replace('nn', 'm')
+
+      // Day in month.
+      .replace(/d/g, 'j')
+      .replace('jj', 'd')
+
+      // Day in week.
+      .replace('EEEE', 'l')
+      .replace('EEE', 'D')
+
+      // Hours, minutes, seconds
+      .replace('HH', 'H')
+      .replace('hh', 'h')
+      .replace('mm', 'i')
+      .replace('ss', 'S')
+      .replace(/a/g, 'K');
+  },
+  /**
+   * Convert the format from the angular-datepicker module to moment format.
+   * @param format
+   * @return {string}
+   */
+  convertFormatToMoment(format) {
+    return format
+      // Year conversion.
+      .replace(/y/g, 'Y')
+      // Day in month.
+      .replace(/d/g, 'D')
+      // Day in week.
+      .replace(/E/g, 'd')
+      // AM/PM marker
+      .replace(/a/g, 'A');
   }
 };
 

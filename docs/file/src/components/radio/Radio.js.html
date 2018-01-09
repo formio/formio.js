@@ -138,6 +138,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well">components/well</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/well/Well.js~WellComponent.html">WellComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-well-fixtures">components/well/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -147,6 +150,10 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
 import _each from &apos;lodash/each&apos;;
 import _assign from &apos;lodash/assign&apos;;
+import _get from &apos;lodash/get&apos;;
+import _isString from &apos;lodash/isString&apos;;
+import _toString from &apos;lodash/toString&apos;;
+import _find from &apos;lodash/find&apos;;
 export class RadioComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
@@ -210,6 +217,13 @@ export class RadioComponent extends BaseComponent {
     this.errorContainer = container;
   }
 
+  createViewOnlyInput() {
+    _each(this.component.values, (value) =&gt; {
+      const input = super.createViewOnlyInput();
+      input.value = value.value;
+    });
+  }
+
   optionsLabelOnTheTopOrLeft() {
     return [&apos;top&apos;, &apos;left&apos;].includes(this.component.optionsLabelPosition);
   }
@@ -269,6 +283,18 @@ export class RadioComponent extends BaseComponent {
       }
     });
     return value;
+  }
+
+  get view() {
+    const value = this.getValue();
+
+    if (!_isString(value)) {
+      return _toString(value);
+    }
+
+    const option = _find(this.component.values, (v) =&gt; v.value === value);
+
+    return _get(option, &apos;label&apos;);
   }
 
   setValueAt(index, value) {

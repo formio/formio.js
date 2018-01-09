@@ -696,14 +696,15 @@ describe('Plugins', () => {
     testRequest(test.url, test.method, test.type);
   });
 
-  var testStaticRequest = function testStaticRequest(fnName, url, method, data) {
+  var testStaticRequest = function testStaticRequest(fnName, url, method) {
     it('Plugin ' + fnName, function(done) {
       var step = 0;
       var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
       var expectedArgs = {
         url: url,
         method: method,
-        data: data
+        data: null,
+        opts: {}
       };
 
       // Set up plugin hooks
@@ -748,14 +749,12 @@ describe('Plugins', () => {
     {
       fnName: 'loadProjects',
       url: 'https://api.localhost:3000/project',
-      method: 'GET',
-      data: undefined
+      method: 'GET'
     },
     {
       fnName: 'logout',
       url: 'https://api.localhost:3000/logout',
-      method: 'GET',
-      data: undefined
+      method: 'GET'
     }
   ];
 
