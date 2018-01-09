@@ -1,5 +1,4 @@
 import { BaseComponent } from '../base/Base';
-import oAuthProvider from '../../providers/oauth'
 import FormioUtils from '../../utils';
 import _each from 'lodash/each';
 import Formio from '../../formio'
@@ -20,21 +19,22 @@ export class ButtonComponent extends BaseComponent {
   }
 
   set loading(loading) {
-    this.setLoading(this.element, loading);
+    this.setLoading(this.button, loading);
   }
 
   set disabled(disabled) {
     super.disabled = disabled;
-    this.setDisabled(this.element, disabled);
+    this.setDisabled(this.button, disabled);
   }
 
   build() {
-    this.element = this.ce(this.info.type, this.info.attr);
-    this.addShortcut(this.element);
+    this.createElement();
+    this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
+    this.addShortcut(this.button);
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
-      this.element.appendChild(this.labelElement);
-      this.createTooltip(this.element, null, 'glyphicon glyphicon-question-sign');
+      this.button.appendChild(this.labelElement);
+      this.createTooltip(this.button, null, 'glyphicon glyphicon-question-sign');
     }
     if (this.component.action === 'submit') {
       this.on('submitButton', () => {
@@ -53,7 +53,7 @@ export class ButtonComponent extends BaseComponent {
         this.loading = false;
       }, true);
     }
-    this.addEventListener(this.element, 'click', (event) => {
+    this.addEventListener(this.button, 'click', (event) => {
       switch (this.component.action) {
         case 'submit':
           event.preventDefault();
@@ -71,9 +71,9 @@ export class ButtonComponent extends BaseComponent {
           break;
         case 'custom':
           // Get the FormioForm at the root of this component's tree
-          var form       = this.getRoot();
+          var form = this.getRoot();
           // Get the form's flattened schema components
-          var flattened  = FormioUtils.flattenComponents(form.component.components, true);
+          var flattened = FormioUtils.flattenComponents(form.component.components, true);
           // Create object containing the corresponding HTML element components
           var components = {};
           _each(flattened, function(component, key) {
@@ -100,33 +100,93 @@ export class ButtonComponent extends BaseComponent {
 
           // Display Alert if OAuth config is missing
           if(!this.component.oauth){
-            // TODO replace alert with 'has-error' class and reminder to set portal OAuth action
-            alert("You must assign this button to an OAuth action before it will work.");
+            this.root.setAlert('danger', 'You must assign this button to an OAuth action before it will work.');
             break;
           }
 
           // Display Alert if oAuth has an error is missing
           if(this.component.oauth.error){
-            // TODO replace alert with 'has-error' class and oauth error message
-            alert("The Following Error Has Occured" + this.component.oauth.error);
+            this.root.setAlert('danger', 'The Following Error Has Occured' + this.component.oauth.error);
             break;
           }
 
-          oAuthProvider(this).initiate(function(that, results) {
-            that.emit('submitButton', {
-              type: "submit",
-              component: that.component,
-              event: "formio.submit",
-              data: results
-            });
+          this.openOauth(this.component.oauth);
 
-          });
           break;
       }
     });
     if (this.shouldDisable) {
       this.disabled = true;
     }
+  }
+
+  openOauth() {
+    const settings = this.component.oauth;
+
+    /*eslint-disable camelcase */
+    let params = {
+      response_type: 'code',
+      client_id: settings.clientId,
+      redirect_uri: window.location.origin || window.location.protocol + '//' + window.location.host,
+      state: settings.state,
+      scope: settings.scope
+    };
+    /*eslint-enable camelcase */
+
+    // Make display optional.
+    if (settings.display) {
+      params.display = settings.display;
+    }
+
+    params = Object.keys(params).map(key => {
+      return key + '=' + encodeURIComponent(params[key]);
+    }).join('&');
+
+    const url = settings.authURI + '?' + params;
+    const popup = window.open(url, settings.provider, 'width=1020,height=618');
+
+    const interval = setInterval(() => {
+      try {
+        const popupHost = popup.location.host;
+        const currentHost = window.location.host;
+        if (popup && !popup.closed && popupHost === currentHost && popup.location.search) {
+          popup.close();
+          let params = popup.location.search.substr(1).split('&').reduce((params, param) => {
+            const split = param.split('=');
+            params[split[0]] = split[1];
+            return params;
+          }, {});
+          if (params.error) {
+            alert(params.error_description || params.error);
+            this.root.setAlert('danger', params.error_description || params.error);
+            return;
+          }
+          // TODO: check for error response here
+          if (settings.state !== params.state) {
+            this.root.setAlert('danger', 'OAuth state does not match. Please try logging in again.');
+            return;
+          }
+          const submission = {data: {}, oauth: {}};
+          submission.oauth[settings.provider] = params;
+          submission.oauth[settings.provider].redirectURI = window.location.origin || window.location.protocol + '//' + window.location.host;
+          this.root.formio.saveSubmission(submission)
+            .then(submission => {
+              this.root.onSubmit(result, true);
+            })
+            .catch((err) => {
+              this.root.onSubmissionError(err);
+            });
+        }
+      }
+      catch (error) {
+        if (error.name !== 'SecurityError') {
+          this.root.setAlert('danger', error.message || error);
+        }
+      }
+      if (!popup || popup.closed || popup.closed === undefined) {
+        clearInterval(interval);
+      }
+    }, 100);
   }
 
   destroy() {

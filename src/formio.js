@@ -156,7 +156,7 @@ export class Formio {
       path = path.replace(subRegEx, '');
       path = path.replace(/\/$/, '');
       this.formsUrl = this.projectUrl + '/form';
-      this.formUrl = this.projectUrl + path + "?live=1";
+      this.formUrl = this.projectUrl + path;
       this.formId = path.replace(/^\/+|\/+$/g, '');
       var items = ['submission', 'action', 'v'];
       for (var i in items) {
