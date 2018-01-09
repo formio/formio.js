@@ -7843,11 +7843,11 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       var inputGroup = this.ce('div', {
         class: 'input-group'
       });
-      var inputType = this.component.inputType;
       var labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
+      var wrappers = [];
 
       (0, _each3.default)(this.component.values, function (value) {
-        var wrapperClass = _this2.component.inline ? inputType + '-inline' : inputType;
+        var wrapperClass = _this2.optionWrapperClass;
         var labelWrapper = _this2.ce('div', {
           class: wrapperClass
         });
@@ -7888,7 +7888,9 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
         labelWrapper.appendChild(label);
 
         inputGroup.appendChild(labelWrapper);
+        wrappers.push(labelWrapper);
       });
+      this.wrappers = wrappers;
       container.appendChild(inputGroup);
       this.errorContainer = container;
     }
@@ -7983,9 +7985,39 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       }
     }
   }, {
+    key: 'updateValue',
+    value: function updateValue(value, flags) {
+      var _this4 = this;
+
+      var changed = _get2(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'updateValue', this).call(this, value, flags);
+      if (changed) {
+        //add/remove selected option class
+        var _value = this.data[this.component.key];
+        var optionSelectedClass = 'radio-selected';
+
+        (0, _each3.default)(this.wrappers, function (wrapper, index) {
+          var input = _this4.inputs[index];
+          if (input.value === _value) {
+            //add class to container when selected
+            _this4.addClass(wrapper, optionSelectedClass);
+          } else {
+            _this4.removeClass(wrapper, optionSelectedClass);
+          }
+        });
+      }
+      return changed;
+    }
+  }, {
     key: 'destroy',
     value: function destroy() {
       _get2(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'destroy', this).apply(this, Array.prototype.slice.apply(arguments));
+    }
+  }, {
+    key: 'optionWrapperClass',
+    get: function get() {
+      var inputType = this.component.inputType;
+      var wrapperClass = this.component.inline ? inputType + '-inline' : inputType;
+      return wrapperClass;
     }
   }, {
     key: 'view',
