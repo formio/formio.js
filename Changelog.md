@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
  - Ability to auto load the initial values for lazyLoad select with search enabled.
+ - CSS class ('radio-selected') for selected option of Radio component
 
 ## 2.27.0
 ### Fixed
