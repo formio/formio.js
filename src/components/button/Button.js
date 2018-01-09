@@ -1,7 +1,6 @@
 import { BaseComponent } from '../base/Base';
 import FormioUtils from '../../utils';
 import _each from 'lodash/each';
-import Formio from '../../formio'
 
 export class ButtonComponent extends BaseComponent {
   elementInfo() {
