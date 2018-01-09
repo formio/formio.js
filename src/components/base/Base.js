@@ -584,10 +584,11 @@ export class BaseComponent {
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
     }
-    if (!_isArray(this.data[this.component.key])) {
+    if (this.data[this.component.key] && !_isArray(this.data[this.component.key])) {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
     this.data[this.component.key].push(this.defaultValue);
+    this.value = this.data[this.component.key];
   }
 
   /**
@@ -621,7 +622,7 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _each(this.data[this.component.key], (value, index) => {
+    _each(this.value, (value, index) => {
       let tr = this.ce('tr');
       let td = this.ce('td');
       const input = this.createInput(td);
@@ -1713,7 +1714,11 @@ export class BaseComponent {
     if (!this.hasInput) {
       return false;
     }
+    if (this.component.multiple && !_isArray(value)) {
+      value = [value];
+    }
     this.value = value;
+    this.buildRows();
     const isArray = _isArray(value);
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {

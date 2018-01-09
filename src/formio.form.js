@@ -669,6 +669,9 @@ export class FormioForm extends FormioComponents {
   }
 
   setValue(submission, flags) {
+    if (!submission) {
+      return super.setValue(this._submission.data, flags);
+    }
     submission = submission || {data: {}};
     this.mergeData(this._submission, submission);
     return super.setValue(this._submission.data, flags);
@@ -680,8 +683,7 @@ export class FormioForm extends FormioComponents {
     }
     let submission = _clone(this._submission);
     submission.data = this.data;
-    this.mergeData(this._submission.data, submission.data);
-    return this._submission;
+    return submission;
   }
 
   /**

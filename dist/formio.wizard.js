@@ -2122,10 +2122,11 @@ var BaseComponent = function () {
       if (!this.data[this.component.key]) {
         this.data[this.component.key] = [];
       }
-      if (!(0, _isArray3.default)(this.data[this.component.key])) {
+      if (this.data[this.component.key] && !(0, _isArray3.default)(this.data[this.component.key])) {
         this.data[this.component.key] = [this.data[this.component.key]];
       }
       this.data[this.component.key].push(this.defaultValue);
+      this.value = this.data[this.component.key];
     }
 
     /**
@@ -2170,7 +2171,7 @@ var BaseComponent = function () {
       }
       this.inputs = [];
       this.tbody.innerHTML = '';
-      (0, _each3.default)(this.data[this.component.key], function (value, index) {
+      (0, _each3.default)(this.value, function (value, index) {
         var tr = _this.ce('tr');
         var td = _this.ce('td');
         var input = _this.createInput(td);
@@ -3360,7 +3361,11 @@ var BaseComponent = function () {
       if (!this.hasInput) {
         return false;
       }
+      if (this.component.multiple && !(0, _isArray3.default)(value)) {
+        value = [value];
+      }
       this.value = value;
+      this.buildRows();
       var isArray = (0, _isArray3.default)(value);
       for (var i in this.inputs) {
         if (this.inputs.hasOwnProperty(i)) {
@@ -8454,6 +8459,9 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         this.selectContainer.appendChild(this.selectInput);
       }
 
+      // We are no longer loading.
+      this.loading = false;
+
       // If a value is provided, then select it.
       if (this.value) {
         this.setValue(this.value, true);
@@ -8512,9 +8520,11 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
       // Make the request.
       options.header = headers;
+      this.loading = true;
       _formio2.default.makeRequest(this.options.formio, 'select', url, method, body, options).then(function (response) {
         return _this4.setItems(response);
       }).catch(function (err) {
+        _this4.loading = false;
         _this4.events.emit('formio.error', err);
         console.warn('Unable to load resources for ' + _this4.component.key);
       });
@@ -8537,7 +8547,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     }
   }, {
     key: 'updateItems',
-    value: function updateItems(searchInput) {
+    value: function updateItems(searchInput, forceUpdate) {
       if (!this.component.data) {
         console.warn('Select component ' + this.component.key + ' does not have data configuration.');
         return;
@@ -8555,7 +8565,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           this.updateCustomItems();
           break;
         case 'resource':
-          if (!this.active) {
+          if (!forceUpdate && !this.active) {
             // If we are lazyLoading, wait until activated.
             return;
           }
@@ -8569,7 +8579,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
           }
           break;
         case 'url':
-          if (!this.active) {
+          if (!forceUpdate && !this.active) {
             // If we are lazyLoading, wait until activated.
             return;
           }
@@ -8744,6 +8754,19 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       var hasPreviousValue = (0, _isArray3.default)(this.value) ? this.value.length : this.value;
       var hasValue = (0, _isArray3.default)(value) ? value.length : value;
       this.value = value;
+
+      // Do not set the value if we are loading... that will happen after it is done.
+      if (this.loading) {
+        return;
+      }
+
+      // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
+      if (this.component.searchField && this.component.lazyLoad && !this.lazyLoadInit && !this.active && !this.selectOptions.length && !(0, _isArray3.default)(value) && hasValue) {
+        this.loading = true;
+        this.lazyLoadInit = true;
+        this.triggerUpdate(this.value, true);
+        return;
+      }
 
       // Add the value options.
       this.addValueOptions();
@@ -10764,6 +10787,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
   }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
+      if (!submission) {
+        return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this._submission.data, flags);
+      }
       submission = submission || { data: {} };
       this.mergeData(this._submission, submission);
       return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, this._submission.data, flags);
@@ -10776,8 +10802,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       }
       var submission = (0, _clone3.default)(this._submission);
       submission.data = this.data;
-      this.mergeData(this._submission.data, submission.data);
-      return this._submission;
+      return submission;
     }
 
     /**
@@ -13859,18 +13884,20 @@ var FormioUtils = {
   checkCalculated: function checkCalculated(component, submission, data) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
+      var row = data;
+      data = submission ? submission.data : data;
       if ((0, _isString3.default)(component.calculateValue)) {
         try {
           var util = this;
-          data[component.key] = eval('(function(data, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, util)');
+          data[component.key] = eval('(function(data, row, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, row, util)');
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
       } else {
         try {
           data[component.key] = this.jsonLogic.apply(component.calculateValue, {
-            data: submission ? submission.data : data,
-            row: data,
+            data: data,
+            row: row,
             _: _lodash2.default
           });
         } catch (e) {

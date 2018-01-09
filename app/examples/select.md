@@ -279,18 +279,74 @@ Formio.createForm(document.getElementById('lazy-load'), {
         <script type="text/javascript">
           createSelectForm('lazy-load', {
             type: 'select',
-            label: 'Model',
-            key: 'model',
-            placeholder: 'Select your model',
+            label: 'Customer',
+            key: 'customer',
+            placeholder: 'Select a customer',
             dataSrc: 'url',
-            defaultValue: 'Pilot',
             data: {
-              url: 'https://vpic.nhtsa.dot.gov/api/vehicles/getmodelsformake/honda?format=json'
+              url: 'https://examples.form.io/customer/submission'
             },
-            valueProperty: 'Model_Name',
+            valueProperty: 'data.email',
+            searchField: 'data.email',
             lazyLoad: true,
-            template: '<span>{% raw %}{{ item.Model_Name }}{% endraw %}</span>',
-            selectValues: 'Results'
+            template: '<span>{% raw %}{{ item.data.firstName }} {{ item.data.lastName }}{% endraw %}</span>'
+          });
+        </script>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <strong>Lazy Loading Default</strong>  
+        <p>When using Lazy Loading, you can also provide a <strong>Search Query Name</strong> to your form. Whenever a value is provided to the component, it will fire off an API call with the Search Query Name provided (which should only return a single record). This will allow you to populate the correct label of the item that is selected without loading all the items. Then when they click on the control, all options are loaded dynamically.</p> 
+{% highlight js %} 
+Formio.createForm(document.getElementById('lazy-load'), {
+  components: [
+    {
+      type: 'select',
+      label: 'Customer',
+      key: 'customer',
+      placeholder: 'Select a customer',
+      dataSrc: 'url',
+      data: {
+        url: 'https://examples.form.io/customer/submission'
+      },
+      valueProperty: 'data.email',
+      searchField: 'data.email',
+      lazyLoad: true,
+      template: '<span>{% raw %}{{ item.data.firstName }} {{ item.data.lastName }}{% endraw %}</span>'
+    }
+  ]
+}).then(function(form) {
+  form.submission = {
+    data: {
+      customer: 'joe@example.com'
+    }
+  };
+});
+{% endhighlight %}
+      </td>
+      <td>
+        <div id="lazy-load2"></div>
+        <script type="text/javascript">
+          createSelectForm('lazy-load2', {
+            type: 'select',
+            label: 'Customer',
+            key: 'customer',
+            placeholder: 'Select a customer',
+            dataSrc: 'url',
+            data: {
+              url: 'https://examples.form.io/customer/submission'
+            },
+            valueProperty: 'data.email',
+            searchField: 'data.email',
+            lazyLoad: true,
+            template: '<span>{% raw %}{{ item.data.firstName }} {{ item.data.lastName }}{% endraw %}</span>'
+          }).then(function(form) {
+            form.submission = {
+              data: {
+                customer: 'joe@example.com'
+              }
+            };
           });
         </script>
       </td>

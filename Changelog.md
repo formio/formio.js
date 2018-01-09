@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.27.1
+### Fixed
+ - Problem with default values on wizards.
+ - Issue where row is not passed to calculated values.
+
+### Added
+ - Ability to auto load the initial values for lazyLoad select with search enabled.
+
 ## 2.27.0
 ### Fixed
  - Issue where read-only forms would still try to submit.
