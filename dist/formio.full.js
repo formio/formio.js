@@ -6778,9 +6778,9 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       }
 
       if (!(0, _isEmpty3.default)(submission.data) || flags.noload) {
-        _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, this.data[this.component.key].data);
+        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, this.data[this.component.key].data);
         this.readyResolve();
-        return true;
+        return superValue;
       } else if (submission._id) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
