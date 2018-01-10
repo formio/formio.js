@@ -326,15 +326,15 @@ const FormioUtils = {
    * @param data
    *   The full submission data.
    */
-  checkCalculated(component, submission, data) {
+  checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      let row = data;
-      data = submission ? submission.data : data;
+      let row = rowData;
+      let data = submission ? submission.data : rowData;
       if (_isString(component.calculateValue)) {
         try {
           const util = this;
-          data[component.key] = eval(`(function(data, row, util) { var value = [];${component.calculateValue.toString()}; return value; })(data, row, util)`);
+          rowData[component.key] = eval(`(function(data, row, util) { var value = [];${component.calculateValue.toString()}; return value; })(data, row, util)`);
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -342,11 +342,7 @@ const FormioUtils = {
       }
       else {
         try {
-          data[component.key] = this.jsonLogic.apply(component.calculateValue, {
-            data: data,
-            row: row,
-            _
-          });
+          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {data, row, _});
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);

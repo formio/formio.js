@@ -14349,25 +14349,21 @@ var FormioUtils = {
    * @param data
    *   The full submission data.
    */
-  checkCalculated: function checkCalculated(component, submission, data) {
+  checkCalculated: function checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      var row = data;
-      data = submission ? submission.data : data;
+      var row = rowData;
+      var data = submission ? submission.data : rowData;
       if ((0, _isString3.default)(component.calculateValue)) {
         try {
           var util = this;
-          data[component.key] = eval('(function(data, row, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, row, util)');
+          rowData[component.key] = eval('(function(data, row, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, row, util)');
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
       } else {
         try {
-          data[component.key] = this.jsonLogic.apply(component.calculateValue, {
-            data: data,
-            row: row,
-            _: _lodash2.default
-          });
+          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, { data: data, row: row, _: _lodash2.default });
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
