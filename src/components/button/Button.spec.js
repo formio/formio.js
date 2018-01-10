@@ -6,7 +6,11 @@ import { Harness } from '../../../test/harness';
 describe('Button Component', function() {
   it('Should build a button component', function(done) {
     Harness.testCreate(ButtonComponent, comps.comp1).then((component) => {
-      assert.equal(component.element.nodeName, 'BUTTON');
+      let buttons = Harness.testElements(component, 'button[type="submit"]', 1);
+      for (let i=0; i < buttons.length; i++) {
+        assert.equal(buttons[i].name, 'data[' + comps.comp1.key + ']');
+        assert.equal(buttons[i].innerHTML, comps.comp1.label);
+      }
       done();
     });
   });
