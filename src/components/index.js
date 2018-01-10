@@ -5,6 +5,7 @@ import { ContainerComponent } from './container/Container';
 import { DataGridComponent } from './datagrid/DataGrid';
 import { DateTimeComponent } from './datetime/DateTime';
 import { DayComponent } from './day/Day';
+import { EditGridComponent } from './editrgrid/EditGrid';
 import { HTMLComponent } from './html/HTML';
 import { HiddenComponent } from './hidden/Hidden';
 import { FormComponent } from './form/Form';
@@ -43,6 +44,7 @@ module.exports = {
   day: DayComponent,
   htmlelement: HTMLComponent,
   hidden: HiddenComponent,
+  editgrid: EditGridComponent,
   form: FormComponent,
   textfield: TextFieldComponent,
   phoneNumber: PhoneNumberComponent,
