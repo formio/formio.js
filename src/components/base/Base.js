@@ -671,7 +671,6 @@ export class BaseComponent {
 
     addButton.appendChild(addIcon);
     addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
-
     return addButton;
   }
 
