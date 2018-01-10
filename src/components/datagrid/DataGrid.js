@@ -63,7 +63,7 @@ export class DataGridComponent extends FormioComponents {
 
       // add the "+" - "add another" button
       if (this.component.addAnotherPosition === "top" || this.component.addAnotherPosition === "both") {
-        th.appendChild(this.addIconButton());
+        th.appendChild(this.addButton(true));
         tr.appendChild(th);
       }
     }
