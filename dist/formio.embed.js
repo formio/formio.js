@@ -5006,7 +5006,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         return;
       }
 
-      this.value = value;
+      this.value = this.data[this.component.key] = value;
+      this.buildRows();
       (0, _each3.default)(this.rows, function (row, index) {
         if (value.length <= index) {
           return;
