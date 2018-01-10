@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Support for OAuth buttons in the renderer.
  - Ability to add the "Add Another" button on datagrid to either above or below the grid.
+ 
+### Fixed
+ - Problem where a padding-right is applied to all has-feedback inputs even though an icon is not used.
 
 ## 2.27.1
 ### Fixed
