@@ -669,10 +669,11 @@ export class BaseComponent {
       class: 'glyphicon glyphicon-plus'
     });
 
-    if(justIcon){
+    if(justIcon) {
       addButton.appendChild(addIcon);
       return addButton;
-    }else{
+    }
+    else {
       addButton.appendChild(addIcon);
       addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
       return addButton;

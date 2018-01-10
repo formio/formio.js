@@ -131,7 +131,7 @@ export class DataGridComponent extends FormioComponents {
       !this.component.addAnotherPosition ||
       this.component.addAnotherPosition === "bottom" ||
       this.component.addAnotherPosition === "both"
-      )){
+      )) {
         let tr = this.ce('tr');
         let td = this.ce('td', {
           colspan: (this.component.components.length + 1)
