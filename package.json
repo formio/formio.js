@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "2.27.4",
+  "version": "2.27.5",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "build/formio.js",
   "files": [
@@ -55,7 +55,7 @@
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
     "browser-cookies": "^1.2.0",
-    "choices.js": "git://github.com/formio/Choices.git#ae69ff4",
+    "choices.js": "github:formio/Choices#ae69ff4",
     "dialog-polyfill": "^0.4.9",
     "eventemitter2": "^5.0.0",
     "flatpickr": "^4.2.3",
