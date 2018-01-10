@@ -2126,7 +2126,6 @@ var BaseComponent = function () {
         this.data[this.component.key] = [this.data[this.component.key]];
       }
       this.data[this.component.key].push(this.defaultValue);
-      this.value = this.data[this.component.key];
     }
 
     /**
@@ -2171,7 +2170,7 @@ var BaseComponent = function () {
       }
       this.inputs = [];
       this.tbody.innerHTML = '';
-      (0, _each3.default)(this.value, function (value, index) {
+      (0, _each3.default)(this.data[this.component.key], function (value, index) {
         var tr = _this.ce('tr');
         var td = _this.ce('td');
         var input = _this.createInput(td);
@@ -5008,12 +5007,6 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
 
       this.value = value;
-
-      // Add needed rows.
-      for (var i = this.rows.length; i < value.length; i++) {
-        this.addValue();
-      }
-
       (0, _each3.default)(this.rows, function (row, index) {
         if (value.length <= index) {
           return;

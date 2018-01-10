@@ -900,7 +900,6 @@ var BaseComponent = function () {
         this.data[this.component.key] = [this.data[this.component.key]];
       }
       this.data[this.component.key].push(this.defaultValue);
-      this.value = this.data[this.component.key];
     }
 
     /**
@@ -945,7 +944,7 @@ var BaseComponent = function () {
       }
       this.inputs = [];
       this.tbody.innerHTML = '';
-      (0, _each3.default)(this.value, function (value, index) {
+      (0, _each3.default)(this.data[this.component.key], function (value, index) {
         var tr = _this.ce('tr');
         var td = _this.ce('td');
         var input = _this.createInput(td);

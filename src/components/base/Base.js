@@ -588,7 +588,6 @@ export class BaseComponent {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
     this.data[this.component.key].push(this.defaultValue);
-    this.value = this.data[this.component.key];
   }
 
   /**
@@ -622,7 +621,7 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _each(this.value, (value, index) => {
+    _each(this.data[this.component.key], (value, index) => {
       let tr = this.ce('tr');
       let td = this.ce('td');
       const input = this.createInput(td);
