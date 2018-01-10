@@ -584,7 +584,7 @@ export class BaseComponent {
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
     }
-    if (!_isArray(this.data[this.component.key])) {
+    if (this.data[this.component.key] && !_isArray(this.data[this.component.key])) {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
     this.data[this.component.key].push(this.defaultValue);
@@ -1713,7 +1713,11 @@ export class BaseComponent {
     if (!this.hasInput) {
       return false;
     }
+    if (this.component.multiple && !_isArray(value)) {
+      value = [value];
+    }
     this.value = value;
+    this.buildRows();
     const isArray = _isArray(value);
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {

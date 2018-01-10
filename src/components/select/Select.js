@@ -169,6 +169,9 @@ export class SelectComponent extends BaseComponent {
       this.selectContainer.appendChild(this.selectInput);
     }
 
+    // We are no longer loading.
+    this.loading = false;
+
     // If a value is provided, then select it.
     if (this.value) {
       this.setValue(this.value, true);
@@ -225,9 +228,11 @@ export class SelectComponent extends BaseComponent {
 
     // Make the request.
     options.header = headers;
+    this.loading = true;
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
       .then((response) => this.setItems(response))
       .catch((err) => {
+        this.loading = false;
         this.events.emit('formio.error', err);
         console.warn(`Unable to load resources for ${this.component.key}`);
       });
@@ -270,7 +275,7 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
-  updateItems(searchInput) {
+  updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
       console.warn(`Select component ${this.component.key} does not have data configuration.`);
       return;
@@ -288,7 +293,7 @@ export class SelectComponent extends BaseComponent {
         this.updateCustomItems();
         break;
       case 'resource':
-        if (!this.active) {
+        if (!forceUpdate && !this.active) {
           // If we are lazyLoading, wait until activated.
           return;
         }
@@ -303,7 +308,7 @@ export class SelectComponent extends BaseComponent {
         }
         break;
       case 'url':
-        if (!this.active) {
+        if (!forceUpdate && !this.active) {
           // If we are lazyLoading, wait until activated.
           return;
         }
@@ -489,6 +494,27 @@ export class SelectComponent extends BaseComponent {
     let hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
     let hasValue = _isArray(value) ? value.length : value;
     this.value = value;
+
+    // Do not set the value if we are loading... that will happen after it is done.
+    if (this.loading) {
+      return;
+    }
+
+    // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
+    if (
+      this.component.searchField &&
+      this.component.lazyLoad &&
+      !this.lazyLoadInit &&
+      !this.active &&
+      !this.selectOptions.length &&
+      !_isArray(value) &&
+      hasValue
+    ) {
+      this.loading = true;
+      this.lazyLoadInit = true;
+      this.triggerUpdate(this.value, true);
+      return;
+    }
 
     // Add the value options.
     this.addValueOptions();

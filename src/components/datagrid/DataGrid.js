@@ -172,13 +172,8 @@ export class DataGridComponent extends FormioComponents {
       return;
     }
 
-    this.value = value;
-
-    // Add needed rows.
-    for (let i=this.rows.length; i < value.length; i++) {
-      this.addValue();
-    }
-
+    this.value = this.data[this.component.key] = value;
+    this.buildRows();
     _each(this.rows, (row, index) => {
       if (value.length <= index) {
         return;

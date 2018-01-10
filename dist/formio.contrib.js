@@ -896,7 +896,7 @@ var BaseComponent = function () {
       if (!this.data[this.component.key]) {
         this.data[this.component.key] = [];
       }
-      if (!(0, _isArray3.default)(this.data[this.component.key])) {
+      if (this.data[this.component.key] && !(0, _isArray3.default)(this.data[this.component.key])) {
         this.data[this.component.key] = [this.data[this.component.key]];
       }
       this.data[this.component.key].push(this.defaultValue);
@@ -2134,7 +2134,11 @@ var BaseComponent = function () {
       if (!this.hasInput) {
         return false;
       }
+      if (this.component.multiple && !(0, _isArray3.default)(value)) {
+        value = [value];
+      }
       this.value = value;
+      this.buildRows();
       var isArray = (0, _isArray3.default)(value);
       for (var i in this.inputs) {
         if (this.inputs.hasOwnProperty(i)) {
@@ -3381,18 +3385,20 @@ var FormioUtils = {
   checkCalculated: function checkCalculated(component, submission, data) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
+      var row = data;
+      data = submission ? submission.data : data;
       if ((0, _isString3.default)(component.calculateValue)) {
         try {
           var util = this;
-          data[component.key] = eval('(function(data, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, util)');
+          data[component.key] = eval('(function(data, row, util) { var value = [];' + component.calculateValue.toString() + '; return value; })(data, row, util)');
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
       } else {
         try {
           data[component.key] = this.jsonLogic.apply(component.calculateValue, {
-            data: submission ? submission.data : data,
-            row: data,
+            data: data,
+            row: row,
             _: _lodash2.default
           });
         } catch (e) {
@@ -3583,6 +3589,46 @@ var FormioUtils = {
     formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
 
     return formatInfo;
+  },
+
+  /**
+   * Convert the format from the angular-datepicker module to flatpickr format.
+   * @param format
+   * @return {string}
+   */
+  convertFormatToFlatpickr: function convertFormatToFlatpickr(format) {
+    return format
+    // Year conversion.
+    .replace(/y/g, 'Y').replace('YYYY', 'Y').replace('YY', 'y')
+
+    // Month conversion.
+    .replace('MMMM', 'F').replace(/M/g, 'n').replace('nnn', 'M').replace('nn', 'm')
+
+    // Day in month.
+    .replace(/d/g, 'j').replace('jj', 'd')
+
+    // Day in week.
+    .replace('EEEE', 'l').replace('EEE', 'D')
+
+    // Hours, minutes, seconds
+    .replace('HH', 'H').replace('hh', 'h').replace('mm', 'i').replace('ss', 'S').replace(/a/g, 'K');
+  },
+
+  /**
+   * Convert the format from the angular-datepicker module to moment format.
+   * @param format
+   * @return {string}
+   */
+  convertFormatToMoment: function convertFormatToMoment(format) {
+    return format
+    // Year conversion.
+    .replace(/y/g, 'Y')
+    // Day in month.
+    .replace(/d/g, 'D')
+    // Day in week.
+    .replace(/E/g, 'd')
+    // AM/PM marker
+    .replace(/a/g, 'A');
   }
 };
 

@@ -6,7 +6,17 @@ import _isEmpty from 'lodash/isEmpty';
 
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
+    // We need to reset the language so that it will not try to rebuild the form (by setting the language)
+    // before this form component is done rendering. We will set it later.
+    let language = '';
+    if (options && options.language) {
+      language = options.language;
+      options.language = '';
+    }
     super(null, options);
+    if (language && options) {
+      options.language = language;
+    }
 
     // Ensure this component does not make it to the global forms array.
     delete Formio.forms[this.id];
@@ -70,6 +80,11 @@ export class FormComponent extends FormioForm {
     this.readyPromise = new Promise((resolve) => {
       this.readyResolve = resolve;
     });
+
+    // Set language after everything is established.
+    if (options && options.language) {
+      this.language = options.language;
+    }
   }
 
   checkValidity(data) {
@@ -107,7 +122,6 @@ export class FormComponent extends FormioForm {
       return this.submit(true).then(submission => {
         // Before we submit, we need to filter out the references.
         this.data[this.component.key] = this.component.reference ? {_id: submission._id, form: submission.form} : submission;
-
         return this.data[this.component.key];
       });
     }
@@ -129,22 +143,30 @@ export class FormComponent extends FormioForm {
       }
     });
 
-    // Set the submission data.
-    let submissionData = this.data[this.component.key] ? this.data[this.component.key].data : {};
+    // Set the data for this form.
+    if (!this.data[this.component.key]) {
+      this.data[this.component.key] = this.defaultValue;
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = {data: {}};
+      }
+    }
 
     // Add components using the data of the submission.
-    this.addComponents(this.element, submissionData);
+    this.addComponents(this.element, this.data[this.component.key].data);
 
     // Restore default values.
     this.restoreValue();
 
-    // Set the value if it is not set already.
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {data: {}};
-    }
+    // Get the submission value.
+    let submission = this.getValue();
 
     // Check conditions for this form.
-    this.checkConditions(this.getValue());
+    this.checkConditions(submission);
+
+    // Check the data for default values.
+    this.checkData(submission.data, {
+      noValidate: true
+    });
   }
 
   whenReady() {
@@ -167,8 +189,7 @@ export class FormComponent extends FormioForm {
     }
 
     if (!_isEmpty(submission.data) || flags.noload) {
-      _merge(this.data[this.component.key], submission);
-      let superValue = super.setValue(submission, flags);
+      let superValue = super.setValue(submission, flags, this.data[this.component.key].data);
       this.readyResolve();
       return superValue;
     }

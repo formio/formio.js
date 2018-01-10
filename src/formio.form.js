@@ -668,10 +668,16 @@ export class FormioForm extends FormioComponents {
     });
   }
 
-  setValue(submission, flags) {
+  setValue(submission, flags, data) {
+    data = data || this.data;
+    if (!submission) {
+      return super.setValue(data, flags);
+    }
     submission = submission || {data: {}};
-    this.mergeData(this._submission, submission);
-    return super.setValue(this._submission.data, flags);
+    this.mergeData(data, submission.data);
+    this._submission = submission;
+    this._submission.data = data;
+    return super.setValue(data, flags);
   }
 
   getValue() {
@@ -680,8 +686,7 @@ export class FormioForm extends FormioComponents {
     }
     let submission = _clone(this._submission);
     submission.data = this.data;
-    this.mergeData(this._submission.data, submission.data);
-    return this._submission;
+    return submission;
   }
 
   /**
@@ -703,7 +708,7 @@ export class FormioForm extends FormioComponents {
     return this.onFormBuild = this.render().then(() => {
       this.formReadyResolve();
       this.onFormBuild = null;
-      this.setSubmission(this._submission);
+      this.setValue(this.submission);
     }).catch((err) => {
       console.warn(err);
       this.formReadyReject(err);
