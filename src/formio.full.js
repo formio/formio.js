@@ -39,7 +39,7 @@ Formio.formFactory = (element, form, options) => {
  */
 Formio.createForm = (element, form, options) => {
   if (typeof form === 'string') {
-    return (new Formio(form)).loadForm().then((formObj) => {
+    return (new Formio(form)).loadForm({params: {live: 1}}).then((formObj) => {
       let instance = Formio.formFactory(element, formObj, options);
       instance.url = form;
       instance.nosubmit = false;

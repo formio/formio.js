@@ -19,7 +19,7 @@ var dropbox = function(formio) {
         xhr.onerror = function(err) {
           err.networkError = true;
           reject(err);
-        }
+        };
 
         xhr.onload = function() {
           if (xhr.status >= 200 && xhr.status < 300) {
@@ -37,7 +37,7 @@ var dropbox = function(formio) {
 
         xhr.onabort = function(err) {
           reject(err);
-        }
+        };
 
         xhr.open('POST', formio.formUrl + '/storage/dropbox');
         var token = formio.getToken();

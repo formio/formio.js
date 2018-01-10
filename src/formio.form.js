@@ -419,7 +419,7 @@ export class FormioForm extends FormioComponents {
   setSrc(value, options) {
     this.setUrl(value, options);
     this.nosubmit = false;
-    this.formio.loadForm().then(
+    this.formio.loadForm({params: {live: 1}}).then(
       (form) => {
         var setForm = this.setForm(form);
         this.loadSubmission();
