@@ -139,19 +139,6 @@ export class DataGridComponent extends FormioComponents {
         td.appendChild(this.addButton());
         tr.appendChild(td);
         this.tbody.appendChild(tr);
-
-      // if(
-      //   this.component.addAnotherPosition === "top" ||
-      //   this.component.addAnotherPosition === "both"
-      // ){
-      //   let tr = this.ce('tr');
-      //   let td = this.ce('td', {
-      //     colspan: (this.component.components.length)
-      //   });
-      //   td.appendChild(this.addIconButton());
-      //   tr.appendChild(td);
-      //   this.tbody.appendChild(tr);
-      // }
     }
   }
 
