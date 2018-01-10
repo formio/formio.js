@@ -656,7 +656,7 @@ export class BaseComponent {
    * Adds a new button to add new rows to the multiple input elements.
    * @returns {HTMLElement} - The "Add New" button html element.
    */
-  addButton() {
+  addButton(justIcon) {
     let addButton = this.ce('a', {
       class: 'btn btn-primary'
     });
@@ -668,9 +668,16 @@ export class BaseComponent {
     let addIcon = this.ce('span', {
       class: 'glyphicon glyphicon-plus'
     });
-    addButton.appendChild(addIcon);
-    addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
-    return addButton;
+
+    if (justIcon) {
+      addButton.appendChild(addIcon);
+      return addButton;
+    }
+    else {
+      addButton.appendChild(addIcon);
+      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
+      return addButton;
+    }
   }
 
   /**
