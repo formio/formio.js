@@ -207,7 +207,12 @@ export class SelectComponent extends BaseComponent {
 
     // Add search capability.
     if (this.component.searchField && search) {
-      query[this.component.searchField] = search;
+      if (_isArray(search)) {
+        query[this.component.searchField + '__in'] = search.join(',');
+      }
+      else {
+        query[this.component.searchField] = search;
+      }
     }
 
     // Add filter capability
@@ -507,7 +512,6 @@ export class SelectComponent extends BaseComponent {
       !this.lazyLoadInit &&
       !this.active &&
       !this.selectOptions.length &&
-      !_isArray(value) &&
       hasValue
     ) {
       this.loading = true;

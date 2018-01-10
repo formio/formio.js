@@ -8614,7 +8614,11 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
       // Add search capability.
       if (this.component.searchField && search) {
-        query[this.component.searchField] = search;
+        if ((0, _isArray3.default)(search)) {
+          query[this.component.searchField + '__in'] = search.join(',');
+        } else {
+          query[this.component.searchField] = search;
+        }
       }
 
       // Add filter capability
@@ -8880,7 +8884,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
 
       // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
-      if (this.component.searchField && this.component.lazyLoad && !this.lazyLoadInit && !this.active && !this.selectOptions.length && !(0, _isArray3.default)(value) && hasValue) {
+      if (this.component.searchField && this.component.lazyLoad && !this.lazyLoadInit && !this.active && !this.selectOptions.length && hasValue) {
         this.loading = true;
         this.lazyLoadInit = true;
         this.triggerUpdate(this.value, true);

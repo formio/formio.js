@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.27.4
+### Added
+ - The ability for the search to be an array of values.
+
 ## 2.27.3
 ### Fixed
  - Issue with the checkCalculated method not working for datagrids.
