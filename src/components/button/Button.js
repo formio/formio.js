@@ -34,6 +34,12 @@ export class ButtonComponent extends BaseComponent {
     return this.clicked;
   }
 
+  get className() {
+    let className = super.className;
+    className += ' form-group';
+    return className;
+  }
+
   build() {
     if (this.viewOnlyMode()) {
       this.component.hidden = true;

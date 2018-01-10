@@ -4093,6 +4093,13 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
       this.setDisabled(this.button, disabled);
     }
+  }, {
+    key: 'className',
+    get: function get() {
+      var className = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'className', this);
+      className += ' form-group';
+      return className;
+    }
   }]);
 
   return ButtonComponent;
