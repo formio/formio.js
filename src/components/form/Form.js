@@ -189,9 +189,9 @@ export class FormComponent extends FormioForm {
     }
 
     if (!_isEmpty(submission.data) || flags.noload) {
-      super.setValue(submission, flags, this.data[this.component.key].data);
+      let superValue = super.setValue(submission, flags, this.data[this.component.key].data);
       this.readyResolve();
-      return true;
+      return superValue;
     }
     else if (submission._id) {
       this.formio.submissionId = submission._id;
