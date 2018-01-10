@@ -982,7 +982,7 @@ var BaseComponent = function () {
 
   }, {
     key: 'addButton',
-    value: function addButton() {
+    value: function addButton(justIcon) {
       var _this2 = this;
 
       var addButton = this.ce('a', {
@@ -996,9 +996,15 @@ var BaseComponent = function () {
       var addIcon = this.ce('span', {
         class: 'glyphicon glyphicon-plus'
       });
-      addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
-      return addButton;
+
+      if (justIcon) {
+        addButton.appendChild(addIcon);
+        return addButton;
+      } else {
+        addButton.appendChild(addIcon);
+        addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
+        return addButton;
+      }
     }
 
     /**
@@ -2675,12 +2681,13 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
 
       this.clicked = false;
-      this.element = this.ce(this.info.type, this.info.attr);
-      this.addShortcut(this.element);
+      this.createElement();
+      this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
+      this.addShortcut(this.button);
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
-        this.element.appendChild(this.labelElement);
-        this.createTooltip(this.element, null, 'glyphicon glyphicon-question-sign');
+        this.button.appendChild(this.labelElement);
+        this.createTooltip(this.button, null, 'glyphicon glyphicon-question-sign');
       }
       if (this.component.action === 'submit') {
         this.on('submitButton', function () {
@@ -2699,7 +2706,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
           _this2.loading = false;
         }, true);
       }
-      this.addEventListener(this.element, 'click', function (event) {
+      this.addEventListener(this.button, 'click', function (event) {
         _this2.clicked = false;
         switch (_this2.component.action) {
           case 'submit':
@@ -2743,13 +2750,105 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
             _this2.emit('resetForm');
             break;
           case 'oauth':
-            console.log('OAuth currently not supported.');
+            if (_this2.root === _this2) {
+              console.warn('You must add the OAuth button to a form for it to function properly');
+              return;
+            }
+
+            // Display Alert if OAuth config is missing
+            if (!_this2.component.oauth) {
+              _this2.root.setAlert('danger', 'You must assign this button to an OAuth action before it will work.');
+              break;
+            }
+
+            // Display Alert if oAuth has an error is missing
+            if (_this2.component.oauth.error) {
+              _this2.root.setAlert('danger', 'The Following Error Has Occured' + _this2.component.oauth.error);
+              break;
+            }
+
+            _this2.openOauth(_this2.component.oauth);
+
             break;
         }
       });
       if (this.shouldDisable) {
         this.disabled = true;
       }
+    }
+  }, {
+    key: 'openOauth',
+    value: function openOauth() {
+      var _this3 = this;
+
+      if (!this.root.formio) {
+        console.warn('You must attach a Form API url to your form in order to use OAuth buttons.');
+        return;
+      }
+
+      var settings = this.component.oauth;
+
+      /*eslint-disable camelcase */
+      var params = {
+        response_type: 'code',
+        client_id: settings.clientId,
+        redirect_uri: window.location.origin || window.location.protocol + '//' + window.location.host,
+        state: settings.state,
+        scope: settings.scope
+      };
+      /*eslint-enable camelcase */
+
+      // Make display optional.
+      if (settings.display) {
+        params.display = settings.display;
+      }
+
+      params = Object.keys(params).map(function (key) {
+        return key + '=' + encodeURIComponent(params[key]);
+      }).join('&');
+
+      var url = settings.authURI + '?' + params;
+      var popup = window.open(url, settings.provider, 'width=1020,height=618');
+
+      var interval = setInterval(function () {
+        try {
+          var popupHost = popup.location.host;
+          var currentHost = window.location.host;
+          if (popup && !popup.closed && popupHost === currentHost && popup.location.search) {
+            popup.close();
+            var _params = popup.location.search.substr(1).split('&').reduce(function (params, param) {
+              var split = param.split('=');
+              params[split[0]] = split[1];
+              return params;
+            }, {});
+            if (_params.error) {
+              alert(_params.error_description || _params.error);
+              _this3.root.setAlert('danger', _params.error_description || _params.error);
+              return;
+            }
+            // TODO: check for error response here
+            if (settings.state !== _params.state) {
+              _this3.root.setAlert('danger', 'OAuth state does not match. Please try logging in again.');
+              return;
+            }
+            var submission = { data: {}, oauth: {} };
+            submission.oauth[settings.provider] = _params;
+            submission.oauth[settings.provider].redirectURI = window.location.origin || window.location.protocol + '//' + window.location.host;
+            _this3.root.formio.saveSubmission(submission).then(function (submission) {
+              _this3.root.onSubmit(result, true);
+            }).catch(function (err) {
+              _this3.root.onSubmissionError(err);
+            });
+          }
+        } catch (error) {
+          if (error.name !== 'SecurityError') {
+            _this3.root.setAlert('danger', error.message || error);
+          }
+        }
+        if (!popup || popup.closed || popup.closed === undefined) {
+          clearInterval(interval);
+        }
+      }, 100);
     }
   }, {
     key: 'destroy',
@@ -2760,13 +2859,13 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
   }, {
     key: 'loading',
     set: function set(loading) {
-      this.setLoading(this.element, loading);
+      this.setLoading(this.button, loading);
     }
   }, {
     key: 'disabled',
     set: function set(disabled) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
-      this.setDisabled(this.element, disabled);
+      this.setDisabled(this.button, disabled);
     }
   }]);
 

@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.27.2
+### Added
+ - Support for OAuth buttons in the renderer.
+ - Ability to add the "Add Another" button on datagrid to either above or below the grid.
+
 ## 2.27.1
 ### Fixed
  - Problem with default values on wizards.

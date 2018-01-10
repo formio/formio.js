@@ -110,6 +110,11 @@ export class ButtonComponent extends BaseComponent {
           this.emit('resetForm');
           break;
         case 'oauth':
+          if (this.root === this) {
+            console.warn('You must add the OAuth button to a form for it to function properly');
+            return;
+          }
+
           // Display Alert if OAuth config is missing
           if(!this.component.oauth){
             this.root.setAlert('danger', 'You must assign this button to an OAuth action before it will work.');
@@ -133,6 +138,11 @@ export class ButtonComponent extends BaseComponent {
   }
 
   openOauth() {
+    if (!this.root.formio) {
+      console.warn('You must attach a Form API url to your form in order to use OAuth buttons.');
+      return;
+    }
+
     const settings = this.component.oauth;
 
     /*eslint-disable camelcase */
