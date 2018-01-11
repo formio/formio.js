@@ -279,7 +279,7 @@ export class BaseComponent {
    */
   getIcon(name) {
     return this.ce('i', {
-      class: `glyphicon glyphicon-${name}`
+      class: this.iconClass(name)
     });
   }
 
@@ -652,6 +652,24 @@ export class BaseComponent {
     }
   }
 
+  iconClass(name, spinning) {
+    if (!this.options.icons || this.options.icons === 'glyphicon') {
+      return spinning ? `glyphicon glyphicon-${name}` : `glyphicon glyphicon-${name} ${spinClass}`;
+    }
+    switch (name) {
+      case 'zoom-in':
+        return 'fa fa-search-plus';
+      case 'zoom-out':
+        return 'fa fa-search-minus';
+      case 'question-sign':
+        return `fa fa-question-circle`;
+      case 'remove-circle':
+        return `fa fa-times-circle-o`;
+      default:
+        return spinning ? `fa fa-${name} ${spinClass}` : `fa fa-${name}`;
+    }
+  }
+
   /**
    * Adds a new button to add new rows to the multiple input elements.
    * @returns {HTMLElement} - The "Add New" button html element.
@@ -666,7 +684,7 @@ export class BaseComponent {
     });
 
     let addIcon = this.ce('span', {
-      class: 'glyphicon glyphicon-plus'
+      class: this.iconClass('plus')
     });
 
     if (justIcon) {
@@ -723,7 +741,7 @@ export class BaseComponent {
     });
 
     let removeIcon = this.ce('span', {
-      class: 'glyphicon glyphicon-remove-circle'
+      class: this.iconClass('remove-circle')
     });
     removeButton.appendChild(removeIcon);
     return removeButton;
@@ -908,7 +926,7 @@ export class BaseComponent {
    */
   createTooltip(container, component, classes) {
     component = component || this.component;
-    classes = classes || 'glyphicon glyphicon-question-sign text-muted';
+    classes = classes || this.iconClass('question-sign') + ' text-muted';
     if (!component.tooltip) {
       return;
     }
@@ -950,7 +968,7 @@ export class BaseComponent {
       return;
     }
     this.errorElement = this.ce('div', {
-      class: 'formio-errors'
+      class: 'formio-errors invalid-feedback'
     });
     this.errorContainer.appendChild(this.errorElement);
   }
@@ -1283,6 +1301,7 @@ export class BaseComponent {
 
     // Add error classes
     this.addClass(this.element, 'has-error');
+    this.inputs.forEach((input) => this.addClass(input, 'is-invalid'));
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'alert alert-danger');
     }
@@ -1661,6 +1680,7 @@ export class BaseComponent {
       catch (err) {}
     }
     this.removeClass(this.element, 'has-error');
+    this.inputs.forEach((input) => this.removeClass(input, 'is-invalid'));
     if (this.options.highlightErrors) {
       this.removeClass(this.element, 'alert alert-danger');
     }
@@ -1785,7 +1805,7 @@ export class BaseComponent {
     element.loading = loading;
     if (!element.loader && loading) {
       element.loader = this.ce('i', {
-        class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
+        class: this.iconClass('refresh', true) + ' button-icon-right'
       });
     }
     if (element.loader) {

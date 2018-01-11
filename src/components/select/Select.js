@@ -363,7 +363,7 @@ export class SelectComponent extends BaseComponent {
     if (this.choices) {
       this.choices.setChoices([{
         value: '',
-        label: '<span class="glyphicon glyphicon-refresh glyphicon-spin" style="font-size:1.3em;"></span>'
+        label: `<span class="${this.iconClass('refresh')}" style="font-size:1.3em;"></span>`
       }], 'value', 'label', true);
     }
     else {

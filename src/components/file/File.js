@@ -111,7 +111,7 @@ export class FileComponent extends BaseComponent {
             (
               !this.disabled ?
                 this.ce('span', {
-                  class: 'glyphicon glyphicon-remove',
+                  class: this.iconClass('remove'),
                   onClick: event => {
                     if (this.component.storage === 'url') {
                       this.options.formio.makeRequest('', this.data[this.component.key][index].url, 'delete');
@@ -167,7 +167,7 @@ export class FileComponent extends BaseComponent {
           (
             !this.disabled ?
               this.ce('span', {
-                class: 'glyphicon glyphicon-remove',
+                class: this.iconClass('remove'),
                 onClick: event => {
                   if (this.component.storage === 'url') {
                     this.options.formio.makeRequest('', this.data[this.component.key][index].url, 'delete');
@@ -210,7 +210,7 @@ export class FileComponent extends BaseComponent {
             }
           },
             [
-              this.ce('i', {class: 'glyphicon glyphicon-cloud-upload'}),
+              this.ce('i', {class: this.iconClass('cloud-upload')}),
               this.text(' Drop files to attach, or '),
               this.ce('a', {
                 onClick: event => {
@@ -278,7 +278,7 @@ export class FileComponent extends BaseComponent {
           this.ce('div', {class: 'fileName control-label col-sm-10'}, [
             fileUpload.originalName,
             this.ce('span', {
-              class: 'glyphicon glyphicon-remove',
+              class: this.iconClass('remove'),
               onClick: () => {this.uploadStatusList.removeChild(container)}
             })
           ]),

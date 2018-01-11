@@ -80,7 +80,7 @@ export class FormioPDF extends FormioForm {
       style: 'position:absolute;right:10px;top:10px;cursor:pointer;',
       class: 'btn btn-default no-disable'
     }, this.ce('span', {
-      class: 'glyphicon glyphicon-zoom-in'
+      class: this.iconClass('zoom-in')
     }));
     this.addEventListener(this.zoomIn, 'click', (event) => {
       event.preventDefault();
@@ -91,7 +91,7 @@ export class FormioPDF extends FormioForm {
       style: 'position:absolute;right:10px;top:60px;cursor:pointer;',
       class: 'btn btn-default no-disable'
     }, this.ce('span', {
-      class: 'glyphicon glyphicon-zoom-out'
+      class: this.iconClass('zoom-out')
     }));
     this.addEventListener(this.zoomOut, 'click', (event) => {
       event.preventDefault();
