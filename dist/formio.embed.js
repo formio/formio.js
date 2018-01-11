@@ -1868,7 +1868,7 @@ var BaseComponent = function () {
     key: 'getIcon',
     value: function getIcon(name) {
       return this.ce('i', {
-        class: 'glyphicon glyphicon-' + name
+        class: this.iconClass(name)
       });
     }
   }, {
@@ -2200,6 +2200,25 @@ var BaseComponent = function () {
         this.disabled = true;
       }
     }
+  }, {
+    key: 'iconClass',
+    value: function iconClass(name, spinning) {
+      if (!this.options.icons || this.options.icons === 'glyphicon') {
+        return spinning ? 'glyphicon glyphicon-' + name : 'glyphicon glyphicon-' + name + ' glyphicon-spin';
+      }
+      switch (name) {
+        case 'zoom-in':
+          return 'fa fa-search-plus';
+        case 'zoom-out':
+          return 'fa fa-search-minus';
+        case 'question-sign':
+          return 'fa fa-question-circle';
+        case 'remove-circle':
+          return 'fa fa-times-circle-o';
+        default:
+          return spinning ? 'fa fa-' + name + ' fa-spin' : 'fa fa-' + name;
+      }
+    }
 
     /**
      * Adds a new button to add new rows to the multiple input elements.
@@ -2219,8 +2238,8 @@ var BaseComponent = function () {
         _this2.addValue();
       });
 
-      var addIcon = this.ce('span', {
-        class: 'glyphicon glyphicon-plus'
+      var addIcon = this.ce('i', {
+        class: this.iconClass('plus')
       });
 
       if (justIcon) {
@@ -2272,8 +2291,8 @@ var BaseComponent = function () {
         _this3.removeValue(index);
       });
 
-      var removeIcon = this.ce('span', {
-        class: 'glyphicon glyphicon-remove-circle'
+      var removeIcon = this.ce('i', {
+        class: this.iconClass('remove-circle')
       });
       removeButton.appendChild(removeIcon);
       return removeButton;
@@ -2462,7 +2481,7 @@ var BaseComponent = function () {
     key: 'createTooltip',
     value: function createTooltip(container, component, classes) {
       component = component || this.component;
-      classes = classes || 'glyphicon glyphicon-question-sign text-muted';
+      classes = classes || this.iconClass('question-sign') + ' text-muted';
       if (!component.tooltip) {
         return;
       }
@@ -2510,7 +2529,7 @@ var BaseComponent = function () {
         return;
       }
       this.errorElement = this.ce('div', {
-        class: 'formio-errors'
+        class: 'formio-errors invalid-feedback'
       });
       this.errorContainer.appendChild(this.errorElement);
     }
@@ -2889,6 +2908,8 @@ var BaseComponent = function () {
   }, {
     key: 'addInputError',
     value: function addInputError(message, dirty) {
+      var _this7 = this;
+
       if (!message) {
         return;
       }
@@ -2903,6 +2924,9 @@ var BaseComponent = function () {
 
       // Add error classes
       this.addClass(this.element, 'has-error');
+      this.inputs.forEach(function (input) {
+        return _this7.addClass(input, 'is-invalid');
+      });
       if (dirty && this.options.highlightErrors) {
         this.addClass(this.element, 'alert alert-danger');
       }
@@ -2917,7 +2941,7 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      var _this7 = this;
+      var _this8 = this;
 
       // Ensure we stop any pending data clears.
       if (this.clearPending) {
@@ -2946,7 +2970,7 @@ var BaseComponent = function () {
 
       if (!_show && this.component.clearOnHide) {
         this.clearPending = setTimeout(function () {
-          return _this7.setValue(null, {
+          return _this8.setValue(null, {
             noValidate: true
           });
         }, 200);
@@ -3005,7 +3029,7 @@ var BaseComponent = function () {
   }, {
     key: 'addInputSubmitListener',
     value: function addInputSubmitListener(input) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (!this.options.submitOnEnter) {
         return;
@@ -3015,7 +3039,7 @@ var BaseComponent = function () {
         if (key == 13) {
           event.preventDefault();
           event.stopPropagation();
-          _this8.emit('submitButton');
+          _this9.emit('submitButton');
         }
       });
     }
@@ -3029,10 +3053,10 @@ var BaseComponent = function () {
   }, {
     key: 'addInputEventListener',
     value: function addInputEventListener(input) {
-      var _this9 = this;
+      var _this10 = this;
 
       this.addEventListener(input, this.info.changeEvent, function () {
-        return _this9.updateValue({ changed: true });
+        return _this10.updateValue({ changed: true });
       });
     }
 
@@ -3293,6 +3317,8 @@ var BaseComponent = function () {
   }, {
     key: 'setCustomValidity',
     value: function setCustomValidity(message, dirty) {
+      var _this11 = this;
+
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
         try {
@@ -3300,6 +3326,9 @@ var BaseComponent = function () {
         } catch (err) {}
       }
       this.removeClass(this.element, 'has-error');
+      this.inputs.forEach(function (input) {
+        return _this11.removeClass(input, 'is-invalid');
+      });
       if (this.options.highlightErrors) {
         this.removeClass(this.element, 'alert alert-danger');
       }
@@ -3416,7 +3445,7 @@ var BaseComponent = function () {
       element.loading = loading;
       if (!element.loader && loading) {
         element.loader = this.ce('i', {
-          class: 'glyphicon glyphicon-refresh glyphicon-spin button-icon-right'
+          class: this.iconClass('refresh', true) + ' button-icon-right'
         });
       }
       if (element.loader) {
@@ -3430,7 +3459,7 @@ var BaseComponent = function () {
   }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
-      var _this10 = this;
+      var _this12 = this;
 
       (0, _each3.default)(options, function (option) {
         var attrs = {
@@ -3439,8 +3468,8 @@ var BaseComponent = function () {
         if (defaultValue !== undefined && option.value === defaultValue) {
           attrs.selected = 'selected';
         }
-        var optionElement = _this10.ce('option', attrs);
-        optionElement.appendChild(_this10.text(option.label));
+        var optionElement = _this12.ce('option', attrs);
+        optionElement.appendChild(_this12.text(option.label));
         select.appendChild(optionElement);
       });
     }
@@ -3677,7 +3706,7 @@ var BaseComponent = function () {
      */
 
     , set: function set(disabled) {
-      var _this11 = this;
+      var _this13 = this;
 
       // Do not allow a component to be disabled if it should be always...
       if (!disabled && this.shouldDisable) {
@@ -3688,7 +3717,7 @@ var BaseComponent = function () {
 
       // Disable all inputs.
       (0, _each3.default)(this.inputs, function (input) {
-        return _this11.setDisabled(input, disabled);
+        return _this13.setDisabled(input, disabled);
       });
     }
   }]);
@@ -3913,7 +3942,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
         this.button.appendChild(this.labelElement);
-        this.createTooltip(this.button, null, 'glyphicon glyphicon-question-sign');
+        this.createTooltip(this.button, null, this.iconClass('question-sign'));
       }
       if (this.component.action === 'submit') {
         this.on('submitButton', function () {
@@ -6264,8 +6293,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
     value: function createFileListItem(fileInfo, index) {
       var _this4 = this;
 
-      return this.ce('li', { class: 'list-group-item' }, this.ce('div', { class: 'row' }, [this.ce('div', { class: 'col-md-1' }, !this.disabled ? this.ce('span', {
-        class: 'glyphicon glyphicon-remove',
+      return this.ce('li', { class: 'list-group-item' }, this.ce('div', { class: 'row' }, [this.ce('div', { class: 'col-md-1' }, !this.disabled ? this.ce('i', {
+        class: this.iconClass('remove'),
         onClick: function onClick(event) {
           if (_this4.component.storage === 'url') {
             _this4.options.formio.makeRequest('', _this4.data[_this4.component.key][index].url, 'delete');
@@ -6307,8 +6336,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
           image.src = result.url;
         });
       }
-      return this.ce('div', {}, this.ce('span', {}, [image = this.ce('img', { src: '', alt: fileInfo.originalName || fileInfo.name, style: 'width:' + this.component.imageSize + 'px' }), !this.disabled ? this.ce('span', {
-        class: 'glyphicon glyphicon-remove',
+      return this.ce('div', {}, this.ce('span', {}, [image = this.ce('img', { src: '', alt: fileInfo.originalName || fileInfo.name, style: 'width:' + this.component.imageSize + 'px' }), !this.disabled ? this.ce('i', {
+        class: this.iconClass('remove'),
         onClick: function onClick(event) {
           if (_this6.component.storage === 'url') {
             _this6.options.formio.makeRequest('', _this6.data[_this6.component.key][index].url, 'delete');
@@ -6344,7 +6373,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
           element.upload(event.dataTransfer.files);
           return false;
         }
-      }, [this.ce('i', { class: 'glyphicon glyphicon-cloud-upload' }), this.text(' Drop files to attach, or '), this.ce('a', {
+      }, [this.ce('i', { class: this.iconClass('cloud-upload') }), this.text(' Drop files to attach, or '), this.ce('a', {
         onClick: function onClick(event) {
           event.preventDefault();
           // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
@@ -6405,8 +6434,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       var _this8 = this;
 
       var container = void 0;
-      return container = this.ce('div', { class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '') }, [this.ce('div', { class: 'row' }, [this.ce('div', { class: 'fileName control-label col-sm-10' }, [fileUpload.originalName, this.ce('span', {
-        class: 'glyphicon glyphicon-remove',
+      return container = this.ce('div', { class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '') }, [this.ce('div', { class: 'row' }, [this.ce('div', { class: 'fileName control-label col-sm-10' }, [fileUpload.originalName, this.ce('i', {
+        class: this.iconClass('remove'),
         onClick: function onClick() {
           _this8.uploadStatusList.removeChild(container);
         }
@@ -8214,8 +8243,8 @@ var ResourceComponent = exports.ResourceComponent = function (_SelectComponent) 
       var addButton = this.ce('a', {
         class: 'btn btn-primary'
       });
-      var addIcon = this.ce('span', {
-        class: 'glyphicon glyphicon-plus'
+      var addIcon = this.ce('i', {
+        class: this.iconClass('plus')
       });
       addButton.appendChild(addIcon);
       addButton.appendChild(this.text(' ' + (this.component.addResourceLabel || 'Add Resource')));
@@ -8750,7 +8779,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (this.choices) {
         this.choices.setChoices([{
           value: '',
-          label: '<span class="glyphicon glyphicon-refresh glyphicon-spin" style="font-size:1.3em;"></span>'
+          label: '<i class="' + this.iconClass('refresh') + '" style="font-size:1.3em;"></i>'
         }], 'value', 'label', true);
       } else {
         this.addOption('', this.t('loading...'));
@@ -13012,8 +13041,8 @@ var FormioPDF = exports.FormioPDF = function (_FormioForm) {
       this.zoomIn = this.ce('span', {
         style: 'position:absolute;right:10px;top:10px;cursor:pointer;',
         class: 'btn btn-default no-disable'
-      }, this.ce('span', {
-        class: 'glyphicon glyphicon-zoom-in'
+      }, this.ce('i', {
+        class: this.iconClass('zoom-in')
       }));
       this.addEventListener(this.zoomIn, 'click', function (event) {
         event.preventDefault();
@@ -13023,8 +13052,8 @@ var FormioPDF = exports.FormioPDF = function (_FormioForm) {
       this.zoomOut = this.ce('span', {
         style: 'position:absolute;right:10px;top:60px;cursor:pointer;',
         class: 'btn btn-default no-disable'
-      }, this.ce('span', {
-        class: 'glyphicon glyphicon-zoom-out'
+      }, this.ce('i', {
+        class: this.iconClass('zoom-out')
       }));
       this.addEventListener(this.zoomOut, 'click', function (event) {
         event.preventDefault();

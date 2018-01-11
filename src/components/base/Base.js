@@ -654,7 +654,7 @@ export class BaseComponent {
 
   iconClass(name, spinning) {
     if (!this.options.icons || this.options.icons === 'glyphicon') {
-      return spinning ? `glyphicon glyphicon-${name}` : `glyphicon glyphicon-${name} ${spinClass}`;
+      return spinning ? `glyphicon glyphicon-${name}` : `glyphicon glyphicon-${name} glyphicon-spin`;
     }
     switch (name) {
       case 'zoom-in':
@@ -666,7 +666,7 @@ export class BaseComponent {
       case 'remove-circle':
         return `fa fa-times-circle-o`;
       default:
-        return spinning ? `fa fa-${name} ${spinClass}` : `fa fa-${name}`;
+        return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
     }
   }
 
