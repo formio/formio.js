@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.27.6
+### Fixed
+ - Issue where the ready promise was not getting fired if a submission is not provided.
+
 ## 2.27.5
 ### Fixed
  - The package.json for the choices.js library to not use a git url.
