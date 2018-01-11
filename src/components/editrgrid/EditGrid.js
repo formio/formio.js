@@ -11,7 +11,7 @@ export class EditGridComponent extends FormioComponents {
     super(component, options, data);
     this.type = 'datagrid';
     this.rows = [];
-    this.openRows = [];
+    this.openRows = {};
   }
 
   build() {
@@ -63,13 +63,43 @@ export class EditGridComponent extends FormioComponents {
     // Store info so we can detect changes later.
     wrapper.rowData = row;
     wrapper.rowIndex = rowIndex;
-    wrapper.rowOpen = this.openRows.includes(rowIndex);
+    wrapper.rowOpen = this.openRows.hasOwnProperty(rowIndex);
 
     if (wrapper.rowOpen) {
-      wrapper.appendChild(this.text('open ' + rowIndex));
+      wrapper.appendChild(
+        this.ce('div', {class: 'editgrid-edit'},
+          this.ce('div', {class: 'editgrid-body'},
+            [
+              this.component.components.map(comp => {
+                const component = _cloneDeep(comp);
+                component.row = this.row + '-' + rowIndex;
+                const options = _clone(this.options);
+                options.name += '[' + rowIndex + ']';
+                const comp1 = this.createComponent(component, options, this.openRows[rowIndex]);
+                return comp1.element;
+              }),
+              this.ce('div', {class: 'editgrid-actions'},
+                [
+                  this.ce('div', {
+                    class: 'btn btn-primary',
+                    onClick: this.saveRow.bind(this, rowIndex)
+                  }, this.component.saveRow || 'Save'),
+                  this.component.removeRow ?
+                    this.ce('div', {
+                      class: 'btn btn-danger',
+                      onClick: this.cancelRow.bind(this, rowIndex)
+                    }, this.component.removeRow || 'Cancel')
+                    : null
+                ]
+              )
+            ]
+          )
+        )
+      );
     }
     else {
-      wrapper.appendChild(this.renderTemplate(this.component.templates.row,
+      wrapper.appendChild(
+        this.renderTemplate(this.component.templates.row,
           {
             row,
             rowIndex,
@@ -137,7 +167,7 @@ export class EditGridComponent extends FormioComponents {
       else if (
         this.rowElements[rowIndex].rowData !== row ||
         this.rowElements[rowIndex].rowIndex !== rowIndex ||
-        this.rowElements[rowIndex].rowOpen !== this.openRows.includes(rowIndex)
+        this.rowElements[rowIndex].rowOpen !== this.openRows.hasOwnProperty(rowIndex)
       ) {
         // Row has changed due to an edit or delete.
         const newRow = this.createRow(row, rowIndex);
@@ -149,42 +179,39 @@ export class EditGridComponent extends FormioComponents {
 
   addRow() {
     this.rows.push({});
-    this.openRows.push(this.rows.length - 1);
+    const rowIndex = this.rows.length - 1;
+    this.openRows[rowIndex] = _clone(this.rows[rowIndex]);
     this.updateValue();
     this.refreshDOM();
   }
 
   editRow(rowIndex) {
-    this.openRows.push(rowIndex);
+    this.openRows[rowIndex] = _clone(this.rows[rowIndex]);
     this.refreshDOM();
   }
 
   cancelRow(rowIndex) {
-    const index = this.openRows.indexOf(rowIndex);
-    if (index !== -1) {
-      this.openRows.splice(index, 1);
-    }
+    delete this.openRows[rowIndex];
     this.refreshDOM();
   }
 
-  saveRow(row, rowIndex) {
-    const index = this.openRows.indexOf(rowIndex);
-    if (index !== -1) {
-      this.openRows.splice(index, 1);
-    }
-    this.rows[rowIndex] = row;
+  saveRow(rowIndex) {
+    this.rows[rowIndex] = this.openRows[rowIndex];
+    delete this.openRows[rowIndex];
     this.updateValue();
     this.refreshDOM();
   }
 
   removeRow(rowIndex) {
     this.rows.splice(rowIndex, 1);
-    const index = this.openRows.indexOf(rowIndex);
-    if (index !== -1) {
-      this.openRows.splice(index, 1);
-    }
+    delete this.openRows[rowIndex];
     // Any open rows below the delete row need to be decremented.
-    this.openRows = this.openRows.map(index => index > rowIndex ? --index : index);
+    for(const index in this.openRows) {
+      if (index > rowIndex) {
+        this.openRows[index - 1] = this.openRows[index];
+        delete this.openRows[index];
+      }
+    }
 
     // Manually remove the dom element so it doesn't have more items than this.rows.
     this.tableElement.removeChild(this.rowElements[rowIndex]);
