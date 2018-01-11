@@ -110,7 +110,7 @@ export class FileComponent extends BaseComponent {
           this.ce('div', {class: 'col-md-1'},
             (
               !this.disabled ?
-                this.ce('span', {
+                this.ce('i', {
                   class: this.iconClass('remove'),
                   onClick: event => {
                     if (this.component.storage === 'url') {
@@ -166,7 +166,7 @@ export class FileComponent extends BaseComponent {
           image = this.ce('img', {src: '', alt: fileInfo.originalName || fileInfo.name, style: 'width:' + this.component.imageSize + 'px'}),
           (
             !this.disabled ?
-              this.ce('span', {
+              this.ce('i', {
                 class: this.iconClass('remove'),
                 onClick: event => {
                   if (this.component.storage === 'url') {
@@ -277,7 +277,7 @@ export class FileComponent extends BaseComponent {
       this.ce('div', {class: 'row'}, [
           this.ce('div', {class: 'fileName control-label col-sm-10'}, [
             fileUpload.originalName,
-            this.ce('span', {
+            this.ce('i', {
               class: this.iconClass('remove'),
               onClick: () => {this.uploadStatusList.removeChild(container)}
             })

@@ -683,7 +683,7 @@ export class BaseComponent {
       this.addValue();
     });
 
-    let addIcon = this.ce('span', {
+    let addIcon = this.ce('i', {
       class: this.iconClass('plus')
     });
 
@@ -740,7 +740,7 @@ export class BaseComponent {
       this.removeValue(index);
     });
 
-    let removeIcon = this.ce('span', {
+    let removeIcon = this.ce('i', {
       class: this.iconClass('remove-circle')
     });
     removeButton.appendChild(removeIcon);
@@ -926,7 +926,7 @@ export class BaseComponent {
    */
   createTooltip(container, component, classes) {
     component = component || this.component;
-    classes = classes || this.iconClass('question-sign') + ' text-muted';
+    classes = classes || `${this.iconClass('question-sign')} text-muted`;
     if (!component.tooltip) {
       return;
     }
