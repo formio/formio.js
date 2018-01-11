@@ -11,7 +11,7 @@ export class EditGridComponent extends FormioComponents {
     super(component, options, data);
     this.type = 'datagrid';
     this.rows = [];
-    this.openRows = {};
+    this.editRows = [];
   }
 
   build() {
@@ -63,7 +63,8 @@ export class EditGridComponent extends FormioComponents {
     // Store info so we can detect changes later.
     wrapper.rowData = row;
     wrapper.rowIndex = rowIndex;
-    wrapper.rowOpen = this.openRows.hasOwnProperty(rowIndex);
+    wrapper.rowOpen = this.editRows[rowIndex].isOpen;
+    this.editRows[rowIndex].components = [];
 
     if (wrapper.rowOpen) {
       wrapper.appendChild(
@@ -75,8 +76,9 @@ export class EditGridComponent extends FormioComponents {
                 component.row = this.row + '-' + rowIndex;
                 const options = _clone(this.options);
                 options.name += '[' + rowIndex + ']';
-                const comp1 = this.createComponent(component, options, this.openRows[rowIndex]);
-                return comp1.element;
+                const inst = this.createComponent(component, options, this.editRows[rowIndex].data);
+                this.editRows[rowIndex].components.push(inst);
+                return inst.element;
               }),
               this.ce('div', {class: 'editgrid-actions'},
                 [
@@ -84,6 +86,7 @@ export class EditGridComponent extends FormioComponents {
                     class: 'btn btn-primary',
                     onClick: this.saveRow.bind(this, rowIndex)
                   }, this.component.saveRow || 'Save'),
+                  ' ',
                   this.component.removeRow ?
                     this.ce('div', {
                       class: 'btn btn-danger',
@@ -158,64 +161,65 @@ export class EditGridComponent extends FormioComponents {
     this.tableElement.replaceChild(newFooter, this.footerElement);
     this.footerElement = newFooter;
 
-    this.rows.forEach((row, rowIndex) => {
-      if (!this.rowElements[rowIndex]) {
+    this.editRows.forEach((editRow, rowIndex) => {
+      if (!editRow.element) {
         // New row
-        this.rowElements[rowIndex] = this.createRow(row, rowIndex);
-        this.tableElement.insertBefore(this.rowElements[rowIndex], this.tableElement.children[rowIndex + 1]);
+        editRow.element = this.createRow(editRow.data, rowIndex);
+        this.tableElement.insertBefore(editRow.element, this.tableElement.children[rowIndex + 1]);
       }
       else if (
-        this.rowElements[rowIndex].rowData !== row ||
-        this.rowElements[rowIndex].rowIndex !== rowIndex ||
-        this.rowElements[rowIndex].rowOpen !== this.openRows.hasOwnProperty(rowIndex)
+        editRow.element.rowData !== editRow.data ||
+        editRow.element.rowIndex !== rowIndex ||
+        editRow.element.rowOpen !== editRow.isOpen
       ) {
         // Row has changed due to an edit or delete.
-        const newRow = this.createRow(row, rowIndex);
-        this.tableElement.replaceChild(newRow, this.rowElements[rowIndex]);
-        this.rowElements[rowIndex] = newRow;
+        const newRow = this.createRow(editRow.data, rowIndex);
+        this.tableElement.replaceChild(newRow, editRow.element);
+        editRow.element = newRow;
       }
     });
   }
 
   addRow() {
-    this.rows.push({});
-    const rowIndex = this.rows.length - 1;
-    this.openRows[rowIndex] = _clone(this.rows[rowIndex]);
+    this.editRows.push({
+      isOpen: true,
+      data: {}
+    });
     this.updateValue();
     this.refreshDOM();
   }
 
   editRow(rowIndex) {
-    this.openRows[rowIndex] = _clone(this.rows[rowIndex]);
+    this.editRows[rowIndex].isOpen = true;
+    this.editRows[rowIndex].data = _cloneDeep(this.rows[rowIndex]);
     this.refreshDOM();
   }
 
   cancelRow(rowIndex) {
-    delete this.openRows[rowIndex];
+    // Remove if new.
+    if (!this.rows[rowIndex]) {
+      this.tableElement.removeChild(this.editRows[rowIndex].element);
+      this.editRows.splice(rowIndex, 1);
+      this.rows.splice(rowIndex, 1);
+    }
+    else {
+      this.editRows[rowIndex].isOpen = false;
+      this.editRows[rowIndex].data = this.rows[rowIndex];
+    }
     this.refreshDOM();
   }
 
   saveRow(rowIndex) {
-    this.rows[rowIndex] = this.openRows[rowIndex];
-    delete this.openRows[rowIndex];
+    this.rows[rowIndex] = this.editRows[rowIndex].data;
+    this.editRows[rowIndex].isOpen = false;
     this.updateValue();
     this.refreshDOM();
   }
 
   removeRow(rowIndex) {
     this.rows.splice(rowIndex, 1);
-    delete this.openRows[rowIndex];
-    // Any open rows below the delete row need to be decremented.
-    for(const index in this.openRows) {
-      if (index > rowIndex) {
-        this.openRows[index - 1] = this.openRows[index];
-        delete this.openRows[index];
-      }
-    }
-
-    // Manually remove the dom element so it doesn't have more items than this.rows.
-    this.tableElement.removeChild(this.rowElements[rowIndex]);
-    this.rowElements.splice(rowIndex, 1);
+    this.tableElement.removeChild(this.editRows[rowIndex].element);
+    this.editRows.splice(rowIndex, 1);
     this.updateValue();
     this.refreshDOM();
   }
@@ -234,6 +238,18 @@ export class EditGridComponent extends FormioComponents {
     }
 
     this.rows = this.data[this.component.key] = value;
+    // Refresh editRow data when data changes.
+    this.rows.forEach((row, rowIndex) => {
+      if (this.editRows[rowIndex]) {
+        this.editRows[rowIndex].data = row;
+      }
+      else {
+        this.editRows[rowIndex] = {
+          isOpen: false,
+          data: row
+        };
+      }
+    });
     this.refreshDOM();
   }
 
