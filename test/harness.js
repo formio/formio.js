@@ -48,12 +48,33 @@ export const Harness = {
     });
     form.submission = submission;
   },
-  testElements: function(component, query, numInputs) {
+  clickElement: function(component, query) {
+    const clickEvent = new MouseEvent('click', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+    const element = this.testElement(component, query, true);
+    return element.dispatchEvent(clickEvent);
+  },
+  testElements: function(component, query, number) {
     let elements = component.element.querySelectorAll(query);
-    if (numInputs !== undefined) {
-      assert.equal(elements.length, numInputs);
+    if (number !== undefined) {
+      assert.equal(elements.length, number);
     }
     return elements;
+  },
+  testElement: function(component, query, exists) {
+    let element = component.element.querySelector(query);
+    if (exists !== undefined) {
+      assert.equal(!!element, !!exists);
+    }
+    return element;
+  },
+  testInnerHtml: function(component, query, content) {
+    let element = component.element.querySelector(query);
+    assert(element, query + ' not found');
+    assert.equal(element.innerHTML.trim(), content);
   },
   testElementAttribute: function(element, attribute, expected) {
     if (element !== undefined && element.getAttribute(attribute)) {
@@ -65,6 +86,18 @@ export const Harness = {
     component.setValue(value);
     assert.deepEqual(component.getValue(), value);
     return component;
+  },
+  setInputValue: function(component, name, value) {
+    const inputEvent = new Event('input', {bubbles: true, cancelable: true});
+    const element = component.element.querySelector('input[name="' + name + '"]');
+    assert(element, name + ' input not found');
+    element.value = value;
+    return element.dispatchEvent(inputEvent);
+  },
+  getInputValue: function(component, name, value) {
+    const element = component.element.querySelector('input[name="' + name + '"]');
+    assert(element, name + ' input not found');
+    assert.equal(value, element.value);
   },
   testSetInput: function(component, input, output, visible, index = 0) {
     component.setValue(input);

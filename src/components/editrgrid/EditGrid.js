@@ -17,10 +17,6 @@ export class EditGridComponent extends FormioComponents {
   build() {
     this.createElement();
     this.createLabel(this.element);
-    if (!this.data.hasOwnProperty(this.component.key)) {
-      this.addNewValue();
-    }
-    this.visibleColumns = true;
     this.buildTable();
     this.createDescription(this.element);
     this.createAddButton();
@@ -327,7 +323,7 @@ export class EditGridComponent extends FormioComponents {
   }
 
   get defaultValue() {
-    return {};
+    return [];
   }
 
   setValue(value, flags) {
