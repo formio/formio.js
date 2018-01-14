@@ -10765,6 +10765,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         }).catch(function (err) {
           return _this5.submissionReadyReject(err);
         });
+      } else {
+        this.submissionReadyResolve();
       }
     }
 

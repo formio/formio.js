@@ -408,6 +408,9 @@ export class FormioForm extends FormioComponents {
         (err) => this.submissionReadyReject(err)
       );
     }
+    else {
+      this.submissionReadyResolve();
+    }
   }
 
   /**
