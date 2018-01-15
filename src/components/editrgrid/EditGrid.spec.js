@@ -294,4 +294,30 @@ describe('EditGrid Component', function() {
       done();
     });
   });
+
+  it('Should disable components when in read only', done => {
+    Harness.testCreate(EditGridComponent, comps.comp1, {readOnly: true}).then((component) => {
+      Harness.testSetGet(component, [
+        {
+          field1: 'good',
+          field2: 'foo'
+        },
+        {
+          field1: 'good',
+          field2: 'bar'
+        }
+      ]);
+      Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.removeRow');
+      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', "2");
+      Harness.clickElement(component, 'div.editgrid-add a');
+      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', "2");
+      Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
+      Harness.clickElement(component, 'div.editgrid-actions div.btn-danger');
+      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', "2");
+      Harness.clickElement(component, 'li.list-group-item:nth-child(3) div.editRow');
+      Harness.clickElement(component, 'div.editgrid-actions div.btn-primary');
+      Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', "2");
+      done();
+    });
+  });
 });

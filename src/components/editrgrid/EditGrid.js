@@ -182,6 +182,9 @@ export class EditGridComponent extends FormioComponents {
   }
 
   addRow() {
+    if (this.options.readOnly) {
+      return;
+    }
     this.editRows.push({
       isOpen: true,
       data: {}
@@ -197,6 +200,12 @@ export class EditGridComponent extends FormioComponents {
   }
 
   cancelRow(rowIndex) {
+    if (this.options.readOnly) {
+      this.editRows[rowIndex].isOpen = false;
+      this.removeRowComponents(rowIndex);
+      this.refreshDOM();
+      return;
+    }
     this.removeRowComponents(rowIndex);
     // Remove if new.
     if (!this.rows[rowIndex]) {
@@ -212,6 +221,12 @@ export class EditGridComponent extends FormioComponents {
   }
 
   saveRow(rowIndex) {
+    if (this.options.readOnly) {
+      this.editRows[rowIndex].isOpen = false;
+      this.removeRowComponents(rowIndex);
+      this.refreshDOM();
+      return;
+    }
     if (!this.validateRow(rowIndex)) {
       return;
     }
@@ -224,6 +239,9 @@ export class EditGridComponent extends FormioComponents {
   }
 
   removeRow(rowIndex) {
+    if (this.options.readOnly) {
+      return;
+    }
     this.removeRowComponents(rowIndex);
     this.rows.splice(rowIndex, 1);
     this.tableElement.removeChild(this.editRows[rowIndex].element);
