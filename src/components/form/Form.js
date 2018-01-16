@@ -181,6 +181,25 @@ export class FormComponent extends FormioForm {
     return this.ready.then(() => this.readyPromise);
   }
 
+  emit(event, data) {
+    switch (event) {
+      case 'submit':
+        event = 'formComponentSubmit';
+        break;
+      case 'submitDone':
+        event = 'formComponentSubmitDone';
+        break;
+      case 'formLoad':
+        event = 'formComponentLoad';
+        break;
+      case 'render':
+        event = 'formComponentRender';
+        break;
+    }
+
+    super.emit(event, data);
+  }
+
   setValue(submission, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!submission) {

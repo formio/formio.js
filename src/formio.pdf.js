@@ -78,7 +78,7 @@ export class FormioPDF extends FormioForm {
   build() {
     this.zoomIn = this.ce('span', {
       style: 'position:absolute;right:10px;top:10px;cursor:pointer;',
-      class: 'btn btn-default no-disable'
+      class: 'btn btn-default btn-secondary no-disable'
     }, this.ce('i', {
       class: this.iconClass('zoom-in')
     }));
@@ -89,7 +89,7 @@ export class FormioPDF extends FormioForm {
 
     this.zoomOut = this.ce('span', {
       style: 'position:absolute;right:10px;top:60px;cursor:pointer;',
-      class: 'btn btn-default no-disable'
+      class: 'btn btn-default btn-secondary no-disable'
     }, this.ce('i', {
       class: this.iconClass('zoom-out')
     }));

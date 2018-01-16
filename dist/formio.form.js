@@ -2282,7 +2282,7 @@ var BaseComponent = function () {
 
       var removeButton = this.ce('button', {
         type: 'button',
-        class: 'btn btn-default',
+        class: 'btn btn-default btn-secondary',
         tabindex: '-1'
       });
 
@@ -2765,38 +2765,6 @@ var BaseComponent = function () {
       } else if (child) {
         element.appendChild(this.text(child.toString()));
       }
-    }
-
-    /**
-     * Render a template string into html.
-     *
-     * @param template
-     * @param data
-     * @param actions
-     *
-     * @return {HTMLElement} - The created element.
-     */
-
-  }, {
-    key: 'renderTemplate',
-    value: function renderTemplate(template, data) {
-      var actions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
-      // Create a container div.
-      var div = this.ce('div');
-
-      // Interpolate the template and populate
-      div.innerHTML = _utils2.default.interpolate(template, data);
-
-      // Add actions to matching elements.
-      actions.forEach(function (action) {
-        var elements = div.getElementsByClassName(action.class);
-        Array.prototype.forEach.call(elements, function (element) {
-          element.addEventListener(action.event, action.action);
-        });
-      });
-
-      return div;
     }
 
     /**
@@ -4246,7 +4214,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       info.type = 'input';
       info.changeEvent = 'click';
       info.attr.type = this.component.inputType;
-      info.attr.class = '';
+      info.attr.class = 'form-check-input';
       if (this.component.name) {
         info.attr.name = 'data[' + this.component.name + ']';
       }
@@ -4278,7 +4246,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   }, {
     key: 'createElement',
     value: function createElement() {
-      var className = this.className;
+      var className = 'form-check ' + this.className;
       if (this.component.label) {
         className += ' checkbox';
       }
@@ -4340,7 +4308,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         return null;
       }
 
-      var className = 'control-label';
+      var className = 'control-label form-check-label';
       if (this.component.input && this.component.validate && this.component.validate.required) {
         className += ' field-required';
       }
@@ -6197,7 +6165,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       this.element.appendChild(this.ce('div', { class: 'editgrid-add' }, this.ce('a', {
         class: 'btn btn-primary',
         onClick: this.addRow.bind(this)
-      }, [this.ce('span', { class: 'glyphicon glyphicon-plus', 'aria-hidden': true }), ' ', this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})])));
+      }, [this.ce('span', { class: this.iconClass('plus'), 'aria-hidden': true }), ' ', this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})])));
     }
   }, {
     key: 'refreshDOM',
@@ -7366,6 +7334,26 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       });
     }
   }, {
+    key: 'emit',
+    value: function emit(event, data) {
+      switch (event) {
+        case 'submit':
+          event = 'formComponentSubmit';
+          break;
+        case 'submitDone':
+          event = 'formComponentSubmitDone';
+          break;
+        case 'formLoad':
+          event = 'formComponentLoad';
+          break;
+        case 'render':
+          event = 'formComponentRender';
+          break;
+      }
+
+      _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'emit', this).call(this, event, data);
+    }
+  }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
       var _this4 = this;
@@ -8416,7 +8404,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       var info = _get2(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'input';
       info.changeEvent = 'click';
-      info.attr.class = '';
+      info.attr.class = 'form-check-input';
       return info;
     }
   }, {
@@ -8424,19 +8412,17 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
     value: function createInput(container) {
       var _this2 = this;
 
-      var inputGroup = this.ce('div', {
-        class: 'input-group'
-      });
+      var inputGroup = this.ce('div');
       var labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
       var wrappers = [];
 
       (0, _each3.default)(this.component.values, function (value) {
-        var wrapperClass = _this2.optionWrapperClass;
+        var wrapperClass = 'form-check ' + _this2.optionWrapperClass;
         var labelWrapper = _this2.ce('div', {
           class: wrapperClass
         });
         var label = _this2.ce('label', {
-          class: 'control-label'
+          class: 'control-label form-check-label'
         });
 
         _this2.addShortcut(label, value.shortcut);
@@ -8600,7 +8586,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
     key: 'optionWrapperClass',
     get: function get() {
       var inputType = this.component.inputType;
-      var wrapperClass = this.component.inline ? inputType + '-inline' : inputType;
+      var wrapperClass = this.component.inline ? 'form-check-inline ' + inputType + '-inline' : inputType;
       return wrapperClass;
     }
   }, {
@@ -9615,6 +9601,7 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
       var info = _get(SelectBoxesComponent.prototype.__proto__ || Object.getPrototypeOf(SelectBoxesComponent.prototype), 'elementInfo', this).call(this);
       info.attr.name += '[]';
       info.attr.type = 'checkbox';
+      info.attr.class = 'form-check-input';
       return info;
     }
 
@@ -9867,7 +9854,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
 
       // Create the refresh button.
       this.refresh = this.ce('a', {
-        class: 'btn btn-sm btn-default signature-pad-refresh'
+        class: 'btn btn-sm btn-default btn-secondary signature-pad-refresh'
       });
       var refreshIcon = this.getIcon('refresh');
       this.refresh.appendChild(refreshIcon);

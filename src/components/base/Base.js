@@ -731,7 +731,7 @@ export class BaseComponent {
   removeButton(index) {
     let removeButton = this.ce('button', {
       type: 'button',
-      class: 'btn btn-default',
+      class: 'btn btn-default btn-secondary',
       tabindex: '-1'
     });
 
@@ -1172,33 +1172,6 @@ export class BaseComponent {
     else if (child) {
       element.appendChild(this.text(child.toString()));
     }
-  }
-
-  /**
-   * Render a template string into html.
-   *
-   * @param template
-   * @param data
-   * @param actions
-   *
-   * @return {HTMLElement} - The created element.
-   */
-  renderTemplate(template, data, actions = []) {
-    // Create a container div.
-    const div = this.ce('div');
-
-    // Interpolate the template and populate
-    div.innerHTML = FormioUtils.interpolate(template, data);
-
-    // Add actions to matching elements.
-    actions.forEach(action => {
-      const elements = div.getElementsByClassName(action.class);
-      Array.prototype.forEach.call(elements, element => {
-        element.addEventListener(action.event, action.action);
-      });
-    });
-
-    return div;
   }
 
   /**

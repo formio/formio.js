@@ -1056,7 +1056,7 @@ var BaseComponent = function () {
 
       var removeButton = this.ce('button', {
         type: 'button',
-        class: 'btn btn-default',
+        class: 'btn btn-default btn-secondary',
         tabindex: '-1'
       });
 
@@ -1539,38 +1539,6 @@ var BaseComponent = function () {
       } else if (child) {
         element.appendChild(this.text(child.toString()));
       }
-    }
-
-    /**
-     * Render a template string into html.
-     *
-     * @param template
-     * @param data
-     * @param actions
-     *
-     * @return {HTMLElement} - The created element.
-     */
-
-  }, {
-    key: 'renderTemplate',
-    value: function renderTemplate(template, data) {
-      var actions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
-      // Create a container div.
-      var div = this.ce('div');
-
-      // Interpolate the template and populate
-      div.innerHTML = _utils2.default.interpolate(template, data);
-
-      // Add actions to matching elements.
-      actions.forEach(function (action) {
-        var elements = div.getElementsByClassName(action.class);
-        Array.prototype.forEach.call(elements, function (element) {
-          element.addEventListener(action.event, action.action);
-        });
-      });
-
-      return div;
     }
 
     /**
