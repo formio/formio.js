@@ -1151,8 +1151,37 @@ export class BaseComponent {
       }
     });
     _each(this.eventHandlers, (handler) => {
-      window.removeEventListener(handler.event, handler.func);
+      if (handler.event) {
+        window.removeEventListener(handler.event, handler.func);
+      }
     });
+  }
+
+  /**
+   * Render a template string into html.
+   *
+   * @param template
+   * @param data
+   * @param actions
+   *
+   * @return {HTMLElement} - The created element.
+   */
+  renderTemplate(template, data, actions = []) {
+    // Create a container div.
+    const div = this.ce('div');
+
+    // Interpolate the template and populate
+    div.innerHTML = FormioUtils.interpolate(template, data);
+
+    // Add actions to matching elements.
+    actions.forEach(action => {
+      const elements = div.getElementsByClassName(action.class);
+      Array.prototype.forEach.call(elements, element => {
+        element.addEventListener(action.event, action.action);
+      });
+    });
+
+    return div;
   }
 
   /**

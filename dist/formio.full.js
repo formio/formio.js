@@ -2741,8 +2741,42 @@ var BaseComponent = function () {
         }
       });
       (0, _each3.default)(this.eventHandlers, function (handler) {
-        window.removeEventListener(handler.event, handler.func);
+        if (handler.event) {
+          window.removeEventListener(handler.event, handler.func);
+        }
       });
+    }
+
+    /**
+     * Render a template string into html.
+     *
+     * @param template
+     * @param data
+     * @param actions
+     *
+     * @return {HTMLElement} - The created element.
+     */
+
+  }, {
+    key: 'renderTemplate',
+    value: function renderTemplate(template, data) {
+      var actions = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
+
+      // Create a container div.
+      var div = this.ce('div');
+
+      // Interpolate the template and populate
+      div.innerHTML = _utils2.default.interpolate(template, data);
+
+      // Add actions to matching elements.
+      actions.forEach(function (action) {
+        var elements = div.getElementsByClassName(action.class);
+        Array.prototype.forEach.call(elements, function (element) {
+          element.addEventListener(action.event, action.action);
+        });
+      });
+
+      return div;
     }
 
     /**
