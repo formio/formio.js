@@ -5297,7 +5297,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     _this.validators.push('date');
     _this.closedOn = 0;
 
-    var dateFormatInfo = (0, _utils.getLocaleDateFormatInfo)(options.language);
+    var dateFormatInfo = (0, _utils.getLocaleDateFormatInfo)(_this.options.language);
     _this.defaultFormat = {
       date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
       time: 'h:i K'
@@ -6718,6 +6718,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   function FormComponent(component, options, data) {
     _classCallCheck(this, FormComponent);
 
+    data = data || {};
+
     // We need to reset the language so that it will not try to rebuild the form (by setting the language)
     // before this form component is done rendering. We will set it later.
     var language = '';
@@ -6773,7 +6775,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     }
 
     // Add the source to this actual submission if the component is a reference.
-    if (data[component.key] && _this.component.reference && !(component.src.indexOf('/submission/') !== -1)) {
+    if (data && data[component.key] && data[component.key]._id && _this.component.reference && !(component.src.indexOf('/submission/') !== -1)) {
       component.src += '/submission/' + data[component.key]._id;
     }
 
@@ -6783,7 +6785,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     }
 
     // Directly set the submission if it isn't a reference.
-    if (data[component.key] && !_this.component.reference) {
+    if (data && data[component.key] && !_this.component.reference) {
       _this.setSubmission(data[component.key]);
     }
 
@@ -6918,11 +6920,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.nosubmit = false;
       }
 
-      if (!(0, _isEmpty3.default)(submission.data) || flags.noload) {
-        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, this.data[this.component.key].data);
-        this.readyResolve();
-        return superValue;
-      } else if (submission._id) {
+      if (submission._id && !flags.noload) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
         this.formReady.then(function () {
@@ -6938,6 +6936,10 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
         // Assume value has changed.
         return true;
+      } else {
+        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, this.data[this.component.key].data);
+        this.readyResolve();
+        return superValue;
       }
     }
   }, {
@@ -7700,15 +7702,18 @@ var PanelComponent = exports.PanelComponent = function (_FormioComponents) {
   _createClass(PanelComponent, [{
     key: 'build',
     value: function build() {
+      var panelClass = 'card bg-' + this.component.theme + ' ';
+      panelClass += 'panel panel-' + this.component.theme + ' ';
+      panelClass += this.component.customClass;
       this.element = this.ce('div', {
-        class: 'panel panel-' + this.component.theme + ' ' + this.component.customClass
+        class: panelClass
       });
       if (this.component.title) {
         var heading = this.ce('div', {
-          class: 'panel-heading'
+          class: 'card-header panel-heading'
         });
         var title = this.ce('h3', {
-          class: 'panel-title'
+          class: 'card-title panel-title'
         });
         title.appendChild(this.text(this.component.title));
         this.createTooltip(title);
@@ -7716,7 +7721,7 @@ var PanelComponent = exports.PanelComponent = function (_FormioComponents) {
         this.element.appendChild(heading);
       }
       var body = this.ce('div', {
-        class: 'panel-body'
+        class: 'card-body panel-body'
       });
       this.addComponents(body);
       this.element.appendChild(body);
@@ -10241,7 +10246,7 @@ var WellComponent = exports.WellComponent = function (_FormioComponents) {
   _createClass(WellComponent, [{
     key: 'className',
     get: function get() {
-      return 'well formio-component formio-component-well ' + this.component.customClass;
+      return 'card card-body bg-faded well formio-component formio-component-well ' + this.component.customClass;
     }
   }]);
 
@@ -13361,7 +13366,7 @@ var FormioUtils = {
    * @returns {Object}
    *   The component that matches the given key, or undefined if not found.
    */
-  getComponent: function getComponent(components, key) {
+  getComponent: function getComponent(components, key, includeAll) {
     var result = void 0;
     FormioUtils.eachComponent(components, function (component, path) {
       if (FormioUtils.matchComponent(component, key)) {
@@ -13369,7 +13374,7 @@ var FormioUtils = {
         result = component;
         return true;
       }
-    });
+    }, includeAll);
     return result;
   },
 
