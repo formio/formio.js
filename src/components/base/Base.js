@@ -1175,6 +1175,33 @@ export class BaseComponent {
   }
 
   /**
+   * Render a template string into html.
+   *
+   * @param template
+   * @param data
+   * @param actions
+   *
+   * @return {HTMLElement} - The created element.
+   */
+  renderTemplate(template, data, actions = []) {
+    // Create a container div.
+    const div = this.ce('div');
+
+    // Interpolate the template and populate
+    div.innerHTML = FormioUtils.interpolate(template, data);
+
+    // Add actions to matching elements.
+    actions.forEach(action => {
+      const elements = div.getElementsByClassName(action.class);
+      Array.prototype.forEach.call(elements, element => {
+        element.addEventListener(action.event, action.action);
+      });
+    });
+
+    return div;
+  }
+
+  /**
    * Alias for document.createElement.
    *
    * @param {string} type - The type of element to create

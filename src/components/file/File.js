@@ -109,7 +109,7 @@ export class FileComponent extends BaseComponent {
         [
           this.ce('div', {class: 'col-md-1'},
             (
-              !this.disabled ?
+              (!this.disabled && !this.shouldDisable) ?
                 this.ce('i', {
                   class: this.iconClass('remove'),
                   onClick: event => {
