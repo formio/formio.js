@@ -1,4 +1,4 @@
-import maskInput from 'text-mask-all/vanilla';
+import maskInput from 'vanilla-text-mask';
 import Promise from "native-promise-only";
 import _ from 'lodash';
 import _get from 'lodash/get';
