@@ -1,6 +1,6 @@
-import maskInput from 'text-mask-all/vanilla';
+import maskInput from 'vanilla-text-mask';
 import _get from 'lodash/get';
-import createNumberMask from 'text-mask-all/addons/dist/createNumberMask';
+import { createNumberMask } from 'text-mask-addons';
 import { BaseComponent } from '../base/Base';
 
 export class NumberComponent extends BaseComponent {
