@@ -15817,7 +15817,7 @@ id:f,value:a,label:h,groupValue:d.value,keyCode:c}):(0,v.triggerEvent)(this.pass
   EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
 
   EventEmitter.prototype.removeAllListeners = function(type) {
-    if (arguments.length === 0) {
+    if (type === undefined) {
       !this._events || init.call(this);
       return this;
     }

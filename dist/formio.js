@@ -2415,7 +2415,7 @@ exports.all = function() {
   EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
 
   EventEmitter.prototype.removeAllListeners = function(type) {
-    if (arguments.length === 0) {
+    if (type === undefined) {
       !this._events || init.call(this);
       return this;
     }
