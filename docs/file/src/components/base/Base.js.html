@@ -70,6 +70,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +143,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
@@ -428,7 +434,7 @@ export class BaseComponent {
    */
   getIcon(name) {
     return this.ce(&apos;i&apos;, {
-      class: `glyphicon glyphicon-${name}`
+      class: this.iconClass(name)
     });
   }
 
@@ -733,7 +739,7 @@ export class BaseComponent {
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
     }
-    if (!_isArray(this.data[this.component.key])) {
+    if (this.data[this.component.key] &amp;&amp; !_isArray(this.data[this.component.key])) {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
     this.data[this.component.key].push(this.defaultValue);
@@ -801,11 +807,33 @@ export class BaseComponent {
     }
   }
 
+  bootstrap4Theme(name) {
+    return (name === &apos;default&apos;) ? &apos;secondary&apos; : name;
+  }
+
+  iconClass(name, spinning) {
+    if (!this.options.icons || this.options.icons === &apos;glyphicon&apos;) {
+      return spinning ? `glyphicon glyphicon-${name} glyphicon-spin` : `glyphicon glyphicon-${name}`;
+    }
+    switch (name) {
+      case &apos;zoom-in&apos;:
+        return &apos;fa fa-search-plus&apos;;
+      case &apos;zoom-out&apos;:
+        return &apos;fa fa-search-minus&apos;;
+      case &apos;question-sign&apos;:
+        return `fa fa-question-circle`;
+      case &apos;remove-circle&apos;:
+        return `fa fa-times-circle-o`;
+      default:
+        return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
+    }
+  }
+
   /**
    * Adds a new button to add new rows to the multiple input elements.
    * @returns {HTMLElement} - The &quot;Add New&quot; button html element.
    */
-  addButton() {
+  addButton(justIcon) {
     let addButton = this.ce(&apos;a&apos;, {
       class: &apos;btn btn-primary&apos;
     });
@@ -814,12 +842,19 @@ export class BaseComponent {
       this.addValue();
     });
 
-    let addIcon = this.ce(&apos;span&apos;, {
-      class: &apos;glyphicon glyphicon-plus&apos;
+    let addIcon = this.ce(&apos;i&apos;, {
+      class: this.iconClass(&apos;plus&apos;)
     });
-    addButton.appendChild(addIcon);
-    addButton.appendChild(this.text(this.component.addAnother || &apos; Add Another&apos;));
-    return addButton;
+
+    if (justIcon) {
+      addButton.appendChild(addIcon);
+      return addButton;
+    }
+    else {
+      addButton.appendChild(addIcon);
+      addButton.appendChild(this.text(this.component.addAnother || &apos; Add Another&apos;));
+      return addButton;
+    }
   }
 
   /**
@@ -855,7 +890,7 @@ export class BaseComponent {
   removeButton(index) {
     let removeButton = this.ce(&apos;button&apos;, {
       type: &apos;button&apos;,
-      class: &apos;btn btn-default&apos;,
+      class: &apos;btn btn-default btn-secondary&apos;,
       tabindex: &apos;-1&apos;
     });
 
@@ -864,8 +899,8 @@ export class BaseComponent {
       this.removeValue(index);
     });
 
-    let removeIcon = this.ce(&apos;span&apos;, {
-      class: &apos;glyphicon glyphicon-remove-circle&apos;
+    let removeIcon = this.ce(&apos;i&apos;, {
+      class: this.iconClass(&apos;remove-circle&apos;)
     });
     removeButton.appendChild(removeIcon);
     return removeButton;
@@ -1050,7 +1085,7 @@ export class BaseComponent {
    */
   createTooltip(container, component, classes) {
     component = component || this.component;
-    classes = classes || &apos;glyphicon glyphicon-question-sign text-muted&apos;;
+    classes = classes || `${this.iconClass(&apos;question-sign&apos;)} text-muted`;
     if (!component.tooltip) {
       return;
     }
@@ -1092,7 +1127,7 @@ export class BaseComponent {
       return;
     }
     this.errorElement = this.ce(&apos;div&apos;, {
-      class: &apos;formio-errors&apos;
+      class: &apos;formio-errors invalid-feedback&apos;
     });
     this.errorContainer.appendChild(this.errorElement);
   }
@@ -1275,8 +1310,37 @@ export class BaseComponent {
       }
     });
     _each(this.eventHandlers, (handler) =&gt; {
-      window.removeEventListener(handler.event, handler.func);
+      if (handler.event) {
+        window.removeEventListener(handler.event, handler.func);
+      }
     });
+  }
+
+  /**
+   * Render a template string into html.
+   *
+   * @param template
+   * @param data
+   * @param actions
+   *
+   * @return {HTMLElement} - The created element.
+   */
+  renderTemplate(template, data, actions = []) {
+    // Create a container div.
+    const div = this.ce(&apos;div&apos;);
+
+    // Interpolate the template and populate
+    div.innerHTML = FormioUtils.interpolate(template, data);
+
+    // Add actions to matching elements.
+    actions.forEach(action =&gt; {
+      const elements = div.getElementsByClassName(action.class);
+      Array.prototype.forEach.call(elements, element =&gt; {
+        element.addEventListener(action.event, action.action);
+      });
+    });
+
+    return div;
   }
 
   /**
@@ -1425,6 +1489,7 @@ export class BaseComponent {
 
     // Add error classes
     this.addClass(this.element, &apos;has-error&apos;);
+    this.inputs.forEach((input) =&gt; this.addClass(input, &apos;is-invalid&apos;));
     if (dirty &amp;&amp; this.options.highlightErrors) {
       this.addClass(this.element, &apos;alert alert-danger&apos;);
     }
@@ -1803,6 +1868,7 @@ export class BaseComponent {
       catch (err) {}
     }
     this.removeClass(this.element, &apos;has-error&apos;);
+    this.inputs.forEach((input) =&gt; this.removeClass(input, &apos;is-invalid&apos;));
     if (this.options.highlightErrors) {
       this.removeClass(this.element, &apos;alert alert-danger&apos;);
     }
@@ -1862,7 +1928,11 @@ export class BaseComponent {
     if (!this.hasInput) {
       return false;
     }
+    if (this.component.multiple &amp;&amp; !_isArray(value)) {
+      value = [value];
+    }
     this.value = value;
+    this.buildRows();
     const isArray = _isArray(value);
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
@@ -1923,7 +1993,7 @@ export class BaseComponent {
     element.loading = loading;
     if (!element.loader &amp;&amp; loading) {
       element.loader = this.ce(&apos;i&apos;, {
-        class: &apos;glyphicon glyphicon-refresh glyphicon-spin button-icon-right&apos;
+        class: this.iconClass(&apos;refresh&apos;, true) + &apos; button-icon-right&apos;
       });
     }
     if (element.loader) {

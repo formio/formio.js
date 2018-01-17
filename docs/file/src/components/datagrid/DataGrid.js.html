@@ -70,6 +70,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -141,6 +144,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -209,6 +215,12 @@ export class DataGridComponent extends FormioComponents {
     if (!this.shouldDisable) {
       let th = this.ce(&apos;th&apos;);
       tr.appendChild(th);
+
+      // add the &quot;+&quot; - &quot;add another&quot; button
+      if (this.component.addAnotherPosition === &quot;top&quot; || this.component.addAnotherPosition === &quot;both&quot;) {
+        th.appendChild(this.addButton(true));
+        tr.appendChild(th);
+      }
     }
 
     thead.appendChild(tr);
@@ -270,14 +282,18 @@ export class DataGridComponent extends FormioComponents {
     });
 
     // Add the add button if not disabled.
-    if (!this.shouldDisable) {
-      let tr = this.ce(&apos;tr&apos;);
-      let td = this.ce(&apos;td&apos;, {
-        colspan: (this.component.components.length + 1)
-      });
-      td.appendChild(this.addButton());
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
+    if (!this.shouldDisable &amp;&amp; (
+      !this.component.addAnotherPosition ||
+      this.component.addAnotherPosition === &quot;bottom&quot; ||
+      this.component.addAnotherPosition === &quot;both&quot;
+      )) {
+        let tr = this.ce(&apos;tr&apos;);
+        let td = this.ce(&apos;td&apos;, {
+          colspan: (this.component.components.length + 1)
+        });
+        td.appendChild(this.addButton());
+        tr.appendChild(td);
+        this.tbody.appendChild(tr);
     }
   }
 
@@ -321,13 +337,8 @@ export class DataGridComponent extends FormioComponents {
       return;
     }
 
-    this.value = value;
-
-    // Add needed rows.
-    for (let i=this.rows.length; i &lt; value.length; i++) {
-      this.addValue();
-    }
-
+    this.value = this.data[this.component.key] = value;
+    this.buildRows();
     _each(this.rows, (row, index) =&gt; {
       if (value.length &lt;= index) {
         return;

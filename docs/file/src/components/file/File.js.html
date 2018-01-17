@@ -70,6 +70,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +143,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
@@ -258,9 +264,9 @@ export class FileComponent extends BaseComponent {
         [
           this.ce(&apos;div&apos;, {class: &apos;col-md-1&apos;},
             (
-              !this.disabled ?
-                this.ce(&apos;span&apos;, {
-                  class: &apos;glyphicon glyphicon-remove&apos;,
+              (!this.disabled &amp;&amp; !this.shouldDisable) ?
+                this.ce(&apos;i&apos;, {
+                  class: this.iconClass(&apos;remove&apos;),
                   onClick: event =&gt; {
                     if (this.component.storage === &apos;url&apos;) {
                       this.options.formio.makeRequest(&apos;&apos;, this.data[this.component.key][index].url, &apos;delete&apos;);
@@ -315,8 +321,8 @@ export class FileComponent extends BaseComponent {
           image = this.ce(&apos;img&apos;, {src: &apos;&apos;, alt: fileInfo.originalName || fileInfo.name, style: &apos;width:&apos; + this.component.imageSize + &apos;px&apos;}),
           (
             !this.disabled ?
-              this.ce(&apos;span&apos;, {
-                class: &apos;glyphicon glyphicon-remove&apos;,
+              this.ce(&apos;i&apos;, {
+                class: this.iconClass(&apos;remove&apos;),
                 onClick: event =&gt; {
                   if (this.component.storage === &apos;url&apos;) {
                     this.options.formio.makeRequest(&apos;&apos;, this.data[this.component.key][index].url, &apos;delete&apos;);
@@ -359,7 +365,7 @@ export class FileComponent extends BaseComponent {
             }
           },
             [
-              this.ce(&apos;i&apos;, {class: &apos;glyphicon glyphicon-cloud-upload&apos;}),
+              this.ce(&apos;i&apos;, {class: this.iconClass(&apos;cloud-upload&apos;)}),
               this.text(&apos; Drop files to attach, or &apos;),
               this.ce(&apos;a&apos;, {
                 onClick: event =&gt; {
@@ -426,8 +432,8 @@ export class FileComponent extends BaseComponent {
       this.ce(&apos;div&apos;, {class: &apos;row&apos;}, [
           this.ce(&apos;div&apos;, {class: &apos;fileName control-label col-sm-10&apos;}, [
             fileUpload.originalName,
-            this.ce(&apos;span&apos;, {
-              class: &apos;glyphicon glyphicon-remove&apos;,
+            this.ce(&apos;i&apos;, {
+              class: this.iconClass(&apos;remove&apos;),
               onClick: () =&gt; {this.uploadStatusList.removeChild(container)}
             })
           ]),

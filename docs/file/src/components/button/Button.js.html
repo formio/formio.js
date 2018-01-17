@@ -70,6 +70,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -141,6 +144,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -168,12 +174,12 @@ export class ButtonComponent extends BaseComponent {
   }
 
   set loading(loading) {
-    this.setLoading(this.element, loading);
+    this.setLoading(this.button, loading);
   }
 
   set disabled(disabled) {
     super.disabled = disabled;
-    this.setDisabled(this.element, disabled);
+    this.setDisabled(this.button, disabled);
   }
 
   getValue() {
@@ -183,18 +189,25 @@ export class ButtonComponent extends BaseComponent {
     return this.clicked;
   }
 
+  get className() {
+    let className = super.className;
+    className += &apos; form-group&apos;;
+    return className;
+  }
+
   build() {
     if (this.viewOnlyMode()) {
       this.component.hidden = true;
     }
 
     this.clicked = false;
-    this.element = this.ce(this.info.type, this.info.attr);
-    this.addShortcut(this.element);
+    this.createElement();
+    this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
+    this.addShortcut(this.button);
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
-      this.element.appendChild(this.labelElement);
-      this.createTooltip(this.element, null, &apos;glyphicon glyphicon-question-sign&apos;);
+      this.button.appendChild(this.labelElement);
+      this.createTooltip(this.button, null, this.iconClass(&apos;question-sign&apos;));
     }
     if (this.component.action === &apos;submit&apos;) {
       this.on(&apos;submitButton&apos;, () =&gt; {
@@ -213,7 +226,7 @@ export class ButtonComponent extends BaseComponent {
         this.loading = false;
       }, true);
     }
-    this.addEventListener(this.element, &apos;click&apos;, (event) =&gt; {
+    this.addEventListener(this.button, &apos;click&apos;, (event) =&gt; {
       this.clicked = false;
       switch (this.component.action) {
         case &apos;submit&apos;:
@@ -232,9 +245,9 @@ export class ButtonComponent extends BaseComponent {
           break;
         case &apos;custom&apos;:
           // Get the FormioForm at the root of this component&apos;s tree
-          var form       = this.getRoot();
+          var form = this.getRoot();
           // Get the form&apos;s flattened schema components
-          var flattened  = FormioUtils.flattenComponents(form.component.components, true);
+          var flattened = FormioUtils.flattenComponents(form.component.components, true);
           // Create object containing the corresponding HTML element components
           var components = {};
           _each(flattened, function(component, key) {
@@ -258,7 +271,25 @@ export class ButtonComponent extends BaseComponent {
           this.emit(&apos;resetForm&apos;);
           break;
         case &apos;oauth&apos;:
-          console.log(&apos;OAuth currently not supported.&apos;);
+          if (this.root === this) {
+            console.warn(&apos;You must add the OAuth button to a form for it to function properly&apos;);
+            return;
+          }
+
+          // Display Alert if OAuth config is missing
+          if(!this.component.oauth){
+            this.root.setAlert(&apos;danger&apos;, &apos;You must assign this button to an OAuth action before it will work.&apos;);
+            break;
+          }
+
+          // Display Alert if oAuth has an error is missing
+          if(this.component.oauth.error){
+            this.root.setAlert(&apos;danger&apos;, &apos;The Following Error Has Occured&apos; + this.component.oauth.error);
+            break;
+          }
+
+          this.openOauth(this.component.oauth);
+
           break;
       }
     });
@@ -267,11 +298,86 @@ export class ButtonComponent extends BaseComponent {
     }
   }
 
+  openOauth() {
+    if (!this.root.formio) {
+      console.warn(&apos;You must attach a Form API url to your form in order to use OAuth buttons.&apos;);
+      return;
+    }
+
+    const settings = this.component.oauth;
+
+    /*eslint-disable camelcase */
+    let params = {
+      response_type: &apos;code&apos;,
+      client_id: settings.clientId,
+      redirect_uri: window.location.origin || window.location.protocol + &apos;//&apos; + window.location.host,
+      state: settings.state,
+      scope: settings.scope
+    };
+    /*eslint-enable camelcase */
+
+    // Make display optional.
+    if (settings.display) {
+      params.display = settings.display;
+    }
+
+    params = Object.keys(params).map(key =&gt; {
+      return key + &apos;=&apos; + encodeURIComponent(params[key]);
+    }).join(&apos;&amp;&apos;);
+
+    const url = settings.authURI + &apos;?&apos; + params;
+    const popup = window.open(url, settings.provider, &apos;width=1020,height=618&apos;);
+
+    const interval = setInterval(() =&gt; {
+      try {
+        const popupHost = popup.location.host;
+        const currentHost = window.location.host;
+        if (popup &amp;&amp; !popup.closed &amp;&amp; popupHost === currentHost &amp;&amp; popup.location.search) {
+          popup.close();
+          let params = popup.location.search.substr(1).split(&apos;&amp;&apos;).reduce((params, param) =&gt; {
+            const split = param.split(&apos;=&apos;);
+            params[split[0]] = split[1];
+            return params;
+          }, {});
+          if (params.error) {
+            alert(params.error_description || params.error);
+            this.root.setAlert(&apos;danger&apos;, params.error_description || params.error);
+            return;
+          }
+          // TODO: check for error response here
+          if (settings.state !== params.state) {
+            this.root.setAlert(&apos;danger&apos;, &apos;OAuth state does not match. Please try logging in again.&apos;);
+            return;
+          }
+          const submission = {data: {}, oauth: {}};
+          submission.oauth[settings.provider] = params;
+          submission.oauth[settings.provider].redirectURI = window.location.origin || window.location.protocol + &apos;//&apos; + window.location.host;
+          this.root.formio.saveSubmission(submission)
+            .then(submission =&gt; {
+              this.root.onSubmit(result, true);
+            })
+            .catch((err) =&gt; {
+              this.root.onSubmissionError(err);
+            });
+        }
+      }
+      catch (error) {
+        if (error.name !== &apos;SecurityError&apos;) {
+          this.root.setAlert(&apos;danger&apos;, error.message || error);
+        }
+      }
+      if (!popup || popup.closed || popup.closed === undefined) {
+        clearInterval(interval);
+      }
+    }, 100);
+  }
+
   destroy() {
     super.destroy.apply(this, Array.prototype.slice.apply(arguments));
     this.removeShortcut(this.element);
   }
 }
+
 </code></pre>
 
 </div>

@@ -70,6 +70,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +143,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
@@ -425,9 +431,15 @@ export class FormioWizard extends FormioForm {
       clickable: true
     });
 
-    this.wizardHeader = this.ce(&apos;ul&apos;, {
+    this.wizardHeader = this.ce(&apos;nav&apos;, {
+      &apos;aria-label&apos;: &apos;navigation&apos;
+    });
+
+    this.wizardHeaderList = this.ce(&apos;ul&apos;, {
       class: &apos;pagination&apos;
     });
+
+    this.wizardHeader.appendChild(this.wizardHeaderList);
 
     // Add the header to the beginning.
     this.prepend(this.wizardHeader);
@@ -441,9 +453,11 @@ export class FormioWizard extends FormioForm {
 
       // Set clickable based on breadcrumb settings
       let clickable = this.page !== i &amp;&amp; this.options.breadcrumbSettings.clickable
+      let pageClass = &apos;page-item &apos;;
+      pageClass += (i === this.page) ? &apos;active&apos; : (clickable ? &apos;&apos; : &apos;disabled&apos;);
 
       let pageButton = this.ce(&apos;li&apos;, {
-        class: (i === this.page) ? &apos;active&apos; : (clickable ? &apos;&apos; : &apos;disabled&apos;),
+        class: pageClass,
         style: (clickable) ? &apos;cursor: pointer;&apos; : &apos;&apos;
       });
 
@@ -456,7 +470,9 @@ export class FormioWizard extends FormioForm {
         });
       }
 
-      let pageLabel = this.ce(&apos;span&apos;);
+      let pageLabel = this.ce(&apos;span&apos;, {
+        class: &apos;page-link&apos;
+      });
       let pageTitle = page.title;
       if (currentPage.breadcrumb.toLowerCase() === &apos;condensed&apos;) {
         pageTitle = ((i === this.page) || showHistory) ? page.title : (i + 1);
@@ -467,7 +483,7 @@ export class FormioWizard extends FormioForm {
 
       pageLabel.appendChild(this.text(pageTitle));
       pageButton.appendChild(pageLabel);
-      this.wizardHeader.appendChild(pageButton);
+      this.wizardHeaderList.appendChild(pageButton);
     });
   }
 
@@ -541,7 +557,7 @@ export class FormioWizard extends FormioForm {
     });
     this.element.appendChild(this.wizardNav);
     each([
-      {name: &apos;cancel&apos;,    method: &apos;cancel&apos;,   class: &apos;btn btn-default&apos;},
+      {name: &apos;cancel&apos;,    method: &apos;cancel&apos;,   class: &apos;btn btn-default btn-secondary&apos;},
       {name: &apos;previous&apos;,  method: &apos;prevPage&apos;, class: &apos;btn btn-primary&apos;},
       {name: &apos;next&apos;,      method: &apos;nextPage&apos;, class: &apos;btn btn-primary&apos;},
       {name: &apos;submit&apos;,    method: &apos;submit&apos;,   class: &apos;btn btn-primary&apos;}
@@ -549,7 +565,9 @@ export class FormioWizard extends FormioForm {
       if (!this.hasButton(button.name, nextPage)) {
         return;
       }
-      let buttonWrapper = this.ce(&apos;li&apos;);
+      let buttonWrapper = this.ce(&apos;li&apos;, {
+        class: &apos;list-inline-item&apos;
+      });
       let buttonProp = button.name + &apos;Button&apos;;
       let buttonElement = this[buttonProp] = this.ce(&apos;button&apos;, {
         class: button.class + &apos; btn-wizard-nav-&apos; + button.name

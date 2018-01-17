@@ -70,6 +70,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +143,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
@@ -345,7 +351,7 @@ const FormioUtils = {
    * @returns {Object}
    *   The component that matches the given key, or undefined if not found.
    */
-  getComponent(components, key) {
+  getComponent(components, key, includeAll) {
     let result;
     FormioUtils.eachComponent(components, (component, path) =&gt; {
       if (FormioUtils.matchComponent(component, key)) {
@@ -353,7 +359,7 @@ const FormioUtils = {
         result = component;
         return true;
       }
-    });
+    }, includeAll);
     return result;
   },
 
@@ -475,13 +481,15 @@ const FormioUtils = {
    * @param data
    *   The full submission data.
    */
-  checkCalculated(component, submission, data) {
+  checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
+      let row = rowData;
+      let data = submission ? submission.data : rowData;
       if (_isString(component.calculateValue)) {
         try {
           const util = this;
-          data[component.key] = eval(`(function(data, util) { var value = [];${component.calculateValue.toString()}; return value; })(data, util)`);
+          rowData[component.key] = eval(`(function(data, row, util) { var value = [];${component.calculateValue.toString()}; return value; })(data, row, util)`);
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -489,11 +497,7 @@ const FormioUtils = {
       }
       else {
         try {
-          data[component.key] = this.jsonLogic.apply(component.calculateValue, {
-            data: submission ? submission.data : data,
-            row: data,
-            _
-          });
+          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {data, row, _});
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -695,6 +699,55 @@ const FormioUtils = {
     formatInfo.dayFirst = localDateString.slice(0, 2) === day.toString();
 
     return formatInfo;
+  },
+  /**
+   * Convert the format from the angular-datepicker module to flatpickr format.
+   * @param format
+   * @return {string}
+   */
+  convertFormatToFlatpickr(format) {
+    return format
+      // Year conversion.
+      .replace(/y/g, &apos;Y&apos;)
+      .replace(&apos;YYYY&apos;, &apos;Y&apos;)
+      .replace(&apos;YY&apos;, &apos;y&apos;)
+
+      // Month conversion.
+      .replace(&apos;MMMM&apos;, &apos;F&apos;)
+      .replace(/M/g, &apos;n&apos;)
+      .replace(&apos;nnn&apos;, &apos;M&apos;)
+      .replace(&apos;nn&apos;, &apos;m&apos;)
+
+      // Day in month.
+      .replace(/d/g, &apos;j&apos;)
+      .replace(&apos;jj&apos;, &apos;d&apos;)
+
+      // Day in week.
+      .replace(&apos;EEEE&apos;, &apos;l&apos;)
+      .replace(&apos;EEE&apos;, &apos;D&apos;)
+
+      // Hours, minutes, seconds
+      .replace(&apos;HH&apos;, &apos;H&apos;)
+      .replace(&apos;hh&apos;, &apos;h&apos;)
+      .replace(&apos;mm&apos;, &apos;i&apos;)
+      .replace(&apos;ss&apos;, &apos;S&apos;)
+      .replace(/a/g, &apos;K&apos;);
+  },
+  /**
+   * Convert the format from the angular-datepicker module to moment format.
+   * @param format
+   * @return {string}
+   */
+  convertFormatToMoment(format) {
+    return format
+      // Year conversion.
+      .replace(/y/g, &apos;Y&apos;)
+      // Day in month.
+      .replace(/d/g, &apos;D&apos;)
+      // Day in week.
+      .replace(/E/g, &apos;d&apos;)
+      // AM/PM marker
+      .replace(/a/g, &apos;A&apos;);
   }
 };
 

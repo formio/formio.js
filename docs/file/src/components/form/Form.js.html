@@ -70,6 +70,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -141,6 +144,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -155,7 +161,19 @@ import _isEmpty from &apos;lodash/isEmpty&apos;;
 
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
+    data = data || {};
+
+    // We need to reset the language so that it will not try to rebuild the form (by setting the language)
+    // before this form component is done rendering. We will set it later.
+    let language = &apos;&apos;;
+    if (options &amp;&amp; options.language) {
+      language = options.language;
+      options.language = &apos;&apos;;
+    }
     super(null, options);
+    if (language &amp;&amp; options) {
+      options.language = language;
+    }
 
     // Ensure this component does not make it to the global forms array.
     delete Formio.forms[this.id];
@@ -202,7 +220,13 @@ export class FormComponent extends FormioForm {
     }
 
     // Add the source to this actual submission if the component is a reference.
-    if (data[component.key] &amp;&amp; this.component.reference &amp;&amp; !component.src.includes(&apos;/submission/&apos;)) {
+    if (
+      data &amp;&amp;
+      data[component.key] &amp;&amp;
+      data[component.key]._id &amp;&amp;
+      this.component.reference &amp;&amp;
+      !component.src.includes(&apos;/submission/&apos;)
+    ) {
       component.src += &apos;/submission/&apos; + data[component.key]._id;
     }
 
@@ -212,13 +236,18 @@ export class FormComponent extends FormioForm {
     }
 
     // Directly set the submission if it isn&apos;t a reference.
-    if (data[component.key] &amp;&amp; !this.component.reference) {
+    if (data &amp;&amp; data[component.key] &amp;&amp; !this.component.reference) {
       this.setSubmission(data[component.key]);
     }
 
     this.readyPromise = new Promise((resolve) =&gt; {
       this.readyResolve = resolve;
     });
+
+    // Set language after everything is established.
+    if (options &amp;&amp; options.language) {
+      this.language = options.language;
+    }
   }
 
   checkValidity(data) {
@@ -256,7 +285,6 @@ export class FormComponent extends FormioForm {
       return this.submit(true).then(submission =&gt; {
         // Before we submit, we need to filter out the references.
         this.data[this.component.key] = this.component.reference ? {_id: submission._id, form: submission.form} : submission;
-
         return this.data[this.component.key];
       });
     }
@@ -278,26 +306,53 @@ export class FormComponent extends FormioForm {
       }
     });
 
-    // Set the submission data.
-    let submissionData = this.data[this.component.key] ? this.data[this.component.key].data : {};
+    // Set the data for this form.
+    if (!this.data[this.component.key]) {
+      this.data[this.component.key] = this.defaultValue;
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = {data: {}};
+      }
+    }
 
     // Add components using the data of the submission.
-    this.addComponents(this.element, submissionData);
+    this.addComponents(this.element, this.data[this.component.key].data);
 
     // Restore default values.
     this.restoreValue();
 
-    // Set the value if it is not set already.
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {data: {}};
-    }
+    // Get the submission value.
+    let submission = this.getValue();
 
     // Check conditions for this form.
-    this.checkConditions(this.getValue());
+    this.checkConditions(submission);
+
+    // Check the data for default values.
+    this.checkData(submission.data, {
+      noValidate: true
+    });
   }
 
   whenReady() {
     return this.ready.then(() =&gt; this.readyPromise);
+  }
+
+  emit(event, data) {
+    switch (event) {
+      case &apos;submit&apos;:
+        event = &apos;formComponentSubmit&apos;;
+        break;
+      case &apos;submitDone&apos;:
+        event = &apos;formComponentSubmitDone&apos;;
+        break;
+      case &apos;formLoad&apos;:
+        event = &apos;formComponentLoad&apos;;
+        break;
+      case &apos;render&apos;:
+        event = &apos;formComponentRender&apos;;
+        break;
+    }
+
+    super.emit(event, data);
   }
 
   setValue(submission, flags) {
@@ -315,13 +370,7 @@ export class FormComponent extends FormioForm {
       this.nosubmit = false;
     }
 
-    if (!_isEmpty(submission.data) || flags.noload) {
-      _merge(this.data[this.component.key], submission);
-      let superValue = super.setValue(submission, flags);
-      this.readyResolve();
-      return superValue;
-    }
-    else if (submission._id) {
+    if (submission._id &amp;&amp; !flags.noload) {
       this.formio.submissionId = submission._id;
       this.formio.submissionUrl = this.formio.submissionsUrl + &apos;/&apos; + submission._id;
       this.formReady.then(() =&gt; {
@@ -337,6 +386,11 @@ export class FormComponent extends FormioForm {
 
       // Assume value has changed.
       return true;
+    }
+    else {
+      let superValue = super.setValue(submission, flags, this.data[this.component.key].data);
+      this.readyResolve();
+      return superValue;
     }
   }
 

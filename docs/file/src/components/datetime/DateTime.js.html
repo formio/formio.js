@@ -70,6 +70,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day">components/day</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/day/Day.js~DayComponent.html">DayComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-day-fixtures">components/day/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -141,6 +144,9 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout">contrib/stripe/checkout</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/checkout/StripeCheckout.js~StripeCheckoutComponent.html">StripeCheckoutComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-checkout-fixtures">contrib/stripe/checkout/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -154,6 +160,8 @@ import _each from &apos;lodash/each&apos;;
 import {
   getDateSetting,
   getLocaleDateFormatInfo,
+  convertFormatToFlatpickr,
+  convertFormatToMoment,
 } from &apos;../../utils&apos;;
 import moment from &apos;moment&apos;;
 export class DateTimeComponent extends BaseComponent {
@@ -162,7 +170,7 @@ export class DateTimeComponent extends BaseComponent {
     this.validators.push(&apos;date&apos;);
     this.closedOn = 0;
 
-    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
+    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.defaultFormat = {
       date: dateFormatInfo.dayFirst ? &apos;d/m/Y &apos; : &apos;m/d/Y &apos;,
       time: &apos;h:i K&apos;
@@ -191,57 +199,6 @@ export class DateTimeComponent extends BaseComponent {
     return false;
   }
 
-  /**
-   * Convert the format from the angular-datepicker module to flatpickr format.
-   * @param format
-   * @return {string|XML|*}
-   */
-  convertFormatToFlatpickr(format) {
-    return format
-      // Year conversion.
-      .replace(/y/g, &apos;Y&apos;)
-      .replace(&apos;YYYY&apos;, &apos;Y&apos;)
-      .replace(&apos;YY&apos;, &apos;y&apos;)
-
-      // Month conversion.
-      .replace(&apos;MMMM&apos;, &apos;F&apos;)
-      .replace(/M/g, &apos;n&apos;)
-      .replace(&apos;nnn&apos;, &apos;M&apos;)
-      .replace(&apos;nn&apos;, &apos;m&apos;)
-
-      // Day in month.
-      .replace(/d/g, &apos;j&apos;)
-      .replace(&apos;jj&apos;, &apos;d&apos;)
-
-      // Day in week.
-      .replace(&apos;EEEE&apos;, &apos;l&apos;)
-      .replace(&apos;EEE&apos;, &apos;D&apos;)
-
-      // Hours, minutes, seconds
-      .replace(&apos;HH&apos;, &apos;H&apos;)
-      .replace(&apos;hh&apos;, &apos;h&apos;)
-      .replace(&apos;mm&apos;, &apos;i&apos;)
-      .replace(&apos;ss&apos;, &apos;S&apos;)
-      .replace(/a/g, &apos;K&apos;);
-  }
-
-  /**
-   * Convert the format from the angular-datepicker module to moment format.
-   * @param format
-   * @return {string}
-   */
-  convertFormatToMoment(format) {
-    return format
-    // Year conversion.
-    .replace(/y/g, &apos;Y&apos;)
-    // Day in month.
-    .replace(/d/g, &apos;D&apos;)
-    // Day in week.
-    .replace(/E/g, &apos;d&apos;)
-    // AM/PM marker
-    .replace(/a/g, &apos;A&apos;);
-  }
-
   getLocaleFormat() {
     let format = &apos;&apos;;
 
@@ -266,7 +223,7 @@ export class DateTimeComponent extends BaseComponent {
       noCalendar: !_get(this.component, &apos;enableDate&apos;, true),
       altFormat: this.component.useLocaleSettings
         ? this.getLocaleFormat()
-        : this.convertFormatToFlatpickr(_get(this.component, &apos;format&apos;, &apos;&apos;)),
+        : convertFormatToFlatpickr(_get(this.component, &apos;format&apos;, &apos;&apos;)),
       dateFormat: &apos;U&apos;,
       defaultDate: this.defaultDate,
       hourIncrement: _get(this.component, &apos;timePicker.hourStep&apos;, 1),
@@ -366,7 +323,7 @@ export class DateTimeComponent extends BaseComponent {
 
   get view() {
     const value = this.getValue();
-    return value ? moment(value).format(this.convertFormatToMoment(_get(this.component, &apos;format&apos;, &apos;&apos;))) : null;
+    return value ? moment(value).format(convertFormatToMoment(_get(this.component, &apos;format&apos;, &apos;&apos;))) : null;
   }
 
   setValueAt(index, value) {
