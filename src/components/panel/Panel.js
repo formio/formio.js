@@ -1,7 +1,7 @@
 import { FormioComponents } from '../Components';
 export class PanelComponent extends FormioComponents {
   build() {
-    let panelClass = `card bg-${this.component.theme} `;
+    let panelClass = `card border-${this.bootstrap4Theme(this.component.theme)} `;
     panelClass += `panel panel-${this.component.theme} `;
     panelClass += this.component.customClass;
     this.element = this.ce('div', {

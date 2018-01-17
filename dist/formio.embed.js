@@ -2201,6 +2201,11 @@ var BaseComponent = function () {
       }
     }
   }, {
+    key: 'bootstrap4Theme',
+    value: function bootstrap4Theme(name) {
+      return name === 'default' ? 'secondary' : name;
+    }
+  }, {
     key: 'iconClass',
     value: function iconClass(name, spinning) {
       if (!this.options.icons || this.options.icons === 'glyphicon') {
@@ -8191,7 +8196,7 @@ var PanelComponent = exports.PanelComponent = function (_FormioComponents) {
   _createClass(PanelComponent, [{
     key: 'build',
     value: function build() {
-      var panelClass = 'card bg-' + this.component.theme + ' ';
+      var panelClass = 'card border-' + this.bootstrap4Theme(this.component.theme) + ' ';
       panelClass += 'panel panel-' + this.component.theme + ' ';
       panelClass += this.component.customClass;
       this.element = this.ce('div', {

@@ -975,6 +975,11 @@ var BaseComponent = function () {
       }
     }
   }, {
+    key: 'bootstrap4Theme',
+    value: function bootstrap4Theme(name) {
+      return name === 'default' ? 'secondary' : name;
+    }
+  }, {
     key: 'iconClass',
     value: function iconClass(name, spinning) {
       if (!this.options.icons || this.options.icons === 'glyphicon') {

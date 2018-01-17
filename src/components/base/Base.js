@@ -652,6 +652,10 @@ export class BaseComponent {
     }
   }
 
+  bootstrap4Theme(name) {
+    return (name === 'default') ? 'secondary' : name;
+  }
+
   iconClass(name, spinning) {
     if (!this.options.icons || this.options.icons === 'glyphicon') {
       return spinning ? `glyphicon glyphicon-${name} glyphicon-spin` : `glyphicon glyphicon-${name}`;
