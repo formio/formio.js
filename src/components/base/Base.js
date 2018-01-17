@@ -654,7 +654,7 @@ export class BaseComponent {
 
   iconClass(name, spinning) {
     if (!this.options.icons || this.options.icons === 'glyphicon') {
-      return spinning ? `glyphicon glyphicon-${name}` : `glyphicon glyphicon-${name} glyphicon-spin`;
+      return spinning ? `glyphicon glyphicon-${name} glyphicon-spin` : `glyphicon glyphicon-${name}`;
     }
     switch (name) {
       case 'zoom-in':
