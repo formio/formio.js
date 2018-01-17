@@ -110,8 +110,8 @@ export class FileComponent extends BaseComponent {
           this.ce('div', {class: 'col-md-1'},
             (
               (!this.disabled && !this.shouldDisable) ?
-                this.ce('span', {
-                  class: 'glyphicon glyphicon-remove',
+                this.ce('i', {
+                  class: this.iconClass('remove'),
                   onClick: event => {
                     if (this.component.storage === 'url') {
                       this.options.formio.makeRequest('', this.data[this.component.key][index].url, 'delete');
@@ -166,8 +166,8 @@ export class FileComponent extends BaseComponent {
           image = this.ce('img', {src: '', alt: fileInfo.originalName || fileInfo.name, style: 'width:' + this.component.imageSize + 'px'}),
           (
             !this.disabled ?
-              this.ce('span', {
-                class: 'glyphicon glyphicon-remove',
+              this.ce('i', {
+                class: this.iconClass('remove'),
                 onClick: event => {
                   if (this.component.storage === 'url') {
                     this.options.formio.makeRequest('', this.data[this.component.key][index].url, 'delete');
@@ -210,7 +210,7 @@ export class FileComponent extends BaseComponent {
             }
           },
             [
-              this.ce('i', {class: 'glyphicon glyphicon-cloud-upload'}),
+              this.ce('i', {class: this.iconClass('cloud-upload')}),
               this.text(' Drop files to attach, or '),
               this.ce('a', {
                 onClick: event => {
@@ -277,8 +277,8 @@ export class FileComponent extends BaseComponent {
       this.ce('div', {class: 'row'}, [
           this.ce('div', {class: 'fileName control-label col-sm-10'}, [
             fileUpload.originalName,
-            this.ce('span', {
-              class: 'glyphicon glyphicon-remove',
+            this.ce('i', {
+              class: this.iconClass('remove'),
               onClick: () => {this.uploadStatusList.removeChild(container)}
             })
           ]),

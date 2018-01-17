@@ -10,24 +10,22 @@ export class RadioComponent extends BaseComponent {
     const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
-    info.attr.class = '';
+    info.attr.class = 'form-check-input';
     return info;
   }
 
   createInput(container) {
-    const inputGroup = this.ce('div', {
-      class: 'input-group'
-    });
+    const inputGroup = this.ce('div');
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
     var wrappers = [];
 
     _each(this.component.values, (value) => {
-      const wrapperClass = this.optionWrapperClass;
+      const wrapperClass = `form-check ${this.optionWrapperClass}`;
       const labelWrapper = this.ce('div', {
         class: wrapperClass
       });
       const label = this.ce('label', {
-        class: 'control-label'
+        class: 'control-label form-check-label'
       });
 
       this.addShortcut(label, value.shortcut);
@@ -72,7 +70,7 @@ export class RadioComponent extends BaseComponent {
 
   get optionWrapperClass() {
     const inputType = this.component.inputType;
-    const wrapperClass = (this.component.inline ? `${inputType}-inline` : inputType);
+    const wrapperClass = (this.component.inline ? `form-check-inline ${inputType}-inline` : inputType);
     return wrapperClass;
   }
 

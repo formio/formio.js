@@ -17,8 +17,8 @@ export class ResourceComponent extends SelectComponent {
     let addButton = this.ce('a', {
       class: 'btn btn-primary'
     });
-    let addIcon   = this.ce('span', {
-      class: 'glyphicon glyphicon-plus'
+    let addIcon   = this.ce('i', {
+      class: this.iconClass('plus')
     });
     addButton.appendChild(addIcon);
     addButton.appendChild(this.text(' ' + (this.component.addResourceLabel || 'Add Resource')));

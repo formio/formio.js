@@ -185,7 +185,7 @@ td > .form-group {
   border-color: #127abe;
 }
 
-.formio-component-file .fileSelector .glyphicon {
+.formio-component-file .fileSelector .glyphicon, .formio-component-file .fileSelector .fa {
   font-size: 20px;
   margin-right: 5px;
 }
@@ -243,4 +243,8 @@ td > .form-group {
 .radio-inline label {
   font-weight: 400;
   cursor: pointer;
+}
+
+.editgrid-listgroup {
+  margin-bottom: 10px;
 }

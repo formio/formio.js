@@ -247,7 +247,7 @@ var FormioUtils = {
    * @returns {Object}
    *   The component that matches the given key, or undefined if not found.
    */
-  getComponent: function getComponent(components, key) {
+  getComponent: function getComponent(components, key, includeAll) {
     var result = void 0;
     FormioUtils.eachComponent(components, function (component, path) {
       if (FormioUtils.matchComponent(component, key)) {
@@ -255,7 +255,7 @@ var FormioUtils = {
         result = component;
         return true;
       }
-    });
+    }, includeAll);
     return result;
   },
 

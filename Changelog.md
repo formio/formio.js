@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.28.0
+### Added
+ - Support for Bootstrap 4
+ - EditGrid Component.
+ - Stripe integration within Contrib.
+
+### Fixed
+ - Small problem with read-only file uplaods where it would allow you to remove files.
+
 ## 2.27.6
 ### Fixed
  - Issue where the ready promise was not getting fired if a submission is not provided.

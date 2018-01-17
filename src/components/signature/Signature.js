@@ -95,7 +95,7 @@ export class SignatureComponent extends BaseComponent {
 
     // Create the refresh button.
     this.refresh = this.ce('a', {
-      class: 'btn btn-sm btn-default signature-pad-refresh'
+      class: 'btn btn-sm btn-default btn-secondary signature-pad-refresh'
     });
     let refreshIcon = this.getIcon('refresh');
     this.refresh.appendChild(refreshIcon);

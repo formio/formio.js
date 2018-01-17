@@ -6,6 +6,8 @@ import _isEmpty from 'lodash/isEmpty';
 
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
+    data = data || {};
+
     // We need to reset the language so that it will not try to rebuild the form (by setting the language)
     // before this form component is done rendering. We will set it later.
     let language = '';
@@ -63,7 +65,13 @@ export class FormComponent extends FormioForm {
     }
 
     // Add the source to this actual submission if the component is a reference.
-    if (data[component.key] && this.component.reference && !component.src.includes('/submission/')) {
+    if (
+      data &&
+      data[component.key] &&
+      data[component.key]._id &&
+      this.component.reference &&
+      !component.src.includes('/submission/')
+    ) {
       component.src += '/submission/' + data[component.key]._id;
     }
 
@@ -73,7 +81,7 @@ export class FormComponent extends FormioForm {
     }
 
     // Directly set the submission if it isn't a reference.
-    if (data[component.key] && !this.component.reference) {
+    if (data && data[component.key] && !this.component.reference) {
       this.setSubmission(data[component.key]);
     }
 
@@ -173,6 +181,25 @@ export class FormComponent extends FormioForm {
     return this.ready.then(() => this.readyPromise);
   }
 
+  emit(event, data) {
+    switch (event) {
+      case 'submit':
+        event = 'formComponentSubmit';
+        break;
+      case 'submitDone':
+        event = 'formComponentSubmitDone';
+        break;
+      case 'formLoad':
+        event = 'formComponentLoad';
+        break;
+      case 'render':
+        event = 'formComponentRender';
+        break;
+    }
+
+    super.emit(event, data);
+  }
+
   setValue(submission, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!submission) {
@@ -188,12 +215,7 @@ export class FormComponent extends FormioForm {
       this.nosubmit = false;
     }
 
-    if (!_isEmpty(submission.data) || flags.noload) {
-      let superValue = super.setValue(submission, flags, this.data[this.component.key].data);
-      this.readyResolve();
-      return superValue;
-    }
-    else if (submission._id) {
+    if (submission._id && !flags.noload) {
       this.formio.submissionId = submission._id;
       this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
       this.formReady.then(() => {
@@ -209,6 +231,11 @@ export class FormComponent extends FormioForm {
 
       // Assume value has changed.
       return true;
+    }
+    else {
+      let superValue = super.setValue(submission, flags, this.data[this.component.key].data);
+      this.readyResolve();
+      return superValue;
     }
   }
 

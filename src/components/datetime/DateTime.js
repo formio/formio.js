@@ -15,7 +15,7 @@ export class DateTimeComponent extends BaseComponent {
     this.validators.push('date');
     this.closedOn = 0;
 
-    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
+    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.defaultFormat = {
       date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
       time: 'h:i K'

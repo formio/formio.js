@@ -12,6 +12,7 @@ export class SelectBoxesComponent extends RadioComponent {
     let info = super.elementInfo();
     info.attr.name += '[]';
     info.attr.type = 'checkbox';
+    info.attr.class = 'form-check-input';
     return info;
   }
 

@@ -137,12 +137,13 @@ export class EditGridComponent extends FormioComponents {
 
   createAddButton() {
     this.element.appendChild(this.ce('div', {class: 'editgrid-add'},
-      this.ce('a', {
+      this.ce('button', {
           class: 'btn btn-primary',
+          role: 'button',
           onClick: this.addRow.bind(this)
         },
         [
-          this.ce('span', {class: 'glyphicon glyphicon-plus', 'aria-hidden': true}),
+          this.ce('span', {class: this.iconClass('plus'), 'aria-hidden': true}),
           ' ',
           this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
         ],

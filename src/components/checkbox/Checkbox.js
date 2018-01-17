@@ -6,7 +6,7 @@ export class CheckBoxComponent extends BaseComponent {
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.type = this.component.inputType;
-    info.attr.class = '';
+    info.attr.class = 'form-check-input';
     if (this.component.name) {
       info.attr.name = `data[${this.component.name}]`;
     }
@@ -36,7 +36,7 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   createElement() {
-    let className = this.className;
+    let className = `form-check ${this.className}`;
     if (this.component.label) {
       className += ' checkbox';
     }
@@ -93,7 +93,7 @@ export class CheckBoxComponent extends BaseComponent {
       return null;
     }
 
-    let className = 'control-label';
+    let className = 'control-label form-check-label';
     if (this.component.input && this.component.validate && this.component.validate.required) {
       className += ' field-required';
     }
