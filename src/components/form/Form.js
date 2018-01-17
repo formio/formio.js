@@ -28,6 +28,9 @@ export class FormComponent extends FormioForm {
     this.submitted = false;
     this.data = data;
     let srcOptions = {};
+    if (options.base) {
+      srcOptions.base = options.base;
+    }
 
     // Make sure that if reference is provided, the form must submit.
     if (this.component.reference) {
