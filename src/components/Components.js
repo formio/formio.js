@@ -268,7 +268,7 @@ export class FormioComponents extends BaseComponent {
         compShow &&
         comp.component &&
         comp.component.conditional &&
-        comp.component.conditional.childOverride
+        comp.component.conditional.overrideParent
       );
       show |= compShow;
     });
