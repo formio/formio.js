@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problem with passing scoped data into Form component was crashing.
  - Problem with sub-forms were not getting same formio options.
 
+## 2.28.3
+### Changed
+ - The conditional logic where a parent that is conditionally invisible is overridden by a child conditionally visible. 
+   This logic is different from the Angular 1 renderer, so we made it consistent where a conditionally visible child will not
+   override a conditionally hidden parent. However, this behavior can be changed by providing the "conditional.overrideParent" flag
+   on the child component.
+
+## 2.28.2
+### Fixed
+ - Issues with the sub-form component not loading the proper source for remote servers.
+ - Issues with the sub-form component not passing along sub data to conditional checks properly.
+
 ## 2.28.1
 ### Fixed
  - Text mask dependencies

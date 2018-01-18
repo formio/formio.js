@@ -390,7 +390,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       var show = false;
       (0, _each3.default)(this.getComponents(), function (comp) {
         var compShow = comp.checkConditions(data);
-        forceShow |= comp.hasCondition() && compShow;
+        forceShow |= comp.hasCondition() && compShow && comp.component && comp.component.conditional && comp.component.conditional.overrideParent;
         show |= compShow;
       });
 
