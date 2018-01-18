@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.28.2
+### Fixed
+ - Problem with passing scoped data into Form component was crashing.
+ - Problem with sub-forms were not getting same formio options.
+
 ## 2.28.1
 ### Fixed
  - Text mask dependencies

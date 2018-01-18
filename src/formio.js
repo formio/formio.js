@@ -76,7 +76,7 @@ export class Formio {
       path = this.base + path;
     }
 
-    var hostparts = Formio.getUrlParts(path);
+    var hostparts = this.getUrlParts(path);
     var parts = [];
     var hostName = hostparts[1] + hostparts[2];
     path = hostparts.length > 3 ? hostparts[3] : '';
@@ -563,10 +563,15 @@ export class Formio {
     });
   }
 
-  static getUrlParts(url) {
+  getUrlParts(url) {
+    return Formio.getUrlParts(url, this);
+  }
+
+  static getUrlParts(url, formio) {
+    const base = (formio && formio.base) ? formio.base : Formio.baseUrl;
     var regex = '^(http[s]?:\\/\\/)';
-    if (this.base && url.indexOf(this.base) === 0) {
-      regex += '(' + this.base.replace(/^http[s]?:\/\//, '') + ')';
+    if (base && url.indexOf(base) === 0) {
+      regex += '(' + base.replace(/^http[s]?:\/\//, '') + ')';
     }
     else {
       regex += '([^/]+)';
