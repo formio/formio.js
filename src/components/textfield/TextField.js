@@ -4,6 +4,10 @@ export class TextFieldComponent extends BaseComponent {
     let info = super.elementInfo();
     info.type = 'input';
 
+    if (this.component.hasOwnProperty('spellCheck')) {
+      info.attr.spellcheck = this.component.spellCheck;
+    }
+
     if (this.component.mask) {
       info.attr.type = 'password';
     }
