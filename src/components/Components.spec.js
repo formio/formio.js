@@ -48,4 +48,83 @@ describe('FormioComponents class', () => {
       assert.equal(component.getValue(), value[component.component.key]);
     });
   });
+
+  it('Should create nested visibility elements.', (done) => {
+    Harness.testCreate(FormioComponents, {
+      components: [
+        {
+          type: 'checkbox',
+          key: 'showPanel',
+          label: 'Show Panel',
+          input: true
+        },
+        {
+          type: 'panel',
+          key: 'parent',
+          title: 'Parent Panel',
+          conditional: {
+            json: {var: 'data.showPanel'}
+          },
+          components: [
+            {
+              type: 'checkbox',
+              key: 'showChild',
+              label: 'Child 1',
+              input: true,
+              conditional: {
+                json: {var: 'data.showChild'}
+              }
+            },
+            {
+              type: 'checkbox',
+              key: 'forceParent',
+              label: 'Child 2',
+              input: true,
+              conditional: {
+                json: {var: 'data.forceParent'},
+                overrideParent: true
+              }
+            }
+          ]
+        }
+      ]
+    }).then((comp) => {
+      // Make sure we built the components tree.
+      assert.equal(comp.components.length, 2);
+      assert.equal(comp.components[1].components.length, 2);
+      let data = {
+        showPanel: true,
+        showChild: false,
+        forceParent: false
+      };
+
+      comp.setValue(data);
+      comp.checkConditions(data);
+      assert.equal(comp.components[1]._visible, true);
+      assert.equal(comp.components[1].components[0]._visible, false);
+      assert.equal(comp.components[1].components[1]._visible, false);
+
+      data.showChild = true;
+      comp.setValue(data);
+      comp.checkConditions(data);
+      assert.equal(comp.components[1]._visible, true);
+      assert.equal(comp.components[1].components[0]._visible, true);
+      assert.equal(comp.components[1].components[1]._visible, false);
+
+      data.showPanel = false;
+      comp.setValue(data);
+      comp.checkConditions(data);
+      assert.equal(comp.components[1]._visible, false);
+      assert.equal(comp.components[1].components[0]._visible, true);
+      assert.equal(comp.components[1].components[1]._visible, false);
+
+      data.forceParent = true;
+      comp.setValue(data);
+      comp.checkConditions(data);
+      assert.equal(comp.components[1]._visible, true);
+      assert.equal(comp.components[1].components[0]._visible, true);
+      assert.equal(comp.components[1].components[1]._visible, true);
+      done();
+    });
+  });
 });
