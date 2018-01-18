@@ -1,8 +1,6 @@
 import FormioForm from '../../formio.form';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
-import _merge from 'lodash/merge';
-import _isEmpty from 'lodash/isEmpty';
 
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
@@ -28,8 +26,11 @@ export class FormComponent extends FormioForm {
     this.submitted = false;
     this.data = data;
     let srcOptions = {};
-    if (options.base) {
+    if (options && options.base) {
       srcOptions.base = options.base;
+    }
+    if (options && options.project) {
+      srcOptions.project = options.project;
     }
 
     // Make sure that if reference is provided, the form must submit.
@@ -98,16 +99,19 @@ export class FormComponent extends FormioForm {
     }
   }
 
-  checkValidity(data) {
-    return super.checkValidity(data[this.component.key] ? data[this.component.key].data : {});
+  checkValidity() {
+    // Maintain isolated data scope when passing root data for validity checks.
+    return super.checkValidity(this.data || {});
   }
 
-  checkConditions(data) {
-    return super.checkConditions(data[this.component.key] ? data[this.component.key].data : {});
+  checkConditions() {
+    // Maintain isolated data scope when checking conditions.
+    return super.checkConditions(this.data || {});
   }
 
   calculateValue(data, flags) {
-    return super.calculateValue(data[this.component.key] ? data[this.component.key].data : {}, flags);
+    // Maintain isolated data scope when calculating values.
+    return super.calculateValue(this.data || {}, flags);
   }
 
   /**
