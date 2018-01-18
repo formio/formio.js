@@ -263,7 +263,13 @@ export class FormioComponents extends BaseComponent {
     let show = false;
     _each(this.getComponents(), (comp) => {
       const compShow = comp.checkConditions(data);
-      forceShow |= (comp.hasCondition() && compShow);
+      forceShow |= (
+        comp.hasCondition() &&
+        compShow &&
+        comp.component &&
+        comp.component.conditional &&
+        comp.component.conditional.childOverride
+      );
       show |= compShow;
     });
 
