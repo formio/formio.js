@@ -3,8 +3,7 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _has from 'lodash/has';
 import _isNumber from 'lodash/isNumber';
-import _isRegExp from 'lodash/isRegExp';
-import FormioUtils from '../utils/index';
+import FormioUtils from '../utils';
 export const Validator = {
   get: _get,
   each: _each,
@@ -217,16 +216,7 @@ export const Validator = {
       },
       check(component, setting, value) {
         if (value && component._inputMask) {
-          const inputMask = component._inputMask;
-
-          for (let i = 0; i < inputMask.length; i++) {
-            const char = value[i];
-            const charPart = inputMask[i];
-
-            if (!(_isRegExp(charPart) && charPart.test(char) || charPart === char)) {
-              return false;
-            }
-          }
+          return FormioUtils.matchInputMask(value, component._inputMask);
         }
 
         return true;

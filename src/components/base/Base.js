@@ -1,4 +1,4 @@
-import maskInput from 'vanilla-text-mask';
+import maskInput, { conformToMask } from 'vanilla-text-mask';
 import Promise from "native-promise-only";
 import _ from 'lodash';
 import _get from 'lodash/get';
@@ -565,6 +565,14 @@ export class BaseComponent {
         }
       }
     }
+
+    if (this._inputMask) {
+      defaultValue = conformToMask(defaultValue, this._inputMask).conformedValue;
+      if (!FormioUtils.matchInputMask(defaultValue, this._inputMask)) {
+        defaultValue = '';
+      }
+    }
+
     return defaultValue;
   }
 
