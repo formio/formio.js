@@ -170,7 +170,7 @@ export class BaseComponent {
      * The validators that are assigned to this component.
      * @type {[string]}
      */
-    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json'];
+    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json', 'mask'];
 
     /**
      * Used to trigger a new change in this component.
@@ -1075,9 +1075,7 @@ export class BaseComponent {
    * @returns {string} - The placeholder that will exist within the input as they type.
    */
   maskPlaceholder(mask) {
-    return mask.map((char) => {
-      return (char instanceof RegExp) ? '_' : char
-    }).join('')
+    return mask.map((char) => (char instanceof RegExp) ? '_' : char).join('');
   }
 
   /**
@@ -1086,10 +1084,11 @@ export class BaseComponent {
    */
   setInputMask(input) {
     if (input && this.component.inputMask) {
-      let mask = this.getInputMask(this.component.inputMask);
+      const mask = this.getInputMask(this.component.inputMask);
+      this._inputMask = mask;
       this.inputMask = maskInput({
         inputElement: input,
-        mask: mask
+        mask
       });
       if (mask.numeric) {
         input.setAttribute('pattern', "\\d*");
