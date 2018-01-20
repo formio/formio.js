@@ -1042,42 +1042,6 @@ export class BaseComponent {
   }
 
   /**
-   * Returns an input mask that is compatible with the input mask library.
-   * @param {string} mask - The Form.io input mask.
-   * @returns {Array} - The input mask for the mask library.
-   */
-  getInputMask(mask) {
-    if (mask instanceof Array) {
-      return mask;
-    }
-    let maskArray = [];
-    maskArray.numeric = true;
-    for (let i=0; i < mask.length; i++) {
-      switch (mask[i]) {
-        case '9':
-          maskArray.push(/\d/);
-          break;
-        case 'A':
-          maskArray.numeric = false;
-          maskArray.push(/[a-zA-Z]/);
-          break;
-        case 'a':
-          maskArray.numeric = false;
-          maskArray.push(/[a-z]/);
-          break;
-        case '*':
-          maskArray.numeric = false;
-          maskArray.push(/[a-zA-Z0-9]/);
-          break;
-        default:
-          maskArray.push(mask[i]);
-          break;
-      }
-    }
-    return maskArray;
-  }
-
-  /**
    * Creates a new input mask placeholder.
    * @param {HTMLElement} mask - The input mask.
    * @returns {string} - The placeholder that will exist within the input as they type.
@@ -1092,7 +1056,7 @@ export class BaseComponent {
    */
   setInputMask(input) {
     if (input && this.component.inputMask) {
-      const mask = this.getInputMask(this.component.inputMask);
+      const mask = FormioUtils.getInputMask(this.component.inputMask);
       this._inputMask = mask;
       this.inputMask = maskInput({
         inputElement: input,
