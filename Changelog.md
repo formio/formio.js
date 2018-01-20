@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Mask validator for Phone Number.
+
+### Fixed
  - Default value for component with input mask.
 
 ## 2.28.3
