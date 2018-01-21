@@ -3,7 +3,7 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _has from 'lodash/has';
 import _isNumber from 'lodash/isNumber';
-import FormioUtils from '../utils/index';
+import FormioUtils from '../utils';
 export const Validator = {
   get: _get,
   each: _each,
@@ -205,6 +205,21 @@ export const Validator = {
           valid = err.message;
         }
         return valid;
+      }
+    },
+    mask: {
+      message(component, setting) {
+        return component.t(component.errorMessage('mask'), {
+          field: component.errorLabel,
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        if (value && component._inputMask) {
+          return FormioUtils.matchInputMask(value, component._inputMask);
+        }
+
+        return true;
       }
     },
     custom: {

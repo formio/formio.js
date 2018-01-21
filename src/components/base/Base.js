@@ -1,4 +1,4 @@
-import maskInput from 'vanilla-text-mask';
+import maskInput, { conformToMask } from 'vanilla-text-mask';
 import Promise from "native-promise-only";
 import _ from 'lodash';
 import _get from 'lodash/get';
@@ -170,7 +170,7 @@ export class BaseComponent {
      * The validators that are assigned to this component.
      * @type {[string]}
      */
-    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json'];
+    this.validators = ['required', 'minLength', 'maxLength', 'custom', 'pattern', 'json', 'mask'];
 
     /**
      * Used to trigger a new change in this component.
@@ -565,6 +565,14 @@ export class BaseComponent {
         }
       }
     }
+
+    if (this._inputMask) {
+      defaultValue = conformToMask(defaultValue, this._inputMask).conformedValue;
+      if (!FormioUtils.matchInputMask(defaultValue, this._inputMask)) {
+        defaultValue = '';
+      }
+    }
+
     return defaultValue;
   }
 
@@ -1034,50 +1042,12 @@ export class BaseComponent {
   }
 
   /**
-   * Returns an input mask that is compatible with the input mask library.
-   * @param {string} mask - The Form.io input mask.
-   * @returns {Array} - The input mask for the mask library.
-   */
-  getInputMask(mask) {
-    if (mask instanceof Array) {
-      return mask;
-    }
-    let maskArray = [];
-    maskArray.numeric = true;
-    for (let i=0; i < mask.length; i++) {
-      switch (mask[i]) {
-        case '9':
-          maskArray.push(/\d/);
-          break;
-        case 'A':
-          maskArray.numeric = false;
-          maskArray.push(/[a-zA-Z]/);
-          break;
-        case 'a':
-          maskArray.numeric = false;
-          maskArray.push(/[a-z]/);
-          break;
-        case '*':
-          maskArray.numeric = false;
-          maskArray.push(/[a-zA-Z0-9]/);
-          break;
-        default:
-          maskArray.push(mask[i]);
-          break;
-      }
-    }
-    return maskArray;
-  }
-
-  /**
    * Creates a new input mask placeholder.
    * @param {HTMLElement} mask - The input mask.
    * @returns {string} - The placeholder that will exist within the input as they type.
    */
   maskPlaceholder(mask) {
-    return mask.map((char) => {
-      return (char instanceof RegExp) ? '_' : char
-    }).join('')
+    return mask.map((char) => (char instanceof RegExp) ? '_' : char).join('');
   }
 
   /**
@@ -1086,10 +1056,11 @@ export class BaseComponent {
    */
   setInputMask(input) {
     if (input && this.component.inputMask) {
-      let mask = this.getInputMask(this.component.inputMask);
+      const mask = FormioUtils.getInputMask(this.component.inputMask);
+      this._inputMask = mask;
       this.inputMask = maskInput({
         inputElement: input,
-        mask: mask
+        mask
       });
       if (mask.numeric) {
         input.setAttribute('pattern', "\\d*");

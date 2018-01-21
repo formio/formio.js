@@ -4,9 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - Mask validator for Phone Number.
+
+### Fixed
+ - Default value for component with input mask.
+
 ## 2.28.3
 ### Changed
- - The conditional logic where a parent that is conditionally invisible is overridden by a child conditionally visible. 
+ - The conditional logic where a parent that is conditionally invisible is overridden by a child conditionally visible.
    This logic is different from the Angular 1 renderer, so we made it consistent where a conditionally visible child will not
    override a conditionally hidden parent. However, this behavior can be changed by providing the "conditional.overrideParent" flag
    on the child component.
@@ -49,7 +56,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Support for OAuth buttons in the renderer.
  - Ability to add the "Add Another" button on datagrid to either above or below the grid.
- 
+
 ### Fixed
  - Problem where a padding-right is applied to all has-feedback inputs even though an icon is not used.
 

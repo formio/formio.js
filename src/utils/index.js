@@ -15,6 +15,7 @@ import _isNil from 'lodash/isNil';
 import _isObject from 'lodash/isObject';
 import _isArray from 'lodash/isArray';
 import _isPlainObject from 'lodash/isPlainObject';
+import _isRegExp from 'lodash/isRegExp';
 import _forOwn from 'lodash/forOwn';
 import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
@@ -593,6 +594,53 @@ const FormioUtils = {
       .replace(/E/g, 'd')
       // AM/PM marker
       .replace(/a/g, 'A');
+  },
+  /**
+   * Returns an input mask that is compatible with the input mask library.
+   * @param {string} mask - The Form.io input mask.
+   * @returns {Array} - The input mask for the mask library.
+   */
+  getInputMask(mask) {
+    if (mask instanceof Array) {
+      return mask;
+    }
+    let maskArray = [];
+    maskArray.numeric = true;
+    for (let i = 0; i < mask.length; i++) {
+      switch (mask[i]) {
+        case '9':
+          maskArray.push(/\d/);
+          break;
+        case 'A':
+          maskArray.numeric = false;
+          maskArray.push(/[a-zA-Z]/);
+          break;
+        case 'a':
+          maskArray.numeric = false;
+          maskArray.push(/[a-z]/);
+          break;
+        case '*':
+          maskArray.numeric = false;
+          maskArray.push(/[a-zA-Z0-9]/);
+          break;
+        default:
+          maskArray.push(mask[i]);
+          break;
+      }
+    }
+    return maskArray;
+  },
+  matchInputMask(value, inputMask) {
+    for (let i = 0; i < inputMask.length; i++) {
+      const char = value[i];
+      const charPart = inputMask[i];
+
+      if (!(_isRegExp(charPart) && charPart.test(char) || charPart === char)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 };
 
