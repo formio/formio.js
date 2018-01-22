@@ -631,6 +631,9 @@ const FormioUtils = {
     return maskArray;
   },
   matchInputMask(value, inputMask) {
+    if (!inputMask) {
+      return true;
+    }
     for (let i = 0; i < inputMask.length; i++) {
       const char = value[i];
       const charPart = inputMask[i];

@@ -15212,6 +15212,9 @@ var FormioUtils = {
     return maskArray;
   },
   matchInputMask: function matchInputMask(value, inputMask) {
+    if (!inputMask) {
+      return true;
+    }
     for (var i = 0; i < inputMask.length; i++) {
       var char = value[i];
       var charPart = inputMask[i];
