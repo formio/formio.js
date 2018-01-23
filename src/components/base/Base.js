@@ -1880,6 +1880,11 @@ export class BaseComponent {
       attributes.tabindex = this.component.tabindex;
     }
 
+
+    if(this.component.autofocus) {
+      attributes.autofocus = this.component.autofocus;
+    }
+
     return {
       type: 'input',
       component: this.component,
