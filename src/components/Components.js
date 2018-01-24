@@ -115,6 +115,7 @@ export class FormioComponents extends BaseComponent {
     comp.parent = this;
     comp.root = this.root || this;
     comp.build();
+    comp.isBuilt = true;
     this.components.push(comp);
     return comp;
   }

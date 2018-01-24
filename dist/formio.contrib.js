@@ -557,6 +557,9 @@ var BaseComponent = function () {
     // To force this component to be invalid.
     this.invalid = false;
 
+    // Determine if the component has been built.
+    this.isBuilt = false;
+
     /**
      * An array of the event listeners so that the destroy command can deregister them.
      * @type {Array}
@@ -1475,6 +1478,10 @@ var BaseComponent = function () {
   }, {
     key: 'redraw',
     value: function redraw() {
+      // Don't bother if we have not built yet.
+      if (!this.isBuilt) {
+        return;
+      }
       this.clear();
       this.build();
     }
@@ -1992,9 +1999,9 @@ var BaseComponent = function () {
           var component = this;
           eval(this.component.calculateValue.toString());
           changed = this.setValue(value, flags);
-        } catch (e) {
+        } catch (err) {
           /* eslint-disable no-console */
-          console.warn('An error occurred calculating a value for ' + this.component.key, e);
+          console.warn('An error occurred calculating a value for ' + this.component.key, err);
           changed = false;
           /* eslint-enable no-console */
         }
@@ -2008,7 +2015,7 @@ var BaseComponent = function () {
           changed = this.setValue(val, flags);
         } catch (err) {
           /* eslint-disable no-console */
-          console.warn('An error occurred calculating a value for ' + this.component.key, e);
+          console.warn('An error occurred calculating a value for ' + this.component.key, err);
           changed = false;
           /* eslint-enable no-console */
         }
@@ -2336,6 +2343,10 @@ var BaseComponent = function () {
 
       if (this.component.tabindex) {
         attributes.tabindex = this.component.tabindex;
+      }
+
+      if (this.component.autofocus) {
+        attributes.autofocus = this.component.autofocus;
       }
 
       return {
