@@ -91,7 +91,7 @@ export class ButtonComponent extends BaseComponent {
     }
     this.addEventListener(this.button, 'click', (event) => {
       this.clicked = false;
-      this.data[this.component.key] = this.component.key;
+      this.data[this.component.key] = true;
       switch (this.component.action) {
         case 'submit':
           event.preventDefault();
@@ -132,6 +132,7 @@ export class ButtonComponent extends BaseComponent {
           }
           break;
         case 'url':
+          var root = this.getRoot();
           this.emit('requestButton');
               /* eslint-disable no-unused-vars */
           var API_URL  = this.component.url;
@@ -151,12 +152,18 @@ export class ButtonComponent extends BaseComponent {
           if (API_URL) {
             fetch(API_URL, settings).then((res) => {
               if (!res.ok) {
+                this.emit('error');
+                root.setAlert('danger', res.statusText + ' ' + res.status);
               }
               else {
+                this.emit('requestDone');
+                root.setAlert('success', 'Request ' + res.statusText);
               }
             });
           }
           else {
+            this.emit('error');
+            root.setAlert('danger', 'You should add a URL to this button.');
           }
               /* eslint-enable no-unused-vars */
 
