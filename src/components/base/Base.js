@@ -535,12 +535,7 @@ export class BaseComponent {
     else if (this.component.customDefaultValue) {
       if (typeof this.component.customDefaultValue === 'string') {
         try {
-          let row = this.data;
-          let data = this.data;
-          let value = '';
-          let component = this;
-          eval(this.component.customDefaultValue.toString());
-          defaultValue = value;
+          defaultValue = (new Function('component', 'row', 'data', `var value = ''; ${this.component.customDefaultValue.toString()}; return value;`))(this, this.data, this.data);
         }
         catch (e) {
           defaultValue = null;
@@ -1306,11 +1301,18 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
+    // Check advanced conditions
+
+
     if (!this.hasCondition()) {
       return this.show(true);
     }
 
     return this.show(FormioUtils.checkCondition(this.component, this.data, data));
+  }
+
+  advancedConditionals(data) {
+
   }
 
   /**
@@ -1580,10 +1582,7 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
-        let value = [];
-        let row = this.data;
-        let component = this;
-        eval(this.component.calculateValue.toString());
+        let value = (new Function('component', 'row', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data);
         changed = this.setValue(value, flags);
       }
       catch (e) {

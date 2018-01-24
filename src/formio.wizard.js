@@ -45,9 +45,7 @@ export class FormioWizard extends FormioForm {
         // Allow for script execution.
         if (typeof form.nextPage === 'string') {
           try {
-            let next = page;
-            eval('(function(data) {' + form.nextPage.toString() + '})(data)');
-            page = next;
+            page = (new Function('next', 'data', `${form.nextPage.toString()}; return next;`))(page, data);
             if (!isNaN(parseInt(page, 10)) && isFinite(page)) {
               return page;
             }

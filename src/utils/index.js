@@ -334,7 +334,7 @@ const FormioUtils = {
       if (_isString(component.calculateValue)) {
         try {
           const util = this;
-          rowData[component.key] = eval(`(function(data, row, util) { var value = [];${component.calculateValue.toString()}; return value; })(data, row, util)`);
+          rowData[component.key] = (new Function('data', 'row', 'util', `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util);
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -366,8 +366,8 @@ const FormioUtils = {
   checkCondition(component, row, data) {
     if (component.customConditional) {
       try {
-        const script = `(function() { var show = true;${component.customConditional.toString()}; return show; })()`;
-        const result = eval(script);
+        const func = new Function('component', 'row', 'data', `var show = true; ${component.customConditional.toString()}; return show;`);
+        const result = func(component, row, data);
         return result.toString() === 'true';
       }
       catch (e) {
@@ -417,6 +417,20 @@ const FormioUtils = {
 
     // Default to show.
     return true;
+  },
+
+  /**
+   *
+   * @param component
+   * @param action
+   * @param data
+   * @param row
+   * @returns {string}
+   */
+  checkTrigger(component, action, row, data) {
+    const result = '';
+
+    return result;
   },
 
   /**
