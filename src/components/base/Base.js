@@ -1894,7 +1894,7 @@ export class BaseComponent {
       type: this.component.inputType || 'text',
       class: 'form-control',
       lang: this.options.language
-  };
+    };
 
     if (this.component.placeholder) {
       attributes.placeholder = this.t(this.component.placeholder);
