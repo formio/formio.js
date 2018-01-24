@@ -258,6 +258,21 @@ describe('checkCondition', () => {
     expect(utils.checkCondition({}, null, {})).to.be.equal(true);
   });
 
+  it('should calculate simple triggers', () => {
+    const component = {
+      key: 'sum',
+      conditional: {
+        when: 'test',
+        eq: 3,
+        show: true
+      }
+    };
+    const data1 = { test: 3 };
+    const data2 = { test: 5 };
+    expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
+    expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
+  });
+
   it('should be able to calculate condition based on javascript code', () => {
     const component = {
       key: 'sum',
@@ -316,5 +331,64 @@ describe('getDateSetting', () => {
 
     expect(utils.getDateSetting(validMomentExpression)).to.be.eql(validDate);
     expect(utils.getDateSetting(invalidMomentExpression)).to.be.equal(null);
+  });
+});
+
+describe('checkTrigger', () => {
+  it('should default to false', () => {
+    expect(utils.checkCondition({}, {type: 'none'}, null, {})).to.be.equal(true);
+  });
+
+  it('should calculate simple triggers', () => {
+    const component = {
+      key: 'sum'
+    };
+    const trigger = {
+      type: 'simple',
+      simple: {
+        when: 'test',
+        eq: 3,
+        show: true
+      }
+    };
+    const data1 = { test: 3 };
+    const data2 = { test: 5 };
+    expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
+    expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
+  });
+
+  it('should be able to calculate trigger based on javascript code', () => {
+    const component = {
+      key: 'sum'
+    };
+    const trigger = {
+      type: 'javascript',
+      javascript: 'result = data.test === 3'
+    };
+    const data1 = { test: 3 };
+    const data2 = { test: 5 };
+
+    expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
+    expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
+  });
+
+  it('should be able to calculate trigger based on json logic', () => {
+    const component = {
+      key: 'sum'
+    };
+    const trigger = {
+      type: 'json',
+      json: {
+        '===': [
+          { '_sum': { var: 'data.test' } },
+          6
+        ]
+      }
+    };
+    const data1 = { test: [ 1, 2, 3 ] };
+    const data2 = { test: [ 1, 2, 4 ] };
+
+    expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
+    expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
   });
 });

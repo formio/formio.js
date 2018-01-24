@@ -352,6 +352,72 @@ const FormioUtils = {
   },
 
   /**
+   * Check if a simple conditional evaluates to true.
+   *
+   * @param condition
+   * @param condition
+   * @param row
+   * @param data
+   * @returns {boolean}
+   */
+  checkSimpleConditional(component, condition, row, data) {
+    let value = null;
+    if (row) {
+      value = this.getValue({data: row}, condition.when);
+    }
+    if (data && _isNil(value)) {
+      value = this.getValue({data: data}, condition.when);
+    }
+    // FOR-400 - Fix issue where falsey values were being evaluated as show=true
+    if (_isNil(value)) {
+      return false;
+    }
+    // Special check for selectboxes component.
+    if (_isObject(value) && _has(value, condition.eq)) {
+      return value[condition.eq].toString() === condition.show.toString();
+    }
+    // FOR-179 - Check for multiple values.
+    if (_isArray(value) && value.includes(trigger.eq)) {
+      return (condition.show.toString() === 'true');
+    }
+
+    return (value.toString() === condition.eq.toString()) === (condition.show.toString() === 'true');
+  },
+
+  /**
+   * Check custom javascript conditional.
+   *
+   * @param component
+   * @param custom
+   * @param row
+   * @param data
+   * @returns {*}
+   */
+  checkCustomConditional(component, custom, row, data, variable, onError) {
+    try {
+      return (new Function('component', 'row', 'data', `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, row, data);
+    }
+    catch (e) {
+      console.warn(`An error occurred in a condition statement for component ${component.key}`, e);
+      return onError;
+    }
+  },
+
+  checkJsonConditional(component, json, row, data, onError) {
+    try {
+      return jsonLogic.apply(json, {
+        data,
+        row,
+        _
+      });
+    }
+    catch (err) {
+      console.warn(`An error occurred in jsonLogic advanced condition for ${component.key}`, err);
+      return onError;
+    }
+  },
+
+  /**
    * Checks the conditions for a provided component and data.
    *
    * @param component
@@ -365,54 +431,13 @@ const FormioUtils = {
    */
   checkCondition(component, row, data) {
     if (component.customConditional) {
-      try {
-        const func = new Function('component', 'row', 'data', `var show = true; ${component.customConditional.toString()}; return show;`);
-        const result = func(component, row, data);
-        return result.toString() === 'true';
-      }
-      catch (e) {
-        console.warn(`An error occurred in a custom conditional statement for component ${component.key}`, e);
-        return true;
-      }
+      return this.checkCustomConditional(component, component.customConditional, row, data, 'show', true);
     }
     else if (component.conditional && component.conditional.when) {
-      const cond = component.conditional;
-      let value = null;
-      if (row) {
-        value = this.getValue({data: row}, cond.when);
-      }
-      if (data && _isNil(value)) {
-        value = this.getValue({data: data}, cond.when);
-      }
-      // FOR-400 - Fix issue where falsey values were being evaluated as show=true
-      if (_isNil(value)) {
-        return false;
-      }
-      // Special check for selectboxes component.
-      if (_isObject(value) && _has(value, cond.eq)) {
-        return value[cond.eq].toString() === cond.show.toString();
-      }
-      // FOR-179 - Check for multiple values.
-      if (_isArray(value) && value.includes(cond.eq)) {
-        return (cond.show.toString() === 'true');
-      }
-
-      return (value.toString() === cond.eq.toString()) === (cond.show.toString() === 'true');
+      return this.checkSimpleConditional(component, component.conditional, row, data, true);
     }
     else if (component.conditional && component.conditional.json) {
-      let retVal = true;
-      try {
-        retVal = jsonLogic.apply(component.conditional.json, {
-          data,
-          row,
-          _
-        });
-      }
-      catch (err) {
-        console.warn(`An error occurred in jsonLogic condition for ${component.key}`, err);
-        retVal = true;
-      }
-      return retVal;
+      return this.checkJsonConditional(component, component.conditional.json, row, data);
     }
 
     // Default to show.
@@ -420,17 +445,44 @@ const FormioUtils = {
   },
 
   /**
+   * Test a trigger on a component.
    *
    * @param component
    * @param action
    * @param data
    * @param row
-   * @returns {string}
+   * @returns {mixed}
    */
-  checkTrigger(component, action, row, data) {
-    const result = '';
+  checkTrigger(component, trigger, row, data) {
+    switch(trigger.type) {
+      case 'simple':
+        return this.checkSimpleConditional(component, trigger.simple, row, data);
+        break;
+      case 'javascript':
+        return this.checkCustomConditional(component, trigger.javascript, row, data, 'result', false);
+        break;
+      case 'json':
+        return this.checkJsonConditional(component, trigger.json, row, data, false);
+        break;
+    }
+    // If none of the types matched, don't fire the trigger.
+    return false;
+  },
 
-    return result;
+  /**
+   * Apply a trigger to a component.
+   *
+   * @param component
+   * @param action
+   * @param value
+   * @param row
+   * @param data
+   * @returns {boolean} - whether or not the action change the component.
+   */
+  applyAction(component, action, row, data, result) {
+    const val = '';
+
+    return val;
   },
 
   /**

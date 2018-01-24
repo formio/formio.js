@@ -1311,8 +1311,27 @@ export class BaseComponent {
     return this.show(FormioUtils.checkCondition(this.component, this.data, data));
   }
 
+  /**
+   * Check all triggers and apply necessary actions.
+   *
+   * @param data
+   */
   advancedConditionals(data) {
+    this.component.advancedConditions = this.component.advancedConditions || [];
 
+    const changed = this.component.advancedConditions.reduce((changed, condition) => {
+      const result = FormioUtils.checkTrigger(this, condition.trigger, this.data, data);
+
+      if (result) {
+        changed &= FormioUtils.applyAction(this, condition.action, this.data, data, result);
+      }
+
+      return changed;
+    }, 0);
+
+    if (changed) {
+      this.redraw();
+    }
   }
 
   /**
