@@ -1901,7 +1901,7 @@ export class BaseComponent {
       type: this.component.inputType || 'text',
       class: 'form-control',
       lang: this.options.language
-  };
+    };
 
     if (this.component.placeholder) {
       attributes.placeholder = this.t(this.component.placeholder);
@@ -1909,6 +1909,11 @@ export class BaseComponent {
 
     if (this.component.tabindex) {
       attributes.tabindex = this.component.tabindex;
+    }
+
+
+    if(this.component.autofocus) {
+      attributes.autofocus = this.component.autofocus;
     }
 
     return {
