@@ -420,17 +420,18 @@ export class FormioForm extends FormioComponents {
    * @param options
    */
   setSrc(value, options) {
-    this.setUrl(value, options);
-    this.nosubmit = false;
-    this.formio.loadForm({params: {live: 1}}).then(
-      (form) => {
-        var setForm = this.setForm(form);
-        this.loadSubmission();
-        return setForm;
-      }).catch((err) => {
+    if (this.setUrl(value, options)) {
+      this.nosubmit = false;
+      this.formio.loadForm({params: {live: 1}}).then(
+        (form) => {
+          var setForm = this.setForm(form);
+          this.loadSubmission();
+          return setForm;
+        }).catch((err) => {
         console.warn(err);
         this.formReadyReject(err);
       });
+    }
   }
 
   /**
@@ -465,8 +466,12 @@ export class FormioForm extends FormioComponents {
    * @param options
    */
   setUrl(value, options) {
-    if (!value || typeof value !== 'string') {
-      return;
+    if (
+      !value ||
+      (typeof value !== 'string') ||
+      (value === this._src)
+    ) {
+      return false;
     }
     this._src = value;
     this.nosubmit = true;
@@ -476,6 +481,7 @@ export class FormioForm extends FormioComponents {
       // Set the options source so this can be passed to other components.
       this.options.src = value;
     }
+    return true;
   }
 
   /**
@@ -727,6 +733,7 @@ export class FormioForm extends FormioComponents {
       this.clear();
       return this.localize().then(() => {
         this.build();
+        this.isBuilt = true;
         this.onResize();
         this.on('resetForm', () => this.reset(), true);
         this.on('refreshData', () => this.updateValue());

@@ -213,6 +213,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       comp.parent = this;
       comp.root = this.root || this;
       comp.build();
+      comp.isBuilt = true;
       this.components.push(comp);
       return comp;
     }
@@ -1783,6 +1784,9 @@ var BaseComponent = function () {
     // To force this component to be invalid.
     this.invalid = false;
 
+    // Determine if the component has been built.
+    this.isBuilt = false;
+
     /**
      * An array of the event listeners so that the destroy command can deregister them.
      * @type {Array}
@@ -2701,6 +2705,10 @@ var BaseComponent = function () {
   }, {
     key: 'redraw',
     value: function redraw() {
+      // Don't bother if we have not built yet.
+      if (!this.isBuilt) {
+        return;
+      }
       this.clear();
       this.build();
     }
@@ -3218,9 +3226,9 @@ var BaseComponent = function () {
           var component = this;
           eval(this.component.calculateValue.toString());
           changed = this.setValue(value, flags);
-        } catch (e) {
+        } catch (err) {
           /* eslint-disable no-console */
-          console.warn('An error occurred calculating a value for ' + this.component.key, e);
+          console.warn('An error occurred calculating a value for ' + this.component.key, err);
           changed = false;
           /* eslint-enable no-console */
         }
@@ -3234,7 +3242,7 @@ var BaseComponent = function () {
           changed = this.setValue(val, flags);
         } catch (err) {
           /* eslint-disable no-console */
-          console.warn('An error occurred calculating a value for ' + this.component.key, e);
+          console.warn('An error occurred calculating a value for ' + this.component.key, err);
           changed = false;
           /* eslint-enable no-console */
         }
@@ -7167,109 +7175,113 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
     data = data || {};
 
-    // We need to reset the language so that it will not try to rebuild the form (by setting the language)
-    // before this form component is done rendering. We will set it later.
-    var language = '';
-    if (options && options.language) {
-      language = options.language;
-      options.language = '';
-    }
-
+    // Ensure this component does not make it to the global forms array.
     var _this = _possibleConstructorReturn(this, (FormComponent.__proto__ || Object.getPrototypeOf(FormComponent)).call(this, null, options));
 
-    if (language && options) {
-      options.language = language;
-    }
-
-    // Ensure this component does not make it to the global forms array.
     delete _formio4.default.forms[_this.id];
-
     _this.type = 'formcomponent';
     _this.component = component;
     _this.submitted = false;
     _this.data = data;
-    var srcOptions = {};
-    if (options && options.base) {
-      srcOptions.base = options.base;
-    }
-    if (options && options.project) {
-      srcOptions.project = options.project;
-    }
-
-    // Make sure that if reference is provided, the form must submit.
-    if (_this.component.reference) {
-      _this.component.submit = true;
-    }
-
-    if (!component.src && !_this.options.formio && component.form) {
-      component.src = _formio4.default.getBaseUrl();
-      if (component.project) {
-        // Check to see if it is a MongoID.
-        if (_utils2.default.isMongoId(component.project)) {
-          component.src += '/project';
-        }
-        component.src += '/' + component.project;
-        srcOptions.project = component.src;
-      }
-      component.src += '/form/' + component.form;
-    }
-
-    // Build the source based on the root src path.
-    if (!component.src && _this.options.formio) {
-      var rootSrc = _this.options.formio.formsUrl;
-      if (component.path) {
-        var parts = rootSrc.split('/');
-        parts.pop();
-        component.src = parts.join('/') + '/' + component.path;
-      }
-      if (component.form) {
-        component.src = rootSrc + '/' + component.form;
-      }
-    }
-
-    // Add the source to this actual submission if the component is a reference.
-    if (data && data[component.key] && data[component.key]._id && _this.component.reference && !(component.src.indexOf('/submission/') !== -1)) {
-      component.src += '/submission/' + data[component.key]._id;
-    }
-
-    // Set the src if the property is provided in the JSON.
-    if (component.src) {
-      _this.setSrc(component.src, srcOptions);
-    }
-
-    // Directly set the submission if it isn't a reference.
-    if (data && data[component.key] && !_this.component.reference) {
-      _this.setSubmission(data[component.key]);
-    }
-
     _this.readyPromise = new Promise(function (resolve) {
       _this.readyResolve = resolve;
     });
-
-    // Set language after everything is established.
-    if (options && options.language) {
-      _this.language = options.language;
-    }
     return _this;
   }
 
+  /**
+   * Load the subform.
+   */
+
   _createClass(FormComponent, [{
+    key: 'loadSubForm',
+    value: function loadSubForm() {
+      if (this.subFormLoaded) {
+        return true;
+      }
+      this.subFormLoaded = true;
+      var srcOptions = {};
+      if (this.options && this.options.base) {
+        srcOptions.base = this.options.base;
+      }
+      if (this.options && this.options.project) {
+        srcOptions.project = this.options.project;
+      }
+
+      // Make sure that if reference is provided, the form must submit.
+      if (this.component.reference) {
+        this.component.submit = true;
+      }
+
+      if (!this.component.src && !this.options.formio && this.component.form) {
+        this.component.src = _formio4.default.getBaseUrl();
+        if (this.component.project) {
+          // Check to see if it is a MongoID.
+          if (_utils2.default.isMongoId(this.component.project)) {
+            this.component.src += '/project';
+          }
+          this.component.src += '/' + this.component.project;
+          srcOptions.project = this.component.src;
+        }
+        this.component.src += '/form/' + this.component.form;
+      }
+
+      // Build the source based on the root src path.
+      if (!this.component.src && this.options.formio) {
+        var rootSrc = this.options.formio.formsUrl;
+        if (this.component.path) {
+          var parts = rootSrc.split('/');
+          parts.pop();
+          this.component.src = parts.join('/') + '/' + this.component.path;
+        }
+        if (this.component.form) {
+          this.component.src = rootSrc + '/' + this.component.form;
+        }
+      }
+
+      // Add the source to this actual submission if the component is a reference.
+      if (this.data && this.data[this.component.key] && this.data[this.component.key]._id && this.component.reference && !(this.component.src.indexOf('/submission/') !== -1)) {
+        this.component.src += '/submission/' + this.data[this.component.key]._id;
+      }
+
+      // Set the src if the property is provided in the JSON.
+      if (this.component.src) {
+        this.setSrc(this.component.src, srcOptions);
+      }
+
+      // Directly set the submission if it isn't a reference.
+      if (this.data && this.data[this.component.key] && !this.component.reference) {
+        this.setSubmission(this.data[this.component.key]);
+      }
+
+      // Set language after everything is established.
+      if (this.options && this.options.language) {
+        this.language = this.options.language;
+      }
+    }
+  }, {
     key: 'checkValidity',
     value: function checkValidity() {
       // Maintain isolated data scope when passing root data for validity checks.
-      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, this.data || {});
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, this.subData);
     }
   }, {
     key: 'checkConditions',
     value: function checkConditions() {
-      // Maintain isolated data scope when checking conditions.
-      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.data || {});
+      // Check the conditions for the subform.
+      if (_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.subData)) {
+        // Only load the subform if this component is visible.
+        this.loadSubForm();
+        return true;
+      }
+
+      return false;
     }
   }, {
     key: 'calculateValue',
     value: function calculateValue(data, flags) {
       // Maintain isolated data scope when calculating values.
-      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'calculateValue', this).call(this, this.data || {}, flags);
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'calculateValue', this).call(this, this.subData, flags);
     }
 
     /**
@@ -7422,6 +7434,14 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     key: 'getValue',
     value: function getValue() {
       return this.data[this.component.key];
+    }
+  }, {
+    key: 'subData',
+    get: function get() {
+      if (!this.data[this.component.key]) {
+        this.data[this.component.key] = { data: {} };
+      }
+      return this.data[this.component.key].data;
     }
   }]);
 
@@ -7938,6 +7958,7 @@ module.exports = {
     }
     if (!nobuild) {
       comp.build();
+      comp.isBuilt = true;
     }
     return comp;
   }
@@ -8023,8 +8044,8 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
 
     _this.validators = _this.validators.concat(['min', 'max']);
 
-    _this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || 12345.6789.toLocaleString(options.language).match(/345(.*)67/)[1];
-    _this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || 12345.6789.toLocaleString(options.language).match(/12(.*)345/)[1];
+    _this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || 12345.6789.toLocaleString(options.language || 'en').match(/345(.*)67/)[1];
+    _this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || 12345.6789.toLocaleString(options.language || 'en').match(/12(.*)345/)[1];
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     _this.decimalLimit = 20;
@@ -8060,9 +8081,9 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
       }
 
       if (this.component.validate && this.component.validate.integer) {
-        return parseInt(value, 10).toLocaleString(this.options.language, this.getFormatOptions());
+        return parseInt(value, 10).toLocaleString(this.options.language || 'en', this.getFormatOptions());
       } else {
-        return parseFloat(value).toLocaleString(this.options.language, this.getFormatOptions());
+        return parseFloat(value).toLocaleString(this.options.language || 'en', this.getFormatOptions());
       }
     }
   }, {
@@ -11305,16 +11326,17 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     value: function setSrc(value, options) {
       var _this6 = this;
 
-      this.setUrl(value, options);
-      this.nosubmit = false;
-      this.formio.loadForm({ params: { live: 1 } }).then(function (form) {
-        var setForm = _this6.setForm(form);
-        _this6.loadSubmission();
-        return setForm;
-      }).catch(function (err) {
-        console.warn(err);
-        _this6.formReadyReject(err);
-      });
+      if (this.setUrl(value, options)) {
+        this.nosubmit = false;
+        this.formio.loadForm({ params: { live: 1 } }).then(function (form) {
+          var setForm = _this6.setForm(form);
+          _this6.loadSubmission();
+          return setForm;
+        }).catch(function (err) {
+          console.warn(err);
+          _this6.formReadyReject(err);
+        });
+      }
     }
 
     /**
@@ -11340,8 +11362,8 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
      * @param options
      */
     value: function setUrl(value, options) {
-      if (!value || typeof value !== 'string') {
-        return;
+      if (!value || typeof value !== 'string' || value === this._src) {
+        return false;
       }
       this._src = value;
       this.nosubmit = true;
@@ -11351,6 +11373,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         // Set the options source so this can be passed to other components.
         this.options.src = value;
       }
+      return true;
     }
 
     /**
@@ -11528,6 +11551,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
         _this10.clear();
         return _this10.localize().then(function () {
           _this10.build();
+          _this10.isBuilt = true;
           _this10.onResize();
           _this10.on('resetForm', function () {
             return _this10.reset();
