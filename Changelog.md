@@ -5,6 +5,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.28.6
+### Added 
+ - Autofocus capability.
+ - Ability to provide spellcheck parameter to input.
+
 ### Fixed
  - Some issues with subforms when performing calcuated values
  - Problems with subforms performing the load when they are not conditionally available.

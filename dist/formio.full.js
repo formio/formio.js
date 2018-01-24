@@ -3572,6 +3572,10 @@ var BaseComponent = function () {
         attributes.tabindex = this.component.tabindex;
       }
 
+      if (this.component.autofocus) {
+        attributes.autofocus = this.component.autofocus;
+      }
+
       return {
         type: 'input',
         component: this.component,
@@ -10511,6 +10515,10 @@ var TextFieldComponent = exports.TextFieldComponent = function (_BaseComponent) 
     value: function elementInfo() {
       var info = _get(TextFieldComponent.prototype.__proto__ || Object.getPrototypeOf(TextFieldComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'input';
+
+      if (this.component.hasOwnProperty('spellcheck')) {
+        info.attr.spellcheck = this.component.spellcheck;
+      }
 
       if (this.component.mask) {
         info.attr.type = 'password';
