@@ -27,11 +27,6 @@ export class DateTimeComponent extends BaseComponent {
     return getDateSetting(this.component.defaultDate);
   }
 
-  // This select component can handle multiple items on its own.
-  createWrapper() {
-    return false;
-  }
-
   /**
    * Convert the format from the angular-datepicker module.
    * @param format
@@ -67,11 +62,12 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   get config() {
+		//mode: this.component.multiple ? 'multiple' : 'single',
     return {
       altInput: true,
       clickOpens: true,
       enableDate: true,
-      mode: this.component.multiple ? 'multiple' : 'single',
+      mode: 'single',
       enableTime: _get(this.component, 'enableTime', true),
       noCalendar: !_get(this.component, 'enableDate', true),
       altFormat: this.convertFormat(_get(this.component, 'format', '')),
@@ -82,7 +78,17 @@ export class DateTimeComponent extends BaseComponent {
       minDate: getDateSetting(_get(this.component, 'datePicker.minDate')),
       maxDate: getDateSetting(_get(this.component, 'datePicker.maxDate')),
       onChange: () => this.onChange(),
-      onClose: () => (this.closedOn = Date.now())
+      onClose: () => (this.closedOn = Date.now()),
+      onReady: function(dateObj, dateStr, instance) {
+        var $cal = $(instance.calendarContainer);
+        if ($cal.find('.flatpickr-clear').length < 1) {
+            $cal.append('<div class="flatpickr-clear">Clear</div>');
+            $cal.find('.flatpickr-clear').on('click', function() {
+                instance.clear();
+                instance.close();
+            });
+        }
+      }
     };
   }
 

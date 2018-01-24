@@ -33,6 +33,7 @@ import { SurveyComponent } from './survey/Survey';
 import { WellComponent } from './well/Well';
 import { GmapComponent } from './gmap/Gmap';
 import { FileComponent } from './file/File';
+import { CollapsiblePanelComponent } from './collapsiblepanel/CollapsiblePanel';
 module.exports = {
   address: AddressComponent,
   base: BaseComponent,
@@ -69,6 +70,7 @@ module.exports = {
   well: WellComponent,
   gmap: GmapComponent,
   file: FileComponent,
+	collapsiblepanel: CollapsiblePanelComponent,
   create: function(component, options, data, nobuild) {
     let comp = null;
     if (!component.type) {
