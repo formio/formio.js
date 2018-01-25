@@ -6,7 +6,7 @@ import _each from 'lodash/each';
 import _assign from 'lodash/assign';
 import _debounce from 'lodash/debounce';
 import _isArray from 'lodash/isArray';
-import _clone from 'lodash/clone';
+import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import _isEqual from 'lodash/isEqual';
 import _isUndefined from 'lodash/isUndefined';
@@ -28,6 +28,7 @@ export class BaseComponent {
    * @param {Object} data - The global data submission object this component will belong.
    */
   constructor(component, options, data) {
+    this.originalComponent = _cloneDeep(component);
     /**
      * The ID of this component. This value is auto-generated when the component is created, but
      * can also be provided from the component.id value passed into the constructor.
@@ -39,7 +40,7 @@ export class BaseComponent {
      * The options for this component.
      * @type {{}}
      */
-    this.options = _defaults(_clone(options), {
+    this.options = _defaults(_cloneDeep(options), {
       highlightErrors: true
     });
 
@@ -1330,8 +1331,15 @@ export class BaseComponent {
   advancedConditions(data) {
     const conditions = this.component.advancedConditions || [];
 
-    return conditions.reduce((changed, condition) => {
-      const result = FormioUtils.checkTrigger(this.component, condition.trigger, this.data, data);
+    // If there aren't advanced conditions, don't go further.
+    if (conditions.length === 0) {
+      return;
+    }
+
+    const newComponent = _cloneDeep(this.originalComponent);
+
+    let changed = conditions.reduce((changed, condition) => {
+      const result = FormioUtils.checkTrigger(newComponent, condition.trigger, this.data, data);
 
       if (result) {
         changed |= condition.actions.reduce((changed, action) => {
@@ -1339,21 +1347,19 @@ export class BaseComponent {
             case 'property':
               switch(action.property.type) {
                 case 'boolean':
-                  if (_get(this.component, action.property.value, false).toString() !== action.state.toString()) {
-                    _set(this.component, action.property.value, action.state.toString() === 'true');
-                    changed = true;
+                  if (_get(newComponent, action.property.value, false).toString() !== action.state.toString()) {
+                    _set(newComponent, action.property.value, action.state.toString() === 'true');
                   }
                   break;
                 case 'string':
                   const newValue = FormioUtils.interpolate(action.value, {
                     data,
                     row: this.data,
-                    component: this.component,
+                    component: newComponent,
                     result
                   });
-                  if (newValue !== _get(this.component, action.property.value, '')) {
-                    _set(this.component, action.property.value, newValue);
-                    changed = true;
+                  if (newValue !== _get(newComponent, action.property.value, '')) {
+                    _set(newComponent, action.property.value, newValue);
                   }
                   break;
               }
@@ -1370,6 +1376,12 @@ export class BaseComponent {
       }
       return changed;
     }, false);
+
+    // If component definition changed, replace and mark as changed.
+    if (!_isEqual(this.component, newComponent)) {
+      this.component = newComponent;
+      changed = true;
+    }
 
     return changed;
   }
@@ -1584,7 +1596,6 @@ export class BaseComponent {
    * @param flags
    */
   updateValue(flags) {
-    console.log('updateValue', this.component.key, this.data[this.component.key]);
     if (!this.hasInput) {
       return false;
     }
