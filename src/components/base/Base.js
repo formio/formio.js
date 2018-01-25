@@ -1352,7 +1352,7 @@ export class BaseComponent {
                   }
                   break;
                 case 'string':
-                  const newValue = FormioUtils.interpolate(action.value, {
+                  const newValue = FormioUtils.interpolate(action.text, {
                     data,
                     row: this.data,
                     component: newComponent,
@@ -1365,7 +1365,11 @@ export class BaseComponent {
               }
               break;
             case 'value':
-              // TODO
+              const newValue = (new Function('row', 'data', 'component', 'result', action.value))(this.data, data, newComponent, result);
+              if (!_isEqual(this.getValue(), newValue)) {
+                this.setValue(newValue);
+                changed = true;
+              }
               break;
             case 'validation':
               // TODO
