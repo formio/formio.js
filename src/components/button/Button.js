@@ -71,8 +71,27 @@ export class ButtonComponent extends BaseComponent {
         this.loading = false;
       }, true);
     }
+
+    if (this.component.action === 'url') {
+      this.on('requestButton', () => {
+        this.loading = true;
+      this.disabled = true;
+    }, true);
+      this.on('requestDone', () => {
+        this.loading = false;
+      this.disabled = false;
+    }, true);
+      this.on('change', (value) => {
+        this.loading = false;
+      this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
+    }, true);
+      this.on('error', () => {
+        this.loading = false;
+    }, true);
+    }
     this.addEventListener(this.button, 'click', (event) => {
       this.clicked = false;
+      this.data[this.component.key] = true;
       switch (this.component.action) {
         case 'submit':
           event.preventDefault();
@@ -111,6 +130,43 @@ export class ButtonComponent extends BaseComponent {
             console.warn('An error occurred evaluating custom logic for ' + this.key, e);
             /* eslint-enable no-console */
           }
+          break;
+        case 'url':
+          var root = this.getRoot();
+          this.emit('requestButton');
+              /* eslint-disable no-unused-vars */
+          var API_URL  = this.component.url;
+          var settings = {
+            method: 'POST',
+            headers: {},
+            body: JSON.stringify(this.data)
+          };
+
+          if (this.component.headers && this.component.headers.length > 0) {
+            this.component.headers.map((e) => {
+              if (e.header !== '' && e.value !== '') {
+              settings.headers[e.header] = e.value;
+            }
+            });
+          }
+          if (API_URL) {
+            fetch(API_URL, settings).then((res) => {
+              if (!res.ok) {
+                this.emit('error');
+                root.setAlert('danger', res.statusText + ' ' + res.status);
+              }
+              else {
+                this.emit('requestDone');
+                root.setAlert('success', 'Request ' + res.statusText);
+              }
+            });
+          }
+          else {
+            this.emit('error');
+            root.setAlert('danger', 'You should add a URL to this button.');
+          }
+              /* eslint-enable no-unused-vars */
+
           break;
         case 'reset':
           this.emit('resetForm');
