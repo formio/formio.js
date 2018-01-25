@@ -1,6 +1,6 @@
 import maskInput from 'vanilla-text-mask';
 import Promise from "native-promise-only";
-import _ from 'lodash';
+import _set from 'lodash/set';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _assign from 'lodash/assign';
@@ -482,16 +482,19 @@ export class BaseComponent {
    * @returns {HTMLElement}
    */
   createElement() {
+    // If the element is already created, don't recreate.
+    if (this.element) {
+      return this.element;
+    }
+
     this.element = this.ce('div', {
       id: this.id,
       class: this.className,
       style: this.customStyle
     });
 
-    if (this.element) {
-      // Ensure you can get the component info from the element.
-      this.element.component = this.component;
-    }
+    // Ensure you can get the component info from the element.
+    this.element.component = this.component;
 
     return this.element;
   }
@@ -1154,6 +1157,7 @@ export class BaseComponent {
         window.removeEventListener(handler.event, handler.func);
       }
     });
+    this.inputs = [];
   }
 
   /**
@@ -1302,13 +1306,20 @@ export class BaseComponent {
    */
   checkConditions(data) {
     // Check advanced conditions
-
+    let result;
 
     if (!this.hasCondition()) {
-      return this.show(true);
+      result = this.show(true);
+    }
+    else {
+      result = this.show(FormioUtils.checkCondition(this.component, this.data, data));
     }
 
-    return this.show(FormioUtils.checkCondition(this.component, this.data, data));
+    if (this.advancedConditions(data)) {
+      this.redraw();
+    }
+
+    return result;
   }
 
   /**
@@ -1316,22 +1327,51 @@ export class BaseComponent {
    *
    * @param data
    */
-  advancedConditionals(data) {
-    this.component.advancedConditions = this.component.advancedConditions || [];
+  advancedConditions(data) {
+    const conditions = this.component.advancedConditions || [];
 
-    const changed = this.component.advancedConditions.reduce((changed, condition) => {
-      const result = FormioUtils.checkTrigger(this, condition.trigger, this.data, data);
+    return conditions.reduce((changed, condition) => {
+      const result = FormioUtils.checkTrigger(this.component, condition.trigger, this.data, data);
 
       if (result) {
-        changed &= FormioUtils.applyAction(this, condition.action, this.data, data, result);
+        changed |= condition.actions.reduce((changed, action) => {
+          switch(action.type) {
+            case 'property':
+              switch(action.property.type) {
+                case 'boolean':
+                  if (_get(this.component, action.property.value, false).toString() !== action.state.toString()) {
+                    _set(this.component, action.property.value, action.state.toString() === 'true');
+                    changed = true;
+                  }
+                  break;
+                case 'string':
+                  const newValue = FormioUtils.interpolate(action.value, {
+                    data,
+                    row: this.data,
+                    component: this.component,
+                    result
+                  });
+                  if (newValue !== _get(this.component, action.property.value, '')) {
+                    _set(this.component, action.property.value, newValue);
+                    changed = true;
+                  }
+                  break;
+              }
+              break;
+            case 'value':
+              // TODO
+              break;
+            case 'validation':
+              // TODO
+              break;
+          }
+          return changed;
+        }, false);
       }
-
       return changed;
-    }, 0);
+    }, false);
 
-    if (changed) {
-      this.redraw();
-    }
+    return changed;
   }
 
   /**
@@ -1544,6 +1584,7 @@ export class BaseComponent {
    * @param flags
    */
   updateValue(flags) {
+    console.log('updateValue', this.component.key, this.data[this.component.key]);
     if (!this.hasInput) {
       return false;
     }
@@ -1905,7 +1946,9 @@ export class BaseComponent {
     this.destroy();
     const element = this.getElement();
     if (element) {
-      element.innerHTML = '';
+      while (element.lastChild) {
+        element.removeChild(element.lastChild);
+      }
     }
   }
 

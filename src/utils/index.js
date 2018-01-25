@@ -470,22 +470,6 @@ const FormioUtils = {
   },
 
   /**
-   * Apply a trigger to a component.
-   *
-   * @param component
-   * @param action
-   * @param value
-   * @param row
-   * @param data
-   * @returns {boolean} - whether or not the action change the component.
-   */
-  applyAction(component, action, row, data, result) {
-    const val = '';
-
-    return val;
-  },
-
-  /**
    * Get the value for a component key, in the given submission.
    *
    * @param {Object} submission
