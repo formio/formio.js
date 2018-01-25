@@ -2,6 +2,7 @@
 import _ from 'lodash';
 import _clone from 'lodash/clone';
 import _get from 'lodash/get';
+import _set from 'lodash/set';
 import _round from 'lodash/round';
 import _pad from 'lodash/pad';
 import _chunk from 'lodash/chunk';
@@ -467,6 +468,28 @@ const FormioUtils = {
     }
     // If none of the types matched, don't fire the trigger.
     return false;
+  },
+
+  setActionProperty(component, action, row, data, result) {
+    switch(action.property.type) {
+      case 'boolean':
+        if (_get(component, action.property.value, false).toString() !== action.state.toString()) {
+          _set(component, action.property.value, action.state.toString() === 'true');
+        }
+        break;
+      case 'string':
+        const newValue = FormioUtils.interpolate(action.text, {
+          data,
+          row,
+          component,
+          result
+        });
+        if (newValue !== _get(component, action.property.value, '')) {
+          _set(component, action.property.value, newValue);
+        }
+        break;
+    }
+    return component;
   },
 
   /**

@@ -2,6 +2,7 @@
 
 /* eslint-env mocha */
 import { expect } from 'chai';
+import _ from 'lodash';
 import writtenNumber from 'written-number';
 import utils from './index';
 import components from './fixtures/components.json';
@@ -390,5 +391,165 @@ describe('checkTrigger', () => {
 
     expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
     expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
+  });
+});
+
+describe('setActionProperty', () => {
+  it('should set a boolean action property to true', () => {
+    const component = {
+      key: 'test',
+      disabled: false
+    };
+    const action = {
+      type: 'property',
+      property: {
+        label: 'Disabled',
+        value: 'disabled',
+        type: 'boolean'
+      },
+      state: true
+    };
+    utils.setActionProperty(component, action, {}, {}, true);
+    expect(component.disabled).to.be.equal(true);
+  });
+
+  it('should set a boolean action property to false', () => {
+    const component = {
+      key: 'test',
+      disabled: true
+    };
+    const action = {
+      type: 'property',
+      property: {
+        label: 'Disabled',
+        value: 'disabled',
+        type: 'boolean'
+      },
+      state: false
+    };
+    utils.setActionProperty(component, action, {}, {}, true);
+    expect(component.disabled).to.be.equal(false);
+  });
+
+  it('should set a boolean action nested property', () => {
+    const component = {
+      key: 'test',
+      validate: {
+        required: true
+      }
+    };
+    const action = {
+      type: 'property',
+      property: {
+        label: 'Required',
+        value: 'validate.required',
+        type: 'boolean'
+      },
+      state: false
+    };
+    utils.setActionProperty(component, action, {}, {}, true);
+    expect(component.validate.required).to.be.equal(false);
+  });
+
+  it('should set a string action property', () => {
+    const component = {
+      key: 'test',
+      label: 'foo'
+    };
+    const action = {
+      type: 'property',
+      property: {
+        label: 'Label',
+        value: 'label',
+        type: 'string'
+      },
+      text: 'bar'
+    };
+    utils.setActionProperty(component, action, {}, {}, true);
+    expect(component.label).to.be.equal('bar');
+  });
+
+  it('should set a string action property with row templating', () => {
+    const component = {
+      key: 'test',
+      label: 'foo'
+    };
+    const action = {
+      type: 'property',
+      property: {
+        label: 'Label',
+        value: 'label',
+        type: 'string'
+      },
+      text: 'bar {{ row.field }}'
+    };
+    utils.setActionProperty(component, action, {field: 'baz'}, {}, true);
+    expect(component.label).to.be.equal('bar baz');
+  });
+
+  it('should set a string action property with data templating', () => {
+    const component = {
+      key: 'test',
+      label: 'foo'
+    };
+    const action = {
+      type: 'property',
+      property: {
+        label: 'Label',
+        value: 'label',
+        type: 'string'
+      },
+      text: 'bar {{ data.field }}'
+    };
+    utils.setActionProperty(component, action, {}, {field: 'baz'}, true);
+    expect(component.label).to.be.equal('bar baz');
+  });
+
+  it('should set a string action property with result templating', () => {
+    const component = {
+      key: 'test',
+      label: 'foo'
+    };
+    const action = {
+      type: 'property',
+      property: {
+        label: 'Label',
+        value: 'label',
+        type: 'string'
+      },
+      text: 'bar {{ result }}'
+    };
+    utils.setActionProperty(component, action, {}, {}, 'baz');
+    expect(component.label).to.be.equal('bar baz');
+  });
+
+  it('should set a string action property with component templating', () => {
+    const component = {
+      key: 'test',
+      label: 'foo'
+    };
+    const action = {
+      type: 'property',
+      property: {
+        label: 'Label',
+        value: 'label',
+        type: 'string'
+      },
+      text: 'bar {{ component.key }}'
+    };
+    utils.setActionProperty(component, action, {}, {}, 'baz');
+    expect(component.label).to.be.equal('bar test');
+  });
+
+  it('should do nothing with a bad request', () => {
+    const component = {
+      key: 'test',
+      label: 'foo'
+    };
+    const originalComponent = _.cloneDeep(component);
+    const action = {
+      type: 'foo',
+    };
+    expect(component).to.deep.equal(originalComponent);
   });
 });

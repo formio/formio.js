@@ -1345,24 +1345,7 @@ export class BaseComponent {
         changed |= condition.actions.reduce((changed, action) => {
           switch(action.type) {
             case 'property':
-              switch(action.property.type) {
-                case 'boolean':
-                  if (_get(newComponent, action.property.value, false).toString() !== action.state.toString()) {
-                    _set(newComponent, action.property.value, action.state.toString() === 'true');
-                  }
-                  break;
-                case 'string':
-                  const newValue = FormioUtils.interpolate(action.text, {
-                    data,
-                    row: this.data,
-                    component: newComponent,
-                    result
-                  });
-                  if (newValue !== _get(newComponent, action.property.value, '')) {
-                    _set(newComponent, action.property.value, newValue);
-                  }
-                  break;
-              }
+              FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
             case 'value':
               const newValue = (new Function('row', 'data', 'component', 'result', action.value))(this.data, data, newComponent, result);
