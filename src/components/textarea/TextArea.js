@@ -71,7 +71,7 @@ export class TextAreaComponent extends TextFieldComponent {
 
         this.quill.on('text-change', () => {
           txtArea.value = this.quill.root.innerHTML;
-          this.updateValue(true, txtArea.value);
+          this.updateValue(txtArea.value, true);
         });
 
         if (this.options.readOnly || this.component.disabled) {
@@ -91,11 +91,11 @@ export class TextAreaComponent extends TextFieldComponent {
 
     this.quillReady.then((quill) => {
       quill.clipboard.dangerouslyPasteHTML(value);
-      this.updateValue(flags);
+      this.updateValue(value, flags);
     });
   }
 
-  updateValue(flags, value) {
+  updateValue(value, flags) {
     if (!this.component.wysiwyg) {
       return super.updateValue();
     }
