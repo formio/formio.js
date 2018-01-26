@@ -61,6 +61,13 @@ export class TextAreaComponent extends TextFieldComponent {
         var txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
         this.quill.addContainer('ql-custom').appendChild(txtArea);
+
+        // Allows users to skip toolbar items when tabbing though form
+        var elm = document.querySelectorAll('.ql-formats > button');
+        for (var i=0; i < elm.length; i++) {
+          elm[i].setAttribute("tabindex", "-1");
+        }
+
         document.querySelector('.ql-source').addEventListener('click', () => {
           if (txtArea.style.display === 'inherit') {
             this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
@@ -71,7 +78,7 @@ export class TextAreaComponent extends TextFieldComponent {
 
         this.quill.on('text-change', () => {
           txtArea.value = this.quill.root.innerHTML;
-          this.updateValue(txtArea.value, true);
+          this.updateValue(true);
         });
 
         if (this.options.readOnly || this.component.disabled) {
@@ -91,32 +98,8 @@ export class TextAreaComponent extends TextFieldComponent {
 
     this.quillReady.then((quill) => {
       quill.clipboard.dangerouslyPasteHTML(value);
-      this.updateValue(value, flags);
+      this.updateValue(flags);
     });
-  }
-
-  updateValue(value, flags) {
-    if (!this.component.wysiwyg) {
-      return super.updateValue();
-    }
-
-    if (this.quill && value) {
-      if ( value == null ||
-        value == '<p></p>' ||
-        value == '<p><br></p>' ||
-        value == '<p>&nbsp;<br></p>' ||
-        value == '<p>&nbsp;</p>' ||
-        value == '&nbsp;<br>' ||
-        value == ' <br>' ||
-        value == '&nbsp;' ||
-        value == ' '
-      ) {
-        delete this.data[this.component.key]
-      }
-      else{
-        this.data[this.component.key] = value;
-      }
-    }
   }
 
   getValue() {
@@ -124,8 +107,19 @@ export class TextAreaComponent extends TextFieldComponent {
       return super.getValue();
     }
 
+    // FOR-998 Assigns default value
+    if(!this.data[this.component.key]){
+      this.data[this.component.key] = "<p></p>";
+      return this.data[this.component.key]
+    }
     if (this.quill && this.data[this.component.key]) {
-      return this.quill.root.innerHTML;
+      var innerHTML = this.quill.root.innerHTML;
+
+      // Required for pristine validation
+      if (this.data[this.component.key] === "<p></p>" && innerHTML === "<p><br></p>") {
+        return this.data[this.component.key]
+      }
+      return innerHTML;
     }
   }
 

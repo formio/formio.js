@@ -71,6 +71,15 @@ export const Validator = {
         if (!FormioUtils.boolValue(setting)) {
           return true;
         }
+
+        // WYSIWYG validation
+        if (component.quill) {
+          if (value === "<p><br></p>") {
+            return false
+          }
+          return true
+        }
+
         return !component.isEmpty(value);
       }
     },
