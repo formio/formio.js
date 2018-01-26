@@ -387,7 +387,7 @@ const FormioUtils = {
       }
       // FOR-400 - Fix issue where falsey values were being evaluated as show=true
       if (_isNil(value)) {
-        return false;
+        value = '';
       }
       // Special check for selectboxes component.
       if (_isObject(value) && _has(value, cond.eq)) {
