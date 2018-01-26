@@ -156,7 +156,6 @@ module.exports = {
     'Test Title, Description and Disabled': (form, done) => {
       Harness.setInputValue(form, 'data[test]', '1');
       form.onChange({}, true);
-      console.log('Form Value', form.getValue());
       Harness.testInnerHtml(form, '.formio-component-changeme .control-label', 'One');
       Harness.testInnerHtml(form, '.formio-component-changeme .help-block', 'You have selected One');
       Harness.testAttribute(form, '.formio-component-changeme .form-control', 'disabled', 'disabled');
