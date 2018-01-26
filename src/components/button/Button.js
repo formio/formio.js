@@ -132,40 +132,12 @@ export class ButtonComponent extends BaseComponent {
           }
           break;
         case 'url':
-          var root = this.getRoot();
           this.emit('requestButton');
-              /* eslint-disable no-unused-vars */
-          var API_URL  = this.component.url;
-          var settings = {
-            method: 'POST',
-            headers: {},
-            body: JSON.stringify(this.data)
-          };
-
-          if (this.component.headers && this.component.headers.length > 0) {
-            this.component.headers.map((e) => {
-              if (e.header !== '' && e.value !== '') {
-              settings.headers[e.header] = e.value;
-            }
+          this.emit('requestUrl',
+            {
+              url: this.component.url,
+              headers: this.component.headers
             });
-          }
-          if (API_URL) {
-            fetch(API_URL, settings).then((res) => {
-              if (!res.ok) {
-                this.emit('error');
-                root.setAlert('danger', res.statusText + ' ' + res.status);
-              }
-              else {
-                this.emit('requestDone');
-                root.setAlert('success', 'Request ' + res.statusText);
-              }
-            });
-          }
-          else {
-            this.emit('error');
-            root.setAlert('danger', 'You should add a URL to this button.');
-          }
-              /* eslint-enable no-unused-vars */
 
           break;
         case 'reset':

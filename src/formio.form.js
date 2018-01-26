@@ -786,6 +786,8 @@ export class FormioForm extends FormioComponents {
     this.checkData(submission.data, {
       noValidate: true
     });
+    this.on('requestUrl', (args) => (
+      this.submitUrl(args.url,args.headers)), true)
   }
 
   /**
@@ -980,6 +982,75 @@ export class FormioForm extends FormioComponents {
     }
     else {
       return this.executeSubmit();
+    }
+  }
+
+  doRequest(url,settings) {
+    return new Promise((resolve,reject) => {
+      fetch(url, settings).then((res) => {
+        if (!res.ok) {
+          this.showErrors(res.statusText + ' ' + res.status);
+          this.emit('error',res.statusText + ' ' + res.status);
+          return reject(console.error(res.statusText + ' ' + res.status));
+        }
+        else {
+          this.emit('requestDone');
+          this.setAlert('success', '<p> Success </p>');
+          return resolve(res);
+        }
+      });
+    })
+  }
+
+  /**
+   * Submit Url
+   *
+   * @example
+   * let form = new FormioForm(document.getElementById('formio'));
+   * let externalUrl = 'https://examples.form.io/example'
+   * let headers = [{"x-jwt-token": "EyxampleToken123"}];
+   * form.src = 'https://examples.form.io/example';
+   * form.submission = {data: {
+   *   firstName: 'Joe',
+   *   lastName: 'Smith',
+   *   email: 'joe@example.com'
+   * }};
+   * form.submitUrl(externalUrl,headers).then((res) => {
+   *   console.log(res);
+   * });
+   *
+   * @param {string} URL - External URL to send the submission.
+   * @param {array} headers - Optional headers for external URL, [{}].
+   *
+   * @returns {Promise} - A promise when the request is done.
+   */
+  submitUrl(URL,headers){
+    if(!URL) {
+      return console.warn('Missing URL argument');
+    }
+
+    let submission = this.submission || {};
+    let API_URL  = URL;
+    let settings = {
+      method: 'POST',
+      headers: {},
+      body: JSON.stringify(submission)
+    };
+
+    if (headers && headers.length > 0) {
+      headers.map((e) => {
+        if (e.header !== '' && e.value !== '') {
+          settings.headers[e.header] = e.value;
+        }
+      });
+    }
+    if (API_URL && settings) {
+       return this.doRequest(API_URL,settings)
+    }
+    else {
+      this.emit('error', 'You should add a URL to this button.');
+      this.setAlert('warning', 'You should add a URL to this button.');
+      return console.warn('You should add a URL to this button.');
     }
   }
 }
