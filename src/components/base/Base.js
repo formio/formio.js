@@ -6,6 +6,7 @@ import _each from 'lodash/each';
 import _assign from 'lodash/assign';
 import _debounce from 'lodash/debounce';
 import _isArray from 'lodash/isArray';
+import _clone from 'lodash/clone';
 import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import _isEqual from 'lodash/isEqual';
@@ -40,7 +41,7 @@ export class BaseComponent {
      * The options for this component.
      * @type {{}}
      */
-    this.options = _defaults(_cloneDeep(options), {
+    this.options = _defaults(_clone(options), {
       highlightErrors: true
     });
 
