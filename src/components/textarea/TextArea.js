@@ -108,7 +108,7 @@ export class TextAreaComponent extends TextFieldComponent {
     }
 
     // FOR-998 Assigns default value
-    if(!this.data[this.component.key]){
+    if (!this.data[this.component.key]) {
       this.data[this.component.key] = "<p></p>";
       return this.data[this.component.key]
     }
