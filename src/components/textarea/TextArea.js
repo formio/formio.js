@@ -11,6 +11,7 @@ export class TextAreaComponent extends TextFieldComponent {
   wysiwygDefault() {
     return {
       theme: 'snow',
+      placeholder: this.component.placeholder,
       modules: {
         toolbar: [
           [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
@@ -70,7 +71,7 @@ export class TextAreaComponent extends TextFieldComponent {
 
         this.quill.on('text-change', () => {
           txtArea.value = this.quill.root.innerHTML;
-          this.updateValue(true);
+          this.updateValue(true, txtArea.value);
         });
 
         if (this.options.readOnly || this.component.disabled) {
@@ -94,12 +95,36 @@ export class TextAreaComponent extends TextFieldComponent {
     });
   }
 
+  updateValue(flags, value) {
+    if (!this.component.wysiwyg) {
+      return super.updateValue();
+    }
+
+    if (this.quill && value) {
+      if ( value == null ||
+        value == '<p></p>' ||
+        value == '<p><br></p>' ||
+        value == '<p>&nbsp;<br></p>' ||
+        value == '<p>&nbsp;</p>' ||
+        value == '&nbsp;<br>' ||
+        value == ' <br>' ||
+        value == '&nbsp;' ||
+        value == ' '
+      ) {
+        delete this.data[this.component.key]
+      }
+      else{
+        this.data[this.component.key] = value;
+      }
+    }
+  }
+
   getValue() {
     if (!this.component.wysiwyg) {
       return super.getValue();
     }
 
-    if (this.quill) {
+    if (this.quill && this.data[this.component.key]) {
       return this.quill.root.innerHTML;
     }
   }
