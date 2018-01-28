@@ -228,7 +228,7 @@ export class SelectComponent extends BaseComponent {
 
     if (!_isEmpty(query)) {
       // Add the query string.
-      url += '?' + Formio.serialize(query);
+      url += (!(url.indexOf('?') !== -1) ? '?' : '&') + Formio.serialize(query);
     }
 
     // Make the request.
