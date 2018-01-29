@@ -1,7 +1,7 @@
 import {Harness} from "../harness";
 
 module.exports = {
-  title: "Advanced Conditions Tests",
+  title: "Field Logic Tests",
   form: {
     components: [
       {
@@ -75,7 +75,7 @@ module.exports = {
         "inputType": "text",
         "tableView": true,
         "input": true,
-        "advancedConditions": [
+        "logic": [
           {
             "name": "Test 1",
             "trigger": {

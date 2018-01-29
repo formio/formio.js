@@ -1316,7 +1316,7 @@ export class BaseComponent {
       result = this.show(FormioUtils.checkCondition(this.component, this.data, data));
     }
 
-    if (this.advancedConditions(data)) {
+    if (this.fieldLogic(data)) {
       this.redraw();
     }
 
@@ -1328,21 +1328,21 @@ export class BaseComponent {
    *
    * @param data
    */
-  advancedConditions(data) {
-    const conditions = this.component.advancedConditions || [];
+  fieldLogic(data) {
+    const logics = this.component.logic || [];
 
-    // If there aren't advanced conditions, don't go further.
-    if (conditions.length === 0) {
+    // If there aren't logic, don't go further.
+    if (logics.length === 0) {
       return;
     }
 
     const newComponent = _cloneDeep(this.originalComponent);
 
-    let changed = conditions.reduce((changed, condition) => {
-      const result = FormioUtils.checkTrigger(newComponent, condition.trigger, this.data, data);
+    let changed = logics.reduce((changed, logic) => {
+      const result = FormioUtils.checkTrigger(newComponent, logic.trigger, this.data, data);
 
       if (result) {
-        changed |= condition.actions.reduce((changed, action) => {
+        changed |= logic.actions.reduce((changed, action) => {
           switch(action.type) {
             case 'property':
               FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);

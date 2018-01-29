@@ -2,5 +2,5 @@ export const FormTests = [
   require('./simple'),
   require('./conditions'),
   require('./calculatedfields'),
-  require('./advancedConditions')
+  require('./fieldLogic')
 ];
