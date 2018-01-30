@@ -25,7 +25,6 @@ export class EditGridComponent extends FormioComponents {
 
   buildTable() {
     if (this.tableElement) {
-      // this.element.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';
     }
 
