@@ -48,6 +48,16 @@ export const Harness = {
     });
     form.submission = submission;
   },
+  testVisibility: function(component, query, visible) {
+    let element = component.element.querySelector(query);
+    assert(element, query + ' not found');
+    if (visible) {
+      assert((element.style.visibility === '') || (element.style.visibility === 'visible'), 'Element must be visible');
+    }
+    else {
+      assert(element.style.visibility === 'hidden', 'Element must be hidden');
+    }
+  },
   clickElement: function(component, query) {
     const clickEvent = new MouseEvent('click', {
       view: window,

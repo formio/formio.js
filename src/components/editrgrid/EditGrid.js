@@ -122,6 +122,7 @@ export class EditGridComponent extends FormioComponents {
       );
     }
     wrapper.appendChild(this.editRows[rowIndex].errorContainer = this.ce('div', {class: 'has-error'}));
+    this.checkData(this.data, {noValidate: true}, rowIndex);
     return wrapper;
   }
 
@@ -133,6 +134,39 @@ export class EditGridComponent extends FormioComponents {
         value: this.rows
       })) :
       this.text('');
+  }
+
+  checkData(data, flags = {}, index) {
+    let valid = true;
+    if (flags.noCheck) {
+      return;
+    }
+
+    // Update the value.
+    let changed = this.updateValue({
+      noUpdateEvent: true
+    });
+
+    // Iterate through all components and check conditions, and calculate values.
+    this.editRows[index].components.forEach(comp => {
+      changed |= comp.calculateValue(data, {
+        noUpdateEvent: true
+      });
+      comp.checkConditions(this.editRows[index].data);
+      if (!flags.noValidate) {
+        valid &= comp.checkValidity(this.editRows[index].data, !this.editRows[index].isOpen);
+      }
+    });
+
+    valid &= this.validateRow(index, false);
+
+    // Trigger the change if the values changed.
+    if (changed) {
+      this.triggerChange(flags);
+    }
+
+    // Return if the value is valid.
+    return valid;
   }
 
   createAddButton() {
@@ -165,7 +199,6 @@ export class EditGridComponent extends FormioComponents {
         // New row
         editRow.element = this.createRow(editRow.data, rowIndex);
         this.tableElement.insertBefore(editRow.element, this.tableElement.children[rowIndex + 1]);
-        this.validateRow(rowIndex);
       }
       else if (
         editRow.element.rowData !== editRow.data ||
@@ -177,7 +210,6 @@ export class EditGridComponent extends FormioComponents {
         const newRow = this.createRow(editRow.data, rowIndex);
         this.tableElement.replaceChild(newRow, editRow.element);
         editRow.element = newRow;
-        this.validateRow(rowIndex);
       }
     });
   }
@@ -228,13 +260,13 @@ export class EditGridComponent extends FormioComponents {
       this.refreshDOM();
       return;
     }
-    if (!this.validateRow(rowIndex)) {
+    if (!this.validateRow(rowIndex, true)) {
       return;
     }
     this.removeRowComponents(rowIndex);
     this.rows[rowIndex] = this.editRows[rowIndex].data;
     this.editRows[rowIndex].isOpen = false;
-    this.checkValidity(this.data);
+    this.checkValidity(this.data, true);
     this.updateValue();
     this.refreshDOM();
   }
@@ -259,11 +291,11 @@ export class EditGridComponent extends FormioComponents {
     this.editRows[rowIndex].components = [];
   }
 
-  validateRow(rowIndex) {
+  validateRow(rowIndex, dirty) {
     let check = true;
     this.editRows[rowIndex].components.forEach(comp => {
-      comp.setPristine(false);
-      check &= comp.checkValidity(this.editRows[rowIndex].data, !comp.pristine);
+      comp.setPristine(!dirty);
+      check &= comp.checkValidity(this.editRows[rowIndex].data, dirty);
     });
 
     if (this.component.validate && this.component.validate.row) {
@@ -294,7 +326,7 @@ export class EditGridComponent extends FormioComponents {
     return check;
   }
 
-  checkValidity(data) {
+  checkValidity(data, dirty) {
     if (!FormioUtils.checkCondition(this.component, data, this.data)) {
       return true;
     }
@@ -303,18 +335,26 @@ export class EditGridComponent extends FormioComponents {
     let rowsClosed = true;
     this.editRows.forEach((editRow, rowIndex) => {
       // Trigger all errors on the row.
-      rowsValid &= this.validateRow(rowIndex);
+      const rowValid = this.validateRow(rowIndex, false);
+      // Add has-error class to row.
+      if (!rowValid) {
+        this.addClass(this.editRows[rowIndex].element, 'has-error');
+      }
+      else {
+        this.removeClass(this.editRows[rowIndex].element, 'has-error');
+      }
+      rowsValid &= rowValid;
 
       // Any open rows causes validation to fail.
       rowsClosed &= !editRow.isOpen;
     });
 
     if (!rowsValid) {
-      this.setCustomValidity('Please correct rows before proceeding.');
+      this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
     else if (!rowsClosed) {
-      this.setCustomValidity('Please save all rows before proceeding.');
+      this.setCustomValidity('Please save all rows before proceeding.', dirty);
       return false;
     }
 
@@ -322,7 +362,7 @@ export class EditGridComponent extends FormioComponents {
     return true;
   }
 
-  setCustomValidity(message) {
+  setCustomValidity(message, dirty) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
       try {
