@@ -89,6 +89,8 @@ export class ButtonComponent extends BaseComponent {
           });
           break;
         case 'custom':
+          // Get the FormioForm at the root of this component's tree
+          var form = this.getRoot();
           // Get the form's flattened schema components
           var flattened = FormioUtils.flattenComponents(form.component.components, true);
           // Create object containing the corresponding HTML element components
@@ -101,7 +103,7 @@ export class ButtonComponent extends BaseComponent {
           });
 
           try {
-            (new Function('form', 'flattened', 'components', 'data', this.component.custom.toString()))(this.getRoot(), flattened, components, this.data);
+            (new Function('form', 'flattened', 'components', 'data', this.component.custom.toString()))(form, flattened, components, this.data);
           }
           catch (e) {
             /* eslint-disable no-console */
