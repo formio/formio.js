@@ -233,10 +233,7 @@ export class AddressComponent extends TextFieldComponent {
    */
   autoCompleteFilterSuggestion(data) {
     try {
-      let script = '(function() { var show = true;';
-      script += this.component.map.autoCompleteFilter.toString();
-      script += '; return show; })()';
-      let result = eval(script);
+      let result = (new Function('data', `var show = true; ${this.component.map.autoCompleteFilter.toString()}; return show;`))(data);
       return result.toString() === 'true';
     }
     catch (e) {

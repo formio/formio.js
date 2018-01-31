@@ -234,12 +234,8 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let valid = true;
-        let row = component.data;
         let custom = setting;
-        /*eslint-disable no-unused-vars */
-        let input = value;
-        /*eslint-enable no-unused-vars */
+
         custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
           if ($2.indexOf('data.') === 0) {
             return _get(data, $2.replace('data.', ''));
@@ -253,8 +249,7 @@ export const Validator = {
         });
 
         /* jshint evil: true */
-        eval(custom);
-        return valid;
+        return (new Function('row', 'data', 'component', 'input', `var valid = true; ${custom}; return valid;`))(component.data, data, component, value);
       }
     }
   }

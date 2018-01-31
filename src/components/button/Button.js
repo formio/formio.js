@@ -101,10 +101,9 @@ export class ButtonComponent extends BaseComponent {
               components[key] = element;
             }
           });
-          // Make data available to script
-          var data = this.data;
+
           try {
-            eval(this.component.custom.toString());
+            (new Function('form', 'flattened', 'components', 'data', this.component.custom.toString()))(form, flattened, components, this.data);
           }
           catch (e) {
             /* eslint-disable no-console */
