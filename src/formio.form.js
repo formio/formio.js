@@ -786,8 +786,7 @@ export class FormioForm extends FormioComponents {
     this.checkData(submission.data, {
       noValidate: true
     });
-    this.on('requestUrl', (args) => (
-      this.submitUrl(args.url,args.headers)), true)
+    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
   }
 
   /**
@@ -985,45 +984,6 @@ export class FormioForm extends FormioComponents {
     }
   }
 
-  doRequest(url,settings) {
-    return new Promise((resolve,reject) => {
-      fetch(url, settings).then((res) => {
-        if (!res.ok) {
-          this.showErrors(res.statusText + ' ' + res.status);
-          this.emit('error',res.statusText + ' ' + res.status);
-          return reject(console.error(res.statusText + ' ' + res.status));
-        }
-        else {
-          this.emit('requestDone');
-          this.setAlert('success', '<p> Success </p>');
-          return resolve(res);
-        }
-      });
-    })
-  }
-
-  /**
-   * Submit Url
-   *
-   * @example
-   * let form = new FormioForm(document.getElementById('formio'));
-   * let externalUrl = 'https://examples.form.io/example'
-   * let headers = [{"x-jwt-token": "EyxampleToken123"}];
-   * form.src = 'https://examples.form.io/example';
-   * form.submission = {data: {
-   *   firstName: 'Joe',
-   *   lastName: 'Smith',
-   *   email: 'joe@example.com'
-   * }};
-   * form.submitUrl(externalUrl,headers).then((res) => {
-   *   console.log(res);
-   * });
-   *
-   * @param {string} URL - External URL to send the submission.
-   * @param {array} headers - Optional headers for external URL, [{}].
-   *
-   * @returns {Promise} - A promise when the request is done.
-   */
   submitUrl(URL,headers){
     if(!URL) {
       return console.warn('Missing URL argument');
@@ -1033,8 +993,7 @@ export class FormioForm extends FormioComponents {
     let API_URL  = URL;
     let settings = {
       method: 'POST',
-      headers: {},
-      body: JSON.stringify(submission)
+      headers: {}
     };
 
     if (headers && headers.length > 0) {
@@ -1045,7 +1004,17 @@ export class FormioForm extends FormioComponents {
       });
     }
     if (API_URL && settings) {
-       return this.doRequest(API_URL,settings)
+      try {
+        Formio.makeStaticRequest(API_URL,settings.method,submission,settings.headers).then((res) =>{
+          this.emit('requestDone');
+          this.setAlert('success', '<p> Success </p>');
+        })
+      }
+      catch(e) {
+        this.showErrors(e.statusText + ' ' + e.status);
+        this.emit('error',e.statusText + ' ' + e.status);
+        console.error(e.statusText + ' ' + e.status);
+      }
     }
     else {
       this.emit('error', 'You should add a URL to this button.');

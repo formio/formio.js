@@ -75,23 +75,22 @@ export class ButtonComponent extends BaseComponent {
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
         this.loading = true;
-      this.disabled = true;
-    }, true);
+        this.disabled = true;
+      }, true);
       this.on('requestDone', () => {
         this.loading = false;
-      this.disabled = false;
-    }, true);
+        this.disabled = false;
+      }, true);
       this.on('change', (value) => {
         this.loading = false;
-      this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
-    }, true);
+        this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
+      }, true);
       this.on('error', () => {
         this.loading = false;
-    }, true);
+      }, true);
     }
     this.addEventListener(this.button, 'click', (event) => {
       this.clicked = false;
-      this.data[this.component.key] = true;
       switch (this.component.action) {
         case 'submit':
           event.preventDefault();
@@ -133,12 +132,10 @@ export class ButtonComponent extends BaseComponent {
           break;
         case 'url':
           this.emit('requestButton');
-          this.emit('requestUrl',
-            {
-              url: this.component.url,
-              headers: this.component.headers
-            });
-
+          this.emit('requestUrl', {
+            url: this.component.url,
+            headers: this.component.headers
+          });
           break;
         case 'reset':
           this.emit('resetForm');
