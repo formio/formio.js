@@ -227,10 +227,7 @@ export class FormComponent extends FormioForm {
     }
 
     // Load the subform if we have data.
-    if (
-      submission._id ||
-      (this.data[this.component.key] && !_isEmpty(this.data[this.component.key].data))
-    ) {
+    if (submission._id || !_isEmpty(this.data[this.component.key])) {
       this.loadSubForm();
     }
 
