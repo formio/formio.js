@@ -7,7 +7,8 @@ import _ from 'lodash';
 import each from 'lodash/each';
 import clone from 'lodash/clone';
 import defaults from 'lodash/defaults';
-export class FormioWizard extends FormioForm {
+
+export default class FormioWizard extends FormioForm {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.
@@ -441,5 +442,3 @@ export class FormioWizard extends FormioForm {
 FormioWizard.setBaseUrl = Formio.setBaseUrl;
 FormioWizard.setApiUrl = Formio.setApiUrl;
 FormioWizard.setAppUrl = Formio.setAppUrl;
-
-module.exports = global.FormioWizard = FormioWizard;

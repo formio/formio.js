@@ -40,7 +40,7 @@ let getOptions = function(options) {
  * let form = new FormioForm(document.getElementById('formio'));
  * form.src = 'https://examples.form.io/example';
  */
-export class FormioForm extends FormioComponents {
+export default class FormioForm extends FormioComponents {
   /**
    * Creates a new FormioForm instance.
    *
@@ -1033,8 +1033,6 @@ if ('addEventListener' in window) {
   window.attachEvent('onresize', () => Formio.triggerResize());
 }
 
-
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;
 FormioForm.setAppUrl = Formio.setAppUrl;
-module.exports = global.FormioForm = FormioForm;

@@ -14,7 +14,7 @@ var cookies = require('browser-cookies');
  *
  *   let formio = new Formio('https://examples.form.io/example');
  */
-export class Formio {
+export default class Formio {
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.
     if (!(this instanceof Formio)) { return new Formio(path); }
@@ -1175,5 +1175,3 @@ Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
-
-module.exports = global.Formio = Formio;
