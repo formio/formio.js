@@ -1,12 +1,13 @@
 import maskInput, { conformToMask } from 'vanilla-text-mask';
 import Promise from "native-promise-only";
-import _ from 'lodash';
+import _set from 'lodash/set';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _assign from 'lodash/assign';
 import _debounce from 'lodash/debounce';
 import _isArray from 'lodash/isArray';
 import _clone from 'lodash/clone';
+import _cloneDeep from 'lodash/cloneDeep';
 import _defaults from 'lodash/defaults';
 import _isEqual from 'lodash/isEqual';
 import _isUndefined from 'lodash/isUndefined';
@@ -28,6 +29,7 @@ export class BaseComponent {
    * @param {Object} data - The global data submission object this component will belong.
    */
   constructor(component, options, data) {
+    this.originalComponent = _cloneDeep(component);
     /**
      * The ID of this component. This value is auto-generated when the component is created, but
      * can also be provided from the component.id value passed into the constructor.
@@ -485,16 +487,19 @@ export class BaseComponent {
    * @returns {HTMLElement}
    */
   createElement() {
+    // If the element is already created, don't recreate.
+    if (this.element) {
+      return this.element;
+    }
+
     this.element = this.ce('div', {
       id: this.id,
       class: this.className,
       style: this.customStyle
     });
 
-    if (this.element) {
-      // Ensure you can get the component info from the element.
-      this.element.component = this.component;
-    }
+    // Ensure you can get the component info from the element.
+    this.element.component = this.component;
 
     return this.element;
   }
@@ -538,12 +543,7 @@ export class BaseComponent {
     else if (this.component.customDefaultValue) {
       if (typeof this.component.customDefaultValue === 'string') {
         try {
-          let row = this.data;
-          let data = this.data;
-          let value = '';
-          let component = this;
-          eval(this.component.customDefaultValue.toString());
-          defaultValue = value;
+          defaultValue = (new Function('component', 'row', 'data', `var value = ''; ${this.component.customDefaultValue.toString()}; return value;`))(this, this.data, this.data);
         }
         catch (e) {
           defaultValue = null;
@@ -556,8 +556,7 @@ export class BaseComponent {
         try {
           defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
             data: this.data,
-            row: this.data,
-            _
+            row: this.data
           });
         }
         catch (err) {
@@ -1137,6 +1136,7 @@ export class BaseComponent {
         window.removeEventListener(handler.event, handler.func);
       }
     });
+    this.inputs = [];
   }
 
   /**
@@ -1284,11 +1284,71 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
+    // Check advanced conditions
+    let result;
+
     if (!this.hasCondition()) {
-      return this.show(true);
+      result = this.show(true);
+    }
+    else {
+      result = this.show(FormioUtils.checkCondition(this.component, this.data, data));
     }
 
-    return this.show(FormioUtils.checkCondition(this.component, this.data, data));
+    if (this.fieldLogic(data)) {
+      this.redraw();
+    }
+
+    return result;
+  }
+
+  /**
+   * Check all triggers and apply necessary actions.
+   *
+   * @param data
+   */
+  fieldLogic(data) {
+    const logics = this.component.logic || [];
+
+    // If there aren't logic, don't go further.
+    if (logics.length === 0) {
+      return;
+    }
+
+    const newComponent = _cloneDeep(this.originalComponent);
+
+    let changed = logics.reduce((changed, logic) => {
+      const result = FormioUtils.checkTrigger(newComponent, logic.trigger, this.data, data);
+
+      if (result) {
+        changed |= logic.actions.reduce((changed, action) => {
+          switch(action.type) {
+            case 'property':
+              FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
+              break;
+            case 'value':
+              const newValue = (new Function('row', 'data', 'component', 'result', action.value))(this.data, data, newComponent, result);
+              if (!_isEqual(this.getValue(), newValue)) {
+                this.setValue(newValue);
+                changed = true;
+              }
+              break;
+            case 'validation':
+              // TODO
+              break;
+          }
+          return changed;
+        }, false);
+      }
+      return changed;
+    }, false);
+
+    // If component definition changed, replace and mark as changed.
+    if (!_isEqual(this.component, newComponent)) {
+      this.component = newComponent;
+      changed = true;
+    }
+
+    return changed;
   }
 
   /**
@@ -1558,10 +1618,7 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
-        let value = [];
-        let row = this.data;
-        let component = this;
-        eval(this.component.calculateValue.toString());
+        let value = (new Function('component', 'row', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data);
         changed = this.setValue(value, flags);
       }
       catch (err) {
@@ -1575,8 +1632,7 @@ export class BaseComponent {
       try {
         let val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
           data,
-          row: this.data,
-          _
+          row: this.data
         });
         changed = this.setValue(val, flags);
       }
@@ -1865,7 +1921,9 @@ export class BaseComponent {
     this.destroy();
     const element = this.getElement();
     if (element) {
-      element.innerHTML = '';
+      while (element.lastChild) {
+        element.removeChild(element.lastChild);
+      }
     }
   }
 

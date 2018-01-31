@@ -1,5 +1,4 @@
 import assert from 'power-assert';
-import _each from 'lodash/each';
 import { Harness } from '../harness';
 module.exports = {
   title: 'Calculated Fields Test',
