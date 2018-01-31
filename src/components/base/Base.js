@@ -1247,7 +1247,10 @@ export class BaseComponent {
    *   The name of the class to add.
    */
   addClass(element, className) {
-    element.setAttribute('class', `${element.getAttribute('class')} ${className}`);
+    const classes = element.getAttribute('class');
+    if (!classes || classes.indexOf(className) === -1) {
+      element.setAttribute('class', `${classes} ${className}`);
+    }
   }
 
   /**
@@ -1261,7 +1264,7 @@ export class BaseComponent {
   removeClass(element, className) {
     let cls = element.getAttribute('class');
     if (cls) {
-      cls = cls.replace(className, '');
+      cls = cls.replace(new RegExp(className, 'g'), '');
       element.setAttribute('class', cls);
     }
   }

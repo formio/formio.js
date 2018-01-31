@@ -320,4 +320,13 @@ describe('EditGrid Component', function() {
       done();
     });
   });
+
+  it('Should calculate conditional logic and default values when adding row', done => {
+    Harness.testCreate(EditGridComponent, comps.comp2).then(component => {
+      Harness.clickElement(component, 'div.editgrid-add button');
+      Harness.testVisibility(component, '.formio-component-field2', false);
+      Harness.getInputValue(component, 'data[editgrid][0][field1]', 'bar');
+      done();
+    });
+  });
 });
