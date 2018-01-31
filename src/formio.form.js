@@ -786,6 +786,7 @@ export class FormioForm extends FormioComponents {
     this.checkData(submission.data, {
       noValidate: true
     });
+    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
   }
 
   /**
@@ -980,6 +981,45 @@ export class FormioForm extends FormioComponents {
     }
     else {
       return this.executeSubmit();
+    }
+  }
+
+  submitUrl(URL,headers){
+    if(!URL) {
+      return console.warn('Missing URL argument');
+    }
+
+    let submission = this.submission || {};
+    let API_URL  = URL;
+    let settings = {
+      method: 'POST',
+      headers: {}
+    };
+
+    if (headers && headers.length > 0) {
+      headers.map((e) => {
+        if (e.header !== '' && e.value !== '') {
+          settings.headers[e.header] = e.value;
+        }
+      });
+    }
+    if (API_URL && settings) {
+      try {
+        Formio.makeStaticRequest(API_URL,settings.method,submission,settings.headers).then((res) =>{
+          this.emit('requestDone');
+          this.setAlert('success', '<p> Success </p>');
+        })
+      }
+      catch(e) {
+        this.showErrors(e.statusText + ' ' + e.status);
+        this.emit('error',e.statusText + ' ' + e.status);
+        console.error(e.statusText + ' ' + e.status);
+      }
+    }
+    else {
+      this.emit('error', 'You should add a URL to this button.');
+      this.setAlert('warning', 'You should add a URL to this button.');
+      return console.warn('You should add a URL to this button.');
     }
   }
 }
