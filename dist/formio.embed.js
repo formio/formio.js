@@ -3284,7 +3284,7 @@ var BaseComponent = function () {
       // If this is a string, then use eval to evalulate it.
       if (typeof this.component.calculateValue === 'string') {
         try {
-          var value = new Function('component', 'row', 'value = []; ' + this.component.calculateValue.toString() + '; return value;')(this, this.data);
+          var value = new Function('component', 'row', 'data', 'value = []; ' + this.component.calculateValue.toString() + '; return value;')(this, this.data, data);
           changed = this.setValue(value, flags);
         } catch (err) {
           /* eslint-disable no-console */
@@ -6196,6 +6196,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     var _this = _possibleConstructorReturn(this, (EditGridComponent.__proto__ || Object.getPrototypeOf(EditGridComponent)).call(this, component, options, data));
 
     _this.type = 'datagrid';
+    _this.rows = [];
     _this.editRows = [];
     return _this;
   }

@@ -2057,7 +2057,7 @@ var BaseComponent = function () {
       // If this is a string, then use eval to evalulate it.
       if (typeof this.component.calculateValue === 'string') {
         try {
-          var value = new Function('component', 'row', 'value = []; ' + this.component.calculateValue.toString() + '; return value;')(this, this.data);
+          var value = new Function('component', 'row', 'data', 'value = []; ' + this.component.calculateValue.toString() + '; return value;')(this, this.data, data);
           changed = this.setValue(value, flags);
         } catch (err) {
           /* eslint-disable no-console */
