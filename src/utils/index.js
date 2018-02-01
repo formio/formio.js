@@ -20,9 +20,16 @@ import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
 import { lodashOperators } from './jsonlogic/operators';
 import momentModule from 'moment';
+import dotty from 'dotty';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
+
+// Custom var_search operator for accessing Array of objects and more
+// https://github.com/deoxxa/dotty
+jsonLogic.add_operation('var_search', function(key){
+  return dotty.search(this, key);
+});
 
 const FormioUtils = {
   jsonLogic, // Share
