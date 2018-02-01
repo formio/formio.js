@@ -534,6 +534,7 @@ export class SelectComponent extends BaseComponent {
     flags = this.getFlags.apply(this, arguments);
     let hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
     let hasValue = _isArray(value) ? value.length : value;
+    this.data[this.component.key] = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {

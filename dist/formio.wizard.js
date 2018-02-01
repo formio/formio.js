@@ -9588,6 +9588,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       flags = this.getFlags.apply(this, arguments);
       var hasPreviousValue = (0, _isArray3.default)(this.value) ? this.value.length : this.value;
       var hasValue = (0, _isArray3.default)(value) ? value.length : value;
+      this.data[this.component.key] = value;
 
       // Do not set the value if we are loading... that will happen after it is done.
       if (this.loading) {
