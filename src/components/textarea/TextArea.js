@@ -50,11 +50,11 @@ export class TextAreaComponent extends TextFieldComponent {
 
     // Lazy load the quill css.
     BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [
-      {type: 'styles', src: 'https://cdn.quilljs.com/1.3.3/quill.' + this.component.wysiwyg.theme + '.css'}
+      {type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + this.component.wysiwyg.theme + '.css'}
     ], true);
 
     // Lazy load the quill library.
-    this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.3/quill.min.js', true)
+    this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(this.input, this.component.wysiwyg);
 
@@ -121,6 +121,9 @@ export class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
+    if (this.viewOnly) {
+      return this.value;
+    }
     return this.quill ? this.quill.root.innerHTML : super.getValue();
   }
 

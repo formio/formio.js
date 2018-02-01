@@ -384,6 +384,10 @@ export class FormioComponents extends BaseComponent {
     return errors;
   }
 
+  get value() {
+    return this.data;
+  }
+
   getValue() {
     return this.data;
   }
@@ -402,7 +406,6 @@ export class FormioComponents extends BaseComponent {
     }
     flags = this.getFlags.apply(this, arguments);
     let changed = false;
-    this.value = value;
     _each(this.getComponents(), (component) => {
       if (component.type === 'button') {
         return;

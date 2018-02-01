@@ -379,7 +379,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   addPlaceholder(input) {
-    if (!this.component.placeholder) {
+    if (!this.component.placeholder || !input) {
       return;
     }
     let placeholder = document.createElement('option');
@@ -505,16 +505,17 @@ export class SelectComponent extends BaseComponent {
     if (!flags.changed && this.value) {
       return this.value;
     }
+    let value = '';
     if (this.choices) {
-      this.value = this.choices.getValue(true);
+      value = this.choices.getValue(true);
 
       // Make sure we don't get the placeholder
       if (
         !this.component.multiple &&
         this.component.placeholder &&
-        (this.value === this.t(this.component.placeholder))
+        (value === this.t(this.component.placeholder))
       ) {
-        this.value = '';
+        value = '';
       }
     }
     else {
@@ -524,16 +525,16 @@ export class SelectComponent extends BaseComponent {
           values.push(selectOption.value);
         }
       });
-      this.value = this.component.multiple ? values : values.shift();
+      value = this.component.multiple ? values : values.shift();
     }
-    return this.value;
+    return value;
   }
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     let hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
     let hasValue = _isArray(value) ? value.length : value;
-    this.value = value;
+    this.data[this.component.key] = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -625,10 +626,6 @@ export class SelectComponent extends BaseComponent {
 
   setupValueElement(element) {
     element.innerHTML = this.asString();
-  }
-
-  updateViewOnlyValue() {
-    this.setupValueElement(this.valueElement);
   }
 
   destroy() {

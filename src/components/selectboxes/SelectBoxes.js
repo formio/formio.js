@@ -35,6 +35,9 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   getValue() {
+    if (this.viewOnly) {
+      return this.value;
+    }
     let value = {};
     _each(this.inputs, (input) => {
       value[input.value] = !!input.checked;
@@ -52,28 +55,25 @@ export class SelectBoxesComponent extends RadioComponent {
     value = value || {};
     flags = this.getFlags.apply(this, arguments);
     if (_isArray(value)) {
-      this.value = {};
       _each(value, (val) => {
-        this.value[val] = true;
+        value[val] = true;
       });
     }
     else {
-      this.value = value;
+      value = value;
     }
 
     _each(this.inputs, (input) => {
-      if (this.value[input.value] == undefined) {
-        this.value[input.value] = false;
+      if (value[input.value] == undefined) {
+        value[input.value] = false;
       }
-      input.checked = !!this.value[input.value];
+      input.checked = !!value[input.value];
     });
 
     this.updateValue(flags);
   }
 
-  get view() {
-    const value = this.getValue();
-
+  getView(value) {
     return _(this.component.values || [])
       .filter((v) => value[v.value])
       .map('label')

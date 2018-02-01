@@ -217,11 +217,6 @@ export class DayComponent extends BaseComponent {
     ];
   }
 
-  createViewOnlyInput() {
-    super.createViewOnlyInput();
-    this.createInputs();
-  }
-
   setSubinputLabelStyle(label) {
     const { inputsLabelPosition } = this.component;
 
@@ -336,7 +331,7 @@ export class DayComponent extends BaseComponent {
     return this.inputs[index].value;
   }
 
-  get view() {
+  getView() {
     const date = this.date;
     return date.isValid() ? date.format(this.format) : null;
   }

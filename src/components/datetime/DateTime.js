@@ -166,8 +166,7 @@ export class DateTimeComponent extends BaseComponent {
     return dates[0].toISOString();
   }
 
-  get view() {
-    const value = this.getValue();
+  getView(value) {
     return value ? moment(value).format(convertFormatToMoment(_get(this.component, 'format', ''))) : null;
   }
 

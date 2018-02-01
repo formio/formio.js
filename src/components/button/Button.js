@@ -41,7 +41,7 @@ export class ButtonComponent extends BaseComponent {
   }
 
   build() {
-    if (this.viewOnlyMode()) {
+    if (this.viewOnly) {
       this.component.hidden = true;
     }
 

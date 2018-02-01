@@ -74,13 +74,6 @@ export class RadioComponent extends BaseComponent {
     return wrapperClass;
   }
 
-  createViewOnlyInput() {
-    _each(this.component.values, (value) => {
-      const input = super.createViewOnlyInput();
-      input.value = value.value;
-    });
-  }
-
   optionsLabelOnTheTopOrLeft() {
     return ['top', 'left'].includes(this.component.optionsLabelPosition);
   }
@@ -124,6 +117,9 @@ export class RadioComponent extends BaseComponent {
   }
 
   getValue() {
+    if (this.viewOnly) {
+      return this.value;
+    }
     let value = '';
     _each(this.inputs, (input) => {
       if (input.checked) {
@@ -142,9 +138,7 @@ export class RadioComponent extends BaseComponent {
     return value;
   }
 
-  get view() {
-    const value = this.getValue();
-
+  getView(value) {
     if (!_isString(value)) {
       return _toString(value);
     }

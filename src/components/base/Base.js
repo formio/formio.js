@@ -1,9 +1,7 @@
 import maskInput, { conformToMask } from 'vanilla-text-mask';
 import Promise from "native-promise-only";
-import _set from 'lodash/set';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
-import _assign from 'lodash/assign';
 import _debounce from 'lodash/debounce';
 import _isArray from 'lodash/isArray';
 import _clone from 'lodash/clone';
@@ -113,12 +111,6 @@ export class BaseComponent {
      * @type {null}
      */
     this.info = null;
-
-    /**
-     * The value of this component
-     * @type {*}
-     */
-    this.value = null;
 
     /**
      * The row path of this component.
@@ -342,7 +334,7 @@ export class BaseComponent {
    * Builds the component.
    */
   build() {
-    if (this.viewOnlyMode()) {
+    if (this.viewOnly) {
       this.viewOnlyBuild();
     }
     else {
@@ -370,14 +362,13 @@ export class BaseComponent {
     }
   }
 
-  viewOnlyMode() {
+  get viewOnly() {
     return this.options.readOnly && this.options.viewAsHtml;
   }
 
   viewOnlyBuild() {
     this.createViewOnlyElement();
     this.createViewOnlyLabel(this.element);
-    this.createViewOnlyInput();
     this.createViewOnlyValue(this.element);
   }
 
@@ -392,12 +383,6 @@ export class BaseComponent {
     }
 
     return this.element;
-  }
-
-  createViewOnlyInput() {
-    this.input = this.ce(this.info.type, this.info.attr);
-    this.inputs.push(this.input);
-    return this.input;
   }
 
   createViewOnlyLabel(container) {
@@ -418,16 +403,17 @@ export class BaseComponent {
   }
 
   setupValueElement(element) {
-    const value = this.text(this.view || this.defaultViewOnlyValue);
-    element.appendChild(value);
+    let value = this.value;
+    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
+    element.appendChild(this.text(value));
   }
 
   get defaultViewOnlyValue() {
     return '-';
   }
 
-  get view() {
-    return _toString(this.getValue());
+  getView(value) {
+    return _toString(value);
   }
 
   updateViewOnlyValue() {
@@ -1520,6 +1506,17 @@ export class BaseComponent {
   }
 
   /**
+   * Get the static value of this component.
+   * @return {*}
+   */
+  get value() {
+    if (!this.data) {
+      return null;
+    }
+    return this.data[this.component.key];
+  }
+
+  /**
    * Get the value at a specific index.
    *
    * @param index
@@ -1529,21 +1526,27 @@ export class BaseComponent {
     return this.inputs[index].value;
   }
 
+  /**
+   * Get the input value of this component.
+   *
+   * @return {*}
+   */
   getValue() {
     if (!this.hasInput) {
       return;
+    }
+    if (this.viewOnly) {
+      return this.value;
     }
     const values = [];
     for (let i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
-          this.value = this.getValueAt(i);
-          return this.value;
+          return this.getValueAt(i);
         }
         values.push(this.getValueAt(i));
       }
     }
-    this.value = values;
     return values;
   }
 
@@ -1571,14 +1574,14 @@ export class BaseComponent {
     flags = flags || {};
     const value = this.data[this.component.key];
     this.data[this.component.key] = this.getValue(flags);
+    if (this.viewOnly) {
+      this.updateViewOnlyValue(this.value);
+    }
+
     const changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
     delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
-
-      if (this.viewOnlyMode()) {
-        this.updateViewOnlyValue();
-      }
     }
     return changed;
   }
@@ -1621,7 +1624,7 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
-        let value = (new Function('component', 'row', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data);
+        let value = (new Function('component', 'row', 'data', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data, data);
         changed = this.setValue(value, flags);
       }
       catch (err) {
@@ -1813,7 +1816,6 @@ export class BaseComponent {
     if (this.component.multiple && !_isArray(value)) {
       value = [value];
     }
-    this.value = value;
     this.buildRows();
     const isArray = _isArray(value);
     for (let i in this.inputs) {
