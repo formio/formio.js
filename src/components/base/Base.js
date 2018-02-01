@@ -1624,7 +1624,7 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
-        let value = (new Function('component', 'row', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data);
+        let value = (new Function('component', 'row', 'data', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data, data);
         changed = this.setValue(value, flags);
       }
       catch (err) {
