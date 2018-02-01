@@ -20,6 +20,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problem with the Form component where it would load the form when a default submission is provided.
  - Performance issues with both EditGrid and DataGrid.
  - Issue with false conditionals and null values.
+ - Issue with the "render" event not firing when form is rendered.
+ - Problems with the viewAsHtml flag not rendering the submission.
 
 ## 2.28.6
 ### Added 
