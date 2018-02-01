@@ -21,6 +21,7 @@ Formio.createForm(document.getElementById('formio'), {
     {
       type: 'textarea',
       label: 'Content',
+      placeholder: 'Enter content here',
       wysiwyg: true,
       key: 'content',
       input: true,
@@ -54,6 +55,9 @@ Formio.createForm(document.getElementById('formio'), {
         type: 'textarea',
         label: 'Content',
         wysiwyg: true,
+        validate: {
+          required: true
+        },
         key: 'content',
         input: true,
         inputType: 'text'
@@ -66,6 +70,10 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'submit'
       }
     ]
+  }).then(function(form) {
+    form.on('submit', function(submission) {
+      console.log(submission);
+    });
   });
   </script>
 </div>

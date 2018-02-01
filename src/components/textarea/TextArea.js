@@ -103,8 +103,8 @@ export class TextAreaComponent extends TextFieldComponent {
 
   get defaultValue() {
     let defaultValue = super.defaultValue;
-    if (this.quill && !defaultValue) {
-      defaultValue = '<p></p>';
+    if (this.component.wysiwyg && !defaultValue) {
+      defaultValue = '<p><br></p>';
     }
     return defaultValue;
   }
