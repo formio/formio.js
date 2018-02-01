@@ -9579,7 +9579,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         });
         value = this.component.multiple ? values : values.shift();
       }
-      return this.value;
+      return value;
     }
   }, {
     key: 'setValue',

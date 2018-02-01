@@ -527,7 +527,7 @@ export class SelectComponent extends BaseComponent {
       });
       value = this.component.multiple ? values : values.shift();
     }
-    return this.value;
+    return value;
   }
 
   setValue(value, flags) {
