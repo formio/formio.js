@@ -4029,7 +4029,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     value: function build() {
       var _this2 = this;
 
-      if (this.viewOnlyMode()) {
+      if (this.viewOnly) {
         this.component.hidden = true;
       }
 
