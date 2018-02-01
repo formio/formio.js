@@ -3,7 +3,7 @@ import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _has from 'lodash/has';
 import _isNumber from 'lodash/isNumber';
-import FormioUtils from '../utils/index';
+import FormioUtils from '../utils';
 export const Validator = {
   get: _get,
   each: _each,
@@ -207,6 +207,21 @@ export const Validator = {
         return valid;
       }
     },
+    mask: {
+      message(component, setting) {
+        return component.t(component.errorMessage('mask'), {
+          field: component.errorLabel,
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        if (value && component._inputMask) {
+          return FormioUtils.matchInputMask(value, component._inputMask);
+        }
+
+        return true;
+      }
+    },
     custom: {
       key: 'validate.custom',
       message(component) {
@@ -219,12 +234,8 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let valid = true;
-        let row = component.data;
         let custom = setting;
-        /*eslint-disable no-unused-vars */
-        let input = value;
-        /*eslint-enable no-unused-vars */
+
         custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
           if ($2.indexOf('data.') === 0) {
             return _get(data, $2.replace('data.', ''));
@@ -238,8 +249,7 @@ export const Validator = {
         });
 
         /* jshint evil: true */
-        eval(custom);
-        return valid;
+        return (new Function('row', 'data', 'component', 'input', `var valid = true; ${custom}; return valid;`))(component.data, data, component, value);
       }
     }
   }

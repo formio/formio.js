@@ -115,6 +115,7 @@ export class FormioComponents extends BaseComponent {
     comp.parent = this;
     comp.root = this.root || this;
     comp.build();
+    comp.isBuilt = true;
     this.components.push(comp);
     return comp;
   }
@@ -263,7 +264,13 @@ export class FormioComponents extends BaseComponent {
     let show = false;
     _each(this.getComponents(), (comp) => {
       const compShow = comp.checkConditions(data);
-      forceShow |= (comp.hasCondition() && compShow);
+      forceShow |= (
+        comp.hasCondition() &&
+        compShow &&
+        comp.component &&
+        comp.component.conditional &&
+        comp.component.conditional.overrideParent
+      );
       show |= compShow;
     });
 

@@ -94,7 +94,7 @@ export class TextAreaComponent extends TextFieldComponent {
 
   isEmpty(value) {
     if (this.quill) {
-      return (value === '<p><br></p>');
+      return (!value || (value === '<p><br></p>'));
     }
     else {
       return super.isEmpty(value);

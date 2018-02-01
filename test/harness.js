@@ -48,6 +48,16 @@ export const Harness = {
     });
     form.submission = submission;
   },
+  testVisibility: function(component, query, visible) {
+    let element = component.element.querySelector(query);
+    assert(element, query + ' not found');
+    if (visible) {
+      assert((element.style.visibility === '') || (element.style.visibility === 'visible'), 'Element must be visible');
+    }
+    else {
+      assert(element.style.visibility === 'hidden', 'Element must be hidden');
+    }
+  },
   clickElement: function(component, query) {
     const clickEvent = new MouseEvent('click', {
       view: window,
@@ -75,6 +85,16 @@ export const Harness = {
     let element = component.element.querySelector(query);
     assert(element, query + ' not found');
     assert.equal(element.innerHTML.trim(), content);
+  },
+  testAttribute: function(component, query, attribute, value) {
+    let element = component.element.querySelector(query);
+    assert(element, query + ' not found');
+    assert.equal(element.getAttribute(attribute), value);
+  },
+  testHasClass: function(component, query, className) {
+    let element = component.element.querySelector(query);
+    assert(element, query + ' not found');
+    assert(element.className.split(' ').indexOf(className) !== -1);
   },
   testElementAttribute: function(element, attribute, expected) {
     if (element !== undefined && element.getAttribute(attribute)) {

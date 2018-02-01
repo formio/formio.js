@@ -71,6 +71,24 @@ export class ButtonComponent extends BaseComponent {
         this.loading = false;
       }, true);
     }
+
+    if (this.component.action === 'url') {
+      this.on('requestButton', () => {
+        this.loading = true;
+        this.disabled = true;
+      }, true);
+      this.on('requestDone', () => {
+        this.loading = false;
+        this.disabled = false;
+      }, true);
+      this.on('change', (value) => {
+        this.loading = false;
+        this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
+      }, true);
+      this.on('error', () => {
+        this.loading = false;
+      }, true);
+    }
     this.addEventListener(this.button, 'click', (event) => {
       this.clicked = false;
       switch (this.component.action) {
@@ -101,16 +119,22 @@ export class ButtonComponent extends BaseComponent {
               components[key] = element;
             }
           });
-          // Make data available to script
-          var data = this.data;
+
           try {
-            eval(this.component.custom.toString());
+            (new Function('form', 'flattened', 'components', 'data', this.component.custom.toString()))(form, flattened, components, this.data);
           }
           catch (e) {
             /* eslint-disable no-console */
             console.warn('An error occurred evaluating custom logic for ' + this.key, e);
             /* eslint-enable no-console */
           }
+          break;
+        case 'url':
+          this.emit('requestButton');
+          this.emit('requestUrl', {
+            url: this.component.url,
+            headers: this.component.headers
+          });
           break;
         case 'reset':
           this.emit('resetForm');

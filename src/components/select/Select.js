@@ -228,7 +228,7 @@ export class SelectComponent extends BaseComponent {
 
     if (!_isEmpty(query)) {
       // Add the query string.
-      url += '?' + Formio.serialize(query);
+      url += (!(url.indexOf('?') !== -1) ? '?' : '&') + Formio.serialize(query);
     }
 
     // Make the request.
@@ -273,7 +273,7 @@ export class SelectComponent extends BaseComponent {
     const data = _cloneDeep(this.data);
     const row = _cloneDeep(this.row);
     try {
-      this.setItems(eval(`(function(data, row) { var values = [];${this.component.data.custom.toString()}; return values; })(data, row)`));
+      this.setItems((new Function('data', 'row', `var values = []; ${this.component.data.custom.toString()}; return values;`))(data, row));
     }
     catch (error) {
       this.setItems([]);
