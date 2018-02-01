@@ -12,22 +12,12 @@ import _isString from 'lodash/isString';
 import _cloneDeep from 'lodash/cloneDeep';
 import _find  from 'lodash/find';
 
-/* eslint-disable */
-const getType = function(obj) {
-  return Object.prototype.toString.call(obj).slice(8, -1);
-};
-
-const isType = function(type, obj) {
-  var clas = getType(obj);
-  return obj !== undefined && obj !== null && clas === type;
-};
-
 // Duck-punch the setValueByChoice to ensure we compare using _isEqual.
 Choices.prototype.setValueByChoice = function(value) {
   if (!this.isTextElement) {
     const choices = this.store.getChoices();
     // If only one value has been passed, convert to array
-    const choiceValue = isType('Array', value) ? value : [value];
+    const choiceValue = _isArray(value) ? value : [value];
 
     // Loop through each value and
     choiceValue.forEach((val) => {
@@ -57,7 +47,6 @@ Choices.prototype.setValueByChoice = function(value) {
   }
   return this;
 };
-/* eslint-enable */
 
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {

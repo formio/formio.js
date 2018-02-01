@@ -9093,16 +9093,6 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-/* eslint-disable */
-var getType = function getType(obj) {
-  return Object.prototype.toString.call(obj).slice(8, -1);
-};
-
-var isType = function isType(type, obj) {
-  var clas = getType(obj);
-  return obj !== undefined && obj !== null && clas === type;
-};
-
 // Duck-punch the setValueByChoice to ensure we compare using _isEqual.
 _choices2.default.prototype.setValueByChoice = function (value) {
   var _this = this;
@@ -9110,7 +9100,7 @@ _choices2.default.prototype.setValueByChoice = function (value) {
   if (!this.isTextElement) {
     var choices = this.store.getChoices();
     // If only one value has been passed, convert to array
-    var choiceValue = isType('Array', value) ? value : [value];
+    var choiceValue = (0, _isArray3.default)(value) ? value : [value];
 
     // Loop through each value and
     choiceValue.forEach(function (val) {
@@ -9132,7 +9122,6 @@ _choices2.default.prototype.setValueByChoice = function (value) {
   }
   return this;
 };
-/* eslint-enable */
 
 var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   _inherits(SelectComponent, _BaseComponent);
