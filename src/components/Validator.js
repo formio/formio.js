@@ -71,7 +71,6 @@ export const Validator = {
         if (!FormioUtils.boolValue(setting)) {
           return true;
         }
-
         return !component.isEmpty(value);
       }
     },
