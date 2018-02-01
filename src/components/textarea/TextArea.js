@@ -1,5 +1,6 @@
 import { TextFieldComponent } from '../textfield/TextField';
 import { BaseComponent } from '../base/Base';
+
 export class TextAreaComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -91,6 +92,23 @@ export class TextAreaComponent extends TextFieldComponent {
     return this.input;
   }
 
+  isEmpty(value) {
+    if (this.quill) {
+      return (value === '<p><br></p>');
+    }
+    else {
+      return super.isEmpty(value);
+    }
+  }
+
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (this.quill && !defaultValue) {
+      defaultValue = '<p></p>';
+    }
+    return defaultValue;
+  }
+
   setValue(value, flags) {
     if (!this.component.wysiwyg) {
       return super.setValue(value, flags);
@@ -103,24 +121,7 @@ export class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
-    if (!this.component.wysiwyg) {
-      return super.getValue();
-    }
-
-    // FOR-998 Assigns default value
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = "<p></p>";
-      return this.data[this.component.key]
-    }
-    if (this.quill && this.data[this.component.key]) {
-      var innerHTML = this.quill.root.innerHTML;
-
-      // Required for pristine validation
-      if (this.data[this.component.key] === "<p></p>" && innerHTML === "<p><br></p>") {
-        return this.data[this.component.key]
-      }
-      return innerHTML;
-    }
+    return this.quill ? this.quill.root.innerHTML : super.getValue();
   }
 
   elementInfo() {
