@@ -12,6 +12,42 @@ import _isString from 'lodash/isString';
 import _cloneDeep from 'lodash/cloneDeep';
 import _find  from 'lodash/find';
 
+// Duck-punch the setValueByChoice to ensure we compare using _isEqual.
+Choices.prototype.setValueByChoice = function(value) {
+  if (!this.isTextElement) {
+    const choices = this.store.getChoices();
+    // If only one value has been passed, convert to array
+    const choiceValue = _isArray(value) ? value : [value];
+
+    // Loop through each value and
+    choiceValue.forEach((val) => {
+      const foundChoice = choices.find((choice) => {
+        // Check 'value' property exists and the choice isn't already selected
+        return _isEqual(choice.value, val);
+      });
+
+      if (foundChoice) {
+        if (!foundChoice.selected) {
+          this._addItem(
+            foundChoice.value,
+            foundChoice.label,
+            foundChoice.id,
+            foundChoice.groupId,
+            foundChoice.customProperties,
+            foundChoice.placeholder,
+            foundChoice.keyCode
+          );
+        } else if (!this.config.silent) {
+          console.warn('Attempting to select choice already selected');
+        }
+      } else if (!this.config.silent) {
+        console.warn('Attempting to select choice that does not exist');
+      }
+    });
+  }
+  return this;
+};
+
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -396,7 +432,6 @@ export class SelectComponent extends BaseComponent {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
       },
-      itemComparer: _isEqual,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       searchPlaceholderValue: placeholderValue,
