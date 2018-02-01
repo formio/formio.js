@@ -740,7 +740,7 @@ export class FormioForm extends FormioComponents {
         this.onResize();
         this.on('resetForm', () => this.reset(), true);
         this.on('refreshData', () => this.updateValue());
-        this.emit('render');
+        setTimeout(() => this.emit('render'), 1);
       });
     });
   }

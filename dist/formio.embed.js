@@ -11765,7 +11765,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
           _this10.on('refreshData', function () {
             return _this10.updateValue();
           });
-          _this10.emit('render');
+          setTimeout(function () {
+            return _this10.emit('render');
+          }, 1);
         });
       });
     }
