@@ -10,7 +10,6 @@ export class EditGridComponent extends FormioComponents {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'datagrid';
-    this.rows = [];
     this.editRows = [];
   }
 

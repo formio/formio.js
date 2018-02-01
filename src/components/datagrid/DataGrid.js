@@ -205,7 +205,7 @@ export class DataGridComponent extends FormioComponents {
       return;
     }
 
-    this.value = this.data[this.component.key] = value;
+    this.data[this.component.key] = value;
     this.buildRows();
     _each(this.rows, (row, index) => {
       if (value.length <= index) {
@@ -228,6 +228,9 @@ export class DataGridComponent extends FormioComponents {
    * @returns {*}
    */
   getValue() {
+    if (this.viewOnly) {
+      return this.value;
+    }
     let values = [];
     _each(this.rows, (row) => {
       let value = {};

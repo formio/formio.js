@@ -693,6 +693,9 @@ export class FormioForm extends FormioComponents {
     if (!this._submission.data) {
       this._submission.data = {};
     }
+    if (this.viewOnly) {
+      return this._submission;
+    }
     let submission = _clone(this._submission);
     submission.data = this.data;
     return submission;
@@ -895,7 +898,7 @@ export class FormioForm extends FormioComponents {
    */
   reset() {
     // Reset the submission data.
-    this._submission.data = this.data = this.value = {};
+    this._submission.data = this.data = {};
     this.setSubmission({data: {}});
   }
 

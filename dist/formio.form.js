@@ -539,7 +539,6 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       }
       flags = this.getFlags.apply(this, arguments);
       var changed = false;
-      this.value = value;
       (0, _each3.default)(this.getComponents(), function (component) {
         if (component.type === 'button') {
           return;
@@ -574,6 +573,11 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         }
       });
       return errors;
+    }
+  }, {
+    key: 'value',
+    get: function get() {
+      return this.data;
     }
   }]);
 
@@ -1499,9 +1503,8 @@ var AddressComponent = exports.AddressComponent = function (_TextFieldComponent)
       return info;
     }
   }, {
-    key: 'view',
-    get: function get() {
-      var value = this.getValue();
+    key: 'getView',
+    value: function getView(value) {
       return (0, _get4.default)(value, 'formatted_address', '');
     }
   }]);
@@ -1535,10 +1538,6 @@ var _nativePromiseOnly = require('native-promise-only');
 
 var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
 
-var _set2 = require('lodash/set');
-
-var _set3 = _interopRequireDefault(_set2);
-
 var _get2 = require('lodash/get');
 
 var _get3 = _interopRequireDefault(_get2);
@@ -1546,10 +1545,6 @@ var _get3 = _interopRequireDefault(_get2);
 var _each2 = require('lodash/each');
 
 var _each3 = _interopRequireDefault(_each2);
-
-var _assign2 = require('lodash/assign');
-
-var _assign3 = _interopRequireDefault(_assign2);
 
 var _debounce2 = require('lodash/debounce');
 
@@ -1705,12 +1700,6 @@ var BaseComponent = function () {
      * @type {null}
      */
     this.info = null;
-
-    /**
-     * The value of this component
-     * @type {*}
-     */
-    this.value = null;
 
     /**
      * The row path of this component.
@@ -1947,7 +1936,7 @@ var BaseComponent = function () {
      * Builds the component.
      */
     value: function build() {
-      if (this.viewOnlyMode()) {
+      if (this.viewOnly) {
         this.viewOnlyBuild();
       } else {
         this.createElement();
@@ -1974,16 +1963,10 @@ var BaseComponent = function () {
       }
     }
   }, {
-    key: 'viewOnlyMode',
-    value: function viewOnlyMode() {
-      return this.options.readOnly && this.options.viewAsHtml;
-    }
-  }, {
     key: 'viewOnlyBuild',
     value: function viewOnlyBuild() {
       this.createViewOnlyElement();
       this.createViewOnlyLabel(this.element);
-      this.createViewOnlyInput();
       this.createViewOnlyValue(this.element);
     }
   }, {
@@ -1999,13 +1982,6 @@ var BaseComponent = function () {
       }
 
       return this.element;
-    }
-  }, {
-    key: 'createViewOnlyInput',
-    value: function createViewOnlyInput() {
-      this.input = this.ce(this.info.type, this.info.attr);
-      this.inputs.push(this.input);
-      return this.input;
     }
   }, {
     key: 'createViewOnlyLabel',
@@ -2029,8 +2005,14 @@ var BaseComponent = function () {
   }, {
     key: 'setupValueElement',
     value: function setupValueElement(element) {
-      var value = this.text(this.view || this.defaultViewOnlyValue);
-      element.appendChild(value);
+      var value = this.value;
+      value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
+      element.appendChild(this.text(value));
+    }
+  }, {
+    key: 'getView',
+    value: function getView(value) {
+      return (0, _toString3.default)(value);
     }
   }, {
     key: 'updateViewOnlyValue',
@@ -3173,34 +3155,47 @@ var BaseComponent = function () {
     }
 
     /**
+     * Get the static value of this component.
+     * @return {*}
+     */
+
+  }, {
+    key: 'getValueAt',
+
+    /**
      * Get the value at a specific index.
      *
      * @param index
      * @returns {*}
      */
-
-  }, {
-    key: 'getValueAt',
     value: function getValueAt(index) {
       return this.inputs[index].value;
     }
+
+    /**
+     * Get the input value of this component.
+     *
+     * @return {*}
+     */
+
   }, {
     key: 'getValue',
     value: function getValue() {
       if (!this.hasInput) {
         return;
       }
+      if (this.viewOnly) {
+        return this.value;
+      }
       var values = [];
       for (var i in this.inputs) {
         if (this.inputs.hasOwnProperty(i)) {
           if (!this.component.multiple) {
-            this.value = this.getValueAt(i);
-            return this.value;
+            return this.getValueAt(i);
           }
           values.push(this.getValueAt(i));
         }
       }
-      this.value = values;
       return values;
     }
 
@@ -3234,14 +3229,14 @@ var BaseComponent = function () {
       flags = flags || {};
       var value = this.data[this.component.key];
       this.data[this.component.key] = this.getValue(flags);
+      if (this.viewOnly) {
+        this.updateViewOnlyValue(this.value);
+      }
+
       var changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
       delete flags.changed;
       if (!flags.noUpdateEvent && changed) {
         this.triggerChange(flags);
-
-        if (this.viewOnlyMode()) {
-          this.updateViewOnlyValue();
-        }
       }
       return changed;
     }
@@ -3486,7 +3481,6 @@ var BaseComponent = function () {
       if (this.component.multiple && !(0, _isArray3.default)(value)) {
         value = [value];
       }
-      this.value = value;
       this.buildRows();
       var isArray = (0, _isArray3.default)(value);
       for (var i in this.inputs) {
@@ -3660,14 +3654,14 @@ var BaseComponent = function () {
       return this.options.readOnly || this.component.disabled;
     }
   }, {
+    key: 'viewOnly',
+    get: function get() {
+      return this.options.readOnly && this.options.viewAsHtml;
+    }
+  }, {
     key: 'defaultViewOnlyValue',
     get: function get() {
       return '-';
-    }
-  }, {
-    key: 'view',
-    get: function get() {
-      return (0, _toString3.default)(this.getValue());
     }
   }, {
     key: 'className',
@@ -3765,6 +3759,14 @@ var BaseComponent = function () {
     },
     get: function get() {
       return this._visible;
+    }
+  }, {
+    key: 'value',
+    get: function get() {
+      if (!this.data) {
+        return null;
+      }
+      return this.data[this.component.key];
     }
   }, {
     key: 'label',
@@ -3907,7 +3909,7 @@ BaseComponent.libraryReady = function (name) {
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
 
-},{"../../utils":50,"../Validator":2,"i18next":71,"lodash/assign":248,"lodash/clone":253,"lodash/cloneDeep":254,"lodash/debounce":256,"lodash/defaults":257,"lodash/each":260,"lodash/get":267,"lodash/isArray":272,"lodash/isEqual":279,"lodash/isUndefined":293,"lodash/set":306,"lodash/toString":315,"native-promise-only":318,"tooltip.js":324,"vanilla-text-mask":325}],5:[function(require,module,exports){
+},{"../../utils":50,"../Validator":2,"i18next":71,"lodash/clone":253,"lodash/cloneDeep":254,"lodash/debounce":256,"lodash/defaults":257,"lodash/each":260,"lodash/get":267,"lodash/isArray":272,"lodash/isEqual":279,"lodash/isUndefined":293,"lodash/toString":315,"native-promise-only":318,"tooltip.js":324,"vanilla-text-mask":325}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4344,7 +4346,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   }, {
     key: 'build',
     value: function build() {
-      if (this.viewOnlyMode()) {
+      if (this.viewOnly) {
         return this.viewOnlyBuild();
       }
 
@@ -4510,7 +4512,6 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
     key: 'setValue',
     value: function setValue(value, flags) {
       flags = this.getFlags.apply(this, arguments);
-      this.value = value;
       if (!this.input) {
         return;
       }
@@ -4539,16 +4540,15 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       return _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'getRawValue', this).call(this);
     }
   }, {
+    key: 'getView',
+    value: function getView(value) {
+      return value ? 'Yes' : 'No';
+    }
+  }, {
     key: 'destroy',
     value: function destroy() {
       _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'destroy', this).apply(this, Array.prototype.slice.apply(arguments));
       this.removeShortcut();
-    }
-  }, {
-    key: 'view',
-    get: function get() {
-      var value = this.getValue();
-      return value ? 'Yes' : 'No';
     }
   }]);
 
@@ -4774,6 +4774,9 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (this.viewOnly) {
+        return this.value;
+      }
       var value = {};
       (0, _each3.default)(this.components, function (component) {
         value[component.component.key] = component.getValue();
@@ -4787,7 +4790,6 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
       if (!value || !(0, _isObject3.default)(value)) {
         return;
       }
-      this.value = value;
       (0, _each3.default)(this.components, function (component) {
         if (component.type === 'components') {
           component.setValue(value, flags);
@@ -5287,7 +5289,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         return;
       }
 
-      this.value = this.data[this.component.key] = value;
+      this.data[this.component.key] = value;
       this.buildRows();
       (0, _each3.default)(this.rows, function (row, index) {
         if (value.length <= index) {
@@ -5312,6 +5314,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (this.viewOnly) {
+        return this.value;
+      }
       var values = [];
       (0, _each3.default)(this.rows, function (row) {
         var value = {};
@@ -5563,6 +5568,11 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       return dates[0].toISOString();
     }
   }, {
+    key: 'getView',
+    value: function getView(value) {
+      return value ? (0, _moment2.default)(value).format((0, _utils.convertFormatToMoment)((0, _get4.default)(this.component, 'format', ''))) : null;
+    }
+  }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
       if (value) {
@@ -5623,12 +5633,6 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
           calendar.redraw();
         }
       });
-    }
-  }, {
-    key: 'view',
-    get: function get() {
-      var value = this.getValue();
-      return value ? (0, _moment2.default)(value).format((0, _utils.convertFormatToMoment)((0, _get4.default)(this.component, 'format', ''))) : null;
     }
   }]);
 
@@ -5953,12 +5957,6 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
       return [this.createDayInput(subinputAtTheBottom), this.createMonthInput(subinputAtTheBottom), this.createYearInput(subinputAtTheBottom)];
     }
   }, {
-    key: 'createViewOnlyInput',
-    value: function createViewOnlyInput() {
-      _get2(DayComponent.prototype.__proto__ || Object.getPrototypeOf(DayComponent.prototype), 'createViewOnlyInput', this).call(this);
-      this.createInputs();
-    }
-  }, {
     key: 'setSubinputLabelStyle',
     value: function setSubinputLabelStyle(label) {
       var inputsLabelPosition = this.component.inputsLabelPosition;
@@ -6056,6 +6054,12 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
       return this.inputs[index].value;
     }
   }, {
+    key: 'getView',
+    value: function getView() {
+      var date = this.date;
+      return date.isValid() ? date.format(this.format) : null;
+    }
+  }, {
     key: 'months',
     get: function get() {
       if (this._months) {
@@ -6109,12 +6113,6 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
       var month = this.monthInput.value;
       var year = this.yearInput.value;
       return (0, _moment2.default)([parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10)]);
-    }
-  }, {
-    key: 'view',
-    get: function get() {
-      var date = this.date;
-      return date.isValid() ? date.format(this.format) : null;
     }
   }]);
 
@@ -6198,7 +6196,6 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     var _this = _possibleConstructorReturn(this, (EditGridComponent.__proto__ || Object.getPrototypeOf(EditGridComponent)).call(this, component, options, data));
 
     _this.type = 'datagrid';
-    _this.rows = [];
     _this.editRows = [];
     return _this;
   }
@@ -8671,16 +8668,6 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       this.errorContainer = container;
     }
   }, {
-    key: 'createViewOnlyInput',
-    value: function createViewOnlyInput() {
-      var _this3 = this;
-
-      (0, _each3.default)(this.component.values, function (value) {
-        var input = _get2(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'createViewOnlyInput', _this3).call(_this3);
-        input.value = value.value;
-      });
-    }
-  }, {
     key: 'optionsLabelOnTheTopOrLeft',
     value: function optionsLabelOnTheTopOrLeft() {
       return ['top', 'left'].indexOf(this.component.optionsLabelPosition) !== -1;
@@ -8729,6 +8716,9 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (this.viewOnly) {
+        return this.value;
+      }
       var value = '';
       (0, _each3.default)(this.inputs, function (input) {
         if (input.checked) {
@@ -8743,6 +8733,19 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
         }
       });
       return value;
+    }
+  }, {
+    key: 'getView',
+    value: function getView(value) {
+      if (!(0, _isString3.default)(value)) {
+        return (0, _toString3.default)(value);
+      }
+
+      var option = (0, _find3.default)(this.component.values, function (v) {
+        return v.value === value;
+      });
+
+      return (0, _get4.default)(option, 'label');
     }
   }, {
     key: 'setValueAt',
@@ -8763,7 +8766,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
   }, {
     key: 'updateValue',
     value: function updateValue(value, flags) {
-      var _this4 = this;
+      var _this3 = this;
 
       var changed = _get2(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'updateValue', this).call(this, value, flags);
       if (changed) {
@@ -8772,12 +8775,12 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
         var optionSelectedClass = 'radio-selected';
 
         (0, _each3.default)(this.wrappers, function (wrapper, index) {
-          var input = _this4.inputs[index];
+          var input = _this3.inputs[index];
           if (input.value === _value) {
             //add class to container when selected
-            _this4.addClass(wrapper, optionSelectedClass);
+            _this3.addClass(wrapper, optionSelectedClass);
           } else {
-            _this4.removeClass(wrapper, optionSelectedClass);
+            _this3.removeClass(wrapper, optionSelectedClass);
           }
         });
       }
@@ -8794,21 +8797,6 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       var inputType = this.component.inputType;
       var wrapperClass = this.component.inline ? 'form-check-inline ' + inputType + '-inline' : inputType;
       return wrapperClass;
-    }
-  }, {
-    key: 'view',
-    get: function get() {
-      var value = this.getValue();
-
-      if (!(0, _isString3.default)(value)) {
-        return (0, _toString3.default)(value);
-      }
-
-      var option = (0, _find3.default)(this.component.values, function (v) {
-        return v.value === value;
-      });
-
-      return (0, _get4.default)(option, 'label');
     }
   }]);
 
@@ -9450,7 +9438,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
   }, {
     key: 'addPlaceholder',
     value: function addPlaceholder(input) {
-      if (!this.component.placeholder) {
+      if (!this.component.placeholder || !input) {
         return;
       }
       var placeholder = document.createElement('option');
@@ -9574,12 +9562,13 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (!flags.changed && this.value) {
         return this.value;
       }
+      var value = '';
       if (this.choices) {
-        this.value = this.choices.getValue(true);
+        value = this.choices.getValue(true);
 
         // Make sure we don't get the placeholder
-        if (!this.component.multiple && this.component.placeholder && this.value === this.t(this.component.placeholder)) {
-          this.value = '';
+        if (!this.component.multiple && this.component.placeholder && value === this.t(this.component.placeholder)) {
+          value = '';
         }
       } else {
         var values = [];
@@ -9588,7 +9577,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
             values.push(selectOption.value);
           }
         });
-        this.value = this.component.multiple ? values : values.shift();
+        value = this.component.multiple ? values : values.shift();
       }
       return this.value;
     }
@@ -9598,7 +9587,6 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       flags = this.getFlags.apply(this, arguments);
       var hasPreviousValue = (0, _isArray3.default)(this.value) ? this.value.length : this.value;
       var hasValue = (0, _isArray3.default)(value) ? value.length : value;
-      this.value = value;
 
       // Do not set the value if we are loading... that will happen after it is done.
       if (this.loading) {
@@ -9682,11 +9670,6 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     key: 'setupValueElement',
     value: function setupValueElement(element) {
       element.innerHTML = this.asString();
-    }
-  }, {
-    key: 'updateViewOnlyValue',
-    value: function updateViewOnlyValue() {
-      this.setupValueElement(this.valueElement);
     }
   }, {
     key: 'destroy',
@@ -9863,6 +9846,9 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (this.viewOnly) {
+        return this.value;
+      }
       var value = {};
       (0, _each3.default)(this.inputs, function (input) {
         value[input.value] = !!input.checked;
@@ -9880,33 +9866,28 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
   }, {
     key: 'setValue',
     value: function setValue(value, flags) {
-      var _this2 = this;
-
       value = value || {};
       flags = this.getFlags.apply(this, arguments);
       if ((0, _isArray3.default)(value)) {
-        this.value = {};
         (0, _each3.default)(value, function (val) {
-          _this2.value[val] = true;
+          value[val] = true;
         });
       } else {
-        this.value = value;
+        value = value;
       }
 
       (0, _each3.default)(this.inputs, function (input) {
-        if (_this2.value[input.value] == undefined) {
-          _this2.value[input.value] = false;
+        if (value[input.value] == undefined) {
+          value[input.value] = false;
         }
-        input.checked = !!_this2.value[input.value];
+        input.checked = !!value[input.value];
       });
 
       this.updateValue(flags);
     }
   }, {
-    key: 'view',
-    get: function get() {
-      var value = this.getValue();
-
+    key: 'getView',
+    value: function getView(value) {
       return (0, _lodash2.default)(this.component.values || []).filter(function (v) {
         return value[v.value];
       }).map('label').join(', ');
@@ -10072,7 +10053,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     value: function build() {
       var _this2 = this;
 
-      if (this.viewOnlyMode()) {
+      if (this.viewOnly) {
         return this.viewOnlyBuild();
       }
 
@@ -10159,6 +10140,11 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       container.appendChild(this.labelElement);
     }
   }, {
+    key: 'getView',
+    value: function getView(value) {
+      return value ? 'Yes' : 'No';
+    }
+  }, {
     key: 'disabled',
     set: function set(disabled) {
       _set(SignatureComponent.prototype.__proto__ || Object.getPrototypeOf(SignatureComponent.prototype), 'disabled', disabled, this);
@@ -10172,12 +10158,6 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
           this.refresh.classList.remove('disabled');
         }
       }
-    }
-  }, {
-    key: 'view',
-    get: function get() {
-      var value = this.getValue();
-      return value ? 'Yes' : 'No';
     }
   }]);
 
@@ -10311,7 +10291,6 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
       if (!value) {
         return;
       }
-      this.value = value;
       var key = 'data[' + this.component.key + ']';
       (0, _each3.default)(this.component.questions, function (question) {
         (0, _each3.default)(_this3.inputs, function (input) {
@@ -10327,6 +10306,9 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
     value: function getValue() {
       var _this4 = this;
 
+      if (this.viewOnly) {
+        return this.value;
+      }
       var value = {};
       var key = 'data[' + this.component.key + ']';
       (0, _each3.default)(this.component.questions, function (question) {
@@ -10562,10 +10544,10 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       container.appendChild(this.input);
 
       // Lazy load the quill css.
-      _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.3/quill.' + this.component.wysiwyg.theme + '.css' }], true);
+      _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + this.component.wysiwyg.theme + '.css' }], true);
 
       // Lazy load the quill library.
-      this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.3/quill.min.js', true).then(function () {
+      this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
         _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
@@ -10627,6 +10609,9 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (this.viewOnly) {
+        return this.value;
+      }
       return this.quill ? this.quill.root.innerHTML : _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this);
     }
   }, {
@@ -11676,6 +11661,9 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
       if (!this._submission.data) {
         this._submission.data = {};
       }
+      if (this.viewOnly) {
+        return this._submission;
+      }
       var submission = (0, _clone3.default)(this._submission);
       submission.data = this.data;
       return submission;
@@ -11916,7 +11904,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
     key: 'reset',
     value: function reset() {
       // Reset the submission data.
-      this._submission.data = this.data = this.value = {};
+      this._submission.data = this.data = {};
       this.setSubmission({ data: {} });
     }
 
