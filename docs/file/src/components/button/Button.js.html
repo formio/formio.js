@@ -72,6 +72,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -82,6 +83,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap">components/gmap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap-fixtures">components/gmap/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -196,7 +198,7 @@ export class ButtonComponent extends BaseComponent {
   }
 
   build() {
-    if (this.viewOnlyMode()) {
+    if (this.viewOnly) {
       this.component.hidden = true;
     }
 
@@ -215,6 +217,24 @@ export class ButtonComponent extends BaseComponent {
         this.disabled = true;
       }, true);
       this.on(&apos;submitDone&apos;, () =&gt; {
+        this.loading = false;
+        this.disabled = false;
+      }, true);
+      this.on(&apos;change&apos;, (value) =&gt; {
+        this.loading = false;
+        this.disabled = (this.component.disableOnInvalid &amp;&amp; !this.root.isValid(value.data, true));
+      }, true);
+      this.on(&apos;error&apos;, () =&gt; {
+        this.loading = false;
+      }, true);
+    }
+
+    if (this.component.action === &apos;url&apos;) {
+      this.on(&apos;requestButton&apos;, () =&gt; {
+        this.loading = true;
+        this.disabled = true;
+      }, true);
+      this.on(&apos;requestDone&apos;, () =&gt; {
         this.loading = false;
         this.disabled = false;
       }, true);
@@ -256,16 +276,22 @@ export class ButtonComponent extends BaseComponent {
               components[key] = element;
             }
           });
-          // Make data available to script
-          var data = this.data;
+
           try {
-            eval(this.component.custom.toString());
+            (new Function(&apos;form&apos;, &apos;flattened&apos;, &apos;components&apos;, &apos;data&apos;, this.component.custom.toString()))(form, flattened, components, this.data);
           }
           catch (e) {
             /* eslint-disable no-console */
             console.warn(&apos;An error occurred evaluating custom logic for &apos; + this.key, e);
             /* eslint-enable no-console */
           }
+          break;
+        case &apos;url&apos;:
+          this.emit(&apos;requestButton&apos;);
+          this.emit(&apos;requestUrl&apos;, {
+            url: this.component.url,
+            headers: this.component.headers
+          });
           break;
         case &apos;reset&apos;:
           this.emit(&apos;resetForm&apos;);

@@ -72,6 +72,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -82,6 +83,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap">components/gmap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap-fixtures">components/gmap/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -155,6 +157,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textarea/TextArea.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { TextFieldComponent } from &apos;../textfield/TextField&apos;;
 import { BaseComponent } from &apos;../base/Base&apos;;
+
 export class TextAreaComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -166,6 +169,7 @@ export class TextAreaComponent extends TextFieldComponent {
   wysiwygDefault() {
     return {
       theme: &apos;snow&apos;,
+      placeholder: this.component.placeholder,
       modules: {
         toolbar: [
           [{ &apos;size&apos;: [&apos;small&apos;, false, &apos;large&apos;, &apos;huge&apos;] }],  // custom dropdown
@@ -203,11 +207,11 @@ export class TextAreaComponent extends TextFieldComponent {
 
     // Lazy load the quill css.
     BaseComponent.requireLibrary(&apos;quill-css-&apos; + this.component.wysiwyg.theme, &apos;Quill&apos;, [
-      {type: &apos;styles&apos;, src: &apos;https://cdn.quilljs.com/1.3.3/quill.&apos; + this.component.wysiwyg.theme + &apos;.css&apos;}
+      {type: &apos;styles&apos;, src: &apos;https://cdn.quilljs.com/1.3.5/quill.&apos; + this.component.wysiwyg.theme + &apos;.css&apos;}
     ], true);
 
     // Lazy load the quill library.
-    this.quillReady = BaseComponent.requireLibrary(&apos;quill&apos;, &apos;Quill&apos;, &apos;https://cdn.quilljs.com/1.3.3/quill.min.js&apos;, true)
+    this.quillReady = BaseComponent.requireLibrary(&apos;quill&apos;, &apos;Quill&apos;, &apos;https://cdn.quilljs.com/1.3.5/quill.min.js&apos;, true)
       .then(() =&gt; {
         this.quill = new Quill(this.input, this.component.wysiwyg);
 
@@ -215,6 +219,13 @@ export class TextAreaComponent extends TextFieldComponent {
         var txtArea = document.createElement(&apos;textarea&apos;);
         txtArea.setAttribute(&apos;class&apos;, &apos;quill-source-code&apos;);
         this.quill.addContainer(&apos;ql-custom&apos;).appendChild(txtArea);
+
+        // Allows users to skip toolbar items when tabbing though form
+        var elm = document.querySelectorAll(&apos;.ql-formats &gt; button&apos;);
+        for (var i=0; i &lt; elm.length; i++) {
+          elm[i].setAttribute(&quot;tabindex&quot;, &quot;-1&quot;);
+        }
+
         document.querySelector(&apos;.ql-source&apos;).addEventListener(&apos;click&apos;, () =&gt; {
           if (txtArea.style.display === &apos;inherit&apos;) {
             this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
@@ -238,6 +249,23 @@ export class TextAreaComponent extends TextFieldComponent {
     return this.input;
   }
 
+  isEmpty(value) {
+    if (this.quill) {
+      return (!value || (value === &apos;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&apos;));
+    }
+    else {
+      return super.isEmpty(value);
+    }
+  }
+
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (this.component.wysiwyg &amp;&amp; !defaultValue) {
+      defaultValue = &apos;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&apos;;
+    }
+    return defaultValue;
+  }
+
   setValue(value, flags) {
     if (!this.component.wysiwyg) {
       return super.setValue(value, flags);
@@ -250,13 +278,10 @@ export class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
-    if (!this.component.wysiwyg) {
-      return super.getValue();
+    if (this.viewOnly) {
+      return this.value;
     }
-
-    if (this.quill) {
-      return this.quill.root.innerHTML;
-    }
+    return this.quill ? this.quill.root.innerHTML : super.getValue();
   }
 
   elementInfo() {

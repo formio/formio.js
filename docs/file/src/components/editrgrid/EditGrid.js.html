@@ -72,6 +72,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -82,6 +83,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap">components/gmap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap-fixtures">components/gmap/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -180,7 +182,6 @@ export class EditGridComponent extends FormioComponents {
 
   buildTable() {
     if (this.tableElement) {
-      // this.element.removeChild(this.tableElement);
       this.tableElement.innerHTML = &apos;&apos;;
     }
 
@@ -277,6 +278,7 @@ export class EditGridComponent extends FormioComponents {
       );
     }
     wrapper.appendChild(this.editRows[rowIndex].errorContainer = this.ce(&apos;div&apos;, {class: &apos;has-error&apos;}));
+    this.checkData(this.data, {noValidate: true}, rowIndex);
     return wrapper;
   }
 
@@ -288,6 +290,39 @@ export class EditGridComponent extends FormioComponents {
         value: this.rows
       })) :
       this.text(&apos;&apos;);
+  }
+
+  checkData(data, flags = {}, index) {
+    let valid = true;
+    if (flags.noCheck) {
+      return;
+    }
+
+    // Update the value.
+    let changed = this.updateValue({
+      noUpdateEvent: true
+    });
+
+    // Iterate through all components and check conditions, and calculate values.
+    this.editRows[index].components.forEach(comp =&gt; {
+      changed |= comp.calculateValue(data, {
+        noUpdateEvent: true
+      });
+      comp.checkConditions(this.editRows[index].data);
+      if (!flags.noValidate) {
+        valid &amp;= comp.checkValidity(this.editRows[index].data, !this.editRows[index].isOpen);
+      }
+    });
+
+    valid &amp;= this.validateRow(index, false);
+
+    // Trigger the change if the values changed.
+    if (changed) {
+      this.triggerChange(flags);
+    }
+
+    // Return if the value is valid.
+    return valid;
   }
 
   createAddButton() {
@@ -320,7 +355,6 @@ export class EditGridComponent extends FormioComponents {
         // New row
         editRow.element = this.createRow(editRow.data, rowIndex);
         this.tableElement.insertBefore(editRow.element, this.tableElement.children[rowIndex + 1]);
-        this.validateRow(rowIndex);
       }
       else if (
         editRow.element.rowData !== editRow.data ||
@@ -332,7 +366,6 @@ export class EditGridComponent extends FormioComponents {
         const newRow = this.createRow(editRow.data, rowIndex);
         this.tableElement.replaceChild(newRow, editRow.element);
         editRow.element = newRow;
-        this.validateRow(rowIndex);
       }
     });
   }
@@ -383,13 +416,13 @@ export class EditGridComponent extends FormioComponents {
       this.refreshDOM();
       return;
     }
-    if (!this.validateRow(rowIndex)) {
+    if (!this.validateRow(rowIndex, true)) {
       return;
     }
     this.removeRowComponents(rowIndex);
     this.rows[rowIndex] = this.editRows[rowIndex].data;
     this.editRows[rowIndex].isOpen = false;
-    this.checkValidity(this.data);
+    this.checkValidity(this.data, true);
     this.updateValue();
     this.refreshDOM();
   }
@@ -414,11 +447,11 @@ export class EditGridComponent extends FormioComponents {
     this.editRows[rowIndex].components = [];
   }
 
-  validateRow(rowIndex) {
+  validateRow(rowIndex, dirty) {
     let check = true;
     this.editRows[rowIndex].components.forEach(comp =&gt; {
-      comp.setPristine(false);
-      check &amp;= comp.checkValidity(this.editRows[rowIndex].data, !comp.pristine);
+      comp.setPristine(!dirty);
+      check &amp;= comp.checkValidity(this.editRows[rowIndex].data, dirty);
     });
 
     if (this.component.validate &amp;&amp; this.component.validate.row) {
@@ -449,7 +482,7 @@ export class EditGridComponent extends FormioComponents {
     return check;
   }
 
-  checkValidity(data) {
+  checkValidity(data, dirty) {
     if (!FormioUtils.checkCondition(this.component, data, this.data)) {
       return true;
     }
@@ -458,18 +491,26 @@ export class EditGridComponent extends FormioComponents {
     let rowsClosed = true;
     this.editRows.forEach((editRow, rowIndex) =&gt; {
       // Trigger all errors on the row.
-      rowsValid &amp;= this.validateRow(rowIndex);
+      const rowValid = this.validateRow(rowIndex, false);
+      // Add has-error class to row.
+      if (!rowValid) {
+        this.addClass(this.editRows[rowIndex].element, &apos;has-error&apos;);
+      }
+      else {
+        this.removeClass(this.editRows[rowIndex].element, &apos;has-error&apos;);
+      }
+      rowsValid &amp;= rowValid;
 
       // Any open rows causes validation to fail.
       rowsClosed &amp;= !editRow.isOpen;
     });
 
     if (!rowsValid) {
-      this.setCustomValidity(&apos;Please correct rows before proceeding.&apos;);
+      this.setCustomValidity(&apos;Please correct rows before proceeding.&apos;, dirty);
       return false;
     }
     else if (!rowsClosed) {
-      this.setCustomValidity(&apos;Please save all rows before proceeding.&apos;);
+      this.setCustomValidity(&apos;Please save all rows before proceeding.&apos;, dirty);
       return false;
     }
 
@@ -477,7 +518,7 @@ export class EditGridComponent extends FormioComponents {
     return true;
   }
 
-  setCustomValidity(message) {
+  setCustomValidity(message, dirty) {
     if (this.errorElement &amp;&amp; this.errorContainer) {
       this.errorElement.innerHTML = &apos;&apos;;
       try {
