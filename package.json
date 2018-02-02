@@ -15,6 +15,7 @@
   "scripts": {
     "prepublish": "gulp build",
     "build": "esdoc;gulp build",
+    "lint": "eslint src",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "./node_modules/karma/bin/karma start --verbose --single-run",
     "test:watch": "./node_modules/karma/bin/karma start --no-single-run --auto-watch"
@@ -64,7 +65,6 @@
     "lodash": "^4.17.4",
     "moment": "^2.20.1",
     "native-promise-only": "^0.8.1",
-    "shallow-copy": "0.0.1",
     "signature_pad": "^2.3.0",
     "text-mask-addons": "^3.7.1",
     "tooltip.js": "^1.1.7",
@@ -73,6 +73,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
     "babel-plugin-array-includes": "^2.0.3",
     "babel-plugin-espower": "^2.4.0",
     "babel-preset-env": "^1.6.1",
@@ -83,6 +84,8 @@
     "del": "^3.0.0",
     "esdoc": "^1.0.4",
     "esdoc-standard-plugin": "^1.0.0",
+    "eslint": "^4.16.0",
+    "eslint-config-formio": "^1.1.4",
     "fetch-mock": "^6.0.0",
     "gulp": "^3.9.0",
     "gulp-babel": "^7.0.1",

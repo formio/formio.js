@@ -1,0 +1,15 @@
+{
+  "parser": "babel-eslint",
+  "extends": "formio",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "no-console": "off",
+    "prefer-arrow-callback": "error",
+    "prefer-const": "error",
+    "prefer-template": "error"
+  }
+}
