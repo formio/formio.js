@@ -21,8 +21,7 @@ export class DataGridComponent extends FormioComponents {
     this.createDescription(this.element);
   }
 
-  buildTable(data) {
-    data = data || {};
+  buildTable() {
     if (this.tableElement) {
       this.element.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';
@@ -42,7 +41,7 @@ export class DataGridComponent extends FormioComponents {
 
     // Build rows the first time.
     this.rows = [];
-    this.tableRows = this.data[this.component.key].map((row, rowIndex) => this.buildRow(row, rowIndex, data));
+    this.tableRows = this.data[this.component.key].map((row, rowIndex) => this.buildRow(row, rowIndex));
     this.tbody = this.ce('tbody', null, this.tableRows);
 
     // Add the body to the table and to the element.
@@ -77,7 +76,7 @@ export class DataGridComponent extends FormioComponents {
           }),
           this.shouldDisable ? null :
             this.ce('th', null,
-              (this.component.addAnotherPosition === 'top' || this.component.addAnotherPosition === 'both') ? this.addButton(true) : null
+              ['top', 'both'].includes(this.component.addAnotherPosition) ? this.addButton(true) : null
             ),
         ]
       )
@@ -125,11 +124,11 @@ export class DataGridComponent extends FormioComponents {
     }
   }
 
-  buildRow(row, index, data) {
+  buildRow(row, index) {
     this.rows[index] = {};
     const element = this.ce('tr', null,
       [
-        this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index, data)),
+        this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index)),
         !this.shouldDisable ? this.ce('td', null, this.removeButton(index)) : null
       ]
     );
@@ -145,7 +144,7 @@ export class DataGridComponent extends FormioComponents {
     this.rows[rowIndex] = [];
   }
 
-  buildComponent(col, colIndex, row, rowIndex, data) {
+  buildComponent(col, colIndex, row, rowIndex) {
     const column = _cloneDeep(col);
     column.label = false;
     column.row = `${rowIndex}-${colIndex}`;
@@ -161,7 +160,6 @@ export class DataGridComponent extends FormioComponents {
     this.rows[rowIndex][column.key] = comp;
     if ((this.visibleColumns === true) || this.visibleColumns[column.key]) {
       return this.ce('td', null, comp.element);
-      comp.checkConditions(data);
     }
   }
 
@@ -189,7 +187,7 @@ export class DataGridComponent extends FormioComponents {
 
     // If a rebuild is needed, then rebuild the table.
     if (rebuild && show) {
-      this.buildTable(data);
+      this.buildTable();
     }
 
     // Return if this table should show.
