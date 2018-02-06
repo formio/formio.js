@@ -72,6 +72,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -82,6 +83,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap">components/gmap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap-fixtures">components/gmap/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -157,6 +159,7 @@
 
 /* eslint-env mocha */
 import { expect } from &apos;chai&apos;;
+import _ from &apos;lodash&apos;;
 import writtenNumber from &apos;written-number&apos;;
 import utils from &apos;./index&apos;;
 import components from &apos;./fixtures/components.json&apos;;
@@ -413,6 +416,21 @@ describe(&apos;checkCondition&apos;, () =&gt; {
     expect(utils.checkCondition({}, null, {})).to.be.equal(true);
   });
 
+  it(&apos;should calculate simple triggers&apos;, () =&gt; {
+    const component = {
+      key: &apos;sum&apos;,
+      conditional: {
+        when: &apos;test&apos;,
+        eq: 3,
+        show: true
+      }
+    };
+    const data1 = { test: 3 };
+    const data2 = { test: 5 };
+    expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
+    expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
+  });
+
   it(&apos;should be able to calculate condition based on javascript code&apos;, () =&gt; {
     const component = {
       key: &apos;sum&apos;,
@@ -471,6 +489,225 @@ describe(&apos;getDateSetting&apos;, () =&gt; {
 
     expect(utils.getDateSetting(validMomentExpression)).to.be.eql(validDate);
     expect(utils.getDateSetting(invalidMomentExpression)).to.be.equal(null);
+  });
+});
+
+describe(&apos;checkTrigger&apos;, () =&gt; {
+  it(&apos;should default to false&apos;, () =&gt; {
+    expect(utils.checkCondition({}, {type: &apos;none&apos;}, null, {})).to.be.equal(true);
+  });
+
+  it(&apos;should calculate simple triggers&apos;, () =&gt; {
+    const component = {
+      key: &apos;sum&apos;
+    };
+    const trigger = {
+      type: &apos;simple&apos;,
+      simple: {
+        when: &apos;test&apos;,
+        eq: 3,
+        show: true
+      }
+    };
+    const data1 = { test: 3 };
+    const data2 = { test: 5 };
+    expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
+    expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
+  });
+
+  it(&apos;should be able to calculate trigger based on javascript code&apos;, () =&gt; {
+    const component = {
+      key: &apos;sum&apos;
+    };
+    const trigger = {
+      type: &apos;javascript&apos;,
+      javascript: &apos;result = data.test === 3&apos;
+    };
+    const data1 = { test: 3 };
+    const data2 = { test: 5 };
+
+    expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
+    expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
+  });
+
+  it(&apos;should be able to calculate trigger based on json logic&apos;, () =&gt; {
+    const component = {
+      key: &apos;sum&apos;
+    };
+    const trigger = {
+      type: &apos;json&apos;,
+      json: {
+        &apos;===&apos;: [
+          { &apos;_sum&apos;: { var: &apos;data.test&apos; } },
+          6
+        ]
+      }
+    };
+    const data1 = { test: [ 1, 2, 3 ] };
+    const data2 = { test: [ 1, 2, 4 ] };
+
+    expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
+    expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
+  });
+});
+
+describe(&apos;setActionProperty&apos;, () =&gt; {
+  it(&apos;should set a boolean action property to true&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      disabled: false
+    };
+    const action = {
+      type: &apos;property&apos;,
+      property: {
+        label: &apos;Disabled&apos;,
+        value: &apos;disabled&apos;,
+        type: &apos;boolean&apos;
+      },
+      state: true
+    };
+    utils.setActionProperty(component, action, {}, {}, true);
+    expect(component.disabled).to.be.equal(true);
+  });
+
+  it(&apos;should set a boolean action property to false&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      disabled: true
+    };
+    const action = {
+      type: &apos;property&apos;,
+      property: {
+        label: &apos;Disabled&apos;,
+        value: &apos;disabled&apos;,
+        type: &apos;boolean&apos;
+      },
+      state: false
+    };
+    utils.setActionProperty(component, action, {}, {}, true);
+    expect(component.disabled).to.be.equal(false);
+  });
+
+  it(&apos;should set a boolean action nested property&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      validate: {
+        required: true
+      }
+    };
+    const action = {
+      type: &apos;property&apos;,
+      property: {
+        label: &apos;Required&apos;,
+        value: &apos;validate.required&apos;,
+        type: &apos;boolean&apos;
+      },
+      state: false
+    };
+    utils.setActionProperty(component, action, {}, {}, true);
+    expect(component.validate.required).to.be.equal(false);
+  });
+
+  it(&apos;should set a string action property&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      label: &apos;foo&apos;
+    };
+    const action = {
+      type: &apos;property&apos;,
+      property: {
+        label: &apos;Label&apos;,
+        value: &apos;label&apos;,
+        type: &apos;string&apos;
+      },
+      text: &apos;bar&apos;
+    };
+    utils.setActionProperty(component, action, {}, {}, true);
+    expect(component.label).to.be.equal(&apos;bar&apos;);
+  });
+
+  it(&apos;should set a string action property with row templating&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      label: &apos;foo&apos;
+    };
+    const action = {
+      type: &apos;property&apos;,
+      property: {
+        label: &apos;Label&apos;,
+        value: &apos;label&apos;,
+        type: &apos;string&apos;
+      },
+      text: &apos;bar {{ row.field }}&apos;
+    };
+    utils.setActionProperty(component, action, {field: &apos;baz&apos;}, {}, true);
+    expect(component.label).to.be.equal(&apos;bar baz&apos;);
+  });
+
+  it(&apos;should set a string action property with data templating&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      label: &apos;foo&apos;
+    };
+    const action = {
+      type: &apos;property&apos;,
+      property: {
+        label: &apos;Label&apos;,
+        value: &apos;label&apos;,
+        type: &apos;string&apos;
+      },
+      text: &apos;bar {{ data.field }}&apos;
+    };
+    utils.setActionProperty(component, action, {}, {field: &apos;baz&apos;}, true);
+    expect(component.label).to.be.equal(&apos;bar baz&apos;);
+  });
+
+  it(&apos;should set a string action property with result templating&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      label: &apos;foo&apos;
+    };
+    const action = {
+      type: &apos;property&apos;,
+      property: {
+        label: &apos;Label&apos;,
+        value: &apos;label&apos;,
+        type: &apos;string&apos;
+      },
+      text: &apos;bar {{ result }}&apos;
+    };
+    utils.setActionProperty(component, action, {}, {}, &apos;baz&apos;);
+    expect(component.label).to.be.equal(&apos;bar baz&apos;);
+  });
+
+  it(&apos;should set a string action property with component templating&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      label: &apos;foo&apos;
+    };
+    const action = {
+      type: &apos;property&apos;,
+      property: {
+        label: &apos;Label&apos;,
+        value: &apos;label&apos;,
+        type: &apos;string&apos;
+      },
+      text: &apos;bar {{ component.key }}&apos;
+    };
+    utils.setActionProperty(component, action, {}, {}, &apos;baz&apos;);
+    expect(component.label).to.be.equal(&apos;bar test&apos;);
+  });
+
+  it(&apos;should do nothing with a bad request&apos;, () =&gt; {
+    const component = {
+      key: &apos;test&apos;,
+      label: &apos;foo&apos;
+    };
+    const originalComponent = _.cloneDeep(component);
+    const action = {
+      type: &apos;foo&apos;,
+    };
+    expect(component).to.deep.equal(originalComponent);
   });
 });
 </code></pre>

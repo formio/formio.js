@@ -15,7 +15,7 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   build() {
-    if (this.viewOnlyMode()) {
+    if (this.viewOnly) {
       return this.viewOnlyBuild();
     }
 
@@ -169,7 +169,6 @@ export class CheckBoxComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    this.value = value;
     if (!this.input) {
       return;
     }
@@ -200,8 +199,7 @@ export class CheckBoxComponent extends BaseComponent {
     return super.getRawValue();
   }
 
-  get view() {
-    const value = this.getValue();
+  getView(value) {
     return value ? 'Yes' : 'No';
   }
 

@@ -1,5 +1,6 @@
 import { TextFieldComponent } from '../textfield/TextField';
 import { BaseComponent } from '../base/Base';
+
 export class TextAreaComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -11,6 +12,7 @@ export class TextAreaComponent extends TextFieldComponent {
   wysiwygDefault() {
     return {
       theme: 'snow',
+      placeholder: this.component.placeholder,
       modules: {
         toolbar: [
           [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
@@ -48,11 +50,11 @@ export class TextAreaComponent extends TextFieldComponent {
 
     // Lazy load the quill css.
     BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [
-      {type: 'styles', src: 'https://cdn.quilljs.com/1.3.3/quill.' + this.component.wysiwyg.theme + '.css'}
+      {type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + this.component.wysiwyg.theme + '.css'}
     ], true);
 
     // Lazy load the quill library.
-    this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.3/quill.min.js', true)
+    this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(this.input, this.component.wysiwyg);
 
@@ -60,6 +62,13 @@ export class TextAreaComponent extends TextFieldComponent {
         var txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
         this.quill.addContainer('ql-custom').appendChild(txtArea);
+
+        // Allows users to skip toolbar items when tabbing though form
+        var elm = document.querySelectorAll('.ql-formats > button');
+        for (var i=0; i < elm.length; i++) {
+          elm[i].setAttribute("tabindex", "-1");
+        }
+
         document.querySelector('.ql-source').addEventListener('click', () => {
           if (txtArea.style.display === 'inherit') {
             this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
@@ -83,6 +92,23 @@ export class TextAreaComponent extends TextFieldComponent {
     return this.input;
   }
 
+  isEmpty(value) {
+    if (this.quill) {
+      return (!value || (value === '<p><br></p>'));
+    }
+    else {
+      return super.isEmpty(value);
+    }
+  }
+
+  get defaultValue() {
+    let defaultValue = super.defaultValue;
+    if (this.component.wysiwyg && !defaultValue) {
+      defaultValue = '<p><br></p>';
+    }
+    return defaultValue;
+  }
+
   setValue(value, flags) {
     if (!this.component.wysiwyg) {
       return super.setValue(value, flags);
@@ -95,13 +121,10 @@ export class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
-    if (!this.component.wysiwyg) {
-      return super.getValue();
+    if (this.viewOnly) {
+      return this.value;
     }
-
-    if (this.quill) {
-      return this.quill.root.innerHTML;
-    }
+    return this.quill ? this.quill.root.innerHTML : super.getValue();
   }
 
   elementInfo() {

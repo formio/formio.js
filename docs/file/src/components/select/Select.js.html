@@ -72,6 +72,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -82,6 +83,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap">components/gmap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap-fixtures">components/gmap/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -166,6 +168,42 @@ import _isEqual from &apos;lodash/isEqual&apos;;
 import _isString from &apos;lodash/isString&apos;;
 import _cloneDeep from &apos;lodash/cloneDeep&apos;;
 import _find  from &apos;lodash/find&apos;;
+
+// Duck-punch the setValueByChoice to ensure we compare using _isEqual.
+Choices.prototype.setValueByChoice = function(value) {
+  if (!this.isTextElement) {
+    const choices = this.store.getChoices();
+    // If only one value has been passed, convert to array
+    const choiceValue = _isArray(value) ? value : [value];
+
+    // Loop through each value and
+    choiceValue.forEach((val) =&gt; {
+      const foundChoice = choices.find((choice) =&gt; {
+        // Check &apos;value&apos; property exists and the choice isn&apos;t already selected
+        return _isEqual(choice.value, val);
+      });
+
+      if (foundChoice) {
+        if (!foundChoice.selected) {
+          this._addItem(
+            foundChoice.value,
+            foundChoice.label,
+            foundChoice.id,
+            foundChoice.groupId,
+            foundChoice.customProperties,
+            foundChoice.placeholder,
+            foundChoice.keyCode
+          );
+        } else if (!this.config.silent) {
+          console.warn(&apos;Attempting to select choice already selected&apos;);
+        }
+      } else if (!this.config.silent) {
+        console.warn(&apos;Attempting to select choice that does not exist&apos;);
+      }
+    });
+  }
+  return this;
+};
 
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
@@ -383,7 +421,7 @@ export class SelectComponent extends BaseComponent {
 
     if (!_isEmpty(query)) {
       // Add the query string.
-      url += &apos;?&apos; + Formio.serialize(query);
+      url += (!(url.indexOf(&apos;?&apos;) !== -1) ? &apos;?&apos; : &apos;&amp;&apos;) + Formio.serialize(query);
     }
 
     // Make the request.
@@ -428,7 +466,7 @@ export class SelectComponent extends BaseComponent {
     const data = _cloneDeep(this.data);
     const row = _cloneDeep(this.row);
     try {
-      this.setItems(eval(`(function(data, row) { var values = [];${this.component.data.custom.toString()}; return values; })(data, row)`));
+      this.setItems((new Function(&apos;data&apos;, &apos;row&apos;, `var values = []; ${this.component.data.custom.toString()}; return values;`))(data, row));
     }
     catch (error) {
       this.setItems([]);
@@ -498,7 +536,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   addPlaceholder(input) {
-    if (!this.component.placeholder) {
+    if (!this.component.placeholder || !input) {
       return;
     }
     let placeholder = document.createElement(&apos;option&apos;);
@@ -551,7 +589,6 @@ export class SelectComponent extends BaseComponent {
         containerOuter: &apos;choices form-group formio-choices&apos;,
         containerInner: &apos;form-control&apos;
       },
-      itemComparer: _isEqual,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       searchPlaceholderValue: placeholderValue,
@@ -625,16 +662,17 @@ export class SelectComponent extends BaseComponent {
     if (!flags.changed &amp;&amp; this.value) {
       return this.value;
     }
+    let value = &apos;&apos;;
     if (this.choices) {
-      this.value = this.choices.getValue(true);
+      value = this.choices.getValue(true);
 
       // Make sure we don&apos;t get the placeholder
       if (
         !this.component.multiple &amp;&amp;
         this.component.placeholder &amp;&amp;
-        (this.value === this.t(this.component.placeholder))
+        (value === this.t(this.component.placeholder))
       ) {
-        this.value = &apos;&apos;;
+        value = &apos;&apos;;
       }
     }
     else {
@@ -644,16 +682,16 @@ export class SelectComponent extends BaseComponent {
           values.push(selectOption.value);
         }
       });
-      this.value = this.component.multiple ? values : values.shift();
+      value = this.component.multiple ? values : values.shift();
     }
-    return this.value;
+    return value;
   }
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     let hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
     let hasValue = _isArray(value) ? value.length : value;
-    this.value = value;
+    this.data[this.component.key] = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -745,10 +783,6 @@ export class SelectComponent extends BaseComponent {
 
   setupValueElement(element) {
     element.innerHTML = this.asString();
-  }
-
-  updateViewOnlyValue() {
-    this.setupValueElement(this.valueElement);
   }
 
   destroy() {

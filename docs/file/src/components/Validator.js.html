@@ -72,6 +72,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -82,6 +83,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap">components/gmap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap-fixtures">components/gmap/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -158,7 +160,7 @@ import _get from &apos;lodash/get&apos;;
 import _each from &apos;lodash/each&apos;;
 import _has from &apos;lodash/has&apos;;
 import _isNumber from &apos;lodash/isNumber&apos;;
-import FormioUtils from &apos;../utils/index&apos;;
+import FormioUtils from &apos;../utils&apos;;
 export const Validator = {
   get: _get,
   each: _each,
@@ -362,6 +364,21 @@ export const Validator = {
         return valid;
       }
     },
+    mask: {
+      message(component, setting) {
+        return component.t(component.errorMessage(&apos;mask&apos;), {
+          field: component.errorLabel,
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        if (value &amp;&amp; component._inputMask) {
+          return FormioUtils.matchInputMask(value, component._inputMask);
+        }
+
+        return true;
+      }
+    },
     custom: {
       key: &apos;validate.custom&apos;,
       message(component) {
@@ -374,12 +391,8 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let valid = true;
-        let row = component.data;
         let custom = setting;
-        /*eslint-disable no-unused-vars */
-        let input = value;
-        /*eslint-enable no-unused-vars */
+
         custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) =&gt; {
           if ($2.indexOf(&apos;data.&apos;) === 0) {
             return _get(data, $2.replace(&apos;data.&apos;, &apos;&apos;));
@@ -393,8 +406,7 @@ export const Validator = {
         });
 
         /* jshint evil: true */
-        eval(custom);
-        return valid;
+        return (new Function(&apos;row&apos;, &apos;data&apos;, &apos;component&apos;, &apos;input&apos;, `var valid = true; ${custom}; return valid;`))(component.data, data, component, value);
       }
     }
   }

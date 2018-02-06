@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "2.28.6",
+  "version": "2.29.0",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "lib/index.js",
   "files": [
@@ -55,13 +55,13 @@
   "homepage": "https://github.com/formio/formio.js#readme",
   "dependencies": {
     "browser-cookies": "^1.2.0",
-    "choices.js": "github:formio/Choices#ae69ff4",
+    "choices.js": "^3.0.3",
     "dialog-polyfill": "^0.4.9",
     "eventemitter2": "^5.0.1",
     "flatpickr": "^4.2.4",
     "i18next": "^10.3.0",
     "json-logic-js": "^1.2.2",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.5",
     "moment": "^2.20.1",
     "native-promise-only": "^0.8.1",
     "shallow-copy": "0.0.1",

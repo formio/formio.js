@@ -4,6 +4,25 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.0
+### Added
+ - New Field Logic feature.
+ - Ability for buttons to be configured with a URL that will send the submission to that url when pressed.
+
+### Changed
+ - Upgraded all dependencies.
+ - Reverted choices.js to use npm version and duck-punch the deep equality checks.
+
+### Fixed
+ - Issue with Required WYSIWYG TextArea always triggering validation error on load.
+ - Problem where backspacing the wysiwyg editor was not working.
+ - Problem where tabbing into a wysiwyg editor would select buttons on the wysiwyg.
+ - Problem with the Form component where it would load the form when a default submission is provided.
+ - Performance issues with both EditGrid and DataGrid.
+ - Issue with false conditionals and null values.
+ - Issue with the "render" event not firing when form is rendered.
+ - Problems with the viewAsHtml flag not rendering the submission.
+
 ## 2.28.6
 ### Added 
  - Autofocus capability.

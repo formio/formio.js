@@ -78,7 +78,7 @@ export class SignatureComponent extends BaseComponent {
   }
 
   build() {
-    if (this.viewOnlyMode()) {
+    if (this.viewOnly) {
       return this.viewOnlyBuild();
     }
 
@@ -162,8 +162,7 @@ export class SignatureComponent extends BaseComponent {
     container.appendChild(this.labelElement);
   }
 
-  get view() {
-    const value = this.getValue();
+  getView(value) {
     return value ? 'Yes' : 'No';
   }
 }
