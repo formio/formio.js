@@ -1,5 +1,6 @@
 import { BaseComponent } from '../base/Base';
 import FormioUtils from '../../utils';
+import _merge from 'lodash/merge';
 import _each from 'lodash/each';
 
 export class ButtonComponent extends BaseComponent {
@@ -121,7 +122,8 @@ export class ButtonComponent extends BaseComponent {
           });
 
           try {
-            (new Function('form', 'flattened', 'components', 'data', this.component.custom.toString()))(form, flattened, components, this.data);
+            (new Function('form', 'flattened', 'components', '_merge', 'data', this.component.custom.toString()))
+            (form, flattened, components, _merge, this.data);
           }
           catch (e) {
             /* eslint-disable no-console */
