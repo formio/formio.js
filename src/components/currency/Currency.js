@@ -1,7 +1,7 @@
 import maskInput from 'vanilla-text-mask';
-import { createNumberMask } from 'text-mask-addons';
+import {createNumberMask} from 'text-mask-addons';
 import _get from 'lodash/get';
-import { NumberComponent } from '../number/Number';
+import {NumberComponent} from '../number/Number';
 
 export class CurrencyComponent extends NumberComponent {
   constructor(component, options, data) {
@@ -11,7 +11,7 @@ export class CurrencyComponent extends NumberComponent {
     this.decimalLimit = this.component.decimalLimit || 2;
 
     // Get the prefix and suffix from the localized string.
-    const regex = '(.*)?100(' + (this.decimalSeparator === '.' ? '\.' : this.decimalSeparator) + '0{' + this.decimalLimit + '})?(.*)?';
+    const regex = `(.*)?100(${this.decimalSeparator === '.' ? '\.' : this.decimalSeparator}0{${this.decimalLimit}})?(.*)?`;
     const parts = (100).toLocaleString(options.language, this.getFormatOptions()).match(new RegExp(regex));
     this.prefix = parts[1] || '';
     this.suffix = parts[3] || '';

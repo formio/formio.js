@@ -1,4 +1,4 @@
-import { BaseComponent } from '../base/Base';
+import {BaseComponent} from '../base/Base';
 import _each from 'lodash/each';
 export class HTMLComponent extends BaseComponent {
   setHTML() {

@@ -3,9 +3,9 @@ import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _remove from 'lodash/remove';
 import _assign from 'lodash/assign';
-import Promise from "native-promise-only";
+import Promise from 'native-promise-only';
 import FormioUtils from '../utils/index';
-import { BaseComponent } from './base/Base';
+import {BaseComponent} from './base/Base';
 
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {

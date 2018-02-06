@@ -1,4 +1,4 @@
-import { RadioComponent } from '../radio/Radio';
+import {RadioComponent} from '../radio/Radio';
 import _each from 'lodash/each';
 import _isArray from 'lodash/isArray';
 import _ from 'lodash';
@@ -9,7 +9,7 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.attr.name += '[]';
     info.attr.type = 'checkbox';
     info.attr.class = 'form-check-input';
@@ -24,7 +24,7 @@ export class SelectBoxesComponent extends RadioComponent {
    */
   isEmpty(value) {
     let empty = true;
-    for (let key in value) {
+    for (const key in value) {
       if (value.hasOwnProperty(key) && value[key]) {
         empty = false;
         break;
@@ -38,7 +38,7 @@ export class SelectBoxesComponent extends RadioComponent {
     if (this.viewOnly) {
       return this.value;
     }
-    let value = {};
+    const value = {};
     _each(this.inputs, (input) => {
       value[input.value] = !!input.checked;
     });

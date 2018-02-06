@@ -1,7 +1,7 @@
 'use strict';
 import FormioForm from './formio.form';
-import { Harness } from '../test/harness';
-import { FormTests } from '../test/forms/index';
+import {Harness} from '../test/harness';
+import {FormTests} from '../test/forms/index';
 import assert from 'power-assert';
 import each from 'lodash/each';
 import i18next from 'i18next';
@@ -9,7 +9,7 @@ import i18next from 'i18next';
 describe('Formio Form Renderer tests', () => {
   let simpleForm = null;
   it('Should create a simple form', (done) => {
-    let formElement = document.createElement('div');
+    const formElement = document.createElement('div');
     simpleForm = new FormioForm(formElement);
     simpleForm.setForm({
       title: 'Simple Form',
@@ -41,8 +41,8 @@ describe('Formio Form Renderer tests', () => {
   });
 
   it('Should translate a form from options', done => {
-    let formElement = document.createElement('div');
-    let translateForm = new FormioForm(formElement, {
+    const formElement = document.createElement('div');
+    const translateForm = new FormioForm(formElement, {
       language: 'es',
       i18n: {
         es: {
@@ -63,15 +63,15 @@ describe('Formio Form Renderer tests', () => {
         }
       ]
     }).then(() => {
-      let label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.control-label');
       assert.equal(label.innerHTML, 'Spanish Label');
       done();
     });
   });
 
   it('Should translate a form after instantiate', done => {
-    let formElement = document.createElement('div');
-    let translateForm = new FormioForm(formElement, {
+    const formElement = document.createElement('div');
+    const translateForm = new FormioForm(formElement, {
       i18n: {
         es: {
           'Default Label': 'Spanish Label'
@@ -92,15 +92,15 @@ describe('Formio Form Renderer tests', () => {
       ]
     }).then(() => {
       translateForm.language = 'es';
-      let label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.control-label');
       assert.equal(label.innerHTML, 'Spanish Label');
       done();
     });
   });
 
   it('Should add a translation after instantiate', done => {
-    let formElement = document.createElement('div');
-    let translateForm = new FormioForm(formElement, {
+    const formElement = document.createElement('div');
+    const translateForm = new FormioForm(formElement, {
       i18n: {
         language: 'es',
         es: {
@@ -125,15 +125,15 @@ describe('Formio Form Renderer tests', () => {
       ]
     }).then(() => {
       translateForm.language = 'fr';
-      let label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.control-label');
       assert.equal(label.innerHTML, 'French Label');
       done();
     });
   });
 
   it('Should switch a translation after instantiate', done => {
-    let formElement = document.createElement('div');
-    let translateForm = new FormioForm(formElement);
+    const formElement = document.createElement('div');
+    const translateForm = new FormioForm(formElement);
     translateForm.setForm({
       title: 'Translate Form',
       components: [
@@ -148,7 +148,7 @@ describe('Formio Form Renderer tests', () => {
       ]
     }).then(() => {
       translateForm.addLanguage('es', {'Default Label': 'Spanish Label'}, true);
-      let label = formElement.querySelector('.control-label');
+      const label = formElement.querySelector('.control-label');
       assert.equal(label.innerHTML, 'Spanish Label');
       done();
     });
@@ -157,8 +157,8 @@ describe('Formio Form Renderer tests', () => {
   each(FormTests, (formTest) => {
     each(formTest.tests, (formTestTest, title) => {
       it(title, (done) => {
-        let formElement = document.createElement('div');
-        let form = new FormioForm(formElement, {language: 'en'});
+        const formElement = document.createElement('div');
+        const form = new FormioForm(formElement, {language: 'en'});
         form.setForm(formTest.form).then(() => {
           formTestTest(form, done);
         }).catch((error) => {

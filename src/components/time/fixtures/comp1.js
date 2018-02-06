@@ -1,24 +1,24 @@
 export const component = {
-  "conditional": {
-    "eq": "",
-    "when": null,
-    "show": ""
+  'conditional': {
+    'eq': '',
+    'when': null,
+    'show': ''
   },
-  "tags": [
+  'tags': [
 
   ],
-  "type": "time",
-  "persistent": true,
-  "unique": false,
-  "protected": false,
-  "format": "HH:mm",
-  "defaultValue": "",
-  "suffix": "",
-  "prefix": "",
-  "placeholder": "Enter a time",
-  "key": "time",
-  "label": "Time",
-  "inputType": "time",
-  "tableView": true,
-  "input": true
+  'type': 'time',
+  'persistent': true,
+  'unique': false,
+  'protected': false,
+  'format': 'HH:mm',
+  'defaultValue': '',
+  'suffix': '',
+  'prefix': '',
+  'placeholder': 'Enter a time',
+  'key': 'time',
+  'label': 'Time',
+  'inputType': 'time',
+  'tableView': true,
+  'input': true
 };

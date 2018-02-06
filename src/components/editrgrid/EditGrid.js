@@ -3,7 +3,7 @@ import _map from 'lodash/map';
 import _cloneDeep from 'lodash/cloneDeep';
 import _clone from 'lodash/clone';
 import _isArray from 'lodash/isArray';
-import { FormioComponents } from '../Components';
+import {FormioComponents} from '../Components';
 import FormioUtils from '../../utils';
 
 export class EditGridComponent extends FormioComponents {
@@ -31,7 +31,7 @@ export class EditGridComponent extends FormioComponents {
     let tableClass = 'editgrid-listgroup list-group ';
     _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
-        tableClass += 'table-' + prop + ' ';
+        tableClass += `table-${prop} `;
       }
     });
     this.tableElement = this.ce('ul', {class: tableClass}, [
@@ -69,9 +69,9 @@ export class EditGridComponent extends FormioComponents {
             [
               this.component.components.map(comp => {
                 const component = _cloneDeep(comp);
-                component.row = this.row + '-' + rowIndex;
+                component.row = `${this.row}-${rowIndex}`;
                 const options = _clone(this.options);
-                options.name += '[' + rowIndex + ']';
+                options.name += `[${rowIndex}]`;
                 const instance = this.createComponent(component, options, this.editRows[rowIndex].data);
                 this.editRows[rowIndex].components.push(instance);
                 return instance.element;
@@ -171,15 +171,15 @@ export class EditGridComponent extends FormioComponents {
   createAddButton() {
     this.element.appendChild(this.ce('div', {class: 'editgrid-add'},
       this.ce('button', {
-          class: 'btn btn-primary',
-          role: 'button',
-          onClick: this.addRow.bind(this)
-        },
-        [
-          this.ce('span', {class: this.iconClass('plus'), 'aria-hidden': true}),
-          ' ',
-          this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
-        ],
+        class: 'btn btn-primary',
+        role: 'button',
+        onClick: this.addRow.bind(this)
+      },
+      [
+        this.ce('span', {class: this.iconClass('plus'), 'aria-hidden': true}),
+        ' ',
+        this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
+      ],
       )
     ));
   }
@@ -299,18 +299,18 @@ export class EditGridComponent extends FormioComponents {
 
     if (this.component.validate && this.component.validate.row) {
       let custom = this.component.validate.row;
-      custom = custom.replace(/({{\s+(.*)\s+}})/, function(match, $1, $2) {
+      custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
         return this.editRows[rowIndex].data[$2];
-      }.bind(this));
+      });
       let valid;
       try {
         const row = this.editRows[rowIndex].data;
         const data = this.data;
-        valid = new Function('row', 'data', custom + '; return valid;')(row, data);
+        valid = new Function('row', 'data', `${custom}; return valid;`)(row, data);
       }
       catch (e) {
         /* eslint-disable no-console, no-undef */
-        console.warn('A syntax error occurred while computing custom values in ' + this.component.key, e);
+        console.warn(`A syntax error occurred while computing custom values in ${this.component.key}`, e);
         /* eslint-enable no-console */
       }
       this.editRows[rowIndex].errorContainer.innerHTML = '';
@@ -372,7 +372,7 @@ export class EditGridComponent extends FormioComponents {
     if (message) {
       this.emit('componentError', this.error);
       this.createErrorElement();
-      let errorMessage = this.ce('p', {
+      const errorMessage = this.ce('p', {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));

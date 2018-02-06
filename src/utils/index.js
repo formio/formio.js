@@ -20,27 +20,26 @@ import _isRegExp from 'lodash/isRegExp';
 import _forOwn from 'lodash/forOwn';
 import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
-import { lodashOperators } from './jsonlogic/operators';
+import {lodashOperators} from './jsonlogic/operators';
 import momentModule from 'moment';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
 // Retrieve Any Date
-jsonLogic.add_operation("getDate", function(date){
-  return momentModule(date).toISOString()
+jsonLogic.add_operation('getDate', (date) => {
+  return momentModule(date).toISOString();
 });
 
 // Set Relative Minimum Date
-jsonLogic.add_operation("relativeMinDate", function(relativeMinDate){
-  return momentModule().subtract(relativeMinDate, "days").toISOString()
+jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
+  return momentModule().subtract(relativeMinDate, 'days').toISOString();
 });
 
 // Set Relative Maximum Date
-jsonLogic.add_operation("relativeMaxDate", function(relativeMaxDate){
-  return momentModule().add(relativeMaxDate, "days").toISOString();
+jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
+  return momentModule().add(relativeMaxDate, 'days').toISOString();
 });
-
 
 const FormioUtils = {
   jsonLogic, // Share
@@ -131,7 +130,7 @@ const FormioUtils = {
         if (
           component.key &&
           (
-            [ 'datagrid', 'container', 'editgrid' ].includes(component.type) ||
+            ['datagrid', 'container', 'editgrid'].includes(component.type) ||
             component.tree
           )
         ) {
@@ -141,7 +140,7 @@ const FormioUtils = {
           component.key &&
           component.type === 'form'
         ) {
-          return `${newPath}.data`
+          return `${newPath}.data`;
         }
         return path;
       };
@@ -218,7 +217,7 @@ const FormioUtils = {
    * @return {*}
    */
   findComponents(components, query) {
-    let results = [];
+    const results = [];
     FormioUtils.eachComponent(components, (component, path) => {
       if (FormioUtils.matchComponent(component, query)) {
         component.path = path;
@@ -240,7 +239,7 @@ const FormioUtils = {
    *   The flattened components map.
    */
   flattenComponents(components, includeAll) {
-    let flattened = {};
+    const flattened = {};
     FormioUtils.eachComponent(components, (component, path) => {
       flattened[path] = component;
     }, includeAll);
@@ -315,7 +314,7 @@ const FormioUtils = {
    *   String with escaped RegEx characters.
    */
   escapeRegExCharacters(value) {
-    return value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    return value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
   },
 
   /**
@@ -331,8 +330,8 @@ const FormioUtils = {
   checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      let row = rowData;
-      let data = submission ? submission.data : rowData;
+      const row = rowData;
+      const data = submission ? submission.data : rowData;
       if (_isString(component.calculateValue)) {
         try {
           const util = this;
@@ -456,7 +455,7 @@ const FormioUtils = {
    * @returns {mixed}
    */
   checkTrigger(component, trigger, row, data) {
-    switch(trigger.type) {
+    switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
         break;
@@ -472,7 +471,7 @@ const FormioUtils = {
   },
 
   setActionProperty(component, action, row, data, result) {
-    switch(action.property.type) {
+    switch (action.property.type) {
       case 'boolean':
         if (_get(component, action.property.value, false).toString() !== action.state.toString()) {
           _set(component, action.property.value, action.state.toString() === 'true');
@@ -521,7 +520,7 @@ const FormioUtils = {
         return value;
       }
       else {
-        return null
+        return null;
       }
     };
 
@@ -677,7 +676,7 @@ const FormioUtils = {
     if (mask instanceof Array) {
       return mask;
     }
-    let maskArray = [];
+    const maskArray = [];
     maskArray.numeric = true;
     for (let i = 0; i < mask.length; i++) {
       switch (mask[i]) {

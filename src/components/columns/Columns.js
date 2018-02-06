@@ -1,8 +1,8 @@
 import _each from 'lodash/each';
-import { FormioComponents } from '../Components';
+import {FormioComponents} from '../Components';
 export class ColumnsComponent extends FormioComponents {
   get className() {
-    return 'row ' + this.component.customClass;
+    return `row ${this.component.customClass}`;
   }
   addComponents() {
     _each(this.component.columns, (column) => {

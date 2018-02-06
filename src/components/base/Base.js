@@ -1,5 +1,5 @@
-import maskInput, { conformToMask } from 'vanilla-text-mask';
-import Promise from "native-promise-only";
+import maskInput, {conformToMask} from 'vanilla-text-mask';
+import Promise from 'native-promise-only';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
 import _debounce from 'lodash/debounce';
@@ -11,7 +11,7 @@ import _isEqual from 'lodash/isEqual';
 import _isUndefined from 'lodash/isUndefined';
 import _toString from 'lodash/toString';
 import FormioUtils from '../../utils';
-import { Validator } from '../Validator';
+import {Validator} from '../Validator';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
 
@@ -223,7 +223,7 @@ export class BaseComponent {
     params.keySeparator = '.|.';
     params.pluralSeparator = '._.';
     params.contextSeparator = '._.';
-    let translated = this.i18next.t(text, params);
+    const translated = this.i18next.t(text, params);
     return translated || text;
   }
 
@@ -249,7 +249,7 @@ export class BaseComponent {
     if (!this.events) {
       return;
     }
-    let type = `formio.${event}`;
+    const type = `formio.${event}`;
     this.eventListeners.push({
       type: type,
       listener: cb,
@@ -452,10 +452,10 @@ export class BaseComponent {
    */
   get customStyle() {
     let customCSS = '';
-    _each(this.component.style, function(value, key) {
-        if (value !== '') {
-          customCSS += `${key}:${value};`;
-        }
+    _each(this.component.style, (value, key) => {
+      if (value !== '') {
+        customCSS += `${key}:${value};`;
+      }
     });
     return customCSS;
   }
@@ -499,7 +499,7 @@ export class BaseComponent {
       return false;
     }
     else {
-      let table = this.ce('table', {
+      const table = this.ce('table', {
         class: 'table table-bordered'
       });
       this.tbody = this.ce('tbody');
@@ -618,14 +618,14 @@ export class BaseComponent {
     this.inputs = [];
     this.tbody.innerHTML = '';
     _each(this.data[this.component.key], (value, index) => {
-      let tr = this.ce('tr');
-      let td = this.ce('td');
+      const tr = this.ce('tr');
+      const td = this.ce('td');
       const input = this.createInput(td);
       input.value = value;
       tr.appendChild(td);
 
       if (!this.shouldDisable) {
-        let tdAdd = this.ce('td');
+        const tdAdd = this.ce('td');
         tdAdd.appendChild(this.removeButton(index));
         tr.appendChild(tdAdd);
       }
@@ -634,8 +634,8 @@ export class BaseComponent {
     });
 
     if (!this.shouldDisable) {
-      let tr = this.ce('tr');
-      let td = this.ce('td', {
+      const tr = this.ce('tr');
+      const td = this.ce('td', {
         colspan: '2'
       });
       td.appendChild(this.addButton());
@@ -662,9 +662,9 @@ export class BaseComponent {
       case 'zoom-out':
         return 'fa fa-search-minus';
       case 'question-sign':
-        return `fa fa-question-circle`;
+        return 'fa fa-question-circle';
       case 'remove-circle':
-        return `fa fa-times-circle-o`;
+        return 'fa fa-times-circle-o';
       default:
         return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
     }
@@ -675,7 +675,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The "Add New" button html element.
    */
   addButton(justIcon) {
-    let addButton = this.ce('a', {
+    const addButton = this.ce('a', {
       class: 'btn btn-primary'
     });
     this.addEventListener(addButton, 'click', (event) => {
@@ -683,7 +683,7 @@ export class BaseComponent {
       this.addValue();
     });
 
-    let addIcon = this.ce('i', {
+    const addIcon = this.ce('i', {
       class: this.iconClass('plus')
     });
 
@@ -729,7 +729,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The html element of the remove button.
    */
   removeButton(index) {
-    let removeButton = this.ce('button', {
+    const removeButton = this.ce('button', {
       type: 'button',
       class: 'btn btn-default btn-secondary',
       tabindex: '-1'
@@ -740,7 +740,7 @@ export class BaseComponent {
       this.removeValue(index);
     });
 
-    let removeIcon = this.ce('i', {
+    const removeIcon = this.ce('i', {
       class: this.iconClass('remove-circle')
     });
     removeButton.appendChild(removeIcon);
@@ -798,10 +798,10 @@ export class BaseComponent {
       input.style.width = `${100 - totalLabelWidth}%`;
 
       if (this.labelOnTheLeft(this.component.labelPosition)) {
-        input.style.marginLeft = `${totalLabelWidth}%`
+        input.style.marginLeft = `${totalLabelWidth}%`;
       }
       else {
-        input.style.marginRight = `${totalLabelWidth}%`
+        input.style.marginRight = `${totalLabelWidth}%`;
       }
     }
   }
@@ -1051,7 +1051,7 @@ export class BaseComponent {
         mask
       });
       if (mask.numeric) {
-        input.setAttribute('pattern', "\\d*");
+        input.setAttribute('pattern', '\\d*');
       }
       if (!this.component.placeholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
@@ -1065,9 +1065,9 @@ export class BaseComponent {
    * @returns {HTMLElement} - Either the input or the group that contains the input.
    */
   createInput(container) {
-    let input = this.ce(this.info.type, this.info.attr);
+    const input = this.ce(this.info.type, this.info.attr);
     this.setInputMask(input);
-    let inputGroup = this.addInputGroup(input, container);
+    const inputGroup = this.addInputGroup(input, container);
     this.addPrefix(input, inputGroup);
     this.addInput(input, inputGroup || container);
     this.addSuffix(input, inputGroup);
@@ -1088,7 +1088,7 @@ export class BaseComponent {
    */
   addEventListener(obj, evt, func) {
     this.eventHandlers.push({type: evt, func: func});
-    if ('addEventListener' in obj){
+    if ('addEventListener' in obj) {
       obj.addEventListener(evt, func, false);
     }
     else if ('attachEvent' in obj) {
@@ -1183,7 +1183,7 @@ export class BaseComponent {
    */
   ce(type, attr, children = null, events = {}) {
     // Create the element.
-    let element = document.createElement(type);
+    const element = document.createElement(type);
 
     // Add attributes.
     if (attr) {
@@ -1310,7 +1310,7 @@ export class BaseComponent {
 
       if (result) {
         changed |= logic.actions.reduce((changed, action) => {
-          switch(action.type) {
+          switch (action.type) {
             case 'property':
               FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
@@ -1352,7 +1352,7 @@ export class BaseComponent {
     }
 
     if (this.errorElement) {
-      let errorMessage = this.ce('p', {
+      const errorMessage = this.ce('p', {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));
@@ -1385,7 +1385,7 @@ export class BaseComponent {
     }
 
     this._visible = show;
-    let element = this.getElement();
+    const element = this.getElement();
     if (element) {
       if (show && !this.component.hidden) {
         element.removeAttribute('hidden');
@@ -1450,7 +1450,7 @@ export class BaseComponent {
     }
 
     // Set the changed variable.
-    let changed = {
+    const changed = {
       component: this.component,
       value: this.value,
       flags: flags
@@ -1470,7 +1470,7 @@ export class BaseComponent {
       return;
     }
     this.addEventListener(input, 'keypress', (event) => {
-      let key = event.keyCode || event.which;
+      const key = event.keyCode || event.which;
       if (key == 13) {
         event.preventDefault();
         event.stopPropagation();
@@ -1539,7 +1539,7 @@ export class BaseComponent {
       return this.value;
     }
     const values = [];
-    for (let i in this.inputs) {
+    for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
           return this.getValueAt(i);
@@ -1596,7 +1596,7 @@ export class BaseComponent {
       });
     }
     else {
-      let defaultValue = this.defaultValue;
+      const defaultValue = this.defaultValue;
       if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
@@ -1624,7 +1624,7 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
-        let value = (new Function('component', 'row', 'data', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data, data);
+        const value = (new Function('component', 'row', 'data', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data, data);
         changed = this.setValue(value, flags);
       }
       catch (err) {
@@ -1636,7 +1636,7 @@ export class BaseComponent {
     }
     else {
       try {
-        let val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
+        const val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
           data,
           row: this.data
         });
@@ -1714,7 +1714,7 @@ export class BaseComponent {
       return true;
     }
 
-    let message = this.invalid || this.invalidMessage(data, dirty);
+    const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
@@ -1818,7 +1818,7 @@ export class BaseComponent {
     }
     this.buildRows();
     const isArray = _isArray(value);
-    for (let i in this.inputs) {
+    for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
       }
@@ -1877,7 +1877,7 @@ export class BaseComponent {
     element.loading = loading;
     if (!element.loader && loading) {
       element.loader = this.ce('i', {
-        class: this.iconClass('refresh', true) + ' button-icon-right'
+        class: `${this.iconClass('refresh', true)} button-icon-right`
       });
     }
     if (element.loader) {
@@ -1892,20 +1892,20 @@ export class BaseComponent {
 
   selectOptions(select, tag, options, defaultValue) {
     _each(options, (option) => {
-      let attrs = {
+      const attrs = {
         value: option.value
       };
       if (defaultValue !== undefined && (option.value === defaultValue)) {
         attrs.selected = 'selected';
       }
-      let optionElement = this.ce('option', attrs);
+      const optionElement = this.ce('option', attrs);
       optionElement.appendChild(this.text(option.label));
       select.appendChild(optionElement);
     });
   }
 
   setSelectValue(select, value) {
-    let options = select.querySelectorAll('option');
+    const options = select.querySelectorAll('option');
     _each(options, (option) => {
       if (option.value === value) {
         option.setAttribute('selected', 'selected');
@@ -1959,7 +1959,7 @@ export class BaseComponent {
    * Get the element information.
    */
   elementInfo() {
-    let attributes = {
+    const attributes = {
       name: this.options.name,
       type: this.component.inputType || 'text',
       class: 'form-control',
@@ -2005,7 +2005,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
     }
 
     // See if the plugin already exists.
-    let plugin = _get(window, property);
+    const plugin = _get(window, property);
     if (plugin) {
       BaseComponent.externalLibraries[name].resolve(plugin);
     }
@@ -2040,8 +2040,8 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
         }
 
         // Add the script to the top page.
-        let script = document.createElement(elementType);
-        for (let attr in attrs) {
+        const script = document.createElement(elementType);
+        for (const attr in attrs) {
           script.setAttribute(attr, attrs[attr]);
         }
         document.getElementsByTagName('head')[0].appendChild(script);
@@ -2050,7 +2050,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       // if no callback is provided, then check periodically for the script.
       if (polling) {
         setTimeout(function checkLibrary() {
-          let plugin = _get(window, property);
+          const plugin = _get(window, property);
           if (plugin) {
             BaseComponent.externalLibraries[name].resolve(plugin);
           }
@@ -2058,7 +2058,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
             // check again after 200 ms.
             setTimeout(checkLibrary, 200);
           }
-        }, 200)
+        }, 200);
       }
     }
   }

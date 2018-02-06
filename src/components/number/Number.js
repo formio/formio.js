@@ -1,7 +1,7 @@
 import maskInput from 'vanilla-text-mask';
 import _get from 'lodash/get';
-import { createNumberMask } from 'text-mask-addons';
-import { BaseComponent } from '../base/Base';
+import {createNumberMask} from 'text-mask-addons';
+import {BaseComponent} from '../base/Base';
 
 export class NumberComponent extends BaseComponent {
   constructor(component, options, data) {
@@ -18,7 +18,7 @@ export class NumberComponent extends BaseComponent {
       this.component.validate.step &&
       this.component.validate.step !== 'any'
     ) {
-      var parts = this.component.validate.step.toString().split('.');
+      const parts = this.component.validate.step.toString().split('.');
       if (parts.length > 1) {
         this.decimalLimit = parts[1].length;
       }
@@ -80,7 +80,7 @@ export class NumberComponent extends BaseComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.attr.type = 'text';
     info.attr.inputmode = 'numeric';
     info.changeEvent = 'input';
@@ -92,7 +92,7 @@ export class NumberComponent extends BaseComponent {
       return null;
     }
 
-    let val = this.inputs[index].value;
+    const val = this.inputs[index].value;
 
     if (!val) {
       return null;

@@ -1,6 +1,13 @@
 {
   "parser": "babel-eslint",
   "extends": "formio",
+  "globals": {
+    "Formio": true,
+    "FormioForm": true,
+    "FormioPDF": true,
+    "FormioWizard": true,
+    "FormioUtils": true
+  },
   "env": {
     "browser": true,
     "node": true,
@@ -10,6 +17,9 @@
     "no-console": "off",
     "prefer-arrow-callback": "error",
     "prefer-const": "error",
-    "prefer-template": "error"
+    "prefer-template": "error",
+    "indent": ["error", 2, {
+      "SwitchCase": 1
+    }]
   }
 }

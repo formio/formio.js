@@ -1,4 +1,4 @@
-import { BaseComponent } from '../base/Base';
+import {BaseComponent} from '../base/Base';
 import _assign from 'lodash/assign';
 export class CheckBoxComponent extends BaseComponent {
   elementInfo() {
@@ -142,7 +142,7 @@ export class CheckBoxComponent extends BaseComponent {
     const component = this.getRoot().getComponent(this.component.name);
 
     if (component) {
-      component.setValue(this.component.value, { changed: true });
+      component.setValue(this.component.value, {changed: true});
     }
     else {
       this.data[this.component.name] = this.component.value;

@@ -1,4 +1,4 @@
-import { BaseComponent } from '../base/Base';
+import {BaseComponent} from '../base/Base';
 import _each from 'lodash/each';
 import _assign from 'lodash/assign';
 import _get from 'lodash/get';
@@ -17,7 +17,7 @@ export class RadioComponent extends BaseComponent {
   createInput(container) {
     const inputGroup = this.ce('div');
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
-    var wrappers = [];
+    const wrappers = [];
 
     _each(this.component.values, (value) => {
       const wrapperClass = `form-check ${this.optionWrapperClass}`;
@@ -41,7 +41,7 @@ export class RadioComponent extends BaseComponent {
 
       // Create the input.
       const input = this.ce('input');
-      _each(this.info.attr, function (value, key) {
+      _each(this.info.attr, (value, key) => {
         input.setAttribute(key, value);
       });
 
@@ -173,12 +173,12 @@ export class RadioComponent extends BaseComponent {
       const optionSelectedClass = 'radio-selected';
 
       _each(this.wrappers, (wrapper, index) => {
-        var input = this.inputs[index];
+        const input = this.inputs[index];
         if (input.value === value) {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);
-
-        } else {
+        }
+        else {
           this.removeClass(wrapper, optionSelectedClass);
         }
       });

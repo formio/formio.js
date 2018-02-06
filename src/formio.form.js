@@ -1,6 +1,6 @@
 import Formio from './formio';
-import Promise from "native-promise-only";
-import { FormioComponents } from './components/Components';
+import Promise from 'native-promise-only';
+import {FormioComponents} from './components/Components';
 import _each from 'lodash/each';
 import _clone from 'lodash/clone';
 import _debounce from 'lodash/debounce';
@@ -18,7 +18,7 @@ i18next.initialized = false;
 // Initialize the available forms.
 Formio.forms = {};
 
-let getOptions = function(options) {
+const getOptions = function(options) {
   options = _defaults(options, {
     submitOnEnter: false,
     i18next: i18next
@@ -220,7 +220,6 @@ export class FormioForm extends FormioComponents {
     }
   }
 
-
   /**
    * Sets the language for this form.
    *
@@ -291,7 +290,7 @@ export class FormioForm extends FormioComponents {
     element.addEventListener('keydown', this.executeShortcuts.bind(this));
 
     this.element = element;
-    var classNames = this.element.getAttribute('class');
+    let classNames = this.element.getAttribute('class');
     classNames += ' formio-form';
     this.addClass(this.element, classNames);
     this.loading = true;
@@ -321,7 +320,7 @@ export class FormioForm extends FormioComponents {
   }
 
   executeShortcuts(event) {
-    const { target } = event;
+    const {target} = event;
     if (!this.keyboardCatchableElement(target)) {
       return;
     }
@@ -332,9 +331,11 @@ export class FormioForm extends FormioComponents {
 
     if (65 <= keyCode && keyCode <= 90) {
       char = String.fromCharCode(keyCode);
-    } else if (keyCode === 13) {
+    }
+    else if (keyCode === 13) {
       char = 'Enter';
-    } else if (keyCode === 27) {
+    }
+    else if (keyCode === 27) {
       char = 'Esc';
     }
 
@@ -367,7 +368,8 @@ export class FormioForm extends FormioComponents {
         shortcut,
         element
       });
-    } else {
+    }
+    else {
       this.shortcuts.push({
         ctrl: true,
         shortcut,
@@ -424,7 +426,7 @@ export class FormioForm extends FormioComponents {
       this.nosubmit = false;
       this.formio.loadForm({params: {live: 1}}).then(
         (form) => {
-          var setForm = this.setForm(form);
+          const setForm = this.setForm(form);
           this.loadSubmission();
           return setForm;
         }).catch((err) => {
@@ -523,7 +525,7 @@ export class FormioForm extends FormioComponents {
         this.loader = this.ce('div', {
           class: 'loader-wrapper'
         });
-        let spinner = this.ce('div', {
+        const spinner = this.ce('div', {
           class: 'loader text-center'
         });
         this.loader.appendChild(spinner);
@@ -696,7 +698,7 @@ export class FormioForm extends FormioComponents {
     if (this.viewOnly) {
       return this._submission;
     }
-    let submission = _clone(this._submission);
+    const submission = _clone(this._submission);
     submission.data = this.data;
     return submission;
   }
@@ -763,11 +765,11 @@ export class FormioForm extends FormioComponents {
         this.removeChild(this.alert);
         this.alert = null;
       }
-      catch(err) {}
+      catch (err) {}
     }
     if (message) {
       this.alert = this.ce('div', {
-        class: 'alert alert-' + type,
+        class: `alert alert-${type}`,
         role: 'alert'
       });
       this.alert.innerHTML = message;
@@ -784,7 +786,7 @@ export class FormioForm extends FormioComponents {
   build() {
     this.on('submitButton', () => this.submit(), true);
     this.addComponents();
-    let submission = this.getValue();
+    const submission = this.getValue();
     this.checkConditions(submission);
     this.checkData(submission.data, {
       noValidate: true
@@ -813,11 +815,11 @@ export class FormioForm extends FormioComponents {
       this.setAlert(false);
       return;
     }
-    let message = '<p>' + this.t('error') + '</p><ul>';
+    let message = `<p>${this.t('error')}</p><ul>`;
     _each(errors, (err) => {
       if (err) {
-        let errorMessage = err.message || err;
-        message += '<li><strong>' + errorMessage + '</strong></li>';
+        const errorMessage = err.message || err;
+        message += `<li><strong>${errorMessage}</strong></li>`;
       }
     });
     message += '</ul>';
@@ -840,7 +842,7 @@ export class FormioForm extends FormioComponents {
       noValidate: true,
       noCheck: true
     });
-    this.setAlert('success', '<p>' + this.t('complete') + '</p>');
+    this.setAlert('success', `<p>${this.t('complete')}</p>`);
     this.emit('submit', submission);
     if (saved) {
       this.emit('submitDone', submission);
@@ -875,7 +877,7 @@ export class FormioForm extends FormioComponents {
   onChange(flags, changed) {
     super.onChange(flags, true);
     this.mergeData(this._submission, this.submission);
-    let value = _clone(this._submission);
+    const value = _clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
     this.emit('change', value);
@@ -908,9 +910,9 @@ export class FormioForm extends FormioComponents {
    * @alias reset
    */
   cancel(noconfirm) {
-    if(noconfirm || confirm('Are you sure you want to cancel?')) {
+    if (noconfirm || confirm('Are you sure you want to cancel?')) {
       this.reset();
-      return true
+      return true;
     }
     else {
       return false;
@@ -924,7 +926,7 @@ export class FormioForm extends FormioComponents {
         return resolve(this.submission);
       }
 
-      let submission = this.submission || {};
+      const submission = this.submission || {};
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {
           this.showErrors(err);
@@ -987,14 +989,14 @@ export class FormioForm extends FormioComponents {
     }
   }
 
-  submitUrl(URL,headers){
-    if(!URL) {
+  submitUrl(URL,headers) {
+    if (!URL) {
       return console.warn('Missing URL argument');
     }
 
-    let submission = this.submission || {};
-    let API_URL  = URL;
-    let settings = {
+    const submission = this.submission || {};
+    const API_URL  = URL;
+    const settings = {
       method: 'POST',
       headers: {}
     };
@@ -1011,12 +1013,12 @@ export class FormioForm extends FormioComponents {
         Formio.makeStaticRequest(API_URL,settings.method,submission,settings.headers).then((res) =>{
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
-        })
+        });
       }
-      catch(e) {
-        this.showErrors(e.statusText + ' ' + e.status);
-        this.emit('error',e.statusText + ' ' + e.status);
-        console.error(e.statusText + ' ' + e.status);
+      catch (e) {
+        this.showErrors(`${e.statusText} ${e.status}`);
+        this.emit('error',`${e.statusText} ${e.status}`);
+        console.error(`${e.statusText} ${e.status}`);
       }
     }
     else {
@@ -1032,10 +1034,10 @@ Formio.onResize = (scale) => _each(Formio.forms, (instance) => instance.onResize
 Formio.triggerResize = _debounce(Formio.onResize, 200);
 if ('addEventListener' in window) {
   window.addEventListener('resize', () => Formio.triggerResize(), false);
-} else if ('attachEvent' in window) {
+}
+else if ('attachEvent' in window) {
   window.attachEvent('onresize', () => Formio.triggerResize());
 }
-
 
 FormioForm.setBaseUrl = Formio.setBaseUrl;
 FormioForm.setApiUrl = Formio.setApiUrl;

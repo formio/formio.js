@@ -1,4 +1,4 @@
-import { FormioComponents } from '../Components';
+import {FormioComponents} from '../Components';
 import _isObject from 'lodash/isObject';
 import _each from 'lodash/each';
 export class ContainerComponent extends FormioComponents {
@@ -9,7 +9,7 @@ export class ContainerComponent extends FormioComponents {
 
   build() {
     this.element = this.ce('div', {
-      class: 'formio-container-component ' + this.component.customClass
+      class: `formio-container-component ${this.component.customClass}`
     });
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = {};
@@ -21,7 +21,7 @@ export class ContainerComponent extends FormioComponents {
     if (this.viewOnly) {
       return this.value;
     }
-    let value = {};
+    const value = {};
     _each(this.components, (component) => {
       value[component.component.key] = component.getValue();
     });

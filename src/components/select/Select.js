@@ -1,4 +1,4 @@
-import { BaseComponent } from '../base/Base';
+import {BaseComponent} from '../base/Base';
 import Choices from 'choices.js';
 import Formio from '../../formio';
 import _each from 'lodash/each';
@@ -37,10 +37,12 @@ Choices.prototype.setValueByChoice = function(value) {
             foundChoice.placeholder,
             foundChoice.keyCode
           );
-        } else if (!this.config.silent) {
+        }
+        else if (!this.config.silent) {
           console.warn('Attempting to select choice already selected');
         }
-      } else if (!this.config.silent) {
+      }
+      else if (!this.config.silent) {
         console.warn('Attempting to select choice that does not exist');
       }
     });
@@ -85,7 +87,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'select';
     info.changeEvent = 'change';
     return info;
@@ -103,8 +105,8 @@ export class SelectComponent extends BaseComponent {
     if (typeof data === 'string') {
       return this.t(data);
     }
-    let template = this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
-    var label = template.replace(/<\/?[^>]+(>|$)/g, "");
+    const template = this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
+    const label = template.replace(/<\/?[^>]+(>|$)/g, '');
     return template.replace(label, this.t(label));
   }
 
@@ -124,7 +126,7 @@ export class SelectComponent extends BaseComponent {
    * @param label
    */
   addOption(value, label, attr) {
-    let option = {
+    const option = {
       value: value,
       label: label
     };
@@ -153,7 +155,7 @@ export class SelectComponent extends BaseComponent {
     if (!this.selectOptions.length) {
       if (this.choices) {
         // Add the currently selected choices if they don't already exist.
-        let currentChoices = _isArray(this.value) ? this.value : [this.value];
+        const currentChoices = _isArray(this.value) ? this.value : [this.value];
         _each(currentChoices, (choice) => {
           this.addCurrentChoices(choice, items);
         });
@@ -214,7 +216,7 @@ export class SelectComponent extends BaseComponent {
     }
     else {
       // If a default value is provided then select it.
-      let defaultValue = this.defaultValue;
+      const defaultValue = this.defaultValue;
       if (defaultValue) {
         this.setValue(defaultValue);
       }
@@ -230,7 +232,7 @@ export class SelectComponent extends BaseComponent {
       body = null;
     }
 
-    let query = (this.component.dataSrc === 'url') ? {} : {
+    const query = (this.component.dataSrc === 'url') ? {} : {
       limit: 100,
       skip: 0
     };
@@ -244,7 +246,7 @@ export class SelectComponent extends BaseComponent {
     // Add search capability.
     if (this.component.searchField && search) {
       if (_isArray(search)) {
-        query[this.component.searchField + '__in'] = search.join(',');
+        query[`${this.component.searchField}__in`] = search.join(',');
       }
       else {
         query[this.component.searchField] = search;
@@ -253,7 +255,7 @@ export class SelectComponent extends BaseComponent {
 
     // Add filter capability
     if (this.component.filter) {
-      let filter = this.interpolate(this.component.filter, {data: this.data});
+      const filter = this.interpolate(this.component.filter, {data: this.data});
       url += (!url.includes('?') ? '?' : '&') + filter;
     }
 
@@ -284,7 +286,7 @@ export class SelectComponent extends BaseComponent {
    */
   get requestHeaders() {
     // Create the headers object.
-    let headers = new Headers();
+    const headers = new Headers();
 
     // Add custom headers to the url.
     if (this.component.data && this.component.data.headers) {
@@ -322,7 +324,7 @@ export class SelectComponent extends BaseComponent {
       return;
     }
 
-    switch(this.component.dataSrc) {
+    switch (this.component.dataSrc) {
       case 'values':
         this.component.valueProperty = 'value';
         this.setItems(this.component.data.values);
@@ -338,7 +340,7 @@ export class SelectComponent extends BaseComponent {
           // If we are lazyLoading, wait until activated.
           return;
         }
-        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : Formio.getProjectUrl() + '/form';
+        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
         resourceUrl += (`/${this.component.data.resource}/submission`);
 
         try {
@@ -370,7 +372,7 @@ export class SelectComponent extends BaseComponent {
             body = this.component.data.body;
           }
           else {
-            body = null
+            body = null;
           }
         }
         this.loadItems(url, searchInput, this.requestHeaders, {noToken: true}, method, body);
@@ -382,7 +384,7 @@ export class SelectComponent extends BaseComponent {
     if (!this.component.placeholder || !input) {
       return;
     }
-    let placeholder = document.createElement('option');
+    const placeholder = document.createElement('option');
     placeholder.setAttribute('placeholder', true);
     placeholder.appendChild(this.text(this.component.placeholder));
     input.appendChild(placeholder);
@@ -424,8 +426,8 @@ export class SelectComponent extends BaseComponent {
       return;
     }
 
-    let placeholderValue = this.t(this.component.placeholder);
-    let choicesOptions = {
+    const placeholderValue = this.t(this.component.placeholder);
+    const choicesOptions = {
       removeItemButton: this.component.removeItemButton || (this.component.multiple || false),
       itemSelectText: '',
       classNames: {
@@ -440,7 +442,7 @@ export class SelectComponent extends BaseComponent {
       searchEnabled: this.component.searchEnabled || false
     };
 
-    let tabIndex = input.tabIndex;
+    const tabIndex = input.tabIndex;
     this.addPlaceholder(input);
     this.choices = new Choices(input, choicesOptions);
     this.choices.itemList.tabIndex = tabIndex;
@@ -519,7 +521,7 @@ export class SelectComponent extends BaseComponent {
       }
     }
     else {
-      let values = [];
+      const values = [];
       _each(this.selectOptions, (selectOption) => {
         if (selectOption.element.selected) {
           values.push(selectOption.value);
@@ -532,8 +534,8 @@ export class SelectComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    let hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
-    let hasValue = _isArray(value) ? value.length : value;
+    const hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
+    const hasValue = _isArray(value) ? value.length : value;
     this.data[this.component.key] = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
@@ -565,7 +567,7 @@ export class SelectComponent extends BaseComponent {
         this.choices
           .removeActiveItems()
           .setChoices(this.selectOptions, 'value', 'label', true)
-          .setValueByChoice(_isArray(value) ? value : [value])
+          .setValueByChoice(_isArray(value) ? value : [value]);
       }
       else if (hasPreviousValue) {
         this.choices.removeActiveItems();
@@ -573,7 +575,7 @@ export class SelectComponent extends BaseComponent {
     }
     else {
       if (hasValue) {
-        let values = _isArray(value) ? value : [value];
+        const values = _isArray(value) ? value : [value];
         _each(this.selectOptions, (selectOption) => {
           _each(values, (val) => {
             if (_isEqual(val, selectOption.value)) {
@@ -612,7 +614,7 @@ export class SelectComponent extends BaseComponent {
     value = value || this.getValue();
 
     if (this.component.dataSrc === 'values') {
-      value = _find(this.component.data.values, [ 'value', value ]);
+      value = _find(this.component.data.values, ['value', value]);
     }
 
     if (_isString(value)) {

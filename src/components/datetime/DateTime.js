@@ -1,4 +1,4 @@
-import { BaseComponent } from '../base/Base';
+import {BaseComponent} from '../base/Base';
 import Flatpickr from 'flatpickr';
 import _get from 'lodash/get';
 import _each from 'lodash/each';
@@ -137,7 +137,7 @@ export class DateTimeComponent extends BaseComponent {
 
   getRawValue() {
     const values = [];
-    for (let i in this.inputs) {
+    for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
           return this.getDate(this.inputs[i].value);

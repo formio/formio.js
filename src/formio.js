@@ -1,5 +1,4 @@
 'use strict';
-import './formio.polyfill';
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
@@ -230,8 +229,8 @@ export class Formio {
       query = this.query;
     }
     if (!this[_id]) {
- return Promise.reject(`Missing ${_id}`);
-}
+      return Promise.reject(`Missing ${_id}`);
+    }
     return this.makeRequest(type, this[_url] + query, 'get', null, opts);
   }
 
@@ -681,9 +680,9 @@ export class Formio {
 
     // Set up and fetch request
     const headers = header || new Headers(opts.headers || {
-        'Accept': 'application/json',
-        'Content-type': 'application/json; charset=UTF-8'
-      });
+      'Accept': 'application/json',
+      'Content-type': 'application/json; charset=UTF-8'
+    });
     const token = Formio.getToken();
     if (token && !opts.noToken) {
       headers.append('x-jwt-token', token);
@@ -720,9 +719,9 @@ export class Formio {
           return (response.headers.get('content-type').includes('application/json')
             ? response.json()
             : response.text())
-              .then((error) => {
-                throw error;
-              });
+            .then((error) => {
+              throw error;
+            });
         }
 
         // Handle fetch results

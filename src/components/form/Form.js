@@ -27,7 +27,7 @@ export class FormComponent extends FormioForm {
       return true;
     }
     this.subFormLoaded = true;
-    let srcOptions = {};
+    const srcOptions = {};
     if (this.options && this.options.base) {
       srcOptions.base = this.options.base;
     }
@@ -51,22 +51,22 @@ export class FormComponent extends FormioForm {
         if (FormioUtils.isMongoId(this.component.project)) {
           this.component.src += '/project';
         }
-        this.component.src += '/' + this.component.project;
+        this.component.src += `/${this.component.project}`;
         srcOptions.project = this.component.src;
       }
-      this.component.src += '/form/' + this.component.form;
+      this.component.src += `/form/${this.component.form}`;
     }
 
     // Build the source based on the root src path.
     if (!this.component.src && this.options.formio) {
-      let rootSrc = this.options.formio.formsUrl;
+      const rootSrc = this.options.formio.formsUrl;
       if (this.component.path) {
-        let parts = rootSrc.split('/');
+        const parts = rootSrc.split('/');
         parts.pop();
-        this.component.src = parts.join('/') + '/' + this.component.path;
+        this.component.src = `${parts.join('/')}/${this.component.path}`;
       }
       if (this.component.form) {
-        this.component.src = rootSrc + '/' + this.component.form;
+        this.component.src = `${rootSrc}/${this.component.form}`;
       }
     }
 
@@ -78,7 +78,7 @@ export class FormComponent extends FormioForm {
       this.component.reference &&
       !this.component.src.includes('/submission/')
     ) {
-      this.component.src += '/submission/' + this.data[this.component.key]._id;
+      this.component.src += `/submission/${this.data[this.component.key]._id}`;
     }
 
     // Set the src if the property is provided in the JSON.
@@ -184,7 +184,7 @@ export class FormComponent extends FormioForm {
     this.restoreValue();
 
     // Get the submission value.
-    let submission = this.getValue();
+    const submission = this.getValue();
 
     // Check conditions for this form.
     this.checkConditions(submission);
@@ -233,14 +233,14 @@ export class FormComponent extends FormioForm {
 
     // Set the url of this form to the url for a submission if it exists.
     if (submission._id) {
-      let submissionUrl = this.options.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;
+      const submissionUrl = `${this.options.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
       this.setUrl(submissionUrl, this.options);
       this.nosubmit = false;
     }
 
     if (submission._id && !flags.noload) {
       this.formio.submissionId = submission._id;
-      this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
+      this.formio.submissionUrl = `${this.formio.submissionsUrl}/${submission._id}`;
       this.formReady.then(() => {
         this._loading = false;
         this.loading = true;
@@ -256,7 +256,7 @@ export class FormComponent extends FormioForm {
       return true;
     }
     else {
-      let superValue = super.setValue(submission, flags, this.data[this.component.key].data);
+      const superValue = super.setValue(submission, flags, this.data[this.component.key].data);
       this.readyResolve();
       return superValue;
     }

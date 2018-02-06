@@ -1,5 +1,5 @@
 import _each from 'lodash/each';
-import { BaseComponent } from '../base/Base';
+import {BaseComponent} from '../base/Base';
 export class SurveyComponent extends BaseComponent {
   build() {
     this.createElement();
@@ -13,11 +13,11 @@ export class SurveyComponent extends BaseComponent {
     this.setInputStyles(this.table);
 
     // Build header.
-    let thead = this.ce('thead');
-    let thr = this.ce('tr');
+    const thead = this.ce('thead');
+    const thr = this.ce('tr');
     thr.appendChild(this.ce('td'));
     _each(this.component.values, (value) => {
-      let th = this.ce('th', {
+      const th = this.ce('th', {
         style: 'text-align: center;'
       });
       th.appendChild(this.text(value.label));
@@ -26,21 +26,21 @@ export class SurveyComponent extends BaseComponent {
     thead.appendChild(thr);
     this.table.appendChild(thead);
     // Build the body.
-    let tbody = this.ce('tbody');
+    const tbody = this.ce('tbody');
     _each(this.component.questions, (question) => {
-      let tr = this.ce('tr');
-      let td = this.ce('td');
+      const tr = this.ce('tr');
+      const td = this.ce('td');
       td.appendChild(this.text(question.label));
       tr.appendChild(td);
       _each(this.component.values, (value) => {
-        let td = this.ce('td', {
+        const td = this.ce('td', {
           style: 'text-align: center;'
         });
-        let input = this.ce('input', {
+        const input = this.ce('input', {
           type: 'radio',
-          name: 'data[' + this.component.key + '][' + question.value + ']',
+          name: `data[${this.component.key}][${question.value}]`,
           value: value.value,
-          id: this.id + '-' + question.value + '-' + value.value
+          id: `${this.id}-${question.value}-${value.value}`
         });
         this.addInput(input, td);
         tr.appendChild(td);
@@ -64,10 +64,10 @@ export class SurveyComponent extends BaseComponent {
     if (!value) {
       return;
     }
-    let key = 'data[' + this.component.key + ']';
+    const key = `data[${this.component.key}]`;
     _each(this.component.questions, (question) => {
       _each(this.inputs, (input) => {
-        if (input.name === (key + '[' + question.value + ']')) {
+        if (input.name === (`${key}[${question.value}]`)) {
           input.checked = (input.value === value[question.value]);
         }
       });
@@ -79,11 +79,11 @@ export class SurveyComponent extends BaseComponent {
     if (this.viewOnly) {
       return this.value;
     }
-    let value = {};
-    let key = 'data[' + this.component.key + ']';
+    const value = {};
+    const key = `data[${this.component.key}]`;
     _each(this.component.questions, (question) => {
       _each(this.inputs, (input) => {
-        if (input.checked && (input.name === (key + '[' + question.value + ']'))) {
+        if (input.checked && (input.name === (`${key}[${question.value}]`))) {
           value[question.value] = input.value;
           return false;
         }
