@@ -955,7 +955,7 @@ export class Formio {
         return true;
       }
 
-      (p.deregister || Formio.noop)(Formio);
+      (p.deregister || Formio.noop).call(plugin, Formio);
       return false;
     });
     return beforeLength !== Formio.plugins.length;
@@ -965,7 +965,7 @@ export class Formio {
     Formio.plugins.push(plugin);
     Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
     plugin.__name = name;
-    (plugin.init || Formio.noop)(Formio);
+    (plugin.init || Formio.noop).call(plugin, Formio);
   }
 
   static getPlugin(name) {
@@ -974,7 +974,7 @@ export class Formio {
 
   static pluginWait(pluginFn, ...args) {
     return Promise.all(Formio.plugins.map((plugin) =>
-      (plugin[pluginFn] || Formio.noop)(...args)));
+      (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));
   }
 
   static pluginGet(pluginFn, ...args) {
@@ -985,7 +985,7 @@ export class Formio {
         return Promise.resolve(null);
       }
 
-      return Promise.resolve((plugin[pluginFn] || Formio.noop)(...args))
+      return Promise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
         .then((result) => {
           if (!_isNil(result)) {
             return result;
