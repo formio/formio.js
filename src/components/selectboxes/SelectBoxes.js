@@ -1,6 +1,7 @@
 import {RadioComponent} from '../radio/Radio';
 import _each from 'lodash/each';
 import _isArray from 'lodash/isArray';
+import _isUndefined from 'lodash/isUndefined';
 import _ from 'lodash';
 export class SelectBoxesComponent extends RadioComponent {
   constructor(component, options, data) {
@@ -59,12 +60,9 @@ export class SelectBoxesComponent extends RadioComponent {
         value[val] = true;
       });
     }
-    else {
-      value = value;
-    }
 
     _each(this.inputs, (input) => {
-      if (value[input.value] == undefined) {
+      if (_isUndefined(value[input.value])) {
         value[input.value] = false;
       }
       input.checked = !!value[input.value];

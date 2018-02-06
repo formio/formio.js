@@ -2,10 +2,10 @@ import {Formio} from './formio.full';
 const query = {};
 const scripts = document.getElementsByTagName('script');
 const thisScript = scripts[ scripts.length - 1 ];
-let scriptSrc = thisScript.src.replace(/^([^\?]+).*/, '$1').split('/');
+let scriptSrc = thisScript.src.replace(/^([^?]+).*/, '$1').split('/');
 scriptSrc.pop();
 scriptSrc = scriptSrc.join('/');
-const queryString = thisScript.src.replace(/^[^\?]+\??/,'');
+const queryString = thisScript.src.replace(/^[^?]+\??/,'');
 queryString.replace(/\?/g, '&').split('&').forEach((item) => {
   query[item.split('=')[0]] = item.split('=')[1] && decodeURIComponent(item.split('=')[1]);
 });

@@ -172,10 +172,13 @@ export class FormioWizard extends FormioForm {
     wizard.components = [];
     do {
       page = this.getPage(pageIndex);
+
       if (page) {
         wizard.components.push(page);
       }
-    } while (pageIndex = this.getNextPage(this.submission.data, pageIndex));
+
+      pageIndex = this.getNextPage(this.submission.data, pageIndex);
+    } while (pageIndex);
 
     // Add all other components.
     each(this.wizard.components, (component) => {
@@ -357,7 +360,8 @@ export class FormioWizard extends FormioForm {
       }
 
       if (FormioUtils.hasCondition(component)) {
-        const hasPage = this.pages && this.pages[pageIndex] && (this.pageId(this.pages[pageIndex]) === this.pageId(component));
+        const hasPage = this.pages && this.pages[pageIndex]
+          && (this.pageId(this.pages[pageIndex]) === this.pageId(component));
         const shouldShow = FormioUtils.checkCondition(component, this.data, this.data);
         if ((shouldShow && !hasPage) || (!shouldShow && hasPage)) {
           rebuild = true;
@@ -378,7 +382,7 @@ export class FormioWizard extends FormioForm {
 
     // Update Wizard Nav
     const nextPage = this.getNextPage(this.submission.data, this.page);
-    if (this._nextPage != nextPage) {
+    if (this._nextPage !== nextPage) {
       this.buildWizardNav(nextPage);
       this.emit('updateWizardNav', {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
       this._nextPage = nextPage;

@@ -361,13 +361,15 @@ export class EditGridComponent extends FormioComponents {
     return true;
   }
 
-  setCustomValidity(message, dirty) {
+  setCustomValidity(message) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
       try {
         this.errorContainer.removeChild(this.errorElement);
       }
-      catch (err) {}
+      catch (err) {
+        // ignore
+      }
     }
     if (message) {
       this.emit('componentError', this.error);
@@ -384,8 +386,7 @@ export class EditGridComponent extends FormioComponents {
     return [];
   }
 
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+  setValue(value) {
     if (!value) {
       return;
     }

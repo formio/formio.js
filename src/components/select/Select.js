@@ -195,7 +195,7 @@ export class SelectComponent extends BaseComponent {
     this.addValueOptions(items);
 
     // Iterate through each of the items.
-    _each(items, (item, index) => {
+    _each(items, (item) => {
       this.addOption(this.itemValue(item), this.itemTemplate(item));
     });
 
@@ -311,7 +311,8 @@ export class SelectComponent extends BaseComponent {
     const data = _cloneDeep(this.data);
     const row = _cloneDeep(this.row);
     try {
-      this.setItems((new Function('data', 'row', `var values = []; ${this.component.data.custom.toString()}; return values;`))(data, row));
+      this.setItems((new Function('data', 'row',
+        `var values = []; ${this.component.data.custom.toString()}; return values;`))(data, row));
     }
     catch (error) {
       this.setItems([]);
@@ -335,7 +336,7 @@ export class SelectComponent extends BaseComponent {
       case 'custom':
         this.updateCustomItems();
         break;
-      case 'resource':
+      case 'resource': {
         if (!forceUpdate && !this.active) {
           // If we are lazyLoading, wait until activated.
           return;
@@ -350,7 +351,8 @@ export class SelectComponent extends BaseComponent {
           console.warn(`Unable to load resources for ${this.component.key}`);
         }
         break;
-      case 'url':
+      }
+      case 'url': {
         if (!forceUpdate && !this.active) {
           // If we are lazyLoading, wait until activated.
           return;
@@ -377,6 +379,7 @@ export class SelectComponent extends BaseComponent {
         }
         this.loadItems(url, searchInput, this.requestHeaders, {noToken: true}, method, body);
         break;
+      }
     }
   }
 
@@ -601,7 +604,7 @@ export class SelectComponent extends BaseComponent {
    *
    * @return {boolean}
    */
-  validateMultiple(value) {
+  validateMultiple() {
     // Select component will contain one input when flagged as multiple.
     return false;
   }

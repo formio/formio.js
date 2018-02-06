@@ -539,7 +539,9 @@ export class FormioForm extends FormioComponents {
             this.removeChild(this.loader);
           }
         }
-        catch (err) {}
+        catch (err) {
+          // ingore
+        }
       }
     }
   }
@@ -765,7 +767,9 @@ export class FormioForm extends FormioComponents {
         this.removeChild(this.alert);
         this.alert = null;
       }
-      catch (err) {}
+      catch (err) {
+        // ingore
+      }
     }
     if (message) {
       this.alert = this.ce('div', {
@@ -1010,7 +1014,7 @@ export class FormioForm extends FormioComponents {
     }
     if (API_URL && settings) {
       try {
-        Formio.makeStaticRequest(API_URL,settings.method,submission,settings.headers).then((res) =>{
+        Formio.makeStaticRequest(API_URL,settings.method,submission,settings.headers).then(() => {
           this.emit('requestDone');
           this.setAlert('success', '<p> Success </p>');
         });

@@ -1,5 +1,4 @@
-import _isObject from 'lodash/isObject';
-import _isArray from 'lodash/isArray';
+/* globals Stripe */
 import _cloneDeep from 'lodash/cloneDeep';
 import _each from 'lodash/each';
 import {Validator} from '../../../components/Validator';
@@ -9,7 +8,7 @@ import {BaseComponent} from '../../../components/base/Base';
 if (typeof Validator.validators.stripe === 'undefined') {
   Validator.validators.stripe =  {
     key: 'validate.stripe',
-    message(component, setting) {
+    message(component) {
       let stripeMessage = '';
       if (component.lastResult && component.lastResult.error) {
         stripeMessage = component.lastResult.error.message;
@@ -161,8 +160,10 @@ export class StripeComponent extends BaseComponent {
     }
 
     // Force change when complete or when an error is thrown or fixed
-    const changed = result.complete || this.lastResult && (!!this.lastResult.error != !!result.error)
-                  || this.lastResult && this.lastResult.error && result.error && this.lastResult.error.code != result.error.code || false;
+    const changed = result.complete
+      || this.lastResult && (!!this.lastResult.error !== !!result.error)
+      || this.lastResult && this.lastResult.error && result.error && this.lastResult.error.code !== result.error.code
+      || false;
     this.lastResult = result;
 
     // When the field is not empty, use "." as value to not trigger "required" validator

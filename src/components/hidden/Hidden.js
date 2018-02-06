@@ -8,7 +8,7 @@ export class HiddenComponent extends BaseComponent {
     return info;
   }
 
-  createLabel(container) {
+  createLabel() {
     return;
   }
 }

@@ -1,6 +1,5 @@
 import {BaseComponent} from '../base/Base';
 import _get from 'lodash/get';
-import _each from 'lodash/each';
 import _assign from 'lodash/assign';
 import moment from 'moment';
 import {getLocaleDateFormatInfo} from '../../utils';

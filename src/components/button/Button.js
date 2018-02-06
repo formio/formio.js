@@ -106,7 +106,7 @@ export class ButtonComponent extends BaseComponent {
             event: event
           });
           break;
-        case 'custom':
+        case 'custom': {
           // Get the FormioForm at the root of this component's tree
           const form = this.getRoot();
           // Get the form's flattened schema components
@@ -121,7 +121,8 @@ export class ButtonComponent extends BaseComponent {
           });
 
           try {
-            (new Function('form', 'flattened', 'components', 'data', this.component.custom.toString()))(form, flattened, components, this.data);
+            (new Function('form', 'flattened', 'components', 'data',
+              this.component.custom.toString()))(form, flattened, components, this.data);
           }
           catch (e) {
             /* eslint-disable no-console */
@@ -129,6 +130,7 @@ export class ButtonComponent extends BaseComponent {
             /* eslint-enable no-console */
           }
           break;
+        }
         case 'url':
           this.emit('requestButton');
           this.emit('requestUrl', {
@@ -220,9 +222,10 @@ export class ButtonComponent extends BaseComponent {
           }
           const submission = {data: {}, oauth: {}};
           submission.oauth[settings.provider] = params;
-          submission.oauth[settings.provider].redirectURI = window.location.origin || `${window.location.protocol}//${window.location.host}`;
+          submission.oauth[settings.provider].redirectURI = window.location.origin
+            || `${window.location.protocol}//${window.location.host}`;
           this.root.formio.saveSubmission(submission)
-            .then(submission => {
+            .then((result) => {
               this.root.onSubmit(result, true);
             })
             .catch((err) => {

@@ -1,3 +1,4 @@
+/* globals Quill */
 import {TextFieldComponent} from '../textfield/TextField';
 import {BaseComponent} from '../base/Base';
 

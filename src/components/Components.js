@@ -28,17 +28,17 @@ export class FormioComponents extends BaseComponent {
    * Perform a deep iteration over every component, including those
    * within other container based components.
    *
-   * @param {function} cb - Called for every component.
+   * @param {function} fn - Called for every component.
    */
-  everyComponent(cb) {
+  everyComponent(fn) {
     const components = this.getComponents();
     _each(components, (component, index) => {
       if (component.type === 'components') {
-        if (component.everyComponent(cb) === false) {
+        if (component.everyComponent(fn) === false) {
           return false;
         }
       }
-      else if (cb(component, components, index) === false) {
+      else if (fn(component, components, index) === false) {
         return false;
       }
     });
@@ -47,11 +47,11 @@ export class FormioComponents extends BaseComponent {
   /**
    * Perform an iteration over each component within this container component.
    *
-   * @param {function} cb - Called for each component
+   * @param {function} fn - Called for each component
    */
-  eachComponent(cb) {
+  eachComponent(fn) {
     _each(this.getComponents(), (component, index) => {
-      if (cb(component, index) === false) {
+      if (fn(component, index) === false) {
         return false;
       }
     });
@@ -62,16 +62,16 @@ export class FormioComponents extends BaseComponent {
    * component tree.
    *
    * @param {string} key - The key of the component to retrieve.
-   * @param {function} cb - Called with the component once found.
+   * @param {function} fn - Called with the component once found.
    * @return {Object} - The component that is located.
    */
-  getComponent(key, cb) {
+  getComponent(key, fn) {
     let comp = null;
     this.everyComponent((component, components) => {
       if (component.component.key === key) {
         comp = component;
-        if (cb) {
-          cb(component, components);
+        if (fn) {
+          fn(component, components);
         }
         return false;
       }
@@ -83,16 +83,16 @@ export class FormioComponents extends BaseComponent {
    * Return a component provided the Id of the component.
    *
    * @param {string} id - The Id of the component.
-   * @param {function} cb - Called with the component once it is retrieved.
+   * @param {function} fn - Called with the component once it is retrieved.
    * @return {Object} - The component retrieved.
    */
-  getComponentById(id, cb) {
+  getComponentById(id, fn) {
     let comp = null;
     this.everyComponent((component, components) => {
       if (component.id === id) {
         comp = component;
-        if (cb) {
-          cb(component, components);
+        if (fn) {
+          fn(component, components);
         }
         return false;
       }
@@ -157,19 +157,19 @@ export class FormioComponents extends BaseComponent {
    * Removes a component provided the API key of that component.
    *
    * @param {string} key - The API key of the component to remove.
-   * @param {function} cb - Called once the component is removed.
+   * @param {function} fn - Called once the component is removed.
    * @return {null}
    */
-  removeComponentByKey(key, cb) {
+  removeComponentByKey(key, fn) {
     const comp = this.getComponent(key, (component, components) => {
       this.removeComponent(component, components);
-      if (cb) {
-        cb(component, components);
+      if (fn) {
+        fn(component, components);
       }
     });
     if (!comp) {
-      if (cb) {
-        cb(null);
+      if (fn) {
+        fn(null);
       }
       return null;
     }
@@ -179,19 +179,19 @@ export class FormioComponents extends BaseComponent {
    * Removes a component provided the Id of the component.
    *
    * @param {string} id - The Id of the component to remove.
-   * @param {function} cb - Called when the component is removed.
+   * @param {function} fn - Called when the component is removed.
    * @return {null}
    */
-  removeComponentById(id, cb) {
+  removeComponentById(id, fn) {
     const comp = this.getComponentById(id, (component, components) => {
       this.removeComponent(component, components);
-      if (cb) {
-        cb(component, components);
+      if (fn) {
+        fn(component, components);
       }
     });
     if (!comp) {
-      if (cb) {
-        cb(null);
+      if (fn) {
+        fn(null);
       }
       return null;
     }

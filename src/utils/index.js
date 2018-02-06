@@ -314,7 +314,7 @@ const FormioUtils = {
    *   String with escaped RegEx characters.
    */
   escapeRegExCharacters(value) {
-    return value.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    return value.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
   },
 
   /**
@@ -335,7 +335,8 @@ const FormioUtils = {
       if (_isString(component.calculateValue)) {
         try {
           const util = this;
-          rowData[component.key] = (new Function('data', 'row', 'util', `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util);
+          rowData[component.key] = (new Function('data', 'row', 'util',
+            `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util);
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -378,7 +379,7 @@ const FormioUtils = {
       return value[condition.eq].toString() === condition.show.toString();
     }
     // FOR-179 - Check for multiple values.
-    if (_isArray(value) && value.includes(trigger.eq)) {
+    if (_isArray(value) && value.includes(condition.eq)) {
       return (condition.show.toString() === 'true');
     }
 
@@ -396,7 +397,8 @@ const FormioUtils = {
    */
   checkCustomConditional(component, custom, row, data, variable, onError) {
     try {
-      return (new Function('component', 'row', 'data', `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, row, data);
+      return (new Function('component', 'row', 'data',
+        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, row, data);
     }
     catch (e) {
       console.warn(`An error occurred in a condition statement for component ${component.key}`, e);
@@ -458,13 +460,10 @@ const FormioUtils = {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
-        break;
       case 'javascript':
         return this.checkCustomConditional(component, trigger.javascript, row, data, 'result', false);
-        break;
       case 'json':
         return this.checkJsonConditional(component, trigger.json, row, data, false);
-        break;
     }
     // If none of the types matched, don't fire the trigger.
     return false;
@@ -477,7 +476,7 @@ const FormioUtils = {
           _set(component, action.property.value, action.state.toString() === 'true');
         }
         break;
-      case 'string':
+      case 'string': {
         const newValue = FormioUtils.interpolate(action.text, {
           data,
           row,
@@ -488,6 +487,7 @@ const FormioUtils = {
           _set(component, action.property.value, newValue);
         }
         break;
+      }
     }
     return component;
   },
@@ -536,7 +536,7 @@ const FormioUtils = {
    */
   interpolate(string, data) {
     const templateSettings = {
-      evaluate: /\{\%(.+?)\%\}/g,
+      evaluate: /\{%(.+?)%\}/g,
       interpolate: /\{\{(.+?)\}\}/g,
       escape: /\{\{\{(.+?)\}\}\}/g
     };
@@ -554,7 +554,7 @@ const FormioUtils = {
    * @returns {string}
    */
   uniqueName(name) {
-    const parts = name.toLowerCase().replace(/[^0-9a-z\.]/g, '').split('.');
+    const parts = name.toLowerCase().replace(/[^0-9a-z.]/g, '').split('.');
     const fileName = parts[0];
     const ext = parts.length > 1
       ? `.${_last(parts)}`
@@ -590,7 +590,7 @@ const FormioUtils = {
 
     try {
       // Moment constant might be used in eval.
-      const moment = momentModule;
+      const moment = momentModule; // eslint-disable-line no-unused-vars
       dateSetting = new Date(eval(date));
     }
     catch (e) {

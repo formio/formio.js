@@ -50,7 +50,8 @@ const dropbox = function(formio) {
     },
     downloadFile: function(file) {
       const token = formio.getToken();
-      file.url = `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&x-jwt-token=${token}` : ''}`;
+      file.url =
+        `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&x-jwt-token=${token}` : ''}`;
       return Promise.resolve(file);
     }
   };

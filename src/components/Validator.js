@@ -61,7 +61,7 @@ export const Validator = {
   validators: {
     required: {
       key: 'validate.required',
-      message(component, setting) {
+      message(component) {
         return component.t(component.errorMessage('required'), {
           field: component.errorLabel,
           data: component.data
@@ -143,7 +143,7 @@ export const Validator = {
       }
     },
     email: {
-      message(component, setting) {
+      message(component) {
         return component.t(component.errorMessage('invalid_email'), {
           field: component.errorLabel,
           data: component.data
@@ -151,14 +151,14 @@ export const Validator = {
       },
       check(component, setting, value) {
         // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-        const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         // Allow emails to be valid if the component is pristine and no value is provided.
         return (component.pristine && !value) || re.test(value);
       }
     },
     date: {
-      message(component, setting) {
+      message(component) {
         return component.t(component.errorMessage('invalid_date'), {
           field: component.errorLabel,
           data: component.data
@@ -208,7 +208,7 @@ export const Validator = {
       }
     },
     mask: {
-      message(component, setting) {
+      message(component) {
         return component.t(component.errorMessage('mask'), {
           field: component.errorLabel,
           data: component.data
@@ -241,7 +241,7 @@ export const Validator = {
             return _get(data, $2.replace('data.', ''));
           }
           else if ($2.indexOf('row.') === 0) {
-            return _get(row, $2.replace('row.', ''));
+            return _get(component.data, $2.replace('row.', ''));
           }
 
           // Support legacy...
@@ -249,7 +249,8 @@ export const Validator = {
         });
 
         /* jshint evil: true */
-        return (new Function('row', 'data', 'component', 'input', `var valid = true; ${custom}; return valid;`))(component.data, data, component, value);
+        return (new Function('row', 'data', 'component', 'input',
+          `var valid = true; ${custom}; return valid;`))(component.data, data, component, value);
       }
     }
   }

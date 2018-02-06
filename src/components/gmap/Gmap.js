@@ -69,14 +69,6 @@ export class GmapComponent extends BaseComponent {
         }));
         that.marker.setPosition(place.geometry.location);
         that.marker.setVisible(true);
-        let address = '';
-        if (place.address_components) {
-          address = [
-            (place.address_components[0] && place.address_components[0].short_name || ''),
-            (place.address_components[1] && place.address_components[1].short_name || ''),
-            (place.address_components[2] && place.address_components[2].short_name || '')
-          ].join(' ');
-        }
         that.setValue(place.name);
       });
     });
@@ -89,7 +81,7 @@ export class GmapComponent extends BaseComponent {
   }
 
   initGoogleMap() {
-    BaseComponent.libraryReady('googleMaps').then((result) => {
+    BaseComponent.libraryReady('googleMaps').then(() => {
       const defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
       const options = {
         zoom: 19,

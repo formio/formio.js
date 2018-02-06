@@ -1,3 +1,4 @@
+/* globals StripeCheckout */
 import _cloneDeep from 'lodash/cloneDeep';
 import _each from 'lodash/each';
 import {BaseComponent} from '../../../components/base/Base';
@@ -57,7 +58,7 @@ export class StripeCheckoutComponent extends ButtonComponent {
    */
   onClickButton(event) {
     // Return if component call is not the current component
-    if (this.component.key != event.component.key) {
+    if (this.component.key !== event.component.key) {
       return;
     }
 
@@ -117,7 +118,7 @@ export class StripeCheckoutComponent extends ButtonComponent {
 
       this.on('customEvent', this.onClickButton.bind(this));
 
-      this.addEventListener(window, 'popstate', (event) => {
+      this.addEventListener(window, 'popstate', () => {
         this.handler.close();
       });
     });

@@ -58,12 +58,12 @@ export class ResourceComponent extends SelectComponent {
 
       close.onclick = function() {
         self.dialog.close();
-		  };
+      };
 
-		  form.on('submit', (submission) => {
+      form.on('submit', (submission) => {
         self.setValue(submission);
         self.dialog.close();
-		  });
+      });
       form.src = `${Formio.getBaseUrl()}/form/${self.component.resource}`;
 
       this.dialog.onclose = function() {

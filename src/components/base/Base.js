@@ -529,7 +529,8 @@ export class BaseComponent {
     else if (this.component.customDefaultValue) {
       if (typeof this.component.customDefaultValue === 'string') {
         try {
-          defaultValue = (new Function('component', 'row', 'data', `var value = ''; ${this.component.customDefaultValue.toString()}; return value;`))(this, this.data, this.data);
+          defaultValue = (new Function('component', 'row', 'data',
+            `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
         }
         catch (e) {
           defaultValue = null;
@@ -548,7 +549,7 @@ export class BaseComponent {
         catch (err) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
+          console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
           /* eslint-enable no-console */
         }
       }
@@ -592,7 +593,7 @@ export class BaseComponent {
   addValue() {
     this.addNewValue();
     this.buildRows();
-	  this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions(this.root ? this.root.data : this.data);
     this.restoreValue();
   }
 
@@ -711,7 +712,10 @@ export class BaseComponent {
    * @return {*}
    */
   get errorLabel() {
-    return this.t(this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key);
+    return this.t(this.component.errorLabel
+      || this.component.label
+      || this.component.placeholder
+      || this.component.key);
   }
 
   /**
@@ -879,7 +883,6 @@ export class BaseComponent {
       return label;
     }
 
-    const char = match[0];
     const index = match.index + 1;
     const lowLineCombinator = '\u0332';
 
@@ -1181,7 +1184,7 @@ export class BaseComponent {
    *
    * @return {HTMLElement} - The created element.
    */
-  ce(type, attr, children = null, events = {}) {
+  ce(type, attr, children = null) {
     // Create the element.
     const element = document.createElement(type);
 
@@ -1314,13 +1317,15 @@ export class BaseComponent {
             case 'property':
               FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
-            case 'value':
-              const newValue = (new Function('row', 'data', 'component', 'result', action.value))(this.data, data, newComponent, result);
+            case 'value': {
+              const newValue = (new Function('row', 'data', 'component', 'result',
+                action.value))(this.data, data, newComponent, result);
               if (!_isEqual(this.getValue(), newValue)) {
                 this.setValue(newValue);
                 changed = true;
               }
               break;
+            }
             case 'validation':
               // TODO
               break;
@@ -1471,7 +1476,7 @@ export class BaseComponent {
     }
     this.addEventListener(input, 'keypress', (event) => {
       const key = event.keyCode || event.which;
-      if (key == 13) {
+      if (key === 13) {
         event.preventDefault();
         event.stopPropagation();
         this.emit('submitButton');
@@ -1624,7 +1629,8 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
-        const value = (new Function('component', 'row', 'data', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data, data);
+        const value = (new Function('component', 'row', 'data',
+          `value = []; ${this.component.calculateValue}; return value;`))(this, this.data, data);
         changed = this.setValue(value, flags);
       }
       catch (err) {
@@ -1750,7 +1756,9 @@ export class BaseComponent {
       try {
         this.errorContainer.removeChild(this.errorElement);
       }
-      catch (err) {}
+      catch (err) {
+        // ingnore
+      }
     }
     this.removeClass(this.element, 'has-error');
     this.inputs.forEach((input) => this.removeClass(input, 'is-invalid'));

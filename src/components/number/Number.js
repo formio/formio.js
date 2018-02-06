@@ -8,8 +8,12 @@ export class NumberComponent extends BaseComponent {
     super(component, options, data);
     this.validators = this.validators.concat(['min', 'max']);
 
-    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || (12345.6789).toLocaleString(options.language || 'en').match(/345(.*)67/)[1];
-    this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator || (12345.6789).toLocaleString(options.language || 'en').match(/12(.*)345/)[1];
+    const formattedNumberString = (12345.6789).toLocaleString(options.language || 'en');
+
+    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
+      || formattedNumberString.match(/345(.*)67/)[1];
+    this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator
+      || formattedNumberString.match(/12(.*)345/)[1];
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     this.decimalLimit = 20;
@@ -74,7 +78,8 @@ export class NumberComponent extends BaseComponent {
         decimalSymbol: _get(this.component, 'decimalSymbol', this.decimalSeparator),
         decimalLimit: _get(this.component, 'decimalLimit', this.decimalLimit),
         allowNegative: _get(this.component, 'allowNegative', true),
-        allowDecimal: _get(this.component, 'allowDecimal', !(this.component.validate && this.component.validate.integer))
+        allowDecimal: _get(this.component, 'allowDecimal',
+          !(this.component.validate && this.component.validate.integer))
       })
     });
   }

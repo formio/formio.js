@@ -1,6 +1,5 @@
 import {BaseComponent} from '../base/Base';
 import FormioUtils from '../../utils';
-import Formio from '../../formio';
 
 export class FileComponent extends BaseComponent {
   constructor(component, options, data) {
@@ -164,7 +163,11 @@ export class FileComponent extends BaseComponent {
     return this.ce('div', {},
       this.ce('span', {},
         [
-          image = this.ce('img', {src: '', alt: fileInfo.originalName || fileInfo.name, style: `width:${this.component.imageSize}px`}),
+          image = this.ce('img', {
+            src: '',
+            alt: fileInfo.originalName || fileInfo.name,
+            style: `width:${this.component.imageSize}px`
+          }),
           (
             !this.disabled ?
               this.ce('i', {
@@ -245,7 +248,8 @@ export class FileComponent extends BaseComponent {
     const warnings = this.ce('div', {class: 'alert alert-warning'});
     if (!this.component.storage) {
       hasWarnings = true;
-      warnings.appendChild(this.ce('p').appendChild(this.text('No storage has been set for this field. File uploads are disabled until storage is set up.')));
+      warnings.appendChild(this.ce('p').appendChild(this.text(
+        'No storage has been set for this field. File uploads are disabled until storage is set up.')));
     }
     if (!this.support.dnd) {
       hasWarnings = true;
@@ -377,7 +381,8 @@ export class FileComponent extends BaseComponent {
     if (!val) {
       return true;
     }
-    let pattern = this.globStringToRegex(val), valid = true;
+    const pattern = this.globStringToRegex(val);
+    let valid = true;
     if (pattern.regexp && pattern.regexp.length) {
       const regexp = new RegExp(pattern.regexp, 'i');
       valid = (file.type != null && regexp.test(file.type)) ||

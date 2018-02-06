@@ -1071,41 +1071,41 @@ export class Formio {
      */
     const getSubmission = () => {
       const submission = {data: {}};
+
       const setValue = (path, value) => {
         const isArray = path.substr(-2) === '[]';
         if (isArray) {
           path = path.replace('[]', '');
         }
+
         const paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
         let current = submission;
-        while (path = paths.shift()) {
-          if (!paths.length) {
-            if (isArray) {
-              if (!current[path]) {
-                current[path] = [];
-              }
-              current[path].push(value);
-            }
-            else {
-              current[path] = value;
-            }
-          }
-          else {
+
+        for (const [index, path] of paths.entries()) {
+          if (index !== paths.length - 1) {
             if (!current[path]) {
               current[path] = {};
             }
             current = current[path];
+            continue;
+          }
+
+          if (isArray) {
+            current[path] = (current[path] || []).concat(value);
+          }
+          else {
+            current[path] = value;
           }
         }
       };
 
       // Get the form data from this form.
       const formData = new FormData(form);
-      const entries = formData.entries();
-      let entry = null;
-      while (entry = entries.next().value) {
+
+      for (const entry of formData) {
         setValue(entry[0], entry[1]);
       }
+
       return submission;
     };
 
@@ -1132,9 +1132,9 @@ export class Formio {
     }
 
     return {
-      submit: submit,
-      getAction: getAction,
-      getSubmission: getSubmission
+      submit,
+      getAction,
+      getSubmission
     };
   }
 
