@@ -17,7 +17,7 @@
     "build": "esdoc;gulp build",
     "lint": "eslint src",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
-    "test": "karma start --verbose --single-run",
+    "test": "./node_modules/karma/bin/karma start --verbose --single-run",
     "test:watch": "./node_modules/karma/bin/karma start --no-single-run --auto-watch"
   },
   "repository": {
@@ -77,7 +77,6 @@
     "babel-eslint": "^8.2.1",
     "babel-plugin-array-includes": "^2.0.3",
     "babel-plugin-espower": "^2.4.0",
-    "babel-plugin-lodash": "^3.3.2",
     "babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
     "babel-preset-env": "^1.6.1",
     "babelify": "^8.0.0",
@@ -95,7 +94,6 @@
     "gulp-clean-css": "^3.9.2",
     "gulp-concat": "^2.6.1",
     "gulp-filter": "^5.1.0",
-    "gulp-if": "^2.0.2",
     "gulp-jshint": "^2.1.0",
     "gulp-load-plugins": "^1.0.0-rc.1",
     "gulp-notify": "^3.2.0",
