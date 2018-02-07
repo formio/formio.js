@@ -122,8 +122,8 @@ export class ButtonComponent extends BaseComponent {
           });
 
           try {
-            (new Function('form', 'flattened', 'components', 'data',
-              this.component.custom.toString()))(form, flattened, components, this.data);
+            (new Function('form', 'flattened', 'components', '_merge', 'data',
+              this.component.custom.toString()))(form, flattened, components, _.merge, this.data);
           }
           catch (e) {
             /* eslint-disable no-console */
