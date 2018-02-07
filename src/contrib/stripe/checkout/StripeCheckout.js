@@ -1,6 +1,6 @@
 /* globals StripeCheckout */
-import _cloneDeep from 'lodash/cloneDeep';
-import _each from 'lodash/each';
+import _ from 'lodash';
+
 import {BaseComponent} from '../../../components/base/Base';
 import {ButtonComponent} from '../../../components/button/Button';
 
@@ -63,8 +63,8 @@ export class StripeCheckoutComponent extends ButtonComponent {
     }
 
     // Open Checkout with further options:
-    const popupConfiguration = _cloneDeep(this.component.stripe.popupConfiguration) || {};
-    _each(popupConfiguration, (value, key) => {
+    const popupConfiguration = _.cloneDeep(this.component.stripe.popupConfiguration) || {};
+    _.each(popupConfiguration, (value, key) => {
       popupConfiguration[key] = this.t(value);
     });
 
@@ -108,7 +108,7 @@ export class StripeCheckoutComponent extends ButtonComponent {
 
     // When stripe checkout is ready, create the handler and add event listeners
     this.stripeCheckoutReady.then(() => {
-      const handlerConfiguration = _cloneDeep(this.component.stripe.handlerConfiguration) || {};
+      const handlerConfiguration = _.cloneDeep(this.component.stripe.handlerConfiguration) || {};
       handlerConfiguration.key = this.component.stripe.apiKey;
       handlerConfiguration.token = this.onToken.bind(this);
       if (typeof handlerConfiguration.locale === 'undefined') {

@@ -1,12 +1,10 @@
-'use strict';
 import Promise from 'native-promise-only';
+import _ from 'lodash';
+
 import FormioForm from './formio.form';
 import Formio from './formio';
 import FormioUtils from './utils';
-import _ from 'lodash';
-import each from 'lodash/each';
-import clone from 'lodash/clone';
-import defaults from 'lodash/defaults';
+
 export class FormioWizard extends FormioForm {
   /**
    * Constructor for wizard based forms
@@ -140,7 +138,7 @@ export class FormioWizard extends FormioForm {
 
   getPageIndexByKey(key) {
     let pageIndex = 0;
-    each(this.pages, (_page, index) => {
+    _.each(this.pages, (_page, index) => {
       if (_page.key === key) {
         pageIndex = index;
         return false;
@@ -168,7 +166,7 @@ export class FormioWizard extends FormioForm {
   getWizard() {
     let pageIndex = 0;
     let page = null;
-    const wizard = clone(this.wizard);
+    const wizard = _.clone(this.wizard);
     wizard.components = [];
     do {
       page = this.getPage(pageIndex);
@@ -181,7 +179,7 @@ export class FormioWizard extends FormioForm {
     } while (pageIndex);
 
     // Add all other components.
-    each(this.wizard.components, (component) => {
+    _.each(this.wizard.components, (component) => {
       if (component.type !== 'panel') {
         wizard.components.push(component);
       }
@@ -196,7 +194,7 @@ export class FormioWizard extends FormioForm {
 
   buildPages(form) {
     this.pages = [];
-    each(form.components, (component) => {
+    _.each(form.components, (component) => {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
         if (FormioUtils.checkCondition(component, this.data, this.data)) {
@@ -235,7 +233,7 @@ export class FormioWizard extends FormioForm {
 
   hasButton(name, nextPage) {
     // Check for and initlize button settings object
-    this.options.buttonSettings = defaults(this.options.buttonSettings, {
+    this.options.buttonSettings = _.defaults(this.options.buttonSettings, {
       showPrevious: true,
       showNext: true,
       showCancel: true
@@ -273,7 +271,7 @@ export class FormioWizard extends FormioForm {
     }
 
     // Check for and initlize breadcrumb settings object
-    this.options.breadcrumbSettings = defaults(this.options.breadcrumbSettings, {
+    this.options.breadcrumbSettings = _.defaults(this.options.breadcrumbSettings, {
       clickable: true
     });
 
@@ -291,7 +289,7 @@ export class FormioWizard extends FormioForm {
     this.prepend(this.wizardHeader);
 
     const showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
-    each(this.pages, (page, i) => {
+    _.each(this.pages, (page, i) => {
       // See if this page is in our history.
       if (showHistory && ((this.page !== i) && !this.history.includes(i))) {
         return;
@@ -354,7 +352,7 @@ export class FormioWizard extends FormioForm {
     // Only rebuild if there is a page change.
     let pageIndex = 0;
     let rebuild = false;
-    each(this.wizard.components, (component) => {
+    _.each(this.wizard.components, (component) => {
       if (component.type !== 'panel') {
         return;
       }
@@ -403,7 +401,7 @@ export class FormioWizard extends FormioForm {
       class: 'list-inline'
     });
     this.element.appendChild(this.wizardNav);
-    each([
+    _.each([
       {name: 'cancel',    method: 'cancel',   class: 'btn btn-default btn-secondary'},
       {name: 'previous',  method: 'prevPage', class: 'btn btn-primary'},
       {name: 'next',      method: 'nextPage', class: 'btn btn-primary'},

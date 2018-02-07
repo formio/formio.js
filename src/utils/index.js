@@ -1,27 +1,8 @@
-'use strict';
 import _ from 'lodash';
-import _clone from 'lodash/clone';
-import _get from 'lodash/get';
-import _set from 'lodash/set';
-import _round from 'lodash/round';
-import _pad from 'lodash/pad';
-import _chunk from 'lodash/chunk';
-import _isNaN from 'lodash/isNaN';
-import _has from 'lodash/has';
-import _last from 'lodash/last';
-import _isBoolean from 'lodash/isBoolean';
-import _isString from 'lodash/isString';
-import _isDate from 'lodash/isDate';
-import _isNil from 'lodash/isNil';
-import _isObject from 'lodash/isObject';
-import _isArray from 'lodash/isArray';
-import _isPlainObject from 'lodash/isPlainObject';
-import _isRegExp from 'lodash/isRegExp';
-import _forOwn from 'lodash/forOwn';
-import compile from 'lodash/template';
 import jsonLogic from 'json-logic-js';
-import {lodashOperators} from './jsonlogic/operators';
 import momentModule from 'moment';
+
+import {lodashOperators} from './jsonlogic/operators';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
@@ -51,10 +32,10 @@ const FormioUtils = {
    * @return {boolean}
    */
   boolValue(value) {
-    if (_isBoolean(value)) {
+    if (_.isBoolean(value)) {
       return value;
     }
-    else if (_isString(value)) {
+    else if (_.isString(value)) {
       return (value.toLowerCase() === 'true');
     }
     else {
@@ -115,7 +96,7 @@ const FormioUtils = {
       // Keep track of parent references.
       if (parent) {
         // Ensure we don't create infinite JSON structures.
-        component.parent = _clone(parent);
+        component.parent = _.clone(parent);
         delete component.parent.components;
         delete component.parent.componentMap;
         delete component.parent.columns;
@@ -171,13 +152,13 @@ const FormioUtils = {
    * @return {boolean}
    */
   matchComponent(component, query) {
-    if (_isString(query)) {
+    if (_.isString(query)) {
       return component.key === query;
     }
     else {
       let matches = false;
-      _forOwn(query, (value, key) => {
-        matches = (_get(component, key) === value);
+      _.forOwn(query, (value, key) => {
+        matches = (_.get(component, key) === value);
         if (!matches) {
           return false;
         }
@@ -271,7 +252,7 @@ const FormioUtils = {
    *   Parsed value.
    */
   parseFloat(value) {
-    return parseFloat(_isString(value)
+    return parseFloat(_.isString(value)
       ? value.replace(/[^\de.+-]/gi, '')
       : value);
   },
@@ -288,20 +269,20 @@ const FormioUtils = {
   formatAsCurrency(value) {
     const parsedValue = this.parseFloat(value);
 
-    if (_isNaN(parsedValue)) {
+    if (_.isNaN(parsedValue)) {
       return '';
     }
 
-    const parts = _round(parsedValue, 2)
+    const parts = _.round(parsedValue, 2)
       .toString()
       .split('.');
-    parts[0] = _chunk(Array.from(parts[0]).reverse(), 3)
+    parts[0] = _.chunk(Array.from(parts[0]).reverse(), 3)
       .reverse()
       .map((part) => part
         .reverse()
         .join(''))
       .join(',');
-    parts[1] = _pad(parts[1], 2, '0');
+    parts[1] = _.pad(parts[1], 2, '0');
     return parts.join('.');
   },
 
@@ -332,7 +313,7 @@ const FormioUtils = {
     if (component.calculateValue) {
       const row = rowData;
       const data = submission ? submission.data : rowData;
-      if (_isString(component.calculateValue)) {
+      if (_.isString(component.calculateValue)) {
         try {
           const util = this;
           rowData[component.key] = (new Function('data', 'row', 'util',
@@ -344,7 +325,11 @@ const FormioUtils = {
       }
       else {
         try {
-          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {data, row, _});
+          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {
+            data,
+            row,
+            _
+          });
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -367,19 +352,19 @@ const FormioUtils = {
     if (row) {
       value = this.getValue({data: row}, condition.when);
     }
-    if (data && _isNil(value)) {
+    if (data && _.isNil(value)) {
       value = this.getValue({data: data}, condition.when);
     }
     // FOR-400 - Fix issue where falsey values were being evaluated as show=true
-    if (_isNil(value)) {
+    if (_.isNil(value)) {
       value = '';
     }
     // Special check for selectboxes component.
-    if (_isObject(value) && _has(value, condition.eq)) {
+    if (_.isObject(value) && _.has(value, condition.eq)) {
       return value[condition.eq].toString() === condition.show.toString();
     }
     // FOR-179 - Check for multiple values.
-    if (_isArray(value) && value.includes(condition.eq)) {
+    if (Array.isArray(value) && value.includes(condition.eq)) {
       return (condition.show.toString() === 'true');
     }
 
@@ -472,8 +457,8 @@ const FormioUtils = {
   setActionProperty(component, action, row, data, result) {
     switch (action.property.type) {
       case 'boolean':
-        if (_get(component, action.property.value, false).toString() !== action.state.toString()) {
-          _set(component, action.property.value, action.state.toString() === 'true');
+        if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
+          _.set(component, action.property.value, action.state.toString() === 'true');
         }
         break;
       case 'string': {
@@ -483,8 +468,8 @@ const FormioUtils = {
           component,
           result
         });
-        if (newValue !== _get(component, action.property.value, '')) {
-          _set(component, action.property.value, newValue);
+        if (newValue !== _.get(component, action.property.value, '')) {
+          _.set(component, action.property.value, newValue);
         }
         break;
       }
@@ -502,16 +487,16 @@ const FormioUtils = {
    */
   getValue(submission, key) {
     const search = (data) => {
-      if (_isPlainObject(data)) {
-        if (_has(data, key)) {
+      if (_.isPlainObject(data)) {
+        if (_.has(data, key)) {
           return data[key];
         }
 
         let value = null;
 
-        _forOwn(data, (prop) => {
+        _.forOwn(data, (prop) => {
           const result = search(prop);
-          if (!_isNil(result)) {
+          if (!_.isNil(result)) {
             value = result;
             return false;
           }
@@ -541,7 +526,7 @@ const FormioUtils = {
       escape: /\{\{\{(.+?)\}\}\}/g
     };
     try {
-      return compile(string, templateSettings)(data);
+      return _.template(string, templateSettings)(data);
     }
     catch (err) {
       console.warn('Error interpolating template', err, string, data);
@@ -557,7 +542,7 @@ const FormioUtils = {
     const parts = name.toLowerCase().replace(/[^0-9a-z.]/g, '').split('.');
     const fileName = parts[0];
     const ext = parts.length > 1
-      ? `.${_last(parts)}`
+      ? `.${_.last(parts)}`
       : '';
     return `${fileName.substr(0, 10)}-${this.guid()}${ext}`;
   },
@@ -579,7 +564,7 @@ const FormioUtils = {
    * @return {*}
    */
   getDateSetting(date) {
-    if (_isNil(date) || _isNaN(date) || date === '') {
+    if (_.isNil(date) || _.isNaN(date) || date === '') {
       return null;
     }
 
@@ -605,7 +590,7 @@ const FormioUtils = {
     return dateSetting;
   },
   isValidDate(date) {
-    return _isDate(date) && !_isNaN(date.getDate());
+    return _.isDate(date) && !_.isNaN(date.getDate());
   },
   getLocaleDateFormatInfo(locale) {
     const formatInfo = {};
@@ -710,7 +695,7 @@ const FormioUtils = {
       const char = value[i];
       const charPart = inputMask[i];
 
-      if (!(_isRegExp(charPart) && charPart.test(char) || charPart === char)) {
+      if (!(_.isRegExp(charPart) && charPart.test(char) || charPart === char)) {
         return false;
       }
     }

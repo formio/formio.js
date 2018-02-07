@@ -1,6 +1,6 @@
 /* globals Stripe */
-import _cloneDeep from 'lodash/cloneDeep';
-import _each from 'lodash/each';
+import _ from 'lodash';
+
 import {Validator} from '../../../components/Validator';
 import {BaseComponent} from '../../../components/base/Base';
 
@@ -131,8 +131,8 @@ export class StripeComponent extends BaseComponent {
       that.authorizePending();
 
       // Get all additionnal data to send to Stripe
-      const cardData = _cloneDeep(that.component.stripe.cardData) || {};
-      _each(cardData, (value, key) => {
+      const cardData = _.cloneDeep(that.component.stripe.cardData) || {};
+      _.each(cardData, (value, key) => {
         cardData[key] = that.t(value);
       });
 
@@ -215,7 +215,7 @@ export class StripeComponent extends BaseComponent {
       // Create an instance of Elements
       let stripeElementsOptions = {};
       if (this.component.stripe) {
-        stripeElementsOptions = _cloneDeep(this.component.stripe.stripeElementsOptions) || {};
+        stripeElementsOptions = _.cloneDeep(this.component.stripe.stripeElementsOptions) || {};
       }
       if (typeof stripeElementsOptions.locale === 'undefined') {
         stripeElementsOptions.locale = this.options.language;

@@ -1,8 +1,7 @@
-import {RadioComponent} from '../radio/Radio';
-import _each from 'lodash/each';
-import _isArray from 'lodash/isArray';
-import _isUndefined from 'lodash/isUndefined';
 import _ from 'lodash';
+
+import {RadioComponent} from '../radio/Radio';
+
 export class SelectBoxesComponent extends RadioComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -40,7 +39,7 @@ export class SelectBoxesComponent extends RadioComponent {
       return this.value;
     }
     const value = {};
-    _each(this.inputs, (input) => {
+    _.each(this.inputs, (input) => {
       value[input.value] = !!input.checked;
     });
     return value;
@@ -55,14 +54,14 @@ export class SelectBoxesComponent extends RadioComponent {
   setValue(value, flags) {
     value = value || {};
     flags = this.getFlags.apply(this, arguments);
-    if (_isArray(value)) {
-      _each(value, (val) => {
+    if (Array.isArray(value)) {
+      _.each(value, (val) => {
         value[val] = true;
       });
     }
 
-    _each(this.inputs, (input) => {
-      if (_isUndefined(value[input.value])) {
+    _.each(this.inputs, (input) => {
+      if (_.isUndefined(value[input.value])) {
         value[input.value] = false;
       }
       input.checked = !!value[input.value];
@@ -72,9 +71,10 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   getView(value) {
-    return _(this.component.values || [])
-      .filter((v) => value[v.value])
-      .map('label')
-      .join(', ');
+    return _.flow(
+      _.filter((v) => value[v.value]),
+      _.map('label'),
+      _.join(', ')
+    )(this.component.values || []);
   }
 }

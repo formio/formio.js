@@ -1,7 +1,8 @@
+import _ from 'lodash';
+
 import FormioForm from '../../formio.form';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
-import _isEmpty from 'lodash/isEmpty';
 
 export class FormComponent extends FormioForm {
   constructor(component, options, data) {
@@ -230,7 +231,7 @@ export class FormComponent extends FormioForm {
     }
 
     // Load the subform if we have data.
-    if (submission._id || !_isEmpty(this.data[this.component.key])) {
+    if (submission._id || !_.isEmpty(this.data[this.component.key])) {
       this.loadSubForm();
     }
 

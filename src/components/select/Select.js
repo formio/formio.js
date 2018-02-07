@@ -1,29 +1,21 @@
-import {BaseComponent} from '../base/Base';
 import Choices from 'choices.js';
-import Formio from '../../formio';
-import _each from 'lodash/each';
-import _get from 'lodash/get';
-import _debounce from 'lodash/debounce';
-import _isEmpty from 'lodash/isEmpty';
-import _isArray from 'lodash/isArray';
-import _isObject from 'lodash/isObject';
-import _isEqual from 'lodash/isEqual';
-import _isString from 'lodash/isString';
-import _cloneDeep from 'lodash/cloneDeep';
-import _find  from 'lodash/find';
+import _ from 'lodash';
 
-// Duck-punch the setValueByChoice to ensure we compare using _isEqual.
+import {BaseComponent} from '../base/Base';
+import Formio from '../../formio';
+
+// Duck-punch the setValueByChoice to ensure we compare using _.isEqual.
 Choices.prototype.setValueByChoice = function(value) {
   if (!this.isTextElement) {
     const choices = this.store.getChoices();
     // If only one value has been passed, convert to array
-    const choiceValue = _isArray(value) ? value : [value];
+    const choiceValue = Array.isArray(value) ? value : [value];
 
     // Loop through each value and
     choiceValue.forEach((val) => {
       const foundChoice = choices.find((choice) => {
         // Check 'value' property exists and the choice isn't already selected
-        return _isEqual(choice.value, val);
+        return _.isEqual(choice.value, val);
       });
 
       if (foundChoice) {
@@ -55,7 +47,7 @@ export class SelectComponent extends BaseComponent {
     super(component, options, data);
 
     // Trigger an update.
-    this.triggerUpdate = _debounce(this.updateItems.bind(this), 100);
+    this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
 
     // Keep track of the select options.
     this.selectOptions = [];
@@ -111,7 +103,7 @@ export class SelectComponent extends BaseComponent {
   }
 
   itemValue(data) {
-    return (this.component.valueProperty && _isObject(data)) ? _get(data, this.component.valueProperty) : data;
+    return (this.component.valueProperty && _.isObject(data)) ? _.get(data, this.component.valueProperty) : data;
   }
 
   createInput(container) {
@@ -143,7 +135,7 @@ export class SelectComponent extends BaseComponent {
     }
     option.element.innerHTML = label;
     if (attr) {
-      _each(attr, (value, key) => {
+      _.each(attr, (value, key) => {
         option.element.setAttribute(key, value);
       });
     }
@@ -155,8 +147,8 @@ export class SelectComponent extends BaseComponent {
     if (!this.selectOptions.length) {
       if (this.choices) {
         // Add the currently selected choices if they don't already exist.
-        const currentChoices = _isArray(this.value) ? this.value : [this.value];
-        _each(currentChoices, (choice) => {
+        const currentChoices = Array.isArray(this.value) ? this.value : [this.value];
+        _.each(currentChoices, (choice) => {
           this.addCurrentChoices(choice, items);
         });
       }
@@ -188,14 +180,14 @@ export class SelectComponent extends BaseComponent {
 
     // If they provided select values, then we need to get them instead.
     if (this.component.selectValues) {
-      items = _get(items, this.component.selectValues);
+      items = _.get(items, this.component.selectValues);
     }
 
     // Add the value options.
     this.addValueOptions(items);
 
     // Iterate through each of the items.
-    _each(items, (item) => {
+    _.each(items, (item) => {
       this.addOption(this.itemValue(item), this.itemTemplate(item));
     });
 
@@ -245,7 +237,7 @@ export class SelectComponent extends BaseComponent {
 
     // Add search capability.
     if (this.component.searchField && search) {
-      if (_isArray(search)) {
+      if (Array.isArray(search)) {
         query[`${this.component.searchField}__in`] = search.join(',');
       }
       else {
@@ -264,7 +256,7 @@ export class SelectComponent extends BaseComponent {
       query.select = this.component.selectFields;
     }
 
-    if (!_isEmpty(query)) {
+    if (!_.isEmpty(query)) {
       // Add the query string.
       url += (!(url.indexOf('?') !== -1) ? '?' : '&') + Formio.serialize(query);
     }
@@ -291,7 +283,7 @@ export class SelectComponent extends BaseComponent {
     // Add custom headers to the url.
     if (this.component.data && this.component.data.headers) {
       try {
-        _each(this.component.data.headers, (header) => {
+        _.each(this.component.data.headers, (header) => {
           if (header.key) {
             headers.set(header.key, this.interpolate(header.value, {
               data: this.data
@@ -308,8 +300,8 @@ export class SelectComponent extends BaseComponent {
   }
 
   updateCustomItems() {
-    const data = _cloneDeep(this.data);
-    const row = _cloneDeep(this.row);
+    const data = _.cloneDeep(this.data);
+    const row = _.cloneDeep(this.row);
     try {
       this.setItems((new Function('data', 'row',
         `var values = []; ${this.component.data.custom.toString()}; return values;`))(data, row));
@@ -488,12 +480,12 @@ export class SelectComponent extends BaseComponent {
     if (value) {
       let found = false;
       if (items && items.length) {
-        _each(items, (choice) => {
+        _.each(items, (choice) => {
           if (choice._id && value._id && (choice._id === value._id)) {
             found = true;
             return false;
           }
-          found |= _isEqual(this.itemValue(choice), value);
+          found |= _.isEqual(this.itemValue(choice), value);
           return found ? false : true;
         });
       }
@@ -525,7 +517,7 @@ export class SelectComponent extends BaseComponent {
     }
     else {
       const values = [];
-      _each(this.selectOptions, (selectOption) => {
+      _.each(this.selectOptions, (selectOption) => {
         if (selectOption.element.selected) {
           values.push(selectOption.value);
         }
@@ -537,8 +529,8 @@ export class SelectComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    const hasPreviousValue = _isArray(this.value) ? this.value.length : this.value;
-    const hasValue = _isArray(value) ? value.length : value;
+    const hasPreviousValue = Array.isArray(this.value) ? this.value.length : this.value;
+    const hasValue = Array.isArray(value) ? value.length : value;
     this.data[this.component.key] = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
@@ -570,7 +562,7 @@ export class SelectComponent extends BaseComponent {
         this.choices
           .removeActiveItems()
           .setChoices(this.selectOptions, 'value', 'label', true)
-          .setValueByChoice(_isArray(value) ? value : [value]);
+          .setValueByChoice(Array.isArray(value) ? value : [value]);
       }
       else if (hasPreviousValue) {
         this.choices.removeActiveItems();
@@ -578,10 +570,10 @@ export class SelectComponent extends BaseComponent {
     }
     else {
       if (hasValue) {
-        const values = _isArray(value) ? value : [value];
-        _each(this.selectOptions, (selectOption) => {
-          _each(values, (val) => {
-            if (_isEqual(val, selectOption.value)) {
+        const values = Array.isArray(value) ? value : [value];
+        _.each(this.selectOptions, (selectOption) => {
+          _.each(values, (val) => {
+            if (_.isEqual(val, selectOption.value)) {
               selectOption.element.selected = true;
               selectOption.element.setAttribute('selected', 'selected');
               return false;
@@ -590,7 +582,7 @@ export class SelectComponent extends BaseComponent {
         });
       }
       else {
-        _each(this.selectOptions, (selectOption) => {
+        _.each(this.selectOptions, (selectOption) => {
           selectOption.element.selected = false;
           selectOption.element.removeAttribute('selected');
         });
@@ -617,14 +609,14 @@ export class SelectComponent extends BaseComponent {
     value = value || this.getValue();
 
     if (this.component.dataSrc === 'values') {
-      value = _find(this.component.data.values, ['value', value]);
+      value = _.find(this.component.data.values, ['value', value]);
     }
 
-    if (_isString(value)) {
+    if (_.isString(value)) {
       return value;
     }
 
-    return _isObject(value)
+    return _.isObject(value)
       ? this.itemTemplate(value)
       : '-';
   }

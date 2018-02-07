@@ -1,4 +1,3 @@
-'use strict';
 import Promise from 'native-promise-only';
 import Formio from './formio';
 import FormioForm from './formio.form';

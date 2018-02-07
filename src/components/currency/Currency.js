@@ -1,6 +1,7 @@
 import maskInput from 'vanilla-text-mask';
 import {createNumberMask} from 'text-mask-addons';
-import _get from 'lodash/get';
+import _ from 'lodash';
+
 import {NumberComponent} from '../number/Number';
 
 export class CurrencyComponent extends NumberComponent {
@@ -24,7 +25,7 @@ export class CurrencyComponent extends NumberComponent {
       style: 'currency',
       currency: this.currency,
       useGrouping: true,
-      maximumFractionDigits: _get(this.component, 'decimalLimit', this.decimalLimit)
+      maximumFractionDigits: _.get(this.component, 'decimalLimit', this.decimalLimit)
     };
   }
 
@@ -53,11 +54,11 @@ export class CurrencyComponent extends NumberComponent {
       mask: createNumberMask({
         prefix: this.prefix,
         suffix: this.suffix,
-        thousandsSeparatorSymbol: _get(this.component, 'thousandsSeparator', this.thousandsSeparator),
-        decimalSymbol: _get(this.component, 'decimalSymbol', this.decimalSeparator),
-        decimalLimit: _get(this.component, 'decimalLimit', this.decimalLimit),
-        allowNegative: _get(this.component, 'allowNegative', true),
-        allowDecimal: _get(this.component, 'allowDecimal', true)
+        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.thousandsSeparator),
+        decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
+        decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
+        allowNegative: _.get(this.component, 'allowNegative', true),
+        allowDecimal: _.get(this.component, 'allowDecimal', true)
       })
     });
   }

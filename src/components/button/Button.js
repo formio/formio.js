@@ -1,6 +1,7 @@
+import _ from 'lodash';
+
 import {BaseComponent} from '../base/Base';
 import FormioUtils from '../../utils';
-import _each from 'lodash/each';
 
 export class ButtonComponent extends BaseComponent {
   elementInfo() {
@@ -113,7 +114,7 @@ export class ButtonComponent extends BaseComponent {
           const flattened = FormioUtils.flattenComponents(form.component.components, true);
           // Create object containing the corresponding HTML element components
           const components = {};
-          _each(flattened, (component, key) => {
+          _.each(flattened, (component, key) => {
             const element = form.getComponent(key);
             if (element) {
               components[key] = element;

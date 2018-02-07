@@ -1,19 +1,11 @@
 import maskInput, {conformToMask} from 'vanilla-text-mask';
 import Promise from 'native-promise-only';
-import _get from 'lodash/get';
-import _each from 'lodash/each';
-import _debounce from 'lodash/debounce';
-import _isArray from 'lodash/isArray';
-import _clone from 'lodash/clone';
-import _cloneDeep from 'lodash/cloneDeep';
-import _defaults from 'lodash/defaults';
-import _isEqual from 'lodash/isEqual';
-import _isUndefined from 'lodash/isUndefined';
-import _toString from 'lodash/toString';
-import FormioUtils from '../../utils';
-import {Validator} from '../Validator';
+import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
+
+import FormioUtils from '../../utils';
+import {Validator} from '../Validator';
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -27,7 +19,7 @@ export class BaseComponent {
    * @param {Object} data - The global data submission object this component will belong.
    */
   constructor(component, options, data) {
-    this.originalComponent = _cloneDeep(component);
+    this.originalComponent = _.cloneDeep(component);
     /**
      * The ID of this component. This value is auto-generated when the component is created, but
      * can also be provided from the component.id value passed into the constructor.
@@ -39,7 +31,7 @@ export class BaseComponent {
      * The options for this component.
      * @type {{}}
      */
-    this.options = _defaults(_clone(options), {
+    this.options = _.defaults(_.clone(options), {
       highlightErrors: true
     });
 
@@ -170,7 +162,7 @@ export class BaseComponent {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
-    this.triggerChange = _debounce(this.onChange.bind(this), 100);
+    this.triggerChange = _.debounce(this.onChange.bind(this), 100);
 
     /**
      * An array of event handlers so that the destry command can deregister them.
@@ -413,7 +405,7 @@ export class BaseComponent {
   }
 
   getView(value) {
-    return _toString(value);
+    return _.toString(value);
   }
 
   updateViewOnlyValue() {
@@ -452,7 +444,7 @@ export class BaseComponent {
    */
   get customStyle() {
     let customCSS = '';
-    _each(this.component.style, (value, key) => {
+    _.each(this.component.style, (value, key) => {
       if (value !== '') {
         customCSS += `${key}:${value};`;
       }
@@ -543,7 +535,8 @@ export class BaseComponent {
         try {
           defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
             data: this.data,
-            row: this.data
+            row: this.data,
+            _
           });
         }
         catch (err) {
@@ -581,7 +574,7 @@ export class BaseComponent {
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
     }
-    if (this.data[this.component.key] && !_isArray(this.data[this.component.key])) {
+    if (this.data[this.component.key] && !Array.isArray(this.data[this.component.key])) {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
     this.data[this.component.key].push(this.defaultValue);
@@ -618,7 +611,7 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _each(this.data[this.component.key], (value, index) => {
+    _.each(this.data[this.component.key], (value, index) => {
       const tr = this.ce('tr');
       const td = this.ce('td');
       const input = this.createInput(td);
@@ -777,7 +770,7 @@ export class BaseComponent {
   }
 
   getLabelWidth() {
-    if (_isUndefined(this.component.labelWidth)) {
+    if (_.isUndefined(this.component.labelWidth)) {
       this.component.labelWidth = 30;
     }
 
@@ -785,7 +778,7 @@ export class BaseComponent {
   }
 
   getLabelMargin() {
-    if (_isUndefined(this.component.labelMargin)) {
+    if (_.isUndefined(this.component.labelMargin)) {
       this.component.labelMargin = 3;
     }
 
@@ -1115,12 +1108,12 @@ export class BaseComponent {
     if (this.inputMask) {
       this.inputMask.destroy();
     }
-    _each(this.eventListeners, (listener) => {
+    _.each(this.eventListeners, (listener) => {
       if (all || listener.internal) {
         this.events.off(listener.type, listener.listener);
       }
     });
-    _each(this.eventHandlers, (handler) => {
+    _.each(this.eventHandlers, (handler) => {
       if (handler.event) {
         window.removeEventListener(handler.event, handler.func);
       }
@@ -1213,7 +1206,7 @@ export class BaseComponent {
    * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
-    _each(attr, (value, key) => {
+    _.each(attr, (value, key) => {
       if (typeof value !== 'undefined') {
         if (key.indexOf('on') === 0) {
           // If this is an event, add a listener.
@@ -1306,7 +1299,7 @@ export class BaseComponent {
       return;
     }
 
-    const newComponent = _cloneDeep(this.originalComponent);
+    const newComponent = _.cloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(newComponent, logic.trigger, this.data, data);
@@ -1320,7 +1313,7 @@ export class BaseComponent {
             case 'value': {
               const newValue = (new Function('row', 'data', 'component', 'result',
                 action.value))(this.data, data, newComponent, result);
-              if (!_isEqual(this.getValue(), newValue)) {
+              if (!_.isEqual(this.getValue(), newValue)) {
                 this.setValue(newValue);
                 changed = true;
               }
@@ -1337,7 +1330,7 @@ export class BaseComponent {
     }, false);
 
     // If component definition changed, replace and mark as changed.
-    if (!_isEqual(this.component, newComponent)) {
+    if (!_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
       changed = true;
     }
@@ -1563,7 +1556,7 @@ export class BaseComponent {
    * @return {boolean}
    */
   hasChanged(before, after) {
-    return !_isEqual(before, after);
+    return !_.isEqual(before, after);
   }
 
   /**
@@ -1644,7 +1637,8 @@ export class BaseComponent {
       try {
         const val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
           data,
-          row: this.data
+          row: this.data,
+          _
         });
         changed = this.setValue(val, flags);
       }
@@ -1739,7 +1733,7 @@ export class BaseComponent {
    * @return {boolean}
    */
   validateMultiple(value) {
-    return this.component.multiple && _isArray(value);
+    return this.component.multiple && Array.isArray(value);
   }
 
   get errors() {
@@ -1777,7 +1771,7 @@ export class BaseComponent {
     else {
       this.error = null;
     }
-    _each(this.inputs, (input) => {
+    _.each(this.inputs, (input) => {
       if (typeof input.setCustomValidity === 'function') {
         input.setCustomValidity(message, dirty);
       }
@@ -1821,11 +1815,11 @@ export class BaseComponent {
     if (!this.hasInput) {
       return false;
     }
-    if (this.component.multiple && !_isArray(value)) {
+    if (this.component.multiple && !Array.isArray(value)) {
       value = [value];
     }
     this.buildRows();
-    const isArray = _isArray(value);
+    const isArray = Array.isArray(value);
     for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
@@ -1839,7 +1833,7 @@ export class BaseComponent {
    */
   asString(value) {
     value = value || this.getValue();
-    return _isArray(value) ? value.join(', ') : value.toString();
+    return Array.isArray(value) ? value.join(', ') : value.toString();
   }
 
   /**
@@ -1864,7 +1858,7 @@ export class BaseComponent {
     this._disabled = disabled;
 
     // Disable all inputs.
-    _each(this.inputs, (input) => this.setDisabled(input, disabled));
+    _.each(this.inputs, (input) => this.setDisabled(input, disabled));
   }
 
   setDisabled(element, disabled) {
@@ -1899,7 +1893,7 @@ export class BaseComponent {
   }
 
   selectOptions(select, tag, options, defaultValue) {
-    _each(options, (option) => {
+    _.each(options, (option) => {
       const attrs = {
         value: option.value
       };
@@ -1914,7 +1908,7 @@ export class BaseComponent {
 
   setSelectValue(select, value) {
     const options = select.querySelectorAll('option');
-    _each(options, (option) => {
+    _.each(options, (option) => {
       if (option.value === value) {
         option.setAttribute('selected', 'selected');
       }
@@ -2013,12 +2007,12 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
     }
 
     // See if the plugin already exists.
-    const plugin = _get(window, property);
+    const plugin = _.get(window, property);
     if (plugin) {
       BaseComponent.externalLibraries[name].resolve(plugin);
     }
     else {
-      src = _isArray(src) ? src : [src];
+      src = Array.isArray(src) ? src : [src];
       src.forEach((lib) => {
         let attrs = {};
         let elementType = '';
@@ -2058,7 +2052,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       // if no callback is provided, then check periodically for the script.
       if (polling) {
         setTimeout(function checkLibrary() {
-          const plugin = _get(window, property);
+          const plugin = _.get(window, property);
           if (plugin) {
             BaseComponent.externalLibraries[name].resolve(plugin);
           }

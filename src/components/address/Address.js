@@ -1,9 +1,8 @@
 /* globals google */
+import _ from 'lodash';
+
 import {TextFieldComponent} from '../textfield/TextField';
 import {BaseComponent} from '../base/Base';
-import _defaultsDeep from 'lodash/defaultsDeep';
-import _delay from 'lodash/delay';
-import _get from 'lodash/get';
 
 export class AddressComponent extends TextFieldComponent {
   constructor(component, options, data) {
@@ -64,7 +63,7 @@ export class AddressComponent extends TextFieldComponent {
         const options = {
           input: input.value
         };
-        autoComplete.getPlacePredictions(_defaultsDeep(options, autoCompleteOptions),
+        autoComplete.getPlacePredictions(_.defaultsDeep(options, autoCompleteOptions),
           (suggestions, status) => {
             this.autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input);
           });
@@ -77,7 +76,7 @@ export class AddressComponent extends TextFieldComponent {
     // Add listener on input field for blur event
     this.addEventListener(input, 'blur', () => {
       // Delay to allow click on suggestion list
-      _delay(() => {
+      _.delay(() => {
         suggestionContainer.style.display = 'none';
       }, 100);
     });
@@ -462,6 +461,6 @@ export class AddressComponent extends TextFieldComponent {
   }
 
   getView(value) {
-    return _get(value, 'formatted_address', '');
+    return _.get(value, 'formatted_address', '');
   }
 }

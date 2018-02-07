@@ -1,9 +1,7 @@
-import _each from 'lodash/each';
-import _cloneDeep from 'lodash/cloneDeep';
-import _clone from 'lodash/clone';
-import _isEqual from 'lodash/isEqual';
-import _isArray from 'lodash/isArray';
+import _ from 'lodash';
+
 import {FormioComponents} from '../Components';
+
 export class DataGridComponent extends FormioComponents {
   constructor(component, options, data) {
     super(component, options, data);
@@ -28,7 +26,7 @@ export class DataGridComponent extends FormioComponents {
     }
 
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
-    _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
+    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
         tableClass += `table-${prop} `;
       }
@@ -110,7 +108,7 @@ export class DataGridComponent extends FormioComponents {
         this.tbody.insertBefore(this.tableRows[rowIndex], this.tbody.children[rowIndex + 1]);
       }
       // Update existing
-      else if (!_isEqual(row, this.tableRows[rowIndex].data)) {
+      else if (!_.isEqual(row, this.tableRows[rowIndex].data)) {
         this.removeRowComponents(rowIndex);
         const newRow = this.buildRow(row, rowIndex, data);
         this.tbody.replaceChild(newRow, this.tableRows[rowIndex]);
@@ -132,7 +130,7 @@ export class DataGridComponent extends FormioComponents {
         !this.shouldDisable ? this.ce('td', null, this.removeButton(index)) : null
       ]
     );
-    element.data = _cloneDeep(row);
+    element.data = _.cloneDeep(row);
     return element;
   }
 
@@ -145,10 +143,10 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildComponent(col, colIndex, row, rowIndex) {
-    const column = _cloneDeep(col);
+    const column = _.cloneDeep(col);
     column.label = false;
     column.row = `${rowIndex}-${colIndex}`;
-    const options = _clone(this.options);
+    const options = _.clone(this.options);
     options.name += `[${colIndex}]`;
     const comp = this.createComponent(column, options, row);
     if (row.hasOwnProperty(column.key)) {
@@ -169,9 +167,9 @@ export class DataGridComponent extends FormioComponents {
     if (this.visibleColumns === true) {
       this.visibleColumns = {};
     }
-    _each(this.component.components, (col) => {
+    _.each(this.component.components, (col) => {
       let showColumn = false;
-      _each(this.rows, (comps) => {
+      _.each(this.rows, (comps) => {
         showColumn |= comps[col.key].checkConditions(data);
       });
       if (
@@ -199,17 +197,17 @@ export class DataGridComponent extends FormioComponents {
     if (!value) {
       return;
     }
-    if (!_isArray(value)) {
+    if (!Array.isArray(value)) {
       return;
     }
 
     this.data[this.component.key] = value;
     this.buildRows();
-    _each(this.rows, (row, index) => {
+    _.each(this.rows, (row, index) => {
       if (value.length <= index) {
         return;
       }
-      _each(row, (col, key) => {
+      _.each(row, (col, key) => {
         if (col.type === 'components') {
           col.setValue(value[index], flags);
         }
@@ -230,9 +228,9 @@ export class DataGridComponent extends FormioComponents {
       return this.value;
     }
     const values = [];
-    _each(this.rows, (row) => {
+    _.each(this.rows, (row) => {
       const value = {};
-      _each(row, (col) => {
+      _.each(row, (col) => {
         if (
           col &&
           col.component &&

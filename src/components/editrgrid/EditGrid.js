@@ -1,8 +1,5 @@
-import _each from 'lodash/each';
-import _map from 'lodash/map';
-import _cloneDeep from 'lodash/cloneDeep';
-import _clone from 'lodash/clone';
-import _isArray from 'lodash/isArray';
+import _ from 'lodash';
+
 import {FormioComponents} from '../Components';
 import FormioUtils from '../../utils';
 
@@ -29,14 +26,14 @@ export class EditGridComponent extends FormioComponents {
     }
 
     let tableClass = 'editgrid-listgroup list-group ';
-    _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
+    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
         tableClass += `table-${prop} `;
       }
     });
     this.tableElement = this.ce('ul', {class: tableClass}, [
       this.headerElement = this.createHeader(),
-      this.rowElements = _map(this.rows, this.createRow.bind(this)),
+      this.rowElements = _.map(this.rows, this.createRow.bind(this)),
       this.footerElement = this.createFooter(),
     ]);
 
@@ -68,9 +65,9 @@ export class EditGridComponent extends FormioComponents {
           this.ce('div', {class: 'editgrid-body'},
             [
               this.component.components.map(comp => {
-                const component = _cloneDeep(comp);
+                const component = _.cloneDeep(comp);
                 component.row = `${this.row}-${rowIndex}`;
-                const options = _clone(this.options);
+                const options = _.clone(this.options);
                 options.name += `[${rowIndex}]`;
                 const instance = this.createComponent(component, options, this.editRows[rowIndex].data);
                 this.editRows[rowIndex].components.push(instance);
@@ -179,8 +176,7 @@ export class EditGridComponent extends FormioComponents {
         this.ce('span', {class: this.iconClass('plus'), 'aria-hidden': true}),
         ' ',
         this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
-      ],
-      )
+      ])
     ));
   }
 
@@ -227,7 +223,7 @@ export class EditGridComponent extends FormioComponents {
 
   editRow(rowIndex) {
     this.editRows[rowIndex].isOpen = true;
-    this.editRows[rowIndex].data = _cloneDeep(this.rows[rowIndex]);
+    this.editRows[rowIndex].data = _.cloneDeep(this.rows[rowIndex]);
     this.refreshDOM();
   }
 
@@ -390,7 +386,7 @@ export class EditGridComponent extends FormioComponents {
     if (!value) {
       return;
     }
-    if (!_isArray(value)) {
+    if (!Array.isArray(value)) {
       return;
     }
 

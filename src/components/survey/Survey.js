@@ -1,5 +1,7 @@
-import _each from 'lodash/each';
+import _ from 'lodash';
+
 import {BaseComponent} from '../base/Base';
+
 export class SurveyComponent extends BaseComponent {
   build() {
     this.createElement();
@@ -16,7 +18,7 @@ export class SurveyComponent extends BaseComponent {
     const thead = this.ce('thead');
     const thr = this.ce('tr');
     thr.appendChild(this.ce('td'));
-    _each(this.component.values, (value) => {
+    _.each(this.component.values, (value) => {
       const th = this.ce('th', {
         style: 'text-align: center;'
       });
@@ -27,12 +29,12 @@ export class SurveyComponent extends BaseComponent {
     this.table.appendChild(thead);
     // Build the body.
     const tbody = this.ce('tbody');
-    _each(this.component.questions, (question) => {
+    _.each(this.component.questions, (question) => {
       const tr = this.ce('tr');
       const td = this.ce('td');
       td.appendChild(this.text(question.label));
       tr.appendChild(td);
-      _each(this.component.values, (value) => {
+      _.each(this.component.values, (value) => {
         const td = this.ce('td', {
           style: 'text-align: center;'
         });
@@ -65,8 +67,8 @@ export class SurveyComponent extends BaseComponent {
       return;
     }
     const key = `data[${this.component.key}]`;
-    _each(this.component.questions, (question) => {
-      _each(this.inputs, (input) => {
+    _.each(this.component.questions, (question) => {
+      _.each(this.inputs, (input) => {
         if (input.name === (`${key}[${question.value}]`)) {
           input.checked = (input.value === value[question.value]);
         }
@@ -81,8 +83,8 @@ export class SurveyComponent extends BaseComponent {
     }
     const value = {};
     const key = `data[${this.component.key}]`;
-    _each(this.component.questions, (question) => {
-      _each(this.inputs, (input) => {
+    _.each(this.component.questions, (question) => {
+      _.each(this.inputs, (input) => {
         if (input.checked && (input.name === (`${key}[${question.value}]`))) {
           value[question.value] = input.value;
           return false;

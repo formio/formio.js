@@ -1,4 +1,3 @@
-'use strict';
 import Promise from 'native-promise-only';
 import FormioWizard from './formio.wizard';
 import FormioPDF from './formio.pdf';

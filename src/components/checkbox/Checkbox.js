@@ -1,5 +1,6 @@
+import _ from 'lodash';
+
 import {BaseComponent} from '../base/Base';
-import _assign from 'lodash/assign';
 export class CheckBoxComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
@@ -56,14 +57,14 @@ export class CheckBoxComponent extends BaseComponent {
 
   setInputLabelStyle(label) {
     if (this.component.labelPosition === 'left') {
-      _assign(label.style, {
+      _.assign(label.style, {
         textAlign: 'center',
         paddingLeft: 0,
       });
     }
 
     if (this.labelOnTheTopOrBottom()) {
-      _assign(label.style, {
+      _.assign(label.style, {
         display: 'block',
         textAlign: 'center',
         paddingLeft: 0,
@@ -73,14 +74,14 @@ export class CheckBoxComponent extends BaseComponent {
 
   setInputStyle(input) {
     if (this.component.labelPosition === 'left') {
-      _assign(input.style, {
+      _.assign(input.style, {
         position: 'initial',
         marginLeft: '7px'
       });
     }
 
     if (this.labelOnTheTopOrBottom()) {
-      _assign(input.style, {
+      _.assign(input.style, {
         width: '100%',
         position: 'initial',
         marginLeft: 0

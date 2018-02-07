@@ -1,4 +1,3 @@
-'use strict';
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
@@ -6,14 +5,11 @@ import Promise from 'native-promise-only';
 import 'whatwg-fetch';
 import {EventEmitter2 as EventEmitter} from 'eventemitter2';
 import cookies from 'browser-cookies';
+import copy from 'shallow-copy';
 
-import _find from 'lodash/find';
-import _clone from 'lodash/clone';
-import _isArray from 'lodash/isArray';
-import _isBoolean from 'lodash/isBoolean';
-import _isFunction from 'lodash/isFunction';
-import _isObject from 'lodash/isObject';
-import _isNil from 'lodash/isNil';
+const isBoolean = (val) => typeof val === typeof true;
+const isNil = (val) => val === null || val === undefined;
+const isObject = (val) => val && typeof val === 'object';
 
 /**
  * The Formio interface class.
@@ -112,7 +108,7 @@ export class Formio {
       for (const i in items) {
         if (items.hasOwnProperty(i)) {
           const item = items[i];
-          if (_isArray(item)) {
+          if (Array.isArray(item)) {
             registerItems(item, base, true);
           }
           else {
@@ -198,7 +194,7 @@ export class Formio {
   index(type, query, opts) {
     const _url = `${type}Url`;
     query = query || '';
-    if (query && _isObject(query)) {
+    if (query && isObject(query)) {
       query = `?${Formio.serialize(query.params)}`;
     }
     return this.makeRequest(type, this[_url] + query, 'get', null, opts);
@@ -219,7 +215,7 @@ export class Formio {
   load(type, query, opts) {
     const _id = `${type}Id`;
     const _url = `${type}Url`;
-    if (query && _isObject(query)) {
+    if (query && isObject(query)) {
       query = Formio.serialize(query.params);
     }
     if (query) {
@@ -252,7 +248,7 @@ export class Formio {
 
   static loadProjects(query, opts) {
     query = query || '';
-    if (_isObject(query)) {
+    if (isObject(query)) {
       query = `?${Formio.serialize(query.params)}`;
     }
     return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);
@@ -270,7 +266,7 @@ export class Formio {
           return currentForm;
         }
         // If they specified a revision form, load the revised form components.
-        if (query && _isObject(query)) {
+        if (query && isObject(query)) {
           query = Formio.serialize(query.params);
         }
         if (query) {
@@ -465,7 +461,7 @@ export class Formio {
       .then(() => {
         return Formio.pluginGet('fileRequest', requestArgs)
           .then((result) => {
-            if (storage && _isNil(result)) {
+            if (storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(storage)) {
                 const provider = new Formio.providers.storage[storage](this);
                 return provider.uploadFile(file, fileName, dir, progressCallback, url);
@@ -491,7 +487,7 @@ export class Formio {
       .then(() => {
         return Formio.pluginGet('fileRequest', requestArgs)
           .then((result) => {
-            if (file.storage && _isNil(result)) {
+            if (file.storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(file.storage)) {
                 const provider = new Formio.providers.storage[file.storage](this);
                 return provider.downloadFile(file);
@@ -602,7 +598,7 @@ export class Formio {
 
   static getRequestArgs(formio, type, url, method, data, opts) {
     method = (method || 'GET').toUpperCase();
-    if (!opts || !_isObject(opts)) {
+    if (!opts || !isObject(opts)) {
       opts = {};
     }
 
@@ -628,7 +624,7 @@ export class Formio {
     const request = Formio.pluginWait('preRequest', requestArgs)
       .then(() => Formio.pluginGet('staticRequest', requestArgs)
         .then((result) => {
-          if (_isNil(result)) {
+          if (isNil(result)) {
             return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
@@ -646,7 +642,7 @@ export class Formio {
     const request = Formio.pluginWait('preRequest', requestArgs)
       .then(() => Formio.pluginGet('request', requestArgs)
         .then((result) => {
-          if (_isNil(result)) {
+          if (isNil(result)) {
             return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
@@ -663,10 +659,10 @@ export class Formio {
 
     // For reverse compatibility, if they provided the ignoreCache parameter,
     // then change it back to the options format where that is a parameter.
-    if (_isBoolean(opts)) {
+    if (isBoolean(opts)) {
       opts = {ignoreCache: opts};
     }
-    if (!opts || !_isObject(opts)) {
+    if (!opts || !isObject(opts)) {
       opts = {};
     }
 
@@ -763,7 +759,7 @@ export class Formio {
         return getResult.then((result) => {
           // Add some content-range metadata to the result here
           let range = response.headers.get('content-range');
-          if (range && _isObject(result)) {
+          if (range && isObject(result)) {
             range = range.split('/');
             if (range[0] !== '*') {
               const skipLimit = range[0].split('-');
@@ -796,13 +792,13 @@ export class Formio {
 
         // Shallow copy result so modifications don't end up in cache
         if (Array.isArray(result)) {
-          const resultCopy = result.map(_clone);
+          const resultCopy = result.map(copy);
           resultCopy.skip = result.skip;
           resultCopy.limit = result.limit;
           resultCopy.serverCount = result.serverCount;
           return resultCopy;
         }
-        return _clone(result);
+        return copy(result);
       })
       .catch((err) => {
         if (err === 'Bad Token') {
@@ -968,7 +964,13 @@ export class Formio {
   }
 
   static getPlugin(name) {
-    return _find(Formio.plugins, ['__name', name]) || null;
+    for (const plugin of Formio.plugins) {
+      if (plugin.__name === name) {
+        return plugin;
+      }
+    }
+
+    return null;
   }
 
   static pluginWait(pluginFn, ...args) {
@@ -986,7 +988,7 @@ export class Formio {
 
       return Promise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
         .then((result) => {
-          if (!_isNil(result)) {
+          if (!isNil(result)) {
             return result;
           }
 
@@ -1047,12 +1049,12 @@ export class Formio {
    */
   static form(form, options, done) {
     // Fix the parameters.
-    if (!done && _isFunction(options)) {
+    if (!done && typeof options === 'function') {
       done = options;
       options = {};
     }
 
-    done = done || (() => console.log(arguments));
+    done = done || ((...args) => console.log(args));
     options = options || {};
 
     // IF they provide a jquery object, then select the element.

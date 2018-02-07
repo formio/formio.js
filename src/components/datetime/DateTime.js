@@ -1,7 +1,8 @@
-import {BaseComponent} from '../base/Base';
 import Flatpickr from 'flatpickr';
-import _get from 'lodash/get';
-import _each from 'lodash/each';
+import _ from 'lodash';
+
+import {BaseComponent} from '../base/Base';
+
 import {
   getDateSetting,
   getLocaleDateFormatInfo,
@@ -64,17 +65,17 @@ export class DateTimeComponent extends BaseComponent {
       clickOpens: true,
       enableDate: true,
       mode: this.component.multiple ? 'multiple' : 'single',
-      enableTime: _get(this.component, 'enableTime', true),
-      noCalendar: !_get(this.component, 'enableDate', true),
+      enableTime: _.get(this.component, 'enableTime', true),
+      noCalendar: !_.get(this.component, 'enableDate', true),
       altFormat: this.component.useLocaleSettings
         ? this.getLocaleFormat()
-        : convertFormatToFlatpickr(_get(this.component, 'format', '')),
+        : convertFormatToFlatpickr(_.get(this.component, 'format', '')),
       dateFormat: 'U',
       defaultDate: this.defaultDate,
-      hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
-      minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
-      minDate: getDateSetting(_get(this.component, 'datePicker.minDate')),
-      maxDate: getDateSetting(_get(this.component, 'datePicker.maxDate')),
+      hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),
+      minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
+      minDate: getDateSetting(_.get(this.component, 'datePicker.minDate')),
+      maxDate: getDateSetting(_.get(this.component, 'datePicker.maxDate')),
       onChange: () => this.onChange(),
       onClose: () => (this.closedOn = Date.now())
     };
@@ -82,7 +83,7 @@ export class DateTimeComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
-    _each(this.inputs, (input) => {
+    _.each(this.inputs, (input) => {
       const calendar = this.getCalendar(input);
       if (calendar) {
         if (disabled) {
@@ -167,7 +168,7 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getView(value) {
-    return value ? moment(value).format(convertFormatToMoment(_get(this.component, 'format', ''))) : null;
+    return value ? moment(value).format(convertFormatToMoment(_.get(this.component, 'format', ''))) : null;
   }
 
   setValueAt(index, value) {

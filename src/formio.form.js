@@ -1,17 +1,10 @@
+import _ from 'lodash';
+import EventEmitter from 'eventemitter2';
+import i18next from 'i18next';
+
 import Formio from './formio';
 import Promise from 'native-promise-only';
 import {FormioComponents} from './components/Components';
-import _each from 'lodash/each';
-import _clone from 'lodash/clone';
-import _debounce from 'lodash/debounce';
-import _remove from 'lodash/remove';
-import _isArray from 'lodash/isArray';
-import _assign from 'lodash/assign';
-import _defaults from 'lodash/defaults';
-import _capitalize from 'lodash/capitalize';
-import _mergeWith from 'lodash/mergeWith';
-import EventEmitter from 'eventemitter2';
-import i18next from 'i18next';
 
 i18next.initialized = false;
 
@@ -19,7 +12,7 @@ i18next.initialized = false;
 Formio.forms = {};
 
 const getOptions = function(options) {
-  options = _defaults(options, {
+  options = _.defaults(options, {
     submitOnEnter: false,
     i18next: i18next
   });
@@ -75,12 +68,12 @@ export class FormioForm extends FormioComponents {
         i18n = options.i18n;
       }
       else {
-        _each(options.i18n, (lang, code) => {
+        _.each(options.i18n, (lang, code) => {
           if (!i18n.resources[code]) {
             i18n.resources[code] = {translation: lang};
           }
           else {
-            _assign(i18n.resources[code].translation, lang);
+            _.assign(i18n.resources[code].translation, lang);
           }
         });
       }
@@ -339,7 +332,7 @@ export class FormioForm extends FormioComponents {
       char = 'Esc';
     }
 
-    _each(this.shortcuts, (shortcut) => {
+    _.each(this.shortcuts, (shortcut) => {
       if (shortcut.ctrl && !ctrl) {
         return;
       }
@@ -356,7 +349,7 @@ export class FormioForm extends FormioComponents {
       return;
     }
 
-    shortcut = _capitalize(shortcut);
+    shortcut = _.capitalize(shortcut);
 
     if (shortcut === 'Enter' || shortcut === 'Esc') {
       // Restrict Enter and Esc only for buttons
@@ -383,7 +376,7 @@ export class FormioForm extends FormioComponents {
       return;
     }
 
-    _remove(this.shortcuts, {
+    _.remove(this.shortcuts, {
       shortcut,
       element
     });
@@ -674,8 +667,8 @@ export class FormioForm extends FormioComponents {
   }
 
   mergeData(_this, _that) {
-    _mergeWith(_this, _that, (thisValue, thatValue) => {
-      if (_isArray(thisValue) && _isArray(thatValue) && thisValue.length !== thatValue.length) {
+    _.mergeWith(_this, _that, (thisValue, thatValue) => {
+      if (Array.isArray(thisValue) && Array.isArray(thatValue) && thisValue.length !== thatValue.length) {
         return thatValue;
       }
     });
@@ -700,7 +693,7 @@ export class FormioForm extends FormioComponents {
     if (this.viewOnly) {
       return this._submission;
     }
-    const submission = _clone(this._submission);
+    const submission = _.clone(this._submission);
     submission.data = this.data;
     return submission;
   }
@@ -808,7 +801,7 @@ export class FormioForm extends FormioComponents {
     this.loading = false;
     let errors = this.errors;
     if (error) {
-      if (_isArray(error)) {
+      if (Array.isArray(error)) {
         errors = errors.concat(error);
       }
       else {
@@ -820,7 +813,7 @@ export class FormioForm extends FormioComponents {
       return;
     }
     let message = `<p>${this.t('error')}</p><ul>`;
-    _each(errors, (err) => {
+    _.each(errors, (err) => {
       if (err) {
         const errorMessage = err.message || err;
         message += `<li><strong>${errorMessage}</strong></li>`;
@@ -881,7 +874,7 @@ export class FormioForm extends FormioComponents {
   onChange(flags, changed) {
     super.onChange(flags, true);
     this.mergeData(this._submission, this.submission);
-    const value = _clone(this._submission);
+    const value = _.clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
     this.emit('change', value);
@@ -1034,8 +1027,8 @@ export class FormioForm extends FormioComponents {
 }
 
 // Used to trigger a resize.
-Formio.onResize = (scale) => _each(Formio.forms, (instance) => instance.onResize(scale));
-Formio.triggerResize = _debounce(Formio.onResize, 200);
+Formio.onResize = (scale) => _.each(Formio.forms, (instance) => instance.onResize(scale));
+Formio.triggerResize = _.debounce(Formio.onResize, 200);
 if ('addEventListener' in window) {
   window.addEventListener('resize', () => Formio.triggerResize(), false);
 }
