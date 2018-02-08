@@ -3,7 +3,7 @@ import Promise from "native-promise-only";
 import Formio from './formio';
 import FormioForm from './formio.form';
 
-export class FormioPDF extends FormioForm {
+export default class FormioPDF extends FormioForm {
   constructor(element, options) {
     super(element, options);
 
@@ -145,5 +145,3 @@ window.addEventListener('message', function(event) {
     Formio.forms[eventData.formId].emit('iframe-' + eventData.name, eventData.data);
   }
 });
-
-module.exports = global.FormioPDF = FormioPDF;
