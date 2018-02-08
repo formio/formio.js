@@ -4,6 +4,31 @@ import {createNumberMask} from 'text-mask-addons';
 import {BaseComponent} from '../base/Base';
 
 export class NumberComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'number',
+      label: 'Number',
+      key: 'number',
+      validate: {
+        min: '',
+        max: '',
+        step: 'any',
+        integer: ''
+      }
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Number',
+      icon: 'fa fa-hashtag',
+      group: 'basic',
+      documentation: 'http://help.form.io/userguide/#number',
+      weight: 10,
+      schema: NumberComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.validators = this.validators.concat(['min', 'max']);

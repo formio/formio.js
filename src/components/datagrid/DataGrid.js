@@ -1,8 +1,29 @@
 import _ from 'lodash';
-
 import {FormioComponents} from '../Components';
 
 export class DataGridComponent extends FormioComponents {
+  static schema(...extend) {
+    return FormioComponents.schema({
+      label: 'Data Grid',
+      key: 'dataGrid',
+      type: 'datagrid',
+      clearOnHide: true,
+      input: true,
+      components: []
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Data Grid',
+      icon: 'fa fa-th',
+      group: 'advanced',
+      documentation: 'http://help.form.io/userguide/#datagrid',
+      weight: 150,
+      schema: DataGridComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'datagrid';
@@ -20,7 +41,7 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildTable() {
-    if (this.tableElement) {
+    if (this.tableElement && this.tableElement.parentNode) {
       this.element.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';
     }
@@ -45,9 +66,11 @@ export class DataGridComponent extends FormioComponents {
     // Add the body to the table and to the element.
     this.tableElement.appendChild(this.tbody);
 
-    const addButton = this.createAddButton();
-    if (addButton) {
-      this.tableElement.appendChild(addButton);
+    if (!this.options.builder && !this.options.preview) {
+      const addButton = this.createAddButton();
+      if (addButton) {
+        this.tableElement.appendChild(addButton);
+      }
     }
 
     this.element.appendChild(this.tableElement);
@@ -124,10 +147,27 @@ export class DataGridComponent extends FormioComponents {
 
   buildRow(row, index) {
     this.rows[index] = {};
+    let lastColumn = null;
+    if (!this.shouldDisable && !this.options.builder) {
+      lastColumn = this.ce('td', null, this.removeButton(index));
+    }
+    if (this.options.builder) {
+      lastColumn = this.ce('td', {
+        class: 'drag-container'
+      }, this.ce('div', {
+        id: this.id + '-placeholder',
+        class: 'alert alert-info',
+        style: 'text-align:center; margin-bottom: 0px;',
+        role: 'alert'
+      }, this.text('Drag and Drop a form component')));
+      lastColumn.component = this;
+      this.root.dragContainers.push(lastColumn);
+    }
+
     const element = this.ce('tr', null,
       [
         this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index)),
-        !this.shouldDisable ? this.ce('td', null, this.removeButton(index)) : null
+        lastColumn
       ]
     );
     element.data = _.cloneDeep(row);
@@ -143,12 +183,22 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildComponent(col, colIndex, row, rowIndex) {
-    const column = _.cloneDeep(col);
-    column.label = false;
-    column.row = `${rowIndex}-${colIndex}`;
-    const options = _.clone(this.options);
+    if (!this.visibleColumns || (this.visibleColumns.hasOwnProperty(col.key) && !this.visibleColumns[col.key])) {
+      return;
+    }
+
+    let container = this.ce('td');
+    let column = _.clone(col);
+    let options = _.clone(this.options);
     options.name += `[${colIndex}]`;
-    const comp = this.createComponent(column, options, row);
+    let comp = this.createComponent(_.assign({}, column, {
+      label: false,
+      row: `${rowIndex}-${colIndex}`
+    }), options, row);
+    comp.component = column;
+    this.hook('addComponent', container, comp);
+    this.appendChild(container, comp.getElement());
+
     if (row.hasOwnProperty(column.key)) {
       comp.setValue(row[column.key]);
     }
@@ -156,9 +206,7 @@ export class DataGridComponent extends FormioComponents {
       comp.setValue(row);
     }
     this.rows[rowIndex][column.key] = comp;
-    if ((this.visibleColumns === true) || this.visibleColumns[column.key]) {
-      return this.ce('td', null, comp.element);
-    }
+    return container;
   }
 
   checkConditions(data) {

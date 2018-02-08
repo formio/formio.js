@@ -89,6 +89,10 @@ dialog.fixed {
   display:none;
 }
 
+.formio-component-tags tags {
+  background-color: #fff;
+}
+
 .field-required:after {
   content:" *";
   color:red;
@@ -245,12 +249,332 @@ td > .form-group {
   cursor: pointer;
 }
 
+.formio-component-tabs .nav-tabs {
+  margin-bottom: 10px;
+}
+
+@-webkit-keyframes formio-dialog-fadeout {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes formio-dialog-fadeout {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes formio-dialog-fadein {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes formio-dialog-fadein {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
 .formio-dialog {
-  width: 65%;
+  box-sizing: border-box;
+  font-size: 0.8em;
+  color: #666;
+}
+
+.formio-dialog *,
+.formio-dialog *:before,
+.formio-dialog *:after {
+  box-sizing: inherit;
+}
+
+.formio-dialog {
   position: fixed;
-  top: 50%;
-  transform: translate(0, -50%);
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 10000;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  /* fix for Scrollbars not clickable on overflow #552 */
+  background: rgba(0, 0, 0, 0.4);
+  animation: formio-dialog-fadein 0.5s;
+  /* end fix for Scrollbars not clickable on overflow #552 */
+}
+
+.formio-dialog.formio-dialog-disabled-animation,
+.formio-dialog.formio-dialog-disabled-animation .formio-dialog-overlay,
+.formio-dialog.formio-dialog-disabled-animation .formio-dialog-content {
+  -webkit-animation: none!important;
+  animation: none!important;
+}
+
+.formio-dialog-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: formio-dialog-fadein 0.5s;
+  animation: formio-dialog-fadein 0.5s;
+  /* fix for Scrollbars not clickable on overflow #552 */
+  margin-right: 15px;
+  background: transparent;
+  /* end fix for Scrollbars not clickable on overflow #552 */
+}
+
+.formio-dialog-no-overlay {
+  pointer-events: none;
+}
+
+.formio-dialog.formio-dialog-closing .formio-dialog-overlay {
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: formio-dialog-fadeout 0.5s;
+  animation: formio-dialog-fadeout 0.5s;
+}
+
+.formio-dialog-content {
+  background: white;
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: formio-dialog-fadein 0.5s;
+  animation: formio-dialog-fadein 0.5s;
+  pointer-events: all;
+}
+
+.formio-dialog.formio-dialog-closing .formio-dialog-content {
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: formio-dialog-fadeout 0.5s;
+  animation: formio-dialog-fadeout 0.5s;
+}
+
+.formio-dialog-close:before {
+  font-family: 'Helvetica', Arial, sans-serif;
+  content: '\00D7';
+  cursor: pointer;
+}
+
+html.formio-dialog-open,
+body.formio-dialog-open {
+  overflow: hidden;
+}
+
+@-webkit-keyframes formio-dialog-flyin {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-40px);
+    transform: translateY(-40px);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes formio-dialog-flyin {
+  0% {
+    opacity: 0;
+    -webkit-transform: translateY(-40px);
+    transform: translateY(-40px);
+  }
+
+  100% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+@-webkit-keyframes formio-dialog-flyout {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(-40px);
+    transform: translateY(-40px);
+  }
+}
+
+@keyframes formio-dialog-flyout {
+  0% {
+    opacity: 1;
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+
+  100% {
+    opacity: 0;
+    -webkit-transform: translateY(-40px);
+    transform: translateY(-40px);
+  }
+}
+
+.formio-dialog.formio-dialog-theme-default {
+  padding-bottom: 160px;
+  padding-top: 160px;
+}
+
+.formio-dialog.formio-dialog-theme-default.formio-dialog-closing .formio-dialog-content {
+  -webkit-animation: formio-dialog-flyout .5s;
+  animation: formio-dialog-flyout .5s;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-content {
+  -webkit-animation: formio-dialog-flyin .5s;
+  animation: formio-dialog-flyin .5s;
+  background: #f0f0f0;
   border-radius: 5px;
+  font-family: 'Helvetica',sans-serif;
+  font-size: 1.1em;
+  line-height: 1.5em;
+  margin: 0 auto;
+  max-width: 100%;
+  padding: 1em;
+  position: relative;
+  width: 65%;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-close {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.formio-clickable {
+  cursor: pointer;
+}
+
+.component-settings .nav>li>a {
+  padding: 8px 10px;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-close:before {
+  display: block;
+  padding: 3px;
+  background: transparent;
+  color: #bbb;
+  content: '\00D7';
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 26px;
+  text-align: center;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-close:hover:before,
+.formio-dialog.formio-dialog-theme-default .formio-dialog-close:active:before {
+  color: #777;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-message {
+  margin-bottom: .5em;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input {
+  margin-bottom: 1em;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input textarea,
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="text"],
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="password"],
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="email"],
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="url"] {
+  background: #fff;
+  border: 0;
+  border-radius: 3px;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  margin: 0 0 .25em;
+  min-height: 2.5em;
+  padding: .25em .67em;
+  width: 100%;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input textarea:focus,
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="text"]:focus,
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="password"]:focus,
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="email"]:focus,
+.formio-dialog.formio-dialog-theme-default .formio-dialog-input input[type="url"]:focus {
+  box-shadow: inset 0 0 0 2px #8dbdf1;
+  outline: none;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-buttons {
+  *zoom: 1;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-buttons:after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-button {
+  border: 0;
+  border-radius: 3px;
+  cursor: pointer;
+  float: right;
+  font-family: inherit;
+  font-size: .8em;
+  letter-spacing: .1em;
+  line-height: 1em;
+  margin: 0 0 0 .5em;
+  padding: .75em 2em;
+  text-transform: uppercase;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-button:focus {
+  -webkit-animation: formio-dialog-pulse 1.1s infinite;
+  animation: formio-dialog-pulse 1.1s infinite;
+  outline: none;
+}
+
+@media (max-width: 568px) {
+  .formio-dialog.formio-dialog-theme-default .formio-dialog-button:focus {
+    -webkit-animation: none;
+    animation: none;
+  }
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-button.formio-dialog-button-primary {
+  background: #3288e6;
+  color: #fff;
+}
+
+.formio-dialog.formio-dialog-theme-default .formio-dialog-button.formio-dialog-button-secondary {
+  background: #e0e0e0;
+  color: #777;
+}
+
+.formio-dialog-content .panel {
+  margin: 0;
 }
 
 .formio-placeholder {
@@ -258,9 +582,8 @@ td > .form-group {
   color: #999;
 }
 
-.formio-dialog-close {
+.formio-dialog .formio-dialog-close {
   cursor: pointer;
-  margin-bottom: 10px;
 }
 
 .formio-iframe {

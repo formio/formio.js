@@ -1,8 +1,29 @@
 import _ from 'lodash';
-
 import {BaseComponent} from '../base/Base';
 
 export class RadioComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'radio',
+      inputType: 'radio',
+      label: 'Radio',
+      key: 'radio',
+      values: [],
+      fieldSet: false
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Radio',
+      group: 'basic',
+      icon: 'fa fa-dot-circle-o',
+      weight: 80,
+      documentation: 'http://help.form.io/userguide/#radio',
+      schema: RadioComponent.schema()
+    };
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

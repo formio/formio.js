@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
-
 import Formio from './formio';
 import Promise from 'native-promise-only';
 import {FormioComponents} from './components/Components';
@@ -663,7 +662,10 @@ export default class FormioForm extends FormioComponents {
   }
 
   get schema() {
-    return this._form;
+    let schema = this._form;
+    schema.components = [];
+    this.eachComponent((component) => schema.components.push(component.schema));
+    return schema;
   }
 
   mergeData(_this, _that) {

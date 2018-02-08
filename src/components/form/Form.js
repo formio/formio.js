@@ -1,10 +1,32 @@
 import _ from 'lodash';
-
 import FormioForm from '../../formio.form';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
+import { FormioComponents } from "../Components";
 
 export class FormComponent extends FormioForm {
+  static schema(...extend) {
+    return FormioComponents.schema({
+      type: 'form',
+      key: 'form',
+      src: '',
+      reference: true,
+      form: '',
+      path: ''
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Nested Form',
+      icon: 'fa fa-wpforms',
+      group: 'advanced',
+      documentation: 'http://help.form.io/userguide/#form',
+      weight: 110,
+      schema: FormComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     data = data || {};
     super(null, options);
@@ -182,7 +204,7 @@ export class FormComponent extends FormioForm {
     }
 
     // Add components using the data of the submission.
-    this.addComponents(this.element, this.data[this.component.key].data);
+    this.addComponents(this.getContainer(), this.subData);
 
     // Restore default values.
     this.restoreValue();

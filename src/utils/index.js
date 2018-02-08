@@ -701,6 +701,79 @@ const FormioUtils = {
     }
 
     return true;
+  },
+
+  /**
+   * Find the given form components in a map, using the component keys.
+   *
+   * @param {Array} components
+   *   An array of the form components.
+   * @param {Object} input
+   *   The input component we're trying to uniquify.
+   *
+   * @returns {Object}
+   *   The memoized form components.
+   */
+  findExistingComponents(components, input) {
+    // Prebuild a list of existing components.
+    var existingComponents = {};
+    FormioUtils.eachComponent(components, function(component) {
+      // If theres no key, we cant compare components.
+      if (!component.key) return;
+      if (
+        (component.key === input.key) &&
+        (!component.id || (component.id !== input.id))
+      ) {
+        existingComponents[component.key] = component;
+      }
+    }, true);
+
+    return existingComponents;
+  },
+
+  /**
+   * Iterate the given key to make it unique.
+   *
+   * @param {String} key
+   *   Modify the component key to be unique.
+   *
+   * @returns {String}
+   *   The new component key.
+   */
+  iterateKey(key) {
+    if (!key.match(/(\d+)$/)) {
+      return key + '2';
+    }
+
+    return key.replace(/(\d+)$/, function(suffix) {
+      return Number(suffix) + 1;
+    });
+  },
+
+  /**
+   * Appends a number to a component.key to keep it unique
+   *
+   * @param {Object} form
+   *   The components parent form.
+   * @param {Object} component
+   *   The component to uniquify
+   */
+  uniquify(form, component) {
+    let changed = false;
+    // Recurse into all child components.
+    FormioUtils.eachComponent([component], (component) => {
+      // Skip key uniquification if this component doesn't have a key.
+      if (!component.key) {
+        return;
+      }
+
+      var memoization = FormioUtils.findExistingComponents(form.components, component);
+      while (memoization.hasOwnProperty(component.key)) {
+        component.key = this.iterateKey(component.key);
+        changed = true;
+      }
+    }, true);
+    return changed;
   }
 };
 

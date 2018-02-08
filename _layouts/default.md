@@ -23,14 +23,24 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   <link href="https://unpkg.com/bootstrap-vertical-tabs@1.2.2/bootstrap.vertical-tabs.min.css" rel="stylesheet">
-  <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% if page.lib %}
+    <link href="{{ site.baseurl }}/dist/formio.full.{{ page.lib }}.min.css" rel="stylesheet">
+  {% endif %}
+  {% if page.lib == nil %}
+    <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% endif %}
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% if page.lib %}
+    <script src="{{ site.baseurl }}/dist/formio.{{ page.lib }}.js"></script>
+  {% endif %}
+  {% if page.lib == nil %}
+    <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% endif %}
   {% if page.contrib %}
     <script src="{{ site.baseurl }}/dist/formio.contrib.js"></script>
   {% endif %}

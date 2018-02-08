@@ -8,6 +8,7 @@ plugins.cleanCSS = require('gulp-clean-css');
 gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 gulp.task('babel', require('./gulp/babel')(gulp, plugins));
 gulp.task('scripts-form', require('./gulp/scripts-form')(gulp, plugins));
+gulp.task('scripts-builder', require('./gulp/scripts-builder')(gulp, plugins));
 gulp.task('scripts-full', require('./gulp/scripts-full')(gulp, plugins));
 gulp.task('scripts-utils', require('./gulp/scripts-utils')(gulp, plugins));
 gulp.task('scripts-wizard', require('./gulp/scripts-wizard')(gulp, plugins));
@@ -19,6 +20,22 @@ gulp.task('icons', () => {
     .pipe(gulp.dest('dist/icons'));
 });
 gulp.task('styles', require('./gulp/styles')(gulp, plugins));
+gulp.task('builder-fonts', () => {
+  return gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts'));
+});
+gulp.task('styles-builder', ['builder-fonts'], require('./gulp/styles-builder')(gulp, plugins));
 gulp.task('watch', require('./gulp/watch')(gulp, plugins));
-gulp.task('build', gulpsync.sync([['clean'], 'babel', ['icons', 'styles', 'scripts', 'scripts-utils', 'scripts-form', 'scripts-wizard', 'scripts-embed', 'scripts-contrib', 'scripts-full']]));
+gulp.task('build', gulpsync.sync([['clean'], 'babel', [
+  'icons',
+  'styles',
+  'styles-builder',
+  'scripts',
+  'scripts-utils',
+  'scripts-form',
+  'scripts-wizard',
+  'scripts-embed',
+  'scripts-contrib',
+  'scripts-full',
+  'scripts-builder'
+]]));
 gulp.task('default', ['build', 'watch']);

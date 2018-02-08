@@ -2,6 +2,30 @@ import {BaseComponent} from '../base/Base';
 import FormioUtils from '../../utils';
 
 export class FileComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'file',
+      label: 'Upload',
+      key: 'file',
+      image: false,
+      imageSize: '200',
+      filePattern: '*',
+      fileMinSize: '0KB',
+      fileMaxSize: '1GB'
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'File',
+      group: 'advanced',
+      icon: 'fa fa-file',
+      documentation: 'http://help.form.io/userguide/#file',
+      weight: 100,
+      schema: FileComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.support = {

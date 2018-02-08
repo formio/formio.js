@@ -1,10 +1,16 @@
+'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-
 import FormioUtils from '../utils/index';
 import {BaseComponent} from './base/Base';
 
 export class FormioComponents extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      tree: true
+    }, ...extend);
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'components';
@@ -15,6 +21,13 @@ export class FormioComponents extends BaseComponent {
   build() {
     this.createElement();
     this.addComponents();
+  }
+
+  get schema() {
+    let schema = this.component;
+    schema.components = [];
+    this.eachComponent((component) => schema.components.push(component.schema));
+    return schema;
   }
 
   getComponents() {
@@ -30,13 +43,14 @@ export class FormioComponents extends BaseComponent {
   everyComponent(fn) {
     const components = this.getComponents();
     _.each(components, (component, index) => {
-      if (component.type === 'components') {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
+
+      if (typeof component.everyComponent === 'function') {
         if (component.everyComponent(fn) === false) {
           return false;
         }
-      }
-      else if (fn(component, components, index) === false) {
-        return false;
       }
     });
   }
@@ -103,7 +117,7 @@ export class FormioComponents extends BaseComponent {
    * @param component
    * @param data
    */
-  createComponent(component, options, data) {
+  createComponent(component, options, data, before) {
     if (!this.options.components) {
       this.options.components = require('./index');
       _.assign(this.options.components, FormioComponents.customComponents);
@@ -113,8 +127,27 @@ export class FormioComponents extends BaseComponent {
     comp.root = this.root || this;
     comp.build();
     comp.isBuilt = true;
-    this.components.push(comp);
+    if (component.internal) {
+      return comp;
+    }
+
+    if (before) {
+      let index = _.findIndex(this.components, {id: before.id});
+      if (index !== -1) {
+        this.components.splice(index, 0, comp);
+      }
+      else {
+        this.components.push(comp);
+      }
+    }
+    else {
+      this.components.push(comp);
+    }
     return comp;
+  }
+
+  getContainer() {
+    return this.element;
   }
 
   /**
@@ -123,15 +156,22 @@ export class FormioComponents extends BaseComponent {
    * @param {Object} component - The component JSON schema to add.
    * @param {HTMLElement} element - The DOM element to append this child to.
    * @param {Object} data - The submission data object to house the data for this component.
+   * @param {HTMLElement} before - A DOM element to insert this element before.
    * @return {BaseComponent} - The created component instance.
    */
-  addComponent(component, element, data) {
-    element = element || this.element;
+  addComponent(component, element, data, before) {
+    element = element || this.getContainer();
     data = data || this.data;
     component.row = this.row;
-    const comp = this.createComponent(component, this.options, data);
+    let comp = this.createComponent(component, this.options, data, before ? before.component : null);
     this.setHidden(comp);
-    element.appendChild(comp.getElement());
+    element = this.hook('addComponent', element, comp);
+    if (before) {
+      element.insertBefore(comp.getElement(), before);
+    }
+    else {
+      element.appendChild(comp.getElement());
+    }
     return comp;
   }
 
@@ -142,6 +182,7 @@ export class FormioComponents extends BaseComponent {
    * @param {Array<BaseComponent>} components - An array of components to remove this component from.
    */
   removeComponent(component, components) {
+    components = components || this.components;
     component.destroy();
     const element = component.getElement();
     if (element && element.parentNode) {
@@ -200,9 +241,10 @@ export class FormioComponents extends BaseComponent {
    * @param data
    */
   addComponents(element, data) {
-    element = element || this.element;
+    element = element || this.getContainer();
     data = data || this.data;
-    _.each(this.component.components, (component) => this.addComponent(component, element, data));
+    let components = this.hook('addComponents', this.component.components);
+    _.each(components, (component) => this.addComponent(component, element, data));
   }
 
   updateValue(flags) {
@@ -424,3 +466,17 @@ export class FormioComponents extends BaseComponent {
 }
 
 FormioComponents.customComponents = {};
+FormioComponents.groupInfo = {
+  basic: {
+    title: 'Basic Components',
+    weight: 0
+  },
+  advanced: {
+    title: 'Advanced',
+    weight: 10
+  },
+  layout: {
+    title: 'Layout',
+    weight: 20
+  }
+};

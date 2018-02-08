@@ -5,6 +5,25 @@ import _ from 'lodash';
 import {NumberComponent} from '../number/Number';
 
 export class CurrencyComponent extends NumberComponent {
+  static schema(...extend) {
+    return NumberComponent.schema({
+      type: 'currency',
+      label: 'Currency',
+      key: 'currency'
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Currency',
+      group: 'advanced',
+      icon: 'fa fa-usd',
+      documentation: 'http://help.form.io/userguide/#currency',
+      weight: 70,
+      schema: CurrencyComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
 

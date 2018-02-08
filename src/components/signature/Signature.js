@@ -1,6 +1,33 @@
 import SignaturePad from 'signature_pad/dist/signature_pad.js';
 import {BaseComponent} from '../base/Base';
+
 export class SignatureComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'signature',
+      label: 'Signature',
+      key: 'signature',
+      footer: 'Sign above',
+      width: '100%',
+      height: '150',
+      penColor: 'black',
+      backgroundColor: 'rgb(245,245,235)',
+      minWidth: '0.5',
+      maxWidth: '2.5'
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Signature',
+      group: 'advanced',
+      icon: 'fa fa-pencil',
+      weight: 120,
+      documentation: 'http://help.form.io/userguide/#signature',
+      schema: SignatureComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.currentWidth = 0;
@@ -84,6 +111,7 @@ export class SignatureComponent extends BaseComponent {
     }
 
     this.element = this.createElement();
+    this.element.component = this;
     let classNames = this.element.getAttribute('class');
     classNames += ' signature-pad';
     this.element.setAttribute('class', classNames);

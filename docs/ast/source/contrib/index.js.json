@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 239,
+  "end": 235,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 239,
+    "end": 235,
     "loc": {
       "start": {
         "line": 1,
@@ -31,7 +31,7 @@
       {
         "type": "ImportDeclaration",
         "start": 0,
-        "end": 57,
+        "end": 55,
         "loc": {
           "start": {
             "line": 1,
@@ -39,36 +39,36 @@
           },
           "end": {
             "line": 1,
-            "column": 57
+            "column": 55
           }
         },
         "specifiers": [
           {
             "type": "ImportSpecifier",
-            "start": 9,
-            "end": 24,
+            "start": 8,
+            "end": 23,
             "loc": {
               "start": {
                 "line": 1,
-                "column": 9
+                "column": 8
               },
               "end": {
                 "line": 1,
-                "column": 24
+                "column": 23
               }
             },
             "imported": {
               "type": "Identifier",
-              "start": 9,
-              "end": 24,
+              "start": 8,
+              "end": 23,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 9
+                  "column": 8
                 },
                 "end": {
                   "line": 1,
-                  "column": 24
+                  "column": 23
                 },
                 "identifierName": "StripeComponent"
               },
@@ -76,16 +76,16 @@
             },
             "local": {
               "type": "Identifier",
-              "start": 9,
-              "end": 24,
+              "start": 8,
+              "end": 23,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 9
+                  "column": 8
                 },
                 "end": {
                   "line": 1,
-                  "column": 24
+                  "column": 23
                 },
                 "identifierName": "StripeComponent"
               },
@@ -95,16 +95,16 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 32,
-          "end": 56,
+          "start": 30,
+          "end": 54,
           "loc": {
             "start": {
               "line": 1,
-              "column": 32
+              "column": 30
             },
             "end": {
               "line": 1,
-              "column": 56
+              "column": 54
             }
           },
           "extra": {
@@ -116,8 +116,8 @@
       },
       {
         "type": "ImportDeclaration",
-        "start": 58,
-        "end": 133,
+        "start": 56,
+        "end": 129,
         "loc": {
           "start": {
             "line": 2,
@@ -125,36 +125,36 @@
           },
           "end": {
             "line": 2,
-            "column": 75
+            "column": 73
           }
         },
         "specifiers": [
           {
             "type": "ImportSpecifier",
-            "start": 67,
-            "end": 90,
+            "start": 64,
+            "end": 87,
             "loc": {
               "start": {
                 "line": 2,
-                "column": 9
+                "column": 8
               },
               "end": {
                 "line": 2,
-                "column": 32
+                "column": 31
               }
             },
             "imported": {
               "type": "Identifier",
-              "start": 67,
-              "end": 90,
+              "start": 64,
+              "end": 87,
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 9
+                  "column": 8
                 },
                 "end": {
                   "line": 2,
-                  "column": 32
+                  "column": 31
                 },
                 "identifierName": "StripeCheckoutComponent"
               },
@@ -162,16 +162,16 @@
             },
             "local": {
               "type": "Identifier",
-              "start": 67,
-              "end": 90,
+              "start": 64,
+              "end": 87,
               "loc": {
                 "start": {
                   "line": 2,
-                  "column": 9
+                  "column": 8
                 },
                 "end": {
                   "line": 2,
-                  "column": 32
+                  "column": 31
                 },
                 "identifierName": "StripeCheckoutComponent"
               },
@@ -181,16 +181,16 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 98,
-          "end": 132,
+          "start": 94,
+          "end": 128,
           "loc": {
             "start": {
               "line": 2,
-              "column": 40
+              "column": 38
             },
             "end": {
               "line": 2,
-              "column": 74
+              "column": 72
             }
           },
           "extra": {
@@ -202,8 +202,8 @@
       },
       {
         "type": "ExpressionStatement",
-        "start": 134,
-        "end": 238,
+        "start": 130,
+        "end": 234,
         "loc": {
           "start": {
             "line": 3,
@@ -216,8 +216,8 @@
         },
         "expression": {
           "type": "AssignmentExpression",
-          "start": 134,
-          "end": 237,
+          "start": 130,
+          "end": 233,
           "loc": {
             "start": {
               "line": 3,
@@ -231,8 +231,8 @@
           "operator": "=",
           "left": {
             "type": "MemberExpression",
-            "start": 134,
-            "end": 148,
+            "start": 130,
+            "end": 144,
             "loc": {
               "start": {
                 "line": 3,
@@ -245,8 +245,8 @@
             },
             "object": {
               "type": "Identifier",
-              "start": 134,
-              "end": 140,
+              "start": 130,
+              "end": 136,
               "loc": {
                 "start": {
                   "line": 3,
@@ -262,8 +262,8 @@
             },
             "property": {
               "type": "Identifier",
-              "start": 141,
-              "end": 148,
+              "start": 137,
+              "end": 144,
               "loc": {
                 "start": {
                   "line": 3,
@@ -281,8 +281,8 @@
           },
           "right": {
             "type": "ObjectExpression",
-            "start": 151,
-            "end": 237,
+            "start": 147,
+            "end": 233,
             "loc": {
               "start": {
                 "line": 3,
@@ -296,8 +296,8 @@
             "properties": [
               {
                 "type": "ObjectProperty",
-                "start": 155,
-                "end": 235,
+                "start": 151,
+                "end": 231,
                 "loc": {
                   "start": {
                     "line": 4,
@@ -313,8 +313,8 @@
                 "computed": false,
                 "key": {
                   "type": "Identifier",
-                  "start": 155,
-                  "end": 161,
+                  "start": 151,
+                  "end": 157,
                   "loc": {
                     "start": {
                       "line": 4,
@@ -330,8 +330,8 @@
                 },
                 "value": {
                   "type": "ObjectExpression",
-                  "start": 163,
-                  "end": 235,
+                  "start": 159,
+                  "end": 231,
                   "loc": {
                     "start": {
                       "line": 4,
@@ -345,8 +345,8 @@
                   "properties": [
                     {
                       "type": "ObjectProperty",
-                      "start": 169,
-                      "end": 192,
+                      "start": 165,
+                      "end": 188,
                       "loc": {
                         "start": {
                           "line": 5,
@@ -362,8 +362,8 @@
                       "computed": false,
                       "key": {
                         "type": "Identifier",
-                        "start": 169,
-                        "end": 175,
+                        "start": 165,
+                        "end": 171,
                         "loc": {
                           "start": {
                             "line": 5,
@@ -379,8 +379,8 @@
                       },
                       "value": {
                         "type": "Identifier",
-                        "start": 177,
-                        "end": 192,
+                        "start": 173,
+                        "end": 188,
                         "loc": {
                           "start": {
                             "line": 5,
@@ -397,8 +397,8 @@
                     },
                     {
                       "type": "ObjectProperty",
-                      "start": 198,
-                      "end": 231,
+                      "start": 194,
+                      "end": 227,
                       "loc": {
                         "start": {
                           "line": 6,
@@ -414,8 +414,8 @@
                       "computed": false,
                       "key": {
                         "type": "Identifier",
-                        "start": 198,
-                        "end": 206,
+                        "start": 194,
+                        "end": 202,
                         "loc": {
                           "start": {
                             "line": 6,
@@ -431,8 +431,8 @@
                       },
                       "value": {
                         "type": "Identifier",
-                        "start": 208,
-                        "end": 231,
+                        "start": 204,
+                        "end": 227,
                         "loc": {
                           "start": {
                             "line": 6,
@@ -525,16 +525,16 @@
         "binop": null
       },
       "value": "StripeComponent",
-      "start": 9,
-      "end": 24,
+      "start": 8,
+      "end": 23,
       "loc": {
         "start": {
           "line": 1,
-          "column": 9
+          "column": 8
         },
         "end": {
           "line": 1,
-          "column": 24
+          "column": 23
         }
       }
     },
@@ -550,16 +550,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 25,
-      "end": 26,
+      "start": 23,
+      "end": 24,
       "loc": {
         "start": {
           "line": 1,
-          "column": 25
+          "column": 23
         },
         "end": {
           "line": 1,
-          "column": 26
+          "column": 24
         }
       }
     },
@@ -576,16 +576,16 @@
         "binop": null
       },
       "value": "from",
-      "start": 27,
-      "end": 31,
+      "start": 25,
+      "end": 29,
       "loc": {
         "start": {
           "line": 1,
-          "column": 27
+          "column": 25
         },
         "end": {
           "line": 1,
-          "column": 31
+          "column": 29
         }
       }
     },
@@ -603,16 +603,16 @@
         "updateContext": null
       },
       "value": "./stripe/stripe/Stripe",
-      "start": 32,
-      "end": 56,
+      "start": 30,
+      "end": 54,
       "loc": {
         "start": {
           "line": 1,
-          "column": 32
+          "column": 30
         },
         "end": {
           "line": 1,
-          "column": 56
+          "column": 54
         }
       }
     },
@@ -629,16 +629,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 56,
-      "end": 57,
+      "start": 54,
+      "end": 55,
       "loc": {
         "start": {
           "line": 1,
-          "column": 56
+          "column": 54
         },
         "end": {
           "line": 1,
-          "column": 57
+          "column": 55
         }
       }
     },
@@ -657,8 +657,8 @@
         "updateContext": null
       },
       "value": "import",
-      "start": 58,
-      "end": 64,
+      "start": 56,
+      "end": 62,
       "loc": {
         "start": {
           "line": 2,
@@ -682,8 +682,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 65,
-      "end": 66,
+      "start": 63,
+      "end": 64,
       "loc": {
         "start": {
           "line": 2,
@@ -708,16 +708,16 @@
         "binop": null
       },
       "value": "StripeCheckoutComponent",
-      "start": 67,
-      "end": 90,
+      "start": 64,
+      "end": 87,
       "loc": {
         "start": {
           "line": 2,
-          "column": 9
+          "column": 8
         },
         "end": {
           "line": 2,
-          "column": 32
+          "column": 31
         }
       }
     },
@@ -733,16 +733,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 91,
-      "end": 92,
+      "start": 87,
+      "end": 88,
       "loc": {
         "start": {
           "line": 2,
-          "column": 33
+          "column": 31
         },
         "end": {
           "line": 2,
-          "column": 34
+          "column": 32
         }
       }
     },
@@ -759,16 +759,16 @@
         "binop": null
       },
       "value": "from",
-      "start": 93,
-      "end": 97,
+      "start": 89,
+      "end": 93,
       "loc": {
         "start": {
           "line": 2,
-          "column": 35
+          "column": 33
         },
         "end": {
           "line": 2,
-          "column": 39
+          "column": 37
         }
       }
     },
@@ -786,16 +786,16 @@
         "updateContext": null
       },
       "value": "./stripe/checkout/StripeCheckout",
-      "start": 98,
-      "end": 132,
+      "start": 94,
+      "end": 128,
       "loc": {
         "start": {
           "line": 2,
-          "column": 40
+          "column": 38
         },
         "end": {
           "line": 2,
-          "column": 74
+          "column": 72
         }
       }
     },
@@ -812,16 +812,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 132,
-      "end": 133,
+      "start": 128,
+      "end": 129,
       "loc": {
         "start": {
           "line": 2,
-          "column": 74
+          "column": 72
         },
         "end": {
           "line": 2,
-          "column": 75
+          "column": 73
         }
       }
     },
@@ -838,8 +838,8 @@
         "binop": null
       },
       "value": "module",
-      "start": 134,
-      "end": 140,
+      "start": 130,
+      "end": 136,
       "loc": {
         "start": {
           "line": 3,
@@ -864,8 +864,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 140,
-      "end": 141,
+      "start": 136,
+      "end": 137,
       "loc": {
         "start": {
           "line": 3,
@@ -890,8 +890,8 @@
         "binop": null
       },
       "value": "exports",
-      "start": 141,
-      "end": 148,
+      "start": 137,
+      "end": 144,
       "loc": {
         "start": {
           "line": 3,
@@ -917,8 +917,8 @@
         "updateContext": null
       },
       "value": "=",
-      "start": 149,
-      "end": 150,
+      "start": 145,
+      "end": 146,
       "loc": {
         "start": {
           "line": 3,
@@ -942,8 +942,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 151,
-      "end": 152,
+      "start": 147,
+      "end": 148,
       "loc": {
         "start": {
           "line": 3,
@@ -968,8 +968,8 @@
         "binop": null
       },
       "value": "stripe",
-      "start": 155,
-      "end": 161,
+      "start": 151,
+      "end": 157,
       "loc": {
         "start": {
           "line": 4,
@@ -994,8 +994,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 161,
-      "end": 162,
+      "start": 157,
+      "end": 158,
       "loc": {
         "start": {
           "line": 4,
@@ -1019,8 +1019,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 163,
-      "end": 164,
+      "start": 159,
+      "end": 160,
       "loc": {
         "start": {
           "line": 4,
@@ -1045,8 +1045,8 @@
         "binop": null
       },
       "value": "stripe",
-      "start": 169,
-      "end": 175,
+      "start": 165,
+      "end": 171,
       "loc": {
         "start": {
           "line": 5,
@@ -1071,8 +1071,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 175,
-      "end": 176,
+      "start": 171,
+      "end": 172,
       "loc": {
         "start": {
           "line": 5,
@@ -1097,8 +1097,8 @@
         "binop": null
       },
       "value": "StripeComponent",
-      "start": 177,
-      "end": 192,
+      "start": 173,
+      "end": 188,
       "loc": {
         "start": {
           "line": 5,
@@ -1123,8 +1123,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 192,
-      "end": 193,
+      "start": 188,
+      "end": 189,
       "loc": {
         "start": {
           "line": 5,
@@ -1149,8 +1149,8 @@
         "binop": null
       },
       "value": "checkout",
-      "start": 198,
-      "end": 206,
+      "start": 194,
+      "end": 202,
       "loc": {
         "start": {
           "line": 6,
@@ -1175,8 +1175,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 206,
-      "end": 207,
+      "start": 202,
+      "end": 203,
       "loc": {
         "start": {
           "line": 6,
@@ -1201,8 +1201,8 @@
         "binop": null
       },
       "value": "StripeCheckoutComponent",
-      "start": 208,
-      "end": 231,
+      "start": 204,
+      "end": 227,
       "loc": {
         "start": {
           "line": 6,
@@ -1226,8 +1226,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 234,
-      "end": 235,
+      "start": 230,
+      "end": 231,
       "loc": {
         "start": {
           "line": 7,
@@ -1251,8 +1251,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 236,
-      "end": 237,
+      "start": 232,
+      "end": 233,
       "loc": {
         "start": {
           "line": 8,
@@ -1277,8 +1277,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 237,
-      "end": 238,
+      "start": 233,
+      "end": 234,
       "loc": {
         "start": {
           "line": 8,
@@ -1303,8 +1303,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 239,
-      "end": 239,
+      "start": 235,
+      "end": 235,
       "loc": {
         "start": {
           "line": 9,

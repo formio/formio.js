@@ -1,8 +1,8 @@
 import Choices from 'choices.js';
 import _ from 'lodash';
-
 import {BaseComponent} from '../base/Base';
 import Formio from '../../formio';
+import FormioUtils from '../../utils';
 
 // Duck-punch the setValueByChoice to ensure we compare using _.isEqual.
 Choices.prototype.setValueByChoice = function(value) {
@@ -43,6 +43,39 @@ Choices.prototype.setValueByChoice = function(value) {
 };
 
 export class SelectComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'select',
+      label: 'Select',
+      key: 'select',
+      data: {
+        values: [],
+        json: '',
+        url: '',
+        resource: '',
+        custom: ''
+      },
+      dataSrc: 'values',
+      valueProperty: '',
+      refreshOn: '',
+      filter: '',
+      authenticate: false,
+      template: '<span>{{ item.label }}</span>',
+      selectFields: ''
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Select',
+      group: 'basic',
+      icon: 'fa fa-th-list',
+      weight: 70,
+      documentation: 'http://help.form.io/userguide/#select',
+      schema: SelectComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
 
@@ -92,7 +125,8 @@ export class SelectComponent extends BaseComponent {
   itemTemplate(data) {
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.useTemplate) {
-      return this.t(data.label || data);
+      let itemLabel = data.label || data;
+      return (typeof itemLabel === 'string') ? this.t(itemLabel) : itemLabel;
     }
     if (typeof data === 'string') {
       return this.t(data);
@@ -300,13 +334,19 @@ export class SelectComponent extends BaseComponent {
   }
 
   updateCustomItems() {
-    const data = _.cloneDeep(this.data);
-    const row = _.cloneDeep(this.row);
+    const utils = FormioUtils;
+    const data = _.cloneDeep(this.root ? this.root.data : this.data);
+    const row = _.cloneDeep(this.data);
     try {
-      this.setItems((new Function('data', 'row',
-        `var values = []; ${this.component.data.custom.toString()}; return values;`))(data, row));
+      this.setItems((new Function(
+        'data',
+        'row',
+        'utils',
+        `var values = []; ${this.component.data.custom.toString()}; return values;`
+      ))(data, row, utils));
     }
     catch (error) {
+      console.warn(error);
       this.setItems([]);
     }
   }

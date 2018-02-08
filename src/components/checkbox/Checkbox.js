@@ -1,12 +1,35 @@
 import _ from 'lodash';
-
 import {BaseComponent} from '../base/Base';
+
 export class CheckBoxComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'checkbox',
+      inputType: 'checkbox',
+      label: 'Checkbox',
+      key: 'checkbox',
+      datagridLabel: true,
+      value: '',
+      name: ''
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Checkbox',
+      group: 'basic',
+      icon: 'fa fa-check-square',
+      documentation: 'http://help.form.io/userguide/#checkbox',
+      weight: 50,
+      schema: CheckBoxComponent.schema()
+    };
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
-    info.attr.type = this.component.inputType;
+    info.attr.type = this.component.inputType || 'checkbox';
     info.attr.class = 'form-check-input';
     if (this.component.name) {
       info.attr.name = `data[${this.component.name}]`;
@@ -45,6 +68,7 @@ export class CheckBoxComponent extends BaseComponent {
       id: this.id,
       class: className
     });
+    this.element.component = this;
   }
 
   labelOnTheTopOrLeft() {

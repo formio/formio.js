@@ -327,13 +327,130 @@ function _classCallCheck(instance, Constructor) {
  * This is the BaseComponent class which all elements within the FormioForm derive from.
  */
 var BaseComponent = function () {
-  /**
-   * Initialize a new BaseComponent.
-   *
-   * @param {Object} component - The component JSON you wish to initialize.
-   * @param {Object} options - The options for this component.
-   * @param {Object} data - The global data submission object this component will belong.
-   */
+  _createClass(BaseComponent, null, [{
+    key: 'schema',
+    value: function schema() {
+      for (var _len = arguments.length, sources = Array(_len), _key = 0; _key < _len; _key++) {
+        sources[_key] = arguments[_key];
+      }
+
+      return _lodash2.default.merge.apply(_lodash2.default, [{
+        /**
+         * Determines if this component provides an input.
+         */
+        input: true,
+
+        /**
+         * The data key for this component (how the data is stored in the database).
+         */
+        key: '',
+
+        /**
+         * The input placeholder for this component.
+         */
+        placeholder: '',
+
+        /**
+         * The input prefix
+         */
+        prefix: '',
+
+        /**
+         * The custom CSS class to provide to this component.
+         */
+        customClass: '',
+
+        /**
+         * The input suffix.
+         */
+        suffix: '',
+
+        /**
+         * If this component should allow an array of values to be captured.
+         */
+        multiple: false,
+
+        /**
+         * The default value of this compoennt.
+         */
+        defaultValue: null,
+
+        /**
+         * If the data of this component should be protected (no GET api requests can see the data)
+         */
+        protected: false,
+
+        /**
+         * Validate if the value of this component should be unique within the form.
+         */
+        unique: false,
+
+        /**
+         * If the value of this component should be persisted within the backend api database.
+         */
+        persistent: false,
+
+        /**
+         * Determines if the component should be within the form, but not visible.
+         */
+        hidden: false,
+
+        /**
+         * If the component should be cleared when hidden.
+         */
+        clearOnHide: true,
+
+        /**
+         * If this component should be included as a column within a submission table.
+         */
+        tableView: true,
+
+        /**
+         * The input label provided to this component.
+         */
+        label: '',
+
+        /**
+         * The validation criteria for this component.
+         */
+        validate: {
+          /**
+           * If this component is required.
+           */
+          required: false,
+
+          /**
+           * Custom JavaScript validation.
+           */
+          custom: '',
+
+          /**
+           * If the custom validation should remain private (only the backend will see it and execute it).
+           */
+          customPrivate: false
+        },
+
+        /**
+         * The simple conditional settings for a component.
+         */
+        conditional: {
+          show: null,
+          when: null,
+          eq: ''
+        }
+      }].concat(sources));
+    }
+
+    /**
+     * Initialize a new BaseComponent.
+     *
+     * @param {Object} component - The component JSON you wish to initialize.
+     * @param {Object} options - The options for this component.
+     * @param {Object} data - The global data submission object this component will belong.
+     */
+
+  }]);
+
   function BaseComponent(component, options, data) {
     _classCallCheck(this, BaseComponent);
 
@@ -343,7 +460,7 @@ var BaseComponent = function () {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = component && component.id ? component.id : Math.random().toString(36).substring(7);
+    this.id = component && component.id ? component.id : 'e' + Math.random().toString(36).substring(7);
 
     /**
      * The options for this component.
@@ -379,6 +496,9 @@ var BaseComponent = function () {
      * @type {*}
      */
     this.component = component || {};
+
+    // Add the id to the component.
+    this.component.id = this.id;
 
     /**
      * The bounding HTML Element which this component is rendered.
@@ -512,6 +632,9 @@ var BaseComponent = function () {
        */
       this.info = this.elementInfo();
     }
+
+    // Allow anyone to hook into the component creation.
+    this.hook('component');
   }
 
   _createClass(BaseComponent, [{
@@ -580,7 +703,9 @@ var BaseComponent = function () {
   }, {
     key: 'emit',
     value: function emit(event, data) {
-      this.events.emit('formio.' + event, data);
+      if (this.events) {
+        this.events.emit('formio.' + event, data);
+      }
     }
 
     /**
@@ -699,7 +824,7 @@ var BaseComponent = function () {
 
       if (this.element) {
         // Ensure you can get the component info from the element.
-        this.element.component = this.component;
+        this.element.component = this;
       }
 
       return this.element;
@@ -748,6 +873,45 @@ var BaseComponent = function () {
         element.removeChild(element.firstChild);
       }
     }
+  }, {
+    key: 'createModal',
+    value: function createModal(title) {
+      var modalBody = this.ce('div');
+      var modalOverlay = this.ce('div', {
+        class: 'formio-dialog-overlay'
+      });
+      var closeDialog = this.ce('button', {
+        class: 'formio-dialog-close pull-right btn btn-default btn-xs',
+        'aria-label': 'close'
+      });
+
+      var dialog = this.ce('div', {
+        class: 'formio-dialog formio-dialog-theme-default component-settings'
+      }, [modalOverlay, this.ce('div', {
+        class: 'formio-dialog-content'
+      }, [modalBody, closeDialog])]);
+
+      this.addEventListener(modalOverlay, 'click', function (event) {
+        event.preventDefault();
+        dialog.close();
+      });
+      this.addEventListener(closeDialog, 'click', function (event) {
+        event.preventDefault();
+        dialog.close();
+      });
+      this.addEventListener(dialog, 'close', function () {
+        document.body.removeChild(dialog);
+      });
+      document.body.appendChild(dialog);
+      dialog.body = modalBody;
+      dialog.close = function () {
+        dialog.dispatchEvent(new CustomEvent('close'));
+        try {
+          document.body.removeChild(dialog);
+        } catch (err) {}
+      };
+      return dialog;
+    }
 
     /**
      * Retrieves the CSS class name of this component.
@@ -785,8 +949,9 @@ var BaseComponent = function () {
       });
 
       // Ensure you can get the component info from the element.
-      this.element.component = this.component;
+      this.element.component = this;
 
+      this.hook('element', this.element);
       return this.element;
     }
 
@@ -1427,11 +1592,13 @@ var BaseComponent = function () {
       if (this.inputMask) {
         this.inputMask.destroy();
       }
-      _lodash2.default.each(this.eventListeners, function (listener) {
-        if (all || listener.internal) {
-          _this4.events.off(listener.type, listener.listener);
-        }
-      });
+      if (this.events) {
+        _lodash2.default.each(this.eventListeners, function (listener) {
+          if (all || listener.internal) {
+            _this4.events.off(listener.type, listener.listener);
+          }
+        });
+      }
       _lodash2.default.each(this.eventHandlers, function (handler) {
         if (handler.event) {
           window.removeEventListener(handler.event, handler.func);
@@ -1557,6 +1724,19 @@ var BaseComponent = function () {
           }
         }
       });
+    }
+
+    /**
+     * Determines if an element has a class.
+     *
+     * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
+     */
+
+  }, {
+    key: 'hasClass',
+    value: function hasClass(element, className) {
+      className = " " + className + " ";
+      return (" " + element.className + " ").replace(/[\n\t\r]/g, " ").indexOf(className) > -1;
     }
 
     /**
@@ -1866,13 +2046,17 @@ var BaseComponent = function () {
   }, {
     key: 'addInput',
     value: function addInput(input, container) {
+      if (!input) {
+        return;
+      }
       if (input && container) {
-        this.inputs.push(input);
         input = container.appendChild(input);
       }
+      this.inputs.push(input);
       this.hook('input', input, container);
       this.addInputEventListener(input);
       this.addInputSubmitListener(input);
+      return input;
     }
 
     /**
@@ -2372,6 +2556,16 @@ var BaseComponent = function () {
     get: function get() {
       return this.component.input || this.inputs.length;
     }
+
+    /**
+     * Returns the JSON schema for this component.
+     */
+
+  }, {
+    key: 'schema',
+    get: function get() {
+      return this.component;
+    }
   }, {
     key: 'shouldDisable',
     get: function get() {
@@ -2430,7 +2624,7 @@ var BaseComponent = function () {
         if (typeof this.component.customDefaultValue === 'string') {
           try {
             defaultValue = new Function('component', 'row', 'data', 'var value = \'\'; ' + this.component.customDefaultValue + '; return value;')(this, this.data, this.data);
-          } catch (e) {
+          } catch (err) {
             defaultValue = null;
             /* eslint-disable no-console */
             console.warn('An error occurred getting default value for ' + this.component.key, e);
@@ -2733,6 +2927,9 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       info.attr.type = this.component.action === 'submit' ? 'submit' : 'button';
       this.component.theme = this.component.theme || 'default';
       info.attr.class = 'btn btn-' + this.component.theme;
+      if (this.component.size) {
+        info.attr.class += ' btn-' + this.component.size;
+      }
       if (this.component.block) {
         info.attr.class += ' btn-block';
       }
@@ -2740,6 +2937,17 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         info.attr.class += ' ' + this.component.customClass;
       }
       return info;
+    }
+  }, {
+    key: 'createLabel',
+
+    // No label needed for buttons.
+    value: function createLabel() {}
+  }, {
+    key: 'createInput',
+    value: function createInput(container) {
+      this.buttonElement = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'createInput', this).call(this, container);
+      return this.buttonElement;
     }
   }, {
     key: 'getValue',
@@ -2760,12 +2968,24 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
 
       this.clicked = false;
       this.createElement();
-      this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
-      this.addShortcut(this.button);
+      this.createInput(this.element);
+      this.addShortcut(this.buttonElement);
+      if (this.component.leftIcon) {
+        this.buttonElement.appendChild(this.ce('span', {
+          class: this.component.leftIcon
+        }));
+        this.buttonElement.appendChild(this.text('\xA0'));
+      }
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
-        this.button.appendChild(this.labelElement);
-        this.createTooltip(this.button, null, this.iconClass('question-sign'));
+        this.buttonElement.appendChild(this.labelElement);
+        this.createTooltip(this.buttonElement, null, this.iconClass('question-sign'));
+      }
+      if (this.component.rightIcon) {
+        this.buttonElement.appendChild(this.text('\xA0'));
+        this.buttonElement.appendChild(this.ce('span', {
+          class: this.component.rightIcon
+        }));
       }
       if (this.component.action === 'submit') {
         this.on('submitButton', function () {
@@ -2802,7 +3022,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
           _this2.loading = false;
         }, true);
       }
-      this.addEventListener(this.button, 'click', function (event) {
+      this.addEventListener(this.buttonElement, 'click', function (event) {
         _this2.clicked = false;
         switch (_this2.component.action) {
           case 'submit':
@@ -2958,18 +3178,18 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     key: 'destroy',
     value: function destroy() {
       _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'destroy', this).apply(this, Array.prototype.slice.apply(arguments));
-      this.removeShortcut(this.element);
+      this.removeShortcut(this.buttonElement);
     }
   }, {
     key: 'loading',
     set: function set(loading) {
-      this.setLoading(this.button, loading);
+      this.setLoading(this.buttonElement, loading);
     }
   }, {
     key: 'disabled',
     set: function set(disabled) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
-      this.setDisabled(this.button, disabled);
+      this.setDisabled(this.buttonElement, disabled);
     }
   }, {
     key: 'className',
@@ -2977,6 +3197,38 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       var className = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'className', this);
       className += ' form-group';
       return className;
+    }
+  }], [{
+    key: 'schema',
+    value: function schema() {
+      for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+        extend[_key] = arguments[_key];
+      }
+
+      return _Base.BaseComponent.schema.apply(_Base.BaseComponent, [{
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        size: 'md',
+        leftIcon: '',
+        rightIcon: '',
+        block: false,
+        action: 'submit',
+        disableOnInvalid: false,
+        theme: 'primary'
+      }].concat(extend));
+    }
+  }, {
+    key: 'builderInfo',
+    get: function get() {
+      return {
+        title: 'Button',
+        group: 'basic',
+        icon: 'fa fa-stop',
+        documentation: 'http://help.form.io/userguide/#button',
+        weight: 110,
+        schema: ButtonComponent.schema()
+      };
     }
   }]);
 
@@ -4241,6 +4493,78 @@ var FormioUtils = {
     }
 
     return true;
+  },
+
+  /**
+   * Find the given form components in a map, using the component keys.
+   *
+   * @param {Array} components
+   *   An array of the form components.
+   * @param {Object} input
+   *   The input component we're trying to uniquify.
+   *
+   * @returns {Object}
+   *   The memoized form components.
+   */
+  findExistingComponents: function findExistingComponents(components, input) {
+    // Prebuild a list of existing components.
+    var existingComponents = {};
+    FormioUtils.eachComponent(components, function (component) {
+      // If theres no key, we cant compare components.
+      if (!component.key) return;
+      if (component.key === input.key && (!component.id || component.id !== input.id)) {
+        existingComponents[component.key] = component;
+      }
+    }, true);
+
+    return existingComponents;
+  },
+
+  /**
+   * Iterate the given key to make it unique.
+   *
+   * @param {String} key
+   *   Modify the component key to be unique.
+   *
+   * @returns {String}
+   *   The new component key.
+   */
+  iterateKey: function iterateKey(key) {
+    if (!key.match(/(\d+)$/)) {
+      return key + '2';
+    }
+
+    return key.replace(/(\d+)$/, function (suffix) {
+      return Number(suffix) + 1;
+    });
+  },
+
+  /**
+   * Appends a number to a component.key to keep it unique
+   *
+   * @param {Object} form
+   *   The components parent form.
+   * @param {Object} component
+   *   The component to uniquify
+   */
+  uniquify: function uniquify(form, component) {
+    var _this = this;
+
+    var changed = false;
+    // Recurse into all child components.
+    FormioUtils.eachComponent([component], function (component) {
+      // Skip key uniquification if this component doesn't have a key.
+      if (!component.key) {
+        return;
+      }
+
+      var memoization = FormioUtils.findExistingComponents(form.components, component);
+      while (memoization.hasOwnProperty(component.key)) {
+        component.key = _this.iterateKey(component.key);
+        changed = true;
+      }
+    }, true);
+    return changed;
   }
 };
 

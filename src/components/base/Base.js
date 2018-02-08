@@ -3,7 +3,6 @@ import Promise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
-
 import FormioUtils from '../../utils';
 import {Validator} from '../Validator';
 
@@ -11,6 +10,114 @@ import {Validator} from '../Validator';
  * This is the BaseComponent class which all elements within the FormioForm derive from.
  */
 export class BaseComponent {
+  static schema(...sources) {
+    return _.merge({
+      /**
+       * Determines if this component provides an input.
+       */
+      input: true,
+
+      /**
+       * The data key for this component (how the data is stored in the database).
+       */
+      key: '',
+
+      /**
+       * The input placeholder for this component.
+       */
+      placeholder: '',
+
+      /**
+       * The input prefix
+       */
+      prefix: '',
+
+      /**
+       * The custom CSS class to provide to this component.
+       */
+      customClass: '',
+
+      /**
+       * The input suffix.
+       */
+      suffix: '',
+
+      /**
+       * If this component should allow an array of values to be captured.
+       */
+      multiple: false,
+
+      /**
+       * The default value of this compoennt.
+       */
+      defaultValue: null,
+
+      /**
+       * If the data of this component should be protected (no GET api requests can see the data)
+       */
+      protected: false,
+
+      /**
+       * Validate if the value of this component should be unique within the form.
+       */
+      unique: false,
+
+      /**
+       * If the value of this component should be persisted within the backend api database.
+       */
+      persistent: false,
+
+      /**
+       * Determines if the component should be within the form, but not visible.
+       */
+      hidden: false,
+
+      /**
+       * If the component should be cleared when hidden.
+       */
+      clearOnHide: true,
+
+      /**
+       * If this component should be included as a column within a submission table.
+       */
+      tableView: true,
+
+      /**
+       * The input label provided to this component.
+       */
+      label: '',
+
+      /**
+       * The validation criteria for this component.
+       */
+      validate: {
+        /**
+         * If this component is required.
+         */
+        required: false,
+
+        /**
+         * Custom JavaScript validation.
+         */
+        custom: '',
+
+        /**
+         * If the custom validation should remain private (only the backend will see it and execute it).
+         */
+        customPrivate: false
+      },
+
+      /**
+       * The simple conditional settings for a component.
+       */
+      conditional: {
+        show: null,
+        when: null,
+        eq: ''
+      }
+    }, ...sources);
+  }
+
   /**
    * Initialize a new BaseComponent.
    *
@@ -25,7 +132,7 @@ export class BaseComponent {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = (component && component.id) ? component.id : Math.random().toString(36).substring(7);
+    this.id = (component && component.id) ? component.id : `e${Math.random().toString(36).substring(7)}`;
 
     /**
      * The options for this component.
@@ -61,6 +168,9 @@ export class BaseComponent {
      * @type {*}
      */
     this.component = component || {};
+
+    // Add the id to the component.
+    this.component.id = this.id;
 
     /**
      * The bounding HTML Element which this component is rendered.
@@ -194,10 +304,20 @@ export class BaseComponent {
        */
       this.info = this.elementInfo();
     }
+
+    // Allow anyone to hook into the component creation.
+    this.hook('component');
   }
 
   get hasInput() {
     return this.component.input || this.inputs.length;
+  }
+
+  /**
+   * Returns the JSON schema for this component.
+   */
+  get schema() {
+    return this.component;
   }
 
   /**
@@ -257,7 +377,9 @@ export class BaseComponent {
    * @param {Object} data - The data to emit with the handler.
    */
   emit(event, data) {
-    this.events.emit(`formio.${event}`, data);
+    if (this.events) {
+      this.events.emit(`formio.${event}`, data);
+    }
   }
 
   /**
@@ -371,7 +493,7 @@ export class BaseComponent {
 
     if (this.element) {
       // Ensure you can get the component info from the element.
-      this.element.component = this.component;
+      this.element.component = this;
     }
 
     return this.element;
@@ -417,6 +539,51 @@ export class BaseComponent {
     while (element.firstChild) {
       element.removeChild(element.firstChild);
     }
+  }
+
+  createModal(title) {
+    let modalBody = this.ce('div');
+    let modalOverlay = this.ce('div', {
+      class: 'formio-dialog-overlay'
+    });
+    let closeDialog = this.ce('button', {
+      class: 'formio-dialog-close pull-right btn btn-default btn-xs',
+      'aria-label': 'close'
+    });
+
+    let dialog = this.ce('div', {
+      class: 'formio-dialog formio-dialog-theme-default component-settings'
+    }, [
+      modalOverlay,
+      this.ce('div', {
+        class: 'formio-dialog-content'
+      }, [
+        modalBody,
+        closeDialog
+      ])
+    ]);
+
+    this.addEventListener(modalOverlay, 'click', (event) => {
+      event.preventDefault();
+      dialog.close();
+    });
+    this.addEventListener(closeDialog, 'click', (event) => {
+      event.preventDefault();
+      dialog.close();
+    });
+    this.addEventListener(dialog, 'close', () => {
+      document.body.removeChild(dialog);
+    });
+    document.body.appendChild(dialog);
+    dialog.body = modalBody;
+    dialog.close = function() {
+      dialog.dispatchEvent(new CustomEvent('close'));
+      try {
+        document.body.removeChild(dialog);
+      }
+      catch (err) {}
+    };
+    return dialog;
   }
 
   /**
@@ -477,8 +644,9 @@ export class BaseComponent {
     });
 
     // Ensure you can get the component info from the element.
-    this.element.component = this.component;
+    this.element.component = this;
 
+    this.hook('element', this.element);
     return this.element;
   }
 
@@ -524,7 +692,7 @@ export class BaseComponent {
           defaultValue = (new Function('component', 'row', 'data',
             `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
         }
-        catch (e) {
+        catch (err) {
           defaultValue = null;
           /* eslint-disable no-console */
           console.warn(`An error occurred getting default value for ${this.component.key}`, e);
@@ -1108,11 +1276,13 @@ export class BaseComponent {
     if (this.inputMask) {
       this.inputMask.destroy();
     }
-    _.each(this.eventListeners, (listener) => {
-      if (all || listener.internal) {
-        this.events.off(listener.type, listener.listener);
-      }
-    });
+    if (this.events) {
+      _.each(this.eventListeners, (listener) => {
+        if (all || listener.internal) {
+          this.events.off(listener.type, listener.listener);
+        }
+      });
+    }
     _.each(this.eventHandlers, (handler) => {
       if (handler.event) {
         window.removeEventListener(handler.event, handler.func);
@@ -1218,6 +1388,16 @@ export class BaseComponent {
         }
       }
     });
+  }
+
+  /**
+   * Determines if an element has a class.
+   *
+   * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
+   */
+  hasClass(element, className) {
+    className = " " + className + " ";
+    return ((" " + element.className + " ").replace(/[\n\t\r]/g, " ").indexOf(className) > -1);
   }
 
   /**
@@ -1494,13 +1674,17 @@ export class BaseComponent {
    * @param noSet
    */
   addInput(input, container) {
+    if (!input) {
+      return;
+    }
     if (input && container) {
-      this.inputs.push(input);
       input = container.appendChild(input);
     }
+    this.inputs.push(input);
     this.hook('input', input, container);
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
+    return input;
   }
 
   /**
