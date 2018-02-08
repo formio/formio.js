@@ -1,6 +1,6 @@
 'use strict';
-import { FormioComponents } from './Components';
-import { Harness } from '../../test/harness';
+import {FormioComponents} from './Components';
+import {Harness} from '../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 describe('FormioComponents class', () => {
@@ -91,7 +91,7 @@ describe('FormioComponents class', () => {
       // Make sure we built the components tree.
       assert.equal(comp.components.length, 2);
       assert.equal(comp.components[1].components.length, 2);
-      let data = {
+      const data = {
         showPanel: true,
         showChild: false,
         forceParent: false

@@ -1,7 +1,7 @@
-import { RadioComponent } from '../radio/Radio';
-import _each from 'lodash/each';
-import _isArray from 'lodash/isArray';
 import _ from 'lodash';
+
+import {RadioComponent} from '../radio/Radio';
+
 export class SelectBoxesComponent extends RadioComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -9,7 +9,7 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.attr.name += '[]';
     info.attr.type = 'checkbox';
     info.attr.class = 'form-check-input';
@@ -24,7 +24,7 @@ export class SelectBoxesComponent extends RadioComponent {
    */
   isEmpty(value) {
     let empty = true;
-    for (let key in value) {
+    for (const key in value) {
       if (value.hasOwnProperty(key) && value[key]) {
         empty = false;
         break;
@@ -38,8 +38,8 @@ export class SelectBoxesComponent extends RadioComponent {
     if (this.viewOnly) {
       return this.value;
     }
-    let value = {};
-    _each(this.inputs, (input) => {
+    const value = {};
+    _.each(this.inputs, (input) => {
       value[input.value] = !!input.checked;
     });
     return value;
@@ -55,17 +55,14 @@ export class SelectBoxesComponent extends RadioComponent {
     value = value || {};
     flags = this.getFlags.apply(this, arguments);
     this.data[this.component.key] = value;
-    if (_isArray(value)) {
-      _each(value, (val) => {
+    if (Array.isArray(value)) {
+      _.each(value, (val) => {
         value[val] = true;
       });
     }
-    else {
-      value = value;
-    }
 
-    _each(this.inputs, (input) => {
-      if (value[input.value] == undefined) {
+    _.each(this.inputs, (input) => {
+      if (_.isUndefined(value[input.value])) {
         value[input.value] = false;
       }
       input.checked = !!value[input.value];
@@ -75,9 +72,10 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   getView(value) {
-    return _(this.component.values || [])
-      .filter((v) => value[v.value])
-      .map('label')
-      .join(', ');
+    return _.flow(
+      _.filter((v) => value[v.value]),
+      _.map('label'),
+      _.join(', ')
+    )(this.component.values || []);
   }
 }

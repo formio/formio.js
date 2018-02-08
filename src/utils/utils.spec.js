@@ -1,7 +1,7 @@
 'use strict';
 
 /* eslint-env mocha */
-import { expect } from 'chai';
+import {expect} from 'chai';
 import _ from 'lodash';
 import writtenNumber from 'written-number';
 import utils from './index';
@@ -244,10 +244,10 @@ describe('checkCalculated', () => {
     const component = {
       key: 'sum',
       calculateValue: {
-        '_sum': { var: 'data.test' }
+        '_sum': {var: 'data.test'}
       }
     };
-    const data = { test: [ 1, 2, 3 ] };
+    const data = {test: [1, 2, 3]};
 
     utils.checkCalculated(component, null, data);
     expect(data.sum).to.be.equal(6);
@@ -268,8 +268,8 @@ describe('checkCondition', () => {
         show: true
       }
     };
-    const data1 = { test: 3 };
-    const data2 = { test: 5 };
+    const data1 = {test: 3};
+    const data2 = {test: 5};
     expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
     expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
   });
@@ -279,8 +279,8 @@ describe('checkCondition', () => {
       key: 'sum',
       customConditional: 'show = data.test === 3'
     };
-    const data1 = { test: 3 };
-    const data2 = { test: 5 };
+    const data1 = {test: 3};
+    const data2 = {test: 5};
 
     expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
     expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
@@ -292,14 +292,14 @@ describe('checkCondition', () => {
       conditional: {
         json: {
           '===': [
-            { '_sum': { var: 'data.test' } },
+            {'_sum': {var: 'data.test'}},
             6
           ]
         }
       }
     };
-    const data1 = { test: [ 1, 2, 3 ] };
-    const data2 = { test: [ 1, 2, 4 ] };
+    const data1 = {test: [1, 2, 3]};
+    const data2 = {test: [1, 2, 4]};
 
     expect(utils.checkCondition(component, null, data1)).to.be.equal(true);
     expect(utils.checkCondition(component, null, data2)).to.be.equal(false);
@@ -352,8 +352,8 @@ describe('checkTrigger', () => {
         show: true
       }
     };
-    const data1 = { test: 3 };
-    const data2 = { test: 5 };
+    const data1 = {test: 3};
+    const data2 = {test: 5};
     expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
     expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
   });
@@ -366,8 +366,8 @@ describe('checkTrigger', () => {
       type: 'javascript',
       javascript: 'result = data.test === 3'
     };
-    const data1 = { test: 3 };
-    const data2 = { test: 5 };
+    const data1 = {test: 3};
+    const data2 = {test: 5};
 
     expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
     expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);
@@ -381,13 +381,13 @@ describe('checkTrigger', () => {
       type: 'json',
       json: {
         '===': [
-          { '_sum': { var: 'data.test' } },
+          {'_sum': {var: 'data.test'}},
           6
         ]
       }
     };
-    const data1 = { test: [ 1, 2, 3 ] };
-    const data2 = { test: [ 1, 2, 4 ] };
+    const data1 = {test: [1, 2, 3]};
+    const data2 = {test: [1, 2, 4]};
 
     expect(utils.checkTrigger(component, trigger, null, data1)).to.be.equal(true);
     expect(utils.checkTrigger(component, trigger, null, data2)).to.be.equal(false);

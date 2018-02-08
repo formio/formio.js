@@ -1,9 +1,7 @@
-import _each from 'lodash/each';
-import _cloneDeep from 'lodash/cloneDeep';
-import _clone from 'lodash/clone';
-import _isEqual from 'lodash/isEqual';
-import _isArray from 'lodash/isArray';
-import { FormioComponents } from '../Components';
+import _ from 'lodash';
+
+import {FormioComponents} from '../Components';
+
 export class DataGridComponent extends FormioComponents {
   constructor(component, options, data) {
     super(component, options, data);
@@ -21,17 +19,16 @@ export class DataGridComponent extends FormioComponents {
     this.createDescription(this.element);
   }
 
-  buildTable(data) {
-    data = data || {};
+  buildTable() {
     if (this.tableElement) {
       this.element.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';
     }
 
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
-    _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
+    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
-        tableClass += 'table-' + prop + ' ';
+        tableClass += `table-${prop} `;
       }
     });
     this.tableElement = this.ce('table', {
@@ -42,7 +39,7 @@ export class DataGridComponent extends FormioComponents {
 
     // Build rows the first time.
     this.rows = [];
-    this.tableRows = this.data[this.component.key].map((row, rowIndex) => this.buildRow(row, rowIndex, data));
+    this.tableRows = this.data[this.component.key].map((row, rowIndex) => this.buildRow(row, rowIndex));
     this.tbody = this.ce('tbody', null, this.tableRows);
 
     // Add the body to the table and to the element.
@@ -58,16 +55,16 @@ export class DataGridComponent extends FormioComponents {
 
   // Build the header.
   createHeader() {
-    let thead = this.ce('thead', null,
+    const thead = this.ce('thead', null,
       this.ce('tr', null,
         [
           this.component.components.map(comp => {
             if ((this.visibleColumns === true) || (this.visibleColumns[comp.key])) {
-              let th = this.ce('th');
+              const th = this.ce('th');
               if (comp.validate && comp.validate.required) {
                 th.setAttribute('class', 'field-required');
               }
-              let title = comp.label || comp.title;
+              const title = comp.label || comp.title;
               if (title) {
                 th.appendChild(this.text(title));
                 this.createTooltip(th, comp);
@@ -77,7 +74,7 @@ export class DataGridComponent extends FormioComponents {
           }),
           this.shouldDisable ? null :
             this.ce('th', null,
-              (this.component.addAnotherPosition === "top" || this.component.addAnotherPosition === "both") ? this.addButton(true) : null
+              ['top', 'both'].includes(this.component.addAnotherPosition) ? this.addButton(true) : null
             ),
         ]
       )
@@ -88,8 +85,8 @@ export class DataGridComponent extends FormioComponents {
   createAddButton() {
     return (!this.shouldDisable && (
       !this.component.addAnotherPosition ||
-      this.component.addAnotherPosition === "bottom" ||
-      this.component.addAnotherPosition === "both"
+      this.component.addAnotherPosition === 'bottom' ||
+      this.component.addAnotherPosition === 'both'
     ))  ?
       this.ce('tr', null,
         this.ce('td', {colspan: (this.component.components.length + 1)},
@@ -112,7 +109,7 @@ export class DataGridComponent extends FormioComponents {
         this.tbody.insertBefore(this.tableRows[rowIndex], this.tbody.children[rowIndex + 1]);
       }
       // Update existing
-      else if (!_isEqual(row, this.tableRows[rowIndex].data)) {
+      else if (!_.isEqual(row, this.tableRows[rowIndex].data)) {
         this.removeRowComponents(rowIndex);
         const newRow = this.buildRow(row, rowIndex, data);
         this.tbody.replaceChild(newRow, this.tableRows[rowIndex]);
@@ -120,21 +117,21 @@ export class DataGridComponent extends FormioComponents {
       }
     });
     // Remove any extra rows.
-    for(let rowIndex = this.tableRows.length; rowIndex > this.data[this.component.key].length; rowIndex--) {
+    for (let rowIndex = this.tableRows.length; rowIndex > this.data[this.component.key].length; rowIndex--) {
       this.tbody.removeChild(this.tableRows[rowIndex - 1]);
       this.tableRows.splice(rowIndex - 1, 1);
     }
   }
 
-  buildRow(row, index, data) {
+  buildRow(row, index) {
     this.rows[index] = {};
     const element = this.ce('tr', null,
       [
-        this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index, data)),
+        this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index)),
         !this.shouldDisable ? this.ce('td', null, this.removeButton(index)) : null
       ]
-    )
-    element.data = _cloneDeep(row);
+    );
+    element.data = _.cloneDeep(row);
     return element;
   }
 
@@ -146,13 +143,13 @@ export class DataGridComponent extends FormioComponents {
     this.rows[rowIndex] = [];
   }
 
-  buildComponent(col, colIndex, row, rowIndex, data) {
-    let column = _cloneDeep(col);
+  buildComponent(col, colIndex, row, rowIndex) {
+    const column = _.cloneDeep(col);
     column.label = false;
-    column.row = rowIndex + '-' + colIndex;
-    let options = _clone(this.options);
-    options.name += '[' + colIndex + ']';
-    let comp = this.createComponent(column, options, row);
+    column.row = `${rowIndex}-${colIndex}`;
+    const options = _.clone(this.options);
+    options.name += `[${colIndex}]`;
+    const comp = this.createComponent(column, options, row);
     if (row.hasOwnProperty(column.key)) {
       comp.setValue(row[column.key]);
     }
@@ -162,7 +159,6 @@ export class DataGridComponent extends FormioComponents {
     this.rows[rowIndex][column.key] = comp;
     if ((this.visibleColumns === true) || this.visibleColumns[column.key]) {
       return this.ce('td', null, comp.element);
-      comp.checkConditions(data);
     }
   }
 
@@ -176,16 +172,16 @@ export class DataGridComponent extends FormioComponents {
     if (this.visibleColumns === true) {
       this.visibleColumns = {};
     }
-    _each(this.component.components, (col) => {
+    _.each(this.component.components, (col) => {
       let showColumn = false;
-      _each(this.rows, (comps) => {
+      _.each(this.rows, (comps) => {
         showColumn |= comps[col.key].checkConditions(data);
       });
       if (
         (this.visibleColumns[col.key] && !showColumn) ||
         (!this.visibleColumns[col.key] && showColumn)
       ) {
-        rebuild = true
+        rebuild = true;
       }
 
       this.visibleColumns[col.key] = showColumn;
@@ -194,7 +190,7 @@ export class DataGridComponent extends FormioComponents {
 
     // If a rebuild is needed, then rebuild the table.
     if (rebuild) {
-      this.buildTable(data);
+      this.buildTable();
     }
 
     // Return if this table should show.
@@ -206,7 +202,7 @@ export class DataGridComponent extends FormioComponents {
     if (!value) {
       return;
     }
-    if (!_isArray(value)) {
+    if (!Array.isArray(value)) {
       if (typeof value === 'object') {
         value = [value];
       }
@@ -217,11 +213,11 @@ export class DataGridComponent extends FormioComponents {
 
     this.data[this.component.key] = value;
     this.buildRows();
-    _each(this.rows, (row, index) => {
+    _.each(this.rows, (row, index) => {
       if (value.length <= index) {
         return;
       }
-      _each(row, (col, key) => {
+      _.each(row, (col, key) => {
         if (col.type === 'components') {
           col.setValue(value[index], flags);
         }
@@ -244,10 +240,10 @@ export class DataGridComponent extends FormioComponents {
     if (this.viewOnly) {
       return this.value;
     }
-    let values = [];
-    _each(this.rows, (row) => {
-      let value = {};
-      _each(row, (col) => {
+    const values = [];
+    _.each(this.rows, (row) => {
+      const value = {};
+      _.each(row, (col) => {
         if (
           col &&
           col.component &&

@@ -1,13 +1,11 @@
-'use strict';
-import Promise from "native-promise-only";
+import Promise from 'native-promise-only';
+import _ from 'lodash';
+
 import FormioForm from './formio.form';
 import Formio from './formio';
 import FormioUtils from './utils';
-import _ from 'lodash';
-import each from 'lodash/each';
-import clone from 'lodash/clone';
-import defaults from 'lodash/defaults';
-export class FormioWizard extends FormioForm {
+
+export default class FormioWizard extends FormioForm {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.
@@ -37,7 +35,7 @@ export class FormioWizard extends FormioForm {
   }
 
   getNextPage(data, currentPage) {
-    let form = this.pages[currentPage];
+    const form = this.pages[currentPage];
     // Check conditional nextPage
     if (form) {
       let page = ++currentPage;
@@ -57,19 +55,19 @@ export class FormioWizard extends FormioForm {
             return this.getPageIndexByKey(page);
           }
           catch (e) {
-            console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);
+            console.warn(`An error occurred in a custom nextPage function statement for component ${form.key}`, e);
             return page;
           }
         }
         // Or use JSON Logic.
         else {
-          let result = FormioUtils.jsonLogic.apply(form.nextPage, {
+          const result = FormioUtils.jsonLogic.apply(form.nextPage, {
             data,
             page,
             form,
             _
           });
-          let newPage = parseInt(result, 10);
+          const newPage = parseInt(result, 10);
           if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
             return newPage;
           }
@@ -85,8 +83,8 @@ export class FormioWizard extends FormioForm {
   }
 
   getPreviousPage() {
-    let prev = this.history.pop();
-    if(typeof prev !== 'undefined') {
+    const prev = this.history.pop();
+    if (typeof prev !== 'undefined') {
       return prev;
     }
 
@@ -122,14 +120,14 @@ export class FormioWizard extends FormioForm {
   }
 
   prevPage() {
-    let prevPage = this.getPreviousPage();
+    const prevPage = this.getPreviousPage();
     return this.setPage(prevPage).then(() => {
       this.emit('prevPage', {page: this.page, submission: this.submission});
     });
   }
 
   cancel(noconfirm) {
-    if(super.cancel(noconfirm)) {
+    if (super.cancel(noconfirm)) {
       this.history = [];
       return this.setPage(0);
     }
@@ -140,7 +138,7 @@ export class FormioWizard extends FormioForm {
 
   getPageIndexByKey(key) {
     let pageIndex = 0;
-    each(this.pages, (_page, index) => {
+    _.each(this.pages, (_page, index) => {
       if (_page.key === key) {
         pageIndex = index;
         return false;
@@ -168,17 +166,20 @@ export class FormioWizard extends FormioForm {
   getWizard() {
     let pageIndex = 0;
     let page = null;
-    let wizard = clone(this.wizard);
+    const wizard = _.clone(this.wizard);
     wizard.components = [];
     do {
       page = this.getPage(pageIndex);
+
       if (page) {
         wizard.components.push(page);
       }
-    } while (pageIndex = this.getNextPage(this.submission.data, pageIndex));
+
+      pageIndex = this.getNextPage(this.submission.data, pageIndex);
+    } while (pageIndex);
 
     // Add all other components.
-    each(this.wizard.components, (component) => {
+    _.each(this.wizard.components, (component) => {
       if (component.type !== 'panel') {
         wizard.components.push(component);
       }
@@ -193,7 +194,7 @@ export class FormioWizard extends FormioForm {
 
   buildPages(form) {
     this.pages = [];
-    each(form.components, (component) => {
+    _.each(form.components, (component) => {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
         if (FormioUtils.checkCondition(component, this.data, this.data)) {
@@ -232,7 +233,7 @@ export class FormioWizard extends FormioForm {
 
   hasButton(name, nextPage) {
     // Check for and initlize button settings object
-    this.options.buttonSettings = defaults(this.options.buttonSettings, {
+    this.options.buttonSettings = _.defaults(this.options.buttonSettings, {
       showPrevious: true,
       showNext: true,
       showCancel: true
@@ -259,7 +260,7 @@ export class FormioWizard extends FormioForm {
       this.wizardHeader.innerHTML = '';
     }
 
-    let currentPage = this.currentPage();
+    const currentPage = this.currentPage();
     if (!currentPage || this.wizard.full) {
       return;
     }
@@ -270,7 +271,7 @@ export class FormioWizard extends FormioForm {
     }
 
     // Check for and initlize breadcrumb settings object
-    this.options.breadcrumbSettings = defaults(this.options.breadcrumbSettings, {
+    this.options.breadcrumbSettings = _.defaults(this.options.breadcrumbSettings, {
       clickable: true
     });
 
@@ -287,19 +288,19 @@ export class FormioWizard extends FormioForm {
     // Add the header to the beginning.
     this.prepend(this.wizardHeader);
 
-    let showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
-    each(this.pages, (page, i) => {
+    const showHistory = (currentPage.breadcrumb.toLowerCase() === 'history');
+    _.each(this.pages, (page, i) => {
       // See if this page is in our history.
       if (showHistory && ((this.page !== i) && !this.history.includes(i))) {
         return;
       }
 
       // Set clickable based on breadcrumb settings
-      let clickable = this.page !== i && this.options.breadcrumbSettings.clickable
+      const clickable = this.page !== i && this.options.breadcrumbSettings.clickable;
       let pageClass = 'page-item ';
       pageClass += (i === this.page) ? 'active' : (clickable ? '' : 'disabled');
 
-      let pageButton = this.ce('li', {
+      const pageButton = this.ce('li', {
         class: pageClass,
         style: (clickable) ? 'cursor: pointer;' : ''
       });
@@ -313,7 +314,7 @@ export class FormioWizard extends FormioForm {
         });
       }
 
-      let pageLabel = this.ce('span', {
+      const pageLabel = this.ce('span', {
         class: 'page-link'
       });
       let pageTitle = page.title;
@@ -351,14 +352,15 @@ export class FormioWizard extends FormioForm {
     // Only rebuild if there is a page change.
     let pageIndex = 0;
     let rebuild = false;
-    each(this.wizard.components, (component) => {
+    _.each(this.wizard.components, (component) => {
       if (component.type !== 'panel') {
         return;
       }
 
       if (FormioUtils.hasCondition(component)) {
-        let hasPage = this.pages && this.pages[pageIndex] && (this.pageId(this.pages[pageIndex]) === this.pageId(component));
-        let shouldShow = FormioUtils.checkCondition(component, this.data, this.data);
+        const hasPage = this.pages && this.pages[pageIndex]
+          && (this.pageId(this.pages[pageIndex]) === this.pageId(component));
+        const shouldShow = FormioUtils.checkCondition(component, this.data, this.data);
         if ((shouldShow && !hasPage) || (!shouldShow && hasPage)) {
           rebuild = true;
           return false;
@@ -377,8 +379,8 @@ export class FormioWizard extends FormioForm {
     }
 
     // Update Wizard Nav
-    let nextPage = this.getNextPage(this.submission.data, this.page);
-    if (this._nextPage != nextPage) {
+    const nextPage = this.getNextPage(this.submission.data, this.page);
+    if (this._nextPage !== nextPage) {
       this.buildWizardNav(nextPage);
       this.emit('updateWizardNav', {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
       this._nextPage = nextPage;
@@ -399,7 +401,7 @@ export class FormioWizard extends FormioForm {
       class: 'list-inline'
     });
     this.element.appendChild(this.wizardNav);
-    each([
+    _.each([
       {name: 'cancel',    method: 'cancel',   class: 'btn btn-default btn-secondary'},
       {name: 'previous',  method: 'prevPage', class: 'btn btn-primary'},
       {name: 'next',      method: 'nextPage', class: 'btn btn-primary'},
@@ -408,12 +410,12 @@ export class FormioWizard extends FormioForm {
       if (!this.hasButton(button.name, nextPage)) {
         return;
       }
-      let buttonWrapper = this.ce('li', {
+      const buttonWrapper = this.ce('li', {
         class: 'list-inline-item'
       });
-      let buttonProp = button.name + 'Button';
-      let buttonElement = this[buttonProp] = this.ce('button', {
-        class: button.class + ' btn-wizard-nav-' + button.name
+      const buttonProp = `${button.name}Button`;
+      const buttonElement = this[buttonProp] = this.ce('button', {
+        class: `${button.class} btn-wizard-nav-${button.name}`
       });
       buttonElement.appendChild(this.text(this.t(button.name)));
       this.addEventListener(this[buttonProp], 'click', (event) => {
@@ -441,5 +443,3 @@ export class FormioWizard extends FormioForm {
 FormioWizard.setBaseUrl = Formio.setBaseUrl;
 FormioWizard.setApiUrl = Formio.setApiUrl;
 FormioWizard.setAppUrl = Formio.setAppUrl;
-
-module.exports = global.FormioWizard = FormioWizard;

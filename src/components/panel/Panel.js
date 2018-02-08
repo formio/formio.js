@@ -1,4 +1,4 @@
-import { FormioComponents } from '../Components';
+import {FormioComponents} from '../Components';
 export class PanelComponent extends FormioComponents {
   build() {
     let panelClass = `card border-${this.bootstrap4Theme(this.component.theme)} `;
@@ -8,10 +8,10 @@ export class PanelComponent extends FormioComponents {
       class: panelClass
     });
     if (this.component.title) {
-      let heading = this.ce('div', {
+      const heading = this.ce('div', {
         class: 'card-header panel-heading'
       });
-      let title = this.ce('h3', {
+      const title = this.ce('h3', {
         class: 'card-title panel-title'
       });
       title.appendChild(this.text(this.component.title));
@@ -19,7 +19,7 @@ export class PanelComponent extends FormioComponents {
       heading.appendChild(title);
       this.element.appendChild(heading);
     }
-    let body = this.ce('div', {
+    const body = this.ce('div', {
       class: 'card-body panel-body'
     });
     this.addComponents(body);

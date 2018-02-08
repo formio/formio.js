@@ -1,11 +1,8 @@
-'use strict';
-import _each from 'lodash/each';
-import _clone from 'lodash/clone';
-import _remove from 'lodash/remove';
-import _assign from 'lodash/assign';
-import Promise from "native-promise-only";
+import _ from 'lodash';
+import Promise from 'native-promise-only';
+
 import FormioUtils from '../utils/index';
-import { BaseComponent } from './base/Base';
+import {BaseComponent} from './base/Base';
 
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
@@ -28,17 +25,17 @@ export class FormioComponents extends BaseComponent {
    * Perform a deep iteration over every component, including those
    * within other container based components.
    *
-   * @param {function} cb - Called for every component.
+   * @param {function} fn - Called for every component.
    */
-  everyComponent(cb) {
+  everyComponent(fn) {
     const components = this.getComponents();
-    _each(components, (component, index) => {
+    _.each(components, (component, index) => {
       if (component.type === 'components') {
-        if (component.everyComponent(cb) === false) {
+        if (component.everyComponent(fn) === false) {
           return false;
         }
       }
-      else if (cb(component, components, index) === false) {
+      else if (fn(component, components, index) === false) {
         return false;
       }
     });
@@ -47,11 +44,11 @@ export class FormioComponents extends BaseComponent {
   /**
    * Perform an iteration over each component within this container component.
    *
-   * @param {function} cb - Called for each component
+   * @param {function} fn - Called for each component
    */
-  eachComponent(cb) {
-    _each(this.getComponents(), (component, index) => {
-      if (cb(component, index) === false) {
+  eachComponent(fn) {
+    _.each(this.getComponents(), (component, index) => {
+      if (fn(component, index) === false) {
         return false;
       }
     });
@@ -62,16 +59,16 @@ export class FormioComponents extends BaseComponent {
    * component tree.
    *
    * @param {string} key - The key of the component to retrieve.
-   * @param {function} cb - Called with the component once found.
+   * @param {function} fn - Called with the component once found.
    * @return {Object} - The component that is located.
    */
-  getComponent(key, cb) {
+  getComponent(key, fn) {
     let comp = null;
     this.everyComponent((component, components) => {
       if (component.component.key === key) {
         comp = component;
-        if (cb) {
-          cb(component, components);
+        if (fn) {
+          fn(component, components);
         }
         return false;
       }
@@ -83,16 +80,16 @@ export class FormioComponents extends BaseComponent {
    * Return a component provided the Id of the component.
    *
    * @param {string} id - The Id of the component.
-   * @param {function} cb - Called with the component once it is retrieved.
+   * @param {function} fn - Called with the component once it is retrieved.
    * @return {Object} - The component retrieved.
    */
-  getComponentById(id, cb) {
+  getComponentById(id, fn) {
     let comp = null;
     this.everyComponent((component, components) => {
       if (component.id === id) {
         comp = component;
-        if (cb) {
-          cb(component, components);
+        if (fn) {
+          fn(component, components);
         }
         return false;
       }
@@ -109,7 +106,7 @@ export class FormioComponents extends BaseComponent {
   createComponent(component, options, data) {
     if (!this.options.components) {
       this.options.components = require('./index');
-      _assign(this.options.components, FormioComponents.customComponents);
+      _.assign(this.options.components, FormioComponents.customComponents);
     }
     const comp = this.options.components.create(component, options, data, true);
     comp.parent = this;
@@ -150,26 +147,26 @@ export class FormioComponents extends BaseComponent {
     if (element && element.parentNode) {
       element.parentNode.removeChild(element);
     }
-    _remove(components, {id: component.id});
+    _.remove(components, {id: component.id});
   }
 
   /**
    * Removes a component provided the API key of that component.
    *
    * @param {string} key - The API key of the component to remove.
-   * @param {function} cb - Called once the component is removed.
+   * @param {function} fn - Called once the component is removed.
    * @return {null}
    */
-  removeComponentByKey(key, cb) {
+  removeComponentByKey(key, fn) {
     const comp = this.getComponent(key, (component, components) => {
       this.removeComponent(component, components);
-      if (cb) {
-        cb(component, components);
+      if (fn) {
+        fn(component, components);
       }
     });
     if (!comp) {
-      if (cb) {
-        cb(null);
+      if (fn) {
+        fn(null);
       }
       return null;
     }
@@ -179,19 +176,19 @@ export class FormioComponents extends BaseComponent {
    * Removes a component provided the Id of the component.
    *
    * @param {string} id - The Id of the component to remove.
-   * @param {function} cb - Called when the component is removed.
+   * @param {function} fn - Called when the component is removed.
    * @return {null}
    */
-  removeComponentById(id, cb) {
+  removeComponentById(id, fn) {
     const comp = this.getComponentById(id, (component, components) => {
       this.removeComponent(component, components);
-      if (cb) {
-        cb(component, components);
+      if (fn) {
+        fn(component, components);
       }
     });
     if (!comp) {
-      if (cb) {
-        cb(null);
+      if (fn) {
+        fn(null);
       }
       return null;
     }
@@ -205,12 +202,12 @@ export class FormioComponents extends BaseComponent {
   addComponents(element, data) {
     element = element || this.element;
     data = data || this.data;
-    _each(this.component.components, (component) => this.addComponent(component, element, data));
+    _.each(this.component.components, (component) => this.addComponent(component, element, data));
   }
 
   updateValue(flags) {
     let changed = false;
-    _each(this.components, (comp) => {
+    _.each(this.components, (comp) => {
       changed |= comp.updateValue(flags);
     });
     return changed;
@@ -240,7 +237,7 @@ export class FormioComponents extends BaseComponent {
     });
 
     // Iterate through all components and check conditions, and calculate values.
-    _each(this.getComponents(), (comp) => {
+    _.each(this.getComponents(), (comp) => {
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
@@ -281,7 +278,7 @@ export class FormioComponents extends BaseComponent {
    */
   beforeNext() {
     const ops = [];
-    _each(this.getComponents(), (comp) => ops.push(comp.beforeNext()));
+    _.each(this.getComponents(), (comp) => ops.push(comp.beforeNext()));
     return Promise.all(ops);
   }
 
@@ -292,18 +289,18 @@ export class FormioComponents extends BaseComponent {
    */
   beforeSubmit() {
     const ops = [];
-    _each(this.getComponents(), (comp) => ops.push(comp.beforeSubmit()));
+    _.each(this.getComponents(), (comp) => ops.push(comp.beforeSubmit()));
     return Promise.all(ops);
   }
 
   onResize(scale) {
     super.onResize(scale);
-    _each(this.getComponents(), (comp) => comp.onResize(scale));
+    _.each(this.getComponents(), (comp) => comp.onResize(scale));
   }
 
   calculateValue(data, flags) {
     let changed = super.calculateValue(data, flags);
-    _each(this.getComponents(), (comp) => {
+    _.each(this.getComponents(), (comp) => {
       changed |= comp.calculateValue(data, flags);
     });
     return changed;
@@ -311,7 +308,7 @@ export class FormioComponents extends BaseComponent {
 
   isValid(data, dirty) {
     let valid = super.isValid(data, dirty);
-    _each(this.getComponents(), (comp) => {
+    _.each(this.getComponents(), (comp) => {
       valid &= comp.isValid(data, dirty);
     });
     return valid;
@@ -323,7 +320,7 @@ export class FormioComponents extends BaseComponent {
     }
 
     let check = super.checkValidity(data, dirty);
-    _each(this.getComponents(), (comp) => {
+    _.each(this.getComponents(), (comp) => {
       check &= comp.checkValidity(data, dirty);
     });
     return check;
@@ -331,19 +328,19 @@ export class FormioComponents extends BaseComponent {
 
   setPristine(pristine) {
     super.setPristine(pristine);
-    _each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
+    _.each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
   }
 
   destroy(all) {
     super.destroy(all);
-    const components = _clone(this.components);
-    _each(components, (comp) => this.removeComponent(comp, this.components));
+    const components = _.clone(this.components);
+    _.each(components, (comp) => this.removeComponent(comp, this.components));
     this.components = [];
     this.hidden = [];
   }
 
   set disabled(disabled) {
-    _each(this.components, (component) => (component.disabled = disabled));
+    _.each(this.components, (component) => (component.disabled = disabled));
   }
 
   setHidden(component) {
@@ -365,7 +362,7 @@ export class FormioComponents extends BaseComponent {
 
   get errors() {
     let errors = [];
-    _each(this.getComponents(), (comp) => {
+    _.each(this.getComponents(), (comp) => {
       const compErrors = comp.errors;
       if (compErrors.length) {
         errors = errors.concat(compErrors);
@@ -384,7 +381,7 @@ export class FormioComponents extends BaseComponent {
 
   whenReady() {
     const promises = [];
-    _each(this.getComponents(), (component) => {
+    _.each(this.getComponents(), (component) => {
       promises.push(component.whenReady());
     });
     return Promise.all(promises);

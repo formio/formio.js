@@ -1,5 +1,6 @@
-import { TextFieldComponent } from '../textfield/TextField';
-import { BaseComponent } from '../base/Base';
+/* globals Quill */
+import {TextFieldComponent} from '../textfield/TextField';
+import {BaseComponent} from '../base/Base';
 
 export class TextAreaComponent extends TextFieldComponent {
   constructor(component, options, data) {
@@ -15,12 +16,12 @@ export class TextAreaComponent extends TextFieldComponent {
       placeholder: this.component.placeholder,
       modules: {
         toolbar: [
-          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-          [{ 'font': [] }],
+          [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+          [{'header': [1, 2, 3, 4, 5, 6, false]}],
+          [{'font': []}],
           ['bold', 'italic', 'underline', 'strike', {'script': 'sub'}, {'script': 'super'}, 'clean'],
-          [{ 'color': [] }, { 'background': [] }],
-          [{'list': 'ordered'}, {'list': 'bullet'}, { 'indent': '-1'}, { 'indent': '+1' }, { 'align': [] }],
+          [{'color': []}, {'background': []}],
+          [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}, {'align': []}],
           ['blockquote', 'code-block'],
           ['link', 'image', 'video', 'formula', 'source']
         ]
@@ -49,8 +50,8 @@ export class TextAreaComponent extends TextFieldComponent {
     container.appendChild(this.input);
 
     // Lazy load the quill css.
-    BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [
-      {type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + this.component.wysiwyg.theme + '.css'}
+    BaseComponent.requireLibrary(`quill-css-${this.component.wysiwyg.theme}`, 'Quill', [
+      {type: 'styles', src: `https://cdn.quilljs.com/1.3.5/quill.${this.component.wysiwyg.theme}.css`}
     ], true);
 
     // Lazy load the quill library.
@@ -59,22 +60,25 @@ export class TextAreaComponent extends TextFieldComponent {
         this.quill = new Quill(this.input, this.component.wysiwyg);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-        var txtArea = document.createElement('textarea');
+        const txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
         this.quill.addContainer('ql-custom').appendChild(txtArea);
 
         // Allows users to skip toolbar items when tabbing though form
-        var elm = document.querySelectorAll('.ql-formats > button');
-        for (var i=0; i < elm.length; i++) {
-          elm[i].setAttribute("tabindex", "-1");
+        const elm = document.querySelectorAll('.ql-formats > button');
+        for (let i=0; i < elm.length; i++) {
+          elm[i].setAttribute('tabindex', '-1');
         }
 
-        document.querySelector('.ql-source').addEventListener('click', () => {
-          if (txtArea.style.display === 'inherit') {
-            this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
-          }
-          txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
-        });
+        let qlSource = document.querySelector('.ql-source');
+        if (qlSource) {
+          qlSource.addEventListener('click', () => {
+            if (txtArea.style.display === 'inherit') {
+              this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+            }
+            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+          });
+        }
         /** END CODEBLOCK **/
 
         this.quill.on('text-change', () => {
@@ -129,7 +133,7 @@ export class TextAreaComponent extends TextFieldComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'textarea';
     if (this.component.rows) {
       info.attr.rows = this.component.rows;
