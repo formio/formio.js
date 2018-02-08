@@ -70,12 +70,15 @@ export class TextAreaComponent extends TextFieldComponent {
           elm[i].setAttribute('tabindex', '-1');
         }
 
-        document.querySelector('.ql-source').addEventListener('click', () => {
-          if (txtArea.style.display === 'inherit') {
-            this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
-          }
-          txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
-        });
+        let qlSource = document.querySelector('.ql-source');
+        if (qlSource) {
+          qlSource.addEventListener('click', () => {
+            if (txtArea.style.display === 'inherit') {
+              this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+            }
+            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+          });
+        }
         /** END CODEBLOCK **/
 
         this.quill.on('text-change', () => {

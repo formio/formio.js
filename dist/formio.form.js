@@ -8620,7 +8620,9 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
     value: function createInput(container) {
       var _this2 = this;
 
-      var inputGroup = this.ce('div');
+      var inputGroup = this.ce('div', {
+        class: 'input-group'
+      });
       var labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
       var wrappers = [];
 
@@ -10567,12 +10569,15 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
           elm[i].setAttribute("tabindex", "-1");
         }
 
-        document.querySelector('.ql-source').addEventListener('click', function () {
-          if (txtArea.style.display === 'inherit') {
-            _this2.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
-          }
-          txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
-        });
+        var qlSource = document.querySelector('.ql-source');
+        if (qlSource) {
+          qlSource.addEventListener('click', function () {
+            if (txtArea.style.display === 'inherit') {
+              _this2.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+            }
+            txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
+          });
+        }
         /** END CODEBLOCK **/
 
         _this2.quill.on('text-change', function () {
@@ -10958,7 +10963,6 @@ var WellComponent = exports.WellComponent = function (_FormioComponents) {
 }(_Components.FormioComponents);
 
 },{"../Components":1}],40:[function(require,module,exports){
-(function (global){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -10966,7 +10970,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FormioForm = undefined;
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -11098,7 +11101,7 @@ var getOptions = function getOptions(options) {
  * form.src = 'https://examples.form.io/example';
  */
 
-var FormioForm = exports.FormioForm = function (_FormioComponents) {
+var FormioForm = function (_FormioComponents) {
   _inherits(FormioForm, _FormioComponents);
 
   /**
@@ -12199,6 +12202,7 @@ var FormioForm = exports.FormioForm = function (_FormioComponents) {
 // Used to trigger a resize.
 
 
+exports.default = FormioForm;
 _formio2.default.onResize = function (scale) {
   return (0, _each3.default)(_formio2.default.forms, function (instance) {
     return instance.onResize(scale);
@@ -12218,11 +12222,8 @@ if ('addEventListener' in window) {
 FormioForm.setBaseUrl = _formio2.default.setBaseUrl;
 FormioForm.setApiUrl = _formio2.default.setApiUrl;
 FormioForm.setAppUrl = _formio2.default.setAppUrl;
-module.exports = global.FormioForm = FormioForm;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/Components":1,"./formio":41,"./i18n":43,"eventemitter2":55,"i18next":71,"lodash/assign":246,"lodash/capitalize":249,"lodash/clone":251,"lodash/debounce":254,"lodash/defaults":255,"lodash/each":258,"lodash/isArray":270,"lodash/mergeWith":301,"lodash/remove":305,"native-promise-only":319}],41:[function(require,module,exports){
-(function (global){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -13474,7 +13475,7 @@ var Formio = function () {
 // Define all the static properties.
 
 
-exports.Formio = Formio;
+exports.default = Formio;
 Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
@@ -13487,9 +13488,6 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
-module.exports = global.Formio = Formio;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./formio.polyfill":42,"./providers":44,"browser-cookies":52,"eventemitter2":55,"native-promise-only":319,"shallow-copy":322,"whatwg-fetch":327}],42:[function(require,module,exports){
 "use strict";
 

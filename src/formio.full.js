@@ -1,55 +1,15 @@
-import Promise from 'native-promise-only';
+'use strict';
 import FormioWizard from './formio.wizard';
 import FormioPDF from './formio.pdf';
 import FormioForm from './formio.form';
 import {FormioComponents} from './components/Components';
 import Formio from './formio';
+import createForm from './createForm';
+import formFactory from './formFactory';
 
-/**
- * Provided a form object, this will return the form instance.
- * @param element
- * @param form
- * @param options
- * @return {*}
- */
-Formio.formFactory = (element, form, options) => {
-  let instance = null;
-  if (form.display === 'wizard') {
-    instance = new FormioWizard(element, options);
-  }
-  else if (form.display === 'pdf') {
-    instance = new FormioPDF(element, options);
-  }
-  else {
-    instance = new FormioForm(element, options);
-  }
-  instance.form = form;
-  return instance;
-};
+Formio.formFactory = formFactory;
 
-/**
- * Creates a new form based on the form parameter.
- *
- * @param element {HMTLElement} - The HTML Element to add this form to.
- * @param form {string|Object} - The src of the form, or a form object.
- * @param options {Object} - The options to create this form.
- *
- * @return {Promise} - When the form is instance is ready.
- */
-Formio.createForm = (element, form, options) => {
-  if (typeof form === 'string') {
-    return (new Formio(form)).loadForm({params: {live: 1}}).then((formObj) => {
-      const instance = Formio.formFactory(element, formObj, options);
-      instance.url = form;
-      instance.nosubmit = false;
-      instance.loadSubmission();
-      return instance.ready.then(() => instance);
-    });
-  }
-  else {
-    return Promise.resolve(Formio.formFactory(element, form, options));
-  }
-};
+Formio.createForm = createForm;
 
 /**
  * Embed this form within the current page.
@@ -81,3 +41,4 @@ FormioForm.registerComponent = Formio.registerComponent = function(type, compone
 exports.Formio = Formio;
 exports.FormioForm = FormioForm;
 exports.FormioWizard = FormioWizard;
+exports.FormioPDF = FormioPDF;

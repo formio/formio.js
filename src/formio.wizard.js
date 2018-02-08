@@ -5,7 +5,7 @@ import FormioForm from './formio.form';
 import Formio from './formio';
 import FormioUtils from './utils';
 
-export class FormioWizard extends FormioForm {
+export default class FormioWizard extends FormioForm {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.
@@ -443,5 +443,3 @@ export class FormioWizard extends FormioForm {
 FormioWizard.setBaseUrl = Formio.setBaseUrl;
 FormioWizard.setApiUrl = Formio.setApiUrl;
 FormioWizard.setAppUrl = Formio.setAppUrl;
-
-module.exports = global.FormioWizard = FormioWizard;

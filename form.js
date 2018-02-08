@@ -1,2 +1,2 @@
 'use strict';
-module.exports = require('./build/formio.form');
+module.exports = require('./lib/formio.form');
