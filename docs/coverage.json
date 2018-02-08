@@ -1,7 +1,7 @@
 {
-  "coverage": "22.17%",
-  "expectCount": 929,
-  "actualCount": 206,
+  "coverage": "22.34%",
+  "expectCount": 931,
+  "actualCount": 208,
   "files": {
     "src/components/Components.js": {
       "expectCount": 37,
@@ -164,17 +164,17 @@
       "expectCount": 11,
       "actualCount": 0,
       "undocumentLines": [
-        5,
         6,
-        21,
-        25,
-        30,
-        37,
-        43,
-        48,
-        53,
-        170,
-        244
+        7,
+        22,
+        26,
+        31,
+        38,
+        44,
+        49,
+        54,
+        172,
+        246
       ]
     },
     "src/components/button/fixtures/comp1.js": {
@@ -841,18 +841,18 @@
         8,
         9,
         17,
-        66,
         68,
-        71,
-        77,
-        81,
-        85,
-        102,
-        119,
-        141,
-        151,
-        168,
-        189
+        70,
+        73,
+        79,
+        83,
+        87,
+        104,
+        121,
+        143,
+        153,
+        170,
+        191
       ]
     },
     "src/components/radio/fixtures/comp1.js": {
@@ -1086,11 +1086,11 @@
         46,
         57,
         59,
-        95,
-        104,
-        112,
-        123,
-        130
+        98,
+        107,
+        115,
+        126,
+        133
       ]
     },
     "src/components/textarea/fixtures/comp1.js": {
@@ -1241,6 +1241,16 @@
       "undocumentLines": [
         2
       ]
+    },
+    "src/createForm.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
+    },
+    "src/formFactory.js": {
+      "expectCount": 1,
+      "actualCount": 1,
+      "undocumentLines": []
     },
     "src/formio.embed.js": {
       "expectCount": 5,
@@ -1421,36 +1431,36 @@
       "expectCount": 31,
       "actualCount": 1,
       "undocumentLines": [
-        10,
-        20,
+        11,
         21,
         22,
         23,
         24,
         25,
-        28,
-        39,
-        87,
-        96,
-        124,
-        131,
-        141,
-        152,
-        161,
-        168,
-        190,
-        194,
-        212,
-        216,
-        225,
-        233,
-        257,
-        277,
-        281,
-        333,
-        348,
-        388,
-        398
+        26,
+        29,
+        40,
+        88,
+        97,
+        125,
+        132,
+        142,
+        153,
+        162,
+        169,
+        191,
+        195,
+        213,
+        217,
+        226,
+        234,
+        258,
+        278,
+        282,
+        334,
+        349,
+        389,
+        399
       ]
     },
     "src/providers/storage/base64.js": {

@@ -33,6 +33,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createForm">createForm</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formFactory">formFactory</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
@@ -164,7 +166,8 @@ import _ from &apos;lodash&apos;;
 import each from &apos;lodash/each&apos;;
 import clone from &apos;lodash/clone&apos;;
 import defaults from &apos;lodash/defaults&apos;;
-export class FormioWizard extends FormioForm {
+
+export default class FormioWizard extends FormioForm {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.
@@ -598,8 +601,6 @@ export class FormioWizard extends FormioForm {
 FormioWizard.setBaseUrl = Formio.setBaseUrl;
 FormioWizard.setApiUrl = Formio.setApiUrl;
 FormioWizard.setAppUrl = Formio.setAppUrl;
-
-module.exports = global.FormioWizard = FormioWizard;
 </code></pre>
 
 </div>

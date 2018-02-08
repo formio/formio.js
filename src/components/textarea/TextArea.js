@@ -69,8 +69,9 @@ export class TextAreaComponent extends TextFieldComponent {
           elm[i].setAttribute("tabindex", "-1");
         }
 
-        if (document.querySelector('.ql-source')) {
-          document.querySelector('.ql-source').addEventListener('click', () => {
+        let qlSource = document.querySelector('.ql-source');
+        if (qlSource) {
+          qlSource.addEventListener('click', () => {
             if (txtArea.style.display === 'inherit') {
               this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
             }
