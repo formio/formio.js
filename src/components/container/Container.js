@@ -17,6 +17,11 @@ export class ContainerComponent extends FormioComponents {
     this.addComponents(this.element, this.data[this.component.key]);
   }
 
+  get defaultValue() {
+    const value = super.defaultValue;
+    return typeof value === 'object' ? value : {};
+  }
+
   getValue() {
     if (this.viewOnly) {
       return this.value;
@@ -33,12 +38,16 @@ export class ContainerComponent extends FormioComponents {
     if (!value || !_isObject(value)) {
       return;
     }
+    this.data[this.component.key] = value;
     _each(this.components, (component) => {
       if (component.type === 'components') {
         component.setValue(value, flags);
       }
       else if (value.hasOwnProperty(component.component.key)) {
         component.setValue(value[component.component.key], flags);
+      }
+      else {
+        component.setValue(component.defaultValue, flags);
       }
     });
     this.updateValue(flags);

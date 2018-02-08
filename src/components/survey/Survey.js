@@ -61,6 +61,7 @@ export class SurveyComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
+    this.data[this.component.key] = value;
     if (!value) {
       return;
     }

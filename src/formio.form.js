@@ -785,10 +785,6 @@ export class FormioForm extends FormioComponents {
     this.on('submitButton', () => this.submit(), true);
     this.addComponents();
     let submission = this.getValue();
-    this.checkConditions(submission);
-    this.checkData(submission.data, {
-      noValidate: true
-    });
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
   }
 
