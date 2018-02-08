@@ -12,8 +12,17 @@ export class NumberComponent extends BaseComponent {
 
     this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
       || formattedNumberString.match(/345(.*)67/)[1];
-    this.thousandsSeparator = options.thousandsSeparator = options.thousandsSeparator
-      || formattedNumberString.match(/12(.*)345/)[1];
+
+    if (component.delimiter) {
+      if (options.hasOwnProperty('thousandsSeparator')) {
+        console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
+      }
+
+      this.delimiter = options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
+    }
+    else {
+      this.delimiter = '';
+    }
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
     this.decimalLimit = 20;
@@ -58,7 +67,7 @@ export class NumberComponent extends BaseComponent {
 
   parseNumber(value) {
     // Remove thousands separators and convert decimal separator to dot.
-    value = value.split(this.thousandsSeparator).join('').replace(this.decimalSeparator, '.');
+    value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
 
     if (this.component.validate && this.component.validate.integer) {
       return parseInt(value, 10);
@@ -74,7 +83,7 @@ export class NumberComponent extends BaseComponent {
       mask: createNumberMask({
         prefix: '',
         suffix: '',
-        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.thousandsSeparator),
+        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
         decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
         decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
         allowNegative: _.get(this.component, 'allowNegative', true),
