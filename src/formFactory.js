@@ -12,15 +12,17 @@ import FormioForm from './formio.form';
  */
 export default (element, form, options) => {
   let instance = null;
-  if (form.display === 'wizard') {
+  if (form && (form.display === 'wizard')) {
     instance = new FormioWizard(element, options);
   }
-  else if (form.display === 'pdf') {
+  else if (form && (form.display === 'pdf')) {
     instance = new FormioPDF(element, options);
   }
   else {
     instance = new FormioForm(element, options);
   }
-  instance.form = form;
+  if (form) {
+    instance.form = form;
+  }
   return instance;
 };

@@ -5,25 +5,36 @@ section: examples
 weight: 30
 lib: builder
 ---
-Form builder example
-
+<h3>Form Builder</h3>
+<div id="builder"></div>
+<h3>JSON Schema</h3>
+<pre id="json"></pre>
+<h3>Form Renderer</h3>
 <div id="formio"></div>
-<script type="text/javascript">
-Formio.builder(document.getElementById("formio")).then(function(builder) {
-  builder.on('saveComponent', function(event) {
-    console.log('saveComponent', event);
-  });
 
-  builder.on('editComponent', function(event) {
-    console.log('editComponent', event);
-  });
+<script type="text/javascript">
+Formio.builder(document.getElementById("builder")).then(function(builder) {
+  var jsonElement = document.getElementById('json');
+
+  Formio.createForm(document.getElementById('formio')).then(function(form) {
+    builder.on('saveComponent', function(event) {
+      var schema = builder.schema;
+      jsonElement.innerHTML = '';
+      jsonElement.appendChild(document.createTextNode(JSON.stringify(schema, null, 4)));
+      form.form = schema;
+    });
   
-  builder.on('updateComponent', function(event) {
-    console.log('updateComponent', event);
-  });
-  
-  builder.on('deleteComponent', function(event) {
-    console.log('deleteComponent', event);
+    builder.on('editComponent', function(event) {
+      console.log('editComponent', event);
+    });
+    
+    builder.on('updateComponent', function(event) {
+      console.log('updateComponent', event);
+    });
+    
+    builder.on('deleteComponent', function(event) {
+      console.log('deleteComponent', event);
+    });
   });
 });
 </script>

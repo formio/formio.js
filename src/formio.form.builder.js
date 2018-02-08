@@ -2,6 +2,7 @@ import FormioForm from './formio.form';
 import dragula from 'dragula';
 import Components from './components/builder';
 import {FormioComponents} from './components/Components';
+import Promise from 'native-promise-only';
 import FormioUtils from './utils';
 import _ from 'lodash';
 
@@ -65,6 +66,10 @@ export class FormioFormBuilder extends FormioForm {
 
       return container;
     };
+  }
+
+  get ready() {
+    return this.formReady;
   }
 
   deleteComponent(component) {
@@ -244,7 +249,6 @@ export class FormioFormBuilder extends FormioForm {
       if (componentCopy.component && componentCopy.component.__form) {
         delete componentCopy.component.__form;
       }
-      console.log(componentCopy.component);
       component.component = componentCopy.component;
       this.emit('saveComponent', component);
       this.form = this.schema;
@@ -465,5 +469,7 @@ export class FormioFormBuilder extends FormioForm {
         this.form = this.schema;
       }
     });
+
+    this.formReadyResolve();
   }
 }
