@@ -26,5 +26,6 @@ export const component = {
   'label': 'Number',
   'inputType': 'number',
   'tableView': true,
+  'delimiter': true,
   'input': true
 };

@@ -111,6 +111,7 @@ export const component = {
       'key': 'year',
       'label': 'Year',
       'inputType': 'number',
+      'delimiter': true,
       'tableView': true,
       'input': true
     }
