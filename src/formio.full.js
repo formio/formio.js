@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 import FormioWizard from './formio.wizard';
 import FormioPDF from './formio.pdf';
 import FormioForm from './formio.form';

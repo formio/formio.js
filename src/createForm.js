@@ -1,4 +1,4 @@
-import Promise from "native-promise-only";
+import Promise from 'native-promise-only';
 import Formio from './formio';
 import formFactory from './formFactory';
 
@@ -14,7 +14,7 @@ import formFactory from './formFactory';
 export default (element, form, options) => {
   if (typeof form === 'string') {
     return (new Formio(form)).loadForm({params: {live: 1}}).then((formObj) => {
-      let instance = formFactory(element, formObj, options);
+      const instance = formFactory(element, formObj, options);
       instance.url = form;
       instance.nosubmit = false;
       instance.loadSubmission();
@@ -24,4 +24,4 @@ export default (element, form, options) => {
   else {
     return Promise.resolve(formFactory(element, form, options));
   }
-}
+};
