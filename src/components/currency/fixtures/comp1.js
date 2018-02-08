@@ -23,6 +23,7 @@ export const component = {
     'eq': ''
   },
   'type': 'currency',
+  'delimiter': true,
   'tags': [
 
   ]

@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - 'Delimiter' property to Number component.
+
 ## 2.29.0
 ### Added
  - New Field Logic feature.
@@ -24,7 +28,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problems with the viewAsHtml flag not rendering the submission.
 
 ## 2.28.6
-### Added 
+### Added
  - Autofocus capability.
  - Ability to provide spellcheck parameter to input.
 
