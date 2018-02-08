@@ -12120,6 +12120,7 @@ FormioForm.setApiUrl = _formio2.default.setApiUrl;
 FormioForm.setAppUrl = _formio2.default.setAppUrl;
 
 },{"./components/Components":1,"./formio":44,"./i18n":47,"eventemitter2":60,"i18next":76,"lodash":78,"native-promise-only":80}],43:[function(require,module,exports){
+(function (global){
 'use strict';
 
 var _formio = require('./formio.wizard');
@@ -12183,11 +12184,12 @@ _formio6.default.registerComponent = _formio8.default.registerComponent = functi
   _Components.FormioComponents.customComponents[type] = component;
 };
 
-exports.Formio = _formio8.default;
+exports.Formio = global.Formio = _formio8.default;
 exports.FormioForm = _formio6.default;
 exports.FormioWizard = _formio2.default;
 exports.FormioPDF = _formio4.default;
 
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/Components":1,"./createForm":40,"./formFactory":41,"./formio":44,"./formio.form":42,"./formio.pdf":45,"./formio.wizard":46}],44:[function(require,module,exports){
 'use strict';
 

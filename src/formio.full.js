@@ -38,7 +38,7 @@ FormioForm.registerComponent = Formio.registerComponent = function(type, compone
   FormioComponents.customComponents[type] = component;
 };
 
-exports.Formio = Formio;
+exports.Formio = global.Formio = Formio;
 exports.FormioForm = FormioForm;
 exports.FormioWizard = FormioWizard;
 exports.FormioPDF = FormioPDF;
