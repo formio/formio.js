@@ -1,4 +1,3 @@
-"use strict";
 if (typeof Formio !== 'undefined') {
   Formio.contrib = require('./contrib');
 }

@@ -1,8 +1,8 @@
-"use strict";
+'use strict';
 import FormioWizard from './formio.wizard';
 import FormioPDF from './formio.pdf';
 import FormioForm from './formio.form';
-import { FormioComponents } from './components/Components';
+import {FormioComponents} from './components/Components';
 import Formio from './formio';
 import createForm from './createForm';
 import formFactory from './formFactory';
@@ -19,12 +19,12 @@ Formio.embedForm = function(embed) {
   if (!embed || !embed.src) {
     return null;
   }
-  let id = embed.id || 'formio-' + Math.random().toString(36).substring(7);
-  let className = embed.class || 'formio-form-wrapper';
-  let code = embed.styles ? '<link rel="stylesheet" href="' + embed.styles + '">' : '';
-  code += '<div id="' + id + '" class="' + className + '"></div>';
+  const id = embed.id || `formio-${Math.random().toString(36).substring(7)}`;
+  const className = embed.class || 'formio-form-wrapper';
+  let code = embed.styles ? `<link rel="stylesheet" href="${embed.styles}">` : '';
+  code += `<div id="${id}" class="${className}"></div>`;
   document.write(code);
-  let formElement = document.getElementById(id);
+  const formElement = document.getElementById(id);
   return Formio.createForm(formElement, embed.src);
 };
 

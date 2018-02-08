@@ -1,36 +1,36 @@
 export const component = {
-  "input": true,
-  "tableView": true,
-  "label": "gmap",
-  "key": "gmap",
-  "placeholder": "",
-  "multiple": false,
-  "protected": false,
-  "clearOnHide": true,
-  "unique": false,
-  "persistent": true,
-  "map": {
-    "gmapId": "",
-    "region": "",
-    "key": "",
-    "autocompleteOptions" : {
-      "componentRestrictions" : {
-        "country" : [
-          ""
+  'input': true,
+  'tableView': true,
+  'label': 'gmap',
+  'key': 'gmap',
+  'placeholder': '',
+  'multiple': false,
+  'protected': false,
+  'clearOnHide': true,
+  'unique': false,
+  'persistent': true,
+  'map': {
+    'gmapId': '',
+    'region': '',
+    'key': '',
+    'autocompleteOptions' : {
+      'componentRestrictions' : {
+        'country' : [
+          ''
         ]
       }
     }
   },
-  "validate": {
-    "required": false
+  'validate': {
+    'required': false
   },
-  "type": "gmap",
-  "tags": [
+  'type': 'gmap',
+  'tags': [
 
   ],
-  "conditional": {
-    "show": "",
-    "when": null,
-    "eq": ""
+  'conditional': {
+    'show': '',
+    'when': null,
+    'eq': ''
   }
 };

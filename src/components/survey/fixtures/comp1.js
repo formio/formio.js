@@ -1,53 +1,53 @@
 export const component = {
-  "conditional": {
-    "eq": "",
-    "when": null,
-    "show": ""
+  'conditional': {
+    'eq': '',
+    'when': null,
+    'show': ''
   },
-  "tags": [],
-  "type": "survey",
-  "validate": {
-    "customPrivate": false,
-    "custom": "",
-    "required": false
+  'tags': [],
+  'type': 'survey',
+  'validate': {
+    'customPrivate': false,
+    'custom': '',
+    'required': false
   },
-  "persistent": true,
-  "protected": false,
-  "defaultValue": "",
-  "values": [
+  'persistent': true,
+  'protected': false,
+  'defaultValue': '',
+  'values': [
     {
-      "label": "Excellent",
-      "value": "excellent"
+      'label': 'Excellent',
+      'value': 'excellent'
     },
     {
-      "label": "Good",
-      "value": "good"
+      'label': 'Good',
+      'value': 'good'
     },
     {
-      "label": "Average",
-      "value": "average"
+      'label': 'Average',
+      'value': 'average'
     },
     {
-      "label": "Inadequate",
-      "value": "inadequate"
+      'label': 'Inadequate',
+      'value': 'inadequate'
     },
     {
-      "label": "Bad",
-      "value": "bad"
+      'label': 'Bad',
+      'value': 'bad'
     }
   ],
-  "questions": [
+  'questions': [
     {
-      "label": "How do you like our service?",
-      "value": "service"
+      'label': 'How do you like our service?',
+      'value': 'service'
     },
     {
-      "label": "How would you rate the technology?",
-      "value": "howWouldYouRateTheTechnology"
+      'label': 'How would you rate the technology?',
+      'value': 'howWouldYouRateTheTechnology'
     }
   ],
-  "key": "surveyQuestions",
-  "label": "Survey Questions",
-  "tableView": true,
-  "input": true
+  'key': 'surveyQuestions',
+  'label': 'Survey Questions',
+  'tableView': true,
+  'input': true
 };

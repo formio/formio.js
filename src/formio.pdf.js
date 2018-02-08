@@ -1,5 +1,4 @@
-'use strict';
-import Promise from "native-promise-only";
+import Promise from 'native-promise-only';
 import Formio from './formio';
 import FormioForm from './formio.form';
 
@@ -24,16 +23,16 @@ export default class FormioPDF extends FormioForm {
     if (!this._form || !this._form.settings || !this._form.settings.pdf) {
       return '';
     }
-    var iframeSrc = this._form.settings.pdf.src + '.html';
-    var params = ['id=' + this.id];
+    let iframeSrc = `${this._form.settings.pdf.src}.html`;
+    const params = [`id=${this.id}`];
     if (this.options.readOnly) {
       params.push('readonly=1');
     }
     if (this.options.zoom) {
-      params.push('zoom=' + this.options.zoom);
+      params.push(`zoom=${this.options.zoom}`);
     }
     if (params.length) {
-      iframeSrc += '?' + params.join('&');
+      iframeSrc += `?${params.join('&')}`;
     }
     return iframeSrc;
   }
@@ -127,8 +126,8 @@ export default class FormioPDF extends FormioForm {
 /**
  * Listen for window messages.
  */
-window.addEventListener('message', function(event) {
-  var eventData = null;
+window.addEventListener('message', (event) => {
+  let eventData = null;
   try {
     eventData = JSON.parse(event.data);
   }
@@ -142,6 +141,6 @@ window.addEventListener('message', function(event) {
     eventData.formId &&
     Formio.forms.hasOwnProperty(eventData.formId)
   ) {
-    Formio.forms[eventData.formId].emit('iframe-' + eventData.name, eventData.data);
+    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
   }
 });

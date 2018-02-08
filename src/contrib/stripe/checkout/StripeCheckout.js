@@ -1,14 +1,15 @@
-import _cloneDeep from 'lodash/cloneDeep';
-import _each from 'lodash/each';
-import { BaseComponent } from '../../../components/base/Base';
-import { ButtonComponent } from '../../../components/button/Button';
+/* globals StripeCheckout */
+import _ from 'lodash';
+
+import {BaseComponent} from '../../../components/base/Base';
+import {ButtonComponent} from '../../../components/button/Button';
 
 export class StripeCheckoutComponent extends ButtonComponent {
   constructor(component, options, data) {
     super(component, options, data);
 
     // Get the source for Stripe API
-    let src = 'https://checkout.stripe.com/checkout.js';
+    const src = 'https://checkout.stripe.com/checkout.js';
 
     /**
      * Promise when Stripe is ready.
@@ -57,13 +58,13 @@ export class StripeCheckoutComponent extends ButtonComponent {
    */
   onClickButton(event) {
     // Return if component call is not the current component
-    if (this.component.key != event.component.key) {
+    if (this.component.key !== event.component.key) {
       return;
     }
 
     // Open Checkout with further options:
-    let popupConfiguration = _cloneDeep(this.component.stripe.popupConfiguration) || {};
-    _each(popupConfiguration, (value, key) => {
+    const popupConfiguration = _.cloneDeep(this.component.stripe.popupConfiguration) || {};
+    _.each(popupConfiguration, (value, key) => {
       popupConfiguration[key] = this.t(value);
     });
 
@@ -107,17 +108,17 @@ export class StripeCheckoutComponent extends ButtonComponent {
 
     // When stripe checkout is ready, create the handler and add event listeners
     this.stripeCheckoutReady.then(() => {
-      let handlerConfiguration = _cloneDeep(this.component.stripe.handlerConfiguration) || {};
+      const handlerConfiguration = _.cloneDeep(this.component.stripe.handlerConfiguration) || {};
       handlerConfiguration.key = this.component.stripe.apiKey;
       handlerConfiguration.token = this.onToken.bind(this);
-      if (typeof handlerConfiguration.locale === "undefined") {
+      if (typeof handlerConfiguration.locale === 'undefined') {
         handlerConfiguration.locale = this.options.language;
       }
       this.handler = StripeCheckout.configure(handlerConfiguration);
 
       this.on('customEvent', this.onClickButton.bind(this));
 
-      this.addEventListener(window, 'popstate', (event) => {
+      this.addEventListener(window, 'popstate', () => {
         this.handler.close();
       });
     });

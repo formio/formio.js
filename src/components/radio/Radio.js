@@ -1,10 +1,7 @@
-import { BaseComponent } from '../base/Base';
-import _each from 'lodash/each';
-import _assign from 'lodash/assign';
-import _get from 'lodash/get';
-import _isString from 'lodash/isString';
-import _toString from 'lodash/toString';
-import _find from 'lodash/find';
+import _ from 'lodash';
+
+import {BaseComponent} from '../base/Base';
+
 export class RadioComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
@@ -19,9 +16,9 @@ export class RadioComponent extends BaseComponent {
       class: 'input-group'
     });
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
-    var wrappers = [];
+    const wrappers = [];
 
-    _each(this.component.values, (value) => {
+    _.each(this.component.values, (value) => {
       const wrapperClass = `form-check ${this.optionWrapperClass}`;
       const labelWrapper = this.ce('div', {
         class: wrapperClass
@@ -43,7 +40,7 @@ export class RadioComponent extends BaseComponent {
 
       // Create the input.
       const input = this.ce('input');
-      _each(this.info.attr, function (value, key) {
+      _.each(this.info.attr, (value, key) => {
         input.setAttribute(key, value);
       });
 
@@ -86,14 +83,14 @@ export class RadioComponent extends BaseComponent {
 
   setInputLabelStyle(label) {
     if (this.component.optionsLabelPosition === 'left') {
-      _assign(label.style, {
+      _.assign(label.style, {
         textAlign: 'center',
         paddingLeft: 0,
       });
     }
 
     if (this.optionsLabelOnTheTopOrBottom()) {
-      _assign(label.style, {
+      _.assign(label.style, {
         display: 'block',
         textAlign: 'center',
         paddingLeft: 0,
@@ -103,14 +100,14 @@ export class RadioComponent extends BaseComponent {
 
   setInputStyle(input) {
     if (this.component.optionsLabelPosition === 'left') {
-      _assign(input.style, {
+      _.assign(input.style, {
         position: 'initial',
         marginLeft: '7px'
       });
     }
 
     if (this.optionsLabelOnTheTopOrBottom()) {
-      _assign(input.style, {
+      _.assign(input.style, {
         width: '100%',
         position: 'initial',
         marginLeft: 0
@@ -123,7 +120,7 @@ export class RadioComponent extends BaseComponent {
       return this.value;
     }
     let value = '';
-    _each(this.inputs, (input) => {
+    _.each(this.inputs, (input) => {
       if (input.checked) {
         value = input.value;
         if (value === 'true') {
@@ -141,13 +138,13 @@ export class RadioComponent extends BaseComponent {
   }
 
   getView(value) {
-    if (!_isString(value)) {
-      return _toString(value);
+    if (!_.isString(value)) {
+      return _.toString(value);
     }
 
-    const option = _find(this.component.values, (v) => v.value === value);
+    const option = _.find(this.component.values, (v) => v.value === value);
 
-    return _get(option, 'label');
+    return _.get(option, 'label');
   }
 
   setValueAt(index, value) {
@@ -174,13 +171,13 @@ export class RadioComponent extends BaseComponent {
       const value = this.data[this.component.key];
       const optionSelectedClass = 'radio-selected';
 
-      _each(this.wrappers, (wrapper, index) => {
-        var input = this.inputs[index];
+      _.each(this.wrappers, (wrapper, index) => {
+        const input = this.inputs[index];
         if (input.value === value) {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);
-
-        } else {
+        }
+        else {
           this.removeClass(wrapper, optionSelectedClass);
         }
       });

@@ -1,18 +1,18 @@
 export const component = {
-  "conditional": {
-    "eq": "",
-    "when": null,
-    "show": ""
+  'conditional': {
+    'eq': '',
+    'when': null,
+    'show': ''
   },
-  "tags": [
+  'tags': [
 
   ],
-  "type": "hidden",
-  "persistent": true,
-  "unique": false,
-  "protected": false,
-  "label": "Secret",
-  "key": "secret",
-  "tableView": true,
-  "input": true
+  'type': 'hidden',
+  'persistent': true,
+  'unique': false,
+  'protected': false,
+  'label': 'Secret',
+  'key': 'secret',
+  'tableView': true,
+  'input': true
 };

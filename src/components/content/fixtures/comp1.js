@@ -1,14 +1,14 @@
 export const component = {
-  "conditional": {
-    "eq": "",
-    "when": null,
-    "show": ""
+  'conditional': {
+    'eq': '',
+    'when': null,
+    'show': ''
   },
-  "tags": [
+  'tags': [
 
   ],
-  "type": "content",
-  "html": "<h1>This is a test</h1>\n",
-  "input": false,
-  "key": "content1"
+  'type': 'content',
+  'html': '<h1>This is a test</h1>\n',
+  'input': false,
+  'key': 'content1'
 };

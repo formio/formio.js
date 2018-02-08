@@ -1,19 +1,11 @@
-import maskInput, { conformToMask } from 'vanilla-text-mask';
-import Promise from "native-promise-only";
-import _get from 'lodash/get';
-import _each from 'lodash/each';
-import _debounce from 'lodash/debounce';
-import _isArray from 'lodash/isArray';
-import _clone from 'lodash/clone';
-import _cloneDeep from 'lodash/cloneDeep';
-import _defaults from 'lodash/defaults';
-import _isEqual from 'lodash/isEqual';
-import _isUndefined from 'lodash/isUndefined';
-import _toString from 'lodash/toString';
-import FormioUtils from '../../utils';
-import { Validator } from '../Validator';
+import maskInput, {conformToMask} from 'vanilla-text-mask';
+import Promise from 'native-promise-only';
+import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
+
+import FormioUtils from '../../utils';
+import {Validator} from '../Validator';
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -27,7 +19,7 @@ export class BaseComponent {
    * @param {Object} data - The global data submission object this component will belong.
    */
   constructor(component, options, data) {
-    this.originalComponent = _cloneDeep(component);
+    this.originalComponent = _.cloneDeep(component);
     /**
      * The ID of this component. This value is auto-generated when the component is created, but
      * can also be provided from the component.id value passed into the constructor.
@@ -39,7 +31,7 @@ export class BaseComponent {
      * The options for this component.
      * @type {{}}
      */
-    this.options = _defaults(_clone(options), {
+    this.options = _.defaults(_.clone(options), {
       highlightErrors: true
     });
 
@@ -170,7 +162,7 @@ export class BaseComponent {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
-    this.triggerChange = _debounce(this.onChange.bind(this), 100);
+    this.triggerChange = _.debounce(this.onChange.bind(this), 100);
 
     /**
      * An array of event handlers so that the destry command can deregister them.
@@ -223,7 +215,7 @@ export class BaseComponent {
     params.keySeparator = '.|.';
     params.pluralSeparator = '._.';
     params.contextSeparator = '._.';
-    let translated = this.i18next.t(text, params);
+    const translated = this.i18next.t(text, params);
     return translated || text;
   }
 
@@ -249,7 +241,7 @@ export class BaseComponent {
     if (!this.events) {
       return;
     }
-    let type = `formio.${event}`;
+    const type = `formio.${event}`;
     this.eventListeners.push({
       type: type,
       listener: cb,
@@ -413,7 +405,7 @@ export class BaseComponent {
   }
 
   getView(value) {
-    return _toString(value);
+    return _.toString(value);
   }
 
   updateViewOnlyValue() {
@@ -452,10 +444,10 @@ export class BaseComponent {
    */
   get customStyle() {
     let customCSS = '';
-    _each(this.component.style, function(value, key) {
-        if (value !== '') {
-          customCSS += `${key}:${value};`;
-        }
+    _.each(this.component.style, (value, key) => {
+      if (value !== '') {
+        customCSS += `${key}:${value};`;
+      }
     });
     return customCSS;
   }
@@ -499,7 +491,7 @@ export class BaseComponent {
       return false;
     }
     else {
-      let table = this.ce('table', {
+      const table = this.ce('table', {
         class: 'table table-bordered'
       });
       this.tbody = this.ce('tbody');
@@ -529,7 +521,8 @@ export class BaseComponent {
     else if (this.component.customDefaultValue) {
       if (typeof this.component.customDefaultValue === 'string') {
         try {
-          defaultValue = (new Function('component', 'row', 'data', `var value = ''; ${this.component.customDefaultValue.toString()}; return value;`))(this, this.data, this.data);
+          defaultValue = (new Function('component', 'row', 'data',
+            `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
         }
         catch (e) {
           defaultValue = null;
@@ -542,13 +535,14 @@ export class BaseComponent {
         try {
           defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
             data: this.data,
-            row: this.data
+            row: this.data,
+            _
           });
         }
         catch (err) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
+          console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
           /* eslint-enable no-console */
         }
       }
@@ -580,7 +574,7 @@ export class BaseComponent {
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
     }
-    if (this.data[this.component.key] && !_isArray(this.data[this.component.key])) {
+    if (this.data[this.component.key] && !Array.isArray(this.data[this.component.key])) {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
     this.data[this.component.key].push(this.defaultValue);
@@ -592,7 +586,7 @@ export class BaseComponent {
   addValue() {
     this.addNewValue();
     this.buildRows();
-	  this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions(this.root ? this.root.data : this.data);
     this.restoreValue();
   }
 
@@ -617,15 +611,15 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _each(this.data[this.component.key], (value, index) => {
-      let tr = this.ce('tr');
-      let td = this.ce('td');
+    _.each(this.data[this.component.key], (value, index) => {
+      const tr = this.ce('tr');
+      const td = this.ce('td');
       const input = this.createInput(td);
       input.value = value;
       tr.appendChild(td);
 
       if (!this.shouldDisable) {
-        let tdAdd = this.ce('td');
+        const tdAdd = this.ce('td');
         tdAdd.appendChild(this.removeButton(index));
         tr.appendChild(tdAdd);
       }
@@ -634,8 +628,8 @@ export class BaseComponent {
     });
 
     if (!this.shouldDisable) {
-      let tr = this.ce('tr');
-      let td = this.ce('td', {
+      const tr = this.ce('tr');
+      const td = this.ce('td', {
         colspan: '2'
       });
       td.appendChild(this.addButton());
@@ -662,9 +656,9 @@ export class BaseComponent {
       case 'zoom-out':
         return 'fa fa-search-minus';
       case 'question-sign':
-        return `fa fa-question-circle`;
+        return 'fa fa-question-circle';
       case 'remove-circle':
-        return `fa fa-times-circle-o`;
+        return 'fa fa-times-circle-o';
       default:
         return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
     }
@@ -675,7 +669,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The "Add New" button html element.
    */
   addButton(justIcon) {
-    let addButton = this.ce('a', {
+    const addButton = this.ce('a', {
       class: 'btn btn-primary'
     });
     this.addEventListener(addButton, 'click', (event) => {
@@ -683,7 +677,7 @@ export class BaseComponent {
       this.addValue();
     });
 
-    let addIcon = this.ce('i', {
+    const addIcon = this.ce('i', {
       class: this.iconClass('plus')
     });
 
@@ -711,7 +705,10 @@ export class BaseComponent {
    * @return {*}
    */
   get errorLabel() {
-    return this.t(this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key);
+    return this.t(this.component.errorLabel
+      || this.component.label
+      || this.component.placeholder
+      || this.component.key);
   }
 
   /**
@@ -729,7 +726,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The html element of the remove button.
    */
   removeButton(index) {
-    let removeButton = this.ce('button', {
+    const removeButton = this.ce('button', {
       type: 'button',
       class: 'btn btn-default btn-secondary',
       tabindex: '-1'
@@ -740,7 +737,7 @@ export class BaseComponent {
       this.removeValue(index);
     });
 
-    let removeIcon = this.ce('i', {
+    const removeIcon = this.ce('i', {
       class: this.iconClass('remove-circle')
     });
     removeButton.appendChild(removeIcon);
@@ -773,7 +770,7 @@ export class BaseComponent {
   }
 
   getLabelWidth() {
-    if (_isUndefined(this.component.labelWidth)) {
+    if (_.isUndefined(this.component.labelWidth)) {
       this.component.labelWidth = 30;
     }
 
@@ -781,7 +778,7 @@ export class BaseComponent {
   }
 
   getLabelMargin() {
-    if (_isUndefined(this.component.labelMargin)) {
+    if (_.isUndefined(this.component.labelMargin)) {
       this.component.labelMargin = 3;
     }
 
@@ -798,10 +795,10 @@ export class BaseComponent {
       input.style.width = `${100 - totalLabelWidth}%`;
 
       if (this.labelOnTheLeft(this.component.labelPosition)) {
-        input.style.marginLeft = `${totalLabelWidth}%`
+        input.style.marginLeft = `${totalLabelWidth}%`;
       }
       else {
-        input.style.marginRight = `${totalLabelWidth}%`
+        input.style.marginRight = `${totalLabelWidth}%`;
       }
     }
   }
@@ -879,7 +876,6 @@ export class BaseComponent {
       return label;
     }
 
-    const char = match[0];
     const index = match.index + 1;
     const lowLineCombinator = '\u0332';
 
@@ -1051,7 +1047,7 @@ export class BaseComponent {
         mask
       });
       if (mask.numeric) {
-        input.setAttribute('pattern', "\\d*");
+        input.setAttribute('pattern', '\\d*');
       }
       if (!this.component.placeholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
@@ -1065,9 +1061,9 @@ export class BaseComponent {
    * @returns {HTMLElement} - Either the input or the group that contains the input.
    */
   createInput(container) {
-    let input = this.ce(this.info.type, this.info.attr);
+    const input = this.ce(this.info.type, this.info.attr);
     this.setInputMask(input);
-    let inputGroup = this.addInputGroup(input, container);
+    const inputGroup = this.addInputGroup(input, container);
     this.addPrefix(input, inputGroup);
     this.addInput(input, inputGroup || container);
     this.addSuffix(input, inputGroup);
@@ -1088,7 +1084,7 @@ export class BaseComponent {
    */
   addEventListener(obj, evt, func) {
     this.eventHandlers.push({type: evt, func: func});
-    if ('addEventListener' in obj){
+    if ('addEventListener' in obj) {
       obj.addEventListener(evt, func, false);
     }
     else if ('attachEvent' in obj) {
@@ -1112,12 +1108,12 @@ export class BaseComponent {
     if (this.inputMask) {
       this.inputMask.destroy();
     }
-    _each(this.eventListeners, (listener) => {
+    _.each(this.eventListeners, (listener) => {
       if (all || listener.internal) {
         this.events.off(listener.type, listener.listener);
       }
     });
-    _each(this.eventHandlers, (handler) => {
+    _.each(this.eventHandlers, (handler) => {
       if (handler.event) {
         window.removeEventListener(handler.event, handler.func);
       }
@@ -1181,9 +1177,9 @@ export class BaseComponent {
    *
    * @return {HTMLElement} - The created element.
    */
-  ce(type, attr, children = null, events = {}) {
+  ce(type, attr, children = null) {
     // Create the element.
-    let element = document.createElement(type);
+    const element = document.createElement(type);
 
     // Add attributes.
     if (attr) {
@@ -1210,7 +1206,7 @@ export class BaseComponent {
    * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
-    _each(attr, (value, key) => {
+    _.each(attr, (value, key) => {
       if (typeof value !== 'undefined') {
         if (key.indexOf('on') === 0) {
           // If this is an event, add a listener.
@@ -1303,24 +1299,26 @@ export class BaseComponent {
       return;
     }
 
-    const newComponent = _cloneDeep(this.originalComponent);
+    const newComponent = _.cloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
       const result = FormioUtils.checkTrigger(newComponent, logic.trigger, this.data, data);
 
       if (result) {
         changed |= logic.actions.reduce((changed, action) => {
-          switch(action.type) {
+          switch (action.type) {
             case 'property':
               FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
-            case 'value':
-              const newValue = (new Function('row', 'data', 'component', 'result', action.value))(this.data, data, newComponent, result);
-              if (!_isEqual(this.getValue(), newValue)) {
+            case 'value': {
+              const newValue = (new Function('row', 'data', 'component', 'result',
+                action.value))(this.data, data, newComponent, result);
+              if (!_.isEqual(this.getValue(), newValue)) {
                 this.setValue(newValue);
                 changed = true;
               }
               break;
+            }
             case 'validation':
               // TODO
               break;
@@ -1332,7 +1330,7 @@ export class BaseComponent {
     }, false);
 
     // If component definition changed, replace and mark as changed.
-    if (!_isEqual(this.component, newComponent)) {
+    if (!_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
       changed = true;
     }
@@ -1352,7 +1350,7 @@ export class BaseComponent {
     }
 
     if (this.errorElement) {
-      let errorMessage = this.ce('p', {
+      const errorMessage = this.ce('p', {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));
@@ -1385,7 +1383,7 @@ export class BaseComponent {
     }
 
     this._visible = show;
-    let element = this.getElement();
+    const element = this.getElement();
     if (element) {
       if (show && !this.component.hidden) {
         element.removeAttribute('hidden');
@@ -1450,7 +1448,7 @@ export class BaseComponent {
     }
 
     // Set the changed variable.
-    let changed = {
+    const changed = {
       component: this.component,
       value: this.value,
       flags: flags
@@ -1470,8 +1468,8 @@ export class BaseComponent {
       return;
     }
     this.addEventListener(input, 'keypress', (event) => {
-      let key = event.keyCode || event.which;
-      if (key == 13) {
+      const key = event.keyCode || event.which;
+      if (key === 13) {
         event.preventDefault();
         event.stopPropagation();
         this.emit('submitButton');
@@ -1539,7 +1537,7 @@ export class BaseComponent {
       return this.value;
     }
     const values = [];
-    for (let i in this.inputs) {
+    for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
           return this.getValueAt(i);
@@ -1558,7 +1556,7 @@ export class BaseComponent {
    * @return {boolean}
    */
   hasChanged(before, after) {
-    return !_isEqual(before, after);
+    return !_.isEqual(before, after);
   }
 
   /**
@@ -1596,7 +1594,7 @@ export class BaseComponent {
       });
     }
     else {
-      let defaultValue = this.defaultValue;
+      const defaultValue = this.defaultValue;
       if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
@@ -1624,7 +1622,8 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
-        let value = (new Function('component', 'row', 'data', `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data, data);
+        const value = (new Function('component', 'row', 'data',
+          `value = []; ${this.component.calculateValue}; return value;`))(this, this.data, data);
         changed = this.setValue(value, flags);
       }
       catch (err) {
@@ -1636,9 +1635,10 @@ export class BaseComponent {
     }
     else {
       try {
-        let val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
+        const val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
           data,
-          row: this.data
+          row: this.data,
+          _
         });
         changed = this.setValue(val, flags);
       }
@@ -1714,7 +1714,7 @@ export class BaseComponent {
       return true;
     }
 
-    let message = this.invalid || this.invalidMessage(data, dirty);
+    const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
@@ -1733,7 +1733,7 @@ export class BaseComponent {
    * @return {boolean}
    */
   validateMultiple(value) {
-    return this.component.multiple && _isArray(value);
+    return this.component.multiple && Array.isArray(value);
   }
 
   get errors() {
@@ -1750,7 +1750,9 @@ export class BaseComponent {
       try {
         this.errorContainer.removeChild(this.errorElement);
       }
-      catch (err) {}
+      catch (err) {
+        // ingnore
+      }
     }
     this.removeClass(this.element, 'has-error');
     this.inputs.forEach((input) => this.removeClass(input, 'is-invalid'));
@@ -1769,7 +1771,7 @@ export class BaseComponent {
     else {
       this.error = null;
     }
-    _each(this.inputs, (input) => {
+    _.each(this.inputs, (input) => {
       if (typeof input.setCustomValidity === 'function') {
         input.setCustomValidity(message, dirty);
       }
@@ -1813,12 +1815,12 @@ export class BaseComponent {
     if (!this.hasInput) {
       return false;
     }
-    if (this.component.multiple && !_isArray(value)) {
+    if (this.component.multiple && !Array.isArray(value)) {
       value = [value];
     }
     this.buildRows();
-    const isArray = _isArray(value);
-    for (let i in this.inputs) {
+    const isArray = Array.isArray(value);
+    for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
       }
@@ -1831,7 +1833,7 @@ export class BaseComponent {
    */
   asString(value) {
     value = value || this.getValue();
-    return _isArray(value) ? value.join(', ') : value.toString();
+    return Array.isArray(value) ? value.join(', ') : value.toString();
   }
 
   /**
@@ -1856,7 +1858,7 @@ export class BaseComponent {
     this._disabled = disabled;
 
     // Disable all inputs.
-    _each(this.inputs, (input) => this.setDisabled(input, disabled));
+    _.each(this.inputs, (input) => this.setDisabled(input, disabled));
   }
 
   setDisabled(element, disabled) {
@@ -1877,7 +1879,7 @@ export class BaseComponent {
     element.loading = loading;
     if (!element.loader && loading) {
       element.loader = this.ce('i', {
-        class: this.iconClass('refresh', true) + ' button-icon-right'
+        class: `${this.iconClass('refresh', true)} button-icon-right`
       });
     }
     if (element.loader) {
@@ -1891,22 +1893,22 @@ export class BaseComponent {
   }
 
   selectOptions(select, tag, options, defaultValue) {
-    _each(options, (option) => {
-      let attrs = {
+    _.each(options, (option) => {
+      const attrs = {
         value: option.value
       };
       if (defaultValue !== undefined && (option.value === defaultValue)) {
         attrs.selected = 'selected';
       }
-      let optionElement = this.ce('option', attrs);
+      const optionElement = this.ce('option', attrs);
       optionElement.appendChild(this.text(option.label));
       select.appendChild(optionElement);
     });
   }
 
   setSelectValue(select, value) {
-    let options = select.querySelectorAll('option');
-    _each(options, (option) => {
+    const options = select.querySelectorAll('option');
+    _.each(options, (option) => {
       if (option.value === value) {
         option.setAttribute('selected', 'selected');
       }
@@ -1959,7 +1961,7 @@ export class BaseComponent {
    * Get the element information.
    */
   elementInfo() {
-    let attributes = {
+    const attributes = {
       name: this.options.name,
       type: this.component.inputType || 'text',
       class: 'form-control',
@@ -2005,12 +2007,12 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
     }
 
     // See if the plugin already exists.
-    let plugin = _get(window, property);
+    const plugin = _.get(window, property);
     if (plugin) {
       BaseComponent.externalLibraries[name].resolve(plugin);
     }
     else {
-      src = _isArray(src) ? src : [src];
+      src = Array.isArray(src) ? src : [src];
       src.forEach((lib) => {
         let attrs = {};
         let elementType = '';
@@ -2040,8 +2042,8 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
         }
 
         // Add the script to the top page.
-        let script = document.createElement(elementType);
-        for (let attr in attrs) {
+        const script = document.createElement(elementType);
+        for (const attr in attrs) {
           script.setAttribute(attr, attrs[attr]);
         }
         document.getElementsByTagName('head')[0].appendChild(script);
@@ -2050,7 +2052,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       // if no callback is provided, then check periodically for the script.
       if (polling) {
         setTimeout(function checkLibrary() {
-          let plugin = _get(window, property);
+          const plugin = _.get(window, property);
           if (plugin) {
             BaseComponent.externalLibraries[name].resolve(plugin);
           }
@@ -2058,7 +2060,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
             // check again after 200 ms.
             setTimeout(checkLibrary, 200);
           }
-        }, 200)
+        }, 200);
       }
     }
   }

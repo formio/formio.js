@@ -1,13 +1,15 @@
-'use strict';
-require('./formio.polyfill');
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
-var Promise = require("native-promise-only");
-require('whatwg-fetch');
-var EventEmitter = require('eventemitter2').EventEmitter2;
-var copy = require('shallow-copy');
-var cookies = require('browser-cookies');
+import Promise from 'native-promise-only';
+import 'whatwg-fetch';
+import {EventEmitter2 as EventEmitter} from 'eventemitter2';
+import cookies from 'browser-cookies';
+import copy from 'shallow-copy';
+
+const isBoolean = (val) => typeof val === typeof true;
+const isNil = (val) => val === null || val === undefined;
+const isObject = (val) => val && typeof val === 'object';
 
 /**
  * The Formio interface class.
@@ -17,7 +19,9 @@ var cookies = require('browser-cookies');
 export default class Formio {
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.
-    if (!(this instanceof Formio)) { return new Formio(path); }
+    if (!(this instanceof Formio)) {
+      return new Formio(path);
+    }
 
     // Initialize our variables.
     this.base = '';
@@ -51,8 +55,8 @@ export default class Formio {
     if (!path) {
       // Allow user to create new projects if this was instantiated without
       // a url
-      this.projectUrl = this.base + '/project';
-      this.projectsUrl = this.base + '/project';
+      this.projectUrl = `${this.base}/project`;
+      this.projectsUrl = `${this.base}/project`;
       this.projectId = false;
       this.query = '';
       return;
@@ -62,7 +66,7 @@ export default class Formio {
       this.projectUrl = options.project;
     }
 
-    let project = this.projectUrl || Formio.projectUrl;
+    const project = this.projectUrl || Formio.projectUrl;
 
     // The baseURL is the same as the projectUrl. This is almost certainly against
     // the Open Source server.
@@ -76,39 +80,39 @@ export default class Formio {
       path = this.base + path;
     }
 
-    var hostparts = this.getUrlParts(path);
-    var parts = [];
-    var hostName = hostparts[1] + hostparts[2];
+    const hostparts = this.getUrlParts(path);
+    let parts = [];
+    const hostName = hostparts[1] + hostparts[2];
     path = hostparts.length > 3 ? hostparts[3] : '';
-    var queryparts = path.split('?');
+    const queryparts = path.split('?');
     if (queryparts.length > 1) {
       path = queryparts[0];
-      this.query = '?' + queryparts[1];
+      this.query = `?${queryparts[1]}`;
     }
 
     // Register a specific path.
-    var registerPath = (name, base) => {
-      this[name + 'sUrl'] = base + '/' + name;
-      var regex = new RegExp('\/' + name + '\/([^/]+)');
+    const registerPath = (name, base) => {
+      this[`${name}sUrl`] = `${base}/${name}`;
+      const regex = new RegExp(`/${name}/([^/]+)`);
       if (path.search(regex) !== -1) {
         parts = path.match(regex);
-        this[name + 'Url'] = parts ? (base + parts[0]) : '';
-        this[name + 'Id'] = (parts.length > 1) ? parts[1] : '';
+        this[`${name}Url`] = parts ? (base + parts[0]) : '';
+        this[`${name}Id`] = (parts.length > 1) ? parts[1] : '';
         base += parts[0];
       }
       return base;
     };
 
     // Register an array of items.
-    var registerItems = function(items, base, staticBase) {
-      for (var i in items) {
+    const registerItems = (items, base, staticBase) => {
+      for (const i in items) {
         if (items.hasOwnProperty(i)) {
-          var item = items[i];
-          if (item instanceof Array) {
+          const item = items[i];
+          if (Array.isArray(item)) {
             registerItems(item, base, true);
           }
           else {
-            var newBase = registerPath(item, base);
+            const newBase = registerPath(item, base);
             base = staticBase ? base : newBase;
           }
         }
@@ -128,11 +132,11 @@ export default class Formio {
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
         if (hostparts.length > 3 && path.split('/').length > 1) {
-          var pathParts = path.split('/');
+          const pathParts = path.split('/');
           pathParts.shift(); // Throw away the first /.
           this.projectId = pathParts.shift();
-          path = '/' + pathParts.join('/');
-          this.projectUrl = hostName + '/' + this.projectId;
+          path = `/${pathParts.join('/')}`;
+          this.projectUrl = `${hostName}/${this.projectId}`;
         }
       }
       else {
@@ -142,7 +146,7 @@ export default class Formio {
           this.projectId = hostparts[2].split('.')[0];
         }
       }
-      this.projectsUrl = this.projectsUrl || this.base + '/project';
+      this.projectsUrl = this.projectsUrl || `${this.base}/project`;
     }
 
     // Configure Form urls and form ids.
@@ -150,22 +154,22 @@ export default class Formio {
       registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);
     }
     else {
-      var subRegEx = new RegExp('\/(submission|action|v)($|\/.*)');
-      var subs = path.match(subRegEx);
+      const subRegEx = new RegExp('/(submission|action|v)($|/.*)');
+      const subs = path.match(subRegEx);
       this.pathType = (subs && (subs.length > 1)) ? subs[1] : '';
       path = path.replace(subRegEx, '');
       path = path.replace(/\/$/, '');
-      this.formsUrl = this.projectUrl + '/form';
+      this.formsUrl = `${this.projectUrl}/form`;
       this.formUrl = this.projectUrl + path;
       this.formId = path.replace(/^\/+|\/+$/g, '');
-      var items = ['submission', 'action', 'v'];
-      for (var i in items) {
+      const items = ['submission', 'action', 'v'];
+      for (const i in items) {
         if (items.hasOwnProperty(i)) {
-          var item = items[i];
-          this[item + 'sUrl'] = this.projectUrl + path + '/' + item;
+          const item = items[i];
+          this[`${item}sUrl`] = `${this.projectUrl + path}/${item}`;
           if ((this.pathType === item) && (subs.length > 2) && subs[2]) {
-            this[item + 'Id'] = subs[2].replace(/^\/+|\/+$/g, '');
-            this[item + 'Url'] = this.projectUrl + path + subs[0];
+            this[`${item}Id`] = subs[2].replace(/^\/+|\/+$/g, '');
+            this[`${item}Url`] = this.projectUrl + path + subs[0];
           }
         }
       }
@@ -178,52 +182,56 @@ export default class Formio {
   }
 
   delete(type, opts) {
-    var _id = type + 'Id';
-    var _url = type + 'Url';
-    if (!this[_id]) { Promise.reject('Nothing to delete'); }
+    const _id = `${type}Id`;
+    const _url = `${type}Url`;
+    if (!this[_id]) {
+      Promise.reject('Nothing to delete');
+    }
     Formio.cache = {};
     return this.makeRequest(type, this[_url], 'delete', null, opts);
   }
 
   index(type, query, opts) {
-    var _url = type + 'Url';
+    const _url = `${type}Url`;
     query = query || '';
-    if (query && typeof query === 'object') {
-      query = '?' + Formio.serialize(query.params);
+    if (query && isObject(query)) {
+      query = `?${Formio.serialize(query.params)}`;
     }
     return this.makeRequest(type, this[_url] + query, 'get', null, opts);
   }
 
   save(type, data, opts) {
-    var _id = type + 'Id';
-    var _url = type + 'Url';
-    var method = (this[_id] || data._id) ? 'put' : 'post';
-    var reqUrl = this[_id] ? this[_url] : this[type + 'sUrl'];
+    const _id = `${type}Id`;
+    const _url = `${type}Url`;
+    const method = (this[_id] || data._id) ? 'put' : 'post';
+    let reqUrl = this[_id] ? this[_url] : this[`${type}sUrl`];
     if (!this[_id] && data._id && (method === 'put') && !reqUrl.includes(data._id)) {
-      reqUrl += '/' + data._id;
+      reqUrl += `/${data._id}`;
     }
     Formio.cache = {};
     return this.makeRequest(type, reqUrl + this.query, method, data, opts);
   }
 
   load(type, query, opts) {
-    var _id = type + 'Id';
-    var _url = type + 'Url';
-    if (query && typeof query === 'object') {
+    const _id = `${type}Id`;
+    const _url = `${type}Url`;
+    if (query && isObject(query)) {
       query = Formio.serialize(query.params);
     }
     if (query) {
-      query = this.query ? (this.query + '&' + query) : ('?' + query);
+      query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
     }
     else {
       query = this.query;
     }
-    if (!this[_id]) { return Promise.reject('Missing ' + _id); }
+    if (!this[_id]) {
+      return Promise.reject(`Missing ${_id}`);
+    }
     return this.makeRequest(type, this[_url] + query, 'get', null, opts);
   }
 
-  makeRequest(type, url, method, data, opts) {
-    return Formio.makeRequest(this, type, url, method, data, opts);
+  makeRequest(...args) {
+    return Formio.makeRequest(this, ...args);
   }
 
   loadProject(query, opts) {
@@ -240,15 +248,15 @@ export default class Formio {
 
   static loadProjects(query, opts) {
     query = query || '';
-    if (typeof query === 'object') {
-      query = '?' + serialize(query.params);
+    if (isObject(query)) {
+      query = `?${Formio.serialize(query.params)}`;
     }
-    return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', null, opts);
+    return Formio.makeStaticRequest(`${Formio.baseUrl}/project${query}`, 'GET', null, opts);
   }
 
   loadForm(query, opts) {
     return this.load('form', query, opts)
-      .then(currentForm => {
+      .then((currentForm) => {
         // Check to see if there isn't a number in vId.
         if (!currentForm.revisions || isNaN(parseInt(this.vId))) {
           return currentForm;
@@ -258,25 +266,23 @@ export default class Formio {
           return currentForm;
         }
         // If they specified a revision form, load the revised form components.
-        if (query && typeof query === 'object') {
+        if (query && isObject(query)) {
           query = Formio.serialize(query.params);
         }
         if (query) {
-          query = this.query ? (this.query + '&' + query) : ('?' + query);
+          query = this.query ? (`${this.query}&${query}`) : (`?${query}`);
         }
         else {
           query = this.query;
         }
         return this.makeRequest('form', this.vUrl + query, 'get', null, opts)
-          .then(revisionForm => {
+          .then((revisionForm) => {
             currentForm.components = revisionForm.components;
             // Using object.assign so we don't cross polinate multiple form loads.
             return Object.assign({}, currentForm);
           })
-          .catch(error => {
-            // If we couldn't load the revision, just return the original form.
-            return Object.assign({}, currentForm);
-          });
+          // If we couldn't load the revision, just return the original form.
+          .catch(() => Object.assign({}, currentForm));
       });
   }
 
@@ -294,9 +300,9 @@ export default class Formio {
 
   loadSubmission(query, opts) {
     return this.load('submission', query, opts)
-      .then(submission => {
+      .then((submission) => {
         this.vId = submission._fvid;
-        this.vUrl = this.formUrl + '/v/' + this.vId;
+        this.vUrl = `${this.formUrl}/v/${this.vId}`;
         return submission;
       });
   }
@@ -333,15 +339,15 @@ export default class Formio {
   }
 
   availableActions() {
-    return this.makeRequest('availableActions', this.formUrl + '/actions');
+    return this.makeRequest('availableActions', `${this.formUrl}/actions`);
   }
 
   actionInfo(name) {
-    return this.makeRequest('actionInfo', this.formUrl + '/actions/' + name);
+    return this.makeRequest('actionInfo', `${this.formUrl}/actions/${name}`);
   }
 
   isObjectId(id) {
-    var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+    const checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');
     return checkForHexRegExp.test(id);
   }
 
@@ -394,11 +400,11 @@ export default class Formio {
    * Returns a temporary authentication token for single purpose token generation.
    */
   getTempToken(expire, allowed) {
-    var token = Formio.getToken();
+    const token = Formio.getToken();
     if (!token) {
       return Promise.reject('You must be authenticated to generate a temporary auth token.');
     }
-    return this.makeRequest('tempToken', this.projectUrl + '/token', 'GET', null, {
+    return this.makeRequest('tempToken', `${this.projectUrl}/token`, 'GET', null, {
       ignoreCache: true,
       header: new Headers({
         'x-expire': expire,
@@ -427,15 +433,15 @@ export default class Formio {
       });
     }
 
-    let apiUrl = '/project/' + form.project;
-    apiUrl += '/form/' + form._id;
-    apiUrl += '/submission/' + this.submissionId;
+    let apiUrl = `/project/${form.project}`;
+    apiUrl += `/form/${form._id}`;
+    apiUrl += `/submission/${this.submissionId}`;
     apiUrl += '/download';
 
     let download = this.base + apiUrl;
     return new Promise((resolve, reject) => {
-      this.getTempToken(3600, 'GET:' + apiUrl).then((tempToken) => {
-        download += '?token=' + tempToken.key;
+      this.getTempToken(3600, `GET:${apiUrl}`).then((tempToken) => {
+        download += `?token=${tempToken.key}`;
         resolve(download);
       }, () => {
         resolve(download);
@@ -444,55 +450,55 @@ export default class Formio {
   }
 
   uploadFile(storage, file, fileName, dir, progressCallback, url) {
-    var requestArgs = {
+    const requestArgs = {
       provider: storage,
       method: 'upload',
       file: file,
       fileName: fileName,
       dir: dir
-    }
-    var request = Formio.pluginWait('preRequest', requestArgs)
-      .then(function() {
+    };
+    const request = Formio.pluginWait('preRequest', requestArgs)
+      .then(() => {
         return Formio.pluginGet('fileRequest', requestArgs)
-          .then(function(result) {
-            if (storage && (result === null || result === undefined)) {
+          .then((result) => {
+            if (storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(storage)) {
-                var provider = new Formio.providers.storage[storage](this);
+                const provider = new Formio.providers.storage[storage](this);
                 return provider.uploadFile(file, fileName, dir, progressCallback, url);
               }
               else {
-                throw('Storage provider not found');
+                throw ('Storage provider not found');
               }
             }
             return result || {url: ''};
-          }.bind(this));
-      }.bind(this));
+          });
+      });
 
     return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
 
   downloadFile(file) {
-    var requestArgs = {
+    const requestArgs = {
       method: 'download',
       file: file
     };
 
-    var request = Formio.pluginWait('preRequest', requestArgs)
-      .then(function() {
+    const request = Formio.pluginWait('preRequest', requestArgs)
+      .then(() => {
         return Formio.pluginGet('fileRequest', requestArgs)
-          .then(function(result) {
-            if (file.storage && (result === null || result === undefined)) {
+          .then((result) => {
+            if (file.storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(file.storage)) {
-                var provider = new Formio.providers.storage[file.storage](this);
+                const provider = new Formio.providers.storage[file.storage](this);
                 return provider.downloadFile(file);
               }
               else {
-                throw('Storage provider not found');
+                throw ('Storage provider not found');
               }
             }
             return result || {url: ''};
-          }.bind(this));
-      }.bind(this));
+          });
+      });
 
     return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
   }
@@ -503,17 +509,17 @@ export default class Formio {
       this.loadForm(),
       this.currentUser(),
       this.accessInfo()
-    ]).then(function(results) {
-      var form = results.shift();
-      var user = results.shift();
-      var access = results.shift();
+    ]).then((results) => {
+      const form = results.shift();
+      const user = results.shift();
+      const access = results.shift();
 
       // Get the anonymous and admin roles.
-      var anonRole = {};
-      var adminRole = {};
-      for (var roleName in access.roles) {
+      let anonRole = {};
+      let adminRole = {};
+      for (const roleName in access.roles) {
         if (access.roles.hasOwnProperty(roleName)) {
-          var role = access.roles[roleName];
+          const role = access.roles[roleName];
           if (role.default) {
             anonRole = role;
           }
@@ -523,19 +529,19 @@ export default class Formio {
         }
       }
 
-      var canSubmit = false;
-      var canSubmitAnonymously = false;
+      let canSubmit = false;
+      let canSubmitAnonymously = false;
 
       // If the user is an admin, then they can submit this form.
       if (user && user.roles.includes(adminRole._id)) {
         return true;
       }
 
-      for (var i in form.submissionAccess) {
+      for (const i in form.submissionAccess) {
         if (form.submissionAccess.hasOwnProperty(i)) {
-          var subRole = form.submissionAccess[i];
+          const subRole = form.submissionAccess[i];
           if (subRole.type === 'create_all' || subRole.type === 'create_own') {
-            for (var j in subRole.roles) {
+            for (const j in subRole.roles) {
               if (subRole.roles.hasOwnProperty(j)) {
                 // Check if anonymous is allowed.
                 if (anonRole._id === subRole.roles[j]) {
@@ -569,9 +575,9 @@ export default class Formio {
 
   static getUrlParts(url, formio) {
     const base = (formio && formio.base) ? formio.base : Formio.baseUrl;
-    var regex = '^(http[s]?:\\/\\/)';
+    let regex = '^(http[s]?:\\/\\/)';
     if (base && url.indexOf(base) === 0) {
-      regex += '(' + base.replace(/^http[s]?:\/\//, '') + ')';
+      regex += `(${base.replace(/^http[s]?:\/\//, '')})`;
     }
     else {
       regex += '([^/]+)';
@@ -581,25 +587,26 @@ export default class Formio {
   }
 
   static serialize(obj) {
-    var str = [];
-    for(var p in obj)
+    const str = [];
+    for (const p in obj) {
       if (obj.hasOwnProperty(p)) {
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(obj[p])}`);
       }
-    return str.join("&");
+    }
+    return str.join('&');
   }
 
   static getRequestArgs(formio, type, url, method, data, opts) {
     method = (method || 'GET').toUpperCase();
-    if(!opts || (typeof opts !== 'object')) {
+    if (!opts || !isObject(opts)) {
       opts = {};
     }
 
-    var requestArgs = {
-      url: url,
-      method: method,
+    const requestArgs = {
+      url,
+      method,
       data: data || null,
-      opts: opts
+      opts
     };
 
     if (type) {
@@ -613,17 +620,15 @@ export default class Formio {
   }
 
   static makeStaticRequest(url, method, data, opts) {
-    var requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);
-    var request = Formio.pluginWait('preRequest', requestArgs)
-      .then(function() {
-        return Formio.pluginGet('staticRequest', requestArgs)
-          .then(function(result) {
-            if (result === null || result === undefined) {
-              return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
-            }
-            return result;
-          });
-      });
+    const requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);
+    const request = Formio.pluginWait('preRequest', requestArgs)
+      .then(() => Formio.pluginGet('staticRequest', requestArgs)
+        .then((result) => {
+          if (isNil(result)) {
+            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+          }
+          return result;
+        }));
 
     return Formio.pluginAlter('wrapStaticRequestPromise', request, requestArgs);
   }
@@ -632,17 +637,16 @@ export default class Formio {
     if (!formio) {
       return Formio.makeStaticRequest(url, method, data, opts);
     }
-    var requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
-    var request = Formio.pluginWait('preRequest', requestArgs)
-      .then(function() {
-        return Formio.pluginGet('request', requestArgs)
-          .then(function(result) {
-            if (result === null || result === undefined) {
-              return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
-            }
-            return result;
-          });
-      });
+
+    const requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
+    const request = Formio.pluginWait('preRequest', requestArgs)
+      .then(() => Formio.pluginGet('request', requestArgs)
+        .then((result) => {
+          if (isNil(result)) {
+            return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
+          }
+          return result;
+        }));
 
     return Formio.pluginAlter('wrapRequestPromise', request, requestArgs);
   }
@@ -655,15 +659,15 @@ export default class Formio {
 
     // For reverse compatibility, if they provided the ignoreCache parameter,
     // then change it back to the options format where that is a parameter.
-    if (typeof opts === 'boolean') {
+    if (isBoolean(opts)) {
       opts = {ignoreCache: opts};
     }
-    if(!opts || typeof opts !== 'object') {
+    if (!opts || !isObject(opts)) {
       opts = {};
     }
 
     // Generate a cachekey.
-    var cacheKey = btoa(url);
+    const cacheKey = btoa(url);
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
@@ -671,16 +675,16 @@ export default class Formio {
     }
 
     // Set up and fetch request
-    var headers = header || new Headers(opts.headers || {
-        'Accept': 'application/json',
-        'Content-type': 'application/json; charset=UTF-8'
-      });
-    var token = Formio.getToken();
+    const headers = header || new Headers(opts.headers || {
+      'Accept': 'application/json',
+      'Content-type': 'application/json; charset=UTF-8'
+    });
+    const token = Formio.getToken();
     if (token && !opts.noToken) {
       headers.append('x-jwt-token', token);
     }
 
-    var options = {
+    let options = {
       method: method,
       headers: headers,
       mode: 'cors'
@@ -692,10 +696,10 @@ export default class Formio {
     // Allow plugins to alter the options.
     options = Formio.pluginAlter('requestOptions', options, url);
 
-    var requestToken = options.headers.get('x-jwt-token');
+    const requestToken = options.headers.get('x-jwt-token');
 
-    var requestPromise = fetch(url, options)
-      .then(function(response) {
+    const requestPromise = fetch(url, options)
+      .then((response) => {
         // Allow plugins to respond.
         response = Formio.pluginAlter('requestResponse', response, Formio);
 
@@ -711,19 +715,19 @@ export default class Formio {
           return (response.headers.get('content-type').includes('application/json')
             ? response.json()
             : response.text())
-              .then(function(error){
-                throw error;
-              });
+            .then((error) => {
+              throw error;
+            });
         }
 
         // Handle fetch results
-        var token = response.headers.get('x-jwt-token');
+        const token = response.headers.get('x-jwt-token');
 
         // In some strange cases, the fetch library will return an x-jwt-token without sending
         // one to the server. This has even been debugged on the server to verify that no token
         // was introduced with the request, but the response contains a token. This is an Invalid
         // case where we do not send an x-jwt-token and get one in return for any GET request.
-        var tokenIntroduced = false;
+        let tokenIntroduced = false;
         if (
           (method === 'GET') &&
           !requestToken &&
@@ -749,14 +753,16 @@ export default class Formio {
           return {};
         }
 
-        var getResult = response.headers.get('content-type').includes('application/json') ? response.json() : response.text();
-        return getResult.then(function(result) {
+        const getResult = response.headers.get('content-type').includes('application/json')
+          ? response.json()
+          : response.text();
+        return getResult.then((result) => {
           // Add some content-range metadata to the result here
-          var range = response.headers.get('content-range');
-          if (range && typeof result === 'object') {
+          let range = response.headers.get('content-range');
+          if (range && isObject(result)) {
             range = range.split('/');
-            if(range[0] !== '*') {
-              var skipLimit = range[0].split('-');
+            if (range[0] !== '*') {
+              const skipLimit = range[0].split('-');
               result.skip = Number(skipLimit[0]);
               result.limit = skipLimit[1] - skipLimit[0] + 1;
             }
@@ -767,8 +773,8 @@ export default class Formio {
             return result;
           }
 
-          var headers = {};
-          response.headers.forEach(function(item, key) {
+          const headers = {};
+          response.headers.forEach((item, key) => {
             headers[key] = item;
           });
 
@@ -779,14 +785,14 @@ export default class Formio {
           };
         });
       })
-      .then(function(result) {
+      .then((result) => {
         if (opts.getHeaders) {
           return result;
         }
 
         // Shallow copy result so modifications don't end up in cache
-        if(Array.isArray(result)) {
-          var resultCopy = result.map(copy);
+        if (Array.isArray(result)) {
+          const resultCopy = result.map(copy);
           resultCopy.skip = result.skip;
           resultCopy.limit = result.limit;
           resultCopy.serverCount = result.serverCount;
@@ -794,13 +800,13 @@ export default class Formio {
         }
         return copy(result);
       })
-      .catch(function(err) {
+      .catch((err) => {
         if (err === 'Bad Token') {
           Formio.setToken(null);
           Formio.events.emit('formio.badToken', err);
         }
         if (err.message) {
-          err.message = 'Could not connect to API server (' + err.message + ')';
+          err.message = `Could not connect to API server (${err.message})`;
           err.networkError = true;
         }
         if (Formio.cache.hasOwnProperty(cacheKey)) {
@@ -822,7 +828,9 @@ export default class Formio {
 
   static setToken(token) {
     token = token || '';
-    if (token === this.token) { return; }
+    if (token === this.token) {
+      return;
+    }
     this.token = token;
     if (!token) {
       Formio.setUser(null);
@@ -830,16 +838,16 @@ export default class Formio {
       try {
         return localStorage.removeItem('formioToken');
       }
-      catch(err) {
-        return cookies.erase('formioToken', { path: '/' });
+      catch (err) {
+        return cookies.erase('formioToken', {path: '/'});
       }
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
     try {
       localStorage.setItem('formioToken', token);
     }
-    catch(err) {
-      cookies.set('formioToken', token, { path: '/' });
+    catch (err) {
+      cookies.set('formioToken', token, {path: '/'});
     }
     return Formio.currentUser(); // Run this so user is updated if null
   }
@@ -865,16 +873,16 @@ export default class Formio {
       try {
         return localStorage.removeItem('formioUser');
       }
-      catch(err) {
-        return cookies.erase('formioUser', { path: '/' });
+      catch (err) {
+        return cookies.erase('formioUser', {path: '/'});
       }
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
     try {
       localStorage.setItem('formioUser', JSON.stringify(user));
     }
-    catch(err) {
-      cookies.set('formioUser', JSON.stringify(user), { path: '/' });
+    catch (err) {
+      cookies.set('formioUser', JSON.stringify(user), {path: '/'});
     }
   }
 
@@ -907,7 +915,7 @@ export default class Formio {
   }
 
   static setAppUrl(url) {
-    console.warn('Formio.setAppUrl() is deprecated. Use Formio.setProjectUrl instead.')
+    console.warn('Formio.setAppUrl() is deprecated. Use Formio.setProjectUrl instead.');
     Formio.projectUrl = url;
     Formio.projectUrlSet = true;
   }
@@ -918,7 +926,7 @@ export default class Formio {
   }
 
   static getAppUrl() {
-    console.warn('Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.')
+    console.warn('Formio.getAppUrl() is deprecated. Use Formio.getProjectUrl instead.');
     return Formio.projectUrl;
   }
 
@@ -931,13 +939,18 @@ export default class Formio {
   }
 
   static noop() {}
-  static identity(value) { return value; }
+  static identity(value) {
+    return value;
+  }
 
   static deregisterPlugin(plugin) {
-    var beforeLength = Formio.plugins.length;
-    Formio.plugins = Formio.plugins.filter(function(p) {
-      if(p !== plugin && p.__name !== plugin) return true;
-      (p.deregister || Formio.noop).call(p, Formio);
+    const beforeLength = Formio.plugins.length;
+    Formio.plugins = Formio.plugins.filter((p) => {
+      if (p !== plugin && p.__name !== plugin) {
+        return true;
+      }
+
+      (p.deregister || Formio.noop).call(plugin, Formio);
       return false;
     });
     return beforeLength !== Formio.plugins.length;
@@ -945,72 +958,75 @@ export default class Formio {
 
   static registerPlugin(plugin, name) {
     Formio.plugins.push(plugin);
-    Formio.plugins.sort(function(a, b) {
-      return (b.priority || 0) - (a.priority || 0);
-    });
+    Formio.plugins.sort((a, b) => (b.priority || 0) - (a.priority || 0));
     plugin.__name = name;
     (plugin.init || Formio.noop).call(plugin, Formio);
   }
 
   static getPlugin(name) {
-    return Formio.plugins.reduce(function(result, plugin) {
-      if (result) return result;
-      if (plugin.__name === name) return plugin;
-    }, null);
+    for (const plugin of Formio.plugins) {
+      if (plugin.__name === name) {
+        return plugin;
+      }
+    }
+
+    return null;
   }
 
-  static pluginWait(pluginFn) {
-    var args = [].slice.call(arguments, 1);
-    return Promise.all(Formio.plugins.map(function(plugin) {
-      return (plugin[pluginFn] || Formio.noop).apply(plugin, args);
-    }));
+  static pluginWait(pluginFn, ...args) {
+    return Promise.all(Formio.plugins.map((plugin) =>
+      (plugin[pluginFn] || Formio.noop).call(plugin, ...args)));
   }
 
-  static pluginGet(pluginFn) {
-    var args = [].slice.call(arguments, 0);
-    var callPlugin = function(index, pluginFn) {
-      var plugin = Formio.plugins[index];
-      if (!plugin) return Promise.resolve(null);
-      return Promise.resolve((plugin && plugin[pluginFn] || Formio.noop).apply(plugin, [].slice.call(arguments, 2)))
-        .then(function(result) {
-          if (result !== null && result !== undefined) return result;
-          return callPlugin.apply(null, [index + 1].concat(args));
+  static pluginGet(pluginFn, ...args) {
+    const callPlugin = (index) => {
+      const plugin = Formio.plugins[index];
+
+      if (!plugin) {
+        return Promise.resolve(null);
+      }
+
+      return Promise.resolve((plugin[pluginFn] || Formio.noop).call(plugin, ...args))
+        .then((result) => {
+          if (!isNil(result)) {
+            return result;
+          }
+
+          return callPlugin(index + 1);
         });
     };
-    return callPlugin.apply(null, [0].concat(args));
+    return callPlugin(0);
   }
 
-  static pluginAlter(pluginFn, value) {
-    var args = [].slice.call(arguments, 2);
-    return Formio.plugins.reduce(function(value, plugin) {
-      return (plugin[pluginFn] || Formio.identity).apply(plugin, [value].concat(args));
-    }, value);
+  static pluginAlter(pluginFn, value, ...args) {
+    return Formio.plugins.reduce((value, plugin) =>
+      (plugin[pluginFn] || Formio.identity)(value, ...args), value);
   }
 
   static accessInfo(formio) {
-    var projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
-    return Formio.makeRequest(formio, 'accessInfo', projectUrl + '/access');
+    const projectUrl = formio ? formio.projectUrl : Formio.projectUrl;
+    return Formio.makeRequest(formio, 'accessInfo', `${projectUrl}/access`);
   }
 
   static currentUser(formio) {
-    var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+    let projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
     projectUrl += '/current';
-    var user = this.getUser();
+    const user = this.getUser();
     if (user) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
         url: projectUrl,
         method: 'GET'
-      })
+      });
     }
-    var token = Formio.getToken();
+    const token = Formio.getToken();
     if (!token) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
         url: projectUrl,
         method: 'GET'
-      })
+      });
     }
     return Formio.makeRequest(formio, 'currentUser', projectUrl)
-      .then(function(response) {
+      .then((response) => {
         Formio.setUser(response);
         return response;
       });
@@ -1020,8 +1036,8 @@ export default class Formio {
     Formio.setToken(null);
     Formio.setUser(null);
     Formio.clearCache();
-    var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
-    return Formio.makeRequest(formio, 'logout', projectUrl + '/logout');
+    const projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+    return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
   }
 
   /**
@@ -1038,73 +1054,73 @@ export default class Formio {
       options = {};
     }
 
-    done = done || (function() { console.log(arguments); });
+    done = done || ((...args) => console.log(args));
     options = options || {};
 
     // IF they provide a jquery object, then select the element.
-    if (form.jquery) { form = form[0]; }
+    if (form.jquery) {
+      form = form[0];
+    }
     if (!form) {
       return done('Invalid Form');
     }
 
-    var getAction = function() {
-      return options.form || form.getAttribute('action');
-    };
+    const getAction = () => options.form || form.getAttribute('action');
 
     /**
      * Returns the current submission object.
      * @returns {{data: {}}}
      */
-    var getSubmission = function() {
-      var submission = {data: {}};
-      var setValue = function(path, value) {
-        var isArray = path.substr(-2) === '[]';
+    const getSubmission = () => {
+      const submission = {data: {}};
+
+      const setValue = (path, value) => {
+        const isArray = path.substr(-2) === '[]';
         if (isArray) {
           path = path.replace('[]', '');
         }
-        var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
-        var current = submission;
-        while (path = paths.shift()) {
-          if (!paths.length) {
-            if (isArray) {
-              if (!current[path]) {
-                current[path] = [];
-              }
-              current[path].push(value);
-            }
-            else {
-              current[path] = value;
-            }
-          }
-          else {
+
+        const paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
+        let current = submission;
+
+        for (const [index, path] of paths.entries()) {
+          if (index !== paths.length - 1) {
             if (!current[path]) {
               current[path] = {};
             }
             current = current[path];
+            continue;
+          }
+
+          if (isArray) {
+            current[path] = (current[path] || []).concat(value);
+          }
+          else {
+            current[path] = value;
           }
         }
       };
 
       // Get the form data from this form.
-      var formData = new FormData(form);
-      var entries = formData.entries();
-      var entry = null;
-      while (entry = entries.next().value) {
+      const formData = new FormData(form);
+
+      for (const entry of formData) {
         setValue(entry[0], entry[1]);
       }
+
       return submission;
     };
 
     // Submits the form.
-    var submit = function(event) {
+    const submit = (event) => {
       if (event) {
         event.preventDefault();
       }
-      var action = getAction();
+      const action = getAction();
       if (!action) {
         return;
       }
-      (new Formio(action)).saveSubmission(getSubmission()).then(function(sub) {
+      (new Formio(action)).saveSubmission(getSubmission()).then((sub) => {
         done(null, sub);
       }, done);
     };
@@ -1112,25 +1128,30 @@ export default class Formio {
     // Attach formio to the provided form.
     if (form.attachEvent) {
       form.attachEvent('submit', submit);
-    } else {
+    }
+    else {
       form.addEventListener('submit', submit);
     }
 
     return {
-      submit: submit,
-      getAction: getAction,
-      getSubmission: getSubmission
+      submit,
+      getAction,
+      getSubmission
     };
   }
 
   static fieldData(data, component) {
-    if (!data) { return ''; }
-    if (!component || !component.key) { return data; }
+    if (!data) {
+      return '';
+    }
+    if (!component || !component.key) {
+      return data;
+    }
     if (component.key.includes('.')) {
-      var value = data;
-      var parts = component.key.split('.');
-      var key = '';
-      for (var i = 0; i < parts.length; i++) {
+      let value = data;
+      const parts = component.key.split('.');
+      let key = '';
+      for (let i = 0; i < parts.length; i++) {
         key = parts[i];
 
         // Handle nested resources
