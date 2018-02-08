@@ -5,7 +5,7 @@ var plugins = require('gulp-load-plugins')();
 plugins.source = require('vinyl-source-stream');
 plugins.browserify = require('browserify');
 plugins.cleanCSS = require('gulp-clean-css');
-gulp.task('clean', require('del').bind(null, ['dist', 'build']));
+gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 gulp.task('babel', require('./gulp/babel')(gulp, plugins));
 gulp.task('scripts-form', require('./gulp/scripts-form')(gulp, plugins));
 gulp.task('scripts-full', require('./gulp/scripts-full')(gulp, plugins));

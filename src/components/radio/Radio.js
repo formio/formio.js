@@ -12,7 +12,9 @@ export class RadioComponent extends BaseComponent {
   }
 
   createInput(container) {
-    const inputGroup = this.ce('div');
+    const inputGroup = this.ce('div', {
+      class: 'input-group'
+    });
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
     const wrappers = [];
 
