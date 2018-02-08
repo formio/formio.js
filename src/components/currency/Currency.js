@@ -54,7 +54,7 @@ export class CurrencyComponent extends NumberComponent {
       mask: createNumberMask({
         prefix: this.prefix,
         suffix: this.suffix,
-        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.thousandsSeparator),
+        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
         decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
         decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
         allowNegative: _.get(this.component, 'allowNegative', true),
