@@ -55,6 +55,7 @@ export class TextAreaComponent extends TextFieldComponent {
     this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.3/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(this.input, this.component.wysiwyg);
+        this.quill.root.spellcheck = this.component.spellcheck;
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
         var txtArea = document.createElement('textarea');
