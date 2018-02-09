@@ -48,6 +48,7 @@ export class ContainerComponent extends FormioComponents {
         component.setValue(value[component.component.key], flags);
       }
       else {
+        component.data = value;
         component.setValue(component.defaultValue, flags);
       }
     });

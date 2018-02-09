@@ -225,6 +225,7 @@ export class DataGridComponent extends FormioComponents {
           col.setValue(value[index][key], flags);
         }
         else {
+          col.data = value[index];
           col.setValue(col.defaultValue, flags);
         }
       });
