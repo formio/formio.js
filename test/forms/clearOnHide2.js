@@ -311,25 +311,6 @@ module.exports = {
         "input": false,
         "hideLabel": false
       }, {
-        "input": true,
-        "label": "Button",
-        "tableView": false,
-        "key": "button",
-        "size": "md",
-        "leftIcon": "",
-        "rightIcon": "",
-        "block": false,
-        "action": "submit",
-        "disableOnInvalid": true,
-        "theme": "primary",
-        "type": "button",
-        "conditional": {
-          "show": null,
-          "when": null,
-          "eq": ""
-        },
-        "hideLabel": false
-      }, {
         "conditional": {
           "eq": "",
           "when": null,
@@ -1234,6 +1215,7 @@ module.exports = {
         component.setValue(false);
         form.checkConditions(form.getValue());
         assert.deepEqual(form.getValue(), fullData);
+        done();
       });
     }
   }

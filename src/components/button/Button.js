@@ -35,6 +35,10 @@ export class ButtonComponent extends BaseComponent {
     return this.clicked;
   }
 
+  get defaultValue() {
+    return false;
+  }
+
   get className() {
     let className = super.className;
     className += ' form-group';
