@@ -5572,6 +5572,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function buildTable() {
       var _this2 = this;
 
+      // Destroy so that it will remove all existing components and clear handlers.
+      this.destroy();
+
       if (this.tableElement && this.tableElement.parentNode) {
         this.element.removeChild(this.tableElement);
         this.tableElement.innerHTML = '';
@@ -12796,14 +12799,16 @@ function _interopRequireDefault(obj) {
  */
 exports.default = function (element, form, options) {
   var instance = null;
-  if (form.display === 'wizard') {
+  if (form && form.display === 'wizard') {
     instance = new _formio2.default(element, options);
-  } else if (form.display === 'pdf') {
+  } else if (form && form.display === 'pdf') {
     instance = new _formio4.default(element, options);
   } else {
     instance = new _formio6.default(element, options);
   }
-  instance.form = form;
+  if (form) {
+    instance.form = form;
+  }
   return instance;
 };
 

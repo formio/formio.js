@@ -28,6 +28,13 @@ export class ColumnsComponent extends FormioComponents {
     };
   }
 
+  get schema() {
+    let schema = _.omit(super.schema, 'components');
+    schema.columns = [];
+    this.eachComponent((component) => schema.columns.push(component.schema));
+    return schema;
+  }
+
   get className() {
     return `row ${super.className}`;
   }

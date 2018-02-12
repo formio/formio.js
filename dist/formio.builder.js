@@ -567,7 +567,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
-      if (!_index2.default.checkCondition(this.component, data, this.data)) {
+      if (!_index2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
         return true;
       }
 
@@ -660,7 +660,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'schema',
     get: function get() {
-      var schema = this.component;
+      var schema = _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'schema', this);
       schema.components = [];
       this.eachComponent(function (component) {
         return schema.components.push(component.schema);
@@ -697,20 +697,6 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 }(_Base.BaseComponent);
 
 FormioComponents.customComponents = {};
-FormioComponents.groupInfo = {
-  basic: {
-    title: 'Basic Components',
-    weight: 0
-  },
-  advanced: {
-    title: 'Advanced',
-    weight: 10
-  },
-  layout: {
-    title: 'Layout',
-    weight: 20
-  }
-};
 
 },{"../utils/index":106,"./base/Base":7,"./index":49,"lodash":318,"native-promise-only":334}],3:[function(require,module,exports){
 'use strict';
@@ -3288,7 +3274,7 @@ var BaseComponent = function () {
       if (!this.hasCondition()) {
         result = this.show(true);
       } else {
-        result = this.show(_utils2.default.checkCondition(this.component, this.data, data));
+        result = this.show(_utils2.default.checkCondition(this.component, this.data, data, this.root ? this.root._form : {}));
       }
 
       if (this.fieldLogic(data)) {
@@ -3750,7 +3736,7 @@ var BaseComponent = function () {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
       // Force valid if component is conditionally hidden.
-      if (!_utils2.default.checkCondition(this.component, data, this.data)) {
+      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
         return true;
       }
 
@@ -4046,7 +4032,7 @@ var BaseComponent = function () {
   }, {
     key: 'schema',
     get: function get() {
-      return this.component;
+      return _lodash2.default.omit(this.component, 'id');
     }
   }, {
     key: 'shouldDisable',
@@ -4462,7 +4448,65 @@ var BaseEditDisplay = exports.BaseEditDisplay = [{
   key: 'label',
   label: 'Label',
   placeholder: 'Field Label',
-  tooltip: 'The label for this field that will appear next to it.'
+  tooltip: 'The label for this field that will appear next to it.',
+  validate: {
+    required: true
+  }
+}, {
+  weight: 10,
+  type: 'checkbox',
+  label: 'Hide Label',
+  tooltip: 'Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.',
+  key: 'hideLabel',
+  input: true
+}, {
+  type: 'select',
+  input: true,
+  key: 'labelPosition',
+  label: 'Label Position',
+  tooltip: 'Position for the label for this field.',
+  weight: 20,
+  defaultValue: 'top',
+  dataSrc: 'values',
+  data: {
+    values: [{ label: 'Top', value: 'top' }, { label: 'Left (Left-aligned)', value: 'left-left' }, { label: 'Left (Right-aligned)', value: 'left-right' }, { label: 'Right (Left-aligned)', value: 'right-left' }, { label: 'Right (Right-aligned)', value: 'right-right' }, { label: 'Bottom', value: 'bottom' }]
+  }
+}, {
+  type: 'number',
+  input: true,
+  key: 'labelWidth',
+  label: 'Label Width',
+  tooltip: 'The width of label on line in percentages.',
+  weight: 30,
+  placeholder: '30',
+  suffix: '%',
+  validate: {
+    min: 0,
+    max: 100
+  },
+  conditional: {
+    json: {
+      or: [{ '===': [{ var: 'data.labelPosition' }, 'top'] }, { '===': [{ var: 'data.labelPosition' }, 'bottom'] }]
+    }
+  }
+}, {
+  type: 'number',
+  input: true,
+  key: 'labelMargin',
+  label: 'Label Margin',
+  tooltip: 'The width of label margin on line in percentages.',
+  weight: 30,
+  placeholder: '3',
+  suffix: '%',
+  validate: {
+    min: 0,
+    max: 100
+  },
+  conditional: {
+    json: {
+      or: [{ '===': [{ var: 'data.labelPosition' }, 'top'] }, { '===': [{ var: 'data.labelPosition' }, 'bottom'] }]
+    }
+  }
 }, {
   weight: 100,
   type: 'textfield',
@@ -4545,13 +4589,6 @@ var BaseEditDisplay = exports.BaseEditDisplay = [{
   label: 'Hidden',
   tooltip: 'A hidden field is still a part of the form, but is hidden from view.',
   key: 'hidden',
-  input: true
-}, {
-  weight: 1200,
-  type: 'checkbox',
-  label: 'Hide Label',
-  tooltip: 'Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.',
-  key: 'hideLabel',
   input: true
 }, {
   weight: 1300,
@@ -5389,7 +5426,68 @@ module.exports = function () {
     extend[_key] = arguments[_key];
   }
 
-  return BaseEditForm.apply(undefined, [{}].concat(extend));
+  return BaseEditForm.apply(undefined, [{
+    components: [{
+      weight: 0,
+      type: 'tabs',
+      key: 'tabs',
+      components: [{
+        label: 'Display',
+        key: 'display',
+        components: [{
+          type: 'select',
+          input: true,
+          label: 'Label Position',
+          key: 'labelPosition',
+          tooltip: 'Position for the label for this field.',
+          defaultValue: 'right',
+          dataSrc: 'values',
+          weight: 10,
+          data: {
+            values: [{ label: 'Top', value: 'top' }, { label: 'Left', value: 'left' }, { label: 'Right', value: 'right' }, { label: 'Bottom', value: 'bottom' }]
+          }
+        }, {
+          type: 'select',
+          input: true,
+          key: 'inputType',
+          label: 'Input Type',
+          tooltip: 'This is the input type used for this checkbox.',
+          dataSrc: 'values',
+          weight: 410,
+          data: {
+            values: [{ label: 'Checkbox', value: 'checkbox' }, { label: 'Radio', value: 'radio' }]
+          }
+        }, {
+          type: 'textfield',
+          input: true,
+          key: 'name',
+          label: 'Radio Key',
+          tooltip: 'The key used to trigger the radio button toggle.',
+          weight: 420,
+          conditional: {
+            json: { '===': [{ var: 'data.inputType' }, 'radio'] }
+          }
+        }, {
+          type: 'textfield',
+          input: true,
+          label: 'Radio Value',
+          key: 'value',
+          tooltip: 'The value used with this radio button.',
+          weight: 430,
+          conditional: {
+            json: { '===': [{ var: 'data.inputType' }, 'radio'] }
+          }
+        }, {
+          type: 'checkbox',
+          input: true,
+          weight: 440,
+          label: 'Datagrid Label',
+          key: 'datagridLabel',
+          tooltip: 'Show the label when in a datagrid.'
+        }]
+      }]
+    }]
+  }].concat(extend));
 };
 
 },{"../base/Base.form":6}],19:[function(require,module,exports){
@@ -5924,6 +6022,16 @@ var ColumnsComponent = exports.ColumnsComponent = function (_FormioComponents) {
         column.type = 'column';
         _this2.addComponent(column, container, _this2.data);
       });
+    }
+  }, {
+    key: 'schema',
+    get: function get() {
+      var schema = _lodash2.default.omit(_get(ColumnsComponent.prototype.__proto__ || Object.getPrototypeOf(ColumnsComponent.prototype), 'schema', this), 'components');
+      schema.columns = [];
+      this.eachComponent(function (component) {
+        return schema.columns.push(component.schema);
+      });
+      return schema;
     }
   }, {
     key: 'className',
@@ -6522,6 +6630,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     key: 'buildTable',
     value: function buildTable() {
       var _this2 = this;
+
+      // Destroy so that it will remove all existing components and clear handlers.
+      this.destroy();
 
       if (this.tableElement && this.tableElement.parentNode) {
         this.element.removeChild(this.tableElement);
@@ -8068,7 +8179,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     value: function checkValidity(data, dirty) {
       var _this8 = this;
 
-      if (!_utils2.default.checkCondition(this.component, data, this.data)) {
+      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
         return true;
       }
 
@@ -11197,7 +11308,14 @@ module.exports = function () {
     extend[_key] = arguments[_key];
   }
 
-  return BaseEditForm.apply(undefined, [{}].concat(extend));
+  return BaseEditForm.apply(undefined, [{
+    components: [{
+      weight: 0,
+      type: 'tabs',
+      key: 'tabs',
+      components: []
+    }]
+  }].concat(extend));
 };
 
 },{"../base/Base.form":6}],65:[function(require,module,exports){
@@ -14459,6 +14577,25 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     var _this = _possibleConstructorReturn(this, (FormioFormBuilder.__proto__ || Object.getPrototypeOf(FormioFormBuilder)).call(this, element, options));
 
     var self = _this;
+
+    // Setup default groups, but let them be overridden.
+    _this.options.groups = _lodash2.default.defaultsDeep({}, _this.options.groups, {
+      basic: {
+        title: 'Basic Components',
+        weight: 0,
+        default: true
+      },
+      advanced: {
+        title: 'Advanced',
+        weight: 10
+      },
+      layout: {
+        title: 'Layout',
+        weight: 20
+      }
+    });
+
+    _this.groups = {};
     _this.options.builder = true;
     _this.options.hooks = _this.options.hooks || {};
     _this.options.hooks.addComponents = function (components) {
@@ -14708,102 +14845,159 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         this.dragula.destroy();
       }
     }
+
+    /**
+     * Insert an element in the weight order.
+     *
+     * @param info
+     * @param items
+     * @param element
+     * @param container
+     */
+
+  }, {
+    key: 'insertInOrder',
+    value: function insertInOrder(info, items, element, container) {
+      // Determine where this item should be added.
+      var beforeWeight = 0;
+      var before = null;
+      _lodash2.default.each(items, function (itemInfo) {
+        if (info.key !== itemInfo.key && info.weight < itemInfo.weight && (!beforeWeight || itemInfo.weight > beforeWeight)) {
+          before = itemInfo.element;
+          beforeWeight = itemInfo.weight;
+        }
+      });
+
+      if (before) {
+        container.insertBefore(element, before);
+      } else {
+        container.appendChild(element);
+      }
+    }
+  }, {
+    key: 'addBuilderGroup',
+    value: function addBuilderGroup(info) {
+      var _this4 = this;
+
+      if (!info || !info.key) {
+        console.warn('Invalid Group Provided.');
+        return;
+      }
+
+      info = _lodash2.default.clone(info);
+      var groupAnchor = this.ce('a', {
+        href: '#group-' + info.key
+      }, this.text(info.title));
+
+      // Add a listener when it is clicked.
+      this.addEventListener(groupAnchor, 'click', function (event) {
+        event.preventDefault();
+        var clickedGroupId = event.target.getAttribute('href').replace('#group-', '');
+        if (_this4.groups[clickedGroupId]) {
+          var clickedGroup = _this4.groups[clickedGroupId];
+          var wasIn = _this4.hasClass(clickedGroup.panel, 'in');
+          _lodash2.default.each(_this4.groups, function (group, groupId) {
+            _this4.removeClass(group.panel, 'in');
+            if (groupId === clickedGroupId && !wasIn) {
+              _this4.addClass(group.panel, 'in');
+            }
+          });
+
+          // Match the form builder height to the sidebar.
+          _this4.formBuilderElement.style.minHeight = _this4.builderSidebar.offsetHeight + 'px';
+        }
+      });
+
+      info.element = this.ce('div', {
+        class: 'panel panel-default form-builder-panel',
+        id: 'group-panel-' + info.key
+      }, [this.ce('div', {
+        class: 'panel-heading'
+      }, [this.ce('h4', {
+        class: 'panel-title'
+      }, groupAnchor)])]);
+      info.body = this.ce('div', {
+        class: 'panel-body no-drop'
+      });
+
+      // Add this group body to the drag containers.
+      this.dragContainers.push(info.body);
+
+      var groupBodyClass = 'panel-collapse collapse';
+      if (info.default) {
+        groupBodyClass += ' in';
+      }
+
+      info.panel = this.ce('div', {
+        class: groupBodyClass,
+        id: 'group-' + info.key
+      }, info.body);
+
+      info.element.appendChild(info.panel);
+      this.groups[info.key] = info;
+      this.insertInOrder(info, this.groups, info.element, this.sideBarElement);
+    }
+  }, {
+    key: 'addBuilderComponent',
+    value: function addBuilderComponent(component) {
+      if (!component || !component.group || !this.groups[component.group]) {
+        console.warn('Invalid group');
+        return;
+      }
+
+      component = _lodash2.default.clone(component);
+      var groupInfo = this.groups[component.group];
+      if (!groupInfo.components) {
+        groupInfo.components = {};
+      }
+
+      groupInfo.components[component.key] = component;
+
+      component.element = this.ce('span', {
+        id: 'builder-' + component.key,
+        class: 'btn btn-primary btn-xs btn-block formcomponent drag-copy'
+      });
+      if (component.icon) {
+        component.element.appendChild(this.ce('i', {
+          class: component.icon,
+          style: 'margin-right: 5px;'
+        }));
+      }
+      component.element.builderInfo = component;
+      component.element.appendChild(this.text(component.title));
+      this.insertInOrder(component, groupInfo.components, component.element, groupInfo.body);
+    }
   }, {
     key: 'buildSidebar',
     value: function buildSidebar() {
-      var _this4 = this;
+      var _this5 = this;
+
+      this.groups = {};
+      this.sideBarElement = this.ce('div', {
+        class: 'panel-group'
+      });
+
+      // Add the groups.
+      _lodash2.default.each(this.options.groups, function (info, group) {
+        info.key = group;
+        _this5.addBuilderGroup(info);
+      });
 
       // Get all of the components builder info grouped and sorted.
-      var components = _lodash2.default.map(_lodash2.default.assign(_builder2.default, _Components.FormioComponents.customComponents), function (component, key) {
+      var components = _lodash2.default.filter(_lodash2.default.map(_lodash2.default.assign(_builder2.default, _Components.FormioComponents.customComponents), function (component, type) {
         var builderInfo = component.builderInfo;
         if (!builderInfo) {
           return null;
         }
 
-        builderInfo.key = key;
+        builderInfo.key = type;
         return builderInfo;
+      }));
+
+      // Iterate through every component.
+      _lodash2.default.each(components, function (component) {
+        return _this5.addBuilderComponent(component);
       });
-
-      components = _lodash2.default.sortBy(components, 'weight');
-      components = _lodash2.default.groupBy(components, 'group');
-      var sideBarElement = this.ce('div', {
-        class: 'panel-group'
-      });
-
-      this.groupPanels = {};
-
-      // Iterate through each group of components.
-      var firstGroup = true;
-      _lodash2.default.each(components, function (groupComponents, group) {
-        var groupInfo = _Components.FormioComponents.groupInfo[group];
-        if (groupInfo) {
-          var groupAnchor = _this4.ce('a', {
-            href: '#group-' + group
-          }, _this4.text(groupInfo.title));
-          _this4.addEventListener(groupAnchor, 'click', function (event) {
-            event.preventDefault();
-            var clickedGroup = event.target.getAttribute('href').substr(1);
-            var wasIn = _this4.hasClass(_this4.groupPanels[clickedGroup], 'in');
-            _lodash2.default.each(_this4.groupPanels, function (groupPanel, groupId) {
-              _this4.removeClass(groupPanel, 'in');
-              if (groupId === clickedGroup && !wasIn) {
-                _this4.addClass(groupPanel, 'in');
-              }
-            });
-
-            // Match the form builder height to the sidebar.
-            _this4.formBuilderElement.style.minHeight = _this4.builderSidebar.offsetHeight + 'px';
-          });
-
-          var groupPanel = _this4.ce('div', {
-            class: 'panel panel-default form-builder-panel'
-          }, [_this4.ce('div', {
-            class: 'panel-heading'
-          }, [_this4.ce('h4', {
-            class: 'panel-title'
-          }, groupAnchor)])]);
-          var groupBody = _this4.ce('div', {
-            class: 'panel-body no-drop'
-          });
-
-          // Add this group body to the drag containers.
-          _this4.dragContainers.push(groupBody);
-
-          var groupBodyClass = 'panel-collapse collapse';
-          if (firstGroup) {
-            groupBodyClass += ' in';
-            firstGroup = false;
-          }
-          var groupId = 'group-' + group;
-          var groupBodyWrapper = _this4.ce('div', {
-            class: groupBodyClass,
-            id: groupId
-          }, groupBody);
-
-          _this4.groupPanels[groupId] = groupBodyWrapper;
-
-          _lodash2.default.each(groupComponents, function (builderInfo) {
-            var compButton = _this4.ce('span', {
-              id: 'builder-' + builderInfo.key,
-              class: 'btn btn-primary btn-xs btn-block formcomponent drag-copy'
-            });
-            if (builderInfo.icon) {
-              compButton.appendChild(_this4.ce('i', {
-                class: builderInfo.icon,
-                style: 'margin-right: 5px;'
-              }));
-            }
-            compButton.builderInfo = builderInfo;
-            compButton.appendChild(_this4.text(builderInfo.title));
-            groupBody.appendChild(compButton);
-          });
-
-          groupPanel.appendChild(groupBodyWrapper);
-          sideBarElement.appendChild(groupPanel);
-        }
-      });
-
-      return sideBarElement;
     }
   }, {
     key: 'getParentElement',
@@ -14817,7 +15011,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'build',
     value: function build() {
-      var _this5 = this;
+      var _this6 = this;
 
       this.dragContainers = [];
       if (!this.builderElement) {
@@ -14835,7 +15029,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       this.element.component = this;
 
       this.builderElement.appendChild(this.formBuilderElement);
-      this.sideBarElement = this.buildSidebar();
+      this.buildSidebar();
       this.builderSidebar.appendChild(this.sideBarElement);
 
       _get(FormioFormBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioFormBuilder.prototype), 'build', this).call(this);
@@ -14848,7 +15042,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         }
       }).on('drop', function (element, target, source, sibling) {
         var builderElement = source.querySelector('#' + element.id);
-        var newParent = _this5.getParentElement(element);
+        var newParent = _this6.getParentElement(element);
         if (!newParent || !newParent.component) {
           return console.warn('Could not find parent component.');
         }
@@ -14870,7 +15064,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           var component = newParent.component.addComponent(builderElement.builderInfo.schema, newParent, newParent.component.data, sibling);
 
           // Edit the component.
-          _this5.editComponent(component, true);
+          _this6.editComponent(component, true);
 
           // Remove the element.
           target.removeChild(element);
@@ -14886,7 +15080,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
             newParent.component.addComponent(element.component.schema, newParent, newParent.component.data, sibling);
 
             // Refresh the form.
-            _this5.form = _this5.schema;
+            _this6.form = _this6.schema;
           }
       });
 
@@ -16203,10 +16397,6 @@ _formio8.default.embedForm = function (embed) {
  */
 _formio6.default.registerComponent = _formio8.default.registerComponent = function (type, component) {
   _Components.FormioComponents.customComponents[type] = component;
-};
-
-_formio6.default.registerGroup = _formio8.default.registerGroup = function (name, groupInfo) {
-  _Components.FormioComponents.groupInfo[name] = groupInfo;
 };
 
 exports.Formio = global.Formio = _formio8.default;
@@ -18266,7 +18456,7 @@ var FormioWizard = function (_FormioForm) {
       _lodash2.default.each(form.components, function (component) {
         if (component.type === 'panel') {
           // Ensure that this page can be seen.
-          if (_utils2.default.checkCondition(component, _this4.data, _this4.data)) {
+          if (_utils2.default.checkCondition(component, _this4.data, _this4.data, _this4.wizard)) {
             _this4.pages.push(component);
           }
         } else if (component.type === 'hidden') {
@@ -18430,7 +18620,7 @@ var FormioWizard = function (_FormioForm) {
 
         if (_utils2.default.hasCondition(component)) {
           var hasPage = _this7.pages && _this7.pages[pageIndex] && _this7.pageId(_this7.pages[pageIndex]) === _this7.pageId(component);
-          var shouldShow = _utils2.default.checkCondition(component, _this7.data, _this7.data);
+          var shouldShow = _utils2.default.checkCondition(component, _this7.data, _this7.data, _this7.wizard);
           if (shouldShow && !hasPage || !shouldShow && hasPage) {
             rebuild = true;
             return false;
@@ -19304,19 +19494,20 @@ var FormioUtils = {
    * @param data
    * @returns {*}
    */
-  checkCustomConditional: function checkCustomConditional(component, custom, row, data, variable, onError) {
+  checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError) {
     try {
-      return new Function('component', 'row', 'data', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, row, data);
+      return new Function('component', 'row', 'data', 'form', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, row, data, form);
     } catch (e) {
       console.warn('An error occurred in a condition statement for component ' + component.key, e);
       return onError;
     }
   },
-  checkJsonConditional: function checkJsonConditional(component, json, row, data, onError) {
+  checkJsonConditional: function checkJsonConditional(component, json, row, data, form, onError) {
     try {
       return _jsonLogicJs2.default.apply(json, {
         data: data,
         row: row,
+        form: form,
         _: _lodash2.default
       });
     } catch (err) {
@@ -19337,13 +19528,13 @@ var FormioUtils = {
    *
    * @returns {boolean}
    */
-  checkCondition: function checkCondition(component, row, data) {
+  checkCondition: function checkCondition(component, row, data, form) {
     if (component.customConditional) {
-      return this.checkCustomConditional(component, component.customConditional, row, data, 'show', true);
+      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true);
     } else if (component.conditional && component.conditional.when) {
       return this.checkSimpleConditional(component, component.conditional, row, data, true);
     } else if (component.conditional && component.conditional.json) {
-      return this.checkJsonConditional(component, component.conditional.json, row, data);
+      return this.checkJsonConditional(component, component.conditional.json, row, data, form);
     }
 
     // Default to show.
@@ -19359,14 +19550,14 @@ var FormioUtils = {
    * @param row
    * @returns {mixed}
    */
-  checkTrigger: function checkTrigger(component, trigger, row, data) {
+  checkTrigger: function checkTrigger(component, trigger, row, data, form) {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
       case 'javascript':
-        return this.checkCustomConditional(component, trigger.javascript, row, data, 'result', false);
+        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false);
       case 'json':
-        return this.checkJsonConditional(component, trigger.json, row, data, false);
+        return this.checkJsonConditional(component, trigger.json, row, data, form, false);
     }
     // If none of the types matched, don't fire the trigger.
     return false;

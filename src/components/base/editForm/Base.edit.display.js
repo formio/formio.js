@@ -6,7 +6,82 @@ export let BaseEditDisplay = [
     key: 'label',
     label: 'Label',
     placeholder: 'Field Label',
-    tooltip: 'The label for this field that will appear next to it.'
+    tooltip: 'The label for this field that will appear next to it.',
+    validate: {
+      required: true
+    }
+  },
+  {
+    weight: 10,
+    type: 'checkbox',
+    label: 'Hide Label',
+    tooltip: 'Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.',
+    key: 'hideLabel',
+    input: true
+  },
+  {
+    type: 'select',
+    input: true,
+    key: 'labelPosition',
+    label: 'Label Position',
+    tooltip: 'Position for the label for this field.',
+    weight: 20,
+    defaultValue: 'top',
+    dataSrc: 'values',
+    data: {
+      values: [
+        {label: 'Top', value: 'top'},
+        {label: 'Left (Left-aligned)', value: 'left-left'},
+        {label: 'Left (Right-aligned)', value: 'left-right'},
+        {label: 'Right (Left-aligned)', value: 'right-left'},
+        {label: 'Right (Right-aligned)', value: 'right-right'},
+        {label: 'Bottom', value: 'bottom'}
+      ]
+    }
+  },
+  {
+    type: 'number',
+    input: true,
+    key: 'labelWidth',
+    label: 'Label Width',
+    tooltip: 'The width of label on line in percentages.',
+    weight: 30,
+    placeholder: '30',
+    suffix: '%',
+    validate: {
+      min: 0,
+      max: 100
+    },
+    conditional: {
+      json: {
+        or: [
+          {'===': [{var: 'data.labelPosition'}, 'top']},
+          {'===': [{var: 'data.labelPosition'}, 'bottom']},
+        ]
+      }
+    }
+  },
+  {
+    type: 'number',
+    input: true,
+    key: 'labelMargin',
+    label: 'Label Margin',
+    tooltip: 'The width of label margin on line in percentages.',
+    weight: 30,
+    placeholder: '3',
+    suffix: '%',
+    validate: {
+      min: 0,
+      max: 100
+    },
+    conditional: {
+      json: {
+        or: [
+          {'===': [{var: 'data.labelPosition'}, 'top']},
+          {'===': [{var: 'data.labelPosition'}, 'bottom']},
+        ]
+      }
+    }
   },
   {
     weight: 100,
@@ -100,14 +175,6 @@ export let BaseEditDisplay = [
     label: 'Hidden',
     tooltip: 'A hidden field is still a part of the form, but is hidden from view.',
     key: 'hidden',
-    input: true
-  },
-  {
-    weight: 1200,
-    type: 'checkbox',
-    label: 'Hide Label',
-    tooltip: 'Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.',
-    key: 'hideLabel',
     input: true
   },
   {

@@ -380,10 +380,10 @@ const FormioUtils = {
    * @param data
    * @returns {*}
    */
-  checkCustomConditional(component, custom, row, data, variable, onError) {
+  checkCustomConditional(component, custom, row, data, form, variable, onError) {
     try {
-      return (new Function('component', 'row', 'data',
-        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, row, data);
+      return (new Function('component', 'row', 'data', 'form',
+        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, row, data, form);
     }
     catch (e) {
       console.warn(`An error occurred in a condition statement for component ${component.key}`, e);
@@ -391,11 +391,12 @@ const FormioUtils = {
     }
   },
 
-  checkJsonConditional(component, json, row, data, onError) {
+  checkJsonConditional(component, json, row, data, form, onError) {
     try {
       return jsonLogic.apply(json, {
         data,
         row,
+        form,
         _
       });
     }
@@ -417,15 +418,15 @@ const FormioUtils = {
    *
    * @returns {boolean}
    */
-  checkCondition(component, row, data) {
+  checkCondition(component, row, data, form) {
     if (component.customConditional) {
-      return this.checkCustomConditional(component, component.customConditional, row, data, 'show', true);
+      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true);
     }
     else if (component.conditional && component.conditional.when) {
       return this.checkSimpleConditional(component, component.conditional, row, data, true);
     }
     else if (component.conditional && component.conditional.json) {
-      return this.checkJsonConditional(component, component.conditional.json, row, data);
+      return this.checkJsonConditional(component, component.conditional.json, row, data, form);
     }
 
     // Default to show.
@@ -441,14 +442,14 @@ const FormioUtils = {
    * @param row
    * @returns {mixed}
    */
-  checkTrigger(component, trigger, row, data) {
+  checkTrigger(component, trigger, row, data, form) {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
       case 'javascript':
-        return this.checkCustomConditional(component, trigger.javascript, row, data, 'result', false);
+        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false);
       case 'json':
-        return this.checkJsonConditional(component, trigger.json, row, data, false);
+        return this.checkJsonConditional(component, trigger.json, row, data, form, false);
     }
     // If none of the types matched, don't fire the trigger.
     return false;

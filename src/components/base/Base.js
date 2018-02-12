@@ -317,7 +317,7 @@ export class BaseComponent {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return this.component;
+    return _.omit(this.component, 'id');
   }
 
   /**
@@ -1456,7 +1456,12 @@ export class BaseComponent {
       result = this.show(true);
     }
     else {
-      result = this.show(FormioUtils.checkCondition(this.component, this.data, data));
+      result = this.show(FormioUtils.checkCondition(
+        this.component,
+        this.data,
+        data,
+        this.root ? this.root._form : {}
+      ));
     }
 
     if (this.fieldLogic(data)) {
@@ -1894,7 +1899,7 @@ export class BaseComponent {
 
   checkValidity(data, dirty) {
     // Force valid if component is conditionally hidden.
-    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
       return true;
     }
 

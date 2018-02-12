@@ -10,13 +10,12 @@ lib: builder
 <h3>JSON Schema</h3>
 <pre id="json"></pre>
 <h3>Form Renderer</h3>
-<div id="formio"></div>
+<div id="formio" class="well"></div>
 
 <script type="text/javascript">
 Formio.builder(document.getElementById("builder")).then(function(builder) {
   var jsonElement = document.getElementById('json');
-
-  Formio.createForm(document.getElementById('formio')).then(function(form) {
+  Formio.createForm(document.getElementById('formio'), {components: []}).then(function(form) {
     builder.on('saveComponent', function(event) {
       var schema = builder.schema;
       jsonElement.innerHTML = '';

@@ -197,7 +197,7 @@ export default class FormioWizard extends FormioForm {
     _.each(form.components, (component) => {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
-        if (FormioUtils.checkCondition(component, this.data, this.data)) {
+        if (FormioUtils.checkCondition(component, this.data, this.data, this.wizard)) {
           this.pages.push(component);
         }
       }
@@ -360,7 +360,7 @@ export default class FormioWizard extends FormioForm {
       if (FormioUtils.hasCondition(component)) {
         const hasPage = this.pages && this.pages[pageIndex]
           && (this.pageId(this.pages[pageIndex]) === this.pageId(component));
-        const shouldShow = FormioUtils.checkCondition(component, this.data, this.data);
+        const shouldShow = FormioUtils.checkCondition(component, this.data, this.data, this.wizard);
         if ((shouldShow && !hasPage) || (!shouldShow && hasPage)) {
           rebuild = true;
           return false;

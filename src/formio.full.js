@@ -38,10 +38,6 @@ FormioForm.registerComponent = Formio.registerComponent = function(type, compone
   FormioComponents.customComponents[type] = component;
 };
 
-FormioForm.registerGroup = Formio.registerGroup = function(name, groupInfo) {
-  FormioComponents.groupInfo[name] = groupInfo;
-};
-
 exports.Formio = global.Formio = Formio;
 exports.FormioForm = FormioForm;
 exports.FormioWizard = FormioWizard;

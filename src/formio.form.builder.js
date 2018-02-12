@@ -10,6 +10,25 @@ export class FormioFormBuilder extends FormioForm {
   constructor(element, options) {
     super(element, options);
     let self = this;
+
+    // Setup default groups, but let them be overridden.
+    this.options.groups = _.defaultsDeep({}, this.options.groups, {
+      basic: {
+        title: 'Basic Components',
+        weight: 0,
+        default: true,
+      },
+      advanced: {
+        title: 'Advanced',
+        weight: 10
+      },
+      layout: {
+        title: 'Layout',
+        weight: 20
+      }
+    });
+
+    this.groups = {};
     this.options.builder = true;
     this.options.hooks = this.options.hooks || {};
     this.options.hooks.addComponents = function(components) {
@@ -280,102 +299,155 @@ export class FormioFormBuilder extends FormioForm {
     }
   }
 
+  /**
+   * Insert an element in the weight order.
+   *
+   * @param info
+   * @param items
+   * @param element
+   * @param container
+   */
+  insertInOrder(info, items, element, container) {
+    // Determine where this item should be added.
+    let beforeWeight = 0;
+    let before = null;
+    _.each(items, (itemInfo) => {
+      if (
+        (info.key !== itemInfo.key) &&
+        (info.weight < itemInfo.weight) &&
+        (!beforeWeight || (itemInfo.weight > beforeWeight))
+      ) {
+        before = itemInfo.element;
+        beforeWeight = itemInfo.weight;
+      }
+    });
+
+    if (before) {
+      container.insertBefore(element, before);
+    }
+    else {
+      container.appendChild(element);
+    }
+  }
+
+  addBuilderGroup(info) {
+    if (!info || !info.key) {
+      console.warn('Invalid Group Provided.');
+      return;
+    }
+
+    info = _.clone(info);
+    let groupAnchor = this.ce('a', {
+      href: `#group-${info.key}`
+    }, this.text(info.title));
+
+    // Add a listener when it is clicked.
+    this.addEventListener(groupAnchor, 'click', (event) => {
+      event.preventDefault();
+      let clickedGroupId = event.target.getAttribute('href').replace('#group-', '');
+      if (this.groups[clickedGroupId]) {
+        let clickedGroup = this.groups[clickedGroupId];
+        let wasIn = this.hasClass(clickedGroup.panel, 'in');
+        _.each(this.groups, (group, groupId) => {
+          this.removeClass(group.panel, 'in');
+          if ((groupId === clickedGroupId) && !wasIn) {
+            this.addClass(group.panel, 'in');
+          }
+        });
+
+        // Match the form builder height to the sidebar.
+        this.formBuilderElement.style.minHeight = this.builderSidebar.offsetHeight + 'px';
+      }
+    });
+
+    info.element = this.ce('div', {
+      class: 'panel panel-default form-builder-panel',
+      id: `group-panel-${info.key}`
+    }, [
+      this.ce('div', {
+        class: 'panel-heading'
+      }, [
+        this.ce('h4', {
+          class: 'panel-title'
+        }, groupAnchor)
+      ])
+    ]);
+    info.body = this.ce('div', {
+      class: 'panel-body no-drop'
+    });
+
+    // Add this group body to the drag containers.
+    this.dragContainers.push(info.body);
+
+    let groupBodyClass = 'panel-collapse collapse';
+    if (info.default) {
+      groupBodyClass += ' in';
+    }
+
+    info.panel = this.ce('div', {
+      class: groupBodyClass,
+      id: `group-${info.key}`
+    }, info.body);
+
+    info.element.appendChild(info.panel);
+    this.groups[info.key] = info;
+    this.insertInOrder(info, this.groups, info.element, this.sideBarElement);
+  }
+
+  addBuilderComponent(component) {
+    if (!component || !component.group || !this.groups[component.group]) {
+      console.warn('Invalid group');
+      return;
+    }
+
+    component = _.clone(component);
+    let groupInfo = this.groups[component.group];
+    if (!groupInfo.components) {
+      groupInfo.components = {};
+    }
+
+    groupInfo.components[component.key] = component;
+
+    component.element = this.ce('span', {
+      id: `builder-${component.key}`,
+      class: 'btn btn-primary btn-xs btn-block formcomponent drag-copy'
+    });
+    if (component.icon) {
+      component.element.appendChild(this.ce('i', {
+        class: component.icon,
+        style: 'margin-right: 5px;'
+      }));
+    }
+    component.element.builderInfo = component;
+    component.element.appendChild(this.text(component.title));
+    this.insertInOrder(component, groupInfo.components, component.element, groupInfo.body);
+  }
+
   buildSidebar() {
+    this.groups = {};
+    this.sideBarElement = this.ce('div', {
+      class: 'panel-group'
+    });
+
+    // Add the groups.
+    _.each(this.options.groups, (info, group) => {
+      info.key = group;
+      this.addBuilderGroup(info);
+    });
+
     // Get all of the components builder info grouped and sorted.
-    let components = _.map(_.assign(Components, FormioComponents.customComponents), (component, key) => {
+    let components = _.filter(_.map(_.assign(Components, FormioComponents.customComponents), (component, type) => {
       let builderInfo = component.builderInfo;
       if (!builderInfo) {
         return null;
       }
 
-      builderInfo.key = key;
+      builderInfo.key = type;
       return builderInfo;
-    });
+    }));
 
-    components = _.sortBy(components, 'weight');
-    components = _.groupBy(components, 'group');
-    let sideBarElement = this.ce('div', {
-      class: 'panel-group'
-    });
-
-    this.groupPanels = {};
-
-    // Iterate through each group of components.
-    let firstGroup = true;
-    _.each(components, (groupComponents, group) => {
-      let groupInfo = FormioComponents.groupInfo[group];
-      if (groupInfo) {
-        let groupAnchor = this.ce('a', {
-          href: '#group-' + group
-        }, this.text(groupInfo.title));
-        this.addEventListener(groupAnchor, 'click', (event) => {
-          event.preventDefault();
-          let clickedGroup = event.target.getAttribute('href').substr(1);
-          let wasIn = this.hasClass(this.groupPanels[clickedGroup], 'in');
-          _.each(this.groupPanels, (groupPanel, groupId) => {
-            this.removeClass(groupPanel, 'in');
-            if ((groupId === clickedGroup) && !wasIn) {
-              this.addClass(groupPanel, 'in');
-            }
-          });
-
-          // Match the form builder height to the sidebar.
-          this.formBuilderElement.style.minHeight = this.builderSidebar.offsetHeight + 'px';
-        });
-
-        let groupPanel = this.ce('div', {
-          class: 'panel panel-default form-builder-panel'
-        }, [
-          this.ce('div', {
-            class: 'panel-heading'
-          }, [
-            this.ce('h4', {
-              class: 'panel-title'
-            }, groupAnchor)
-          ])
-        ]);
-        let groupBody = this.ce('div', {
-          class: 'panel-body no-drop'
-        });
-
-        // Add this group body to the drag containers.
-        this.dragContainers.push(groupBody);
-
-        let groupBodyClass = 'panel-collapse collapse';
-        if (firstGroup) {
-          groupBodyClass += ' in';
-          firstGroup = false;
-        }
-        let groupId = `group-${group}`;
-        let groupBodyWrapper = this.ce('div', {
-          class: groupBodyClass,
-          id: groupId
-        }, groupBody);
-
-        this.groupPanels[groupId] = groupBodyWrapper;
-
-        _.each(groupComponents, (builderInfo) => {
-          let compButton = this.ce('span', {
-            id: 'builder-' + builderInfo.key,
-            class: 'btn btn-primary btn-xs btn-block formcomponent drag-copy'
-          });
-          if (builderInfo.icon) {
-            compButton.appendChild(this.ce('i', {
-              class: builderInfo.icon,
-              style: 'margin-right: 5px;'
-            }));
-          }
-          compButton.builderInfo = builderInfo;
-          compButton.appendChild(this.text(builderInfo.title));
-          groupBody.appendChild(compButton);
-        });
-
-        groupPanel.appendChild(groupBodyWrapper);
-        sideBarElement.appendChild(groupPanel);
-      }
-    });
-
-    return sideBarElement;
+    // Iterate through every component.
+    _.each(components, (component) => this.addBuilderComponent(component));
   }
 
   getParentElement(element) {
@@ -401,7 +473,7 @@ export class FormioFormBuilder extends FormioForm {
     this.element.component = this;
 
     this.builderElement.appendChild(this.formBuilderElement);
-    this.sideBarElement = this.buildSidebar();
+    this.buildSidebar();
     this.builderSidebar.appendChild(this.sideBarElement);
 
     super.build();

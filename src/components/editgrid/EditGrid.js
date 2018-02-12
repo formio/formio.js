@@ -365,7 +365,7 @@ export class EditGridComponent extends FormioComponents {
   }
 
   checkValidity(data, dirty) {
-    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
       return true;
     }
 

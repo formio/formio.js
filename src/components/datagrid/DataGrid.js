@@ -41,6 +41,9 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildTable() {
+    // Destroy so that it will remove all existing components and clear handlers.
+    this.destroy();
+    
     if (this.tableElement && this.tableElement.parentNode) {
       this.element.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';

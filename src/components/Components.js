@@ -24,7 +24,7 @@ export class FormioComponents extends BaseComponent {
   }
 
   get schema() {
-    let schema = this.component;
+    let schema = super.schema;
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;
@@ -367,7 +367,7 @@ export class FormioComponents extends BaseComponent {
   }
 
   checkValidity(data, dirty) {
-    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
       return true;
     }
 
@@ -466,17 +466,3 @@ export class FormioComponents extends BaseComponent {
 }
 
 FormioComponents.customComponents = {};
-FormioComponents.groupInfo = {
-  basic: {
-    title: 'Basic Components',
-    weight: 0
-  },
-  advanced: {
-    title: 'Advanced',
-    weight: 10
-  },
-  layout: {
-    title: 'Layout',
-    weight: 20
-  }
-};
