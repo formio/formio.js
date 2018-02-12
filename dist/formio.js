@@ -1,5 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-(function (global){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -8,11 +7,31 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
+var _slicedToArray = function () {
+  function sliceIterator(arr, i) {
+    var _arr = [];var _n = true;var _d = false;var _e = undefined;try {
+      for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
+        _arr.push(_s.value);if (i && _arr.length === i) break;
+      }
+    } catch (err) {
+      _d = true;_e = err;
+    } finally {
+      try {
+        if (!_n && _i["return"]) _i["return"]();
+      } finally {
+        if (_d) throw _e;
+      }
+    }return _arr;
+  }return function (arr, i) {
+    if (Array.isArray(arr)) {
+      return arr;
+    } else if (Symbol.iterator in Object(arr)) {
+      return sliceIterator(arr, i);
+    } else {
+      throw new TypeError("Invalid attempt to destructure non-iterable instance");
+    }
+  };
+}();
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -24,21 +43,50 @@ var _createClass = function () {
   };
 }();
 
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+}; // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
+
+
+var _nativePromiseOnly = require('native-promise-only');
+
+var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
+
+require('whatwg-fetch');
+
+var _eventemitter = require('eventemitter2');
+
+var _browserCookies = require('browser-cookies');
+
+var _browserCookies2 = _interopRequireDefault(_browserCookies);
+
+var _shallowCopy = require('shallow-copy');
+
+var _shallowCopy2 = _interopRequireDefault(_shallowCopy);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
   }
 }
 
-require('./formio.polyfill');
-// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
-// duck-punch the global Promise definition which messes up Angular 2 since it
-// also duck-punches the global Promise definition. For now, keep native-promise-only.
-var Promise = require("native-promise-only");
-require('whatwg-fetch');
-var EventEmitter = require('eventemitter2').EventEmitter2;
-var copy = require('shallow-copy');
-var cookies = require('browser-cookies');
+var isBoolean = function isBoolean(val) {
+  return (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === _typeof(true);
+};
+var isNil = function isNil(val) {
+  return val === null || val === undefined;
+};
+var isObject = function isObject(val) {
+  return val && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object';
+};
 
 /**
  * The Formio interface class.
@@ -114,7 +162,7 @@ var Formio = function () {
       path = this.base + path;
     }
 
-    var hostparts = Formio.getUrlParts(path);
+    var hostparts = this.getUrlParts(path);
     var parts = [];
     var hostName = hostparts[1] + hostparts[2];
     path = hostparts.length > 3 ? hostparts[3] : '';
@@ -127,7 +175,7 @@ var Formio = function () {
     // Register a specific path.
     var registerPath = function registerPath(name, base) {
       _this[name + 'sUrl'] = base + '/' + name;
-      var regex = new RegExp('\/' + name + '\/([^/]+)');
+      var regex = new RegExp('/' + name + '/([^/]+)');
       if (path.search(regex) !== -1) {
         parts = path.match(regex);
         _this[name + 'Url'] = parts ? base + parts[0] : '';
@@ -142,7 +190,7 @@ var Formio = function () {
       for (var i in items) {
         if (items.hasOwnProperty(i)) {
           var item = items[i];
-          if (item instanceof Array) {
+          if (Array.isArray(item)) {
             registerItems(item, base, true);
           } else {
             var newBase = registerPath(item, base);
@@ -184,7 +232,7 @@ var Formio = function () {
     if (path.search(/(^|\/)(project|form)($|\/)/) !== -1) {
       registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);
     } else {
-      var subRegEx = new RegExp('\/(submission|action|v)($|\/.*)');
+      var subRegEx = new RegExp('/(submission|action|v)($|/.*)');
       var subs = path.match(subRegEx);
       this.pathType = subs && subs.length > 1 ? subs[1] : '';
       path = path.replace(subRegEx, '');
@@ -217,7 +265,7 @@ var Formio = function () {
       var _id = type + 'Id';
       var _url = type + 'Url';
       if (!this[_id]) {
-        Promise.reject('Nothing to delete');
+        _nativePromiseOnly2.default.reject('Nothing to delete');
       }
       Formio.cache = {};
       return this.makeRequest(type, this[_url], 'delete', null, opts);
@@ -227,7 +275,7 @@ var Formio = function () {
     value: function index(type, query, opts) {
       var _url = type + 'Url';
       query = query || '';
-      if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+      if (query && isObject(query)) {
         query = '?' + Formio.serialize(query.params);
       }
       return this.makeRequest(type, this[_url] + query, 'get', null, opts);
@@ -250,7 +298,7 @@ var Formio = function () {
     value: function load(type, query, opts) {
       var _id = type + 'Id';
       var _url = type + 'Url';
-      if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+      if (query && isObject(query)) {
         query = Formio.serialize(query.params);
       }
       if (query) {
@@ -259,14 +307,18 @@ var Formio = function () {
         query = this.query;
       }
       if (!this[_id]) {
-        return Promise.reject('Missing ' + _id);
+        return _nativePromiseOnly2.default.reject('Missing ' + _id);
       }
       return this.makeRequest(type, this[_url] + query, 'get', null, opts);
     }
   }, {
     key: 'makeRequest',
-    value: function makeRequest(type, url, method, data, opts) {
-      return Formio.makeRequest(this, type, url, method, data, opts);
+    value: function makeRequest() {
+      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      return Formio.makeRequest.apply(Formio, [this].concat(args));
     }
   }, {
     key: 'loadProject',
@@ -298,7 +350,7 @@ var Formio = function () {
           return currentForm;
         }
         // If they specified a revision form, load the revised form components.
-        if (query && (typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
+        if (query && isObject(query)) {
           query = Formio.serialize(query.params);
         }
         if (query) {
@@ -310,8 +362,9 @@ var Formio = function () {
           currentForm.components = revisionForm.components;
           // Using object.assign so we don't cross polinate multiple form loads.
           return Object.assign({}, currentForm);
-        }).catch(function (error) {
-          // If we couldn't load the revision, just return the original form.
+        })
+        // If we couldn't load the revision, just return the original form.
+        .catch(function () {
           return Object.assign({}, currentForm);
         });
       });
@@ -393,17 +446,17 @@ var Formio = function () {
   }, {
     key: 'isObjectId',
     value: function isObjectId(id) {
-      var checkForHexRegExp = new RegExp("^[0-9a-fA-F]{24}$");
+      var checkForHexRegExp = new RegExp('^[0-9a-fA-F]{24}$');
       return checkForHexRegExp.test(id);
     }
   }, {
     key: 'getProjectId',
     value: function getProjectId() {
       if (!this.projectId) {
-        return Promise.resolve('');
+        return _nativePromiseOnly2.default.resolve('');
       }
       if (this.isObjectId(this.projectId)) {
-        return Promise.resolve(this.projectId);
+        return _nativePromiseOnly2.default.resolve(this.projectId);
       } else {
         return this.loadProject().then(function (project) {
           return project._id;
@@ -414,10 +467,10 @@ var Formio = function () {
     key: 'getFormId',
     value: function getFormId() {
       if (!this.formId) {
-        return Promise.resolve('');
+        return _nativePromiseOnly2.default.resolve('');
       }
       if (this.isObjectId(this.formId)) {
-        return Promise.resolve(this.formId);
+        return _nativePromiseOnly2.default.resolve(this.formId);
       } else {
         return this.loadForm().then(function (form) {
           return form._id;
@@ -456,7 +509,7 @@ var Formio = function () {
     value: function getTempToken(expire, allowed) {
       var token = Formio.getToken();
       if (!token) {
-        return Promise.reject('You must be authenticated to generate a temporary auth token.');
+        return _nativePromiseOnly2.default.reject('You must be authenticated to generate a temporary auth token.');
       }
       return this.makeRequest('tempToken', this.projectUrl + '/token', 'GET', null, {
         ignoreCache: true,
@@ -479,7 +532,7 @@ var Formio = function () {
       var _this4 = this;
 
       if (!this.submissionId) {
-        return Promise.resolve('');
+        return _nativePromiseOnly2.default.resolve('');
       }
 
       if (!form) {
@@ -498,7 +551,7 @@ var Formio = function () {
       apiUrl += '/download';
 
       var download = this.base + apiUrl;
-      return new Promise(function (resolve, reject) {
+      return new _nativePromiseOnly2.default(function (resolve, reject) {
         _this4.getTempToken(3600, 'GET:' + apiUrl).then(function (tempToken) {
           download += '?token=' + tempToken.key;
           resolve(download);
@@ -510,6 +563,8 @@ var Formio = function () {
   }, {
     key: 'uploadFile',
     value: function uploadFile(storage, file, fileName, dir, progressCallback, url) {
+      var _this5 = this;
+
       var requestArgs = {
         provider: storage,
         method: 'upload',
@@ -519,23 +574,25 @@ var Formio = function () {
       };
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('fileRequest', requestArgs).then(function (result) {
-          if (storage && (result === null || result === undefined)) {
+          if (storage && isNil(result)) {
             if (Formio.providers.storage.hasOwnProperty(storage)) {
-              var provider = new Formio.providers.storage[storage](this);
+              var provider = new Formio.providers.storage[storage](_this5);
               return provider.uploadFile(file, fileName, dir, progressCallback, url);
             } else {
               throw 'Storage provider not found';
             }
           }
           return result || { url: '' };
-        }.bind(this));
-      }.bind(this));
+        });
+      });
 
       return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
     }
   }, {
     key: 'downloadFile',
     value: function downloadFile(file) {
+      var _this6 = this;
+
       var requestArgs = {
         method: 'download',
         file: file
@@ -543,17 +600,17 @@ var Formio = function () {
 
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('fileRequest', requestArgs).then(function (result) {
-          if (file.storage && (result === null || result === undefined)) {
+          if (file.storage && isNil(result)) {
             if (Formio.providers.storage.hasOwnProperty(file.storage)) {
-              var provider = new Formio.providers.storage[file.storage](this);
+              var provider = new Formio.providers.storage[file.storage](_this6);
               return provider.downloadFile(file);
             } else {
               throw 'Storage provider not found';
             }
           }
           return result || { url: '' };
-        }.bind(this));
-      }.bind(this));
+        });
+      });
 
       return Formio.pluginAlter('wrapFileRequestPromise', request, requestArgs);
     }
@@ -563,7 +620,7 @@ var Formio = function () {
   }, {
     key: 'canSubmit',
     value: function canSubmit() {
-      return Promise.all([this.loadForm(), this.currentUser(), this.accessInfo()]).then(function (results) {
+      return _nativePromiseOnly2.default.all([this.loadForm(), this.currentUser(), this.accessInfo()]).then(function (results) {
         var form = results.shift();
         var user = results.shift();
         var access = results.shift();
@@ -622,21 +679,27 @@ var Formio = function () {
         return canSubmit;
       });
     }
+  }, {
+    key: 'getUrlParts',
+    value: function getUrlParts(url) {
+      return Formio.getUrlParts(url, this);
+    }
   }], [{
     key: 'loadProjects',
     value: function loadProjects(query, opts) {
       query = query || '';
-      if ((typeof query === 'undefined' ? 'undefined' : _typeof(query)) === 'object') {
-        query = '?' + serialize(query.params);
+      if (isObject(query)) {
+        query = '?' + Formio.serialize(query.params);
       }
       return Formio.makeStaticRequest(Formio.baseUrl + '/project' + query, 'GET', null, opts);
     }
   }, {
     key: 'getUrlParts',
-    value: function getUrlParts(url) {
+    value: function getUrlParts(url, formio) {
+      var base = formio && formio.base ? formio.base : Formio.baseUrl;
       var regex = '^(http[s]?:\\/\\/)';
-      if (this.base && url.indexOf(this.base) === 0) {
-        regex += '(' + this.base.replace(/^http[s]?:\/\//, '') + ')';
+      if (base && url.indexOf(base) === 0) {
+        regex += '(' + base.replace(/^http[s]?:\/\//, '') + ')';
       } else {
         regex += '([^/]+)';
       }
@@ -649,15 +712,16 @@ var Formio = function () {
       var str = [];
       for (var p in obj) {
         if (obj.hasOwnProperty(p)) {
-          str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+          str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
         }
-      }return str.join("&");
+      }
+      return str.join('&');
     }
   }, {
     key: 'getRequestArgs',
     value: function getRequestArgs(formio, type, url, method, data, opts) {
       method = (method || 'GET').toUpperCase();
-      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+      if (!opts || !isObject(opts)) {
         opts = {};
       }
 
@@ -683,7 +747,7 @@ var Formio = function () {
       var requestArgs = Formio.getRequestArgs(null, '', url, method, data, opts);
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('staticRequest', requestArgs).then(function (result) {
-          if (result === null || result === undefined) {
+          if (isNil(result)) {
             return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
@@ -698,10 +762,11 @@ var Formio = function () {
       if (!formio) {
         return Formio.makeStaticRequest(url, method, data, opts);
       }
+
       var requestArgs = Formio.getRequestArgs(formio, type, url, method, data, opts);
       var request = Formio.pluginWait('preRequest', requestArgs).then(function () {
         return Formio.pluginGet('request', requestArgs).then(function (result) {
-          if (result === null || result === undefined) {
+          if (isNil(result)) {
             return Formio.request(url, method, requestArgs.data, requestArgs.opts.header, requestArgs.opts);
           }
           return result;
@@ -714,16 +779,16 @@ var Formio = function () {
     key: 'request',
     value: function request(url, method, data, header, opts) {
       if (!url) {
-        return Promise.reject('No url provided');
+        return _nativePromiseOnly2.default.reject('No url provided');
       }
       method = (method || 'GET').toUpperCase();
 
       // For reverse compatibility, if they provided the ignoreCache parameter,
       // then change it back to the options format where that is a parameter.
-      if (typeof opts === 'boolean') {
+      if (isBoolean(opts)) {
         opts = { ignoreCache: opts };
       }
-      if (!opts || (typeof opts === 'undefined' ? 'undefined' : _typeof(opts)) !== 'object') {
+      if (!opts || !isObject(opts)) {
         opts = {};
       }
 
@@ -801,7 +866,7 @@ var Formio = function () {
         return getResult.then(function (result) {
           // Add some content-range metadata to the result here
           var range = response.headers.get('content-range');
-          if (range && (typeof result === 'undefined' ? 'undefined' : _typeof(result)) === 'object') {
+          if (range && isObject(result)) {
             range = range.split('/');
             if (range[0] !== '*') {
               var skipLimit = range[0].split('-');
@@ -833,13 +898,13 @@ var Formio = function () {
 
         // Shallow copy result so modifications don't end up in cache
         if (Array.isArray(result)) {
-          var resultCopy = result.map(copy);
+          var resultCopy = result.map(_shallowCopy2.default);
           resultCopy.skip = result.skip;
           resultCopy.limit = result.limit;
           resultCopy.serverCount = result.serverCount;
           return resultCopy;
         }
-        return copy(result);
+        return (0, _shallowCopy2.default)(result);
       }).catch(function (err) {
         if (err === 'Bad Token') {
           Formio.setToken(null);
@@ -879,14 +944,14 @@ var Formio = function () {
         try {
           return localStorage.removeItem('formioToken');
         } catch (err) {
-          return cookies.erase('formioToken', { path: '/' });
+          return _browserCookies2.default.erase('formioToken', { path: '/' });
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         localStorage.setItem('formioToken', token);
       } catch (err) {
-        cookies.set('formioToken', token, { path: '/' });
+        _browserCookies2.default.set('formioToken', token, { path: '/' });
       }
       return Formio.currentUser(); // Run this so user is updated if null
     }
@@ -900,7 +965,7 @@ var Formio = function () {
         this.token = localStorage.getItem('formioToken') || '';
         return this.token;
       } catch (e) {
-        this.token = cookies.get('formioToken');
+        this.token = _browserCookies2.default.get('formioToken');
         return this.token;
       }
     }
@@ -913,14 +978,14 @@ var Formio = function () {
         try {
           return localStorage.removeItem('formioUser');
         } catch (err) {
-          return cookies.erase('formioUser', { path: '/' });
+          return _browserCookies2.default.erase('formioUser', { path: '/' });
         }
       }
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
       try {
         localStorage.setItem('formioUser', JSON.stringify(user));
       } catch (err) {
-        cookies.set('formioUser', JSON.stringify(user), { path: '/' });
+        _browserCookies2.default.set('formioUser', JSON.stringify(user), { path: '/' });
       }
     }
   }, {
@@ -929,7 +994,7 @@ var Formio = function () {
       try {
         return JSON.parse(localStorage.getItem('formioUser') || null);
       } catch (e) {
-        return JSON.parse(cookies.get('formioUser'));
+        return JSON.parse(_browserCookies2.default.get('formioUser'));
       }
     }
   }, {
@@ -997,8 +1062,11 @@ var Formio = function () {
     value: function deregisterPlugin(plugin) {
       var beforeLength = Formio.plugins.length;
       Formio.plugins = Formio.plugins.filter(function (p) {
-        if (p !== plugin && p.__name !== plugin) return true;
-        (p.deregister || Formio.noop).call(p, Formio);
+        if (p !== plugin && p.__name !== plugin) {
+          return true;
+        }
+
+        (p.deregister || Formio.noop).call(plugin, Formio);
         return false;
       });
       return beforeLength !== Formio.plugins.length;
@@ -1016,39 +1084,83 @@ var Formio = function () {
   }, {
     key: 'getPlugin',
     value: function getPlugin(name) {
-      return Formio.plugins.reduce(function (result, plugin) {
-        if (result) return result;
-        if (plugin.__name === name) return plugin;
-      }, null);
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
+
+      try {
+        for (var _iterator = Formio.plugins[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var plugin = _step.value;
+
+          if (plugin.__name === name) {
+            return plugin;
+          }
+        }
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
+
+      return null;
     }
   }, {
     key: 'pluginWait',
     value: function pluginWait(pluginFn) {
-      var args = [].slice.call(arguments, 1);
-      return Promise.all(Formio.plugins.map(function (plugin) {
-        return (plugin[pluginFn] || Formio.noop).apply(plugin, args);
+      for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        args[_key2 - 1] = arguments[_key2];
+      }
+
+      return _nativePromiseOnly2.default.all(Formio.plugins.map(function (plugin) {
+        var _ref;
+
+        return (_ref = plugin[pluginFn] || Formio.noop).call.apply(_ref, [plugin].concat(args));
       }));
     }
   }, {
     key: 'pluginGet',
     value: function pluginGet(pluginFn) {
-      var args = [].slice.call(arguments, 0);
-      var callPlugin = function callPlugin(index, pluginFn) {
+      for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
+        args[_key3 - 1] = arguments[_key3];
+      }
+
+      var callPlugin = function callPlugin(index) {
+        var _ref2;
+
         var plugin = Formio.plugins[index];
-        if (!plugin) return Promise.resolve(null);
-        return Promise.resolve((plugin && plugin[pluginFn] || Formio.noop).apply(plugin, [].slice.call(arguments, 2))).then(function (result) {
-          if (result !== null && result !== undefined) return result;
-          return callPlugin.apply(null, [index + 1].concat(args));
+
+        if (!plugin) {
+          return _nativePromiseOnly2.default.resolve(null);
+        }
+
+        return _nativePromiseOnly2.default.resolve((_ref2 = plugin[pluginFn] || Formio.noop).call.apply(_ref2, [plugin].concat(args))).then(function (result) {
+          if (!isNil(result)) {
+            return result;
+          }
+
+          return callPlugin(index + 1);
         });
       };
-      return callPlugin.apply(null, [0].concat(args));
+      return callPlugin(0);
     }
   }, {
     key: 'pluginAlter',
     value: function pluginAlter(pluginFn, value) {
-      var args = [].slice.call(arguments, 2);
+      for (var _len4 = arguments.length, args = Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
+        args[_key4 - 2] = arguments[_key4];
+      }
+
       return Formio.plugins.reduce(function (value, plugin) {
-        return (plugin[pluginFn] || Formio.identity).apply(plugin, [value].concat(args));
+        return (plugin[pluginFn] || Formio.identity).apply(undefined, [value].concat(args));
       }, value);
     }
   }, {
@@ -1064,14 +1176,14 @@ var Formio = function () {
       projectUrl += '/current';
       var user = this.getUser();
       if (user) {
-        return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
+        return Formio.pluginAlter('wrapStaticRequestPromise', _nativePromiseOnly2.default.resolve(user), {
           url: projectUrl,
           method: 'GET'
         });
       }
       var token = Formio.getToken();
       if (!token) {
-        return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
+        return Formio.pluginAlter('wrapStaticRequestPromise', _nativePromiseOnly2.default.resolve(null), {
           url: projectUrl,
           method: 'GET'
         });
@@ -1109,7 +1221,11 @@ var Formio = function () {
       }
 
       done = done || function () {
-        console.log(arguments);
+        for (var _len5 = arguments.length, args = Array(_len5), _key5 = 0; _key5 < _len5; _key5++) {
+          args[_key5] = arguments[_key5];
+        }
+
+        return console.log(args);
       };
       options = options || {};
 
@@ -1131,39 +1247,87 @@ var Formio = function () {
        */
       var getSubmission = function getSubmission() {
         var submission = { data: {} };
+
         var setValue = function setValue(path, value) {
           var isArray = path.substr(-2) === '[]';
           if (isArray) {
             path = path.replace('[]', '');
           }
+
           var paths = path.replace(/\[|\]\[/g, '.').replace(/\]$/g, '').split('.');
           var current = submission;
-          while (path = paths.shift()) {
-            if (!paths.length) {
-              if (isArray) {
-                if (!current[path]) {
-                  current[path] = [];
+
+          var _iteratorNormalCompletion2 = true;
+          var _didIteratorError2 = false;
+          var _iteratorError2 = undefined;
+
+          try {
+            for (var _iterator2 = paths.entries()[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+              var _ref3 = _step2.value;
+
+              var _ref4 = _slicedToArray(_ref3, 2);
+
+              var index = _ref4[0];
+              var _path = _ref4[1];
+
+              if (index !== paths.length - 1) {
+                if (!current[_path]) {
+                  current[_path] = {};
                 }
-                current[path].push(value);
+                current = current[_path];
+                continue;
+              }
+
+              if (isArray) {
+                current[_path] = (current[_path] || []).concat(value);
               } else {
-                current[path] = value;
+                current[_path] = value;
               }
-            } else {
-              if (!current[path]) {
-                current[path] = {};
+            }
+          } catch (err) {
+            _didIteratorError2 = true;
+            _iteratorError2 = err;
+          } finally {
+            try {
+              if (!_iteratorNormalCompletion2 && _iterator2.return) {
+                _iterator2.return();
               }
-              current = current[path];
+            } finally {
+              if (_didIteratorError2) {
+                throw _iteratorError2;
+              }
             }
           }
         };
 
         // Get the form data from this form.
         var formData = new FormData(_form2);
-        var entries = formData.entries();
-        var entry = null;
-        while (entry = entries.next().value) {
-          setValue(entry[0], entry[1]);
+
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
+        try {
+          for (var _iterator3 = formData[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var entry = _step3.value;
+
+            setValue(entry[0], entry[1]);
+          }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return) {
+              _iterator3.return();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
+          }
         }
+
         return submission;
       };
 
@@ -1245,7 +1409,7 @@ var Formio = function () {
 // Define all the static properties.
 
 
-exports.Formio = Formio;
+exports.default = Formio;
 Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
@@ -1253,59 +1417,33 @@ Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
 Formio.providers = require('./providers');
-Formio.events = new EventEmitter({
+Formio.events = new _eventemitter.EventEmitter2({
   wildcard: false,
   maxListeners: 0
 });
 
-module.exports = global.Formio = Formio;
-
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./formio.polyfill":2,"./providers":3,"browser-cookies":9,"eventemitter2":10,"native-promise-only":11,"shallow-copy":13,"whatwg-fetch":14}],2:[function(require,module,exports){
-"use strict";
-
-/**
- * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
- *
- * This is needed for PhantomJS.
- */
-
-if (!Function.prototype.bind) {
-  Function.prototype.bind = function (oThis) {
-    if (typeof this !== 'function') {
-      // closest thing possible to the ECMAScript 5
-      // internal IsCallable function
-      throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-    }
-
-    var aArgs = Array.prototype.slice.call(arguments, 1),
-        fToBind = this,
-        fNOP = function fNOP() {},
-        fBound = function fBound() {
-      return fToBind.apply(this instanceof fNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
-    };
-
-    if (this.prototype) {
-      // Function.prototype doesn't have a prototype property
-      fNOP.prototype = this.prototype;
-    }
-    fBound.prototype = new fNOP();
-
-    return fBound;
-  };
-}
-
-},{}],3:[function(require,module,exports){
+},{"./providers":2,"browser-cookies":8,"eventemitter2":9,"native-promise-only":10,"shallow-copy":12,"whatwg-fetch":13}],2:[function(require,module,exports){
 'use strict';
 
 module.exports = {
   storage: require('./storage')
 };
 
-},{"./storage":6}],4:[function(require,module,exports){
+},{"./storage":5}],3:[function(require,module,exports){
 'use strict';
 
-var Promise = require('native-promise-only');
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _nativePromiseOnly = require('native-promise-only');
+
+var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
 var base64 = function base64() {
   return {
     title: 'Base64',
@@ -1315,7 +1453,7 @@ var base64 = function base64() {
 
       var reader = new FileReader();
 
-      return new Promise(function (resolve, reject) {
+      return new _nativePromiseOnly2.default(function (resolve, reject) {
         reader.onload = function (event) {
           var url = event.target.result;
           resolve({
@@ -1337,22 +1475,33 @@ var base64 = function base64() {
     },
     downloadFile: function downloadFile(file) {
       // Return the original as there is nothing to do.
-      return Promise.resolve(file);
+      return _nativePromiseOnly2.default.resolve(file);
     }
   };
 };
 
 base64.title = 'Base64';
-module.exports = base64;
+exports.default = base64;
 
-},{"native-promise-only":11}],5:[function(require,module,exports){
+},{"native-promise-only":10}],4:[function(require,module,exports){
 'use strict';
 
-var Promise = require("native-promise-only");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _nativePromiseOnly = require('native-promise-only');
+
+var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
 var dropbox = function dropbox(formio) {
   return {
     uploadFile: function uploadFile(file, fileName, dir, progressCallback) {
-      return new Promise(function (resolve, reject) {
+      return new _nativePromiseOnly2.default(function (resolve, reject) {
         // Send the file with data.
         var xhr = new XMLHttpRequest();
 
@@ -1399,15 +1548,15 @@ var dropbox = function dropbox(formio) {
     downloadFile: function downloadFile(file) {
       var token = formio.getToken();
       file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
-      return Promise.resolve(file);
+      return _nativePromiseOnly2.default.resolve(file);
     }
   };
 };
 
 dropbox.title = 'Dropbox';
-module.exports = dropbox;
+exports.default = dropbox;
 
-},{"native-promise-only":11}],6:[function(require,module,exports){
+},{"native-promise-only":10}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -1417,14 +1566,25 @@ module.exports = {
   url: require('./url.js')
 };
 
-},{"./base64":4,"./dropbox.js":5,"./s3.js":7,"./url.js":8}],7:[function(require,module,exports){
+},{"./base64":3,"./dropbox.js":4,"./s3.js":6,"./url.js":7}],6:[function(require,module,exports){
 'use strict';
 
-var Promise = require("native-promise-only");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _nativePromiseOnly = require('native-promise-only');
+
+var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
 var s3 = function s3(formio) {
   return {
     uploadFile: function uploadFile(file, fileName, dir, progressCallback) {
-      return new Promise(function (resolve, reject) {
+      return new _nativePromiseOnly2.default(function (resolve, reject) {
         // Send the pre response to sign the upload.
         var pre = new XMLHttpRequest();
 
@@ -1518,25 +1678,36 @@ var s3 = function s3(formio) {
       if (file.acl !== 'public-read') {
         return formio.makeRequest('file', formio.formUrl + '/storage/s3?bucket=' + file.bucket + '&key=' + file.key, 'GET');
       } else {
-        return Promise.resolve(file);
+        return _nativePromiseOnly2.default.resolve(file);
       }
     }
   };
 };
 
 s3.title = 'S3';
-module.exports = s3;
+exports.default = s3;
 
-},{"native-promise-only":11}],8:[function(require,module,exports){
+},{"native-promise-only":10}],7:[function(require,module,exports){
 'use strict';
 
-var Promise = require("native-promise-only");
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _nativePromiseOnly = require('native-promise-only');
+
+var _nativePromiseOnly2 = _interopRequireDefault(_nativePromiseOnly);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
 var url = function url(formio) {
   return {
     title: 'Url',
     name: 'url',
     uploadFile: function uploadFile(file, fileName, dir, progressCallback, url) {
-      return new Promise(function (resolve, reject) {
+      return new _nativePromiseOnly2.default(function (resolve, reject) {
         var data = {
           dir: dir,
           name: fileName,
@@ -1598,15 +1769,15 @@ var url = function url(formio) {
     },
     downloadFile: function downloadFile(file) {
       // Return the original as there is nothing to do.
-      return Promise.resolve(file);
+      return _nativePromiseOnly2.default.resolve(file);
     }
   };
 };
 
 url.title = 'Url';
-module.exports = url;
+exports.default = url;
 
-},{"native-promise-only":11}],9:[function(require,module,exports){
+},{"native-promise-only":10}],8:[function(require,module,exports){
 exports.defaults = {};
 
 exports.set = function(name, value, options) {
@@ -1701,7 +1872,7 @@ exports.all = function() {
   return all;
 };
 
-},{}],10:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 (function (process){
 /*!
  * EventEmitter2
@@ -2415,7 +2586,7 @@ exports.all = function() {
   EventEmitter.prototype.removeListener = EventEmitter.prototype.off;
 
   EventEmitter.prototype.removeAllListeners = function(type) {
-    if (arguments.length === 0) {
+    if (type === undefined) {
       !this._events || init.call(this);
       return this;
     }
@@ -2487,7 +2658,7 @@ exports.all = function() {
 }();
 
 }).call(this,require('_process'))
-},{"_process":12}],11:[function(require,module,exports){
+},{"_process":11}],10:[function(require,module,exports){
 (function (global){
 /*! Native Promise Only
     v0.8.1 (c) Kyle Simpson
@@ -2864,7 +3035,7 @@ exports.all = function() {
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],12:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -3050,7 +3221,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],13:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = function (obj) {
     if (!obj || typeof obj !== 'object') return obj;
     
@@ -3087,7 +3258,7 @@ var isArray = Array.isArray || function (xs) {
     return {}.toString.call(xs) === '[object Array]';
 };
 
-},{}],14:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 (function(self) {
   'use strict';
 

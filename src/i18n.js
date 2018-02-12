@@ -11,9 +11,11 @@ module.exports = {
         maxLength: '{{field}} must be shorter than {{length}} characters.',
         min: '{{field}} cannot be less than {{min}}.',
         max: '{{field}} cannot be greater than {{max}}.',
-        invalid_email: '{{field}} must be a valid email.',
-        invalid_regex: '{{field}} does not match the pattern {{regex}}.',
-        invalid_date: '{{field}} is not a valid date.',
+        invalid_email: '{{field}} must be a valid email.', // eslint-disable-line camelcase
+        invalid_regex: '{{field}} does not match the pattern {{regex}}.', // eslint-disable-line camelcase
+        invalid_date: '{{field}} is not a valid date.', // eslint-disable-line camelcase
+        mask: '{{field}} does not match the mask.',
+        stripe: '{{stripe}}',
         month: 'Month',
         day: 'Day',
         year: 'Year',

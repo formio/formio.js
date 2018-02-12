@@ -1,10 +1,13 @@
-import { BaseComponent } from '../base/Base';
 import Flatpickr from 'flatpickr';
-import _get from 'lodash/get';
-import _each from 'lodash/each';
+import _ from 'lodash';
+
+import {BaseComponent} from '../base/Base';
+
 import {
   getDateSetting,
   getLocaleDateFormatInfo,
+  convertFormatToFlatpickr,
+  convertFormatToMoment,
 } from '../../utils';
 import moment from 'moment';
 export class DateTimeComponent extends BaseComponent {
@@ -13,7 +16,7 @@ export class DateTimeComponent extends BaseComponent {
     this.validators.push('date');
     this.closedOn = 0;
 
-    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
+    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.defaultFormat = {
       date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
       time: 'h:i K'
@@ -42,57 +45,6 @@ export class DateTimeComponent extends BaseComponent {
     return false;
   }
 
-  /**
-   * Convert the format from the angular-datepicker module to flatpickr format.
-   * @param format
-   * @return {string|XML|*}
-   */
-  convertFormatToFlatpickr(format) {
-    return format
-      // Year conversion.
-      .replace(/y/g, 'Y')
-      .replace('YYYY', 'Y')
-      .replace('YY', 'y')
-
-      // Month conversion.
-      .replace('MMMM', 'F')
-      .replace(/M/g, 'n')
-      .replace('nnn', 'M')
-      .replace('nn', 'm')
-
-      // Day in month.
-      .replace(/d/g, 'j')
-      .replace('jj', 'd')
-
-      // Day in week.
-      .replace('EEEE', 'l')
-      .replace('EEE', 'D')
-
-      // Hours, minutes, seconds
-      .replace('HH', 'H')
-      .replace('hh', 'h')
-      .replace('mm', 'i')
-      .replace('ss', 'S')
-      .replace(/a/g, 'K');
-  }
-
-  /**
-   * Convert the format from the angular-datepicker module to moment format.
-   * @param format
-   * @return {string}
-   */
-  convertFormatToMoment(format) {
-    return format
-    // Year conversion.
-    .replace(/y/g, 'Y')
-    // Day in month.
-    .replace(/d/g, 'D')
-    // Day in week.
-    .replace(/E/g, 'd')
-    // AM/PM marker
-    .replace(/a/g, 'A');
-  }
-
   getLocaleFormat() {
     let format = '';
 
@@ -113,17 +65,17 @@ export class DateTimeComponent extends BaseComponent {
       clickOpens: true,
       enableDate: true,
       mode: this.component.multiple ? 'multiple' : 'single',
-      enableTime: _get(this.component, 'enableTime', true),
-      noCalendar: !_get(this.component, 'enableDate', true),
+      enableTime: _.get(this.component, 'enableTime', true),
+      noCalendar: !_.get(this.component, 'enableDate', true),
       altFormat: this.component.useLocaleSettings
         ? this.getLocaleFormat()
-        : this.convertFormatToFlatpickr(_get(this.component, 'format', '')),
+        : convertFormatToFlatpickr(_.get(this.component, 'format', '')),
       dateFormat: 'U',
       defaultDate: this.defaultDate,
-      hourIncrement: _get(this.component, 'timePicker.hourStep', 1),
-      minuteIncrement: _get(this.component, 'timePicker.minuteStep', 5),
-      minDate: getDateSetting(_get(this.component, 'datePicker.minDate')),
-      maxDate: getDateSetting(_get(this.component, 'datePicker.maxDate')),
+      hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),
+      minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
+      minDate: getDateSetting(_.get(this.component, 'datePicker.minDate')),
+      maxDate: getDateSetting(_.get(this.component, 'datePicker.maxDate')),
       onChange: () => this.onChange(),
       onClose: () => (this.closedOn = Date.now())
     };
@@ -131,7 +83,7 @@ export class DateTimeComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
-    _each(this.inputs, (input) => {
+    _.each(this.inputs, (input) => {
       const calendar = this.getCalendar(input);
       if (calendar) {
         if (disabled) {
@@ -186,7 +138,7 @@ export class DateTimeComponent extends BaseComponent {
 
   getRawValue() {
     const values = [];
-    for (let i in this.inputs) {
+    for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
           return this.getDate(this.inputs[i].value);
@@ -215,9 +167,8 @@ export class DateTimeComponent extends BaseComponent {
     return dates[0].toISOString();
   }
 
-  get view() {
-    const value = this.getValue();
-    return value ? moment(value).format(this.convertFormatToMoment(_get(this.component, 'format', ''))) : null;
+  getView(value) {
+    return value ? moment(value).format(convertFormatToMoment(_.get(this.component, 'format', ''))) : null;
   }
 
   setValueAt(index, value) {

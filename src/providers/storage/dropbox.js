@@ -1,16 +1,17 @@
-var Promise = require("native-promise-only");
-var dropbox = function(formio) {
+import Promise from 'native-promise-only';
+
+const dropbox = function(formio) {
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(((resolve, reject) => {
         // Send the file with data.
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
 
         if (typeof progressCallback === 'function') {
           xhr.upload.onprogress = progressCallback;
         }
 
-        var fd = new FormData();
+        const fd = new FormData();
         fd.append('name', fileName);
         fd.append('dir', dir);
         fd.append('file', file);
@@ -19,11 +20,11 @@ var dropbox = function(formio) {
         xhr.onerror = function(err) {
           err.networkError = true;
           reject(err);
-        }
+        };
 
         xhr.onload = function() {
           if (xhr.status >= 200 && xhr.status < 300) {
-            var response = JSON.parse(xhr.response);
+            const response = JSON.parse(xhr.response);
             response.storage = 'dropbox';
             response.size = file.size;
             response.type = file.type;
@@ -37,25 +38,24 @@ var dropbox = function(formio) {
 
         xhr.onabort = function(err) {
           reject(err);
-        }
+        };
 
-        xhr.open('POST', formio.formUrl + '/storage/dropbox');
-        var token = formio.getToken();
+        xhr.open('POST', `${formio.formUrl}/storage/dropbox`);
+        const token = formio.getToken();
         if (token) {
           xhr.setRequestHeader('x-jwt-token', token);
         }
         xhr.send(fd);
-      });
+      }));
     },
     downloadFile: function(file) {
-      var token = formio.getToken();
-      file.url = formio.formUrl + '/storage/dropbox?path_lower=' + file.path_lower + (token ? '&x-jwt-token=' + token : '');
+      const token = formio.getToken();
+      file.url =
+        `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&x-jwt-token=${token}` : ''}`;
       return Promise.resolve(file);
     }
   };
 };
 
 dropbox.title = 'Dropbox';
-module.exports = dropbox;
-
-
+export default dropbox;

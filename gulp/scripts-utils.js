@@ -1,7 +1,7 @@
 module.exports = function(gulp, plugins) {
   return function () {
     return plugins.browserify({
-      entries: './build/utils/index.js',
+      entries: './lib/utils/index.js',
       debug: false
     })
       .bundle()

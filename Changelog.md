@@ -4,12 +4,114 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - 'Delimiter' property to Number component.
+
+## 2.29.0
+### Added
+ - New Field Logic feature.
+ - Ability for buttons to be configured with a URL that will send the submission to that url when pressed.
+
+### Changed
+ - Upgraded all dependencies.
+ - Reverted choices.js to use npm version and duck-punch the deep equality checks.
+
+### Fixed
+ - Issue with Required WYSIWYG TextArea always triggering validation error on load.
+ - Problem where backspacing the wysiwyg editor was not working.
+ - Problem where tabbing into a wysiwyg editor would select buttons on the wysiwyg.
+ - Problem with the Form component where it would load the form when a default submission is provided.
+ - Performance issues with both EditGrid and DataGrid.
+ - Issue with false conditionals and null values.
+ - Issue with the "render" event not firing when form is rendered.
+ - Problems with the viewAsHtml flag not rendering the submission.
+
+## 2.28.6
+### Added
+ - Autofocus capability.
+ - Ability to provide spellcheck parameter to input.
+
+### Fixed
+ - Some issues with subforms when performing calcuated values
+ - Problems with subforms performing the load when they are not conditionally available.
+
+## 2.28.5
+### Fixed
+ - Issue with input mask crashing when no input mask is on the field.
+
+## 2.28.4
+### Added
+ - Mask validator for Phone Number.
+
+### Fixed
+ - Default value for component with input mask.
+
+## 2.28.3
+### Changed
+ - The conditional logic where a parent that is conditionally invisible is overridden by a child conditionally visible.
+   This logic is different from the Angular 1 renderer, so we made it consistent where a conditionally visible child will not
+   override a conditionally hidden parent. However, this behavior can be changed by providing the "conditional.overrideParent" flag
+   on the child component.
+
+## 2.28.2
+### Fixed
+ - Issues with the sub-form component not loading the proper source for remote servers.
+ - Issues with the sub-form component not passing along sub data to conditional checks properly.
+
+## 2.28.1
+### Fixed
+ - Text mask dependencies
+
+## 2.28.0
+### Added
+ - Support for Bootstrap 4
+ - EditGrid Component.
+ - Stripe integration within Contrib.
+
+### Fixed
+ - Small problem with read-only file uplaods where it would allow you to remove files.
+
+## 2.27.6
+### Fixed
+ - Issue where the ready promise was not getting fired if a submission is not provided.
+
+## 2.27.5
+### Fixed
+ - The package.json for the choices.js library to not use a git url.
+
+## 2.27.4
+### Added
+ - The ability for the search to be an array of values.
+
+## 2.27.3
+### Fixed
+ - Issue with the checkCalculated method not working for datagrids.
+
+## 2.27.2
+### Added
+ - Support for OAuth buttons in the renderer.
+ - Ability to add the "Add Another" button on datagrid to either above or below the grid.
+
+### Fixed
+ - Problem where a padding-right is applied to all has-feedback inputs even though an icon is not used.
+
+## 2.27.1
+### Fixed
+ - Problem with default values on wizards.
+ - Issue where row is not passed to calculated values.
+ - Select Resource component searching.
+
+### Added
+ - Ability to auto load the initial values for lazyLoad select with search enabled.
+ - CSS class ('radio-selected') for selected option of Radio component
+
 ## 2.27.0
 ### Fixed
  - Issue where read-only forms would still try to submit.
  - Problem with read-only wizards triggering beforeSubmit handlers.
  - Fix issue where submissions made before revisions are made will sometimes cause the form to not load.
- 
+
 ### Changed
  - Upgrade all dependencies
 
@@ -22,7 +124,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problems where data keys are added even if component is not set with input.
  - Failing tests.
  - Datagrid data merging.
- 
+
 ### Changed
  - Upgraded choices.js to 3.0.3 which includes performance fix.
  - Removed performance hack in Select since 3.0.3 of choices resolves the problem.

@@ -1,28 +1,28 @@
 {
   "type": "File",
   "start": 0,
-  "end": 152,
+  "end": 239,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 7,
+      "line": 9,
       "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 152,
+    "end": 239,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 7,
+        "line": 9,
         "column": 0
       }
     },
@@ -31,7 +31,7 @@
       {
         "type": "ImportDeclaration",
         "start": 0,
-        "end": 75,
+        "end": 57,
         "loc": {
           "start": {
             "line": 1,
@@ -39,14 +39,14 @@
           },
           "end": {
             "line": 1,
-            "column": 75
+            "column": 57
           }
         },
         "specifiers": [
           {
             "type": "ImportSpecifier",
             "start": 9,
-            "end": 32,
+            "end": 24,
             "loc": {
               "start": {
                 "line": 1,
@@ -54,13 +54,13 @@
               },
               "end": {
                 "line": 1,
-                "column": 32
+                "column": 24
               }
             },
             "imported": {
               "type": "Identifier",
               "start": 9,
-              "end": 32,
+              "end": 24,
               "loc": {
                 "start": {
                   "line": 1,
@@ -68,6 +68,92 @@
                 },
                 "end": {
                   "line": 1,
+                  "column": 24
+                },
+                "identifierName": "StripeComponent"
+              },
+              "name": "StripeComponent"
+            },
+            "local": {
+              "type": "Identifier",
+              "start": 9,
+              "end": 24,
+              "loc": {
+                "start": {
+                  "line": 1,
+                  "column": 9
+                },
+                "end": {
+                  "line": 1,
+                  "column": 24
+                },
+                "identifierName": "StripeComponent"
+              },
+              "name": "StripeComponent"
+            }
+          }
+        ],
+        "source": {
+          "type": "StringLiteral",
+          "start": 32,
+          "end": 56,
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 32
+            },
+            "end": {
+              "line": 1,
+              "column": 56
+            }
+          },
+          "extra": {
+            "rawValue": "./stripe/stripe/Stripe",
+            "raw": "'./stripe/stripe/Stripe'"
+          },
+          "value": "./stripe/stripe/Stripe"
+        }
+      },
+      {
+        "type": "ImportDeclaration",
+        "start": 58,
+        "end": 133,
+        "loc": {
+          "start": {
+            "line": 2,
+            "column": 0
+          },
+          "end": {
+            "line": 2,
+            "column": 75
+          }
+        },
+        "specifiers": [
+          {
+            "type": "ImportSpecifier",
+            "start": 67,
+            "end": 90,
+            "loc": {
+              "start": {
+                "line": 2,
+                "column": 9
+              },
+              "end": {
+                "line": 2,
+                "column": 32
+              }
+            },
+            "imported": {
+              "type": "Identifier",
+              "start": 67,
+              "end": 90,
+              "loc": {
+                "start": {
+                  "line": 2,
+                  "column": 9
+                },
+                "end": {
+                  "line": 2,
                   "column": 32
                 },
                 "identifierName": "StripeCheckoutComponent"
@@ -76,15 +162,15 @@
             },
             "local": {
               "type": "Identifier",
-              "start": 9,
-              "end": 32,
+              "start": 67,
+              "end": 90,
               "loc": {
                 "start": {
-                  "line": 1,
+                  "line": 2,
                   "column": 9
                 },
                 "end": {
-                  "line": 1,
+                  "line": 2,
                   "column": 32
                 },
                 "identifierName": "StripeCheckoutComponent"
@@ -95,15 +181,15 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 40,
-          "end": 74,
+          "start": 98,
+          "end": 132,
           "loc": {
             "start": {
-              "line": 1,
+              "line": 2,
               "column": 40
             },
             "end": {
-              "line": 1,
+              "line": 2,
               "column": 74
             }
           },
@@ -116,58 +202,58 @@
       },
       {
         "type": "ExpressionStatement",
-        "start": 76,
-        "end": 151,
+        "start": 134,
+        "end": 238,
         "loc": {
           "start": {
-            "line": 2,
+            "line": 3,
             "column": 0
           },
           "end": {
-            "line": 6,
+            "line": 8,
             "column": 2
           }
         },
         "expression": {
           "type": "AssignmentExpression",
-          "start": 76,
-          "end": 150,
+          "start": 134,
+          "end": 237,
           "loc": {
             "start": {
-              "line": 2,
+              "line": 3,
               "column": 0
             },
             "end": {
-              "line": 6,
+              "line": 8,
               "column": 1
             }
           },
           "operator": "=",
           "left": {
             "type": "MemberExpression",
-            "start": 76,
-            "end": 90,
+            "start": 134,
+            "end": 148,
             "loc": {
               "start": {
-                "line": 2,
+                "line": 3,
                 "column": 0
               },
               "end": {
-                "line": 2,
+                "line": 3,
                 "column": 14
               }
             },
             "object": {
               "type": "Identifier",
-              "start": 76,
-              "end": 82,
+              "start": 134,
+              "end": 140,
               "loc": {
                 "start": {
-                  "line": 2,
+                  "line": 3,
                   "column": 0
                 },
                 "end": {
-                  "line": 2,
+                  "line": 3,
                   "column": 6
                 },
                 "identifierName": "module"
@@ -176,15 +262,15 @@
             },
             "property": {
               "type": "Identifier",
-              "start": 83,
-              "end": 90,
+              "start": 141,
+              "end": 148,
               "loc": {
                 "start": {
-                  "line": 2,
+                  "line": 3,
                   "column": 7
                 },
                 "end": {
-                  "line": 2,
+                  "line": 3,
                   "column": 14
                 },
                 "identifierName": "exports"
@@ -195,30 +281,30 @@
           },
           "right": {
             "type": "ObjectExpression",
-            "start": 93,
-            "end": 150,
+            "start": 151,
+            "end": 237,
             "loc": {
               "start": {
-                "line": 2,
+                "line": 3,
                 "column": 17
               },
               "end": {
-                "line": 6,
+                "line": 8,
                 "column": 1
               }
             },
             "properties": [
               {
                 "type": "ObjectProperty",
-                "start": 97,
-                "end": 148,
+                "start": 155,
+                "end": 235,
                 "loc": {
                   "start": {
-                    "line": 3,
+                    "line": 4,
                     "column": 2
                   },
                   "end": {
-                    "line": 5,
+                    "line": 7,
                     "column": 3
                   }
                 },
@@ -227,15 +313,15 @@
                 "computed": false,
                 "key": {
                   "type": "Identifier",
-                  "start": 97,
-                  "end": 103,
+                  "start": 155,
+                  "end": 161,
                   "loc": {
                     "start": {
-                      "line": 3,
+                      "line": 4,
                       "column": 2
                     },
                     "end": {
-                      "line": 3,
+                      "line": 4,
                       "column": 8
                     },
                     "identifierName": "stripe"
@@ -244,30 +330,82 @@
                 },
                 "value": {
                   "type": "ObjectExpression",
-                  "start": 105,
-                  "end": 148,
+                  "start": 163,
+                  "end": 235,
                   "loc": {
                     "start": {
-                      "line": 3,
+                      "line": 4,
                       "column": 10
                     },
                     "end": {
-                      "line": 5,
+                      "line": 7,
                       "column": 3
                     }
                   },
                   "properties": [
                     {
                       "type": "ObjectProperty",
-                      "start": 111,
-                      "end": 144,
+                      "start": 169,
+                      "end": 192,
                       "loc": {
                         "start": {
-                          "line": 4,
+                          "line": 5,
                           "column": 4
                         },
                         "end": {
-                          "line": 4,
+                          "line": 5,
+                          "column": 27
+                        }
+                      },
+                      "method": false,
+                      "shorthand": false,
+                      "computed": false,
+                      "key": {
+                        "type": "Identifier",
+                        "start": 169,
+                        "end": 175,
+                        "loc": {
+                          "start": {
+                            "line": 5,
+                            "column": 4
+                          },
+                          "end": {
+                            "line": 5,
+                            "column": 10
+                          },
+                          "identifierName": "stripe"
+                        },
+                        "name": "stripe"
+                      },
+                      "value": {
+                        "type": "Identifier",
+                        "start": 177,
+                        "end": 192,
+                        "loc": {
+                          "start": {
+                            "line": 5,
+                            "column": 12
+                          },
+                          "end": {
+                            "line": 5,
+                            "column": 27
+                          },
+                          "identifierName": "StripeComponent"
+                        },
+                        "name": "StripeComponent"
+                      }
+                    },
+                    {
+                      "type": "ObjectProperty",
+                      "start": 198,
+                      "end": 231,
+                      "loc": {
+                        "start": {
+                          "line": 6,
+                          "column": 4
+                        },
+                        "end": {
+                          "line": 6,
                           "column": 37
                         }
                       },
@@ -276,15 +414,15 @@
                       "computed": false,
                       "key": {
                         "type": "Identifier",
-                        "start": 111,
-                        "end": 119,
+                        "start": 198,
+                        "end": 206,
                         "loc": {
                           "start": {
-                            "line": 4,
+                            "line": 6,
                             "column": 4
                           },
                           "end": {
-                            "line": 4,
+                            "line": 6,
                             "column": 12
                           },
                           "identifierName": "checkout"
@@ -293,15 +431,15 @@
                       },
                       "value": {
                         "type": "Identifier",
-                        "start": 121,
-                        "end": 144,
+                        "start": 208,
+                        "end": 231,
                         "loc": {
                           "start": {
-                            "line": 4,
+                            "line": 6,
                             "column": 14
                           },
                           "end": {
-                            "line": 4,
+                            "line": 6,
                             "column": 37
                           },
                           "identifierName": "StripeCheckoutComponent"
@@ -386,9 +524,9 @@
         "postfix": false,
         "binop": null
       },
-      "value": "StripeCheckoutComponent",
+      "value": "StripeComponent",
       "start": 9,
-      "end": 32,
+      "end": 24,
       "loc": {
         "start": {
           "line": 1,
@@ -396,6 +534,189 @@
         },
         "end": {
           "line": 1,
+          "column": 24
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "}",
+        "beforeExpr": false,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 25,
+      "end": 26,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 25
+        },
+        "end": {
+          "line": 1,
+          "column": 26
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "from",
+      "start": 27,
+      "end": 31,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 27
+        },
+        "end": {
+          "line": 1,
+          "column": 31
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "string",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "./stripe/stripe/Stripe",
+      "start": 32,
+      "end": 56,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 32
+        },
+        "end": {
+          "line": 1,
+          "column": 56
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ";",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 56,
+      "end": 57,
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 56
+        },
+        "end": {
+          "line": 1,
+          "column": 57
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "import",
+        "keyword": "import",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "value": "import",
+      "start": 58,
+      "end": 64,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 0
+        },
+        "end": {
+          "line": 2,
+          "column": 6
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "{",
+        "beforeExpr": true,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "start": 65,
+      "end": 66,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 7
+        },
+        "end": {
+          "line": 2,
+          "column": 8
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "StripeCheckoutComponent",
+      "start": 67,
+      "end": 90,
+      "loc": {
+        "start": {
+          "line": 2,
+          "column": 9
+        },
+        "end": {
+          "line": 2,
           "column": 32
         }
       }
@@ -412,15 +733,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 33,
-      "end": 34,
+      "start": 91,
+      "end": 92,
       "loc": {
         "start": {
-          "line": 1,
+          "line": 2,
           "column": 33
         },
         "end": {
-          "line": 1,
+          "line": 2,
           "column": 34
         }
       }
@@ -438,15 +759,15 @@
         "binop": null
       },
       "value": "from",
-      "start": 35,
-      "end": 39,
+      "start": 93,
+      "end": 97,
       "loc": {
         "start": {
-          "line": 1,
+          "line": 2,
           "column": 35
         },
         "end": {
-          "line": 1,
+          "line": 2,
           "column": 39
         }
       }
@@ -465,15 +786,15 @@
         "updateContext": null
       },
       "value": "./stripe/checkout/StripeCheckout",
-      "start": 40,
-      "end": 74,
+      "start": 98,
+      "end": 132,
       "loc": {
         "start": {
-          "line": 1,
+          "line": 2,
           "column": 40
         },
         "end": {
-          "line": 1,
+          "line": 2,
           "column": 74
         }
       }
@@ -491,15 +812,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 74,
-      "end": 75,
+      "start": 132,
+      "end": 133,
       "loc": {
         "start": {
-          "line": 1,
+          "line": 2,
           "column": 74
         },
         "end": {
-          "line": 1,
+          "line": 2,
           "column": 75
         }
       }
@@ -517,15 +838,15 @@
         "binop": null
       },
       "value": "module",
-      "start": 76,
-      "end": 82,
+      "start": 134,
+      "end": 140,
       "loc": {
         "start": {
-          "line": 2,
+          "line": 3,
           "column": 0
         },
         "end": {
-          "line": 2,
+          "line": 3,
           "column": 6
         }
       }
@@ -543,15 +864,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 82,
-      "end": 83,
+      "start": 140,
+      "end": 141,
       "loc": {
         "start": {
-          "line": 2,
+          "line": 3,
           "column": 6
         },
         "end": {
-          "line": 2,
+          "line": 3,
           "column": 7
         }
       }
@@ -569,15 +890,15 @@
         "binop": null
       },
       "value": "exports",
-      "start": 83,
-      "end": 90,
+      "start": 141,
+      "end": 148,
       "loc": {
         "start": {
-          "line": 2,
+          "line": 3,
           "column": 7
         },
         "end": {
-          "line": 2,
+          "line": 3,
           "column": 14
         }
       }
@@ -596,15 +917,15 @@
         "updateContext": null
       },
       "value": "=",
-      "start": 91,
-      "end": 92,
+      "start": 149,
+      "end": 150,
       "loc": {
         "start": {
-          "line": 2,
+          "line": 3,
           "column": 15
         },
         "end": {
-          "line": 2,
+          "line": 3,
           "column": 16
         }
       }
@@ -621,15 +942,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 93,
-      "end": 94,
+      "start": 151,
+      "end": 152,
       "loc": {
         "start": {
-          "line": 2,
+          "line": 3,
           "column": 17
         },
         "end": {
-          "line": 2,
+          "line": 3,
           "column": 18
         }
       }
@@ -647,15 +968,15 @@
         "binop": null
       },
       "value": "stripe",
-      "start": 97,
-      "end": 103,
+      "start": 155,
+      "end": 161,
       "loc": {
         "start": {
-          "line": 3,
+          "line": 4,
           "column": 2
         },
         "end": {
-          "line": 3,
+          "line": 4,
           "column": 8
         }
       }
@@ -673,15 +994,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 103,
-      "end": 104,
+      "start": 161,
+      "end": 162,
       "loc": {
         "start": {
-          "line": 3,
+          "line": 4,
           "column": 8
         },
         "end": {
-          "line": 3,
+          "line": 4,
           "column": 9
         }
       }
@@ -698,15 +1019,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 105,
-      "end": 106,
+      "start": 163,
+      "end": 164,
       "loc": {
         "start": {
-          "line": 3,
+          "line": 4,
           "column": 10
         },
         "end": {
-          "line": 3,
+          "line": 4,
           "column": 11
         }
       }
@@ -723,16 +1044,120 @@
         "postfix": false,
         "binop": null
       },
-      "value": "checkout",
-      "start": 111,
-      "end": 119,
+      "value": "stripe",
+      "start": 169,
+      "end": 175,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 5,
           "column": 4
         },
         "end": {
-          "line": 4,
+          "line": 5,
+          "column": 10
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ":",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 175,
+      "end": 176,
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 10
+        },
+        "end": {
+          "line": 5,
+          "column": 11
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "StripeComponent",
+      "start": 177,
+      "end": 192,
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 12
+        },
+        "end": {
+          "line": 5,
+          "column": 27
+        }
+      }
+    },
+    {
+      "type": {
+        "label": ",",
+        "beforeExpr": true,
+        "startsExpr": false,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null,
+        "updateContext": null
+      },
+      "start": 192,
+      "end": 193,
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 27
+        },
+        "end": {
+          "line": 5,
+          "column": 28
+        }
+      }
+    },
+    {
+      "type": {
+        "label": "name",
+        "beforeExpr": false,
+        "startsExpr": true,
+        "rightAssociative": false,
+        "isLoop": false,
+        "isAssign": false,
+        "prefix": false,
+        "postfix": false,
+        "binop": null
+      },
+      "value": "checkout",
+      "start": 198,
+      "end": 206,
+      "loc": {
+        "start": {
+          "line": 6,
+          "column": 4
+        },
+        "end": {
+          "line": 6,
           "column": 12
         }
       }
@@ -750,15 +1175,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 119,
-      "end": 120,
+      "start": 206,
+      "end": 207,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 6,
           "column": 12
         },
         "end": {
-          "line": 4,
+          "line": 6,
           "column": 13
         }
       }
@@ -776,15 +1201,15 @@
         "binop": null
       },
       "value": "StripeCheckoutComponent",
-      "start": 121,
-      "end": 144,
+      "start": 208,
+      "end": 231,
       "loc": {
         "start": {
-          "line": 4,
+          "line": 6,
           "column": 14
         },
         "end": {
-          "line": 4,
+          "line": 6,
           "column": 37
         }
       }
@@ -801,15 +1226,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 147,
-      "end": 148,
+      "start": 234,
+      "end": 235,
       "loc": {
         "start": {
-          "line": 5,
+          "line": 7,
           "column": 2
         },
         "end": {
-          "line": 5,
+          "line": 7,
           "column": 3
         }
       }
@@ -826,15 +1251,15 @@
         "postfix": false,
         "binop": null
       },
-      "start": 149,
-      "end": 150,
+      "start": 236,
+      "end": 237,
       "loc": {
         "start": {
-          "line": 6,
+          "line": 8,
           "column": 0
         },
         "end": {
-          "line": 6,
+          "line": 8,
           "column": 1
         }
       }
@@ -852,15 +1277,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 150,
-      "end": 151,
+      "start": 237,
+      "end": 238,
       "loc": {
         "start": {
-          "line": 6,
+          "line": 8,
           "column": 1
         },
         "end": {
-          "line": 6,
+          "line": 8,
           "column": 2
         }
       }
@@ -878,15 +1303,15 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 152,
-      "end": 152,
+      "start": 239,
+      "end": 239,
       "loc": {
         "start": {
-          "line": 7,
+          "line": 9,
           "column": 0
         },
         "end": {
-          "line": 7,
+          "line": 9,
           "column": 0
         }
       }

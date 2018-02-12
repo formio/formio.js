@@ -114,7 +114,6 @@ Formio.createForm(
 ```
 
 ### Result
-
 <div class="well">
 <div id="wizardWithOptions"></div>
 <script type="text/javascript">

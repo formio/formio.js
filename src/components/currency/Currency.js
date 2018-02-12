@@ -1,7 +1,8 @@
-import maskInput from 'text-mask-all/vanilla';
-import createNumberMask from 'text-mask-all/addons/dist/createNumberMask';
-import _get from 'lodash/get';
-import { NumberComponent } from '../number/Number';
+import maskInput from 'vanilla-text-mask';
+import {createNumberMask} from 'text-mask-addons';
+import _ from 'lodash';
+
+import {NumberComponent} from '../number/Number';
 
 export class CurrencyComponent extends NumberComponent {
   constructor(component, options, data) {
@@ -11,7 +12,9 @@ export class CurrencyComponent extends NumberComponent {
     this.decimalLimit = this.component.decimalLimit || 2;
 
     // Get the prefix and suffix from the localized string.
-    const regex = '(.*)?100(' + (this.decimalSeparator === '.' ? '\.' : this.decimalSeparator) + '0{' + this.decimalLimit + '})?(.*)?';
+    const regex = `(.*)?100(${this.decimalSeparator === '.'
+      ? '\\.'
+      : this.decimalSeparator}0{${this.decimalLimit}})?(.*)?`;
     const parts = (100).toLocaleString(options.language, this.getFormatOptions()).match(new RegExp(regex));
     this.prefix = parts[1] || '';
     this.suffix = parts[3] || '';
@@ -22,7 +25,7 @@ export class CurrencyComponent extends NumberComponent {
       style: 'currency',
       currency: this.currency,
       useGrouping: true,
-      maximumFractionDigits: _get(this.component, 'decimalLimit', this.decimalLimit)
+      maximumFractionDigits: _.get(this.component, 'decimalLimit', this.decimalLimit)
     };
   }
 
@@ -51,11 +54,11 @@ export class CurrencyComponent extends NumberComponent {
       mask: createNumberMask({
         prefix: this.prefix,
         suffix: this.suffix,
-        thousandsSeparatorSymbol: _get(this.component, 'thousandsSeparator', this.thousandsSeparator),
-        decimalSymbol: _get(this.component, 'decimalSymbol', this.decimalSeparator),
-        decimalLimit: _get(this.component, 'decimalLimit', this.decimalLimit),
-        allowNegative: _get(this.component, 'allowNegative', true),
-        allowDecimal: _get(this.component, 'allowDecimal', true)
+        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
+        decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
+        decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
+        allowNegative: _.get(this.component, 'allowNegative', true),
+        allowDecimal: _.get(this.component, 'allowDecimal', true)
       })
     });
   }
