@@ -11,6 +11,12 @@ export class RadioComponent extends BaseComponent {
     return info;
   }
 
+  createTooltip(...args) {
+    if (!this.labelIsHidden()) {
+      super.createTooltip(...args);
+    }
+  }
+
   createInput(container) {
     const inputGroup = this.ce('div', {
       class: 'input-group'

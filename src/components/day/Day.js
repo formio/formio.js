@@ -57,6 +57,11 @@ export class DayComponent extends BaseComponent {
       class: _.get(this.component, 'fields.day.required', false) ? 'field-required' : ''
     });
     dayLabel.appendChild(this.text(this.t('day')));
+
+    if (this.labelIsHidden()) {
+      this.createTooltip(dayLabel);
+    }
+
     this.setSubinputLabelStyle(dayLabel);
     if (!subinputAtTheBottom) {
       dayColumn.appendChild(dayLabel);
@@ -96,6 +101,11 @@ export class DayComponent extends BaseComponent {
       class: _.get(this.component, 'fields.month.required', false) ? 'field-required' : ''
     });
     monthLabel.appendChild(this.text(this.t('month')));
+
+    if (this.labelIsHidden()) {
+      this.createTooltip(monthLabel);
+    }
+
     this.setSubinputLabelStyle(monthLabel);
     if (!subinputAtTheBottom) {
       monthColumn.appendChild(monthLabel);
@@ -140,6 +150,11 @@ export class DayComponent extends BaseComponent {
       class: _.get(this.component, 'fields.year.required', false) ? 'field-required' : ''
     });
     yearLabel.appendChild(this.text(this.t('year')));
+
+    if (this.labelIsHidden()) {
+      this.createTooltip(yearLabel);
+    }
+
     this.setSubinputLabelStyle(yearLabel);
     if (!subinputAtTheBottom) {
       yearColumn.appendChild(yearLabel);
@@ -178,6 +193,12 @@ export class DayComponent extends BaseComponent {
       this.yearInput.removeAttribute('disabled');
       this.monthInput.removeAttribute('disabled');
       this.dayInput.removeAttribute('disabled');
+    }
+  }
+
+  createLabel(container) {
+    if (!this.labelIsHidden()) {
+      super.createLabel(container);
     }
   }
 

@@ -61,6 +61,12 @@ export class SurveyComponent extends BaseComponent {
     }
   }
 
+  createTooltip(...args) {
+    if (!this.labelIsHidden()) {
+      super.createTooltip(...args);
+    }
+  }
+
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {

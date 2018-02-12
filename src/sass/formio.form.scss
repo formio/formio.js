@@ -61,6 +61,16 @@
   z-index: 5;
 }
 
+.formio-component-radio .label-text-hidden,
+.formio-component-selectboxes .label-text-hidden,
+.formio-component-survey .label-text-hidden {
+  position: absolute;
+  top: 0;
+  right: 0;
+  text-align: center;
+  font-size: 24px;
+}
+
 .glyphicon-spin {
   -webkit-animation: formio-spin 1s infinite linear;
   -moz-animation: formio-spin 1s infinite linear;
