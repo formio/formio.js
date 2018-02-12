@@ -39,6 +39,24 @@
   color:red;
 }
 
+.label-text-hidden {
+  float: left;
+  margin-bottom: -50px;
+  margin-top: 7px;
+  margin-right: 7px;
+}
+
+.input-label-hidden {
+  padding-left: 30px;
+}
+
+.formio-component-select .label-text-hidden,
+.formio-component-datetime .label-text-hidden,
+.formio-component-resource .label-text-hidden {
+  position: relative;
+  z-index: 5;
+}
+
 .glyphicon-spin {
   -webkit-animation: formio-spin 1s infinite linear;
   -moz-animation: formio-spin 1s infinite linear;

@@ -452,6 +452,10 @@ export class BaseComponent {
     if (this.hasInput && this.component.validate && this.component.validate.required) {
       className += ' required';
     }
+    //add special css class if label should be hidden
+    if (this.labelIsHidden()) {
+      className += ' formio-component-label-hidden';
+    }
     return className;
   }
 
@@ -790,11 +794,9 @@ export class BaseComponent {
    * @param {HTMLElement} container - The containing element that will contain this label.
    */
   createLabel(container) {
-    if (this.labelIsHidden()) {
-      return;
-    }
     let className = 'control-label';
     let style = '';
+    const isLabelHidden = this.labelIsHidden();
 
     const {
       labelPosition
@@ -823,6 +825,9 @@ export class BaseComponent {
     if (this.hasInput && this.component.validate && this.component.validate.required) {
       className += ' field-required';
     }
+    if (isLabelHidden) {
+      className += ' label-text-hidden';
+    }
     this.labelElement = this.ce('label', {
       class: className,
       style
@@ -830,7 +835,9 @@ export class BaseComponent {
     if (this.info.attr.id) {
       this.labelElement.setAttribute('for', this.info.attr.id);
     }
-    this.labelElement.appendChild(this.text(this.component.label));
+    if (!isLabelHidden) {
+      this.labelElement.appendChild(this.text(this.component.label));
+    }
     this.createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
   }
@@ -1083,6 +1090,11 @@ export class BaseComponent {
     this.addPrefix(input, inputGroup);
     this.addInput(input, inputGroup || container);
     this.addSuffix(input, inputGroup);
+
+    //add special css class if label should be hidden
+    if (this.labelIsHidden()) {
+      this.addClass(input, 'input-label-hidden');
+    }
     this.errorContainer = container;
     this.setInputStyles(inputGroup || input);
     return inputGroup || input;
