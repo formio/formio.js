@@ -50,6 +50,19 @@ export class ButtonComponent extends BaseComponent {
     this.createElement();
     this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
     this.addShortcut(this.button);
+
+    if (this.component.action === 'submit') {
+      const errorContainer = this.ce('div', {
+        class: 'has-error'
+      });
+      const error = this.ce('span', {
+        class: 'help-block'
+      });
+      errorContainer.appendChild(error);
+      error.appendChild(this.text('Please correct all errors before submitting.'));
+      this.element.appendChild(errorContainer);
+    }
+
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
       this.button.appendChild(this.labelElement);
