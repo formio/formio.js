@@ -106,6 +106,7 @@ export class TabsComponent extends FormioComponents {
     this.empty(this.tabs[this.currentTab]);
     let components = this.hook('addComponents', tab.components);
     _each(components, (component) => this.addComponent(component, this.tabs[this.currentTab]));
+    this.checkConditions(this.root ? this.root.data : {});
 
     if (this.tabLinks.length <= index) {
       return;

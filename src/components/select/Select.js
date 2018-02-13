@@ -204,6 +204,14 @@ export class SelectComponent extends BaseComponent {
       }
     }
 
+    // Allow js processing (needed for form builder)
+    if (this.component.onSetItems && typeof this.component.onSetItems === 'function') {
+      let newItems = this.component.onSetItems(this, items);
+      if (newItems) {
+        items = newItems;
+      }
+    }
+
     if (!this.choices && this.selectInput) {
       // Detach from DOM and clear input.
       this.selectContainer.removeChild(this.selectInput);
@@ -302,7 +310,7 @@ export class SelectComponent extends BaseComponent {
       .then((response) => this.setItems(response))
       .catch((err) => {
         this.loading = false;
-        this.events.emit('formio.error', err);
+        this.emit('error', err);
         console.warn(`Unable to load resources for ${this.component.key}`);
       });
   }
@@ -338,12 +346,17 @@ export class SelectComponent extends BaseComponent {
     const data = _.cloneDeep(this.root ? this.root.data : this.data);
     const row = _.cloneDeep(this.data);
     try {
-      this.setItems((new Function(
-        'data',
-        'row',
-        'utils',
-        `var values = []; ${this.component.data.custom.toString()}; return values;`
-      ))(data, row, utils));
+      if (typeof this.component.data.custom === 'function') {
+        this.setItems(this.component.data.custom(this, data, row, utils));
+      }
+      else {
+        this.setItems((new Function(
+          'data',
+          'row',
+          'utils',
+          `var values = []; ${this.component.data.custom.toString()}; return values;`
+        ))(data, row, utils));
+      }
     }
     catch (error) {
       console.warn(error);
@@ -354,6 +367,11 @@ export class SelectComponent extends BaseComponent {
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
       console.warn(`Select component ${this.component.key} does not have data configuration.`);
+      return;
+    }
+
+    // Only load the data if it is visible.
+    if (!this.checkConditions()) {
       return;
     }
 
@@ -516,6 +534,14 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
+  show(show) {
+    // If we go from hidden to visible, trigger a refresh.
+    if (show && (this._visible !== show)) {
+      this.triggerUpdate();
+    }
+    return super.show(show);
+  }
+
   addCurrentChoices(value, items) {
     if (value) {
       let found = false;
@@ -571,7 +597,7 @@ export class SelectComponent extends BaseComponent {
     flags = this.getFlags.apply(this, arguments);
     const hasPreviousValue = Array.isArray(this.value) ? this.value.length : this.value;
     const hasValue = Array.isArray(value) ? value.length : value;
-    this.data[this.component.key] = value;
+    _.set(this.data, this.component.key, value);
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {

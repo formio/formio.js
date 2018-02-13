@@ -2441,7 +2441,8 @@ var BaseComponent = function () {
         table.appendChild(this.tbody);
 
         // Add a default value.
-        if (!this.data[this.component.key] || !this.data[this.component.key].length) {
+        var dataValue = _lodash2.default.get(this.data, this.component.key);
+        if (!dataValue || !dataValue.length) {
           this.addNewValue();
         }
 
@@ -2474,13 +2475,14 @@ var BaseComponent = function () {
   }, {
     key: 'addNewValue',
     value: function addNewValue() {
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = [];
+      if (!_lodash2.default.has(this.data, this.component.key)) {
+        _lodash2.default.set(this.data, this.component.key, []);
       }
-      if (this.data[this.component.key] && !Array.isArray(this.data[this.component.key])) {
-        this.data[this.component.key] = [this.data[this.component.key]];
+      var dataValue = _lodash2.default.get(this.data, this.component.key);
+      if (dataValue && !Array.isArray(dataValue)) {
+        _lodash2.default.set(this.data, this.component.key, [dataValue]);
       }
-      this.data[this.component.key].push(this.defaultValue);
+      _lodash2.default.get(this.data, this.component.key).push(this.defaultValue);
     }
 
     /**
@@ -2504,8 +2506,8 @@ var BaseComponent = function () {
   }, {
     key: 'removeValue',
     value: function removeValue(index) {
-      if (this.data.hasOwnProperty(this.component.key)) {
-        this.data[this.component.key].splice(index, 1);
+      if (_lodash2.default.has(this.data, this.component.key)) {
+        _lodash2.default.get(this.data, this.component.key).splice(index, 1);
         this.triggerChange();
       }
       this.buildRows();
@@ -2525,7 +2527,7 @@ var BaseComponent = function () {
       }
       this.inputs = [];
       this.tbody.innerHTML = '';
-      _lodash2.default.each(this.data[this.component.key], function (value, index) {
+      _lodash2.default.each(_lodash2.default.get(this.data, this.component.key), function (value, index) {
         var tr = _this.ce('tr');
         var td = _this.ce('td');
         var input = _this.createInput(td);
@@ -3268,6 +3270,8 @@ var BaseComponent = function () {
   }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
+      data = data || (this.root ? this.root.data : {});
+
       // Check advanced conditions
       var result = void 0;
 
@@ -3600,13 +3604,13 @@ var BaseComponent = function () {
       }
 
       flags = flags || {};
-      var value = this.data[this.component.key];
-      this.data[this.component.key] = this.getValue(flags);
+      var value = _lodash2.default.get(this.data, this.component.key);
+      _lodash2.default.set(this.data, this.component.key, this.getValue(flags));
       if (this.viewOnly) {
         this.updateViewOnlyValue(this.value);
       }
 
-      var changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+      var changed = flags.changed || this.hasChanged(value, _lodash2.default.get(this.data, this.component.key));
       delete flags.changed;
       if (!flags.noUpdateEvent && changed) {
         this.triggerChange(flags);
@@ -3621,13 +3625,13 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      if (this.data && this.data.hasOwnProperty(this.component.key)) {
-        this.setValue(this.data[this.component.key], {
+      if (_lodash2.default.has(this.data, this.component.key)) {
+        this.setValue(_lodash2.default.get(this.data, this.component.key), {
           noUpdateEvent: true
         });
       } else {
         var defaultValue = this.defaultValue;
-        if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
+        if (!_lodash2.default.has(this.data, this.component.key) && defaultValue) {
           this.setValue(defaultValue, {
             noUpdateEvent: true
           });
@@ -3747,7 +3751,7 @@ var BaseComponent = function () {
   }, {
     key: 'getRawValue',
     value: function getRawValue() {
-      return this.data[this.component.key];
+      return _lodash2.default.get(this.data, this.component.key);
     }
   }, {
     key: 'isEmpty',
@@ -4153,7 +4157,7 @@ var BaseComponent = function () {
       if (!this.data) {
         return null;
       }
-      return this.data[this.component.key];
+      return _lodash2.default.get(this.data, this.component.key);
     }
   }, {
     key: 'label',
@@ -6177,10 +6181,10 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
     key: 'build',
     value: function build() {
       this.createElement();
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = {};
+      if (!_lodash2.default.has(this.data, this.component.key)) {
+        _lodash2.default.set(this.data, this.component.key, {});
       }
-      this.addComponents(this.getContainer(), this.data[this.component.key]);
+      this.addComponents(this.getContainer(), _lodash2.default.get(this.data, this.component.key));
     }
   }, {
     key: 'getValue',
@@ -6619,7 +6623,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function build() {
       this.createElement();
       this.createLabel(this.element);
-      if (!this.data.hasOwnProperty(this.component.key)) {
+      if (!_lodash2.default.has(this.data, this.component.key) || !_lodash2.default.get(this.data, this.component.key).length) {
         this.addNewValue();
       }
       this.visibleColumns = true;
@@ -6653,7 +6657,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
 
       // Build rows the first time.
       this.rows = [];
-      this.tableRows = this.data[this.component.key].map(function (row, rowIndex) {
+      this.tableRows = _lodash2.default.get(this.data, this.component.key).map(function (row, rowIndex) {
         return _this2.buildRow(row, rowIndex);
       });
       this.tbody = this.ce('tbody', null, this.tableRows);
@@ -6704,7 +6708,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function buildRows(data) {
       var _this4 = this;
 
-      this.data[this.component.key].forEach(function (row, rowIndex) {
+      _lodash2.default.get(this.data, this.component.key).forEach(function (row, rowIndex) {
         // New Row.
         if (!_this4.tableRows[rowIndex]) {
           _this4.tableRows[rowIndex] = _this4.buildRow(row, rowIndex, data);
@@ -6719,7 +6723,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           }
       });
       // Remove any extra rows.
-      for (var rowIndex = this.tableRows.length; rowIndex > this.data[this.component.key].length; rowIndex--) {
+      for (var rowIndex = this.tableRows.length; rowIndex > _lodash2.default.get(this.data, this.component.key).length; rowIndex--) {
         this.tbody.removeChild(this.tableRows[rowIndex - 1]);
         this.tableRows.splice(rowIndex - 1, 1);
       }
@@ -6833,7 +6837,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         return;
       }
 
-      this.data[this.component.key] = value;
+      _lodash2.default.set(this.data, this.component.key, value);
       this.buildRows();
       _lodash2.default.each(this.rows, function (row, index) {
         if (value.length <= index) {
@@ -8244,7 +8248,8 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         return;
       }
 
-      this.rows = this.data[this.component.key] = value;
+      _lodash2.default.set(this.data, this.component.key, value);
+      this.rows = value;
       // Refresh editRow data when data changes.
       this.rows.forEach(function (row, rowIndex) {
         if (_this9.editRows[rowIndex]) {
@@ -8567,6 +8572,10 @@ var _createClass = function () {
 
 var _Base = require('../base/Base');
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var _utils = require('../../utils');
 
 var _utils2 = _interopRequireDefault(_utils);
@@ -8645,12 +8654,12 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   _createClass(FileComponent, [{
     key: 'getValue',
     value: function getValue() {
-      return this.data[this.component.key];
+      return _lodash2.default.get(this.data, this.component.key);
     }
   }, {
     key: 'setValue',
     value: function setValue(value) {
-      this.data[this.component.key] = value;
+      _lodash2.default.set(this.data, this.component.key, value);
       this.refreshDOM();
     }
   }, {
@@ -8713,7 +8722,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
     value: function buildFileList() {
       var _this2 = this;
 
-      return this.ce('ul', { class: 'list-group list-group-striped' }, [this.ce('li', { class: 'list-group-item list-group-header hidden-xs hidden-sm' }, this.ce('div', { class: 'row' }, [this.ce('div', { class: 'col-md-1' }), this.ce('div', { class: 'col-md-9' }, this.ce('strong', {}, 'File Name')), this.ce('div', { class: 'col-md-2' }, this.ce('strong', {}, 'Size'))])), this.data[this.component.key].map(function (fileInfo, index) {
+      return this.ce('ul', { class: 'list-group list-group-striped' }, [this.ce('li', { class: 'list-group-item list-group-header hidden-xs hidden-sm' }, this.ce('div', { class: 'row' }, [this.ce('div', { class: 'col-md-1' }), this.ce('div', { class: 'col-md-9' }, this.ce('strong', {}, 'File Name')), this.ce('div', { class: 'col-md-2' }, this.ce('strong', {}, 'Size'))])), _lodash2.default.get(this.data, this.component.key).map(function (fileInfo, index) {
         return _this2.createFileListItem(fileInfo, index);
       })]);
     }
@@ -8740,10 +8749,10 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         class: this.iconClass('remove'),
         onClick: function onClick(event) {
           if (_this4.component.storage === 'url') {
-            _this4.options.formio.makeRequest('', _this4.data[_this4.component.key][index].url, 'delete');
+            _this4.options.formio.makeRequest('', _lodash2.default.get(_this4.data, _this4.component.key)[index].url, 'delete');
           }
           event.preventDefault();
-          _this4.data[_this4.component.key].splice(index, 1);
+          _lodash2.default.get(_this4.data, _this4.component.key).splice(index, 1);
           _this4.refreshDOM();
           _this4.triggerChange();
         }
@@ -8762,7 +8771,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
     value: function buildImageList() {
       var _this5 = this;
 
-      return this.ce('div', {}, this.data[this.component.key].map(function (fileInfo, index) {
+      return this.ce('div', {}, _lodash2.default.get(this.data, this.component.key).map(function (fileInfo, index) {
         return _this5.createImageListItem(fileInfo, index);
       }));
     }
@@ -8787,10 +8796,10 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         class: this.iconClass('remove'),
         onClick: function onClick(event) {
           if (_this6.component.storage === 'url') {
-            _this6.options.formio.makeRequest('', _this6.data[_this6.component.key][index].url, 'delete');
+            _this6.options.formio.makeRequest('', _lodash2.default.get(_this6.data, _this6.component.key)[index].url, 'delete');
           }
           event.preventDefault();
-          _this6.data[_this6.component.key].splice(index, 1);
+          _lodash2.default.get(_this6.data, _this6.component.key).splice(index, 1);
           _this6.refreshDOM();
           _this6.triggerChange();
         }
@@ -8804,7 +8813,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       // Drop event must change this pointer so need a reference to parent this.
       var element = this;
       // If this is disabled or a single value with a value, don't show the upload div.
-      return this.ce('div', {}, !this.disabled && (this.component.multiple || this.data[this.component.key].length === 0) ? this.ce('div', {
+      return this.ce('div', {}, !this.disabled && (this.component.multiple || _lodash2.default.get(this.data, this.component.key).length === 0) ? this.ce('div', {
         class: 'fileSelector',
         onDragover: function onDragover(event) {
           this.className = 'fileSelector fileDragOver';
@@ -9038,7 +9047,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             }, _this9.component.url).then(function (fileInfo) {
               _this9.uploadStatusList.removeChild(uploadStatus);
               fileInfo.originalName = file.name;
-              _this9.data[_this9.component.key].push(fileInfo);
+              _lodash2.default.get(_this9.data, _this9.component.key).push(fileInfo);
               _this9.refreshDOM();
               _this9.triggerChange();
             }).catch(function (response) {
@@ -9081,7 +9090,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   return FileComponent;
 }(_Base.BaseComponent);
 
-},{"../../utils":106,"../base/Base":7}],43:[function(require,module,exports){
+},{"../../utils":106,"../base/Base":7,"lodash":318}],43:[function(require,module,exports){
 'use strict';
 
 var ComponentsEditForm = require('../Components.form');
@@ -9272,8 +9281,9 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       }
 
       // Add the source to this actual submission if the component is a reference.
-      if (this.data && this.data[this.component.key] && this.data[this.component.key]._id && this.component.reference && !(this.component.src.indexOf('/submission/') !== -1)) {
-        this.component.src += '/submission/' + this.data[this.component.key]._id;
+      var dataValue = _lodash2.default.get(this.data, this.component.key);
+      if (dataValue && dataValue._id && this.component.reference && !(this.component.src.indexOf('/submission/') !== -1)) {
+        this.component.src += '/submission/' + dataValue._id;
       }
 
       // Set the src if the property is provided in the JSON.
@@ -9282,8 +9292,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       }
 
       // Directly set the submission if it isn't a reference.
-      if (this.data && this.data[this.component.key] && !this.component.reference) {
-        this.setSubmission(this.data[this.component.key]);
+      if (dataValue && !this.component.reference) {
+        this.setSubmission(dataValue);
       }
 
       // Set language after everything is established.
@@ -9345,11 +9355,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       if (this.component.submit && !this.submitted) {
         return this.submit(true).then(function (submission) {
           // Before we submit, we need to filter out the references.
-          _this2.data[_this2.component.key] = _this2.component.reference ? {
+          _lodash2.default.set(_this2.data, _this2.component.key, _this2.component.reference ? {
             _id: submission._id,
             form: submission.form
-          } : submission;
-          return _this2.data[_this2.component.key];
+          } : submission);
+          return _lodash2.default.get(_this2.data, _this2.component.key);
         });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeSubmit', this).call(this);
@@ -9371,10 +9381,10 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       });
 
       // Set the data for this form.
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = this.defaultValue;
-        if (!this.data[this.component.key]) {
-          this.data[this.component.key] = { data: {} };
+      if (!_lodash2.default.has(this.data, this.component.key)) {
+        _lodash2.default.set(this.data, this.component.key, this.defaultValue);
+        if (!_lodash2.default.has(this.data, this.component.key)) {
+          _lodash2.default.set(this.data, this.component.key, { data: {} });
         }
       }
 
@@ -9431,13 +9441,14 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
       flags = this.getFlags.apply(this, arguments);
       if (!submission) {
-        this.data[this.component.key] = this._submission = { data: {} };
+        this._submission = { data: {} };
+        _lodash2.default.set(this.data, this.component.key, this._submission);
         this.readyResolve();
         return;
       }
 
       // Load the subform if we have data.
-      if (submission._id || !_lodash2.default.isEmpty(this.data[this.component.key])) {
+      if (submission._id || !_lodash2.default.isEmpty(_lodash2.default.get(this.data, this.component.key))) {
         this.loadSubForm();
       }
 
@@ -9465,7 +9476,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         // Assume value has changed.
         return true;
       } else {
-        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, this.data[this.component.key].data);
+        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, _lodash2.default.get(this.data, this.component.key).data);
         this.readyResolve();
         return superValue;
       }
@@ -9473,15 +9484,15 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'getValue',
     value: function getValue() {
-      return this.data[this.component.key];
+      return _lodash2.default.get(this.data, this.component.key);
     }
   }, {
     key: 'subData',
     get: function get() {
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = { data: {} };
+      if (!_lodash2.default.has(this.data, this.component.key)) {
+        _lodash2.default.set(this.data, this.component.key, { data: {} });
       }
-      return this.data[this.component.key].data;
+      return _lodash2.default.get(this.data, this.component.key).data;
     }
   }]);
 
@@ -11069,7 +11080,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       var changed = _get(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'updateValue', this).call(this, value, flags);
       if (changed) {
         //add/remove selected option class
-        var _value = this.data[this.component.key];
+        var _value = _lodash2.default.get(this.data, this.component.key);
         var optionSelectedClass = 'radio-selected';
 
         _lodash2.default.each(this.wrappers, function (wrapper, index) {
@@ -11302,7 +11313,20 @@ var ResourceComponent = exports.ResourceComponent = function (_SelectComponent) 
 },{"../select/Select":65}],64:[function(require,module,exports){
 'use strict';
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _utils = require('../../utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
 var BaseEditForm = require('../base/Base.form');
+
 module.exports = function () {
   for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
     extend[_key] = arguments[_key];
@@ -11313,12 +11337,246 @@ module.exports = function () {
       weight: 0,
       type: 'tabs',
       key: 'tabs',
-      components: []
+      components: [{}, {
+        label: 'Data',
+        key: 'data',
+        components: [{
+          type: 'select',
+          input: true,
+          weight: 0,
+          tooltip: 'The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.',
+          key: 'dataSrc',
+          defaultValue: 'values',
+          label: 'Data Source Type',
+          dataSrc: 'values',
+          data: {
+            values: [{ label: 'Values', value: 'values' }, { label: 'Raw JSON', value: 'json' }, { label: 'URL', value: 'url' }, { label: 'Resource', value: 'resource' }, { label: 'Custom', value: 'custom' }]
+          }
+        }, {
+          type: 'textarea',
+          as: 'json',
+          editor: 'ace',
+          weight: 10,
+          input: true,
+          key: 'data.json',
+          label: 'Data Source Raw JSON',
+          tooltip: 'A raw JSON array to use as a data source.',
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'json'] }
+          }
+        }, {
+          type: 'textfield',
+          input: true,
+          key: 'url',
+          weight: 10,
+          label: 'Data Source URL',
+          placeholder: 'Data Source URL',
+          tooltip: 'A URL that returns a JSON array to use as the data source.',
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+          }
+        }, {
+          type: 'datagrid',
+          input: true,
+          label: 'Request Headers',
+          key: 'data.headers',
+          tooltip: 'Set any headers that should be sent along with the request to the url. This is useful for authentication.',
+          weight: 11,
+          components: [{
+            label: 'Key',
+            key: 'key',
+            input: true,
+            type: 'textfield'
+          }, {
+            label: 'Value',
+            key: 'value',
+            input: true,
+            type: 'textfield'
+          }],
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+          }
+        }, {
+          type: 'datagrid',
+          input: true,
+          label: 'Data Source Values',
+          key: 'data.values',
+          tooltip: 'Values to use as the data source. Labels are shown in the select field. Values are the corresponding values saved with the submission.',
+          weight: 10,
+          components: [{
+            label: 'Label',
+            key: 'label',
+            input: true,
+            type: 'textfield'
+          }, {
+            label: 'Value',
+            key: 'value',
+            input: true,
+            type: 'textfield',
+            calculateValue: { _camelCase: [{ var: 'row.label' }] }
+          }],
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'values'] }
+          }
+        }, {
+          type: 'select',
+          input: true,
+          dataSrc: 'url',
+          data: {
+            url: '/form?type=resource&limit=4294967295&select=_id,title'
+          },
+          template: '<span>{{ item.title }}</span>',
+          valueProperty: '_id',
+          label: 'Resource',
+          key: 'resource',
+          weight: 10,
+          tooltip: 'The resource to be used with this field.',
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
+          }
+        }, {
+          type: 'select',
+          input: true,
+          label: 'Value Property',
+          key: 'valueProperty',
+          tooltip: 'The field to use as the value.',
+          weight: 11,
+          refreshOn: 'resource',
+          template: '<span>{{ item.label }}</span>',
+          valueProperty: 'key',
+          dataSrc: 'url',
+          onSetItems: function onSetItems(component, form) {
+            var newItems = [];
+            _utils2.default.eachComponent(form.components, function (component, path) {
+              newItems.push({
+                label: component.label || component.key,
+                key: path
+              });
+            });
+            return newItems;
+          },
+          data: {
+            url: '/form/{{ data.resource }}'
+          },
+          conditional: {
+            json: { var: 'data.resource' }
+          }
+        }, {
+          type: 'textfield',
+          input: true,
+          label: 'Data Path',
+          key: 'selectValues',
+          weight: 12,
+          description: 'The object path to the iterable items.',
+          tooltip: 'The property within the source data, where iterable items reside. For example: results.items or results[0].items',
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+          }
+        }, {
+          type: 'textfield',
+          input: true,
+          label: 'Value Property',
+          key: 'valueProperty',
+          weight: 13,
+          description: 'The selected item\'s property to save.',
+          tooltip: 'The property of each item in the data source to use as the select value. If not specified, the item itself will be used.',
+          conditional: {
+            json: {
+              and: [{ '!==': [{ var: 'data.dataSrc' }, 'values'] }, { '!==': [{ var: 'data.dataSrc' }, 'resource'] }, { '!==': [{ var: 'data.dataSrc' }, 'custom'] }]
+            }
+          }
+        }, {
+          type: 'textfield',
+          input: true,
+          label: 'Select Fields',
+          key: 'selectFields',
+          tooltip: 'The properties on the resource to return as part of the options. Separate property names by commas. If left blank, all properties will be returned.',
+          placeholder: 'Comma separated list of fields to select.',
+          weight: 14,
+          conditional: {
+            json: {
+              and: [{ '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.valueProperty' }, ''] }]
+            }
+          }
+        }, {
+          type: 'checkbox',
+          input: true,
+          key: 'disableLimit',
+          label: 'Disable limiting response',
+          tooltip: 'When enabled the request will not include the limit and skip options in the query string',
+          weight: 15,
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+          }
+        }, {
+          type: 'textfield',
+          input: true,
+          key: 'searchField',
+          label: 'Search Query Name',
+          weight: 16,
+          description: 'Name of URL query parameter',
+          tooltip: 'The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter.',
+          conditional: {
+            json: {
+              or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }]
+            }
+          }
+        }, {
+          type: 'textfield',
+          input: true,
+          key: 'filter',
+          label: 'Filter Query',
+          weight: 17,
+          description: 'The filter query for results.',
+          tooltip: 'Use this to provide additional filtering using query parameters.',
+          conditional: {
+            json: {
+              or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }]
+            }
+          }
+        }, {
+          type: 'number',
+          input: true,
+          key: 'limit',
+          label: 'Limit',
+          weight: 17,
+          description: 'Maximum number of items to view per page of results.',
+          tooltip: 'Use this to limit the number of items to request or view.',
+          conditional: {
+            json: {
+              or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.dataSrc' }, 'json'] }]
+            }
+          }
+        }, {
+          type: 'textarea',
+          input: true,
+          key: 'data.custom',
+          label: 'Custom Values',
+          editor: 'ace',
+          rows: 10,
+          weight: 14,
+          placeholder: 'values = data[\'mykey\'];',
+          tooltip: 'Write custom code to return the value options. The form data object is available.',
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'custom'] }
+          }
+        }, {
+          type: 'textarea',
+          input: true,
+          key: 'template',
+          label: 'Item Template',
+          editor: 'ace',
+          as: 'html',
+          rows: 3,
+          weight: 18,
+          tooltip: 'The HTML template for the result data items.'
+        }]
+      }]
     }]
   }].concat(extend));
 };
 
-},{"../base/Base.form":6}],65:[function(require,module,exports){
+},{"../../utils":106,"../base/Base.form":6,"lodash":318}],65:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -11438,7 +11696,7 @@ _choices2.default.prototype.setValueByChoice = function (value) {
   return this;
 };
 
-var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
+var SelectComponent = function (_BaseComponent) {
   _inherits(SelectComponent, _BaseComponent);
 
   _createClass(SelectComponent, null, [{
@@ -11626,6 +11884,14 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         }
       }
 
+      // Allow js processing (needed for form builder)
+      if (this.component.onSetItems && typeof this.component.onSetItems === 'function') {
+        var newItems = this.component.onSetItems(this, items);
+        if (newItems) {
+          items = newItems;
+        }
+      }
+
       if (!this.choices && this.selectInput) {
         // Detach from DOM and clear input.
         this.selectContainer.removeChild(this.selectInput);
@@ -11724,7 +11990,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         return _this5.setItems(response);
       }).catch(function (err) {
         _this5.loading = false;
-        _this5.events.emit('formio.error', err);
+        _this5.emit('error', err);
         console.warn('Unable to load resources for ' + _this5.component.key);
       });
     }
@@ -11740,7 +12006,11 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       var data = _lodash2.default.cloneDeep(this.root ? this.root.data : this.data);
       var row = _lodash2.default.cloneDeep(this.data);
       try {
-        this.setItems(new Function('data', 'row', 'utils', 'var values = []; ' + this.component.data.custom.toString() + '; return values;')(data, row, utils));
+        if (typeof this.component.data.custom === 'function') {
+          this.setItems(this.component.data.custom(this, data, row, utils));
+        } else {
+          this.setItems(new Function('data', 'row', 'utils', 'var values = []; ' + this.component.data.custom.toString() + '; return values;')(data, row, utils));
+        }
       } catch (error) {
         console.warn(error);
         this.setItems([]);
@@ -11751,6 +12021,11 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
     value: function updateItems(searchInput, forceUpdate) {
       if (!this.component.data) {
         console.warn('Select component ' + this.component.key + ' does not have data configuration.');
+        return;
+      }
+
+      // Only load the data if it is visible.
+      if (!this.checkConditions()) {
         return;
       }
 
@@ -11907,6 +12182,15 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       this.triggerUpdate();
     }
   }, {
+    key: 'show',
+    value: function show(_show) {
+      // If we go from hidden to visible, trigger a refresh.
+      if (_show && this._visible !== _show) {
+        this.triggerUpdate();
+      }
+      return _get(SelectComponent.prototype.__proto__ || Object.getPrototypeOf(SelectComponent.prototype), 'show', this).call(this, _show);
+    }
+  }, {
     key: 'addCurrentChoices',
     value: function addCurrentChoices(value, items) {
       var _this7 = this;
@@ -11962,7 +12246,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       flags = this.getFlags.apply(this, arguments);
       var hasPreviousValue = Array.isArray(this.value) ? this.value.length : this.value;
       var hasValue = Array.isArray(value) ? value.length : value;
-      this.data[this.component.key] = value;
+      _lodash2.default.set(this.data, this.component.key, value);
 
       // Do not set the value if we are loading... that will happen after it is done.
       if (this.loading) {
@@ -12104,6 +12388,8 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
   return SelectComponent;
 }(_Base.BaseComponent);
+
+exports.SelectComponent = SelectComponent;
 
 },{"../../formio":93,"../../utils":106,"../base/Base":7,"choices.js":110,"lodash":318}],66:[function(require,module,exports){
 'use strict';
@@ -13007,7 +13293,8 @@ module.exports = function () {
             type: 'textfield',
             input: true,
             key: 'key',
-            label: 'Key'
+            label: 'Key',
+            calculateValue: { _camelCase: [{ var: 'row.label' }] }
           }]
         }]
       }]
@@ -13177,6 +13464,7 @@ var TabsComponent = exports.TabsComponent = function (_FormioComponents) {
       (0, _each3.default)(components, function (component) {
         return _this3.addComponent(component, _this3.tabs[_this3.currentTab]);
       });
+      this.checkConditions(this.root ? this.root.data : {});
 
       if (this.tabLinks.length <= index) {
         return;
@@ -13628,8 +13916,8 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       container.appendChild(this.input);
 
       if (this.component.editor === 'ace') {
-        _Base.BaseComponent.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true).then(function () {
-          var mode = _this2.component.as === 'json' ? 'json' : 'javascript';
+        this.editorReady = _Base.BaseComponent.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true).then(function () {
+          var mode = _this2.component.as || 'javascript';
           _this2.editor = ace.edit(_this2.input);
           _this2.editor.on('change', function () {
             return _this2.updateValue({ noUpdateEvent: true });
@@ -13642,6 +13930,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
           setTimeout(function () {
             return _this2.acePlaceholder();
           }, 100);
+          return _this2.editor;
         });
         return this.input;
       }
@@ -13659,7 +13948,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + this.component.wysiwyg.theme + '.css' }], true);
 
       // Lazy load the quill library.
-      this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
+      this.editorReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
         _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
@@ -13724,17 +14013,18 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
     value: function setValue(value, flags) {
       var _this3 = this;
 
+      value = value || '';
       if (!this.component.wysiwyg && !this.component.editor) {
         return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'setValue', this).call(this, this.setConvertedValue(value), flags);
       }
 
-      if (this.component.editor === 'ace') {
-        return this.editor ? this.editor.setValue(this.setConvertedValue(value)) : '';
-      }
-
-      this.quillReady.then(function (quill) {
-        quill.clipboard.dangerouslyPasteHTML(_this3.setConvertedValue(value));
-        _this3.updateValue(flags);
+      this.editorReady.then(function (editor) {
+        if (_this3.component.editor === 'ace') {
+          editor.setValue(_this3.setConvertedValue(value));
+        } else {
+          editor.clipboard.dangerouslyPasteHTML(_this3.setConvertedValue(value));
+          _this3.updateValue(flags);
+        }
       });
     }
   }, {
@@ -14672,8 +14962,6 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'updateComponent',
     value: function updateComponent(component, isNew) {
-      var _this2 = this;
-
       // Update the preview.
       if (this.componentPreview) {
         this.componentPreview.innerHTML = '';
@@ -14695,15 +14983,6 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       // Set the full form on the component.
       component.component.__form = this.schema;
 
-      // Modify the component information in the edit form.
-      if (this.editForm) {
-        this.editForm.formReady.then(function () {
-          return _this2.editForm.setValue({ data: component.component }, {
-            noUpdateEvent: true
-          });
-        });
-      }
-
       // Called when we update a component.
       component.isNew = isNew;
       this.emit('updateComponent', component);
@@ -14711,7 +14990,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'editComponent',
     value: function editComponent(component, isNew) {
-      var _this3 = this;
+      var _this2 = this;
 
       var componentCopy = _lodash2.default.cloneDeep(component);
       var componentClass = _builder2.default[componentCopy.component.type];
@@ -14792,8 +15071,15 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           componentCopy.component = event.data;
 
           // Update the component.
-          _this3.updateComponent(componentCopy, isNew);
+          _this2.updateComponent(componentCopy, isNew);
         }
+      });
+
+      // Modify the component information in the edit form.
+      this.editForm.formReady.then(function () {
+        return _this2.editForm.setValue({ data: componentCopy.component }, {
+          noUpdateEvent: true
+        });
       });
 
       this.addEventListener(cancelButton, 'click', function (event) {
@@ -14803,7 +15089,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       this.addEventListener(removeButton, 'click', function (event) {
         event.preventDefault();
-        _this3.deleteComponent(component);
+        _this2.deleteComponent(component);
         dialog.close();
       });
 
@@ -14814,15 +15100,15 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           delete componentCopy.component.__form;
         }
         component.component = componentCopy.component;
-        _this3.emit('saveComponent', component);
-        _this3.form = _this3.schema;
+        _this2.emit('saveComponent', component);
+        _this2.form = _this2.schema;
         dialog.close();
       });
 
       this.addEventListener(dialog, 'close', function () {
-        _this3.editForm.destroy();
+        _this2.editForm.destroy();
         if (isNew) {
-          _this3.deleteComponent(component);
+          _this2.deleteComponent(component);
         }
       });
 
@@ -14877,7 +15163,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'addBuilderGroup',
     value: function addBuilderGroup(info) {
-      var _this4 = this;
+      var _this3 = this;
 
       if (!info || !info.key) {
         console.warn('Invalid Group Provided.');
@@ -14893,18 +15179,18 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       this.addEventListener(groupAnchor, 'click', function (event) {
         event.preventDefault();
         var clickedGroupId = event.target.getAttribute('href').replace('#group-', '');
-        if (_this4.groups[clickedGroupId]) {
-          var clickedGroup = _this4.groups[clickedGroupId];
-          var wasIn = _this4.hasClass(clickedGroup.panel, 'in');
-          _lodash2.default.each(_this4.groups, function (group, groupId) {
-            _this4.removeClass(group.panel, 'in');
+        if (_this3.groups[clickedGroupId]) {
+          var clickedGroup = _this3.groups[clickedGroupId];
+          var wasIn = _this3.hasClass(clickedGroup.panel, 'in');
+          _lodash2.default.each(_this3.groups, function (group, groupId) {
+            _this3.removeClass(group.panel, 'in');
             if (groupId === clickedGroupId && !wasIn) {
-              _this4.addClass(group.panel, 'in');
+              _this3.addClass(group.panel, 'in');
             }
           });
 
           // Match the form builder height to the sidebar.
-          _this4.formBuilderElement.style.minHeight = _this4.builderSidebar.offsetHeight + 'px';
+          _this3.formBuilderElement.style.minHeight = _this3.builderSidebar.offsetHeight + 'px';
         }
       });
 
@@ -14970,7 +15256,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'buildSidebar',
     value: function buildSidebar() {
-      var _this5 = this;
+      var _this4 = this;
 
       this.groups = {};
       this.sideBarElement = this.ce('div', {
@@ -14980,7 +15266,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       // Add the groups.
       _lodash2.default.each(this.options.groups, function (info, group) {
         info.key = group;
-        _this5.addBuilderGroup(info);
+        _this4.addBuilderGroup(info);
       });
 
       // Get all of the components builder info grouped and sorted.
@@ -14996,7 +15282,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       // Iterate through every component.
       _lodash2.default.each(components, function (component) {
-        return _this5.addBuilderComponent(component);
+        return _this4.addBuilderComponent(component);
       });
     }
   }, {
@@ -15011,7 +15297,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'build',
     value: function build() {
-      var _this6 = this;
+      var _this5 = this;
 
       this.dragContainers = [];
       if (!this.builderElement) {
@@ -15042,7 +15328,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         }
       }).on('drop', function (element, target, source, sibling) {
         var builderElement = source.querySelector('#' + element.id);
-        var newParent = _this6.getParentElement(element);
+        var newParent = _this5.getParentElement(element);
         if (!newParent || !newParent.component) {
           return console.warn('Could not find parent component.');
         }
@@ -15064,7 +15350,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           var component = newParent.component.addComponent(builderElement.builderInfo.schema, newParent, newParent.component.data, sibling);
 
           // Edit the component.
-          _this6.editComponent(component, true);
+          _this5.editComponent(component, true);
 
           // Remove the element.
           target.removeChild(element);
@@ -15080,7 +15366,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
             newParent.component.addComponent(element.component.schema, newParent, newParent.component.data, sibling);
 
             // Refresh the form.
-            _this6.form = _this6.schema;
+            _this5.form = _this5.schema;
           }
       });
 
@@ -15231,6 +15517,11 @@ var FormioForm = function (_FormioComponents) {
     var _this2 = _possibleConstructorReturn(this, (FormioForm.__proto__ || Object.getPrototypeOf(FormioForm)).call(this, null, getOptions(options)));
 
     _formio2.default.forms[_this2.id] = _this2;
+
+    // Set the base url.
+    if (_this2.options.baseUrl) {
+      _formio2.default.setBaseUrl(_this2.options.baseUrl);
+    }
 
     /**
      * The i18n configuration for this component.

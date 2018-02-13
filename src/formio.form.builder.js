@@ -132,13 +132,6 @@ export class FormioFormBuilder extends FormioForm {
     // Set the full form on the component.
     component.component.__form = this.schema;
 
-    // Modify the component information in the edit form.
-    if (this.editForm) {
-      this.editForm.formReady.then(() => this.editForm.setValue({data: component.component}, {
-        noUpdateEvent: true
-      }));
-    }
-
     // Called when we update a component.
     component.isNew = isNew;
     this.emit('updateComponent', component);
@@ -250,6 +243,11 @@ export class FormioFormBuilder extends FormioForm {
         this.updateComponent(componentCopy, isNew);
       }
     });
+
+    // Modify the component information in the edit form.
+    this.editForm.formReady.then(() => this.editForm.setValue({data: componentCopy.component}, {
+      noUpdateEvent: true
+    }));
 
     this.addEventListener(cancelButton, 'click', (event) => {
       event.preventDefault();

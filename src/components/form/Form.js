@@ -94,14 +94,14 @@ export class FormComponent extends FormioForm {
     }
 
     // Add the source to this actual submission if the component is a reference.
+    let dataValue = _.get(this.data, this.component.key);
     if (
-      this.data &&
-      this.data[this.component.key] &&
-      this.data[this.component.key]._id &&
+      dataValue &&
+      dataValue._id &&
       this.component.reference &&
       !this.component.src.includes('/submission/')
     ) {
-      this.component.src += `/submission/${this.data[this.component.key]._id}`;
+      this.component.src += `/submission/${dataValue._id}`;
     }
 
     // Set the src if the property is provided in the JSON.
@@ -110,8 +110,8 @@ export class FormComponent extends FormioForm {
     }
 
     // Directly set the submission if it isn't a reference.
-    if (this.data && this.data[this.component.key] && !this.component.reference) {
-      this.setSubmission(this.data[this.component.key]);
+    if (dataValue && !this.component.reference) {
+      this.setSubmission(dataValue);
     }
 
     // Set language after everything is established.
@@ -121,10 +121,10 @@ export class FormComponent extends FormioForm {
   }
 
   get subData() {
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {data: {}};
+    if (!_.has(this.data, this.component.key)) {
+      _.set(this.data, this.component.key, {data: {}});
     }
-    return this.data[this.component.key].data;
+    return _.get(this.data, this.component.key).data;
   }
 
   checkValidity() {
@@ -170,11 +170,11 @@ export class FormComponent extends FormioForm {
     if (this.component.submit && !this.submitted) {
       return this.submit(true).then(submission => {
         // Before we submit, we need to filter out the references.
-        this.data[this.component.key] = this.component.reference ? {
+        _.set(this.data, this.component.key, this.component.reference ? {
           _id: submission._id,
           form: submission.form
-        } : submission;
-        return this.data[this.component.key];
+        } : submission);
+        return _.get(this.data, this.component.key);
       });
     }
     else {
@@ -196,10 +196,10 @@ export class FormComponent extends FormioForm {
     });
 
     // Set the data for this form.
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = this.defaultValue;
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = {data: {}};
+    if (!_.has(this.data, this.component.key)) {
+      _.set(this.data, this.component.key, this.defaultValue);
+      if (!_.has(this.data, this.component.key)) {
+        _.set(this.data, this.component.key, {data: {}});
       }
     }
 
@@ -247,13 +247,14 @@ export class FormComponent extends FormioForm {
   setValue(submission, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!submission) {
-      this.data[this.component.key] = this._submission = {data: {}};
+      this._submission = {data: {}};
+      _.set(this.data, this.component.key, this._submission);
       this.readyResolve();
       return;
     }
 
     // Load the subform if we have data.
-    if (submission._id || !_.isEmpty(this.data[this.component.key])) {
+    if (submission._id || !_.isEmpty(_.get(this.data, this.component.key))) {
       this.loadSubForm();
     }
 
@@ -282,13 +283,13 @@ export class FormComponent extends FormioForm {
       return true;
     }
     else {
-      const superValue = super.setValue(submission, flags, this.data[this.component.key].data);
+      const superValue = super.setValue(submission, flags, _.get(this.data, this.component.key).data);
       this.readyResolve();
       return superValue;
     }
   }
 
   getValue() {
-    return this.data[this.component.key];
+    return _.get(this.data, this.component.key);
   }
 }

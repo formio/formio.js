@@ -1,4 +1,5 @@
 import {BaseComponent} from '../base/Base';
+import _ from 'lodash';
 import FormioUtils from '../../utils';
 
 export class FileComponent extends BaseComponent {
@@ -37,11 +38,11 @@ export class FileComponent extends BaseComponent {
   }
 
   getValue() {
-    return this.data[this.component.key];
+    return _.get(this.data, this.component.key);
   }
 
   setValue(value) {
-    this.data[this.component.key] = value;
+    _.set(this.data, this.component.key, value);
     this.refreshDOM();
   }
 
@@ -113,7 +114,7 @@ export class FileComponent extends BaseComponent {
           ]
         )
       ),
-      this.data[this.component.key].map((fileInfo, index) => this.createFileListItem(fileInfo, index))
+      _.get(this.data, this.component.key).map((fileInfo, index) => this.createFileListItem(fileInfo, index))
     ]);
   }
 
@@ -139,10 +140,10 @@ export class FileComponent extends BaseComponent {
                   class: this.iconClass('remove'),
                   onClick: event => {
                     if (this.component.storage === 'url') {
-                      this.options.formio.makeRequest('', this.data[this.component.key][index].url, 'delete');
+                      this.options.formio.makeRequest('', _.get(this.data, this.component.key)[index].url, 'delete');
                     }
                     event.preventDefault();
-                    this.data[this.component.key].splice(index, 1);
+                    _.get(this.data, this.component.key).splice(index, 1);
                     this.refreshDOM();
                     this.triggerChange();
                   }
@@ -166,7 +167,7 @@ export class FileComponent extends BaseComponent {
 
   buildImageList() {
     return this.ce('div', {},
-      this.data[this.component.key].map((fileInfo, index) => this.createImageListItem(fileInfo, index))
+      _.get(this.data, this.component.key).map((fileInfo, index) => this.createImageListItem(fileInfo, index))
     );
   }
 
@@ -198,10 +199,10 @@ export class FileComponent extends BaseComponent {
                 class: this.iconClass('remove'),
                 onClick: event => {
                   if (this.component.storage === 'url') {
-                    this.options.formio.makeRequest('', this.data[this.component.key][index].url, 'delete');
+                    this.options.formio.makeRequest('', _.get(this.data, this.component.key)[index].url, 'delete');
                   }
                   event.preventDefault();
-                  this.data[this.component.key].splice(index, 1);
+                  _.get(this.data, this.component.key).splice(index, 1);
                   this.refreshDOM();
                   this.triggerChange();
                 }
@@ -219,7 +220,7 @@ export class FileComponent extends BaseComponent {
     // If this is disabled or a single value with a value, don't show the upload div.
     return this.ce('div', {},
       (
-        (!this.disabled && (this.component.multiple || this.data[this.component.key].length === 0)) ?
+        (!this.disabled && (this.component.multiple || _.get(this.data, this.component.key).length === 0)) ?
           this.ce('div', {
             class: 'fileSelector',
             onDragover: function(event) {
@@ -483,7 +484,7 @@ export class FileComponent extends BaseComponent {
             .then(fileInfo => {
               this.uploadStatusList.removeChild(uploadStatus);
               fileInfo.originalName = file.name;
-              this.data[this.component.key].push(fileInfo);
+              _.get(this.data, this.component.key).push(fileInfo);
               this.refreshDOM();
               this.triggerChange();
             })

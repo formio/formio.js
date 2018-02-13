@@ -13,7 +13,9 @@ lib: builder
 <div id="formio" class="well"></div>
 
 <script type="text/javascript">
-Formio.builder(document.getElementById("builder")).then(function(builder) {
+Formio.builder(document.getElementById("builder"), null, {
+  baseUrl: 'https://sqpgeuzujwerjcu.form.io'
+}).then(function(builder) {
   var jsonElement = document.getElementById('json');
   Formio.createForm(document.getElementById('formio'), {components: []}).then(function(form) {
     builder.on('saveComponent', function(event) {

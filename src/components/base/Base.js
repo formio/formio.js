@@ -666,7 +666,8 @@ export class BaseComponent {
       table.appendChild(this.tbody);
 
       // Add a default value.
-      if (!this.data[this.component.key] || !this.data[this.component.key].length) {
+      let dataValue = _.get(this.data, this.component.key);
+      if (!dataValue || !dataValue.length) {
         this.addNewValue();
       }
 
@@ -739,13 +740,14 @@ export class BaseComponent {
    * Adds a new empty value to the data array.
    */
   addNewValue() {
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = [];
+    if (!_.has(this.data, this.component.key)) {
+      _.set(this.data, this.component.key, []);
     }
-    if (this.data[this.component.key] && !Array.isArray(this.data[this.component.key])) {
-      this.data[this.component.key] = [this.data[this.component.key]];
+    let dataValue = _.get(this.data, this.component.key);
+    if (dataValue && !Array.isArray(dataValue)) {
+      _.set(this.data, this.component.key, [dataValue]);
     }
-    this.data[this.component.key].push(this.defaultValue);
+    _.get(this.data, this.component.key).push(this.defaultValue);
   }
 
   /**
@@ -763,8 +765,8 @@ export class BaseComponent {
    * @param {number} index - The index of the data element to remove.
    */
   removeValue(index) {
-    if (this.data.hasOwnProperty(this.component.key)) {
-      this.data[this.component.key].splice(index, 1);
+    if (_.has(this.data, this.component.key)) {
+      _.get(this.data, this.component.key).splice(index, 1);
       this.triggerChange();
     }
     this.buildRows();
@@ -779,7 +781,7 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _.each(this.data[this.component.key], (value, index) => {
+    _.each(_.get(this.data, this.component.key), (value, index) => {
       const tr = this.ce('tr');
       const td = this.ce('td');
       const input = this.createInput(td);
@@ -1449,6 +1451,8 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
+    data = data || (this.root ? this.root.data: {});
+
     // Check advanced conditions
     let result;
 
@@ -1700,7 +1704,7 @@ export class BaseComponent {
     if (!this.data) {
       return null;
     }
-    return this.data[this.component.key];
+    return _.get(this.data, this.component.key);
   }
 
   /**
@@ -1759,13 +1763,13 @@ export class BaseComponent {
     }
 
     flags = flags || {};
-    const value = this.data[this.component.key];
-    this.data[this.component.key] = this.getValue(flags);
+    const value = _.get(this.data, this.component.key);
+    _.set(this.data, this.component.key, this.getValue(flags));
     if (this.viewOnly) {
       this.updateViewOnlyValue(this.value);
     }
 
-    const changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+    const changed = flags.changed || this.hasChanged(value, _.get(this.data, this.component.key));
     delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
@@ -1777,14 +1781,14 @@ export class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.data && this.data.hasOwnProperty(this.component.key)) {
-      this.setValue(this.data[this.component.key], {
+    if (_.has(this.data, this.component.key)) {
+      this.setValue(_.get(this.data, this.component.key), {
         noUpdateEvent: true
       });
     }
     else {
       const defaultValue = this.defaultValue;
-      if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
+      if (!_.has(this.data, this.component.key) && defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
         });
@@ -1909,7 +1913,7 @@ export class BaseComponent {
   }
 
   getRawValue() {
-    return this.data[this.component.key];
+    return _.get(this.data, this.component.key);
   }
 
   isEmpty(value) {

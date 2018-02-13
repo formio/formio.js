@@ -57,6 +57,11 @@ export default class FormioForm extends FormioComponents {
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
 
+    // Set the base url.
+    if (this.options.baseUrl) {
+      Formio.setBaseUrl(this.options.baseUrl);
+    }
+
     /**
      * The i18n configuration for this component.
      */

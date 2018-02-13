@@ -81,15 +81,16 @@ export class TextAreaComponent extends TextFieldComponent {
     container.appendChild(this.input);
 
     if (this.component.editor === 'ace') {
-      BaseComponent.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)
+      this.editorReady = BaseComponent.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)
         .then(() => {
-          let mode = (this.component.as === 'json') ? 'json' : 'javascript';
+          let mode = this.component.as || 'javascript';
           this.editor = ace.edit(this.input);
           this.editor.on('change', () => this.updateValue({noUpdateEvent: true}));
           this.editor.getSession().setTabSize(2);
           this.editor.getSession().setMode("ace/mode/" + mode);
           this.editor.on('input', () => this.acePlaceholder());
           setTimeout(() => this.acePlaceholder(), 100);
+          return this.editor;
         });
       return this.input;
     }
@@ -109,7 +110,7 @@ export class TextAreaComponent extends TextFieldComponent {
     ], true);
 
     // Lazy load the quill library.
-    this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true)
+    this.editorReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(this.input, this.component.wysiwyg);
 
@@ -180,17 +181,20 @@ export class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
+    value = value || '';
     if (!this.component.wysiwyg && !this.component.editor) {
       return super.setValue(this.setConvertedValue(value), flags);
     }
 
-    if (this.component.editor === 'ace') {
-      return this.editor ? this.editor.setValue(this.setConvertedValue(value)) : '';
-    }
-
-    this.quillReady.then((quill) => {
-      quill.clipboard.dangerouslyPasteHTML(this.setConvertedValue(value));
-      this.updateValue(flags);
+    // Set the value when the editor is ready.
+    this.editorReady.then((editor) => {
+      if (this.component.editor === 'ace') {
+        editor.setValue(this.setConvertedValue(value));
+      }
+      else {
+        editor.clipboard.dangerouslyPasteHTML(this.setConvertedValue(value));
+        this.updateValue(flags);
+      }
     });
   }
 

@@ -27,7 +27,8 @@ module.exports = function(...extend) {
                     type: 'textfield',
                     input: true,
                     key: 'key',
-                    label: 'Key'
+                    label: 'Key',
+                    calculateValue: {_camelCase: [{var: 'row.label'}]}
                   }
                 ]
               }

@@ -973,7 +973,8 @@ var BaseComponent = function () {
         table.appendChild(this.tbody);
 
         // Add a default value.
-        if (!this.data[this.component.key] || !this.data[this.component.key].length) {
+        var dataValue = _lodash2.default.get(this.data, this.component.key);
+        if (!dataValue || !dataValue.length) {
           this.addNewValue();
         }
 
@@ -1006,13 +1007,14 @@ var BaseComponent = function () {
   }, {
     key: 'addNewValue',
     value: function addNewValue() {
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = [];
+      if (!_lodash2.default.has(this.data, this.component.key)) {
+        _lodash2.default.set(this.data, this.component.key, []);
       }
-      if (this.data[this.component.key] && !Array.isArray(this.data[this.component.key])) {
-        this.data[this.component.key] = [this.data[this.component.key]];
+      var dataValue = _lodash2.default.get(this.data, this.component.key);
+      if (dataValue && !Array.isArray(dataValue)) {
+        _lodash2.default.set(this.data, this.component.key, [dataValue]);
       }
-      this.data[this.component.key].push(this.defaultValue);
+      _lodash2.default.get(this.data, this.component.key).push(this.defaultValue);
     }
 
     /**
@@ -1036,8 +1038,8 @@ var BaseComponent = function () {
   }, {
     key: 'removeValue',
     value: function removeValue(index) {
-      if (this.data.hasOwnProperty(this.component.key)) {
-        this.data[this.component.key].splice(index, 1);
+      if (_lodash2.default.has(this.data, this.component.key)) {
+        _lodash2.default.get(this.data, this.component.key).splice(index, 1);
         this.triggerChange();
       }
       this.buildRows();
@@ -1057,7 +1059,7 @@ var BaseComponent = function () {
       }
       this.inputs = [];
       this.tbody.innerHTML = '';
-      _lodash2.default.each(this.data[this.component.key], function (value, index) {
+      _lodash2.default.each(_lodash2.default.get(this.data, this.component.key), function (value, index) {
         var tr = _this.ce('tr');
         var td = _this.ce('td');
         var input = _this.createInput(td);
@@ -1800,13 +1802,15 @@ var BaseComponent = function () {
   }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
+      data = data || (this.root ? this.root.data : {});
+
       // Check advanced conditions
       var result = void 0;
 
       if (!this.hasCondition()) {
         result = this.show(true);
       } else {
-        result = this.show(_utils2.default.checkCondition(this.component, this.data, data));
+        result = this.show(_utils2.default.checkCondition(this.component, this.data, data, this.root ? this.root._form : {}));
       }
 
       if (this.fieldLogic(data)) {
@@ -2132,13 +2136,13 @@ var BaseComponent = function () {
       }
 
       flags = flags || {};
-      var value = this.data[this.component.key];
-      this.data[this.component.key] = this.getValue(flags);
+      var value = _lodash2.default.get(this.data, this.component.key);
+      _lodash2.default.set(this.data, this.component.key, this.getValue(flags));
       if (this.viewOnly) {
         this.updateViewOnlyValue(this.value);
       }
 
-      var changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+      var changed = flags.changed || this.hasChanged(value, _lodash2.default.get(this.data, this.component.key));
       delete flags.changed;
       if (!flags.noUpdateEvent && changed) {
         this.triggerChange(flags);
@@ -2153,13 +2157,13 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      if (this.data && this.data.hasOwnProperty(this.component.key)) {
-        this.setValue(this.data[this.component.key], {
+      if (_lodash2.default.has(this.data, this.component.key)) {
+        this.setValue(_lodash2.default.get(this.data, this.component.key), {
           noUpdateEvent: true
         });
       } else {
         var defaultValue = this.defaultValue;
-        if (!this.data.hasOwnProperty(this.component.key) && defaultValue) {
+        if (!_lodash2.default.has(this.data, this.component.key) && defaultValue) {
           this.setValue(defaultValue, {
             noUpdateEvent: true
           });
@@ -2268,7 +2272,7 @@ var BaseComponent = function () {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
       // Force valid if component is conditionally hidden.
-      if (!_utils2.default.checkCondition(this.component, data, this.data)) {
+      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
         return true;
       }
 
@@ -2279,7 +2283,7 @@ var BaseComponent = function () {
   }, {
     key: 'getRawValue',
     value: function getRawValue() {
-      return this.data[this.component.key];
+      return _lodash2.default.get(this.data, this.component.key);
     }
   }, {
     key: 'isEmpty',
@@ -2564,7 +2568,7 @@ var BaseComponent = function () {
   }, {
     key: 'schema',
     get: function get() {
-      return this.component;
+      return _lodash2.default.omit(this.component, 'id');
     }
   }, {
     key: 'shouldDisable',
@@ -2685,7 +2689,7 @@ var BaseComponent = function () {
       if (!this.data) {
         return null;
       }
-      return this.data[this.component.key];
+      return _lodash2.default.get(this.data, this.component.key);
     }
   }, {
     key: 'label',
@@ -4194,19 +4198,20 @@ var FormioUtils = {
    * @param data
    * @returns {*}
    */
-  checkCustomConditional: function checkCustomConditional(component, custom, row, data, variable, onError) {
+  checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError) {
     try {
-      return new Function('component', 'row', 'data', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, row, data);
+      return new Function('component', 'row', 'data', 'form', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, row, data, form);
     } catch (e) {
       console.warn('An error occurred in a condition statement for component ' + component.key, e);
       return onError;
     }
   },
-  checkJsonConditional: function checkJsonConditional(component, json, row, data, onError) {
+  checkJsonConditional: function checkJsonConditional(component, json, row, data, form, onError) {
     try {
       return _jsonLogicJs2.default.apply(json, {
         data: data,
         row: row,
+        form: form,
         _: _lodash2.default
       });
     } catch (err) {
@@ -4227,13 +4232,13 @@ var FormioUtils = {
    *
    * @returns {boolean}
    */
-  checkCondition: function checkCondition(component, row, data) {
+  checkCondition: function checkCondition(component, row, data, form) {
     if (component.customConditional) {
-      return this.checkCustomConditional(component, component.customConditional, row, data, 'show', true);
+      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true);
     } else if (component.conditional && component.conditional.when) {
       return this.checkSimpleConditional(component, component.conditional, row, data, true);
     } else if (component.conditional && component.conditional.json) {
-      return this.checkJsonConditional(component, component.conditional.json, row, data);
+      return this.checkJsonConditional(component, component.conditional.json, row, data, form);
     }
 
     // Default to show.
@@ -4249,14 +4254,14 @@ var FormioUtils = {
    * @param row
    * @returns {mixed}
    */
-  checkTrigger: function checkTrigger(component, trigger, row, data) {
+  checkTrigger: function checkTrigger(component, trigger, row, data, form) {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
       case 'javascript':
-        return this.checkCustomConditional(component, trigger.javascript, row, data, 'result', false);
+        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false);
       case 'json':
-        return this.checkJsonConditional(component, trigger.json, row, data, false);
+        return this.checkJsonConditional(component, trigger.json, row, data, form, false);
     }
     // If none of the types matched, don't fire the trigger.
     return false;

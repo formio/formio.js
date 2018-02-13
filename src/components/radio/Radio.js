@@ -189,7 +189,7 @@ export class RadioComponent extends BaseComponent {
     const changed = super.updateValue(value, flags);
     if (changed) {
       //add/remove selected option class
-      const value = this.data[this.component.key];
+      const value = _.get(this.data, this.component.key);
       const optionSelectedClass = 'radio-selected';
 
       _.each(this.wrappers, (wrapper, index) => {

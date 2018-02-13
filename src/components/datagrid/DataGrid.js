@@ -32,7 +32,7 @@ export class DataGridComponent extends FormioComponents {
   build() {
     this.createElement();
     this.createLabel(this.element);
-    if (!this.data.hasOwnProperty(this.component.key)) {
+    if (!_.has(this.data, this.component.key) || !_.get(this.data, this.component.key).length) {
       this.addNewValue();
     }
     this.visibleColumns = true;
@@ -43,7 +43,7 @@ export class DataGridComponent extends FormioComponents {
   buildTable() {
     // Destroy so that it will remove all existing components and clear handlers.
     this.destroy();
-    
+
     if (this.tableElement && this.tableElement.parentNode) {
       this.element.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';
@@ -63,7 +63,7 @@ export class DataGridComponent extends FormioComponents {
 
     // Build rows the first time.
     this.rows = [];
-    this.tableRows = this.data[this.component.key].map((row, rowIndex) => this.buildRow(row, rowIndex));
+    this.tableRows = _.get(this.data, this.component.key).map((row, rowIndex) => this.buildRow(row, rowIndex));
     this.tbody = this.ce('tbody', null, this.tableRows);
 
     // Add the body to the table and to the element.
@@ -127,7 +127,7 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildRows(data) {
-    this.data[this.component.key].forEach((row, rowIndex) => {
+    _.get(this.data, this.component.key).forEach((row, rowIndex) => {
       // New Row.
       if (!this.tableRows[rowIndex]) {
         this.tableRows[rowIndex] = this.buildRow(row, rowIndex, data);
@@ -142,7 +142,7 @@ export class DataGridComponent extends FormioComponents {
       }
     });
     // Remove any extra rows.
-    for (let rowIndex = this.tableRows.length; rowIndex > this.data[this.component.key].length; rowIndex--) {
+    for (let rowIndex = this.tableRows.length; rowIndex > _.get(this.data, this.component.key).length; rowIndex--) {
       this.tbody.removeChild(this.tableRows[rowIndex - 1]);
       this.tableRows.splice(rowIndex - 1, 1);
     }
@@ -252,7 +252,7 @@ export class DataGridComponent extends FormioComponents {
       return;
     }
 
-    this.data[this.component.key] = value;
+    _.set(this.data, this.component.key, value);
     this.buildRows();
     _.each(this.rows, (row, index) => {
       if (value.length <= index) {

@@ -30,10 +30,10 @@ export class ContainerComponent extends FormioComponents {
 
   build() {
     this.createElement();
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {};
+    if (!_.has(this.data, this.component.key)) {
+      _.set(this.data, this.component.key, {});
     }
-    this.addComponents(this.getContainer(), this.data[this.component.key]);
+    this.addComponents(this.getContainer(), _.get(this.data, this.component.key));
   }
 
   getValue() {
