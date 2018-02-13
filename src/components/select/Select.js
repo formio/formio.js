@@ -172,7 +172,7 @@ export class SelectComponent extends BaseComponent {
 
     if (!this.choices && this.selectInput) {
       // Detach from DOM and clear input.
-      this.selectContainer.removeChild(this.selectInput);
+      this.removeChildFrom(this.selectInput, this.selectContainer);
       this.selectInput.innerHTML = '';
     }
 
@@ -196,7 +196,7 @@ export class SelectComponent extends BaseComponent {
     }
     else {
       // Re-attach select input.
-      this.selectContainer.appendChild(this.selectInput);
+      this.appendTo(this.selectInput, this.selectContainer);
     }
 
     // We are no longer loading.

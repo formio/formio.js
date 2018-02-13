@@ -390,9 +390,7 @@ export default class FormioWizard extends FormioForm {
   buildWizardNav(nextPage) {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = '';
-      if (this.element.contains(this.wizardNav)) {
-        this.element.removeChild(this.wizardNav);
-      }
+      this.removeChild(this.wizardNav);
     }
     if (this.wizard.full) {
       return;

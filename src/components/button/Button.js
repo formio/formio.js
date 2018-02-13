@@ -51,21 +51,10 @@ export class ButtonComponent extends BaseComponent {
     }
 
     this.clicked = false;
+    this.hasError = false;
     this.createElement();
     this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
     this.addShortcut(this.button);
-
-    if (this.component.action === 'submit') {
-      const errorContainer = this.ce('div', {
-        class: 'has-error'
-      });
-      const error = this.ce('span', {
-        class: 'help-block'
-      });
-      errorContainer.appendChild(error);
-      error.appendChild(this.text('Please correct all errors before submitting.'));
-      this.element.appendChild(errorContainer);
-    }
 
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
@@ -73,6 +62,15 @@ export class ButtonComponent extends BaseComponent {
       this.createTooltip(this.button, null, this.iconClass('question-sign'));
     }
     if (this.component.action === 'submit') {
+      const errorContainer = this.ce('div', {
+        class: 'has-error'
+      });
+      const error = this.ce('span', {
+        class: 'help-block'
+      });
+      error.appendChild(this.text('Please correct all errors before submitting.'));
+      errorContainer.appendChild(error);
+
       this.on('submitButton', () => {
         this.loading = true;
         this.disabled = true;
@@ -83,10 +81,17 @@ export class ButtonComponent extends BaseComponent {
       }, true);
       this.on('change', (value) => {
         this.loading = false;
-        this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
+        let isValid = this.root.isValid(value.data, true);
+        this.disabled = (this.component.disableOnInvalid && !isValid);
+        if (isValid && this.hasError) {
+          this.hasError = false;
+          this.removeChild(errorContainer);
+        }
       }, true);
       this.on('error', () => {
         this.loading = false;
+        this.hasError = true;
+        this.append(errorContainer);
       }, true);
     }
 

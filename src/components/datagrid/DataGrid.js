@@ -21,7 +21,7 @@ export class DataGridComponent extends FormioComponents {
 
   buildTable() {
     if (this.tableElement) {
-      this.element.removeChild(this.tableElement);
+      this.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';
     }
 
@@ -118,7 +118,7 @@ export class DataGridComponent extends FormioComponents {
     });
     // Remove any extra rows.
     for (let rowIndex = this.tableRows.length; rowIndex > this.data[this.component.key].length; rowIndex--) {
-      this.tbody.removeChild(this.tableRows[rowIndex - 1]);
+      this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
       this.tableRows.splice(rowIndex - 1, 1);
     }
   }

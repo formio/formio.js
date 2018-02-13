@@ -744,8 +744,10 @@ var BaseComponent = function () {
   }, {
     key: 'empty',
     value: function empty(element) {
-      while (element.firstChild) {
-        element.removeChild(element.firstChild);
+      if (element) {
+        while (element.firstChild) {
+          element.removeChild(element.firstChild);
+        }
       }
     }
 
@@ -2133,11 +2135,7 @@ var BaseComponent = function () {
 
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
-        try {
-          this.errorContainer.removeChild(this.errorElement);
-        } catch (err) {
-          // ingnore
-        }
+        this.removeChildFrom(this.errorElement, this.errorContainer);
       }
       this.removeClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
@@ -2263,9 +2261,9 @@ var BaseComponent = function () {
       }
       if (element.loader) {
         if (loading) {
-          element.appendChild(element.loader);
-        } else if (element.contains(element.loader)) {
-          element.removeChild(element.loader);
+          this.appendTo(element.loader, element);
+        } else {
+          this.removeChildFrom(element.loader, element);
         }
       }
     }
@@ -2308,37 +2306,56 @@ var BaseComponent = function () {
     key: 'clear',
     value: function clear() {
       this.destroy();
-      var element = this.getElement();
-      if (element) {
-        while (element.lastChild) {
-          element.removeChild(element.lastChild);
-        }
+      this.empty(this.getElement());
+    }
+  }, {
+    key: 'appendTo',
+    value: function appendTo(element, container) {
+      if (container) {
+        container.appendChild(element);
       }
     }
   }, {
     key: 'append',
     value: function append(element) {
-      if (this.element) {
-        this.element.appendChild(element);
+      this.appendTo(element, this.element);
+    }
+  }, {
+    key: 'prependTo',
+    value: function prependTo(element, container) {
+      if (container) {
+        if (container.firstChild) {
+          try {
+            container.insertBefore(element, container.firstChild);
+          } catch (err) {
+            console.warn(err);
+            container.appendChild(element);
+          }
+        } else {
+          container.appendChild(element);
+        }
       }
     }
   }, {
     key: 'prepend',
     value: function prepend(element) {
-      if (this.element) {
-        if (this.element.firstChild) {
-          this.element.insertBefore(element, this.element.firstChild);
-        } else {
-          this.element.appendChild(element);
+      this.prependTo(element, this.element);
+    }
+  }, {
+    key: 'removeChildFrom',
+    value: function removeChildFrom(element, container) {
+      if (container && container.contains(element)) {
+        try {
+          container.removeChild(element);
+        } catch (err) {
+          console.warn(err);
         }
       }
     }
   }, {
     key: 'removeChild',
     value: function removeChild(element) {
-      if (this.element) {
-        this.element.removeChild(element);
-      }
+      this.removeChildFrom(element, this.element);
     }
 
     /**
@@ -2766,21 +2783,10 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
 
       this.clicked = false;
+      this.hasError = false;
       this.createElement();
       this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
       this.addShortcut(this.button);
-
-      if (this.component.action === 'submit') {
-        var errorContainer = this.ce('div', {
-          class: 'has-error'
-        });
-        var error = this.ce('span', {
-          class: 'help-block'
-        });
-        errorContainer.appendChild(error);
-        error.appendChild(this.text('Please correct all errors before submitting.'));
-        this.element.appendChild(errorContainer);
-      }
 
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
@@ -2788,6 +2794,15 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         this.createTooltip(this.button, null, this.iconClass('question-sign'));
       }
       if (this.component.action === 'submit') {
+        var errorContainer = this.ce('div', {
+          class: 'has-error'
+        });
+        var error = this.ce('span', {
+          class: 'help-block'
+        });
+        error.appendChild(this.text('Please correct all errors before submitting.'));
+        errorContainer.appendChild(error);
+
         this.on('submitButton', function () {
           _this2.loading = true;
           _this2.disabled = true;
@@ -2798,10 +2813,17 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }, true);
         this.on('change', function (value) {
           _this2.loading = false;
-          _this2.disabled = _this2.component.disableOnInvalid && !_this2.root.isValid(value.data, true);
+          var isValid = _this2.root.isValid(value.data, true);
+          _this2.disabled = _this2.component.disableOnInvalid && !isValid;
+          if (isValid && _this2.hasError) {
+            _this2.hasError = false;
+            _this2.removeChild(errorContainer);
+          }
         }, true);
         this.on('error', function () {
           _this2.loading = false;
+          _this2.hasError = true;
+          _this2.append(errorContainer);
         }, true);
       }
 

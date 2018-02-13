@@ -67,7 +67,7 @@ export class ResourceComponent extends SelectComponent {
       form.src = `${Formio.getBaseUrl()}/form/${self.component.resource}`;
 
       this.dialog.onclose = function() {
-        self.dialog.parentElement.removeChild(self.dialog);
+        self.removeChildFrom(self.dialog, self.dialog.parentElement);
       };
 
       this.dialog.showModal();

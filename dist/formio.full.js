@@ -240,7 +240,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       component.destroy();
       var element = component.getElement();
       if (element && element.parentNode) {
-        element.parentNode.removeChild(element);
+        this.removeChildFrom(element, element.parentNode);
       }
       _lodash2.default.remove(components, { id: component.id });
     }
@@ -1953,8 +1953,10 @@ var BaseComponent = function () {
   }, {
     key: 'empty',
     value: function empty(element) {
-      while (element.firstChild) {
-        element.removeChild(element.firstChild);
+      if (element) {
+        while (element.firstChild) {
+          element.removeChild(element.firstChild);
+        }
       }
     }
 
@@ -3342,11 +3344,7 @@ var BaseComponent = function () {
 
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
-        try {
-          this.errorContainer.removeChild(this.errorElement);
-        } catch (err) {
-          // ingnore
-        }
+        this.removeChildFrom(this.errorElement, this.errorContainer);
       }
       this.removeClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
@@ -3472,9 +3470,9 @@ var BaseComponent = function () {
       }
       if (element.loader) {
         if (loading) {
-          element.appendChild(element.loader);
-        } else if (element.contains(element.loader)) {
-          element.removeChild(element.loader);
+          this.appendTo(element.loader, element);
+        } else {
+          this.removeChildFrom(element.loader, element);
         }
       }
     }
@@ -3517,37 +3515,56 @@ var BaseComponent = function () {
     key: 'clear',
     value: function clear() {
       this.destroy();
-      var element = this.getElement();
-      if (element) {
-        while (element.lastChild) {
-          element.removeChild(element.lastChild);
-        }
+      this.empty(this.getElement());
+    }
+  }, {
+    key: 'appendTo',
+    value: function appendTo(element, container) {
+      if (container) {
+        container.appendChild(element);
       }
     }
   }, {
     key: 'append',
     value: function append(element) {
-      if (this.element) {
-        this.element.appendChild(element);
+      this.appendTo(element, this.element);
+    }
+  }, {
+    key: 'prependTo',
+    value: function prependTo(element, container) {
+      if (container) {
+        if (container.firstChild) {
+          try {
+            container.insertBefore(element, container.firstChild);
+          } catch (err) {
+            console.warn(err);
+            container.appendChild(element);
+          }
+        } else {
+          container.appendChild(element);
+        }
       }
     }
   }, {
     key: 'prepend',
     value: function prepend(element) {
-      if (this.element) {
-        if (this.element.firstChild) {
-          this.element.insertBefore(element, this.element.firstChild);
-        } else {
-          this.element.appendChild(element);
+      this.prependTo(element, this.element);
+    }
+  }, {
+    key: 'removeChildFrom',
+    value: function removeChildFrom(element, container) {
+      if (container && container.contains(element)) {
+        try {
+          container.removeChild(element);
+        } catch (err) {
+          console.warn(err);
         }
       }
     }
   }, {
     key: 'removeChild',
     value: function removeChild(element) {
-      if (this.element) {
-        this.element.removeChild(element);
-      }
+      this.removeChildFrom(element, this.element);
     }
 
     /**
@@ -3975,21 +3992,10 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
 
       this.clicked = false;
+      this.hasError = false;
       this.createElement();
       this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
       this.addShortcut(this.button);
-
-      if (this.component.action === 'submit') {
-        var errorContainer = this.ce('div', {
-          class: 'has-error'
-        });
-        var error = this.ce('span', {
-          class: 'help-block'
-        });
-        errorContainer.appendChild(error);
-        error.appendChild(this.text('Please correct all errors before submitting.'));
-        this.element.appendChild(errorContainer);
-      }
 
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
@@ -3997,6 +4003,15 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         this.createTooltip(this.button, null, this.iconClass('question-sign'));
       }
       if (this.component.action === 'submit') {
+        var errorContainer = this.ce('div', {
+          class: 'has-error'
+        });
+        var error = this.ce('span', {
+          class: 'help-block'
+        });
+        error.appendChild(this.text('Please correct all errors before submitting.'));
+        errorContainer.appendChild(error);
+
         this.on('submitButton', function () {
           _this2.loading = true;
           _this2.disabled = true;
@@ -4007,10 +4022,17 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }, true);
         this.on('change', function (value) {
           _this2.loading = false;
-          _this2.disabled = _this2.component.disableOnInvalid && !_this2.root.isValid(value.data, true);
+          var isValid = _this2.root.isValid(value.data, true);
+          _this2.disabled = _this2.component.disableOnInvalid && !isValid;
+          if (isValid && _this2.hasError) {
+            _this2.hasError = false;
+            _this2.removeChild(errorContainer);
+          }
         }, true);
         this.on('error', function () {
           _this2.loading = false;
+          _this2.hasError = true;
+          _this2.append(errorContainer);
         }, true);
       }
 
@@ -5095,7 +5117,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       var _this2 = this;
 
       if (this.tableElement) {
-        this.element.removeChild(this.tableElement);
+        this.removeChild(this.tableElement);
         this.tableElement.innerHTML = '';
       }
 
@@ -5178,7 +5200,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       });
       // Remove any extra rows.
       for (var rowIndex = this.tableRows.length; rowIndex > this.data[this.component.key].length; rowIndex--) {
-        this.tbody.removeChild(this.tableRows[rowIndex - 1]);
+        this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
         this.tableRows.splice(rowIndex - 1, 1);
       }
     }
@@ -6381,7 +6403,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       this.removeRowComponents(rowIndex);
       // Remove if new.
       if (!this.rows[rowIndex]) {
-        this.tableElement.removeChild(this.editRows[rowIndex].element);
+        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
         this.editRows.splice(rowIndex, 1);
         this.rows.splice(rowIndex, 1);
       } else {
@@ -6417,7 +6439,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       }
       this.removeRowComponents(rowIndex);
       this.rows.splice(rowIndex, 1);
-      this.tableElement.removeChild(this.editRows[rowIndex].element);
+      this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
       this.updateValue();
       this.refreshDOM();
@@ -6510,11 +6532,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     value: function setCustomValidity(message) {
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
-        try {
-          this.errorContainer.removeChild(this.errorElement);
-        } catch (err) {
-          // ignore
-        }
+        this.removeChildFrom(this.errorElement, this.errorContainer);
       }
       if (message) {
         this.emit('componentError', this.error);
@@ -6523,7 +6541,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           class: 'help-block'
         });
         errorMessage.appendChild(this.text(message));
-        this.errorElement.appendChild(errorMessage);
+        this.appendTo(errorMessage, this.errorElement);
       }
     }
   }, {
@@ -6554,7 +6572,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       if (this.rows.length < this.editRows.length) {
         for (var rowIndex = this.editRows.length - 1; rowIndex >= this.rows.length; rowIndex--) {
           this.removeRowComponents(rowIndex);
-          this.tableElement.removeChild(this.editRows[rowIndex].element);
+          this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
           this.editRows.splice(rowIndex, 1);
         }
       }
@@ -7055,7 +7073,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       return container = this.ce('div', { class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '') }, [this.ce('div', { class: 'row' }, [this.ce('div', { class: 'fileName control-label col-sm-10' }, [fileUpload.originalName, this.ce('i', {
         class: this.iconClass('remove'),
         onClick: function onClick() {
-          _this8.uploadStatusList.removeChild(container);
+          _this8.removeChildFrom(container, _this8.uploadStatusList);
         }
       })]), this.ce('div', { class: 'fileSize control-label col-sm-2 text-right' }, this.fileSize(fileUpload.size))]), this.ce('div', { class: 'row' }, [this.ce('div', { class: 'col-sm-12' }, [fileUpload.status === 'progress' ? this.ce('div', { class: 'progress' }, this.ce('div', {
         class: 'progress-bar',
@@ -7207,7 +7225,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
               uploadStatus = _this9.createUploadStatus(fileUpload);
               _this9.uploadStatusList.replaceChild(uploadStatus, originalStatus);
             }, _this9.component.url).then(function (fileInfo) {
-              _this9.uploadStatusList.removeChild(uploadStatus);
+              _this9.removeChildFrom(uploadStatus, _this9.uploadStatusList);
               fileInfo.originalName = file.name;
               _this9.data[_this9.component.key].push(fileInfo);
               _this9.refreshDOM();
@@ -8931,7 +8949,7 @@ var ResourceComponent = exports.ResourceComponent = function (_SelectComponent) 
         form.src = Formio.getBaseUrl() + '/form/' + self.component.resource;
 
         _this2.dialog.onclose = function () {
-          self.dialog.parentElement.removeChild(self.dialog);
+          self.removeChildFrom(self.dialog, self.dialog.parentElement);
         };
 
         _this2.dialog.showModal();
@@ -9225,7 +9243,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
       if (!this.choices && this.selectInput) {
         // Detach from DOM and clear input.
-        this.selectContainer.removeChild(this.selectInput);
+        this.removeChildFrom(this.selectInput, this.selectContainer);
         this.selectInput.innerHTML = '';
       }
 
@@ -9248,7 +9266,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         this.choices.setChoices(this.selectOptions, 'value', 'label', true);
       } else {
         // Re-attach select input.
-        this.selectContainer.appendChild(this.selectInput);
+        this.appendTo(this.selectInput, this.selectContainer);
       }
 
       // We are no longer loading.
@@ -14450,9 +14468,7 @@ var FormioWizard = function (_FormioForm) {
 
       if (this.wizardNav) {
         this.wizardNav.innerHTML = '';
-        if (this.element.contains(this.wizardNav)) {
-          this.element.removeChild(this.wizardNav);
-        }
+        this.removeChild(this.wizardNav);
       }
       if (this.wizard.full) {
         return;

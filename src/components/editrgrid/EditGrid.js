@@ -237,7 +237,7 @@ export class EditGridComponent extends FormioComponents {
     this.removeRowComponents(rowIndex);
     // Remove if new.
     if (!this.rows[rowIndex]) {
-      this.tableElement.removeChild(this.editRows[rowIndex].element);
+      this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
       this.rows.splice(rowIndex, 1);
     }
@@ -272,7 +272,7 @@ export class EditGridComponent extends FormioComponents {
     }
     this.removeRowComponents(rowIndex);
     this.rows.splice(rowIndex, 1);
-    this.tableElement.removeChild(this.editRows[rowIndex].element);
+    this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
     this.refreshDOM();
@@ -360,12 +360,7 @@ export class EditGridComponent extends FormioComponents {
   setCustomValidity(message) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
-      try {
-        this.errorContainer.removeChild(this.errorElement);
-      }
-      catch (err) {
-        // ignore
-      }
+      this.removeChildFrom(this.errorElement, this.errorContainer);
     }
     if (message) {
       this.emit('componentError', this.error);
@@ -374,7 +369,7 @@ export class EditGridComponent extends FormioComponents {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));
-      this.errorElement.appendChild(errorMessage);
+      this.appendTo(errorMessage, this.errorElement);
     }
   }
 
@@ -408,7 +403,7 @@ export class EditGridComponent extends FormioComponents {
     if (this.rows.length < this.editRows.length) {
       for (let rowIndex = this.editRows.length - 1; rowIndex >= this.rows.length; rowIndex--) {
         this.removeRowComponents(rowIndex);
-        this.tableElement.removeChild(this.editRows[rowIndex].element);
+        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
         this.editRows.splice(rowIndex, 1);
       }
     }

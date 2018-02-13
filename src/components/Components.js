@@ -145,7 +145,7 @@ export class FormioComponents extends BaseComponent {
     component.destroy();
     const element = component.getElement();
     if (element && element.parentNode) {
-      element.parentNode.removeChild(element);
+      this.removeChildFrom(element, element.parentNode);
     }
     _.remove(components, {id: component.id});
   }
