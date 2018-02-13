@@ -11727,6 +11727,7 @@ var FormioForm = function (_FormioComponents) {
         return _this11.submit();
       }, true);
       this.addComponents();
+      this.checkConditions(this.getValue());
       this.on('requestUrl', function (args) {
         return _this11.submitUrl(args.url, args.headers);
       }, true);
