@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - 'Delimiter' property to Number component.
  - Error message below submit button.
 
+### Changed
+ - Improved viewAsHtml and asString features.
+
 ## 2.29.0
 ### Added
  - New Field Logic feature.
