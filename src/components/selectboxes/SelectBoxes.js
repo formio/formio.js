@@ -71,10 +71,9 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   getView(value) {
-    return _.flow(
-      _.filter((v) => value[v.value]),
-      _.map('label'),
-      _.join(', ')
-    )(this.component.values || []);
+    return _(this.component.values || [])
+      .filter((v) => value[v.value])
+      .map('label')
+      .join(', ');
   }
 }
