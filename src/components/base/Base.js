@@ -1397,13 +1397,24 @@ export class BaseComponent {
       }
     }
 
-    if (!show && this.component.clearOnHide) {
-      this.clearPending = setTimeout(() => this.setValue(null, {
-        noValidate: true
-      }), 200);
-    }
+    this.clearOnHide(show);
 
     return show;
+  }
+
+  clearOnHide(show) {
+    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+    if (this.component.clearOnHide !== false) {
+      if (!show) {
+        delete this.data[this.component.key];
+      }
+      else {
+        // If shown, ensure the default is set.
+        this.setValue(this.defaultValue, {
+          noUpdateEvent: true
+        });
+      }
+    }
   }
 
   onResize() {}

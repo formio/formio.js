@@ -35,12 +35,12 @@ export const Harness = {
       form.everyComponent((comp) => {
         if (hidden.indexOf(comp.component.key) !== -1) {
           // Should be hidden.
-          assert.equal(comp.element.hidden, true);
+          assert(comp.element.hidden, 'Element should not be visible');
           assert.equal(comp.element.style.visibility, 'hidden');
         }
         else {
           // Should be visible.
-          assert(!comp.element.hidden, 'Element is hidden');
+          assert(!comp.element.hidden, 'Element should not be hidden');
           assert((comp.element.style.visibility === '') || (comp.element.style.visibility === 'visible'), 'Element must be visible');
         }
       });

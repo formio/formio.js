@@ -21,6 +21,11 @@ export class FileComponent extends BaseComponent {
     this.refreshDOM();
   }
 
+  get defaultValue() {
+    const value = super.defaultValue;
+    return Array.isArray(value) ? value : [];
+  }
+
   build() {
     // Set default to empty array.
     this.setValue([]);

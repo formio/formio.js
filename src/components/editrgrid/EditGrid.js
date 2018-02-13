@@ -379,7 +379,8 @@ export class EditGridComponent extends FormioComponents {
   }
 
   get defaultValue() {
-    return [];
+    const value = super.defaultValue;
+    return Array.isArray(value) ? value : [];
   }
 
   setValue(value) {
@@ -403,6 +404,14 @@ export class EditGridComponent extends FormioComponents {
         };
       }
     });
+    // Remove any extra edit rows.
+    if (this.rows.length < this.editRows.length) {
+      for (let rowIndex = this.editRows.length - 1; rowIndex >= this.rows.length; rowIndex--) {
+        this.removeRowComponents(rowIndex);
+        this.tableElement.removeChild(this.editRows[rowIndex].element);
+        this.editRows.splice(rowIndex, 1);
+      }
+    }
     this.refreshDOM();
   }
 
