@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - 'Delimiter' property to Number component.
+ - Error message below submit button.
 
 ## 2.29.0
 ### Added
