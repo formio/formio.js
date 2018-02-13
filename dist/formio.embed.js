@@ -280,7 +280,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       component.destroy();
       var element = component.getElement();
       if (element && element.parentNode) {
-        element.parentNode.removeChild(element);
+        this.removeChildFrom(element, element.parentNode);
       }
       _lodash2.default.remove(components, { id: component.id });
     }
@@ -416,22 +416,21 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'checkConditions',
     value: function checkConditions(data) {
-      var forceShow = false;
-      var show = false;
-      _lodash2.default.each(this.getComponents(), function (comp) {
-        var compShow = comp.checkConditions(data);
-        forceShow |= comp.hasCondition() && compShow && comp.component && comp.component.conditional && comp.component.conditional.overrideParent;
-        show |= compShow;
+      this.getComponents().forEach(function (comp) {
+        if (comp.hasCondition()) {
+          comp.checkConditions(data);
+        }
       });
 
-      // If any child has conditions set and are visible, then force the show.
-      if (forceShow) {
-        return this.show(true);
-      }
-
-      // Show if it explicitely says so.
-      show |= _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
-      return show;
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
+    }
+  }, {
+    key: 'clearOnHide',
+    value: function clearOnHide(show) {
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'clearOnHide', this).call(this, show);
+      this.getComponents().forEach(function (component) {
+        return component.clearOnHide(show);
+      });
     }
 
     /**
@@ -568,7 +567,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       }
       flags = this.getFlags.apply(this, arguments);
       var changed = false;
-      _lodash2.default.each(this.getComponents(), function (component) {
+      this.getComponents().forEach(function (component) {
         if (component.type === 'button') {
           return;
         }
@@ -577,9 +576,9 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
           changed |= component.setValue(value, flags);
         } else if (value && value.hasOwnProperty(component.component.key)) {
           changed |= component.setValue(value[component.component.key], flags);
-        } else if (component.hasInput) {
+        } else {
           flags.noValidate = true;
-          changed |= component.setValue(null, flags);
+          changed |= component.setValue(component.defaultValue, flags);
         }
       });
       return changed;
@@ -2161,13 +2160,17 @@ var BaseComponent = function () {
   }, {
     key: 'empty',
     value: function empty(element) {
-      while (element.firstChild) {
-        element.removeChild(element.firstChild);
+      if (element) {
+        while (element.firstChild) {
+          element.removeChild(element.firstChild);
+        }
       }
     }
   }, {
     key: 'createModal',
     value: function createModal(title) {
+      var _this = this;
+
       var modalBody = this.ce('div');
       var modalOverlay = this.ce('div', {
         class: 'formio-dialog-overlay'
@@ -2192,15 +2195,13 @@ var BaseComponent = function () {
         dialog.close();
       });
       this.addEventListener(dialog, 'close', function () {
-        document.body.removeChild(dialog);
+        _this.removeChildFrom(dialog, document.body);
       });
       document.body.appendChild(dialog);
       dialog.body = modalBody;
       dialog.close = function () {
         dialog.dispatchEvent(new CustomEvent('close'));
-        try {
-          document.body.removeChild(dialog);
-        } catch (err) {}
+        this.removeChildFrom(dialog, document.body);
       };
       return dialog;
     }
@@ -2344,7 +2345,7 @@ var BaseComponent = function () {
   }, {
     key: 'buildRows',
     value: function buildRows() {
-      var _this = this;
+      var _this2 = this;
 
       if (!this.tbody) {
         return;
@@ -2352,19 +2353,19 @@ var BaseComponent = function () {
       this.inputs = [];
       this.tbody.innerHTML = '';
       _lodash2.default.each(_lodash2.default.get(this.data, this.component.key), function (value, index) {
-        var tr = _this.ce('tr');
-        var td = _this.ce('td');
-        var input = _this.createInput(td);
+        var tr = _this2.ce('tr');
+        var td = _this2.ce('td');
+        var input = _this2.createInput(td);
         input.value = value;
         tr.appendChild(td);
 
-        if (!_this.shouldDisable) {
-          var tdAdd = _this.ce('td');
-          tdAdd.appendChild(_this.removeButton(index));
+        if (!_this2.shouldDisable) {
+          var tdAdd = _this2.ce('td');
+          tdAdd.appendChild(_this2.removeButton(index));
           tr.appendChild(tdAdd);
         }
 
-        _this.tbody.appendChild(tr);
+        _this2.tbody.appendChild(tr);
       });
 
       if (!this.shouldDisable) {
@@ -2414,14 +2415,14 @@ var BaseComponent = function () {
   }, {
     key: 'addButton',
     value: function addButton(justIcon) {
-      var _this2 = this;
+      var _this3 = this;
 
       var addButton = this.ce('a', {
         class: 'btn btn-primary'
       });
       this.addEventListener(addButton, 'click', function (event) {
         event.preventDefault();
-        _this2.addValue();
+        _this3.addValue();
       });
 
       var addIcon = this.ce('i', {
@@ -2464,7 +2465,7 @@ var BaseComponent = function () {
   }, {
     key: 'removeButton',
     value: function removeButton(index) {
-      var _this3 = this;
+      var _this4 = this;
 
       var removeButton = this.ce('button', {
         type: 'button',
@@ -2474,7 +2475,7 @@ var BaseComponent = function () {
 
       this.addEventListener(removeButton, 'click', function (event) {
         event.preventDefault();
-        _this3.removeValue(index);
+        _this4.removeValue(index);
       });
 
       var removeIcon = this.ce('i', {
@@ -2881,7 +2882,7 @@ var BaseComponent = function () {
   }, {
     key: 'destroy',
     value: function destroy(all) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.inputMask) {
         this.inputMask.destroy();
@@ -2889,7 +2890,7 @@ var BaseComponent = function () {
       if (this.events) {
         _lodash2.default.each(this.eventListeners, function (listener) {
           if (all || listener.internal) {
-            _this4.events.off(listener.type, listener.listener);
+            _this5.events.off(listener.type, listener.listener);
           }
         });
       }
@@ -2942,11 +2943,11 @@ var BaseComponent = function () {
   }, {
     key: 'appendChild',
     value: function appendChild(element, child) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (Array.isArray(child)) {
         child.forEach(function (oneChild) {
-          _this5.appendChild(element, oneChild);
+          _this6.appendChild(element, oneChild);
         });
       } else if (child instanceof HTMLElement || child instanceof Text) {
         element.appendChild(child);
@@ -3005,13 +3006,13 @@ var BaseComponent = function () {
   }, {
     key: 'attr',
     value: function attr(element, _attr) {
-      var _this6 = this;
+      var _this7 = this;
 
       _lodash2.default.each(_attr, function (value, key) {
         if (typeof value !== 'undefined') {
           if (key.indexOf('on') === 0) {
             // If this is an event, add a listener.
-            _this6.addEventListener(element, key.substr(2).toLowerCase(), value);
+            _this7.addEventListener(element, key.substr(2).toLowerCase(), value);
           } else {
             // Otherwise it is just an attribute.
             element.setAttribute(key, value);
@@ -3121,7 +3122,7 @@ var BaseComponent = function () {
   }, {
     key: 'fieldLogic',
     value: function fieldLogic(data) {
-      var _this7 = this;
+      var _this8 = this;
 
       var logics = this.component.logic || [];
 
@@ -3133,19 +3134,19 @@ var BaseComponent = function () {
       var newComponent = _lodash2.default.cloneDeep(this.originalComponent);
 
       var changed = logics.reduce(function (changed, logic) {
-        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this7.data, data);
+        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this8.data, data);
 
         if (result) {
           changed |= logic.actions.reduce(function (changed, action) {
             switch (action.type) {
               case 'property':
-                _utils2.default.setActionProperty(newComponent, action, _this7.data, data, newComponent, result);
+                _utils2.default.setActionProperty(newComponent, action, _this8.data, data, newComponent, result);
                 break;
               case 'value':
                 {
-                  var newValue = new Function('row', 'data', 'component', 'result', action.value)(_this7.data, data, newComponent, result);
-                  if (!_lodash2.default.isEqual(_this7.getValue(), newValue)) {
-                    _this7.setValue(newValue);
+                  var newValue = new Function('row', 'data', 'component', 'result', action.value)(_this8.data, data, newComponent, result);
+                  if (!_lodash2.default.isEqual(_this8.getValue(), newValue)) {
+                    _this8.setValue(newValue);
                     changed = true;
                   }
                   break;
@@ -3179,7 +3180,7 @@ var BaseComponent = function () {
   }, {
     key: 'addInputError',
     value: function addInputError(message, dirty) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (!message) {
         return;
@@ -3196,7 +3197,7 @@ var BaseComponent = function () {
       // Add error classes
       this.addClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
-        return _this8.addClass(input, 'is-invalid');
+        return _this9.addClass(input, 'is-invalid');
       });
       if (dirty && this.options.highlightErrors) {
         this.addClass(this.element, 'alert alert-danger');
@@ -3212,8 +3213,6 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      var _this9 = this;
-
       // Ensure we stop any pending data clears.
       if (this.clearPending) {
         clearTimeout(this.clearPending);
@@ -3239,15 +3238,24 @@ var BaseComponent = function () {
         }
       }
 
-      if (!_show && this.component.clearOnHide) {
-        this.clearPending = setTimeout(function () {
-          return _this9.setValue(null, {
-            noValidate: true
-          });
-        }, 200);
-      }
+      this.clearOnHide(_show);
 
       return _show;
+    }
+  }, {
+    key: 'clearOnHide',
+    value: function clearOnHide(show) {
+      // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+      if (this.component.clearOnHide !== false) {
+        if (!show) {
+          delete this.data[this.component.key];
+        } else {
+          // If shown, ensure the default is set.
+          this.setValue(this.defaultValue, {
+            noUpdateEvent: true
+          });
+        }
+      }
     }
   }, {
     key: 'onResize',
@@ -3606,11 +3614,7 @@ var BaseComponent = function () {
 
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
-        try {
-          this.errorContainer.removeChild(this.errorElement);
-        } catch (err) {
-          // ingnore
-        }
+        this.removeChildFrom(this.errorElement, this.errorContainer);
       }
       this.removeClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
@@ -3736,9 +3740,9 @@ var BaseComponent = function () {
       }
       if (element.loader) {
         if (loading) {
-          element.appendChild(element.loader);
-        } else if (element.contains(element.loader)) {
-          element.removeChild(element.loader);
+          this.appendTo(element.loader, element);
+        } else {
+          this.removeChildFrom(element.loader, element);
         }
       }
     }
@@ -3781,37 +3785,56 @@ var BaseComponent = function () {
     key: 'clear',
     value: function clear() {
       this.destroy();
-      var element = this.getElement();
-      if (element) {
-        while (element.lastChild) {
-          element.removeChild(element.lastChild);
-        }
+      this.empty(this.getElement());
+    }
+  }, {
+    key: 'appendTo',
+    value: function appendTo(element, container) {
+      if (container) {
+        container.appendChild(element);
       }
     }
   }, {
     key: 'append',
     value: function append(element) {
-      if (this.element) {
-        this.element.appendChild(element);
+      this.appendTo(element, this.element);
+    }
+  }, {
+    key: 'prependTo',
+    value: function prependTo(element, container) {
+      if (container) {
+        if (container.firstChild) {
+          try {
+            container.insertBefore(element, container.firstChild);
+          } catch (err) {
+            console.warn(err);
+            container.appendChild(element);
+          }
+        } else {
+          container.appendChild(element);
+        }
       }
     }
   }, {
     key: 'prepend',
     value: function prepend(element) {
-      if (this.element) {
-        if (this.element.firstChild) {
-          this.element.insertBefore(element, this.element.firstChild);
-        } else {
-          this.element.appendChild(element);
+      this.prependTo(element, this.element);
+    }
+  }, {
+    key: 'removeChildFrom',
+    value: function removeChildFrom(element, container) {
+      if (container && container.contains(element)) {
+        try {
+          container.removeChild(element);
+        } catch (err) {
+          console.warn(err);
         }
       }
     }
   }, {
     key: 'removeChild',
     value: function removeChild(element) {
-      if (this.element) {
-        this.element.removeChild(element);
-      }
+      this.removeChildFrom(element, this.element);
     }
 
     /**
@@ -4263,6 +4286,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
 
       this.clicked = false;
+      this.hasError = false;
       this.createElement();
       this.createInput(this.element);
       this.addShortcut(this.buttonElement);
@@ -4272,6 +4296,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }));
         this.buttonElement.appendChild(this.text('\xA0'));
       }
+
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
         this.buttonElement.appendChild(this.labelElement);
@@ -4284,6 +4309,15 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }));
       }
       if (this.component.action === 'submit') {
+        var errorContainer = this.ce('div', {
+          class: 'has-error'
+        });
+        var error = this.ce('span', {
+          class: 'help-block'
+        });
+        error.appendChild(this.text('Please correct all errors before submitting.'));
+        errorContainer.appendChild(error);
+
         this.on('submitButton', function () {
           _this2.loading = true;
           _this2.disabled = true;
@@ -4294,10 +4328,17 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }, true);
         this.on('change', function (value) {
           _this2.loading = false;
-          _this2.disabled = _this2.component.disableOnInvalid && !_this2.root.isValid(value.data, true);
+          var isValid = _this2.root.isValid(value.data, true);
+          _this2.disabled = _this2.component.disableOnInvalid && !isValid;
+          if (isValid && _this2.hasError) {
+            _this2.hasError = false;
+            _this2.removeChild(errorContainer);
+          }
         }, true);
         this.on('error', function () {
           _this2.loading = false;
+          _this2.hasError = true;
+          _this2.append(errorContainer);
         }, true);
       }
 
@@ -4486,6 +4527,11 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     set: function set(disabled) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
       this.setDisabled(this.buttonElement, disabled);
+    }
+  }, {
+    key: 'defaultValue',
+    get: function get() {
+      return false;
     }
   }, {
     key: 'className',
@@ -5064,12 +5110,34 @@ var ColumnsComponent = exports.ColumnsComponent = function (_FormioComponents) {
 },{"../Components":1,"lodash":230}],9:[function(require,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ContainerComponent = undefined;
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -5100,12 +5168,12 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof2(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
@@ -5178,14 +5246,24 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
       if (!value || !_lodash2.default.isObject(value)) {
         return;
       }
+      this.data[this.component.key] = value;
       _lodash2.default.each(this.components, function (component) {
         if (component.type === 'components') {
           component.setValue(value, flags);
         } else if (value.hasOwnProperty(component.component.key)) {
           component.setValue(value[component.component.key], flags);
+        } else {
+          component.data = value;
+          component.setValue(component.defaultValue, flags);
         }
       });
       this.updateValue(flags);
+    }
+  }, {
+    key: 'defaultValue',
+    get: function get() {
+      var value = _get(ContainerComponent.prototype.__proto__ || Object.getPrototypeOf(ContainerComponent.prototype), 'defaultValue', this);
+      return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? value : {};
     }
   }]);
 
@@ -5452,12 +5530,18 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
 },{"../number/Number":24,"lodash":230,"text-mask-addons":243,"vanilla-text-mask":245}],12:[function(require,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DataGridComponent = undefined;
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 var _get = function get(object, property, receiver) {
   if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
@@ -5504,12 +5588,12 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof2(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
@@ -5575,8 +5659,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       // Destroy so that it will remove all existing components and clear handlers.
       this.destroy();
 
-      if (this.tableElement && this.tableElement.parentNode) {
-        this.element.removeChild(this.tableElement);
+      if (this.tableElement) {
+        this.removeChild(this.tableElement);
         this.tableElement.innerHTML = '';
       }
 
@@ -5661,7 +5745,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       });
       // Remove any extra rows.
       for (var rowIndex = this.tableRows.length; rowIndex > _lodash2.default.get(this.data, this.component.key).length; rowIndex--) {
-        this.tbody.removeChild(this.tableRows[rowIndex - 1]);
+        this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
         this.tableRows.splice(rowIndex - 1, 1);
       }
     }
@@ -5738,6 +5822,10 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       var _this7 = this;
 
       var show = _get(DataGridComponent.prototype.__proto__ || Object.getPrototypeOf(DataGridComponent.prototype), 'checkConditions', this).call(this, data);
+      // If table isn't visible, don't bother calculating columns.
+      if (!show) {
+        return false;
+      }
       var rebuild = false;
       if (this.visibleColumns === true) {
         this.visibleColumns = {};
@@ -5756,7 +5844,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       });
 
       // If a rebuild is needed, then rebuild the table.
-      if (rebuild && show) {
+      if (rebuild) {
         this.buildTable();
       }
 
@@ -5771,7 +5859,11 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         return;
       }
       if (!Array.isArray(value)) {
-        return;
+        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+          value = [value];
+        } else {
+          return;
+        }
       }
 
       _lodash2.default.set(this.data, this.component.key, value);
@@ -5785,6 +5877,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
             col.setValue(value[index], flags);
           } else if (value[index].hasOwnProperty(key)) {
             col.setValue(value[index][key], flags);
+          } else {
+            col.data = value[index];
+            col.setValue(col.defaultValue, flags);
           }
         });
       });
@@ -5817,7 +5912,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   }, {
     key: 'defaultValue',
     get: function get() {
-      return {};
+      var value = _get(DataGridComponent.prototype.__proto__ || Object.getPrototypeOf(DataGridComponent.prototype), 'defaultValue', this);
+      return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? value : {};
     }
   }]);
 
@@ -6698,6 +6794,22 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.EditGridComponent = undefined;
 
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
 var _createClass = function () {
   function defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
@@ -6992,7 +7104,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       this.removeRowComponents(rowIndex);
       // Remove if new.
       if (!this.rows[rowIndex]) {
-        this.tableElement.removeChild(this.editRows[rowIndex].element);
+        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
         this.editRows.splice(rowIndex, 1);
         this.rows.splice(rowIndex, 1);
       } else {
@@ -7028,7 +7140,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       }
       this.removeRowComponents(rowIndex);
       this.rows.splice(rowIndex, 1);
-      this.tableElement.removeChild(this.editRows[rowIndex].element);
+      this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
       this.updateValue();
       this.refreshDOM();
@@ -7121,11 +7233,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     value: function setCustomValidity(message) {
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
-        try {
-          this.errorContainer.removeChild(this.errorElement);
-        } catch (err) {
-          // ignore
-        }
+        this.removeChildFrom(this.errorElement, this.errorContainer);
       }
       if (message) {
         this.emit('componentError', this.error);
@@ -7134,7 +7242,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           class: 'help-block'
         });
         errorMessage.appendChild(this.text(message));
-        this.errorElement.appendChild(errorMessage);
+        this.appendTo(errorMessage, this.errorElement);
       }
     }
   }, {
@@ -7162,6 +7270,14 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           };
         }
       });
+      // Remove any extra edit rows.
+      if (this.rows.length < this.editRows.length) {
+        for (var rowIndex = this.editRows.length - 1; rowIndex >= this.rows.length; rowIndex--) {
+          this.removeRowComponents(rowIndex);
+          this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
+          this.editRows.splice(rowIndex, 1);
+        }
+      }
       this.refreshDOM();
     }
 
@@ -7179,7 +7295,8 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
   }, {
     key: 'defaultValue',
     get: function get() {
-      return [];
+      var value = _get(EditGridComponent.prototype.__proto__ || Object.getPrototypeOf(EditGridComponent.prototype), 'defaultValue', this);
+      return Array.isArray(value) ? value : [];
     }
   }]);
 
@@ -7424,6 +7541,22 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FileComponent = undefined;
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -7758,7 +7891,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       return container = this.ce('div', { class: 'file' + (fileUpload.status === 'error' ? ' has-error' : '') }, [this.ce('div', { class: 'row' }, [this.ce('div', { class: 'fileName control-label col-sm-10' }, [fileUpload.originalName, this.ce('i', {
         class: this.iconClass('remove'),
         onClick: function onClick() {
-          _this8.uploadStatusList.removeChild(container);
+          _this8.removeChildFrom(container, _this8.uploadStatusList);
         }
       })]), this.ce('div', { class: 'fileSize control-label col-sm-2 text-right' }, this.fileSize(fileUpload.size))]), this.ce('div', { class: 'row' }, [this.ce('div', { class: 'col-sm-12' }, [fileUpload.status === 'progress' ? this.ce('div', { class: 'progress' }, this.ce('div', {
         class: 'progress-bar',
@@ -7910,7 +8043,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
               uploadStatus = _this9.createUploadStatus(fileUpload);
               _this9.uploadStatusList.replaceChild(uploadStatus, originalStatus);
             }, _this9.component.url).then(function (fileInfo) {
-              _this9.uploadStatusList.removeChild(uploadStatus);
+              _this9.removeChildFrom(uploadStatus, _this9.uploadStatusList);
               fileInfo.originalName = file.name;
               _lodash2.default.get(_this9.data, _this9.component.key).push(fileInfo);
               _this9.refreshDOM();
@@ -7944,6 +8077,12 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         alert(response);
       });
       event.preventDefault();
+    }
+  }, {
+    key: 'defaultValue',
+    get: function get() {
+      var value = _get(FileComponent.prototype.__proto__ || Object.getPrototypeOf(FileComponent.prototype), 'defaultValue', this);
+      return Array.isArray(value) ? value : [];
     }
   }, {
     key: 'fileService',
@@ -10325,7 +10464,7 @@ var SelectComponent = function (_BaseComponent) {
 
       if (!this.choices && this.selectInput) {
         // Detach from DOM and clear input.
-        this.selectContainer.removeChild(this.selectInput);
+        this.removeChildFrom(this.selectInput, this.selectContainer);
         this.selectInput.innerHTML = '';
       }
 
@@ -10348,7 +10487,7 @@ var SelectComponent = function (_BaseComponent) {
         this.choices.setChoices(this.selectOptions, 'value', 'label', true);
       } else {
         // Re-attach select input.
-        this.selectContainer.appendChild(this.selectInput);
+        this.appendTo(this.selectInput, this.selectContainer);
       }
 
       // We are no longer loading.
@@ -12233,6 +12372,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       // Lazy load the quill library.
       this.editorReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
         _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
+        _this2.quill.root.spellcheck = _this2.component.spellcheck;
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
         var txtArea = document.createElement('textarea');
@@ -13691,11 +13831,7 @@ var FormioForm = function (_FormioComponents) {
         return _this11.submit();
       }, true);
       this.addComponents();
-      var submission = this.getValue();
-      this.checkConditions(submission);
-      this.checkData(submission.data, {
-        noValidate: true
-      });
+      this.checkConditions(this.getValue());
       this.on('requestUrl', function (args) {
         return _this11.submitUrl(args.url, args.headers);
       }, true);
@@ -16350,9 +16486,7 @@ var FormioWizard = function (_FormioForm) {
 
       if (this.wizardNav) {
         this.wizardNav.innerHTML = '';
-        if (this.element.contains(this.wizardNav)) {
-          this.element.removeChild(this.wizardNav);
-        }
+        this.removeChild(this.wizardNav);
       }
       if (this.wizard.full) {
         return;
@@ -18441,7 +18575,7 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
 
 }).call(this,require('_process'))
 },{"_process":240}],63:[function(require,module,exports){
-/* flatpickr v4.2.4, @license MIT */
+/* flatpickr v4.3.2, @license MIT */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
 	typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -18494,10 +18628,6 @@ function debounce(func, wait, immediate) {
 var arrayify = function (obj) {
     return obj instanceof Array ? obj : [obj];
 };
-function mouseDelta(e) {
-    var delta = e.wheelDelta || -e.deltaY;
-    return delta >= 0 ? 1 : -1;
-}
 
 var do_nothing = function () { return undefined; };
 var revFormat = {
@@ -18694,14 +18824,15 @@ var english = {
 
 var createDateFormatter = function (_a) {
     var _b = _a.config, config = _b === void 0 ? defaults : _b, _c = _a.l10n, l10n = _c === void 0 ? english : _c;
-    return function (dateObj, frmt) {
+    return function (dateObj, frmt, overrideLocale) {
         if (config.formatDate !== undefined)
             return config.formatDate(dateObj, frmt);
+        var locale = overrideLocale || l10n;
         return frmt
             .split("")
             .map(function (c, i, arr) {
             return formats[c] && arr[i - 1] !== "\\"
-                ? formats[c](dateObj, l10n, config)
+                ? formats[c](dateObj, locale, config)
                 : c !== "\\" ? c : "";
         })
             .join("");
@@ -18917,7 +19048,6 @@ function FlatpickrInstance(element, instanceConfig) {
         l10n: english,
     };
     self.parseDate = createDateParser({ config: self.config, l10n: self.l10n });
-    self._animationLoop = [];
     self._handlers = [];
     self._bind = bind;
     self._setHoursFromDate = setHoursFromDate;
@@ -18967,8 +19097,12 @@ function FlatpickrInstance(element, instanceConfig) {
         self.showTimeInput =
             self.selectedDates.length > 0 || self.config.noCalendar;
         if (self.weekWrapper !== undefined && self.daysContainer !== undefined) {
+            self.calendarContainer.style.visibility = "hidden";
+            self.calendarContainer.style.display = "block";
             self.calendarContainer.style.width =
                 self.daysContainer.offsetWidth + self.weekWrapper.offsetWidth + "px";
+            self.calendarContainer.style.visibility = "visible";
+            self.calendarContainer.style.display = null;
         }
         var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
         if (!self.isMobile && isSafari) {
@@ -19109,11 +19243,10 @@ function FlatpickrInstance(element, instanceConfig) {
         }
         var debouncedResize = debounce(onResize, 50);
         self._debouncedChange = debounce(triggerChange, DEBOUNCED_CHANGE_MS);
-        if (self.config.mode === "range" &&
-            self.daysContainer &&
-            !/iPhone|iPad|iPod/i.test(navigator.userAgent))
+        if (self.daysContainer && !/iPhone|iPad|iPod/i.test(navigator.userAgent))
             bind(self.daysContainer, "mouseover", function (e) {
-                return onMouseOver(e.target);
+                if (self.config.mode === "range")
+                    onMouseOver(e.target);
             });
         bind(window.document.body, "keydown", onKeyDown);
         if (!self.config.static)
@@ -19121,22 +19254,17 @@ function FlatpickrInstance(element, instanceConfig) {
         if (!self.config.inline && !self.config.static)
             bind(window, "resize", debouncedResize);
         if (window.ontouchstart !== undefined)
-            bind(window.document.body, "touchstart", documentClick);
-        bind(window.document.body, "mousedown", onClick(documentClick));
-        bind(window.document.body, "focus", documentClick, { capture: true });
+            bind(window.document, "touchstart", documentClick);
+        bind(window.document, "mousedown", onClick(documentClick));
+        bind(window.document, "focus", documentClick, { capture: true });
         if (self.config.clickOpens === true) {
             bind(self._input, "focus", self.open);
             bind(self._input, "mousedown", onClick(self.open));
         }
         if (self.daysContainer !== undefined) {
-            bind(self.monthNav, "wheel", onMonthNavScroll);
             bind(self.monthNav, "mousedown", onClick(onMonthNavClick));
             bind(self.monthNav, ["keyup", "increment"], onYearInput);
             bind(self.daysContainer, "mousedown", onClick(selectDate));
-            if (self.config.animate) {
-                bind(self.daysContainer, ["webkitAnimationEnd", "animationend"], animateDays);
-                bind(self.monthNav, ["webkitAnimationEnd", "animationend"], animateMonths);
-            }
         }
         if (self.timeContainer !== undefined &&
             self.minuteElement !== undefined &&
@@ -19144,9 +19272,11 @@ function FlatpickrInstance(element, instanceConfig) {
             var selText = function (e) {
                 return e.target.select();
             };
-            bind(self.timeContainer, ["wheel", "input", "increment"], updateTime);
+            bind(self.timeContainer, ["input", "increment"], updateTime);
             bind(self.timeContainer, "mousedown", onClick(timeIncrement));
-            bind(self.timeContainer, ["wheel", "input", "increment"], self._debouncedChange, { passive: true });
+            bind(self.timeContainer, ["input", "increment"], self._debouncedChange, {
+                passive: true,
+            });
             bind([self.hourElement, self.minuteElement], ["focus", "click"], selText);
             if (self.secondElement !== undefined)
                 bind(self.secondElement, "focus", function () { return self.secondElement && self.secondElement.select(); });
@@ -19156,51 +19286,6 @@ function FlatpickrInstance(element, instanceConfig) {
                     triggerChange();
                 }));
             }
-        }
-    }
-    function processPostDayAnimation() {
-        self._animationLoop.forEach(function (f) { return f(); });
-        self._animationLoop = [];
-    }
-    function animateDays(e) {
-        if (self.daysContainer && self.daysContainer.childNodes.length > 1) {
-            switch (e.animationName) {
-                case "fpSlideLeft":
-                    self.daysContainer.lastChild &&
-                        self.daysContainer.lastChild.classList.remove("slideLeftNew");
-                    self.daysContainer.removeChild(self.daysContainer
-                        .firstChild);
-                    self.days = self.daysContainer.firstChild;
-                    processPostDayAnimation();
-                    break;
-                case "fpSlideRight":
-                    self.daysContainer.firstChild &&
-                        self.daysContainer.firstChild.classList.remove("slideRightNew");
-                    self.daysContainer.removeChild(self.daysContainer
-                        .lastChild);
-                    self.days = self.daysContainer.firstChild;
-                    processPostDayAnimation();
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-    function animateMonths(e) {
-        switch (e.animationName) {
-            case "fpSlideLeftNew":
-            case "fpSlideRightNew":
-                self.navigationCurrentMonth.classList.remove("slideLeftNew");
-                self.navigationCurrentMonth.classList.remove("slideRightNew");
-                var nav = self.navigationCurrentMonth;
-                while (nav.nextSibling &&
-                    /curr/.test(nav.nextSibling.className))
-                    self.monthNav.removeChild(nav.nextSibling);
-                while (nav.previousSibling &&
-                    /curr/.test(nav.previousSibling.className))
-                    self.monthNav.removeChild(nav.previousSibling);
-                self.oldCurMonth = undefined;
-                break;
         }
     }
     function jumpToDate(jumpDate) {
@@ -19356,21 +19441,17 @@ function FlatpickrInstance(element, instanceConfig) {
         };
         if (targetNode === undefined && offset !== 0) {
             if (offset > 0) {
-                self.changeMonth(1, true, undefined, true);
+                self.changeMonth(1, true, true);
                 newIndex = newIndex % 42;
             }
             else if (offset < 0) {
-                self.changeMonth(-1, true, undefined, true);
+                self.changeMonth(-1, true, true);
                 newIndex += 42;
             }
-            return afterDayAnim(focus);
         }
         focus();
     }
-    function afterDayAnim(fn) {
-        self.config.animate === true ? self._animationLoop.push(fn) : fn();
-    }
-    function buildDays(delta) {
+    function buildDays() {
         if (self.daysContainer === undefined) {
             return;
         }
@@ -19411,17 +19492,9 @@ function FlatpickrInstance(element, instanceConfig) {
             updateNavigationCurrentMonth();
         var dayContainer = createElement("div", "dayContainer");
         dayContainer.appendChild(days);
-        if (!self.config.animate || delta === undefined)
-            clearNode(self.daysContainer);
-        else {
-            while (self.daysContainer.childNodes.length > 1)
-                self.daysContainer.removeChild(self.daysContainer.firstChild);
-        }
-        if (delta && delta >= 0)
-            self.daysContainer.appendChild(dayContainer);
-        else
-            self.daysContainer.insertBefore(dayContainer, self.daysContainer.firstChild);
-        self.days = self.daysContainer.childNodes[0];
+        clearNode(self.daysContainer);
+        self.daysContainer.insertBefore(dayContainer, self.daysContainer.firstChild);
+        self.days = self.daysContainer.firstChild;
     }
     function buildMonthNav() {
         var monthNavFragment = window.document.createDocumentFragment();
@@ -19429,10 +19502,8 @@ function FlatpickrInstance(element, instanceConfig) {
         self.prevMonthNav = createElement("span", "flatpickr-prev-month");
         self.prevMonthNav.innerHTML = self.config.prevArrow;
         self.currentMonthElement = createElement("span", "cur-month");
-        self.currentMonthElement.title = self.l10n.scrollTitle;
         var yearInput = createNumberInput("cur-year", { tabindex: "-1" });
         self.currentYearElement = yearInput.childNodes[0];
-        self.currentYearElement.title = self.l10n.scrollTitle;
         if (self.config.minDate)
             self.currentYearElement.setAttribute("data-min", self.config.minDate.getFullYear().toString());
         if (self.config.maxDate) {
@@ -19495,7 +19566,6 @@ function FlatpickrInstance(element, instanceConfig) {
         self.hourElement.setAttribute("data-max", self.config.time_24hr ? "23" : "12");
         self.minuteElement.setAttribute("data-min", "0");
         self.minuteElement.setAttribute("data-max", "59");
-        self.hourElement.title = self.minuteElement.title = self.l10n.scrollTitle;
         self.timeContainer.appendChild(hourInput);
         self.timeContainer.appendChild(separator);
         self.timeContainer.appendChild(minuteInput);
@@ -19546,9 +19616,8 @@ function FlatpickrInstance(element, instanceConfig) {
             weekNumbers: weekNumbers,
         };
     }
-    function changeMonth(value, is_offset, animate, from_keyboard) {
+    function changeMonth(value, is_offset, from_keyboard) {
         if (is_offset === void 0) { is_offset = true; }
-        if (animate === void 0) { animate = self.config.animate; }
         if (from_keyboard === void 0) { from_keyboard = false; }
         var delta = is_offset ? value : value - self.currentMonth;
         if ((delta < 0 && self._hidePrevMonthArrow) ||
@@ -19560,54 +19629,14 @@ function FlatpickrInstance(element, instanceConfig) {
             self.currentMonth = (self.currentMonth + 12) % 12;
             triggerEvent("onYearChange");
         }
-        buildDays(animate ? delta : undefined);
-        if (!animate) {
-            triggerEvent("onMonthChange");
-            return updateNavigationCurrentMonth();
-        }
-        var nav = self.navigationCurrentMonth;
-        if (delta < 0) {
-            while (nav.nextSibling &&
-                /curr/.test(nav.nextSibling.className))
-                self.monthNav.removeChild(nav.nextSibling);
-        }
-        else if (delta > 0) {
-            while (nav.previousSibling &&
-                /curr/.test(nav.previousSibling.className))
-                self.monthNav.removeChild(nav.previousSibling);
-        }
-        self.oldCurMonth = self.navigationCurrentMonth;
-        self.navigationCurrentMonth = self.monthNav.insertBefore(self.oldCurMonth.cloneNode(true), delta > 0 ? self.oldCurMonth.nextSibling : self.oldCurMonth);
-        var daysContainer = self.daysContainer;
-        if (daysContainer.firstChild && daysContainer.lastChild) {
-            if (delta > 0) {
-                daysContainer.firstChild.classList.add("slideLeft");
-                daysContainer.lastChild.classList.add("slideLeftNew");
-                self.oldCurMonth.classList.add("slideLeft");
-                self.navigationCurrentMonth.classList.add("slideLeftNew");
-            }
-            else if (delta < 0) {
-                daysContainer.firstChild.classList.add("slideRightNew");
-                daysContainer.lastChild.classList.add("slideRight");
-                self.oldCurMonth.classList.add("slideRight");
-                self.navigationCurrentMonth.classList.add("slideRightNew");
-            }
-        }
-        self.currentMonthElement = self.navigationCurrentMonth
-            .firstChild;
-        self.currentYearElement = self.navigationCurrentMonth.lastChild
-            .childNodes[0];
+        buildDays();
+        triggerEvent("onMonthChange");
         updateNavigationCurrentMonth();
-        if (self.oldCurMonth.firstChild)
-            self.oldCurMonth.firstChild.textContent = monthToStr(self.currentMonth - delta, self.config.shorthandCurrentMonth, self.l10n);
-        afterDayAnim(function () { return triggerEvent("onMonthChange"); });
         if (from_keyboard &&
             document.activeElement &&
             document.activeElement.$i) {
-            var index_1 = document.activeElement.$i;
-            afterDayAnim(function () {
-                focusOnDay(index_1, 0);
-            });
+            var index = document.activeElement.$i;
+            focusOnDay(index, 0);
         }
     }
     function clear(triggerChangeEvent) {
@@ -19841,7 +19870,7 @@ function FlatpickrInstance(element, instanceConfig) {
                             if (!e.ctrlKey)
                                 focusOnDay(e.target.$i, delta_1);
                             else
-                                changeMonth(delta_1, true, undefined, true);
+                                changeMonth(delta_1, true, true);
                         }
                     }
                     else if (self.hourElement)
@@ -20173,10 +20202,13 @@ function FlatpickrInstance(element, instanceConfig) {
     }
     function focusAndClose() {
         self._input.focus();
-        if (window.navigator.userAgent.indexOf("MSIE") === -1)
-            self.close();
-        else
+        if (window.navigator.userAgent.indexOf("MSIE") !== -1 ||
+            navigator.msMaxTouchPoints !== undefined) {
             setTimeout(self.close, 0);
+        }
+        else {
+            self.close();
+        }
     }
     function selectDate(e) {
         e.preventDefault();
@@ -20249,7 +20281,7 @@ function FlatpickrInstance(element, instanceConfig) {
         if (!shouldChangeMonth)
             focusOnDay(target.$i, 0);
         else
-            afterDayAnim(function () { return self.selectedDateElem && self.selectedDateElem.focus(); });
+            self.selectedDateElem && self.selectedDateElem.focus();
         if (self.hourElement !== undefined)
             setTimeout(function () { return self.hourElement !== undefined && self.hourElement.select(); }, 451);
         if (self.config.closeOnSelect) {
@@ -20305,7 +20337,8 @@ function FlatpickrInstance(element, instanceConfig) {
         else
             self.config.errorHandler(new Error("Invalid date supplied: " + JSON.stringify(inputDate)));
         self.selectedDates = dates.filter(function (d) { return d instanceof Date && isEnabled(d, false); });
-        self.selectedDates.sort(function (a, b) { return a.getTime() - b.getTime(); });
+        if (self.config.mode === "range")
+            self.selectedDates.sort(function (a, b) { return a.getTime() - b.getTime(); });
     }
     function setDate(date, triggerChange, format) {
         if (triggerChange === void 0) { triggerChange = false; }
@@ -20403,6 +20436,7 @@ function FlatpickrInstance(element, instanceConfig) {
             self.altInput.placeholder = self.input.placeholder;
             self.altInput.disabled = self.input.disabled;
             self.altInput.required = self.input.required;
+            self.altInput.tabIndex = self.input.tabIndex;
             self.altInput.type = "text";
             self.input.type = "hidden";
             if (!self.config.static && self.input.parentNode)
@@ -20523,33 +20557,22 @@ function FlatpickrInstance(element, instanceConfig) {
         if (triggerChange !== false)
             triggerEvent("onValueUpdate");
     }
-    function onMonthNavScroll(e) {
-        e.preventDefault();
-        var isYear = self.currentYearElement.parentNode &&
-            self.currentYearElement.parentNode.contains(e.target);
-        if (e.target === self.currentMonthElement || isYear) {
-            var delta = mouseDelta(e);
-            if (isYear) {
-                changeYear(self.currentYear + delta);
-                e.target.value = self.currentYear.toString();
-            }
-            else
-                self.changeMonth(delta, true, false);
-        }
-    }
     function onMonthNavClick(e) {
+        e.preventDefault();
         var isPrevMonth = self.prevMonthNav.contains(e.target);
         var isNextMonth = self.nextMonthNav.contains(e.target);
-        if (isPrevMonth || isNextMonth)
+        if (isPrevMonth || isNextMonth) {
             changeMonth(isPrevMonth ? -1 : 1);
+        }
         else if (e.target === self.currentYearElement) {
-            e.preventDefault();
             self.currentYearElement.select();
         }
-        else if (e.target.className === "arrowUp")
+        else if (e.target.className === "arrowUp") {
             self.changeYear(self.currentYear + 1);
-        else if (e.target.className === "arrowDown")
+        }
+        else if (e.target.className === "arrowDown") {
             self.changeYear(self.currentYear - 1);
+        }
     }
     function timeWrapper(e) {
         e.preventDefault();
@@ -20559,9 +20582,7 @@ function FlatpickrInstance(element, instanceConfig) {
                 self.l10n.amPM[int(self.amPM.textContent === self.l10n.amPM[0])];
         }
         var min = parseFloat(input.getAttribute("data-min")), max = parseFloat(input.getAttribute("data-max")), step = parseFloat(input.getAttribute("data-step")), curValue = parseInt(input.value, 10), delta = e.delta ||
-            (isKeyDown
-                ? e.which === 38 ? 1 : -1
-                : Math.max(-1, Math.min(1, e.wheelDelta || -e.deltaY)) || 0);
+            (isKeyDown ? (e.which === 38 ? 1 : -1) : 0);
         var newValue = curValue + step * delta;
         if (typeof input.value !== "undefined" && input.value.length === 2) {
             var isHourElem = input === self.hourElement, isMinuteElem = input === self.minuteElement;
@@ -20657,7 +20678,7 @@ Date.prototype.fp_incr = function (days) {
 };
 var flatpickr$1 = flatpickr;
 
-exports['default'] = flatpickr$1;
+exports.default = flatpickr$1;
 
 Object.defineProperty(exports, '__esModule', { value: true });
 

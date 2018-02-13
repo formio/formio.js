@@ -790,11 +790,7 @@ export default class FormioForm extends FormioComponents {
   build() {
     this.on('submitButton', () => this.submit(), true);
     this.addComponents();
-    const submission = this.getValue();
-    this.checkConditions(submission);
-    this.checkData(submission.data, {
-      noValidate: true
-    });
+    this.checkConditions(this.getValue());
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
   }
 

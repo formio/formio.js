@@ -46,6 +46,11 @@ export class FileComponent extends BaseComponent {
     this.refreshDOM();
   }
 
+  get defaultValue() {
+    const value = super.defaultValue;
+    return Array.isArray(value) ? value : [];
+  }
+
   build() {
     // Set default to empty array.
     this.setValue([]);
@@ -310,7 +315,7 @@ export class FileComponent extends BaseComponent {
           this.ce('i', {
             class: this.iconClass('remove'),
             onClick: () => {
-              this.uploadStatusList.removeChild(container);
+              this.removeChildFrom(container, this.uploadStatusList);
             }
           })
         ]),
@@ -482,7 +487,7 @@ export class FileComponent extends BaseComponent {
             this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
           }, this.component.url)
             .then(fileInfo => {
-              this.uploadStatusList.removeChild(uploadStatus);
+              this.removeChildFrom(uploadStatus, this.uploadStatusList);
               fileInfo.originalName = file.name;
               _.get(this.data, this.component.key).push(fileInfo);
               this.refreshDOM();

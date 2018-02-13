@@ -571,3 +571,11 @@ body.formio-dialog-open {
 .editgrid-listgroup {
   margin-bottom: 10px;
 }
+
+.formio-component-submit .has-error {
+  display: none;
+}
+
+.formio-component-submit button[disabled]+.has-error {
+  display: block;
+}

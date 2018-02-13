@@ -536,8 +536,10 @@ export class BaseComponent {
   }
 
   empty(element) {
-    while (element.firstChild) {
-      element.removeChild(element.firstChild);
+    if (element) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
     }
   }
 
@@ -572,16 +574,13 @@ export class BaseComponent {
       dialog.close();
     });
     this.addEventListener(dialog, 'close', () => {
-      document.body.removeChild(dialog);
+      this.removeChildFrom(dialog, document.body);
     });
     document.body.appendChild(dialog);
     dialog.body = modalBody;
     dialog.close = function() {
       dialog.dispatchEvent(new CustomEvent('close'));
-      try {
-        document.body.removeChild(dialog);
-      }
-      catch (err) {}
+      this.removeChildFrom(dialog, document.body);
     };
     return dialog;
   }
@@ -1586,13 +1585,24 @@ export class BaseComponent {
       }
     }
 
-    if (!show && this.component.clearOnHide) {
-      this.clearPending = setTimeout(() => this.setValue(null, {
-        noValidate: true
-      }), 200);
-    }
+    this.clearOnHide(show);
 
     return show;
+  }
+
+  clearOnHide(show) {
+    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+    if (this.component.clearOnHide !== false) {
+      if (!show) {
+        delete this.data[this.component.key];
+      }
+      else {
+        // If shown, ensure the default is set.
+        this.setValue(this.defaultValue, {
+          noUpdateEvent: true
+        });
+      }
+    }
   }
 
   onResize() {}
@@ -1940,12 +1950,7 @@ export class BaseComponent {
   setCustomValidity(message, dirty) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
-      try {
-        this.errorContainer.removeChild(this.errorElement);
-      }
-      catch (err) {
-        // ingnore
-      }
+      this.removeChildFrom(this.errorElement, this.errorContainer);
     }
     this.removeClass(this.element, 'has-error');
     this.inputs.forEach((input) => this.removeClass(input, 'is-invalid'));
@@ -2077,10 +2082,10 @@ export class BaseComponent {
     }
     if (element.loader) {
       if (loading) {
-        element.appendChild(element.loader);
+        this.appendTo(element.loader, element);
       }
-      else if (element.contains(element.loader)) {
-        element.removeChild(element.loader);
+      else {
+        this.removeChildFrom(element.loader, element);
       }
     }
   }
@@ -2119,35 +2124,53 @@ export class BaseComponent {
 
   clear() {
     this.destroy();
-    const element = this.getElement();
-    if (element) {
-      while (element.lastChild) {
-        element.removeChild(element.lastChild);
-      }
+    this.empty(this.getElement());
+  }
+
+  appendTo(element, container) {
+    if (container) {
+      container.appendChild(element);
     }
   }
 
   append(element) {
-    if (this.element) {
-      this.element.appendChild(element);
+    this.appendTo(element, this.element);
+  }
+
+  prependTo(element, container) {
+    if (container) {
+      if (container.firstChild) {
+        try {
+          container.insertBefore(element, container.firstChild);
+        }
+        catch (err) {
+          console.warn(err);
+          container.appendChild(element);
+        }
+      }
+      else {
+        container.appendChild(element);
+      }
     }
   }
 
   prepend(element) {
-    if (this.element) {
-      if (this.element.firstChild) {
-        this.element.insertBefore(element, this.element.firstChild);
+    this.prependTo(element, this.element);
+  }
+
+  removeChildFrom(element, container) {
+    if (container && container.contains(element)) {
+      try {
+        container.removeChild(element);
       }
-      else {
-        this.element.appendChild(element);
+      catch (err) {
+        console.warn(err);
       }
     }
   }
 
   removeChild(element) {
-    if (this.element) {
-      this.element.removeChild(element);
-    }
+    this.removeChildFrom(element, this.element);
   }
 
   /**

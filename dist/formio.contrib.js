@@ -869,13 +869,17 @@ var BaseComponent = function () {
   }, {
     key: 'empty',
     value: function empty(element) {
-      while (element.firstChild) {
-        element.removeChild(element.firstChild);
+      if (element) {
+        while (element.firstChild) {
+          element.removeChild(element.firstChild);
+        }
       }
     }
   }, {
     key: 'createModal',
     value: function createModal(title) {
+      var _this = this;
+
       var modalBody = this.ce('div');
       var modalOverlay = this.ce('div', {
         class: 'formio-dialog-overlay'
@@ -900,15 +904,13 @@ var BaseComponent = function () {
         dialog.close();
       });
       this.addEventListener(dialog, 'close', function () {
-        document.body.removeChild(dialog);
+        _this.removeChildFrom(dialog, document.body);
       });
       document.body.appendChild(dialog);
       dialog.body = modalBody;
       dialog.close = function () {
         dialog.dispatchEvent(new CustomEvent('close'));
-        try {
-          document.body.removeChild(dialog);
-        } catch (err) {}
+        this.removeChildFrom(dialog, document.body);
       };
       return dialog;
     }
@@ -1052,7 +1054,7 @@ var BaseComponent = function () {
   }, {
     key: 'buildRows',
     value: function buildRows() {
-      var _this = this;
+      var _this2 = this;
 
       if (!this.tbody) {
         return;
@@ -1060,19 +1062,19 @@ var BaseComponent = function () {
       this.inputs = [];
       this.tbody.innerHTML = '';
       _lodash2.default.each(_lodash2.default.get(this.data, this.component.key), function (value, index) {
-        var tr = _this.ce('tr');
-        var td = _this.ce('td');
-        var input = _this.createInput(td);
+        var tr = _this2.ce('tr');
+        var td = _this2.ce('td');
+        var input = _this2.createInput(td);
         input.value = value;
         tr.appendChild(td);
 
-        if (!_this.shouldDisable) {
-          var tdAdd = _this.ce('td');
-          tdAdd.appendChild(_this.removeButton(index));
+        if (!_this2.shouldDisable) {
+          var tdAdd = _this2.ce('td');
+          tdAdd.appendChild(_this2.removeButton(index));
           tr.appendChild(tdAdd);
         }
 
-        _this.tbody.appendChild(tr);
+        _this2.tbody.appendChild(tr);
       });
 
       if (!this.shouldDisable) {
@@ -1122,14 +1124,14 @@ var BaseComponent = function () {
   }, {
     key: 'addButton',
     value: function addButton(justIcon) {
-      var _this2 = this;
+      var _this3 = this;
 
       var addButton = this.ce('a', {
         class: 'btn btn-primary'
       });
       this.addEventListener(addButton, 'click', function (event) {
         event.preventDefault();
-        _this2.addValue();
+        _this3.addValue();
       });
 
       var addIcon = this.ce('i', {
@@ -1172,7 +1174,7 @@ var BaseComponent = function () {
   }, {
     key: 'removeButton',
     value: function removeButton(index) {
-      var _this3 = this;
+      var _this4 = this;
 
       var removeButton = this.ce('button', {
         type: 'button',
@@ -1182,7 +1184,7 @@ var BaseComponent = function () {
 
       this.addEventListener(removeButton, 'click', function (event) {
         event.preventDefault();
-        _this3.removeValue(index);
+        _this4.removeValue(index);
       });
 
       var removeIcon = this.ce('i', {
@@ -1589,7 +1591,7 @@ var BaseComponent = function () {
   }, {
     key: 'destroy',
     value: function destroy(all) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (this.inputMask) {
         this.inputMask.destroy();
@@ -1597,7 +1599,7 @@ var BaseComponent = function () {
       if (this.events) {
         _lodash2.default.each(this.eventListeners, function (listener) {
           if (all || listener.internal) {
-            _this4.events.off(listener.type, listener.listener);
+            _this5.events.off(listener.type, listener.listener);
           }
         });
       }
@@ -1650,11 +1652,11 @@ var BaseComponent = function () {
   }, {
     key: 'appendChild',
     value: function appendChild(element, child) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (Array.isArray(child)) {
         child.forEach(function (oneChild) {
-          _this5.appendChild(element, oneChild);
+          _this6.appendChild(element, oneChild);
         });
       } else if (child instanceof HTMLElement || child instanceof Text) {
         element.appendChild(child);
@@ -1713,13 +1715,13 @@ var BaseComponent = function () {
   }, {
     key: 'attr',
     value: function attr(element, _attr) {
-      var _this6 = this;
+      var _this7 = this;
 
       _lodash2.default.each(_attr, function (value, key) {
         if (typeof value !== 'undefined') {
           if (key.indexOf('on') === 0) {
             // If this is an event, add a listener.
-            _this6.addEventListener(element, key.substr(2).toLowerCase(), value);
+            _this7.addEventListener(element, key.substr(2).toLowerCase(), value);
           } else {
             // Otherwise it is just an attribute.
             element.setAttribute(key, value);
@@ -1829,7 +1831,7 @@ var BaseComponent = function () {
   }, {
     key: 'fieldLogic',
     value: function fieldLogic(data) {
-      var _this7 = this;
+      var _this8 = this;
 
       var logics = this.component.logic || [];
 
@@ -1841,19 +1843,19 @@ var BaseComponent = function () {
       var newComponent = _lodash2.default.cloneDeep(this.originalComponent);
 
       var changed = logics.reduce(function (changed, logic) {
-        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this7.data, data);
+        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this8.data, data);
 
         if (result) {
           changed |= logic.actions.reduce(function (changed, action) {
             switch (action.type) {
               case 'property':
-                _utils2.default.setActionProperty(newComponent, action, _this7.data, data, newComponent, result);
+                _utils2.default.setActionProperty(newComponent, action, _this8.data, data, newComponent, result);
                 break;
               case 'value':
                 {
-                  var newValue = new Function('row', 'data', 'component', 'result', action.value)(_this7.data, data, newComponent, result);
-                  if (!_lodash2.default.isEqual(_this7.getValue(), newValue)) {
-                    _this7.setValue(newValue);
+                  var newValue = new Function('row', 'data', 'component', 'result', action.value)(_this8.data, data, newComponent, result);
+                  if (!_lodash2.default.isEqual(_this8.getValue(), newValue)) {
+                    _this8.setValue(newValue);
                     changed = true;
                   }
                   break;
@@ -1887,7 +1889,7 @@ var BaseComponent = function () {
   }, {
     key: 'addInputError',
     value: function addInputError(message, dirty) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (!message) {
         return;
@@ -1904,7 +1906,7 @@ var BaseComponent = function () {
       // Add error classes
       this.addClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
-        return _this8.addClass(input, 'is-invalid');
+        return _this9.addClass(input, 'is-invalid');
       });
       if (dirty && this.options.highlightErrors) {
         this.addClass(this.element, 'alert alert-danger');
@@ -1920,8 +1922,6 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      var _this9 = this;
-
       // Ensure we stop any pending data clears.
       if (this.clearPending) {
         clearTimeout(this.clearPending);
@@ -1947,15 +1947,24 @@ var BaseComponent = function () {
         }
       }
 
-      if (!_show && this.component.clearOnHide) {
-        this.clearPending = setTimeout(function () {
-          return _this9.setValue(null, {
-            noValidate: true
-          });
-        }, 200);
-      }
+      this.clearOnHide(_show);
 
       return _show;
+    }
+  }, {
+    key: 'clearOnHide',
+    value: function clearOnHide(show) {
+      // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+      if (this.component.clearOnHide !== false) {
+        if (!show) {
+          delete this.data[this.component.key];
+        } else {
+          // If shown, ensure the default is set.
+          this.setValue(this.defaultValue, {
+            noUpdateEvent: true
+          });
+        }
+      }
     }
   }, {
     key: 'onResize',
@@ -2314,11 +2323,7 @@ var BaseComponent = function () {
 
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
-        try {
-          this.errorContainer.removeChild(this.errorElement);
-        } catch (err) {
-          // ingnore
-        }
+        this.removeChildFrom(this.errorElement, this.errorContainer);
       }
       this.removeClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
@@ -2444,9 +2449,9 @@ var BaseComponent = function () {
       }
       if (element.loader) {
         if (loading) {
-          element.appendChild(element.loader);
-        } else if (element.contains(element.loader)) {
-          element.removeChild(element.loader);
+          this.appendTo(element.loader, element);
+        } else {
+          this.removeChildFrom(element.loader, element);
         }
       }
     }
@@ -2489,37 +2494,56 @@ var BaseComponent = function () {
     key: 'clear',
     value: function clear() {
       this.destroy();
-      var element = this.getElement();
-      if (element) {
-        while (element.lastChild) {
-          element.removeChild(element.lastChild);
-        }
+      this.empty(this.getElement());
+    }
+  }, {
+    key: 'appendTo',
+    value: function appendTo(element, container) {
+      if (container) {
+        container.appendChild(element);
       }
     }
   }, {
     key: 'append',
     value: function append(element) {
-      if (this.element) {
-        this.element.appendChild(element);
+      this.appendTo(element, this.element);
+    }
+  }, {
+    key: 'prependTo',
+    value: function prependTo(element, container) {
+      if (container) {
+        if (container.firstChild) {
+          try {
+            container.insertBefore(element, container.firstChild);
+          } catch (err) {
+            console.warn(err);
+            container.appendChild(element);
+          }
+        } else {
+          container.appendChild(element);
+        }
       }
     }
   }, {
     key: 'prepend',
     value: function prepend(element) {
-      if (this.element) {
-        if (this.element.firstChild) {
-          this.element.insertBefore(element, this.element.firstChild);
-        } else {
-          this.element.appendChild(element);
+      this.prependTo(element, this.element);
+    }
+  }, {
+    key: 'removeChildFrom',
+    value: function removeChildFrom(element, container) {
+      if (container && container.contains(element)) {
+        try {
+          container.removeChild(element);
+        } catch (err) {
+          console.warn(err);
         }
       }
     }
   }, {
     key: 'removeChild',
     value: function removeChild(element) {
-      if (this.element) {
-        this.element.removeChild(element);
-      }
+      this.removeChildFrom(element, this.element);
     }
 
     /**
@@ -2971,6 +2995,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
 
       this.clicked = false;
+      this.hasError = false;
       this.createElement();
       this.createInput(this.element);
       this.addShortcut(this.buttonElement);
@@ -2980,6 +3005,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }));
         this.buttonElement.appendChild(this.text('\xA0'));
       }
+
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
         this.buttonElement.appendChild(this.labelElement);
@@ -2992,6 +3018,15 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }));
       }
       if (this.component.action === 'submit') {
+        var errorContainer = this.ce('div', {
+          class: 'has-error'
+        });
+        var error = this.ce('span', {
+          class: 'help-block'
+        });
+        error.appendChild(this.text('Please correct all errors before submitting.'));
+        errorContainer.appendChild(error);
+
         this.on('submitButton', function () {
           _this2.loading = true;
           _this2.disabled = true;
@@ -3002,10 +3037,17 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }, true);
         this.on('change', function (value) {
           _this2.loading = false;
-          _this2.disabled = _this2.component.disableOnInvalid && !_this2.root.isValid(value.data, true);
+          var isValid = _this2.root.isValid(value.data, true);
+          _this2.disabled = _this2.component.disableOnInvalid && !isValid;
+          if (isValid && _this2.hasError) {
+            _this2.hasError = false;
+            _this2.removeChild(errorContainer);
+          }
         }, true);
         this.on('error', function () {
           _this2.loading = false;
+          _this2.hasError = true;
+          _this2.append(errorContainer);
         }, true);
       }
 
@@ -3194,6 +3236,11 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     set: function set(disabled) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
       this.setDisabled(this.buttonElement, disabled);
+    }
+  }, {
+    key: 'defaultValue',
+    get: function get() {
+      return false;
     }
   }, {
     key: 'className',

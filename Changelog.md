@@ -4,9 +4,20 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 2.29.1
 ### Added
  - 'Delimiter' property to Number component.
+ - Error message below submit button.
+ - WYSIWYG spellcheck option for the Quill editor.
+
+### Fixed
+ - Issues with clearOnHide
+ - Fixed radio button wrapping issue
+ - Problems with the wysiwyg editor clearing values within a datagrid.
+
+### Changed
+ - Cleanup and performance improvements on how conditions are checked and evaluated.
+ - Upgrade flatpickr to version 4.3.2
 
 ## 2.29.0
 ### Added

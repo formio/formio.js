@@ -44,8 +44,8 @@ export class DataGridComponent extends FormioComponents {
     // Destroy so that it will remove all existing components and clear handlers.
     this.destroy();
 
-    if (this.tableElement && this.tableElement.parentNode) {
-      this.element.removeChild(this.tableElement);
+    if (this.tableElement) {
+      this.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';
     }
 
@@ -123,7 +123,8 @@ export class DataGridComponent extends FormioComponents {
   }
 
   get defaultValue() {
-    return {};
+    const value = super.defaultValue;
+    return typeof value === 'object' ? value : {};
   }
 
   buildRows(data) {
@@ -143,7 +144,7 @@ export class DataGridComponent extends FormioComponents {
     });
     // Remove any extra rows.
     for (let rowIndex = this.tableRows.length; rowIndex > _.get(this.data, this.component.key).length; rowIndex--) {
-      this.tbody.removeChild(this.tableRows[rowIndex - 1]);
+      this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
       this.tableRows.splice(rowIndex - 1, 1);
     }
   }
@@ -214,6 +215,10 @@ export class DataGridComponent extends FormioComponents {
 
   checkConditions(data) {
     let show = super.checkConditions(data);
+    // If table isn't visible, don't bother calculating columns.
+    if (!show) {
+      return false;
+    }
     let rebuild = false;
     if (this.visibleColumns === true) {
       this.visibleColumns = {};
@@ -235,7 +240,7 @@ export class DataGridComponent extends FormioComponents {
     });
 
     // If a rebuild is needed, then rebuild the table.
-    if (rebuild && show) {
+    if (rebuild) {
       this.buildTable();
     }
 
@@ -249,7 +254,12 @@ export class DataGridComponent extends FormioComponents {
       return;
     }
     if (!Array.isArray(value)) {
-      return;
+      if (typeof value === 'object') {
+        value = [value];
+      }
+      else {
+        return;
+      }
     }
 
     _.set(this.data, this.component.key, value);
@@ -264,6 +274,10 @@ export class DataGridComponent extends FormioComponents {
         }
         else if (value[index].hasOwnProperty(key)) {
           col.setValue(value[index][key], flags);
+        }
+        else {
+          col.data = value[index];
+          col.setValue(col.defaultValue, flags);
         }
       });
     });
