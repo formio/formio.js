@@ -194,6 +194,14 @@ export let BaseEditDisplay = [
     input: true
   },
   {
+    weight: 1450,
+    type: 'checkbox',
+    label: 'Initial Focus',
+    tooltip: 'Make this field the initially focused element on this form.',
+    key: 'autofocus',
+    input: true
+  },
+  {
     weight: 1500,
     type: 'checkbox',
     label: 'Table View',

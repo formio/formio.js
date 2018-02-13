@@ -4434,10 +4434,25 @@ var BaseEditData = exports.BaseEditData = [{
   type: 'textfield',
   label: 'Default Value',
   key: 'defaultValue',
+  weight: 100,
   placeholder: 'Default Value',
   tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
   input: true
-}, _utils.EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue'), _utils.EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue')];
+}, _utils.EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue'), _utils.EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue'), {
+  weight: 400,
+  type: 'checkbox',
+  label: 'Encrypt',
+  tooltip: 'Encrypt this field on the server. This is two way encryption which is not be suitable for passwords.',
+  key: 'autofocus',
+  input: true
+}, {
+  type: 'checkbox',
+  input: true,
+  weight: 500,
+  key: 'dbIndex',
+  label: 'Database Index',
+  tooltip: 'Set this field as an index within the database. Increases performance for submission queries.'
+}];
 
 },{"./utils":14}],11:[function(require,module,exports){
 'use strict';
@@ -4607,6 +4622,13 @@ var BaseEditDisplay = exports.BaseEditDisplay = [{
   label: 'Disabled',
   tooltip: 'Disable the form input.',
   key: 'disabled',
+  input: true
+}, {
+  weight: 1450,
+  type: 'checkbox',
+  label: 'Initial Focus',
+  tooltip: 'Make this field the initially focused element on this form.',
+  key: 'autofocus',
   input: true
 }, {
   weight: 1500,
@@ -11570,6 +11592,68 @@ module.exports = function () {
           rows: 3,
           weight: 18,
           tooltip: 'The HTML template for the result data items.'
+        }, {
+          type: 'select',
+          input: true,
+          key: 'refreshOn',
+          label: 'Refresh On',
+          weight: 19,
+          tooltip: 'Refresh data when another field changes.',
+          dataSrc: 'custom',
+          data: {
+            custom: '\n                    values.push({label: \'Any Change\', key: \'data\'});\n                    utils.eachComponent(data.__form.components, function(component, path) {\n                      if (component.key !== data.key) {\n                        values.push({\n                          label: component.label || component.key,\n                          value: path\n                        });\n                      }\n                    });\n                  '
+          },
+          conditional: {
+            json: {
+              and: [{ '!==': [{ var: 'data.dataSrc' }, 'values'] }, { '!==': [{ var: 'data.dataSrc' }, 'json'] }]
+            }
+          }
+        }, {
+          type: 'checkbox',
+          input: true,
+          weight: 20,
+          key: 'clearOnRefresh',
+          label: 'Clear Value On Refresh',
+          tooltip: 'When the Refresh On field is changed, clear the selected value.',
+          conditional: {
+            json: {
+              or: [{ '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'custom'] }]
+            }
+          }
+        }, {
+          type: 'checkbox',
+          input: true,
+          weight: 21,
+          key: 'reference',
+          label: 'Save as reference',
+          tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
+          }
+        }, {
+          type: 'checkbox',
+          input: true,
+          weight: 21,
+          key: 'authenticate',
+          label: 'Formio Authenticate',
+          tooltip: 'Check this if you would like to use Formio Authentication with the request.',
+          conditional: {
+            json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+          }
+        }]
+      }, {
+        label: 'Validation',
+        key: 'validation',
+        components: [{
+          weight: 50,
+          type: 'checkbox',
+          label: 'Perform server validation',
+          tooltip: 'Check this if you would like for the server to perform a validation check to ensure the selected value is an available option. This requires a Search query to ensure a record is found.',
+          key: 'validate.select',
+          input: true,
+          conditional: {
+            json: { var: 'data.searchField' }
+          }
         }]
       }]
     }]
@@ -14018,6 +14102,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'setValue', this).call(this, this.setConvertedValue(value), flags);
       }
 
+      // Set the value when the editor is ready.
       this.editorReady.then(function (editor) {
         if (_this3.component.editor === 'ace') {
           editor.setValue(_this3.setConvertedValue(value));

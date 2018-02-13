@@ -288,6 +288,92 @@ module.exports = function(...extend) {
                 rows: 3,
                 weight: 18,
                 tooltip: 'The HTML template for the result data items.'
+              },
+              {
+                type: 'select',
+                input: true,
+                key: 'refreshOn',
+                label: 'Refresh On',
+                weight: 19,
+                tooltip: 'Refresh data when another field changes.',
+                dataSrc: 'custom',
+                data: {
+                  custom: `
+                    values.push({label: 'Any Change', key: 'data'});
+                    utils.eachComponent(data.__form.components, function(component, path) {
+                      if (component.key !== data.key) {
+                        values.push({
+                          label: component.label || component.key,
+                          value: path
+                        });
+                      }
+                    });
+                  `
+                },
+                conditional: {
+                  json: {
+                    and: [
+                      {'!==': [{var: 'data.dataSrc'}, 'values']},
+                      {'!==': [{var: 'data.dataSrc'}, 'json']}
+                    ]
+                  }
+                }
+              },
+              {
+                type: 'checkbox',
+                input: true,
+                weight: 20,
+                key: 'clearOnRefresh',
+                label: 'Clear Value On Refresh',
+                tooltip: 'When the Refresh On field is changed, clear the selected value.',
+                conditional: {
+                  json: {
+                    or: [
+                      {'===': [{var: 'data.dataSrc'}, 'resource']},
+                      {'===': [{var: 'data.dataSrc'}, 'url']},
+                      {'===': [{var: 'data.dataSrc'}, 'custom']}
+                    ]
+                  }
+                }
+              },
+              {
+                type: 'checkbox',
+                input: true,
+                weight: 21,
+                key: 'reference',
+                label: 'Save as reference',
+                tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
+                conditional: {
+                  json: {'===': [{var: 'data.dataSrc'}, 'resource']}
+                }
+              },
+              {
+                type: 'checkbox',
+                input: true,
+                weight: 21,
+                key: 'authenticate',
+                label: 'Formio Authenticate',
+                tooltip: 'Check this if you would like to use Formio Authentication with the request.',
+                conditional: {
+                  json: {'===': [{var: 'data.dataSrc'}, 'url']}
+                }
+              }
+            ]
+          },
+          {
+            label: 'Validation',
+            key: 'validation',
+            components: [
+              {
+                weight: 50,
+                type: 'checkbox',
+                label: 'Perform server validation',
+                tooltip: 'Check this if you would like for the server to perform a validation check to ensure the selected value is an available option. This requires a Search query to ensure a record is found.',
+                key: 'validate.select',
+                input: true,
+                conditional: {
+                  json: {var: 'data.searchField'}
+                }
               }
             ]
           }

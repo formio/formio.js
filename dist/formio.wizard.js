@@ -12301,6 +12301,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'setValue', this).call(this, this.setConvertedValue(value), flags);
       }
 
+      // Set the value when the editor is ready.
       this.editorReady.then(function (editor) {
         if (_this3.component.editor === 'ace') {
           editor.setValue(_this3.setConvertedValue(value));
