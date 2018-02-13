@@ -54,7 +54,6 @@ export class SelectBoxesComponent extends RadioComponent {
   setValue(value, flags) {
     value = value || {};
     flags = this.getFlags.apply(this, arguments);
-    this.data[this.component.key] = value;
     if (Array.isArray(value)) {
       _.each(value, (val) => {
         value[val] = true;

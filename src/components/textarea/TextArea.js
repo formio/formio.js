@@ -118,7 +118,6 @@ export class TextAreaComponent extends TextFieldComponent {
       return super.setValue(value, flags);
     }
 
-    this.data[this.component.key] = value;
     this.quillReady.then((quill) => {
       quill.clipboard.dangerouslyPasteHTML(value);
       this.updateValue(flags);
