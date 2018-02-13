@@ -1,4 +1,6 @@
 const BaseEditForm = require('../base/Base.form');
+import { BuilderUtils } from '../../utils/builder';
+
 module.exports = function(...extend) {
   return BaseEditForm({
     components: [
@@ -27,6 +29,20 @@ module.exports = function(...extend) {
                     {label: 'Right', value: 'right'},
                     {label: 'Bottom', value: 'bottom'}
                   ]
+                }
+              },
+              {
+                type: 'select',
+                input: true,
+                weight: 350,
+                label: 'Shortcut',
+                key: 'shortcut',
+                tooltip: 'Shortcut for this component.',
+                dataSrc: 'custom',
+                data: {
+                  custom: (component, data) => {
+                    return BuilderUtils.getAvailableShortcuts(data.__form, component.component);
+                  }
                 }
               },
               {

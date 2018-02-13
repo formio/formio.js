@@ -1,13 +1,5 @@
 const BaseEditForm = require('../base/Base.form');
-import _range from 'lodash/range';
-
-const shortcuts = _range('A'.charCodeAt(), 'Z'.charCodeAt() + 1).map(function(charCode) {
-  let char = String.fromCharCode(charCode);
-  return {label: char, value: char};
-}).concat([
-  {label: 'Enter', value: 'Enter'},
-  {label: 'Esc', value: 'Esc'}
-]);
+import { BuilderUtils } from "../../utils/builder";
 
 module.exports = function(...extend) {
   return BaseEditForm({
@@ -160,14 +152,16 @@ module.exports = function(...extend) {
               },
               {
                 type: 'select',
-                key: 'shortcut',
-                label: 'Shortcut',
-                tooltip: 'Shortcut for this component.',
                 input: true,
-                dataSrc: 'values',
                 weight: 180,
+                label: 'Shortcut',
+                key: 'shortcut',
+                tooltip: 'Shortcut for this component.',
+                dataSrc: 'custom',
                 data: {
-                  values: shortcuts
+                  custom: (component, data) => {
+                    return BuilderUtils.getAvailableShortcuts(data.__form, component.component);
+                  }
                 }
               },
               {

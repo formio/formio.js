@@ -2,8 +2,7 @@ import FormioForm from './formio.form';
 import dragula from 'dragula';
 import Components from './components/builder';
 import {FormioComponents} from './components/Components';
-import Promise from 'native-promise-only';
-import FormioUtils from './utils';
+import { BuilderUtils } from './utils/builder';
 import _ from 'lodash';
 
 export class FormioFormBuilder extends FormioForm {
@@ -126,7 +125,7 @@ export class FormioFormBuilder extends FormioForm {
       }
 
       // Set a unique key for this component.
-      FormioUtils.uniquify(this._form, component.component, isNew);
+      BuilderUtils.uniquify(this._form, component.component, isNew);
     }
 
     // Set the full form on the component.

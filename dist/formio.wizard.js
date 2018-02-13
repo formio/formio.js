@@ -17072,53 +17072,6 @@ var FormioUtils = {
     }, true);
 
     return existingComponents;
-  },
-
-  /**
-   * Iterate the given key to make it unique.
-   *
-   * @param {String} key
-   *   Modify the component key to be unique.
-   *
-   * @returns {String}
-   *   The new component key.
-   */
-  iterateKey: function iterateKey(key) {
-    if (!key.match(/(\d+)$/)) {
-      return key + '2';
-    }
-
-    return key.replace(/(\d+)$/, function (suffix) {
-      return Number(suffix) + 1;
-    });
-  },
-
-  /**
-   * Appends a number to a component.key to keep it unique
-   *
-   * @param {Object} form
-   *   The components parent form.
-   * @param {Object} component
-   *   The component to uniquify
-   */
-  uniquify: function uniquify(form, component) {
-    var _this = this;
-
-    var changed = false;
-    // Recurse into all child components.
-    FormioUtils.eachComponent([component], function (component) {
-      // Skip key uniquification if this component doesn't have a key.
-      if (!component.key) {
-        return;
-      }
-
-      var memoization = FormioUtils.findExistingComponents(form.components, component);
-      while (memoization.hasOwnProperty(component.key)) {
-        component.key = _this.iterateKey(component.key);
-        changed = true;
-      }
-    }, true);
-    return changed;
   }
 };
 
