@@ -263,7 +263,7 @@ export class FormioComponents extends BaseComponent {
       }
     });
 
-    super.checkConditions(data);
+    return super.checkConditions(data);
   }
 
   clearOnHide(show) {
