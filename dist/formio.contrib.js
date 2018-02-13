@@ -1736,8 +1736,6 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      var _this9 = this;
-
       // Ensure we stop any pending data clears.
       if (this.clearPending) {
         clearTimeout(this.clearPending);
@@ -1763,15 +1761,24 @@ var BaseComponent = function () {
         }
       }
 
-      if (!_show && this.component.clearOnHide) {
-        this.clearPending = setTimeout(function () {
-          return _this9.setValue(null, {
-            noValidate: true
-          });
-        }, 200);
-      }
+      this.clearOnHide(_show);
 
       return _show;
+    }
+  }, {
+    key: 'clearOnHide',
+    value: function clearOnHide(show) {
+      // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+      if (this.component.clearOnHide !== false) {
+        if (!show) {
+          delete this.data[this.component.key];
+        } else {
+          // If shown, ensure the default is set.
+          this.setValue(this.defaultValue, {
+            noUpdateEvent: true
+          });
+        }
+      }
     }
   }, {
     key: 'onResize',
@@ -1824,7 +1831,7 @@ var BaseComponent = function () {
   }, {
     key: 'addInputSubmitListener',
     value: function addInputSubmitListener(input) {
-      var _this10 = this;
+      var _this9 = this;
 
       if (!this.options.submitOnEnter) {
         return;
@@ -1834,7 +1841,7 @@ var BaseComponent = function () {
         if (key === 13) {
           event.preventDefault();
           event.stopPropagation();
-          _this10.emit('submitButton');
+          _this9.emit('submitButton');
         }
       });
     }
@@ -1848,10 +1855,10 @@ var BaseComponent = function () {
   }, {
     key: 'addInputEventListener',
     value: function addInputEventListener(input) {
-      var _this11 = this;
+      var _this10 = this;
 
       this.addEventListener(input, this.info.changeEvent, function () {
-        return _this11.updateValue({ changed: true });
+        return _this10.updateValue({ changed: true });
       });
     }
 
@@ -2122,7 +2129,7 @@ var BaseComponent = function () {
   }, {
     key: 'setCustomValidity',
     value: function setCustomValidity(message, dirty) {
-      var _this12 = this;
+      var _this11 = this;
 
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
@@ -2134,7 +2141,7 @@ var BaseComponent = function () {
       }
       this.removeClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
-        return _this12.removeClass(input, 'is-invalid');
+        return _this11.removeClass(input, 'is-invalid');
       });
       if (this.options.highlightErrors) {
         this.removeClass(this.element, 'alert alert-danger');
@@ -2265,7 +2272,7 @@ var BaseComponent = function () {
   }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
-      var _this13 = this;
+      var _this12 = this;
 
       _lodash2.default.each(options, function (option) {
         var attrs = {
@@ -2274,8 +2281,8 @@ var BaseComponent = function () {
         if (defaultValue !== undefined && option.value === defaultValue) {
           attrs.selected = 'selected';
         }
-        var optionElement = _this13.ce('option', attrs);
-        optionElement.appendChild(_this13.text(option.label));
+        var optionElement = _this12.ce('option', attrs);
+        optionElement.appendChild(_this12.text(option.label));
         select.appendChild(optionElement);
       });
     }
@@ -2529,7 +2536,7 @@ var BaseComponent = function () {
      */
 
     , set: function set(disabled) {
-      var _this14 = this;
+      var _this13 = this;
 
       // Do not allow a component to be disabled if it should be always...
       if (!disabled && this.shouldDisable) {
@@ -2540,7 +2547,7 @@ var BaseComponent = function () {
 
       // Disable all inputs.
       _lodash2.default.each(this.inputs, function (input) {
-        return _this14.setDisabled(input, disabled);
+        return _this13.setDisabled(input, disabled);
       });
     }
   }]);
@@ -2762,6 +2769,19 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       this.createElement();
       this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
       this.addShortcut(this.button);
+
+      if (this.component.action === 'submit') {
+        var errorContainer = this.ce('div', {
+          class: 'has-error'
+        });
+        var error = this.ce('span', {
+          class: 'help-block'
+        });
+        errorContainer.appendChild(error);
+        error.appendChild(this.text('Please correct all errors before submitting.'));
+        this.element.appendChild(errorContainer);
+      }
+
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
         this.button.appendChild(this.labelElement);
@@ -2970,6 +2990,11 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     set: function set(disabled) {
       _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'disabled', disabled, this);
       this.setDisabled(this.button, disabled);
+    }
+  }, {
+    key: 'defaultValue',
+    get: function get() {
+      return false;
     }
   }, {
     key: 'className',
