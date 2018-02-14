@@ -259,7 +259,7 @@ var Validator = exports.Validator = {
         if (valid === null) {
           return true;
         }
-        return valid.toString().toLowerCase() === 'true';
+        return valid;
       }
     }
   }

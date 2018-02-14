@@ -885,7 +885,7 @@ var Validator = exports.Validator = {
         if (valid === null) {
           return true;
         }
-        return valid.toString().toLowerCase() === 'true';
+        return valid;
       }
     }
   }
@@ -7135,7 +7135,10 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           valid: true,
           row: this.editRows[rowIndex].data,
           data: this.data
-        }, 'valid', true).toString().toLowerCase() === 'true';
+        }, 'valid', true);
+        if (valid === null) {
+          valid = 'Invalid row validation for ' + this.component.key;
+        }
 
         this.editRows[rowIndex].errorContainer.innerHTML = '';
         if (valid !== true) {
