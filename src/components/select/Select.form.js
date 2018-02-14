@@ -151,7 +151,12 @@ module.exports = function(...extend) {
                   url: '/form/{{ data.resource }}'
                 },
                 conditional: {
-                  json: {var: 'data.resource'}
+                  json: {
+                    and: [
+                      {'===': [{var: 'data.dataSrc'}, 'resource']},
+                      {var: 'data.resource'}
+                    ]
+                  }
                 }
               },
               {

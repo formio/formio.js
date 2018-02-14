@@ -191,15 +191,13 @@ export class ButtonComponent extends BaseComponent {
             }
           });
 
-          try {
-            (new Function('form', 'flattened', 'components', '_merge', 'data',
-              this.component.custom.toString()))(form, flattened, components, _.merge, this.data);
-          }
-          catch (e) {
-            /* eslint-disable no-console */
-            console.warn(`An error occurred evaluating custom logic for ${this.key}`, e);
-            /* eslint-enable no-console */
-          }
+          FormioUtils.evaluate(this.component.custom, {
+            form,
+            flattened,
+            components,
+            _,
+            data: this.data
+          });
           break;
         }
         case 'url':

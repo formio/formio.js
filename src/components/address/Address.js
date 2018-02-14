@@ -260,16 +260,14 @@ export class AddressComponent extends TextFieldComponent {
    * @returns {Boolean}
    */
   autoCompleteFilterSuggestion(data) {
-    try {
-      const result = (new Function('data',
-        `var show = true; ${this.component.map.autoCompleteFilter.toString()}; return show;`))(data);
-      return result.toString() === 'true';
-    }
-    catch (e) {
-      console.warn(
-        `An error occurred in a custom autoComplete filter statement for component ${this.component.key}`, e);
+    let result = FormioUtils.evaluate(this.component.map.autoCompleteFilter, {
+      show: true,
+      data
+    }, 'show');
+    if (result === null) {
       return true;
     }
+    return result.toString() === 'true';
   }
 
   /**

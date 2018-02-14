@@ -2,6 +2,14 @@
 (function (global){
 'use strict';
 
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -18,6 +26,16 @@ var _operators = require('./jsonlogic/operators');
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _toConsumableArray(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }return arr2;
+  } else {
+    return Array.from(arr);
+  }
 }
 
 // Configure JsonLogic
@@ -42,6 +60,58 @@ _jsonLogicJs2.default.add_operation('relativeMaxDate', function (relativeMaxDate
 
 var FormioUtils = {
   jsonLogic: _jsonLogicJs2.default, // Share
+
+  /**
+   * Evaluate a method.
+   *
+   * @param func
+   * @param args
+   * @return {*}
+   */
+  evaluate: function evaluate(func, args, ret, tokenize) {
+    var returnVal = null;
+    if (typeof func === 'string') {
+      if (ret) {
+        func += ';return ' + ret;
+      }
+      var params = _lodash2.default.keys(args);
+
+      if (tokenize) {
+        // Replace all {{ }} references with actual data.
+        func = func.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
+          if ($2.indexOf('data.') === 0) {
+            return _lodash2.default.get(args.data, $2.replace('data.', ''));
+          } else if ($2.indexOf('row.') === 0) {
+            return _lodash2.default.get(args.row, $2.replace('row.', ''));
+          }
+
+          // Support legacy...
+          return _lodash2.default.get(args.data, $2);
+        });
+      }
+
+      func = new (Function.prototype.bind.apply(Function, [null].concat(_toConsumableArray(params), [func])))();
+    }
+    if (typeof func === 'function') {
+      var values = _lodash2.default.values(args);
+      try {
+        returnVal = func.apply(undefined, _toConsumableArray(values));
+      } catch (err) {
+        returnVal = null;
+        console.warn('An error occured within custom function for ' + this.component.key, err);
+      }
+    } else if ((typeof func === 'undefined' ? 'undefined' : _typeof(func)) === 'object') {
+      try {
+        returnVal = _jsonLogicJs2.default.apply(func, args);
+      } catch (err) {
+        returnVal = null;
+        console.warn('An error occured within custom function for ' + this.component.key, err);
+      }
+    } else {
+      console.warn('Unknown function type for ' + this.component.key);
+    }
+    return returnVal;
+  },
 
   /**
    * Determines the boolean value of a setting.
@@ -311,26 +381,12 @@ var FormioUtils = {
   checkCalculated: function checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      var row = rowData;
-      var data = submission ? submission.data : rowData;
-      if (_lodash2.default.isString(component.calculateValue)) {
-        try {
-          var util = this;
-          rowData[component.key] = new Function('data', 'row', 'util', 'var value = [];' + component.calculateValue.toString() + '; return value;')(data, row, util);
-        } catch (e) {
-          console.warn('An error occurred calculating a value for ' + component.key, e);
-        }
-      } else {
-        try {
-          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {
-            data: data,
-            row: row,
-            _: _lodash2.default
-          });
-        } catch (e) {
-          console.warn('An error occurred calculating a value for ' + component.key, e);
-        }
-      }
+      rowData[component.key] = FormioUtils.evaluate(component.calculateValue, {
+        value: [],
+        data: submission ? submission.data : rowData,
+        row: rowData,
+        util: this
+      }, 'value');
     }
   },
 
@@ -377,12 +433,14 @@ var FormioUtils = {
    * @returns {*}
    */
   checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError) {
-    try {
-      return new Function('component', 'row', 'data', 'form', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, row, data, form);
-    } catch (e) {
-      console.warn('An error occurred in a condition statement for component ' + component.key, e);
+    if (typeof custom === 'string') {
+      custom = 'var ' + variable + ' = true; ' + custom + '; return ' + variable + ';';
+    }
+    var value = FormioUtils.evaluate(custom, { component: component, row: row, data: data, form: form });
+    if (value === null) {
       return onError;
     }
+    return value;
   },
   checkJsonConditional: function checkJsonConditional(component, json, row, data, form, onError) {
     try {

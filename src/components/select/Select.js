@@ -342,26 +342,13 @@ export class SelectComponent extends BaseComponent {
   }
 
   updateCustomItems() {
-    const utils = FormioUtils;
-    const data = _.cloneDeep(this.root ? this.root.data : this.data);
-    const row = _.cloneDeep(this.data);
-    try {
-      if (typeof this.component.data.custom === 'function') {
-        this.setItems(this.component.data.custom(this, data, row, utils));
-      }
-      else {
-        this.setItems((new Function(
-          'data',
-          'row',
-          'utils',
-          `var values = []; ${this.component.data.custom.toString()}; return values;`
-        ))(data, row, utils));
-      }
-    }
-    catch (error) {
-      console.warn(error);
-      this.setItems([]);
-    }
+    this.setItems(FormioUtils.evaluate(this.component.data.custom, {
+      values: [],
+      component: this,
+      data: _.cloneDeep(this.root ? this.root.data : this.data),
+      row: _.cloneDeep(this.data),
+      utils: FormioUtils
+    }, 'values') || []);
   }
 
   updateItems(searchInput, forceUpdate) {

@@ -875,21 +875,17 @@ var Validator = exports.Validator = {
         if (!setting) {
           return true;
         }
-        var custom = setting;
-
-        custom = custom.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
-          if ($2.indexOf('data.') === 0) {
-            return _lodash2.default.get(data, $2.replace('data.', ''));
-          } else if ($2.indexOf('row.') === 0) {
-            return _lodash2.default.get(component.data, $2.replace('row.', ''));
-          }
-
-          // Support legacy...
-          return _lodash2.default.get(data, $2);
-        });
-
-        /* jshint evil: true */
-        return new Function('row', 'data', 'component', 'input', 'var valid = true; ' + custom + '; return valid;')(component.data, data, component, value);
+        var valid = _utils2.default.evaluate(setting, {
+          valid: true,
+          row: component.data,
+          data: data,
+          component: component,
+          input: value
+        }, 'valid', true);
+        if (valid === null) {
+          return true;
+        }
+        return valid.toString().toLowerCase() === 'true';
       }
     }
   }
@@ -1275,13 +1271,14 @@ var AddressComponent = exports.AddressComponent = function (_TextFieldComponent)
   }, {
     key: 'autoCompleteFilterSuggestion',
     value: function autoCompleteFilterSuggestion(data) {
-      try {
-        var result = new Function('data', 'var show = true; ' + this.component.map.autoCompleteFilter.toString() + '; return show;')(data);
-        return result.toString() === 'true';
-      } catch (e) {
-        console.warn('An error occurred in a custom autoComplete filter statement for component ' + this.component.key, e);
+      var result = FormioUtils.evaluate(this.component.map.autoCompleteFilter, {
+        show: true,
+        data: data
+      }, 'show');
+      if (result === null) {
         return true;
       }
+      return result.toString() === 'true';
     }
 
     /**
@@ -3144,8 +3141,15 @@ var BaseComponent = function () {
                 break;
               case 'value':
                 {
-                  var newValue = new Function('row', 'data', 'component', 'result', action.value)(_this8.data, data, newComponent, result);
-                  if (!_lodash2.default.isEqual(_this8.getValue(), newValue)) {
+                  var oldValue = _this8.getValue();
+                  var newValue = _utils2.default.evaluate(action.value, {
+                    value: _lodash2.default.clone(oldValue),
+                    row: _this8.data,
+                    data: data,
+                    component: newComponent,
+                    result: result
+                  }, 'value');
+                  if (!_lodash2.default.isEqual(oldValue, newValue)) {
                     _this8.setValue(newValue);
                     changed = true;
                   }
@@ -3488,36 +3492,12 @@ var BaseComponent = function () {
 
       flags = flags || {};
       flags.noCheck = true;
-      var changed = false;
-
-      // If this is a string, then use eval to evalulate it.
-      if (typeof this.component.calculateValue === 'string') {
-        try {
-          var value = new Function('component', 'row', 'data', 'value = []; ' + this.component.calculateValue + '; return value;')(this, this.data, data);
-          changed = this.setValue(value, flags);
-        } catch (err) {
-          /* eslint-disable no-console */
-          console.warn('An error occurred calculating a value for ' + this.component.key, err);
-          changed = false;
-          /* eslint-enable no-console */
-        }
-      } else {
-        try {
-          var val = _utils2.default.jsonLogic.apply(this.component.calculateValue, {
-            data: data,
-            row: this.data,
-            _: _lodash2.default
-          });
-          changed = this.setValue(val, flags);
-        } catch (err) {
-          /* eslint-disable no-console */
-          console.warn('An error occurred calculating a value for ' + this.component.key, err);
-          changed = false;
-          /* eslint-enable no-console */
-        }
-      }
-
-      return changed;
+      return this.setValue(_utils2.default.evaluate(this.component.calculateValue, {
+        value: [],
+        component: this,
+        data: data,
+        row: this.root ? this.root.data : this.data
+      }, 'value'), flags);
     }
 
     /**
@@ -3940,29 +3920,12 @@ var BaseComponent = function () {
       if (this.component.defaultValue) {
         defaultValue = this.component.defaultValue;
       } else if (this.component.customDefaultValue) {
-        if (typeof this.component.customDefaultValue === 'string') {
-          try {
-            defaultValue = new Function('component', 'row', 'data', 'var value = \'\'; ' + this.component.customDefaultValue + '; return value;')(this, this.data, this.data);
-          } catch (err) {
-            defaultValue = null;
-            /* eslint-disable no-console */
-            console.warn('An error occurred getting default value for ' + this.component.key, e);
-            /* eslint-enable no-console */
-          }
-        } else {
-          try {
-            defaultValue = _utils2.default.jsonLogic.apply(this.component.customDefaultValue, {
-              data: this.data,
-              row: this.data,
-              _: _lodash2.default
-            });
-          } catch (err) {
-            defaultValue = null;
-            /* eslint-disable no-console */
-            console.warn('An error occurred calculating a value for ' + this.component.key, err);
-            /* eslint-enable no-console */
-          }
-        }
+        defaultValue = _utils2.default.evaluate(this.component.customDefaultValue, {
+          value: '',
+          component: this,
+          row: this.data,
+          data: this.root ? this.root.data : this.data
+        }, 'value');
       }
 
       if (this._inputMask) {
@@ -4391,13 +4354,13 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
                 }
               });
 
-              try {
-                new Function('form', 'flattened', 'components', '_merge', 'data', _this2.component.custom.toString())(form, flattened, components, _lodash2.default.merge, _this2.data);
-              } catch (e) {
-                /* eslint-disable no-console */
-                console.warn('An error occurred evaluating custom logic for ' + _this2.key, e);
-                /* eslint-enable no-console */
-              }
+              _utils2.default.evaluate(_this2.component.custom, {
+                form: form,
+                flattened: flattened,
+                components: components,
+                _: _lodash2.default,
+                data: _this2.data
+              });
               break;
             }
           case 'url':
@@ -7168,20 +7131,12 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       });
 
       if (this.component.validate && this.component.validate.row) {
-        var custom = this.component.validate.row;
-        custom = custom.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
-          return _this7.editRows[rowIndex].data[$2];
-        });
-        var valid = void 0;
-        try {
-          var row = this.editRows[rowIndex].data;
-          var data = this.data;
-          valid = new Function('row', 'data', custom + '; return valid;')(row, data);
-        } catch (e) {
-          /* eslint-disable no-console, no-undef */
-          console.warn('A syntax error occurred while computing custom values in ' + this.component.key, e);
-          /* eslint-enable no-console */
-        }
+        var valid = _utils2.default.evaluate(this.component.validate.row, {
+          valid: true,
+          row: this.editRows[rowIndex].data,
+          data: this.data
+        }, 'valid', true).toString().toLowerCase() === 'true';
+
         this.editRows[rowIndex].errorContainer.innerHTML = '';
         if (valid !== true) {
           this.editRows[rowIndex].errorContainer.appendChild(this.ce('div', { class: 'editgrid-row-error help-block' }, valid));
@@ -10572,19 +10527,13 @@ var SelectComponent = function (_BaseComponent) {
   }, {
     key: 'updateCustomItems',
     value: function updateCustomItems() {
-      var utils = _utils2.default;
-      var data = _lodash2.default.cloneDeep(this.root ? this.root.data : this.data);
-      var row = _lodash2.default.cloneDeep(this.data);
-      try {
-        if (typeof this.component.data.custom === 'function') {
-          this.setItems(this.component.data.custom(this, data, row, utils));
-        } else {
-          this.setItems(new Function('data', 'row', 'utils', 'var values = []; ' + this.component.data.custom.toString() + '; return values;')(data, row, utils));
-        }
-      } catch (error) {
-        console.warn(error);
-        this.setItems([]);
-      }
+      this.setItems(_utils2.default.evaluate(this.component.data.custom, {
+        values: [],
+        component: this,
+        data: _lodash2.default.cloneDeep(this.root ? this.root.data : this.data),
+        row: _lodash2.default.cloneDeep(this.data),
+        utils: _utils2.default
+      }, 'values') || []);
     }
   }, {
     key: 'updateItems',
@@ -16120,39 +16069,22 @@ var FormioWizard = function (_FormioForm) {
       if (form) {
         var page = ++currentPage;
         if (form.nextPage) {
-          // Allow for script execution.
-          if (typeof form.nextPage === 'string') {
-            try {
-              page = new Function('next', 'data', form.nextPage.toString() + '; return next;')(page, data);
-              if (!isNaN(parseInt(page, 10)) && isFinite(page)) {
-                return page;
-              }
-              if (typeof page !== 'string') {
-                return page;
-              }
-
-              // Assume they passed back the key of the page to go to.
-              return this.getPageIndexByKey(page);
-            } catch (e) {
-              console.warn('An error occurred in a custom nextPage function statement for component ' + form.key, e);
-              return page;
-            }
+          var next = _utils2.default.evaluate(form.nextPage, {
+            next: page,
+            data: data,
+            page: page,
+            form: form
+          }, 'next');
+          if (next === null) {
+            return page;
           }
-          // Or use JSON Logic.
-          else {
-              var result = _utils2.default.jsonLogic.apply(form.nextPage, {
-                data: data,
-                page: page,
-                form: form,
-                _: _lodash2.default
-              });
-              var newPage = parseInt(result, 10);
-              if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
-                return newPage;
-              }
 
-              return this.getPageIndexByKey(result);
-            }
+          var pageNum = parseInt(next, 10);
+          if (!isNaN(parseInt(pageNum, 10)) && isFinite(pageNum)) {
+            return pageNum;
+          }
+
+          return this.getPageIndexByKey(next);
         }
 
         return page;
@@ -16952,6 +16884,14 @@ exports.default = url;
 (function (global){
 'use strict';
 
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -16968,6 +16908,16 @@ var _operators = require('./jsonlogic/operators');
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _toConsumableArray(arr) {
+  if (Array.isArray(arr)) {
+    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+      arr2[i] = arr[i];
+    }return arr2;
+  } else {
+    return Array.from(arr);
+  }
 }
 
 // Configure JsonLogic
@@ -16992,6 +16942,58 @@ _jsonLogicJs2.default.add_operation('relativeMaxDate', function (relativeMaxDate
 
 var FormioUtils = {
   jsonLogic: _jsonLogicJs2.default, // Share
+
+  /**
+   * Evaluate a method.
+   *
+   * @param func
+   * @param args
+   * @return {*}
+   */
+  evaluate: function evaluate(func, args, ret, tokenize) {
+    var returnVal = null;
+    if (typeof func === 'string') {
+      if (ret) {
+        func += ';return ' + ret;
+      }
+      var params = _lodash2.default.keys(args);
+
+      if (tokenize) {
+        // Replace all {{ }} references with actual data.
+        func = func.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
+          if ($2.indexOf('data.') === 0) {
+            return _lodash2.default.get(args.data, $2.replace('data.', ''));
+          } else if ($2.indexOf('row.') === 0) {
+            return _lodash2.default.get(args.row, $2.replace('row.', ''));
+          }
+
+          // Support legacy...
+          return _lodash2.default.get(args.data, $2);
+        });
+      }
+
+      func = new (Function.prototype.bind.apply(Function, [null].concat(_toConsumableArray(params), [func])))();
+    }
+    if (typeof func === 'function') {
+      var values = _lodash2.default.values(args);
+      try {
+        returnVal = func.apply(undefined, _toConsumableArray(values));
+      } catch (err) {
+        returnVal = null;
+        console.warn('An error occured within custom function for ' + this.component.key, err);
+      }
+    } else if ((typeof func === 'undefined' ? 'undefined' : _typeof(func)) === 'object') {
+      try {
+        returnVal = _jsonLogicJs2.default.apply(func, args);
+      } catch (err) {
+        returnVal = null;
+        console.warn('An error occured within custom function for ' + this.component.key, err);
+      }
+    } else {
+      console.warn('Unknown function type for ' + this.component.key);
+    }
+    return returnVal;
+  },
 
   /**
    * Determines the boolean value of a setting.
@@ -17261,26 +17263,12 @@ var FormioUtils = {
   checkCalculated: function checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      var row = rowData;
-      var data = submission ? submission.data : rowData;
-      if (_lodash2.default.isString(component.calculateValue)) {
-        try {
-          var util = this;
-          rowData[component.key] = new Function('data', 'row', 'util', 'var value = [];' + component.calculateValue.toString() + '; return value;')(data, row, util);
-        } catch (e) {
-          console.warn('An error occurred calculating a value for ' + component.key, e);
-        }
-      } else {
-        try {
-          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {
-            data: data,
-            row: row,
-            _: _lodash2.default
-          });
-        } catch (e) {
-          console.warn('An error occurred calculating a value for ' + component.key, e);
-        }
-      }
+      rowData[component.key] = FormioUtils.evaluate(component.calculateValue, {
+        value: [],
+        data: submission ? submission.data : rowData,
+        row: rowData,
+        util: this
+      }, 'value');
     }
   },
 
@@ -17327,12 +17315,14 @@ var FormioUtils = {
    * @returns {*}
    */
   checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError) {
-    try {
-      return new Function('component', 'row', 'data', 'form', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, row, data, form);
-    } catch (e) {
-      console.warn('An error occurred in a condition statement for component ' + component.key, e);
+    if (typeof custom === 'string') {
+      custom = 'var ' + variable + ' = true; ' + custom + '; return ' + variable + ';';
+    }
+    var value = FormioUtils.evaluate(custom, { component: component, row: row, data: data, form: form });
+    if (value === null) {
       return onError;
     }
+    return value;
   },
   checkJsonConditional: function checkJsonConditional(component, json, row, data, form, onError) {
     try {

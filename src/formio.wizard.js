@@ -40,40 +40,22 @@ export default class FormioWizard extends FormioForm {
     if (form) {
       let page = ++currentPage;
       if (form.nextPage) {
-        // Allow for script execution.
-        if (typeof form.nextPage === 'string') {
-          try {
-            page = (new Function('next', 'data', `${form.nextPage.toString()}; return next;`))(page, data);
-            if (!isNaN(parseInt(page, 10)) && isFinite(page)) {
-              return page;
-            }
-            if (typeof page !== 'string') {
-              return page;
-            }
-
-            // Assume they passed back the key of the page to go to.
-            return this.getPageIndexByKey(page);
-          }
-          catch (e) {
-            console.warn(`An error occurred in a custom nextPage function statement for component ${form.key}`, e);
-            return page;
-          }
+        let next = FormioUtils.evaluate(form.nextPage, {
+          next: page,
+          data,
+          page,
+          form
+        }, 'next');
+        if (next === null) {
+          return page;
         }
-        // Or use JSON Logic.
-        else {
-          const result = FormioUtils.jsonLogic.apply(form.nextPage, {
-            data,
-            page,
-            form,
-            _
-          });
-          const newPage = parseInt(result, 10);
-          if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
-            return newPage;
-          }
 
-          return this.getPageIndexByKey(result);
+        const pageNum = parseInt(next, 10);
+        if (!isNaN(parseInt(pageNum, 10)) && isFinite(pageNum)) {
+          return pageNum;
         }
+
+        return this.getPageIndexByKey(next);
       }
 
       return page;

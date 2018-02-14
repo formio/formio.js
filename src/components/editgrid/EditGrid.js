@@ -337,21 +337,12 @@ export class EditGridComponent extends FormioComponents {
     });
 
     if (this.component.validate && this.component.validate.row) {
-      let custom = this.component.validate.row;
-      custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
-        return this.editRows[rowIndex].data[$2];
-      });
-      let valid;
-      try {
-        const row = this.editRows[rowIndex].data;
-        const data = this.data;
-        valid = new Function('row', 'data', `${custom}; return valid;`)(row, data);
-      }
-      catch (e) {
-        /* eslint-disable no-console, no-undef */
-        console.warn(`A syntax error occurred while computing custom values in ${this.component.key}`, e);
-        /* eslint-enable no-console */
-      }
+      let valid = FormioUtils.evaluate(this.component.validate.row, {
+        valid: true,
+        row: this.editRows[rowIndex].data,
+        data: this.data
+      }, 'valid', true).toString().toLowerCase() === 'true';
+
       this.editRows[rowIndex].errorContainer.innerHTML = '';
       if (valid !== true) {
         this.editRows[rowIndex].errorContainer.appendChild(

@@ -26,6 +26,63 @@ const FormioUtils = {
   jsonLogic, // Share
 
   /**
+   * Evaluate a method.
+   *
+   * @param func
+   * @param args
+   * @return {*}
+   */
+  evaluate(func, args, ret, tokenize) {
+    let returnVal = null;
+    if (typeof func === 'string') {
+      if (ret) {
+        func += `;return ${ret}`;
+      }
+      let params = _.keys(args);
+
+      if (tokenize) {
+        // Replace all {{ }} references with actual data.
+        func = func.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
+          if ($2.indexOf('data.') === 0) {
+            return _.get(args.data, $2.replace('data.', ''));
+          }
+          else if ($2.indexOf('row.') === 0) {
+            return _.get(args.row, $2.replace('row.', ''));
+          }
+
+          // Support legacy...
+          return _.get(args.data, $2);
+        });
+      }
+
+      func = new Function(...params, func);
+    }
+    if (typeof func === 'function') {
+      let values = _.values(args);
+      try {
+        returnVal = func(...values);
+      }
+      catch (err) {
+        returnVal = null;
+        console.warn(`An error occured within custom function for ${this.component.key}`, err);
+      }
+    }
+    else if (typeof func === 'object') {
+      try {
+        returnVal = jsonLogic.apply(func, args);
+      }
+      catch (err) {
+        returnVal = null;
+        console.warn(`An error occured within custom function for ${this.component.key}`, err);
+      }
+    }
+    else {
+      console.warn(`Unknown function type for ${this.component.key}`);
+    }
+    return returnVal;
+  },
+
+  /**
    * Determines the boolean value of a setting.
    *
    * @param value
@@ -311,30 +368,12 @@ const FormioUtils = {
   checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      const row = rowData;
-      const data = submission ? submission.data : rowData;
-      if (_.isString(component.calculateValue)) {
-        try {
-          const util = this;
-          rowData[component.key] = (new Function('data', 'row', 'util',
-            `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util);
-        }
-        catch (e) {
-          console.warn(`An error occurred calculating a value for ${component.key}`, e);
-        }
-      }
-      else {
-        try {
-          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {
-            data,
-            row,
-            _
-          });
-        }
-        catch (e) {
-          console.warn(`An error occurred calculating a value for ${component.key}`, e);
-        }
-      }
+      rowData[component.key] = FormioUtils.evaluate(component.calculateValue, {
+        value: [],
+        data: submission ? submission.data : rowData,
+        row: rowData,
+        util: this
+      }, 'value');
     }
   },
 
@@ -381,14 +420,14 @@ const FormioUtils = {
    * @returns {*}
    */
   checkCustomConditional(component, custom, row, data, form, variable, onError) {
-    try {
-      return (new Function('component', 'row', 'data', 'form',
-        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, row, data, form);
+    if (typeof custom === 'string') {
+      custom = `var ${variable} = true; ${custom}; return ${variable};`;
     }
-    catch (e) {
-      console.warn(`An error occurred in a condition statement for component ${component.key}`, e);
+    let value = FormioUtils.evaluate(custom, {component, row, data, form});
+    if (value === null) {
       return onError;
     }
+    return value;
   },
 
   checkJsonConditional(component, json, row, data, form, onError) {

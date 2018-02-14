@@ -687,33 +687,16 @@ export class BaseComponent {
       defaultValue = this.component.defaultValue;
     }
     else if (this.component.customDefaultValue) {
-      if (typeof this.component.customDefaultValue === 'string') {
-        try {
-          defaultValue = (new Function('component', 'row', 'data',
-            `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
-        }
-        catch (err) {
-          defaultValue = null;
-          /* eslint-disable no-console */
-          console.warn(`An error occurred getting default value for ${this.component.key}`, e);
-          /* eslint-enable no-console */
-        }
-      }
-      else {
-        try {
-          defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
-            data: this.data,
-            row: this.data,
-            _
-          });
-        }
-        catch (err) {
-          defaultValue = null;
-          /* eslint-disable no-console */
-          console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-          /* eslint-enable no-console */
-        }
-      }
+      defaultValue = FormioUtils.evaluate(
+        this.component.customDefaultValue,
+        {
+          value: '',
+          component: this,
+          row: this.data,
+          data: (this.root ? this.root.data : this.data)
+        },
+        'value'
+      );
     }
 
     if (this._inputMask) {
@@ -1499,9 +1482,19 @@ export class BaseComponent {
               FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
             case 'value': {
-              const newValue = (new Function('row', 'data', 'component', 'result',
-                action.value))(this.data, data, newComponent, result);
-              if (!_.isEqual(this.getValue(), newValue)) {
+              const oldValue = this.getValue();
+              const newValue = FormioUtils.evaluate(
+                action.value,
+                {
+                  value: _.clone(oldValue),
+                  row: this.data,
+                  data: data,
+                  component: newComponent,
+                  result: result
+                },
+                'value'
+              );
+              if (!_.isEqual(oldValue, newValue)) {
                 this.setValue(newValue);
                 changed = true;
               }
@@ -1820,40 +1813,12 @@ export class BaseComponent {
 
     flags = flags || {};
     flags.noCheck = true;
-    let changed = false;
-
-    // If this is a string, then use eval to evalulate it.
-    if (typeof this.component.calculateValue === 'string') {
-      try {
-        const value = (new Function('component', 'row', 'data',
-          `value = []; ${this.component.calculateValue}; return value;`))(this, this.data, data);
-        changed = this.setValue(value, flags);
-      }
-      catch (err) {
-        /* eslint-disable no-console */
-        console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-        changed = false;
-        /* eslint-enable no-console */
-      }
-    }
-    else {
-      try {
-        const val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
-          data,
-          row: this.data,
-          _
-        });
-        changed = this.setValue(val, flags);
-      }
-      catch (err) {
-        /* eslint-disable no-console */
-        console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-        changed = false;
-        /* eslint-enable no-console */
-      }
-    }
-
-    return changed;
+    return this.setValue(FormioUtils.evaluate(this.component.calculateValue, {
+      value: [],
+      component: this,
+      data,
+      row: this.root ? this.root.data : this.data
+    }, 'value'), flags);
   }
 
   /**
