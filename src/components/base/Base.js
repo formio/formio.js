@@ -1833,7 +1833,8 @@ export class BaseComponent {
    * Prints out the value of this component as a string value.
    */
   asString(value) {
-    return this.getView(value);
+    value = value || this.getValue();
+    return Array.isArray(value) ? value.join(', ') : value.toString();
   }
 
   /**
