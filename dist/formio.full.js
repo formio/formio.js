@@ -13960,6 +13960,7 @@ var FormioPDF = function (_FormioForm) {
         });
         this.appendChild(this.element, this.submitButton);
       }
+      this.triggerChange();
     }
   }]);
 

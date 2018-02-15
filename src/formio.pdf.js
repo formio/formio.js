@@ -120,6 +120,7 @@ export default class FormioPDF extends FormioForm {
       });
       this.appendChild(this.element, this.submitButton);
     }
+    this.triggerChange();
   }
 }
 
