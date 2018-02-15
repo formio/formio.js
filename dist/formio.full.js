@@ -376,11 +376,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'checkConditions',
     value: function checkConditions(data) {
       this.getComponents().forEach(function (comp) {
-        if (comp.hasCondition()) {
-          comp.checkConditions(data);
-        }
+        return comp.checkConditions(data);
       });
-
       return _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'checkConditions', this).call(this, data);
     }
   }, {
