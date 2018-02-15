@@ -671,7 +671,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-      return Formio.cache[cacheKey];
+      return Promise.resolve(Formio.cache[cacheKey]);
     }
 
     // Set up and fetch request
@@ -697,8 +697,7 @@ export default class Formio {
     options = Formio.pluginAlter('requestOptions', options, url);
 
     const requestToken = options.headers.get('x-jwt-token');
-
-    const requestPromise = fetch(url, options)
+    return fetch(url, options)
       .then((response) => {
         // Allow plugins to respond.
         response = Formio.pluginAlter('requestResponse', response, Formio);
@@ -790,15 +789,25 @@ export default class Formio {
           return result;
         }
 
+        let resultCopy = {};
+
         // Shallow copy result so modifications don't end up in cache
         if (Array.isArray(result)) {
-          const resultCopy = result.map(copy);
+          resultCopy = result.map(copy);
           resultCopy.skip = result.skip;
           resultCopy.limit = result.limit;
           resultCopy.serverCount = result.serverCount;
-          return resultCopy;
         }
-        return copy(result);
+        else {
+          resultCopy = copy(result);
+        }
+
+        // Cache the response.
+        if (method === 'GET') {
+          Formio.cache[cacheKey] = resultCopy;
+        }
+
+        return resultCopy;
       })
       .catch((err) => {
         if (err === 'Bad Token') {
@@ -809,21 +818,9 @@ export default class Formio {
           err.message = `Could not connect to API server (${err.message})`;
           err.networkError = true;
         }
-        if (Formio.cache.hasOwnProperty(cacheKey)) {
-          // Remove failed promises from cache
-          delete Formio.cache[cacheKey];
-        }
         // Propagate error so client can handle accordingly
         throw err;
       });
-
-    // Cache the request promise.
-    if (method === 'GET') {
-      Formio.cache[cacheKey] = requestPromise;
-    }
-
-    // Return the request promise.
-    return requestPromise;
   }
 
   static setToken(token) {
