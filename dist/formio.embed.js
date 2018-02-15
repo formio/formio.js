@@ -8151,7 +8151,6 @@ module.exports = {
     }
     if (!nobuild) {
       comp.build();
-      comp.triggerChange();
       comp.isBuilt = true;
     }
     return comp;
@@ -9568,7 +9567,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       } else {
         var values = [];
         _lodash2.default.each(this.selectOptions, function (selectOption) {
-          if (selectOption.element.selected) {
+          if (selectOption.element && selectOption.element.selected) {
             values.push(selectOption.value);
           }
         });
@@ -11795,6 +11794,7 @@ var FormioForm = function (_FormioComponents) {
 
       return this.onElement.then(function () {
         _this9.clear();
+        _this9.showElement(false);
         return _this9.localize().then(function () {
           _this9.build();
           _this9.isBuilt = true;
@@ -11806,7 +11806,8 @@ var FormioForm = function (_FormioComponents) {
             return _this9.updateValue();
           });
           setTimeout(function () {
-            return _this9.emit('render');
+            _this9.onChange();
+            _this9.emit('render');
           }, 1);
         });
       });
@@ -14002,7 +14003,6 @@ var FormioPDF = function (_FormioForm) {
         });
         this.appendChild(this.element, this.submitButton);
       }
-      this.triggerChange();
     }
   }]);
 
