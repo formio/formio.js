@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 ### Fixed
- - Astericks for Checkbox component with 'inputsOnly' option.
+ - Asterisks for Checkbox component with 'inputsOnly' option.
 
 ## 2.29.1
 ### Added
