@@ -681,6 +681,7 @@ var BaseComponent = function () {
 
         // Restore the value.
         this.restoreValue();
+        this.triggerChange();
       }
     }
   }, {
@@ -1738,34 +1739,39 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      // Ensure we stop any pending data clears.
-      if (this.clearPending) {
-        clearTimeout(this.clearPending);
-        this.clearPending = null;
-      }
-
       // Execute only if visibility changes.
       if (!_show === !this._visible) {
         return _show;
       }
 
       this._visible = _show;
+      this.showElement(_show && !this.component.hidden);
+      this.clearOnHide(_show);
+      return _show;
+    }
+
+    /**
+     * Show or hide the root element of this component.
+     *
+     * @param show
+     */
+
+  }, {
+    key: 'showElement',
+    value: function showElement(show) {
       var element = this.getElement();
       if (element) {
-        if (_show && !this.component.hidden) {
+        if (show) {
           element.removeAttribute('hidden');
           element.style.visibility = 'visible';
           element.style.position = 'relative';
-        } else if (!_show || this.component.hidden) {
+        } else {
           element.setAttribute('hidden', true);
           element.style.visibility = 'hidden';
           element.style.position = 'absolute';
         }
       }
-
-      this.clearOnHide(_show);
-
-      return _show;
+      return show;
     }
   }, {
     key: 'clearOnHide',
@@ -1774,7 +1780,7 @@ var BaseComponent = function () {
       if (this.component.clearOnHide !== false) {
         if (!show) {
           delete this.data[this.component.key];
-        } else {
+        } else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
           // If shown, ensure the default is set.
           this.setValue(this.defaultValue, {
             noUpdateEvent: true

@@ -351,6 +351,7 @@ export class BaseComponent {
 
       // Restore the value.
       this.restoreValue();
+      this.triggerChange();
     }
   }
 
@@ -1373,34 +1374,36 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
-    // Ensure we stop any pending data clears.
-    if (this.clearPending) {
-      clearTimeout(this.clearPending);
-      this.clearPending = null;
-    }
-
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
     }
 
     this._visible = show;
+    this.showElement(show && !this.component.hidden);
+    this.clearOnHide(show);
+    return show;
+  }
+
+  /**
+   * Show or hide the root element of this component.
+   *
+   * @param show
+   */
+  showElement(show) {
     const element = this.getElement();
     if (element) {
-      if (show && !this.component.hidden) {
+      if (show) {
         element.removeAttribute('hidden');
         element.style.visibility = 'visible';
         element.style.position = 'relative';
       }
-      else if (!show || this.component.hidden) {
+      else {
         element.setAttribute('hidden', true);
         element.style.visibility = 'hidden';
         element.style.position = 'absolute';
       }
     }
-
-    this.clearOnHide(show);
-
     return show;
   }
 
@@ -1410,7 +1413,7 @@ export class BaseComponent {
       if (!show) {
         delete this.data[this.component.key];
       }
-      else {
+      else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
