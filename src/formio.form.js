@@ -280,19 +280,16 @@ export default class FormioForm extends FormioComponents {
     if (this.element) {
       this.element.removeEventListener('keydown', this.executeShortcuts.bind(this));
     }
-    element.addEventListener('keydown', this.executeShortcuts.bind(this));
 
-    this.element = element;
+    this.wrapper = element;
+    this.element = this.ce('div');
+    this.wrapper.appendChild(this.element);
+    this.showElement(false);
+    this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
     let classNames = this.element.getAttribute('class');
     classNames += ' formio-form';
-    this.addClass(this.element, classNames);
+    this.addClass(this.wrapper, classNames);
     this.loading = true;
-    this.ready.then(
-      () => (this.loading = false),
-      () => (this.loading = false)
-    ).catch(
-      () => (this.loading = false)
-    );
     this.elementResolve(element);
   }
 
@@ -526,10 +523,10 @@ export default class FormioForm extends FormioComponents {
       if (this.loader) {
         try {
           if (loading) {
-            this.prepend(this.loader);
+            this.prependTo(this.loader, this.wrapper);
           }
           else {
-            this.removeChild(this.loader);
+            this.removeChildFrom(this.loader, this.wrapper);
           }
         }
         catch (err) {
@@ -731,13 +728,17 @@ export default class FormioForm extends FormioComponents {
   render() {
     return this.onElement.then(() => {
       this.clear();
+      this.showElement(false);
       return this.localize().then(() => {
         this.build();
         this.isBuilt = true;
         this.onResize();
         this.on('resetForm', () => this.reset(), true);
         this.on('refreshData', () => this.updateValue());
-        setTimeout(() => this.emit('render'), 1);
+        setTimeout(() => {
+          this.onChange();
+          this.emit('render');
+        }, 1);
       });
     });
   }
@@ -783,7 +784,6 @@ export default class FormioForm extends FormioComponents {
   build() {
     this.on('submitButton', () => this.submit(), true);
     this.addComponents();
-    this.checkConditions(this.getValue());
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
   }
 
@@ -873,6 +873,8 @@ export default class FormioForm extends FormioComponents {
     const value = _.clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
+    this.showElement(true);
+    this.loading = false;
     this.emit('change', value);
   }
 
