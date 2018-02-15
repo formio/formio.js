@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Cleanup and performance improvements on how conditions are checked and evaluated.
  - Upgrade flatpickr to version 4.3.2
 
+### Changed
+ - Improved viewAsHtml and asString features.
+
 ## 2.29.0
 ### Added
  - New Field Logic feature.

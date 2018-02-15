@@ -395,9 +395,9 @@ export class BaseComponent {
   }
 
   setupValueElement(element) {
-    let value = this.value;
+    let value = this.getValue();
     value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
-    element.appendChild(this.text(value));
+    element.innerHTML = value;
   }
 
   get defaultViewOnlyValue() {
@@ -405,11 +405,18 @@ export class BaseComponent {
   }
 
   getView(value) {
-    return _.toString(value);
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    return value.toString();
   }
 
   updateViewOnlyValue() {
-    this.empty(this.valueElement);
+    if (!this.valueElement) {
+      return;
+    }
+
     this.setupValueElement(this.valueElement);
   }
 
