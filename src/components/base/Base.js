@@ -351,7 +351,6 @@ export class BaseComponent {
 
       // Restore the value.
       this.restoreValue();
-      this.triggerChange();
     }
   }
 

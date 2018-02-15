@@ -84,6 +84,7 @@ module.exports = {
     }
     if (!nobuild) {
       comp.build();
+      comp.triggerChange();
       comp.isBuilt = true;
     }
     return comp;

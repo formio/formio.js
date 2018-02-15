@@ -681,7 +681,6 @@ var BaseComponent = function () {
 
         // Restore the value.
         this.restoreValue();
-        this.triggerChange();
       }
     }
   }, {
