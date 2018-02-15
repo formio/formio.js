@@ -420,6 +420,12 @@ export class BaseComponent {
     this.setupValueElement(this.valueElement);
   }
 
+  empty(element) {
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+  }
+
   /**
    * Retrieves the CSS class name of this component.
    * @returns {string} - The class name of this component.
