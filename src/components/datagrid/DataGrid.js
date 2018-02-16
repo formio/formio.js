@@ -114,9 +114,11 @@ export class DataGridComponent extends FormioComponents {
       this.component.addAnotherPosition === 'bottom' ||
       this.component.addAnotherPosition === 'both'
     ))  ?
-      this.ce('tr', null,
-        this.ce('td', {colspan: (this.component.components.length + 1)},
-          this.addButton()
+      this.ce('tfoot', null,
+        this.ce('tr', null,
+          this.ce('td', {colspan: (this.component.components.length + 1)},
+            this.addButton()
+          )
         )
       )
       : null;
@@ -135,7 +137,10 @@ export class DataGridComponent extends FormioComponents {
         this.tbody.insertBefore(this.tableRows[rowIndex], this.tbody.children[rowIndex + 1]);
       }
       // Update existing
-      else if (!_.isEqual(row, this.tableRows[rowIndex].data)) {
+      else if (
+        !_.isEqual(row, this.tableRows[rowIndex].data) ||
+        !_.isEqual(this.visibleColumns, this.tableRows[rowIndex].visibleColumns)
+      ) {
         this.removeRowComponents(rowIndex);
         const newRow = this.buildRow(row, rowIndex, data);
         this.tbody.replaceChild(newRow, this.tableRows[rowIndex]);
@@ -175,15 +180,16 @@ export class DataGridComponent extends FormioComponents {
       ]
     );
     element.data = _.cloneDeep(row);
+    element.visibleColumns = _.cloneDeep(this.visibleColumns);
     return element;
   }
 
   removeRowComponents(rowIndex) {
     // Clean up components list.
     (Object.keys(this.rows[rowIndex])).forEach(key => {
-      this.removeComponent(this.rows[rowIndex][key], this.components);
+      this.removeComponent(this.rows[rowIndex][key], this.rows[rowIndex][key].element);
     });
-    this.rows[rowIndex] = [];
+    delete this.rows[rowIndex];
   }
 
   buildComponent(col, colIndex, row, rowIndex) {
@@ -241,7 +247,7 @@ export class DataGridComponent extends FormioComponents {
 
     // If a rebuild is needed, then rebuild the table.
     if (rebuild) {
-      this.buildTable();
+      this.buildRows();
     }
 
     // Return if this table should show.

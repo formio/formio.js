@@ -24,60 +24,65 @@ export class SurveyComponent extends BaseComponent {
   }
 
   build() {
-    this.createElement();
-    const labelAtTheBottom = this.component.labelPosition === 'bottom';
-    if (!labelAtTheBottom) {
-      this.createLabel(this.element);
+    if (this.viewOnly) {
+      this.viewOnlyBuild();
     }
-    this.table = this.ce('table', {
-      class: 'table table-striped table-bordered'
-    });
-    this.setInputStyles(this.table);
-
-    // Build header.
-    const thead = this.ce('thead');
-    const thr = this.ce('tr');
-    thr.appendChild(this.ce('td'));
-    _.each(this.component.values, (value) => {
-      const th = this.ce('th', {
-        style: 'text-align: center;'
+    else {
+      this.createElement();
+      const labelAtTheBottom = this.component.labelPosition === 'bottom';
+      if (!labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+      this.table = this.ce('table', {
+        class: 'table table-striped table-bordered'
       });
-      th.appendChild(this.text(value.label));
-      thr.appendChild(th);
-    });
-    thead.appendChild(thr);
-    this.table.appendChild(thead);
-    // Build the body.
-    const tbody = this.ce('tbody');
-    _.each(this.component.questions, (question) => {
-      const tr = this.ce('tr');
-      const td = this.ce('td');
-      td.appendChild(this.text(question.label));
-      tr.appendChild(td);
+      this.setInputStyles(this.table);
+
+      // Build header.
+      const thead = this.ce('thead');
+      const thr = this.ce('tr');
+      thr.appendChild(this.ce('td'));
       _.each(this.component.values, (value) => {
-        const td = this.ce('td', {
+        const th = this.ce('th', {
           style: 'text-align: center;'
         });
-        const input = this.ce('input', {
-          type: 'radio',
-          name: `data[${this.component.key}][${question.value}]`,
-          value: value.value,
-          id: `${this.id}-${question.value}-${value.value}`
-        });
-        this.addInput(input, td);
-        tr.appendChild(td);
+        th.appendChild(this.text(value.label));
+        thr.appendChild(th);
       });
-      tbody.appendChild(tr);
-    });
-    this.table.appendChild(tbody);
-    this.element.appendChild(this.table);
-    if (labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    this.createDescription(this.element);
-    this.restoreValue();
-    if (this.shouldDisable) {
-      this.disabled = true;
+      thead.appendChild(thr);
+      this.table.appendChild(thead);
+      // Build the body.
+      const tbody = this.ce('tbody');
+      _.each(this.component.questions, (question) => {
+        const tr = this.ce('tr');
+        const td = this.ce('td');
+        td.appendChild(this.text(question.label));
+        tr.appendChild(td);
+        _.each(this.component.values, (value) => {
+          const td = this.ce('td', {
+            style: 'text-align: center;'
+          });
+          const input = this.ce('input', {
+            type: 'radio',
+            name: `data[${this.component.key}][${question.value}]`,
+            value: value.value,
+            id: `${this.id}-${question.value}-${value.value}`
+          });
+          this.addInput(input, td);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      this.table.appendChild(tbody);
+      this.element.appendChild(this.table);
+      if (labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+      this.createDescription(this.element);
+      this.restoreValue();
+      if (this.shouldDisable) {
+        this.disabled = true;
+      }
     }
   }
 
@@ -112,5 +117,33 @@ export class SurveyComponent extends BaseComponent {
       });
     });
     return value;
+  }
+
+  getView(value) {
+    const table = this.ce('table', {
+      class: 'table table-striped table-bordered table-condensed'
+    });
+    const tbody = this.ce('tbody');
+
+    _.each(value, (value, question) => {
+      const row = this.ce('tr');
+
+      const questionCell = this.ce('th');
+      const valueCell = this.ce('td');
+
+      const questionText = _.find(this.component.questions, ['value', question]).label;
+      const valueText = _.find(this.component.values, ['value', value]).label;
+
+      questionCell.appendChild(this.text(questionText));
+      valueCell.appendChild(this.text(valueText));
+
+      row.appendChild(questionCell);
+      row.appendChild(valueCell);
+
+      tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+    return table.outerHTML;
   }
 }

@@ -14,10 +14,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Issues with clearOnHide
  - Fixed radio button wrapping issue
  - Problems with the wysiwyg editor clearing values within a datagrid.
+ - Asterisks for Checkbox component with 'inputsOnly' option.
+ - The Formio.cache to return new promises instead of using old ones.
 
 ### Changed
  - Cleanup and performance improvements on how conditions are checked and evaluated.
+ - How the loader icon is added to the renderer by adding an additional DOM element above the form components.
  - Upgrade flatpickr to version 4.3.2
+ - Improved viewAsHtml and asString features.
 
 ## 2.29.0
 ### Added

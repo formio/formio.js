@@ -119,7 +119,10 @@ export class CheckBoxComponent extends BaseComponent {
     }
 
     let className = 'control-label form-check-label';
-    if (this.component.input && this.component.validate && this.component.validate.required) {
+    if (this.component.input
+      && !this.options.inputsOnly
+      && this.component.validate
+      && this.component.validate.required) {
       className += ' field-required';
     }
 

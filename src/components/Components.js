@@ -299,13 +299,8 @@ export class FormioComponents extends BaseComponent {
   }
 
   checkConditions(data) {
-    this.getComponents().forEach(comp => {
-      if (comp.hasCondition()) {
-        comp.checkConditions(data);
-      }
-    });
-
-    super.checkConditions(data);
+    this.getComponents().forEach(comp => comp.checkConditions(data));
+    return super.checkConditions(data);
   }
 
   clearOnHide(show) {

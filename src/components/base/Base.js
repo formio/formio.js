@@ -517,9 +517,9 @@ export class BaseComponent {
   }
 
   setupValueElement(element) {
-    let value = this.value;
+    let value = this.getValue();
     value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
-    element.appendChild(this.text(value));
+    element.innerHTML = value;
   }
 
   get defaultViewOnlyValue() {
@@ -527,11 +527,18 @@ export class BaseComponent {
   }
 
   getView(value) {
-    return _.toString(value);
+    if (Array.isArray(value)) {
+      return value.join(', ');
+    }
+
+    return value.toString();
   }
 
   updateViewOnlyValue() {
-    this.empty(this.valueElement);
+    if (!this.valueElement) {
+      return;
+    }
+
     this.setupValueElement(this.valueElement);
   }
 
@@ -544,6 +551,7 @@ export class BaseComponent {
   }
 
   createModal(title) {
+    let self = this;
     let modalBody = this.ce('div');
     let modalOverlay = this.ce('div', {
       class: 'formio-dialog-overlay'
@@ -580,7 +588,7 @@ export class BaseComponent {
     dialog.body = modalBody;
     dialog.close = function() {
       dialog.dispatchEvent(new CustomEvent('close'));
-      this.removeChildFrom(dialog, document.body);
+      self.removeChildFrom(dialog, document.body);
     };
     return dialog;
   }
@@ -1552,34 +1560,36 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
-    // Ensure we stop any pending data clears.
-    if (this.clearPending) {
-      clearTimeout(this.clearPending);
-      this.clearPending = null;
-    }
-
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
     }
 
     this._visible = show;
+    this.showElement(show && !this.component.hidden);
+    this.clearOnHide(show);
+    return show;
+  }
+
+  /**
+   * Show or hide the root element of this component.
+   *
+   * @param show
+   */
+  showElement(show) {
     const element = this.getElement();
     if (element) {
-      if (show && !this.component.hidden) {
+      if (show) {
         element.removeAttribute('hidden');
         element.style.visibility = 'visible';
         element.style.position = 'relative';
       }
-      else if (!show || this.component.hidden) {
+      else {
         element.setAttribute('hidden', true);
         element.style.visibility = 'hidden';
         element.style.position = 'absolute';
       }
     }
-
-    this.clearOnHide(show);
-
     return show;
   }
 
@@ -1589,7 +1599,7 @@ export class BaseComponent {
       if (!show) {
         delete this.data[this.component.key];
       }
-      else {
+      else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true

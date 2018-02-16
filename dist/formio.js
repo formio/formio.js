@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -797,7 +797,7 @@ var Formio = function () {
 
       // Get the cached promise to save multiple loads.
       if (!opts.ignoreCache && method === 'GET' && Formio.cache.hasOwnProperty(cacheKey)) {
-        return Formio.cache[cacheKey];
+        return _nativePromiseOnly2.default.resolve(Formio.cache[cacheKey]);
       }
 
       // Set up and fetch request
@@ -823,8 +823,7 @@ var Formio = function () {
       options = Formio.pluginAlter('requestOptions', options, url);
 
       var requestToken = options.headers.get('x-jwt-token');
-
-      var requestPromise = fetch(url, options).then(function (response) {
+      return fetch(url, options).then(function (response) {
         // Allow plugins to respond.
         response = Formio.pluginAlter('requestResponse', response, Formio);
 
@@ -896,15 +895,24 @@ var Formio = function () {
           return result;
         }
 
+        var resultCopy = {};
+
         // Shallow copy result so modifications don't end up in cache
         if (Array.isArray(result)) {
-          var resultCopy = result.map(_shallowCopy2.default);
+          resultCopy = result.map(_shallowCopy2.default);
           resultCopy.skip = result.skip;
           resultCopy.limit = result.limit;
           resultCopy.serverCount = result.serverCount;
-          return resultCopy;
+        } else {
+          resultCopy = (0, _shallowCopy2.default)(result);
         }
-        return (0, _shallowCopy2.default)(result);
+
+        // Cache the response.
+        if (method === 'GET') {
+          Formio.cache[cacheKey] = resultCopy;
+        }
+
+        return resultCopy;
       }).catch(function (err) {
         if (err === 'Bad Token') {
           Formio.setToken(null);
@@ -914,21 +922,9 @@ var Formio = function () {
           err.message = 'Could not connect to API server (' + err.message + ')';
           err.networkError = true;
         }
-        if (Formio.cache.hasOwnProperty(cacheKey)) {
-          // Remove failed promises from cache
-          delete Formio.cache[cacheKey];
-        }
         // Propagate error so client can handle accordingly
         throw err;
       });
-
-      // Cache the request promise.
-      if (method === 'GET') {
-        Formio.cache[cacheKey] = requestPromise;
-      }
-
-      // Return the request promise.
-      return requestPromise;
     }
   }, {
     key: 'setToken',

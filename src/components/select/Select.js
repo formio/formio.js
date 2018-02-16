@@ -571,7 +571,7 @@ export class SelectComponent extends BaseComponent {
     else {
       const values = [];
       _.each(this.selectOptions, (selectOption) => {
-        if (selectOption.element.selected) {
+        if (selectOption.element && selectOption.element.selected) {
           values.push(selectOption.value);
         }
       });

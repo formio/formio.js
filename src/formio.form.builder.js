@@ -9,6 +9,8 @@ export class FormioFormBuilder extends FormioForm {
   constructor(element, options) {
     super(element, options);
     let self = this;
+    this.dragContainers = [];
+    this.sidebarContainers = [];
 
     // Setup default groups, but let them be overridden.
     this.options.groups = _.defaultsDeep({}, this.options.groups, {
@@ -75,15 +77,29 @@ export class FormioFormBuilder extends FormioForm {
         }, [removeButton, editButton]));
       }
 
-      if (!container.noDrop && !container.dragContainer) {
+      if (!container.noDrop) {
         container.component = this;
-        container.dragContainer = true;
         self.addClass(container, 'drag-container');
         self.dragContainers.push(container);
       }
 
       return container;
     };
+    this.setBuilderElement();
+  }
+
+  setBuilderElement() {
+    this.onElement.then(() => {
+      this.addClass(this.wrapper, 'row formbuilder');
+      this.builderSidebar = this.ce('div', {
+        class: 'col-xs-4 col-sm-3 col-md-2 formcomponents'
+      });
+      this.prependTo(this.builderSidebar, this.wrapper);
+      this.addClass(this.element, 'col-xs-8 col-sm-9 col-md-10 formarea');
+      this.element.component = this;
+      this.buildSidebar();
+      this.builderSidebar.appendChild(this.sideBarElement);
+    });
   }
 
   get ready() {
@@ -282,13 +298,6 @@ export class FormioFormBuilder extends FormioForm {
     this.emit('editComponent', component);
   }
 
-  clear() {
-    super.clear();
-    if (this.builderElement) {
-      this.builderElement.innerHTML = '';
-    }
-  }
-
   destroy() {
     super.destroy();
     if (this.dragula) {
@@ -353,7 +362,7 @@ export class FormioFormBuilder extends FormioForm {
         });
 
         // Match the form builder height to the sidebar.
-        this.formBuilderElement.style.minHeight = this.builderSidebar.offsetHeight + 'px';
+        this.element.style.minHeight = this.builderSidebar.offsetHeight + 'px';
       }
     });
 
@@ -374,7 +383,7 @@ export class FormioFormBuilder extends FormioForm {
     });
 
     // Add this group body to the drag containers.
-    this.dragContainers.push(info.body);
+    this.sidebarContainers.push(info.body);
 
     let groupBodyClass = 'panel-collapse collapse';
     if (info.default) {
@@ -453,28 +462,14 @@ export class FormioFormBuilder extends FormioForm {
     return containerComponent;
   }
 
-  build() {
+  clear() {
+    super.clear();
     this.dragContainers = [];
-    if (!this.builderElement) {
-      this.builderElement = this.element;
-      this.builderElement.setAttribute('class', 'row formbuilder');
-    }
+  }
 
-    this.builderSidebar = document.createElement('div');
-    this.builderSidebar.setAttribute('class', 'col-xs-4 col-sm-3 col-md-2 formcomponents');
-    this.builderElement.appendChild(this.builderSidebar);
-
-    this.formBuilderElement = document.createElement('div');
-    this.formBuilderElement.setAttribute('class', 'col-xs-8 col-sm-9 col-md-10 formarea');
-    this.element = this.formBuilderElement;
-    this.element.component = this;
-
-    this.builderElement.appendChild(this.formBuilderElement);
-    this.buildSidebar();
-    this.builderSidebar.appendChild(this.sideBarElement);
-
+  build() {
     super.build();
-    this.dragula = dragula(this.dragContainers, {
+    this.dragula = dragula(this.sidebarContainers.concat(this.dragContainers), {
       copy: function(el, source) {
         return el.classList.contains('drag-copy');
       },

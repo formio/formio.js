@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -847,19 +847,26 @@ var BaseComponent = function () {
   }, {
     key: 'setupValueElement',
     value: function setupValueElement(element) {
-      var value = this.value;
+      var value = this.getValue();
       value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
-      element.appendChild(this.text(value));
+      element.innerHTML = value;
     }
   }, {
     key: 'getView',
     value: function getView(value) {
-      return _lodash2.default.toString(value);
+      if (Array.isArray(value)) {
+        return value.join(', ');
+      }
+
+      return value.toString();
     }
   }, {
     key: 'updateViewOnlyValue',
     value: function updateViewOnlyValue() {
-      this.empty(this.valueElement);
+      if (!this.valueElement) {
+        return;
+      }
+
       this.setupValueElement(this.valueElement);
     }
   }, {
@@ -876,6 +883,7 @@ var BaseComponent = function () {
     value: function createModal(title) {
       var _this = this;
 
+      var self = this;
       var modalBody = this.ce('div');
       var modalOverlay = this.ce('div', {
         class: 'formio-dialog-overlay'
@@ -906,7 +914,7 @@ var BaseComponent = function () {
       dialog.body = modalBody;
       dialog.close = function () {
         dialog.dispatchEvent(new CustomEvent('close'));
-        this.removeChildFrom(dialog, document.body);
+        self.removeChildFrom(dialog, document.body);
       };
       return dialog;
     }
@@ -1925,34 +1933,39 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      // Ensure we stop any pending data clears.
-      if (this.clearPending) {
-        clearTimeout(this.clearPending);
-        this.clearPending = null;
-      }
-
       // Execute only if visibility changes.
       if (!_show === !this._visible) {
         return _show;
       }
 
       this._visible = _show;
+      this.showElement(_show && !this.component.hidden);
+      this.clearOnHide(_show);
+      return _show;
+    }
+
+    /**
+     * Show or hide the root element of this component.
+     *
+     * @param show
+     */
+
+  }, {
+    key: 'showElement',
+    value: function showElement(show) {
       var element = this.getElement();
       if (element) {
-        if (_show && !this.component.hidden) {
+        if (show) {
           element.removeAttribute('hidden');
           element.style.visibility = 'visible';
           element.style.position = 'relative';
-        } else if (!_show || this.component.hidden) {
+        } else {
           element.setAttribute('hidden', true);
           element.style.visibility = 'hidden';
           element.style.position = 'absolute';
         }
       }
-
-      this.clearOnHide(_show);
-
-      return _show;
+      return show;
     }
   }, {
     key: 'clearOnHide',
@@ -1961,7 +1974,7 @@ var BaseComponent = function () {
       if (this.component.clearOnHide !== false) {
         if (!show) {
           delete this.data[this.component.key];
-        } else {
+        } else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
           // If shown, ensure the default is set.
           this.setValue(this.defaultValue, {
             noUpdateEvent: true
