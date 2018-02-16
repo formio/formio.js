@@ -47,7 +47,7 @@ export default class FormioWizard extends FormioForm {
           form
         }, 'next');
         if (next === null) {
-          return page;
+          return null;
         }
 
         const pageNum = parseInt(next, 10);

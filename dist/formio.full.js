@@ -16076,7 +16076,7 @@ var FormioWizard = function (_FormioForm) {
             form: form
           }, 'next');
           if (next === null) {
-            return page;
+            return null;
           }
 
           var pageNum = parseInt(next, 10);
