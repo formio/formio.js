@@ -190,6 +190,18 @@ export class ButtonComponent extends BaseComponent {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+
+    function getUrlParameter(name) {
+      name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+      var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+      var results = regex.exec(location.search);
+      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    };
+
+    // If this is an OpenID Provider initiated login, perform the click event immediately
+    if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
+      this.openOauth();
+    }
   }
 
   openOauth() {
