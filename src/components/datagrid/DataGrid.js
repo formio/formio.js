@@ -144,7 +144,7 @@ export class DataGridComponent extends FormioComponents {
   removeRowComponents(rowIndex) {
     // Clean up components list.
     (Object.keys(this.rows[rowIndex])).forEach(key => {
-      this.removeComponent(this.rows[rowIndex][key], this.rows[rowIndex][key].element);
+      this.removeComponent(this.rows[rowIndex][key]);
     });
     delete this.rows[rowIndex];
   }
