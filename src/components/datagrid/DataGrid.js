@@ -169,8 +169,7 @@ export class DataGridComponent extends FormioComponents {
         style: 'text-align:center; margin-bottom: 0px;',
         role: 'alert'
       }, this.text('Drag and Drop a form component')));
-      lastColumn.component = this;
-      this.root.dragContainers.push(lastColumn);
+      this.root.addDragContainer(lastColumn, this);
     }
 
     const element = this.ce('tr', null,

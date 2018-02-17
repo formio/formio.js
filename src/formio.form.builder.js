@@ -78,9 +78,7 @@ export class FormioFormBuilder extends FormioForm {
       }
 
       if (!container.noDrop) {
-        container.component = this;
-        self.addClass(container, 'drag-container');
-        self.dragContainers.push(container);
+        self.addDragContainer(container, this);
       }
 
       return container;
@@ -460,6 +458,13 @@ export class FormioFormBuilder extends FormioForm {
     let containerComponent = element;
     do { containerComponent = containerComponent.parentNode } while (containerComponent && !containerComponent.component);
     return containerComponent;
+  }
+
+  addDragContainer(element, component) {
+    _.remove(this.dragContainers, (container) => (container.component === component));
+    element.component = component;
+    this.addClass(element, 'drag-container');
+    this.dragContainers.push(element);
   }
 
   clear() {

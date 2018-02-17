@@ -370,6 +370,10 @@ export class FormioComponents extends BaseComponent {
 
   destroy(all) {
     super.destroy(all);
+    this.destroyComponents();
+  }
+
+  destroyComponents() {
     const components = _.clone(this.components);
     _.each(components, (comp) => this.removeComponent(comp, this.components));
     this.components = [];

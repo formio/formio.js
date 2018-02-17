@@ -584,9 +584,14 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'destroy',
     value: function destroy(all) {
+      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'destroy', this).call(this, all);
+      this.destroyComponents();
+    }
+  }, {
+    key: 'destroyComponents',
+    value: function destroyComponents() {
       var _this5 = this;
 
-      _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'destroy', this).call(this, all);
       var components = _lodash2.default.clone(this.components);
       _lodash2.default.each(components, function (comp) {
         return _this5.removeComponent(comp, _this5.components);
@@ -6833,8 +6838,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           style: 'text-align:center; margin-bottom: 0px;',
           role: 'alert'
         }, this.text('Drag and Drop a form component')));
-        lastColumn.component = this;
-        this.root.dragContainers.push(lastColumn);
+        this.root.addDragContainer(lastColumn, this);
       }
 
       var element = this.ce('tr', null, [this.component.components.map(function (col, colIndex) {
@@ -6851,7 +6855,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
 
       // Clean up components list.
       Object.keys(this.rows[rowIndex]).forEach(function (key) {
-        _this6.removeComponent(_this6.rows[rowIndex][key], _this6.rows[rowIndex][key].element);
+        _this6.removeComponent(_this6.rows[rowIndex][key]);
       });
       delete this.rows[rowIndex];
     }
@@ -15228,9 +15232,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       }
 
       if (!container.noDrop) {
-        container.component = this;
-        self.addClass(container, 'drag-container');
-        self.dragContainers.push(container);
+        self.addDragContainer(container, this);
       }
 
       return container;
@@ -15598,6 +15600,16 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         containerComponent = containerComponent.parentNode;
       } while (containerComponent && !containerComponent.component);
       return containerComponent;
+    }
+  }, {
+    key: 'addDragContainer',
+    value: function addDragContainer(element, component) {
+      _lodash2.default.remove(this.dragContainers, function (container) {
+        return container.component === component;
+      });
+      element.component = component;
+      this.addClass(element, 'drag-container');
+      this.dragContainers.push(element);
     }
   }, {
     key: 'clear',
