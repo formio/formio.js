@@ -2933,6 +2933,18 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       if (this.shouldDisable) {
         this.disabled = true;
       }
+
+      function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      };
+
+      // If this is an OpenID Provider initiated login, perform the click event immediately
+      if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
+        this.openOauth();
+      }
     }
   }, {
     key: 'openOauth',
@@ -4628,7 +4640,11 @@ var Connector = function (_EventEmitter) {
   };
 
   Connector.prototype.saveMissing = function saveMissing(languages, namespace, key, fallbackValue, isUpdate) {
-    if (this.backend && this.backend.create) this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, { isUpdate: isUpdate });
+    var options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : {};
+
+    if (this.backend && this.backend.create) {
+      this.backend.create(languages, namespace, key, fallbackValue, null /* unused callback */, _extends({}, options, { isUpdate: isUpdate }));
+    }
 
     // write to store to avoid resending
     if (!languages || !languages[0]) return;
@@ -5564,15 +5580,14 @@ var Translator = function (_EventEmitter) {
     };
   };
 
-  Translator.prototype.translate = function translate(keys) {
+  Translator.prototype.translate = function translate(keys, options) {
     var _this2 = this;
 
-    var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-    if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== 'object') {
+    if ((typeof options === 'undefined' ? 'undefined' : _typeof(options)) !== 'object' && this.options.overloadTranslationOptionHandler) {
       /* eslint prefer-rest-params: 0 */
       options = this.options.overloadTranslationOptionHandler(arguments);
     }
+    if (!options) options = {};
 
     // non valid keys handling
     if (keys === undefined || keys === null || keys === '') return '';
@@ -5605,7 +5620,7 @@ var Translator = function (_EventEmitter) {
     // resolve from store
     var resolved = this.resolve(keys, options);
     var res = resolved && resolved.res;
-    var usedKey = resolved && resolved.usedKey || key;
+    var resUsedKey = resolved && resolved.usedKey || key;
 
     var resType = Object.prototype.toString.apply(res);
     var noObject = ['[object Number]', '[object Function]', '[object RegExp]'];
@@ -5616,7 +5631,7 @@ var Translator = function (_EventEmitter) {
     if (res && handleAsObject && noObject.indexOf(resType) < 0 && !(joinArrays && resType === '[object Array]')) {
       if (!options.returnObjects && !this.options.returnObjects) {
         this.logger.warn('accessing an object - but returnObjects options is not enabled!');
-        return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(usedKey, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
+        return this.options.returnedObjectHandler ? this.options.returnedObjectHandler(resUsedKey, res, options) : 'key \'' + key + ' (' + this.language + ')\' returned an object instead of string.';
       }
 
       // if we got a separator we loop over children - else we just return object as is
@@ -5627,7 +5642,9 @@ var Translator = function (_EventEmitter) {
         /* eslint no-restricted-syntax: 0 */
         for (var m in res) {
           if (Object.prototype.hasOwnProperty.call(res, m)) {
-            copy[m] = this.translate('' + usedKey + keySeparator + m, _extends({}, options, { joinArrays: false, ns: namespaces }));
+            var deepKey = '' + resUsedKey + keySeparator + m;
+            copy[m] = this.translate(deepKey, _extends({}, options, { joinArrays: false, ns: namespaces }));
+            if (copy[m] === deepKey) copy[m] = res[m]; // if nothing found use orginal value as fallback
           }
         }
         res = copy;
@@ -5639,7 +5656,7 @@ var Translator = function (_EventEmitter) {
     } else {
       // string, empty or null
       var usedDefault = false;
-      var _usedKey = false;
+      var usedKey = false;
 
       // fallback value
       if (!this.isValidLookup(res) && options.defaultValue !== undefined) {
@@ -5647,13 +5664,13 @@ var Translator = function (_EventEmitter) {
         res = options.defaultValue;
       }
       if (!this.isValidLookup(res)) {
-        _usedKey = true;
+        usedKey = true;
         res = key;
       }
 
       // save missing
       var updateMissing = options.defaultValue && options.defaultValue !== res && this.options.updateMissing;
-      if (_usedKey || usedDefault || updateMissing) {
+      if (usedKey || usedDefault || updateMissing) {
         this.logger.log(updateMissing ? 'updateKey' : 'missingKey', lng, namespace, key, updateMissing ? options.defaultValue : res);
 
         var lngs = [];
@@ -5670,9 +5687,9 @@ var Translator = function (_EventEmitter) {
 
         var send = function send(l, k) {
           if (_this2.options.missingKeyHandler) {
-            _this2.options.missingKeyHandler(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing);
+            _this2.options.missingKeyHandler(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing, options);
           } else if (_this2.backendConnector && _this2.backendConnector.saveMissing) {
-            _this2.backendConnector.saveMissing(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing);
+            _this2.backendConnector.saveMissing(l, namespace, k, updateMissing ? options.defaultValue : res, updateMissing, options);
           }
           _this2.emit('missingKey', l, namespace, k, res);
         };
@@ -5696,10 +5713,10 @@ var Translator = function (_EventEmitter) {
       res = this.extendTranslation(res, keys, options);
 
       // append namespace if still key
-      if (_usedKey && res === key && this.options.appendNamespaceToMissingKey) res = namespace + ':' + key;
+      if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = namespace + ':' + key;
 
       // parseMissingKeyHandler
-      if (_usedKey && this.options.parseMissingKeyHandler) res = this.options.parseMissingKeyHandler(res);
+      if (usedKey && this.options.parseMissingKeyHandler) res = this.options.parseMissingKeyHandler(res);
     }
 
     // return
@@ -5727,7 +5744,7 @@ var Translator = function (_EventEmitter) {
     var postProcess = options.postProcess || this.options.postProcess;
     var postProcessorNames = typeof postProcess === 'string' ? [postProcess] : postProcess;
 
-    if (res !== undefined && postProcessorNames && postProcessorNames.length && options.applyPostProcessor !== false) {
+    if (res !== undefined && res !== null && postProcessorNames && postProcessorNames.length && options.applyPostProcessor !== false) {
       res = _postProcessor2.default.handle(postProcessorNames, res, key, options, this);
     }
 
@@ -5852,7 +5869,10 @@ function get() {
     appendNamespaceToMissingKey: false,
     appendNamespaceToCIMode: false,
     overloadTranslationOptionHandler: function handle(args) {
-      return { defaultValue: args[1] };
+      var ret = {};
+      if (args[1]) ret.defaultValue = args[1];
+      if (args[2]) ret.tDescription = args[2];
+      return ret;
     },
 
     interpolation: {

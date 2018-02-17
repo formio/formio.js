@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.2
+### Changed
+ - Upgraded i18next to 10.4.1 
+
+### Fixed
+ - Problem where DataGrid could add duplicate columns.
+
+### Added
+ - Add ability to have oauth initiated logins.
+
 ## 2.29.1
 ### Added
  - 'Delimiter' property to Number component.
