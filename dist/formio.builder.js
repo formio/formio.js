@@ -5277,7 +5277,8 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
                 flattened: flattened,
                 components: components,
                 _: _lodash2.default,
-                data: _this2.data
+                data: _this2.data,
+                component: _this2
               });
               break;
             }
@@ -6843,6 +6844,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
       if (this.options.builder) {
         lastColumn = this.ce('td', {
+          id: this.id + '-drag-container',
           class: 'drag-container'
         }, this.ce('div', {
           id: this.id + '-placeholder',
@@ -6879,6 +6881,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
 
       var container = this.ce('td');
+      container.noDrop = true;
       var column = _lodash2.default.clone(col);
       var options = _lodash2.default.clone(this.options);
       options.name += '[' + colIndex + ']';
@@ -8289,7 +8292,8 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         var valid = _utils2.default.evaluate(this.component.validate.row, {
           valid: true,
           row: this.editRows[rowIndex].data,
-          data: this.data
+          data: this.data,
+          component: this
         }, 'valid', true);
         if (valid === null) {
           valid = 'Invalid row validation for ' + this.component.key;
@@ -15179,6 +15183,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     var self = _this;
     _this.dragContainers = [];
     _this.sidebarContainers = [];
+    _this.updateDraggable = _lodash2.default.debounce(_this.refreshDraggable.bind(_this), 200);
 
     // Setup default groups, but let them be overridden.
     _this.options.groups = _lodash2.default.defaultsDeep({}, _this.options.groups, {
@@ -15288,7 +15293,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     }
   }, {
     key: 'updateComponent',
-    value: function updateComponent(component, isNew) {
+    value: function updateComponent(component) {
       // Update the preview.
       if (this.componentPreview) {
         this.componentPreview.innerHTML = '';
@@ -15298,25 +15303,25 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       }
 
       // Ensure this component has a key.
-      if (isNew) {
+      if (component.isNew && !component.uniqueKey) {
         if (!component.keyModified) {
           component.component.key = _lodash2.default.camelCase(component.component.label || component.component.placeholder || component.component.type);
         }
 
         // Set a unique key for this component.
-        _builder3.BuilderUtils.uniquify(this._form, component.component, isNew);
+        _builder3.BuilderUtils.uniquify(this._form, component.component);
+        component.uniqueKey = true;
       }
 
       // Set the full form on the component.
       component.component.__form = this.schema;
 
       // Called when we update a component.
-      component.isNew = isNew;
       this.emit('updateComponent', component);
     }
   }, {
     key: 'editComponent',
-    value: function editComponent(component, isNew) {
+    value: function editComponent(component) {
       var _this3 = this;
 
       var componentCopy = _lodash2.default.cloneDeep(component);
@@ -15384,7 +15389,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       this.editForm.form = _builder2.default[componentCopy.component.type].editForm();
 
       // Update the preview with this component.
-      this.updateComponent(componentCopy, isNew);
+      this.updateComponent(componentCopy);
 
       // Register for when the edit form changes.
       this.editForm.on('change', function (event) {
@@ -15392,13 +15397,14 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           // See if this is a manually modified key.
           if (event.changed.component && event.changed.component.key === 'key') {
             componentCopy.keyModified = true;
+            componentCopy.uniqueKey = false;
           }
 
           // Set the component JSON to the new data.
           componentCopy.component = event.data;
 
           // Update the component.
-          _this3.updateComponent(componentCopy, isNew);
+          _this3.updateComponent(componentCopy);
         }
       });
 
@@ -15422,10 +15428,10 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       this.addEventListener(saveButton, 'click', function (event) {
         event.preventDefault();
-        isNew = false;
         if (componentCopy.component && componentCopy.component.__form) {
           delete componentCopy.component.__form;
         }
+        component.isNew = false;
         component.component = componentCopy.component;
         _this3.emit('saveComponent', component);
         _this3.form = _this3.schema;
@@ -15434,7 +15440,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       this.addEventListener(dialog, 'close', function () {
         _this3.editForm.destroy();
-        if (isNew) {
+        if (component.isNew) {
           _this3.deleteComponent(component);
         }
       });
@@ -15617,11 +15623,15 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     key: 'addDragContainer',
     value: function addDragContainer(element, component) {
       _lodash2.default.remove(this.dragContainers, function (container) {
-        return container.component === component;
+        return element.id && element.id === container.id;
       });
       element.component = component;
       this.addClass(element, 'drag-container');
+      if (!element.id) {
+        element.id = 'builder-element-' + component.id;
+      }
       this.dragContainers.push(element);
+      this.updateDraggable();
     }
   }, {
     key: 'clear',
@@ -15630,11 +15640,61 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       this.dragContainers = [];
     }
   }, {
-    key: 'build',
-    value: function build() {
+    key: 'onDrop',
+    value: function onDrop(element, target, source, sibling) {
+      var builderElement = source.querySelector('#' + element.id);
+      var newParent = this.getParentElement(element);
+      if (!newParent || !newParent.component) {
+        return console.warn('Could not find parent component.');
+      }
+
+      // Remove any instances of the placeholder.
+      var placeholder = document.getElementById(newParent.component.id + '-placeholder');
+      if (placeholder) {
+        placeholder.parentNode.removeChild(placeholder);
+      }
+
+      // If the sibling is the placeholder, then set it to null.
+      if (sibling === placeholder) {
+        sibling = null;
+      }
+
+      // If this is a new component, it will come from the builderElement
+      if (builderElement && builderElement.builderInfo && builderElement.builderInfo.schema) {
+        // Add the new component.
+        var component = newParent.component.addComponent(builderElement.builderInfo.schema, newParent, newParent.component.data, sibling);
+
+        // Set that this is a new component.
+        component.isNew = true;
+
+        // Edit the component.
+        this.editComponent(component);
+
+        // Remove the element.
+        target.removeChild(element);
+      }
+      // Check to see if this is a moved component.
+      else if (element.component) {
+          // Remove the component from its parent.
+          if (element.component.parent) {
+            element.component.parent.removeComponent(element.component);
+          }
+
+          // Add the component to its new parent.
+          newParent.component.addComponent(element.component.schema, newParent, newParent.component.data, sibling);
+
+          // Refresh the form.
+          this.form = this.schema;
+        }
+    }
+  }, {
+    key: 'refreshDraggable',
+    value: function refreshDraggable() {
       var _this6 = this;
 
-      _get(FormioFormBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioFormBuilder.prototype), 'build', this).call(this);
+      if (this.dragula) {
+        this.dragula.destroy();
+      }
       this.dragula = (0, _dragula2.default)(this.sidebarContainers.concat(this.dragContainers), {
         copy: function copy(el, source) {
           return el.classList.contains('drag-copy');
@@ -15643,49 +15703,14 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           return !target.classList.contains('no-drop');
         }
       }).on('drop', function (element, target, source, sibling) {
-        var builderElement = source.querySelector('#' + element.id);
-        var newParent = _this6.getParentElement(element);
-        if (!newParent || !newParent.component) {
-          return console.warn('Could not find parent component.');
-        }
-
-        // Remove any instances of the placeholder.
-        var placeholder = document.getElementById(newParent.component.id + '-placeholder');
-        if (placeholder) {
-          placeholder.parentNode.removeChild(placeholder);
-        }
-
-        // If the sibling is the placeholder, then set it to null.
-        if (sibling === placeholder) {
-          sibling = null;
-        }
-
-        // If this is a new component, it will come from the builderElement
-        if (builderElement && builderElement.builderInfo && builderElement.builderInfo.schema) {
-          // Add the new component.
-          var component = newParent.component.addComponent(builderElement.builderInfo.schema, newParent, newParent.component.data, sibling);
-
-          // Edit the component.
-          _this6.editComponent(component, true);
-
-          // Remove the element.
-          target.removeChild(element);
-        }
-        // Check to see if this is a moved component.
-        else if (element.component) {
-            // Remove the component from its parent.
-            if (element.component.parent) {
-              element.component.parent.removeComponent(element.component);
-            }
-
-            // Add the component to its new parent.
-            newParent.component.addComponent(element.component.schema, newParent, newParent.component.data, sibling);
-
-            // Refresh the form.
-            _this6.form = _this6.schema;
-          }
+        return _this6.onDrop(element, target, source, sibling);
       });
-
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      _get(FormioFormBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioFormBuilder.prototype), 'build', this).call(this);
+      this.updateDraggable();
       this.formReadyResolve();
     }
   }, {
@@ -16064,7 +16089,7 @@ var FormioForm = function (_FormioComponents) {
       this.wrapper = element;
       this.element = this.ce('div');
       this.wrapper.appendChild(this.element);
-      this.showElement(false);
+      //this.showElement(false);
       this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
       var classNames = this.element.getAttribute('class');
       classNames += ' formio-form';
@@ -16423,7 +16448,7 @@ var FormioForm = function (_FormioComponents) {
 
       return this.onElement.then(function () {
         _this9.clear();
-        _this9.showElement(false);
+        //this.showElement(false);
         return _this9.localize().then(function () {
           _this9.build();
           _this9.isBuilt = true;
@@ -19745,6 +19770,11 @@ var BuilderUtils = exports.BuilderUtils = {
     var _this = this;
 
     var changed = false;
+    var formKeys = {};
+    _index2.default.eachComponent(form.components, function (comp) {
+      formKeys[comp.key] = true;
+    });
+
     // Recurse into all child components.
     _index2.default.eachComponent([component], function (component) {
       // Skip key uniquification if this component doesn't have a key.
@@ -19752,8 +19782,7 @@ var BuilderUtils = exports.BuilderUtils = {
         return;
       }
 
-      var memoization = _index2.default.findExistingComponents(form.components, component);
-      while (memoization.hasOwnProperty(component.key)) {
+      while (formKeys.hasOwnProperty(component.key)) {
         component.key = _this.iterateKey(component.key);
         changed = true;
       }
@@ -19872,6 +19901,7 @@ var FormioUtils = {
    */
   evaluate: function evaluate(func, args, ret, tokenize) {
     var returnVal = null;
+    var component = args.component && args.component.component ? args.component.component : { key: 'unknown' };
     if (typeof func === 'string') {
       if (ret) {
         func += ';return ' + ret;
@@ -19900,17 +19930,17 @@ var FormioUtils = {
         returnVal = func.apply(undefined, _toConsumableArray(values));
       } catch (err) {
         returnVal = null;
-        console.warn('An error occured within custom function for ' + this.component.key, err);
+        console.warn('An error occured within custom function for ' + component.key, err);
       }
     } else if ((typeof func === 'undefined' ? 'undefined' : _typeof(func)) === 'object') {
       try {
         returnVal = _jsonLogicJs2.default.apply(func, args);
       } catch (err) {
         returnVal = null;
-        console.warn('An error occured within custom function for ' + this.component.key, err);
+        console.warn('An error occured within custom function for ' + component.key, err);
       }
     } else {
-      console.warn('Unknown function type for ' + this.component.key);
+      console.warn('Unknown function type for ' + component.key);
     }
     return returnVal;
   },
@@ -20187,7 +20217,8 @@ var FormioUtils = {
         value: [],
         data: submission ? submission.data : rowData,
         row: rowData,
-        util: this
+        util: this,
+        component: { component: component }
       }, 'value');
     }
   },
@@ -20536,31 +20567,6 @@ var FormioUtils = {
     }
 
     return true;
-  },
-
-  /**
-   * Find the given form components in a map, using the component keys.
-   *
-   * @param {Array} components
-   *   An array of the form components.
-   * @param {Object} input
-   *   The input component we're trying to uniquify.
-   *
-   * @returns {Object}
-   *   The memoized form components.
-   */
-  findExistingComponents: function findExistingComponents(components, input) {
-    // Prebuild a list of existing components.
-    var existingComponents = {};
-    FormioUtils.eachComponent(components, function (component) {
-      // If theres no key, we cant compare components.
-      if (!component.key) return;
-      if (component.key === input.key && (!component.id || component.id !== input.id)) {
-        existingComponents[component.key] = component;
-      }
-    }, true);
-
-    return existingComponents;
   }
 };
 

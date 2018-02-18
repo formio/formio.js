@@ -196,7 +196,8 @@ export class ButtonComponent extends BaseComponent {
             flattened,
             components,
             _,
-            data: this.data
+            data: this.data,
+            component: this
           });
           break;
         }

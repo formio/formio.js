@@ -162,6 +162,7 @@ export class DataGridComponent extends FormioComponents {
     }
     if (this.options.builder) {
       lastColumn = this.ce('td', {
+        id: `${this.id}-drag-container`,
         class: 'drag-container'
       }, this.ce('div', {
         id: this.id + '-placeholder',
@@ -197,6 +198,7 @@ export class DataGridComponent extends FormioComponents {
     }
 
     let container = this.ce('td');
+    container.noDrop = true;
     let column = _.clone(col);
     let options = _.clone(this.options);
     options.name += `[${colIndex}]`;

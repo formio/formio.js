@@ -31,6 +31,11 @@ export const BuilderUtils = {
    */
   uniquify(form, component) {
     let changed = false;
+    let formKeys = {};
+    FormioUtils.eachComponent(form.components, function(comp) {
+      formKeys[comp.key] = true;
+    });
+
     // Recurse into all child components.
     FormioUtils.eachComponent([component], (component) => {
       // Skip key uniquification if this component doesn't have a key.
@@ -38,8 +43,7 @@ export const BuilderUtils = {
         return;
       }
 
-      var memoization = FormioUtils.findExistingComponents(form.components, component);
-      while (memoization.hasOwnProperty(component.key)) {
+      while (formKeys.hasOwnProperty(component.key)) {
         component.key = this.iterateKey(component.key);
         changed = true;
       }

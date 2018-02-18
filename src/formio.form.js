@@ -288,7 +288,7 @@ export default class FormioForm extends FormioComponents {
     this.wrapper = element;
     this.element = this.ce('div');
     this.wrapper.appendChild(this.element);
-    this.showElement(false);
+    //this.showElement(false);
     this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
     let classNames = this.element.getAttribute('class');
     classNames += ' formio-form';
@@ -735,7 +735,7 @@ export default class FormioForm extends FormioComponents {
   render() {
     return this.onElement.then(() => {
       this.clear();
-      this.showElement(false);
+      //this.showElement(false);
       return this.localize().then(() => {
         this.build();
         this.isBuilt = true;

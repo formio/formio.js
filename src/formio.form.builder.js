@@ -11,6 +11,7 @@ export class FormioFormBuilder extends FormioForm {
     let self = this;
     this.dragContainers = [];
     this.sidebarContainers = [];
+    this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
 
     // Setup default groups, but let them be overridden.
     this.options.groups = _.defaultsDeep({}, this.options.groups, {
@@ -119,7 +120,7 @@ export class FormioFormBuilder extends FormioForm {
     }
   }
 
-  updateComponent(component, isNew) {
+  updateComponent(component) {
     // Update the preview.
     if (this.componentPreview) {
       this.componentPreview.innerHTML = '';
@@ -129,7 +130,7 @@ export class FormioFormBuilder extends FormioForm {
     }
 
     // Ensure this component has a key.
-    if (isNew) {
+    if (component.isNew && !component.uniqueKey) {
       if (!component.keyModified) {
         component.component.key = _.camelCase(
           component.component.label ||
@@ -139,18 +140,18 @@ export class FormioFormBuilder extends FormioForm {
       }
 
       // Set a unique key for this component.
-      BuilderUtils.uniquify(this._form, component.component, isNew);
+      BuilderUtils.uniquify(this._form, component.component);
+      component.uniqueKey = true;
     }
 
     // Set the full form on the component.
     component.component.__form = this.schema;
 
     // Called when we update a component.
-    component.isNew = isNew;
     this.emit('updateComponent', component);
   }
 
-  editComponent(component, isNew) {
+  editComponent(component) {
     let componentCopy = _.cloneDeep(component);
     let componentClass = Components[componentCopy.component.type];
     let dialog = this.createModal(componentCopy.name);
@@ -239,7 +240,7 @@ export class FormioFormBuilder extends FormioForm {
     this.editForm.form = Components[componentCopy.component.type].editForm();
 
     // Update the preview with this component.
-    this.updateComponent(componentCopy, isNew);
+    this.updateComponent(componentCopy);
 
     // Register for when the edit form changes.
     this.editForm.on('change', (event) => {
@@ -247,13 +248,14 @@ export class FormioFormBuilder extends FormioForm {
         // See if this is a manually modified key.
         if (event.changed.component && (event.changed.component.key === 'key')) {
           componentCopy.keyModified = true;
+          componentCopy.uniqueKey = false;
         }
 
         // Set the component JSON to the new data.
         componentCopy.component = event.data;
 
         // Update the component.
-        this.updateComponent(componentCopy, isNew);
+        this.updateComponent(componentCopy);
       }
     });
 
@@ -275,10 +277,10 @@ export class FormioFormBuilder extends FormioForm {
 
     this.addEventListener(saveButton, 'click', (event) => {
       event.preventDefault();
-      isNew = false;
       if (componentCopy.component && componentCopy.component.__form) {
         delete componentCopy.component.__form;
       }
+      component.isNew = false;
       component.component = componentCopy.component;
       this.emit('saveComponent', component);
       this.form = this.schema;
@@ -287,7 +289,7 @@ export class FormioFormBuilder extends FormioForm {
 
     this.addEventListener(dialog, 'close', () => {
       this.editForm.destroy();
-      if (isNew) {
+      if (component.isNew) {
         this.deleteComponent(component);
       }
     });
@@ -461,10 +463,14 @@ export class FormioFormBuilder extends FormioForm {
   }
 
   addDragContainer(element, component) {
-    _.remove(this.dragContainers, (container) => (container.component === component));
+    _.remove(this.dragContainers, (container) => (element.id && (element.id === container.id)));
     element.component = component;
     this.addClass(element, 'drag-container');
+    if (!element.id) {
+      element.id = `builder-element-${component.id}`;
+    }
     this.dragContainers.push(element);
+    this.updateDraggable();
   }
 
   clear() {
@@ -472,8 +478,71 @@ export class FormioFormBuilder extends FormioForm {
     this.dragContainers = [];
   }
 
-  build() {
-    super.build();
+  onDrop(element, target, source, sibling) {
+    let builderElement = source.querySelector('#' + element.id);
+    let newParent = this.getParentElement(element);
+    if (!newParent || !newParent.component) {
+      return console.warn('Could not find parent component.');
+    }
+
+    // Remove any instances of the placeholder.
+    let placeholder = document.getElementById(newParent.component.id + '-placeholder');
+    if (placeholder) {
+      placeholder.parentNode.removeChild(placeholder);
+    }
+
+    // If the sibling is the placeholder, then set it to null.
+    if (sibling === placeholder) {
+      sibling = null;
+    }
+
+    // If this is a new component, it will come from the builderElement
+    if (
+      builderElement &&
+      builderElement.builderInfo &&
+      builderElement.builderInfo.schema
+    ) {
+      // Add the new component.
+      let component = newParent.component.addComponent(
+        builderElement.builderInfo.schema,
+        newParent,
+        newParent.component.data,
+        sibling
+      );
+
+      // Set that this is a new component.
+      component.isNew = true;
+
+      // Edit the component.
+      this.editComponent(component);
+
+      // Remove the element.
+      target.removeChild(element);
+    }
+    // Check to see if this is a moved component.
+    else if (element.component) {
+      // Remove the component from its parent.
+      if (element.component.parent) {
+        element.component.parent.removeComponent(element.component);
+      }
+
+      // Add the component to its new parent.
+      newParent.component.addComponent(
+        element.component.schema,
+        newParent,
+        newParent.component.data,
+        sibling
+      );
+
+      // Refresh the form.
+      this.form = this.schema;
+    }
+  }
+
+  refreshDraggable() {
+    if (this.dragula) {
+      this.dragula.destroy();
+    }
     this.dragula = dragula(this.sidebarContainers.concat(this.dragContainers), {
       copy: function(el, source) {
         return el.classList.contains('drag-copy');
@@ -481,64 +550,12 @@ export class FormioFormBuilder extends FormioForm {
       accepts: function(el, target) {
         return !target.classList.contains('no-drop');
       }
-    }).on('drop', (element, target, source, sibling) => {
-      let builderElement = source.querySelector('#' + element.id);
-      let newParent = this.getParentElement(element);
-      if (!newParent || !newParent.component) {
-        return console.warn('Could not find parent component.');
-      }
+    }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
+  }
 
-      // Remove any instances of the placeholder.
-      let placeholder = document.getElementById(newParent.component.id + '-placeholder');
-      if (placeholder) {
-        placeholder.parentNode.removeChild(placeholder);
-      }
-
-      // If the sibling is the placeholder, then set it to null.
-      if (sibling === placeholder) {
-        sibling = null;
-      }
-
-      // If this is a new component, it will come from the builderElement
-      if (
-        builderElement &&
-        builderElement.builderInfo &&
-        builderElement.builderInfo.schema
-      ) {
-        // Add the new component.
-        let component = newParent.component.addComponent(
-          builderElement.builderInfo.schema,
-          newParent,
-          newParent.component.data,
-          sibling
-        );
-
-        // Edit the component.
-        this.editComponent(component, true);
-
-        // Remove the element.
-        target.removeChild(element);
-      }
-      // Check to see if this is a moved component.
-      else if (element.component) {
-        // Remove the component from its parent.
-        if (element.component.parent) {
-          element.component.parent.removeComponent(element.component);
-        }
-
-        // Add the component to its new parent.
-        newParent.component.addComponent(
-          element.component.schema,
-          newParent,
-          newParent.component.data,
-          sibling
-        );
-
-        // Refresh the form.
-        this.form = this.schema;
-      }
-    });
-
+  build() {
+    super.build();
+    this.updateDraggable();
     this.formReadyResolve();
   }
 }

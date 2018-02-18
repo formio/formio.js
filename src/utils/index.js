@@ -34,6 +34,7 @@ const FormioUtils = {
    */
   evaluate(func, args, ret, tokenize) {
     let returnVal = null;
+    let component = (args.component && args.component.component) ? args.component.component : {key: 'unknown'};
     if (typeof func === 'string') {
       if (ret) {
         func += `;return ${ret}`;
@@ -64,7 +65,7 @@ const FormioUtils = {
       }
       catch (err) {
         returnVal = null;
-        console.warn(`An error occured within custom function for ${this.component.key}`, err);
+        console.warn(`An error occured within custom function for ${component.key}`, err);
       }
     }
     else if (typeof func === 'object') {
@@ -73,11 +74,11 @@ const FormioUtils = {
       }
       catch (err) {
         returnVal = null;
-        console.warn(`An error occured within custom function for ${this.component.key}`, err);
+        console.warn(`An error occured within custom function for ${component.key}`, err);
       }
     }
     else {
-      console.warn(`Unknown function type for ${this.component.key}`);
+      console.warn(`Unknown function type for ${component.key}`);
     }
     return returnVal;
   },
@@ -372,7 +373,8 @@ const FormioUtils = {
         value: [],
         data: submission ? submission.data : rowData,
         row: rowData,
-        util: this
+        util: this,
+        component: {component}
       }, 'value');
     }
   },
@@ -741,34 +743,6 @@ const FormioUtils = {
     }
 
     return true;
-  },
-
-  /**
-   * Find the given form components in a map, using the component keys.
-   *
-   * @param {Array} components
-   *   An array of the form components.
-   * @param {Object} input
-   *   The input component we're trying to uniquify.
-   *
-   * @returns {Object}
-   *   The memoized form components.
-   */
-  findExistingComponents(components, input) {
-    // Prebuild a list of existing components.
-    var existingComponents = {};
-    FormioUtils.eachComponent(components, function(component) {
-      // If theres no key, we cant compare components.
-      if (!component.key) return;
-      if (
-        (component.key === input.key) &&
-        (!component.id || (component.id !== input.id))
-      ) {
-        existingComponents[component.key] = component;
-      }
-    }, true);
-
-    return existingComponents;
   }
 };
 

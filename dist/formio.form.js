@@ -4374,7 +4374,8 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
                 flattened: flattened,
                 components: components,
                 _: _lodash2.default,
-                data: _this2.data
+                data: _this2.data,
+                component: _this2
               });
               break;
             }
@@ -5751,6 +5752,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
       if (this.options.builder) {
         lastColumn = this.ce('td', {
+          id: this.id + '-drag-container',
           class: 'drag-container'
         }, this.ce('div', {
           id: this.id + '-placeholder',
@@ -5787,6 +5789,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
 
       var container = this.ce('td');
+      container.noDrop = true;
       var column = _lodash2.default.clone(col);
       var options = _lodash2.default.clone(this.options);
       options.name += '[' + colIndex + ']';
@@ -7161,7 +7164,8 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         var valid = _utils2.default.evaluate(this.component.validate.row, {
           valid: true,
           row: this.editRows[rowIndex].data,
-          data: this.data
+          data: this.data,
+          component: this
         }, 'valid', true);
         if (valid === null) {
           valid = 'Invalid row validation for ' + this.component.key;
@@ -13277,7 +13281,7 @@ var FormioForm = function (_FormioComponents) {
       this.wrapper = element;
       this.element = this.ce('div');
       this.wrapper.appendChild(this.element);
-      this.showElement(false);
+      //this.showElement(false);
       this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
       var classNames = this.element.getAttribute('class');
       classNames += ' formio-form';
@@ -13636,7 +13640,7 @@ var FormioForm = function (_FormioComponents) {
 
       return this.onElement.then(function () {
         _this9.clear();
-        _this9.showElement(false);
+        //this.showElement(false);
         return _this9.localize().then(function () {
           _this9.build();
           _this9.isBuilt = true;
@@ -16039,6 +16043,7 @@ var FormioUtils = {
    */
   evaluate: function evaluate(func, args, ret, tokenize) {
     var returnVal = null;
+    var component = args.component && args.component.component ? args.component.component : { key: 'unknown' };
     if (typeof func === 'string') {
       if (ret) {
         func += ';return ' + ret;
@@ -16067,17 +16072,17 @@ var FormioUtils = {
         returnVal = func.apply(undefined, _toConsumableArray(values));
       } catch (err) {
         returnVal = null;
-        console.warn('An error occured within custom function for ' + this.component.key, err);
+        console.warn('An error occured within custom function for ' + component.key, err);
       }
     } else if ((typeof func === 'undefined' ? 'undefined' : _typeof(func)) === 'object') {
       try {
         returnVal = _jsonLogicJs2.default.apply(func, args);
       } catch (err) {
         returnVal = null;
-        console.warn('An error occured within custom function for ' + this.component.key, err);
+        console.warn('An error occured within custom function for ' + component.key, err);
       }
     } else {
-      console.warn('Unknown function type for ' + this.component.key);
+      console.warn('Unknown function type for ' + component.key);
     }
     return returnVal;
   },
@@ -16354,7 +16359,8 @@ var FormioUtils = {
         value: [],
         data: submission ? submission.data : rowData,
         row: rowData,
-        util: this
+        util: this,
+        component: { component: component }
       }, 'value');
     }
   },
@@ -16703,31 +16709,6 @@ var FormioUtils = {
     }
 
     return true;
-  },
-
-  /**
-   * Find the given form components in a map, using the component keys.
-   *
-   * @param {Array} components
-   *   An array of the form components.
-   * @param {Object} input
-   *   The input component we're trying to uniquify.
-   *
-   * @returns {Object}
-   *   The memoized form components.
-   */
-  findExistingComponents: function findExistingComponents(components, input) {
-    // Prebuild a list of existing components.
-    var existingComponents = {};
-    FormioUtils.eachComponent(components, function (component) {
-      // If theres no key, we cant compare components.
-      if (!component.key) return;
-      if (component.key === input.key && (!component.id || component.id !== input.id)) {
-        existingComponents[component.key] = component;
-      }
-    }, true);
-
-    return existingComponents;
   }
 };
 
