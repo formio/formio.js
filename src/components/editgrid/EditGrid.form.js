@@ -1,4 +1,4 @@
-const ComponentsEditForm = require('../Components.form');
+const BaseEditForm = require('../base/Base.form');
 module.exports = function(...extend) {
-  return ComponentsEditForm({}, ...extend);
+  return BaseEditForm({}, ...extend);
 };

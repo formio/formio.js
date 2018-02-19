@@ -6897,6 +6897,9 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
   _createClass(EditGridComponent, [{
     key: 'build',
     value: function build() {
+      if (this.options.builder) {
+        return _get(EditGridComponent.prototype.__proto__ || Object.getPrototypeOf(EditGridComponent.prototype), 'build', this).call(this);
+      }
       this.createElement();
       this.createLabel(this.element);
       this.buildTable();
@@ -11676,6 +11679,22 @@ var _createClass = function () {
   };
 }();
 
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -11714,9 +11733,79 @@ var TableComponent = exports.TableComponent = function (_FormioComponents) {
   }
 
   _createClass(TableComponent, [{
+    key: 'addComponents',
+
+    /**
+     *
+     * @param element
+     * @param data
+     */
+    value: function addComponents(element, data) {
+      var _this2 = this;
+
+      // Build the body.
+      this.tbody = this.ce('tbody');
+      _lodash2.default.each(this.component.rows, function (row, rowIndex) {
+        var tr = _this2.ce('tr');
+        _lodash2.default.each(row, function (column, colIndex) {
+          var td = _this2.ce('td', {
+            id: _this2.id + '-' + rowIndex + '-' + colIndex
+          });
+          _lodash2.default.each(column.components, function (comp) {
+            comp.tableRow = rowIndex;
+            comp.tableColumn = colIndex;
+            _this2.addComponent(comp, td, data);
+          });
+
+          if (_this2.options.builder) {
+            if (!column.components || !column.components.length) {
+              td.appendChild(_this2.ce('div', {
+                id: _this2.id + '-' + rowIndex + '-' + colIndex + '-placeholder',
+                class: 'alert alert-info',
+                style: 'text-align:center; margin-bottom: 0px;',
+                role: 'alert'
+              }, _this2.text('Drag and Drop a form component')));
+              td.tableRow = rowIndex;
+              td.tableColumn = colIndex;
+            }
+            _this2.root.addDragContainer(td, _this2, {
+              onDrop: function onDrop(element, target, source, sibling, component) {
+                component.tableRow = target.tableRow;
+                component.tableColumn = target.tableColumn;
+              },
+              onSave: function onSave(component) {
+                component.tableRow = rowIndex;
+                component.tableColumn = colIndex;
+              }
+            });
+          }
+
+          tr.appendChild(td);
+        });
+        _this2.tbody.appendChild(tr);
+      });
+    }
+  }, {
+    key: 'buildHeader',
+    value: function buildHeader() {
+      var _this3 = this;
+
+      if (this.component.header && this.component.header.length) {
+        var thead = this.ce('thead');
+        var thr = this.ce('tr');
+        _lodash2.default.each(this.component.header, function (header) {
+          var th = _this3.ce('th');
+          th.appendChild(_this3.text(header));
+          thr.appendChild(th);
+        });
+        thead.appendChild(thr);
+        this.table.appendChild(thead);
+      }
+    }
+  }, {
     key: 'build',
     value: function build() {
-      var _this2 = this;
+      var _this4 = this;
 
       this.element = this.ce('div', {
         id: this.id,
@@ -11726,42 +11815,40 @@ var TableComponent = exports.TableComponent = function (_FormioComponents) {
 
       var tableClass = 'table ';
       _lodash2.default.each(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
-        if (_this2.component[prop]) {
+        if (_this4.component[prop]) {
           tableClass += 'table-' + prop + ' ';
         }
       });
-      var table = this.ce('table', {
+      this.table = this.ce('table', {
         class: tableClass
       });
 
-      // Build the header.
-      if (this.component.header && this.component.header.length) {
-        var thead = this.ce('thead');
-        var thr = this.ce('tr');
-        _lodash2.default.each(this.component.header, function (header) {
-          var th = _this2.ce('th');
-          th.appendChild(_this2.text(header));
-          thr.appendChild(th);
-        });
-        thead.appendChild(thr);
-        table.appendChild(thead);
-      }
-
-      // Build the body.
-      var tbody = this.ce('tbody');
-      _lodash2.default.each(this.component.rows, function (row) {
-        var tr = _this2.ce('tr');
-        _lodash2.default.each(row, function (column) {
-          var td = _this2.ce('td');
-          _lodash2.default.each(column.components, function (comp) {
-            _this2.addComponent(comp, td);
-          });
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
+      this.buildHeader();
+      this.addComponents();
+      this.table.appendChild(this.tbody);
+      this.element.appendChild(this.table);
+    }
+  }, {
+    key: 'schema',
+    get: function get() {
+      var schema = _get(TableComponent.prototype.__proto__ || Object.getPrototypeOf(TableComponent.prototype), 'schema', this);
+      schema.rows = [];
+      this.eachComponent(function (component) {
+        if (!schema.rows || !schema.rows.length) {
+          schema.rows = [[{ components: [] }, { components: [] }, { components: [] }], [{ components: [] }, { components: [] }, { components: [] }], [{ components: [] }, { components: [] }, { components: [] }]];
+        }
+        if (!schema.rows[component.tableRow]) {
+          schema.rows[component.tableRow] = [];
+        }
+        if (!schema.rows[component.tableRow][component.tableColumn]) {
+          schema.rows[component.tableRow][component.column] = { components: [] };
+        }
+        schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
       });
-      table.appendChild(tbody);
-      this.element.appendChild(table);
+      if (!schema.rows.length) {
+        schema.rows = [[{ components: [] }, { components: [] }, { components: [] }], [{ components: [] }, { components: [] }, { components: [] }], [{ components: [] }, { components: [] }, { components: [] }]];
+      }
+      return schema;
     }
   }], [{
     key: 'schema',

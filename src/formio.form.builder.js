@@ -282,6 +282,9 @@ export class FormioFormBuilder extends FormioForm {
       }
       component.isNew = false;
       component.component = componentCopy.component;
+      if (component.dragEvents && component.dragEvents.onSave) {
+        component.dragEvents.onSave(component);
+      }
       this.emit('saveComponent', component);
       this.form = this.schema;
       dialog.close();
@@ -462,9 +465,12 @@ export class FormioFormBuilder extends FormioForm {
     return containerComponent;
   }
 
-  addDragContainer(element, component) {
+  addDragContainer(element, component, dragEvents) {
     _.remove(this.dragContainers, (container) => (element.id && (element.id === container.id)));
     element.component = component;
+    if (dragEvents) {
+      element.dragEvents = dragEvents;
+    }
     this.addClass(element, 'drag-container');
     if (!element.id) {
       element.id = `builder-element-${component.id}`;
@@ -502,9 +508,14 @@ export class FormioFormBuilder extends FormioForm {
       builderElement.builderInfo &&
       builderElement.builderInfo.schema
     ) {
+      let componentSchema = _.clone(builderElement.builderInfo.schema);
+      if (target.dragEvents && target.dragEvents.onDrop) {
+        target.dragEvents.onDrop(element, target, source, sibling, componentSchema);
+      }
+
       // Add the new component.
       let component = newParent.component.addComponent(
-        builderElement.builderInfo.schema,
+        componentSchema,
         newParent,
         newParent.component.data,
         sibling
@@ -512,6 +523,11 @@ export class FormioFormBuilder extends FormioForm {
 
       // Set that this is a new component.
       component.isNew = true;
+
+      // Pass along the save event.
+      if (target.dragEvents) {
+        component.dragEvents = target.dragEvents;
+      }
 
       // Edit the component.
       this.editComponent(component);
@@ -521,18 +537,27 @@ export class FormioFormBuilder extends FormioForm {
     }
     // Check to see if this is a moved component.
     else if (element.component) {
+      let componentSchema = element.component.schema;
+      if (target.dragEvents && target.dragEvents.onDrop) {
+        target.dragEvents.onDrop(element, target, source, sibling, componentSchema);
+      }
+
       // Remove the component from its parent.
       if (element.component.parent) {
         element.component.parent.removeComponent(element.component);
       }
 
       // Add the component to its new parent.
-      newParent.component.addComponent(
-        element.component.schema,
+      let component = newParent.component.addComponent(
+        componentSchema,
         newParent,
         newParent.component.data,
         sibling
       );
+
+      if (target.dragEvents && target.dragEvents.onSave) {
+        target.dragEvents.onSave(component);
+      }
 
       // Refresh the form.
       this.form = this.schema;

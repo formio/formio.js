@@ -55,6 +55,9 @@ export class EditGridComponent extends FormioComponents {
   }
 
   build() {
+    if (this.options.builder) {
+      return super.build();
+    }
     this.createElement();
     this.createLabel(this.element);
     this.buildTable();
