@@ -463,7 +463,7 @@ export default class Formio {
           .then((result) => {
             if (storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(storage)) {
-                const provider = new Formio.providers.storage[storage](this);
+                const provider = new Formio.providers.storage[storage].default(this);
                 return provider.uploadFile(file, fileName, dir, progressCallback, url);
               }
               else {
@@ -489,7 +489,7 @@ export default class Formio {
           .then((result) => {
             if (file.storage && isNil(result)) {
               if (Formio.providers.storage.hasOwnProperty(file.storage)) {
-                const provider = new Formio.providers.storage[file.storage](this);
+                const provider = new Formio.providers.storage[file.storage].default(this);
                 return provider.downloadFile(file);
               }
               else {
