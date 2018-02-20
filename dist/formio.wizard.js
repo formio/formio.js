@@ -4005,6 +4005,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       this.createElement();
       this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
       this.addShortcut(this.button);
+      this.hook('input', this.button, this.element);
 
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
@@ -5833,6 +5834,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
         placeholder: _lodash2.default.get(this.component, 'fields.day.placeholder', ''),
         id: id
       });
+      this.hook('input', this.dayInput, dayInputWrapper);
       this.addEventListener(this.dayInput, 'change', function () {
         return _this2.updateValue();
       });
@@ -5870,6 +5872,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
         class: 'form-control',
         id: id
       });
+      this.hook('input', this.monthInput, monthInputWrapper);
       this.selectOptions(this.monthInput, 'monthOption', this.months);
       var self = this;
 
@@ -5922,6 +5925,8 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
         value: new Date().getFullYear(),
         id: id
       });
+
+      this.hook('input', this.yearInput, yearInputWrapper);
       this.addEventListener(this.yearInput, 'change', function () {
         return _this3.updateValue();
       });
@@ -6883,6 +6888,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       this.inputsContainer.appendChild(this.listContainer);
       this.uploadContainer = this.buildUpload();
       this.hiddenFileInputElement = this.buildHiddenFileInput();
+      this.hook('input', this.hiddenFileInputElement, this.inputsContainer);
       this.inputsContainer.appendChild(this.hiddenFileInputElement);
       this.inputsContainer.appendChild(this.uploadContainer);
       this.addWarnings(this.inputsContainer);

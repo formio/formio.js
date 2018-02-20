@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.29.4
+### Added
+ - More input hooks to certain components.
+
 ### Fixed
  - Issue where file component values would reset.
 

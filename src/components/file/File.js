@@ -43,6 +43,7 @@ export class FileComponent extends BaseComponent {
     this.inputsContainer.appendChild(this.listContainer);
     this.uploadContainer = this.buildUpload();
     this.hiddenFileInputElement = this.buildHiddenFileInput();
+    this.hook('input', this.hiddenFileInputElement, this.inputsContainer);
     this.inputsContainer.appendChild(this.hiddenFileInputElement);
     this.inputsContainer.appendChild(this.uploadContainer);
     this.addWarnings(this.inputsContainer);
