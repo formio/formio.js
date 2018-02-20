@@ -27,8 +27,8 @@ export class FileComponent extends BaseComponent {
   }
 
   build() {
-    // Set default to empty array.
-    this.setValue([]);
+    // Restore the value.
+    this.restoreValue();
 
     const labelAtTheBottom = this.component.labelPosition === 'bottom';
 
@@ -43,6 +43,7 @@ export class FileComponent extends BaseComponent {
     this.inputsContainer.appendChild(this.listContainer);
     this.uploadContainer = this.buildUpload();
     this.hiddenFileInputElement = this.buildHiddenFileInput();
+    this.hook('input', this.hiddenFileInputElement, this.inputsContainer);
     this.inputsContainer.appendChild(this.hiddenFileInputElement);
     this.inputsContainer.appendChild(this.uploadContainer);
     this.addWarnings(this.inputsContainer);

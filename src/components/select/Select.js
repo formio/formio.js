@@ -421,6 +421,7 @@ export class SelectComponent extends BaseComponent {
       return;
     }
 
+    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
     const placeholderValue = this.t(this.component.placeholder);
     const choicesOptions = {
       removeItemButton: this.component.removeItemButton || (this.component.multiple || false),
@@ -434,7 +435,7 @@ export class SelectComponent extends BaseComponent {
       searchPlaceholderValue: placeholderValue,
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
-      searchEnabled: this.component.searchEnabled || false
+      searchEnabled: useSearch
     };
 
     const tabIndex = input.tabIndex;

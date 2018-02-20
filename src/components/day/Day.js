@@ -72,6 +72,7 @@ export class DayComponent extends BaseComponent {
       placeholder: _.get(this.component, 'fields.day.placeholder', ''),
       id
     });
+    this.hook('input', this.dayInput, dayInputWrapper);
     this.addEventListener(this.dayInput, 'change', () => this.updateValue());
     dayInputWrapper.appendChild(this.dayInput);
     this.setSubinputStyle(dayInputWrapper);
@@ -106,6 +107,7 @@ export class DayComponent extends BaseComponent {
       class: 'form-control',
       id
     });
+    this.hook('input', this.monthInput, monthInputWrapper);
     this.selectOptions(this.monthInput, 'monthOption', this.months);
     const self = this;
 
@@ -155,6 +157,8 @@ export class DayComponent extends BaseComponent {
       value: (new Date().getFullYear()),
       id
     });
+
+    this.hook('input', this.yearInput, yearInputWrapper);
     this.addEventListener(this.yearInput, 'change', () => this.updateValue());
     yearInputWrapper.appendChild(this.yearInput);
     this.setSubinputStyle(yearInputWrapper);

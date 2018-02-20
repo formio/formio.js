@@ -55,6 +55,7 @@ export class ButtonComponent extends BaseComponent {
     this.createElement();
     this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
     this.addShortcut(this.button);
+    this.hook('input', this.button, this.element);
 
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
