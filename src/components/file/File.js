@@ -27,8 +27,8 @@ export class FileComponent extends BaseComponent {
   }
 
   build() {
-    // Set default to empty array.
-    this.setValue([]);
+    // Restore the value.
+    this.restoreValue();
 
     const labelAtTheBottom = this.component.labelPosition === 'bottom';
 

@@ -6867,8 +6867,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   }, {
     key: 'build',
     value: function build() {
-      // Set default to empty array.
-      this.setValue([]);
+      // Restore the value.
+      this.restoreValue();
 
       var labelAtTheBottom = this.component.labelPosition === 'bottom';
 
@@ -9496,6 +9496,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         return;
       }
 
+      var useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
       var placeholderValue = this.t(this.component.placeholder);
       var choicesOptions = {
         removeItemButton: this.component.removeItemButton || this.component.multiple || false,
@@ -9509,7 +9510,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
         searchPlaceholderValue: placeholderValue,
         shouldSort: false,
         position: this.component.dropdown || 'auto',
-        searchEnabled: this.component.searchEnabled || false
+        searchEnabled: useSearch
       };
 
       var tabIndex = input.tabIndex;
