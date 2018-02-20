@@ -6,6 +6,7 @@ import 'whatwg-fetch';
 import {EventEmitter2 as EventEmitter} from 'eventemitter2';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
+import providers from './providers';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -1188,7 +1189,7 @@ Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.providers = require('./providers');
+Formio.providers = providers;
 Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0

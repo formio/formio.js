@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.3
+### Fixed
+ - Issue with the providers not getting registered correctly.
+
 ## 2.29.2
 ### Changed
  - Upgraded i18next to 10.4.1 
