@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -159,18 +163,18 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/DataGrid.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 import assert from &apos;power-assert&apos;;
-import { DataGridComponent } from &apos;./DataGrid&apos;;
-import { components as comps } from &apos;./fixtures/index&apos;;
-import { Harness } from &apos;../../../test/harness&apos;;
-describe(&apos;DataGrid Component&apos;, function() {
-  it(&apos;Should build a data grid component&apos;, function(done) {
+import {DataGridComponent} from &apos;./DataGrid&apos;;
+import {components as comps} from &apos;./fixtures/index&apos;;
+import {Harness} from &apos;../../../test/harness&apos;;
+describe(&apos;DataGrid Component&apos;, () =&gt; {
+  it(&apos;Should build a data grid component&apos;, (done) =&gt; {
     Harness.testCreate(DataGridComponent, comps.comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 3);
       done();
     });
   });
 
-  it(&apos;Should get and set values within the grid.&apos;, function(done) {
+  it(&apos;Should get and set values within the grid.&apos;, (done) =&gt; {
     Harness.testCreate(DataGridComponent, comps.comp1).then((component) =&gt; {
       Harness.testSetGet(component, [
         {
@@ -188,7 +192,7 @@ describe(&apos;DataGrid Component&apos;, function() {
     });
   });
 
-  it(&apos;Should be able to add another row.&apos;, function(done) {
+  it(&apos;Should be able to add another row.&apos;, (done) =&gt; {
     Harness.testCreate(DataGridComponent, comps.comp1).then((component) =&gt; {
       Harness.testSetGet(component, [
         {
@@ -205,8 +209,8 @@ describe(&apos;DataGrid Component&apos;, function() {
           year: 1997
         },
         {
-          make: &quot;&quot;,
-          model: &quot;&quot;,
+          make: &apos;&apos;,
+          model: &apos;&apos;,
           year: null
         }
       ]);

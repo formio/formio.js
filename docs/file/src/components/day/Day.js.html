@@ -151,18 +151,22 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/day/Day.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
-import _get from &apos;lodash/get&apos;;
-import _each from &apos;lodash/each&apos;;
-import _assign from &apos;lodash/assign&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import moment from &apos;moment&apos;;
-import { getLocaleDateFormatInfo } from &apos;../../utils&apos;;
+
+import {BaseComponent} from &apos;../base/Base&apos;;
+import {getLocaleDateFormatInfo} from &apos;../../utils&apos;;
+
 export class DayComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -187,19 +191,19 @@ export class DayComponent extends BaseComponent {
       return this._months;
     }
     this._months = [
-      { value: 0, label: _get(this.component, &apos;fields.month.placeholder&apos;, &apos;&apos;) },
-      { value: 1, label: this.t(&apos;january&apos;) },
-      { value: 2, label: this.t(&apos;february&apos;) },
-      { value: 3, label: this.t(&apos;march&apos;) },
-      { value: 4, label: this.t(&apos;april&apos;) },
-      { value: 5, label: this.t(&apos;may&apos;) },
-      { value: 6, label: this.t(&apos;june&apos;) },
-      { value: 7, label: this.t(&apos;july&apos;) },
-      { value: 8, label: this.t(&apos;august&apos;) },
-      { value: 9, label: this.t(&apos;september&apos;) },
-      { value: 10, label: this.t(&apos;october&apos;) },
-      { value: 11, label: this.t(&apos;november&apos;) },
-      { value: 12, label: this.t(&apos;december&apos;) }
+      {value: 0, label: _.get(this.component, &apos;fields.month.placeholder&apos;, &apos;&apos;)},
+      {value: 1, label: this.t(&apos;january&apos;)},
+      {value: 2, label: this.t(&apos;february&apos;)},
+      {value: 3, label: this.t(&apos;march&apos;)},
+      {value: 4, label: this.t(&apos;april&apos;)},
+      {value: 5, label: this.t(&apos;may&apos;)},
+      {value: 6, label: this.t(&apos;june&apos;)},
+      {value: 7, label: this.t(&apos;july&apos;)},
+      {value: 8, label: this.t(&apos;august&apos;)},
+      {value: 9, label: this.t(&apos;september&apos;)},
+      {value: 10, label: this.t(&apos;october&apos;)},
+      {value: 11, label: this.t(&apos;november&apos;)},
+      {value: 12, label: this.t(&apos;december&apos;)}
     ];
     return this._months;
   }
@@ -213,7 +217,7 @@ export class DayComponent extends BaseComponent {
 
     const dayLabel = this.ce(&apos;label&apos;, {
       for: id,
-      class: _get(this.component, &apos;fields.day.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
+      class: _.get(this.component, &apos;fields.day.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     dayLabel.appendChild(this.text(this.t(&apos;day&apos;)));
     this.setSubinputLabelStyle(dayLabel);
@@ -228,9 +232,10 @@ export class DayComponent extends BaseComponent {
       step: &apos;1&apos;,
       min: &apos;1&apos;,
       max: &apos;31&apos;,
-      placeholder: _get(this.component, &apos;fields.day.placeholder&apos;, &apos;&apos;),
+      placeholder: _.get(this.component, &apos;fields.day.placeholder&apos;, &apos;&apos;),
       id
     });
+    this.hook(&apos;input&apos;, this.dayInput, dayInputWrapper);
     this.addEventListener(this.dayInput, &apos;change&apos;, () =&gt; this.updateValue());
     dayInputWrapper.appendChild(this.dayInput);
     this.setSubinputStyle(dayInputWrapper);
@@ -252,7 +257,7 @@ export class DayComponent extends BaseComponent {
 
     const monthLabel = this.ce(&apos;label&apos;, {
       for: id,
-      class: _get(this.component, &apos;fields.month.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
+      class: _.get(this.component, &apos;fields.month.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     monthLabel.appendChild(this.text(this.t(&apos;month&apos;)));
     this.setSubinputLabelStyle(monthLabel);
@@ -265,6 +270,7 @@ export class DayComponent extends BaseComponent {
       class: &apos;form-control&apos;,
       id
     });
+    this.hook(&apos;input&apos;, this.monthInput, monthInputWrapper);
     this.selectOptions(this.monthInput, &apos;monthOption&apos;, this.months);
     const self = this;
 
@@ -296,7 +302,7 @@ export class DayComponent extends BaseComponent {
 
     const yearLabel = this.ce(&apos;label&apos;, {
       for: id,
-      class: _get(this.component, &apos;fields.year.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
+      class: _.get(this.component, &apos;fields.year.required&apos;, false) ? &apos;field-required&apos; : &apos;&apos;
     });
     yearLabel.appendChild(this.text(this.t(&apos;year&apos;)));
     this.setSubinputLabelStyle(yearLabel);
@@ -310,10 +316,12 @@ export class DayComponent extends BaseComponent {
       type: &apos;number&apos;,
       step: &apos;1&apos;,
       min: &apos;1&apos;,
-      placeholder: _get(this.component, &apos;fields.year.placeholder&apos;, &apos;&apos;),
+      placeholder: _.get(this.component, &apos;fields.year.placeholder&apos;, &apos;&apos;),
       value: (new Date().getFullYear()),
       id
     });
+
+    this.hook(&apos;input&apos;, this.yearInput, yearInputWrapper);
     this.addEventListener(this.yearInput, &apos;change&apos;, () =&gt; this.updateValue());
     yearInputWrapper.appendChild(this.yearInput);
     this.setSubinputStyle(yearInputWrapper);
@@ -332,7 +340,8 @@ export class DayComponent extends BaseComponent {
       this.yearInput.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
       this.monthInput.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
       this.dayInput.setAttribute(&apos;disabled&apos;, &apos;disabled&apos;);
-    } else {
+    }
+    else {
       this.yearInput.removeAttribute(&apos;disabled&apos;);
       this.monthInput.removeAttribute(&apos;disabled&apos;);
       this.dayInput.removeAttribute(&apos;disabled&apos;);
@@ -345,19 +354,19 @@ export class DayComponent extends BaseComponent {
       style: &apos;width: 100%&apos;
     });
     const subinputAtTheBottom = this.component.inputsLabelPosition === &apos;bottom&apos;;
-    const [ dayColumn, monthColumn, yearColumn ] = this.createInputs(subinputAtTheBottom);
+    const [dayColumn, monthColumn, yearColumn] = this.createInputs(subinputAtTheBottom);
 
     // Add the columns to the day select in the right order.
-    if (this.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
-      inputGroup.appendChild(dayColumn)
-    }
-    if (!_get(this.component, &apos;fields.month.hide&apos;, false)) {
-      inputGroup.appendChild(monthColumn);
-    }
-    if (!this.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (this.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
       inputGroup.appendChild(dayColumn);
     }
-    if (!_get(this.component, &apos;fields.year.hide&apos;, false)) {
+    if (!_.get(this.component, &apos;fields.month.hide&apos;, false)) {
+      inputGroup.appendChild(monthColumn);
+    }
+    if (!this.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
+      inputGroup.appendChild(dayColumn);
+    }
+    if (!_.get(this.component, &apos;fields.year.hide&apos;, false)) {
       inputGroup.appendChild(yearColumn);
     }
 
@@ -377,10 +386,10 @@ export class DayComponent extends BaseComponent {
   }
 
   setSubinputLabelStyle(label) {
-    const { inputsLabelPosition } = this.component;
+    const {inputsLabelPosition} = this.component;
 
     if (inputsLabelPosition === &apos;left&apos;) {
-      _assign(label.style, {
+      _.assign(label.style, {
         float: &apos;left&apos;,
         width: &apos;30%&apos;,
         marginRight: &apos;3%&apos;,
@@ -389,7 +398,7 @@ export class DayComponent extends BaseComponent {
     }
 
     if (inputsLabelPosition === &apos;right&apos;) {
-      _assign(label.style, {
+      _.assign(label.style, {
         float: &apos;right&apos;,
         width: &apos;30%&apos;,
         marginLeft: &apos;3%&apos;,
@@ -399,9 +408,9 @@ export class DayComponent extends BaseComponent {
   }
 
   setSubinputStyle(input) {
-    const { inputsLabelPosition } = this.component;
+    const {inputsLabelPosition} = this.component;
 
-    if ([ &apos;left&apos;, &apos;right&apos; ].includes(inputsLabelPosition)) {
+    if ([&apos;left&apos;, &apos;right&apos;].includes(inputsLabelPosition)) {
       input.style.width = &apos;67%&apos;;
 
       if (inputsLabelPosition === &apos;left&apos;) {
@@ -424,16 +433,16 @@ export class DayComponent extends BaseComponent {
       return;
     }
     const parts = value.split(&apos;/&apos;);
-    if (this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (this.component.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
       this.dayInput.value = parseInt(parts.shift(), 10);
     }
-    if (!_get(this.component, &apos;fields.month.hide&apos;, false)) {
+    if (!_.get(this.component, &apos;fields.month.hide&apos;, false)) {
       this.monthInput.value = parseInt(parts.shift(), 10);
     }
-    if (!this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (!this.component.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
       this.dayInput.value = parseInt(parts.shift(), 10);
     }
-    if (!_get(this.component, &apos;fields.year.hide&apos;, false)) {
+    if (!_.get(this.component, &apos;fields.year.hide&apos;, false)) {
       this.yearInput.value = parseInt(parts.shift(), 10);
     }
   }
@@ -444,16 +453,16 @@ export class DayComponent extends BaseComponent {
    */
   get format() {
     let format = &apos;&apos;;
-    if (this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (this.component.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
       format += &apos;D/&apos;;
     }
-    if (!_get(this.component, &apos;fields.month.hide&apos;, false)) {
+    if (!_.get(this.component, &apos;fields.month.hide&apos;, false)) {
       format += &apos;M/&apos;;
     }
-    if (!this.component.dayFirst &amp;&amp; !_get(this.component, &apos;fields.day.hide&apos;, false)) {
+    if (!this.component.dayFirst &amp;&amp; !_.get(this.component, &apos;fields.day.hide&apos;, false)) {
       format += &apos;D/&apos;;
     }
-    if (!_get(this.component, &apos;fields.year.hide&apos;, false)) {
+    if (!_.get(this.component, &apos;fields.year.hide&apos;, false)) {
       format += &apos;YYYY&apos;;
     }
     return format;

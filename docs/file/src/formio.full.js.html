@@ -151,17 +151,21 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.full.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&quot;use strict&quot;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 import FormioWizard from &apos;./formio.wizard&apos;;
 import FormioPDF from &apos;./formio.pdf&apos;;
 import FormioForm from &apos;./formio.form&apos;;
-import { FormioComponents } from &apos;./components/Components&apos;;
+import {FormioComponents} from &apos;./components/Components&apos;;
 import Formio from &apos;./formio&apos;;
 import createForm from &apos;./createForm&apos;;
 import formFactory from &apos;./formFactory&apos;;
@@ -178,12 +182,12 @@ Formio.embedForm = function(embed) {
   if (!embed || !embed.src) {
     return null;
   }
-  let id = embed.id || &apos;formio-&apos; + Math.random().toString(36).substring(7);
-  let className = embed.class || &apos;formio-form-wrapper&apos;;
-  let code = embed.styles ? &apos;&lt;link rel=&quot;stylesheet&quot; href=&quot;&apos; + embed.styles + &apos;&quot;&gt;&apos; : &apos;&apos;;
-  code += &apos;&lt;div id=&quot;&apos; + id + &apos;&quot; class=&quot;&apos; + className + &apos;&quot;&gt;&lt;/div&gt;&apos;;
+  const id = embed.id || `formio-${Math.random().toString(36).substring(7)}`;
+  const className = embed.class || &apos;formio-form-wrapper&apos;;
+  let code = embed.styles ? `&lt;link rel=&quot;stylesheet&quot; href=&quot;${embed.styles}&quot;&gt;` : &apos;&apos;;
+  code += `&lt;div id=&quot;${id}&quot; class=&quot;${className}&quot;&gt;&lt;/div&gt;`;
   document.write(code);
-  let formElement = document.getElementById(id);
+  const formElement = document.getElementById(id);
   return Formio.createForm(formElement, embed.src);
 };
 
@@ -197,7 +201,7 @@ FormioForm.registerComponent = Formio.registerComponent = function(type, compone
   FormioComponents.customComponents[type] = component;
 };
 
-exports.Formio = Formio;
+exports.Formio = global.Formio = Formio;
 exports.FormioForm = FormioForm;
 exports.FormioWizard = FormioWizard;
 exports.FormioPDF = FormioPDF;

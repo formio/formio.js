@@ -151,29 +151,33 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/button/Button.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
+import {BaseComponent} from &apos;../base/Base&apos;;
 import FormioUtils from &apos;../../utils&apos;;
-import _merge from &apos;lodash/merge&apos;;
-import _each from &apos;lodash/each&apos;;
 
 export class ButtonComponent extends BaseComponent {
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = &apos;button&apos;;
     info.attr.type = (this.component.action === &apos;submit&apos;) ? &apos;submit&apos; : &apos;button&apos;;
     this.component.theme = this.component.theme || &apos;default&apos;;
-    info.attr.class = &apos;btn btn-&apos; + this.component.theme;
+    info.attr.class = `btn btn-${this.component.theme}`;
     if (this.component.block) {
       info.attr.class += &apos; btn-block&apos;;
     }
     if (this.component.customClass) {
-      info.attr.class += &apos; &apos; + this.component.customClass;
+      info.attr.class += ` ${this.component.customClass}`;
     }
     return info;
   }
@@ -194,6 +198,10 @@ export class ButtonComponent extends BaseComponent {
     return this.clicked;
   }
 
+  get defaultValue() {
+    return false;
+  }
+
   get className() {
     let className = super.className;
     className += &apos; form-group&apos;;
@@ -206,15 +214,27 @@ export class ButtonComponent extends BaseComponent {
     }
 
     this.clicked = false;
+    this.hasError = false;
     this.createElement();
     this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
     this.addShortcut(this.button);
+    this.hook(&apos;input&apos;, this.button, this.element);
+
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
       this.button.appendChild(this.labelElement);
       this.createTooltip(this.button, null, this.iconClass(&apos;question-sign&apos;));
     }
     if (this.component.action === &apos;submit&apos;) {
+      const errorContainer = this.ce(&apos;div&apos;, {
+        class: &apos;has-error&apos;
+      });
+      const error = this.ce(&apos;span&apos;, {
+        class: &apos;help-block&apos;
+      });
+      error.appendChild(this.text(&apos;Please correct all errors before submitting.&apos;));
+      errorContainer.appendChild(error);
+
       this.on(&apos;submitButton&apos;, () =&gt; {
         this.loading = true;
         this.disabled = true;
@@ -225,10 +245,17 @@ export class ButtonComponent extends BaseComponent {
       }, true);
       this.on(&apos;change&apos;, (value) =&gt; {
         this.loading = false;
-        this.disabled = (this.component.disableOnInvalid &amp;&amp; !this.root.isValid(value.data, true));
+        let isValid = this.root.isValid(value.data, true);
+        this.disabled = (this.component.disableOnInvalid &amp;&amp; !isValid);
+        if (isValid &amp;&amp; this.hasError) {
+          this.hasError = false;
+          this.removeChild(errorContainer);
+        }
       }, true);
       this.on(&apos;error&apos;, () =&gt; {
         this.loading = false;
+        this.hasError = true;
+        this.append(errorContainer);
       }, true);
     }
 
@@ -266,30 +293,31 @@ export class ButtonComponent extends BaseComponent {
             event: event
           });
           break;
-        case &apos;custom&apos;:
+        case &apos;custom&apos;: {
           // Get the FormioForm at the root of this component&apos;s tree
-          var form = this.getRoot();
+          const form = this.getRoot();
           // Get the form&apos;s flattened schema components
-          var flattened = FormioUtils.flattenComponents(form.component.components, true);
+          const flattened = FormioUtils.flattenComponents(form.component.components, true);
           // Create object containing the corresponding HTML element components
-          var components = {};
-          _each(flattened, function(component, key) {
-            var element = form.getComponent(key);
+          const components = {};
+          _.each(flattened, (component, key) =&gt; {
+            const element = form.getComponent(key);
             if (element) {
               components[key] = element;
             }
           });
 
           try {
-            (new Function(&apos;form&apos;, &apos;flattened&apos;, &apos;components&apos;, &apos;_merge&apos;, &apos;data&apos;, this.component.custom.toString()))
-            (form, flattened, components, _merge, this.data);
+            (new Function(&apos;form&apos;, &apos;flattened&apos;, &apos;components&apos;, &apos;_merge&apos;, &apos;data&apos;,
+              this.component.custom.toString()))(form, flattened, components, _.merge, this.data);
           }
           catch (e) {
             /* eslint-disable no-console */
-            console.warn(&apos;An error occurred evaluating custom logic for &apos; + this.key, e);
+            console.warn(`An error occurred evaluating custom logic for ${this.key}`, e);
             /* eslint-enable no-console */
           }
           break;
+        }
         case &apos;url&apos;:
           this.emit(&apos;requestButton&apos;);
           this.emit(&apos;requestUrl&apos;, {
@@ -307,14 +335,14 @@ export class ButtonComponent extends BaseComponent {
           }
 
           // Display Alert if OAuth config is missing
-          if(!this.component.oauth){
+          if (!this.component.oauth) {
             this.root.setAlert(&apos;danger&apos;, &apos;You must assign this button to an OAuth action before it will work.&apos;);
             break;
           }
 
           // Display Alert if oAuth has an error is missing
-          if(this.component.oauth.error){
-            this.root.setAlert(&apos;danger&apos;, &apos;The Following Error Has Occured&apos; + this.component.oauth.error);
+          if (this.component.oauth.error) {
+            this.root.setAlert(&apos;danger&apos;, `The Following Error Has Occured${this.component.oauth.error}`);
             break;
           }
 
@@ -325,6 +353,18 @@ export class ButtonComponent extends BaseComponent {
     });
     if (this.shouldDisable) {
       this.disabled = true;
+    }
+
+    function getUrlParameter(name) {
+      name = name.replace(/[\[]/, &apos;\\[&apos;).replace(/[\]]/, &apos;\\]&apos;);
+      var regex = new RegExp(&apos;[\\?&amp;]&apos; + name + &apos;=([^&amp;#]*)&apos;);
+      var results = regex.exec(location.search);
+      return results === null ? &apos;&apos; : decodeURIComponent(results[1].replace(/\+/g, &apos; &apos;));
+    };
+
+    // If this is an OpenID Provider initiated login, perform the click event immediately
+    if (this.component.action === &apos;oauth&apos; &amp;&amp; this.component.oauth.authURI.indexOf(getUrlParameter(&apos;iss&apos;)) === 0) {
+      this.openOauth();
     }
   }
 
@@ -340,7 +380,7 @@ export class ButtonComponent extends BaseComponent {
     let params = {
       response_type: &apos;code&apos;,
       client_id: settings.clientId,
-      redirect_uri: window.location.origin || window.location.protocol + &apos;//&apos; + window.location.host,
+      redirect_uri: window.location.origin || `${window.location.protocol}//${window.location.host}`,
       state: settings.state,
       scope: settings.scope
     };
@@ -352,10 +392,10 @@ export class ButtonComponent extends BaseComponent {
     }
 
     params = Object.keys(params).map(key =&gt; {
-      return key + &apos;=&apos; + encodeURIComponent(params[key]);
+      return `${key}=${encodeURIComponent(params[key])}`;
     }).join(&apos;&amp;&apos;);
 
-    const url = settings.authURI + &apos;?&apos; + params;
+    const url = `${settings.authURI}?${params}`;
     const popup = window.open(url, settings.provider, &apos;width=1020,height=618&apos;);
 
     const interval = setInterval(() =&gt; {
@@ -364,7 +404,7 @@ export class ButtonComponent extends BaseComponent {
         const currentHost = window.location.host;
         if (popup &amp;&amp; !popup.closed &amp;&amp; popupHost === currentHost &amp;&amp; popup.location.search) {
           popup.close();
-          let params = popup.location.search.substr(1).split(&apos;&amp;&apos;).reduce((params, param) =&gt; {
+          const params = popup.location.search.substr(1).split(&apos;&amp;&apos;).reduce((params, param) =&gt; {
             const split = param.split(&apos;=&apos;);
             params[split[0]] = split[1];
             return params;
@@ -381,9 +421,10 @@ export class ButtonComponent extends BaseComponent {
           }
           const submission = {data: {}, oauth: {}};
           submission.oauth[settings.provider] = params;
-          submission.oauth[settings.provider].redirectURI = window.location.origin || window.location.protocol + &apos;//&apos; + window.location.host;
+          submission.oauth[settings.provider].redirectURI = window.location.origin
+            || `${window.location.protocol}//${window.location.host}`;
           this.root.formio.saveSubmission(submission)
-            .then(submission =&gt; {
+            .then((result) =&gt; {
               this.root.onSubmit(result, true);
             })
             .catch((err) =&gt; {

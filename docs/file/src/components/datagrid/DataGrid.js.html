@@ -151,18 +151,20 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/DataGrid.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _each from &apos;lodash/each&apos;;
-import _cloneDeep from &apos;lodash/cloneDeep&apos;;
-import _clone from &apos;lodash/clone&apos;;
-import _isEqual from &apos;lodash/isEqual&apos;;
-import _isArray from &apos;lodash/isArray&apos;;
-import { FormioComponents } from &apos;../Components&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
+import {FormioComponents} from &apos;../Components&apos;;
+
 export class DataGridComponent extends FormioComponents {
   constructor(component, options, data) {
     super(component, options, data);
@@ -180,17 +182,16 @@ export class DataGridComponent extends FormioComponents {
     this.createDescription(this.element);
   }
 
-  buildTable(data) {
-    data = data || {};
+  buildTable() {
     if (this.tableElement) {
-      this.element.removeChild(this.tableElement);
+      this.removeChild(this.tableElement);
       this.tableElement.innerHTML = &apos;&apos;;
     }
 
     let tableClass = &apos;table datagrid-table table-bordered form-group formio-data-grid &apos;;
-    _each([&apos;striped&apos;, &apos;bordered&apos;, &apos;hover&apos;, &apos;condensed&apos;], (prop) =&gt; {
+    _.each([&apos;striped&apos;, &apos;bordered&apos;, &apos;hover&apos;, &apos;condensed&apos;], (prop) =&gt; {
       if (this.component[prop]) {
-        tableClass += &apos;table-&apos; + prop + &apos; &apos;;
+        tableClass += `table-${prop} `;
       }
     });
     this.tableElement = this.ce(&apos;table&apos;, {
@@ -201,7 +202,7 @@ export class DataGridComponent extends FormioComponents {
 
     // Build rows the first time.
     this.rows = [];
-    this.tableRows = this.data[this.component.key].map((row, rowIndex) =&gt; this.buildRow(row, rowIndex, data));
+    this.tableRows = this.data[this.component.key].map((row, rowIndex) =&gt; this.buildRow(row, rowIndex));
     this.tbody = this.ce(&apos;tbody&apos;, null, this.tableRows);
 
     // Add the body to the table and to the element.
@@ -217,16 +218,16 @@ export class DataGridComponent extends FormioComponents {
 
   // Build the header.
   createHeader() {
-    let thead = this.ce(&apos;thead&apos;, null,
+    const thead = this.ce(&apos;thead&apos;, null,
       this.ce(&apos;tr&apos;, null,
         [
           this.component.components.map(comp =&gt; {
             if ((this.visibleColumns === true) || (this.visibleColumns[comp.key])) {
-              let th = this.ce(&apos;th&apos;);
+              const th = this.ce(&apos;th&apos;);
               if (comp.validate &amp;&amp; comp.validate.required) {
                 th.setAttribute(&apos;class&apos;, &apos;field-required&apos;);
               }
-              let title = comp.label || comp.title;
+              const title = comp.label || comp.title;
               if (title) {
                 th.appendChild(this.text(title));
                 this.createTooltip(th, comp);
@@ -236,7 +237,7 @@ export class DataGridComponent extends FormioComponents {
           }),
           this.shouldDisable ? null :
             this.ce(&apos;th&apos;, null,
-              (this.component.addAnotherPosition === &quot;top&quot; || this.component.addAnotherPosition === &quot;both&quot;) ? this.addButton(true) : null
+              [&apos;top&apos;, &apos;both&apos;].includes(this.component.addAnotherPosition) ? this.addButton(true) : null
             ),
         ]
       )
@@ -247,19 +248,22 @@ export class DataGridComponent extends FormioComponents {
   createAddButton() {
     return (!this.shouldDisable &amp;&amp; (
       !this.component.addAnotherPosition ||
-      this.component.addAnotherPosition === &quot;bottom&quot; ||
-      this.component.addAnotherPosition === &quot;both&quot;
+      this.component.addAnotherPosition === &apos;bottom&apos; ||
+      this.component.addAnotherPosition === &apos;both&apos;
     ))  ?
-      this.ce(&apos;tr&apos;, null,
-        this.ce(&apos;td&apos;, {colspan: (this.component.components.length + 1)},
-          this.addButton()
+      this.ce(&apos;tfoot&apos;, null,
+        this.ce(&apos;tr&apos;, null,
+          this.ce(&apos;td&apos;, {colspan: (this.component.components.length + 1)},
+            this.addButton()
+          )
         )
       )
       : null;
   }
 
   get defaultValue() {
-    return {};
+    const value = super.defaultValue;
+    return typeof value === &apos;object&apos; ? value : {};
   }
 
   buildRows(data) {
@@ -270,7 +274,10 @@ export class DataGridComponent extends FormioComponents {
         this.tbody.insertBefore(this.tableRows[rowIndex], this.tbody.children[rowIndex + 1]);
       }
       // Update existing
-      else if (!_isEqual(row, this.tableRows[rowIndex].data)) {
+      else if (
+        !_.isEqual(row, this.tableRows[rowIndex].data) ||
+        !_.isEqual(this.visibleColumns, this.tableRows[rowIndex].visibleColumns)
+      ) {
         this.removeRowComponents(rowIndex);
         const newRow = this.buildRow(row, rowIndex, data);
         this.tbody.replaceChild(newRow, this.tableRows[rowIndex]);
@@ -278,39 +285,40 @@ export class DataGridComponent extends FormioComponents {
       }
     });
     // Remove any extra rows.
-    for(let rowIndex = this.tableRows.length; rowIndex &gt; this.data[this.component.key].length; rowIndex--) {
-      this.tbody.removeChild(this.tableRows[rowIndex - 1]);
+    for (let rowIndex = this.tableRows.length; rowIndex &gt; this.data[this.component.key].length; rowIndex--) {
+      this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
       this.tableRows.splice(rowIndex - 1, 1);
     }
   }
 
-  buildRow(row, index, data) {
+  buildRow(row, index) {
     this.rows[index] = {};
     const element = this.ce(&apos;tr&apos;, null,
       [
-        this.component.components.map((col, colIndex) =&gt; this.buildComponent(col, colIndex, row, index, data)),
+        this.component.components.map((col, colIndex) =&gt; this.buildComponent(col, colIndex, row, index)),
         !this.shouldDisable ? this.ce(&apos;td&apos;, null, this.removeButton(index)) : null
       ]
-    )
-    element.data = _cloneDeep(row);
+    );
+    element.data = _.cloneDeep(row);
+    element.visibleColumns = _.cloneDeep(this.visibleColumns);
     return element;
   }
 
   removeRowComponents(rowIndex) {
     // Clean up components list.
     (Object.keys(this.rows[rowIndex])).forEach(key =&gt; {
-      this.removeComponent(this.rows[rowIndex][key], this.components);
+      this.removeComponent(this.rows[rowIndex][key]);
     });
-    this.rows[rowIndex] = [];
+    delete this.rows[rowIndex];
   }
 
-  buildComponent(col, colIndex, row, rowIndex, data) {
-    let column = _cloneDeep(col);
+  buildComponent(col, colIndex, row, rowIndex) {
+    const column = _.cloneDeep(col);
     column.label = false;
-    column.row = rowIndex + &apos;-&apos; + colIndex;
-    let options = _clone(this.options);
-    options.name += &apos;[&apos; + colIndex + &apos;]&apos;;
-    let comp = this.createComponent(column, options, row);
+    column.row = `${rowIndex}-${colIndex}`;
+    const options = _.clone(this.options);
+    options.name += `[${colIndex}]`;
+    const comp = this.createComponent(column, options, row);
     if (row.hasOwnProperty(column.key)) {
       comp.setValue(row[column.key]);
     }
@@ -320,26 +328,29 @@ export class DataGridComponent extends FormioComponents {
     this.rows[rowIndex][column.key] = comp;
     if ((this.visibleColumns === true) || this.visibleColumns[column.key]) {
       return this.ce(&apos;td&apos;, null, comp.element);
-      comp.checkConditions(data);
     }
   }
 
   checkConditions(data) {
     let show = super.checkConditions(data);
+    // If table isn&apos;t visible, don&apos;t bother calculating columns.
+    if (!show) {
+      return false;
+    }
     let rebuild = false;
     if (this.visibleColumns === true) {
       this.visibleColumns = {};
     }
-    _each(this.component.components, (col) =&gt; {
+    _.each(this.component.components, (col) =&gt; {
       let showColumn = false;
-      _each(this.rows, (comps) =&gt; {
+      _.each(this.rows, (comps) =&gt; {
         showColumn |= comps[col.key].checkConditions(data);
       });
       if (
         (this.visibleColumns[col.key] &amp;&amp; !showColumn) ||
         (!this.visibleColumns[col.key] &amp;&amp; showColumn)
       ) {
-        rebuild = true
+        rebuild = true;
       }
 
       this.visibleColumns[col.key] = showColumn;
@@ -347,8 +358,8 @@ export class DataGridComponent extends FormioComponents {
     });
 
     // If a rebuild is needed, then rebuild the table.
-    if (rebuild &amp;&amp; show) {
-      this.buildTable(data);
+    if (rebuild) {
+      this.buildRows();
     }
 
     // Return if this table should show.
@@ -360,22 +371,31 @@ export class DataGridComponent extends FormioComponents {
     if (!value) {
       return;
     }
-    if (!_isArray(value)) {
-      return;
+    if (!Array.isArray(value)) {
+      if (typeof value === &apos;object&apos;) {
+        value = [value];
+      }
+      else {
+        return;
+      }
     }
 
     this.data[this.component.key] = value;
     this.buildRows();
-    _each(this.rows, (row, index) =&gt; {
+    _.each(this.rows, (row, index) =&gt; {
       if (value.length &lt;= index) {
         return;
       }
-      _each(row, (col, key) =&gt; {
+      _.each(row, (col, key) =&gt; {
         if (col.type === &apos;components&apos;) {
           col.setValue(value[index], flags);
         }
         else if (value[index].hasOwnProperty(key)) {
           col.setValue(value[index][key], flags);
+        }
+        else {
+          col.data = value[index];
+          col.setValue(col.defaultValue, flags);
         }
       });
     });
@@ -390,10 +410,10 @@ export class DataGridComponent extends FormioComponents {
     if (this.viewOnly) {
       return this.value;
     }
-    let values = [];
-    _each(this.rows, (row) =&gt; {
-      let value = {};
-      _each(row, (col) =&gt; {
+    const values = [];
+    _.each(this.rows, (row) =&gt; {
+      const value = {};
+      _.each(row, (col) =&gt; {
         if (
           col &amp;&amp;
           col.component &amp;&amp;

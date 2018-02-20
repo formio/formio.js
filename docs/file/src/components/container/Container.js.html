@@ -151,15 +151,20 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/container/Container.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { FormioComponents } from &apos;../Components&apos;;
-import _isObject from &apos;lodash/isObject&apos;;
-import _each from &apos;lodash/each&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
+import {FormioComponents} from &apos;../Components&apos;;
+
 export class ContainerComponent extends FormioComponents {
   constructor(component, options, data) {
     super(component, options, data);
@@ -168,7 +173,7 @@ export class ContainerComponent extends FormioComponents {
 
   build() {
     this.element = this.ce(&apos;div&apos;, {
-      class: &apos;formio-container-component &apos; + this.component.customClass
+      class: `formio-container-component ${this.component.customClass}`
     });
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = {};
@@ -176,12 +181,17 @@ export class ContainerComponent extends FormioComponents {
     this.addComponents(this.element, this.data[this.component.key]);
   }
 
+  get defaultValue() {
+    const value = super.defaultValue;
+    return typeof value === &apos;object&apos; ? value : {};
+  }
+
   getValue() {
     if (this.viewOnly) {
       return this.value;
     }
-    let value = {};
-    _each(this.components, (component) =&gt; {
+    const value = {};
+    _.each(this.components, (component) =&gt; {
       value[component.component.key] = component.getValue();
     });
     return value;
@@ -189,15 +199,20 @@ export class ContainerComponent extends FormioComponents {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    if (!value || !_isObject(value)) {
+    if (!value || !_.isObject(value)) {
       return;
     }
-    _each(this.components, (component) =&gt; {
+    this.data[this.component.key] = value;
+    _.each(this.components, (component) =&gt; {
       if (component.type === &apos;components&apos;) {
         component.setValue(value, flags);
       }
       else if (value.hasOwnProperty(component.component.key)) {
         component.setValue(value[component.component.key], flags);
+      }
+      else {
+        component.data = value;
+        component.setValue(component.defaultValue, flags);
       }
     });
     this.updateValue(flags);

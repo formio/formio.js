@@ -151,18 +151,19 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editrgrid/EditGrid.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _each from &apos;lodash/each&apos;;
-import _map from &apos;lodash/map&apos;;
-import _cloneDeep from &apos;lodash/cloneDeep&apos;;
-import _clone from &apos;lodash/clone&apos;;
-import _isArray from &apos;lodash/isArray&apos;;
-import { FormioComponents } from &apos;../Components&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
+import {FormioComponents} from &apos;../Components&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 
 export class EditGridComponent extends FormioComponents {
@@ -188,14 +189,14 @@ export class EditGridComponent extends FormioComponents {
     }
 
     let tableClass = &apos;editgrid-listgroup list-group &apos;;
-    _each([&apos;striped&apos;, &apos;bordered&apos;, &apos;hover&apos;, &apos;condensed&apos;], (prop) =&gt; {
+    _.each([&apos;striped&apos;, &apos;bordered&apos;, &apos;hover&apos;, &apos;condensed&apos;], (prop) =&gt; {
       if (this.component[prop]) {
-        tableClass += &apos;table-&apos; + prop + &apos; &apos;;
+        tableClass += `table-${prop} `;
       }
     });
     this.tableElement = this.ce(&apos;ul&apos;, {class: tableClass}, [
       this.headerElement = this.createHeader(),
-      this.rowElements = _map(this.rows, this.createRow.bind(this)),
+      this.rowElements = _.map(this.rows, this.createRow.bind(this)),
       this.footerElement = this.createFooter(),
     ]);
 
@@ -227,10 +228,10 @@ export class EditGridComponent extends FormioComponents {
           this.ce(&apos;div&apos;, {class: &apos;editgrid-body&apos;},
             [
               this.component.components.map(comp =&gt; {
-                const component = _cloneDeep(comp);
-                component.row = this.row + &apos;-&apos; + rowIndex;
-                const options = _clone(this.options);
-                options.name += &apos;[&apos; + rowIndex + &apos;]&apos;;
+                const component = _.cloneDeep(comp);
+                component.row = `${this.row}-${rowIndex}`;
+                const options = _.clone(this.options);
+                options.name += `[${rowIndex}]`;
                 const instance = this.createComponent(component, options, this.editRows[rowIndex].data);
                 this.editRows[rowIndex].components.push(instance);
                 return instance.element;
@@ -330,16 +331,15 @@ export class EditGridComponent extends FormioComponents {
   createAddButton() {
     this.element.appendChild(this.ce(&apos;div&apos;, {class: &apos;editgrid-add&apos;},
       this.ce(&apos;button&apos;, {
-          class: &apos;btn btn-primary&apos;,
-          role: &apos;button&apos;,
-          onClick: this.addRow.bind(this)
-        },
-        [
-          this.ce(&apos;span&apos;, {class: this.iconClass(&apos;plus&apos;), &apos;aria-hidden&apos;: true}),
-          &apos; &apos;,
-          this.t(this.component.addAnother ? this.component.addAnother : &apos;Add Another&apos;, {})
-        ],
-      )
+        class: &apos;btn btn-primary&apos;,
+        role: &apos;button&apos;,
+        onClick: this.addRow.bind(this)
+      },
+      [
+        this.ce(&apos;span&apos;, {class: this.iconClass(&apos;plus&apos;), &apos;aria-hidden&apos;: true}),
+        &apos; &apos;,
+        this.t(this.component.addAnother ? this.component.addAnother : &apos;Add Another&apos;, {})
+      ])
     ));
   }
 
@@ -386,7 +386,7 @@ export class EditGridComponent extends FormioComponents {
 
   editRow(rowIndex) {
     this.editRows[rowIndex].isOpen = true;
-    this.editRows[rowIndex].data = _cloneDeep(this.rows[rowIndex]);
+    this.editRows[rowIndex].data = _.cloneDeep(this.rows[rowIndex]);
     this.refreshDOM();
   }
 
@@ -400,7 +400,7 @@ export class EditGridComponent extends FormioComponents {
     this.removeRowComponents(rowIndex);
     // Remove if new.
     if (!this.rows[rowIndex]) {
-      this.tableElement.removeChild(this.editRows[rowIndex].element);
+      this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
       this.rows.splice(rowIndex, 1);
     }
@@ -435,7 +435,7 @@ export class EditGridComponent extends FormioComponents {
     }
     this.removeRowComponents(rowIndex);
     this.rows.splice(rowIndex, 1);
-    this.tableElement.removeChild(this.editRows[rowIndex].element);
+    this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
     this.refreshDOM();
@@ -458,18 +458,18 @@ export class EditGridComponent extends FormioComponents {
 
     if (this.component.validate &amp;&amp; this.component.validate.row) {
       let custom = this.component.validate.row;
-      custom = custom.replace(/({{\s+(.*)\s+}})/, function(match, $1, $2) {
+      custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) =&gt; {
         return this.editRows[rowIndex].data[$2];
-      }.bind(this));
+      });
       let valid;
       try {
         const row = this.editRows[rowIndex].data;
         const data = this.data;
-        valid = new Function(&apos;row&apos;, &apos;data&apos;, custom + &apos;; return valid;&apos;)(row, data);
+        valid = new Function(&apos;row&apos;, &apos;data&apos;, `${custom}; return valid;`)(row, data);
       }
       catch (e) {
         /* eslint-disable no-console, no-undef */
-        console.warn(&apos;A syntax error occurred while computing custom values in &apos; + this.component.key, e);
+        console.warn(`A syntax error occurred while computing custom values in ${this.component.key}`, e);
         /* eslint-enable no-console */
       }
       this.editRows[rowIndex].errorContainer.innerHTML = &apos;&apos;;
@@ -520,35 +520,32 @@ export class EditGridComponent extends FormioComponents {
     return true;
   }
 
-  setCustomValidity(message, dirty) {
+  setCustomValidity(message) {
     if (this.errorElement &amp;&amp; this.errorContainer) {
       this.errorElement.innerHTML = &apos;&apos;;
-      try {
-        this.errorContainer.removeChild(this.errorElement);
-      }
-      catch (err) {}
+      this.removeChildFrom(this.errorElement, this.errorContainer);
     }
     if (message) {
       this.emit(&apos;componentError&apos;, this.error);
       this.createErrorElement();
-      let errorMessage = this.ce(&apos;p&apos;, {
+      const errorMessage = this.ce(&apos;p&apos;, {
         class: &apos;help-block&apos;
       });
       errorMessage.appendChild(this.text(message));
-      this.errorElement.appendChild(errorMessage);
+      this.appendTo(errorMessage, this.errorElement);
     }
   }
 
   get defaultValue() {
-    return [];
+    const value = super.defaultValue;
+    return Array.isArray(value) ? value : [];
   }
 
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+  setValue(value) {
     if (!value) {
       return;
     }
-    if (!_isArray(value)) {
+    if (!Array.isArray(value)) {
       return;
     }
 
@@ -565,6 +562,14 @@ export class EditGridComponent extends FormioComponents {
         };
       }
     });
+    // Remove any extra edit rows.
+    if (this.rows.length &lt; this.editRows.length) {
+      for (let rowIndex = this.editRows.length - 1; rowIndex &gt;= this.rows.length; rowIndex--) {
+        this.removeRowComponents(rowIndex);
+        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
+        this.editRows.splice(rowIndex, 1);
+      }
+    }
     this.refreshDOM();
   }
 

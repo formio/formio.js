@@ -151,25 +151,30 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/providers/storage/dropbox.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">var Promise = require(&quot;native-promise-only&quot;);
-var dropbox = function(formio) {
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
+
+const dropbox = function(formio) {
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(((resolve, reject) =&gt; {
         // Send the file with data.
-        var xhr = new XMLHttpRequest();
+        const xhr = new XMLHttpRequest();
 
         if (typeof progressCallback === &apos;function&apos;) {
           xhr.upload.onprogress = progressCallback;
         }
 
-        var fd = new FormData();
+        const fd = new FormData();
         fd.append(&apos;name&apos;, fileName);
         fd.append(&apos;dir&apos;, dir);
         fd.append(&apos;file&apos;, file);
@@ -182,7 +187,7 @@ var dropbox = function(formio) {
 
         xhr.onload = function() {
           if (xhr.status &gt;= 200 &amp;&amp; xhr.status &lt; 300) {
-            var response = JSON.parse(xhr.response);
+            const response = JSON.parse(xhr.response);
             response.storage = &apos;dropbox&apos;;
             response.size = file.size;
             response.type = file.type;
@@ -198,26 +203,25 @@ var dropbox = function(formio) {
           reject(err);
         };
 
-        xhr.open(&apos;POST&apos;, formio.formUrl + &apos;/storage/dropbox&apos;);
-        var token = formio.getToken();
+        xhr.open(&apos;POST&apos;, `${formio.formUrl}/storage/dropbox`);
+        const token = formio.getToken();
         if (token) {
           xhr.setRequestHeader(&apos;x-jwt-token&apos;, token);
         }
         xhr.send(fd);
-      });
+      }));
     },
     downloadFile: function(file) {
-      var token = formio.getToken();
-      file.url = formio.formUrl + &apos;/storage/dropbox?path_lower=&apos; + file.path_lower + (token ? &apos;&amp;x-jwt-token=&apos; + token : &apos;&apos;);
+      const token = formio.getToken();
+      file.url =
+        `${formio.formUrl}/storage/dropbox?path_lower=${file.path_lower}${token ? `&amp;x-jwt-token=${token}` : &apos;&apos;}`;
       return Promise.resolve(file);
     }
   };
 };
 
 dropbox.title = &apos;Dropbox&apos;;
-module.exports = dropbox;
-
-
+export default dropbox;
 </code></pre>
 
 </div>

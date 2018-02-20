@@ -151,21 +151,25 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/columns/Column.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { FormioComponents } from &apos;../Components&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {FormioComponents} from &apos;../Components&apos;;
 export class ColumnComponent extends FormioComponents {
   get className() {
-      var comp   = this.component;
-      var width  = &apos; col-sm-&apos;        + (comp.width  ? comp.width  : 6);
-      var offset = &apos; col-sm-offset-&apos; + (comp.offset ? comp.offset : 0);  
-      var push   = &apos; col-sm-push-&apos;   + (comp.push   ? comp.push   : 0);  
-      var pull   = &apos; col-sm-pull-&apos;   + (comp.pull   ? comp.pull   : 0);  
-      return &apos;col&apos; + width + offset + push + pull;
+    const comp   = this.component;
+    const width  = ` col-sm-${comp.width  ? comp.width  : 6}`;
+    const offset = ` col-sm-offset-${comp.offset ? comp.offset : 0}`;
+    const push   = ` col-sm-push-${comp.push   ? comp.push   : 0}`;
+    const pull   = ` col-sm-pull-${comp.pull   ? comp.pull   : 0}`;
+    return `col${width}${offset}${push}${pull}`;
   }
 }
 </code></pre>

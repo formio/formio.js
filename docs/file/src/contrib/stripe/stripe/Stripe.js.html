@@ -151,26 +151,28 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/contrib/stripe/stripe/Stripe.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _isObject from &apos;lodash/isObject&apos;;
-import _isArray from &apos;lodash/isArray&apos;;
-import _cloneDeep from &apos;lodash/cloneDeep&apos;;
-import _each from &apos;lodash/each&apos;;
-import { Validator } from &apos;../../../components/Validator&apos;;
-import { BaseComponent } from &apos;../../../components/base/Base&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* globals Stripe */
+import _ from &apos;lodash&apos;;
 
+import {Validator} from &apos;../../../components/Validator&apos;;
+import {BaseComponent} from &apos;../../../components/base/Base&apos;;
 
 // Register a custom validor to use card validition from Stripe
-if (typeof Validator.validators.stripe === &quot;undefined&quot;) {
+if (typeof Validator.validators.stripe === &apos;undefined&apos;) {
   Validator.validators.stripe =  {
     key: &apos;validate.stripe&apos;,
-    message(component, setting) {
-      let stripeMessage = &quot;&quot;;
+    message(component) {
+      let stripeMessage = &apos;&apos;;
       if (component.lastResult &amp;&amp; component.lastResult.error) {
         stripeMessage = component.lastResult.error.message;
       }
@@ -190,7 +192,6 @@ if (typeof Validator.validators.stripe === &quot;undefined&quot;) {
   };
 }
 
-
 /**
  * This is the StripeComponent class.
  */
@@ -199,7 +200,7 @@ export class StripeComponent extends BaseComponent {
     super(component, options, data);
 
     // Get the source for Stripe API
-    let src = &apos;https://js.stripe.com/v3/&apos;;
+    const src = &apos;https://js.stripe.com/v3/&apos;;
 
     /**
      * Promise when Stripe is ready.
@@ -224,7 +225,7 @@ export class StripeComponent extends BaseComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = &apos;input&apos;;
     info.attr.type = &apos;hidden&apos;;
     info.changeEvent = &apos;change&apos;;
@@ -267,19 +268,18 @@ export class StripeComponent extends BaseComponent {
     this.removeClass(this.element, &apos;stripe-submitting&apos;);
     this.addClass(this.element, &apos;stripe-submitted&apos;);
 
-    this.stripeSuccess.style.display = &quot;block&quot;;
+    this.stripeSuccess.style.display = &apos;block&apos;;
     if (this.component.stripe.payButton &amp;&amp; this.component.stripe.payButton.enable) {
-      this.stripeElementPayButton.style.display = &quot;none&quot;;
-      this.stripeSeparator.style.display = &quot;none&quot;;
+      this.stripeElementPayButton.style.display = &apos;none&apos;;
+      this.stripeSeparator.style.display = &apos;none&apos;;
     }
-    this.stripeElementCard.style.display = &quot;none&quot;;
+    this.stripeElementCard.style.display = &apos;none&apos;;
 
     // Store token in hidden input
     this.setValue(result.token.id);
 
     this.paymentDone = true;
   }
-
 
   /**
    * Call Stripe API to get token
@@ -289,13 +289,13 @@ export class StripeComponent extends BaseComponent {
       return;
     }
 
-    let that = this;
-    return new Promise(function(resolve, reject) {
+    const that = this;
+    return new Promise(((resolve, reject) =&gt; {
       that.authorizePending();
 
       // Get all additionnal data to send to Stripe
-      let cardData = _cloneDeep(that.component.stripe.cardData) || {};
-      _each(cardData, (value, key) =&gt; {
+      const cardData = _.cloneDeep(that.component.stripe.cardData) || {};
+      _.each(cardData, (value, key) =&gt; {
         cardData[key] = that.t(value);
       });
 
@@ -303,12 +303,13 @@ export class StripeComponent extends BaseComponent {
         if (result.error) {
           that.authorizeError(result.error);
           reject(result.error);
-        } else {
+        }
+        else {
           that.authorizeDone(result);
           resolve();
         }
       });
-    });
+    }));
   }
 
   /**
@@ -322,12 +323,14 @@ export class StripeComponent extends BaseComponent {
     }
 
     // Force change when complete or when an error is thrown or fixed
-    let changed = result.complete || this.lastResult &amp;&amp; (!!this.lastResult.error != !!result.error)
-                  || this.lastResult &amp;&amp; this.lastResult.error &amp;&amp; result.error &amp;&amp; this.lastResult.error.code != result.error.code || false;
+    const changed = result.complete
+      || this.lastResult &amp;&amp; (!!this.lastResult.error !== !!result.error)
+      || this.lastResult &amp;&amp; this.lastResult.error &amp;&amp; result.error &amp;&amp; this.lastResult.error.code !== result.error.code
+      || false;
     this.lastResult = result;
 
     // When the field is not empty, use &quot;.&quot; as value to not trigger &quot;required&quot; validator
-    let value = result.empty ? &quot;&quot; : &quot;.&quot;;
+    const value = result.empty ? &apos;&apos; : &apos;.&apos;;
     this.setValue(value, {
       changed: changed
     });
@@ -343,24 +346,24 @@ export class StripeComponent extends BaseComponent {
   build() {
     super.build();
 
-    let successLabel = this.component.stripe.payButton.successLabel || &quot;Payment successful&quot;;
+    const successLabel = this.component.stripe.payButton.successLabel || &apos;Payment successful&apos;;
     this.stripeSuccess = this.ce(&apos;div&apos;, {
-      class: &quot;Stripe-success&quot;,
-      style: &quot;display: none&quot;
+      class: &apos;Stripe-success&apos;,
+      style: &apos;display: none&apos;
     }, this.t(successLabel));
     this.element.appendChild(this.stripeSuccess);
 
     // Add container for pay button
     if (this.component.stripe.payButton &amp;&amp; this.component.stripe.payButton.enable) {
       this.stripeElementPayButton = this.ce(&apos;div&apos;, {
-        class: &quot;Stripe-paybutton&quot;
+        class: &apos;Stripe-paybutton&apos;
       });
       this.element.appendChild(this.stripeElementPayButton);
 
-      let separatorLabel = this.component.stripe.payButton.separatorLabel || &quot;Or&quot;;
+      const separatorLabel = this.component.stripe.payButton.separatorLabel || &apos;Or&apos;;
       this.stripeSeparator = this.ce(&apos;div&apos;, {
-        class: &quot;Stripe-separator&quot;,
-        style: &quot;display: none&quot;
+        class: &apos;Stripe-separator&apos;,
+        style: &apos;display: none&apos;
       }, this.t(separatorLabel));
       this.element.appendChild(this.stripeSeparator);
     }
@@ -375,12 +378,12 @@ export class StripeComponent extends BaseComponent {
       // Create an instance of Elements
       let stripeElementsOptions = {};
       if (this.component.stripe) {
-        stripeElementsOptions = _cloneDeep(this.component.stripe.stripeElementsOptions) || {};
+        stripeElementsOptions = _.cloneDeep(this.component.stripe.stripeElementsOptions) || {};
       }
-      if (typeof stripeElementsOptions.locale === &quot;undefined&quot;) {
+      if (typeof stripeElementsOptions.locale === &apos;undefined&apos;) {
         stripeElementsOptions.locale = this.options.language;
       }
-      let elements = this.stripe.elements(stripeElementsOptions);
+      const elements = this.stripe.elements(stripeElementsOptions);
 
       // Create an instance of the card Element
       let stripeElementOptions = {};
@@ -397,11 +400,11 @@ export class StripeComponent extends BaseComponent {
 
       // If there is a pay button, then create it and add listener
       if (this.component.stripe.payButton &amp;&amp; this.component.stripe.payButton.enable) {
-        let paymentRequest = this.stripe.paymentRequest(this.component.stripe.payButton.paymentRequest);
+        const paymentRequest = this.stripe.paymentRequest(this.component.stripe.payButton.paymentRequest);
 
         this.addEventListener(paymentRequest, &apos;token&apos;, (result) =&gt; {
           this.authorizeDone(result, true);
-          result.complete(&quot;success&quot;);
+          result.complete(&apos;success&apos;);
         });
 
         let stripeOptionsPayButton = {};
@@ -410,12 +413,12 @@ export class StripeComponent extends BaseComponent {
         }
         stripeOptionsPayButton.paymentRequest = paymentRequest;
 
-        let paymentRequestElement = elements.create(&quot;paymentRequestButton&quot;, stripeOptionsPayButton);
+        const paymentRequestElement = elements.create(&apos;paymentRequestButton&apos;, stripeOptionsPayButton);
 
         paymentRequest.canMakePayment().then((result) =&gt; {
           if (result) {
             // Display label separator
-            this.stripeSeparator.style.display = &quot;block&quot;;
+            this.stripeSeparator.style.display = &apos;block&apos;;
             paymentRequestElement.mount(this.stripeElementPayButton);
           }
         });

@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -160,21 +164,21 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 import assert from &apos;power-assert&apos;;
 import _merge from &apos;lodash/merge&apos;;
-import { BaseComponent } from &apos;./Base&apos;;
-import { Harness } from &apos;../../../test/harness&apos;;
-import { components as comps } from &apos;./fixtures/index&apos;;
-describe(&apos;Base Component&apos;, function() {
-  it(&apos;Should build a base component&apos;, function(done) {
+import {BaseComponent} from &apos;./Base&apos;;
+import {Harness} from &apos;../../../test/harness&apos;;
+import {components as comps} from &apos;./fixtures/index&apos;;
+describe(&apos;Base Component&apos;, () =&gt; {
+  it(&apos;Should build a base component&apos;, (done) =&gt; {
     Harness.testCreate(BaseComponent, comps.comp1).then((component) =&gt; {
-      let inputs = Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
+      const inputs = Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
       for (let i=0; i &lt; inputs.length; i++) {
-        assert.equal(inputs[i].name, &apos;data[&apos; + comps.comp1.key + &apos;]&apos;);
+        assert.equal(inputs[i].name, `data[${comps.comp1.key}]`);
       }
-      done()
+      done();
     });
   });
 
-  it(&apos;Should provide required validation&apos;, function(done) {
+  it(&apos;Should provide required validation&apos;, (done) =&gt; {
     Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {required: true}
     })).then((component) =&gt; Harness.testComponent(component, {
@@ -189,7 +193,7 @@ describe(&apos;Base Component&apos;, function() {
     }, done));
   });
 
-  it(&apos;Should provide minLength validation&apos;, function(done) {
+  it(&apos;Should provide minLength validation&apos;, (done) =&gt; {
     Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {minLength: 2}
     })).then((component) =&gt; Harness.testComponent(component, {
@@ -204,7 +208,7 @@ describe(&apos;Base Component&apos;, function() {
     }, done));
   });
 
-  it(&apos;Should provide maxLength validation&apos;, function(done) {
+  it(&apos;Should provide maxLength validation&apos;, (done) =&gt; {
     Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {maxLength: 5}
     })).then((component) =&gt; Harness.testComponent(component, {
@@ -219,7 +223,7 @@ describe(&apos;Base Component&apos;, function() {
     }, done));
   });
 
-  it(&apos;Should provide custom validation&apos;, function(done) {
+  it(&apos;Should provide custom validation&apos;, (done) =&gt; {
     Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {
         custom: &apos;valid = (input !== &quot;Joe&quot;) ? true : &quot;You cannot be Joe&quot;&apos;
@@ -236,19 +240,19 @@ describe(&apos;Base Component&apos;, function() {
     }, done));
   });
 
-  it(&apos;Should provide json validation&apos;, function(done) {
+  it(&apos;Should provide json validation&apos;, (done) =&gt; {
     Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
       validate: {
         json: {
-          &quot;if&quot;: [
+          &apos;if&apos;: [
             {
-              &quot;===&quot;: [
-                {var: &quot;data.firstName&quot;},
-                &quot;Joe&quot;
+              &apos;===&apos;: [
+                {var: &apos;data.firstName&apos;},
+                &apos;Joe&apos;
               ]
             },
             true,
-            &quot;You must be Joe&quot;
+            &apos;You must be Joe&apos;
           ]
         }
       }

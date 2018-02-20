@@ -151,13 +151,17 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/panel/Panel.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { FormioComponents } from &apos;../Components&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {FormioComponents} from &apos;../Components&apos;;
 export class PanelComponent extends FormioComponents {
   build() {
     let panelClass = `card border-${this.bootstrap4Theme(this.component.theme)} `;
@@ -167,10 +171,10 @@ export class PanelComponent extends FormioComponents {
       class: panelClass
     });
     if (this.component.title) {
-      let heading = this.ce(&apos;div&apos;, {
+      const heading = this.ce(&apos;div&apos;, {
         class: &apos;card-header panel-heading&apos;
       });
-      let title = this.ce(&apos;h3&apos;, {
+      const title = this.ce(&apos;h3&apos;, {
         class: &apos;card-title panel-title&apos;
       });
       title.appendChild(this.text(this.component.title));
@@ -178,7 +182,7 @@ export class PanelComponent extends FormioComponents {
       heading.appendChild(title);
       this.element.appendChild(heading);
     }
-    let body = this.ce(&apos;div&apos;, {
+    const body = this.ce(&apos;div&apos;, {
       class: &apos;card-body panel-body&apos;
     });
     this.addComponents(body);

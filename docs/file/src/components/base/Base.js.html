@@ -151,28 +151,24 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/base/Base.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import maskInput, { conformToMask } from &apos;vanilla-text-mask&apos;;
-import Promise from &quot;native-promise-only&quot;;
-import _get from &apos;lodash/get&apos;;
-import _each from &apos;lodash/each&apos;;
-import _debounce from &apos;lodash/debounce&apos;;
-import _isArray from &apos;lodash/isArray&apos;;
-import _clone from &apos;lodash/clone&apos;;
-import _cloneDeep from &apos;lodash/cloneDeep&apos;;
-import _defaults from &apos;lodash/defaults&apos;;
-import _isEqual from &apos;lodash/isEqual&apos;;
-import _isUndefined from &apos;lodash/isUndefined&apos;;
-import _toString from &apos;lodash/toString&apos;;
-import FormioUtils from &apos;../../utils&apos;;
-import { Validator } from &apos;../Validator&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import maskInput, {conformToMask} from &apos;vanilla-text-mask&apos;;
+import Promise from &apos;native-promise-only&apos;;
+import _ from &apos;lodash&apos;;
 import Tooltip from &apos;tooltip.js&apos;;
 import i18next from &apos;i18next&apos;;
+
+import FormioUtils from &apos;../../utils&apos;;
+import {Validator} from &apos;../Validator&apos;;
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -186,7 +182,7 @@ export class BaseComponent {
    * @param {Object} data - The global data submission object this component will belong.
    */
   constructor(component, options, data) {
-    this.originalComponent = _cloneDeep(component);
+    this.originalComponent = _.cloneDeep(component);
     /**
      * The ID of this component. This value is auto-generated when the component is created, but
      * can also be provided from the component.id value passed into the constructor.
@@ -198,7 +194,7 @@ export class BaseComponent {
      * The options for this component.
      * @type {{}}
      */
-    this.options = _defaults(_clone(options), {
+    this.options = _.defaults(_.clone(options), {
       highlightErrors: true
     });
 
@@ -329,7 +325,7 @@ export class BaseComponent {
      * Used to trigger a new change in this component.
      * @type {function} - Call to trigger a change in this component.
      */
-    this.triggerChange = _debounce(this.onChange.bind(this), 100);
+    this.triggerChange = _.debounce(this.onChange.bind(this), 100);
 
     /**
      * An array of event handlers so that the destry command can deregister them.
@@ -382,7 +378,7 @@ export class BaseComponent {
     params.keySeparator = &apos;.|.&apos;;
     params.pluralSeparator = &apos;._.&apos;;
     params.contextSeparator = &apos;._.&apos;;
-    let translated = this.i18next.t(text, params);
+    const translated = this.i18next.t(text, params);
     return translated || text;
   }
 
@@ -408,7 +404,7 @@ export class BaseComponent {
     if (!this.events) {
       return;
     }
-    let type = `formio.${event}`;
+    const type = `formio.${event}`;
     this.eventListeners.push({
       type: type,
       listener: cb,
@@ -562,9 +558,9 @@ export class BaseComponent {
   }
 
   setupValueElement(element) {
-    let value = this.value;
+    let value = this.getValue();
     value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
-    element.appendChild(this.text(value));
+    element.innerHTML = value;
   }
 
   get defaultViewOnlyValue() {
@@ -572,17 +568,26 @@ export class BaseComponent {
   }
 
   getView(value) {
-    return _toString(value);
+    if (Array.isArray(value)) {
+      return value.join(&apos;, &apos;);
+    }
+
+    return value.toString();
   }
 
   updateViewOnlyValue() {
-    this.empty(this.valueElement);
+    if (!this.valueElement) {
+      return;
+    }
+
     this.setupValueElement(this.valueElement);
   }
 
   empty(element) {
-    while (element.firstChild) {
-      element.removeChild(element.firstChild);
+    if (element) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
     }
   }
 
@@ -611,10 +616,10 @@ export class BaseComponent {
    */
   get customStyle() {
     let customCSS = &apos;&apos;;
-    _each(this.component.style, function(value, key) {
-        if (value !== &apos;&apos;) {
-          customCSS += `${key}:${value};`;
-        }
+    _.each(this.component.style, (value, key) =&gt; {
+      if (value !== &apos;&apos;) {
+        customCSS += `${key}:${value};`;
+      }
     });
     return customCSS;
   }
@@ -658,7 +663,7 @@ export class BaseComponent {
       return false;
     }
     else {
-      let table = this.ce(&apos;table&apos;, {
+      const table = this.ce(&apos;table&apos;, {
         class: &apos;table table-bordered&apos;
       });
       this.tbody = this.ce(&apos;tbody&apos;);
@@ -688,7 +693,8 @@ export class BaseComponent {
     else if (this.component.customDefaultValue) {
       if (typeof this.component.customDefaultValue === &apos;string&apos;) {
         try {
-          defaultValue = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;, `var value = &apos;&apos;; ${this.component.customDefaultValue.toString()}; return value;`))(this, this.data, this.data);
+          defaultValue = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;,
+            `var value = &apos;&apos;; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
         }
         catch (e) {
           defaultValue = null;
@@ -701,13 +707,14 @@ export class BaseComponent {
         try {
           defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
             data: this.data,
-            row: this.data
+            row: this.data,
+            _
           });
         }
         catch (err) {
           defaultValue = null;
           /* eslint-disable no-console */
-          console.warn(`An error occurred calculating a value for ${this.component.key}`, e);
+          console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
           /* eslint-enable no-console */
         }
       }
@@ -739,7 +746,7 @@ export class BaseComponent {
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = [];
     }
-    if (this.data[this.component.key] &amp;&amp; !_isArray(this.data[this.component.key])) {
+    if (this.data[this.component.key] &amp;&amp; !Array.isArray(this.data[this.component.key])) {
       this.data[this.component.key] = [this.data[this.component.key]];
     }
     this.data[this.component.key].push(this.defaultValue);
@@ -751,7 +758,7 @@ export class BaseComponent {
   addValue() {
     this.addNewValue();
     this.buildRows();
-	  this.checkConditions(this.root ? this.root.data : this.data);
+    this.checkConditions(this.root ? this.root.data : this.data);
     this.restoreValue();
   }
 
@@ -776,15 +783,15 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = &apos;&apos;;
-    _each(this.data[this.component.key], (value, index) =&gt; {
-      let tr = this.ce(&apos;tr&apos;);
-      let td = this.ce(&apos;td&apos;);
+    _.each(this.data[this.component.key], (value, index) =&gt; {
+      const tr = this.ce(&apos;tr&apos;);
+      const td = this.ce(&apos;td&apos;);
       const input = this.createInput(td);
       input.value = value;
       tr.appendChild(td);
 
       if (!this.shouldDisable) {
-        let tdAdd = this.ce(&apos;td&apos;);
+        const tdAdd = this.ce(&apos;td&apos;);
         tdAdd.appendChild(this.removeButton(index));
         tr.appendChild(tdAdd);
       }
@@ -793,8 +800,8 @@ export class BaseComponent {
     });
 
     if (!this.shouldDisable) {
-      let tr = this.ce(&apos;tr&apos;);
-      let td = this.ce(&apos;td&apos;, {
+      const tr = this.ce(&apos;tr&apos;);
+      const td = this.ce(&apos;td&apos;, {
         colspan: &apos;2&apos;
       });
       td.appendChild(this.addButton());
@@ -821,9 +828,9 @@ export class BaseComponent {
       case &apos;zoom-out&apos;:
         return &apos;fa fa-search-minus&apos;;
       case &apos;question-sign&apos;:
-        return `fa fa-question-circle`;
+        return &apos;fa fa-question-circle&apos;;
       case &apos;remove-circle&apos;:
-        return `fa fa-times-circle-o`;
+        return &apos;fa fa-times-circle-o&apos;;
       default:
         return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
     }
@@ -834,7 +841,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The &quot;Add New&quot; button html element.
    */
   addButton(justIcon) {
-    let addButton = this.ce(&apos;a&apos;, {
+    const addButton = this.ce(&apos;a&apos;, {
       class: &apos;btn btn-primary&apos;
     });
     this.addEventListener(addButton, &apos;click&apos;, (event) =&gt; {
@@ -842,7 +849,7 @@ export class BaseComponent {
       this.addValue();
     });
 
-    let addIcon = this.ce(&apos;i&apos;, {
+    const addIcon = this.ce(&apos;i&apos;, {
       class: this.iconClass(&apos;plus&apos;)
     });
 
@@ -870,7 +877,10 @@ export class BaseComponent {
    * @return {*}
    */
   get errorLabel() {
-    return this.t(this.component.errorLabel || this.component.label || this.component.placeholder || this.component.key);
+    return this.t(this.component.errorLabel
+      || this.component.label
+      || this.component.placeholder
+      || this.component.key);
   }
 
   /**
@@ -888,7 +898,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The html element of the remove button.
    */
   removeButton(index) {
-    let removeButton = this.ce(&apos;button&apos;, {
+    const removeButton = this.ce(&apos;button&apos;, {
       type: &apos;button&apos;,
       class: &apos;btn btn-default btn-secondary&apos;,
       tabindex: &apos;-1&apos;
@@ -899,7 +909,7 @@ export class BaseComponent {
       this.removeValue(index);
     });
 
-    let removeIcon = this.ce(&apos;i&apos;, {
+    const removeIcon = this.ce(&apos;i&apos;, {
       class: this.iconClass(&apos;remove-circle&apos;)
     });
     removeButton.appendChild(removeIcon);
@@ -932,7 +942,7 @@ export class BaseComponent {
   }
 
   getLabelWidth() {
-    if (_isUndefined(this.component.labelWidth)) {
+    if (_.isUndefined(this.component.labelWidth)) {
       this.component.labelWidth = 30;
     }
 
@@ -940,7 +950,7 @@ export class BaseComponent {
   }
 
   getLabelMargin() {
-    if (_isUndefined(this.component.labelMargin)) {
+    if (_.isUndefined(this.component.labelMargin)) {
       this.component.labelMargin = 3;
     }
 
@@ -957,10 +967,10 @@ export class BaseComponent {
       input.style.width = `${100 - totalLabelWidth}%`;
 
       if (this.labelOnTheLeft(this.component.labelPosition)) {
-        input.style.marginLeft = `${totalLabelWidth}%`
+        input.style.marginLeft = `${totalLabelWidth}%`;
       }
       else {
-        input.style.marginRight = `${totalLabelWidth}%`
+        input.style.marginRight = `${totalLabelWidth}%`;
       }
     }
   }
@@ -1038,7 +1048,6 @@ export class BaseComponent {
       return label;
     }
 
-    const char = match[0];
     const index = match.index + 1;
     const lowLineCombinator = &apos;\u0332&apos;;
 
@@ -1210,7 +1219,7 @@ export class BaseComponent {
         mask
       });
       if (mask.numeric) {
-        input.setAttribute(&apos;pattern&apos;, &quot;\\d*&quot;);
+        input.setAttribute(&apos;pattern&apos;, &apos;\\d*&apos;);
       }
       if (!this.component.placeholder) {
         input.setAttribute(&apos;placeholder&apos;, this.maskPlaceholder(mask));
@@ -1224,9 +1233,9 @@ export class BaseComponent {
    * @returns {HTMLElement} - Either the input or the group that contains the input.
    */
   createInput(container) {
-    let input = this.ce(this.info.type, this.info.attr);
+    const input = this.ce(this.info.type, this.info.attr);
     this.setInputMask(input);
-    let inputGroup = this.addInputGroup(input, container);
+    const inputGroup = this.addInputGroup(input, container);
     this.addPrefix(input, inputGroup);
     this.addInput(input, inputGroup || container);
     this.addSuffix(input, inputGroup);
@@ -1247,7 +1256,7 @@ export class BaseComponent {
    */
   addEventListener(obj, evt, func) {
     this.eventHandlers.push({type: evt, func: func});
-    if (&apos;addEventListener&apos; in obj){
+    if (&apos;addEventListener&apos; in obj) {
       obj.addEventListener(evt, func, false);
     }
     else if (&apos;attachEvent&apos; in obj) {
@@ -1271,12 +1280,12 @@ export class BaseComponent {
     if (this.inputMask) {
       this.inputMask.destroy();
     }
-    _each(this.eventListeners, (listener) =&gt; {
+    _.each(this.eventListeners, (listener) =&gt; {
       if (all || listener.internal) {
         this.events.off(listener.type, listener.listener);
       }
     });
-    _each(this.eventHandlers, (handler) =&gt; {
+    _.each(this.eventHandlers, (handler) =&gt; {
       if (handler.event) {
         window.removeEventListener(handler.event, handler.func);
       }
@@ -1340,9 +1349,9 @@ export class BaseComponent {
    *
    * @return {HTMLElement} - The created element.
    */
-  ce(type, attr, children = null, events = {}) {
+  ce(type, attr, children = null) {
     // Create the element.
-    let element = document.createElement(type);
+    const element = document.createElement(type);
 
     // Add attributes.
     if (attr) {
@@ -1369,7 +1378,7 @@ export class BaseComponent {
    * @param {Object} attr - The attributes to add to the input element.
    */
   attr(element, attr) {
-    _each(attr, (value, key) =&gt; {
+    _.each(attr, (value, key) =&gt; {
       if (typeof value !== &apos;undefined&apos;) {
         if (key.indexOf(&apos;on&apos;) === 0) {
           // If this is an event, add a listener.
@@ -1462,24 +1471,26 @@ export class BaseComponent {
       return;
     }
 
-    const newComponent = _cloneDeep(this.originalComponent);
+    const newComponent = _.cloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) =&gt; {
       const result = FormioUtils.checkTrigger(newComponent, logic.trigger, this.data, data);
 
       if (result) {
         changed |= logic.actions.reduce((changed, action) =&gt; {
-          switch(action.type) {
+          switch (action.type) {
             case &apos;property&apos;:
               FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
-            case &apos;value&apos;:
-              const newValue = (new Function(&apos;row&apos;, &apos;data&apos;, &apos;component&apos;, &apos;result&apos;, action.value))(this.data, data, newComponent, result);
-              if (!_isEqual(this.getValue(), newValue)) {
+            case &apos;value&apos;: {
+              const newValue = (new Function(&apos;row&apos;, &apos;data&apos;, &apos;component&apos;, &apos;result&apos;,
+                action.value))(this.data, data, newComponent, result);
+              if (!_.isEqual(this.getValue(), newValue)) {
                 this.setValue(newValue);
                 changed = true;
               }
               break;
+            }
             case &apos;validation&apos;:
               // TODO
               break;
@@ -1491,7 +1502,7 @@ export class BaseComponent {
     }, false);
 
     // If component definition changed, replace and mark as changed.
-    if (!_isEqual(this.component, newComponent)) {
+    if (!_.isEqual(this.component, newComponent)) {
       this.component = newComponent;
       changed = true;
     }
@@ -1511,7 +1522,7 @@ export class BaseComponent {
     }
 
     if (this.errorElement) {
-      let errorMessage = this.ce(&apos;p&apos;, {
+      const errorMessage = this.ce(&apos;p&apos;, {
         class: &apos;help-block&apos;
       });
       errorMessage.appendChild(this.text(message));
@@ -1532,39 +1543,52 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
-    // Ensure we stop any pending data clears.
-    if (this.clearPending) {
-      clearTimeout(this.clearPending);
-      this.clearPending = null;
-    }
-
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
     }
 
     this._visible = show;
-    let element = this.getElement();
+    this.showElement(show &amp;&amp; !this.component.hidden);
+    this.clearOnHide(show);
+    return show;
+  }
+
+  /**
+   * Show or hide the root element of this component.
+   *
+   * @param show
+   */
+  showElement(show) {
+    const element = this.getElement();
     if (element) {
-      if (show &amp;&amp; !this.component.hidden) {
+      if (show) {
         element.removeAttribute(&apos;hidden&apos;);
         element.style.visibility = &apos;visible&apos;;
         element.style.position = &apos;relative&apos;;
       }
-      else if (!show || this.component.hidden) {
+      else {
         element.setAttribute(&apos;hidden&apos;, true);
         element.style.visibility = &apos;hidden&apos;;
         element.style.position = &apos;absolute&apos;;
       }
     }
-
-    if (!show &amp;&amp; this.component.clearOnHide) {
-      this.clearPending = setTimeout(() =&gt; this.setValue(null, {
-        noValidate: true
-      }), 200);
-    }
-
     return show;
+  }
+
+  clearOnHide(show) {
+    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+    if (this.component.clearOnHide !== false) {
+      if (!show) {
+        delete this.data[this.component.key];
+      }
+      else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
+        // If shown, ensure the default is set.
+        this.setValue(this.defaultValue, {
+          noUpdateEvent: true
+        });
+      }
+    }
   }
 
   onResize() {}
@@ -1609,7 +1633,7 @@ export class BaseComponent {
     }
 
     // Set the changed variable.
-    let changed = {
+    const changed = {
       component: this.component,
       value: this.value,
       flags: flags
@@ -1629,8 +1653,8 @@ export class BaseComponent {
       return;
     }
     this.addEventListener(input, &apos;keypress&apos;, (event) =&gt; {
-      let key = event.keyCode || event.which;
-      if (key == 13) {
+      const key = event.keyCode || event.which;
+      if (key === 13) {
         event.preventDefault();
         event.stopPropagation();
         this.emit(&apos;submitButton&apos;);
@@ -1698,7 +1722,7 @@ export class BaseComponent {
       return this.value;
     }
     const values = [];
-    for (let i in this.inputs) {
+    for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         if (!this.component.multiple) {
           return this.getValueAt(i);
@@ -1717,7 +1741,7 @@ export class BaseComponent {
    * @return {boolean}
    */
   hasChanged(before, after) {
-    return !_isEqual(before, after);
+    return !_.isEqual(before, after);
   }
 
   /**
@@ -1755,7 +1779,7 @@ export class BaseComponent {
       });
     }
     else {
-      let defaultValue = this.defaultValue;
+      const defaultValue = this.defaultValue;
       if (!this.data.hasOwnProperty(this.component.key) &amp;&amp; defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
@@ -1783,7 +1807,8 @@ export class BaseComponent {
     // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === &apos;string&apos;) {
       try {
-        let value = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;, `value = []; ${this.component.calculateValue.toString()}; return value;`))(this, this.data, data);
+        const value = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;,
+          `value = []; ${this.component.calculateValue}; return value;`))(this, this.data, data);
         changed = this.setValue(value, flags);
       }
       catch (err) {
@@ -1795,9 +1820,10 @@ export class BaseComponent {
     }
     else {
       try {
-        let val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
+        const val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
           data,
-          row: this.data
+          row: this.data,
+          _
         });
         changed = this.setValue(val, flags);
       }
@@ -1873,7 +1899,7 @@ export class BaseComponent {
       return true;
     }
 
-    let message = this.invalid || this.invalidMessage(data, dirty);
+    const message = this.invalid || this.invalidMessage(data, dirty);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
@@ -1892,7 +1918,7 @@ export class BaseComponent {
    * @return {boolean}
    */
   validateMultiple(value) {
-    return this.component.multiple &amp;&amp; _isArray(value);
+    return this.component.multiple &amp;&amp; Array.isArray(value);
   }
 
   get errors() {
@@ -1906,10 +1932,7 @@ export class BaseComponent {
   setCustomValidity(message, dirty) {
     if (this.errorElement &amp;&amp; this.errorContainer) {
       this.errorElement.innerHTML = &apos;&apos;;
-      try {
-        this.errorContainer.removeChild(this.errorElement);
-      }
-      catch (err) {}
+      this.removeChildFrom(this.errorElement, this.errorContainer);
     }
     this.removeClass(this.element, &apos;has-error&apos;);
     this.inputs.forEach((input) =&gt; this.removeClass(input, &apos;is-invalid&apos;));
@@ -1928,7 +1951,7 @@ export class BaseComponent {
     else {
       this.error = null;
     }
-    _each(this.inputs, (input) =&gt; {
+    _.each(this.inputs, (input) =&gt; {
       if (typeof input.setCustomValidity === &apos;function&apos;) {
         input.setCustomValidity(message, dirty);
       }
@@ -1972,12 +1995,12 @@ export class BaseComponent {
     if (!this.hasInput) {
       return false;
     }
-    if (this.component.multiple &amp;&amp; !_isArray(value)) {
+    if (this.component.multiple &amp;&amp; !Array.isArray(value)) {
       value = [value];
     }
     this.buildRows();
-    const isArray = _isArray(value);
-    for (let i in this.inputs) {
+    const isArray = Array.isArray(value);
+    for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
       }
@@ -1990,7 +2013,7 @@ export class BaseComponent {
    */
   asString(value) {
     value = value || this.getValue();
-    return _isArray(value) ? value.join(&apos;, &apos;) : value.toString();
+    return Array.isArray(value) ? value.join(&apos;, &apos;) : value.toString();
   }
 
   /**
@@ -2015,7 +2038,7 @@ export class BaseComponent {
     this._disabled = disabled;
 
     // Disable all inputs.
-    _each(this.inputs, (input) =&gt; this.setDisabled(input, disabled));
+    _.each(this.inputs, (input) =&gt; this.setDisabled(input, disabled));
   }
 
   setDisabled(element, disabled) {
@@ -2036,36 +2059,36 @@ export class BaseComponent {
     element.loading = loading;
     if (!element.loader &amp;&amp; loading) {
       element.loader = this.ce(&apos;i&apos;, {
-        class: this.iconClass(&apos;refresh&apos;, true) + &apos; button-icon-right&apos;
+        class: `${this.iconClass(&apos;refresh&apos;, true)} button-icon-right`
       });
     }
     if (element.loader) {
       if (loading) {
-        element.appendChild(element.loader);
+        this.appendTo(element.loader, element);
       }
-      else if (element.contains(element.loader)) {
-        element.removeChild(element.loader);
+      else {
+        this.removeChildFrom(element.loader, element);
       }
     }
   }
 
   selectOptions(select, tag, options, defaultValue) {
-    _each(options, (option) =&gt; {
-      let attrs = {
+    _.each(options, (option) =&gt; {
+      const attrs = {
         value: option.value
       };
       if (defaultValue !== undefined &amp;&amp; (option.value === defaultValue)) {
         attrs.selected = &apos;selected&apos;;
       }
-      let optionElement = this.ce(&apos;option&apos;, attrs);
+      const optionElement = this.ce(&apos;option&apos;, attrs);
       optionElement.appendChild(this.text(option.label));
       select.appendChild(optionElement);
     });
   }
 
   setSelectValue(select, value) {
-    let options = select.querySelectorAll(&apos;option&apos;);
-    _each(options, (option) =&gt; {
+    const options = select.querySelectorAll(&apos;option&apos;);
+    _.each(options, (option) =&gt; {
       if (option.value === value) {
         option.setAttribute(&apos;selected&apos;, &apos;selected&apos;);
       }
@@ -2083,42 +2106,60 @@ export class BaseComponent {
 
   clear() {
     this.destroy();
-    const element = this.getElement();
-    if (element) {
-      while (element.lastChild) {
-        element.removeChild(element.lastChild);
-      }
+    this.empty(this.getElement());
+  }
+
+  appendTo(element, container) {
+    if (container) {
+      container.appendChild(element);
     }
   }
 
   append(element) {
-    if (this.element) {
-      this.element.appendChild(element);
+    this.appendTo(element, this.element);
+  }
+
+  prependTo(element, container) {
+    if (container) {
+      if (container.firstChild) {
+        try {
+          container.insertBefore(element, container.firstChild);
+        }
+        catch (err) {
+          console.warn(err);
+          container.appendChild(element);
+        }
+      }
+      else {
+        container.appendChild(element);
+      }
     }
   }
 
   prepend(element) {
-    if (this.element) {
-      if (this.element.firstChild) {
-        this.element.insertBefore(element, this.element.firstChild);
+    this.prependTo(element, this.element);
+  }
+
+  removeChildFrom(element, container) {
+    if (container &amp;&amp; container.contains(element)) {
+      try {
+        container.removeChild(element);
       }
-      else {
-        this.element.appendChild(element);
+      catch (err) {
+        console.warn(err);
       }
     }
   }
 
   removeChild(element) {
-    if (this.element) {
-      this.element.removeChild(element);
-    }
+    this.removeChildFrom(element, this.element);
   }
 
   /**
    * Get the element information.
    */
   elementInfo() {
-    let attributes = {
+    const attributes = {
       name: this.options.name,
       type: this.component.inputType || &apos;text&apos;,
       class: &apos;form-control&apos;,
@@ -2164,12 +2205,12 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
     }
 
     // See if the plugin already exists.
-    let plugin = _get(window, property);
+    const plugin = _.get(window, property);
     if (plugin) {
       BaseComponent.externalLibraries[name].resolve(plugin);
     }
     else {
-      src = _isArray(src) ? src : [src];
+      src = Array.isArray(src) ? src : [src];
       src.forEach((lib) =&gt; {
         let attrs = {};
         let elementType = &apos;&apos;;
@@ -2199,8 +2240,8 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
         }
 
         // Add the script to the top page.
-        let script = document.createElement(elementType);
-        for (let attr in attrs) {
+        const script = document.createElement(elementType);
+        for (const attr in attrs) {
           script.setAttribute(attr, attrs[attr]);
         }
         document.getElementsByTagName(&apos;head&apos;)[0].appendChild(script);
@@ -2209,7 +2250,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       // if no callback is provided, then check periodically for the script.
       if (polling) {
         setTimeout(function checkLibrary() {
-          let plugin = _get(window, property);
+          const plugin = _.get(window, property);
           if (plugin) {
             BaseComponent.externalLibraries[name].resolve(plugin);
           }
@@ -2217,7 +2258,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
             // check again after 200 ms.
             setTimeout(checkLibrary, 200);
           }
-        }, 200)
+        }, 200);
       }
     }
   }

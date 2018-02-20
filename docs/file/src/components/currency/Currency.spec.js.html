@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -158,17 +162,17 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/currency/Currency.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
-import { CurrencyComponent } from &apos;./Currency&apos;;
-import { components as comps } from &apos;./fixtures/index&apos;;
-import { Harness } from &apos;../../../test/harness&apos;;
-describe(&apos;Currency Component&apos;, function() {
-  it(&apos;Should build a currency component&apos;, function(done) {
+import {CurrencyComponent} from &apos;./Currency&apos;;
+import {components as comps} from &apos;./fixtures/index&apos;;
+import {Harness} from &apos;../../../test/harness&apos;;
+describe(&apos;Currency Component&apos;, () =&gt; {
+  it(&apos;Should build a currency component&apos;, (done) =&gt; {
     Harness.testCreate(CurrencyComponent, comps.comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;input[type=&quot;text&quot;]&apos;, 1);
       done();
     });
   });
-  it(&apos;Should format currency for USA locale&apos;, function(done) {
+  it(&apos;Should format currency for USA locale&apos;, (done) =&gt; {
     Harness.testCreate(CurrencyComponent, comps.comp1, {language: &apos;en-US&apos;}).then((component) =&gt; {
       Harness.testSetInput(component, null, null, &apos;&apos;);
       Harness.testSetInput(component, undefined, null, &apos;&apos;);
@@ -219,7 +223,7 @@ describe(&apos;Currency Component&apos;, function() {
       done();
     });
   });
-  it(&apos;Should format currency for British locale&apos;, function(done) {
+  it(&apos;Should format currency for British locale&apos;, (done) =&gt; {
     Harness.testCreate(CurrencyComponent, comps.comp1, {language: &apos;en-GB&apos;}).then((component) =&gt; {
       Harness.testSetInput(component, null, null, &apos;&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);
@@ -238,7 +242,7 @@ describe(&apos;Currency Component&apos;, function() {
       done();
     });
   });
-  it(&apos;Should format currency for French locale&apos;, function(done) {
+  it(&apos;Should format currency for French locale&apos;, (done) =&gt; {
     Harness.testCreate(CurrencyComponent, comps.comp1, {language: &apos;fr&apos;}).then((component) =&gt; {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, &apos;&apos;);
@@ -258,7 +262,7 @@ describe(&apos;Currency Component&apos;, function() {
       done();
     });
   });
-  it(&apos;Should format currency for German locale&apos;, function(done) {
+  it(&apos;Should format currency for German locale&apos;, (done) =&gt; {
     Harness.testCreate(CurrencyComponent, comps.comp1, {language: &apos;de&apos;}).then((component) =&gt; {
       Harness.testSetInput(component, null, null, &apos;&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);

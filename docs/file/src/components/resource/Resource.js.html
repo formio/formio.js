@@ -151,13 +151,17 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/resource/Resource.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { SelectComponent } from &apos;../select/Select&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {SelectComponent} from &apos;../select/Select&apos;;
 import dialogPolyfill from &apos;dialog-polyfill&apos;;
 export class ResourceComponent extends SelectComponent {
   constructor(component, options, data) {
@@ -173,20 +177,20 @@ export class ResourceComponent extends SelectComponent {
    * @returns {HTMLElement} - The &quot;Add Resource&quot; button html element.
    */
   addButton() {
-    let addButton = this.ce(&apos;a&apos;, {
+    const addButton = this.ce(&apos;a&apos;, {
       class: &apos;btn btn-primary&apos;
     });
-    let addIcon   = this.ce(&apos;i&apos;, {
+    const addIcon   = this.ce(&apos;i&apos;, {
       class: this.iconClass(&apos;plus&apos;)
     });
     addButton.appendChild(addIcon);
-    addButton.appendChild(this.text(&apos; &apos; + (this.component.addResourceLabel || &apos;Add Resource&apos;)));
+    addButton.appendChild(this.text(` ${this.component.addResourceLabel || &apos;Add Resource&apos;}`));
 
     this.addEventListener(addButton, &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
 
       // HTML for dialog
-      var template = &apos;&lt;div class=&quot;row&quot;&gt;&apos; +
+      const template = `${&apos;&lt;div class=&quot;row&quot;&gt;&apos; +
                        &apos;&lt;div class=&quot;col-sm-12&quot;&gt;&apos; +
                          &apos;&lt;b id=&quot;close&quot; class=&quot;formio-dialog-close pull-right&quot;&gt;X&lt;/b&gt;&apos; +
                        &apos;&lt;/div&gt;&apos; +
@@ -195,7 +199,7 @@ export class ResourceComponent extends SelectComponent {
                        &apos;&lt;div class=&quot;col-sm-12&quot;&gt;&apos; +
                          &apos;&lt;div class=&quot;panel panel-default&quot;&gt;&apos; +
                            &apos;&lt;div class=&quot;panel-heading&quot;&gt;&apos; +
-                             &apos;&lt;h3 class=&quot;panel-title&quot;&gt;&apos; + (this.component.addResourceLabel || &apos;Add Resource&apos;) + &apos;&lt;/h3&gt;&apos; +
+                             &apos;&lt;h3 class=&quot;panel-title&quot;&gt;&apos;}${this.component.addResourceLabel || &apos;Add Resource&apos;}&lt;/h3&gt;` +
                            &apos;&lt;/div&gt;&apos; +
                            &apos;&lt;div class=&quot;panel-body&quot;&gt;&apos; +
                              &apos;&lt;div id=&quot;formio&quot;&gt;&lt;/div&gt;&apos; +
@@ -211,22 +215,22 @@ export class ResourceComponent extends SelectComponent {
       addButton.ownerDocument.body.appendChild(this.dialog);
       dialogPolyfill.registerDialog(this.dialog);
 
-      var self  = this;
-      var close = this.dialog.querySelector(&apos;#close&apos;);
-      var form  = new FormioForm(this.dialog.querySelector(&apos;#formio&apos;));
+      const self  = this;
+      const close = this.dialog.querySelector(&apos;#close&apos;);
+      const form  = new FormioForm(this.dialog.querySelector(&apos;#formio&apos;));
 
-      close.onclick = function () {
+      close.onclick = function() {
         self.dialog.close();
-		  };
+      };
 
-		  form.on(&apos;submit&apos;, (submission) =&gt; {
+      form.on(&apos;submit&apos;, (submission) =&gt; {
         self.setValue(submission);
         self.dialog.close();
-		  });
-      form.src = Formio.getBaseUrl() + &apos;/form/&apos; + self.component.resource;
+      });
+      form.src = `${Formio.getBaseUrl()}/form/${self.component.resource}`;
 
-      this.dialog.onclose = function () {
-        self.dialog.parentElement.removeChild(self.dialog);
+      this.dialog.onclose = function() {
+        self.removeChildFrom(self.dialog, self.dialog.parentElement);
       };
 
       this.dialog.showModal();
@@ -238,10 +242,10 @@ export class ResourceComponent extends SelectComponent {
   addInput(input, container) {
     // Add Resource button
     if (this.component.addResource) {
-      var table    = this.ce(&apos;table&apos;, {
+      const table    = this.ce(&apos;table&apos;, {
         class: &apos;table table-bordered&apos;
       });
-      var template = &apos;&lt;tbody&gt;&apos; +
+      const template = &apos;&lt;tbody&gt;&apos; +
                        &apos;&lt;tr&gt;&apos; +
                          &apos;&lt;td id=&quot;select&quot;&gt;&apos; +
                          &apos;&lt;/td&gt;&apos; +
@@ -253,8 +257,8 @@ export class ResourceComponent extends SelectComponent {
                      &apos;&lt;/tbody&gt;&apos;;
       container.appendChild(table);
       table.innerHTML = template;
-      table.querySelector(&quot;#button&quot;).appendChild(this.addButton());
-      super.addInput(input, table.querySelector(&quot;#select&quot;));
+      table.querySelector(&apos;#button&apos;).appendChild(this.addButton());
+      super.addInput(input, table.querySelector(&apos;#select&apos;));
     }
     else {
       super.addInput(input, container);

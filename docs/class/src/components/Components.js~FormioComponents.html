@@ -151,19 +151,23 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FormioComponents} from &apos;<span><a href="file/src/components/Components.js.html#lineNumber10">formiojs/src/components/Components.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FormioComponents} from &apos;<span><a href="file/src/components/Components.js.html#lineNumber7">formiojs/src/components/Components.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/components/Components.js.html#lineNumber10">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/components/Components.js.html#lineNumber7">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -682,6 +686,34 @@ a submission once it has been changed.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-clearOnHide">clearOnHide</a></span></span><span class="code" data-ice="signature">(show: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-createComponent">createComponent</a></span></span><span class="code" data-ice="signature">(component: <span>*</span>, data: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -739,7 +771,7 @@ a submission once it has been changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-eachComponent">eachComponent</a></span></span><span class="code" data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-eachComponent">eachComponent</a></span></span><span class="code" data-ice="signature">(fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
         </p>
       </div>
       <div>
@@ -768,7 +800,7 @@ a submission once it has been changed.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-everyComponent">everyComponent</a></span></span><span class="code" data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-everyComponent">everyComponent</a></span></span><span class="code" data-ice="signature">(fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
         </p>
       </div>
       <div>
@@ -798,7 +830,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-getComponent">getComponent</a></span></span><span class="code" data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-getComponent">getComponent</a></span></span><span class="code" data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
       <div>
@@ -827,7 +859,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-getComponentById">getComponentById</a></span></span><span class="code" data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-getComponentById">getComponentById</a></span></span><span class="code" data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
         </p>
       </div>
       <div>
@@ -1053,7 +1085,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponentById">removeComponentById</a></span></span><span class="code" data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponentById">removeComponentById</a></span></span><span class="code" data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
         </p>
       </div>
       <div>
@@ -1082,7 +1114,7 @@ within other container based components.</p>
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponentByKey">removeComponentByKey</a></span></span><span class="code" data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html#instance-method-removeComponentByKey">removeComponentByKey</a></span></span><span class="code" data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
         </p>
       </div>
       <div>
@@ -1717,34 +1749,6 @@ within other container based components.</p>
           
           
           <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-set-visible">visible</a></span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-          
-          
-          
-          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-member-clearPending">clearPending</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -3208,6 +3212,34 @@ within other container based components.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-appendTo">appendTo</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, container: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-asString">asString</a></span></span><span class="code" data-ice="signature">(value: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -3528,6 +3560,34 @@ to perform special async functions.</p>
           
           
           <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-clear">clear</a></span></span><span class="code" data-ice="signature">()</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-clearOnHide">clearOnHide</a></span></span><span class="code" data-ice="signature">(show: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -4811,6 +4871,34 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-prependTo">prependTo</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, container: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-redraw">redraw</a></span></span><span class="code" data-ice="signature">()</span>
         </p>
       </div>
@@ -4869,6 +4957,34 @@ to perform special async functions.</p>
           
           
           <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-removeChild">removeChild</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-removeChildFrom">removeChildFrom</a></span></span><span class="code" data-ice="signature">(element: <span>*</span>, container: <span>*</span>)</span>
         </p>
       </div>
       <div>
@@ -5409,6 +5525,35 @@ to perform special async functions.</p>
           
           
           
+          <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-showElement">showElement</a></span></span><span class="code" data-ice="signature">(show: <span>*</span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description"><p>Show or hide the root element of this component.</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+          
+          
+          
           <span class="code" data-ice="name"><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-t">t</a></span></span><span class="code" data-ice="signature">(text: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, params: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span>*</span></span>
         </p>
       </div>
@@ -5615,7 +5760,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber11">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber8">source</a></span></span>
     </span>
   </h3>
 
@@ -5662,7 +5807,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber14">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber11">source</a></span></span>
     </span>
   </h3>
 
@@ -5705,7 +5850,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber355">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber337">source</a></span></span>
     </span>
   </h3>
 
@@ -5749,7 +5894,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber376">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber358">source</a></span></span>
     </span>
   </h3>
 
@@ -5792,7 +5937,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber15">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber12">source</a></span></span>
     </span>
   </h3>
 
@@ -5835,7 +5980,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber13">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber10">source</a></span></span>
     </span>
   </h3>
 
@@ -5878,7 +6023,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber387">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber369">source</a></span></span>
     </span>
   </h3>
 
@@ -5925,7 +6070,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber131">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber128">source</a></span></span>
     </span>
   </h3>
 
@@ -6013,7 +6158,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber205">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber202">source</a></span></span>
     </span>
   </h3>
 
@@ -6078,7 +6223,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber292">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber274">source</a></span></span>
     </span>
   </h3>
 
@@ -6134,7 +6279,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber303">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber285">source</a></span></span>
     </span>
   </h3>
 
@@ -6190,7 +6335,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber18">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber15">source</a></span></span>
     </span>
   </h3>
 
@@ -6234,7 +6379,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber314">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber296">source</a></span></span>
     </span>
   </h3>
 
@@ -6312,7 +6457,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber262">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber259">source</a></span></span>
     </span>
   </h3>
 
@@ -6384,7 +6529,7 @@ to perform special async functions.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber230">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber227">source</a></span></span>
     </span>
   </h3>
 
@@ -6463,7 +6608,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber330">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber312">source</a></span></span>
     </span>
   </h3>
 
@@ -6529,6 +6674,65 @@ a submission once it has been changed.</p>
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-clearOnHide">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">clearOnHide</span><span class="code" data-ice="signature">(show: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber264">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  <div data-ice="override"><h4>Override:</h4><span><a href="class/src/components/base/Base.js~BaseComponent.html#instance-method-clearOnHide">BaseComponent#clearOnHide</a></span></div>
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">show</td>
+      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-createComponent">
     <span class="access" data-ice="access">public</span>
     
@@ -6540,7 +6744,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber109">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber106">source</a></span></span>
     </span>
   </h3>
 
@@ -6618,7 +6822,7 @@ a submission once it has been changed.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber347">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber329">source</a></span></span>
     </span>
   </h3>
 
@@ -6674,11 +6878,11 @@ a submission once it has been changed.</p>
     
     
     
-    <span class="code" data-ice="name">eachComponent</span><span class="code" data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
+    <span class="code" data-ice="name">eachComponent</span><span class="code" data-ice="signature">(fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber52">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber49">source</a></span></span>
     </span>
   </h3>
 
@@ -6699,7 +6903,7 @@ a submission once it has been changed.</p>
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">cb</td>
+      <td data-ice="name" class="code" data-depth="0">fn</td>
       <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>Called for each component</p>
@@ -6735,11 +6939,11 @@ a submission once it has been changed.</p>
     
     
     
-    <span class="code" data-ice="name">everyComponent</span><span class="code" data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
+    <span class="code" data-ice="name">everyComponent</span><span class="code" data-ice="signature">(fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber33">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber30">source</a></span></span>
     </span>
   </h3>
 
@@ -6761,7 +6965,7 @@ within other container based components.</p>
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">cb</td>
+      <td data-ice="name" class="code" data-depth="0">fn</td>
       <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>Called for every component.</p>
@@ -6797,11 +7001,11 @@ within other container based components.</p>
     
     
     
-    <span class="code" data-ice="name">getComponent</span><span class="code" data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+    <span class="code" data-ice="name">getComponent</span><span class="code" data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber68">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber65">source</a></span></span>
     </span>
   </h3>
 
@@ -6830,7 +7034,7 @@ component tree.</p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">cb</td>
+      <td data-ice="name" class="code" data-depth="0">fn</td>
       <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>Called with the component once found.</p>
@@ -6879,11 +7083,11 @@ component tree.</p>
     
     
     
-    <span class="code" data-ice="name">getComponentById</span><span class="code" data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
+    <span class="code" data-ice="name">getComponentById</span><span class="code" data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber89">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber86">source</a></span></span>
     </span>
   </h3>
 
@@ -6911,7 +7115,7 @@ component tree.</p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">cb</td>
+      <td data-ice="name" class="code" data-depth="0">fn</td>
       <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>Called with the component once it is retrieved.</p>
@@ -6964,7 +7168,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber23">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber20">source</a></span></span>
     </span>
   </h3>
 
@@ -7019,7 +7223,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber391">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber373">source</a></span></span>
     </span>
   </h3>
 
@@ -7075,7 +7279,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber219">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber216">source</a></span></span>
     </span>
   </h3>
 
@@ -7131,7 +7335,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber371">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber353">source</a></span></span>
     </span>
   </h3>
 
@@ -7190,7 +7394,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber322">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber304">source</a></span></span>
     </span>
   </h3>
 
@@ -7268,7 +7472,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber309">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber291">source</a></span></span>
     </span>
   </h3>
 
@@ -7327,7 +7531,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber147">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber144">source</a></span></span>
     </span>
   </h3>
 
@@ -7391,11 +7595,11 @@ component tree.</p>
     
     
     
-    <span class="code" data-ice="name">removeComponentById</span><span class="code" data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
+    <span class="code" data-ice="name">removeComponentById</span><span class="code" data-ice="signature">(id: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber185">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber182">source</a></span></span>
     </span>
   </h3>
 
@@ -7423,7 +7627,7 @@ component tree.</p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">cb</td>
+      <td data-ice="name" class="code" data-depth="0">fn</td>
       <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>Called when the component is removed.</p>
@@ -7471,11 +7675,11 @@ component tree.</p>
     
     
     
-    <span class="code" data-ice="name">removeComponentByKey</span><span class="code" data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
+    <span class="code" data-ice="name">removeComponentByKey</span><span class="code" data-ice="signature">(key: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>, fn: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber163">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber160">source</a></span></span>
     </span>
   </h3>
 
@@ -7503,7 +7707,7 @@ component tree.</p>
 </td>
     </tr>
 <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">cb</td>
+      <td data-ice="name" class="code" data-depth="0">fn</td>
       <td data-ice="type" class="code"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>Called once the component is removed.</p>
@@ -7555,7 +7759,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber359">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber341">source</a></span></span>
     </span>
   </h3>
 
@@ -7614,7 +7818,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber342">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber324">source</a></span></span>
     </span>
   </h3>
 
@@ -7674,7 +7878,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber403">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber385">source</a></span></span>
     </span>
   </h3>
 
@@ -7752,7 +7956,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber211">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber208">source</a></span></span>
     </span>
   </h3>
 
@@ -7824,7 +8028,7 @@ component tree.</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber395">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/components/Components.js.html#lineNumber377">source</a></span></span>
     </span>
   </h3>
 

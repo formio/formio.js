@@ -151,20 +151,21 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/Components.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
-import _each from &apos;lodash/each&apos;;
-import _clone from &apos;lodash/clone&apos;;
-import _remove from &apos;lodash/remove&apos;;
-import _assign from &apos;lodash/assign&apos;;
-import Promise from &quot;native-promise-only&quot;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+import Promise from &apos;native-promise-only&apos;;
+
 import FormioUtils from &apos;../utils/index&apos;;
-import { BaseComponent } from &apos;./base/Base&apos;;
+import {BaseComponent} from &apos;./base/Base&apos;;
 
 export class FormioComponents extends BaseComponent {
   constructor(component, options, data) {
@@ -187,17 +188,17 @@ export class FormioComponents extends BaseComponent {
    * Perform a deep iteration over every component, including those
    * within other container based components.
    *
-   * @param {function} cb - Called for every component.
+   * @param {function} fn - Called for every component.
    */
-  everyComponent(cb) {
+  everyComponent(fn) {
     const components = this.getComponents();
-    _each(components, (component, index) =&gt; {
+    _.each(components, (component, index) =&gt; {
       if (component.type === &apos;components&apos;) {
-        if (component.everyComponent(cb) === false) {
+        if (component.everyComponent(fn) === false) {
           return false;
         }
       }
-      else if (cb(component, components, index) === false) {
+      else if (fn(component, components, index) === false) {
         return false;
       }
     });
@@ -206,11 +207,11 @@ export class FormioComponents extends BaseComponent {
   /**
    * Perform an iteration over each component within this container component.
    *
-   * @param {function} cb - Called for each component
+   * @param {function} fn - Called for each component
    */
-  eachComponent(cb) {
-    _each(this.getComponents(), (component, index) =&gt; {
-      if (cb(component, index) === false) {
+  eachComponent(fn) {
+    _.each(this.getComponents(), (component, index) =&gt; {
+      if (fn(component, index) === false) {
         return false;
       }
     });
@@ -221,16 +222,16 @@ export class FormioComponents extends BaseComponent {
    * component tree.
    *
    * @param {string} key - The key of the component to retrieve.
-   * @param {function} cb - Called with the component once found.
+   * @param {function} fn - Called with the component once found.
    * @return {Object} - The component that is located.
    */
-  getComponent(key, cb) {
+  getComponent(key, fn) {
     let comp = null;
     this.everyComponent((component, components) =&gt; {
       if (component.component.key === key) {
         comp = component;
-        if (cb) {
-          cb(component, components);
+        if (fn) {
+          fn(component, components);
         }
         return false;
       }
@@ -242,16 +243,16 @@ export class FormioComponents extends BaseComponent {
    * Return a component provided the Id of the component.
    *
    * @param {string} id - The Id of the component.
-   * @param {function} cb - Called with the component once it is retrieved.
+   * @param {function} fn - Called with the component once it is retrieved.
    * @return {Object} - The component retrieved.
    */
-  getComponentById(id, cb) {
+  getComponentById(id, fn) {
     let comp = null;
     this.everyComponent((component, components) =&gt; {
       if (component.id === id) {
         comp = component;
-        if (cb) {
-          cb(component, components);
+        if (fn) {
+          fn(component, components);
         }
         return false;
       }
@@ -268,7 +269,7 @@ export class FormioComponents extends BaseComponent {
   createComponent(component, options, data) {
     if (!this.options.components) {
       this.options.components = require(&apos;./index&apos;);
-      _assign(this.options.components, FormioComponents.customComponents);
+      _.assign(this.options.components, FormioComponents.customComponents);
     }
     const comp = this.options.components.create(component, options, data, true);
     comp.parent = this;
@@ -307,28 +308,28 @@ export class FormioComponents extends BaseComponent {
     component.destroy();
     const element = component.getElement();
     if (element &amp;&amp; element.parentNode) {
-      element.parentNode.removeChild(element);
+      this.removeChildFrom(element, element.parentNode);
     }
-    _remove(components, {id: component.id});
+    _.remove(components, {id: component.id});
   }
 
   /**
    * Removes a component provided the API key of that component.
    *
    * @param {string} key - The API key of the component to remove.
-   * @param {function} cb - Called once the component is removed.
+   * @param {function} fn - Called once the component is removed.
    * @return {null}
    */
-  removeComponentByKey(key, cb) {
+  removeComponentByKey(key, fn) {
     const comp = this.getComponent(key, (component, components) =&gt; {
       this.removeComponent(component, components);
-      if (cb) {
-        cb(component, components);
+      if (fn) {
+        fn(component, components);
       }
     });
     if (!comp) {
-      if (cb) {
-        cb(null);
+      if (fn) {
+        fn(null);
       }
       return null;
     }
@@ -338,19 +339,19 @@ export class FormioComponents extends BaseComponent {
    * Removes a component provided the Id of the component.
    *
    * @param {string} id - The Id of the component to remove.
-   * @param {function} cb - Called when the component is removed.
+   * @param {function} fn - Called when the component is removed.
    * @return {null}
    */
-  removeComponentById(id, cb) {
+  removeComponentById(id, fn) {
     const comp = this.getComponentById(id, (component, components) =&gt; {
       this.removeComponent(component, components);
-      if (cb) {
-        cb(component, components);
+      if (fn) {
+        fn(component, components);
       }
     });
     if (!comp) {
-      if (cb) {
-        cb(null);
+      if (fn) {
+        fn(null);
       }
       return null;
     }
@@ -364,12 +365,12 @@ export class FormioComponents extends BaseComponent {
   addComponents(element, data) {
     element = element || this.element;
     data = data || this.data;
-    _each(this.component.components, (component) =&gt; this.addComponent(component, element, data));
+    _.each(this.component.components, (component) =&gt; this.addComponent(component, element, data));
   }
 
   updateValue(flags) {
     let changed = false;
-    _each(this.components, (comp) =&gt; {
+    _.each(this.components, (comp) =&gt; {
       changed |= comp.updateValue(flags);
     });
     return changed;
@@ -399,7 +400,7 @@ export class FormioComponents extends BaseComponent {
     });
 
     // Iterate through all components and check conditions, and calculate values.
-    _each(this.getComponents(), (comp) =&gt; {
+    _.each(this.getComponents(), (comp) =&gt; {
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
@@ -419,28 +420,13 @@ export class FormioComponents extends BaseComponent {
   }
 
   checkConditions(data) {
-    let forceShow = false;
-    let show = false;
-    _each(this.getComponents(), (comp) =&gt; {
-      const compShow = comp.checkConditions(data);
-      forceShow |= (
-        comp.hasCondition() &amp;&amp;
-        compShow &amp;&amp;
-        comp.component &amp;&amp;
-        comp.component.conditional &amp;&amp;
-        comp.component.conditional.overrideParent
-      );
-      show |= compShow;
-    });
+    this.getComponents().forEach(comp =&gt; comp.checkConditions(data));
+    return super.checkConditions(data);
+  }
 
-    // If any child has conditions set and are visible, then force the show.
-    if (forceShow) {
-      return this.show(true);
-    }
-
-    // Show if it explicitely says so.
-    show |= super.checkConditions(data);
-    return show;
+  clearOnHide(show) {
+    super.clearOnHide(show);
+    this.getComponents().forEach(component =&gt; component.clearOnHide(show));
   }
 
   /**
@@ -450,7 +436,7 @@ export class FormioComponents extends BaseComponent {
    */
   beforeNext() {
     const ops = [];
-    _each(this.getComponents(), (comp) =&gt; ops.push(comp.beforeNext()));
+    _.each(this.getComponents(), (comp) =&gt; ops.push(comp.beforeNext()));
     return Promise.all(ops);
   }
 
@@ -461,18 +447,18 @@ export class FormioComponents extends BaseComponent {
    */
   beforeSubmit() {
     const ops = [];
-    _each(this.getComponents(), (comp) =&gt; ops.push(comp.beforeSubmit()));
+    _.each(this.getComponents(), (comp) =&gt; ops.push(comp.beforeSubmit()));
     return Promise.all(ops);
   }
 
   onResize(scale) {
     super.onResize(scale);
-    _each(this.getComponents(), (comp) =&gt; comp.onResize(scale));
+    _.each(this.getComponents(), (comp) =&gt; comp.onResize(scale));
   }
 
   calculateValue(data, flags) {
     let changed = super.calculateValue(data, flags);
-    _each(this.getComponents(), (comp) =&gt; {
+    _.each(this.getComponents(), (comp) =&gt; {
       changed |= comp.calculateValue(data, flags);
     });
     return changed;
@@ -480,7 +466,7 @@ export class FormioComponents extends BaseComponent {
 
   isValid(data, dirty) {
     let valid = super.isValid(data, dirty);
-    _each(this.getComponents(), (comp) =&gt; {
+    _.each(this.getComponents(), (comp) =&gt; {
       valid &amp;= comp.isValid(data, dirty);
     });
     return valid;
@@ -492,7 +478,7 @@ export class FormioComponents extends BaseComponent {
     }
 
     let check = super.checkValidity(data, dirty);
-    _each(this.getComponents(), (comp) =&gt; {
+    _.each(this.getComponents(), (comp) =&gt; {
       check &amp;= comp.checkValidity(data, dirty);
     });
     return check;
@@ -500,19 +486,19 @@ export class FormioComponents extends BaseComponent {
 
   setPristine(pristine) {
     super.setPristine(pristine);
-    _each(this.getComponents(), (comp) =&gt; (comp.setPristine(pristine)));
+    _.each(this.getComponents(), (comp) =&gt; (comp.setPristine(pristine)));
   }
 
   destroy(all) {
     super.destroy(all);
-    const components = _clone(this.components);
-    _each(components, (comp) =&gt; this.removeComponent(comp, this.components));
+    const components = _.clone(this.components);
+    _.each(components, (comp) =&gt; this.removeComponent(comp, this.components));
     this.components = [];
     this.hidden = [];
   }
 
   set disabled(disabled) {
-    _each(this.components, (component) =&gt; (component.disabled = disabled));
+    _.each(this.components, (component) =&gt; (component.disabled = disabled));
   }
 
   setHidden(component) {
@@ -534,7 +520,7 @@ export class FormioComponents extends BaseComponent {
 
   get errors() {
     let errors = [];
-    _each(this.getComponents(), (comp) =&gt; {
+    _.each(this.getComponents(), (comp) =&gt; {
       const compErrors = comp.errors;
       if (compErrors.length) {
         errors = errors.concat(compErrors);
@@ -553,7 +539,7 @@ export class FormioComponents extends BaseComponent {
 
   whenReady() {
     const promises = [];
-    _each(this.getComponents(), (component) =&gt; {
+    _.each(this.getComponents(), (component) =&gt; {
       promises.push(component.whenReady());
     });
     return Promise.all(promises);
@@ -565,7 +551,7 @@ export class FormioComponents extends BaseComponent {
     }
     flags = this.getFlags.apply(this, arguments);
     let changed = false;
-    _each(this.getComponents(), (component) =&gt; {
+    this.getComponents().forEach(component =&gt; {
       if (component.type === &apos;button&apos;) {
         return;
       }
@@ -576,9 +562,9 @@ export class FormioComponents extends BaseComponent {
       else if (value &amp;&amp; value.hasOwnProperty(component.component.key)) {
         changed |= component.setValue(value[component.component.key], flags);
       }
-      else if (component.hasInput) {
+      else {
         flags.noValidate = true;
-        changed |= component.setValue(null, flags);
+        changed |= component.setValue(component.defaultValue, flags);
       }
     });
     return changed;

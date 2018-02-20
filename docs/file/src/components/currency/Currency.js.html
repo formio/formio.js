@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -158,9 +162,10 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/currency/Currency.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import maskInput from &apos;vanilla-text-mask&apos;;
-import { createNumberMask } from &apos;text-mask-addons&apos;;
-import _get from &apos;lodash/get&apos;;
-import { NumberComponent } from &apos;../number/Number&apos;;
+import {createNumberMask} from &apos;text-mask-addons&apos;;
+import _ from &apos;lodash&apos;;
+
+import {NumberComponent} from &apos;../number/Number&apos;;
 
 export class CurrencyComponent extends NumberComponent {
   constructor(component, options, data) {
@@ -170,7 +175,9 @@ export class CurrencyComponent extends NumberComponent {
     this.decimalLimit = this.component.decimalLimit || 2;
 
     // Get the prefix and suffix from the localized string.
-    const regex = &apos;(.*)?100(&apos; + (this.decimalSeparator === &apos;.&apos; ? &apos;\.&apos; : this.decimalSeparator) + &apos;0{&apos; + this.decimalLimit + &apos;})?(.*)?&apos;;
+    const regex = `(.*)?100(${this.decimalSeparator === &apos;.&apos;
+      ? &apos;\\.&apos;
+      : this.decimalSeparator}0{${this.decimalLimit}})?(.*)?`;
     const parts = (100).toLocaleString(options.language, this.getFormatOptions()).match(new RegExp(regex));
     this.prefix = parts[1] || &apos;&apos;;
     this.suffix = parts[3] || &apos;&apos;;
@@ -181,7 +188,7 @@ export class CurrencyComponent extends NumberComponent {
       style: &apos;currency&apos;,
       currency: this.currency,
       useGrouping: true,
-      maximumFractionDigits: _get(this.component, &apos;decimalLimit&apos;, this.decimalLimit)
+      maximumFractionDigits: _.get(this.component, &apos;decimalLimit&apos;, this.decimalLimit)
     };
   }
 
@@ -210,11 +217,11 @@ export class CurrencyComponent extends NumberComponent {
       mask: createNumberMask({
         prefix: this.prefix,
         suffix: this.suffix,
-        thousandsSeparatorSymbol: _get(this.component, &apos;thousandsSeparator&apos;, this.thousandsSeparator),
-        decimalSymbol: _get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
-        decimalLimit: _get(this.component, &apos;decimalLimit&apos;, this.decimalLimit),
-        allowNegative: _get(this.component, &apos;allowNegative&apos;, true),
-        allowDecimal: _get(this.component, &apos;allowDecimal&apos;, true)
+        thousandsSeparatorSymbol: _.get(this.component, &apos;thousandsSeparator&apos;, this.delimiter),
+        decimalSymbol: _.get(this.component, &apos;decimalSymbol&apos;, this.decimalSeparator),
+        decimalLimit: _.get(this.component, &apos;decimalLimit&apos;, this.decimalLimit),
+        allowNegative: _.get(this.component, &apos;allowNegative&apos;, true),
+        allowDecimal: _.get(this.component, &apos;allowDecimal&apos;, true)
       })
     });
   }

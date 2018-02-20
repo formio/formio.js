@@ -151,27 +151,31 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/address/Address.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { TextFieldComponent } from &apos;../textfield/TextField&apos;;
-import { BaseComponent } from &apos;../base/Base&apos;;
-import _defaultsDeep from &apos;lodash/defaultsDeep&apos;;
-import _delay from &apos;lodash/delay&apos;;
-import _get from &apos;lodash/get&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* globals google */
+import _ from &apos;lodash&apos;;
+
+import {TextFieldComponent} from &apos;../textfield/TextField&apos;;
+import {BaseComponent} from &apos;../base/Base&apos;;
 
 export class AddressComponent extends TextFieldComponent {
   constructor(component, options, data) {
     super(component, options, data);
     let src = &apos;https://maps.googleapis.com/maps/api/js?v=3&amp;libraries=places&amp;callback=googleMapsCallback&apos;;
     if (component.map &amp;&amp; component.map.key) {
-      src += &apos;&amp;key=&apos; + component.map.key;
+      src += `&amp;key=${component.map.key}`;
     }
     if (component.map &amp;&amp; component.map.region) {
-      src += &apos;&amp;region=&apos; + component.map.region;
+      src += `&amp;region=${component.map.region}`;
     }
     BaseComponent.requireLibrary(&apos;googleMaps&apos;, &apos;google.maps.places&apos;, src);
 
@@ -203,10 +207,10 @@ export class AddressComponent extends TextFieldComponent {
    */
   autoCompleteInit(input, autoCompleteOptions) {
     // Set attribute autoComplete to off
-    input.setAttribute(&quot;autocomplete&quot;, &quot;off&quot;);
+    input.setAttribute(&apos;autocomplete&apos;, &apos;off&apos;);
 
     // Init suggestions list
-    this.autoCompleteSuggestions = []
+    this.autoCompleteSuggestions = [];
 
     // Start Google AutocompleteService
     const autoComplete = new google.maps.places.AutocompleteService();
@@ -217,37 +221,38 @@ export class AddressComponent extends TextFieldComponent {
     input.parentNode.appendChild(suggestionContainer);
 
     // Add listener on input field for input event
-    this.addEventListener(input, &apos;input&apos;, (event) =&gt; {
+    this.addEventListener(input, &apos;input&apos;, () =&gt; {
       if (input.value) {
-        let options = {
+        const options = {
           input: input.value
-        }
-        autoComplete.getPlacePredictions(_defaultsDeep(options, autoCompleteOptions),
+        };
+        autoComplete.getPlacePredictions(_.defaultsDeep(options, autoCompleteOptions),
           (suggestions, status) =&gt; {
             this.autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input);
-        });
-      } else {
+          });
+      }
+      else {
         this.autoCompleteCleanSuggestions(suggestionContainer);
         suggestionContainer.style.display = &apos;none&apos;;
       }
     });
     // Add listener on input field for blur event
-    this.addEventListener(input, &apos;blur&apos;, (event) =&gt; {
+    this.addEventListener(input, &apos;blur&apos;, () =&gt; {
       // Delay to allow click on suggestion list
-      _delay(function() {
+      _.delay(() =&gt; {
         suggestionContainer.style.display = &apos;none&apos;;
       }, 100);
     });
     // Add listener on input field for focus event
-    this.addEventListener(input, &apos;focus&apos;, (event) =&gt; {
+    this.addEventListener(input, &apos;focus&apos;, () =&gt; {
       if (suggestionContainer.childElementCount) {
         suggestionContainer.style.display = &apos;block&apos;;
       }
     });
     // Add listener on input field for focus event
-    this.addEventListener(window, &apos;resize&apos;, (event) =&gt; {
+    this.addEventListener(window, &apos;resize&apos;, () =&gt; {
       // Set the same width as input field
-      suggestionContainer.style.width = input.offsetWidth + &apos;px&apos;;
+      suggestionContainer.style.width = `${input.offsetWidth}px`;
     });
     // Add listiner on input field for key event
     this.autoCompleteKeyboardListener(suggestionContainer, input);
@@ -288,7 +293,7 @@ export class AddressComponent extends TextFieldComponent {
       }
     };
 
-    this.addEventListener(input, &apos;keydown&apos;, this.autoCompleteKeyCodeListener)
+    this.addEventListener(input, &apos;keydown&apos;, this.autoCompleteKeyCodeListener);
   }
 
   /**
@@ -300,16 +305,18 @@ export class AddressComponent extends TextFieldComponent {
    *   Input field to listen
    */
   autoCompleteKeyUpInteraction(suggestionContainer, input) {
-    let elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
+    const elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
     if (!elementSelected) {
       // Returns the bottom of the list.
       return this.autoCompleteListDecorator(suggestionContainer.lastChild, input);
-    } else {
+    }
+    else {
       // Transverse the list in reverse order.
       const previousSibling = elementSelected.previousSibling;
       if (previousSibling) {
-       this.autoCompleteListDecorator(previousSibling, input);
-      } else {
+        this.autoCompleteListDecorator(previousSibling, input);
+      }
+      else {
         // Return to input value
         elementSelected.classList.remove(&apos;pac-item-selected&apos;);
         input.value = this.autoCompleteInputValue;
@@ -326,18 +333,20 @@ export class AddressComponent extends TextFieldComponent {
    *   Input field to listen
    */
   autoCompleteKeyDownInteraction(suggestionContainer, input) {
-    let elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
+    const elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
     if (!elementSelected) {
       // Start at the top of the list.
       if (suggestionContainer.firstChild) {
         return this.autoCompleteListDecorator(suggestionContainer.firstChild, input);
       }
-    } else {
+    }
+    else {
       // Transverse the list from top down.
       const nextSibling = elementSelected.nextSibling;
       if (nextSibling) {
         this.autoCompleteListDecorator(nextSibling, input);
-      } else {
+      }
+      else {
         // Return to input value
         elementSelected.classList.remove(&apos;pac-item-selected&apos;);
         input.value = this.autoCompleteInputValue;
@@ -354,10 +363,10 @@ export class AddressComponent extends TextFieldComponent {
    *   Input field to listen
    */
   autoCompleteKeyValidationInteraction(suggestionContainer, input) {
-    let elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
+    const elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
     if (elementSelected) {
       for (const suggestion of this.autoCompleteSuggestions) {
-        let content = elementSelected.textContent || elementSelected.innerText;
+        const content = elementSelected.textContent || elementSelected.innerText;
         if (content === suggestion.description) {
           this.autoCompleteServiceListener(suggestion, suggestionContainer, input);
         }
@@ -375,11 +384,11 @@ export class AddressComponent extends TextFieldComponent {
    *   Input field to listen
    */
   autoCompleteListDecorator(item, input) {
-    let elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
+    const elementSelected = document.querySelector(&apos;.pac-item-selected&apos;);
     if (elementSelected) {
       elementSelected.classList.remove(&apos;pac-item-selected&apos;);
     }
-    input.value = item.textContent || suggestionContainer.innerText;
+    input.value = item.textContent;
     item.classList.add(&apos;pac-item-selected&apos;);
   }
 
@@ -392,11 +401,13 @@ export class AddressComponent extends TextFieldComponent {
    */
   autoCompleteFilterSuggestion(data) {
     try {
-      let result = (new Function(&apos;data&apos;, `var show = true; ${this.component.map.autoCompleteFilter.toString()}; return show;`))(data);
+      const result = (new Function(&apos;data&apos;,
+        `var show = true; ${this.component.map.autoCompleteFilter.toString()}; return show;`))(data);
       return result.toString() === &apos;true&apos;;
     }
     catch (e) {
-      console.warn(&apos;An error occurred in a custom autoComplete filter statement for component &apos; + this.component.key, e);
+      console.warn(
+        `An error occurred in a custom autoComplete filter statement for component ${this.component.key}`, e);
       return true;
     }
   }
@@ -433,15 +444,14 @@ export class AddressComponent extends TextFieldComponent {
    *   Input field to listen
    */
   autoCompleteDisplaySuggestions(suggestions, status, suggestionContainer, input) {
-
     // Set the same width as input field
-    suggestionContainer.style.width = input.offsetWidth + &apos;px&apos;;
+    suggestionContainer.style.width = `${input.offsetWidth}px`;
 
     // Set the default input value
     this.autoCompleteInputValue = input.value;
 
     this.autoCompleteCleanSuggestions(suggestionContainer);
-    if (status != google.maps.places.PlacesServiceStatus.OK) {
+    if (status !== google.maps.places.PlacesServiceStatus.OK) {
       suggestionContainer.style.display = &apos;none&apos;;
       return;
     }
@@ -473,7 +483,6 @@ export class AddressComponent extends TextFieldComponent {
    *   Input field to listen
    */
   autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input) {
-
     const item = document.createElement(&apos;div&apos;);
     item.classList.add(&apos;pac-item&apos;);
 
@@ -485,20 +494,22 @@ export class AddressComponent extends TextFieldComponent {
     const itemMain = document.createElement(&apos;span&apos;);
     itemMain.classList.add(&apos;pac-item-query&apos;);
     if (suggestion.structured_formatting.main_text_matched_substrings) {
-      let matches = suggestion.structured_formatting.main_text_matched_substrings;
-      for(let k in matches) {
-        let part = matches[k];
-        if (k == 0 &amp;&amp; part.offset &gt; 0) {
-          itemMain.appendChild(document.createTextNode(suggestion.structured_formatting.main_text.substring(0, part.offset)));
+      const matches = suggestion.structured_formatting.main_text_matched_substrings;
+      for (const k in matches) {
+        const part = matches[k];
+        if (k === 0 &amp;&amp; part.offset &gt; 0) {
+          itemMain.appendChild(document.createTextNode(
+            suggestion.structured_formatting.main_text.substring(0, part.offset)));
         }
 
         const itemBold = document.createElement(&apos;span&apos;);
         itemBold.classList.add(&apos;pac-matched&apos;);
-        itemBold.appendChild(document.createTextNode(suggestion.structured_formatting.main_text.substring(part.offset, (part.offset + part.length))));
+        itemBold.appendChild(document.createTextNode(
+          suggestion.structured_formatting.main_text.substring(part.offset, (part.offset + part.length))));
         itemMain.appendChild(itemBold);
 
-        if (k == (matches.length - 1)) {
-          let content = suggestion.structured_formatting.main_text.substring((part.offset + part.length));
+        if (k === (matches.length - 1)) {
+          const content = suggestion.structured_formatting.main_text.substring((part.offset + part.length));
           if (content.length &gt; 0) {
             itemMain.appendChild(document.createTextNode(content));
           }
@@ -510,25 +521,26 @@ export class AddressComponent extends TextFieldComponent {
     }
     item.appendChild(itemMain);
 
-
     // Draw secondary part
     if (suggestion.structured_formatting.secondary_text) {
-      const itemSecondary = document.createElement(&apos;span&apos;)
+      const itemSecondary = document.createElement(&apos;span&apos;);
       if (suggestion.structured_formatting.secondary_text_matched_substrings) {
-        let matches = suggestion.structured_formatting.secondary_text_matched_substrings;
-        for(let k in matches) {
-          let part = matches[k];
-          if (k == 0 &amp;&amp; part.offset &gt; 0) {
-            itemSecondary.appendChild(document.createTextNode(suggestion.structured_formatting.secondary_text.substring(0, part.offset)));
+        const matches = suggestion.structured_formatting.secondary_text_matched_substrings;
+        for (const k in matches) {
+          const part = matches[k];
+          if (k === 0 &amp;&amp; part.offset &gt; 0) {
+            itemSecondary.appendChild(document.createTextNode(
+              suggestion.structured_formatting.secondary_text.substring(0, part.offset)));
           }
 
           const itemBold = document.createElement(&apos;span&apos;);
           itemBold.classList.add(&apos;pac-matched&apos;);
-          itemBold.appendChild(document.createTextNode(suggestion.structured_formatting.secondary_text.substring(part.offset, (part.offset + part.length))));
+          itemBold.appendChild(document.createTextNode(
+            suggestion.structured_formatting.secondary_text.substring(part.offset, (part.offset + part.length))));
           itemSecondary.appendChild(itemBold);
 
-          if (k == (matches.length - 1)) {
-            let content = suggestion.structured_formatting.secondary_text.substring((part.offset + part.length));
+          if (k === (matches.length - 1)) {
+            const content = suggestion.structured_formatting.secondary_text.substring((part.offset + part.length));
             if (content.length &gt; 0) {
               itemSecondary.appendChild(document.createTextNode(content));
             }
@@ -543,20 +555,20 @@ export class AddressComponent extends TextFieldComponent {
 
     suggestionContainer.appendChild(item);
 
-    let clickListener = (event) =&gt; {
+    const clickListener = () =&gt; {
       input.value = suggestion.description;
       this.autoCompleteInputValue = suggestion.description;
       this.autoCompleteServiceListener(suggestion, suggestionContainer, input);
     };
     suggestion.clickListener = clickListener;
     suggestion.item = item;
-    if (&apos;addEventListener&apos; in item){
+    if (&apos;addEventListener&apos; in item) {
       item.addEventListener(&apos;click&apos;, clickListener, false);
-    } else if (&apos;attachEvent&apos; in item) {
+    }
+    else if (&apos;attachEvent&apos; in item) {
       item.attachEvent(&apos;onclick&apos;, clickListener);
     }
   }
-
 
   /**
    * Get detailed information and set it as value
@@ -579,7 +591,6 @@ export class AddressComponent extends TextFieldComponent {
     });
   }
 
-
   addInput(input, container) {
     super.addInput(input, container);
     BaseComponent.libraryReady(&apos;googleMaps&apos;).then(() =&gt; {
@@ -587,7 +598,11 @@ export class AddressComponent extends TextFieldComponent {
       if (this.component.map) {
         autoCompleteOptions = this.component.map.autoCompleteOptions || {};
         if (autoCompleteOptions.location) {
-          autoCompleteOptions.location = new google.maps.LatLng(autoCompleteOptions.location.lat, autoCompleteOptions.location.lng);
+          const {
+            lat,
+            lng
+          } = autoCompleteOptions.location;
+          autoCompleteOptions.location = new google.maps.LatLng(lat, lng);
         }
       }
 
@@ -596,20 +611,20 @@ export class AddressComponent extends TextFieldComponent {
         this.autoCompleteInit(input, autoCompleteOptions);
       }
       else {
-        let autocomplete = new google.maps.places.Autocomplete(input);
-        autocomplete.addListener(&quot;place_changed&quot;, () =&gt; this.setValue(autocomplete.getPlace()));
+        const autocomplete = new google.maps.places.Autocomplete(input);
+        autocomplete.addListener(&apos;place_changed&apos;, () =&gt; this.setValue(autocomplete.getPlace()));
       }
     });
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.attr.class += &apos; address-search&apos;;
     return info;
   }
 
   getView(value) {
-    return _get(value, &apos;formatted_address&apos;, &apos;&apos;);
+    return _.get(value, &apos;formatted_address&apos;, &apos;&apos;);
   }
 }
 </code></pre>

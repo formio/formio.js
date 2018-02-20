@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -160,8 +164,8 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 
 /* eslint-env mocha */
-import { expect } from &apos;chai&apos;;
-import { jsonLogic } from &apos;../index&apos;;
+import {expect} from &apos;chai&apos;;
+import {jsonLogic} from &apos;../index&apos;;
 
 describe(&apos;Lodash operators&apos;, () =&gt; {
   describe(&apos;Arrays&apos;, () =&gt; {
@@ -178,88 +182,88 @@ describe(&apos;Lodash operators&apos;, () =&gt; {
   });
   describe(&apos;Lang&apos;, () =&gt; {
     it(&apos;isEqual&apos;, () =&gt; {
-      const logicTrue = { _isEqual: [ [ 2, 3 ], [2, 3] ] };
-      const logicFalse = { _isEqual: [ [ 2, 3 ], [2, 4] ] };
+      const logicTrue = {_isEqual: [[2, 3], [2, 3]]};
+      const logicFalse = {_isEqual: [[2, 3], [2, 4]]};
       expect(jsonLogic.apply(logicTrue)).to.be.equal(true);
       expect(jsonLogic.apply(logicFalse)).to.be.equal(false);
     });
   });
   describe(&apos;Math&apos;, () =&gt; {
     it(&apos;add&apos;, () =&gt; {
-      const logic = { _add: [ 2, 3 ] };
+      const logic = {_add: [2, 3]};
       expect(jsonLogic.apply(logic)).to.be.equal(5);
     });
     it(&apos;ceil&apos;, () =&gt; {
-      const logic = { _ceil: [ 4.006 ] };
+      const logic = {_ceil: [4.006]};
       expect(jsonLogic.apply(logic)).to.be.equal(5);
     });
     it(&apos;divide&apos;, () =&gt; {
-      const logic = { _divide: [ 6, 3 ] };
+      const logic = {_divide: [6, 3]};
       expect(jsonLogic.apply(logic)).to.be.equal(2);
     });
     it(&apos;floor&apos;, () =&gt; {
-      const logic = { _floor: [ 4.906 ] };
+      const logic = {_floor: [4.906]};
       expect(jsonLogic.apply(logic)).to.be.equal(4);
     });
     it(&apos;max&apos;, () =&gt; {
-      const logic = { _max: [ [ 2, 5, 6, 3 ] ] };
+      const logic = {_max: [[2, 5, 6, 3]]};
       expect(jsonLogic.apply(logic)).to.be.equal(6);
     });
     it(&apos;maxBy&apos;, () =&gt; {
-      const data = [{ n: 4 }, { n: 2 }, { n: 8 }, { n: 6 }];
-      const logic1 = { _maxBy: [ { &apos;var&apos;: &apos;&apos; }, &apos;n&apos; ] };
-      const logic2 = { _maxBy: [ { &apos;var&apos;: &apos;&apos; }, { _property: &apos;n&apos; } ] };
+      const data = [{n: 4}, {n: 2}, {n: 8}, {n: 6}];
+      const logic1 = {_maxBy: [{&apos;var&apos;: &apos;&apos;}, &apos;n&apos;]};
+      const logic2 = {_maxBy: [{&apos;var&apos;: &apos;&apos;}, {_property: &apos;n&apos;}]};
       expect(jsonLogic.apply(logic1, data)).to.be.equal(data[2]);
       expect(jsonLogic.apply(logic2, data)).to.be.equal(data[2]);
     });
     it(&apos;mean&apos;, () =&gt; {
-      const logic = { _mean: [ [ 2, 5, 6, 3 ] ] };
+      const logic = {_mean: [[2, 5, 6, 3]]};
       expect(jsonLogic.apply(logic)).to.be.equal(4);
     });
     it(&apos;meanBy&apos;, () =&gt; {
-      const data = [{ n: 4 }, { n: 2 }, { n: 8 }, { n: 6 }];
-      const logic1 = { _meanBy: [ { &apos;var&apos;: &apos;&apos; }, &apos;n&apos; ] };
-      const logic2 = { _meanBy: [ { &apos;var&apos;: &apos;&apos; }, { _property: &apos;n&apos; } ] };
+      const data = [{n: 4}, {n: 2}, {n: 8}, {n: 6}];
+      const logic1 = {_meanBy: [{&apos;var&apos;: &apos;&apos;}, &apos;n&apos;]};
+      const logic2 = {_meanBy: [{&apos;var&apos;: &apos;&apos;}, {_property: &apos;n&apos;}]};
       expect(jsonLogic.apply(logic1, data)).to.be.equal(5);
       expect(jsonLogic.apply(logic2, data)).to.be.equal(5);
     });
     it(&apos;min&apos;, () =&gt; {
-      const logic = { _min: [ [ 2, 5, 6, 3 ] ] };
+      const logic = {_min: [[2, 5, 6, 3]]};
       expect(jsonLogic.apply(logic)).to.be.equal(2);
     });
     it(&apos;minBy&apos;, () =&gt; {
-      const data = [{ n: 4 }, { n: 2 }, { n: 8 }, { n: 6 }];
-      const logic1 = { _minBy: [ { &apos;var&apos;: &apos;&apos; }, &apos;n&apos; ] };
-      const logic2 = { _minBy: [ { &apos;var&apos;: &apos;&apos; }, { _property: &apos;n&apos; } ] };
+      const data = [{n: 4}, {n: 2}, {n: 8}, {n: 6}];
+      const logic1 = {_minBy: [{&apos;var&apos;: &apos;&apos;}, &apos;n&apos;]};
+      const logic2 = {_minBy: [{&apos;var&apos;: &apos;&apos;}, {_property: &apos;n&apos;}]};
       expect(jsonLogic.apply(logic1, data)).to.be.equal(data[1]);
       expect(jsonLogic.apply(logic2, data)).to.be.equal(data[1]);
     });
     it(&apos;multiply&apos;, () =&gt; {
-      const logic = { _multiply: [ 2, 3 ] };
+      const logic = {_multiply: [2, 3]};
       expect(jsonLogic.apply(logic)).to.be.equal(6);
     });
     it(&apos;round&apos;, () =&gt; {
-      const logic1 = { _round: [ 4.006 ] };
-      const logic2 = { _round: [ 4.906 ] };
+      const logic1 = {_round: [4.006]};
+      const logic2 = {_round: [4.906]};
       expect(jsonLogic.apply(logic1)).to.be.equal(4);
       expect(jsonLogic.apply(logic2)).to.be.equal(5);
     });
     it(&apos;multiply&apos;, () =&gt; {
-      const logic = { _multiply: [ 2, 3 ] };
+      const logic = {_multiply: [2, 3]};
       expect(jsonLogic.apply(logic)).to.be.equal(6);
     });
     it(&apos;subtract&apos;, () =&gt; {
-      const logic = { _subtract: [ 2, 3 ] };
+      const logic = {_subtract: [2, 3]};
       expect(jsonLogic.apply(logic)).to.be.equal(-1);
     });
     it(&apos;sum&apos;, () =&gt; {
-      const logic = { _sum: [ [ 2, 3 ] ] };
+      const logic = {_sum: [[2, 3]]};
       expect(jsonLogic.apply(logic)).to.be.equal(5);
     });
     it(&apos;sumBy&apos;, () =&gt; {
-      const data = [{ n: 4 }, { n: 2 }, { n: 8 }, { n: 6 }];
-      const logic1 = { _sumBy: [ { &apos;var&apos;: &apos;&apos; }, &apos;n&apos; ] };
-      const logic2 = { _sumBy: [ { &apos;var&apos;: &apos;&apos; }, { _property: &apos;n&apos; } ] };
+      const data = [{n: 4}, {n: 2}, {n: 8}, {n: 6}];
+      const logic1 = {_sumBy: [{&apos;var&apos;: &apos;&apos;}, &apos;n&apos;]};
+      const logic2 = {_sumBy: [{&apos;var&apos;: &apos;&apos;}, {_property: &apos;n&apos;}]};
       expect(jsonLogic.apply(logic1, data)).to.be.equal(20);
       expect(jsonLogic.apply(logic2, data)).to.be.equal(20);
     });
@@ -276,10 +280,10 @@ describe(&apos;Lodash operators&apos;, () =&gt; {
   describe(&apos;Util&apos;, () =&gt; {
     it(&apos;property&apos;, () =&gt; {
       const data = [
-        { &apos;a&apos;: { &apos;b&apos;: 2 } },
-        { &apos;a&apos;: { &apos;b&apos;: 1 } }
+        {&apos;a&apos;: {&apos;b&apos;: 2}},
+        {&apos;a&apos;: {&apos;b&apos;: 1}}
       ];
-      const logic = { _sumBy: [ { &apos;var&apos;: &apos;&apos; }, { _property: &apos;a.b&apos; } ] };
+      const logic = {_sumBy: [{&apos;var&apos;: &apos;&apos;}, {_property: &apos;a.b&apos;}]};
       expect(jsonLogic.apply(logic, data)).to.be.equal(3);
     });
   });

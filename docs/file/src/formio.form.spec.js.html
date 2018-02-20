@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -159,8 +163,8 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.form.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 import FormioForm from &apos;./formio.form&apos;;
-import { Harness } from &apos;../test/harness&apos;;
-import { FormTests } from &apos;../test/forms/index&apos;;
+import {Harness} from &apos;../test/harness&apos;;
+import {FormTests} from &apos;../test/forms/index&apos;;
 import assert from &apos;power-assert&apos;;
 import each from &apos;lodash/each&apos;;
 import i18next from &apos;i18next&apos;;
@@ -168,7 +172,7 @@ import i18next from &apos;i18next&apos;;
 describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   let simpleForm = null;
   it(&apos;Should create a simple form&apos;, (done) =&gt; {
-    let formElement = document.createElement(&apos;div&apos;);
+    const formElement = document.createElement(&apos;div&apos;);
     simpleForm = new FormioForm(formElement);
     simpleForm.setForm({
       title: &apos;Simple Form&apos;,
@@ -200,8 +204,8 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   });
 
   it(&apos;Should translate a form from options&apos;, done =&gt; {
-    let formElement = document.createElement(&apos;div&apos;);
-    let translateForm = new FormioForm(formElement, {
+    const formElement = document.createElement(&apos;div&apos;);
+    const translateForm = new FormioForm(formElement, {
       language: &apos;es&apos;,
       i18n: {
         es: {
@@ -222,15 +226,15 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
         }
       ]
     }).then(() =&gt; {
-      let label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML, &apos;Spanish Label&apos;);
       done();
     });
   });
 
   it(&apos;Should translate a form after instantiate&apos;, done =&gt; {
-    let formElement = document.createElement(&apos;div&apos;);
-    let translateForm = new FormioForm(formElement, {
+    const formElement = document.createElement(&apos;div&apos;);
+    const translateForm = new FormioForm(formElement, {
       i18n: {
         es: {
           &apos;Default Label&apos;: &apos;Spanish Label&apos;
@@ -251,15 +255,15 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
       ]
     }).then(() =&gt; {
       translateForm.language = &apos;es&apos;;
-      let label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML, &apos;Spanish Label&apos;);
       done();
     });
   });
 
   it(&apos;Should add a translation after instantiate&apos;, done =&gt; {
-    let formElement = document.createElement(&apos;div&apos;);
-    let translateForm = new FormioForm(formElement, {
+    const formElement = document.createElement(&apos;div&apos;);
+    const translateForm = new FormioForm(formElement, {
       i18n: {
         language: &apos;es&apos;,
         es: {
@@ -284,15 +288,15 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
       ]
     }).then(() =&gt; {
       translateForm.language = &apos;fr&apos;;
-      let label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML, &apos;French Label&apos;);
       done();
     });
   });
 
   it(&apos;Should switch a translation after instantiate&apos;, done =&gt; {
-    let formElement = document.createElement(&apos;div&apos;);
-    let translateForm = new FormioForm(formElement);
+    const formElement = document.createElement(&apos;div&apos;);
+    const translateForm = new FormioForm(formElement);
     translateForm.setForm({
       title: &apos;Translate Form&apos;,
       components: [
@@ -307,7 +311,7 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
       ]
     }).then(() =&gt; {
       translateForm.addLanguage(&apos;es&apos;, {&apos;Default Label&apos;: &apos;Spanish Label&apos;}, true);
-      let label = formElement.querySelector(&apos;.control-label&apos;);
+      const label = formElement.querySelector(&apos;.control-label&apos;);
       assert.equal(label.innerHTML, &apos;Spanish Label&apos;);
       done();
     });
@@ -316,8 +320,8 @@ describe(&apos;Formio Form Renderer tests&apos;, () =&gt; {
   each(FormTests, (formTest) =&gt; {
     each(formTest.tests, (formTestTest, title) =&gt; {
       it(title, (done) =&gt; {
-        let formElement = document.createElement(&apos;div&apos;);
-        let form = new FormioForm(formElement, {language: &apos;en&apos;});
+        const formElement = document.createElement(&apos;div&apos;);
+        const form = new FormioForm(formElement, {language: &apos;en&apos;});
         form.setForm(formTest.form).then(() =&gt; {
           formTestTest(form, done);
         }).catch((error) =&gt; {

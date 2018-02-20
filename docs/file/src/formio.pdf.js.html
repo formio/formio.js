@@ -151,14 +151,17 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.pdf.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
-import Promise from &quot;native-promise-only&quot;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Promise from &apos;native-promise-only&apos;;
 import Formio from &apos;./formio&apos;;
 import FormioForm from &apos;./formio.form&apos;;
 
@@ -183,16 +186,16 @@ export default class FormioPDF extends FormioForm {
     if (!this._form || !this._form.settings || !this._form.settings.pdf) {
       return &apos;&apos;;
     }
-    var iframeSrc = this._form.settings.pdf.src + &apos;.html&apos;;
-    var params = [&apos;id=&apos; + this.id];
+    let iframeSrc = `${this._form.settings.pdf.src}.html`;
+    const params = [`id=${this.id}`];
     if (this.options.readOnly) {
       params.push(&apos;readonly=1&apos;);
     }
     if (this.options.zoom) {
-      params.push(&apos;zoom=&apos; + this.options.zoom);
+      params.push(`zoom=${this.options.zoom}`);
     }
     if (params.length) {
-      iframeSrc += &apos;?&apos; + params.join(&apos;&amp;&apos;);
+      iframeSrc += `?${params.join(&apos;&amp;&apos;)}`;
     }
     return iframeSrc;
   }
@@ -286,8 +289,8 @@ export default class FormioPDF extends FormioForm {
 /**
  * Listen for window messages.
  */
-window.addEventListener(&apos;message&apos;, function(event) {
-  var eventData = null;
+window.addEventListener(&apos;message&apos;, (event) =&gt; {
+  let eventData = null;
   try {
     eventData = JSON.parse(event.data);
   }
@@ -301,7 +304,7 @@ window.addEventListener(&apos;message&apos;, function(event) {
     eventData.formId &amp;&amp;
     Formio.forms.hasOwnProperty(eventData.formId)
   ) {
-    Formio.forms[eventData.formId].emit(&apos;iframe-&apos; + eventData.name, eventData.data);
+    Formio.forms[eventData.formId].emit(`iframe-${eventData.name}`, eventData.data);
   }
 });
 </code></pre>

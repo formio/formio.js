@@ -1,29 +1,29 @@
 {
   "type": "File",
   "start": 0,
-  "end": 3182,
+  "end": 3167,
   "loc": {
     "start": {
       "line": 1,
       "column": 0
     },
     "end": {
-      "line": 112,
-      "column": 2
+      "line": 113,
+      "column": 0
     }
   },
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 3182,
+    "end": 3167,
     "loc": {
       "start": {
         "line": 1,
         "column": 0
       },
       "end": {
-        "line": 112,
-        "column": 2
+        "line": 113,
+        "column": 0
       }
     },
     "sourceType": "module",
@@ -31,7 +31,7 @@
       {
         "type": "ExportNamedDeclaration",
         "start": 0,
-        "end": 3182,
+        "end": 3166,
         "loc": {
           "start": {
             "line": 1,
@@ -47,7 +47,7 @@
         "declaration": {
           "type": "VariableDeclaration",
           "start": 7,
-          "end": 3182,
+          "end": 3166,
           "loc": {
             "start": {
               "line": 1,
@@ -62,7 +62,7 @@
             {
               "type": "VariableDeclarator",
               "start": 13,
-              "end": 3181,
+              "end": 3165,
               "loc": {
                 "start": {
                   "line": 1,
@@ -93,7 +93,7 @@
               "init": {
                 "type": "ObjectExpression",
                 "start": 33,
-                "end": 3181,
+                "end": 3165,
                 "loc": {
                   "start": {
                     "line": 1,
@@ -138,7 +138,7 @@
                       },
                       "extra": {
                         "rawValue": "components",
-                        "raw": "\"components\""
+                        "raw": "'components'"
                       },
                       "value": "components"
                     },
@@ -205,7 +205,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "components",
-                                  "raw": "\"components\""
+                                  "raw": "'components'"
                                 },
                                 "value": "components"
                               },
@@ -272,7 +272,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "type",
-                                            "raw": "\"type\""
+                                            "raw": "'type'"
                                           },
                                           "value": "type"
                                         },
@@ -292,7 +292,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "textfield",
-                                            "raw": "\"textfield\""
+                                            "raw": "'textfield'"
                                           },
                                           "value": "textfield"
                                         }
@@ -330,7 +330,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "conditional",
-                                            "raw": "\"conditional\""
+                                            "raw": "'conditional'"
                                           },
                                           "value": "conditional"
                                         },
@@ -382,7 +382,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "show",
-                                                  "raw": "\"show\""
+                                                  "raw": "'show'"
                                                 },
                                                 "value": "show"
                                               },
@@ -402,7 +402,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -440,7 +440,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "when",
-                                                  "raw": "\"when\""
+                                                  "raw": "'when'"
                                                 },
                                                 "value": "when"
                                               },
@@ -493,7 +493,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "eq",
-                                                  "raw": "\"eq\""
+                                                  "raw": "'eq'"
                                                 },
                                                 "value": "eq"
                                               },
@@ -513,7 +513,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -554,7 +554,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "validate",
-                                            "raw": "\"validate\""
+                                            "raw": "'validate'"
                                           },
                                           "value": "validate"
                                         },
@@ -606,7 +606,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "required",
-                                                  "raw": "\"required\""
+                                                  "raw": "'required'"
                                                 },
                                                 "value": "required"
                                               },
@@ -660,7 +660,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "minLength",
-                                                  "raw": "\"minLength\""
+                                                  "raw": "'minLength'"
                                                 },
                                                 "value": "minLength"
                                               },
@@ -680,7 +680,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -718,7 +718,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "maxLength",
-                                                  "raw": "\"maxLength\""
+                                                  "raw": "'maxLength'"
                                                 },
                                                 "value": "maxLength"
                                               },
@@ -738,7 +738,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -776,7 +776,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "pattern",
-                                                  "raw": "\"pattern\""
+                                                  "raw": "'pattern'"
                                                 },
                                                 "value": "pattern"
                                               },
@@ -796,7 +796,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -834,7 +834,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "custom",
-                                                  "raw": "\"custom\""
+                                                  "raw": "'custom'"
                                                 },
                                                 "value": "custom"
                                               },
@@ -854,7 +854,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -892,7 +892,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "customPrivate",
-                                                  "raw": "\"customPrivate\""
+                                                  "raw": "'customPrivate'"
                                                 },
                                                 "value": "customPrivate"
                                               },
@@ -949,7 +949,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "customDefaultValue",
-                                            "raw": "\"customDefaultValue\""
+                                            "raw": "'customDefaultValue'"
                                           },
                                           "value": "customDefaultValue"
                                         },
@@ -1007,7 +1007,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "clearOnHide",
-                                            "raw": "\"clearOnHide\""
+                                            "raw": "'clearOnHide'"
                                           },
                                           "value": "clearOnHide"
                                         },
@@ -1061,7 +1061,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "hidden",
-                                            "raw": "\"hidden\""
+                                            "raw": "'hidden'"
                                           },
                                           "value": "hidden"
                                         },
@@ -1115,7 +1115,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "persistent",
-                                            "raw": "\"persistent\""
+                                            "raw": "'persistent'"
                                           },
                                           "value": "persistent"
                                         },
@@ -1169,7 +1169,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "unique",
-                                            "raw": "\"unique\""
+                                            "raw": "'unique'"
                                           },
                                           "value": "unique"
                                         },
@@ -1223,7 +1223,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "protected",
-                                            "raw": "\"protected\""
+                                            "raw": "'protected'"
                                           },
                                           "value": "protected"
                                         },
@@ -1277,7 +1277,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "defaultValue",
-                                            "raw": "\"defaultValue\""
+                                            "raw": "'defaultValue'"
                                           },
                                           "value": "defaultValue"
                                         },
@@ -1297,7 +1297,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -1335,7 +1335,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "multiple",
-                                            "raw": "\"multiple\""
+                                            "raw": "'multiple'"
                                           },
                                           "value": "multiple"
                                         },
@@ -1389,7 +1389,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "suffix",
-                                            "raw": "\"suffix\""
+                                            "raw": "'suffix'"
                                           },
                                           "value": "suffix"
                                         },
@@ -1409,7 +1409,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -1447,7 +1447,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "prefix",
-                                            "raw": "\"prefix\""
+                                            "raw": "'prefix'"
                                           },
                                           "value": "prefix"
                                         },
@@ -1467,7 +1467,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -1505,7 +1505,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "placeholder",
-                                            "raw": "\"placeholder\""
+                                            "raw": "'placeholder'"
                                           },
                                           "value": "placeholder"
                                         },
@@ -1525,7 +1525,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -1563,7 +1563,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "key",
-                                            "raw": "\"key\""
+                                            "raw": "'key'"
                                           },
                                           "value": "key"
                                         },
@@ -1583,7 +1583,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "field1",
-                                            "raw": "\"field1\""
+                                            "raw": "'field1'"
                                           },
                                           "value": "field1"
                                         }
@@ -1621,7 +1621,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "label",
-                                            "raw": "\"label\""
+                                            "raw": "'label'"
                                           },
                                           "value": "label"
                                         },
@@ -1641,7 +1641,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "Field 1",
-                                            "raw": "\"Field 1\""
+                                            "raw": "'Field 1'"
                                           },
                                           "value": "Field 1"
                                         }
@@ -1679,7 +1679,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "inputMask",
-                                            "raw": "\"inputMask\""
+                                            "raw": "'inputMask'"
                                           },
                                           "value": "inputMask"
                                         },
@@ -1699,7 +1699,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -1737,7 +1737,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "inputType",
-                                            "raw": "\"inputType\""
+                                            "raw": "'inputType'"
                                           },
                                           "value": "inputType"
                                         },
@@ -1757,7 +1757,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "text",
-                                            "raw": "\"text\""
+                                            "raw": "'text'"
                                           },
                                           "value": "text"
                                         }
@@ -1795,7 +1795,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "tableView",
-                                            "raw": "\"tableView\""
+                                            "raw": "'tableView'"
                                           },
                                           "value": "tableView"
                                         },
@@ -1849,7 +1849,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "input",
-                                            "raw": "\"input\""
+                                            "raw": "'input'"
                                           },
                                           "value": "input"
                                         },
@@ -1920,7 +1920,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "properties",
-                                            "raw": "\"properties\""
+                                            "raw": "'properties'"
                                           },
                                           "value": "properties"
                                         },
@@ -1972,7 +1972,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               },
@@ -1992,7 +1992,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -2033,7 +2033,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "tags",
-                                            "raw": "\"tags\""
+                                            "raw": "'tags'"
                                           },
                                           "value": "tags"
                                         },
@@ -2087,7 +2087,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "type",
-                                            "raw": "\"type\""
+                                            "raw": "'type'"
                                           },
                                           "value": "type"
                                         },
@@ -2107,7 +2107,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "textfield",
-                                            "raw": "\"textfield\""
+                                            "raw": "'textfield'"
                                           },
                                           "value": "textfield"
                                         }
@@ -2145,7 +2145,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "conditional",
-                                            "raw": "\"conditional\""
+                                            "raw": "'conditional'"
                                           },
                                           "value": "conditional"
                                         },
@@ -2197,7 +2197,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "show",
-                                                  "raw": "\"show\""
+                                                  "raw": "'show'"
                                                 },
                                                 "value": "show"
                                               },
@@ -2217,7 +2217,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "true",
-                                                  "raw": "\"true\""
+                                                  "raw": "'true'"
                                                 },
                                                 "value": "true"
                                               }
@@ -2255,7 +2255,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "when",
-                                                  "raw": "\"when\""
+                                                  "raw": "'when'"
                                                 },
                                                 "value": "when"
                                               },
@@ -2275,7 +2275,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "field1",
-                                                  "raw": "\"field1\""
+                                                  "raw": "'field1'"
                                                 },
                                                 "value": "field1"
                                               }
@@ -2313,7 +2313,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "eq",
-                                                  "raw": "\"eq\""
+                                                  "raw": "'eq'"
                                                 },
                                                 "value": "eq"
                                               },
@@ -2333,7 +2333,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "foo",
-                                                  "raw": "\"foo\""
+                                                  "raw": "'foo'"
                                                 },
                                                 "value": "foo"
                                               }
@@ -2374,7 +2374,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "validate",
-                                            "raw": "\"validate\""
+                                            "raw": "'validate'"
                                           },
                                           "value": "validate"
                                         },
@@ -2426,7 +2426,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "required",
-                                                  "raw": "\"required\""
+                                                  "raw": "'required'"
                                                 },
                                                 "value": "required"
                                               },
@@ -2480,7 +2480,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "minLength",
-                                                  "raw": "\"minLength\""
+                                                  "raw": "'minLength'"
                                                 },
                                                 "value": "minLength"
                                               },
@@ -2500,7 +2500,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -2538,7 +2538,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "maxLength",
-                                                  "raw": "\"maxLength\""
+                                                  "raw": "'maxLength'"
                                                 },
                                                 "value": "maxLength"
                                               },
@@ -2558,7 +2558,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -2596,7 +2596,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "pattern",
-                                                  "raw": "\"pattern\""
+                                                  "raw": "'pattern'"
                                                 },
                                                 "value": "pattern"
                                               },
@@ -2616,7 +2616,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -2654,7 +2654,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "custom",
-                                                  "raw": "\"custom\""
+                                                  "raw": "'custom'"
                                                 },
                                                 "value": "custom"
                                               },
@@ -2674,7 +2674,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "",
-                                                  "raw": "\"\""
+                                                  "raw": "''"
                                                 },
                                                 "value": ""
                                               }
@@ -2712,7 +2712,7 @@
                                                 },
                                                 "extra": {
                                                   "rawValue": "customPrivate",
-                                                  "raw": "\"customPrivate\""
+                                                  "raw": "'customPrivate'"
                                                 },
                                                 "value": "customPrivate"
                                               },
@@ -2769,7 +2769,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "clearOnHide",
-                                            "raw": "\"clearOnHide\""
+                                            "raw": "'clearOnHide'"
                                           },
                                           "value": "clearOnHide"
                                         },
@@ -2823,7 +2823,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "hidden",
-                                            "raw": "\"hidden\""
+                                            "raw": "'hidden'"
                                           },
                                           "value": "hidden"
                                         },
@@ -2877,7 +2877,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "persistent",
-                                            "raw": "\"persistent\""
+                                            "raw": "'persistent'"
                                           },
                                           "value": "persistent"
                                         },
@@ -2931,7 +2931,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "unique",
-                                            "raw": "\"unique\""
+                                            "raw": "'unique'"
                                           },
                                           "value": "unique"
                                         },
@@ -2985,7 +2985,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "protected",
-                                            "raw": "\"protected\""
+                                            "raw": "'protected'"
                                           },
                                           "value": "protected"
                                         },
@@ -3039,7 +3039,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "defaultValue",
-                                            "raw": "\"defaultValue\""
+                                            "raw": "'defaultValue'"
                                           },
                                           "value": "defaultValue"
                                         },
@@ -3059,7 +3059,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -3097,7 +3097,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "multiple",
-                                            "raw": "\"multiple\""
+                                            "raw": "'multiple'"
                                           },
                                           "value": "multiple"
                                         },
@@ -3151,7 +3151,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "suffix",
-                                            "raw": "\"suffix\""
+                                            "raw": "'suffix'"
                                           },
                                           "value": "suffix"
                                         },
@@ -3171,7 +3171,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -3209,7 +3209,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "prefix",
-                                            "raw": "\"prefix\""
+                                            "raw": "'prefix'"
                                           },
                                           "value": "prefix"
                                         },
@@ -3229,7 +3229,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -3267,7 +3267,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "placeholder",
-                                            "raw": "\"placeholder\""
+                                            "raw": "'placeholder'"
                                           },
                                           "value": "placeholder"
                                         },
@@ -3287,7 +3287,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -3325,7 +3325,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "key",
-                                            "raw": "\"key\""
+                                            "raw": "'key'"
                                           },
                                           "value": "key"
                                         },
@@ -3345,7 +3345,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "field2",
-                                            "raw": "\"field2\""
+                                            "raw": "'field2'"
                                           },
                                           "value": "field2"
                                         }
@@ -3383,7 +3383,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "label",
-                                            "raw": "\"label\""
+                                            "raw": "'label'"
                                           },
                                           "value": "label"
                                         },
@@ -3403,7 +3403,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "Field 2",
-                                            "raw": "\"Field 2\""
+                                            "raw": "'Field 2'"
                                           },
                                           "value": "Field 2"
                                         }
@@ -3441,7 +3441,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "inputMask",
-                                            "raw": "\"inputMask\""
+                                            "raw": "'inputMask'"
                                           },
                                           "value": "inputMask"
                                         },
@@ -3461,7 +3461,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "",
-                                            "raw": "\"\""
+                                            "raw": "''"
                                           },
                                           "value": ""
                                         }
@@ -3499,7 +3499,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "inputType",
-                                            "raw": "\"inputType\""
+                                            "raw": "'inputType'"
                                           },
                                           "value": "inputType"
                                         },
@@ -3519,7 +3519,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "text",
-                                            "raw": "\"text\""
+                                            "raw": "'text'"
                                           },
                                           "value": "text"
                                         }
@@ -3557,7 +3557,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "tableView",
-                                            "raw": "\"tableView\""
+                                            "raw": "'tableView'"
                                           },
                                           "value": "tableView"
                                         },
@@ -3611,7 +3611,7 @@
                                           },
                                           "extra": {
                                             "rawValue": "input",
-                                            "raw": "\"input\""
+                                            "raw": "'input'"
                                           },
                                           "value": "input"
                                         },
@@ -3670,7 +3670,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "clearOnHide",
-                                  "raw": "\"clearOnHide\""
+                                  "raw": "'clearOnHide'"
                                 },
                                 "value": "clearOnHide"
                               },
@@ -3724,7 +3724,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "key",
-                                  "raw": "\"key\""
+                                  "raw": "'key'"
                                 },
                                 "value": "key"
                               },
@@ -3744,7 +3744,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "editgridPanel",
-                                  "raw": "\"editgridPanel\""
+                                  "raw": "'editgridPanel'"
                                 },
                                 "value": "editgridPanel"
                               }
@@ -3782,7 +3782,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "input",
-                                  "raw": "\"input\""
+                                  "raw": "'input'"
                                 },
                                 "value": "input"
                               },
@@ -3836,7 +3836,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "title",
-                                  "raw": "\"title\""
+                                  "raw": "'title'"
                                 },
                                 "value": "title"
                               },
@@ -3856,7 +3856,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "",
-                                  "raw": "\"\""
+                                  "raw": "''"
                                 },
                                 "value": ""
                               }
@@ -3894,7 +3894,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "theme",
-                                  "raw": "\"theme\""
+                                  "raw": "'theme'"
                                 },
                                 "value": "theme"
                               },
@@ -3914,7 +3914,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "default",
-                                  "raw": "\"default\""
+                                  "raw": "'default'"
                                 },
                                 "value": "default"
                               }
@@ -3952,7 +3952,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "tableView",
-                                  "raw": "\"tableView\""
+                                  "raw": "'tableView'"
                                 },
                                 "value": "tableView"
                               },
@@ -4006,7 +4006,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "type",
-                                  "raw": "\"type\""
+                                  "raw": "'type'"
                                 },
                                 "value": "type"
                               },
@@ -4026,7 +4026,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "panel",
-                                  "raw": "\"panel\""
+                                  "raw": "'panel'"
                                 },
                                 "value": "panel"
                               }
@@ -4064,7 +4064,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "breadcrumb",
-                                  "raw": "\"breadcrumb\""
+                                  "raw": "'breadcrumb'"
                                 },
                                 "value": "breadcrumb"
                               },
@@ -4084,7 +4084,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "default",
-                                  "raw": "\"default\""
+                                  "raw": "'default'"
                                 },
                                 "value": "default"
                               }
@@ -4122,7 +4122,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "tags",
-                                  "raw": "\"tags\""
+                                  "raw": "'tags'"
                                 },
                                 "value": "tags"
                               },
@@ -4176,7 +4176,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "conditional",
-                                  "raw": "\"conditional\""
+                                  "raw": "'conditional'"
                                 },
                                 "value": "conditional"
                               },
@@ -4228,7 +4228,7 @@
                                       },
                                       "extra": {
                                         "rawValue": "eq",
-                                        "raw": "\"eq\""
+                                        "raw": "'eq'"
                                       },
                                       "value": "eq"
                                     },
@@ -4248,7 +4248,7 @@
                                       },
                                       "extra": {
                                         "rawValue": "",
-                                        "raw": "\"\""
+                                        "raw": "''"
                                       },
                                       "value": ""
                                     }
@@ -4286,7 +4286,7 @@
                                       },
                                       "extra": {
                                         "rawValue": "when",
-                                        "raw": "\"when\""
+                                        "raw": "'when'"
                                       },
                                       "value": "when"
                                     },
@@ -4339,7 +4339,7 @@
                                       },
                                       "extra": {
                                         "rawValue": "show",
-                                        "raw": "\"show\""
+                                        "raw": "'show'"
                                       },
                                       "value": "show"
                                     },
@@ -4359,7 +4359,7 @@
                                       },
                                       "extra": {
                                         "rawValue": "",
-                                        "raw": "\"\""
+                                        "raw": "''"
                                       },
                                       "value": ""
                                     }
@@ -4400,7 +4400,7 @@
                                 },
                                 "extra": {
                                   "rawValue": "properties",
-                                  "raw": "\"properties\""
+                                  "raw": "'properties'"
                                 },
                                 "value": "properties"
                               },
@@ -4452,7 +4452,7 @@
                                       },
                                       "extra": {
                                         "rawValue": "",
-                                        "raw": "\"\""
+                                        "raw": "''"
                                       },
                                       "value": ""
                                     },
@@ -4472,7 +4472,7 @@
                                       },
                                       "extra": {
                                         "rawValue": "",
-                                        "raw": "\"\""
+                                        "raw": "''"
                                       },
                                       "value": ""
                                     }
@@ -4518,7 +4518,7 @@
                       },
                       "extra": {
                         "rawValue": "tags",
-                        "raw": "\"tags\""
+                        "raw": "'tags'"
                       },
                       "value": "tags"
                     },
@@ -4572,7 +4572,7 @@
                       },
                       "extra": {
                         "rawValue": "type",
-                        "raw": "\"type\""
+                        "raw": "'type'"
                       },
                       "value": "type"
                     },
@@ -4592,7 +4592,7 @@
                       },
                       "extra": {
                         "rawValue": "editgrid",
-                        "raw": "\"editgrid\""
+                        "raw": "'editgrid'"
                       },
                       "value": "editgrid"
                     }
@@ -4600,7 +4600,7 @@
                   {
                     "type": "ObjectProperty",
                     "start": 2289,
-                    "end": 2958,
+                    "end": 2942,
                     "loc": {
                       "start": {
                         "line": 96,
@@ -4630,14 +4630,14 @@
                       },
                       "extra": {
                         "rawValue": "templates",
-                        "raw": "\"templates\""
+                        "raw": "'templates'"
                       },
                       "value": "templates"
                     },
                     "value": {
                       "type": "ObjectExpression",
                       "start": 2302,
-                      "end": 2958,
+                      "end": 2942,
                       "loc": {
                         "start": {
                           "line": 96,
@@ -4652,7 +4652,7 @@
                         {
                           "type": "ObjectProperty",
                           "start": 2308,
-                          "end": 2526,
+                          "end": 2522,
                           "loc": {
                             "start": {
                               "line": 97,
@@ -4660,7 +4660,7 @@
                             },
                             "end": {
                               "line": 97,
-                              "column": 222
+                              "column": 218
                             }
                           },
                           "method": false,
@@ -4682,14 +4682,14 @@
                             },
                             "extra": {
                               "rawValue": "header",
-                              "raw": "\"header\""
+                              "raw": "'header'"
                             },
                             "value": "header"
                           },
                           "value": {
                             "type": "StringLiteral",
                             "start": 2318,
-                            "end": 2526,
+                            "end": 2522,
                             "loc": {
                               "start": {
                                 "line": 97,
@@ -4697,20 +4697,20 @@
                               },
                               "end": {
                                 "line": 97,
-                                "column": 222
+                                "column": 218
                               }
                             },
                             "extra": {
                               "rawValue": "<div class=\"row\"> \n  {%util.eachComponent(components, function(component) { %} \n    <div class=\"col-sm-2\"> \n      {{ component.label }} \n    </div> \n  {% }) %} \n<div>{{value.length}}</div>\n</div>",
-                              "raw": "\"<div class=\\\"row\\\"> \\n  {%util.eachComponent(components, function(component) { %} \\n    <div class=\\\"col-sm-2\\\"> \\n      {{ component.label }} \\n    </div> \\n  {% }) %} \\n<div>{{value.length}}</div>\\n</div>\""
+                              "raw": "'<div class=\"row\"> \\n  {%util.eachComponent(components, function(component) { %} \\n    <div class=\"col-sm-2\"> \\n      {{ component.label }} \\n    </div> \\n  {% }) %} \\n<div>{{value.length}}</div>\\n</div>'"
                             },
                             "value": "<div class=\"row\"> \n  {%util.eachComponent(components, function(component) { %} \n    <div class=\"col-sm-2\"> \n      {{ component.label }} \n    </div> \n  {% }) %} \n<div>{{value.length}}</div>\n</div>"
                           }
                         },
                         {
                           "type": "ObjectProperty",
-                          "start": 2532,
-                          "end": 2936,
+                          "start": 2528,
+                          "end": 2920,
                           "loc": {
                             "start": {
                               "line": 98,
@@ -4718,7 +4718,7 @@
                             },
                             "end": {
                               "line": 98,
-                              "column": 408
+                              "column": 396
                             }
                           },
                           "method": false,
@@ -4726,8 +4726,8 @@
                           "computed": false,
                           "key": {
                             "type": "StringLiteral",
-                            "start": 2532,
-                            "end": 2537,
+                            "start": 2528,
+                            "end": 2533,
                             "loc": {
                               "start": {
                                 "line": 98,
@@ -4740,14 +4740,14 @@
                             },
                             "extra": {
                               "rawValue": "row",
-                              "raw": "\"row\""
+                              "raw": "'row'"
                             },
                             "value": "row"
                           },
                           "value": {
                             "type": "StringLiteral",
-                            "start": 2539,
-                            "end": 2936,
+                            "start": 2535,
+                            "end": 2920,
                             "loc": {
                               "start": {
                                 "line": 98,
@@ -4755,20 +4755,20 @@
                               },
                               "end": {
                                 "line": 98,
-                                "column": 408
+                                "column": 396
                               }
                             },
                             "extra": {
                               "rawValue": "<div class=\"row\"> \n  {%util.eachComponent(components, function(component) { %} \n    <div class=\"col-sm-2\"> \n      {{ row[component.key] }} \n    </div> \n  {% }) %} \n  <div class=\"col-sm-2\"> \n    <div class=\"btn-group pull-right\"> \n      <div class=\"btn btn-default editRow\">Edit</div> \n      <div class=\"btn btn-danger removeRow\">Delete</div> \n    </div> \n  </div> \n</div>",
-                              "raw": "\"<div class=\\\"row\\\"> \\n  {%util.eachComponent(components, function(component) { %} \\n    <div class=\\\"col-sm-2\\\"> \\n      {{ row[component.key] }} \\n    </div> \\n  {% }) %} \\n  <div class=\\\"col-sm-2\\\"> \\n    <div class=\\\"btn-group pull-right\\\"> \\n      <div class=\\\"btn btn-default editRow\\\">Edit</div> \\n      <div class=\\\"btn btn-danger removeRow\\\">Delete</div> \\n    </div> \\n  </div> \\n</div>\""
+                              "raw": "'<div class=\"row\"> \\n  {%util.eachComponent(components, function(component) { %} \\n    <div class=\"col-sm-2\"> \\n      {{ row[component.key] }} \\n    </div> \\n  {% }) %} \\n  <div class=\"col-sm-2\"> \\n    <div class=\"btn-group pull-right\"> \\n      <div class=\"btn btn-default editRow\">Edit</div> \\n      <div class=\"btn btn-danger removeRow\">Delete</div> \\n    </div> \\n  </div> \\n</div>'"
                             },
                             "value": "<div class=\"row\"> \n  {%util.eachComponent(components, function(component) { %} \n    <div class=\"col-sm-2\"> \n      {{ row[component.key] }} \n    </div> \n  {% }) %} \n  <div class=\"col-sm-2\"> \n    <div class=\"btn-group pull-right\"> \n      <div class=\"btn btn-default editRow\">Edit</div> \n      <div class=\"btn btn-danger removeRow\">Delete</div> \n    </div> \n  </div> \n</div>"
                           }
                         },
                         {
                           "type": "ObjectProperty",
-                          "start": 2942,
-                          "end": 2954,
+                          "start": 2926,
+                          "end": 2938,
                           "loc": {
                             "start": {
                               "line": 99,
@@ -4784,8 +4784,8 @@
                           "computed": false,
                           "key": {
                             "type": "StringLiteral",
-                            "start": 2942,
-                            "end": 2950,
+                            "start": 2926,
+                            "end": 2934,
                             "loc": {
                               "start": {
                                 "line": 99,
@@ -4798,14 +4798,14 @@
                             },
                             "extra": {
                               "rawValue": "footer",
-                              "raw": "\"footer\""
+                              "raw": "'footer'"
                             },
                             "value": "footer"
                           },
                           "value": {
                             "type": "StringLiteral",
-                            "start": 2952,
-                            "end": 2954,
+                            "start": 2936,
+                            "end": 2938,
                             "loc": {
                               "start": {
                                 "line": 99,
@@ -4818,7 +4818,7 @@
                             },
                             "extra": {
                               "rawValue": "",
-                              "raw": "\"\""
+                              "raw": "''"
                             },
                             "value": ""
                           }
@@ -4828,8 +4828,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 2962,
-                    "end": 2981,
+                    "start": 2946,
+                    "end": 2965,
                     "loc": {
                       "start": {
                         "line": 101,
@@ -4845,8 +4845,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 2962,
-                      "end": 2975,
+                      "start": 2946,
+                      "end": 2959,
                       "loc": {
                         "start": {
                           "line": 101,
@@ -4859,14 +4859,14 @@
                       },
                       "extra": {
                         "rawValue": "clearOnHide",
-                        "raw": "\"clearOnHide\""
+                        "raw": "'clearOnHide'"
                       },
                       "value": "clearOnHide"
                     },
                     "value": {
                       "type": "BooleanLiteral",
-                      "start": 2977,
-                      "end": 2981,
+                      "start": 2961,
+                      "end": 2965,
                       "loc": {
                         "start": {
                           "line": 101,
@@ -4882,8 +4882,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 2985,
-                    "end": 3000,
+                    "start": 2969,
+                    "end": 2984,
                     "loc": {
                       "start": {
                         "line": 102,
@@ -4899,8 +4899,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 2985,
-                      "end": 2993,
+                      "start": 2969,
+                      "end": 2977,
                       "loc": {
                         "start": {
                           "line": 102,
@@ -4913,14 +4913,14 @@
                       },
                       "extra": {
                         "rawValue": "hidden",
-                        "raw": "\"hidden\""
+                        "raw": "'hidden'"
                       },
                       "value": "hidden"
                     },
                     "value": {
                       "type": "BooleanLiteral",
-                      "start": 2995,
-                      "end": 3000,
+                      "start": 2979,
+                      "end": 2984,
                       "loc": {
                         "start": {
                           "line": 102,
@@ -4936,8 +4936,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3004,
-                    "end": 3022,
+                    "start": 2988,
+                    "end": 3006,
                     "loc": {
                       "start": {
                         "line": 103,
@@ -4953,8 +4953,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3004,
-                      "end": 3016,
+                      "start": 2988,
+                      "end": 3000,
                       "loc": {
                         "start": {
                           "line": 103,
@@ -4967,14 +4967,14 @@
                       },
                       "extra": {
                         "rawValue": "persistent",
-                        "raw": "\"persistent\""
+                        "raw": "'persistent'"
                       },
                       "value": "persistent"
                     },
                     "value": {
                       "type": "BooleanLiteral",
-                      "start": 3018,
-                      "end": 3022,
+                      "start": 3002,
+                      "end": 3006,
                       "loc": {
                         "start": {
                           "line": 103,
@@ -4990,8 +4990,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3026,
-                    "end": 3044,
+                    "start": 3010,
+                    "end": 3028,
                     "loc": {
                       "start": {
                         "line": 104,
@@ -5007,8 +5007,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3026,
-                      "end": 3037,
+                      "start": 3010,
+                      "end": 3021,
                       "loc": {
                         "start": {
                           "line": 104,
@@ -5021,14 +5021,14 @@
                       },
                       "extra": {
                         "rawValue": "protected",
-                        "raw": "\"protected\""
+                        "raw": "'protected'"
                       },
                       "value": "protected"
                     },
                     "value": {
                       "type": "BooleanLiteral",
-                      "start": 3039,
-                      "end": 3044,
+                      "start": 3023,
+                      "end": 3028,
                       "loc": {
                         "start": {
                           "line": 104,
@@ -5044,8 +5044,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3048,
-                    "end": 3065,
+                    "start": 3032,
+                    "end": 3049,
                     "loc": {
                       "start": {
                         "line": 105,
@@ -5061,8 +5061,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3048,
-                      "end": 3053,
+                      "start": 3032,
+                      "end": 3037,
                       "loc": {
                         "start": {
                           "line": 105,
@@ -5075,14 +5075,14 @@
                       },
                       "extra": {
                         "rawValue": "key",
-                        "raw": "\"key\""
+                        "raw": "'key'"
                       },
                       "value": "key"
                     },
                     "value": {
                       "type": "StringLiteral",
-                      "start": 3055,
-                      "end": 3065,
+                      "start": 3039,
+                      "end": 3049,
                       "loc": {
                         "start": {
                           "line": 105,
@@ -5095,15 +5095,15 @@
                       },
                       "extra": {
                         "rawValue": "editgrid",
-                        "raw": "\"editgrid\""
+                        "raw": "'editgrid'"
                       },
                       "value": "editgrid"
                     }
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3069,
-                    "end": 3080,
+                    "start": 3053,
+                    "end": 3064,
                     "loc": {
                       "start": {
                         "line": 106,
@@ -5119,8 +5119,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3069,
-                      "end": 3076,
+                      "start": 3053,
+                      "end": 3060,
                       "loc": {
                         "start": {
                           "line": 106,
@@ -5133,14 +5133,14 @@
                       },
                       "extra": {
                         "rawValue": "label",
-                        "raw": "\"label\""
+                        "raw": "'label'"
                       },
                       "value": "label"
                     },
                     "value": {
                       "type": "StringLiteral",
-                      "start": 3078,
-                      "end": 3080,
+                      "start": 3062,
+                      "end": 3064,
                       "loc": {
                         "start": {
                           "line": 106,
@@ -5153,15 +5153,15 @@
                       },
                       "extra": {
                         "rawValue": "",
-                        "raw": "\"\""
+                        "raw": "''"
                       },
                       "value": ""
                     }
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3084,
-                    "end": 3101,
+                    "start": 3068,
+                    "end": 3085,
                     "loc": {
                       "start": {
                         "line": 107,
@@ -5177,8 +5177,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3084,
-                      "end": 3095,
+                      "start": 3068,
+                      "end": 3079,
                       "loc": {
                         "start": {
                           "line": 107,
@@ -5191,14 +5191,14 @@
                       },
                       "extra": {
                         "rawValue": "tableView",
-                        "raw": "\"tableView\""
+                        "raw": "'tableView'"
                       },
                       "value": "tableView"
                     },
                     "value": {
                       "type": "BooleanLiteral",
-                      "start": 3097,
-                      "end": 3101,
+                      "start": 3081,
+                      "end": 3085,
                       "loc": {
                         "start": {
                           "line": 107,
@@ -5214,8 +5214,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3105,
-                    "end": 3121,
+                    "start": 3089,
+                    "end": 3105,
                     "loc": {
                       "start": {
                         "line": 108,
@@ -5231,8 +5231,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3105,
-                      "end": 3115,
+                      "start": 3089,
+                      "end": 3099,
                       "loc": {
                         "start": {
                           "line": 108,
@@ -5245,14 +5245,14 @@
                       },
                       "extra": {
                         "rawValue": "multiple",
-                        "raw": "\"multiple\""
+                        "raw": "'multiple'"
                       },
                       "value": "multiple"
                     },
                     "value": {
                       "type": "BooleanLiteral",
-                      "start": 3117,
-                      "end": 3121,
+                      "start": 3101,
+                      "end": 3105,
                       "loc": {
                         "start": {
                           "line": 108,
@@ -5268,8 +5268,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3125,
-                    "end": 3137,
+                    "start": 3109,
+                    "end": 3121,
                     "loc": {
                       "start": {
                         "line": 109,
@@ -5285,8 +5285,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3125,
-                      "end": 3131,
+                      "start": 3109,
+                      "end": 3115,
                       "loc": {
                         "start": {
                           "line": 109,
@@ -5299,14 +5299,14 @@
                       },
                       "extra": {
                         "rawValue": "tree",
-                        "raw": "\"tree\""
+                        "raw": "'tree'"
                       },
                       "value": "tree"
                     },
                     "value": {
                       "type": "BooleanLiteral",
-                      "start": 3133,
-                      "end": 3137,
+                      "start": 3117,
+                      "end": 3121,
                       "loc": {
                         "start": {
                           "line": 109,
@@ -5322,8 +5322,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3141,
-                    "end": 3154,
+                    "start": 3125,
+                    "end": 3138,
                     "loc": {
                       "start": {
                         "line": 110,
@@ -5339,8 +5339,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3141,
-                      "end": 3148,
+                      "start": 3125,
+                      "end": 3132,
                       "loc": {
                         "start": {
                           "line": 110,
@@ -5353,14 +5353,14 @@
                       },
                       "extra": {
                         "rawValue": "input",
-                        "raw": "\"input\""
+                        "raw": "'input'"
                       },
                       "value": "input"
                     },
                     "value": {
                       "type": "BooleanLiteral",
-                      "start": 3150,
-                      "end": 3154,
+                      "start": 3134,
+                      "end": 3138,
                       "loc": {
                         "start": {
                           "line": 110,
@@ -5376,8 +5376,8 @@
                   },
                   {
                     "type": "ObjectProperty",
-                    "start": 3158,
-                    "end": 3179,
+                    "start": 3142,
+                    "end": 3163,
                     "loc": {
                       "start": {
                         "line": 111,
@@ -5393,8 +5393,8 @@
                     "computed": false,
                     "key": {
                       "type": "StringLiteral",
-                      "start": 3158,
-                      "end": 3169,
+                      "start": 3142,
+                      "end": 3153,
                       "loc": {
                         "start": {
                           "line": 111,
@@ -5407,14 +5407,14 @@
                       },
                       "extra": {
                         "rawValue": "removeRow",
-                        "raw": "\"removeRow\""
+                        "raw": "'removeRow'"
                       },
                       "value": "removeRow"
                     },
                     "value": {
                       "type": "StringLiteral",
-                      "start": 3171,
-                      "end": 3179,
+                      "start": 3155,
+                      "end": 3163,
                       "loc": {
                         "start": {
                           "line": 111,
@@ -5427,7 +5427,7 @@
                       },
                       "extra": {
                         "rawValue": "Cancel",
-                        "raw": "\"Cancel\""
+                        "raw": "'Cancel'"
                       },
                       "value": "Cancel"
                     }
@@ -14327,7 +14327,7 @@
       },
       "value": "<div class=\"row\"> \n  {%util.eachComponent(components, function(component) { %} \n    <div class=\"col-sm-2\"> \n      {{ component.label }} \n    </div> \n  {% }) %} \n<div>{{value.length}}</div>\n</div>",
       "start": 2318,
-      "end": 2526,
+      "end": 2522,
       "loc": {
         "start": {
           "line": 97,
@@ -14335,7 +14335,7 @@
         },
         "end": {
           "line": 97,
-          "column": 222
+          "column": 218
         }
       }
     },
@@ -14352,16 +14352,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2526,
-      "end": 2527,
+      "start": 2522,
+      "end": 2523,
       "loc": {
         "start": {
           "line": 97,
-          "column": 222
+          "column": 218
         },
         "end": {
           "line": 97,
-          "column": 223
+          "column": 219
         }
       }
     },
@@ -14379,8 +14379,8 @@
         "updateContext": null
       },
       "value": "row",
-      "start": 2532,
-      "end": 2537,
+      "start": 2528,
+      "end": 2533,
       "loc": {
         "start": {
           "line": 98,
@@ -14405,8 +14405,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2537,
-      "end": 2538,
+      "start": 2533,
+      "end": 2534,
       "loc": {
         "start": {
           "line": 98,
@@ -14432,8 +14432,8 @@
         "updateContext": null
       },
       "value": "<div class=\"row\"> \n  {%util.eachComponent(components, function(component) { %} \n    <div class=\"col-sm-2\"> \n      {{ row[component.key] }} \n    </div> \n  {% }) %} \n  <div class=\"col-sm-2\"> \n    <div class=\"btn-group pull-right\"> \n      <div class=\"btn btn-default editRow\">Edit</div> \n      <div class=\"btn btn-danger removeRow\">Delete</div> \n    </div> \n  </div> \n</div>",
-      "start": 2539,
-      "end": 2936,
+      "start": 2535,
+      "end": 2920,
       "loc": {
         "start": {
           "line": 98,
@@ -14441,7 +14441,7 @@
         },
         "end": {
           "line": 98,
-          "column": 408
+          "column": 396
         }
       }
     },
@@ -14458,16 +14458,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2936,
-      "end": 2937,
+      "start": 2920,
+      "end": 2921,
       "loc": {
         "start": {
           "line": 98,
-          "column": 408
+          "column": 396
         },
         "end": {
           "line": 98,
-          "column": 409
+          "column": 397
         }
       }
     },
@@ -14485,8 +14485,8 @@
         "updateContext": null
       },
       "value": "footer",
-      "start": 2942,
-      "end": 2950,
+      "start": 2926,
+      "end": 2934,
       "loc": {
         "start": {
           "line": 99,
@@ -14511,8 +14511,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2950,
-      "end": 2951,
+      "start": 2934,
+      "end": 2935,
       "loc": {
         "start": {
           "line": 99,
@@ -14538,8 +14538,8 @@
         "updateContext": null
       },
       "value": "",
-      "start": 2952,
-      "end": 2954,
+      "start": 2936,
+      "end": 2938,
       "loc": {
         "start": {
           "line": 99,
@@ -14563,8 +14563,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 2957,
-      "end": 2958,
+      "start": 2941,
+      "end": 2942,
       "loc": {
         "start": {
           "line": 100,
@@ -14589,8 +14589,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2958,
-      "end": 2959,
+      "start": 2942,
+      "end": 2943,
       "loc": {
         "start": {
           "line": 100,
@@ -14616,8 +14616,8 @@
         "updateContext": null
       },
       "value": "clearOnHide",
-      "start": 2962,
-      "end": 2975,
+      "start": 2946,
+      "end": 2959,
       "loc": {
         "start": {
           "line": 101,
@@ -14642,8 +14642,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2975,
-      "end": 2976,
+      "start": 2959,
+      "end": 2960,
       "loc": {
         "start": {
           "line": 101,
@@ -14670,8 +14670,8 @@
         "updateContext": null
       },
       "value": "true",
-      "start": 2977,
-      "end": 2981,
+      "start": 2961,
+      "end": 2965,
       "loc": {
         "start": {
           "line": 101,
@@ -14696,8 +14696,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2981,
-      "end": 2982,
+      "start": 2965,
+      "end": 2966,
       "loc": {
         "start": {
           "line": 101,
@@ -14723,8 +14723,8 @@
         "updateContext": null
       },
       "value": "hidden",
-      "start": 2985,
-      "end": 2993,
+      "start": 2969,
+      "end": 2977,
       "loc": {
         "start": {
           "line": 102,
@@ -14749,8 +14749,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 2993,
-      "end": 2994,
+      "start": 2977,
+      "end": 2978,
       "loc": {
         "start": {
           "line": 102,
@@ -14777,8 +14777,8 @@
         "updateContext": null
       },
       "value": "false",
-      "start": 2995,
-      "end": 3000,
+      "start": 2979,
+      "end": 2984,
       "loc": {
         "start": {
           "line": 102,
@@ -14803,8 +14803,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3000,
-      "end": 3001,
+      "start": 2984,
+      "end": 2985,
       "loc": {
         "start": {
           "line": 102,
@@ -14830,8 +14830,8 @@
         "updateContext": null
       },
       "value": "persistent",
-      "start": 3004,
-      "end": 3016,
+      "start": 2988,
+      "end": 3000,
       "loc": {
         "start": {
           "line": 103,
@@ -14856,8 +14856,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3016,
-      "end": 3017,
+      "start": 3000,
+      "end": 3001,
       "loc": {
         "start": {
           "line": 103,
@@ -14884,8 +14884,8 @@
         "updateContext": null
       },
       "value": "true",
-      "start": 3018,
-      "end": 3022,
+      "start": 3002,
+      "end": 3006,
       "loc": {
         "start": {
           "line": 103,
@@ -14910,8 +14910,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3022,
-      "end": 3023,
+      "start": 3006,
+      "end": 3007,
       "loc": {
         "start": {
           "line": 103,
@@ -14937,8 +14937,8 @@
         "updateContext": null
       },
       "value": "protected",
-      "start": 3026,
-      "end": 3037,
+      "start": 3010,
+      "end": 3021,
       "loc": {
         "start": {
           "line": 104,
@@ -14963,8 +14963,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3037,
-      "end": 3038,
+      "start": 3021,
+      "end": 3022,
       "loc": {
         "start": {
           "line": 104,
@@ -14991,8 +14991,8 @@
         "updateContext": null
       },
       "value": "false",
-      "start": 3039,
-      "end": 3044,
+      "start": 3023,
+      "end": 3028,
       "loc": {
         "start": {
           "line": 104,
@@ -15017,8 +15017,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3044,
-      "end": 3045,
+      "start": 3028,
+      "end": 3029,
       "loc": {
         "start": {
           "line": 104,
@@ -15044,8 +15044,8 @@
         "updateContext": null
       },
       "value": "key",
-      "start": 3048,
-      "end": 3053,
+      "start": 3032,
+      "end": 3037,
       "loc": {
         "start": {
           "line": 105,
@@ -15070,8 +15070,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3053,
-      "end": 3054,
+      "start": 3037,
+      "end": 3038,
       "loc": {
         "start": {
           "line": 105,
@@ -15097,8 +15097,8 @@
         "updateContext": null
       },
       "value": "editgrid",
-      "start": 3055,
-      "end": 3065,
+      "start": 3039,
+      "end": 3049,
       "loc": {
         "start": {
           "line": 105,
@@ -15123,8 +15123,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3065,
-      "end": 3066,
+      "start": 3049,
+      "end": 3050,
       "loc": {
         "start": {
           "line": 105,
@@ -15150,8 +15150,8 @@
         "updateContext": null
       },
       "value": "label",
-      "start": 3069,
-      "end": 3076,
+      "start": 3053,
+      "end": 3060,
       "loc": {
         "start": {
           "line": 106,
@@ -15176,8 +15176,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3076,
-      "end": 3077,
+      "start": 3060,
+      "end": 3061,
       "loc": {
         "start": {
           "line": 106,
@@ -15203,8 +15203,8 @@
         "updateContext": null
       },
       "value": "",
-      "start": 3078,
-      "end": 3080,
+      "start": 3062,
+      "end": 3064,
       "loc": {
         "start": {
           "line": 106,
@@ -15229,8 +15229,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3080,
-      "end": 3081,
+      "start": 3064,
+      "end": 3065,
       "loc": {
         "start": {
           "line": 106,
@@ -15256,8 +15256,8 @@
         "updateContext": null
       },
       "value": "tableView",
-      "start": 3084,
-      "end": 3095,
+      "start": 3068,
+      "end": 3079,
       "loc": {
         "start": {
           "line": 107,
@@ -15282,8 +15282,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3095,
-      "end": 3096,
+      "start": 3079,
+      "end": 3080,
       "loc": {
         "start": {
           "line": 107,
@@ -15310,8 +15310,8 @@
         "updateContext": null
       },
       "value": "true",
-      "start": 3097,
-      "end": 3101,
+      "start": 3081,
+      "end": 3085,
       "loc": {
         "start": {
           "line": 107,
@@ -15336,8 +15336,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3101,
-      "end": 3102,
+      "start": 3085,
+      "end": 3086,
       "loc": {
         "start": {
           "line": 107,
@@ -15363,8 +15363,8 @@
         "updateContext": null
       },
       "value": "multiple",
-      "start": 3105,
-      "end": 3115,
+      "start": 3089,
+      "end": 3099,
       "loc": {
         "start": {
           "line": 108,
@@ -15389,8 +15389,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3115,
-      "end": 3116,
+      "start": 3099,
+      "end": 3100,
       "loc": {
         "start": {
           "line": 108,
@@ -15417,8 +15417,8 @@
         "updateContext": null
       },
       "value": "true",
-      "start": 3117,
-      "end": 3121,
+      "start": 3101,
+      "end": 3105,
       "loc": {
         "start": {
           "line": 108,
@@ -15443,8 +15443,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3121,
-      "end": 3122,
+      "start": 3105,
+      "end": 3106,
       "loc": {
         "start": {
           "line": 108,
@@ -15470,8 +15470,8 @@
         "updateContext": null
       },
       "value": "tree",
-      "start": 3125,
-      "end": 3131,
+      "start": 3109,
+      "end": 3115,
       "loc": {
         "start": {
           "line": 109,
@@ -15496,8 +15496,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3131,
-      "end": 3132,
+      "start": 3115,
+      "end": 3116,
       "loc": {
         "start": {
           "line": 109,
@@ -15524,8 +15524,8 @@
         "updateContext": null
       },
       "value": "true",
-      "start": 3133,
-      "end": 3137,
+      "start": 3117,
+      "end": 3121,
       "loc": {
         "start": {
           "line": 109,
@@ -15550,8 +15550,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3137,
-      "end": 3138,
+      "start": 3121,
+      "end": 3122,
       "loc": {
         "start": {
           "line": 109,
@@ -15577,8 +15577,8 @@
         "updateContext": null
       },
       "value": "input",
-      "start": 3141,
-      "end": 3148,
+      "start": 3125,
+      "end": 3132,
       "loc": {
         "start": {
           "line": 110,
@@ -15603,8 +15603,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3148,
-      "end": 3149,
+      "start": 3132,
+      "end": 3133,
       "loc": {
         "start": {
           "line": 110,
@@ -15631,8 +15631,8 @@
         "updateContext": null
       },
       "value": "true",
-      "start": 3150,
-      "end": 3154,
+      "start": 3134,
+      "end": 3138,
       "loc": {
         "start": {
           "line": 110,
@@ -15657,8 +15657,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3154,
-      "end": 3155,
+      "start": 3138,
+      "end": 3139,
       "loc": {
         "start": {
           "line": 110,
@@ -15684,8 +15684,8 @@
         "updateContext": null
       },
       "value": "removeRow",
-      "start": 3158,
-      "end": 3169,
+      "start": 3142,
+      "end": 3153,
       "loc": {
         "start": {
           "line": 111,
@@ -15710,8 +15710,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3169,
-      "end": 3170,
+      "start": 3153,
+      "end": 3154,
       "loc": {
         "start": {
           "line": 111,
@@ -15737,8 +15737,8 @@
         "updateContext": null
       },
       "value": "Cancel",
-      "start": 3171,
-      "end": 3179,
+      "start": 3155,
+      "end": 3163,
       "loc": {
         "start": {
           "line": 111,
@@ -15762,8 +15762,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 3180,
-      "end": 3181,
+      "start": 3164,
+      "end": 3165,
       "loc": {
         "start": {
           "line": 112,
@@ -15788,8 +15788,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3181,
-      "end": 3182,
+      "start": 3165,
+      "end": 3166,
       "loc": {
         "start": {
           "line": 112,
@@ -15814,16 +15814,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 3182,
-      "end": 3182,
+      "start": 3167,
+      "end": 3167,
       "loc": {
         "start": {
-          "line": 112,
-          "column": 2
+          "line": 113,
+          "column": 0
         },
         "end": {
-          "line": 112,
-          "column": 2
+          "line": 113,
+          "column": 0
         }
       }
     }

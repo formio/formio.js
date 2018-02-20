@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -158,131 +162,132 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editrgrid/fixtures/comp1.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export const component =         {
-  &quot;components&quot;: [
+  &apos;components&apos;: [
     {
-      &quot;components&quot;: [
+      &apos;components&apos;: [
         {
-          &quot;properties&quot;: {
-            &quot;&quot;: &quot;&quot;
+          &apos;properties&apos;: {
+            &apos;&apos;: &apos;&apos;
           },
-          &quot;tags&quot;: [],
-          &quot;type&quot;: &quot;textfield&quot;,
-          &quot;conditional&quot;: {
-            &quot;show&quot;: &quot;&quot;,
-            &quot;when&quot;: null,
-            &quot;eq&quot;: &quot;&quot;
+          &apos;tags&apos;: [],
+          &apos;type&apos;: &apos;textfield&apos;,
+          &apos;conditional&apos;: {
+            &apos;show&apos;: &apos;&apos;,
+            &apos;when&apos;: null,
+            &apos;eq&apos;: &apos;&apos;
           },
-          &quot;validate&quot;: {
-            &quot;required&quot;: false,
-            &quot;minLength&quot;: &quot;&quot;,
-            &quot;maxLength&quot;: &quot;&quot;,
-            &quot;pattern&quot;: &quot;&quot;,
-            &quot;custom&quot;: &quot;&quot;,
-            &quot;customPrivate&quot;: false
+          &apos;validate&apos;: {
+            &apos;required&apos;: false,
+            &apos;minLength&apos;: &apos;&apos;,
+            &apos;maxLength&apos;: &apos;&apos;,
+            &apos;pattern&apos;: &apos;&apos;,
+            &apos;custom&apos;: &apos;&apos;,
+            &apos;customPrivate&apos;: false
           },
-          &quot;clearOnHide&quot;: true,
-          &quot;hidden&quot;: false,
-          &quot;persistent&quot;: true,
-          &quot;unique&quot;: false,
-          &quot;protected&quot;: false,
-          &quot;defaultValue&quot;: &quot;&quot;,
-          &quot;multiple&quot;: false,
-          &quot;suffix&quot;: &quot;&quot;,
-          &quot;prefix&quot;: &quot;&quot;,
-          &quot;placeholder&quot;: &quot;&quot;,
-          &quot;key&quot;: &quot;field1&quot;,
-          &quot;label&quot;: &quot;Field 1&quot;,
-          &quot;inputMask&quot;: &quot;&quot;,
-          &quot;inputType&quot;: &quot;text&quot;,
-          &quot;tableView&quot;: true,
-          &quot;input&quot;: true
+          &apos;clearOnHide&apos;: true,
+          &apos;hidden&apos;: false,
+          &apos;persistent&apos;: true,
+          &apos;unique&apos;: false,
+          &apos;protected&apos;: false,
+          &apos;defaultValue&apos;: &apos;&apos;,
+          &apos;multiple&apos;: false,
+          &apos;suffix&apos;: &apos;&apos;,
+          &apos;prefix&apos;: &apos;&apos;,
+          &apos;placeholder&apos;: &apos;&apos;,
+          &apos;key&apos;: &apos;field1&apos;,
+          &apos;label&apos;: &apos;Field 1&apos;,
+          &apos;inputMask&apos;: &apos;&apos;,
+          &apos;inputType&apos;: &apos;text&apos;,
+          &apos;tableView&apos;: true,
+          &apos;input&apos;: true
         },
         {
-          &quot;properties&quot;: {
-            &quot;&quot;: &quot;&quot;
+          &apos;properties&apos;: {
+            &apos;&apos;: &apos;&apos;
           },
-          &quot;tags&quot;: [],
-          &quot;type&quot;: &quot;textfield&quot;,
-          &quot;conditional&quot;: {
-            &quot;show&quot;: &quot;&quot;,
-            &quot;when&quot;: null,
-            &quot;eq&quot;: &quot;&quot;
+          &apos;tags&apos;: [],
+          &apos;type&apos;: &apos;textfield&apos;,
+          &apos;conditional&apos;: {
+            &apos;show&apos;: &apos;&apos;,
+            &apos;when&apos;: null,
+            &apos;eq&apos;: &apos;&apos;
           },
-          &quot;validate&quot;: {
-            &quot;required&quot;: true,
-            &quot;minLength&quot;: &quot;&quot;,
-            &quot;maxLength&quot;: &quot;&quot;,
-            &quot;pattern&quot;: &quot;&quot;,
-            &quot;custom&quot;: &quot;&quot;,
-            &quot;customPrivate&quot;: false
+          &apos;validate&apos;: {
+            &apos;required&apos;: true,
+            &apos;minLength&apos;: &apos;&apos;,
+            &apos;maxLength&apos;: &apos;&apos;,
+            &apos;pattern&apos;: &apos;&apos;,
+            &apos;custom&apos;: &apos;&apos;,
+            &apos;customPrivate&apos;: false
           },
-          &quot;clearOnHide&quot;: true,
-          &quot;hidden&quot;: false,
-          &quot;persistent&quot;: true,
-          &quot;unique&quot;: false,
-          &quot;protected&quot;: false,
-          &quot;defaultValue&quot;: &quot;&quot;,
-          &quot;multiple&quot;: false,
-          &quot;suffix&quot;: &quot;&quot;,
-          &quot;prefix&quot;: &quot;&quot;,
-          &quot;placeholder&quot;: &quot;&quot;,
-          &quot;key&quot;: &quot;field2&quot;,
-          &quot;label&quot;: &quot;Field 2&quot;,
-          &quot;inputMask&quot;: &quot;&quot;,
-          &quot;inputType&quot;: &quot;text&quot;,
-          &quot;tableView&quot;: true,
-          &quot;input&quot;: true
+          &apos;clearOnHide&apos;: true,
+          &apos;hidden&apos;: false,
+          &apos;persistent&apos;: true,
+          &apos;unique&apos;: false,
+          &apos;protected&apos;: false,
+          &apos;defaultValue&apos;: &apos;&apos;,
+          &apos;multiple&apos;: false,
+          &apos;suffix&apos;: &apos;&apos;,
+          &apos;prefix&apos;: &apos;&apos;,
+          &apos;placeholder&apos;: &apos;&apos;,
+          &apos;key&apos;: &apos;field2&apos;,
+          &apos;label&apos;: &apos;Field 2&apos;,
+          &apos;inputMask&apos;: &apos;&apos;,
+          &apos;inputType&apos;: &apos;text&apos;,
+          &apos;tableView&apos;: true,
+          &apos;input&apos;: true
         }
       ],
-      &quot;clearOnHide&quot;: false,
-      &quot;key&quot;: &quot;editgridPanel&quot;,
-      &quot;input&quot;: false,
-      &quot;title&quot;: &quot;&quot;,
-      &quot;theme&quot;: &quot;default&quot;,
-      &quot;tableView&quot;: false,
-      &quot;type&quot;: &quot;panel&quot;,
-      &quot;breadcrumb&quot;: &quot;default&quot;,
-      &quot;tags&quot;: [],
-      &quot;conditional&quot;: {
-        &quot;eq&quot;: &quot;&quot;,
-        &quot;when&quot;: null,
-        &quot;show&quot;: &quot;&quot;
+      &apos;clearOnHide&apos;: false,
+      &apos;key&apos;: &apos;editgridPanel&apos;,
+      &apos;input&apos;: false,
+      &apos;title&apos;: &apos;&apos;,
+      &apos;theme&apos;: &apos;default&apos;,
+      &apos;tableView&apos;: false,
+      &apos;type&apos;: &apos;panel&apos;,
+      &apos;breadcrumb&apos;: &apos;default&apos;,
+      &apos;tags&apos;: [],
+      &apos;conditional&apos;: {
+        &apos;eq&apos;: &apos;&apos;,
+        &apos;when&apos;: null,
+        &apos;show&apos;: &apos;&apos;
       },
-      &quot;properties&quot;: {
-        &quot;&quot;: &quot;&quot;
+      &apos;properties&apos;: {
+        &apos;&apos;: &apos;&apos;
       }
     }
   ],
-  &quot;validate&quot;: {
-    &quot;row&quot;: &quot;valid = row.field1 === &apos;good&apos; ? true : &apos;Must be good&apos;;&quot;
+  &apos;validate&apos;: {
+    &apos;row&apos;: &quot;valid = row.field1 === &apos;good&apos; ? true : &apos;Must be good&apos;;&quot;
   },
-  &quot;properties&quot;: {
-    &quot;&quot;: &quot;&quot;
+  &apos;properties&apos;: {
+    &apos;&apos;: &apos;&apos;
   },
-  &quot;conditional&quot;: {
-    &quot;show&quot;: &quot;&quot;,
-    &quot;when&quot;: null,
-    &quot;eq&quot;: &quot;&quot;
+  &apos;conditional&apos;: {
+    &apos;show&apos;: &apos;&apos;,
+    &apos;when&apos;: null,
+    &apos;eq&apos;: &apos;&apos;
   },
-  &quot;tags&quot;: [],
-  &quot;type&quot;: &quot;editgrid&quot;,
-  &quot;templates&quot;: {
-    &quot;header&quot;: &quot;&lt;div class=\&quot;row\&quot;&gt; \n  {%util.eachComponent(components, function(component) { %} \n    &lt;div class=\&quot;col-sm-2\&quot;&gt; \n      {{ component.label }} \n    &lt;/div&gt; \n  {% }) %} \n&lt;div&gt;{{value.length}}&lt;/div&gt;\n&lt;/div&gt;&quot;,
-    &quot;row&quot;: &quot;&lt;div class=\&quot;row\&quot;&gt; \n  {%util.eachComponent(components, function(component) { %} \n    &lt;div class=\&quot;col-sm-2\&quot;&gt; \n      {{ row[component.key] }} \n    &lt;/div&gt; \n  {% }) %} \n  &lt;div class=\&quot;col-sm-2\&quot;&gt; \n    &lt;div class=\&quot;btn-group pull-right\&quot;&gt; \n      &lt;div class=\&quot;btn btn-default editRow\&quot;&gt;Edit&lt;/div&gt; \n      &lt;div class=\&quot;btn btn-danger removeRow\&quot;&gt;Delete&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&quot;,
-    &quot;footer&quot;: &quot;&quot;
+  &apos;tags&apos;: [],
+  &apos;type&apos;: &apos;editgrid&apos;,
+  &apos;templates&apos;: {
+    &apos;header&apos;: &apos;&lt;div class=&quot;row&quot;&gt; \n  {%util.eachComponent(components, function(component) { %} \n    &lt;div class=&quot;col-sm-2&quot;&gt; \n      {{ component.label }} \n    &lt;/div&gt; \n  {% }) %} \n&lt;div&gt;{{value.length}}&lt;/div&gt;\n&lt;/div&gt;&apos;,
+    &apos;row&apos;: &apos;&lt;div class=&quot;row&quot;&gt; \n  {%util.eachComponent(components, function(component) { %} \n    &lt;div class=&quot;col-sm-2&quot;&gt; \n      {{ row[component.key] }} \n    &lt;/div&gt; \n  {% }) %} \n  &lt;div class=&quot;col-sm-2&quot;&gt; \n    &lt;div class=&quot;btn-group pull-right&quot;&gt; \n      &lt;div class=&quot;btn btn-default editRow&quot;&gt;Edit&lt;/div&gt; \n      &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;Delete&lt;/div&gt; \n    &lt;/div&gt; \n  &lt;/div&gt; \n&lt;/div&gt;&apos;,
+    &apos;footer&apos;: &apos;&apos;
   },
-  &quot;clearOnHide&quot;: true,
-  &quot;hidden&quot;: false,
-  &quot;persistent&quot;: true,
-  &quot;protected&quot;: false,
-  &quot;key&quot;: &quot;editgrid&quot;,
-  &quot;label&quot;: &quot;&quot;,
-  &quot;tableView&quot;: true,
-  &quot;multiple&quot;: true,
-  &quot;tree&quot;: true,
-  &quot;input&quot;: true,
-  &quot;removeRow&quot;: &quot;Cancel&quot;
-};</code></pre>
+  &apos;clearOnHide&apos;: true,
+  &apos;hidden&apos;: false,
+  &apos;persistent&apos;: true,
+  &apos;protected&apos;: false,
+  &apos;key&apos;: &apos;editgrid&apos;,
+  &apos;label&apos;: &apos;&apos;,
+  &apos;tableView&apos;: true,
+  &apos;multiple&apos;: true,
+  &apos;tree&apos;: true,
+  &apos;input&apos;: true,
+  &apos;removeRow&apos;: &apos;Cancel&apos;
+};
+</code></pre>
 
 </div>
 

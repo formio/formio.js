@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -159,33 +163,33 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/survey/Survey.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 import assert from &apos;power-assert&apos;;
-import { SurveyComponent } from &apos;./Survey&apos;;
-import { components as comps } from &apos;./fixtures/index&apos;;
-import { Harness } from &apos;../../../test/harness&apos;;
-describe(&apos;Survey Component&apos;, function() {
-  it(&apos;Should build a survey component&apos;, function(done) {
+import {SurveyComponent} from &apos;./Survey&apos;;
+import {components as comps} from &apos;./fixtures/index&apos;;
+import {Harness} from &apos;../../../test/harness&apos;;
+describe(&apos;Survey Component&apos;, () =&gt; {
+  it(&apos;Should build a survey component&apos;, (done) =&gt; {
     Harness.testCreate(SurveyComponent, comps.comp1).then((component) =&gt; {
-      let inputs = Harness.testElements(component, &apos;input[type=&quot;radio&quot;]&apos;, 10);
+      const inputs = Harness.testElements(component, &apos;input[type=&quot;radio&quot;]&apos;, 10);
       for (let i=0; i &lt; 5; i++) {
         assert.equal(inputs[i].name, &apos;data[surveyQuestions][service]&apos;);
-        assert.equal(inputs[i].id, component.id + &apos;-service-&apos; + comps.comp1.values[i].value);
+        assert.equal(inputs[i].id, `${component.id}-service-${comps.comp1.values[i].value}`);
       }
       for (let i=5, j=0; i &lt; 10; i++, j++) {
         assert.equal(inputs[i].name, &apos;data[surveyQuestions][howWouldYouRateTheTechnology]&apos;);
-        assert.equal(inputs[i].id, component.id + &apos;-howWouldYouRateTheTechnology-&apos; + comps.comp1.values[j].value);
+        assert.equal(inputs[i].id, `${component.id}-howWouldYouRateTheTechnology-${comps.comp1.values[j].value}`);
       }
       done();
     });
   });
 
-  it(&apos;Should set the value of surveys.&apos;, function(done) {
+  it(&apos;Should set the value of surveys.&apos;, (done) =&gt; {
     Harness.testCreate(SurveyComponent, comps.comp1).then((component) =&gt; {
       Harness.testSetGet(component, {service: &apos;bad&apos;, howWouldYouRateTheTechnology: &apos;good&apos;});
-      let inputs = Harness.testElements(component, &apos;input[type=&quot;radio&quot;]&apos;, 10);
+      const inputs = Harness.testElements(component, &apos;input[type=&quot;radio&quot;]&apos;, 10);
       for (let i=0; i &lt; inputs.length; i++) {
         if (
-          (inputs[i].id === component.id + &apos;-service-bad&apos;) ||
-          (inputs[i].id === component.id + &apos;-howWouldYouRateTheTechnology-good&apos;)
+          (inputs[i].id === `${component.id}-service-bad`) ||
+          (inputs[i].id === `${component.id}-howWouldYouRateTheTechnology-good`)
         ) {
           assert.equal(inputs[i].checked, true);
         }

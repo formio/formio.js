@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -158,124 +162,125 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/fixtures/comp1.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">export const component = {
-  &quot;conditional&quot;: {
-    &quot;eq&quot;: &quot;&quot;,
-    &quot;when&quot;: null,
-    &quot;show&quot;: &quot;&quot;
+  &apos;conditional&apos;: {
+    &apos;eq&apos;: &apos;&apos;,
+    &apos;when&apos;: null,
+    &apos;show&apos;: &apos;&apos;
   },
-  &quot;tags&quot;: [
+  &apos;tags&apos;: [
 
   ],
-  &quot;type&quot;: &quot;datagrid&quot;,
-  &quot;persistent&quot;: true,
-  &quot;protected&quot;: false,
-  &quot;key&quot;: &quot;cars&quot;,
-  &quot;label&quot;: &quot;Cars&quot;,
-  &quot;tableView&quot;: true,
-  &quot;components&quot;: [
+  &apos;type&apos;: &apos;datagrid&apos;,
+  &apos;persistent&apos;: true,
+  &apos;protected&apos;: false,
+  &apos;key&apos;: &apos;cars&apos;,
+  &apos;label&apos;: &apos;Cars&apos;,
+  &apos;tableView&apos;: true,
+  &apos;components&apos;: [
     {
-      &quot;tags&quot;: [
+      &apos;tags&apos;: [
 
       ],
-      &quot;hideLabel&quot;: true,
-      &quot;type&quot;: &quot;textfield&quot;,
-      &quot;conditional&quot;: {
-        &quot;eq&quot;: &quot;&quot;,
-        &quot;when&quot;: null,
-        &quot;show&quot;: &quot;&quot;
+      &apos;hideLabel&apos;: true,
+      &apos;type&apos;: &apos;textfield&apos;,
+      &apos;conditional&apos;: {
+        &apos;eq&apos;: &apos;&apos;,
+        &apos;when&apos;: null,
+        &apos;show&apos;: &apos;&apos;
       },
-      &quot;validate&quot;: {
-        &quot;customPrivate&quot;: false,
-        &quot;custom&quot;: &quot;&quot;,
-        &quot;pattern&quot;: &quot;&quot;,
-        &quot;maxLength&quot;: &quot;&quot;,
-        &quot;minLength&quot;: &quot;&quot;,
-        &quot;required&quot;: false
+      &apos;validate&apos;: {
+        &apos;customPrivate&apos;: false,
+        &apos;custom&apos;: &apos;&apos;,
+        &apos;pattern&apos;: &apos;&apos;,
+        &apos;maxLength&apos;: &apos;&apos;,
+        &apos;minLength&apos;: &apos;&apos;,
+        &apos;required&apos;: false
       },
-      &quot;persistent&quot;: true,
-      &quot;unique&quot;: false,
-      &quot;protected&quot;: false,
-      &quot;defaultValue&quot;: &quot;&quot;,
-      &quot;multiple&quot;: false,
-      &quot;suffix&quot;: &quot;&quot;,
-      &quot;prefix&quot;: &quot;&quot;,
-      &quot;placeholder&quot;: &quot;&quot;,
-      &quot;key&quot;: &quot;make&quot;,
-      &quot;label&quot;: &quot;Make&quot;,
-      &quot;inputMask&quot;: &quot;&quot;,
-      &quot;inputType&quot;: &quot;text&quot;,
-      &quot;tableView&quot;: true,
-      &quot;input&quot;: true
+      &apos;persistent&apos;: true,
+      &apos;unique&apos;: false,
+      &apos;protected&apos;: false,
+      &apos;defaultValue&apos;: &apos;&apos;,
+      &apos;multiple&apos;: false,
+      &apos;suffix&apos;: &apos;&apos;,
+      &apos;prefix&apos;: &apos;&apos;,
+      &apos;placeholder&apos;: &apos;&apos;,
+      &apos;key&apos;: &apos;make&apos;,
+      &apos;label&apos;: &apos;Make&apos;,
+      &apos;inputMask&apos;: &apos;&apos;,
+      &apos;inputType&apos;: &apos;text&apos;,
+      &apos;tableView&apos;: true,
+      &apos;input&apos;: true
     },
     {
-      &quot;tags&quot;: [
+      &apos;tags&apos;: [
 
       ],
-      &quot;hideLabel&quot;: true,
-      &quot;type&quot;: &quot;textfield&quot;,
-      &quot;conditional&quot;: {
-        &quot;eq&quot;: &quot;&quot;,
-        &quot;when&quot;: null,
-        &quot;show&quot;: &quot;&quot;
+      &apos;hideLabel&apos;: true,
+      &apos;type&apos;: &apos;textfield&apos;,
+      &apos;conditional&apos;: {
+        &apos;eq&apos;: &apos;&apos;,
+        &apos;when&apos;: null,
+        &apos;show&apos;: &apos;&apos;
       },
-      &quot;validate&quot;: {
-        &quot;customPrivate&quot;: false,
-        &quot;custom&quot;: &quot;&quot;,
-        &quot;pattern&quot;: &quot;&quot;,
-        &quot;maxLength&quot;: &quot;&quot;,
-        &quot;minLength&quot;: &quot;&quot;,
-        &quot;required&quot;: false
+      &apos;validate&apos;: {
+        &apos;customPrivate&apos;: false,
+        &apos;custom&apos;: &apos;&apos;,
+        &apos;pattern&apos;: &apos;&apos;,
+        &apos;maxLength&apos;: &apos;&apos;,
+        &apos;minLength&apos;: &apos;&apos;,
+        &apos;required&apos;: false
       },
-      &quot;persistent&quot;: true,
-      &quot;unique&quot;: false,
-      &quot;protected&quot;: false,
-      &quot;defaultValue&quot;: &quot;&quot;,
-      &quot;multiple&quot;: false,
-      &quot;suffix&quot;: &quot;&quot;,
-      &quot;prefix&quot;: &quot;&quot;,
-      &quot;placeholder&quot;: &quot;&quot;,
-      &quot;key&quot;: &quot;model&quot;,
-      &quot;label&quot;: &quot;Model&quot;,
-      &quot;inputMask&quot;: &quot;&quot;,
-      &quot;inputType&quot;: &quot;text&quot;,
-      &quot;tableView&quot;: true,
-      &quot;input&quot;: true
+      &apos;persistent&apos;: true,
+      &apos;unique&apos;: false,
+      &apos;protected&apos;: false,
+      &apos;defaultValue&apos;: &apos;&apos;,
+      &apos;multiple&apos;: false,
+      &apos;suffix&apos;: &apos;&apos;,
+      &apos;prefix&apos;: &apos;&apos;,
+      &apos;placeholder&apos;: &apos;&apos;,
+      &apos;key&apos;: &apos;model&apos;,
+      &apos;label&apos;: &apos;Model&apos;,
+      &apos;inputMask&apos;: &apos;&apos;,
+      &apos;inputType&apos;: &apos;text&apos;,
+      &apos;tableView&apos;: true,
+      &apos;input&apos;: true
     },
     {
-      &quot;conditional&quot;: {
-        &quot;eq&quot;: &quot;&quot;,
-        &quot;when&quot;: null,
-        &quot;show&quot;: &quot;&quot;
+      &apos;conditional&apos;: {
+        &apos;eq&apos;: &apos;&apos;,
+        &apos;when&apos;: null,
+        &apos;show&apos;: &apos;&apos;
       },
-      &quot;tags&quot;: [
+      &apos;tags&apos;: [
 
       ],
-      &quot;hideLabel&quot;: true,
-      &quot;type&quot;: &quot;number&quot;,
-      &quot;validate&quot;: {
-        &quot;custom&quot;: &quot;&quot;,
-        &quot;multiple&quot;: &quot;&quot;,
-        &quot;integer&quot;: &quot;&quot;,
-        &quot;step&quot;: &quot;any&quot;,
-        &quot;max&quot;: &quot;&quot;,
-        &quot;min&quot;: &quot;&quot;,
-        &quot;required&quot;: false
+      &apos;hideLabel&apos;: true,
+      &apos;type&apos;: &apos;number&apos;,
+      &apos;validate&apos;: {
+        &apos;custom&apos;: &apos;&apos;,
+        &apos;multiple&apos;: &apos;&apos;,
+        &apos;integer&apos;: &apos;&apos;,
+        &apos;step&apos;: &apos;any&apos;,
+        &apos;max&apos;: &apos;&apos;,
+        &apos;min&apos;: &apos;&apos;,
+        &apos;required&apos;: false
       },
-      &quot;persistent&quot;: true,
-      &quot;protected&quot;: false,
-      &quot;defaultValue&quot;: &quot;&quot;,
-      &quot;suffix&quot;: &quot;&quot;,
-      &quot;prefix&quot;: &quot;&quot;,
-      &quot;placeholder&quot;: &quot;&quot;,
-      &quot;key&quot;: &quot;year&quot;,
-      &quot;label&quot;: &quot;Year&quot;,
-      &quot;inputType&quot;: &quot;number&quot;,
-      &quot;tableView&quot;: true,
-      &quot;input&quot;: true
+      &apos;persistent&apos;: true,
+      &apos;protected&apos;: false,
+      &apos;defaultValue&apos;: &apos;&apos;,
+      &apos;suffix&apos;: &apos;&apos;,
+      &apos;prefix&apos;: &apos;&apos;,
+      &apos;placeholder&apos;: &apos;&apos;,
+      &apos;key&apos;: &apos;year&apos;,
+      &apos;label&apos;: &apos;Year&apos;,
+      &apos;inputType&apos;: &apos;number&apos;,
+      &apos;delimiter&apos;: true,
+      &apos;tableView&apos;: true,
+      &apos;input&apos;: true
     }
   ],
-  &quot;tree&quot;: true,
-  &quot;input&quot;: true
+  &apos;tree&apos;: true,
+  &apos;input&apos;: true
 };
 </code></pre>
 

@@ -151,19 +151,23 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Formio from &apos;<span><a href="file/src/formio.js.html#lineNumber17">formiojs/src/formio.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import Formio from &apos;<span><a href="file/src/formio.js.html#lineNumber20">formiojs/src/formio.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/src/formio.js.html#lineNumber17">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/src/formio.js.html#lineNumber20">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -839,7 +843,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#static-method-pluginAlter">pluginAlter</a></span></span><span class="code" data-ice="signature">(pluginFn: <span>*</span>, value: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#static-method-pluginAlter">pluginAlter</a></span></span><span class="code" data-ice="signature">(pluginFn: <span>*</span>, value: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -867,7 +871,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#static-method-pluginGet">pluginGet</a></span></span><span class="code" data-ice="signature">(pluginFn: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#static-method-pluginGet">pluginGet</a></span></span><span class="code" data-ice="signature">(pluginFn: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -895,7 +899,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#static-method-pluginWait">pluginWait</a></span></span><span class="code" data-ice="signature">(pluginFn: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#static-method-pluginWait">pluginWait</a></span></span><span class="code" data-ice="signature">(pluginFn: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1217,7 +1221,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[item + &apos;Id&apos;]">[item + &apos;Id&apos;]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[`${item}Id`]">[`${item}Id`]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1245,7 +1249,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[item + &apos;Url&apos;]">[item + &apos;Url&apos;]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[`${item}Url`]">[`${item}Url`]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1273,7 +1277,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[item + &apos;sUrl&apos;]">[item + &apos;sUrl&apos;]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[`${item}sUrl`]">[`${item}sUrl`]</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
       <div>
@@ -1301,7 +1305,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[name + &apos;Id&apos;]">[name + &apos;Id&apos;]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[`${name}Id`]">[`${name}Id`]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1329,7 +1333,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[name + &apos;Url&apos;]">[name + &apos;Url&apos;]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[`${name}Url`]">[`${name}Url`]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1357,7 +1361,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[name + &apos;sUrl&apos;]">[name + &apos;sUrl&apos;]</a></span></span><span class="code" data-ice="signature">: <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-member-[`${name}sUrl`]">[`${name}sUrl`]</a></span></span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
       <div>
@@ -2683,7 +2687,7 @@
           
           
           
-          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-method-makeRequest">makeRequest</a></span></span><span class="code" data-ice="signature">(type: <span>*</span>, url: <span>*</span>, method: <span>*</span>, data: <span>*</span>, opts: <span>*</span>): <span>*</span></span>
+          <span class="code" data-ice="name"><span><a href="class/src/formio.js~Formio.html#instance-method-makeRequest">makeRequest</a></span></span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -2885,7 +2889,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber826">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber832">source</a></span></span>
     </span>
   </h3>
 
@@ -2931,7 +2935,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber990">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber1004">source</a></span></span>
     </span>
   </h3>
 
@@ -3002,7 +3006,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber929">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber935">source</a></span></span>
     </span>
   </h3>
 
@@ -3045,7 +3049,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber995">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber1009">source</a></span></span>
     </span>
   </h3>
 
@@ -3116,7 +3120,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber936">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber944">source</a></span></span>
     </span>
   </h3>
 
@@ -3187,7 +3191,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber1126">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber1141">source</a></span></span>
     </span>
   </h3>
 
@@ -3264,7 +3268,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber1034">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber1048">source</a></span></span>
     </span>
   </h3>
 
@@ -3348,7 +3352,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber905">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber911">source</a></span></span>
     </span>
   </h3>
 
@@ -3403,7 +3407,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber920">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber926">source</a></span></span>
     </span>
   </h3>
 
@@ -3458,7 +3462,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber897">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber903">source</a></span></span>
     </span>
   </h3>
 
@@ -3513,7 +3517,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber955">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber964">source</a></span></span>
     </span>
   </h3>
 
@@ -3584,7 +3588,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber925">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber931">source</a></span></span>
     </span>
   </h3>
 
@@ -3639,7 +3643,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber592">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber600">source</a></span></span>
     </span>
   </h3>
 
@@ -3740,7 +3744,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber847">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber853">source</a></span></span>
     </span>
   </h3>
 
@@ -3795,7 +3799,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber570">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber577">source</a></span></span>
     </span>
   </h3>
 
@@ -3872,7 +3876,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber881">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber887">source</a></span></span>
     </span>
   </h3>
 
@@ -3927,7 +3931,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber934">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber940">source</a></span></span>
     </span>
   </h3>
 
@@ -3998,7 +4002,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber241">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber250">source</a></span></span>
     </span>
   </h3>
 
@@ -4075,7 +4079,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber1019">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber1033">source</a></span></span>
     </span>
   </h3>
 
@@ -4146,7 +4150,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber631">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber637">source</a></span></span>
     </span>
   </h3>
 
@@ -4247,7 +4251,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber615">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber623">source</a></span></span>
     </span>
   </h3>
 
@@ -4336,7 +4340,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber933">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber939">source</a></span></span>
     </span>
   </h3>
 
@@ -4375,11 +4379,11 @@
     
     
     
-    <span class="code" data-ice="name">pluginAlter</span><span class="code" data-ice="signature">(pluginFn: <span>*</span>, value: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">pluginAlter</span><span class="code" data-ice="signature">(pluginFn: <span>*</span>, value: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber983">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber999">source</a></span></span>
     </span>
   </h3>
 
@@ -4407,6 +4411,12 @@
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">value</td>
       <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">args</td>
+      <td data-ice="type" class="code">...<span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -4452,11 +4462,11 @@
     
     
     
-    <span class="code" data-ice="name">pluginGet</span><span class="code" data-ice="signature">(pluginFn: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">pluginGet</span><span class="code" data-ice="signature">(pluginFn: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber969">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber979">source</a></span></span>
     </span>
   </h3>
 
@@ -4478,6 +4488,12 @@
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pluginFn</td>
       <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">args</td>
+      <td data-ice="type" class="code">...<span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -4523,11 +4539,11 @@
     
     
     
-    <span class="code" data-ice="name">pluginWait</span><span class="code" data-ice="signature">(pluginFn: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">pluginWait</span><span class="code" data-ice="signature">(pluginFn: <span>*</span>, args: ...<span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber962">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber974">source</a></span></span>
     </span>
   </h3>
 
@@ -4549,6 +4565,12 @@
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" class="code" data-depth="0">pluginFn</td>
       <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" class="code" data-depth="0">args</td>
+      <td data-ice="type" class="code">...<span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -4598,7 +4620,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber946">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber957">source</a></span></span>
     </span>
   </h3>
 
@@ -4663,7 +4685,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber650">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber655">source</a></span></span>
     </span>
   </h3>
 
@@ -4758,7 +4780,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber583">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber590">source</a></span></span>
     </span>
   </h3>
 
@@ -4829,7 +4851,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber901">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber907">source</a></span></span>
     </span>
   </h3>
 
@@ -4900,7 +4922,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber909">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber915">source</a></span></span>
     </span>
   </h3>
 
@@ -4959,7 +4981,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber890">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber896">source</a></span></span>
     </span>
   </h3>
 
@@ -5018,7 +5040,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber915">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber921">source</a></span></span>
     </span>
   </h3>
 
@@ -5077,7 +5099,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber823">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber827">source</a></span></span>
     </span>
   </h3>
 
@@ -5148,7 +5170,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber861">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber867">source</a></span></span>
     </span>
   </h3>
 
@@ -5222,7 +5244,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber18">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber21">source</a></span></span>
     </span>
   </h3>
 
@@ -5257,18 +5279,18 @@
 <div data-ice="memberDetails"><h2 data-ice="title">Public Members</h2>
 
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-[item + &apos;Id&apos;]">
+  <h3 data-ice="anchor" id="instance-member-[`${item}Id`]">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">[item + &apos;Id&apos;]</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="code" data-ice="name">[`${item}Id`]</span><span class="code" data-ice="signature">: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber167">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber172">source</a></span></span>
     </span>
   </h3>
 
@@ -5300,18 +5322,18 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-[item + &apos;Url&apos;]">
+  <h3 data-ice="anchor" id="instance-member-[`${item}Url`]">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">[item + &apos;Url&apos;]</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="code" data-ice="name">[`${item}Url`]</span><span class="code" data-ice="signature">: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber168">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber173">source</a></span></span>
     </span>
   </h3>
 
@@ -5343,18 +5365,18 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-[item + &apos;sUrl&apos;]">
+  <h3 data-ice="anchor" id="instance-member-[`${item}sUrl`]">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">[item + &apos;sUrl&apos;]</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="code" data-ice="name">[`${item}sUrl`]</span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber165">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber170">source</a></span></span>
     </span>
   </h3>
 
@@ -5386,104 +5408,104 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-[name + &apos;Id&apos;]">
+  <h3 data-ice="anchor" id="instance-member-[`${name}Id`]">
     <span class="access" data-ice="access">public</span>
     
     
     
     
     
-    <span class="code" data-ice="name">[name + &apos;Id&apos;]</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="code" data-ice="name">[`${name}Id`]</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber101">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-[`${name}Url`]">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">[`${name}Url`]</span><span class="code" data-ice="signature">: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber100">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-member-[`${name}sUrl`]">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    
+    <span class="code" data-ice="name">[`${name}sUrl`]</span><span class="code" data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
     <span class="right-info">
       
       
       <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber96">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-[name + &apos;Url&apos;]">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">[name + &apos;Url&apos;]</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber95">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-member-[name + &apos;sUrl&apos;]">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    
-    <span class="code" data-ice="name">[name + &apos;sUrl&apos;]</span><span class="code" data-ice="signature">: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber91">source</a></span></span>
     </span>
   </h3>
 
@@ -5526,7 +5548,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber34">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber39">source</a></span></span>
     </span>
   </h3>
 
@@ -5569,7 +5591,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber35">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber40">source</a></span></span>
     </span>
   </h3>
 
@@ -5612,7 +5634,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber33">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber38">source</a></span></span>
     </span>
   </h3>
 
@@ -5655,7 +5677,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber23">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber28">source</a></span></span>
     </span>
   </h3>
 
@@ -5698,7 +5720,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber29">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber34">source</a></span></span>
     </span>
   </h3>
 
@@ -5741,7 +5763,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber27">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber32">source</a></span></span>
     </span>
   </h3>
 
@@ -5784,7 +5806,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber28">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber33">source</a></span></span>
     </span>
   </h3>
 
@@ -5827,7 +5849,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber70">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber75">source</a></span></span>
     </span>
   </h3>
 
@@ -5870,7 +5892,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber155">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber160">source</a></span></span>
     </span>
   </h3>
 
@@ -5913,7 +5935,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber26">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber31">source</a></span></span>
     </span>
   </h3>
 
@@ -5956,7 +5978,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber25">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber30">source</a></span></span>
     </span>
   </h3>
 
@@ -5999,7 +6021,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber24">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber29">source</a></span></span>
     </span>
   </h3>
 
@@ -6042,7 +6064,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber39">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber44">source</a></span></span>
     </span>
   </h3>
 
@@ -6085,7 +6107,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber32">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber37">source</a></span></span>
     </span>
   </h3>
 
@@ -6128,7 +6150,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber31">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber36">source</a></span></span>
     </span>
   </h3>
 
@@ -6171,7 +6193,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber30">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber35">source</a></span></span>
     </span>
   </h3>
 
@@ -6214,7 +6236,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber37">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber42">source</a></span></span>
     </span>
   </h3>
 
@@ -6257,7 +6279,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber38">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber43">source</a></span></span>
     </span>
   </h3>
 
@@ -6300,7 +6322,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber36">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber41">source</a></span></span>
     </span>
   </h3>
 
@@ -6346,7 +6368,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber380">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber387">source</a></span></span>
     </span>
   </h3>
 
@@ -6401,7 +6423,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber339">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber346">source</a></span></span>
     </span>
   </h3>
 
@@ -6472,7 +6494,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber335">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber342">source</a></span></span>
     </span>
   </h3>
 
@@ -6527,7 +6549,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber501">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber508">source</a></span></span>
     </span>
   </h3>
 
@@ -6582,7 +6604,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber376">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber383">source</a></span></span>
     </span>
   </h3>
 
@@ -6637,7 +6659,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber180">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber185">source</a></span></span>
     </span>
   </h3>
 
@@ -6714,7 +6736,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber327">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber334">source</a></span></span>
     </span>
   </h3>
 
@@ -6785,7 +6807,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber287">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber294">source</a></span></span>
     </span>
   </h3>
 
@@ -6856,7 +6878,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber237">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber246">source</a></span></span>
     </span>
   </h3>
 
@@ -6927,7 +6949,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber311">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber318">source</a></span></span>
     </span>
   </h3>
 
@@ -6998,7 +7020,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber474">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber481">source</a></span></span>
     </span>
   </h3>
 
@@ -7069,7 +7091,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber415">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber422">source</a></span></span>
     </span>
   </h3>
 
@@ -7141,7 +7163,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber362">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber369">source</a></span></span>
     </span>
   </h3>
 
@@ -7196,7 +7218,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber348">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber355">source</a></span></span>
     </span>
   </h3>
 
@@ -7251,7 +7273,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber396">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber403">source</a></span></span>
     </span>
   </h3>
 
@@ -7329,7 +7351,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber389">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber396">source</a></span></span>
     </span>
   </h3>
 
@@ -7385,7 +7407,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber566">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber573">source</a></span></span>
     </span>
   </h3>
 
@@ -7456,7 +7478,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber188">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber195">source</a></span></span>
     </span>
   </h3>
 
@@ -7539,7 +7561,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber343">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber350">source</a></span></span>
     </span>
   </h3>
 
@@ -7610,7 +7632,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber209">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber216">source</a></span></span>
     </span>
   </h3>
 
@@ -7693,7 +7715,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber319">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber326">source</a></span></span>
     </span>
   </h3>
 
@@ -7770,7 +7792,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber331">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber338">source</a></span></span>
     </span>
   </h3>
 
@@ -7847,7 +7869,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber249">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber258">source</a></span></span>
     </span>
   </h3>
 
@@ -7924,7 +7946,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber291">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber298">source</a></span></span>
     </span>
   </h3>
 
@@ -8001,7 +8023,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber229">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber238">source</a></span></span>
     </span>
   </h3>
 
@@ -8078,7 +8100,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber295">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber302">source</a></span></span>
     </span>
   </h3>
 
@@ -8155,7 +8177,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber315">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber322">source</a></span></span>
     </span>
   </h3>
 
@@ -8228,11 +8250,11 @@
     
     
     
-    <span class="code" data-ice="name">makeRequest</span><span class="code" data-ice="signature">(type: <span>*</span>, url: <span>*</span>, method: <span>*</span>, data: <span>*</span>, opts: <span>*</span>): <span>*</span></span>
+    <span class="code" data-ice="name">makeRequest</span><span class="code" data-ice="signature">(args: ...<span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber225">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber234">source</a></span></span>
     </span>
   </h3>
 
@@ -8252,32 +8274,8 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">type</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">url</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">method</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">data</td>
-      <td data-ice="type" class="code"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" class="code" data-depth="0">opts</td>
-      <td data-ice="type" class="code"><span>*</span></td>
+      <td data-ice="name" class="code" data-depth="0">args</td>
+      <td data-ice="type" class="code">...<span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -8327,7 +8325,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber197">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber204">source</a></span></span>
     </span>
   </h3>
 
@@ -8410,7 +8408,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber323">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber330">source</a></span></span>
     </span>
   </h3>
 
@@ -8487,7 +8485,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber283">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber290">source</a></span></span>
     </span>
   </h3>
 
@@ -8564,7 +8562,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber233">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber242">source</a></span></span>
     </span>
   </h3>
 
@@ -8641,7 +8639,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber304">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber311">source</a></span></span>
     </span>
   </h3>
 
@@ -8718,7 +8716,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber446">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/formio.js.html#lineNumber453">source</a></span></span>
     </span>
   </h3>
 
