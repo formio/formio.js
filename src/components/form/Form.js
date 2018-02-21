@@ -24,7 +24,8 @@ export class FormComponent extends FormioForm {
    * Load the subform.
    */
   loadSubForm() {
-    if (this.subFormLoaded) {
+    // Only load the subform if the subform isn't loaded and the conditions apply.
+    if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
       return true;
     }
     this.subFormLoaded = true;

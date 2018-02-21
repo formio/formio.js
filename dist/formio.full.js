@@ -7407,7 +7407,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   _createClass(FormComponent, [{
     key: 'loadSubForm',
     value: function loadSubForm() {
-      if (this.subFormLoaded) {
+      // Only load the subform if the subform isn't loaded and the conditions apply.
+      if (this.subFormLoaded || !_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.root ? this.root.data : this.data)) {
         return true;
       }
       this.subFormLoaded = true;
