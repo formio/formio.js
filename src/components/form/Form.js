@@ -106,9 +106,9 @@ export class FormComponent extends FormioForm {
     return this.data[this.component.key].data;
   }
 
-  checkValidity() {
+  checkValidity(data, dirty) {
     // Maintain isolated data scope when passing root data for validity checks.
-    return super.checkValidity(this.subData);
+    return super.checkValidity(this.subData, dirty);
   }
 
   checkConditions() {
@@ -134,7 +134,10 @@ export class FormComponent extends FormioForm {
     // If we wish to submit the form on next page, then do that here.
     if (this.component.submit) {
       this.submitted = true;
-      return this.submit(true);
+      return this.submit(true).then(submission => {
+        // Set data to submission.
+        return this.data[this.component.key] = submission;
+      });
     }
     else {
       return super.beforeNext();
