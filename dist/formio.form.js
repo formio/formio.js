@@ -7473,9 +7473,9 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     }
   }, {
     key: 'checkValidity',
-    value: function checkValidity() {
+    value: function checkValidity(data, dirty) {
       // Maintain isolated data scope when passing root data for validity checks.
-      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, this.subData);
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, this.subData, dirty);
     }
   }, {
     key: 'checkConditions',
@@ -7503,10 +7503,15 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'beforeNext',
     value: function beforeNext() {
+      var _this2 = this;
+
       // If we wish to submit the form on next page, then do that here.
       if (this.component.submit) {
         this.submitted = true;
-        return this.submit(true);
+        return this.submit(true).then(function (submission) {
+          // Set data to submission.
+          return _this2.data[_this2.component.key] = submission;
+        });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeNext', this).call(this);
       }
@@ -7519,17 +7524,17 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'beforeSubmit',
     value: function beforeSubmit() {
-      var _this2 = this;
+      var _this3 = this;
 
       // Ensure we submit the form.
       if (this.component.submit && !this.submitted) {
         return this.submit(true).then(function (submission) {
           // Before we submit, we need to filter out the references.
-          _this2.data[_this2.component.key] = _this2.component.reference ? {
+          _this3.data[_this3.component.key] = _this3.component.reference ? {
             _id: submission._id,
             form: submission.form
           } : submission;
-          return _this2.data[_this2.component.key];
+          return _this3.data[_this3.component.key];
         });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeSubmit', this).call(this);
@@ -7578,10 +7583,10 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'whenReady',
     value: function whenReady() {
-      var _this3 = this;
+      var _this4 = this;
 
       return this.ready.then(function () {
-        return _this3.readyPromise;
+        return _this4.readyPromise;
       });
     }
   }, {
@@ -7607,7 +7612,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
-      var _this4 = this;
+      var _this5 = this;
 
       flags = this.getFlags.apply(this, arguments);
       if (!submission) {
@@ -7632,11 +7637,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
         this.formReady.then(function () {
-          _this4._loading = false;
-          _this4.loading = true;
-          _this4.formio.loadSubmission().then(function (result) {
-            _this4.loading = false;
-            _this4.setValue(result, {
+          _this5._loading = false;
+          _this5.loading = true;
+          _this5.formio.loadSubmission().then(function (result) {
+            _this5.loading = false;
+            _this5.setValue(result, {
               noload: true
             });
           });
@@ -11870,6 +11875,10 @@ var FormioForm = function (_FormioComponents) {
       // Normalize the error.
       if (typeof error === 'string') {
         error = { message: error };
+      }
+
+      if ('details' in error) {
+        error = error.details;
       }
 
       return this.showErrors(error);
