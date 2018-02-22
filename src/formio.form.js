@@ -858,6 +858,10 @@ export default class FormioForm extends FormioComponents {
       error = {message: error};
     }
 
+    if ('details' in error) {
+      error = error.details;
+    }
+
     return this.showErrors(error);
   }
 
