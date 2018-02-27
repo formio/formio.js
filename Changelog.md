@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.9
+### Fixed
+ - Issues with IE not translating Date's properly.
+
 ## 2.29.8
 ### Fixed
  - Include polyfill for bind to fix PDF generation.

@@ -164,7 +164,7 @@ export class DateTimeComponent extends BaseComponent {
       return '';
     }
 
-    return dates[0].toISOString();
+    return (typeof dates[0].toISOString === 'function') ? dates[0].toISOString() : 'Invalid Date';
   }
 
   getView(value) {
@@ -173,6 +173,9 @@ export class DateTimeComponent extends BaseComponent {
 
   setValueAt(index, value) {
     if (value) {
+      // Convert to a standard ISO-8601 format. Needed for proper IE function.
+      value = moment(value).toISOString();
+
       const calendar = this.getCalendar(this.inputs[index]);
       if (!calendar) {
         return super.setValueAt(index, value);
