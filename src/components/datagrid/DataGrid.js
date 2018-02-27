@@ -86,10 +86,20 @@ export class DataGridComponent extends FormioComponents {
     return {};
   }
 
+
   buildRows(data) {
     this.tbody.innerHTML = '';
     this.rows = [];
     this.components = [];
+
+    // Check minLength validation
+    if (this.component.validate && this.component.validate.hasOwnProperty('minLength') && this.data[this.component.key].length < this.component.validate.minLength) {
+      let toAdd = this.component.validate.minLength - this.data[this.component.key].length;
+      for (let i = 0; i < toAdd; i++) {
+        this.data[this.component.key].push({});
+      }
+    }
+
     _each(this.data[this.component.key], (row, index) => {
       let tr = this.ce('tr');
       let cols = {};
@@ -128,17 +138,21 @@ export class DataGridComponent extends FormioComponents {
 
     // Add the add button if not disabled.
     if (!this.shouldDisable && (
-      !this.component.addAnotherPosition ||
-      this.component.addAnotherPosition === "bottom" ||
-      this.component.addAnotherPosition === "both"
+        !this.component.addAnotherPosition ||
+        this.component.addAnotherPosition === "bottom" ||
+        this.component.addAnotherPosition === "both"
       )) {
-        let tr = this.ce('tr');
-        let td = this.ce('td', {
-          colspan: (this.component.components.length + 1)
-        });
-        td.appendChild(this.addButton());
-        tr.appendChild(td);
+      let tr = this.ce('tr');
+      let td = this.ce('td', {
+        colspan: (this.component.components.length + 1)
+      });
+      td.appendChild(this.addButton());
+      tr.appendChild(td);
+
+      // Check maxLength validation
+      if (this.component.validate && this.component.validate.hasOwnProperty('maxLength') && this.rows.length < this.component.validate.maxLength) {
         this.tbody.appendChild(tr);
+      }
     }
   }
 
