@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.8
+### Fixed
+ - Include polyfill for bind to fix PDF generation.
+
+### Changed
+ - Upgraded i18next to 10.5.0
+
 ## 2.29.7
 ### Fixed
  - Fix validations automatically triggering if you have only a container on a form at the root level.
