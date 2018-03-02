@@ -1709,6 +1709,62 @@ export class BaseComponent {
     return input;
   }
 
+  get wysiwygDefault() {
+    return {
+      theme: 'snow',
+      placeholder: this.t(this.component.placeholder),
+      modules: {
+        toolbar: [
+          [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+          [{'header': [1, 2, 3, 4, 5, 6, false]}],
+          [{'font': []}],
+          ['bold', 'italic', 'underline', 'strike', {'script': 'sub'}, {'script': 'super'}, 'clean'],
+          [{'color': []}, {'background': []}],
+          [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}, {'align': []}],
+          ['blockquote', 'code-block'],
+          ['link', 'image', 'video', 'formula', 'source']
+        ]
+      }
+    };
+  }
+
+  addQuill(element, settings, onChange) {
+    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
+
+    // Lazy load the quill css.
+    BaseComponent.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
+      {type: 'styles', src: `https://cdn.quilljs.com/1.3.5/quill.${settings.theme}.css`}
+    ], true);
+
+    // Lazy load the quill library.
+    return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true)
+      .then(() => {
+        this.quill = new Quill(element, settings);
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        const txtArea = document.createElement('textarea');
+        txtArea.setAttribute('class', 'quill-source-code');
+        this.quill.addContainer('ql-custom').appendChild(txtArea);
+        let qlSource = document.querySelector('.ql-source');
+        if (qlSource) {
+          qlSource.addEventListener('click', () => {
+            if (txtArea.style.display === 'inherit') {
+              this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+            }
+            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+          });
+        }
+        /** END CODEBLOCK **/
+
+        this.quill.on('text-change', () => {
+          txtArea.value = this.quill.root.innerHTML;
+          onChange(txtArea);
+        });
+
+        return this.quill;
+      });
+  }
+
   /**
    * Get the static value of this component.
    * @return {*}

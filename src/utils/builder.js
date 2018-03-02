@@ -92,6 +92,9 @@ export const BuilderUtils = {
   },
 
   getAvailableShortcuts(form, component) {
+    if (!component) {
+      return [];
+    }
     return [''].concat(_.difference(
       this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)),
       this.getBindedShortcuts(form.components, component))

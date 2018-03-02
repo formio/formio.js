@@ -1,4 +1,5 @@
 import {BaseComponent} from '../base/Base';
+import _ from 'lodash';
 
 export class ContentComponent extends BaseComponent {
   static schema(...extend) {
@@ -26,7 +27,20 @@ export class ContentComponent extends BaseComponent {
       id: this.id,
       class: `form-group ${this.component.customClass}`
     });
+
     this.element.component = this;
-    this.element.innerHTML = this.interpolate(this.component.html, {data: this.data});
+
+    if (this.options.builder) {
+      const editorElement = this.ce('div');
+      this.addQuill(editorElement, this.wysiwygDefault, (element) => {
+        this.component.html = element.value;
+      }).then((editor) => {
+        editor.clipboard.dangerouslyPasteHTML(this.component.html);
+      });
+      this.element.appendChild(editorElement);
+    }
+    else {
+      this.element.innerHTML = this.interpolate(this.component.html, {data: this.data});
+    }
   }
 }

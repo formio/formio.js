@@ -72,7 +72,7 @@ module.exports = function(...extend) {
                 label: 'Editor Settings',
                 tooltip: 'Enter the WYSIWYG editor JSON configuration.',
                 key: 'wysiwyg',
-                customDefaultValue: (component, row, data) => {
+                customDefaultValue: (value, component, row, data) => {
                   return component.wysiwygDefault();
                 },
                 conditional: {

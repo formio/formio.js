@@ -21,7 +21,7 @@ module.exports = function(...extend) {
                 tooltip: 'Position for the label for this field.',
                 defaultValue: 'right',
                 dataSrc: 'values',
-                weight: 10,
+                weight: 20,
                 data: {
                   values: [
                     {label: 'Top', value: 'top'},

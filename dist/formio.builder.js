@@ -3557,6 +3557,43 @@ var BaseComponent = function () {
       this.addInputSubmitListener(input);
       return input;
     }
+  }, {
+    key: 'addQuill',
+    value: function addQuill(element, settings, onChange) {
+      var _this12 = this;
+
+      settings = _lodash2.default.isEmpty(settings) ? this.wysiwygDefault : settings;
+
+      // Lazy load the quill css.
+      BaseComponent.requireLibrary('quill-css-' + settings.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + settings.theme + '.css' }], true);
+
+      // Lazy load the quill library.
+      return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
+        _this12.quill = new Quill(element, settings);
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        var txtArea = document.createElement('textarea');
+        txtArea.setAttribute('class', 'quill-source-code');
+        _this12.quill.addContainer('ql-custom').appendChild(txtArea);
+        var qlSource = document.querySelector('.ql-source');
+        if (qlSource) {
+          qlSource.addEventListener('click', function () {
+            if (txtArea.style.display === 'inherit') {
+              _this12.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+            }
+            txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
+          });
+        }
+        /** END CODEBLOCK **/
+
+        _this12.quill.on('text-change', function () {
+          txtArea.value = _this12.quill.root.innerHTML;
+          onChange(txtArea);
+        });
+
+        return _this12.quill;
+      });
+    }
 
     /**
      * Get the static value of this component.
@@ -3781,7 +3818,7 @@ var BaseComponent = function () {
   }, {
     key: 'setCustomValidity',
     value: function setCustomValidity(message, dirty) {
-      var _this12 = this;
+      var _this13 = this;
 
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
@@ -3789,7 +3826,7 @@ var BaseComponent = function () {
       }
       this.removeClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
-        return _this12.removeClass(input, 'is-invalid');
+        return _this13.removeClass(input, 'is-invalid');
       });
       if (this.options.highlightErrors) {
         this.removeClass(this.element, 'alert alert-danger');
@@ -3920,7 +3957,7 @@ var BaseComponent = function () {
   }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
-      var _this13 = this;
+      var _this14 = this;
 
       _lodash2.default.each(options, function (option) {
         var attrs = {
@@ -3929,8 +3966,8 @@ var BaseComponent = function () {
         if (defaultValue !== undefined && option.value === defaultValue) {
           attrs.selected = 'selected';
         }
-        var optionElement = _this13.ce('option', attrs);
-        optionElement.appendChild(_this13.text(option.label));
+        var optionElement = _this14.ce('option', attrs);
+        optionElement.appendChild(_this14.text(option.label));
         select.appendChild(optionElement);
       });
     }
@@ -4153,6 +4190,18 @@ var BaseComponent = function () {
       return this._visible;
     }
   }, {
+    key: 'wysiwygDefault',
+    get: function get() {
+      return {
+        theme: 'snow',
+        placeholder: this.t(this.component.placeholder),
+        modules: {
+          toolbar: [[{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'font': [] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }], ['blockquote', 'code-block'], ['link', 'image', 'video', 'formula', 'source']]
+        }
+      };
+    }
+  }, {
     key: 'value',
     get: function get() {
       if (!this.data) {
@@ -4196,7 +4245,7 @@ var BaseComponent = function () {
      */
 
     , set: function set(disabled) {
-      var _this14 = this;
+      var _this15 = this;
 
       // Do not allow a component to be disabled if it should be always...
       if (!disabled && this.shouldDisable) {
@@ -4207,7 +4256,7 @@ var BaseComponent = function () {
 
       // Disable all inputs.
       _lodash2.default.each(this.inputs, function (input) {
-        return _this14.setDisabled(input, disabled);
+        return _this15.setDisabled(input, disabled);
       });
     }
   }]);
@@ -4765,7 +4814,7 @@ var EditFormUtils = exports.EditFormUtils = {
         return (0, _mergeWith3.default)(objValue, srcValue, EditFormUtils.mergeComponents);
       }
       if (objValue[0] && objValue[0].type) {
-        return (0, _sortBy3.default)((0, _unionWith3.default)(objValue, srcValue, function (a, b) {
+        return (0, _sortBy3.default)((0, _unionWith3.default)(srcValue, objValue, function (a, b) {
           return a.key === b.key;
         }), ['weight']);
       }
@@ -5500,7 +5549,7 @@ module.exports = function () {
           tooltip: 'Position for the label for this field.',
           defaultValue: 'right',
           dataSrc: 'values',
-          weight: 10,
+          weight: 20,
           data: {
             values: [{ label: 'Top', value: 'top' }, { label: 'Left', value: 'left' }, { label: 'Right', value: 'right' }, { label: 'Bottom', value: 'bottom' }]
           }
@@ -5732,7 +5781,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   }, {
     key: 'createLabel',
     value: function createLabel(container, input) {
-      if (!this.component.label) {
+      if (_get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'labelIsHidden', this).call(this)) {
         return null;
       }
 
@@ -5869,6 +5918,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         label: 'Checkbox',
         key: 'checkbox',
         datagridLabel: true,
+        labelPosition: 'right',
         value: '',
         name: ''
       }].concat(extend));
@@ -6355,6 +6405,14 @@ var _createClass = function () {
 
 var _Base = require('../base/Base');
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
     throw new TypeError("Cannot call a class as a function");
@@ -6385,12 +6443,26 @@ var ContentComponent = exports.ContentComponent = function (_BaseComponent) {
   _createClass(ContentComponent, [{
     key: 'build',
     value: function build() {
+      var _this2 = this;
+
       this.element = this.ce('div', {
         id: this.id,
         class: 'form-group ' + this.component.customClass
       });
+
       this.element.component = this;
-      this.element.innerHTML = this.interpolate(this.component.html, { data: this.data });
+
+      if (this.options.builder) {
+        var editorElement = this.ce('div');
+        this.addQuill(editorElement, this.wysiwygDefault, function (element) {
+          _this2.component.html = element.value;
+        }).then(function (editor) {
+          editor.clipboard.dangerouslyPasteHTML(_this2.component.html);
+        });
+        this.element.appendChild(editorElement);
+      } else {
+        this.element.innerHTML = this.interpolate(this.component.html, { data: this.data });
+      }
     }
   }], [{
     key: 'schema',
@@ -6423,7 +6495,7 @@ var ContentComponent = exports.ContentComponent = function (_BaseComponent) {
   return ContentComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":7}],27:[function(require,module,exports){
+},{"../base/Base":7,"lodash":319}],27:[function(require,module,exports){
 'use strict';
 
 var BaseEditForm = require('../base/Base.form');
@@ -14284,7 +14356,7 @@ module.exports = function () {
           label: 'Editor Settings',
           tooltip: 'Enter the WYSIWYG editor JSON configuration.',
           key: 'wysiwyg',
-          customDefaultValue: function customDefaultValue(component, row, data) {
+          customDefaultValue: function customDefaultValue(value, component, row, data) {
             return component.wysiwygDefault();
           },
           conditional: {
@@ -14401,18 +14473,6 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
   }
 
   _createClass(TextAreaComponent, [{
-    key: 'wysiwygDefault',
-    value: function wysiwygDefault() {
-      return {
-        theme: 'snow',
-        placeholder: this.t(this.component.placeholder),
-        modules: {
-          toolbar: [[{ 'size': ['small', false, 'large', 'huge'] }], // custom dropdown
-          [{ 'header': [1, 2, 3, 4, 5, 6, false] }], [{ 'font': [] }], ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }], ['blockquote', 'code-block'], ['link', 'image', 'video', 'formula', 'source']]
-        }
-      };
-    }
-  }, {
     key: 'acePlaceholder',
     value: function acePlaceholder() {
       if (!this.component.placeholder || !this.editor) {
@@ -14467,26 +14527,21 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       }
 
       // Normalize the configurations.
-      if (this.component.wysiwyg.toolbarGroups) {
+      if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
         console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-        this.component.wysiwyg = this.wysiwygDefault();
+        this.component.wysiwyg = this.wysiwygDefault;
+        this.emit('componentEdit', this);
       }
-      if (typeof this.component.wysiwyg === 'boolean') {
-        this.component.wysiwyg = this.wysiwygDefault();
+      if (!this.component.wysiwyg || typeof this.component.wysiwyg === 'boolean') {
+        this.component.wysiwyg = this.wysiwygDefault;
+        this.emit('componentEdit', this);
       }
 
-      // Lazy load the quill css.
-      _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + this.component.wysiwyg.theme + '.css' }], true);
-
-      // Lazy load the quill library.
-      this.editorReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
-        _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
-        _this2.quill.root.spellcheck = _this2.component.spellcheck;
-
-        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-        var txtArea = document.createElement('textarea');
-        txtArea.setAttribute('class', 'quill-source-code');
-        _this2.quill.addContainer('ql-custom').appendChild(txtArea);
+      // Add the quill editor.
+      this.editorReady = this.addQuill(this.input, this.component.wysiwyg, function () {
+        return _this2.updateValue({ noUpdateEvent: true });
+      }).then(function (quill) {
+        quill.root.spellcheck = _this2.component.spellcheck;
 
         // Allows users to skip toolbar items when tabbing though form
         var elm = document.querySelectorAll('.ql-formats > button');
@@ -14494,27 +14549,11 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
           elm[i].setAttribute('tabindex', '-1');
         }
 
-        var qlSource = document.querySelector('.ql-source');
-        if (qlSource) {
-          qlSource.addEventListener('click', function () {
-            if (txtArea.style.display === 'inherit') {
-              _this2.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
-            }
-            txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
-          });
-        }
-        /** END CODEBLOCK **/
-
-        _this2.quill.on('text-change', function () {
-          txtArea.value = _this2.quill.root.innerHTML;
-          _this2.updateValue({ noUpdateEvent: true });
-        });
-
         if (_this2.options.readOnly || _this2.component.disabled) {
-          _this2.quill.disable();
+          quill.disable();
         }
 
-        return _this2.quill;
+        return quill;
       });
 
       return this.input;
@@ -15359,6 +15398,10 @@ var _Components = require('./components/Components');
 
 var _builder3 = require('./utils/builder');
 
+var _eventemitter = require('eventemitter2');
+
+var _eventemitter2 = _interopRequireDefault(_eventemitter);
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -15397,6 +15440,10 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     _this.dragContainers = [];
     _this.sidebarContainers = [];
     _this.updateDraggable = _lodash2.default.debounce(_this.refreshDraggable.bind(_this), 200);
+
+    _this.on('componentEdit', function (component) {
+      console.log(component);
+    });
 
     // Setup default groups, but let them be overridden.
     _this.options.groups = _lodash2.default.defaultsDeep({}, _this.options.groups, {
@@ -15507,12 +15554,25 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'updateComponent',
     value: function updateComponent(component) {
+      var _this3 = this;
+
       // Update the preview.
       if (this.componentPreview) {
+        var preview = _builder2.default.create(component.component, {
+          preview: true,
+          events: new _eventemitter2.default({
+            wildcard: false,
+            maxListeners: 0
+          })
+        }, {}, true);
+        preview.on('componentEdit', function (comp) {
+          _lodash2.default.merge(component.component, comp.component);
+          _this3.editForm.redraw();
+        });
+        preview.build();
+        preview.isBuilt = true;
         this.componentPreview.innerHTML = '';
-        this.componentPreview.appendChild(_builder2.default.create(component.component, {
-          preview: true
-        }).getElement());
+        this.componentPreview.appendChild(preview.getElement());
       }
 
       // Ensure this component has a key.
@@ -15535,7 +15595,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'editComponent',
     value: function editComponent(component) {
-      var _this3 = this;
+      var _this4 = this;
 
       var componentCopy = _lodash2.default.cloneDeep(component);
       var componentClass = _builder2.default[componentCopy.component.type];
@@ -15617,13 +15677,13 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           componentCopy.component = event.data;
 
           // Update the component.
-          _this3.updateComponent(componentCopy);
+          _this4.updateComponent(componentCopy);
         }
       });
 
       // Modify the component information in the edit form.
       this.editForm.formReady.then(function () {
-        return _this3.editForm.setValue({ data: componentCopy.component }, {
+        return _this4.editForm.setValue({ data: componentCopy.component }, {
           noUpdateEvent: true
         });
       });
@@ -15635,7 +15695,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       this.addEventListener(removeButton, 'click', function (event) {
         event.preventDefault();
-        _this3.deleteComponent(component);
+        _this4.deleteComponent(component);
         dialog.close();
       });
 
@@ -15649,15 +15709,15 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         if (component.dragEvents && component.dragEvents.onSave) {
           component.dragEvents.onSave(component);
         }
-        _this3.emit('saveComponent', component);
-        _this3.form = _this3.schema;
+        _this4.emit('saveComponent', component);
+        _this4.form = _this4.schema;
         dialog.close();
       });
 
       this.addEventListener(dialog, 'close', function () {
-        _this3.editForm.destroy();
+        _this4.editForm.destroy();
         if (component.isNew) {
-          _this3.deleteComponent(component);
+          _this4.deleteComponent(component);
         }
       });
 
@@ -15704,7 +15764,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'addBuilderGroup',
     value: function addBuilderGroup(info) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (!info || !info.key) {
         console.warn('Invalid Group Provided.');
@@ -15720,18 +15780,18 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       this.addEventListener(groupAnchor, 'click', function (event) {
         event.preventDefault();
         var clickedGroupId = event.target.getAttribute('href').replace('#group-', '');
-        if (_this4.groups[clickedGroupId]) {
-          var clickedGroup = _this4.groups[clickedGroupId];
-          var wasIn = _this4.hasClass(clickedGroup.panel, 'in');
-          _lodash2.default.each(_this4.groups, function (group, groupId) {
-            _this4.removeClass(group.panel, 'in');
+        if (_this5.groups[clickedGroupId]) {
+          var clickedGroup = _this5.groups[clickedGroupId];
+          var wasIn = _this5.hasClass(clickedGroup.panel, 'in');
+          _lodash2.default.each(_this5.groups, function (group, groupId) {
+            _this5.removeClass(group.panel, 'in');
             if (groupId === clickedGroupId && !wasIn) {
-              _this4.addClass(group.panel, 'in');
+              _this5.addClass(group.panel, 'in');
             }
           });
 
           // Match the form builder height to the sidebar.
-          _this4.element.style.minHeight = _this4.builderSidebar.offsetHeight + 'px';
+          _this5.element.style.minHeight = _this5.builderSidebar.offsetHeight + 'px';
         }
       });
 
@@ -15797,7 +15857,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'buildSidebar',
     value: function buildSidebar() {
-      var _this5 = this;
+      var _this6 = this;
 
       this.groups = {};
       this.sideBarElement = this.ce('div', {
@@ -15807,7 +15867,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       // Add the groups.
       _lodash2.default.each(this.options.groups, function (info, group) {
         info.key = group;
-        _this5.addBuilderGroup(info);
+        _this6.addBuilderGroup(info);
       });
 
       // Get all of the components builder info grouped and sorted.
@@ -15823,7 +15883,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       // Iterate through every component.
       _lodash2.default.each(components, function (component) {
-        return _this5.addBuilderComponent(component);
+        return _this6.addBuilderComponent(component);
       });
     }
   }, {
@@ -15928,7 +15988,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }, {
     key: 'refreshDraggable',
     value: function refreshDraggable() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.dragula) {
         this.dragula.destroy();
@@ -15941,7 +16001,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           return !target.classList.contains('no-drop');
         }
       }).on('drop', function (element, target, source, sibling) {
-        return _this6.onDrop(element, target, source, sibling);
+        return _this7.onDrop(element, target, source, sibling);
       });
     }
   }, {
@@ -15961,7 +16021,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   return FormioFormBuilder;
 }(_formio2.default);
 
-},{"./components/Components":2,"./components/builder":15,"./formio.form":92,"./utils/builder":108,"dragula":120,"lodash":319}],92:[function(require,module,exports){
+},{"./components/Components":2,"./components/builder":15,"./formio.form":92,"./utils/builder":108,"dragula":120,"eventemitter2":121,"lodash":319}],92:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -20162,6 +20222,9 @@ var BuilderUtils = exports.BuilderUtils = {
     return result;
   },
   getAvailableShortcuts: function getAvailableShortcuts(form, component) {
+    if (!component) {
+      return [];
+    }
     return [''].concat(_lodash2.default.difference(this.getAlphaShortcuts().concat(this.getAdditionalShortcuts(component.type)), this.getBindedShortcuts(form.components, component)));
   }
 };

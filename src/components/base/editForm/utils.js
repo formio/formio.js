@@ -10,7 +10,7 @@ export let EditFormUtils = {
         return _mergeWith(objValue, srcValue, EditFormUtils.mergeComponents);
       }
       if (objValue[0] && objValue[0].type) {
-        return _sortBy(_unionWith(objValue, srcValue, (a, b) => (a.key === b.key)), ['weight']);
+        return _sortBy(_unionWith(srcValue, objValue, (a, b) => (a.key === b.key)), ['weight']);
       }
       return objValue.concat(srcValue);
     }

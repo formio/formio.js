@@ -9,6 +9,7 @@ export class CheckBoxComponent extends BaseComponent {
       label: 'Checkbox',
       key: 'checkbox',
       datagridLabel: true,
+      labelPosition: 'right',
       value: '',
       name: ''
     }, ...extend);
@@ -114,7 +115,7 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   createLabel(container, input) {
-    if (!this.component.label) {
+    if (super.labelIsHidden()) {
       return null;
     }
 

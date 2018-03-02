@@ -3,6 +3,7 @@ import dragula from 'dragula';
 import Components from './components/builder';
 import {FormioComponents} from './components/Components';
 import { BuilderUtils } from './utils/builder';
+import EventEmitter from 'eventemitter2';
 import _ from 'lodash';
 
 export class FormioFormBuilder extends FormioForm {
@@ -12,6 +13,10 @@ export class FormioFormBuilder extends FormioForm {
     this.dragContainers = [];
     this.sidebarContainers = [];
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
+
+    this.on('componentEdit', (component) => {
+      console.log(component);
+    });
 
     // Setup default groups, but let them be overridden.
     this.options.groups = _.defaultsDeep({}, this.options.groups, {
@@ -123,10 +128,21 @@ export class FormioFormBuilder extends FormioForm {
   updateComponent(component) {
     // Update the preview.
     if (this.componentPreview) {
+      const preview = Components.create(component.component, {
+        preview: true,
+        events: new EventEmitter({
+          wildcard: false,
+          maxListeners: 0
+        })
+      }, {}, true);
+      preview.on('componentEdit', (comp) => {
+        _.merge(component.component, comp.component);
+        this.editForm.redraw();
+      });
+      preview.build();
+      preview.isBuilt = true;
       this.componentPreview.innerHTML = '';
-      this.componentPreview.appendChild(Components.create(component.component, {
-        preview: true
-      }).getElement());
+      this.componentPreview.appendChild(preview.getElement());
     }
 
     // Ensure this component has a key.
