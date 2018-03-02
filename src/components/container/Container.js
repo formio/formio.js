@@ -1,6 +1,7 @@
-import { FormioComponents } from '../Components';
-import _isObject from 'lodash/isObject';
-import _each from 'lodash/each';
+import _ from 'lodash';
+
+import {FormioComponents} from '../Components';
+
 export class ContainerComponent extends FormioComponents {
   constructor(component, options, data) {
     super(component, options, data);
@@ -9,7 +10,7 @@ export class ContainerComponent extends FormioComponents {
 
   build() {
     this.element = this.ce('div', {
-      class: 'formio-container-component ' + this.component.customClass
+      class: `formio-container-component ${this.component.customClass}`
     });
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = {};
@@ -17,9 +18,17 @@ export class ContainerComponent extends FormioComponents {
     this.addComponents(this.element, this.data[this.component.key]);
   }
 
+  get defaultValue() {
+    const value = super.defaultValue;
+    return typeof value === 'object' ? value : {};
+  }
+
   getValue() {
-    let value = {};
-    _each(this.components, (component) => {
+    if (this.viewOnly) {
+      return this.value;
+    }
+    const value = {};
+    _.each(this.components, (component) => {
       value[component.component.key] = component.getValue();
     });
     return value;
@@ -27,16 +36,23 @@ export class ContainerComponent extends FormioComponents {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    if (!value || !_isObject(value)) {
+    if (!value || !_.isObject(value)) {
       return;
     }
-    this.value = value;
-    _each(this.components, (component) => {
+    if(this.data && this.data.hasOwnProperty(this.component.key) && _.isEmpty(this.data[this.component.key])) {
+      flags.noValidate = true;
+    }
+    this.data[this.component.key] = value;
+    _.each(this.components, (component) => {
       if (component.type === 'components') {
         component.setValue(value, flags);
       }
       else if (value.hasOwnProperty(component.component.key)) {
         component.setValue(value[component.component.key], flags);
+      }
+      else {
+        component.data = value;
+        component.setValue(component.defaultValue, flags);
       }
     });
     this.updateValue(flags);

@@ -35,18 +35,28 @@ export const Harness = {
       form.everyComponent((comp) => {
         if (hidden.indexOf(comp.component.key) !== -1) {
           // Should be hidden.
-          assert.equal(comp.element.hidden, true);
+          assert(comp.element.hidden, 'Element should not be visible');
           assert.equal(comp.element.style.visibility, 'hidden');
         }
         else {
           // Should be visible.
-          assert(!comp.element.hidden, 'Element is hidden');
+          assert(!comp.element.hidden, 'Element should not be hidden');
           assert((comp.element.style.visibility === '') || (comp.element.style.visibility === 'visible'), 'Element must be visible');
         }
       });
       done();
     });
     form.submission = submission;
+  },
+  testVisibility: function(component, query, visible) {
+    let element = component.element.querySelector(query);
+    assert(element, query + ' not found');
+    if (visible) {
+      assert((element.style.visibility === '') || (element.style.visibility === 'visible'), 'Element must be visible');
+    }
+    else {
+      assert(element.style.visibility === 'hidden', 'Element must be hidden');
+    }
   },
   clickElement: function(component, query) {
     const clickEvent = new MouseEvent('click', {
@@ -75,6 +85,16 @@ export const Harness = {
     let element = component.element.querySelector(query);
     assert(element, query + ' not found');
     assert.equal(element.innerHTML.trim(), content);
+  },
+  testAttribute: function(component, query, attribute, value) {
+    let element = component.element.querySelector(query);
+    assert(element, query + ' not found');
+    assert.equal(element.getAttribute(attribute), value);
+  },
+  testHasClass: function(component, query, className) {
+    let element = component.element.querySelector(query);
+    assert(element, query + ' not found');
+    assert(element.className.split(' ').indexOf(className) !== -1);
   },
   testElementAttribute: function(element, attribute, expected) {
     if (element !== undefined && element.getAttribute(attribute)) {

@@ -1,5 +1,5 @@
-import SignaturePad from 'signature_pad/dist/signature_pad.js'
-import { BaseComponent } from '../base/Base';
+import SignaturePad from 'signature_pad/dist/signature_pad.js';
+import {BaseComponent} from '../base/Base';
 export class SignatureComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -14,7 +14,7 @@ export class SignatureComponent extends BaseComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'hidden';
     return info;
@@ -48,7 +48,8 @@ export class SignatureComponent extends BaseComponent {
       if (disabled) {
         this.signaturePad.off();
         this.refresh.classList.add('disabled');
-      } else {
+      }
+      else {
         this.signaturePad.on();
         this.refresh.classList.remove('disabled');
       }
@@ -68,7 +69,7 @@ export class SignatureComponent extends BaseComponent {
       this.currentWidth = this.padBody.offsetWidth;
       this.canvas.width = this.currentWidth * this.scale;
       this.canvas.height = this.padBody.offsetHeight * this.scale;
-      let ctx = this.canvas.getContext("2d");
+      const ctx = this.canvas.getContext('2d');
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));
       ctx.fillStyle = this.signaturePad.backgroundColor;
@@ -78,7 +79,7 @@ export class SignatureComponent extends BaseComponent {
   }
 
   build() {
-    if (this.viewOnlyMode()) {
+    if (this.viewOnly) {
       return this.viewOnlyBuild();
     }
 
@@ -90,14 +91,14 @@ export class SignatureComponent extends BaseComponent {
     this.input = this.createInput(this.element);
     this.padBody = this.ce('div', {
       class: 'signature-pad-body',
-      style: ('width: ' + this.component.width + ';height: ' + this.component.height)
+      style: (`width: ${this.component.width};height: ${this.component.height}`)
     });
 
     // Create the refresh button.
     this.refresh = this.ce('a', {
       class: 'btn btn-sm btn-default btn-secondary signature-pad-refresh'
     });
-    let refreshIcon = this.getIcon('refresh');
+    const refreshIcon = this.getIcon('refresh');
     this.refresh.appendChild(refreshIcon);
     this.padBody.appendChild(this.refresh);
 
@@ -132,7 +133,7 @@ export class SignatureComponent extends BaseComponent {
       penColor: this.component.penColor,
       backgroundColor: this.component.backgroundColor
     });
-    this.refresh.addEventListener("click", (event) => {
+    this.refresh.addEventListener('click', (event) => {
       event.preventDefault();
       this.showCanvas(true);
       this.signaturePad.clear();
@@ -162,8 +163,7 @@ export class SignatureComponent extends BaseComponent {
     container.appendChild(this.labelElement);
   }
 
-  get view() {
-    const value = this.getValue();
+  getView(value) {
     return value ? 'Yes' : 'No';
   }
 }

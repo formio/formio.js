@@ -1,12 +1,13 @@
-var Promise = require("native-promise-only");
-var s3 = function(formio) {
+import Promise from 'native-promise-only';
+
+const s3 = function(formio) {
   return {
     uploadFile: function(file, fileName, dir, progressCallback) {
-      return new Promise(function(resolve, reject) {
+      return new Promise(((resolve, reject) => {
         // Send the pre response to sign the upload.
-        var pre = new XMLHttpRequest();
+        const pre = new XMLHttpRequest();
 
-        var prefd = new FormData();
+        const prefd = new FormData();
         prefd.append('name', fileName);
         prefd.append('size', file.size);
         prefd.append('type', file.type);
@@ -15,18 +16,18 @@ var s3 = function(formio) {
         pre.onerror = function(err) {
           err.networkError = true;
           reject(err);
-        }
+        };
 
         pre.onabort = function(err) {
           reject(err);
-        }
+        };
 
         pre.onload = function() {
           if (pre.status >= 200 && pre.status < 300) {
-            var response = JSON.parse(pre.response);
+            const response = JSON.parse(pre.response);
 
             // Send the file with data.
-            var xhr = new XMLHttpRequest();
+            const xhr = new XMLHttpRequest();
 
             if (typeof progressCallback === 'function') {
               xhr.upload.onprogress = progressCallback;
@@ -35,8 +36,8 @@ var s3 = function(formio) {
             response.data.fileName = fileName;
             response.data.key += dir + fileName;
 
-            var fd = new FormData();
-            for(var key in response.data) {
+            const fd = new FormData();
+            for (const key in response.data) {
               fd.append(key, response.data[key]);
             }
             fd.append('file', file);
@@ -45,7 +46,7 @@ var s3 = function(formio) {
             xhr.onerror = function(err) {
               err.networkError = true;
               reject(err);
-            }
+            };
 
             xhr.onload = function() {
               if (xhr.status >= 200 && xhr.status < 300) {
@@ -67,7 +68,7 @@ var s3 = function(formio) {
 
             xhr.onabort = function(err) {
               reject(err);
-            }
+            };
 
             xhr.open('POST', response.url);
 
@@ -78,11 +79,11 @@ var s3 = function(formio) {
           }
         };
 
-        pre.open('POST', formio.formUrl + '/storage/s3');
+        pre.open('POST', `${formio.formUrl}/storage/s3`);
 
         pre.setRequestHeader('Accept', 'application/json');
         pre.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-        var token = formio.getToken();
+        const token = formio.getToken();
         if (token) {
           pre.setRequestHeader('x-jwt-token', token);
         }
@@ -92,11 +93,11 @@ var s3 = function(formio) {
           size: file.size,
           type: file.type
         }));
-      });
+      }));
     },
     downloadFile: function(file) {
       if (file.acl !== 'public-read') {
-        return formio.makeRequest('file', formio.formUrl + '/storage/s3?bucket=' + file.bucket + '&key=' + file.key, 'GET');
+        return formio.makeRequest('file', `${formio.formUrl}/storage/s3?bucket=${file.bucket}&key=${file.key}`, 'GET');
       }
       else {
         return Promise.resolve(file);
@@ -106,4 +107,4 @@ var s3 = function(formio) {
 };
 
 s3.title = 'S3';
-module.exports = s3;
+export default s3;

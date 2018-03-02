@@ -4,8 +4,93 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.9
+### Fixed
+ - Issues with IE not translating Date's properly.
+
+## 2.29.8
+### Fixed
+ - Include polyfill for bind to fix PDF generation.
+
+### Changed
+ - Upgraded i18next to 10.5.0
+
+## 2.29.7
+### Fixed
+ - Fix validations automatically triggering if you have only a container on a form at the root level.
+
+## 2.29.6
+### Fixed
+ - Fix validation and nested form issues with wizard.
+
+## 2.29.5
+### Fixed
+ - Ensure that the form components do not load if conditions on the component return false.
+
+## 2.29.4
+### Added
+ - More input hooks to certain components.
+
+### Fixed
+ - Issue where file component values would reset.
+
+### Changed
+ - The select component will now enable search by default and can be turned off with "searchEnabled" flag on component.
+
+## 2.29.3
+### Fixed
+ - Issue with the providers not getting registered correctly.
+
+## 2.29.2
+### Changed
+ - Upgraded i18next to 10.4.1 
+
+### Fixed
+ - Problem where DataGrid could add duplicate columns.
+
+### Added
+ - Add ability to have oauth initiated logins.
+
+## 2.29.1
+### Added
+ - 'Delimiter' property to Number component.
+ - Error message below submit button.
+ - WYSIWYG spellcheck option for the Quill editor.
+
+### Fixed
+ - Issues with clearOnHide
+ - Fixed radio button wrapping issue
+ - Problems with the wysiwyg editor clearing values within a datagrid.
+ - Asterisks for Checkbox component with 'inputsOnly' option.
+ - The Formio.cache to return new promises instead of using old ones.
+
+### Changed
+ - Cleanup and performance improvements on how conditions are checked and evaluated.
+ - How the loader icon is added to the renderer by adding an additional DOM element above the form components.
+ - Upgrade flatpickr to version 4.3.2
+ - Improved viewAsHtml and asString features.
+
+## 2.29.0
+### Added
+ - New Field Logic feature.
+ - Ability for buttons to be configured with a URL that will send the submission to that url when pressed.
+
+### Changed
+ - Upgraded all dependencies.
+ - Reverted choices.js to use npm version and duck-punch the deep equality checks.
+
+### Fixed
+ - Issue with Required WYSIWYG TextArea always triggering validation error on load.
+ - Problem where backspacing the wysiwyg editor was not working.
+ - Problem where tabbing into a wysiwyg editor would select buttons on the wysiwyg.
+ - Problem with the Form component where it would load the form when a default submission is provided.
+ - Performance issues with both EditGrid and DataGrid.
+ - Issue with false conditionals and null values.
+ - Issue with the "render" event not firing when form is rendered.
+ - Problems with the viewAsHtml flag not rendering the submission.
+
 ## 2.28.6
-### Added 
+### Added
  - Autofocus capability.
  - Ability to provide spellcheck parameter to input.
 

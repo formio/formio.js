@@ -1,9 +1,10 @@
-const Promise = require('native-promise-only');
-const base64 = function () {
+import Promise from 'native-promise-only';
+
+const base64 = function() {
   return {
     title: 'Base64',
     name: 'base64',
-    uploadFile: function (file, fileName) {
+    uploadFile: function(file, fileName) {
       const reader = new FileReader();
 
       return new Promise((resolve, reject) => {
@@ -26,7 +27,7 @@ const base64 = function () {
         reader.readAsDataURL(file);
       });
     },
-    downloadFile: function (file) {
+    downloadFile: function(file) {
       // Return the original as there is nothing to do.
       return Promise.resolve(file);
     }
@@ -34,4 +35,4 @@ const base64 = function () {
 };
 
 base64.title = 'Base64';
-module.exports = base64;
+export default base64;

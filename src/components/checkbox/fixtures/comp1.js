@@ -1,24 +1,24 @@
 export const component = {
-  "conditional": {
-    "eq": "",
-    "when": null,
-    "show": ""
+  'conditional': {
+    'eq': '',
+    'when': null,
+    'show': ''
   },
-  "tags": [
+  'tags': [
 
   ],
-  "type": "checkbox",
-  "validate": {
-    "required": false
+  'type': 'checkbox',
+  'validate': {
+    'required': false
   },
-  "persistent": true,
-  "protected": false,
-  "defaultValue": false,
-  "key": "checkme",
-  "datagridLabel": true,
-  "label": "Check me",
-  "hideLabel": true,
-  "tableView": true,
-  "inputType": "checkbox",
-  "input": true
+  'persistent': true,
+  'protected': false,
+  'defaultValue': false,
+  'key': 'checkme',
+  'datagridLabel': true,
+  'label': 'Check me',
+  'hideLabel': true,
+  'tableView': true,
+  'inputType': 'checkbox',
+  'input': true
 };

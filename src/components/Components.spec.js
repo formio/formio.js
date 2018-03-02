@@ -1,6 +1,6 @@
 'use strict';
-import { FormioComponents } from './Components';
-import { Harness } from '../../test/harness';
+import {FormioComponents} from './Components';
+import {Harness} from '../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 describe('FormioComponents class', () => {
@@ -82,7 +82,6 @@ describe('FormioComponents class', () => {
               input: true,
               conditional: {
                 json: {var: 'data.forceParent'},
-                overrideParent: true
               }
             }
           ]
@@ -92,7 +91,7 @@ describe('FormioComponents class', () => {
       // Make sure we built the components tree.
       assert.equal(comp.components.length, 2);
       assert.equal(comp.components[1].components.length, 2);
-      let data = {
+      const data = {
         showPanel: true,
         showChild: false,
         forceParent: false
@@ -118,10 +117,11 @@ describe('FormioComponents class', () => {
       assert.equal(comp.components[1].components[0]._visible, true);
       assert.equal(comp.components[1].components[1]._visible, false);
 
+      // overrideParent is depricated.
       data.forceParent = true;
       comp.setValue(data);
       comp.checkConditions(data);
-      assert.equal(comp.components[1]._visible, true);
+      assert.equal(comp.components[1]._visible, false);
       assert.equal(comp.components[1].components[0]._visible, true);
       assert.equal(comp.components[1].components[1]._visible, true);
       done();

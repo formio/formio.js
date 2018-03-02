@@ -38,6 +38,10 @@ Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/e
       lastName: 'Smith'
     }
   };
+  
+  form.on('render', function() {
+    console.log('Rendered!');
+  });
 
   form.on('change', function(value) {
       console.log(value);

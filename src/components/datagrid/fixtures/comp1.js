@@ -1,120 +1,121 @@
 export const component = {
-  "conditional": {
-    "eq": "",
-    "when": null,
-    "show": ""
+  'conditional': {
+    'eq': '',
+    'when': null,
+    'show': ''
   },
-  "tags": [
+  'tags': [
 
   ],
-  "type": "datagrid",
-  "persistent": true,
-  "protected": false,
-  "key": "cars",
-  "label": "Cars",
-  "tableView": true,
-  "components": [
+  'type': 'datagrid',
+  'persistent': true,
+  'protected': false,
+  'key': 'cars',
+  'label': 'Cars',
+  'tableView': true,
+  'components': [
     {
-      "tags": [
+      'tags': [
 
       ],
-      "hideLabel": true,
-      "type": "textfield",
-      "conditional": {
-        "eq": "",
-        "when": null,
-        "show": ""
+      'hideLabel': true,
+      'type': 'textfield',
+      'conditional': {
+        'eq': '',
+        'when': null,
+        'show': ''
       },
-      "validate": {
-        "customPrivate": false,
-        "custom": "",
-        "pattern": "",
-        "maxLength": "",
-        "minLength": "",
-        "required": false
+      'validate': {
+        'customPrivate': false,
+        'custom': '',
+        'pattern': '',
+        'maxLength': '',
+        'minLength': '',
+        'required': false
       },
-      "persistent": true,
-      "unique": false,
-      "protected": false,
-      "defaultValue": "",
-      "multiple": false,
-      "suffix": "",
-      "prefix": "",
-      "placeholder": "",
-      "key": "make",
-      "label": "Make",
-      "inputMask": "",
-      "inputType": "text",
-      "tableView": true,
-      "input": true
+      'persistent': true,
+      'unique': false,
+      'protected': false,
+      'defaultValue': '',
+      'multiple': false,
+      'suffix': '',
+      'prefix': '',
+      'placeholder': '',
+      'key': 'make',
+      'label': 'Make',
+      'inputMask': '',
+      'inputType': 'text',
+      'tableView': true,
+      'input': true
     },
     {
-      "tags": [
+      'tags': [
 
       ],
-      "hideLabel": true,
-      "type": "textfield",
-      "conditional": {
-        "eq": "",
-        "when": null,
-        "show": ""
+      'hideLabel': true,
+      'type': 'textfield',
+      'conditional': {
+        'eq': '',
+        'when': null,
+        'show': ''
       },
-      "validate": {
-        "customPrivate": false,
-        "custom": "",
-        "pattern": "",
-        "maxLength": "",
-        "minLength": "",
-        "required": false
+      'validate': {
+        'customPrivate': false,
+        'custom': '',
+        'pattern': '',
+        'maxLength': '',
+        'minLength': '',
+        'required': false
       },
-      "persistent": true,
-      "unique": false,
-      "protected": false,
-      "defaultValue": "",
-      "multiple": false,
-      "suffix": "",
-      "prefix": "",
-      "placeholder": "",
-      "key": "model",
-      "label": "Model",
-      "inputMask": "",
-      "inputType": "text",
-      "tableView": true,
-      "input": true
+      'persistent': true,
+      'unique': false,
+      'protected': false,
+      'defaultValue': '',
+      'multiple': false,
+      'suffix': '',
+      'prefix': '',
+      'placeholder': '',
+      'key': 'model',
+      'label': 'Model',
+      'inputMask': '',
+      'inputType': 'text',
+      'tableView': true,
+      'input': true
     },
     {
-      "conditional": {
-        "eq": "",
-        "when": null,
-        "show": ""
+      'conditional': {
+        'eq': '',
+        'when': null,
+        'show': ''
       },
-      "tags": [
+      'tags': [
 
       ],
-      "hideLabel": true,
-      "type": "number",
-      "validate": {
-        "custom": "",
-        "multiple": "",
-        "integer": "",
-        "step": "any",
-        "max": "",
-        "min": "",
-        "required": false
+      'hideLabel': true,
+      'type': 'number',
+      'validate': {
+        'custom': '',
+        'multiple': '',
+        'integer': '',
+        'step': 'any',
+        'max': '',
+        'min': '',
+        'required': false
       },
-      "persistent": true,
-      "protected": false,
-      "defaultValue": "",
-      "suffix": "",
-      "prefix": "",
-      "placeholder": "",
-      "key": "year",
-      "label": "Year",
-      "inputType": "number",
-      "tableView": true,
-      "input": true
+      'persistent': true,
+      'protected': false,
+      'defaultValue': '',
+      'suffix': '',
+      'prefix': '',
+      'placeholder': '',
+      'key': 'year',
+      'label': 'Year',
+      'inputType': 'number',
+      'delimiter': true,
+      'tableView': true,
+      'input': true
     }
   ],
-  "tree": true,
-  "input": true
+  'tree': true,
+  'input': true
 };

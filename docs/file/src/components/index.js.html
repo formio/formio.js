@@ -33,6 +33,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createForm">createForm</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formFactory">formFactory</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
@@ -72,6 +74,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -82,6 +85,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap">components/gmap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap-fixtures">components/gmap/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -147,48 +151,52 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/index.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { AddressComponent } from &apos;./address/Address&apos;;
-import { BaseComponent } from &apos;./base/Base&apos;;
-import { ContentComponent } from &apos;./content/Content&apos;;
-import { ContainerComponent } from &apos;./container/Container&apos;;
-import { DataGridComponent } from &apos;./datagrid/DataGrid&apos;;
-import { DateTimeComponent } from &apos;./datetime/DateTime&apos;;
-import { DayComponent } from &apos;./day/Day&apos;;
-import { EditGridComponent } from &apos;./editrgrid/EditGrid&apos;;
-import { HTMLComponent } from &apos;./html/HTML&apos;;
-import { HiddenComponent } from &apos;./hidden/Hidden&apos;;
-import { FormComponent } from &apos;./form/Form&apos;;
-import { TextFieldComponent } from &apos;./textfield/TextField&apos;;
-import { PhoneNumberComponent } from &apos;./phonenumber/PhoneNumber&apos;;
-import { EmailComponent } from &apos;./email/Email&apos;;
-import { TimeComponent } from &apos;./time/Time&apos;;
-import { CheckBoxComponent } from &apos;./checkbox/Checkbox&apos;;
-import { CurrencyComponent } from &apos;./currency/Currency&apos;;
-import { FieldsetComponent } from &apos;./fieldset/Fieldset&apos;;
-import { SignatureComponent } from &apos;./signature/Signature&apos;;
-import { SelectComponent } from &apos;./select/Select&apos;;
-import { ResourceComponent } from &apos;./resource/Resource&apos;;
-import { TextAreaComponent } from &apos;./textarea/TextArea&apos;;
-import { ButtonComponent } from &apos;./button/Button&apos;;
-import { NumberComponent } from &apos;./number/Number&apos;;
-import { PasswordComponent } from &apos;./password/Password&apos;;
-import { PanelComponent } from &apos;./panel/Panel&apos;;
-import { ColumnComponent } from &apos;./columns/Column&apos;;
-import { ColumnsComponent } from &apos;./columns/Columns&apos;;
-import { TableComponent } from &apos;./table/Table&apos;;
-import { UnknownComponent } from &apos;./unknown/Unknown&apos;;
-import { RadioComponent } from &apos;./radio/Radio&apos;;
-import { SelectBoxesComponent } from &apos;./selectboxes/SelectBoxes&apos;;
-import { SurveyComponent } from &apos;./survey/Survey&apos;;
-import { WellComponent } from &apos;./well/Well&apos;;
-import { GmapComponent } from &apos;./gmap/Gmap&apos;;
-import { FileComponent } from &apos;./file/File&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {AddressComponent} from &apos;./address/Address&apos;;
+import {BaseComponent} from &apos;./base/Base&apos;;
+import {ContentComponent} from &apos;./content/Content&apos;;
+import {ContainerComponent} from &apos;./container/Container&apos;;
+import {DataGridComponent} from &apos;./datagrid/DataGrid&apos;;
+import {DateTimeComponent} from &apos;./datetime/DateTime&apos;;
+import {DayComponent} from &apos;./day/Day&apos;;
+import {EditGridComponent} from &apos;./editrgrid/EditGrid&apos;;
+import {HTMLComponent} from &apos;./html/HTML&apos;;
+import {HiddenComponent} from &apos;./hidden/Hidden&apos;;
+import {FormComponent} from &apos;./form/Form&apos;;
+import {TextFieldComponent} from &apos;./textfield/TextField&apos;;
+import {PhoneNumberComponent} from &apos;./phonenumber/PhoneNumber&apos;;
+import {EmailComponent} from &apos;./email/Email&apos;;
+import {TimeComponent} from &apos;./time/Time&apos;;
+import {CheckBoxComponent} from &apos;./checkbox/Checkbox&apos;;
+import {CurrencyComponent} from &apos;./currency/Currency&apos;;
+import {FieldsetComponent} from &apos;./fieldset/Fieldset&apos;;
+import {SignatureComponent} from &apos;./signature/Signature&apos;;
+import {SelectComponent} from &apos;./select/Select&apos;;
+import {ResourceComponent} from &apos;./resource/Resource&apos;;
+import {TextAreaComponent} from &apos;./textarea/TextArea&apos;;
+import {ButtonComponent} from &apos;./button/Button&apos;;
+import {NumberComponent} from &apos;./number/Number&apos;;
+import {PasswordComponent} from &apos;./password/Password&apos;;
+import {PanelComponent} from &apos;./panel/Panel&apos;;
+import {ColumnComponent} from &apos;./columns/Column&apos;;
+import {ColumnsComponent} from &apos;./columns/Columns&apos;;
+import {TableComponent} from &apos;./table/Table&apos;;
+import {UnknownComponent} from &apos;./unknown/Unknown&apos;;
+import {RadioComponent} from &apos;./radio/Radio&apos;;
+import {SelectBoxesComponent} from &apos;./selectboxes/SelectBoxes&apos;;
+import {SurveyComponent} from &apos;./survey/Survey&apos;;
+import {WellComponent} from &apos;./well/Well&apos;;
+import {GmapComponent} from &apos;./gmap/Gmap&apos;;
+import {FileComponent} from &apos;./file/File&apos;;
 module.exports = {
   address: AddressComponent,
   base: BaseComponent,
@@ -239,6 +247,7 @@ module.exports = {
     }
     if (!nobuild) {
       comp.build();
+      comp.isBuilt = true;
     }
     return comp;
   }

@@ -1,5 +1,6 @@
-import { BaseComponent } from '../base/Base';
-import _assign from 'lodash/assign';
+import _ from 'lodash';
+
+import {BaseComponent} from '../base/Base';
 export class CheckBoxComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
@@ -15,7 +16,7 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   build() {
-    if (this.viewOnlyMode()) {
+    if (this.viewOnly) {
       return this.viewOnlyBuild();
     }
 
@@ -56,14 +57,14 @@ export class CheckBoxComponent extends BaseComponent {
 
   setInputLabelStyle(label) {
     if (this.component.labelPosition === 'left') {
-      _assign(label.style, {
+      _.assign(label.style, {
         textAlign: 'center',
         paddingLeft: 0,
       });
     }
 
     if (this.labelOnTheTopOrBottom()) {
-      _assign(label.style, {
+      _.assign(label.style, {
         display: 'block',
         textAlign: 'center',
         paddingLeft: 0,
@@ -73,14 +74,14 @@ export class CheckBoxComponent extends BaseComponent {
 
   setInputStyle(input) {
     if (this.component.labelPosition === 'left') {
-      _assign(input.style, {
+      _.assign(input.style, {
         position: 'initial',
         marginLeft: '7px'
       });
     }
 
     if (this.labelOnTheTopOrBottom()) {
-      _assign(input.style, {
+      _.assign(input.style, {
         width: '100%',
         position: 'initial',
         marginLeft: 0
@@ -94,7 +95,10 @@ export class CheckBoxComponent extends BaseComponent {
     }
 
     let className = 'control-label form-check-label';
-    if (this.component.input && this.component.validate && this.component.validate.required) {
+    if (this.component.input
+      && !this.options.inputsOnly
+      && this.component.validate
+      && this.component.validate.required) {
       className += ' field-required';
     }
 
@@ -142,7 +146,7 @@ export class CheckBoxComponent extends BaseComponent {
     const component = this.getRoot().getComponent(this.component.name);
 
     if (component) {
-      component.setValue(this.component.value, { changed: true });
+      component.setValue(this.component.value, {changed: true});
     }
     else {
       this.data[this.component.name] = this.component.value;
@@ -169,7 +173,6 @@ export class CheckBoxComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    this.value = value;
     if (!this.input) {
       return;
     }
@@ -200,8 +203,7 @@ export class CheckBoxComponent extends BaseComponent {
     return super.getRawValue();
   }
 
-  get view() {
-    const value = this.getValue();
+  getView(value) {
     return value ? 'Yes' : 'No';
   }
 

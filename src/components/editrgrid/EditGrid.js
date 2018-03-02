@@ -1,9 +1,6 @@
-import _each from 'lodash/each';
-import _map from 'lodash/map';
-import _cloneDeep from 'lodash/cloneDeep';
-import _clone from 'lodash/clone';
-import _isArray from 'lodash/isArray';
-import { FormioComponents } from '../Components';
+import _ from 'lodash';
+
+import {FormioComponents} from '../Components';
 import FormioUtils from '../../utils';
 
 export class EditGridComponent extends FormioComponents {
@@ -25,19 +22,18 @@ export class EditGridComponent extends FormioComponents {
 
   buildTable() {
     if (this.tableElement) {
-      // this.element.removeChild(this.tableElement);
       this.tableElement.innerHTML = '';
     }
 
     let tableClass = 'editgrid-listgroup list-group ';
-    _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
+    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
-        tableClass += 'table-' + prop + ' ';
+        tableClass += `table-${prop} `;
       }
     });
     this.tableElement = this.ce('ul', {class: tableClass}, [
       this.headerElement = this.createHeader(),
-      this.rowElements = _map(this.rows, this.createRow.bind(this)),
+      this.rowElements = _.map(this.rows, this.createRow.bind(this)),
       this.footerElement = this.createFooter(),
     ]);
 
@@ -69,10 +65,10 @@ export class EditGridComponent extends FormioComponents {
           this.ce('div', {class: 'editgrid-body'},
             [
               this.component.components.map(comp => {
-                const component = _cloneDeep(comp);
-                component.row = this.row + '-' + rowIndex;
-                const options = _clone(this.options);
-                options.name += '[' + rowIndex + ']';
+                const component = _.cloneDeep(comp);
+                component.row = `${this.row}-${rowIndex}`;
+                const options = _.clone(this.options);
+                options.name += `[${rowIndex}]`;
                 const instance = this.createComponent(component, options, this.editRows[rowIndex].data);
                 this.editRows[rowIndex].components.push(instance);
                 return instance.element;
@@ -122,6 +118,7 @@ export class EditGridComponent extends FormioComponents {
       );
     }
     wrapper.appendChild(this.editRows[rowIndex].errorContainer = this.ce('div', {class: 'has-error'}));
+    this.checkData(this.data, {noValidate: true}, rowIndex);
     return wrapper;
   }
 
@@ -135,19 +132,51 @@ export class EditGridComponent extends FormioComponents {
       this.text('');
   }
 
+  checkData(data, flags = {}, index) {
+    let valid = true;
+    if (flags.noCheck) {
+      return;
+    }
+
+    // Update the value.
+    let changed = this.updateValue({
+      noUpdateEvent: true
+    });
+
+    // Iterate through all components and check conditions, and calculate values.
+    this.editRows[index].components.forEach(comp => {
+      changed |= comp.calculateValue(data, {
+        noUpdateEvent: true
+      });
+      comp.checkConditions(this.editRows[index].data);
+      if (!flags.noValidate) {
+        valid &= comp.checkValidity(this.editRows[index].data, !this.editRows[index].isOpen);
+      }
+    });
+
+    valid &= this.validateRow(index, false);
+
+    // Trigger the change if the values changed.
+    if (changed) {
+      this.triggerChange(flags);
+    }
+
+    // Return if the value is valid.
+    return valid;
+  }
+
   createAddButton() {
     this.element.appendChild(this.ce('div', {class: 'editgrid-add'},
       this.ce('button', {
-          class: 'btn btn-primary',
-          role: 'button',
-          onClick: this.addRow.bind(this)
-        },
-        [
-          this.ce('span', {class: this.iconClass('plus'), 'aria-hidden': true}),
-          ' ',
-          this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
-        ],
-      )
+        class: 'btn btn-primary',
+        role: 'button',
+        onClick: this.addRow.bind(this)
+      },
+      [
+        this.ce('span', {class: this.iconClass('plus'), 'aria-hidden': true}),
+        ' ',
+        this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
+      ])
     ));
   }
 
@@ -165,7 +194,6 @@ export class EditGridComponent extends FormioComponents {
         // New row
         editRow.element = this.createRow(editRow.data, rowIndex);
         this.tableElement.insertBefore(editRow.element, this.tableElement.children[rowIndex + 1]);
-        this.validateRow(rowIndex);
       }
       else if (
         editRow.element.rowData !== editRow.data ||
@@ -177,7 +205,6 @@ export class EditGridComponent extends FormioComponents {
         const newRow = this.createRow(editRow.data, rowIndex);
         this.tableElement.replaceChild(newRow, editRow.element);
         editRow.element = newRow;
-        this.validateRow(rowIndex);
       }
     });
   }
@@ -196,7 +223,7 @@ export class EditGridComponent extends FormioComponents {
 
   editRow(rowIndex) {
     this.editRows[rowIndex].isOpen = true;
-    this.editRows[rowIndex].data = _cloneDeep(this.rows[rowIndex]);
+    this.editRows[rowIndex].data = _.cloneDeep(this.rows[rowIndex]);
     this.refreshDOM();
   }
 
@@ -210,7 +237,7 @@ export class EditGridComponent extends FormioComponents {
     this.removeRowComponents(rowIndex);
     // Remove if new.
     if (!this.rows[rowIndex]) {
-      this.tableElement.removeChild(this.editRows[rowIndex].element);
+      this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
       this.rows.splice(rowIndex, 1);
     }
@@ -228,13 +255,13 @@ export class EditGridComponent extends FormioComponents {
       this.refreshDOM();
       return;
     }
-    if (!this.validateRow(rowIndex)) {
+    if (!this.validateRow(rowIndex, true)) {
       return;
     }
     this.removeRowComponents(rowIndex);
     this.rows[rowIndex] = this.editRows[rowIndex].data;
     this.editRows[rowIndex].isOpen = false;
-    this.checkValidity(this.data);
+    this.checkValidity(this.data, true);
     this.updateValue();
     this.refreshDOM();
   }
@@ -245,7 +272,7 @@ export class EditGridComponent extends FormioComponents {
     }
     this.removeRowComponents(rowIndex);
     this.rows.splice(rowIndex, 1);
-    this.tableElement.removeChild(this.editRows[rowIndex].element);
+    this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
     this.refreshDOM();
@@ -259,27 +286,27 @@ export class EditGridComponent extends FormioComponents {
     this.editRows[rowIndex].components = [];
   }
 
-  validateRow(rowIndex) {
+  validateRow(rowIndex, dirty) {
     let check = true;
     this.editRows[rowIndex].components.forEach(comp => {
-      comp.setPristine(false);
-      check &= comp.checkValidity(this.editRows[rowIndex].data, !comp.pristine);
+      comp.setPristine(!dirty);
+      check &= comp.checkValidity(this.editRows[rowIndex].data, dirty);
     });
 
     if (this.component.validate && this.component.validate.row) {
       let custom = this.component.validate.row;
-      custom = custom.replace(/({{\s+(.*)\s+}})/, function(match, $1, $2) {
+      custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
         return this.editRows[rowIndex].data[$2];
-      }.bind(this));
+      });
       let valid;
       try {
         const row = this.editRows[rowIndex].data;
         const data = this.data;
-        valid = new Function('row', 'data', custom + '; return valid;')(row, data);
+        valid = new Function('row', 'data', `${custom}; return valid;`)(row, data);
       }
       catch (e) {
         /* eslint-disable no-console, no-undef */
-        console.warn('A syntax error occurred while computing custom values in ' + this.component.key, e);
+        console.warn(`A syntax error occurred while computing custom values in ${this.component.key}`, e);
         /* eslint-enable no-console */
       }
       this.editRows[rowIndex].errorContainer.innerHTML = '';
@@ -294,7 +321,7 @@ export class EditGridComponent extends FormioComponents {
     return check;
   }
 
-  checkValidity(data) {
+  checkValidity(data, dirty) {
     if (!FormioUtils.checkCondition(this.component, data, this.data)) {
       return true;
     }
@@ -303,18 +330,26 @@ export class EditGridComponent extends FormioComponents {
     let rowsClosed = true;
     this.editRows.forEach((editRow, rowIndex) => {
       // Trigger all errors on the row.
-      rowsValid &= this.validateRow(rowIndex);
+      const rowValid = this.validateRow(rowIndex, false);
+      // Add has-error class to row.
+      if (!rowValid) {
+        this.addClass(this.editRows[rowIndex].element, 'has-error');
+      }
+      else {
+        this.removeClass(this.editRows[rowIndex].element, 'has-error');
+      }
+      rowsValid &= rowValid;
 
       // Any open rows causes validation to fail.
       rowsClosed &= !editRow.isOpen;
     });
 
     if (!rowsValid) {
-      this.setCustomValidity('Please correct rows before proceeding.');
+      this.setCustomValidity('Please correct rows before proceeding.', dirty);
       return false;
     }
     else if (!rowsClosed) {
-      this.setCustomValidity('Please save all rows before proceeding.');
+      this.setCustomValidity('Please save all rows before proceeding.', dirty);
       return false;
     }
 
@@ -325,32 +360,29 @@ export class EditGridComponent extends FormioComponents {
   setCustomValidity(message) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
-      try {
-        this.errorContainer.removeChild(this.errorElement);
-      }
-      catch (err) {}
+      this.removeChildFrom(this.errorElement, this.errorContainer);
     }
     if (message) {
       this.emit('componentError', this.error);
       this.createErrorElement();
-      let errorMessage = this.ce('p', {
+      const errorMessage = this.ce('p', {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));
-      this.errorElement.appendChild(errorMessage);
+      this.appendTo(errorMessage, this.errorElement);
     }
   }
 
   get defaultValue() {
-    return [];
+    const value = super.defaultValue;
+    return Array.isArray(value) ? value : [];
   }
 
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+  setValue(value) {
     if (!value) {
       return;
     }
-    if (!_isArray(value)) {
+    if (!Array.isArray(value)) {
       return;
     }
 
@@ -367,6 +399,14 @@ export class EditGridComponent extends FormioComponents {
         };
       }
     });
+    // Remove any extra edit rows.
+    if (this.rows.length < this.editRows.length) {
+      for (let rowIndex = this.editRows.length - 1; rowIndex >= this.rows.length; rowIndex--) {
+        this.removeRowComponents(rowIndex);
+        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
+        this.editRows.splice(rowIndex, 1);
+      }
+    }
     this.refreshDOM();
   }
 

@@ -33,6 +33,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.js~Formio.html">Formio</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.pdf.js~FormioPDF.html">FormioPDF</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/formio.wizard.js~FormioWizard.html">FormioWizard</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-createForm">createForm</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formFactory">formFactory</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
@@ -72,6 +74,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid">components/editrgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editrgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -82,6 +85,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-file">components/file</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/file/File.js~FileComponent.html">FileComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form">components/form</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/form/Form.js~FormComponent.html">FormComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-form-fixtures">components/form/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap">components/gmap</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/gmap/Gmap.js~GmapComponent.html">GmapComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-gmap-fixtures">components/gmap/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
@@ -147,70 +151,81 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/survey/Survey.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _each from &apos;lodash/each&apos;;
-import { BaseComponent } from &apos;../base/Base&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
+import {BaseComponent} from &apos;../base/Base&apos;;
+
 export class SurveyComponent extends BaseComponent {
   build() {
-    this.createElement();
-    const labelAtTheBottom = this.component.labelPosition === &apos;bottom&apos;;
-    if (!labelAtTheBottom) {
-      this.createLabel(this.element);
+    if (this.viewOnly) {
+      this.viewOnlyBuild();
     }
-    this.table = this.ce(&apos;table&apos;, {
-      class: &apos;table table-striped table-bordered&apos;
-    });
-    this.setInputStyles(this.table);
-
-    // Build header.
-    let thead = this.ce(&apos;thead&apos;);
-    let thr = this.ce(&apos;tr&apos;);
-    thr.appendChild(this.ce(&apos;td&apos;));
-    _each(this.component.values, (value) =&gt; {
-      let th = this.ce(&apos;th&apos;, {
-        style: &apos;text-align: center;&apos;
+    else {
+      this.createElement();
+      const labelAtTheBottom = this.component.labelPosition === &apos;bottom&apos;;
+      if (!labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+      this.table = this.ce(&apos;table&apos;, {
+        class: &apos;table table-striped table-bordered&apos;
       });
-      th.appendChild(this.text(value.label));
-      thr.appendChild(th);
-    });
-    thead.appendChild(thr);
-    this.table.appendChild(thead);
-    // Build the body.
-    let tbody = this.ce(&apos;tbody&apos;);
-    _each(this.component.questions, (question) =&gt; {
-      let tr = this.ce(&apos;tr&apos;);
-      let td = this.ce(&apos;td&apos;);
-      td.appendChild(this.text(question.label));
-      tr.appendChild(td);
-      _each(this.component.values, (value) =&gt; {
-        let td = this.ce(&apos;td&apos;, {
+      this.setInputStyles(this.table);
+
+      // Build header.
+      const thead = this.ce(&apos;thead&apos;);
+      const thr = this.ce(&apos;tr&apos;);
+      thr.appendChild(this.ce(&apos;td&apos;));
+      _.each(this.component.values, (value) =&gt; {
+        const th = this.ce(&apos;th&apos;, {
           style: &apos;text-align: center;&apos;
         });
-        let input = this.ce(&apos;input&apos;, {
-          type: &apos;radio&apos;,
-          name: &apos;data[&apos; + this.component.key + &apos;][&apos; + question.value + &apos;]&apos;,
-          value: value.value,
-          id: this.id + &apos;-&apos; + question.value + &apos;-&apos; + value.value
-        });
-        this.addInput(input, td);
-        tr.appendChild(td);
+        th.appendChild(this.text(value.label));
+        thr.appendChild(th);
       });
-      tbody.appendChild(tr);
-    });
-    this.table.appendChild(tbody);
-    this.element.appendChild(this.table);
-    if (labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    this.createDescription(this.element);
-    this.restoreValue();
-    if (this.shouldDisable) {
-      this.disabled = true;
+      thead.appendChild(thr);
+      this.table.appendChild(thead);
+      // Build the body.
+      const tbody = this.ce(&apos;tbody&apos;);
+      _.each(this.component.questions, (question) =&gt; {
+        const tr = this.ce(&apos;tr&apos;);
+        const td = this.ce(&apos;td&apos;);
+        td.appendChild(this.text(question.label));
+        tr.appendChild(td);
+        _.each(this.component.values, (value) =&gt; {
+          const td = this.ce(&apos;td&apos;, {
+            style: &apos;text-align: center;&apos;
+          });
+          const input = this.ce(&apos;input&apos;, {
+            type: &apos;radio&apos;,
+            name: `data[${this.component.key}][${question.value}]`,
+            value: value.value,
+            id: `${this.id}-${question.value}-${value.value}`
+          });
+          this.addInput(input, td);
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      this.table.appendChild(tbody);
+      this.element.appendChild(this.table);
+      if (labelAtTheBottom) {
+        this.createLabel(this.element);
+      }
+      this.createDescription(this.element);
+      this.restoreValue();
+      if (this.shouldDisable) {
+        this.disabled = true;
+      }
     }
   }
 
@@ -219,11 +234,10 @@ export class SurveyComponent extends BaseComponent {
     if (!value) {
       return;
     }
-    this.value = value;
-    let key = &apos;data[&apos; + this.component.key + &apos;]&apos;;
-    _each(this.component.questions, (question) =&gt; {
-      _each(this.inputs, (input) =&gt; {
-        if (input.name === (key + &apos;[&apos; + question.value + &apos;]&apos;)) {
+    const key = `data[${this.component.key}]`;
+    _.each(this.component.questions, (question) =&gt; {
+      _.each(this.inputs, (input) =&gt; {
+        if (input.name === (`${key}[${question.value}]`)) {
           input.checked = (input.value === value[question.value]);
         }
       });
@@ -232,17 +246,48 @@ export class SurveyComponent extends BaseComponent {
   }
 
   getValue() {
-    let value = {};
-    let key = &apos;data[&apos; + this.component.key + &apos;]&apos;;
-    _each(this.component.questions, (question) =&gt; {
-      _each(this.inputs, (input) =&gt; {
-        if (input.checked &amp;&amp; (input.name === (key + &apos;[&apos; + question.value + &apos;]&apos;))) {
+    if (this.viewOnly) {
+      return this.value;
+    }
+    const value = {};
+    const key = `data[${this.component.key}]`;
+    _.each(this.component.questions, (question) =&gt; {
+      _.each(this.inputs, (input) =&gt; {
+        if (input.checked &amp;&amp; (input.name === (`${key}[${question.value}]`))) {
           value[question.value] = input.value;
           return false;
         }
       });
     });
     return value;
+  }
+
+  getView(value) {
+    const table = this.ce(&apos;table&apos;, {
+      class: &apos;table table-striped table-bordered table-condensed&apos;
+    });
+    const tbody = this.ce(&apos;tbody&apos;);
+
+    _.each(value, (value, question) =&gt; {
+      const row = this.ce(&apos;tr&apos;);
+
+      const questionCell = this.ce(&apos;th&apos;);
+      const valueCell = this.ce(&apos;td&apos;);
+
+      const questionText = _.find(this.component.questions, [&apos;value&apos;, question]).label;
+      const valueText = _.find(this.component.values, [&apos;value&apos;, value]).label;
+
+      questionCell.appendChild(this.text(questionText));
+      valueCell.appendChild(this.text(valueText));
+
+      row.appendChild(questionCell);
+      row.appendChild(valueCell);
+
+      tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+    return table.outerHTML;
   }
 }
 </code></pre>
