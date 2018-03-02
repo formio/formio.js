@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -218,40 +220,22 @@ export default class FormioWizard extends FormioForm {
     if (form) {
       let page = ++currentPage;
       if (form.nextPage) {
-        // Allow for script execution.
-        if (typeof form.nextPage === &apos;string&apos;) {
-          try {
-            page = (new Function(&apos;next&apos;, &apos;data&apos;, `${form.nextPage.toString()}; return next;`))(page, data);
-            if (!isNaN(parseInt(page, 10)) &amp;&amp; isFinite(page)) {
-              return page;
-            }
-            if (typeof page !== &apos;string&apos;) {
-              return page;
-            }
-
-            // Assume they passed back the key of the page to go to.
-            return this.getPageIndexByKey(page);
-          }
-          catch (e) {
-            console.warn(`An error occurred in a custom nextPage function statement for component ${form.key}`, e);
-            return page;
-          }
+        let next = FormioUtils.evaluate(form.nextPage, {
+          next: page,
+          data,
+          page,
+          form
+        }, &apos;next&apos;);
+        if (next === null) {
+          return null;
         }
-        // Or use JSON Logic.
-        else {
-          const result = FormioUtils.jsonLogic.apply(form.nextPage, {
-            data,
-            page,
-            form,
-            _
-          });
-          const newPage = parseInt(result, 10);
-          if (!isNaN(parseInt(newPage, 10)) &amp;&amp; isFinite(newPage)) {
-            return newPage;
-          }
 
-          return this.getPageIndexByKey(result);
+        const pageNum = parseInt(next, 10);
+        if (!isNaN(parseInt(pageNum, 10)) &amp;&amp; isFinite(pageNum)) {
+          return pageNum;
         }
+
+        return this.getPageIndexByKey(next);
       }
 
       return page;
@@ -375,7 +359,7 @@ export default class FormioWizard extends FormioForm {
     _.each(form.components, (component) =&gt; {
       if (component.type === &apos;panel&apos;) {
         // Ensure that this page can be seen.
-        if (FormioUtils.checkCondition(component, this.data, this.data)) {
+        if (FormioUtils.checkCondition(component, this.data, this.data, this.wizard)) {
           this.pages.push(component);
         }
       }
@@ -538,7 +522,7 @@ export default class FormioWizard extends FormioForm {
       if (FormioUtils.hasCondition(component)) {
         const hasPage = this.pages &amp;&amp; this.pages[pageIndex]
           &amp;&amp; (this.pageId(this.pages[pageIndex]) === this.pageId(component));
-        const shouldShow = FormioUtils.checkCondition(component, this.data, this.data);
+        const shouldShow = FormioUtils.checkCondition(component, this.data, this.data, this.wizard);
         if ((shouldShow &amp;&amp; !hasPage) || (!shouldShow &amp;&amp; hasPage)) {
           rebuild = true;
           return false;
@@ -568,9 +552,7 @@ export default class FormioWizard extends FormioForm {
   buildWizardNav(nextPage) {
     if (this.wizardNav) {
       this.wizardNav.innerHTML = &apos;&apos;;
-      if (this.element.contains(this.wizardNav)) {
-        this.element.removeChild(this.wizardNav);
-      }
+      this.removeChild(this.wizardNav);
     }
     if (this.wizard.full) {
       return;

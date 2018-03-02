@@ -48,6 +48,12 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
+    "formiojs/src/utils/builder.js~builderutils",
+    "variable/index.html#static-variable-BuilderUtils",
+    "<span>BuilderUtils</span> <span class=\"search-result-import-path\">formiojs/src/utils/builder.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/components/button/button.js~buttoncomponent",
     "class/src/components/button/Button.js~ButtonComponent.html",
     "<span>ButtonComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/button/Button.js</span>",
@@ -288,6 +294,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/components/table/tableeditoptions.js~tableeditoptions",
+    "variable/index.html#static-variable-TableEditOptions",
+    "<span>TableEditOptions</span> <span class=\"search-result-import-path\">formiojs/src/components/table/TableEditOptions.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/components/tabs/tabs.js~tabscomponent",
     "class/src/components/tabs/Tabs.js~TabsComponent.html",
     "<span>TabsComponent</span> <span class=\"search-result-import-path\">formiojs/src/components/tabs/Tabs.js</span>",
@@ -426,9 +438,9 @@ window.esdocSearchIndex = [
     "variable"
   ],
   [
-    "formiojs/src/components/editrgrid/fixtures/comp2.js~component",
+    "formiojs/src/components/editgrid/fixtures/comp2.js~component",
     "variable/index.html#static-variable-component",
-    "<span>component</span> <span class=\"search-result-import-path\">formiojs/src/components/editrgrid/fixtures/comp2.js</span>",
+    "<span>component</span> <span class=\"search-result-import-path\">formiojs/src/components/editgrid/fixtures/comp2.js</span>",
     "variable"
   ],
   [
@@ -1200,6 +1212,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/components.js~formiocomponents#clearonhide",
+    "class/src/components/Components.js~FormioComponents.html#instance-method-clearOnHide",
+    "src/components/Components.js~FormioComponents#clearOnHide",
+    "method"
+  ],
+  [
     "src/components/components.js~formiocomponents#components",
     "class/src/components/Components.js~FormioComponents.html#instance-member-components",
     "src/components/Components.js~FormioComponents#components",
@@ -1221,6 +1239,12 @@ window.esdocSearchIndex = [
     "src/components/components.js~formiocomponents#destroy",
     "class/src/components/Components.js~FormioComponents.html#instance-method-destroy",
     "src/components/Components.js~FormioComponents#destroy",
+    "method"
+  ],
+  [
+    "src/components/components.js~formiocomponents#destroycomponents",
+    "class/src/components/Components.js~FormioComponents.html#instance-method-destroyComponents",
+    "src/components/Components.js~FormioComponents#destroyComponents",
     "method"
   ],
   [
@@ -1698,6 +1722,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#appendto",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-appendTo",
+    "src/components/base/Base.js~BaseComponent#appendTo",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#asstring",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-asString",
     "src/components/base/Base.js~BaseComponent#asString",
@@ -1776,10 +1806,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/components/base/base.js~basecomponent#clearpending",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-member-clearPending",
-    "src/components/base/Base.js~BaseComponent#clearPending",
-    "member"
+    "src/components/base/base.js~basecomponent#clearonhide",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-clearOnHide",
+    "src/components/base/Base.js~BaseComponent#clearOnHide",
+    "method"
   ],
   [
     "src/components/base/base.js~basecomponent#component",
@@ -1897,13 +1927,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -2161,13 +2191,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#label",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-label",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-label",
     "src/components/base/Base.js~BaseComponent#label",
     "member"
   ],
@@ -2256,6 +2286,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#prependto",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-prependTo",
+    "src/components/base/Base.js~BaseComponent#prependTo",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#pristine",
     "class/src/components/base/Base.js~BaseComponent.html#instance-member-pristine",
     "src/components/base/Base.js~BaseComponent#pristine",
@@ -2277,6 +2313,12 @@ window.esdocSearchIndex = [
     "src/components/base/base.js~basecomponent#removechild",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeChild",
     "src/components/base/Base.js~BaseComponent#removeChild",
+    "method"
+  ],
+  [
+    "src/components/base/base.js~basecomponent#removechildfrom",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-removeChildFrom",
+    "src/components/base/Base.js~BaseComponent#removeChildFrom",
     "method"
   ],
   [
@@ -2412,6 +2454,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/base/base.js~basecomponent#showelement",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-method-showElement",
+    "src/components/base/Base.js~BaseComponent#showElement",
+    "method"
+  ],
+  [
     "src/components/base/base.js~basecomponent#t",
     "class/src/components/base/Base.js~BaseComponent.html#instance-method-t",
     "src/components/base/Base.js~BaseComponent#t",
@@ -2497,13 +2545,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -2640,6 +2688,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/button/button.js~buttoncomponent#defaultvalue",
+    "class/src/components/button/Button.js~ButtonComponent.html#instance-get-defaultValue",
+    "src/components/button/Button.js~ButtonComponent#defaultValue",
+    "member"
+  ],
+  [
     "src/components/button/button.js~buttoncomponent#destroy",
     "class/src/components/button/Button.js~ButtonComponent.html#instance-method-destroy",
     "src/components/button/Button.js~ButtonComponent#destroy",
@@ -2662,6 +2716,12 @@ window.esdocSearchIndex = [
     "class/src/components/button/Button.js~ButtonComponent.html#instance-method-getValue",
     "src/components/button/Button.js~ButtonComponent#getValue",
     "method"
+  ],
+  [
+    "src/components/button/button.js~buttoncomponent#haserror",
+    "class/src/components/button/Button.js~ButtonComponent.html#instance-member-hasError",
+    "src/components/button/Button.js~ButtonComponent#hasError",
+    "member"
   ],
   [
     "src/components/button/button.js~buttoncomponent#labelelement",
@@ -2934,6 +2994,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/columns/columns.js~columnscomponent#schema",
+    "class/src/components/columns/Columns.js~ColumnsComponent.html#instance-get-schema",
+    "src/components/columns/Columns.js~ColumnsComponent#schema",
+    "member"
+  ],
+  [
     "src/components/columns/columns.js~columnscomponent.builderinfo",
     "class/src/components/columns/Columns.js~ColumnsComponent.html#static-get-builderInfo",
     "src/components/columns/Columns.js~ColumnsComponent.builderInfo",
@@ -2986,6 +3052,12 @@ window.esdocSearchIndex = [
     "class/src/components/container/Container.js~ContainerComponent.html#instance-constructor-constructor",
     "src/components/container/Container.js~ContainerComponent#constructor",
     "method"
+  ],
+  [
+    "src/components/container/container.js~containercomponent#defaultvalue",
+    "class/src/components/container/Container.js~ContainerComponent.html#instance-get-defaultValue",
+    "src/components/container/Container.js~ContainerComponent#defaultValue",
+    "member"
   ],
   [
     "src/components/container/container.js~containercomponent#getvalue",
@@ -3864,15 +3936,15 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/components/editgrid/fixtures/index.js",
-    "file/src/components/editgrid/fixtures/index.js.html",
-    "src/components/editgrid/fixtures/index.js",
+    "src/components/editgrid/fixtures/comp2.js",
+    "file/src/components/editgrid/fixtures/comp2.js.html",
+    "src/components/editgrid/fixtures/comp2.js",
     "file"
   ],
   [
-    "src/components/editrgrid/fixtures/comp2.js",
-    "file/src/components/editrgrid/fixtures/comp2.js.html",
-    "src/components/editrgrid/fixtures/comp2.js",
+    "src/components/editgrid/fixtures/index.js",
+    "file/src/components/editgrid/fixtures/index.js.html",
+    "src/components/editgrid/fixtures/index.js",
     "file"
   ],
   [
@@ -4086,6 +4158,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/file/file.js~filecomponent#defaultvalue",
+    "class/src/components/file/File.js~FileComponent.html#instance-get-defaultValue",
+    "src/components/file/File.js~FileComponent#defaultValue",
+    "member"
+  ],
+  [
     "src/components/file/file.js~filecomponent#errorcontainer",
     "class/src/components/file/File.js~FileComponent.html#instance-member-errorContainer",
     "src/components/file/File.js~FileComponent#errorContainer",
@@ -4227,6 +4305,12 @@ window.esdocSearchIndex = [
     "src/components/form/form.js~formcomponent#_loading",
     "class/src/components/form/Form.js~FormComponent.html#instance-member-_loading",
     "src/components/form/Form.js~FormComponent#_loading",
+    "member"
+  ],
+  [
+    "src/components/form/form.js~formcomponent#_submission",
+    "class/src/components/form/Form.js~FormComponent.html#instance-member-_submission",
+    "src/components/form/Form.js~FormComponent#_submission",
     "member"
   ],
   [
@@ -5322,6 +5406,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/select/select.js~selectcomponent#show",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-show",
+    "src/components/select/Select.js~SelectComponent#show",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#triggerupdate",
     "class/src/components/select/Select.js~SelectComponent.html#instance-member-triggerUpdate",
     "src/components/select/Select.js~SelectComponent#triggerUpdate",
@@ -5670,6 +5760,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/survey/survey.js~surveycomponent#getview",
+    "class/src/components/survey/Survey.js~SurveyComponent.html#instance-method-getView",
+    "src/components/survey/Survey.js~SurveyComponent#getView",
+    "method"
+  ],
+  [
     "src/components/survey/survey.js~surveycomponent#setvalue",
     "class/src/components/survey/Survey.js~SurveyComponent.html#instance-method-setValue",
     "src/components/survey/Survey.js~SurveyComponent#setValue",
@@ -5724,15 +5820,45 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/components/table/table.js~tablecomponent#addcomponents",
+    "class/src/components/table/Table.js~TableComponent.html#instance-method-addComponents",
+    "src/components/table/Table.js~TableComponent#addComponents",
+    "method"
+  ],
+  [
     "src/components/table/table.js~tablecomponent#build",
     "class/src/components/table/Table.js~TableComponent.html#instance-method-build",
     "src/components/table/Table.js~TableComponent#build",
     "method"
   ],
   [
+    "src/components/table/table.js~tablecomponent#buildheader",
+    "class/src/components/table/Table.js~TableComponent.html#instance-method-buildHeader",
+    "src/components/table/Table.js~TableComponent#buildHeader",
+    "method"
+  ],
+  [
     "src/components/table/table.js~tablecomponent#element",
     "class/src/components/table/Table.js~TableComponent.html#instance-member-element",
     "src/components/table/Table.js~TableComponent#element",
+    "member"
+  ],
+  [
+    "src/components/table/table.js~tablecomponent#schema",
+    "class/src/components/table/Table.js~TableComponent.html#instance-get-schema",
+    "src/components/table/Table.js~TableComponent#schema",
+    "member"
+  ],
+  [
+    "src/components/table/table.js~tablecomponent#table",
+    "class/src/components/table/Table.js~TableComponent.html#instance-member-table",
+    "src/components/table/Table.js~TableComponent#table",
+    "member"
+  ],
+  [
+    "src/components/table/table.js~tablecomponent#tbody",
+    "class/src/components/table/Table.js~TableComponent.html#instance-member-tbody",
+    "src/components/table/Table.js~TableComponent#tbody",
     "member"
   ],
   [
@@ -5751,6 +5877,12 @@ window.esdocSearchIndex = [
     "src/components/table/table.spec.js",
     "file/src/components/table/Table.spec.js.html",
     "src/components/table/Table.spec.js",
+    "file"
+  ],
+  [
+    "src/components/table/tableeditoptions.js",
+    "file/src/components/table/TableEditOptions.js.html",
+    "src/components/table/TableEditOptions.js",
     "file"
   ],
   [
@@ -5988,6 +6120,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/components/textarea/textarea.js~textareacomponent#editorready",
+    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-editorReady",
+    "src/components/textarea/TextArea.js~TextAreaComponent#editorReady",
+    "member"
+  ],
+  [
     "src/components/textarea/textarea.js~textareacomponent#elementinfo",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-method-elementInfo",
     "src/components/textarea/TextArea.js~TextAreaComponent#elementInfo",
@@ -6021,12 +6159,6 @@ window.esdocSearchIndex = [
     "src/components/textarea/textarea.js~textareacomponent#quill",
     "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-quill",
     "src/components/textarea/TextArea.js~TextAreaComponent#quill",
-    "member"
-  ],
-  [
-    "src/components/textarea/textarea.js~textareacomponent#quillready",
-    "class/src/components/textarea/TextArea.js~TextAreaComponent.html#instance-member-quillReady",
-    "src/components/textarea/TextArea.js~TextAreaComponent#quillReady",
     "member"
   ],
   [
@@ -6522,6 +6654,24 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "src/formio.form.builder.js~formioformbuilder#addbuildercomponent",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-addBuilderComponent",
+    "src/formio.form.builder.js~FormioFormBuilder#addBuilderComponent",
+    "method"
+  ],
+  [
+    "src/formio.form.builder.js~formioformbuilder#addbuildergroup",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-addBuilderGroup",
+    "src/formio.form.builder.js~FormioFormBuilder#addBuilderGroup",
+    "method"
+  ],
+  [
+    "src/formio.form.builder.js~formioformbuilder#adddragcontainer",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-addDragContainer",
+    "src/formio.form.builder.js~FormioFormBuilder#addDragContainer",
+    "method"
+  ],
+  [
     "src/formio.form.builder.js~formioformbuilder#build",
     "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-build",
     "src/formio.form.builder.js~FormioFormBuilder#build",
@@ -6532,12 +6682,6 @@ window.esdocSearchIndex = [
     "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-buildSidebar",
     "src/formio.form.builder.js~FormioFormBuilder#buildSidebar",
     "method"
-  ],
-  [
-    "src/formio.form.builder.js~formioformbuilder#builderelement",
-    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-member-builderElement",
-    "src/formio.form.builder.js~FormioFormBuilder#builderElement",
-    "member"
   ],
   [
     "src/formio.form.builder.js~formioformbuilder#buildersidebar",
@@ -6600,21 +6744,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/formio.form.builder.js~formioformbuilder#element",
-    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-member-element",
-    "src/formio.form.builder.js~FormioFormBuilder#element",
-    "member"
-  ],
-  [
     "src/formio.form.builder.js~formioformbuilder#form",
     "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-member-form",
     "src/formio.form.builder.js~FormioFormBuilder#form",
-    "member"
-  ],
-  [
-    "src/formio.form.builder.js~formioformbuilder#formbuilderelement",
-    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-member-formBuilderElement",
-    "src/formio.form.builder.js~FormioFormBuilder#formBuilderElement",
     "member"
   ],
   [
@@ -6624,10 +6756,40 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/formio.form.builder.js~formioformbuilder#grouppanels",
-    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-member-groupPanels",
-    "src/formio.form.builder.js~FormioFormBuilder#groupPanels",
+    "src/formio.form.builder.js~formioformbuilder#groups",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-member-groups",
+    "src/formio.form.builder.js~FormioFormBuilder#groups",
     "member"
+  ],
+  [
+    "src/formio.form.builder.js~formioformbuilder#insertinorder",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-insertInOrder",
+    "src/formio.form.builder.js~FormioFormBuilder#insertInOrder",
+    "method"
+  ],
+  [
+    "src/formio.form.builder.js~formioformbuilder#ondrop",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-onDrop",
+    "src/formio.form.builder.js~FormioFormBuilder#onDrop",
+    "method"
+  ],
+  [
+    "src/formio.form.builder.js~formioformbuilder#ready",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-get-ready",
+    "src/formio.form.builder.js~FormioFormBuilder#ready",
+    "member"
+  ],
+  [
+    "src/formio.form.builder.js~formioformbuilder#refreshdraggable",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-refreshDraggable",
+    "src/formio.form.builder.js~FormioFormBuilder#refreshDraggable",
+    "method"
+  ],
+  [
+    "src/formio.form.builder.js~formioformbuilder#setbuilderelement",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-setBuilderElement",
+    "src/formio.form.builder.js~FormioFormBuilder#setBuilderElement",
+    "method"
   ],
   [
     "src/formio.form.builder.js~formioformbuilder#sidebarelement",
@@ -6636,10 +6798,22 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.form.builder.js~formioformbuilder#sidebarcontainers",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-member-sidebarContainers",
+    "src/formio.form.builder.js~FormioFormBuilder#sidebarContainers",
+    "member"
+  ],
+  [
     "src/formio.form.builder.js~formioformbuilder#updatecomponent",
     "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-method-updateComponent",
     "src/formio.form.builder.js~FormioFormBuilder#updateComponent",
     "method"
+  ],
+  [
+    "src/formio.form.builder.js~formioformbuilder#updatedraggable",
+    "class/src/formio.form.builder.js~FormioFormBuilder.html#instance-member-updateDraggable",
+    "src/formio.form.builder.js~FormioFormBuilder#updateDraggable",
+    "member"
   ],
   [
     "src/formio.form.js",
@@ -6979,13 +7153,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
@@ -7027,14 +7201,20 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#url",
-    "class/src/formio.form.js~FormioForm.html#instance-get-url",
+    "class/src/formio.form.js~FormioForm.html#instance-set-url",
     "src/formio.form.js~FormioForm#url",
     "member"
   ],
   [
     "src/formio.form.js~formioform#url",
-    "class/src/formio.form.js~FormioForm.html#instance-set-url",
+    "class/src/formio.form.js~FormioForm.html#instance-get-url",
     "src/formio.form.js~FormioForm#url",
+    "member"
+  ],
+  [
+    "src/formio.form.js~formioform#wrapper",
+    "class/src/formio.form.js~FormioForm.html#instance-member-wrapper",
+    "src/formio.form.js~FormioForm#wrapper",
     "member"
   ],
   [
@@ -7722,6 +7902,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "src/formio.polyfill.js",
+    "file/src/formio.polyfill.js.html",
+    "src/formio.polyfill.js",
+    "file"
+  ],
+  [
     "src/formio.spec.js",
     "file/src/formio.spec.js.html",
     "src/formio.spec.js",
@@ -7977,6 +8163,12 @@ window.esdocSearchIndex = [
     "src/providers/storage/url.js",
     "file/src/providers/storage/url.js.html",
     "src/providers/storage/url.js",
+    "file"
+  ],
+  [
+    "src/utils/builder.js",
+    "file/src/utils/builder.js.html",
+    "src/utils/builder.js",
     "file"
   ],
   [

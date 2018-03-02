@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -178,23 +180,37 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.form.builder.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import FormioForm from &apos;./formio.form&apos;;
 import dragula from &apos;dragula&apos;;
-import { ColumnsComponent } from &apos;./components/columns/Columns&apos;;
-import { ColumnComponent } from &apos;./components/columns/Column&apos;;
 import Components from &apos;./components/builder&apos;;
-import { FormioComponents } from &apos;./components/Components&apos;;
-import FormioUtils from &apos;./utils&apos;;
-import _groupBy from &apos;lodash/groupBy&apos;;
-import _sortBy from &apos;lodash/sortBy&apos;;
-import _each from &apos;lodash/each&apos;;
-import _cloneDeep from &apos;lodash/cloneDeep&apos;;
-import _camelCase from &apos;lodash/camelCase&apos;;
-import _assign from &apos;lodash/assign&apos;;
-import _map from &apos;lodash/map&apos;;
+import {FormioComponents} from &apos;./components/Components&apos;;
+import { BuilderUtils } from &apos;./utils/builder&apos;;
+import _ from &apos;lodash&apos;;
 
 export class FormioFormBuilder extends FormioForm {
   constructor(element, options) {
     super(element, options);
     let self = this;
+    this.dragContainers = [];
+    this.sidebarContainers = [];
+    this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
+
+    // Setup default groups, but let them be overridden.
+    this.options.groups = _.defaultsDeep({}, this.options.groups, {
+      basic: {
+        title: &apos;Basic Components&apos;,
+        weight: 0,
+        default: true,
+      },
+      advanced: {
+        title: &apos;Advanced&apos;,
+        weight: 10
+      },
+      layout: {
+        title: &apos;Layout&apos;,
+        weight: 20
+      }
+    });
+
+    this.groups = {};
     this.options.builder = true;
     this.options.hooks = this.options.hooks || {};
     this.options.hooks.addComponents = function(components) {
@@ -243,13 +259,30 @@ export class FormioFormBuilder extends FormioForm {
       }
 
       if (!container.noDrop) {
-        container.component = this;
-        self.addClass(container, &apos;drag-container&apos;);
-        self.dragContainers.push(container);
+        self.addDragContainer(container, this);
       }
 
       return container;
     };
+    this.setBuilderElement();
+  }
+
+  setBuilderElement() {
+    this.onElement.then(() =&gt; {
+      this.addClass(this.wrapper, &apos;row formbuilder&apos;);
+      this.builderSidebar = this.ce(&apos;div&apos;, {
+        class: &apos;col-xs-4 col-sm-3 col-md-2 formcomponents&apos;
+      });
+      this.prependTo(this.builderSidebar, this.wrapper);
+      this.addClass(this.element, &apos;col-xs-8 col-sm-9 col-md-10 formarea&apos;);
+      this.element.component = this;
+      this.buildSidebar();
+      this.builderSidebar.appendChild(this.sideBarElement);
+    });
+  }
+
+  get ready() {
+    return this.formReady;
   }
 
   deleteComponent(component) {
@@ -267,7 +300,7 @@ export class FormioFormBuilder extends FormioForm {
     }
   }
 
-  updateComponent(component, isNew) {
+  updateComponent(component) {
     // Update the preview.
     if (this.componentPreview) {
       this.componentPreview.innerHTML = &apos;&apos;;
@@ -277,9 +310,9 @@ export class FormioFormBuilder extends FormioForm {
     }
 
     // Ensure this component has a key.
-    if (isNew) {
+    if (component.isNew &amp;&amp; !component.uniqueKey) {
       if (!component.keyModified) {
-        component.component.key = _camelCase(
+        component.component.key = _.camelCase(
           component.component.label ||
           component.component.placeholder ||
           component.component.type
@@ -287,26 +320,19 @@ export class FormioFormBuilder extends FormioForm {
       }
 
       // Set a unique key for this component.
-      FormioUtils.uniquify(this._form, component.component, isNew);
+      BuilderUtils.uniquify(this._form, component.component);
+      component.uniqueKey = true;
     }
 
     // Set the full form on the component.
     component.component.__form = this.schema;
 
-    // Modify the component information in the edit form.
-    if (this.editForm) {
-      this.editForm.formReady.then(() =&gt; this.editForm.setValue({data: component.component}, {
-        noUpdateEvent: true
-      }));
-    }
-
     // Called when we update a component.
-    component.isNew = isNew;
     this.emit(&apos;updateComponent&apos;, component);
   }
 
-  editComponent(component, isNew) {
-    let componentCopy = _cloneDeep(component);
+  editComponent(component) {
+    let componentCopy = _.cloneDeep(component);
     let componentClass = Components[componentCopy.component.type];
     let dialog = this.createModal(componentCopy.name);
     let formioForm = this.ce(&apos;div&apos;);
@@ -394,7 +420,7 @@ export class FormioFormBuilder extends FormioForm {
     this.editForm.form = Components[componentCopy.component.type].editForm();
 
     // Update the preview with this component.
-    this.updateComponent(componentCopy, isNew);
+    this.updateComponent(componentCopy);
 
     // Register for when the edit form changes.
     this.editForm.on(&apos;change&apos;, (event) =&gt; {
@@ -402,15 +428,21 @@ export class FormioFormBuilder extends FormioForm {
         // See if this is a manually modified key.
         if (event.changed.component &amp;&amp; (event.changed.component.key === &apos;key&apos;)) {
           componentCopy.keyModified = true;
+          componentCopy.uniqueKey = false;
         }
 
         // Set the component JSON to the new data.
         componentCopy.component = event.data;
 
         // Update the component.
-        this.updateComponent(componentCopy, isNew);
+        this.updateComponent(componentCopy);
       }
     });
+
+    // Modify the component information in the edit form.
+    this.editForm.formReady.then(() =&gt; this.editForm.setValue({data: componentCopy.component}, {
+      noUpdateEvent: true
+    }));
 
     this.addEventListener(cancelButton, &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
@@ -425,12 +457,14 @@ export class FormioFormBuilder extends FormioForm {
 
     this.addEventListener(saveButton, &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
-      isNew = false;
       if (componentCopy.component &amp;&amp; componentCopy.component.__form) {
         delete componentCopy.component.__form;
       }
-      console.log(componentCopy.component);
+      component.isNew = false;
       component.component = componentCopy.component;
+      if (component.dragEvents &amp;&amp; component.dragEvents.onSave) {
+        component.dragEvents.onSave(component);
+      }
       this.emit(&apos;saveComponent&apos;, component);
       this.form = this.schema;
       dialog.close();
@@ -438,20 +472,13 @@ export class FormioFormBuilder extends FormioForm {
 
     this.addEventListener(dialog, &apos;close&apos;, () =&gt; {
       this.editForm.destroy();
-      if (isNew) {
+      if (component.isNew) {
         this.deleteComponent(component);
       }
     });
 
     // Called when we edit a component.
     this.emit(&apos;editComponent&apos;, component);
-  }
-
-  clear() {
-    super.clear();
-    if (this.builderElement) {
-      this.builderElement.innerHTML = &apos;&apos;;
-    }
   }
 
   destroy() {
@@ -461,102 +488,155 @@ export class FormioFormBuilder extends FormioForm {
     }
   }
 
+  /**
+   * Insert an element in the weight order.
+   *
+   * @param info
+   * @param items
+   * @param element
+   * @param container
+   */
+  insertInOrder(info, items, element, container) {
+    // Determine where this item should be added.
+    let beforeWeight = 0;
+    let before = null;
+    _.each(items, (itemInfo) =&gt; {
+      if (
+        (info.key !== itemInfo.key) &amp;&amp;
+        (info.weight &lt; itemInfo.weight) &amp;&amp;
+        (!beforeWeight || (itemInfo.weight &gt; beforeWeight))
+      ) {
+        before = itemInfo.element;
+        beforeWeight = itemInfo.weight;
+      }
+    });
+
+    if (before) {
+      container.insertBefore(element, before);
+    }
+    else {
+      container.appendChild(element);
+    }
+  }
+
+  addBuilderGroup(info) {
+    if (!info || !info.key) {
+      console.warn(&apos;Invalid Group Provided.&apos;);
+      return;
+    }
+
+    info = _.clone(info);
+    let groupAnchor = this.ce(&apos;a&apos;, {
+      href: `#group-${info.key}`
+    }, this.text(info.title));
+
+    // Add a listener when it is clicked.
+    this.addEventListener(groupAnchor, &apos;click&apos;, (event) =&gt; {
+      event.preventDefault();
+      let clickedGroupId = event.target.getAttribute(&apos;href&apos;).replace(&apos;#group-&apos;, &apos;&apos;);
+      if (this.groups[clickedGroupId]) {
+        let clickedGroup = this.groups[clickedGroupId];
+        let wasIn = this.hasClass(clickedGroup.panel, &apos;in&apos;);
+        _.each(this.groups, (group, groupId) =&gt; {
+          this.removeClass(group.panel, &apos;in&apos;);
+          if ((groupId === clickedGroupId) &amp;&amp; !wasIn) {
+            this.addClass(group.panel, &apos;in&apos;);
+          }
+        });
+
+        // Match the form builder height to the sidebar.
+        this.element.style.minHeight = this.builderSidebar.offsetHeight + &apos;px&apos;;
+      }
+    });
+
+    info.element = this.ce(&apos;div&apos;, {
+      class: &apos;panel panel-default form-builder-panel&apos;,
+      id: `group-panel-${info.key}`
+    }, [
+      this.ce(&apos;div&apos;, {
+        class: &apos;panel-heading&apos;
+      }, [
+        this.ce(&apos;h4&apos;, {
+          class: &apos;panel-title&apos;
+        }, groupAnchor)
+      ])
+    ]);
+    info.body = this.ce(&apos;div&apos;, {
+      class: &apos;panel-body no-drop&apos;
+    });
+
+    // Add this group body to the drag containers.
+    this.sidebarContainers.push(info.body);
+
+    let groupBodyClass = &apos;panel-collapse collapse&apos;;
+    if (info.default) {
+      groupBodyClass += &apos; in&apos;;
+    }
+
+    info.panel = this.ce(&apos;div&apos;, {
+      class: groupBodyClass,
+      id: `group-${info.key}`
+    }, info.body);
+
+    info.element.appendChild(info.panel);
+    this.groups[info.key] = info;
+    this.insertInOrder(info, this.groups, info.element, this.sideBarElement);
+  }
+
+  addBuilderComponent(component) {
+    if (!component || !component.group || !this.groups[component.group]) {
+      console.warn(&apos;Invalid group&apos;);
+      return;
+    }
+
+    component = _.clone(component);
+    let groupInfo = this.groups[component.group];
+    if (!groupInfo.components) {
+      groupInfo.components = {};
+    }
+
+    groupInfo.components[component.key] = component;
+
+    component.element = this.ce(&apos;span&apos;, {
+      id: `builder-${component.key}`,
+      class: &apos;btn btn-primary btn-xs btn-block formcomponent drag-copy&apos;
+    });
+    if (component.icon) {
+      component.element.appendChild(this.ce(&apos;i&apos;, {
+        class: component.icon,
+        style: &apos;margin-right: 5px;&apos;
+      }));
+    }
+    component.element.builderInfo = component;
+    component.element.appendChild(this.text(component.title));
+    this.insertInOrder(component, groupInfo.components, component.element, groupInfo.body);
+  }
+
   buildSidebar() {
+    this.groups = {};
+    this.sideBarElement = this.ce(&apos;div&apos;, {
+      class: &apos;panel-group&apos;
+    });
+
+    // Add the groups.
+    _.each(this.options.groups, (info, group) =&gt; {
+      info.key = group;
+      this.addBuilderGroup(info);
+    });
+
     // Get all of the components builder info grouped and sorted.
-    let components = _map(_assign(Components, FormioComponents.customComponents), (component, key) =&gt; {
+    let components = _.filter(_.map(_.assign(Components, FormioComponents.customComponents), (component, type) =&gt; {
       let builderInfo = component.builderInfo;
       if (!builderInfo) {
         return null;
       }
 
-      builderInfo.key = key;
+      builderInfo.key = type;
       return builderInfo;
-    });
+    }));
 
-    components = _sortBy(components, &apos;weight&apos;);
-    components = _groupBy(components, &apos;group&apos;);
-    let sideBarElement = this.ce(&apos;div&apos;, {
-      class: &apos;panel-group&apos;
-    });
-
-    this.groupPanels = {};
-
-    // Iterate through each group of components.
-    let firstGroup = true;
-    _each(components, (groupComponents, group) =&gt; {
-      let groupInfo = FormioComponents.groupInfo[group];
-      if (groupInfo) {
-        let groupAnchor = this.ce(&apos;a&apos;, {
-          href: &apos;#group-&apos; + group
-        }, this.text(groupInfo.title));
-        this.addEventListener(groupAnchor, &apos;click&apos;, (event) =&gt; {
-          event.preventDefault();
-          let clickedGroup = event.target.getAttribute(&apos;href&apos;).substr(1);
-          let wasIn = this.hasClass(this.groupPanels[clickedGroup], &apos;in&apos;);
-          _each(this.groupPanels, (groupPanel, groupId) =&gt; {
-            this.removeClass(groupPanel, &apos;in&apos;);
-            if ((groupId === clickedGroup) &amp;&amp; !wasIn) {
-              this.addClass(groupPanel, &apos;in&apos;);
-            }
-          });
-
-          // Match the form builder height to the sidebar.
-          this.formBuilderElement.style.minHeight = this.builderSidebar.offsetHeight + &apos;px&apos;;
-        });
-
-        let groupPanel = this.ce(&apos;div&apos;, {
-          class: &apos;panel panel-default form-builder-panel&apos;
-        }, [
-          this.ce(&apos;div&apos;, {
-            class: &apos;panel-heading&apos;
-          }, [
-            this.ce(&apos;h4&apos;, {
-              class: &apos;panel-title&apos;
-            }, groupAnchor)
-          ])
-        ]);
-        let groupBody = this.ce(&apos;div&apos;, {
-          class: &apos;panel-body no-drop&apos;
-        });
-
-        // Add this group body to the drag containers.
-        this.dragContainers.push(groupBody);
-
-        let groupBodyClass = &apos;panel-collapse collapse&apos;;
-        if (firstGroup) {
-          groupBodyClass += &apos; in&apos;;
-          firstGroup = false;
-        }
-        let groupId = `group-${group}`;
-        let groupBodyWrapper = this.ce(&apos;div&apos;, {
-          class: groupBodyClass,
-          id: groupId
-        }, groupBody);
-
-        this.groupPanels[groupId] = groupBodyWrapper;
-
-        _each(groupComponents, (builderInfo) =&gt; {
-          let compButton = this.ce(&apos;span&apos;, {
-            id: &apos;builder-&apos; + builderInfo.key,
-            class: &apos;btn btn-primary btn-xs btn-block formcomponent drag-copy&apos;
-          });
-          if (builderInfo.icon) {
-            compButton.appendChild(this.ce(&apos;i&apos;, {
-              class: builderInfo.icon,
-              style: &apos;margin-right: 5px;&apos;
-            }));
-          }
-          compButton.builderInfo = builderInfo;
-          compButton.appendChild(this.text(builderInfo.title));
-          groupBody.appendChild(compButton);
-        });
-
-        groupPanel.appendChild(groupBodyWrapper);
-        sideBarElement.appendChild(groupPanel);
-      }
-    });
-
-    return sideBarElement;
+    // Iterate through every component.
+    _.each(components, (component) =&gt; this.addBuilderComponent(component));
   }
 
   getParentElement(element) {
@@ -565,91 +645,123 @@ export class FormioFormBuilder extends FormioForm {
     return containerComponent;
   }
 
-  build() {
+  addDragContainer(element, component, dragEvents) {
+    _.remove(this.dragContainers, (container) =&gt; (element.id &amp;&amp; (element.id === container.id)));
+    element.component = component;
+    if (dragEvents) {
+      element.dragEvents = dragEvents;
+    }
+    this.addClass(element, &apos;drag-container&apos;);
+    if (!element.id) {
+      element.id = `builder-element-${component.id}`;
+    }
+    this.dragContainers.push(element);
+    this.updateDraggable();
+  }
+
+  clear() {
+    super.clear();
     this.dragContainers = [];
-    if (!this.builderElement) {
-      this.builderElement = this.element;
-      this.builderElement.setAttribute(&apos;class&apos;, &apos;row formbuilder&apos;);
+  }
+
+  onDrop(element, target, source, sibling) {
+    let builderElement = source.querySelector(&apos;#&apos; + element.id);
+    let newParent = this.getParentElement(element);
+    if (!newParent || !newParent.component) {
+      return console.warn(&apos;Could not find parent component.&apos;);
     }
 
-    this.builderSidebar = document.createElement(&apos;div&apos;);
-    this.builderSidebar.setAttribute(&apos;class&apos;, &apos;col-xs-4 col-sm-3 col-md-2 formcomponents&apos;);
-    this.builderElement.appendChild(this.builderSidebar);
+    // Remove any instances of the placeholder.
+    let placeholder = document.getElementById(newParent.component.id + &apos;-placeholder&apos;);
+    if (placeholder) {
+      placeholder.parentNode.removeChild(placeholder);
+    }
 
-    this.formBuilderElement = document.createElement(&apos;div&apos;);
-    this.formBuilderElement.setAttribute(&apos;class&apos;, &apos;col-xs-8 col-sm-9 col-md-10 formarea&apos;);
-    this.element = this.formBuilderElement;
-    this.element.component = this;
+    // If the sibling is the placeholder, then set it to null.
+    if (sibling === placeholder) {
+      sibling = null;
+    }
 
-    this.builderElement.appendChild(this.formBuilderElement);
-    this.sideBarElement = this.buildSidebar();
-    this.builderSidebar.appendChild(this.sideBarElement);
+    // If this is a new component, it will come from the builderElement
+    if (
+      builderElement &amp;&amp;
+      builderElement.builderInfo &amp;&amp;
+      builderElement.builderInfo.schema
+    ) {
+      let componentSchema = _.clone(builderElement.builderInfo.schema);
+      if (target.dragEvents &amp;&amp; target.dragEvents.onDrop) {
+        target.dragEvents.onDrop(element, target, source, sibling, componentSchema);
+      }
 
-    super.build();
-    this.dragula = dragula(this.dragContainers, {
+      // Add the new component.
+      let component = newParent.component.addComponent(
+        componentSchema,
+        newParent,
+        newParent.component.data,
+        sibling
+      );
+
+      // Set that this is a new component.
+      component.isNew = true;
+
+      // Pass along the save event.
+      if (target.dragEvents) {
+        component.dragEvents = target.dragEvents;
+      }
+
+      // Edit the component.
+      this.editComponent(component);
+
+      // Remove the element.
+      target.removeChild(element);
+    }
+    // Check to see if this is a moved component.
+    else if (element.component) {
+      let componentSchema = element.component.schema;
+      if (target.dragEvents &amp;&amp; target.dragEvents.onDrop) {
+        target.dragEvents.onDrop(element, target, source, sibling, componentSchema);
+      }
+
+      // Remove the component from its parent.
+      if (element.component.parent) {
+        element.component.parent.removeComponent(element.component);
+      }
+
+      // Add the component to its new parent.
+      let component = newParent.component.addComponent(
+        componentSchema,
+        newParent,
+        newParent.component.data,
+        sibling
+      );
+
+      if (target.dragEvents &amp;&amp; target.dragEvents.onSave) {
+        target.dragEvents.onSave(component);
+      }
+
+      // Refresh the form.
+      this.form = this.schema;
+    }
+  }
+
+  refreshDraggable() {
+    if (this.dragula) {
+      this.dragula.destroy();
+    }
+    this.dragula = dragula(this.sidebarContainers.concat(this.dragContainers), {
       copy: function(el, source) {
         return el.classList.contains(&apos;drag-copy&apos;);
       },
       accepts: function(el, target) {
         return !target.classList.contains(&apos;no-drop&apos;);
       }
-    }).on(&apos;drop&apos;, (element, target, source, sibling) =&gt; {
-      let builderElement = source.querySelector(&apos;#&apos; + element.id);
-      let newParent = this.getParentElement(element);
-      if (!newParent || !newParent.component) {
-        return console.warn(&apos;Could not find parent component.&apos;);
-      }
+    }).on(&apos;drop&apos;, (element, target, source, sibling) =&gt; this.onDrop(element, target, source, sibling));
+  }
 
-      // Remove any instances of the placeholder.
-      let placeholder = document.getElementById(newParent.component.id + &apos;-placeholder&apos;);
-      if (placeholder) {
-        placeholder.parentNode.removeChild(placeholder);
-      }
-
-      // If the sibling is the placeholder, then set it to null.
-      if (sibling === placeholder) {
-        sibling = null;
-      }
-
-      // If this is a new component, it will come from the builderElement
-      if (
-        builderElement &amp;&amp;
-        builderElement.builderInfo &amp;&amp;
-        builderElement.builderInfo.schema
-      ) {
-        // Add the new component.
-        let component = newParent.component.addComponent(
-          builderElement.builderInfo.schema,
-          newParent,
-          newParent.component.data,
-          sibling
-        );
-
-        // Edit the component.
-        this.editComponent(component, true);
-
-        // Remove the element.
-        target.removeChild(element);
-      }
-      // Check to see if this is a moved component.
-      else if (element.component) {
-        // Remove the component from its parent.
-        if (element.component.parent) {
-          element.component.parent.removeComponent(element.component);
-        }
-
-        // Add the component to its new parent.
-        newParent.component.addComponent(
-          element.component.schema,
-          newParent,
-          newParent.component.data,
-          sibling
-        );
-
-        // Refresh the form.
-        this.form = this.schema;
-      }
-    });
+  build() {
+    super.build();
+    this.updateDraggable();
+    this.formReadyResolve();
   }
 }
 </code></pre>

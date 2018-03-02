@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -382,9 +384,17 @@ export class SelectComponent extends BaseComponent {
       }
     }
 
+    // Allow js processing (needed for form builder)
+    if (this.component.onSetItems &amp;&amp; typeof this.component.onSetItems === &apos;function&apos;) {
+      let newItems = this.component.onSetItems(this, items);
+      if (newItems) {
+        items = newItems;
+      }
+    }
+
     if (!this.choices &amp;&amp; this.selectInput) {
       // Detach from DOM and clear input.
-      this.selectContainer.removeChild(this.selectInput);
+      this.removeChildFrom(this.selectInput, this.selectContainer);
       this.selectInput.innerHTML = &apos;&apos;;
     }
 
@@ -408,7 +418,7 @@ export class SelectComponent extends BaseComponent {
     }
     else {
       // Re-attach select input.
-      this.selectContainer.appendChild(this.selectInput);
+      this.appendTo(this.selectInput, this.selectContainer);
     }
 
     // We are no longer loading.
@@ -480,7 +490,7 @@ export class SelectComponent extends BaseComponent {
       .then((response) =&gt; this.setItems(response))
       .catch((err) =&gt; {
         this.loading = false;
-        this.events.emit(&apos;formio.error&apos;, err);
+        this.emit(&apos;error&apos;, err);
         console.warn(`Unable to load resources for ${this.component.key}`);
       });
   }
@@ -512,26 +522,23 @@ export class SelectComponent extends BaseComponent {
   }
 
   updateCustomItems() {
-    const utils = FormioUtils;
-    const data = _.cloneDeep(this.root ? this.root.data : this.data);
-    const row = _.cloneDeep(this.data);
-    try {
-      this.setItems((new Function(
-        &apos;data&apos;,
-        &apos;row&apos;,
-        &apos;utils&apos;,
-        `var values = []; ${this.component.data.custom.toString()}; return values;`
-      ))(data, row, utils));
-    }
-    catch (error) {
-      console.warn(error);
-      this.setItems([]);
-    }
+    this.setItems(FormioUtils.evaluate(this.component.data.custom, {
+      values: [],
+      component: this,
+      data: _.cloneDeep(this.root ? this.root.data : this.data),
+      row: _.cloneDeep(this.data),
+      utils: FormioUtils
+    }, &apos;values&apos;) || []);
   }
 
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
       console.warn(`Select component ${this.component.key} does not have data configuration.`);
+      return;
+    }
+
+    // Only load the data if it is visible.
+    if (!this.checkConditions()) {
       return;
     }
 
@@ -639,6 +646,7 @@ export class SelectComponent extends BaseComponent {
       return;
     }
 
+    const useSearch = this.component.hasOwnProperty(&apos;searchEnabled&apos;) ? this.component.searchEnabled : true;
     const placeholderValue = this.t(this.component.placeholder);
     const choicesOptions = {
       removeItemButton: this.component.removeItemButton || (this.component.multiple || false),
@@ -652,7 +660,7 @@ export class SelectComponent extends BaseComponent {
       searchPlaceholderValue: placeholderValue,
       shouldSort: false,
       position: (this.component.dropdown || &apos;auto&apos;),
-      searchEnabled: this.component.searchEnabled || false
+      searchEnabled: useSearch
     };
 
     const tabIndex = input.tabIndex;
@@ -692,6 +700,14 @@ export class SelectComponent extends BaseComponent {
     else {
       this.choices.enable();
     }
+  }
+
+  show(show) {
+    // If we go from hidden to visible, trigger a refresh.
+    if (show &amp;&amp; (this._visible !== show)) {
+      this.triggerUpdate();
+    }
+    return super.show(show);
   }
 
   addCurrentChoices(value, items) {
@@ -736,7 +752,7 @@ export class SelectComponent extends BaseComponent {
     else {
       const values = [];
       _.each(this.selectOptions, (selectOption) =&gt; {
-        if (selectOption.element.selected) {
+        if (selectOption.element &amp;&amp; selectOption.element.selected) {
           values.push(selectOption.value);
         }
       });
@@ -749,7 +765,7 @@ export class SelectComponent extends BaseComponent {
     flags = this.getFlags.apply(this, arguments);
     const hasPreviousValue = Array.isArray(this.value) ? this.value.length : this.value;
     const hasValue = Array.isArray(value) ? value.length : value;
-    this.data[this.component.key] = value;
+    _.set(this.data, this.component.key, value);
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {

@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -495,7 +497,7 @@ export class BaseComponent {
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return this.component;
+    return _.omit(this.component, &apos;id&apos;);
   }
 
   /**
@@ -695,9 +697,9 @@ export class BaseComponent {
   }
 
   setupValueElement(element) {
-    let value = this.value;
+    let value = this.getValue();
     value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
-    element.appendChild(this.text(value));
+    element.innerHTML = value;
   }
 
   get defaultViewOnlyValue() {
@@ -705,21 +707,31 @@ export class BaseComponent {
   }
 
   getView(value) {
-    return _.toString(value);
+    if (Array.isArray(value)) {
+      return value.join(&apos;, &apos;);
+    }
+
+    return value.toString();
   }
 
   updateViewOnlyValue() {
-    this.empty(this.valueElement);
+    if (!this.valueElement) {
+      return;
+    }
+
     this.setupValueElement(this.valueElement);
   }
 
   empty(element) {
-    while (element.firstChild) {
-      element.removeChild(element.firstChild);
+    if (element) {
+      while (element.firstChild) {
+        element.removeChild(element.firstChild);
+      }
     }
   }
 
   createModal(title) {
+    let self = this;
     let modalBody = this.ce(&apos;div&apos;);
     let modalOverlay = this.ce(&apos;div&apos;, {
       class: &apos;formio-dialog-overlay&apos;
@@ -750,16 +762,13 @@ export class BaseComponent {
       dialog.close();
     });
     this.addEventListener(dialog, &apos;close&apos;, () =&gt; {
-      document.body.removeChild(dialog);
+      this.removeChildFrom(dialog, document.body);
     });
     document.body.appendChild(dialog);
     dialog.body = modalBody;
     dialog.close = function() {
       dialog.dispatchEvent(new CustomEvent(&apos;close&apos;));
-      try {
-        document.body.removeChild(dialog);
-      }
-      catch (err) {}
+      self.removeChildFrom(dialog, document.body);
     };
     return dialog;
   }
@@ -844,7 +853,8 @@ export class BaseComponent {
       table.appendChild(this.tbody);
 
       // Add a default value.
-      if (!this.data[this.component.key] || !this.data[this.component.key].length) {
+      let dataValue = _.get(this.data, this.component.key);
+      if (!dataValue || !dataValue.length) {
         this.addNewValue();
       }
 
@@ -865,33 +875,16 @@ export class BaseComponent {
       defaultValue = this.component.defaultValue;
     }
     else if (this.component.customDefaultValue) {
-      if (typeof this.component.customDefaultValue === &apos;string&apos;) {
-        try {
-          defaultValue = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;,
-            `var value = &apos;&apos;; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
-        }
-        catch (err) {
-          defaultValue = null;
-          /* eslint-disable no-console */
-          console.warn(`An error occurred getting default value for ${this.component.key}`, e);
-          /* eslint-enable no-console */
-        }
-      }
-      else {
-        try {
-          defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
-            data: this.data,
-            row: this.data,
-            _
-          });
-        }
-        catch (err) {
-          defaultValue = null;
-          /* eslint-disable no-console */
-          console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-          /* eslint-enable no-console */
-        }
-      }
+      defaultValue = FormioUtils.evaluate(
+        this.component.customDefaultValue,
+        {
+          value: &apos;&apos;,
+          component: this,
+          row: this.data,
+          data: (this.root ? this.root.data : this.data)
+        },
+        &apos;value&apos;
+      );
     }
 
     if (this._inputMask) {
@@ -917,13 +910,14 @@ export class BaseComponent {
    * Adds a new empty value to the data array.
    */
   addNewValue() {
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = [];
+    if (!_.has(this.data, this.component.key)) {
+      _.set(this.data, this.component.key, []);
     }
-    if (this.data[this.component.key] &amp;&amp; !Array.isArray(this.data[this.component.key])) {
-      this.data[this.component.key] = [this.data[this.component.key]];
+    let dataValue = _.get(this.data, this.component.key);
+    if (dataValue &amp;&amp; !Array.isArray(dataValue)) {
+      _.set(this.data, this.component.key, [dataValue]);
     }
-    this.data[this.component.key].push(this.defaultValue);
+    _.get(this.data, this.component.key).push(this.defaultValue);
   }
 
   /**
@@ -941,8 +935,8 @@ export class BaseComponent {
    * @param {number} index - The index of the data element to remove.
    */
   removeValue(index) {
-    if (this.data.hasOwnProperty(this.component.key)) {
-      this.data[this.component.key].splice(index, 1);
+    if (_.has(this.data, this.component.key)) {
+      _.get(this.data, this.component.key).splice(index, 1);
       this.triggerChange();
     }
     this.buildRows();
@@ -957,7 +951,7 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = &apos;&apos;;
-    _.each(this.data[this.component.key], (value, index) =&gt; {
+    _.each(_.get(this.data, this.component.key), (value, index) =&gt; {
       const tr = this.ce(&apos;tr&apos;);
       const td = this.ce(&apos;td&apos;);
       const input = this.createInput(td);
@@ -1627,6 +1621,8 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
+    data = data || (this.root ? this.root.data: {});
+
     // Check advanced conditions
     let result;
 
@@ -1634,7 +1630,12 @@ export class BaseComponent {
       result = this.show(true);
     }
     else {
-      result = this.show(FormioUtils.checkCondition(this.component, this.data, data));
+      result = this.show(FormioUtils.checkCondition(
+        this.component,
+        this.data,
+        data,
+        this.root ? this.root._form : {}
+      ));
     }
 
     if (this.fieldLogic(data)) {
@@ -1669,9 +1670,19 @@ export class BaseComponent {
               FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
             case &apos;value&apos;: {
-              const newValue = (new Function(&apos;row&apos;, &apos;data&apos;, &apos;component&apos;, &apos;result&apos;,
-                action.value))(this.data, data, newComponent, result);
-              if (!_.isEqual(this.getValue(), newValue)) {
+              const oldValue = this.getValue();
+              const newValue = FormioUtils.evaluate(
+                action.value,
+                {
+                  value: _.clone(oldValue),
+                  row: this.data,
+                  data: data,
+                  component: newComponent,
+                  result: result
+                },
+                &apos;value&apos;
+              );
+              if (!_.isEqual(oldValue, newValue)) {
                 this.setValue(newValue);
                 changed = true;
               }
@@ -1729,39 +1740,52 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
-    // Ensure we stop any pending data clears.
-    if (this.clearPending) {
-      clearTimeout(this.clearPending);
-      this.clearPending = null;
-    }
-
     // Execute only if visibility changes.
     if (!show === !this._visible) {
       return show;
     }
 
     this._visible = show;
+    this.showElement(show &amp;&amp; !this.component.hidden);
+    this.clearOnHide(show);
+    return show;
+  }
+
+  /**
+   * Show or hide the root element of this component.
+   *
+   * @param show
+   */
+  showElement(show) {
     const element = this.getElement();
     if (element) {
-      if (show &amp;&amp; !this.component.hidden) {
+      if (show) {
         element.removeAttribute(&apos;hidden&apos;);
         element.style.visibility = &apos;visible&apos;;
         element.style.position = &apos;relative&apos;;
       }
-      else if (!show || this.component.hidden) {
+      else {
         element.setAttribute(&apos;hidden&apos;, true);
         element.style.visibility = &apos;hidden&apos;;
         element.style.position = &apos;absolute&apos;;
       }
     }
-
-    if (!show &amp;&amp; this.component.clearOnHide) {
-      this.clearPending = setTimeout(() =&gt; this.setValue(null, {
-        noValidate: true
-      }), 200);
-    }
-
     return show;
+  }
+
+  clearOnHide(show) {
+    // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
+    if (this.component.clearOnHide !== false) {
+      if (!show) {
+        delete this.data[this.component.key];
+      }
+      else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
+        // If shown, ensure the default is set.
+        this.setValue(this.defaultValue, {
+          noUpdateEvent: true
+        });
+      }
+    }
   }
 
   onResize() {}
@@ -1873,7 +1897,7 @@ export class BaseComponent {
     if (!this.data) {
       return null;
     }
-    return this.data[this.component.key];
+    return _.get(this.data, this.component.key);
   }
 
   /**
@@ -1932,13 +1956,13 @@ export class BaseComponent {
     }
 
     flags = flags || {};
-    const value = this.data[this.component.key];
-    this.data[this.component.key] = this.getValue(flags);
+    const value = _.get(this.data, this.component.key);
+    _.set(this.data, this.component.key, this.getValue(flags));
     if (this.viewOnly) {
       this.updateViewOnlyValue(this.value);
     }
 
-    const changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
+    const changed = flags.changed || this.hasChanged(value, _.get(this.data, this.component.key));
     delete flags.changed;
     if (!flags.noUpdateEvent &amp;&amp; changed) {
       this.triggerChange(flags);
@@ -1950,14 +1974,14 @@ export class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.data &amp;&amp; this.data.hasOwnProperty(this.component.key)) {
-      this.setValue(this.data[this.component.key], {
+    if (_.has(this.data, this.component.key)) {
+      this.setValue(_.get(this.data, this.component.key), {
         noUpdateEvent: true
       });
     }
     else {
       const defaultValue = this.defaultValue;
-      if (!this.data.hasOwnProperty(this.component.key) &amp;&amp; defaultValue) {
+      if (!_.has(this.data, this.component.key) &amp;&amp; defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
         });
@@ -1979,40 +2003,12 @@ export class BaseComponent {
 
     flags = flags || {};
     flags.noCheck = true;
-    let changed = false;
-
-    // If this is a string, then use eval to evalulate it.
-    if (typeof this.component.calculateValue === &apos;string&apos;) {
-      try {
-        const value = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;,
-          `value = []; ${this.component.calculateValue}; return value;`))(this, this.data, data);
-        changed = this.setValue(value, flags);
-      }
-      catch (err) {
-        /* eslint-disable no-console */
-        console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-        changed = false;
-        /* eslint-enable no-console */
-      }
-    }
-    else {
-      try {
-        const val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
-          data,
-          row: this.data,
-          _
-        });
-        changed = this.setValue(val, flags);
-      }
-      catch (err) {
-        /* eslint-disable no-console */
-        console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-        changed = false;
-        /* eslint-enable no-console */
-      }
-    }
-
-    return changed;
+    return this.setValue(FormioUtils.evaluate(this.component.calculateValue, {
+      value: [],
+      component: this,
+      data,
+      row: this.root ? this.root.data : this.data
+    }, &apos;value&apos;), flags);
   }
 
   /**
@@ -2072,7 +2068,7 @@ export class BaseComponent {
 
   checkValidity(data, dirty) {
     // Force valid if component is conditionally hidden.
-    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
       return true;
     }
 
@@ -2082,7 +2078,7 @@ export class BaseComponent {
   }
 
   getRawValue() {
-    return this.data[this.component.key];
+    return _.get(this.data, this.component.key);
   }
 
   isEmpty(value) {
@@ -2109,12 +2105,7 @@ export class BaseComponent {
   setCustomValidity(message, dirty) {
     if (this.errorElement &amp;&amp; this.errorContainer) {
       this.errorElement.innerHTML = &apos;&apos;;
-      try {
-        this.errorContainer.removeChild(this.errorElement);
-      }
-      catch (err) {
-        // ingnore
-      }
+      this.removeChildFrom(this.errorElement, this.errorContainer);
     }
     this.removeClass(this.element, &apos;has-error&apos;);
     this.inputs.forEach((input) =&gt; this.removeClass(input, &apos;is-invalid&apos;));
@@ -2246,10 +2237,10 @@ export class BaseComponent {
     }
     if (element.loader) {
       if (loading) {
-        element.appendChild(element.loader);
+        this.appendTo(element.loader, element);
       }
-      else if (element.contains(element.loader)) {
-        element.removeChild(element.loader);
+      else {
+        this.removeChildFrom(element.loader, element);
       }
     }
   }
@@ -2288,35 +2279,53 @@ export class BaseComponent {
 
   clear() {
     this.destroy();
-    const element = this.getElement();
-    if (element) {
-      while (element.lastChild) {
-        element.removeChild(element.lastChild);
-      }
+    this.empty(this.getElement());
+  }
+
+  appendTo(element, container) {
+    if (container) {
+      container.appendChild(element);
     }
   }
 
   append(element) {
-    if (this.element) {
-      this.element.appendChild(element);
+    this.appendTo(element, this.element);
+  }
+
+  prependTo(element, container) {
+    if (container) {
+      if (container.firstChild) {
+        try {
+          container.insertBefore(element, container.firstChild);
+        }
+        catch (err) {
+          console.warn(err);
+          container.appendChild(element);
+        }
+      }
+      else {
+        container.appendChild(element);
+      }
     }
   }
 
   prepend(element) {
-    if (this.element) {
-      if (this.element.firstChild) {
-        this.element.insertBefore(element, this.element.firstChild);
+    this.prependTo(element, this.element);
+  }
+
+  removeChildFrom(element, container) {
+    if (container &amp;&amp; container.contains(element)) {
+      try {
+        container.removeChild(element);
       }
-      else {
-        this.element.appendChild(element);
+      catch (err) {
+        console.warn(err);
       }
     }
   }
 
   removeChild(element) {
-    if (this.element) {
-      this.element.removeChild(element);
-    }
+    this.removeChildFrom(element, this.element);
   }
 
   /**

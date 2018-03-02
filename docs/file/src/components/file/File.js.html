@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -177,6 +179,7 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/file/File.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {BaseComponent} from &apos;../base/Base&apos;;
+import _ from &apos;lodash&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 
 export class FileComponent extends BaseComponent {
@@ -215,17 +218,22 @@ export class FileComponent extends BaseComponent {
   }
 
   getValue() {
-    return this.data[this.component.key];
+    return _.get(this.data, this.component.key);
   }
 
   setValue(value) {
-    this.data[this.component.key] = value;
+    _.set(this.data, this.component.key, value);
     this.refreshDOM();
   }
 
+  get defaultValue() {
+    const value = super.defaultValue;
+    return Array.isArray(value) ? value : [];
+  }
+
   build() {
-    // Set default to empty array.
-    this.setValue([]);
+    // Restore the value.
+    this.restoreValue();
 
     const labelAtTheBottom = this.component.labelPosition === &apos;bottom&apos;;
 
@@ -240,6 +248,7 @@ export class FileComponent extends BaseComponent {
     this.inputsContainer.appendChild(this.listContainer);
     this.uploadContainer = this.buildUpload();
     this.hiddenFileInputElement = this.buildHiddenFileInput();
+    this.hook(&apos;input&apos;, this.hiddenFileInputElement, this.inputsContainer);
     this.inputsContainer.appendChild(this.hiddenFileInputElement);
     this.inputsContainer.appendChild(this.uploadContainer);
     this.addWarnings(this.inputsContainer);
@@ -291,7 +300,7 @@ export class FileComponent extends BaseComponent {
           ]
         )
       ),
-      this.data[this.component.key].map((fileInfo, index) =&gt; this.createFileListItem(fileInfo, index))
+      _.get(this.data, this.component.key).map((fileInfo, index) =&gt; this.createFileListItem(fileInfo, index))
     ]);
   }
 
@@ -317,10 +326,10 @@ export class FileComponent extends BaseComponent {
                   class: this.iconClass(&apos;remove&apos;),
                   onClick: event =&gt; {
                     if (this.component.storage === &apos;url&apos;) {
-                      this.options.formio.makeRequest(&apos;&apos;, this.data[this.component.key][index].url, &apos;delete&apos;);
+                      this.options.formio.makeRequest(&apos;&apos;, _.get(this.data, this.component.key)[index].url, &apos;delete&apos;);
                     }
                     event.preventDefault();
-                    this.data[this.component.key].splice(index, 1);
+                    _.get(this.data, this.component.key).splice(index, 1);
                     this.refreshDOM();
                     this.triggerChange();
                   }
@@ -344,7 +353,7 @@ export class FileComponent extends BaseComponent {
 
   buildImageList() {
     return this.ce(&apos;div&apos;, {},
-      this.data[this.component.key].map((fileInfo, index) =&gt; this.createImageListItem(fileInfo, index))
+      _.get(this.data, this.component.key).map((fileInfo, index) =&gt; this.createImageListItem(fileInfo, index))
     );
   }
 
@@ -376,10 +385,10 @@ export class FileComponent extends BaseComponent {
                 class: this.iconClass(&apos;remove&apos;),
                 onClick: event =&gt; {
                   if (this.component.storage === &apos;url&apos;) {
-                    this.options.formio.makeRequest(&apos;&apos;, this.data[this.component.key][index].url, &apos;delete&apos;);
+                    this.options.formio.makeRequest(&apos;&apos;, _.get(this.data, this.component.key)[index].url, &apos;delete&apos;);
                   }
                   event.preventDefault();
-                  this.data[this.component.key].splice(index, 1);
+                  _.get(this.data, this.component.key).splice(index, 1);
                   this.refreshDOM();
                   this.triggerChange();
                 }
@@ -397,7 +406,7 @@ export class FileComponent extends BaseComponent {
     // If this is disabled or a single value with a value, don&apos;t show the upload div.
     return this.ce(&apos;div&apos;, {},
       (
-        (!this.disabled &amp;&amp; (this.component.multiple || this.data[this.component.key].length === 0)) ?
+        (!this.disabled &amp;&amp; (this.component.multiple || _.get(this.data, this.component.key).length === 0)) ?
           this.ce(&apos;div&apos;, {
             class: &apos;fileSelector&apos;,
             onDragover: function(event) {
@@ -487,7 +496,7 @@ export class FileComponent extends BaseComponent {
           this.ce(&apos;i&apos;, {
             class: this.iconClass(&apos;remove&apos;),
             onClick: () =&gt; {
-              this.uploadStatusList.removeChild(container);
+              this.removeChildFrom(container, this.uploadStatusList);
             }
           })
         ]),
@@ -659,9 +668,9 @@ export class FileComponent extends BaseComponent {
             this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
           }, this.component.url)
             .then(fileInfo =&gt; {
-              this.uploadStatusList.removeChild(uploadStatus);
+              this.removeChildFrom(uploadStatus, this.uploadStatusList);
               fileInfo.originalName = file.name;
-              this.data[this.component.key].push(fileInfo);
+              _.get(this.data, this.component.key).push(fileInfo);
               this.refreshDOM();
               this.triggerChange();
             })

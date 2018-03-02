@@ -4268,6 +4268,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       this.createElement();
       this.createInput(this.element);
       this.addShortcut(this.buttonElement);
+      this.hook('input', this.buttonElement, this.element);
       if (this.component.leftIcon) {
         this.buttonElement.appendChild(this.ce('span', {
           class: this.component.leftIcon
@@ -5237,6 +5238,9 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
       if (!value || !_lodash2.default.isObject(value)) {
         return;
       }
+      if (this.data && this.data.hasOwnProperty(this.component.key) && _lodash2.default.isEmpty(this.data[this.component.key])) {
+        flags.noValidate = true;
+      }
       this.data[this.component.key] = value;
       _lodash2.default.each(this.components, function (component) {
         if (component.type === 'components') {
@@ -6186,7 +6190,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         return '';
       }
 
-      return dates[0].toISOString();
+      return typeof dates[0].toISOString === 'function' ? dates[0].toISOString() : 'Invalid Date';
     }
   }, {
     key: 'getView',
@@ -6197,6 +6201,9 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
       if (value) {
+        // Convert to a standard ISO-8601 format. Needed for proper IE function.
+        value = (0, _moment2.default)(value).toISOString();
+
         var calendar = this.getCalendar(this.inputs[index]);
         if (!calendar) {
           return _get(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'setValueAt', this).call(this, index, value);
@@ -6470,6 +6477,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
         placeholder: _lodash2.default.get(this.component, 'fields.day.placeholder', ''),
         id: id
       });
+      this.hook('input', this.dayInput, dayInputWrapper);
       this.addEventListener(this.dayInput, 'change', function () {
         return _this2.updateValue();
       });
@@ -6507,6 +6515,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
         class: 'form-control',
         id: id
       });
+      this.hook('input', this.monthInput, monthInputWrapper);
       this.selectOptions(this.monthInput, 'monthOption', this.months);
       var self = this;
 
@@ -6559,6 +6568,8 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
         value: new Date().getFullYear(),
         id: id
       });
+
+      this.hook('input', this.yearInput, yearInputWrapper);
       this.addEventListener(this.yearInput, 'change', function () {
         return _this3.updateValue();
       });
@@ -7655,8 +7666,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   }, {
     key: 'build',
     value: function build() {
-      // Set default to empty array.
-      this.setValue([]);
+      // Restore the value.
+      this.restoreValue();
 
       var labelAtTheBottom = this.component.labelPosition === 'bottom';
 
@@ -7671,6 +7682,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       this.inputsContainer.appendChild(this.listContainer);
       this.uploadContainer = this.buildUpload();
       this.hiddenFileInputElement = this.buildHiddenFileInput();
+      this.hook('input', this.hiddenFileInputElement, this.inputsContainer);
       this.inputsContainer.appendChild(this.hiddenFileInputElement);
       this.inputsContainer.appendChild(this.uploadContainer);
       this.addWarnings(this.inputsContainer);
@@ -8221,7 +8233,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   _createClass(FormComponent, [{
     key: 'loadSubForm',
     value: function loadSubForm() {
-      if (this.subFormLoaded) {
+      // Only load the subform if the subform isn't loaded and the conditions apply.
+      if (this.subFormLoaded || !_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.root ? this.root.data : this.data)) {
         return true;
       }
       this.subFormLoaded = true;
@@ -8287,9 +8300,9 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     }
   }, {
     key: 'checkValidity',
-    value: function checkValidity() {
+    value: function checkValidity(data, dirty) {
       // Maintain isolated data scope when passing root data for validity checks.
-      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, this.subData);
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkValidity', this).call(this, this.subData, dirty);
     }
   }, {
     key: 'checkConditions',
@@ -8317,10 +8330,15 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'beforeNext',
     value: function beforeNext() {
+      var _this2 = this;
+
       // If we wish to submit the form on next page, then do that here.
       if (this.component.submit) {
         this.submitted = true;
-        return this.submit(true);
+        return this.submit(true).then(function (submission) {
+          // Set data to submission.
+          return _this2.data[_this2.component.key] = submission;
+        });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeNext', this).call(this);
       }
@@ -8333,17 +8351,17 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'beforeSubmit',
     value: function beforeSubmit() {
-      var _this2 = this;
+      var _this3 = this;
 
       // Ensure we submit the form.
       if (this.component.submit && !this.submitted) {
         return this.submit(true).then(function (submission) {
           // Before we submit, we need to filter out the references.
-          _lodash2.default.set(_this2.data, _this2.component.key, _this2.component.reference ? {
+          _lodash2.default.set(_this3.data, _this3.component.key, _this3.component.reference ? {
             _id: submission._id,
             form: submission.form
           } : submission);
-          return _lodash2.default.get(_this2.data, _this2.component.key);
+          return _lodash2.default.get(_this3.data, _this3.component.key);
         });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeSubmit', this).call(this);
@@ -8392,10 +8410,10 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'whenReady',
     value: function whenReady() {
-      var _this3 = this;
+      var _this4 = this;
 
       return this.ready.then(function () {
-        return _this3.readyPromise;
+        return _this4.readyPromise;
       });
     }
   }, {
@@ -8421,7 +8439,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
-      var _this4 = this;
+      var _this5 = this;
 
       flags = this.getFlags.apply(this, arguments);
       if (!submission) {
@@ -8447,11 +8465,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.formio.submissionId = submission._id;
         this.formio.submissionUrl = this.formio.submissionsUrl + '/' + submission._id;
         this.formReady.then(function () {
-          _this4._loading = false;
-          _this4.loading = true;
-          _this4.formio.loadSubmission().then(function (result) {
-            _this4.loading = false;
-            _this4.setValue(result, {
+          _this5._loading = false;
+          _this5.loading = true;
+          _this5.formio.loadSubmission().then(function (result) {
+            _this5.loading = false;
+            _this5.setValue(result, {
               noload: true
             });
           });
@@ -10692,6 +10710,7 @@ var SelectComponent = function (_BaseComponent) {
         return;
       }
 
+      var useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
       var placeholderValue = this.t(this.component.placeholder);
       var choicesOptions = {
         removeItemButton: this.component.removeItemButton || this.component.multiple || false,
@@ -10705,7 +10724,7 @@ var SelectComponent = function (_BaseComponent) {
         searchPlaceholderValue: placeholderValue,
         shouldSort: false,
         position: this.component.dropdown || 'auto',
-        searchEnabled: this.component.searchEnabled || false
+        searchEnabled: useSearch
       };
 
       var tabIndex = input.tabIndex;
@@ -13880,6 +13899,10 @@ var FormioForm = function (_FormioComponents) {
         error = { message: error };
       }
 
+      if ('details' in error) {
+        error = error.details;
+      }
+
       return this.showErrors(error);
     }
 
@@ -14240,6 +14263,9 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 
 },{"./components/Components":1,"./formio":43,"./i18n":45,"eventemitter2":56,"i18next":72,"lodash":224,"native-promise-only":232}],43:[function(require,module,exports){
 'use strict';
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -14287,10 +14313,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
   return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-}; // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
-// duck-punch the global Promise definition which messes up Angular 2 since it
-// also duck-punches the global Promise definition. For now, keep native-promise-only.
-
+};
 
 var _nativePromiseOnly = require('native-promise-only');
 
@@ -14307,6 +14330,10 @@ var _browserCookies2 = _interopRequireDefault(_browserCookies);
 var _shallowCopy = require('shallow-copy');
 
 var _shallowCopy2 = _interopRequireDefault(_shallowCopy);
+
+var _providers = require('./providers');
+
+var _providers2 = _interopRequireDefault(_providers);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -15652,7 +15679,7 @@ Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.providers = require('./providers');
+Formio.providers = _providers2.default;
 Formio.events = new _eventemitter.EventEmitter2({
   wildcard: false,
   maxListeners: 0
@@ -16232,8 +16259,20 @@ module.exports = {
 },{}],46:[function(require,module,exports){
 'use strict';
 
-module.exports = {
-  storage: require('./storage')
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _storage = require('./storage');
+
+var _storage2 = _interopRequireDefault(_storage);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+exports.default = {
+  storage: _storage2.default
 };
 
 },{"./storage":49}],47:[function(require,module,exports){
@@ -16366,14 +16405,38 @@ exports.default = dropbox;
 },{"native-promise-only":232}],49:[function(require,module,exports){
 'use strict';
 
-module.exports = {
-  base64: require('./base64'),
-  dropbox: require('./dropbox.js'),
-  s3: require('./s3.js'),
-  url: require('./url.js')
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _base = require('./base64');
+
+var _base2 = _interopRequireDefault(_base);
+
+var _dropbox = require('./dropbox');
+
+var _dropbox2 = _interopRequireDefault(_dropbox);
+
+var _s = require('./s3');
+
+var _s2 = _interopRequireDefault(_s);
+
+var _url = require('./url');
+
+var _url2 = _interopRequireDefault(_url);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+exports.default = {
+  base64: _base2.default,
+  dropbox: _dropbox2.default,
+  s3: _s2.default,
+  url: _url2.default
 };
 
-},{"./base64":47,"./dropbox.js":48,"./s3.js":50,"./url.js":51}],50:[function(require,module,exports){
+},{"./base64":47,"./dropbox":48,"./s3":50,"./url":51}],50:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21440,14 +21503,18 @@ var ResourceStore = function (_EventEmitter) {
   };
 
   ResourceStore.prototype.addResources = function addResources(lng, ns, resources) {
+    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : { silent: false };
+
     /* eslint no-restricted-syntax: 0 */
     for (var m in resources) {
       if (typeof resources[m] === 'string') this.addResource(lng, ns, m, resources[m], { silent: true });
     }
-    this.emit('added', lng, ns, resources);
+    if (!options.silent) this.emit('added', lng, ns, resources);
   };
 
   ResourceStore.prototype.addResourceBundle = function addResourceBundle(lng, ns, resources, deep, overwrite) {
+    var options = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : { silent: false };
+
     var path = [lng, ns];
     if (lng.indexOf('.') > -1) {
       path = lng.split('.');
@@ -21468,7 +21535,7 @@ var ResourceStore = function (_EventEmitter) {
 
     utils.setPath(this.data, path, pack);
 
-    this.emit('added', lng, ns, resources);
+    if (!options.silent) this.emit('added', lng, ns, resources);
   };
 
   ResourceStore.prototype.removeResourceBundle = function removeResourceBundle(lng, ns) {

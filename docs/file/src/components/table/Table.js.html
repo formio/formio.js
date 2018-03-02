@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -212,6 +214,98 @@ export class TableComponent extends FormioComponents {
     };
   }
 
+  get schema() {
+    let schema = super.schema;
+    schema.rows = [];
+    this.eachComponent((component) =&gt; {
+      if (!schema.rows || !schema.rows.length) {
+        schema.rows = [
+          [{components: []}, {components: []}, {components: []}],
+          [{components: []}, {components: []}, {components: []}],
+          [{components: []}, {components: []}, {components: []}]
+        ];
+      }
+      if (!schema.rows[component.tableRow]) {
+        schema.rows[component.tableRow] = [];
+      }
+      if (!schema.rows[component.tableRow][component.tableColumn]) {
+        schema.rows[component.tableRow][component.column] = {components: []};
+      }
+      schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
+    });
+    if (!schema.rows.length) {
+      schema.rows = [
+        [{components: []}, {components: []}, {components: []}],
+        [{components: []}, {components: []}, {components: []}],
+        [{components: []}, {components: []}, {components: []}]
+      ];
+    }
+    return schema;
+  }
+
+  /**
+   *
+   * @param element
+   * @param data
+   */
+  addComponents(element, data) {
+    // Build the body.
+    this.tbody = this.ce(&apos;tbody&apos;);
+    _.each(this.component.rows, (row, rowIndex) =&gt; {
+      const tr = this.ce(&apos;tr&apos;);
+      _.each(row, (column, colIndex) =&gt; {
+        const td = this.ce(&apos;td&apos;, {
+          id: `${this.id}-${rowIndex}-${colIndex}`
+        });
+        _.each(column.components, (comp) =&gt; {
+          comp.tableRow = rowIndex;
+          comp.tableColumn = colIndex;
+          this.addComponent(comp, td, data);
+        });
+
+        if (this.options.builder) {
+          if (!column.components || !column.components.length) {
+            td.appendChild(this.ce(&apos;div&apos;, {
+              id: `${this.id}-${rowIndex}-${colIndex}-placeholder`,
+              class: &apos;alert alert-info&apos;,
+              style: &apos;text-align:center; margin-bottom: 0px;&apos;,
+              role: &apos;alert&apos;
+            }, this.text(&apos;Drag and Drop a form component&apos;)));
+            td.tableRow = rowIndex;
+            td.tableColumn = colIndex;
+          }
+          this.root.addDragContainer(td, this, {
+            onDrop: (element, target, source, sibling, component) =&gt; {
+              component.tableRow = target.tableRow;
+              component.tableColumn = target.tableColumn;
+            },
+            onSave: (component) =&gt; {
+              component.tableRow = rowIndex;
+              component.tableColumn = colIndex;
+            }
+          });
+        }
+
+        tr.appendChild(td);
+      });
+      this.tbody.appendChild(tr);
+    });
+  }
+
+  buildHeader() {
+    if (this.component.header &amp;&amp; this.component.header.length) {
+      const thead = this.ce(&apos;thead&apos;);
+      const thr = this.ce(&apos;tr&apos;);
+      _.each(this.component.header, (header) =&gt; {
+        const th = this.ce(&apos;th&apos;);
+        th.appendChild(this.text(header));
+        thr.appendChild(th);
+      });
+      thead.appendChild(thr);
+      this.table.appendChild(thead);
+    }
+  }
+
   build() {
     this.element = this.ce(&apos;div&apos;, {
       id: this.id,
@@ -225,38 +319,14 @@ export class TableComponent extends FormioComponents {
         tableClass += `table-${prop} `;
       }
     });
-    const table = this.ce(&apos;table&apos;, {
+    this.table = this.ce(&apos;table&apos;, {
       class: tableClass
     });
 
-    // Build the header.
-    if (this.component.header &amp;&amp; this.component.header.length) {
-      const thead = this.ce(&apos;thead&apos;);
-      const thr = this.ce(&apos;tr&apos;);
-      _.each(this.component.header, (header) =&gt; {
-        const th = this.ce(&apos;th&apos;);
-        th.appendChild(this.text(header));
-        thr.appendChild(th);
-      });
-      thead.appendChild(thr);
-      table.appendChild(thead);
-    }
-
-    // Build the body.
-    const tbody = this.ce(&apos;tbody&apos;);
-    _.each(this.component.rows, (row) =&gt; {
-      const tr = this.ce(&apos;tr&apos;);
-      _.each(row, (column) =&gt; {
-        const td = this.ce(&apos;td&apos;);
-        _.each(column.components, (comp) =&gt; {
-          this.addComponent(comp, td);
-        });
-        tr.appendChild(td);
-      });
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    this.element.appendChild(table);
+    this.buildHeader();
+    this.addComponents();
+    this.table.appendChild(this.tbody);
+    this.element.appendChild(this.table);
   }
 }
 </code></pre>

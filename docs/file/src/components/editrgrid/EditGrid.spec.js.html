@@ -151,6 +151,10 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -159,15 +163,15 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editrgrid/EditGrid.spec.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
 import assert from &apos;power-assert&apos;;
-import { EditGridComponent } from &apos;./EditGrid&apos;;
-import { components as comps } from &apos;./fixtures/index&apos;;
-import { Harness } from &apos;../../../test/harness&apos;;
-describe(&apos;EditGrid Component&apos;, function() {
+import {EditGridComponent} from &apos;./EditGrid&apos;;
+import {components as comps} from &apos;./fixtures/index&apos;;
+import {Harness} from &apos;../../../test/harness&apos;;
+describe(&apos;EditGrid Component&apos;, () =&gt; {
   it(&apos;Should build an empty edit grid component&apos;, done =&gt; {
     Harness.testCreate(EditGridComponent, comps.comp1).then((component) =&gt; {
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(1)&apos;, &quot;Field 1&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(2)&apos;, &quot;Field 2&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;0&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(1)&apos;, &apos;Field 1&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(2)&apos;, &apos;Field 2&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;0&apos;);
       Harness.testElements(component, &apos;li.list-group-header&apos;, 1);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 1);
       Harness.testElements(component, &apos;li.list-group-footer&apos;, 0);
@@ -181,9 +185,9 @@ describe(&apos;EditGrid Component&apos;, function() {
 
   it(&apos;Should build an edit grid component&apos;, done =&gt; {
     Harness.testCreate(EditGridComponent, comps.comp1).then((component) =&gt; {
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(1)&apos;, &quot;Field 1&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(2)&apos;, &quot;Field 2&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;0&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(1)&apos;, &apos;Field 1&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(2)&apos;, &apos;Field 2&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;0&apos;);
       Harness.testSetGet(component, [
         {
           field1: &apos;good&apos;,
@@ -200,11 +204,11 @@ describe(&apos;EditGrid Component&apos;, function() {
       Harness.testElements(component, &apos;div.editRow&apos;, 2);
       Harness.testElements(component, &apos;div.removeRow&apos;, 2);
       Harness.testElements(component, &apos;div.editgrid-add button&apos;, 1);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(1)&apos;, &quot;good&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(2)&apos;, &quot;foo&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(1)&apos;, &quot;good&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(2)&apos;, &quot;bar&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(1)&apos;, &apos;good&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(2)&apos;, &apos;foo&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(1)&apos;, &apos;good&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(2)&apos;, &apos;bar&apos;);
       assert(component.checkValidity(component.getValue()), &apos;Item should be valid&apos;);
       done();
     });
@@ -213,13 +217,13 @@ describe(&apos;EditGrid Component&apos;, function() {
   it(&apos;Should add a row when add another is clicked&apos;, done =&gt; {
     Harness.testCreate(EditGridComponent, comps.comp1).then((component) =&gt; {
       Harness.testElements(component, &apos;li.list-group-item&apos;, 1);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;0&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;0&apos;);
       Harness.clickElement(component, &apos;div.editgrid-add button&apos;);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 2);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;0&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;0&apos;);
       Harness.clickElement(component, &apos;div.editgrid-add button&apos;);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 3);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;0&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;0&apos;);
       assert(!component.checkValidity(component.getValue()), &apos;Item should not be valid&apos;);
       done();
     });
@@ -238,17 +242,17 @@ describe(&apos;EditGrid Component&apos;, function() {
         }
       ]);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 3);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.clickElement(component, &apos;div.editgrid-add button&apos;);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 4);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.setInputValue(component, &apos;data[editgrid][2][field1]&apos;, &apos;good&apos;);
       Harness.setInputValue(component, &apos;data[editgrid][2][field2]&apos;, &apos;baz&apos;);
       Harness.clickElement(component, &apos;div.editgrid-actions div.btn-primary&apos;);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 4);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;3&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(4) div.row div:nth-child(1)&apos;, &quot;good&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(4) div.row div:nth-child(2)&apos;, &quot;baz&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;3&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(4) div.row div:nth-child(1)&apos;, &apos;good&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(4) div.row div:nth-child(2)&apos;, &apos;baz&apos;);
       assert(component.checkValidity(component.getValue()), &apos;Item should be valid&apos;);
       done();
     });
@@ -267,15 +271,15 @@ describe(&apos;EditGrid Component&apos;, function() {
         }
       ]);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 3);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.clickElement(component, &apos;div.editgrid-add button&apos;);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 4);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.setInputValue(component, &apos;data[editgrid][2][field1]&apos;, &apos;good&apos;);
       Harness.setInputValue(component, &apos;data[editgrid][2][field2]&apos;, &apos;baz&apos;);
       Harness.clickElement(component, &apos;div.editgrid-actions div.btn-danger&apos;);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 3);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       assert.equal(component.editRows.length, 2);
       assert(component.checkValidity(component.getValue()), &apos;Item should be valid&apos;);
       done();
@@ -298,13 +302,13 @@ describe(&apos;EditGrid Component&apos;, function() {
           field2: &apos;baz&apos;
         }
       ]);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;3&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;3&apos;);
       Harness.clickElement(component, &apos;li.list-group-item:nth-child(3) div.removeRow&apos;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(1)&apos;, &quot;good&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(2)&apos;, &quot;foo&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(1)&apos;, &quot;good&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(2)&apos;, &quot;baz&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(1)&apos;, &apos;good&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(2)&apos;, &apos;foo&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(1)&apos;, &apos;good&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(2)&apos;, &apos;baz&apos;);
       assert(component.checkValidity(component.getValue()), &apos;Item should be valid&apos;);
       done();
     });
@@ -348,9 +352,9 @@ describe(&apos;EditGrid Component&apos;, function() {
       Harness.setInputValue(component, &apos;data[editgrid][1][field2]&apos;, &apos;baz&apos;);
       Harness.clickElement(component, &apos;div.editgrid-actions div.btn-primary&apos;);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 3);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(1)&apos;, &quot;good&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(2)&apos;, &quot;baz&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(1)&apos;, &apos;good&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(2)&apos;, &apos;baz&apos;);
       assert(component.checkValidity(component.getValue()), &apos;Item should be valid&apos;);
       done();
     });
@@ -372,9 +376,9 @@ describe(&apos;EditGrid Component&apos;, function() {
       Harness.setInputValue(component, &apos;data[editgrid][1][field2]&apos;, &apos;baz&apos;);
       Harness.clickElement(component, &apos;div.editgrid-actions div.btn-danger&apos;);
       Harness.testElements(component, &apos;li.list-group-item&apos;, 3);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(1)&apos;, &quot;good&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(2)&apos;, &quot;bar&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(1)&apos;, &apos;good&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(3) div.row div:nth-child(2)&apos;, &apos;bar&apos;);
       assert(component.checkValidity(component.getValue()), &apos;Item should be valid&apos;);
       done();
     });
@@ -423,9 +427,9 @@ describe(&apos;EditGrid Component&apos;, function() {
       Harness.setInputValue(component, &apos;data[editgrid][0][field1]&apos;, &apos;good&apos;);
       Harness.clickElement(component, &apos;div.editgrid-actions div.btn-primary&apos;);
       assert(component.checkValidity(component.getValue()), &apos;Item should be valid&apos;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;1&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(1)&apos;, &quot;good&quot;);
-      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(2)&apos;, &quot;baz&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;1&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(1)&apos;, &apos;good&apos;);
+      Harness.testInnerHtml(component, &apos;li.list-group-item:nth-child(2) div.row div:nth-child(2)&apos;, &apos;baz&apos;);
       done();
     });
   });
@@ -467,15 +471,15 @@ describe(&apos;EditGrid Component&apos;, function() {
         }
       ]);
       Harness.clickElement(component, &apos;li.list-group-item:nth-child(3) div.removeRow&apos;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.clickElement(component, &apos;div.editgrid-add button&apos;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.clickElement(component, &apos;li.list-group-item:nth-child(3) div.editRow&apos;);
       Harness.clickElement(component, &apos;div.editgrid-actions div.btn-danger&apos;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       Harness.clickElement(component, &apos;li.list-group-item:nth-child(3) div.editRow&apos;);
       Harness.clickElement(component, &apos;div.editgrid-actions div.btn-primary&apos;);
-      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &quot;2&quot;);
+      Harness.testInnerHtml(component, &apos;li.list-group-header div.row div:nth-child(3)&apos;, &apos;2&apos;);
       done();
     });
   });

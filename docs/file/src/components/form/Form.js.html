@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -224,7 +226,8 @@ export class FormComponent extends FormioForm {
    * Load the subform.
    */
   loadSubForm() {
-    if (this.subFormLoaded) {
+    // Only load the subform if the subform isn&apos;t loaded and the conditions apply.
+    if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
       return true;
     }
     this.subFormLoaded = true;
@@ -272,14 +275,14 @@ export class FormComponent extends FormioForm {
     }
 
     // Add the source to this actual submission if the component is a reference.
+    let dataValue = _.get(this.data, this.component.key);
     if (
-      this.data &amp;&amp;
-      this.data[this.component.key] &amp;&amp;
-      this.data[this.component.key]._id &amp;&amp;
+      dataValue &amp;&amp;
+      dataValue._id &amp;&amp;
       this.component.reference &amp;&amp;
       !this.component.src.includes(&apos;/submission/&apos;)
     ) {
-      this.component.src += `/submission/${this.data[this.component.key]._id}`;
+      this.component.src += `/submission/${dataValue._id}`;
     }
 
     // Set the src if the property is provided in the JSON.
@@ -288,8 +291,8 @@ export class FormComponent extends FormioForm {
     }
 
     // Directly set the submission if it isn&apos;t a reference.
-    if (this.data &amp;&amp; this.data[this.component.key] &amp;&amp; !this.component.reference) {
-      this.setSubmission(this.data[this.component.key]);
+    if (dataValue &amp;&amp; !this.component.reference) {
+      this.setSubmission(dataValue);
     }
 
     // Set language after everything is established.
@@ -299,15 +302,15 @@ export class FormComponent extends FormioForm {
   }
 
   get subData() {
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {data: {}};
+    if (!_.has(this.data, this.component.key)) {
+      _.set(this.data, this.component.key, {data: {}});
     }
-    return this.data[this.component.key].data;
+    return _.get(this.data, this.component.key).data;
   }
 
-  checkValidity() {
+  checkValidity(data, dirty) {
     // Maintain isolated data scope when passing root data for validity checks.
-    return super.checkValidity(this.subData);
+    return super.checkValidity(this.subData, dirty);
   }
 
   checkConditions() {
@@ -333,7 +336,10 @@ export class FormComponent extends FormioForm {
     // If we wish to submit the form on next page, then do that here.
     if (this.component.submit) {
       this.submitted = true;
-      return this.submit(true);
+      return this.submit(true).then(submission =&gt; {
+        // Set data to submission.
+        return this.data[this.component.key] = submission;
+      });
     }
     else {
       return super.beforeNext();
@@ -348,11 +354,11 @@ export class FormComponent extends FormioForm {
     if (this.component.submit &amp;&amp; !this.submitted) {
       return this.submit(true).then(submission =&gt; {
         // Before we submit, we need to filter out the references.
-        this.data[this.component.key] = this.component.reference ? {
+        _.set(this.data, this.component.key, this.component.reference ? {
           _id: submission._id,
           form: submission.form
-        } : submission;
-        return this.data[this.component.key];
+        } : submission);
+        return _.get(this.data, this.component.key);
       });
     }
     else {
@@ -374,10 +380,10 @@ export class FormComponent extends FormioForm {
     });
 
     // Set the data for this form.
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = this.defaultValue;
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = {data: {}};
+    if (!_.has(this.data, this.component.key)) {
+      _.set(this.data, this.component.key, this.defaultValue);
+      if (!_.has(this.data, this.component.key)) {
+        _.set(this.data, this.component.key, {data: {}});
       }
     }
 
@@ -425,13 +431,14 @@ export class FormComponent extends FormioForm {
   setValue(submission, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!submission) {
-      this.data[this.component.key] = this._submission = {data: {}};
+      this._submission = {data: {}};
+      _.set(this.data, this.component.key, this._submission);
       this.readyResolve();
       return;
     }
 
     // Load the subform if we have data.
-    if (submission._id || !_.isEmpty(this.data[this.component.key])) {
+    if (submission._id || !_.isEmpty(_.get(this.data, this.component.key))) {
       this.loadSubForm();
     }
 
@@ -460,14 +467,14 @@ export class FormComponent extends FormioForm {
       return true;
     }
     else {
-      const superValue = super.setValue(submission, flags, this.data[this.component.key].data);
+      const superValue = super.setValue(submission, flags, _.get(this.data, this.component.key).data);
       this.readyResolve();
       return superValue;
     }
   }
 
   getValue() {
-    return this.data[this.component.key];
+    return _.get(this.data, this.component.key);
   }
 }
 </code></pre>

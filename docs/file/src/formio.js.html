@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,13 +171,15 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/formio.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">&apos;use strict&apos;;
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import Promise from &apos;native-promise-only&apos;;
@@ -184,6 +187,7 @@ import &apos;whatwg-fetch&apos;;
 import {EventEmitter2 as EventEmitter} from &apos;eventemitter2&apos;;
 import cookies from &apos;browser-cookies&apos;;
 import copy from &apos;shallow-copy&apos;;
+import providers from &apos;./providers&apos;;
 
 const isBoolean = (val) =&gt; typeof val === typeof true;
 const isNil = (val) =&gt; val === null || val === undefined;
@@ -849,7 +853,7 @@ export default class Formio {
 
     // Get the cached promise to save multiple loads.
     if (!opts.ignoreCache &amp;&amp; method === &apos;GET&apos; &amp;&amp; Formio.cache.hasOwnProperty(cacheKey)) {
-      return Formio.cache[cacheKey];
+      return Promise.resolve(Formio.cache[cacheKey]);
     }
 
     // Set up and fetch request
@@ -875,8 +879,7 @@ export default class Formio {
     options = Formio.pluginAlter(&apos;requestOptions&apos;, options, url);
 
     const requestToken = options.headers.get(&apos;x-jwt-token&apos;);
-
-    const requestPromise = fetch(url, options)
+    return fetch(url, options)
       .then((response) =&gt; {
         // Allow plugins to respond.
         response = Formio.pluginAlter(&apos;requestResponse&apos;, response, Formio);
@@ -968,15 +971,25 @@ export default class Formio {
           return result;
         }
 
+        let resultCopy = {};
+
         // Shallow copy result so modifications don&apos;t end up in cache
         if (Array.isArray(result)) {
-          const resultCopy = result.map(copy);
+          resultCopy = result.map(copy);
           resultCopy.skip = result.skip;
           resultCopy.limit = result.limit;
           resultCopy.serverCount = result.serverCount;
-          return resultCopy;
         }
-        return copy(result);
+        else {
+          resultCopy = copy(result);
+        }
+
+        // Cache the response.
+        if (method === &apos;GET&apos;) {
+          Formio.cache[cacheKey] = resultCopy;
+        }
+
+        return resultCopy;
       })
       .catch((err) =&gt; {
         if (err === &apos;Bad Token&apos;) {
@@ -987,21 +1000,9 @@ export default class Formio {
           err.message = `Could not connect to API server (${err.message})`;
           err.networkError = true;
         }
-        if (Formio.cache.hasOwnProperty(cacheKey)) {
-          // Remove failed promises from cache
-          delete Formio.cache[cacheKey];
-        }
         // Propagate error so client can handle accordingly
         throw err;
       });
-
-    // Cache the request promise.
-    if (method === &apos;GET&apos;) {
-      Formio.cache[cacheKey] = requestPromise;
-    }
-
-    // Return the request promise.
-    return requestPromise;
   }
 
   static setToken(token) {
@@ -1369,7 +1370,7 @@ Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.providers = require(&apos;./providers&apos;);
+Formio.providers = providers;
 Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0

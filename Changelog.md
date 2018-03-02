@@ -4,6 +4,43 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.9
+### Fixed
+ - Issues with IE not translating Date's properly.
+
+## 2.29.8
+### Fixed
+ - Include polyfill for bind to fix PDF generation.
+
+### Changed
+ - Upgraded i18next to 10.5.0
+
+## 2.29.7
+### Fixed
+ - Fix validations automatically triggering if you have only a container on a form at the root level.
+
+## 2.29.6
+### Fixed
+ - Fix validation and nested form issues with wizard.
+
+## 2.29.5
+### Fixed
+ - Ensure that the form components do not load if conditions on the component return false.
+
+## 2.29.4
+### Added
+ - More input hooks to certain components.
+
+### Fixed
+ - Issue where file component values would reset.
+
+### Changed
+ - The select component will now enable search by default and can be turned off with "searchEnabled" flag on component.
+
+## 2.29.3
+### Fixed
+ - Issue with the providers not getting registered correctly.
+
 ## 2.29.2
 ### Changed
  - Upgraded i18next to 10.4.1 

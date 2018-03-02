@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -177,8 +179,98 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textarea/TextArea.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const BaseEditForm = require(&apos;../base/Base.form&apos;);
+import {TextAreaComponent} from &quot;./TextArea&quot;;
+
 module.exports = function(...extend) {
-  return BaseEditForm({}, ...extend);
+  return BaseEditForm({
+    components: [
+      {
+        weight: 0,
+        type: &apos;tabs&apos;,
+        key: &apos;tabs&apos;,
+        components: [
+          {
+            label: &apos;Display&apos;,
+            key: &apos;display&apos;,
+            components: [
+              {
+                type: &apos;number&apos;,
+                input: true,
+                key: &apos;rows&apos;,
+                label: &apos;Rows&apos;,
+                weight: 210,
+                tooltip: &apos;This allows control over how many rows are visible in the text area.&apos;,
+                placeholder: &apos;Enter the amount of rows&apos;
+              },
+              {
+                type: &apos;select&apos;,
+                input: true,
+                key: &apos;editor&apos;,
+                label: &apos;Editor&apos;,
+                tooltip: &apos;Select the type of WYSIWYG editor to use for this text area.&apos;,
+                dataSrc: &apos;values&apos;,
+                data: {
+                  values: [
+                    {label: &apos;None&apos;, value: &apos;&apos;},
+                    {label: &apos;Quill&apos;, value: &apos;quill&apos;},
+                    {label: &apos;ACE&apos;, value: &apos;ace&apos;}
+                  ]
+                },
+                weight: 415
+              },
+              {
+                type: &apos;select&apos;,
+                input: true,
+                key: &apos;as&apos;,
+                label: &apos;Save As&apos;,
+                dataSrc: &apos;values&apos;,
+                tooltip: &apos;This setting determines how the value should be entered and stored in the database.&apos;,
+                clearOnHide: true,
+                data: {
+                  values: [
+                    {label: &apos;String&apos;, value: &apos;string&apos;},
+                    {label: &apos;JSON&apos;, value: &apos;json&apos;},
+                    {label: &apos;HTML&apos;, value: &apos;html&apos;}
+                  ]
+                },
+                conditional: {
+                  json: {
+                    or: [
+                      {&apos;===&apos;: [{var: &apos;data.editor&apos;}, &apos;quill&apos;]},
+                      {&apos;===&apos;: [{var: &apos;data.editor&apos;}, &apos;ace&apos;]}
+                    ]
+                  }
+                },
+                weight: 416
+              },
+              {
+                type: &apos;textarea&apos;,
+                input: true,
+                editor: &apos;ace&apos;,
+                rows: 10,
+                as: &apos;json&apos;,
+                label: &apos;Editor Settings&apos;,
+                tooltip: &apos;Enter the WYSIWYG editor JSON configuration.&apos;,
+                key: &apos;wysiwyg&apos;,
+                customDefaultValue: (component, row, data) =&gt; {
+                  return component.wysiwygDefault();
+                },
+                conditional: {
+                  json: {
+                    or: [
+                      {&apos;===&apos;: [{var: &apos;data.editor&apos;}, &apos;quill&apos;]},
+                      {&apos;===&apos;: [{var: &apos;data.editor&apos;}, &apos;ace&apos;]}
+                    ]
+                  }
+                },
+                weight: 417
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }, ...extend);
 };
 </code></pre>
 

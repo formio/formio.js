@@ -1,5 +1,8 @@
 (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 'use strict';
+// Intentionally use native-promise-only here... Other promise libraries (es6-promise)
+// duck-punch the global Promise definition which messes up Angular 2 since it
+// also duck-punches the global Promise definition. For now, keep native-promise-only.
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -47,10 +50,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
   return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-}; // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
-// duck-punch the global Promise definition which messes up Angular 2 since it
-// also duck-punches the global Promise definition. For now, keep native-promise-only.
-
+};
 
 var _nativePromiseOnly = require('native-promise-only');
 
@@ -67,6 +67,10 @@ var _browserCookies2 = _interopRequireDefault(_browserCookies);
 var _shallowCopy = require('shallow-copy');
 
 var _shallowCopy2 = _interopRequireDefault(_shallowCopy);
+
+var _providers = require('./providers');
+
+var _providers2 = _interopRequireDefault(_providers);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -1412,7 +1416,7 @@ Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.providers = require('./providers');
+Formio.providers = _providers2.default;
 Formio.events = new _eventemitter.EventEmitter2({
   wildcard: false,
   maxListeners: 0
@@ -1421,8 +1425,20 @@ Formio.events = new _eventemitter.EventEmitter2({
 },{"./providers":2,"browser-cookies":8,"eventemitter2":9,"native-promise-only":10,"shallow-copy":12,"whatwg-fetch":13}],2:[function(require,module,exports){
 'use strict';
 
-module.exports = {
-  storage: require('./storage')
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _storage = require('./storage');
+
+var _storage2 = _interopRequireDefault(_storage);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+exports.default = {
+  storage: _storage2.default
 };
 
 },{"./storage":5}],3:[function(require,module,exports){
@@ -1555,14 +1571,38 @@ exports.default = dropbox;
 },{"native-promise-only":10}],5:[function(require,module,exports){
 'use strict';
 
-module.exports = {
-  base64: require('./base64'),
-  dropbox: require('./dropbox.js'),
-  s3: require('./s3.js'),
-  url: require('./url.js')
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _base = require('./base64');
+
+var _base2 = _interopRequireDefault(_base);
+
+var _dropbox = require('./dropbox');
+
+var _dropbox2 = _interopRequireDefault(_dropbox);
+
+var _s = require('./s3');
+
+var _s2 = _interopRequireDefault(_s);
+
+var _url = require('./url');
+
+var _url2 = _interopRequireDefault(_url);
+
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : { default: obj };
+}
+
+exports.default = {
+  base64: _base2.default,
+  dropbox: _dropbox2.default,
+  s3: _s2.default,
+  url: _url2.default
 };
 
-},{"./base64":3,"./dropbox.js":4,"./s3.js":6,"./url.js":7}],6:[function(require,module,exports){
+},{"./base64":3,"./dropbox":4,"./s3":6,"./url":7}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

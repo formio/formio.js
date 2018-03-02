@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -233,6 +235,9 @@ export class EditGridComponent extends FormioComponents {
   }
 
   build() {
+    if (this.options.builder) {
+      return super.build();
+    }
     this.createElement();
     this.createLabel(this.element);
     this.buildTable();
@@ -458,7 +463,7 @@ export class EditGridComponent extends FormioComponents {
     this.removeRowComponents(rowIndex);
     // Remove if new.
     if (!this.rows[rowIndex]) {
-      this.tableElement.removeChild(this.editRows[rowIndex].element);
+      this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
       this.rows.splice(rowIndex, 1);
     }
@@ -493,7 +498,7 @@ export class EditGridComponent extends FormioComponents {
     }
     this.removeRowComponents(rowIndex);
     this.rows.splice(rowIndex, 1);
-    this.tableElement.removeChild(this.editRows[rowIndex].element);
+    this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
     this.refreshDOM();
@@ -515,21 +520,16 @@ export class EditGridComponent extends FormioComponents {
     });
 
     if (this.component.validate &amp;&amp; this.component.validate.row) {
-      let custom = this.component.validate.row;
-      custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) =&gt; {
-        return this.editRows[rowIndex].data[$2];
-      });
-      let valid;
-      try {
-        const row = this.editRows[rowIndex].data;
-        const data = this.data;
-        valid = new Function(&apos;row&apos;, &apos;data&apos;, `${custom}; return valid;`)(row, data);
+      let valid = FormioUtils.evaluate(this.component.validate.row, {
+        valid: true,
+        row: this.editRows[rowIndex].data,
+        data: this.data,
+        component: this
+      }, &apos;valid&apos;, true);
+      if (valid === null) {
+        valid = `Invalid row validation for ${this.component.key}`;
       }
-      catch (e) {
-        /* eslint-disable no-console, no-undef */
-        console.warn(`A syntax error occurred while computing custom values in ${this.component.key}`, e);
-        /* eslint-enable no-console */
-      }
+
       this.editRows[rowIndex].errorContainer.innerHTML = &apos;&apos;;
       if (valid !== true) {
         this.editRows[rowIndex].errorContainer.appendChild(
@@ -543,7 +543,7 @@ export class EditGridComponent extends FormioComponents {
   }
 
   checkValidity(data, dirty) {
-    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
       return true;
     }
 
@@ -581,12 +581,7 @@ export class EditGridComponent extends FormioComponents {
   setCustomValidity(message) {
     if (this.errorElement &amp;&amp; this.errorContainer) {
       this.errorElement.innerHTML = &apos;&apos;;
-      try {
-        this.errorContainer.removeChild(this.errorElement);
-      }
-      catch (err) {
-        // ignore
-      }
+      this.removeChildFrom(this.errorElement, this.errorContainer);
     }
     if (message) {
       this.emit(&apos;componentError&apos;, this.error);
@@ -595,12 +590,13 @@ export class EditGridComponent extends FormioComponents {
         class: &apos;help-block&apos;
       });
       errorMessage.appendChild(this.text(message));
-      this.errorElement.appendChild(errorMessage);
+      this.appendTo(errorMessage, this.errorElement);
     }
   }
 
   get defaultValue() {
-    return [];
+    const value = super.defaultValue;
+    return Array.isArray(value) ? value : [];
   }
 
   setValue(value) {
@@ -611,7 +607,8 @@ export class EditGridComponent extends FormioComponents {
       return;
     }
 
-    this.rows = this.data[this.component.key] = value;
+    _.set(this.data, this.component.key, value);
+    this.rows = value;
     // Refresh editRow data when data changes.
     this.rows.forEach((row, rowIndex) =&gt; {
       if (this.editRows[rowIndex]) {
@@ -624,6 +621,14 @@ export class EditGridComponent extends FormioComponents {
         };
       }
     });
+    // Remove any extra edit rows.
+    if (this.rows.length &lt; this.editRows.length) {
+      for (let rowIndex = this.editRows.length - 1; rowIndex &gt;= this.rows.length; rowIndex--) {
+        this.removeRowComponents(rowIndex);
+        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
+        this.editRows.splice(rowIndex, 1);
+      }
+    }
     this.refreshDOM();
   }
 

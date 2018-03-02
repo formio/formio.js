@@ -1,3 +1,4 @@
-module.exports = {
-  storage: require('./storage')
+import storage from './storage';
+export default {
+  storage: storage
 };

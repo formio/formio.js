@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -210,7 +212,7 @@ export class DataGridComponent extends FormioComponents {
   build() {
     this.createElement();
     this.createLabel(this.element);
-    if (!this.data.hasOwnProperty(this.component.key)) {
+    if (!_.has(this.data, this.component.key) || !_.get(this.data, this.component.key).length) {
       this.addNewValue();
     }
     this.visibleColumns = true;
@@ -219,8 +221,11 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildTable() {
-    if (this.tableElement &amp;&amp; this.tableElement.parentNode) {
-      this.element.removeChild(this.tableElement);
+    // Destroy so that it will remove all existing components and clear handlers.
+    this.destroy();
+
+    if (this.tableElement) {
+      this.removeChild(this.tableElement);
       this.tableElement.innerHTML = &apos;&apos;;
     }
 
@@ -238,7 +243,7 @@ export class DataGridComponent extends FormioComponents {
 
     // Build rows the first time.
     this.rows = [];
-    this.tableRows = this.data[this.component.key].map((row, rowIndex) =&gt; this.buildRow(row, rowIndex));
+    this.tableRows = _.get(this.data, this.component.key).map((row, rowIndex) =&gt; this.buildRow(row, rowIndex));
     this.tbody = this.ce(&apos;tbody&apos;, null, this.tableRows);
 
     // Add the body to the table and to the element.
@@ -289,27 +294,33 @@ export class DataGridComponent extends FormioComponents {
       this.component.addAnotherPosition === &apos;bottom&apos; ||
       this.component.addAnotherPosition === &apos;both&apos;
     ))  ?
-      this.ce(&apos;tr&apos;, null,
-        this.ce(&apos;td&apos;, {colspan: (this.component.components.length + 1)},
-          this.addButton()
+      this.ce(&apos;tfoot&apos;, null,
+        this.ce(&apos;tr&apos;, null,
+          this.ce(&apos;td&apos;, {colspan: (this.component.components.length + 1)},
+            this.addButton()
+          )
         )
       )
       : null;
   }
 
   get defaultValue() {
-    return {};
+    const value = super.defaultValue;
+    return typeof value === &apos;object&apos; ? value : {};
   }
 
   buildRows(data) {
-    this.data[this.component.key].forEach((row, rowIndex) =&gt; {
+    _.get(this.data, this.component.key).forEach((row, rowIndex) =&gt; {
       // New Row.
       if (!this.tableRows[rowIndex]) {
         this.tableRows[rowIndex] = this.buildRow(row, rowIndex, data);
         this.tbody.insertBefore(this.tableRows[rowIndex], this.tbody.children[rowIndex + 1]);
       }
       // Update existing
-      else if (!_.isEqual(row, this.tableRows[rowIndex].data)) {
+      else if (
+        !_.isEqual(row, this.tableRows[rowIndex].data) ||
+        !_.isEqual(this.visibleColumns, this.tableRows[rowIndex].visibleColumns)
+      ) {
         this.removeRowComponents(rowIndex);
         const newRow = this.buildRow(row, rowIndex, data);
         this.tbody.replaceChild(newRow, this.tableRows[rowIndex]);
@@ -317,8 +328,8 @@ export class DataGridComponent extends FormioComponents {
       }
     });
     // Remove any extra rows.
-    for (let rowIndex = this.tableRows.length; rowIndex &gt; this.data[this.component.key].length; rowIndex--) {
-      this.tbody.removeChild(this.tableRows[rowIndex - 1]);
+    for (let rowIndex = this.tableRows.length; rowIndex &gt; _.get(this.data, this.component.key).length; rowIndex--) {
+      this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
       this.tableRows.splice(rowIndex - 1, 1);
     }
   }
@@ -331,6 +342,7 @@ export class DataGridComponent extends FormioComponents {
     }
     if (this.options.builder) {
       lastColumn = this.ce(&apos;td&apos;, {
+        id: `${this.id}-drag-container`,
         class: &apos;drag-container&apos;
       }, this.ce(&apos;div&apos;, {
         id: this.id + &apos;-placeholder&apos;,
@@ -338,8 +350,7 @@ export class DataGridComponent extends FormioComponents {
         style: &apos;text-align:center; margin-bottom: 0px;&apos;,
         role: &apos;alert&apos;
       }, this.text(&apos;Drag and Drop a form component&apos;)));
-      lastColumn.component = this;
-      this.root.dragContainers.push(lastColumn);
+      this.root.addDragContainer(lastColumn, this);
     }
 
     const element = this.ce(&apos;tr&apos;, null,
@@ -349,15 +360,16 @@ export class DataGridComponent extends FormioComponents {
       ]
     );
     element.data = _.cloneDeep(row);
+    element.visibleColumns = _.cloneDeep(this.visibleColumns);
     return element;
   }
 
   removeRowComponents(rowIndex) {
     // Clean up components list.
     (Object.keys(this.rows[rowIndex])).forEach(key =&gt; {
-      this.removeComponent(this.rows[rowIndex][key], this.components);
+      this.removeComponent(this.rows[rowIndex][key]);
     });
-    this.rows[rowIndex] = [];
+    delete this.rows[rowIndex];
   }
 
   buildComponent(col, colIndex, row, rowIndex) {
@@ -366,6 +378,7 @@ export class DataGridComponent extends FormioComponents {
     }
 
     let container = this.ce(&apos;td&apos;);
+    container.noDrop = true;
     let column = _.clone(col);
     let options = _.clone(this.options);
     options.name += `[${colIndex}]`;
@@ -389,6 +402,10 @@ export class DataGridComponent extends FormioComponents {
 
   checkConditions(data) {
     let show = super.checkConditions(data);
+    // If table isn&apos;t visible, don&apos;t bother calculating columns.
+    if (!show) {
+      return false;
+    }
     let rebuild = false;
     if (this.visibleColumns === true) {
       this.visibleColumns = {};
@@ -410,8 +427,8 @@ export class DataGridComponent extends FormioComponents {
     });
 
     // If a rebuild is needed, then rebuild the table.
-    if (rebuild &amp;&amp; show) {
-      this.buildTable();
+    if (rebuild) {
+      this.buildRows();
     }
 
     // Return if this table should show.
@@ -424,10 +441,15 @@ export class DataGridComponent extends FormioComponents {
       return;
     }
     if (!Array.isArray(value)) {
-      return;
+      if (typeof value === &apos;object&apos;) {
+        value = [value];
+      }
+      else {
+        return;
+      }
     }
 
-    this.data[this.component.key] = value;
+    _.set(this.data, this.component.key, value);
     this.buildRows();
     _.each(this.rows, (row, index) =&gt; {
       if (value.length &lt;= index) {
@@ -439,6 +461,10 @@ export class DataGridComponent extends FormioComponents {
         }
         else if (value[index].hasOwnProperty(key)) {
           col.setValue(value[index][key], flags);
+        }
+        else {
+          col.data = value[index];
+          col.setValue(col.defaultValue, flags);
         }
       });
     });

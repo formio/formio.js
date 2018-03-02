@@ -151,13 +151,18 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe">contrib/stripe/stripe</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/contrib/stripe/stripe/Stripe.js~StripeComponent.html">StripeComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#contrib-stripe-stripe-fixtures">contrib/stripe/stripe/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#providers-storage">providers/storage</a><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-base64">base64</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/gmap/Gmap.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import { BaseComponent } from &apos;../base/Base&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/* globals google */
+import {BaseComponent} from &apos;../base/Base&apos;;
 export class GmapComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -165,10 +170,10 @@ export class GmapComponent extends BaseComponent {
     // Get the source for Google Maps API
     let src = &apos;https://maps.googleapis.com/maps/api/js?v=3&amp;libraries=places&amp;callback=googleMapsCallback&apos;;
     if (component.map &amp;&amp; component.map.key) {
-      src += &apos;&amp;key=&apos; + component.map.key;
+      src += `&amp;key=${component.map.key}`;
     }
     if (component.map &amp;&amp; component.map.region) {
-      src += &apos;&amp;region=&apos; + component.map.region;
+      src += `&amp;region=${component.map.region}`;
     }
     BaseComponent.requireLibrary(&apos;googleMaps&apos;, &apos;google.maps.places&apos;, src);
   }
@@ -180,9 +185,9 @@ export class GmapComponent extends BaseComponent {
     this.initGoogleMap();
     this.input = this.createInput(this.element);
     this.addInput(this.input, this.element);
-    let gmapElement = this.ce(&apos;div&apos;, {
+    const gmapElement = this.ce(&apos;div&apos;, {
       id: this.component.map.gmapId,
-      style: &quot;min-height: 300px; height: calc(100vh - 600px);&quot;
+      style: &apos;min-height: 300px; height: calc(100vh - 600px);&apos;
     });
     this.element.appendChild(gmapElement);
   }
@@ -195,16 +200,16 @@ export class GmapComponent extends BaseComponent {
 
   addInput(input, container) {
     super.addInput(input, container);
-    let that = this;
+    const that = this;
     BaseComponent.libraryReady(&apos;googleMaps&apos;).then(() =&gt; {
       let autocompleteOptions = {};
       if (this.component.map) {
         autocompleteOptions = this.component.map.autocompleteOptions || {};
       }
-      let autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
-      autocomplete.addListener(&apos;place_changed&apos;, function() {
+      const autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
+      autocomplete.addListener(&apos;place_changed&apos;, () =&gt; {
         that.marker.setVisible(false);
-        let place = autocomplete.getPlace();
+        const place = autocomplete.getPlace();
         if (!place.geometry) {
           console.log(&quot;Autocomplete&apos;s returned place contains no geometry&quot;);
           return;
@@ -213,7 +218,8 @@ export class GmapComponent extends BaseComponent {
         // If the place has a geometry, then present it on a map.
         if (place.geometry.viewport) {
           that.map.fitBounds(place.geometry.viewport);
-        } else {
+        }
+        else {
           that.map.setCenter(place.geometry.location);
           that.map.setZoom(17);  // Why 17? Because it looks good.
         }
@@ -226,53 +232,45 @@ export class GmapComponent extends BaseComponent {
         }));
         that.marker.setPosition(place.geometry.location);
         that.marker.setVisible(true);
-        let address = &apos;&apos;;
-        if (place.address_components) {
-          address = [
-            (place.address_components[0] &amp;&amp; place.address_components[0].short_name || &apos;&apos;),
-            (place.address_components[1] &amp;&amp; place.address_components[1].short_name || &apos;&apos;),
-            (place.address_components[2] &amp;&amp; place.address_components[2].short_name || &apos;&apos;)
-          ].join(&apos; &apos;);
-        }
         that.setValue(place.name);
       });
     });
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.attr.class += &apos; Gmap-search&apos;;
     return info;
   }
 
   initGoogleMap() {
-    BaseComponent.libraryReady(&apos;googleMaps&apos;).then((result) =&gt; {
-      let defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
-      let options = {
+    BaseComponent.libraryReady(&apos;googleMaps&apos;).then(() =&gt; {
+      const defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
+      const options = {
         zoom: 19,
         center: defaultLatlng,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
         styles: [
           {
-            &quot;featureType&quot;: &quot;poi&quot;,
-            &quot;stylers&quot;: [
+            &apos;featureType&apos;: &apos;poi&apos;,
+            &apos;stylers&apos;: [
               {
-                &quot;visibility&quot;: &quot;off&quot;
+                &apos;visibility&apos;: &apos;off&apos;
               }
             ]
           },
           {
-            &quot;featureType&quot;: &quot;transit&quot;,
-            &quot;stylers&quot;: [
+            &apos;featureType&apos;: &apos;transit&apos;,
+            &apos;stylers&apos;: [
               {
-                &quot;visibility&quot;: &quot;off&quot;
+                &apos;visibility&apos;: &apos;off&apos;
               }
             ]
           }
         ]
       };
 
-      let mapElement = document.getElementById(this.component.map.gmapId);
+      const mapElement = document.getElementById(this.component.map.gmapId);
       if (!mapElement) {
         return;
       }
@@ -282,25 +280,27 @@ export class GmapComponent extends BaseComponent {
   }
 
   addMarker(latlng, title, map) {
-    let that = this;
+    const that = this;
     this.marker = new google.maps.Marker({
       position: latlng,
       map: map,
       title: title,
       draggable:true
     });
-    this.marker.addListener(&apos;dragend&apos;, function(event) {
-      let geocoder = new google.maps.Geocoder;
-      let latlng = {lat: parseFloat(event.latLng.lat()), lng: parseFloat(event.latLng.lng())};
-      geocoder.geocode({&apos;location&apos;: latlng}, function(results, status) {
+    this.marker.addListener(&apos;dragend&apos;, (event) =&gt; {
+      const geocoder = new google.maps.Geocoder;
+      const latlng = {lat: parseFloat(event.latLng.lat()), lng: parseFloat(event.latLng.lng())};
+      geocoder.geocode({&apos;location&apos;: latlng}, (results, status) =&gt; {
         if (status === google.maps.GeocoderStatus.OK) {
           if (results[1]) {
             that.setValue(results[0].formatted_address);
-          } else {
+          }
+          else {
             console.log(&apos;No results found&apos;);
           }
-        } else {
-          console.log(&apos;Geocoder failed due to: &apos; + status);
+        }
+        else {
+          console.log(`Geocoder failed due to: ${status}`);
         }
       });
     });

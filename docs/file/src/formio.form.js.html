@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -179,7 +181,6 @@
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import EventEmitter from &apos;eventemitter2&apos;;
 import i18next from &apos;i18next&apos;;
-
 import Formio from &apos;./formio&apos;;
 import Promise from &apos;native-promise-only&apos;;
 import {FormioComponents} from &apos;./components/Components&apos;;
@@ -235,6 +236,11 @@ export default class FormioForm extends FormioComponents {
 
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
+
+    // Set the base url.
+    if (this.options.baseUrl) {
+      Formio.setBaseUrl(this.options.baseUrl);
+    }
 
     /**
      * The i18n configuration for this component.
@@ -458,19 +464,16 @@ export default class FormioForm extends FormioComponents {
     if (this.element) {
       this.element.removeEventListener(&apos;keydown&apos;, this.executeShortcuts.bind(this));
     }
-    element.addEventListener(&apos;keydown&apos;, this.executeShortcuts.bind(this));
 
-    this.element = element;
+    this.wrapper = element;
+    this.element = this.ce(&apos;div&apos;);
+    this.wrapper.appendChild(this.element);
+    //this.showElement(false);
+    this.element.addEventListener(&apos;keydown&apos;, this.executeShortcuts.bind(this));
     let classNames = this.element.getAttribute(&apos;class&apos;);
     classNames += &apos; formio-form&apos;;
-    this.addClass(this.element, classNames);
+    this.addClass(this.wrapper, classNames);
     this.loading = true;
-    this.ready.then(
-      () =&gt; (this.loading = false),
-      () =&gt; (this.loading = false)
-    ).catch(
-      () =&gt; (this.loading = false)
-    );
     this.elementResolve(element);
   }
 
@@ -704,10 +707,10 @@ export default class FormioForm extends FormioComponents {
       if (this.loader) {
         try {
           if (loading) {
-            this.prepend(this.loader);
+            this.prependTo(this.loader, this.wrapper);
           }
           else {
-            this.removeChild(this.loader);
+            this.removeChildFrom(this.loader, this.wrapper);
           }
         }
         catch (err) {
@@ -912,13 +915,17 @@ export default class FormioForm extends FormioComponents {
   render() {
     return this.onElement.then(() =&gt; {
       this.clear();
+      //this.showElement(false);
       return this.localize().then(() =&gt; {
         this.build();
         this.isBuilt = true;
         this.onResize();
         this.on(&apos;resetForm&apos;, () =&gt; this.reset(), true);
         this.on(&apos;refreshData&apos;, () =&gt; this.updateValue());
-        setTimeout(() =&gt; this.emit(&apos;render&apos;), 1);
+        setTimeout(() =&gt; {
+          this.onChange();
+          this.emit(&apos;render&apos;);
+        }, 1);
       });
     });
   }
@@ -964,11 +971,6 @@ export default class FormioForm extends FormioComponents {
   build() {
     this.on(&apos;submitButton&apos;, () =&gt; this.submit(), true);
     this.addComponents();
-    const submission = this.getValue();
-    this.checkConditions(submission);
-    this.checkData(submission.data, {
-      noValidate: true
-    });
     this.on(&apos;requestUrl&apos;, (args) =&gt; (this.submitUrl(args.url,args.headers)), true);
   }
 
@@ -1043,6 +1045,10 @@ export default class FormioForm extends FormioComponents {
       error = {message: error};
     }
 
+    if (&apos;details&apos; in error) {
+      error = error.details;
+    }
+
     return this.showErrors(error);
   }
 
@@ -1058,6 +1064,8 @@ export default class FormioForm extends FormioComponents {
     const value = _.clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
+    this.showElement(true);
+    this.loading = false;
     this.emit(&apos;change&apos;, value);
   }
 

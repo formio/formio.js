@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -184,7 +186,82 @@
     key: &apos;label&apos;,
     label: &apos;Label&apos;,
     placeholder: &apos;Field Label&apos;,
-    tooltip: &apos;The label for this field that will appear next to it.&apos;
+    tooltip: &apos;The label for this field that will appear next to it.&apos;,
+    validate: {
+      required: true
+    }
+  },
+  {
+    weight: 10,
+    type: &apos;checkbox&apos;,
+    label: &apos;Hide Label&apos;,
+    tooltip: &apos;Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.&apos;,
+    key: &apos;hideLabel&apos;,
+    input: true
+  },
+  {
+    type: &apos;select&apos;,
+    input: true,
+    key: &apos;labelPosition&apos;,
+    label: &apos;Label Position&apos;,
+    tooltip: &apos;Position for the label for this field.&apos;,
+    weight: 20,
+    defaultValue: &apos;top&apos;,
+    dataSrc: &apos;values&apos;,
+    data: {
+      values: [
+        {label: &apos;Top&apos;, value: &apos;top&apos;},
+        {label: &apos;Left (Left-aligned)&apos;, value: &apos;left-left&apos;},
+        {label: &apos;Left (Right-aligned)&apos;, value: &apos;left-right&apos;},
+        {label: &apos;Right (Left-aligned)&apos;, value: &apos;right-left&apos;},
+        {label: &apos;Right (Right-aligned)&apos;, value: &apos;right-right&apos;},
+        {label: &apos;Bottom&apos;, value: &apos;bottom&apos;}
+      ]
+    }
+  },
+  {
+    type: &apos;number&apos;,
+    input: true,
+    key: &apos;labelWidth&apos;,
+    label: &apos;Label Width&apos;,
+    tooltip: &apos;The width of label on line in percentages.&apos;,
+    weight: 30,
+    placeholder: &apos;30&apos;,
+    suffix: &apos;%&apos;,
+    validate: {
+      min: 0,
+      max: 100
+    },
+    conditional: {
+      json: {
+        or: [
+          {&apos;===&apos;: [{var: &apos;data.labelPosition&apos;}, &apos;top&apos;]},
+          {&apos;===&apos;: [{var: &apos;data.labelPosition&apos;}, &apos;bottom&apos;]},
+        ]
+      }
+    }
+  },
+  {
+    type: &apos;number&apos;,
+    input: true,
+    key: &apos;labelMargin&apos;,
+    label: &apos;Label Margin&apos;,
+    tooltip: &apos;The width of label margin on line in percentages.&apos;,
+    weight: 30,
+    placeholder: &apos;3&apos;,
+    suffix: &apos;%&apos;,
+    validate: {
+      min: 0,
+      max: 100
+    },
+    conditional: {
+      json: {
+        or: [
+          {&apos;===&apos;: [{var: &apos;data.labelPosition&apos;}, &apos;top&apos;]},
+          {&apos;===&apos;: [{var: &apos;data.labelPosition&apos;}, &apos;bottom&apos;]},
+        ]
+      }
+    }
   },
   {
     weight: 100,
@@ -281,14 +358,6 @@
     input: true
   },
   {
-    weight: 1200,
-    type: &apos;checkbox&apos;,
-    label: &apos;Hide Label&apos;,
-    tooltip: &apos;Hide the label of this component. This allows you to show the label in the form builder, but not when it is rendered.&apos;,
-    key: &apos;hideLabel&apos;,
-    input: true
-  },
-  {
     weight: 1300,
     type: &apos;checkbox&apos;,
     label: &apos;Hide Input&apos;,
@@ -302,6 +371,14 @@
     label: &apos;Disabled&apos;,
     tooltip: &apos;Disable the form input.&apos;,
     key: &apos;disabled&apos;,
+    input: true
+  },
+  {
+    weight: 1450,
+    type: &apos;checkbox&apos;,
+    label: &apos;Initial Focus&apos;,
+    tooltip: &apos;Make this field the initially focused element on this form.&apos;,
+    key: &apos;autofocus&apos;,
     input: true
   },
   {

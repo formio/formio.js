@@ -84,8 +84,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid">components/editgrid</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/editgrid/EditGrid.js~EditGridComponent.html">EditGridComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editgrid-fixtures">components/editgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
-<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-editrgrid-fixtures">components/editrgrid/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email">components/email</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/email/Email.js~EmailComponent.html">EmailComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-email-fixtures">components/email/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -140,6 +140,7 @@
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-survey-fixtures">components/survey/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table">components/table</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/table/Table.js~TableComponent.html">TableComponent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-TableEditOptions">TableEditOptions</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-table-fixtures">components/table/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-tabs">components/tabs</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/tabs/Tabs.js~TabsComponent.html">TabsComponent</a></span></span></li>
@@ -170,6 +171,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -177,8 +179,103 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/checkbox/Checkbox.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">const BaseEditForm = require(&apos;../base/Base.form&apos;);
+import { BuilderUtils } from &apos;../../utils/builder&apos;;
+
 module.exports = function(...extend) {
-  return BaseEditForm({}, ...extend);
+  return BaseEditForm({
+    components: [
+      {
+        weight: 0,
+        type: &apos;tabs&apos;,
+        key: &apos;tabs&apos;,
+        components: [
+          {
+            label: &apos;Display&apos;,
+            key: &apos;display&apos;,
+            components: [
+              {
+                type: &apos;select&apos;,
+                input: true,
+                label: &apos;Label Position&apos;,
+                key: &apos;labelPosition&apos;,
+                tooltip: &apos;Position for the label for this field.&apos;,
+                defaultValue: &apos;right&apos;,
+                dataSrc: &apos;values&apos;,
+                weight: 10,
+                data: {
+                  values: [
+                    {label: &apos;Top&apos;, value: &apos;top&apos;},
+                    {label: &apos;Left&apos;, value: &apos;left&apos;},
+                    {label: &apos;Right&apos;, value: &apos;right&apos;},
+                    {label: &apos;Bottom&apos;, value: &apos;bottom&apos;}
+                  ]
+                }
+              },
+              {
+                type: &apos;select&apos;,
+                input: true,
+                weight: 350,
+                label: &apos;Shortcut&apos;,
+                key: &apos;shortcut&apos;,
+                tooltip: &apos;Shortcut for this component.&apos;,
+                dataSrc: &apos;custom&apos;,
+                data: {
+                  custom: (component, data) =&gt; {
+                    return BuilderUtils.getAvailableShortcuts(data.__form, component.component);
+                  }
+                }
+              },
+              {
+                type: &apos;select&apos;,
+                input: true,
+                key: &apos;inputType&apos;,
+                label: &apos;Input Type&apos;,
+                tooltip: &apos;This is the input type used for this checkbox.&apos;,
+                dataSrc: &apos;values&apos;,
+                weight: 410,
+                data: {
+                  values: [
+                    {label: &apos;Checkbox&apos;, value: &apos;checkbox&apos;},
+                    {label: &apos;Radio&apos;, value: &apos;radio&apos;}
+                  ]
+                }
+              },
+              {
+                type: &apos;textfield&apos;,
+                input: true,
+                key: &apos;name&apos;,
+                label: &apos;Radio Key&apos;,
+                tooltip: &apos;The key used to trigger the radio button toggle.&apos;,
+                weight: 420,
+                conditional: {
+                  json: {&apos;===&apos;: [{var: &apos;data.inputType&apos;}, &apos;radio&apos;]}
+                }
+              },
+              {
+                type: &apos;textfield&apos;,
+                input: true,
+                label: &apos;Radio Value&apos;,
+                key: &apos;value&apos;,
+                tooltip: &apos;The value used with this radio button.&apos;,
+                weight: 430,
+                conditional: {
+                  json: {&apos;===&apos;: [{var: &apos;data.inputType&apos;}, &apos;radio&apos;]}
+                }
+              },
+              {
+                type: &apos;checkbox&apos;,
+                input: true,
+                weight: 440,
+                label: &apos;Datagrid Label&apos;,
+                key: &apos;datagridLabel&apos;,
+                tooltip: &apos;Show the label when in a datagrid.&apos;
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }, ...extend);
 };
 </code></pre>
 

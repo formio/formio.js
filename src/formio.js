@@ -1,3 +1,4 @@
+'use strict';
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
@@ -6,6 +7,7 @@ import 'whatwg-fetch';
 import {EventEmitter2 as EventEmitter} from 'eventemitter2';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
+import providers from './providers';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -1188,7 +1190,7 @@ Formio.projectUrl = Formio.baseUrl;
 Formio.projectUrlSet = false;
 Formio.plugins = [];
 Formio.cache = {};
-Formio.providers = require('./providers');
+Formio.providers = providers;
 Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
