@@ -168,7 +168,7 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   getView(value) {
-    return value ? moment(value).format(convertFormatToMoment(_.get(this.component, 'format', ''))) : null;
+    return value ? moment(value).format(convertFormatToMoment(_.get(this.component, 'format', ''))) : '';
   }
 
   setValueAt(index, value) {
