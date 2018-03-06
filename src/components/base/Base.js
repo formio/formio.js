@@ -415,13 +415,13 @@ export class BaseComponent {
 
     // FOR-1094
     if (typeof value === 'object') {
-      let nestedObject = [];
+      let convertObj = [];
 
       for (let propt in value.data) {
-        nestedObject.push(value.data[propt]);
+        convertObj.push(value.data[propt]);
       }
 
-      return nestedObject.join(' ');
+      return convertObj.join(' ');
     }
 
     return value.toString();
