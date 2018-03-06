@@ -405,7 +405,6 @@ export class BaseComponent {
   }
 
   getView(value) {
-
     if (!value) {
       return '';
     }
