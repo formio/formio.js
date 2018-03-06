@@ -1939,6 +1939,9 @@ var BaseComponent = function () {
   }, {
     key: 'getView',
     value: function getView(value) {
+      if (!value) {
+        return '';
+      }
       if (Array.isArray(value)) {
         return value.join(', ');
       }
@@ -5160,11 +5163,19 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
 
       // Build rows the first time.
       this.rows = [];
+
+      // Check if there is a Min Length Validation
+      if (this.component.validate && this.component.validate.minLength > this.data[this.component.key].length) {
+        var toAdd = this.component.validate.minLength - this.data[this.component.key].length;
+        for (var i = 0; i < toAdd; i++) {
+          this.data[this.component.key].push({});
+        }
+      }
+
       this.tableRows = this.data[this.component.key].map(function (row, rowIndex) {
         return _this2.buildRow(row, rowIndex);
       });
       this.tbody = this.ce('tbody', null, this.tableRows);
-
       // Add the body to the table and to the element.
       this.tableElement.appendChild(this.tbody);
 
@@ -5205,6 +5216,16 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       return !this.shouldDisable && (!this.component.addAnotherPosition || this.component.addAnotherPosition === 'bottom' || this.component.addAnotherPosition === 'both') ? this.ce('tfoot', null, this.ce('tr', null, this.ce('td', { colspan: this.component.components.length + 1 }, this.addButton()))) : null;
     }
   }, {
+    key: 'checkAndRemoveAddButton',
+    value: function checkAndRemoveAddButton() {
+      //check validation and remove add button
+      if (this.component.validate && this.tableElement.lastChild.firstChild && this.component.validate.maxLength <= this.data[this.component.key].length) {
+        this.tableElement.lastChild.firstChild.remove();
+      } else if (this.component.validate && !this.tableElement.lastChild.firstChild && this.component.validate.maxLength > this.data[this.component.key].length) {
+        this.tableElement.lastChild.appendChild(this.ce('tr', null, this.ce('td', { colspan: this.component.components.length + 1 }, this.addButton())));
+      }
+    }
+  }, {
     key: 'buildRows',
     value: function buildRows(data) {
       var _this4 = this;
@@ -5228,6 +5249,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
         this.tableRows.splice(rowIndex - 1, 1);
       }
+
+      this.checkAndRemoveAddButton();
     }
   }, {
     key: 'buildRow',
@@ -5603,7 +5626,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'getView',
     value: function getView(value) {
-      return value ? (0, _moment2.default)(value).format((0, _utils.convertFormatToMoment)(_lodash2.default.get(this.component, 'format', ''))) : null;
+      return value ? (0, _moment2.default)(value).format((0, _utils.convertFormatToMoment)(_lodash2.default.get(this.component, 'format', ''))) : '';
     }
   }, {
     key: 'setValueAt',
@@ -8797,6 +8820,9 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
   }, {
     key: 'getView',
     value: function getView(value) {
+      if (!value) {
+        return '';
+      }
       if (!_lodash2.default.isString(value)) {
         return _lodash2.default.toString(value);
       }
@@ -9908,6 +9934,9 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
   }, {
     key: 'getView',
     value: function getView(value) {
+      if (!value) {
+        return '';
+      }
       return (0, _lodash2.default)(this.component.values || []).filter(function (v) {
         return value[v.value];
       }).map('label').join(', ');
@@ -10350,6 +10379,9 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
     value: function getView(value) {
       var _this5 = this;
 
+      if (!value) {
+        return '';
+      }
       var table = this.ce('table', {
         class: 'table table-striped table-bordered table-condensed'
       });
