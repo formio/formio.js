@@ -405,11 +405,23 @@ export class BaseComponent {
   }
 
   getView(value) {
+
     if (!value) {
       return '';
     }
     if (Array.isArray(value)) {
       return value.join(', ');
+    }
+
+    // FOR-1094
+    if (typeof value === 'object') {
+      let nestedObject = [];
+
+      for (let propt in value.data) {
+        nestedObject.push(value.data[propt]);
+      }
+
+      return nestedObject.join(' ');
     }
 
     return value.toString();
