@@ -107,6 +107,9 @@ export class SelectComponent extends BaseComponent {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       return template.replace(label, this.t(label));
     }
+    else {
+      return JSON.stringify(data);
+    }
   }
 
   itemValue(data) {
