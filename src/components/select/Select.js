@@ -508,7 +508,6 @@ export class SelectComponent extends BaseComponent {
     if (typeof data === 'string') {
       return this.t(data);
     }
-
     if (this.component.template) {
       return this.interpolate(this.component.template, {item: data})
     }
