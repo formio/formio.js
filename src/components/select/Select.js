@@ -511,7 +511,7 @@ export class SelectComponent extends BaseComponent {
     if (this.component.template) {
       return this.interpolate(this.component.template, {item: data})
     }
-    return  value.data || this.component.placeholder;
+    return data.label || this.component.placeholder;
   }
 
   getValue(flags) {
