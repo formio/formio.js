@@ -498,6 +498,23 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
+  getView(data) {
+    if (!data) {
+      return '';
+    }
+    if (data && !this.useTemplate) {
+      return this.t(data.label || data);
+    }
+    if (typeof data === 'string') {
+      return this.t(data);
+    }
+
+    if (this.component.template) {
+      return this.interpolate(this.component.template, {item: data})
+    }
+    return  value.data || this.component.placeholder;
+  }
+
   getValue(flags) {
     flags = flags || {};
     if (!flags.changed && this.value) {
