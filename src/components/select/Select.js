@@ -97,13 +97,12 @@ export class SelectComponent extends BaseComponent {
     if (typeof data === 'string') {
       return this.t(data);
     }
-    if (!data.data) {
-      return '' || this.component.placeholder
-    }
 
     const template = this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
-    const label = template.replace(/<\/?[^>]+(>|$)/g, '');
-    return template.replace(label, this.t(label));
+    if (template) {
+      const label = template.replace(/<\/?[^>]+(>|$)/g, '');
+      return template.replace(label, this.t(label));
+    }
   }
 
   itemValue(data) {
