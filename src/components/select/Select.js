@@ -90,6 +90,10 @@ export class SelectComponent extends BaseComponent {
   }
 
   itemTemplate(data) {
+    if (!data) {
+      return '';
+    }
+
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.useTemplate) {
       return this.t(data.label || data);
