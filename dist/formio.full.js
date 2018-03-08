@@ -12477,10 +12477,7 @@ exports.FormioForm = _formio7.default;
 exports.FormioWizard = _formio3.default;
 exports.FormioPDF = _formio5.default;
 
-exports.Formio = global.Formio = _formio9.default;
-exports.FormioForm = _formio7.default;
-exports.FormioWizard = _formio3.default;
-exports.FormioPDF = _formio5.default;
+module.exports = global.Formio = _formio9.default;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/Components":1,"./createForm":40,"./formFactory":41,"./formio":44,"./formio.form":42,"./formio.pdf":45,"./formio.polyfill":46,"./formio.wizard":47}],44:[function(require,module,exports){
