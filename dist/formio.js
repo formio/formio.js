@@ -1,4 +1,5 @@
 (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function (global){
 'use strict';
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
@@ -1422,6 +1423,10 @@ Formio.events = new _eventemitter.EventEmitter2({
   maxListeners: 0
 });
 
+// Support ES5 require and globals.
+module.exports = global.Formio = Formio;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./providers":2,"browser-cookies":8,"eventemitter2":9,"native-promise-only":10,"shallow-copy":12,"whatwg-fetch":13}],2:[function(require,module,exports){
 'use strict';
 

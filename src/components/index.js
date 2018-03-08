@@ -34,7 +34,7 @@ import {SurveyComponent} from './survey/Survey';
 import {WellComponent} from './well/Well';
 import {GmapComponent} from './gmap/Gmap';
 import {FileComponent} from './file/File';
-module.exports = {
+const FormioComponentsIndex = {
   address: AddressComponent,
   base: BaseComponent,
   content: ContentComponent,
@@ -89,3 +89,6 @@ module.exports = {
     return comp;
   }
 };
+
+module.exports = FormioComponentsIndex;
+export default FormioComponentsIndex;
