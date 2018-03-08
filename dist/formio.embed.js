@@ -12435,7 +12435,6 @@ FormioForm.setAppUrl = _formio2.default.setAppUrl;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.FormioPDF = exports.FormioWizard = exports.FormioForm = exports.Formio = undefined;
 
 var _formio = require('./formio.polyfill');
 
@@ -12514,12 +12513,12 @@ _formio7.default.registerComponent = _formio9.default.registerComponent = functi
   _Components.FormioComponents.customComponents[type] = component;
 };
 
-exports.Formio = _formio9.default;
+exports.default = _formio9.default;
+
+exports.Formio = global.Formio = _formio9.default;
 exports.FormioForm = _formio7.default;
 exports.FormioWizard = _formio3.default;
 exports.FormioPDF = _formio5.default;
-
-module.exports = global.Formio = _formio9.default;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./components/Components":1,"./createForm":40,"./formFactory":41,"./formio":45,"./formio.form":43,"./formio.pdf":46,"./formio.polyfill":47,"./formio.wizard":48}],45:[function(require,module,exports){
@@ -13934,7 +13933,6 @@ var Formio = function () {
 // Define all the static properties.
 
 
-exports.default = Formio;
 Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
@@ -13949,6 +13947,7 @@ Formio.events = new _eventemitter.EventEmitter2({
 
 // Support ES5 require and globals.
 module.exports = global.Formio = Formio;
+exports.default = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./providers":51,"browser-cookies":59,"eventemitter2":62,"native-promise-only":82,"shallow-copy":85,"whatwg-fetch":90}],46:[function(require,module,exports){

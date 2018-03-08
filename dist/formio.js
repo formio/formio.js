@@ -1410,7 +1410,6 @@ var Formio = function () {
 // Define all the static properties.
 
 
-exports.default = Formio;
 Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;
@@ -1425,6 +1424,7 @@ Formio.events = new _eventemitter.EventEmitter2({
 
 // Support ES5 require and globals.
 module.exports = global.Formio = Formio;
+exports.default = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"./providers":2,"browser-cookies":8,"eventemitter2":9,"native-promise-only":10,"shallow-copy":12,"whatwg-fetch":13}],2:[function(require,module,exports){
