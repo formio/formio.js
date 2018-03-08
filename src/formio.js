@@ -18,7 +18,7 @@ const isObject = (val) => val && typeof val === 'object';
  *
  *   let formio = new Formio('https://examples.form.io/example');
  */
-export default class Formio {
+class Formio {
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.
     if (!(this instanceof Formio)) {
@@ -1195,3 +1195,7 @@ Formio.events = new EventEmitter({
   wildcard: false,
   maxListeners: 0
 });
+
+// Support ES5 require and globals.
+module.exports = global.Formio = Formio;
+export default Formio;

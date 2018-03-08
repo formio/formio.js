@@ -705,3 +705,4 @@ const FormioUtils = {
 };
 
 module.exports = global.FormioUtils = FormioUtils;
+export default FormioUtils;
