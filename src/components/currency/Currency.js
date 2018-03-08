@@ -10,14 +10,19 @@ export class CurrencyComponent extends NumberComponent {
 
     this.currency = this.component.currency || 'USD';
     this.decimalLimit = this.component.decimalLimit || 2;
-
+    let parts;
     // Get the prefix and suffix from the localized string.
-    const regex = `(.*)?100(${this.decimalSeparator === '.'
-      ? '\\.'
-      : this.decimalSeparator}0{${this.decimalLimit}})?(.*)?`;
-    const parts = (100).toLocaleString(options.language, this.getFormatOptions()).match(new RegExp(regex));
-    this.prefix = parts[1] || '';
-    this.suffix = parts[3] || '';
+    if (component.localeString) {
+      const regex = `(.*)?100(${this.decimalSeparator === '.'
+        ? '\\.'
+        : this.decimalSeparator}0{${this.decimalLimit}})?(.*)?`;
+      parts = (100).toLocaleString(options.language, this.getFormatOptions()).match(new RegExp(regex));
+      this.prefix = parts[1];
+      this.suffix = parts[3];
+    } else {
+      this.prefix = '';
+      this.suffix = '';
+    }
   }
 
   getFormatOptions() {
@@ -37,7 +42,6 @@ export class CurrencyComponent extends NumberComponent {
     catch (e) {
       // If value doesn't have a replace method, continue on as before.
     }
-
     return super.formatNumber(value);
   }
 

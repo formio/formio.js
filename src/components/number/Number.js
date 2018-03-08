@@ -10,7 +10,14 @@ export class NumberComponent extends BaseComponent {
 
     const formattedNumberString = (12345.6789).toLocaleString(options.language || 'en');
 
-    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
+    if (component.localeString) {
+      component.setDelimiter = ',';
+    }
+
+    const setDecimalSeparator = component.setDelimiter && component.setDelimiter === ',' ?
+      '.' : ',';
+
+    this.decimalSeparator = options.decimalSeparator = setDecimalSeparator || options.decimalSeparator
       || formattedNumberString.match(/345(.*)67/)[1];
 
     if (component.delimiter) {
@@ -18,7 +25,7 @@ export class NumberComponent extends BaseComponent {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
+      this.delimiter = component.setDelimiter || options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
     }
     else {
       this.delimiter = '';
@@ -68,7 +75,6 @@ export class NumberComponent extends BaseComponent {
   parseNumber(value) {
     // Remove thousands separators and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
-
     if (this.component.validate && this.component.validate.integer) {
       return parseInt(value, 10);
     }
