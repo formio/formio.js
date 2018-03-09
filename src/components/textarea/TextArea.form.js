@@ -1,8 +1,6 @@
-const BaseEditForm = require('../base/Base.form');
-import {TextAreaComponent} from "./TextArea";
-
+const TextEditForm = require('../textfield/TextField.form');
 module.exports = function(...extend) {
-  return BaseEditForm({
+  return TextEditForm({
     components: [
       {
         weight: 0,

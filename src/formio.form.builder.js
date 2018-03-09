@@ -340,7 +340,7 @@ export class FormioFormBuilder extends FormioForm {
       if (
         (info.key !== itemInfo.key) &&
         (info.weight < itemInfo.weight) &&
-        (!beforeWeight || (itemInfo.weight > beforeWeight))
+        (!beforeWeight || (itemInfo.weight < beforeWeight))
       ) {
         before = itemInfo.element;
         beforeWeight = itemInfo.weight;

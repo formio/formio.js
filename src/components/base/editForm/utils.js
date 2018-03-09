@@ -1,16 +1,15 @@
-import _mergeWith from 'lodash/mergeWith';
-import _sortBy from 'lodash/sortBy';
-import _isArray from 'lodash/isArray';
-import _unionWith from 'lodash/unionWith';
+import _ from 'lodash';
 
 export let EditFormUtils = {
   mergeComponents: (objValue, srcValue) => {
-    if (_isArray(objValue)) {
+    if (_.isArray(objValue)) {
       if (objValue[0] && objValue[0].components) {
-        return _mergeWith(objValue, srcValue, EditFormUtils.mergeComponents);
+        return _.mergeWith(objValue, srcValue, EditFormUtils.mergeComponents);
       }
       if (objValue[0] && objValue[0].type) {
-        return _sortBy(_unionWith(srcValue, objValue, (a, b) => (a.key === b.key)), ['weight']);
+        return _.filter(_.sortBy(_.unionWith(srcValue, objValue, (a, b) => (a.key === b.key)), ['weight']), (item) => {
+          return !item.ignore;
+        });
       }
       return objValue.concat(srcValue);
     }

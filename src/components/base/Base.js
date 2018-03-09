@@ -1886,7 +1886,7 @@ export class BaseComponent {
       value: [],
       component: this,
       data,
-      row: this.root ? this.root.data : this.data
+      row: this.data
     }, 'value'), flags);
   }
 

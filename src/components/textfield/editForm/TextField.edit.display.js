@@ -1,4 +1,4 @@
-export let TextFieldEditDisplay = [
+export const TextFieldEditDisplay = [
   {
     weight: 50,
     type: 'select',

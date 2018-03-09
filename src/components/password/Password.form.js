@@ -1,4 +1,4 @@
-const BaseEditForm = require('../base/Base.form');
+const TextEditForm = require('../textfield/TextField.form');
 module.exports = function(...extend) {
-  return BaseEditForm({}, ...extend);
+  return TextEditForm({}, ...extend);
 };
