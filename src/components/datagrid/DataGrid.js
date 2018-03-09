@@ -39,9 +39,20 @@ export class DataGridComponent extends FormioComponents {
 
     // Build rows the first time.
     this.rows = [];
+
+    // Check if there is a Min Length Validation
+    if (
+      this.component.validate &&
+      this.component.validate.minLength > this.data[this.component.key].length
+    ) {
+      let toAdd = this.component.validate.minLength - this.data[this.component.key].length;
+      for (let i = 0; i < toAdd; i++) {
+        this.data[this.component.key].push({});
+      }
+    }
+
     this.tableRows = this.data[this.component.key].map((row, rowIndex) => this.buildRow(row, rowIndex));
     this.tbody = this.ce('tbody', null, this.tableRows);
-
     // Add the body to the table and to the element.
     this.tableElement.appendChild(this.tbody);
 
@@ -98,6 +109,26 @@ export class DataGridComponent extends FormioComponents {
       : null;
   }
 
+  checkAndRemoveAddButton() {
+    //check validation and remove add button
+    if (
+      (this.component.validate && this.tableElement.lastChild.firstChild) &&
+      this.component.validate.maxLength <= this.data[this.component.key].length
+    ) {
+      this.tableElement.lastChild.firstChild.remove();
+    }
+    else if ((this.component.validate && !this.tableElement.lastChild.firstChild) &&
+      this.component.validate.maxLength > this.data[this.component.key].length) {
+      this.tableElement.lastChild.appendChild(
+        this.ce('tr', null,
+          this.ce('td', {colspan: (this.component.components.length + 1)},
+            this.addButton()
+          )
+        )
+      );
+    }
+  }
+
   get defaultValue() {
     const value = super.defaultValue;
     return typeof value === 'object' ? value : {};
@@ -126,6 +157,8 @@ export class DataGridComponent extends FormioComponents {
       this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
       this.tableRows.splice(rowIndex - 1, 1);
     }
+
+    this.checkAndRemoveAddButton();
   }
 
   buildRow(row, index) {

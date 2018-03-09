@@ -90,6 +90,10 @@ export class SelectComponent extends BaseComponent {
   }
 
   itemTemplate(data) {
+    if (!data) {
+      return '';
+    }
+
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.useTemplate) {
       return this.t(data.label || data);
@@ -97,9 +101,15 @@ export class SelectComponent extends BaseComponent {
     if (typeof data === 'string') {
       return this.t(data);
     }
+
     const template = this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
-    const label = template.replace(/<\/?[^>]+(>|$)/g, '');
-    return template.replace(label, this.t(label));
+    if (template) {
+      const label = template.replace(/<\/?[^>]+(>|$)/g, '');
+      return template.replace(label, this.t(label));
+    }
+    else {
+      return JSON.stringify(data);
+    }
   }
 
   itemValue(data) {
@@ -496,6 +506,10 @@ export class SelectComponent extends BaseComponent {
         this.addOption(this.itemValue(value), this.itemTemplate(value));
       }
     }
+  }
+
+  getView(data) {
+    return this.itemTemplate(data);
   }
 
   getValue(flags) {

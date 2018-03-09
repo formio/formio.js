@@ -1,4 +1,7 @@
 'use strict';
+// DO NOT DELETE! THIS WILL BREAK PDF GENERATION.
+import * as polyfill from './formio.polyfill';
+
 import FormioWizard from './formio.wizard';
 import FormioPDF from './formio.pdf';
 import FormioForm from './formio.form';
@@ -38,6 +41,7 @@ FormioForm.registerComponent = Formio.registerComponent = function(type, compone
   FormioComponents.customComponents[type] = component;
 };
 
+export default Formio;
 exports.Formio = global.Formio = Formio;
 exports.FormioForm = FormioForm;
 exports.FormioWizard = FormioWizard;

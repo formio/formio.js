@@ -4,6 +4,34 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.11
+### Changed
+ - Upgraded browserify@16.1.1 eslint@4.18.2 fetch-mock@6.0.1 mocha@5.0.4 watchify@3.11.0 gulp-strip-debug@3.0.0 marked@0.3.17
+ - Added exports that are reverse compatible with ES5.
+
+### Fixed
+ - Display for resource fields within submission grid.
+
+## 2.29.10
+### Fixed
+ - Issues with getView so that it does not throw errors.
+ - Min and Max settings on DataGrid to stop showing Add Another button.
+
+## 2.29.9
+### Fixed
+ - Issues with IE not translating Date's properly.
+
+## 2.29.8
+### Fixed
+ - Include polyfill for bind to fix PDF generation.
+
+### Changed
+ - Upgraded i18next to 10.5.0
+
+## 2.29.7
+### Fixed
+ - Fix validations automatically triggering if you have only a container on a form at the root level.
+
 ## 2.29.6
 ### Fixed
  - Fix validation and nested form issues with wizard.
