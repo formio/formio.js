@@ -2415,6 +2415,10 @@ dialog.fixed {
   min-height: 80px;
 }
 
+.formio-component.has-error .invalid-feedback {
+  display: block;
+}
+
 .formio-wysiwyg-editor {
   min-height: 200px;
   background-color: #fff;

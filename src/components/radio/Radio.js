@@ -159,6 +159,9 @@ export class RadioComponent extends BaseComponent {
   }
 
   getView(value) {
+    if (!value) {
+      return '';
+    }
     if (!_.isString(value)) {
       return _.toString(value);
     }
