@@ -123,7 +123,7 @@ export class ButtonComponent extends BaseComponent {
           break;
         case 'event':
           this.emit(this.component.event, this.data);
-          this.event.emit(this.component.event, this.data);
+          this.events.emit(this.component.event, this.data);
           this.emit('customEvent', {
             type: this.component.event,
             component: this.component,
