@@ -122,6 +122,7 @@ export class ButtonComponent extends BaseComponent {
           this.emit('submitButton');
           break;
         case 'event':
+          this.emit(this.component.event, this.data);
           this.events.emit(this.component.event, this.data);
           this.emit('customEvent', {
             type: this.component.event,
