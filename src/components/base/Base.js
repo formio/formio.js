@@ -717,7 +717,8 @@ export class BaseComponent {
       }
     }
 
-    return defaultValue;
+    // Clone so that it creates a new instance.
+    return _.cloneDeep(defaultValue);
   }
 
   /**
@@ -733,14 +734,19 @@ export class BaseComponent {
    * Adds a new empty value to the data array.
    */
   addNewValue() {
-    if (!_.has(this.data, this.component.key)) {
-      _.set(this.data, this.component.key, []);
+    let dataValue = _.get(this.data, this.component.key, []);
+    if (!Array.isArray(dataValue)) {
+      dataValue = [dataValue];
     }
-    let dataValue = _.get(this.data, this.component.key);
-    if (dataValue && !Array.isArray(dataValue)) {
-      _.set(this.data, this.component.key, [dataValue]);
+
+    const defaultValue = this.defaultValue;
+    if (Array.isArray(defaultValue)) {
+      dataValue = dataValue.concat(defaultValue);
     }
-    _.get(this.data, this.component.key).push(this.defaultValue);
+    else {
+      dataValue.push(defaultValue);
+    }
+    _.set(this.data, this.component.key, dataValue);
   }
 
   /**
