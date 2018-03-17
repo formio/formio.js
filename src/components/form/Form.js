@@ -134,8 +134,12 @@ export class FormComponent extends FormioForm {
   }
 
   checkConditions() {
-    // Check the conditions for the subform.
-    if (super.checkConditions(this.subData)) {
+    if (this.subFormLoaded) {
+      return super.checkConditions(this.subData);
+    }
+
+    // Check the conditions against the component if the subform has not loaded.
+    if (super.checkConditions(this.root ? this.root.data : this.data)) {
       // Only load the subform if this component is visible.
       this.loadSubForm();
       return true;

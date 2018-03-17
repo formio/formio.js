@@ -2257,7 +2257,7 @@ var BaseComponent = function () {
         value: [],
         component: this,
         data: data,
-        row: this.root ? this.root.data : this.data
+        row: this.data
       }, 'value'), flags);
     }
 
@@ -3105,6 +3105,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
             _this2.emit('submitButton');
             break;
           case 'event':
+            _this2.emit(_this2.component.event, _this2.data);
             _this2.events.emit(_this2.component.event, _this2.data);
             _this2.emit('customEvent', {
               type: _this2.component.event,

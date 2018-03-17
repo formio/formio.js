@@ -5292,6 +5292,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
             _this2.emit('submitButton');
             break;
           case 'event':
+            _this2.emit(_this2.component.event, _this2.data);
             _this2.events.emit(_this2.component.event, _this2.data);
             _this2.emit('customEvent', {
               type: _this2.component.event,
@@ -9625,8 +9626,12 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'checkConditions',
     value: function checkConditions() {
-      // Check the conditions for the subform.
-      if (_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.subData)) {
+      if (this.subFormLoaded) {
+        return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.subData);
+      }
+
+      // Check the conditions against the component if the subform has not loaded.
+      if (_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.root ? this.root.data : this.data)) {
         // Only load the subform if this component is visible.
         this.loadSubForm();
         return true;
