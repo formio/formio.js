@@ -48,7 +48,7 @@ export class NumberComponent extends BaseComponent {
 
   parseNumber(value) {
     // Remove thousands separators and convert decimal separator to dot.
-    value = value.replace(this.delimiter, '').replace(this.decimalSeparator, '.');
+    value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
     return parseFloat(value);
   }
 
@@ -91,6 +91,10 @@ export class NumberComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
+    if (_.isNumber(value)) {
+      value = String(value).replace('.', this.decimalSeparator);
+    }
+
     this.inputMask.textMaskInputElement.update(value);
   }
 }

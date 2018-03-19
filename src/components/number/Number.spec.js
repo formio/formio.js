@@ -48,8 +48,8 @@ describe('Number Component', () => {
       Harness.testSetInput(component, 12.123456789, 12.123456789, '12.123456789');
       Harness.testSetInput(component, -12.123456789, -12.123456789, '-12.123456789');
       // These tests run into the maximum number of significant digits for floats.
-      Harness.testSetInput(component, 123456789.123456789, 123456789.123457, '123,456,789.123457');
-      Harness.testSetInput(component, -123456789.123456789, -123456789.123457, '-123,456,789.123457');
+      Harness.testSetInput(component, 123456789.123456789, 123456789.123456789, '123,456,789.12345679');
+      Harness.testSetInput(component, -123456789.123456789, -123456789.123456789, '-123,456,789.12345679');
       Harness.testSetInput(component, '0', 0, '0');
       Harness.testSetInput(component, '1', 1, '1');
       Harness.testSetInput(component, '-1', -1, '-1');
@@ -57,16 +57,16 @@ describe('Number Component', () => {
       Harness.testSetInput(component, '-1000', -1000, '-1,000');
       Harness.testSetInput(component, '1000.01', 1000.01, '1,000.01');
       Harness.testSetInput(component, '-1000.01', -1000.01, '-1,000.01');
-      Harness.testSetInput(component, '1000.00', 1000, '1,000');
-      Harness.testSetInput(component, '-1000.00', -1000, '-1,000');
+      Harness.testSetInput(component, '1000.00', 1000, '1,000.00');
+      Harness.testSetInput(component, '-1000.00', -1000, '-1,000.00');
       Harness.testSetInput(component, '1000.001', 1000.001, '1,000.001');
       Harness.testSetInput(component, '-1000.001', -1000.001, '-1,000.001');
       Harness.testSetInput(component, '1234567890.12', 1234567890.12, '1,234,567,890.12');
       Harness.testSetInput(component, '-1234567890.12', -1234567890.12, '-1,234,567,890.12');
       Harness.testSetInput(component, '12.123456789', 12.123456789, '12.123456789');
       Harness.testSetInput(component, '-12.123456789', -12.123456789, '-12.123456789');
-      Harness.testSetInput(component, '123456789.123456789', 123456789.123457, '123,456,789.123457');
-      Harness.testSetInput(component, '-123456789.123456789', -123456789.123457, '-123,456,789.123457');
+      Harness.testSetInput(component, '123456789.123456789', 123456789.123456789, '123,456,789.123456789');
+      Harness.testSetInput(component, '-123456789.123456789', -123456789.123456789, '-123,456,789.123456789');
       done();
     });
   });
