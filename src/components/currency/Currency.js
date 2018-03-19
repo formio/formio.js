@@ -29,18 +29,6 @@ export class CurrencyComponent extends NumberComponent {
     };
   }
 
-  formatNumber(value) {
-    try {
-      // Strip out the prefix and suffix before parsing. This occurs when numbers are from an old renderer.
-      value = value.replace(this.prefix, '').replace(this.suffix, '');
-    }
-    catch (e) {
-      // If value doesn't have a replace method, continue on as before.
-    }
-
-    return super.formatNumber(value);
-  }
-
   parseNumber(value) {
     // Strip out the prefix and suffix before parsing.
     value = value.replace(this.prefix, '').replace(this.suffix, '');

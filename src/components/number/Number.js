@@ -46,35 +46,10 @@ export class NumberComponent extends BaseComponent {
     };
   }
 
-  formatNumber(value) {
-    // If not a number, return empty string.
-    if (isNaN(value)) {
-      return '';
-    }
-
-    // If empty string, zero or other, don't format.
-    if (!value) {
-      return value;
-    }
-
-    if (this.component.validate && this.component.validate.integer) {
-      return parseInt(value, 10).toLocaleString(this.options.language || 'en', this.getFormatOptions());
-    }
-    else {
-      return parseFloat(value).toLocaleString(this.options.language || 'en', this.getFormatOptions());
-    }
-  }
-
   parseNumber(value) {
     // Remove thousands separators and convert decimal separator to dot.
-    value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
-
-    if (this.component.validate && this.component.validate.integer) {
-      return parseInt(value, 10);
-    }
-    else {
-      return parseFloat(value);
-    }
+    value = value.replace(this.delimiter, '').replace(this.decimalSeparator, '.');
+    return parseFloat(value);
   }
 
   setInputMask(input) {
@@ -116,6 +91,6 @@ export class NumberComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
-    this.inputs[index].value = this.formatNumber(value);
+    this.inputMask.textMaskInputElement.update(value);
   }
 }
