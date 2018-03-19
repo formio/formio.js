@@ -50,4 +50,23 @@ export class CurrencyComponent extends NumberComponent {
       })
     });
   }
+
+  clearInput(input) {
+    try {
+      input = input.replace(this.prefix, '').replace(this.suffix, '');
+    }
+    catch (err) {
+      // If value doesn't have a replace method, continue on as before.
+    }
+
+    return super.clearInput(input);
+  }
+
+  formatValue(value) {
+    if (this.component.requireDecimals && value && !value.includes(this.decimalSeparator)) {
+      return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;
+    }
+
+    return value;
+  }
 }

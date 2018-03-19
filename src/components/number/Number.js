@@ -90,11 +90,26 @@ export class NumberComponent extends BaseComponent {
     return this.parseNumber(val);
   }
 
-  setValueAt(index, value) {
-    if (_.isNumber(value)) {
+  clearInput(input) {
+    let value = parseFloat(input);
+
+    if (!_.isNaN(value)) {
       value = String(value).replace('.', this.decimalSeparator);
     }
+    else {
+      value = null;
+    }
 
+    return value;
+  }
+
+  formatValue(value) {
+    return value;
+  }
+
+  setValueAt(index, value) {
+    value = this.clearInput(value);
+    value = this.formatValue(value);
     this.inputMask.textMaskInputElement.update(value);
   }
 }
