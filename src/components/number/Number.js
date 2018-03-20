@@ -2,30 +2,28 @@ import maskInput from 'vanilla-text-mask';
 import _ from 'lodash';
 import {createNumberMask} from 'text-mask-addons';
 import {BaseComponent} from '../base/Base';
+import currencyData from '../../currencyData';
 
 export class NumberComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
+    this.currencies = currencyData;
     this.validators = this.validators.concat(['min', 'max']);
-
-    const formattedNumberString = (12345.6789).toLocaleString(options.language || 'en');
-
-    if (component.localeString) {
-      component.setDelimiter = ',';
+    // Currencies to override BrowserLanguage Config. Object key {}
+    if(options.currency) {
+      const override = this.getOverrideBrowser(options.currency);
+      this.overrideLanguage = override[this.getBrowserLanguage()];
     }
-
-    const setDecimalSeparator = component.setDelimiter && component.setDelimiter === ',' ?
-      '.' : ',';
-
-    this.decimalSeparator = options.decimalSeparator = setDecimalSeparator || options.decimalSeparator
+    
+    const formattedNumberString = (12345.6789).toLocaleString(this.getBrowserLanguage() || 'en');
+    this.decimalSeparator = options.decimalSeparator = this.overrideLanguage.separator || options.decimalSeparator
       || formattedNumberString.match(/345(.*)67/)[1];
-
     if (component.delimiter) {
       if (options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = component.setDelimiter || options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
+      this.delimiter = this.overrideLanguage.delimiter || options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
     }
     else {
       this.delimiter = '';
@@ -43,6 +41,17 @@ export class NumberComponent extends BaseComponent {
         this.decimalLimit = parts[1].length;
       }
     }
+  }
+
+  getOverrideBrowser(currency) {
+    Object.keys(currency).map((curr)=>{
+      this.currencies[curr] = {
+        delimiter: currency[curr].delimiter,
+        separator: currency[curr].separator
+      };
+      return this.currencies
+    });
+    return this.currencies;
   }
 
   getFormatOptions() {
@@ -63,7 +72,6 @@ export class NumberComponent extends BaseComponent {
     if (!value) {
       return value;
     }
-
     if (this.component.validate && this.component.validate.integer) {
       return parseInt(value, 10).toLocaleString(this.options.language || 'en', this.getFormatOptions());
     }
