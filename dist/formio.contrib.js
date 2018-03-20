@@ -853,13 +853,18 @@ var BaseComponent = function () {
   }, {
     key: 'addNewValue',
     value: function addNewValue() {
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = [];
+      var dataValue = _lodash2.default.get(this.data, this.component.key, []);
+      if (!Array.isArray(dataValue)) {
+        dataValue = [dataValue];
       }
-      if (this.data[this.component.key] && !Array.isArray(this.data[this.component.key])) {
-        this.data[this.component.key] = [this.data[this.component.key]];
+
+      var defaultValue = this.defaultValue;
+      if (Array.isArray(defaultValue)) {
+        dataValue = dataValue.concat(defaultValue);
+      } else {
+        dataValue.push(defaultValue);
       }
-      this.data[this.component.key].push(this.defaultValue);
+      _lodash2.default.set(this.data, this.component.key, dataValue);
     }
 
     /**
@@ -2498,7 +2503,8 @@ var BaseComponent = function () {
         }
       }
 
-      return defaultValue;
+      // Clone so that it creates a new instance.
+      return _lodash2.default.cloneDeep(defaultValue);
     }
   }, {
     key: 'name',
