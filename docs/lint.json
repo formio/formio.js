@@ -47,23 +47,23 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 927,
+        "lineNumber": 937,
         "line": "  /**"
       },
       {
-        "lineNumber": 928,
+        "lineNumber": 938,
         "line": "   * Create the HTML element for the tooltip of this component."
       },
       {
-        "lineNumber": 929,
+        "lineNumber": 939,
         "line": "   * @param {HTMLElement} container - The containing element that will contain this tooltip."
       },
       {
-        "lineNumber": 930,
+        "lineNumber": 940,
         "line": "   */"
       },
       {
-        "lineNumber": 931,
+        "lineNumber": 941,
         "line": "  createTooltip(container, component, classes) {"
       }
     ],
@@ -81,27 +81,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1159,
+        "lineNumber": 1169,
         "line": "  /**"
       },
       {
-        "lineNumber": 1160,
+        "lineNumber": 1170,
         "line": "   * Append different types of children."
       },
       {
-        "lineNumber": 1161,
+        "lineNumber": 1171,
         "line": "   *"
       },
       {
-        "lineNumber": 1162,
+        "lineNumber": 1172,
         "line": "   * @param child"
       },
       {
-        "lineNumber": 1163,
+        "lineNumber": 1173,
         "line": "   */"
       },
       {
-        "lineNumber": 1164,
+        "lineNumber": 1174,
         "line": "  appendChild(element, child) {"
       }
     ],
@@ -118,47 +118,47 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1178,
+        "lineNumber": 1188,
         "line": "  /**"
       },
       {
-        "lineNumber": 1179,
+        "lineNumber": 1189,
         "line": "   * Alias for document.createElement."
       },
       {
-        "lineNumber": 1180,
+        "lineNumber": 1190,
         "line": "   *"
       },
       {
-        "lineNumber": 1181,
+        "lineNumber": 1191,
         "line": "   * @param {string} type - The type of element to create"
       },
       {
-        "lineNumber": 1182,
+        "lineNumber": 1192,
         "line": "   * @param {Object} attr - The element attributes to add to the created element."
       },
       {
-        "lineNumber": 1183,
+        "lineNumber": 1193,
         "line": "   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both."
       },
       {
-        "lineNumber": 1184,
+        "lineNumber": 1194,
         "line": "   * @param {Object} events"
       },
       {
-        "lineNumber": 1185,
+        "lineNumber": 1195,
         "line": "   *"
       },
       {
-        "lineNumber": 1186,
+        "lineNumber": 1196,
         "line": "   * @return {HTMLElement} - The created element."
       },
       {
-        "lineNumber": 1187,
+        "lineNumber": 1197,
         "line": "   */"
       },
       {
-        "lineNumber": 1188,
+        "lineNumber": 1198,
         "line": "  ce(type, attr, children = null) {"
       }
     ],
@@ -179,35 +179,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1510,
+        "lineNumber": 1520,
         "line": "  /**"
       },
       {
-        "lineNumber": 1511,
+        "lineNumber": 1521,
         "line": "   * Add a new input to this comonent."
       },
       {
-        "lineNumber": 1512,
+        "lineNumber": 1522,
         "line": "   *"
       },
       {
-        "lineNumber": 1513,
+        "lineNumber": 1523,
         "line": "   * @param input"
       },
       {
-        "lineNumber": 1514,
+        "lineNumber": 1524,
         "line": "   * @param container"
       },
       {
-        "lineNumber": 1515,
+        "lineNumber": 1525,
         "line": "   * @param noSet"
       },
       {
-        "lineNumber": 1516,
+        "lineNumber": 1526,
         "line": "   */"
       },
       {
-        "lineNumber": 1517,
+        "lineNumber": 1527,
         "line": "  addInput(input, container) {"
       }
     ],
@@ -226,35 +226,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1627,
+        "lineNumber": 1637,
         "line": "  /**"
       },
       {
-        "lineNumber": 1628,
+        "lineNumber": 1638,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 1629,
+        "lineNumber": 1639,
         "line": "   *"
       },
       {
-        "lineNumber": 1630,
+        "lineNumber": 1640,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 1631,
+        "lineNumber": 1641,
         "line": "   *"
       },
       {
-        "lineNumber": 1632,
+        "lineNumber": 1642,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 1633,
+        "lineNumber": 1643,
         "line": "   */"
       },
       {
-        "lineNumber": 1634,
+        "lineNumber": 1644,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -271,31 +271,31 @@
     "filePath": "src/components/select/Select.js",
     "lines": [
       {
-        "lineNumber": 113,
+        "lineNumber": 123,
         "line": "  /**"
       },
       {
-        "lineNumber": 114,
+        "lineNumber": 124,
         "line": "   * Adds an option to the select dropdown."
       },
       {
-        "lineNumber": 115,
+        "lineNumber": 125,
         "line": "   *"
       },
       {
-        "lineNumber": 116,
+        "lineNumber": 126,
         "line": "   * @param value"
       },
       {
-        "lineNumber": 117,
+        "lineNumber": 127,
         "line": "   * @param label"
       },
       {
-        "lineNumber": 118,
+        "lineNumber": 128,
         "line": "   */"
       },
       {
-        "lineNumber": 119,
+        "lineNumber": 129,
         "line": "  addOption(value, label, attr) {"
       }
     ],
@@ -314,31 +314,31 @@
     "filePath": "src/formio.form.js",
     "lines": [
       {
-        "lineNumber": 863,
+        "lineNumber": 867,
         "line": "  /**"
       },
       {
-        "lineNumber": 864,
+        "lineNumber": 868,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 865,
+        "lineNumber": 869,
         "line": "   *"
       },
       {
-        "lineNumber": 866,
+        "lineNumber": 870,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 867,
+        "lineNumber": 871,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 868,
+        "lineNumber": 872,
         "line": "   */"
       },
       {
-        "lineNumber": 869,
+        "lineNumber": 873,
         "line": "  onChange(flags, changed) {"
       }
     ],
