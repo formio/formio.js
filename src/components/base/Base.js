@@ -319,7 +319,7 @@ export class BaseComponent {
   }
 
   get shouldDisable() {
-    return (this.options.readOnly || this.component.disabled);
+    return (this.options.readOnly || this.component.disabled) && !this.component.alwaysEnabled;
   }
 
   /**
