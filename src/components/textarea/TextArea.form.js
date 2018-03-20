@@ -1,5 +1,5 @@
-const TextEditForm = require('../textfield/TextField.form');
-module.exports = function(...extend) {
+import TextEditForm from '../textfield/TextField.form';
+export default function(...extend) {
   return TextEditForm({
     components: [
       {

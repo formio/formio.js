@@ -2,7 +2,7 @@ import _mergeWith from 'lodash/mergeWith';
 import { EditFormUtils } from './base/editForm/utils';
 import { BaseEditAPI } from './base/editForm/Base.edit.api';
 import { BaseEditConditional } from './base/editForm/Base.edit.conditional';
-module.exports = function(...extend) {
+export default function(...extend) {
   return _mergeWith({
     components: [
       {

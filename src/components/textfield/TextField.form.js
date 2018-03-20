@@ -1,8 +1,8 @@
-const BaseEditForm = require('../base/Base.form');
+import BaseEditForm from '../base/Base.form';
 import { TextFieldEditDisplay } from './editForm/TextField.edit.display';
 import { TextFieldEditValidation } from './editForm/TextField.edit.validation';
 
-module.exports = function(...extend) {
+export default function(...extend) {
   return BaseEditForm({
     components: [
       {

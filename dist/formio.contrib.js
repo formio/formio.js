@@ -3336,11 +3336,15 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
 },{"../../utils":8,"../base/Base":2,"lodash":26}],4:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _Stripe = require('./stripe/stripe/Stripe');
 
 var _StripeCheckout = require('./stripe/checkout/StripeCheckout');
 
-module.exports = {
+exports.default = {
   stripe: {
     stripe: _Stripe.StripeComponent,
     checkout: _StripeCheckout.StripeCheckoutComponent

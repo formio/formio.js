@@ -1,11 +1,5 @@
-import {BaseEditValidation} from "../base/editForm/Base.edit.validation";
-import {BaseEditConditional} from "../base/editForm/Base.edit.conditional";
-import {BaseEditDisplay} from "../base/editForm/Base.edit.display";
-import {BaseEditData} from "../base/editForm/Base.edit.data";
-import {BaseEditAPI} from "../base/editForm/Base.edit.api";
-
-const BaseEditForm = require('../base/Base.form');
-module.exports = function(...extend) {
+import BaseEditForm from '../base/Base.form';
+export default function(...extend) {
   return BaseEditForm({
     components: [
       {

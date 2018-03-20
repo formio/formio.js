@@ -1,7 +1,7 @@
-const BaseEditForm = require('../base/Base.form');
+import BaseEditForm from '../base/Base.form';
 import { BuilderUtils } from "../../utils/builder";
 
-module.exports = function(...extend) {
+export default function(...extend) {
   return BaseEditForm({
     components: [
       {

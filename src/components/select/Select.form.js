@@ -1,7 +1,7 @@
-const BaseEditForm = require('../base/Base.form');
+import BaseEditForm from '../base/Base.form';
 import _ from 'lodash';
 import FormioUtils from '../../utils';
-module.exports = function(...extend) {
+export default function(...extend) {
   return BaseEditForm({
     components: [
       {

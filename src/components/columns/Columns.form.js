@@ -1,5 +1,5 @@
-const ComponentsEditForm = require('../Components.form');
-module.exports = function(...extend) {
+import ComponentsEditForm from '../Components.form';
+export default function(...extend) {
   return ComponentsEditForm({
     components: [
       {

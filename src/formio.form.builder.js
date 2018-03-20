@@ -4,6 +4,7 @@ import Components from './components/builder';
 import {FormioComponents} from './components/Components';
 import { BuilderUtils } from './utils/builder';
 import EventEmitter from 'eventemitter2';
+import Promise from 'native-promise-only';
 import _ from 'lodash';
 
 export class FormioFormBuilder extends FormioForm {
@@ -13,10 +14,6 @@ export class FormioFormBuilder extends FormioForm {
     this.dragContainers = [];
     this.sidebarContainers = [];
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
-
-    this.on('componentEdit', (component) => {
-      console.log(component);
-    });
 
     // Setup default groups, but let them be overridden.
     this.options.groups = _.defaultsDeep({}, this.options.groups, {
@@ -33,6 +30,10 @@ export class FormioFormBuilder extends FormioForm {
         title: 'Layout',
         weight: 20
       }
+    });
+
+    this.builderReady = new Promise((resolve) => {
+      this.builderReadyResolve = resolve;
     });
 
     this.groups = {};
@@ -107,7 +108,7 @@ export class FormioFormBuilder extends FormioForm {
   }
 
   get ready() {
-    return this.formReady;
+    return this.builderReady;
   }
 
   deleteComponent(component) {
@@ -170,7 +171,11 @@ export class FormioFormBuilder extends FormioForm {
   editComponent(component) {
     let componentCopy = _.cloneDeep(component);
     let componentClass = Components[componentCopy.component.type];
-    let dialog = this.createModal(componentCopy.name);
+    // Make sure we only have one dialog open at a time.
+    if (this.dialog) {
+      this.dialog.close();
+    }
+    this.dialog = this.createModal(componentCopy.name);
     let formioForm = this.ce('div');
     this.componentPreview = this.ce('div', {
       class: 'component-preview'
@@ -249,7 +254,7 @@ export class FormioFormBuilder extends FormioForm {
     ]);
 
     // Append the settings page to the dialog body.
-    dialog.body.appendChild(componentEdit);
+    this.dialog.body.appendChild(componentEdit);
     this.editForm = new FormioForm(formioForm);
 
     // Set the form to the edit form.
@@ -282,13 +287,13 @@ export class FormioFormBuilder extends FormioForm {
 
     this.addEventListener(cancelButton, 'click', (event) => {
       event.preventDefault();
-      dialog.close();
+      this.dialog.close();
     });
 
     this.addEventListener(removeButton, 'click', (event) => {
       event.preventDefault();
       this.deleteComponent(component);
-      dialog.close();
+      this.dialog.close();
     });
 
     this.addEventListener(saveButton, 'click', (event) => {
@@ -303,10 +308,10 @@ export class FormioFormBuilder extends FormioForm {
       }
       this.emit('saveComponent', component);
       this.form = this.schema;
-      dialog.close();
+      this.dialog.close();
     });
 
-    this.addEventListener(dialog, 'close', () => {
+    this.addEventListener(this.dialog, 'close', () => {
       this.editForm.destroy();
       if (component.isNew) {
         this.deleteComponent(component);
@@ -592,6 +597,7 @@ export class FormioFormBuilder extends FormioForm {
         return !target.classList.contains('no-drop');
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
+    this.builderReadyResolve();
   }
 
   build() {

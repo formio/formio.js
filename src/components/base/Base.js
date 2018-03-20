@@ -371,6 +371,23 @@ export class BaseComponent {
   }
 
   /**
+   * Removes all listeners for a certain event.
+   *
+   * @param event
+   */
+  off(event, cb) {
+    if (!this.events) {
+      return;
+    }
+    const type = `formio.${event}`;
+    _.each(this.eventListeners, (listener) => {
+      if ((listener.type == type) && (!cb || (cb === listener.listener))) {
+        this.events.off(listener.type, listener.listener);
+      }
+    });
+  }
+
+  /**
    * Emit a new event.
    *
    * @param {string} event - The event to emit.
