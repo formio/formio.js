@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Required validator for Checkbox component.
+
 ## 2.29.13
 ### Fixed
  - Problem with some crashes within the file component.
@@ -70,7 +74,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.29.2
 ### Changed
- - Upgraded i18next to 10.4.1 
+ - Upgraded i18next to 10.4.1
 
 ### Fixed
  - Problem where DataGrid could add duplicate columns.
