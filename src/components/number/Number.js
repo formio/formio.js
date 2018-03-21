@@ -49,7 +49,13 @@ export class NumberComponent extends BaseComponent {
   parseNumber(value) {
     // Remove thousands separators and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
-    return parseFloat(value);
+
+    if (this.component.validate && this.component.validate.integer) {
+      return parseInt(value, 10);
+    }
+    else {
+      return parseFloat(value);
+    }
   }
 
   setInputMask(input) {
