@@ -54,6 +54,11 @@ export class FileComponent extends BaseComponent {
       this.createLabel(this.element);
     }
     this.createDescription(this.element);
+
+    // Disable if needed.
+    if (this.shouldDisable) {
+      this.disabled = true;
+    }
   }
 
   refreshDOM() {
@@ -104,6 +109,7 @@ export class FileComponent extends BaseComponent {
     return this.ce('input', {
       type: 'file',
       style: 'opacity: 0; position: absolute;',
+      tabindex: -1,
       onChange: () => {
         this.upload(this.hiddenFileInputElement.files);
       }
