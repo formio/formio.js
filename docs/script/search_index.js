@@ -114,6 +114,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "formiojs/src/components/index.js~formiocomponentsindex",
+    "variable/index.html#static-variable-FormioComponentsIndex",
+    "<span>FormioComponentsIndex</span> <span class=\"search-result-import-path\">formiojs/src/components/index.js</span>",
+    "variable"
+  ],
+  [
     "formiojs/src/formio.form.js~formioform",
     "class/src/formio.form.js~FormioForm.html",
     "<span>FormioForm</span> <span class=\"search-result-import-path\">formiojs/src/formio.form.js</span>",
@@ -124,6 +130,12 @@ window.esdocSearchIndex = [
     "class/src/formio.pdf.js~FormioPDF.html",
     "<span>FormioPDF</span> <span class=\"search-result-import-path\">formiojs/src/formio.pdf.js</span>",
     "class"
+  ],
+  [
+    "formiojs/src/utils/index.js~formioutils",
+    "variable/index.html#static-variable-FormioUtils",
+    "<span>FormioUtils</span> <span class=\"search-result-import-path\">formiojs/src/utils/index.js</span>",
+    "variable"
   ],
   [
     "formiojs/src/formio.wizard.js~formiowizard",
@@ -1765,13 +1777,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#disabled",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-disabled",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-disabled",
     "src/components/base/Base.js~BaseComponent#disabled",
     "member"
   ],
@@ -2934,6 +2946,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/datagrid/datagrid.js~datagridcomponent#checkandremoveaddbutton",
+    "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-checkAndRemoveAddButton",
+    "src/components/datagrid/DataGrid.js~DataGridComponent#checkAndRemoveAddButton",
+    "method"
+  ],
+  [
     "src/components/datagrid/datagrid.js~datagridcomponent#checkconditions",
     "class/src/components/datagrid/DataGrid.js~DataGridComponent.html#instance-method-checkConditions",
     "src/components/datagrid/DataGrid.js~DataGridComponent#checkConditions",
@@ -3586,6 +3604,12 @@ window.esdocSearchIndex = [
     "file/src/components/file/File.js.html",
     "src/components/file/File.js",
     "file"
+  ],
+  [
+    "src/components/file/file.js~filecomponent#addfileinfo",
+    "class/src/components/file/File.js~FileComponent.html#instance-method-addFileInfo",
+    "src/components/file/File.js~FileComponent#addFileInfo",
+    "method"
   ],
   [
     "src/components/file/file.js~filecomponent#addwarnings",
@@ -4602,6 +4626,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/components/select/select.js~selectcomponent#getview",
+    "class/src/components/select/Select.js~SelectComponent.html#instance-method-getView",
+    "src/components/select/Select.js~SelectComponent#getView",
+    "method"
+  ],
+  [
     "src/components/select/select.js~selectcomponent#itemtemplate",
     "class/src/components/select/Select.js~SelectComponent.html#instance-method-itemTemplate",
     "src/components/select/Select.js~SelectComponent#itemTemplate",
@@ -5611,13 +5641,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#form",
-    "class/src/formio.form.js~FormioForm.html#instance-set-form",
+    "class/src/formio.form.js~FormioForm.html#instance-get-form",
     "src/formio.form.js~FormioForm#form",
     "member"
   ],
   [
     "src/formio.form.js~formioform#form",
-    "class/src/formio.form.js~FormioForm.html#instance-get-form",
+    "class/src/formio.form.js~FormioForm.html#instance-set-form",
     "src/formio.form.js~FormioForm#form",
     "member"
   ],
@@ -5845,13 +5875,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
   [
     "src/formio.form.js~formioform#submission",
-    "class/src/formio.form.js~FormioForm.html#instance-get-submission",
+    "class/src/formio.form.js~FormioForm.html#instance-set-submission",
     "src/formio.form.js~FormioForm#submission",
     "member"
   ],
@@ -6586,6 +6616,12 @@ window.esdocSearchIndex = [
     "class/src/formio.pdf.js~FormioPDF.html#instance-member-zoomOut",
     "src/formio.pdf.js~FormioPDF#zoomOut",
     "member"
+  ],
+  [
+    "src/formio.polyfill.js",
+    "file/src/formio.polyfill.js.html",
+    "src/formio.polyfill.js",
+    "file"
   ],
   [
     "src/formio.spec.js",

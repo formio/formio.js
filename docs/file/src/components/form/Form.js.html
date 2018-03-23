@@ -37,6 +37,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formFactory">formFactory</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioComponentsIndex">FormioComponentsIndex</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address-fixtures">components/address/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -155,6 +156,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioUtils">FormioUtils</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -187,7 +189,8 @@ export class FormComponent extends FormioForm {
    * Load the subform.
    */
   loadSubForm() {
-    if (this.subFormLoaded) {
+    // Only load the subform if the subform isn&apos;t loaded and the conditions apply.
+    if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
       return true;
     }
     this.subFormLoaded = true;
@@ -268,14 +271,18 @@ export class FormComponent extends FormioForm {
     return this.data[this.component.key].data;
   }
 
-  checkValidity() {
+  checkValidity(data, dirty) {
     // Maintain isolated data scope when passing root data for validity checks.
-    return super.checkValidity(this.subData);
+    return super.checkValidity(this.subData, dirty);
   }
 
   checkConditions() {
-    // Check the conditions for the subform.
-    if (super.checkConditions(this.subData)) {
+    if (this.subFormLoaded) {
+      return super.checkConditions(this.subData);
+    }
+
+    // Check the conditions against the component if the subform has not loaded.
+    if (super.checkConditions(this.root ? this.root.data : this.data)) {
       // Only load the subform if this component is visible.
       this.loadSubForm();
       return true;
@@ -296,7 +303,10 @@ export class FormComponent extends FormioForm {
     // If we wish to submit the form on next page, then do that here.
     if (this.component.submit) {
       this.submitted = true;
-      return this.submit(true);
+      return this.submit(true).then(submission =&gt; {
+        // Set data to submission.
+        return this.data[this.component.key] = submission;
+      });
     }
     else {
       return super.beforeNext();
