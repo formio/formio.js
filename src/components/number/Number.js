@@ -2,88 +2,41 @@ import maskInput from 'vanilla-text-mask';
 import _ from 'lodash';
 import {createNumberMask} from 'text-mask-addons';
 import {BaseComponent} from '../base/Base';
-import currencyData from '../../currencyData';
+import FormioUtils from '../../utils';
 
 export class NumberComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
-    this.currencies = currencyData;
     this.validators = this.validators.concat(['min', 'max']);
 
-    const formattedNumberString = (12345.6789).toLocaleString(this.getBrowserLanguage() || 'en');
+    const separators = FormioUtils.getNumberSeparators(options.language);
+
     this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
-      || formattedNumberString.match(/345(.*)67/)[1];
+      || separators.decimalSeparator;
+
     if (component.delimiter) {
       if (options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
+      this.delimiter = options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = '';
     }
 
+    this.decimalLimit = FormioUtils.getNumberDecimalLimit(this.component);
     // Currencies to override BrowserLanguage Config. Object key {}
-    if (this.options.languageOverride && this.options.languageOverride.hasOwnProperty(this.options.language || 'en')) {
+    if (this.options.languageOverride && this.options.languageOverride.hasOwnProperty(options.language || 'en')) {
       this.decimalSeparator = this.options.languageOverride[this.options.language || 'en'].decimalSeparator;
       this.delimiter = this.options.languageOverride[this.options.language || 'en'].delimiter;
-    }
-
-    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-    this.decimalLimit = 20;
-    if (
-      this.component.validate &&
-      this.component.validate.step &&
-      this.component.validate.step !== 'any'
-    ) {
-      const parts = this.component.validate.step.toString().split('.');
-      if (parts.length > 1) {
-        this.decimalLimit = parts[1].length;
-      }
-    }
-  }
-
-  getOverrideBrowser(currency) {
-    Object.keys(currency).map((curr)=>{
-      this.currencies[curr] = {
-        delimiter: currency[curr].delimiter,
-        separator: currency[curr].separator
-      };
-      return this.currencies
-    });
-    return this.currencies;
-  }
-
-  getFormatOptions() {
-    return {
-      style: 'decimal',
-      useGrouping: true,
-      maximumFractionDigits: _.get(this.component, 'decimalLimit', this.decimalLimit)
-    };
-  }
-
-  formatNumber(value) {
-    // If not a number, return empty string.
-    if (isNaN(value)) {
-      return '';
-    }
-
-    // If empty string, zero or other, don't format.
-    if (!value) {
-      return value;
-    }
-    if (this.component.validate && this.component.validate.integer) {
-      return parseInt(value, 10).toLocaleString(this.options.language || 'en', this.getFormatOptions());
-    }
-    else {
-      return parseFloat(value).toLocaleString(this.options.language || 'en', this.getFormatOptions());
     }
   }
 
   parseNumber(value) {
-    // Remove thousands separators and convert decimal separator to dot.
+    // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
+
     if (this.component.validate && this.component.validate.integer) {
       return parseInt(value, 10);
     }
@@ -93,6 +46,8 @@ export class NumberComponent extends BaseComponent {
   }
 
   setInputMask(input) {
+    console.log(this.decimalSeparator);
+    console.log(this.decimalSeparator);
     this.inputMask = maskInput({
       inputElement: input,
       mask: createNumberMask({
@@ -130,7 +85,26 @@ export class NumberComponent extends BaseComponent {
     return this.parseNumber(val);
   }
 
+  clearInput(input) {
+    let value = parseFloat(input);
+
+    if (!_.isNaN(value)) {
+      value = String(value).replace('.', this.decimalSeparator);
+    }
+    else {
+      value = null;
+    }
+
+    return value;
+  }
+
+  formatValue(value) {
+    return value;
+  }
+
   setValueAt(index, value) {
-    this.inputs[index].value = this.formatNumber(value);
+    value = this.clearInput(value);
+    value = this.formatValue(value);
+    this.inputMask.textMaskInputElement.update(value);
   }
 }

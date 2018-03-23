@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Number and Currency components default value.
+
+## 2.29.13
+### Fixed
+ - Problem with some crashes within the file component.
+ - Make sure the Submit button was not disabled even if form was readonly
+ - Problem with the DataGrid component default values copying from row to row.
+
+### Added
+ - The ability to prevent a component from being disabled with a "alwaysEnabled" property.
+
+## 2.29.12
+### Fixed
+ - Custom events not firing for button custom events.
+ - Issue with conditoinals not checking on form components before loading subforms.
+
+## 2.29.11
+### Changed
+ - Upgraded browserify@16.1.1 eslint@4.18.2 fetch-mock@6.0.1 mocha@5.0.4 watchify@3.11.0 gulp-strip-debug@3.0.0 marked@0.3.17
+ - Added exports that are reverse compatible with ES5.
+
+### Fixed
+ - Display for resource fields within submission grid.
+
+## 2.29.10
+### Fixed
+ - Issues with getView so that it does not throw errors.
+ - Min and Max settings on DataGrid to stop showing Add Another button.
+
 ## 2.29.9
 ### Fixed
  - Issues with IE not translating Date's properly.
@@ -43,7 +74,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.29.2
 ### Changed
- - Upgraded i18next to 10.4.1 
+ - Upgraded i18next to 10.4.1
 
 ### Fixed
  - Problem where DataGrid could add duplicate columns.

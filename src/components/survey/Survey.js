@@ -100,6 +100,9 @@ export class SurveyComponent extends BaseComponent {
   }
 
   getView(value) {
+    if (!value) {
+      return '';
+    }
     const table = this.ce('table', {
       class: 'table table-striped table-bordered table-condensed'
     });
