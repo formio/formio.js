@@ -2,52 +2,34 @@ import maskInput from 'vanilla-text-mask';
 import _ from 'lodash';
 import {createNumberMask} from 'text-mask-addons';
 import {BaseComponent} from '../base/Base';
+import FormioUtils from '../../utils';
 
 export class NumberComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators = this.validators.concat(['min', 'max']);
 
-    const formattedNumberString = (12345.6789).toLocaleString(options.language || 'en');
+    const separators = FormioUtils.getNumberSeparators(options.language);
 
     this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
-      || formattedNumberString.match(/345(.*)67/)[1];
+      || separators.decimalSeparator;
 
     if (component.delimiter) {
       if (options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
+      this.delimiter = options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = '';
     }
 
-    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-    this.decimalLimit = 20;
-    if (
-      this.component.validate &&
-      this.component.validate.step &&
-      this.component.validate.step !== 'any'
-    ) {
-      const parts = this.component.validate.step.toString().split('.');
-      if (parts.length > 1) {
-        this.decimalLimit = parts[1].length;
-      }
-    }
-  }
-
-  getFormatOptions() {
-    return {
-      style: 'decimal',
-      useGrouping: true,
-      maximumFractionDigits: _.get(this.component, 'decimalLimit', this.decimalLimit)
-    };
+    this.decimalLimit = FormioUtils.getNumberDecimalLimit(this.component);
   }
 
   parseNumber(value) {
-    // Remove thousands separators and convert decimal separator to dot.
+    // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
 
     if (this.component.validate && this.component.validate.integer) {

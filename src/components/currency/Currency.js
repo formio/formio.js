@@ -1,6 +1,7 @@
 import maskInput from 'vanilla-text-mask';
 import {createNumberMask} from 'text-mask-addons';
 import _ from 'lodash';
+import {getCurrencyAffixes} from '../../utils';
 
 import {NumberComponent} from '../number/Number';
 
@@ -8,25 +9,16 @@ export class CurrencyComponent extends NumberComponent {
   constructor(component, options, data) {
     super(component, options, data);
 
-    this.currency = this.component.currency || 'USD';
-    this.decimalLimit = this.component.decimalLimit || 2;
+    this.decimalLimit = _.get(this.component, 'decimalLimit', 2);
 
-    // Get the prefix and suffix from the localized string.
-    const regex = `(.*)?100(${this.decimalSeparator === '.'
-      ? '\\.'
-      : this.decimalSeparator}0{${this.decimalLimit}})?(.*)?`;
-    const parts = (100).toLocaleString(options.language, this.getFormatOptions()).match(new RegExp(regex));
-    this.prefix = parts[1] || '';
-    this.suffix = parts[3] || '';
-  }
-
-  getFormatOptions() {
-    return {
-      style: 'currency',
-      currency: this.currency,
-      useGrouping: true,
-      maximumFractionDigits: _.get(this.component, 'decimalLimit', this.decimalLimit)
-    };
+    const affixes = getCurrencyAffixes({
+      currency: this.component.currency,
+      decimalLimit: this.decimalLimit,
+      decimalSeparator: this.decimalSeparator,
+      lang: options.language,
+    });
+    this.prefix = affixes.prefix;
+    this.suffix = affixes.suffix;
   }
 
   parseNumber(value) {
@@ -44,7 +36,7 @@ export class CurrencyComponent extends NumberComponent {
         suffix: this.suffix,
         thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
         decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-        decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
+        decimalLimit: this.decimalLimit,
         allowNegative: _.get(this.component, 'allowNegative', true),
         allowDecimal: _.get(this.component, 'allowDecimal', true)
       })
