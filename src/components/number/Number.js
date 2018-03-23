@@ -28,8 +28,8 @@ export class NumberComponent extends BaseComponent {
     this.decimalLimit = FormioUtils.getNumberDecimalLimit(this.component);
     // Currencies to override BrowserLanguage Config. Object key {}
     if (this.options.languageOverride && this.options.languageOverride.hasOwnProperty(options.language || 'en')) {
-      this.decimalSeparator = this.options.languageOverride[this.options.language || 'en'].decimalSeparator;
-      this.delimiter = this.options.languageOverride[this.options.language || 'en'].delimiter;
+      this.decimalSeparator = this.options.languageOverride[options.language || 'en'].decimalSeparator;
+      this.delimiter = this.options.languageOverride[options.language || 'en'].delimiter;
     }
   }
 
