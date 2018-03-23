@@ -8,19 +8,21 @@ export class CurrencyComponent extends NumberComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.currency = this.component.currency || 'USD';
-    this.decimalLimit = options.decimalLimit || this.component.decimalLimit || 2;
+    this.decimalLimit = this.component.decimalLimit || 2;
     // Get the prefix and suffix from the localized string.
-    const regex = `(.*)?100(${this.decimalSeparator}0{${this.decimalLimit}})?(.*)?`;
+    const regex = `(.*)?100(${this.decimalSeparator === '.'
+      ? '\\.'
+      : this.decimalSeparator}0{${this.decimalLimit}})?(.*)?`;
     const parts = (100).toLocaleString(this.getBrowserLanguage(), this.getFormatOptions()).replace('.', this.decimalSeparator).match(new RegExp(regex));
     this.prefix = parts[1] || '';
-      this.suffix = parts[3] || '';
+    this.suffix = parts[3] || '';
   }
 
   getFormatOptions() {
     return {
       style: 'currency',
       currency: this.currency,
-      useGrouping: false,
+      useGrouping: true,
       maximumFractionDigits: _.get(this.component, 'decimalLimit', this.decimalLimit)
     };
   }
@@ -49,8 +51,8 @@ export class CurrencyComponent extends NumberComponent {
       mask: createNumberMask({
         prefix: this.prefix,
         suffix: this.suffix,
-        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.overrideLanguage.delimiter || this.delimiter),
-        decimalSymbol: _.get(this.component, 'decimalSymbol', this.overrideLanguage.separator || this.decimalSeparator),
+        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
+        decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
         decimalLimit: _.get(this.component, 'decimalLimit', this.decimalLimit),
         allowNegative: _.get(this.component, 'allowNegative', true),
         allowDecimal: _.get(this.component, 'allowDecimal', true)

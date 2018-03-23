@@ -9,24 +9,25 @@ export class NumberComponent extends BaseComponent {
     super(component, options, data);
     this.currencies = currencyData;
     this.validators = this.validators.concat(['min', 'max']);
-    // Currencies to override BrowserLanguage Config. Object key {}
-    if(options.currency) {
-      const override = this.getOverrideBrowser(options.currency);
-      this.overrideLanguage = override[this.getBrowserLanguage()];
-    }
-    
+
     const formattedNumberString = (12345.6789).toLocaleString(this.getBrowserLanguage() || 'en');
-    this.decimalSeparator = options.decimalSeparator = this.overrideLanguage.separator || options.decimalSeparator
+    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
       || formattedNumberString.match(/345(.*)67/)[1];
     if (component.delimiter) {
       if (options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = this.overrideLanguage.delimiter || options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
+      this.delimiter = options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
     }
     else {
       this.delimiter = '';
+    }
+
+    // Currencies to override BrowserLanguage Config. Object key {}
+    if (this.options.languageOverride && this.options.languageOverride.hasOwnProperty(this.options.language || 'en')) {
+      this.decimalSeparator = this.options.languageOverride[this.options.language || 'en'].decimalSeparator;
+      this.delimiter = this.options.languageOverride[this.options.language || 'en'].delimiter;
     }
 
     // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
