@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.29.13
+### Fixed
+ - Problem with some crashes within the file component.
+ - Make sure the Submit button was not disabled even if form was readonly
+ - Problem with the DataGrid component default values copying from row to row.
+
+### Added
+ - The ability to prevent a component from being disabled with a "alwaysEnabled" property.
+
 ## 2.29.12
 ### Fixed
  - Custom events not firing for button custom events.

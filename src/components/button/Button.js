@@ -131,7 +131,7 @@ export class ButtonComponent extends BaseComponent {
       this.on('change', (value) => {
         this.loading = false;
         let isValid = this.root.isValid(value.data, true);
-        this.disabled = (this.component.disableOnInvalid && !isValid);
+        this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
         if (isValid && this.hasError) {
           this.hasError = false;
           this.removeChild(errorContainer);

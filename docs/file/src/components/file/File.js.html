@@ -40,6 +40,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-formFactory">formFactory</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components">components</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/Components.js~FormioComponents.html">FormioComponents</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-Validator">Validator</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioComponentsIndex">FormioComponentsIndex</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address">components/address</a><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/components/address/Address.js~AddressComponent.html">AddressComponent</a></span></span></li>
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#components-address-fixtures">components/address/fixtures</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-component">component</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-components">components</a></span></span></li>
@@ -171,7 +172,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-dropbox">dropbox</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-s3">s3</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-function">F</span><span data-ice="name"><span><a href="function/index.html#static-function-url">url</a></span></span></li>
+<<<<<<< HEAD
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-BuilderUtils">BuilderUtils</a></span></span></li>
+=======
+<li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils">utils</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-FormioUtils">FormioUtils</a></span></span></li>
+>>>>>>> 0c4b02527c231fedb306df632163340886a15d33
 <li data-ice="doc"><a data-ice="dirPath" class="nav-dir-path" href="identifiers.html#utils-jsonlogic">utils/jsonlogic</a><span data-ice="kind" class="kind-variable">V</span><span data-ice="name"><span><a href="variable/index.html#static-variable-lodashOperators">lodashOperators</a></span></span></li>
 </ul>
 </div>
@@ -221,8 +226,19 @@ export class FileComponent extends BaseComponent {
     return _.get(this.data, this.component.key);
   }
 
+  addFileInfo(fileInfo) {
+    if (!this.data[this.component.key]) {
+      this.data[this.component.key] = [];
+    }
+    this.data[this.component.key].push(fileInfo);
+  }
+
   setValue(value) {
+<<<<<<< HEAD
     _.set(this.data, this.component.key, value);
+=======
+    this.data[this.component.key] = value || [];
+>>>>>>> 0c4b02527c231fedb306df632163340886a15d33
     this.refreshDOM();
   }
 
@@ -325,8 +341,13 @@ export class FileComponent extends BaseComponent {
                 this.ce(&apos;i&apos;, {
                   class: this.iconClass(&apos;remove&apos;),
                   onClick: event =&gt; {
+<<<<<<< HEAD
                     if (this.component.storage === &apos;url&apos;) {
                       this.options.formio.makeRequest(&apos;&apos;, _.get(this.data, this.component.key)[index].url, &apos;delete&apos;);
+=======
+                    if (fileInfo &amp;&amp; (this.component.storage === &apos;url&apos;)) {
+                      this.options.formio.makeRequest(&apos;&apos;, fileInfo.url, &apos;delete&apos;);
+>>>>>>> 0c4b02527c231fedb306df632163340886a15d33
                     }
                     event.preventDefault();
                     _.get(this.data, this.component.key).splice(index, 1);
@@ -384,8 +405,13 @@ export class FileComponent extends BaseComponent {
               this.ce(&apos;i&apos;, {
                 class: this.iconClass(&apos;remove&apos;),
                 onClick: event =&gt; {
+<<<<<<< HEAD
                   if (this.component.storage === &apos;url&apos;) {
                     this.options.formio.makeRequest(&apos;&apos;, _.get(this.data, this.component.key)[index].url, &apos;delete&apos;);
+=======
+                  if (fileInfo &amp;&amp; (this.component.storage === &apos;url&apos;)) {
+                    this.options.formio.makeRequest(&apos;&apos;, fileInfo.url, &apos;delete&apos;);
+>>>>>>> 0c4b02527c231fedb306df632163340886a15d33
                   }
                   event.preventDefault();
                   _.get(this.data, this.component.key).splice(index, 1);
@@ -428,6 +454,7 @@ export class FileComponent extends BaseComponent {
             this.ce(&apos;i&apos;, {class: this.iconClass(&apos;cloud-upload&apos;)}),
             this.text(&apos; Drop files to attach, or &apos;),
             this.ce(&apos;a&apos;, {
+              href: &apos;#&apos;,
               onClick: event =&gt; {
                 event.preventDefault();
                 // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
@@ -670,7 +697,11 @@ export class FileComponent extends BaseComponent {
             .then(fileInfo =&gt; {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
               fileInfo.originalName = file.name;
+<<<<<<< HEAD
               _.get(this.data, this.component.key).push(fileInfo);
+=======
+              this.addFileInfo(fileInfo);
+>>>>>>> 0c4b02527c231fedb306df632163340886a15d33
               this.refreshDOM();
               this.triggerChange();
             })

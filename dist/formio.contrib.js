@@ -690,6 +690,28 @@ var BaseComponent = function () {
     }
 
     /**
+     * Removes all listeners for a certain event.
+     *
+     * @param event
+     */
+
+  }, {
+    key: 'off',
+    value: function off(event, cb) {
+      var _this = this;
+
+      if (!this.events) {
+        return;
+      }
+      var type = 'formio.' + event;
+      _lodash2.default.each(this.eventListeners, function (listener) {
+        if (listener.type == type && (!cb || cb === listener.listener)) {
+          _this.events.off(listener.type, listener.listener);
+        }
+      });
+    }
+
+    /**
      * Emit a new event.
      *
      * @param {string} event - The event to emit.
@@ -884,7 +906,7 @@ var BaseComponent = function () {
   }, {
     key: 'createModal',
     value: function createModal(title) {
-      var _this = this;
+      var _this2 = this;
 
       var self = this;
       var modalBody = this.ce('div');
@@ -911,7 +933,7 @@ var BaseComponent = function () {
         dialog.close();
       });
       this.addEventListener(dialog, 'close', function () {
-        _this.removeChildFrom(dialog, document.body);
+        _this2.removeChildFrom(dialog, document.body);
       });
       document.body.appendChild(dialog);
       dialog.body = modalBody;
@@ -1065,7 +1087,7 @@ var BaseComponent = function () {
   }, {
     key: 'buildRows',
     value: function buildRows() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.tbody) {
         return;
@@ -1073,19 +1095,19 @@ var BaseComponent = function () {
       this.inputs = [];
       this.tbody.innerHTML = '';
       _lodash2.default.each(_lodash2.default.get(this.data, this.component.key), function (value, index) {
-        var tr = _this2.ce('tr');
-        var td = _this2.ce('td');
-        var input = _this2.createInput(td);
+        var tr = _this3.ce('tr');
+        var td = _this3.ce('td');
+        var input = _this3.createInput(td);
         input.value = value;
         tr.appendChild(td);
 
-        if (!_this2.shouldDisable) {
-          var tdAdd = _this2.ce('td');
-          tdAdd.appendChild(_this2.removeButton(index));
+        if (!_this3.shouldDisable) {
+          var tdAdd = _this3.ce('td');
+          tdAdd.appendChild(_this3.removeButton(index));
           tr.appendChild(tdAdd);
         }
 
-        _this2.tbody.appendChild(tr);
+        _this3.tbody.appendChild(tr);
       });
 
       if (!this.shouldDisable) {
@@ -1135,14 +1157,14 @@ var BaseComponent = function () {
   }, {
     key: 'addButton',
     value: function addButton(justIcon) {
-      var _this3 = this;
+      var _this4 = this;
 
       var addButton = this.ce('a', {
         class: 'btn btn-primary'
       });
       this.addEventListener(addButton, 'click', function (event) {
         event.preventDefault();
-        _this3.addValue();
+        _this4.addValue();
       });
 
       var addIcon = this.ce('i', {
@@ -1185,7 +1207,7 @@ var BaseComponent = function () {
   }, {
     key: 'removeButton',
     value: function removeButton(index) {
-      var _this4 = this;
+      var _this5 = this;
 
       var removeButton = this.ce('button', {
         type: 'button',
@@ -1195,7 +1217,7 @@ var BaseComponent = function () {
 
       this.addEventListener(removeButton, 'click', function (event) {
         event.preventDefault();
-        _this4.removeValue(index);
+        _this5.removeValue(index);
       });
 
       var removeIcon = this.ce('i', {
@@ -1602,7 +1624,7 @@ var BaseComponent = function () {
   }, {
     key: 'destroy',
     value: function destroy(all) {
-      var _this5 = this;
+      var _this6 = this;
 
       if (this.inputMask) {
         this.inputMask.destroy();
@@ -1610,7 +1632,7 @@ var BaseComponent = function () {
       if (this.events) {
         _lodash2.default.each(this.eventListeners, function (listener) {
           if (all || listener.internal) {
-            _this5.events.off(listener.type, listener.listener);
+            _this6.events.off(listener.type, listener.listener);
           }
         });
       }
@@ -1663,11 +1685,11 @@ var BaseComponent = function () {
   }, {
     key: 'appendChild',
     value: function appendChild(element, child) {
-      var _this6 = this;
+      var _this7 = this;
 
       if (Array.isArray(child)) {
         child.forEach(function (oneChild) {
-          _this6.appendChild(element, oneChild);
+          _this7.appendChild(element, oneChild);
         });
       } else if (child instanceof HTMLElement || child instanceof Text) {
         element.appendChild(child);
@@ -1726,13 +1748,13 @@ var BaseComponent = function () {
   }, {
     key: 'attr',
     value: function attr(element, _attr) {
-      var _this7 = this;
+      var _this8 = this;
 
       _lodash2.default.each(_attr, function (value, key) {
         if (typeof value !== 'undefined') {
           if (key.indexOf('on') === 0) {
             // If this is an event, add a listener.
-            _this7.addEventListener(element, key.substr(2).toLowerCase(), value);
+            _this8.addEventListener(element, key.substr(2).toLowerCase(), value);
           } else {
             // Otherwise it is just an attribute.
             element.setAttribute(key, value);
@@ -1842,7 +1864,7 @@ var BaseComponent = function () {
   }, {
     key: 'fieldLogic',
     value: function fieldLogic(data) {
-      var _this8 = this;
+      var _this9 = this;
 
       var logics = this.component.logic || [];
 
@@ -1854,26 +1876,26 @@ var BaseComponent = function () {
       var newComponent = _lodash2.default.cloneDeep(this.originalComponent);
 
       var changed = logics.reduce(function (changed, logic) {
-        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this8.data, data);
+        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this9.data, data);
 
         if (result) {
           changed |= logic.actions.reduce(function (changed, action) {
             switch (action.type) {
               case 'property':
-                _utils2.default.setActionProperty(newComponent, action, _this8.data, data, newComponent, result);
+                _utils2.default.setActionProperty(newComponent, action, _this9.data, data, newComponent, result);
                 break;
               case 'value':
                 {
-                  var oldValue = _this8.getValue();
+                  var oldValue = _this9.getValue();
                   var newValue = _utils2.default.evaluate(action.value, {
                     value: _lodash2.default.clone(oldValue),
-                    row: _this8.data,
+                    row: _this9.data,
                     data: data,
                     component: newComponent,
                     result: result
                   }, 'value');
                   if (!_lodash2.default.isEqual(oldValue, newValue)) {
-                    _this8.setValue(newValue);
+                    _this9.setValue(newValue);
                     changed = true;
                   }
                   break;
@@ -1907,7 +1929,7 @@ var BaseComponent = function () {
   }, {
     key: 'addInputError',
     value: function addInputError(message, dirty) {
-      var _this9 = this;
+      var _this10 = this;
 
       if (!message) {
         return;
@@ -1924,7 +1946,7 @@ var BaseComponent = function () {
       // Add error classes
       this.addClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
-        return _this9.addClass(input, 'is-invalid');
+        return _this10.addClass(input, 'is-invalid');
       });
       if (dirty && this.options.highlightErrors) {
         this.addClass(this.element, 'alert alert-danger');
@@ -2040,7 +2062,7 @@ var BaseComponent = function () {
   }, {
     key: 'addInputSubmitListener',
     value: function addInputSubmitListener(input) {
-      var _this10 = this;
+      var _this11 = this;
 
       if (!this.options.submitOnEnter) {
         return;
@@ -2050,7 +2072,7 @@ var BaseComponent = function () {
         if (key === 13) {
           event.preventDefault();
           event.stopPropagation();
-          _this10.emit('submitButton');
+          _this11.emit('submitButton');
         }
       });
     }
@@ -2064,10 +2086,10 @@ var BaseComponent = function () {
   }, {
     key: 'addInputEventListener',
     value: function addInputEventListener(input) {
-      var _this11 = this;
+      var _this12 = this;
 
       this.addEventListener(input, this.info.changeEvent, function () {
-        return _this11.updateValue({ changed: true });
+        return _this12.updateValue({ changed: true });
       });
     }
 
@@ -2097,7 +2119,7 @@ var BaseComponent = function () {
   }, {
     key: 'addQuill',
     value: function addQuill(element, settings, onChange) {
-      var _this12 = this;
+      var _this13 = this;
 
       settings = _lodash2.default.isEmpty(settings) ? this.wysiwygDefault : settings;
 
@@ -2106,29 +2128,29 @@ var BaseComponent = function () {
 
       // Lazy load the quill library.
       return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
-        _this12.quill = new Quill(element, settings);
+        _this13.quill = new Quill(element, settings);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
         var txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
-        _this12.quill.addContainer('ql-custom').appendChild(txtArea);
+        _this13.quill.addContainer('ql-custom').appendChild(txtArea);
         var qlSource = document.querySelector('.ql-source');
         if (qlSource) {
           qlSource.addEventListener('click', function () {
             if (txtArea.style.display === 'inherit') {
-              _this12.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+              _this13.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
             }
             txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
           });
         }
         /** END CODEBLOCK **/
 
-        _this12.quill.on('text-change', function () {
-          txtArea.value = _this12.quill.root.innerHTML;
+        _this13.quill.on('text-change', function () {
+          txtArea.value = _this13.quill.root.innerHTML;
           onChange(txtArea);
         });
 
-        return _this12.quill;
+        return _this13.quill;
       });
     }
 
@@ -2355,7 +2377,7 @@ var BaseComponent = function () {
   }, {
     key: 'setCustomValidity',
     value: function setCustomValidity(message, dirty) {
-      var _this13 = this;
+      var _this14 = this;
 
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
@@ -2363,7 +2385,7 @@ var BaseComponent = function () {
       }
       this.removeClass(this.element, 'has-error');
       this.inputs.forEach(function (input) {
-        return _this13.removeClass(input, 'is-invalid');
+        return _this14.removeClass(input, 'is-invalid');
       });
       if (this.options.highlightErrors) {
         this.removeClass(this.element, 'alert alert-danger');
@@ -2494,7 +2516,7 @@ var BaseComponent = function () {
   }, {
     key: 'selectOptions',
     value: function selectOptions(select, tag, options, defaultValue) {
-      var _this14 = this;
+      var _this15 = this;
 
       _lodash2.default.each(options, function (option) {
         var attrs = {
@@ -2503,8 +2525,8 @@ var BaseComponent = function () {
         if (defaultValue !== undefined && option.value === defaultValue) {
           attrs.selected = 'selected';
         }
-        var optionElement = _this14.ce('option', attrs);
-        optionElement.appendChild(_this14.text(option.label));
+        var optionElement = _this15.ce('option', attrs);
+        optionElement.appendChild(_this15.text(option.label));
         select.appendChild(optionElement);
       });
     }
@@ -2633,7 +2655,7 @@ var BaseComponent = function () {
   }, {
     key: 'shouldDisable',
     get: function get() {
-      return this.options.readOnly || this.component.disabled;
+      return (this.options.readOnly || this.component.disabled) && !this.component.alwaysEnabled;
     }
   }, {
     key: 'viewOnly',
@@ -2783,7 +2805,7 @@ var BaseComponent = function () {
      */
 
     , set: function set(disabled) {
-      var _this15 = this;
+      var _this16 = this;
 
       // Do not allow a component to be disabled if it should be always...
       if (!disabled && this.shouldDisable) {
@@ -2794,7 +2816,7 @@ var BaseComponent = function () {
 
       // Disable all inputs.
       _lodash2.default.each(this.inputs, function (input) {
-        return _this15.setDisabled(input, disabled);
+        return _this16.setDisabled(input, disabled);
       });
     }
   }]);
@@ -3071,7 +3093,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         this.on('change', function (value) {
           _this2.loading = false;
           var isValid = _this2.root.isValid(value.data, true);
-          _this2.disabled = _this2.component.disableOnInvalid && !isValid;
+          _this2.disabled = _this2.options.readOnly || _this2.component.disableOnInvalid && !isValid;
           if (isValid && _this2.hasError) {
             _this2.hasError = false;
             _this2.removeChild(errorContainer);
@@ -5294,8 +5316,13 @@ var Interpolator = function () {
       value = handleFormat(match[1].trim());
       if (typeof value !== 'string') value = utils.makeString(value);
       if (!value) {
-        this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
-        value = '';
+        if (typeof this.options.missingInterpolationHandler === 'function') {
+          var temp = this.options.missingInterpolationHandler(str, match);
+          value = typeof temp === 'string' ? temp : '';
+        } else {
+          this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
+          value = '';
+        }
       }
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
@@ -5630,6 +5657,8 @@ var PluralResolver = function () {
     var ret = [];
 
     var rule = this.getRule(code);
+
+    if (!rule) return ret;
 
     rule.numbers.forEach(function (n) {
       var suffix = _this.getSuffix(code, n);
@@ -6211,6 +6240,7 @@ function get() {
     saveMissingTo: 'fallback', // 'current' || 'all'
     saveMissingPlurals: true, // will save all forms not only singular key
     missingKeyHandler: false, // function(lng, ns, key, fallbackValue) -> override if prefer on handling
+    missingInterpolationHandler: false, // function(str, match)
 
     postProcess: false, // string or array of postProcessor names
     returnNull: true, // allows null value as valid translation
@@ -6260,7 +6290,9 @@ function transformOptions(options) {
   if (typeof options.fallbackNS === 'string') options.fallbackNS = [options.fallbackNS];
 
   // extend whitelist with cimode
-  if (options.whitelist && options.whitelist.indexOf('cimode') < 0) options.whitelist.push('cimode');
+  if (options.whitelist && options.whitelist.indexOf('cimode') < 0) {
+    options.whitelist = options.whitelist.concat(['cimode']);
+  }
 
   return options;
 }
@@ -29442,7 +29474,7 @@ return hooks;
 (function (global){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.12.9
+ * @version 1.14.1
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -29590,12 +29622,47 @@ function getScrollParent(element) {
       overflowX = _getStyleComputedProp.overflowX,
       overflowY = _getStyleComputedProp.overflowY;
 
-  if (/(auto|scroll)/.test(overflow + overflowY + overflowX)) {
+  if (/(auto|scroll|overlay)/.test(overflow + overflowY + overflowX)) {
     return element;
   }
 
   return getScrollParent(getParentNode(element));
 }
+
+/**
+ * Tells if you are running Internet Explorer
+ * @method
+ * @memberof Popper.Utils
+ * @argument {number} version to check
+ * @returns {Boolean} isIE
+ */
+var cache = {};
+
+var isIE = function () {
+  var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'all';
+
+  version = version.toString();
+  if (cache.hasOwnProperty(version)) {
+    return cache[version];
+  }
+  switch (version) {
+    case '11':
+      cache[version] = navigator.userAgent.indexOf('Trident') !== -1;
+      break;
+    case '10':
+      cache[version] = navigator.appVersion.indexOf('MSIE 10') !== -1;
+      break;
+    case 'all':
+      cache[version] = navigator.userAgent.indexOf('Trident') !== -1 || navigator.userAgent.indexOf('MSIE') !== -1;
+      break;
+  }
+
+  //Set IE
+  cache.all = cache.all || Object.keys(cache).some(function (key) {
+    return cache[key];
+  });
+  return cache[version];
+};
 
 /**
  * Returns the offset parent of the given element
@@ -29605,16 +29672,23 @@ function getScrollParent(element) {
  * @returns {Element} offset parent
  */
 function getOffsetParent(element) {
+  if (!element) {
+    return document.documentElement;
+  }
+
+  var noOffsetParent = isIE(10) ? document.body : null;
+
   // NOTE: 1 DOM access here
-  var offsetParent = element && element.offsetParent;
+  var offsetParent = element.offsetParent;
+  // Skip hidden elements which don't have an offsetParent
+  while (offsetParent === noOffsetParent && element.nextElementSibling) {
+    offsetParent = (element = element.nextElementSibling).offsetParent;
+  }
+
   var nodeName = offsetParent && offsetParent.nodeName;
 
   if (!nodeName || nodeName === 'BODY' || nodeName === 'HTML') {
-    if (element) {
-      return element.ownerDocument.documentElement;
-    }
-
-    return document.documentElement;
+    return element ? element.ownerDocument.documentElement : document.documentElement;
   }
 
   // .offsetParent will return the closest TD or TABLE in case
@@ -29756,29 +29830,14 @@ function getBordersSize(styles, axis) {
   return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
 }
 
-/**
- * Tells if you are running Internet Explorer 10
- * @method
- * @memberof Popper.Utils
- * @returns {Boolean} isIE10
- */
-var isIE10 = undefined;
-
-var isIE10$1 = function () {
-  if (isIE10 === undefined) {
-    isIE10 = navigator.appVersion.indexOf('MSIE 10') !== -1;
-  }
-  return isIE10;
-};
-
 function getSize(axis, body, html, computedStyle) {
-  return Math.max(body['offset' + axis], body['scroll' + axis], html['client' + axis], html['offset' + axis], html['scroll' + axis], isIE10$1() ? html['offset' + axis] + computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')] + computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')] : 0);
+  return Math.max(body['offset' + axis], body['scroll' + axis], html['client' + axis], html['offset' + axis], html['scroll' + axis], isIE(10) ? html['offset' + axis] + computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')] + computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')] : 0);
 }
 
 function getWindowSizes() {
   var body = document.body;
   var html = document.documentElement;
-  var computedStyle = isIE10$1() && getComputedStyle(html);
+  var computedStyle = isIE(10) && getComputedStyle(html);
 
   return {
     height: getSize('Height', body, html, computedStyle),
@@ -29870,8 +29929,8 @@ function getBoundingClientRect(element) {
   // IE10 10 FIX: Please, don't ask, the element isn't
   // considered in DOM in some circumstances...
   // This isn't reproducible in IE10 compatibility mode of IE11
-  if (isIE10$1()) {
-    try {
+  try {
+    if (isIE(10)) {
       rect = element.getBoundingClientRect();
       var scrollTop = getScroll(element, 'top');
       var scrollLeft = getScroll(element, 'left');
@@ -29879,10 +29938,10 @@ function getBoundingClientRect(element) {
       rect.left += scrollLeft;
       rect.bottom += scrollTop;
       rect.right += scrollLeft;
-    } catch (err) {}
-  } else {
-    rect = element.getBoundingClientRect();
-  }
+    } else {
+      rect = element.getBoundingClientRect();
+    }
+  } catch (e) {}
 
   var result = {
     left: rect.left,
@@ -29914,7 +29973,9 @@ function getBoundingClientRect(element) {
 }
 
 function getOffsetRectRelativeToArbitraryNode(children, parent) {
-  var isIE10 = isIE10$1();
+  var fixedPosition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+  var isIE10 = isIE(10);
   var isHTML = parent.nodeName === 'HTML';
   var childrenRect = getBoundingClientRect(children);
   var parentRect = getBoundingClientRect(parent);
@@ -29924,6 +29985,11 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
   var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
 
+  // In cases where the parent is fixed, we must ignore negative scroll in offset calc
+  if (fixedPosition && parent.nodeName === 'HTML') {
+    parentRect.top = Math.max(parentRect.top, 0);
+    parentRect.left = Math.max(parentRect.left, 0);
+  }
   var offsets = getClientRect({
     top: childrenRect.top - parentRect.top - borderTopWidth,
     left: childrenRect.left - parentRect.left - borderLeftWidth,
@@ -29951,7 +30017,7 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
     offsets.marginLeft = marginLeft;
   }
 
-  if (isIE10 ? parent.contains(scrollParent) : parent === scrollParent && scrollParent.nodeName !== 'BODY') {
+  if (isIE10 && !fixedPosition ? parent.contains(scrollParent) : parent === scrollParent && scrollParent.nodeName !== 'BODY') {
     offsets = includeScroll(offsets, parent);
   }
 
@@ -29959,13 +30025,15 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
 }
 
 function getViewportOffsetRectRelativeToArtbitraryNode(element) {
+  var excludeScroll = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
   var html = element.ownerDocument.documentElement;
   var relativeOffset = getOffsetRectRelativeToArbitraryNode(element, html);
   var width = Math.max(html.clientWidth, window.innerWidth || 0);
   var height = Math.max(html.clientHeight, window.innerHeight || 0);
 
-  var scrollTop = getScroll(html);
-  var scrollLeft = getScroll(html, 'left');
+  var scrollTop = !excludeScroll ? getScroll(html) : 0;
+  var scrollLeft = !excludeScroll ? getScroll(html, 'left') : 0;
 
   var offset = {
     top: scrollTop - relativeOffset.top + relativeOffset.marginTop,
@@ -29997,6 +30065,26 @@ function isFixed(element) {
 }
 
 /**
+ * Finds the first parent of an element that has a transformed property defined
+ * @method
+ * @memberof Popper.Utils
+ * @argument {Element} element
+ * @returns {Element} first transformed parent or documentElement
+ */
+
+function getFixedPositionOffsetParent(element) {
+  // This check is needed to avoid errors in case one of the elements isn't defined for any reason
+  if (!element || !element.parentElement || isIE()) {
+    return document.documentElement;
+  }
+  var el = element.parentElement;
+  while (el && getStyleComputedProperty(el, 'transform') === 'none') {
+    el = el.parentElement;
+  }
+  return el || document.documentElement;
+}
+
+/**
  * Computed the boundaries limits and return them
  * @method
  * @memberof Popper.Utils
@@ -30004,16 +30092,20 @@ function isFixed(element) {
  * @param {HTMLElement} reference
  * @param {number} padding
  * @param {HTMLElement} boundariesElement - Element used to define the boundaries
+ * @param {Boolean} fixedPosition - Is in fixed position mode
  * @returns {Object} Coordinates of the boundaries
  */
 function getBoundaries(popper, reference, padding, boundariesElement) {
+  var fixedPosition = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+
   // NOTE: 1 DOM access here
+
   var boundaries = { top: 0, left: 0 };
-  var offsetParent = findCommonOffsetParent(popper, reference);
+  var offsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
 
   // Handle viewport case
   if (boundariesElement === 'viewport') {
-    boundaries = getViewportOffsetRectRelativeToArtbitraryNode(offsetParent);
+    boundaries = getViewportOffsetRectRelativeToArtbitraryNode(offsetParent, fixedPosition);
   } else {
     // Handle other cases based on DOM element used as boundaries
     var boundariesNode = void 0;
@@ -30028,7 +30120,7 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
       boundariesNode = boundariesElement;
     }
 
-    var offsets = getOffsetRectRelativeToArbitraryNode(boundariesNode, offsetParent);
+    var offsets = getOffsetRectRelativeToArbitraryNode(boundariesNode, offsetParent, fixedPosition);
 
     // In case of HTML, we need a different computation
     if (boundariesNode.nodeName === 'HTML' && !isFixed(offsetParent)) {
@@ -30129,11 +30221,14 @@ function computeAutoPlacement(placement, refRect, popper, reference, boundariesE
  * @param {Object} state
  * @param {Element} popper - the popper element
  * @param {Element} reference - the reference element (the popper will be relative to this)
+ * @param {Element} fixedPosition - is in fixed position mode
  * @returns {Object} An object containing the offsets which will be applied to the popper
  */
 function getReferenceOffsets(state, popper, reference) {
-  var commonOffsetParent = findCommonOffsetParent(popper, reference);
-  return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent);
+  var fixedPosition = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+  var commonOffsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
+  return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent, fixedPosition);
 }
 
 /**
@@ -30306,7 +30401,7 @@ function update() {
   };
 
   // compute reference element offsets
-  data.offsets.reference = getReferenceOffsets(this.state, this.popper, this.reference);
+  data.offsets.reference = getReferenceOffsets(this.state, this.popper, this.reference, this.options.positionFixed);
 
   // compute auto placement, store placement inside the data object,
   // modifiers will be able to edit `placement` if needed
@@ -30316,9 +30411,11 @@ function update() {
   // store the computed placement inside `originalPlacement`
   data.originalPlacement = data.placement;
 
+  data.positionFixed = this.options.positionFixed;
+
   // compute the popper offsets
   data.offsets.popper = getPopperOffsets(this.popper, data.offsets.reference, data.placement);
-  data.offsets.popper.position = 'absolute';
+  data.offsets.popper.position = this.options.positionFixed ? 'fixed' : 'absolute';
 
   // run the modifiers
   data = runModifiers(this.modifiers, data);
@@ -30358,7 +30455,7 @@ function getSupportedPropertyName(property) {
   var prefixes = [false, 'ms', 'Webkit', 'Moz', 'O'];
   var upperProp = property.charAt(0).toUpperCase() + property.slice(1);
 
-  for (var i = 0; i < prefixes.length - 1; i++) {
+  for (var i = 0; i < prefixes.length; i++) {
     var prefix = prefixes[i];
     var toCheck = prefix ? '' + prefix + upperProp : property;
     if (typeof document.body.style[toCheck] !== 'undefined') {
@@ -30379,9 +30476,12 @@ function destroy() {
   // touch DOM only if `applyStyle` modifier is enabled
   if (isModifierEnabled(this.modifiers, 'applyStyle')) {
     this.popper.removeAttribute('x-placement');
-    this.popper.style.left = '';
     this.popper.style.position = '';
     this.popper.style.top = '';
+    this.popper.style.left = '';
+    this.popper.style.right = '';
+    this.popper.style.bottom = '';
+    this.popper.style.willChange = '';
     this.popper.style[getSupportedPropertyName('transform')] = '';
   }
 
@@ -30569,12 +30669,12 @@ function applyStyle(data) {
  * @method
  * @memberof Popper.modifiers
  * @param {HTMLElement} reference - The reference element used to position the popper
- * @param {HTMLElement} popper - The HTML element used as popper.
+ * @param {HTMLElement} popper - The HTML element used as popper
  * @param {Object} options - Popper.js options
  */
 function applyStyleOnLoad(reference, popper, options, modifierOptions, state) {
   // compute reference element offsets
-  var referenceOffsets = getReferenceOffsets(state, popper, reference);
+  var referenceOffsets = getReferenceOffsets(state, popper, reference, options.positionFixed);
 
   // compute auto placement, store placement inside the data object,
   // modifiers will be able to edit `placement` if needed
@@ -30585,7 +30685,7 @@ function applyStyleOnLoad(reference, popper, options, modifierOptions, state) {
 
   // Apply `position` to popper before anything else because
   // without the position applied we can't guarantee correct computations
-  setStyles(popper, { position: 'absolute' });
+  setStyles(popper, { position: options.positionFixed ? 'fixed' : 'absolute' });
 
   return options;
 }
@@ -30888,7 +30988,7 @@ function flip(data, options) {
     return data;
   }
 
-  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, options.boundariesElement);
+  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, options.boundariesElement, data.positionFixed);
 
   var placement = data.placement.split('-')[0];
   var placementOpposite = getOppositePlacement(placement);
@@ -31180,7 +31280,7 @@ function preventOverflow(data, options) {
     boundariesElement = getOffsetParent(boundariesElement);
   }
 
-  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, boundariesElement);
+  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, boundariesElement, data.positionFixed);
   options.boundaries = boundaries;
 
   var order = options.priority;
@@ -31678,6 +31778,12 @@ var Defaults = {
   placement: 'bottom',
 
   /**
+   * Set this to true if you want popper to position it self in 'fixed' mode
+   * @prop {Boolean} positionFixed=false
+   */
+  positionFixed: false,
+
+  /**
    * Whether events (resize, scroll) are initially enabled
    * @prop {Boolean} eventsEnabled=true
    */
@@ -31890,7 +31996,7 @@ return Popper;
 },{}],30:[function(require,module,exports){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.1.7
+ * @version 1.2.0
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -31918,7 +32024,7 @@ return Popper;
 	(global.Tooltip = factory(global.Popper));
 }(this, (function (Popper) { 'use strict';
 
-Popper = Popper && 'default' in Popper ? Popper['default'] : Popper;
+Popper = Popper && Popper.hasOwnProperty('default') ? Popper['default'] : Popper;
 
 /**
  * Check if the given variable is a function
@@ -31993,7 +32099,7 @@ var Tooltip = function () {
    * @class Tooltip
    * @param {HTMLElement} reference - The DOM node used as reference of the tooltip (it can be a jQuery element).
    * @param {Object} options
-   * @param {String} options.placement=bottom
+   * @param {String|PlacementFunction} options.placement=top
    *      Placement of the popper accepted values: `top(-start, -end), right(-start, -end), bottom(-start, -end),
    *      left(-start, -end)`
    * @param {HTMLElement|String|false} options.container=false - Append the tooltip to a specific element.
@@ -32001,7 +32107,7 @@ var Tooltip = function () {
    *      Delay showing and hiding the tooltip (ms) - does not apply to manual trigger type.
    *      If a number is supplied, delay is applied to both hide/show.
    *      Object structure is: `{ show: 500, hide: 100 }`
-   * @param {Boolean} options.html=false - Insert HTML into the tooltip. If false, the content will inserted with `innerText`.
+   * @param {Boolean} options.html=false - Insert HTML into the tooltip. If false, the content will inserted with `textContent`.
    * @param {String|PlacementFunction} options.placement='top' - One of the allowed placements, or a function returning one of them.
    * @param {String} [options.template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>']
    *      Base HTML to used when creating the tooltip.
@@ -32012,7 +32118,7 @@ var Tooltip = function () {
    * @param {String} [options.trigger='hover focus']
    *      How tooltip is triggered - click, hover, focus, manual.
    *      You may pass multiple triggers; separate them with a space. `manual` cannot be combined with any other trigger.
-   * @param {HTMLElement} options.boundariesElement
+   * @param {String|HTMLElement} options.boundariesElement
    *      The element used as boundaries for the tooltip. For more information refer to Popper.js'
    *      [boundariesElement docs](https://popper.js.org/popper-documentation.html)
    * @param {Number|String} options.offset=0 - Offset of the tooltip relative to its reference. For more information refer to Popper.js'
@@ -32081,6 +32187,14 @@ var Tooltip = function () {
    */
 
 
+  /**
+   * Updates the tooltip's title content
+   * @method Tooltip#updateTitleContent
+   * @memberof Tooltip
+   * @param {String|HTMLElement} title - The new content to use for the title
+   */
+
+
   //
   // Defaults
   //
@@ -32102,7 +32216,7 @@ var Tooltip = function () {
      * @param {String} template
      * @param {String|HTMLElement|TitleFunction} title
      * @param {Boolean} allowHtml
-     * @return {HTMLelement} tooltipNode
+     * @return {HTMLElement} tooltipNode
      */
     value: function _create(reference, template, title, allowHtml) {
       // create tooltip element
@@ -32118,20 +32232,25 @@ var Tooltip = function () {
 
       // add title to tooltip
       var titleNode = tooltipGenerator.querySelector(this.innerSelector);
+      this._addTitleContent(reference, title, allowHtml, titleNode);
+
+      // return the generated tooltip node
+      return tooltipNode;
+    }
+  }, {
+    key: '_addTitleContent',
+    value: function _addTitleContent(reference, title, allowHtml, titleNode) {
       if (title.nodeType === 1 || title.nodeType === 11) {
         // if title is a element node or document fragment, append it only if allowHtml is true
         allowHtml && titleNode.appendChild(title);
       } else if (isFunction(title)) {
-        // if title is a function, call it and set innerText or innerHtml depending by `allowHtml` value
+        // if title is a function, call it and set textContent or innerHtml depending by `allowHtml` value
         var titleText = title.call(reference);
-        allowHtml ? titleNode.innerHTML = titleText : titleNode.innerText = titleText;
+        allowHtml ? titleNode.innerHTML = titleText : titleNode.textContent = titleText;
       } else {
-        // if it's just a simple text, set innerText or innerHtml depending by `allowHtml` value
-        allowHtml ? titleNode.innerHTML = title : titleNode.innerText = title;
+        // if it's just a simple text, set textContent or innerHtml depending by `allowHtml` value
+        allowHtml ? titleNode.innerHTML = title : titleNode.textContent = title;
       }
-
-      // return the generated tooltip node
-      return tooltipNode;
     }
   }, {
     key: '_show',
@@ -32256,7 +32375,7 @@ var Tooltip = function () {
      * Append tooltip to container
      * @memberof Tooltip
      * @private
-     * @param {HTMLElement} tooltip
+     * @param {HTMLElement} tooltipNode
      * @param {HTMLElement|String|false} container
      */
 
@@ -32359,6 +32478,30 @@ var Tooltip = function () {
         _this4._hide(reference, options);
       }, computedDelay);
     }
+  }, {
+    key: '_updateTitleContent',
+    value: function _updateTitleContent(title) {
+      if (typeof this._tooltipNode === 'undefined') {
+        if (typeof this.options.title !== 'undefined') {
+          this.options.title = title;
+        }
+        return;
+      }
+      var titleNode = this._tooltipNode.parentNode.querySelector(this.innerSelector);
+      this._clearTitleContent(titleNode, this.options.html, this.reference.getAttribute('title') || this.options.title);
+      this._addTitleContent(this.reference, title, this.options.html, titleNode);
+      this.options.title = title;
+      this.popperInstance.update();
+    }
+  }, {
+    key: '_clearTitleContent',
+    value: function _clearTitleContent(titleNode, allowHtml, lastTitle) {
+      if (lastTitle.nodeType === 1 || lastTitle.nodeType === 11) {
+        allowHtml && titleNode.removeChild(lastTitle);
+      } else {
+        allowHtml ? titleNode.innerHTML = '' : titleNode.textContent = '';
+      }
+    }
   }]);
   return Tooltip;
 }();
@@ -32401,6 +32544,10 @@ var _initialiseProps = function _initialiseProps() {
     } else {
       return _this5.show();
     }
+  };
+
+  this.updateTitleContent = function (title) {
+    return _this5._updateTitleContent(title);
   };
 
   this.arrowSelector = '.tooltip-arrow, .tooltip__arrow';

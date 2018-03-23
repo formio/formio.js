@@ -42,7 +42,7 @@ export class FileComponent extends BaseComponent {
   }
 
   setValue(value) {
-    _.set(this.data, this.component.key, value);
+    _.set(this.data, this.component.key, value || []);
     this.refreshDOM();
   }
 
@@ -145,8 +145,8 @@ export class FileComponent extends BaseComponent {
                 this.ce('i', {
                   class: this.iconClass('remove'),
                   onClick: event => {
-                    if (this.component.storage === 'url') {
-                      this.options.formio.makeRequest('', _.get(this.data, this.component.key)[index].url, 'delete');
+                    if (fileInfo && (this.component.storage === 'url')) {
+                      this.options.formio.makeRequest('', fileInfo.url, 'delete');
                     }
                     event.preventDefault();
                     _.get(this.data, this.component.key).splice(index, 1);
@@ -204,8 +204,8 @@ export class FileComponent extends BaseComponent {
               this.ce('i', {
                 class: this.iconClass('remove'),
                 onClick: event => {
-                  if (this.component.storage === 'url') {
-                    this.options.formio.makeRequest('', _.get(this.data, this.component.key)[index].url, 'delete');
+                  if (fileInfo && (this.component.storage === 'url')) {
+                    this.options.formio.makeRequest('', fileInfo.url, 'delete');
                   }
                   event.preventDefault();
                   _.get(this.data, this.component.key).splice(index, 1);
@@ -248,6 +248,7 @@ export class FileComponent extends BaseComponent {
             this.ce('i', {class: this.iconClass('cloud-upload')}),
             this.text(' Drop files to attach, or '),
             this.ce('a', {
+              href: '#',
               onClick: event => {
                 event.preventDefault();
                 // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
@@ -490,8 +491,7 @@ export class FileComponent extends BaseComponent {
             .then(fileInfo => {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
               fileInfo.originalName = file.name;
-              _.get(this.data, this.component.key).push(fileInfo);
-              this.refreshDOM();
+              this.setValue(_.get(this.data, this.component.key, []).push(fileInfo));
               this.triggerChange();
             })
             .catch(response => {
