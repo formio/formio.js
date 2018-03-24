@@ -599,11 +599,12 @@ export class SelectComponent extends BaseComponent {
     flags = this.getFlags.apply(this, arguments);
     const hasPreviousValue = Array.isArray(this.value) ? this.value.length : this.value;
     const hasValue = Array.isArray(value) ? value.length : value;
-    _.set(this.data, this.component.key, value);
+    const changed = flags.changed || this.hasChanged(value, this.value);
+    this.value = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
-      return;
+      return changed;
     }
 
     // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
@@ -618,7 +619,7 @@ export class SelectComponent extends BaseComponent {
       this.loading = true;
       this.lazyLoadInit = true;
       this.triggerUpdate(this.value, true);
-      return;
+      return changed;
     }
 
     // Add the value options.
@@ -656,7 +657,9 @@ export class SelectComponent extends BaseComponent {
         });
       }
     }
-    this.updateValue(flags);
+
+    this.updateOnChange(flags, changed);
+    return changed;
   }
 
   /**

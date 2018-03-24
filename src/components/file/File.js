@@ -37,12 +37,16 @@ export class FileComponent extends BaseComponent {
     };
   }
 
+  get emptyValue() {
+    return [];
+  }
+
   getValue() {
-    return _.get(this.data, this.component.key);
+    return this.value;
   }
 
   setValue(value) {
-    _.set(this.data, this.component.key, value || []);
+    this.value = value || [];
     this.refreshDOM();
   }
 
@@ -120,7 +124,7 @@ export class FileComponent extends BaseComponent {
           ]
         )
       ),
-      _.get(this.data, this.component.key).map((fileInfo, index) => this.createFileListItem(fileInfo, index))
+      this.value.map((fileInfo, index) => this.createFileListItem(fileInfo, index))
     ]);
   }
 
@@ -149,7 +153,7 @@ export class FileComponent extends BaseComponent {
                       this.options.formio.makeRequest('', fileInfo.url, 'delete');
                     }
                     event.preventDefault();
-                    _.get(this.data, this.component.key).splice(index, 1);
+                    this.value = this.value.splice(index, 1);
                     this.refreshDOM();
                     this.triggerChange();
                   }
@@ -173,7 +177,7 @@ export class FileComponent extends BaseComponent {
 
   buildImageList() {
     return this.ce('div', {},
-      _.get(this.data, this.component.key).map((fileInfo, index) => this.createImageListItem(fileInfo, index))
+      this.value.map((fileInfo, index) => this.createImageListItem(fileInfo, index))
     );
   }
 
@@ -208,7 +212,7 @@ export class FileComponent extends BaseComponent {
                     this.options.formio.makeRequest('', fileInfo.url, 'delete');
                   }
                   event.preventDefault();
-                  _.get(this.data, this.component.key).splice(index, 1);
+                  this.value = this.value.splice(index, 1);
                   this.refreshDOM();
                   this.triggerChange();
                 }
@@ -226,7 +230,7 @@ export class FileComponent extends BaseComponent {
     // If this is disabled or a single value with a value, don't show the upload div.
     return this.ce('div', {},
       (
-        (!this.disabled && (this.component.multiple || _.get(this.data, this.component.key).length === 0)) ?
+        (!this.disabled && (this.component.multiple || this.value.length === 0)) ?
           this.ce('div', {
             class: 'fileSelector',
             onDragover: function(event) {
@@ -491,7 +495,7 @@ export class FileComponent extends BaseComponent {
             .then(fileInfo => {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
               fileInfo.originalName = file.name;
-              this.setValue(_.get(this.data, this.component.key, []).push(fileInfo));
+              this.setValue(this.value.push(fileInfo));
               this.triggerChange();
             })
             .catch(response => {

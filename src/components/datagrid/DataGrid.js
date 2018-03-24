@@ -29,10 +29,14 @@ export class DataGridComponent extends FormioComponents {
     this.type = 'datagrid';
   }
 
+  get emptyValue() {
+    return [];
+  }
+
   build() {
     this.createElement();
     this.createLabel(this.element);
-    if (!_.has(this.data, this.component.key) || !_.get(this.data, this.component.key).length) {
+    if (!this.value.length) {
       this.addNewValue();
     }
     this.visibleColumns = true;
@@ -67,15 +71,15 @@ export class DataGridComponent extends FormioComponents {
     // Check if there is a Min Length Validation
     if (
       this.component.validate &&
-      this.component.validate.minLength > this.data[this.component.key].length
+      this.component.validate.minLength > this.value.length
     ) {
-      let toAdd = this.component.validate.minLength - this.data[this.component.key].length;
+      let toAdd = this.component.validate.minLength - this.value.length;
       for (let i = 0; i < toAdd; i++) {
-        this.data[this.component.key].push({});
+        this.value = this.value.push({});
       }
     }
 
-    this.tableRows = _.get(this.data, this.component.key).map((row, rowIndex) => this.buildRow(row, rowIndex));
+    this.tableRows = this.value.map((row, rowIndex) => this.buildRow(row, rowIndex));
     this.tbody = this.ce('tbody', null, this.tableRows);
     // Add the body to the table and to the element.
     this.tableElement.appendChild(this.tbody);
@@ -139,12 +143,12 @@ export class DataGridComponent extends FormioComponents {
     //check validation and remove add button
     if (
       (this.component.validate && this.tableElement.lastChild.firstChild) &&
-      this.component.validate.maxLength <= this.data[this.component.key].length
+      this.component.validate.maxLength <= this.value.length
     ) {
       this.tableElement.lastChild.firstChild.remove();
     }
     else if ((this.component.validate && !this.tableElement.lastChild.firstChild) &&
-      this.component.validate.maxLength > this.data[this.component.key].length) {
+      this.component.validate.maxLength > this.value.length) {
       this.tableElement.lastChild.appendChild(
         this.ce('tr', null,
           this.ce('td', {colspan: (this.component.components.length + 1)},
@@ -161,7 +165,7 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildRows(data) {
-    _.get(this.data, this.component.key).forEach((row, rowIndex) => {
+    this.value.forEach((row, rowIndex) => {
       // New Row.
       if (!this.tableRows[rowIndex]) {
         this.tableRows[rowIndex] = this.buildRow(row, rowIndex, data);
@@ -179,7 +183,7 @@ export class DataGridComponent extends FormioComponents {
       }
     });
     // Remove any extra rows.
-    for (let rowIndex = this.tableRows.length; rowIndex > _.get(this.data, this.component.key).length; rowIndex--) {
+    for (let rowIndex = this.tableRows.length; rowIndex > this.value.length; rowIndex--) {
       this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
       this.tableRows.splice(rowIndex - 1, 1);
     }
@@ -302,7 +306,7 @@ export class DataGridComponent extends FormioComponents {
       }
     }
 
-    _.set(this.data, this.component.key, value);
+    this.value = value;
     this.buildRows();
     _.each(this.rows, (row, index) => {
       if (value.length <= index) {
@@ -341,7 +345,7 @@ export class DataGridComponent extends FormioComponents {
           col.component &&
           col.component.key
         ) {
-          value[col.component.key] = col.getValue();
+          _.set(value, col.component.key, col.getValue());
         }
       });
       values.push(value);

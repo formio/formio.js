@@ -427,7 +427,7 @@ export class EditGridComponent extends FormioComponents {
       return;
     }
 
-    _.set(this.data, this.component.key, value);
+    this.value = value;
     this.rows = value;
     // Refresh editRow data when data changes.
     this.rows.forEach((row, rowIndex) => {

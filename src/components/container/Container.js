@@ -30,10 +30,10 @@ export class ContainerComponent extends FormioComponents {
 
   build() {
     this.createElement();
-    if (!_.has(this.data, this.component.key)) {
-      _.set(this.data, this.component.key, {});
+    if (!this.hasValue) {
+      this.value = {};
     }
-    this.addComponents(this.getContainer(), _.get(this.data, this.component.key));
+    this.addComponents(this.getContainer(), this.value);
   }
 
   get defaultValue() {
@@ -46,9 +46,7 @@ export class ContainerComponent extends FormioComponents {
       return this.value;
     }
     const value = {};
-    _.each(this.components, (component) => {
-      value[component.component.key] = component.getValue();
-    });
+    _.each(this.components, (component) => _.set(value, component.component.key, component.getValue()));
     return value;
   }
 
@@ -57,16 +55,16 @@ export class ContainerComponent extends FormioComponents {
     if (!value || !_.isObject(value)) {
       return;
     }
-    if(this.data && this.data.hasOwnProperty(this.component.key) && _.isEmpty(this.data[this.component.key])) {
+    if(this.hasValue && _.isEmpty(this.value)) {
       flags.noValidate = true;
     }
-    this.data[this.component.key] = value;
+    this.value = value;
     _.each(this.components, (component) => {
       if (component.type === 'components') {
         component.setValue(value, flags);
       }
-      else if (value.hasOwnProperty(component.component.key)) {
-        component.setValue(value[component.component.key], flags);
+      else if (_.has(value, component.component.key)) {
+        component.setValue(_.get(value, component.component.key), flags);
       }
       else {
         component.data = value;

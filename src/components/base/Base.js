@@ -693,7 +693,7 @@ export class BaseComponent {
       table.appendChild(this.tbody);
 
       // Add a default value.
-      let dataValue = _.get(this.data, this.component.key);
+      let dataValue = this.value;
       if (!dataValue || !dataValue.length) {
         this.addNewValue();
       }
@@ -751,7 +751,7 @@ export class BaseComponent {
    * Adds a new empty value to the data array.
    */
   addNewValue() {
-    let dataValue = _.get(this.data, this.component.key, []);
+    let dataValue = this.value || [];
     if (!Array.isArray(dataValue)) {
       dataValue = [dataValue];
     }
@@ -763,7 +763,7 @@ export class BaseComponent {
     else {
       dataValue.push(defaultValue);
     }
-    _.set(this.data, this.component.key, dataValue);
+    this.value = dataValue;
   }
 
   /**
@@ -781,8 +781,8 @@ export class BaseComponent {
    * @param {number} index - The index of the data element to remove.
    */
   removeValue(index) {
-    if (_.has(this.data, this.component.key)) {
-      _.get(this.data, this.component.key).splice(index, 1);
+    if (this.hasValue) {
+      this.value = this.value.splice(index, 1);
       this.triggerChange();
     }
     this.buildRows();
@@ -797,7 +797,7 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _.each(_.get(this.data, this.component.key), (value, index) => {
+    _.each(this.value, (value, index) => {
       const tr = this.ce('tr');
       const td = this.ce('td');
       const input = this.createInput(td);
@@ -1623,9 +1623,9 @@ export class BaseComponent {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (this.component.clearOnHide !== false) {
       if (!show) {
-        delete this.data[this.component.key];
+        this.deleteValue();
       }
-      else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
+      else if (!this.hasValue) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -1791,15 +1791,33 @@ export class BaseComponent {
       });
   }
 
+  get emptyValue() {
+    return null;
+  }
+
+  get hasValue() {
+    return _.has(this.data, this.component.key);
+  }
+
   /**
    * Get the static value of this component.
    * @return {*}
    */
   get value() {
-    if (!this.data) {
-      return null;
-    }
-    return _.get(this.data, this.component.key);
+    return _.get(this.data, this.component.key, this.emptyValue);
+  }
+
+  /**
+   * Sets the static value of this component.
+   *
+   * @param value
+   */
+  set value(value) {
+    _.set(this.data, this.component.key, value);
+  }
+
+  deleteValue() {
+    _.unset(this.data, this.component.key);
   }
 
   /**
@@ -1848,6 +1866,21 @@ export class BaseComponent {
   }
 
   /**
+   * Update the value on change.
+   *
+   * @param flags
+   * @param changed
+   */
+  updateOnChange(flags, changed) {
+    delete flags.changed;
+    if (!flags.noUpdateEvent && changed) {
+      this.triggerChange(flags);
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * Update a value of this component.
    *
    * @param flags
@@ -1858,17 +1891,14 @@ export class BaseComponent {
     }
 
     flags = flags || {};
-    const value = _.get(this.data, this.component.key);
-    _.set(this.data, this.component.key, this.getValue(flags));
+    const value = this.getValue(flags);
+    const changed = flags.changed || this.hasChanged(value, this.value);
+    this.value = value;
     if (this.viewOnly) {
-      this.updateViewOnlyValue(this.value);
+      this.updateViewOnlyValue(value);
     }
 
-    const changed = flags.changed || this.hasChanged(value, _.get(this.data, this.component.key));
-    delete flags.changed;
-    if (!flags.noUpdateEvent && changed) {
-      this.triggerChange(flags);
-    }
+    this.updateOnChange(flags, changed);
     return changed;
   }
 
@@ -1876,14 +1906,14 @@ export class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (_.has(this.data, this.component.key)) {
-      this.setValue(_.get(this.data, this.component.key), {
+    if (this.hasValue) {
+      this.setValue(this.value, {
         noUpdateEvent: true
       });
     }
     else {
       const defaultValue = this.defaultValue;
-      if (!_.has(this.data, this.component.key) && defaultValue) {
+      if (defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
         });
@@ -1980,7 +2010,12 @@ export class BaseComponent {
   }
 
   getRawValue() {
-    return _.get(this.data, this.component.key);
+    console.warn('component.getRawValue() has been deprecated. Use component.validateValue or component.value instead.');
+    return this.validateValue;
+  }
+
+  get validateValue() {
+    return this.value;
   }
 
   isEmpty(value) {

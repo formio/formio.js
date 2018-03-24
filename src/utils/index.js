@@ -369,13 +369,13 @@ const FormioUtils = {
   checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      rowData[component.key] = FormioUtils.evaluate(component.calculateValue, {
+      _.set(rowData, component.key, FormioUtils.evaluate(component.calculateValue, {
         value: [],
         data: submission ? submission.data : rowData,
         row: rowData,
         util: this,
         component: {component}
-      }, 'value');
+      }, 'value'));
     }
   },
 
