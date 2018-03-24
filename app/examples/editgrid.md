@@ -1,11 +1,12 @@
 ---
-title: Data Grid Input
+title: Edit Grid
 layout: vtabs
 section: examples
-weight: 220
+weight: 221
 ---
-### Data Grid Input
-Data Grids allow you to collect an array of object values.
+### Edit Grid
+The Edit Grid is very similar to the Data Grid, but allows you to view the whole form within for each new item, and then
+constructs as table view as you add new rows.
 
 ```js
 Formio.createForm(document.getElementById('formio'), {
@@ -13,8 +14,33 @@ Formio.createForm(document.getElementById('formio'), {
       {
         label: 'Children',
         key: 'children',
-        type: 'datagrid',
+        type: 'editgrid',
         input: true,
+        templates: {
+          header: '' +
+            '<div class="row"> \n' +
+            '{% raw %}  {% util.eachComponent(components, function(component) { %} \n{% endraw %}' +
+            '    <div class="col-sm-2"> \n' +
+            '{% raw %}      <strong>{{ component.label }}</strong> \n{% endraw %}' +
+            '    </div> \n' +
+            '{% raw %}  {% }) %} \n{% endraw %}' +
+            '</div>',
+          row: '' +
+            '<div class="row"> \n' +
+            '{% raw %}  {%util.eachComponent(components, function(component) { %} \n{% endraw %}' +
+            '    <div class="col-sm-2"> \n' +
+            '{% raw %}      {{ row[component.key] }} \n{% endraw %}' +
+            '    </div> \n' +
+            '{% raw %}  {% }) %} \n{% endraw %}' +
+            '  <div class="col-sm-2"> \n' +
+            '    <div class="btn-group pull-right"> \n' +
+            '      <div class="btn btn-default editRow">Edit</div> \n' +
+            '      <div class="btn btn-danger removeRow">Delete</div> \n' +
+            '    </div> \n' +
+            '  </div> \n' +
+            '</div>',
+          footer: ''
+        },
         components: [
           {
             label: 'First Name',
@@ -130,8 +156,33 @@ Formio.createForm(document.getElementById('formio'), {
       {
         label: 'Children',
         key: 'children',
-        type: 'datagrid',
+        type: 'editgrid',
         input: true,
+        templates: {
+          header: '' +
+            '<div class="row"> \n' +
+            '{% raw %}  {%util.eachComponent(components, function(component) { %} \n{% endraw %}' +
+            '    <div class="col-sm-2"> \n' +
+            '{% raw %}      <strong>{{ component.label }}</strong> \n{% endraw %}' +
+            '    </div> \n' +
+            '{% raw %}  {% }) %} \n{% endraw %}' +
+            '</div>',
+          row: '' +
+            '<div class="row"> \n' +
+            '{% raw %}  {%util.eachComponent(components, function(component) { %} \n{% endraw %}' +
+            '    <div class="col-sm-2"> \n' +
+            '{% raw %}      {{ row[component.key] }} \n{% endraw %}' +
+            '    </div> \n' +
+            '{% raw %}  {% }) %} \n{% endraw %}' +
+            '  <div class="col-sm-2"> \n' +
+            '    <div class="btn-group pull-right"> \n' +
+            '      <div class="btn btn-default editRow">Edit</div> \n' +
+            '      <div class="btn btn-danger removeRow">Delete</div> \n' +
+            '    </div> \n' +
+            '  </div> \n' +
+            '</div>',
+          footer: ''
+        },
         components: [
           {
             label: 'First Name',
