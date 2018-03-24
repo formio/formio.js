@@ -1190,7 +1190,7 @@ module.exports = {
       },
       "properties": {}
     }, {
-      "input": true,
+      "input": false,
       "label": "Submit",
       "tableView": false,
       "key": "submit",

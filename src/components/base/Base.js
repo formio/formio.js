@@ -1565,12 +1565,12 @@ export class BaseComponent {
    */
   get dataValue() {
     if (!this.component.key) {
-      return this.data;
+      return this.emptyValue;
     }
     if (!this.hasValue) {
       this.dataValue = this.emptyValue;
     }
-    return _.get(this.data, this.component.key);
+    return _.get(this.data, this.component.key, this.emptyValue);
   }
 
   /**

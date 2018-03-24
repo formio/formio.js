@@ -28,15 +28,27 @@ export class ButtonComponent extends BaseComponent {
     this.setDisabled(this.button, disabled);
   }
 
+  get emptyValue() {
+    return false;
+  }
+
   getValue() {
-    if (!this.component.input) {
-      return;
-    }
-    return this.clicked;
+    return this.dataValue;
+  }
+
+  get clicked() {
+    return this.dataValue;
   }
 
   get defaultValue() {
     return false;
+  }
+
+  set dataValue(value) {
+    if (!this.component.input) {
+      return;
+    }
+    super.dataValue = value;
   }
 
   get className() {
@@ -50,7 +62,7 @@ export class ButtonComponent extends BaseComponent {
       this.component.hidden = true;
     }
 
-    this.clicked = false;
+    this.dataValue = false;
     this.hasError = false;
     this.createElement();
     this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
@@ -114,7 +126,7 @@ export class ButtonComponent extends BaseComponent {
       }, true);
     }
     this.addEventListener(this.button, 'click', (event) => {
-      this.clicked = false;
+      this.dataValue = true;
       switch (this.component.action) {
         case 'submit':
           event.preventDefault();
