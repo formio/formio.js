@@ -39,6 +39,10 @@ export default function(...extend) {
             components: BaseEditConditional
           }
         ]
+      },
+      {
+        type: 'hidden',
+        key: 'type'
       }
     ]
   }, ...extend, EditFormUtils.mergeComponents);

@@ -1,6 +1,7 @@
 'use strict';
 import {TextFieldComponent} from './TextField';
 import {components as comps} from './fixtures/index';
+import _ from 'lodash';
 import {Harness} from '../../../test/harness';
 import assert from 'power-assert';
 describe('TextField Component', () => {
@@ -29,43 +30,27 @@ describe('TextField Builder', () => {
   });
 
   it ('Should allow you to change the label', (done) => {
-    let component = builder.editForm.submission;
-    assert.equal(component.data.label, 'Text Field');
-    component.data.label = 'First Name';
-    builder.off('updateComponent');
-    builder.on('updateComponent', () => {
-      let preview = builder.componentPreview.innerHTML;
+    Harness.setComponentProperty('label', 'Text Field', 'First Name', (preview) => {
       assert(preview.match(/label.*input/), 'Label must be on top.');
       assert(preview.indexOf('<label class="control-label" style="">First Name</label>') !== -1, 'Must have a label');
       done();
     });
-    builder.editForm.submission = component;
   });
 
-  it ('Should allow you to hide the label', (done) => {
-    let component = builder.editForm.submission;
-    assert.equal(component.data.hideLabel, false);
-    component.data.hideLabel = true;
-    builder.off('updateComponent');
-    builder.on('updateComponent', () => {
-      let preview = builder.componentPreview.innerHTML;
+  it ('Should allow you to hide/show the label', (done) => {
+    Harness.setComponentProperty('hideLabel', false, true, (preview) => {
       assert(preview.indexOf('<label class="control-label"') === -1, 'Must not have a label');
-      done();
+      Harness.setComponentProperty('hideLabel', true, false, (preview) => {
+        assert(preview.indexOf('<label class="control-label"') !== -1, 'Must have a label');
+        done();
+      });
     });
-    builder.editForm.submission = component;
   });
 
   it ('Should allow you to change the label position', (done) => {
-    let component = builder.editForm.submission;
-    assert.equal(component.data.labelPosition, 'top');
-    component.data.hideLabel = false;
-    component.data.labelPosition = 'bottom';
-    builder.off('updateComponent');
-    builder.on('updateComponent', () => {
-      let preview = builder.componentPreview.innerHTML;
+    Harness.setComponentProperty('labelPosition', 'top', 'bottom', (preview) => {
       assert(preview.match(/input.*label/), 'Label must be on bottom.');
       done();
     });
-    builder.editForm.submission = component;
   });
 });

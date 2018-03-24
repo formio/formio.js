@@ -36,6 +36,19 @@ export const Harness = {
     return formBuilder;
   },
 
+  setComponentProperty: function(property, before, after, cb) {
+    let component = _.cloneDeep(formBuilder.editForm.submission);
+    assert.equal(_.get(component.data, property), before);
+    _.set(component.data, property, after);
+    formBuilder.off('updateComponent');
+    formBuilder.on('updateComponent', () => {
+      let preview = formBuilder.componentPreview.innerHTML;
+      assert.equal(_.get(formBuilder.editForm.submission.data, property), after);
+      cb(preview);
+    });
+    formBuilder.editForm.submission = component;
+  },
+
   getDate: function() {
     let timestamp = (new Date()).getTime();
     timestamp = parseInt(timestamp / 1000, 10);
