@@ -316,8 +316,8 @@ const FormioUtils = {
       if (_.isString(component.calculateValue)) {
         try {
           const util = this;
-          rowData[component.key] = (new Function('data', 'row', 'util',
-            `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util);
+          _.set(rowData, component.key, (new Function('data', 'row', 'util',
+            `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util));
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -325,11 +325,11 @@ const FormioUtils = {
       }
       else {
         try {
-          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {
+          _.set(rowData, component.key, this.jsonLogic.apply(component.calculateValue, {
             data,
             row,
             _
-          });
+          }));
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
