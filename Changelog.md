@@ -4,11 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 2.30.0
 ### Fixed
  - Required validator for Checkbox component.
  - Radio and SelectBoxes components for the case with multiple nested forms.
  - Number and Currency components default value.
+ - Issues with onChange events not firing for Select components.
+ 
+### Added
+ - Better data handling using getters and setters.
+ 
+### Changed
+ - Deprecating "getRawValue" with reverse compatibility in favor of component.dataValue.
 
 ## 2.29.13
 ### Fixed
