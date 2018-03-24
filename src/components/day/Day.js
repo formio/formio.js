@@ -113,7 +113,7 @@ export class DayComponent extends BaseComponent {
 
     // Ensure the day limits match up with the months selected.
     this.monthInput.onchange = function() {
-      self.dayInput.max = new Date(self.yearInput.value, self.dataValue, 0).getDate();
+      self.dayInput.max = new Date(self.yearInput.value, this.value, 0).getDate();
       if (self.dayInput.value > self.dayInput.max) {
         self.dayInput.value = self.dayInput.max;
       }
