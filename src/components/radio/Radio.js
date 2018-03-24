@@ -121,7 +121,7 @@ export class RadioComponent extends BaseComponent {
 
   getValue() {
     if (this.viewOnly) {
-      return this.value;
+      return this.dataValue;
     }
     let value = '';
     _.each(this.inputs, (input) => {
@@ -175,7 +175,7 @@ export class RadioComponent extends BaseComponent {
     const changed = super.updateValue(value, flags);
     if (changed) {
       //add/remove selected option class
-      const value = this.data[this.component.key];
+      const value = this.dataValue;
       const optionSelectedClass = 'radio-selected';
 
       _.each(this.wrappers, (wrapper, index) => {

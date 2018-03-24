@@ -140,7 +140,8 @@ export class FormComponent extends FormioForm {
       this.submitted = true;
       return this.submit(true).then(submission => {
         // Set data to submission.
-        return this.data[this.component.key] = submission;
+        this.dataValue = submission;
+        return submission;
       });
     }
     else {
@@ -233,13 +234,13 @@ export class FormComponent extends FormioForm {
   setValue(submission, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!submission) {
-      this.data[this.component.key] = this._submission = {data: {}};
+      this.dataValue = this._submission = {data: {}};
       this.readyResolve();
       return;
     }
 
     // Load the subform if we have data.
-    if (submission._id || !_.isEmpty(this.data[this.component.key])) {
+    if (submission._id || !_.isEmpty(this.dataValue)) {
       this.loadSubForm();
     }
 
@@ -268,13 +269,13 @@ export class FormComponent extends FormioForm {
       return true;
     }
     else {
-      const superValue = super.setValue(submission, flags, this.data[this.component.key].data);
+      const superValue = super.setValue(submission, flags, this.dataValue.data);
       this.readyResolve();
       return superValue;
     }
   }
 
   getValue() {
-    return this.data[this.component.key];
+    return this.dataValue;
   }
 }

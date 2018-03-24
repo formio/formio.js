@@ -321,7 +321,7 @@ export class DayComponent extends BaseComponent {
    *
    * @returns {Date}
    */
-  getRawValue() {
+  get validationValue() {
     return this.date.format();
   }
 

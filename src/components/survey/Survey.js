@@ -84,7 +84,7 @@ export class SurveyComponent extends BaseComponent {
 
   getValue() {
     if (this.viewOnly) {
-      return this.value;
+      return this.dataValue;
     }
     const value = {};
     const key = `data[${this.component.key}]`;

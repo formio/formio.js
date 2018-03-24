@@ -136,7 +136,7 @@ export class DateTimeComponent extends BaseComponent {
     return (new Date(timestamp * 1000));
   }
 
-  getRawValue() {
+  get validationValue() {
     const values = [];
     for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {

@@ -246,6 +246,7 @@ describe('EditGrid Component', () => {
 
   it('Should not allow saving when errors exist', done => {
     Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+      document.body.appendChild(component.element);
       Harness.clickElement(component, 'div.editgrid-add button');
       Harness.clickElement(component, 'div.editgrid-actions div.btn-primary');
       Harness.getInputValue(component, 'data[editgrid][0][field1]', '');

@@ -127,7 +127,7 @@ export class TextAreaComponent extends TextFieldComponent {
 
   getValue() {
     if (this.viewOnly) {
-      return this.value;
+      return this.dataValue;
     }
     return this.quill ? this.quill.root.innerHTML : super.getValue();
   }
