@@ -89,6 +89,10 @@ export class CheckBoxComponent extends BaseComponent {
     }
   }
 
+  isEmpty(value) {
+    return super.isEmpty(value) || value === false;
+  }
+
   createLabel(container, input) {
     if (!this.component.label) {
       return null;
