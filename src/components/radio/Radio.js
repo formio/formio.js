@@ -18,6 +18,10 @@ export class RadioComponent extends BaseComponent {
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
     const wrappers = [];
 
+    if (this.component.inputType === 'radio') {
+      this.info.attr.name += this.id;
+    }
+
     _.each(this.component.values, (value) => {
       const wrapperClass = `form-check ${this.optionWrapperClass}`;
       const labelWrapper = this.ce('div', {
@@ -33,7 +37,7 @@ export class RadioComponent extends BaseComponent {
       const labelSpan = this.ce('span');
 
       // Determine the attributes for this input.
-      const inputId = `${this.component.key}${this.row}-${value.value}`;
+      const inputId = `${this.id}${this.row}-${value.value}`;
       this.info.attr.id = inputId;
       this.info.attr.value = value.value;
       label.setAttribute('for', this.info.attr.id);

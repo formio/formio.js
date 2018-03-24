@@ -701,7 +701,47 @@ const FormioUtils = {
     }
 
     return true;
-  }
+  },
+  getNumberSeparators(lang = 'en') {
+    const formattedNumberString = (12345.6789).toLocaleString(lang);
+    return {
+      delimiter: formattedNumberString.match(/12(.*)345/)[1],
+      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+    };
+  },
+  getNumberDecimalLimit(component) {
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    let decimalLimit = 20;
+    const step = _.get(component, 'validate.step', 'any');
+
+    if (step !== 'any') {
+      const parts = step.toString().split('.');
+      if (parts.length > 1) {
+        decimalLimit = parts[1].length;
+      }
+    }
+
+    return decimalLimit;
+  },
+  getCurrencyAffixes({
+    currency = 'USD',
+    decimalLimit,
+    decimalSeparator,
+    lang,
+  }) {
+    // Get the prefix and suffix from the localized string.
+    const regex = `(.*)?100${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}(.*)?`;
+    const parts = (100).toLocaleString(lang, {
+      style: 'currency',
+      currency,
+      useGrouping: true,
+      maximumFractionDigits: decimalLimit
+    }).replace('.', decimalSeparator).match(new RegExp(regex));
+    return {
+      prefix: parts[1] || '',
+      suffix: parts[2] || ''
+    };
+  },
 };
 
 module.exports = global.FormioUtils = FormioUtils;
