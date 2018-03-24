@@ -1,9 +1,7 @@
 import i18next from 'i18next';
 import assert from 'power-assert';
-import _cloneDeep from 'lodash/cloneDeep';
+import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
-import _merge from 'lodash/merge';
-import _each from 'lodash/each';
 import i18n from '../src/i18n';
 export const Harness = {
   getDate: function() {
@@ -12,8 +10,8 @@ export const Harness = {
     return (new Date(timestamp * 1000)).toISOString();
   },
   testCreate: function(Component, componentSettings, options = {}) {
-    let compSettings = _cloneDeep(componentSettings);
-    var component = new Component(compSettings, _merge({
+    let compSettings = _.cloneDeep(componentSettings);
+    var component = new Component(compSettings, _.merge({
       events: new EventEmitter({
         wildcard: false,
         maxListeners: 0
@@ -104,6 +102,9 @@ export const Harness = {
   },
   testSetGet: function(component, value) {
     component.setValue(value);
+    console.log(component.getValue());
+    console.log(value);
+    console.log(_.isEqual(component.getValue(), value));
     assert.deepEqual(component.getValue(), value);
     return component;
   },
@@ -134,7 +135,7 @@ export const Harness = {
   },
   testErrors: function(form, submission, errors, done) {
     form.on('error', (err) => {
-      _each(errors, (error, index) => {
+      _.each(errors, (error, index) => {
         error.component = form.getComponent(error.component).component;
         assert.deepEqual(err[index], error);
       });
@@ -169,7 +170,7 @@ export const Harness = {
   testWizardPrevPage: function(form, errors, onPrevPage) {
     if (errors) {
       form.on('error', (err) => {
-        _each(errors, (error, index) => {
+        _.each(errors, (error, index) => {
           error.component = form.getComponent(error.component).component;
           assert.deepEqual(err[index], error);
         });
@@ -183,7 +184,7 @@ export const Harness = {
   testWizardNextPage: function(form, errors, onNextPage) {
     if (errors) {
       form.on('error', (err) => {
-        _each(errors, (error, index) => {
+        _.each(errors, (error, index) => {
           error.component = form.getComponent(error.component).component;
           assert.deepEqual(err[index], error);
         });

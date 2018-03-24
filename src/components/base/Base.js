@@ -1564,9 +1564,33 @@ export class BaseComponent {
    * @return {*}
    */
   get dataValue() {
-    return _.get(this.data, this.component.key, this.emptyValue);
+    if (!this.component.key) {
+      return this.data;
+    }
+    if (!this.hasValue) {
+      this.dataValue = this.emptyValue;
+    }
+    return _.get(this.data, this.component.key);
   }
 
+  /**
+   * Sets the static value of this component.
+   *
+   * @param value
+   */
+  set dataValue(value) {
+    if (!this.component.key) {
+      return value;
+    }
+    _.set(this.data, this.component.key, value);
+    return value;
+  }
+
+  /**
+   * Splice a value from the dataValue.
+   *
+   * @param index
+   */
   splice(index) {
     if (this.hasValue) {
       let dataValue = this.dataValue || [];
@@ -1576,16 +1600,6 @@ export class BaseComponent {
         this.triggerChange();
       }
     }
-  }
-
-  /**
-   * Sets the static value of this component.
-   *
-   * @param value
-   */
-  set dataValue(value) {
-    _.set(this.data, this.component.key, value);
-    return value;
   }
 
   /**
