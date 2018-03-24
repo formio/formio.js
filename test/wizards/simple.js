@@ -311,9 +311,7 @@ module.exports = {
           // Write data
           let wizardData = {
             a: 'a',
-            b: 'b',
-            c: '',
-            d: ''
+            b: 'b'
           };
           Harness.testSubmission(form, {
             data: wizardData
