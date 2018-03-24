@@ -46,8 +46,6 @@ export class NumberComponent extends BaseComponent {
   }
 
   setInputMask(input) {
-    console.log(this.decimalSeparator);
-    console.log(this.decimalSeparator);
     this.inputMask = maskInput({
       inputElement: input,
       mask: createNumberMask({
