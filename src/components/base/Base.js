@@ -1827,11 +1827,11 @@ export class BaseComponent {
   }
 
   getRawValue() {
-    console.warn('component.getRawValue() has been deprecated. Use component.validateValue or component.dataValue instead.');
-    return this.validateValue;
+    console.warn('component.getRawValue() has been deprecated. Use component.validationValue or component.dataValue instead.');
+    return this.validationValue;
   }
 
-  get validateValue() {
+  get validationValue() {
     return this.dataValue;
   }
 

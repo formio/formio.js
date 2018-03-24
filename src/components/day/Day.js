@@ -321,7 +321,7 @@ export class DayComponent extends BaseComponent {
    *
    * @returns {Date}
    */
-  get validateValue() {
+  get validationValue() {
     return this.date.format();
   }
 
