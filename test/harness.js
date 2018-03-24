@@ -102,9 +102,6 @@ export const Harness = {
   },
   testSetGet: function(component, value) {
     component.setValue(value);
-    console.log(component.getValue());
-    console.log(value);
-    console.log(_.isEqual(component.getValue(), value));
     assert.deepEqual(component.getValue(), value);
     return component;
   },
