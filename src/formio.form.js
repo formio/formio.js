@@ -672,7 +672,7 @@ export default class FormioForm extends FormioComponents {
   }
 
   setValue(submission, flags, data) {
-    data = data || _.cloneDeep(this.data);
+    data = data || this.data;
     if (!submission) {
       return super.setValue(data, flags);
     }
