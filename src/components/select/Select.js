@@ -451,7 +451,7 @@ export class SelectComponent extends BaseComponent {
     const tabIndex = input.tabIndex;
     this.addPlaceholder(input);
     this.choices = new Choices(input, choicesOptions);
-    this.choices.itemList.tabIndex = tabIndex;
+    this.choices.itemList.setAttribute('tabIndex', tabIndex);
     this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
@@ -480,9 +480,13 @@ export class SelectComponent extends BaseComponent {
       return;
     }
     if (disabled) {
+      this.setDisabled(this.choices.containerInner, true);
+      this.choices.itemList.removeAttribute('tabIndex');
       this.choices.disable();
     }
     else {
+      this.setDisabled(this.choices.containerInner, false);
+      this.choices.itemList.setAttribute('tabIndex', this.component.tabindex || 0);
       this.choices.enable();
     }
   }

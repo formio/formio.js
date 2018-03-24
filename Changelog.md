@@ -6,6 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 ### Fixed
+ - Required validator for Checkbox component.
+ - Radio and SelectBoxes components for the case with multiple nested forms.
  - Number and Currency components default value.
 
 ## 2.29.13
