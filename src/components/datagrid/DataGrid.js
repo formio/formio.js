@@ -45,7 +45,7 @@ export class DataGridComponent extends FormioComponents {
       this.component.validate &&
       this.component.validate.minLength > this.data[this.component.key].length
     ) {
-      let toAdd = this.component.validate.minLength - this.data[this.component.key].length;
+      const toAdd = this.component.validate.minLength - this.data[this.component.key].length;
       for (let i = 0; i < toAdd; i++) {
         this.data[this.component.key].push({});
       }

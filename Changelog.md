@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Fixed
  - Radio and SelectBoxes components for the case with multiple nested forms.
+ - Number and Currency components default value.
 
 ## 2.29.13
 ### Fixed
