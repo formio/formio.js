@@ -1569,8 +1569,12 @@ export class BaseComponent {
 
   splice(index) {
     if (this.hasValue) {
-      this.dataValue = _.pullAt(this.dataValue, index);
-      this.triggerChange();
+      let dataValue = this.dataValue || [];
+      if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
+        dataValue.splice(index, 1);
+        this.dataValue = dataValue;
+        this.triggerChange();
+      }
     }
   }
 
