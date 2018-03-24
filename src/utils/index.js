@@ -727,7 +727,7 @@ const FormioUtils = {
     currency = 'USD',
     decimalLimit,
     decimalSeparator,
-    lang = 'en',
+    lang,
   }) {
     // Get the prefix and suffix from the localized string.
     const regex = `(.*)?100${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}(.*)?`;
@@ -736,8 +736,7 @@ const FormioUtils = {
       currency,
       useGrouping: true,
       maximumFractionDigits: decimalLimit
-    }).match(new RegExp(regex));
-
+    }).replace('.', decimalSeparator).match(new RegExp(regex));
     return {
       prefix: parts[1] || '',
       suffix: parts[2] || ''

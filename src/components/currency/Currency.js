@@ -8,14 +8,12 @@ import {NumberComponent} from '../number/Number';
 export class CurrencyComponent extends NumberComponent {
   constructor(component, options, data) {
     super(component, options, data);
-
     this.decimalLimit = _.get(this.component, 'decimalLimit', 2);
-
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
       decimalLimit: this.decimalLimit,
       decimalSeparator: this.decimalSeparator,
-      lang: options.language,
+      lang: options.language || 'en',
     });
     this.prefix = affixes.prefix;
     this.suffix = affixes.suffix;

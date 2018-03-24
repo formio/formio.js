@@ -26,6 +26,11 @@ export class NumberComponent extends BaseComponent {
     }
 
     this.decimalLimit = FormioUtils.getNumberDecimalLimit(this.component);
+    // Currencies to override BrowserLanguage Config. Object key {}
+    if (this.options.languageOverride && this.options.languageOverride.hasOwnProperty(options.language || 'en')) {
+      this.decimalSeparator = this.options.languageOverride[options.language || 'en'].decimalSeparator;
+      this.delimiter = this.options.languageOverride[options.language || 'en'].delimiter;
+    }
   }
 
   parseNumber(value) {
@@ -41,6 +46,8 @@ export class NumberComponent extends BaseComponent {
   }
 
   setInputMask(input) {
+    console.log(this.decimalSeparator);
+    console.log(this.decimalSeparator);
     this.inputMask = maskInput({
       inputElement: input,
       mask: createNumberMask({
