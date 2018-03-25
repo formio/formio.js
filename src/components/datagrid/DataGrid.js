@@ -9,7 +9,7 @@ export class DataGridComponent extends FormioComponents {
   }
 
   get emptyValue() {
-    return [];
+    return [{}];
   }
 
   build() {
@@ -135,14 +135,13 @@ export class DataGridComponent extends FormioComponents {
 
   get defaultValue() {
     const value = super.defaultValue;
-    const isArray = _.isArray(value);
-    if (isArray && !value.length) {
-      return {};
-    }
-    else if (_.isPlainObject(value)) {
+    if (_.isArray(value)) {
       return value;
     }
-    return isArray ? value[0] : value;
+    if (value && (typeof value === 'object')) {
+      return [value];
+    }
+    return this.emptyValue;
   }
 
   buildRows(data) {
