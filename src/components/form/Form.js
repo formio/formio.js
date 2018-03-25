@@ -96,9 +96,6 @@ export class FormComponent extends FormioForm {
     if (this.data && this.data[this.component.key] && !this.component.reference) {
       this.setSubmission(this.data[this.component.key]);
     }
-
-    // Set language after everything is established.
-    this.language = this.options.language;
   }
 
   get subData() {

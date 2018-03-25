@@ -5,13 +5,6 @@ import Formio from './formio';
 import Promise from 'native-promise-only';
 import {FormioComponents} from './components/Components';
 
-// Setup global promises when our i18n instance is ready.
-i18next.initialized = false;
-i18next.onLocaleReady = new Promise((resolve, reject) => {
-  i18next.localeResolve = resolve;
-  i18next.localeReject = reject;
-});
-
 // Initialize the available forms.
 Formio.forms = {};
 
@@ -211,7 +204,9 @@ export default class FormioForm extends FormioComponents {
     this.shortcuts = [];
 
     // Set language after everything is established.
-    this.language = this.options.language;
+    this.localize().then(() => {
+      this.language = this.options.language;
+    });
   }
 
   /**
@@ -223,17 +218,12 @@ export default class FormioForm extends FormioComponents {
   set language(lang) {
     return new Promise((resolve, reject) => {
       this.options.language = lang;
-      this.localize().then((i18) => {
-        if (i18.language === lang) {
-          return resolve();
+      i18next.changeLanguage(lang, (err) => {
+        if (err) {
+          return reject(err);
         }
-        i18.changeLanguage(lang, (err) => {
-          if (err) {
-            return reject(err);
-          }
-          this.redraw();
-          resolve();
-        });
+        this.redraw();
+        resolve();
       });
     });
   }
@@ -259,17 +249,18 @@ export default class FormioForm extends FormioComponents {
    */
   localize() {
     if (i18next.initialized) {
-      return i18next.onLocaleReady;
+      return Promise.resolve(i18next);
     }
-
     i18next.initialized = true;
-    i18next.init(this.options.i18n, (err) => {
-      if (err) {
-        return i18next.localeReject(err);
-      }
-      i18next.localeResolve(i18next);
+    return new Promise((resolve, reject) => {
+      i18next.init(this.options.i18n, (err) => {
+        this.options.language = i18next.language;
+        if (err) {
+          return reject(err);
+        }
+        resolve(i18next);
+      });
     });
-    return i18next.onLocaleReady;
   }
 
   /**
@@ -734,17 +725,15 @@ export default class FormioForm extends FormioComponents {
     return this.onElement.then(() => {
       this.clear();
       this.showElement(false);
-      return this.localize().then(() => {
-        this.build();
-        this.isBuilt = true;
-        this.onResize();
-        this.on('resetForm', () => this.reset(), true);
-        this.on('refreshData', () => this.updateValue());
-        setTimeout(() => {
-          this.onChange();
-          this.emit('render');
-        }, 1);
-      });
+      this.build();
+      this.isBuilt = true;
+      this.onResize();
+      this.on('resetForm', () => this.reset(), true);
+      this.on('refreshData', () => this.updateValue());
+      setTimeout(() => {
+        this.onChange();
+        this.emit('render');
+      }, 1);
     });
   }
 
