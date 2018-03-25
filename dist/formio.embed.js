@@ -11502,8 +11502,6 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-_i18next2.default.initialized = false;
-
 // Initialize the available forms.
 _formio2.default.forms = {};
 
@@ -11702,10 +11700,22 @@ var FormioForm = function (_FormioComponents) {
       _this2.setElement(element);
     });
 
+    /**
+     * Promise to trigger when the locale configuration of this form is established.
+     *
+     * @type {Promise}
+     */
+    _this2.onLocaleReady = new _nativePromiseOnly2.default(function (resolve, reject) {
+      /**
+       * Called when the form's locale is loaded and ready to be used.
+       */
+      _this2.localeResolve = resolve;
+      _this2.localeReject = reject;
+    });
+
     _this2.shortcuts = [];
 
     // Set language after everything is established.
-    i18n.lng = _this2.options.language;
     _this2.language = _this2.options.language;
     return _this2;
   }
@@ -11748,18 +11758,17 @@ var FormioForm = function (_FormioComponents) {
       var _this3 = this;
 
       if (_i18next2.default.initialized) {
-        return _nativePromiseOnly2.default.resolve(_i18next2.default);
+        return this.onLocaleReady;
       }
+
       _i18next2.default.initialized = true;
-      return new _nativePromiseOnly2.default(function (resolve, reject) {
-        _i18next2.default.init(_this3.options.i18n, function (err) {
-          _this3.options.language = _i18next2.default.language;
-          if (err) {
-            return reject(err);
-          }
-          resolve(_i18next2.default);
-        });
+      _i18next2.default.init(this.options.i18n, function (err) {
+        if (err) {
+          return _this3.localeReject(err);
+        }
+        _this3.localeResolve(_i18next2.default);
       });
+      return this.onLocaleReady;
     }
 
     /**
@@ -12478,12 +12487,14 @@ var FormioForm = function (_FormioComponents) {
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
         _this14.options.language = lang;
-        _i18next2.default.changeLanguage(lang, function (err) {
-          if (err) {
-            return reject(err);
-          }
-          _this14.redraw();
-          resolve();
+        _this14.localize().then(function (i18) {
+          i18.changeLanguage(lang, function (err) {
+            if (err) {
+              return reject(err);
+            }
+            _this14.redraw();
+            resolve();
+          });
         });
       });
     }

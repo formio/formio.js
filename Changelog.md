@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Number and Currency components default value.
  - Input mask problems where a single instance was used to manage multiple inputs.
  - Issues with onChange events not firing for Select components.
+ - Streamlined the language inititalization.
  
 ### Added
  - Better data handling using getters and setters.

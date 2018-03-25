@@ -1,12 +1,9 @@
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
-
 import Formio from './formio';
 import Promise from 'native-promise-only';
 import {FormioComponents} from './components/Components';
-
-i18next.initialized = false;
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -204,10 +201,22 @@ export default class FormioForm extends FormioComponents {
       this.setElement(element);
     });
 
+    /**
+     * Promise to trigger when the locale configuration of this form is established.
+     *
+     * @type {Promise}
+     */
+    this.onLocaleReady = new Promise((resolve, reject) => {
+      /**
+       * Called when the form's locale is loaded and ready to be used.
+       */
+      this.localeResolve = resolve;
+      this.localeReject = reject;
+    });
+
     this.shortcuts = [];
 
     // Set language after everything is established.
-    i18n.lng = this.options.language;
     this.language = this.options.language;
   }
 
@@ -220,12 +229,14 @@ export default class FormioForm extends FormioComponents {
   set language(lang) {
     return new Promise((resolve, reject) => {
       this.options.language = lang;
-      i18next.changeLanguage(lang, (err) => {
-        if (err) {
-          return reject(err);
-        }
-        this.redraw();
-        resolve();
+      this.localize().then((i18) => {
+        i18.changeLanguage(lang, (err) => {
+          if (err) {
+            return reject(err);
+          }
+          this.redraw();
+          resolve();
+        });
       });
     });
   }
@@ -251,18 +262,17 @@ export default class FormioForm extends FormioComponents {
    */
   localize() {
     if (i18next.initialized) {
-      return Promise.resolve(i18next);
+      return this.onLocaleReady;
     }
+
     i18next.initialized = true;
-    return new Promise((resolve, reject) => {
-      i18next.init(this.options.i18n, (err) => {
-        this.options.language = i18next.language;
-        if (err) {
-          return reject(err);
-        }
-        resolve(i18next);
-      });
+    i18next.init(this.options.i18n, (err) => {
+      if (err) {
+        return this.localeReject(err);
+      }
+      this.localeResolve(i18next);
     });
+    return this.onLocaleReady;
   }
 
   /**
