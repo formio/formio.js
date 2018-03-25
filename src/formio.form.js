@@ -5,6 +5,13 @@ import Formio from './formio';
 import Promise from 'native-promise-only';
 import {FormioComponents} from './components/Components';
 
+// Setup global promises when our i18n instance is ready.
+i18next.initialized = false;
+i18next.onLocaleReady = new Promise((resolve, reject) => {
+  i18next.localeResolve = resolve;
+  i18next.localeReject = reject;
+});
+
 // Initialize the available forms.
 Formio.forms = {};
 
@@ -201,19 +208,6 @@ export default class FormioForm extends FormioComponents {
       this.setElement(element);
     });
 
-    /**
-     * Promise to trigger when the locale configuration of this form is established.
-     *
-     * @type {Promise}
-     */
-    this.onLocaleReady = new Promise((resolve, reject) => {
-      /**
-       * Called when the form's locale is loaded and ready to be used.
-       */
-      this.localeResolve = resolve;
-      this.localeReject = reject;
-    });
-
     this.shortcuts = [];
 
     // Set language after everything is established.
@@ -230,6 +224,9 @@ export default class FormioForm extends FormioComponents {
     return new Promise((resolve, reject) => {
       this.options.language = lang;
       this.localize().then((i18) => {
+        if (i18.language === lang) {
+          return resolve();
+        }
         i18.changeLanguage(lang, (err) => {
           if (err) {
             return reject(err);
@@ -262,17 +259,17 @@ export default class FormioForm extends FormioComponents {
    */
   localize() {
     if (i18next.initialized) {
-      return this.onLocaleReady;
+      return i18next.onLocaleReady;
     }
 
     i18next.initialized = true;
     i18next.init(this.options.i18n, (err) => {
       if (err) {
-        return this.localeReject(err);
+        return i18next.localeReject(err);
       }
-      this.localeResolve(i18next);
+      i18next.localeResolve(i18next);
     });
-    return this.onLocaleReady;
+    return i18next.onLocaleReady;
   }
 
   /**

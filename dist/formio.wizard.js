@@ -11368,6 +11368,13 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
+// Setup global promises when our i18n instance is ready.
+_i18next2.default.initialized = false;
+_i18next2.default.onLocaleReady = new _nativePromiseOnly2.default(function (resolve, reject) {
+  _i18next2.default.localeResolve = resolve;
+  _i18next2.default.localeReject = reject;
+});
+
 // Initialize the available forms.
 _formio2.default.forms = {};
 
@@ -11566,19 +11573,6 @@ var FormioForm = function (_FormioComponents) {
       _this2.setElement(element);
     });
 
-    /**
-     * Promise to trigger when the locale configuration of this form is established.
-     *
-     * @type {Promise}
-     */
-    _this2.onLocaleReady = new _nativePromiseOnly2.default(function (resolve, reject) {
-      /**
-       * Called when the form's locale is loaded and ready to be used.
-       */
-      _this2.localeResolve = resolve;
-      _this2.localeReject = reject;
-    });
-
     _this2.shortcuts = [];
 
     // Set language after everything is established.
@@ -11621,20 +11615,18 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'localize',
     value: function localize() {
-      var _this3 = this;
-
       if (_i18next2.default.initialized) {
-        return this.onLocaleReady;
+        return _i18next2.default.onLocaleReady;
       }
 
       _i18next2.default.initialized = true;
       _i18next2.default.init(this.options.i18n, function (err) {
         if (err) {
-          return _this3.localeReject(err);
+          return _i18next2.default.localeReject(err);
         }
-        _this3.localeResolve(_i18next2.default);
+        _i18next2.default.localeResolve(_i18next2.default);
       });
-      return this.onLocaleReady;
+      return _i18next2.default.onLocaleReady;
     }
 
     /**
@@ -11763,15 +11755,15 @@ var FormioForm = function (_FormioComponents) {
      * Loads the submission if applicable.
      */
     value: function loadSubmission() {
-      var _this4 = this;
+      var _this3 = this;
 
       if (this.formio.submissionId) {
         this.onSubmission = this.formio.loadSubmission().then(function (submission) {
-          return _this4.setSubmission(submission);
+          return _this3.setSubmission(submission);
         }, function (err) {
-          return _this4.submissionReadyReject(err);
+          return _this3.submissionReadyReject(err);
         }).catch(function (err) {
-          return _this4.submissionReadyReject(err);
+          return _this3.submissionReadyReject(err);
         });
       } else {
         this.submissionReadyResolve();
@@ -11788,17 +11780,17 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'setSrc',
     value: function setSrc(value, options) {
-      var _this5 = this;
+      var _this4 = this;
 
       if (this.setUrl(value, options)) {
         this.nosubmit = false;
         this.formio.loadForm({ params: { live: 1 } }).then(function (form) {
-          var setForm = _this5.setForm(form);
-          _this5.loadSubmission();
+          var setForm = _this4.setForm(form);
+          _this4.loadSubmission();
           return setForm;
         }).catch(function (err) {
           console.warn(err);
-          _this5.formReadyReject(err);
+          _this4.formReadyReject(err);
         });
       }
     }
@@ -11883,7 +11875,7 @@ var FormioForm = function (_FormioComponents) {
      * @returns {*}
      */
     value: function setForm(form) {
-      var _this6 = this;
+      var _this5 = this;
 
       if (form.display === 'wizard') {
         console.warn('You need to instantiate the FormioWizard class to use this form as a wizard.');
@@ -11891,11 +11883,11 @@ var FormioForm = function (_FormioComponents) {
 
       if (this.onFormBuild) {
         return this.onFormBuild.then(function () {
-          return _this6.createForm(form);
+          return _this5.createForm(form);
         }, function (err) {
-          return _this6.formReadyReject(err);
+          return _this5.formReadyReject(err);
         }).catch(function (err) {
-          return _this6.formReadyReject(err);
+          return _this5.formReadyReject(err);
         });
       }
 
@@ -11922,20 +11914,20 @@ var FormioForm = function (_FormioComponents) {
      * @return {Promise.<TResult>}
      */
     value: function setSubmission(submission) {
-      var _this7 = this;
+      var _this6 = this;
 
       return this.onSubmission = this.formReady.then(function () {
         // If nothing changed, still trigger an update.
-        if (!_this7.setValue(submission)) {
-          _this7.triggerChange({
+        if (!_this6.setValue(submission)) {
+          _this6.triggerChange({
             noValidate: true
           });
         }
-        _this7.submissionReadyResolve();
+        _this6.submissionReadyResolve();
       }, function (err) {
-        return _this7.submissionReadyReject(err);
+        return _this6.submissionReadyReject(err);
       }).catch(function (err) {
-        return _this7.submissionReadyReject(err);
+        return _this6.submissionReadyReject(err);
       });
     }
   }, {
@@ -11984,7 +11976,7 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'createForm',
     value: function createForm(form) {
-      var _this8 = this;
+      var _this7 = this;
 
       /**
        * {@link BaseComponent.component}
@@ -11995,12 +11987,12 @@ var FormioForm = function (_FormioComponents) {
         this.component = form;
       }
       return this.onFormBuild = this.render().then(function () {
-        _this8.formReadyResolve();
-        _this8.onFormBuild = null;
-        _this8.setValue(_this8.submission);
+        _this7.formReadyResolve();
+        _this7.onFormBuild = null;
+        _this7.setValue(_this7.submission);
       }).catch(function (err) {
         console.warn(err);
-        _this8.formReadyReject(err);
+        _this7.formReadyReject(err);
       });
     }
 
@@ -12012,24 +12004,24 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'render',
     value: function render() {
-      var _this9 = this;
+      var _this8 = this;
 
       return this.onElement.then(function () {
-        _this9.clear();
-        _this9.showElement(false);
-        return _this9.localize().then(function () {
-          _this9.build();
-          _this9.isBuilt = true;
-          _this9.onResize();
-          _this9.on('resetForm', function () {
-            return _this9.reset();
+        _this8.clear();
+        _this8.showElement(false);
+        return _this8.localize().then(function () {
+          _this8.build();
+          _this8.isBuilt = true;
+          _this8.onResize();
+          _this8.on('resetForm', function () {
+            return _this8.reset();
           }, true);
-          _this9.on('refreshData', function () {
-            return _this9.updateValue();
+          _this8.on('refreshData', function () {
+            return _this8.updateValue();
           });
           setTimeout(function () {
-            _this9.onChange();
-            _this9.emit('render');
+            _this8.onChange();
+            _this8.emit('render');
           }, 1);
         });
       });
@@ -12079,14 +12071,14 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'build',
     value: function build() {
-      var _this10 = this;
+      var _this9 = this;
 
       this.on('submitButton', function () {
-        return _this10.submit();
+        return _this9.submit();
       }, true);
       this.addComponents();
       this.on('requestUrl', function (args) {
-        return _this10.submitUrl(args.url, args.headers);
+        return _this9.submitUrl(args.url, args.headers);
       }, true);
     }
 
@@ -12239,34 +12231,34 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'executeSubmit',
     value: function executeSubmit() {
-      var _this11 = this;
+      var _this10 = this;
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
         // Read-only forms should never submit.
-        if (_this11.options.readOnly) {
-          return resolve(_this11.submission);
+        if (_this10.options.readOnly) {
+          return resolve(_this10.submission);
         }
 
-        var submission = _this11.submission || {};
-        _this11.hook('beforeSubmit', submission, function (err) {
+        var submission = _this10.submission || {};
+        _this10.hook('beforeSubmit', submission, function (err) {
           if (err) {
-            _this11.showErrors(err);
+            _this10.showErrors(err);
             return reject(err.message || err);
           }
 
-          if (submission && submission.data && _this11.checkValidity(submission.data, true)) {
-            _this11.loading = true;
-            if (_this11.nosubmit || !_this11.formio) {
-              return resolve(_this11.onSubmit(submission, false));
+          if (submission && submission.data && _this10.checkValidity(submission.data, true)) {
+            _this10.loading = true;
+            if (_this10.nosubmit || !_this10.formio) {
+              return resolve(_this10.onSubmit(submission, false));
             }
-            return _this11.formio.saveSubmission(submission).then(function (result) {
-              return resolve(_this11.onSubmit(result, true));
+            return _this10.formio.saveSubmission(submission).then(function (result) {
+              return resolve(_this10.onSubmit(result, true));
             }).catch(function (err) {
-              _this11.onSubmissionError(err);
+              _this10.onSubmissionError(err);
               reject(err);
             });
           } else {
-            _this11.showErrors();
+            _this10.showErrors();
             return reject('Invalid Submission');
           }
         });
@@ -12296,11 +12288,11 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'submit',
     value: function submit(before) {
-      var _this12 = this;
+      var _this11 = this;
 
       if (!before) {
         return this.beforeSubmit().then(function () {
-          return _this12.executeSubmit();
+          return _this11.executeSubmit();
         });
       } else {
         return this.executeSubmit();
@@ -12309,7 +12301,7 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'submitUrl',
     value: function submitUrl(URL, headers) {
-      var _this13 = this;
+      var _this12 = this;
 
       if (!URL) {
         return console.warn('Missing URL argument');
@@ -12332,8 +12324,8 @@ var FormioForm = function (_FormioComponents) {
       if (API_URL && settings) {
         try {
           _formio2.default.makeStaticRequest(API_URL, settings.method, submission, settings.headers).then(function () {
-            _this13.emit('requestDone');
-            _this13.setAlert('success', '<p> Success </p>');
+            _this12.emit('requestDone');
+            _this12.setAlert('success', '<p> Success </p>');
           });
         } catch (e) {
           this.showErrors(e.statusText + ' ' + e.status);
@@ -12349,16 +12341,19 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'language',
     set: function set(lang) {
-      var _this14 = this;
+      var _this13 = this;
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
-        _this14.options.language = lang;
-        _this14.localize().then(function (i18) {
+        _this13.options.language = lang;
+        _this13.localize().then(function (i18) {
+          if (i18.language === lang) {
+            return resolve();
+          }
           i18.changeLanguage(lang, function (err) {
             if (err) {
               return reject(err);
             }
-            _this14.redraw();
+            _this13.redraw();
             resolve();
           });
         });
@@ -12397,10 +12392,10 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'ready',
     get: function get() {
-      var _this15 = this;
+      var _this14 = this;
 
       return this.formReady.then(function () {
-        return _this15.submissionReady;
+        return _this14.submissionReady;
       });
     }
 
