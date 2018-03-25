@@ -36,6 +36,10 @@ export class CheckBoxComponent extends BaseComponent {
     }
   }
 
+  get emptyValue() {
+    return false;
+  }
+
   createElement() {
     let className = `form-check ${this.className}`;
     if (this.component.label) {

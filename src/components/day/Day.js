@@ -8,8 +8,7 @@ export class DayComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
-
-    const dateFormatInfo = getLocaleDateFormatInfo(options.language);
+    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
       : this.component.dayFirst;
@@ -43,6 +42,10 @@ export class DayComponent extends BaseComponent {
       {value: 12, label: this.t('december')}
     ];
     return this._months;
+  }
+
+  get emptyValue() {
+    return '';
   }
 
   createDayInput(subinputAtTheBottom) {

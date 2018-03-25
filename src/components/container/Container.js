@@ -18,9 +18,8 @@ export class ContainerComponent extends FormioComponents {
     this.addComponents(this.element, this.dataValue);
   }
 
-  get defaultValue() {
-    const value = super.defaultValue;
-    return typeof value === 'object' ? value : {};
+  get emptyValue() {
+    return {};
   }
 
   getValue() {

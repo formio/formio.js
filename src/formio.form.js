@@ -207,10 +207,8 @@ export default class FormioForm extends FormioComponents {
     this.shortcuts = [];
 
     // Set language after everything is established.
-    if (options && options.language) {
-      i18n.lng = options.language;
-      this.language = options.language;
-    }
+    i18n.lng = this.options.language;
+    this.language = this.options.language;
   }
 
   /**

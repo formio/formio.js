@@ -1556,6 +1556,7 @@ var BaseComponent = function () {
      * @type {{}}
      */
     this.options = _lodash2.default.defaults(_lodash2.default.clone(options), {
+      language: 'en',
       highlightErrors: true
     });
 
@@ -1667,12 +1668,6 @@ var BaseComponent = function () {
      * @type {BaseComponent}
      */
     this.root = this;
-
-    /**
-     * The Input mask instance for this component.
-     * @type {InputMask}
-     */
-    this.inputMask = null;
 
     this.options.name = this.options.name || 'data';
 
@@ -2571,7 +2566,7 @@ var BaseComponent = function () {
       if (input && this.component.inputMask) {
         var mask = _utils2.default.getInputMask(this.component.inputMask);
         this._inputMask = mask;
-        this.inputMask = (0, _vanillaTextMask2.default)({
+        input.mask = (0, _vanillaTextMask2.default)({
           inputElement: input,
           mask: mask
         });
@@ -2645,9 +2640,6 @@ var BaseComponent = function () {
     value: function destroy(all) {
       var _this4 = this;
 
-      if (this.inputMask) {
-        this.inputMask.destroy();
-      }
       _lodash2.default.each(this.eventListeners, function (listener) {
         if (all || listener.internal) {
           _this4.events.off(listener.type, listener.listener);
@@ -2656,6 +2648,11 @@ var BaseComponent = function () {
       _lodash2.default.each(this.eventHandlers, function (handler) {
         if (handler.event) {
           window.removeEventListener(handler.event, handler.func);
+        }
+      });
+      _lodash2.default.each(this.inputs, function (input) {
+        if (input.mask) {
+          input.mask.destroy();
         }
       });
       this.inputs = [];
@@ -3445,7 +3442,11 @@ var BaseComponent = function () {
       if (value === null || value === undefined) {
         value = this.defaultValue;
       }
-      this.inputs[index].value = value;
+      if (this.inputs[index].mask) {
+        this.inputs[index].mask.textMaskInputElement.update(value);
+      } else {
+        this.inputs[index].value = value;
+      }
     }
   }, {
     key: 'getFlags',
@@ -3717,7 +3718,7 @@ var BaseComponent = function () {
   }, {
     key: 'defaultValue',
     get: function get() {
-      var defaultValue = '';
+      var defaultValue = this.emptyValue;
       if (this.component.defaultValue) {
         defaultValue = this.component.defaultValue;
       } else if (this.component.customDefaultValue) {
@@ -4690,6 +4691,11 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       this.removeShortcut();
     }
   }, {
+    key: 'emptyValue',
+    get: function get() {
+      return false;
+    }
+  }, {
     key: 'dataValue',
     get: function get() {
       if (this.component.name) {
@@ -4856,18 +4862,12 @@ var ColumnsComponent = exports.ColumnsComponent = function (_FormioComponents) {
 },{"../Components":1,"lodash":80}],9:[function(require,module,exports){
 'use strict';
 
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ContainerComponent = undefined;
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -4878,22 +4878,6 @@ var _createClass = function () {
     if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
   };
 }();
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
 
 var _lodash = require('lodash');
 
@@ -4914,12 +4898,12 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof2(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
@@ -4982,10 +4966,9 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
       this.updateValue(flags);
     }
   }, {
-    key: 'defaultValue',
+    key: 'emptyValue',
     get: function get() {
-      var value = _get(ContainerComponent.prototype.__proto__ || Object.getPrototypeOf(ContainerComponent.prototype), 'defaultValue', this);
-      return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? value : {};
+      return {};
     }
   }]);
 
@@ -5048,6 +5031,11 @@ var ContentComponent = exports.ContentComponent = function (_BaseComponent) {
         class: 'form-group ' + this.component.customClass
       });
       this.element.innerHTML = this.interpolate(this.component.html, { data: this.data });
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return '';
     }
   }]);
 
@@ -5132,6 +5120,11 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
   function CurrencyComponent(component, options, data) {
     _classCallCheck(this, CurrencyComponent);
 
+    // Currency should default to have a delimiter unless otherwise specified.
+    if (component && !component.hasOwnProperty('delimiter')) {
+      component.delimiter = true;
+    }
+
     var _this = _possibleConstructorReturn(this, (CurrencyComponent.__proto__ || Object.getPrototypeOf(CurrencyComponent)).call(this, component, options, data));
 
     _this.decimalLimit = _lodash2.default.get(_this.component, 'decimalLimit', 2);
@@ -5139,7 +5132,7 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
       currency: _this.component.currency,
       decimalLimit: _this.decimalLimit,
       decimalSeparator: _this.decimalSeparator,
-      lang: options.language || 'en'
+      lang: _this.options.language
     });
     _this.prefix = affixes.prefix;
     _this.suffix = affixes.suffix;
@@ -5157,7 +5150,7 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
   }, {
     key: 'setInputMask',
     value: function setInputMask(input) {
-      this.inputMask = (0, _vanillaTextMask2.default)({
+      input.mask = (0, _vanillaTextMask2.default)({
         inputElement: input,
         mask: (0, _textMaskAddons.createNumberMask)({
           prefix: this.prefix,
@@ -5671,12 +5664,6 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       this.component.suffix = true;
       return info;
     }
-
-    /**
-     * Get the default date for the calendar.
-     * @return {*}
-     */
-
   }, {
     key: 'createWrapper',
 
@@ -5784,6 +5771,17 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         calendar.setDate(value ? new Date(value) : new Date(), false);
       }
     }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return 0;
+    }
+
+    /**
+     * Get the default date for the calendar.
+     * @return {*}
+     */
+
   }, {
     key: 'defaultDate',
     get: function get() {
@@ -5972,8 +5970,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
     var _this = _possibleConstructorReturn(this, (DayComponent.__proto__ || Object.getPrototypeOf(DayComponent)).call(this, component, options, data));
 
     _this.validators.push('date');
-
-    var dateFormatInfo = (0, _utils.getLocaleDateFormatInfo)(options.language);
+    var dateFormatInfo = (0, _utils.getLocaleDateFormatInfo)(_this.options.language);
     _this.dayFirst = _this.component.useLocaleSettings ? dateFormatInfo.dayFirst : _this.component.dayFirst;
     return _this;
   }
@@ -6265,6 +6262,11 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
       }
       this._months = [{ value: 0, label: _lodash2.default.get(this.component, 'fields.month.placeholder', '') }, { value: 1, label: this.t('january') }, { value: 2, label: this.t('february') }, { value: 3, label: this.t('march') }, { value: 4, label: this.t('april') }, { value: 5, label: this.t('may') }, { value: 6, label: this.t('june') }, { value: 7, label: this.t('july') }, { value: 8, label: this.t('august') }, { value: 9, label: this.t('september') }, { value: 10, label: this.t('october') }, { value: 11, label: this.t('november') }, { value: 12, label: this.t('december') }];
       return this._months;
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return '';
     }
   }, {
     key: 'disabled',
@@ -7611,12 +7613,12 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     return _this;
   }
 
-  /**
-   * Load the subform.
-   */
-
   _createClass(FormComponent, [{
     key: 'loadSubForm',
+
+    /**
+     * Load the subform.
+     */
     value: function loadSubForm() {
       // Only load the subform if the subform isn't loaded and the conditions apply.
       if (this.subFormLoaded || !_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.root ? this.root.data : this.data)) {
@@ -7678,9 +7680,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       }
 
       // Set language after everything is established.
-      if (this.options && this.options.language) {
-        this.language = this.options.language;
-      }
+      this.language = this.options.language;
     }
   }, {
     key: 'checkValidity',
@@ -7774,9 +7774,6 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       // Set the data for this form.
       if (!this.data[this.component.key]) {
         this.data[this.component.key] = this.defaultValue;
-        if (!this.data[this.component.key]) {
-          this.data[this.component.key] = { data: {} };
-        }
       }
 
       // Add components using the data of the submission.
@@ -7832,7 +7829,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
       flags = this.getFlags.apply(this, arguments);
       if (!submission) {
-        this.dataValue = this._submission = { data: {} };
+        this.dataValue = this._submission = this.emptyValue;
         this.readyResolve();
         return;
       }
@@ -7877,10 +7874,15 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       return this.dataValue;
     }
   }, {
+    key: 'emptyValue',
+    get: function get() {
+      return { data: {} };
+    }
+  }, {
     key: 'subData',
     get: function get() {
       if (!this.data[this.component.key]) {
-        this.data[this.component.key] = { data: {} };
+        this.data[this.component.key] = this.emptyValue;
       }
       return this.data[this.component.key].data;
     }
@@ -8092,6 +8094,11 @@ var GmapComponent = exports.GmapComponent = function (_BaseComponent) {
           }
         });
       });
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return '';
     }
   }]);
 
@@ -8492,11 +8499,11 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
 
     _this.validators = _this.validators.concat(['min', 'max']);
 
-    var separators = _utils2.default.getNumberSeparators(options.language);
+    var separators = _utils2.default.getNumberSeparators(_this.options.language);
 
     _this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || separators.decimalSeparator;
 
-    if (component.delimiter) {
+    if (_this.component.delimiter) {
       if (options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
@@ -8507,10 +8514,12 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
     }
 
     _this.decimalLimit = _utils2.default.getNumberDecimalLimit(_this.component);
+
     // Currencies to override BrowserLanguage Config. Object key {}
-    if (_this.options.languageOverride && _this.options.languageOverride.hasOwnProperty(options.language || 'en')) {
-      _this.decimalSeparator = _this.options.languageOverride[options.language || 'en'].decimalSeparator;
-      _this.delimiter = _this.options.languageOverride[options.language || 'en'].delimiter;
+    if (_lodash2.default.has(_this.options, 'languageOverride.' + _this.options.language)) {
+      var override = _lodash2.default.get(_this.options, 'languageOverride.' + _this.options.language);
+      _this.decimalSeparator = override.decimalSeparator;
+      _this.delimiter = override.delimiter;
     }
     return _this;
   }
@@ -8530,7 +8539,8 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
   }, {
     key: 'setInputMask',
     value: function setInputMask(input) {
-      this.inputMask = (0, _vanillaTextMask2.default)({
+      input.setAttribute('pattern', '\\d*');
+      input.mask = (0, _vanillaTextMask2.default)({
         inputElement: input,
         mask: (0, _textMaskAddons.createNumberMask)({
           prefix: '',
@@ -8588,9 +8598,12 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
   }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
-      value = this.clearInput(value);
-      value = this.formatValue(value);
-      this.inputMask.textMaskInputElement.update(value);
+      return _get(NumberComponent.prototype.__proto__ || Object.getPrototypeOf(NumberComponent.prototype), 'setValueAt', this).call(this, index, this.formatValue(this.clearInput(value)));
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return 0;
     }
   }]);
 
@@ -11025,6 +11038,11 @@ var TextFieldComponent = exports.TextFieldComponent = function (_BaseComponent) 
       info.changeEvent = 'input';
       return info;
     }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return '';
+    }
   }]);
 
   return TextFieldComponent;
@@ -11671,10 +11689,8 @@ var FormioForm = function (_FormioComponents) {
     _this2.shortcuts = [];
 
     // Set language after everything is established.
-    if (options && options.language) {
-      i18n.lng = options.language;
-      _this2.language = options.language;
-    }
+    i18n.lng = _this2.options.language;
+    _this2.language = _this2.options.language;
     return _this2;
   }
 

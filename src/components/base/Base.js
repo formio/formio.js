@@ -32,6 +32,7 @@ export class BaseComponent {
      * @type {{}}
      */
     this.options = _.defaults(_.clone(options), {
+      language: 'en',
       highlightErrors: true
     });
 
@@ -143,12 +144,6 @@ export class BaseComponent {
      * @type {BaseComponent}
      */
     this.root = this;
-
-    /**
-     * The Input mask instance for this component.
-     * @type {InputMask}
-     */
-    this.inputMask = null;
 
     this.options.name = this.options.name || 'data';
 
@@ -527,7 +522,7 @@ export class BaseComponent {
   }
 
   get defaultValue() {
-    let defaultValue = '';
+    let defaultValue = this.emptyValue;
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
@@ -1059,7 +1054,7 @@ export class BaseComponent {
     if (input && this.component.inputMask) {
       const mask = FormioUtils.getInputMask(this.component.inputMask);
       this._inputMask = mask;
-      this.inputMask = maskInput({
+      input.mask = maskInput({
         inputElement: input,
         mask
       });
@@ -1122,9 +1117,6 @@ export class BaseComponent {
    * Remove all event handlers.
    */
   destroy(all) {
-    if (this.inputMask) {
-      this.inputMask.destroy();
-    }
     _.each(this.eventListeners, (listener) => {
       if (all || listener.internal) {
         this.events.off(listener.type, listener.listener);
@@ -1133,6 +1125,11 @@ export class BaseComponent {
     _.each(this.eventHandlers, (handler) => {
       if (handler.event) {
         window.removeEventListener(handler.event, handler.func);
+      }
+    });
+    _.each(this.inputs, (input) => {
+      if (input.mask) {
+        input.mask.destroy();
       }
     });
     this.inputs = [];
@@ -1895,7 +1892,12 @@ export class BaseComponent {
     if (value === null || value === undefined) {
       value = this.defaultValue;
     }
-    this.inputs[index].value = value;
+    if (this.inputs[index].mask) {
+      this.inputs[index].mask.textMaskInputElement.update(value);
+    }
+    else {
+      this.inputs[index].value = value;
+    }
   }
 
   getFlags() {

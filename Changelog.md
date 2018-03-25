@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Required validator for Checkbox component.
  - Radio and SelectBoxes components for the case with multiple nested forms.
  - Number and Currency components default value.
+ - Input mask problems where a single instance was used to manage multiple inputs.
  - Issues with onChange events not firing for Select components.
  
 ### Added
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ### Changed
  - Deprecating "getRawValue" with reverse compatibility in favor of component.dataValue.
+ - Made currency component to have a delimiter unless specified otherwise.
 
 ## 2.29.13
 ### Fixed

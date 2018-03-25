@@ -9,12 +9,12 @@ export class NumberComponent extends BaseComponent {
     super(component, options, data);
     this.validators = this.validators.concat(['min', 'max']);
 
-    const separators = FormioUtils.getNumberSeparators(options.language);
+    const separators = FormioUtils.getNumberSeparators(this.options.language);
 
     this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
       || separators.decimalSeparator;
 
-    if (component.delimiter) {
+    if (this.component.delimiter) {
       if (options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
@@ -26,11 +26,17 @@ export class NumberComponent extends BaseComponent {
     }
 
     this.decimalLimit = FormioUtils.getNumberDecimalLimit(this.component);
+
     // Currencies to override BrowserLanguage Config. Object key {}
-    if (this.options.languageOverride && this.options.languageOverride.hasOwnProperty(options.language || 'en')) {
-      this.decimalSeparator = this.options.languageOverride[options.language || 'en'].decimalSeparator;
-      this.delimiter = this.options.languageOverride[options.language || 'en'].delimiter;
+    if (_.has(this.options, `languageOverride.${this.options.language}`)) {
+      const override = _.get(this.options, `languageOverride.${this.options.language}`);
+      this.decimalSeparator = override.decimalSeparator;
+      this.delimiter = override.delimiter;
     }
+  }
+
+  get emptyValue() {
+    return 0;
   }
 
   parseNumber(value) {
@@ -46,7 +52,8 @@ export class NumberComponent extends BaseComponent {
   }
 
   setInputMask(input) {
-    this.inputMask = maskInput({
+    input.setAttribute('pattern', '\\d*');
+    input.mask = maskInput({
       inputElement: input,
       mask: createNumberMask({
         prefix: '',
@@ -101,8 +108,6 @@ export class NumberComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
-    value = this.clearInput(value);
-    value = this.formatValue(value);
-    this.inputMask.textMaskInputElement.update(value);
+    return super.setValueAt(index, this.formatValue(this.clearInput(value)));
   }
 }

@@ -32,6 +32,10 @@ export class DateTimeComponent extends BaseComponent {
     return info;
   }
 
+  get emptyValue() {
+    return 0;
+  }
+
   /**
    * Get the default date for the calendar.
    * @return {*}

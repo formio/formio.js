@@ -7,13 +7,17 @@ import {NumberComponent} from '../number/Number';
 
 export class CurrencyComponent extends NumberComponent {
   constructor(component, options, data) {
+    // Currency should default to have a delimiter unless otherwise specified.
+    if (component && !component.hasOwnProperty('delimiter')) {
+      component.delimiter = true;
+    }
     super(component, options, data);
     this.decimalLimit = _.get(this.component, 'decimalLimit', 2);
     const affixes = getCurrencyAffixes({
       currency: this.component.currency,
       decimalLimit: this.decimalLimit,
       decimalSeparator: this.decimalSeparator,
-      lang: options.language || 'en',
+      lang: this.options.language,
     });
     this.prefix = affixes.prefix;
     this.suffix = affixes.suffix;
@@ -27,7 +31,7 @@ export class CurrencyComponent extends NumberComponent {
   }
 
   setInputMask(input) {
-    this.inputMask = maskInput({
+    input.mask = maskInput({
       inputElement: input,
       mask: createNumberMask({
         prefix: this.prefix,

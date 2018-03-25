@@ -350,6 +350,7 @@ var BaseComponent = function () {
      * @type {{}}
      */
     this.options = _lodash2.default.defaults(_lodash2.default.clone(options), {
+      language: 'en',
       highlightErrors: true
     });
 
@@ -461,12 +462,6 @@ var BaseComponent = function () {
      * @type {BaseComponent}
      */
     this.root = this;
-
-    /**
-     * The Input mask instance for this component.
-     * @type {InputMask}
-     */
-    this.inputMask = null;
 
     this.options.name = this.options.name || 'data';
 
@@ -1365,7 +1360,7 @@ var BaseComponent = function () {
       if (input && this.component.inputMask) {
         var mask = _utils2.default.getInputMask(this.component.inputMask);
         this._inputMask = mask;
-        this.inputMask = (0, _vanillaTextMask2.default)({
+        input.mask = (0, _vanillaTextMask2.default)({
           inputElement: input,
           mask: mask
         });
@@ -1439,9 +1434,6 @@ var BaseComponent = function () {
     value: function destroy(all) {
       var _this4 = this;
 
-      if (this.inputMask) {
-        this.inputMask.destroy();
-      }
       _lodash2.default.each(this.eventListeners, function (listener) {
         if (all || listener.internal) {
           _this4.events.off(listener.type, listener.listener);
@@ -1450,6 +1442,11 @@ var BaseComponent = function () {
       _lodash2.default.each(this.eventHandlers, function (handler) {
         if (handler.event) {
           window.removeEventListener(handler.event, handler.func);
+        }
+      });
+      _lodash2.default.each(this.inputs, function (input) {
+        if (input.mask) {
+          input.mask.destroy();
         }
       });
       this.inputs = [];
@@ -2239,7 +2236,11 @@ var BaseComponent = function () {
       if (value === null || value === undefined) {
         value = this.defaultValue;
       }
-      this.inputs[index].value = value;
+      if (this.inputs[index].mask) {
+        this.inputs[index].mask.textMaskInputElement.update(value);
+      } else {
+        this.inputs[index].value = value;
+      }
     }
   }, {
     key: 'getFlags',
@@ -2511,7 +2512,7 @@ var BaseComponent = function () {
   }, {
     key: 'defaultValue',
     get: function get() {
-      var defaultValue = '';
+      var defaultValue = this.emptyValue;
       if (this.component.defaultValue) {
         defaultValue = this.component.defaultValue;
       } else if (this.component.customDefaultValue) {

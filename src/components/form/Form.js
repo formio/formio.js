@@ -20,6 +20,10 @@ export class FormComponent extends FormioForm {
     });
   }
 
+  get emptyValue() {
+    return {data: {}};
+  }
+
   /**
    * Load the subform.
    */
@@ -94,14 +98,12 @@ export class FormComponent extends FormioForm {
     }
 
     // Set language after everything is established.
-    if (this.options && this.options.language) {
-      this.language = this.options.language;
-    }
+    this.language = this.options.language;
   }
 
   get subData() {
     if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {data: {}};
+      this.data[this.component.key] = this.emptyValue;
     }
     return this.data[this.component.key].data;
   }
@@ -185,9 +187,6 @@ export class FormComponent extends FormioForm {
     // Set the data for this form.
     if (!this.data[this.component.key]) {
       this.data[this.component.key] = this.defaultValue;
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = {data: {}};
-      }
     }
 
     // Add components using the data of the submission.
@@ -234,7 +233,7 @@ export class FormComponent extends FormioForm {
   setValue(submission, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!submission) {
-      this.dataValue = this._submission = {data: {}};
+      this.dataValue = this._submission = this.emptyValue;
       this.readyResolve();
       return;
     }
