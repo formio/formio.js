@@ -407,7 +407,12 @@ export class EditGridComponent extends FormioComponents {
       return;
     }
     if (!Array.isArray(value)) {
-      return;
+      if (typeof value === 'object') {
+        value = [value];
+      }
+      else {
+        return;
+      }
     }
 
     this.dataValue = value;

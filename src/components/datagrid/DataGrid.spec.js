@@ -48,7 +48,7 @@ describe('DataGrid Component', () => {
         {
           make: '',
           model: '',
-          year: null
+          year: 0
         }
       ]);
       done();

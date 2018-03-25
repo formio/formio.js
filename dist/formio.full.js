@@ -5539,8 +5539,15 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   }, {
     key: 'defaultValue',
     get: function get() {
+      // DataGrid defaults are strange in that they provide the default for a single row vs. the whole value.
       var value = _get(DataGridComponent.prototype.__proto__ || Object.getPrototypeOf(DataGridComponent.prototype), 'defaultValue', this);
-      return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? value : {};
+      var isArray = _lodash2.default.isArray(value);
+      if (isArray && !value.length) {
+        return {};
+      } else if (_lodash2.default.isPlainObject(value)) {
+        return value;
+      }
+      return isArray ? value[0] : value;
     }
   }]);
 
@@ -6334,12 +6341,18 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
 },{"../../utils":56,"../base/Base":4,"lodash":79,"moment":80}],15:[function(require,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.EditGridComponent = undefined;
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -6390,12 +6403,12 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof2(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
@@ -6774,7 +6787,11 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         return;
       }
       if (!Array.isArray(value)) {
-        return;
+        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+          value = [value];
+        } else {
+          return;
+        }
       }
 
       this.dataValue = value;

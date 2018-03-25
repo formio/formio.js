@@ -135,7 +135,14 @@ export class DataGridComponent extends FormioComponents {
 
   get defaultValue() {
     const value = super.defaultValue;
-    return typeof value === 'object' ? value : {};
+    const isArray = _.isArray(value);
+    if (isArray && !value.length) {
+      return {};
+    }
+    else if (_.isPlainObject(value)) {
+      return value;
+    }
+    return isArray ? value[0] : value;
   }
 
   buildRows(data) {
