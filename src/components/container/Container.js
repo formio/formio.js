@@ -31,19 +31,18 @@ export class ContainerComponent extends FormioComponents {
   build() {
     this.createElement();
     if (!this.hasValue) {
-      this.value = {};
+      this.dataValue = {};
     }
-    this.addComponents(this.getContainer(), this.value);
+    this.addComponents(this.getContainer(), this.dataValue);
   }
 
-  get defaultValue() {
-    const value = super.defaultValue;
-    return typeof value === 'object' ? value : {};
+  get emptyValue() {
+    return {};
   }
 
   getValue() {
     if (this.viewOnly) {
-      return this.value;
+      return this.dataValue;
     }
     const value = {};
     _.each(this.components, (component) => _.set(value, component.component.key, component.getValue()));
@@ -55,10 +54,10 @@ export class ContainerComponent extends FormioComponents {
     if (!value || !_.isObject(value)) {
       return;
     }
-    if(this.hasValue && _.isEmpty(this.value)) {
+    if(this.hasValue && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
-    this.value = value;
+    this.dataValue = value;
     _.each(this.components, (component) => {
       if (component.type === 'components') {
         component.setValue(value, flags);

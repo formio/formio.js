@@ -24,7 +24,7 @@ export const Validator = {
   },
   check(component, data) {
     let result = '';
-    const value = component.validateValue;
+    const value = component.validationValue;
     data = data || component.data;
     _.each(component.validators, (name) => {
       if (this.validators.hasOwnProperty(name)) {

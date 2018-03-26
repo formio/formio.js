@@ -139,6 +139,7 @@ export class BaseComponent {
      * @type {{}}
      */
     this.options = _.defaults(_.clone(options), {
+      language: 'en',
       highlightErrors: true
     });
 
@@ -253,12 +254,6 @@ export class BaseComponent {
      * @type {BaseComponent}
      */
     this.root = this;
-
-    /**
-     * The Input mask instance for this component.
-     * @type {InputMask}
-     */
-    this.inputMask = null;
 
     this.options.name = this.options.name || 'data';
 
@@ -693,7 +688,7 @@ export class BaseComponent {
       table.appendChild(this.tbody);
 
       // Add a default value.
-      let dataValue = this.value;
+      let dataValue = this.dataValue;
       if (!dataValue || !dataValue.length) {
         this.addNewValue();
       }
@@ -710,7 +705,7 @@ export class BaseComponent {
   }
 
   get defaultValue() {
-    let defaultValue = '';
+    let defaultValue = this.emptyValue;
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
@@ -751,7 +746,7 @@ export class BaseComponent {
    * Adds a new empty value to the data array.
    */
   addNewValue() {
-    let dataValue = this.value || [];
+    let dataValue = this.dataValue || [];
     if (!Array.isArray(dataValue)) {
       dataValue = [dataValue];
     }
@@ -763,7 +758,7 @@ export class BaseComponent {
     else {
       dataValue.push(defaultValue);
     }
-    this.value = dataValue;
+    this.dataValue = dataValue;
   }
 
   /**
@@ -781,10 +776,7 @@ export class BaseComponent {
    * @param {number} index - The index of the data element to remove.
    */
   removeValue(index) {
-    if (this.hasValue) {
-      this.value = this.value.splice(index, 1);
-      this.triggerChange();
-    }
+    this.splice(index);
     this.buildRows();
   }
 
@@ -797,7 +789,7 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _.each(this.value, (value, index) => {
+    _.each(this.dataValue, (value, index) => {
       const tr = this.ce('tr');
       const td = this.ce('td');
       const input = this.createInput(td);
@@ -1228,7 +1220,7 @@ export class BaseComponent {
     if (input && this.component.inputMask) {
       const mask = FormioUtils.getInputMask(this.component.inputMask);
       this._inputMask = mask;
-      this.inputMask = maskInput({
+      input.mask = maskInput({
         inputElement: input,
         mask
       });
@@ -1291,19 +1283,19 @@ export class BaseComponent {
    * Remove all event handlers.
    */
   destroy(all) {
-    if (this.inputMask) {
-      this.inputMask.destroy();
-    }
-    if (this.events) {
-      _.each(this.eventListeners, (listener) => {
-        if (all || listener.internal) {
-          this.events.off(listener.type, listener.listener);
-        }
-      });
-    }
+    _.each(this.eventListeners, (listener) => {
+      if (all || listener.internal) {
+        this.events.off(listener.type, listener.listener);
+      }
+    });
     _.each(this.eventHandlers, (handler) => {
       if (handler.event) {
         window.removeEventListener(handler.event, handler.func);
+      }
+    });
+    _.each(this.inputs, (input) => {
+      if (input.mask) {
+        input.mask.destroy();
       }
     });
     this.inputs = [];
@@ -1678,7 +1670,7 @@ export class BaseComponent {
     // Set the changed variable.
     const changed = {
       component: this.component,
-      value: this.value,
+      value: this.dataValue,
       flags: flags
     };
 
@@ -1800,10 +1792,42 @@ export class BaseComponent {
   }
 
   /**
-   * Get the static value of this component.
+   * The empty value for this component.
+   *
+   * @return {null}
+   */
+  get emptyValue() {
+    return null;
+  }
+
+  /**
+   * Returns if this component has a value set.
+   *
+   */
+  get hasValue() {
+    return _.has(this.data, this.component.key);
+  }
+
+  /**
+   * Get the value of this component.
+   *
    * @return {*}
    */
   get value() {
+    return this.dataValue;
+  }
+
+  /**
+   * Get the static value of this component.
+   * @return {*}
+   */
+  get dataValue() {
+    if (!this.component.key) {
+      return this.emptyValue;
+    }
+    if (!this.hasValue) {
+      this.dataValue = this.emptyValue;
+    }
     return _.get(this.data, this.component.key, this.emptyValue);
   }
 
@@ -1812,10 +1836,33 @@ export class BaseComponent {
    *
    * @param value
    */
-  set value(value) {
+  set dataValue(value) {
+    if (!this.component.key) {
+      return value;
+    }
     _.set(this.data, this.component.key, value);
+    return value;
   }
 
+  /**
+   * Splice a value from the dataValue.
+   *
+   * @param index
+   */
+  splice(index) {
+    if (this.hasValue) {
+      let dataValue = this.dataValue || [];
+      if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
+        dataValue.splice(index, 1);
+        this.dataValue = dataValue;
+        this.triggerChange();
+      }
+    }
+  }
+
+  /**
+   * Deletes the value of the component.
+   */
   deleteValue() {
     _.unset(this.data, this.component.key);
   }
@@ -1840,7 +1887,7 @@ export class BaseComponent {
       return;
     }
     if (this.viewOnly) {
-      return this.value;
+      return this.dataValue;
     }
     const values = [];
     for (const i in this.inputs) {
@@ -1892,8 +1939,8 @@ export class BaseComponent {
 
     flags = flags || {};
     const value = this.getValue(flags);
-    const changed = flags.changed || this.hasChanged(value, this.value);
-    this.value = value;
+    const changed = flags.changed || this.hasChanged(value, this.dataValue);
+    this.dataValue = value;
     if (this.viewOnly) {
       this.updateViewOnlyValue(value);
     }
@@ -1907,7 +1954,7 @@ export class BaseComponent {
    */
   restoreValue() {
     if (this.hasValue) {
-      this.setValue(this.value, {
+      this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
     }
@@ -2010,12 +2057,12 @@ export class BaseComponent {
   }
 
   getRawValue() {
-    console.warn('component.getRawValue() has been deprecated. Use component.validateValue or component.value instead.');
-    return this.validateValue;
+    console.warn('component.getRawValue() has been deprecated. Use component.validationValue or component.dataValue instead.');
+    return this.validationValue;
   }
 
-  get validateValue() {
-    return this.value;
+  get validationValue() {
+    return this.dataValue;
   }
 
   isEmpty(value) {
@@ -2078,7 +2125,12 @@ export class BaseComponent {
     if (value === null || value === undefined) {
       value = this.defaultValue;
     }
-    this.inputs[index].value = value;
+    if (this.inputs[index].mask) {
+      this.inputs[index].mask.textMaskInputElement.update(value);
+    }
+    else {
+      this.inputs[index].value = value;
+    }
   }
 
   getFlags() {

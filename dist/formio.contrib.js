@@ -43,7 +43,7 @@ var Validator = exports.Validator = {
     var _this = this;
 
     var result = '';
-    var value = component.getRawValue();
+    var value = component.validationValue;
     data = data || component.data;
     _lodash2.default.each(component.validators, function (name) {
       if (_this.validators.hasOwnProperty(name)) {
@@ -463,6 +463,7 @@ var BaseComponent = function () {
      * @type {{}}
      */
     this.options = _lodash2.default.defaults(_lodash2.default.clone(options), {
+      language: 'en',
       highlightErrors: true
     });
 
@@ -577,12 +578,6 @@ var BaseComponent = function () {
      * @type {BaseComponent}
      */
     this.root = this;
-
-    /**
-     * The Input mask instance for this component.
-     * @type {InputMask}
-     */
-    this.inputMask = null;
 
     this.options.name = this.options.name || 'data';
 
@@ -1004,7 +999,7 @@ var BaseComponent = function () {
         table.appendChild(this.tbody);
 
         // Add a default value.
-        var dataValue = _lodash2.default.get(this.data, this.component.key);
+        var dataValue = this.dataValue;
         if (!dataValue || !dataValue.length) {
           this.addNewValue();
         }
@@ -1038,7 +1033,7 @@ var BaseComponent = function () {
   }, {
     key: 'addNewValue',
     value: function addNewValue() {
-      var dataValue = _lodash2.default.get(this.data, this.component.key, []);
+      var dataValue = this.dataValue || [];
       if (!Array.isArray(dataValue)) {
         dataValue = [dataValue];
       }
@@ -1049,7 +1044,7 @@ var BaseComponent = function () {
       } else {
         dataValue.push(defaultValue);
       }
-      _lodash2.default.set(this.data, this.component.key, dataValue);
+      this.dataValue = dataValue;
     }
 
     /**
@@ -1073,10 +1068,7 @@ var BaseComponent = function () {
   }, {
     key: 'removeValue',
     value: function removeValue(index) {
-      if (_lodash2.default.has(this.data, this.component.key)) {
-        _lodash2.default.get(this.data, this.component.key).splice(index, 1);
-        this.triggerChange();
-      }
+      this.splice(index);
       this.buildRows();
     }
 
@@ -1094,7 +1086,7 @@ var BaseComponent = function () {
       }
       this.inputs = [];
       this.tbody.innerHTML = '';
-      _lodash2.default.each(_lodash2.default.get(this.data, this.component.key), function (value, index) {
+      _lodash2.default.each(this.dataValue, function (value, index) {
         var tr = _this3.ce('tr');
         var td = _this3.ce('td');
         var input = _this3.createInput(td);
@@ -1552,7 +1544,7 @@ var BaseComponent = function () {
       if (input && this.component.inputMask) {
         var mask = _utils2.default.getInputMask(this.component.inputMask);
         this._inputMask = mask;
-        this.inputMask = (0, _vanillaTextMask2.default)({
+        input.mask = (0, _vanillaTextMask2.default)({
           inputElement: input,
           mask: mask
         });
@@ -1626,19 +1618,19 @@ var BaseComponent = function () {
     value: function destroy(all) {
       var _this6 = this;
 
-      if (this.inputMask) {
-        this.inputMask.destroy();
-      }
-      if (this.events) {
-        _lodash2.default.each(this.eventListeners, function (listener) {
-          if (all || listener.internal) {
-            _this6.events.off(listener.type, listener.listener);
-          }
-        });
-      }
+      _lodash2.default.each(this.eventListeners, function (listener) {
+        if (all || listener.internal) {
+          _this6.events.off(listener.type, listener.listener);
+        }
+      });
       _lodash2.default.each(this.eventHandlers, function (handler) {
         if (handler.event) {
           window.removeEventListener(handler.event, handler.func);
+        }
+      });
+      _lodash2.default.each(this.inputs, function (input) {
+        if (input.mask) {
+          input.mask.destroy();
         }
       });
       this.inputs = [];
@@ -2002,8 +1994,8 @@ var BaseComponent = function () {
       // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
       if (this.component.clearOnHide !== false) {
         if (!show) {
-          delete this.data[this.component.key];
-        } else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
+          this.deleteValue();
+        } else if (!this.hasValue) {
           // If shown, ensure the default is set.
           this.setValue(this.defaultValue, {
             noUpdateEvent: true
@@ -2047,7 +2039,7 @@ var BaseComponent = function () {
       // Set the changed variable.
       var changed = {
         component: this.component,
-        value: this.value,
+        value: this.dataValue,
         flags: flags
       };
 
@@ -2153,14 +2145,34 @@ var BaseComponent = function () {
         return _this13.quill;
       });
     }
+  }, {
+    key: 'splice',
 
     /**
-     * Get the static value of this component.
-     * @return {*}
+     * Splice a value from the dataValue.
+     *
+     * @param index
+     */
+    value: function splice(index) {
+      if (this.hasValue) {
+        var dataValue = this.dataValue || [];
+        if (_lodash2.default.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
+          dataValue.splice(index, 1);
+          this.dataValue = dataValue;
+          this.triggerChange();
+        }
+      }
+    }
+
+    /**
+     * Deletes the value of the component.
      */
 
   }, {
-    key: 'getValueAt',
+    key: 'deleteValue',
+    value: function deleteValue() {
+      _lodash2.default.unset(this.data, this.component.key);
+    }
 
     /**
      * Get the value at a specific index.
@@ -2168,6 +2180,9 @@ var BaseComponent = function () {
      * @param index
      * @returns {*}
      */
+
+  }, {
+    key: 'getValueAt',
     value: function getValueAt(index) {
       return this.inputs[index].value;
     }
@@ -2185,7 +2200,7 @@ var BaseComponent = function () {
         return;
       }
       if (this.viewOnly) {
-        return this.value;
+        return this.dataValue;
       }
       var values = [];
       for (var i in this.inputs) {
@@ -2214,6 +2229,24 @@ var BaseComponent = function () {
     }
 
     /**
+     * Update the value on change.
+     *
+     * @param flags
+     * @param changed
+     */
+
+  }, {
+    key: 'updateOnChange',
+    value: function updateOnChange(flags, changed) {
+      delete flags.changed;
+      if (!flags.noUpdateEvent && changed) {
+        this.triggerChange(flags);
+        return true;
+      }
+      return false;
+    }
+
+    /**
      * Update a value of this component.
      *
      * @param flags
@@ -2227,17 +2260,14 @@ var BaseComponent = function () {
       }
 
       flags = flags || {};
-      var value = _lodash2.default.get(this.data, this.component.key);
-      _lodash2.default.set(this.data, this.component.key, this.getValue(flags));
+      var value = this.getValue(flags);
+      var changed = flags.changed || this.hasChanged(value, this.dataValue);
+      this.dataValue = value;
       if (this.viewOnly) {
-        this.updateViewOnlyValue(this.value);
+        this.updateViewOnlyValue(value);
       }
 
-      var changed = flags.changed || this.hasChanged(value, _lodash2.default.get(this.data, this.component.key));
-      delete flags.changed;
-      if (!flags.noUpdateEvent && changed) {
-        this.triggerChange(flags);
-      }
+      this.updateOnChange(flags, changed);
       return changed;
     }
 
@@ -2248,13 +2278,13 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      if (_lodash2.default.has(this.data, this.component.key)) {
-        this.setValue(_lodash2.default.get(this.data, this.component.key), {
+      if (this.hasValue) {
+        this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
       } else {
         var defaultValue = this.defaultValue;
-        if (!_lodash2.default.has(this.data, this.component.key) && defaultValue) {
+        if (defaultValue) {
           this.setValue(defaultValue, {
             noUpdateEvent: true
           });
@@ -2350,7 +2380,8 @@ var BaseComponent = function () {
   }, {
     key: 'getRawValue',
     value: function getRawValue() {
-      return _lodash2.default.get(this.data, this.component.key);
+      console.warn('component.getRawValue() has been deprecated. Use component.validationValue or component.dataValue instead.');
+      return this.validationValue;
     }
   }, {
     key: 'isEmpty',
@@ -2421,7 +2452,11 @@ var BaseComponent = function () {
       if (value === null || value === undefined) {
         value = this.defaultValue;
       }
-      this.inputs[index].value = value;
+      if (this.inputs[index].mask) {
+        this.inputs[index].mask.textMaskInputElement.update(value);
+      } else {
+        this.inputs[index].value = value;
+      }
     }
   }, {
     key: 'getFlags',
@@ -2703,7 +2738,7 @@ var BaseComponent = function () {
   }, {
     key: 'defaultValue',
     get: function get() {
-      var defaultValue = '';
+      var defaultValue = this.emptyValue;
       if (this.component.defaultValue) {
         defaultValue = this.component.defaultValue;
       } else if (this.component.customDefaultValue) {
@@ -2762,12 +2797,69 @@ var BaseComponent = function () {
       };
     }
   }, {
+    key: 'emptyValue',
+
+    /**
+     * The empty value for this component.
+     *
+     * @return {null}
+     */
+    get: function get() {
+      return null;
+    }
+
+    /**
+     * Returns if this component has a value set.
+     *
+     */
+
+  }, {
+    key: 'hasValue',
+    get: function get() {
+      return _lodash2.default.has(this.data, this.component.key);
+    }
+
+    /**
+     * Get the value of this component.
+     *
+     * @return {*}
+     */
+
+  }, {
     key: 'value',
     get: function get() {
-      if (!this.data) {
-        return null;
+      return this.dataValue;
+    }
+
+    /**
+     * Get the static value of this component.
+     * @return {*}
+     */
+
+  }, {
+    key: 'dataValue',
+    get: function get() {
+      if (!this.component.key) {
+        return this.emptyValue;
       }
-      return _lodash2.default.get(this.data, this.component.key);
+      if (!this.hasValue) {
+        this.dataValue = this.emptyValue;
+      }
+      return _lodash2.default.get(this.data, this.component.key, this.emptyValue);
+    }
+
+    /**
+     * Sets the static value of this component.
+     *
+     * @param value
+     */
+
+    , set: function set(value) {
+      if (!this.component.key) {
+        return value;
+      }
+      _lodash2.default.set(this.data, this.component.key, value);
+      return value;
     }
   }, {
     key: 'label',
@@ -2786,6 +2878,11 @@ var BaseComponent = function () {
       if (this.labelElement) {
         this.labelElement.innerText = value;
       }
+    }
+  }, {
+    key: 'validationValue',
+    get: function get() {
+      return this.dataValue;
     }
   }, {
     key: 'errors',
@@ -3034,10 +3131,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
   }, {
     key: 'getValue',
     value: function getValue() {
-      if (!this.component.input) {
-        return;
-      }
-      return this.clicked;
+      return this.dataValue;
     }
   }, {
     key: 'build',
@@ -3048,7 +3142,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         this.component.hidden = true;
       }
 
-      this.clicked = false;
+      this.dataValue = false;
       this.hasError = false;
       this.createElement();
       this.createInput(this.element);
@@ -3124,7 +3218,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }, true);
       }
       this.addEventListener(this.buttonElement, 'click', function (event) {
-        _this2.clicked = false;
+        _this2.dataValue = true;
         switch (_this2.component.action) {
           case 'submit':
             event.preventDefault();
@@ -3204,11 +3298,11 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
 
       function getUrlParameter(name) {
-        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
         var results = regex.exec(location.search);
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-      };
+      }
 
       // If this is an OpenID Provider initiated login, perform the click event immediately
       if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
@@ -3307,9 +3401,27 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       this.setDisabled(this.buttonElement, disabled);
     }
   }, {
+    key: 'emptyValue',
+    get: function get() {
+      return false;
+    }
+  }, {
+    key: 'clicked',
+    get: function get() {
+      return this.dataValue;
+    }
+  }, {
     key: 'defaultValue',
     get: function get() {
       return false;
+    }
+  }, {
+    key: 'dataValue',
+    set: function set(value) {
+      if (!this.component.input) {
+        return;
+      }
+      _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'dataValue', value, this);
     }
   }, {
     key: 'className',
@@ -3470,7 +3582,7 @@ var StripeCheckoutComponent = exports.StripeCheckoutComponent = function (_Butto
   _createClass(StripeCheckoutComponent, [{
     key: 'getValue',
     value: function getValue() {
-      return this.value;
+      return this.dataValue;
     }
   }, {
     key: 'setValue',
@@ -4328,13 +4440,13 @@ var FormioUtils = {
   checkCalculated: function checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      rowData[component.key] = FormioUtils.evaluate(component.calculateValue, {
+      _lodash2.default.set(rowData, component.key, FormioUtils.evaluate(component.calculateValue, {
         value: [],
         data: submission ? submission.data : rowData,
         row: rowData,
         util: this,
         component: { component: component }
-      }, 'value');
+      }, 'value'));
     }
   },
 
@@ -4682,6 +4794,49 @@ var FormioUtils = {
     }
 
     return true;
+  },
+  getNumberSeparators: function getNumberSeparators() {
+    var lang = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'en';
+
+    var formattedNumberString = 12345.6789.toLocaleString(lang);
+    return {
+      delimiter: formattedNumberString.match(/12(.*)345/)[1],
+      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+    };
+  },
+  getNumberDecimalLimit: function getNumberDecimalLimit(component) {
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    var decimalLimit = 20;
+    var step = _lodash2.default.get(component, 'validate.step', 'any');
+
+    if (step !== 'any') {
+      var parts = step.toString().split('.');
+      if (parts.length > 1) {
+        decimalLimit = parts[1].length;
+      }
+    }
+
+    return decimalLimit;
+  },
+  getCurrencyAffixes: function getCurrencyAffixes(_ref) {
+    var _ref$currency = _ref.currency,
+        currency = _ref$currency === undefined ? 'USD' : _ref$currency,
+        decimalLimit = _ref.decimalLimit,
+        decimalSeparator = _ref.decimalSeparator,
+        lang = _ref.lang;
+
+    // Get the prefix and suffix from the localized string.
+    var regex = '(.*)?100' + (decimalSeparator === '.' ? '\\.' : decimalSeparator) + '0{' + decimalLimit + '}(.*)?';
+    var parts = 100 .toLocaleString(lang, {
+      style: 'currency',
+      currency: currency,
+      useGrouping: true,
+      maximumFractionDigits: decimalLimit
+    }).replace('.', decimalSeparator).match(new RegExp(regex));
+    return {
+      prefix: parts[1] || '',
+      suffix: parts[2] || ''
+    };
   }
 };
 

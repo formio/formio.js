@@ -42,11 +42,11 @@ export class FileComponent extends BaseComponent {
   }
 
   getValue() {
-    return this.value;
+    return this.dataValue;
   }
 
   setValue(value) {
-    this.value = value || [];
+    this.dataValue = value || [];
     this.refreshDOM();
   }
 
@@ -83,6 +83,11 @@ export class FileComponent extends BaseComponent {
       this.createLabel(this.element);
     }
     this.createDescription(this.element);
+
+    // Disable if needed.
+    if (this.shouldDisable) {
+      this.disabled = true;
+    }
   }
 
   refreshDOM() {
@@ -124,7 +129,7 @@ export class FileComponent extends BaseComponent {
           ]
         )
       ),
-      this.value.map((fileInfo, index) => this.createFileListItem(fileInfo, index))
+      this.dataValue.map((fileInfo, index) => this.createFileListItem(fileInfo, index))
     ]);
   }
 
@@ -133,6 +138,7 @@ export class FileComponent extends BaseComponent {
     return this.ce('input', {
       type: 'file',
       style: 'opacity: 0; position: absolute;',
+      tabindex: -1,
       onChange: () => {
         this.upload(this.hiddenFileInputElement.files);
       }
@@ -153,9 +159,8 @@ export class FileComponent extends BaseComponent {
                       this.options.formio.makeRequest('', fileInfo.url, 'delete');
                     }
                     event.preventDefault();
-                    this.value = this.value.splice(index, 1);
+                    this.splice(index);
                     this.refreshDOM();
-                    this.triggerChange();
                   }
                 }) :
                 null
@@ -177,7 +182,7 @@ export class FileComponent extends BaseComponent {
 
   buildImageList() {
     return this.ce('div', {},
-      this.value.map((fileInfo, index) => this.createImageListItem(fileInfo, index))
+      this.dataValue.map((fileInfo, index) => this.createImageListItem(fileInfo, index))
     );
   }
 
@@ -212,9 +217,8 @@ export class FileComponent extends BaseComponent {
                     this.options.formio.makeRequest('', fileInfo.url, 'delete');
                   }
                   event.preventDefault();
-                  this.value = this.value.splice(index, 1);
+                  this.splice(index);
                   this.refreshDOM();
-                  this.triggerChange();
                 }
               }) :
               null
@@ -230,7 +234,7 @@ export class FileComponent extends BaseComponent {
     // If this is disabled or a single value with a value, don't show the upload div.
     return this.ce('div', {},
       (
-        (!this.disabled && (this.component.multiple || this.value.length === 0)) ?
+        (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
           this.ce('div', {
             class: 'fileSelector',
             onDragover: function(event) {
@@ -495,7 +499,7 @@ export class FileComponent extends BaseComponent {
             .then(fileInfo => {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
               fileInfo.originalName = file.name;
-              this.setValue(this.value.push(fileInfo));
+              this.setValue(this.dataValue.push(fileInfo));
               this.triggerChange();
             })
             .catch(response => {

@@ -60,6 +60,10 @@ export class CheckBoxComponent extends BaseComponent {
     }
   }
 
+  get emptyValue() {
+    return false;
+  }
+
   createElement() {
     let className = `form-check ${this.className}`;
     if (this.component.label) {
@@ -112,6 +116,10 @@ export class CheckBoxComponent extends BaseComponent {
         marginLeft: 0
       });
     }
+  }
+
+  isEmpty(value) {
+    return super.isEmpty(value) || value === false;
   }
 
   createLabel(container, input) {
@@ -219,20 +227,22 @@ export class CheckBoxComponent extends BaseComponent {
     return this.updateValue(flags);
   }
 
-  get value() {
+  get dataValue() {
     if (this.component.name) {
       return _.get(this.data, this.component.name, this.emptyValue);
     }
 
-    return super.validateValue;
+    return super.dataValue;
   }
 
-  set value(value) {
+  set dataValue(value) {
     if (this.component.name) {
-      return _.set(this.data, this.component.name, value);
+      _.set(this.data, this.component.name, value);
+      return value;
     }
 
-    return super.value = value;
+    super.dataValue = value;
+    return value;
   }
 
   getView(value) {

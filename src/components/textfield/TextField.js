@@ -44,4 +44,8 @@ export class TextFieldComponent extends BaseComponent {
     info.changeEvent = 'input';
     return info;
   }
+
+  get emptyValue() {
+    return '';
+  }
 }

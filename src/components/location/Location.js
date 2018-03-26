@@ -39,6 +39,10 @@ export class LocationComponent extends BaseComponent {
     BaseComponent.requireLibrary('googleMaps', 'google.maps.places', src);
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   build() {
     this.element = this.ce('div', {
       id: this.id,

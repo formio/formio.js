@@ -42,6 +42,10 @@ export class FormComponent extends FormioForm {
     });
   }
 
+  get emptyValue() {
+    return {data: {}};
+  }
+
   /**
    * Load the subform.
    */
@@ -114,16 +118,11 @@ export class FormComponent extends FormioForm {
     if (dataValue && !this.component.reference) {
       this.setSubmission(dataValue);
     }
-
-    // Set language after everything is established.
-    if (this.options && this.options.language) {
-      this.language = this.options.language;
-    }
   }
 
   get subData() {
     if (!_.has(this.data, this.component.key)) {
-      _.set(this.data, this.component.key, {data: {}});
+      _.set(this.data, this.component.key, this.emptyValue);
     }
     return _.get(this.data, this.component.key).data;
   }
@@ -162,7 +161,7 @@ export class FormComponent extends FormioForm {
       this.submitted = true;
       return this.submit(true).then(submission => {
         // Set data to submission.
-        this.value = submission;
+        this.dataValue = submission;
         return submission;
       });
     }
@@ -207,9 +206,6 @@ export class FormComponent extends FormioForm {
     // Set the data for this form.
     if (!_.has(this.data, this.component.key)) {
       _.set(this.data, this.component.key, this.defaultValue);
-      if (!_.has(this.data, this.component.key)) {
-        _.set(this.data, this.component.key, {data: {}});
-      }
     }
 
     // Add components using the data of the submission.
@@ -256,14 +252,13 @@ export class FormComponent extends FormioForm {
   setValue(submission, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!submission) {
-      this._submission = {data: {}};
-      this.value = this._submission;
+      this.dataValue = this._submission = this.emptyValue;
       this.readyResolve();
       return;
     }
 
     // Load the subform if we have data.
-    if (submission._id || !_.isEmpty(this.value)) {
+    if (submission._id || !_.isEmpty(this.dataValue)) {
       this.loadSubForm();
     }
 
@@ -292,13 +287,13 @@ export class FormComponent extends FormioForm {
       return true;
     }
     else {
-      const superValue = super.setValue(submission, flags, this.value.data);
+      const superValue = super.setValue(submission, flags, this.dataValue.data);
       this.readyResolve();
       return superValue;
     }
   }
 
   getValue() {
-    return this.value;
+    return this.dataValue;
   }
 }

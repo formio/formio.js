@@ -43,4 +43,8 @@ export class ContentComponent extends BaseComponent {
       this.element.innerHTML = this.interpolate(this.component.html, {data: this.data});
     }
   }
+
+  get emptyValue() {
+    return '';
+  }
 }

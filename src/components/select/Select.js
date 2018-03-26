@@ -173,7 +173,7 @@ export class SelectComponent extends BaseComponent {
     }
 
     option.element = document.createElement('option');
-    if (this.value === option.value) {
+    if (this.dataValue === option.value) {
       option.element.setAttribute('selected', 'selected');
       option.element.selected = 'selected';
     }
@@ -191,7 +191,7 @@ export class SelectComponent extends BaseComponent {
     if (!this.selectOptions.length) {
       if (this.choices) {
         // Add the currently selected choices if they don't already exist.
-        const currentChoices = Array.isArray(this.value) ? this.value : [this.value];
+        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
         _.each(currentChoices, (choice) => {
           this.addCurrentChoices(choice, items);
         });
@@ -255,8 +255,8 @@ export class SelectComponent extends BaseComponent {
     this.loading = false;
 
     // If a value is provided, then select it.
-    if (this.value) {
-      this.setValue(this.value, true);
+    if (this.dataValue) {
+      this.setValue(this.dataValue, true);
     }
     else {
       // If a default value is provided then select it.
@@ -496,7 +496,7 @@ export class SelectComponent extends BaseComponent {
     const tabIndex = input.tabIndex;
     this.addPlaceholder(input);
     this.choices = new Choices(input, choicesOptions);
-    this.choices.itemList.tabIndex = tabIndex;
+    this.choices.itemList.setAttribute('tabIndex', tabIndex);
     this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
@@ -525,9 +525,13 @@ export class SelectComponent extends BaseComponent {
       return;
     }
     if (disabled) {
+      this.setDisabled(this.choices.containerInner, true);
+      this.choices.itemList.removeAttribute('tabIndex');
       this.choices.disable();
     }
     else {
+      this.setDisabled(this.choices.containerInner, false);
+      this.choices.itemList.setAttribute('tabIndex', this.component.tabindex || 0);
       this.choices.enable();
     }
   }
@@ -567,8 +571,8 @@ export class SelectComponent extends BaseComponent {
 
   getValue(flags) {
     flags = flags || {};
-    if (!flags.changed && this.value) {
-      return this.value;
+    if (!flags.changed && this.dataValue) {
+      return this.dataValue;
     }
     let value = '';
     if (this.choices) {
@@ -597,10 +601,10 @@ export class SelectComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    const hasPreviousValue = Array.isArray(this.value) ? this.value.length : this.value;
+    const hasPreviousValue = Array.isArray(this.dataValue) ? this.dataValue.length : this.dataValue;
     const hasValue = Array.isArray(value) ? value.length : value;
-    const changed = flags.changed || this.hasChanged(value, this.value);
-    this.value = value;
+    const changed = flags.changed || this.hasChanged(value, this.dataValue);
+    this.dataValue = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
@@ -618,7 +622,7 @@ export class SelectComponent extends BaseComponent {
     ) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(this.value, true);
+      this.triggerUpdate(this.dataValue, true);
       return changed;
     }
 

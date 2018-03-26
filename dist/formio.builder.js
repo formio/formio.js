@@ -656,7 +656,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         if (component.type === 'components') {
           changed |= component.setValue(value, flags);
         } else if (value && value.hasOwnProperty(component.component.key)) {
-          changed |= component.setValue(value[component.component.key], flags);
+          changed |= component.setValue(_lodash2.default.get(value, component.component.key), flags);
         } else {
           flags.noValidate = true;
           changed |= component.setValue(component.defaultValue, flags);
@@ -750,7 +750,7 @@ var Validator = exports.Validator = {
     var _this = this;
 
     var result = '';
-    var value = component.getRawValue();
+    var value = component.validationValue;
     data = data || component.data;
     _lodash2.default.each(component.validators, function (name) {
       if (_this.validators.hasOwnProperty(name)) {
@@ -1732,6 +1732,9 @@ exports.default = function () {
         key: 'conditional',
         components: _BaseEdit5.BaseEditConditional
       }]
+    }, {
+      type: 'hidden',
+      key: 'type'
     }]
   }].concat(extend, [_utils.EditFormUtils.mergeComponents]));
 };
@@ -1956,6 +1959,7 @@ var BaseComponent = function () {
      * @type {{}}
      */
     this.options = _lodash2.default.defaults(_lodash2.default.clone(options), {
+      language: 'en',
       highlightErrors: true
     });
 
@@ -2070,12 +2074,6 @@ var BaseComponent = function () {
      * @type {BaseComponent}
      */
     this.root = this;
-
-    /**
-     * The Input mask instance for this component.
-     * @type {InputMask}
-     */
-    this.inputMask = null;
 
     this.options.name = this.options.name || 'data';
 
@@ -2497,7 +2495,7 @@ var BaseComponent = function () {
         table.appendChild(this.tbody);
 
         // Add a default value.
-        var dataValue = _lodash2.default.get(this.data, this.component.key);
+        var dataValue = this.dataValue;
         if (!dataValue || !dataValue.length) {
           this.addNewValue();
         }
@@ -2531,7 +2529,7 @@ var BaseComponent = function () {
   }, {
     key: 'addNewValue',
     value: function addNewValue() {
-      var dataValue = _lodash2.default.get(this.data, this.component.key, []);
+      var dataValue = this.dataValue || [];
       if (!Array.isArray(dataValue)) {
         dataValue = [dataValue];
       }
@@ -2542,7 +2540,7 @@ var BaseComponent = function () {
       } else {
         dataValue.push(defaultValue);
       }
-      _lodash2.default.set(this.data, this.component.key, dataValue);
+      this.dataValue = dataValue;
     }
 
     /**
@@ -2566,10 +2564,7 @@ var BaseComponent = function () {
   }, {
     key: 'removeValue',
     value: function removeValue(index) {
-      if (_lodash2.default.has(this.data, this.component.key)) {
-        _lodash2.default.get(this.data, this.component.key).splice(index, 1);
-        this.triggerChange();
-      }
+      this.splice(index);
       this.buildRows();
     }
 
@@ -2587,7 +2582,7 @@ var BaseComponent = function () {
       }
       this.inputs = [];
       this.tbody.innerHTML = '';
-      _lodash2.default.each(_lodash2.default.get(this.data, this.component.key), function (value, index) {
+      _lodash2.default.each(this.dataValue, function (value, index) {
         var tr = _this3.ce('tr');
         var td = _this3.ce('td');
         var input = _this3.createInput(td);
@@ -3045,7 +3040,7 @@ var BaseComponent = function () {
       if (input && this.component.inputMask) {
         var mask = _utils2.default.getInputMask(this.component.inputMask);
         this._inputMask = mask;
-        this.inputMask = (0, _vanillaTextMask2.default)({
+        input.mask = (0, _vanillaTextMask2.default)({
           inputElement: input,
           mask: mask
         });
@@ -3119,19 +3114,19 @@ var BaseComponent = function () {
     value: function destroy(all) {
       var _this6 = this;
 
-      if (this.inputMask) {
-        this.inputMask.destroy();
-      }
-      if (this.events) {
-        _lodash2.default.each(this.eventListeners, function (listener) {
-          if (all || listener.internal) {
-            _this6.events.off(listener.type, listener.listener);
-          }
-        });
-      }
+      _lodash2.default.each(this.eventListeners, function (listener) {
+        if (all || listener.internal) {
+          _this6.events.off(listener.type, listener.listener);
+        }
+      });
       _lodash2.default.each(this.eventHandlers, function (handler) {
         if (handler.event) {
           window.removeEventListener(handler.event, handler.func);
+        }
+      });
+      _lodash2.default.each(this.inputs, function (input) {
+        if (input.mask) {
+          input.mask.destroy();
         }
       });
       this.inputs = [];
@@ -3495,8 +3490,8 @@ var BaseComponent = function () {
       // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
       if (this.component.clearOnHide !== false) {
         if (!show) {
-          delete this.data[this.component.key];
-        } else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
+          this.deleteValue();
+        } else if (!this.hasValue) {
           // If shown, ensure the default is set.
           this.setValue(this.defaultValue, {
             noUpdateEvent: true
@@ -3540,7 +3535,7 @@ var BaseComponent = function () {
       // Set the changed variable.
       var changed = {
         component: this.component,
-        value: this.value,
+        value: this.dataValue,
         flags: flags
       };
 
@@ -3646,14 +3641,34 @@ var BaseComponent = function () {
         return _this13.quill;
       });
     }
+  }, {
+    key: 'splice',
 
     /**
-     * Get the static value of this component.
-     * @return {*}
+     * Splice a value from the dataValue.
+     *
+     * @param index
+     */
+    value: function splice(index) {
+      if (this.hasValue) {
+        var dataValue = this.dataValue || [];
+        if (_lodash2.default.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
+          dataValue.splice(index, 1);
+          this.dataValue = dataValue;
+          this.triggerChange();
+        }
+      }
+    }
+
+    /**
+     * Deletes the value of the component.
      */
 
   }, {
-    key: 'getValueAt',
+    key: 'deleteValue',
+    value: function deleteValue() {
+      _lodash2.default.unset(this.data, this.component.key);
+    }
 
     /**
      * Get the value at a specific index.
@@ -3661,6 +3676,9 @@ var BaseComponent = function () {
      * @param index
      * @returns {*}
      */
+
+  }, {
+    key: 'getValueAt',
     value: function getValueAt(index) {
       return this.inputs[index].value;
     }
@@ -3678,7 +3696,7 @@ var BaseComponent = function () {
         return;
       }
       if (this.viewOnly) {
-        return this.value;
+        return this.dataValue;
       }
       var values = [];
       for (var i in this.inputs) {
@@ -3707,6 +3725,24 @@ var BaseComponent = function () {
     }
 
     /**
+     * Update the value on change.
+     *
+     * @param flags
+     * @param changed
+     */
+
+  }, {
+    key: 'updateOnChange',
+    value: function updateOnChange(flags, changed) {
+      delete flags.changed;
+      if (!flags.noUpdateEvent && changed) {
+        this.triggerChange(flags);
+        return true;
+      }
+      return false;
+    }
+
+    /**
      * Update a value of this component.
      *
      * @param flags
@@ -3720,17 +3756,14 @@ var BaseComponent = function () {
       }
 
       flags = flags || {};
-      var value = _lodash2.default.get(this.data, this.component.key);
-      _lodash2.default.set(this.data, this.component.key, this.getValue(flags));
+      var value = this.getValue(flags);
+      var changed = flags.changed || this.hasChanged(value, this.dataValue);
+      this.dataValue = value;
       if (this.viewOnly) {
-        this.updateViewOnlyValue(this.value);
+        this.updateViewOnlyValue(value);
       }
 
-      var changed = flags.changed || this.hasChanged(value, _lodash2.default.get(this.data, this.component.key));
-      delete flags.changed;
-      if (!flags.noUpdateEvent && changed) {
-        this.triggerChange(flags);
-      }
+      this.updateOnChange(flags, changed);
       return changed;
     }
 
@@ -3741,13 +3774,13 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      if (_lodash2.default.has(this.data, this.component.key)) {
-        this.setValue(_lodash2.default.get(this.data, this.component.key), {
+      if (this.hasValue) {
+        this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
       } else {
         var defaultValue = this.defaultValue;
-        if (!_lodash2.default.has(this.data, this.component.key) && defaultValue) {
+        if (defaultValue) {
           this.setValue(defaultValue, {
             noUpdateEvent: true
           });
@@ -3843,7 +3876,8 @@ var BaseComponent = function () {
   }, {
     key: 'getRawValue',
     value: function getRawValue() {
-      return _lodash2.default.get(this.data, this.component.key);
+      console.warn('component.getRawValue() has been deprecated. Use component.validationValue or component.dataValue instead.');
+      return this.validationValue;
     }
   }, {
     key: 'isEmpty',
@@ -3914,7 +3948,11 @@ var BaseComponent = function () {
       if (value === null || value === undefined) {
         value = this.defaultValue;
       }
-      this.inputs[index].value = value;
+      if (this.inputs[index].mask) {
+        this.inputs[index].mask.textMaskInputElement.update(value);
+      } else {
+        this.inputs[index].value = value;
+      }
     }
   }, {
     key: 'getFlags',
@@ -4196,7 +4234,7 @@ var BaseComponent = function () {
   }, {
     key: 'defaultValue',
     get: function get() {
-      var defaultValue = '';
+      var defaultValue = this.emptyValue;
       if (this.component.defaultValue) {
         defaultValue = this.component.defaultValue;
       } else if (this.component.customDefaultValue) {
@@ -4255,12 +4293,69 @@ var BaseComponent = function () {
       };
     }
   }, {
+    key: 'emptyValue',
+
+    /**
+     * The empty value for this component.
+     *
+     * @return {null}
+     */
+    get: function get() {
+      return null;
+    }
+
+    /**
+     * Returns if this component has a value set.
+     *
+     */
+
+  }, {
+    key: 'hasValue',
+    get: function get() {
+      return _lodash2.default.has(this.data, this.component.key);
+    }
+
+    /**
+     * Get the value of this component.
+     *
+     * @return {*}
+     */
+
+  }, {
     key: 'value',
     get: function get() {
-      if (!this.data) {
-        return null;
+      return this.dataValue;
+    }
+
+    /**
+     * Get the static value of this component.
+     * @return {*}
+     */
+
+  }, {
+    key: 'dataValue',
+    get: function get() {
+      if (!this.component.key) {
+        return this.emptyValue;
       }
-      return _lodash2.default.get(this.data, this.component.key);
+      if (!this.hasValue) {
+        this.dataValue = this.emptyValue;
+      }
+      return _lodash2.default.get(this.data, this.component.key, this.emptyValue);
+    }
+
+    /**
+     * Sets the static value of this component.
+     *
+     * @param value
+     */
+
+    , set: function set(value) {
+      if (!this.component.key) {
+        return value;
+      }
+      _lodash2.default.set(this.data, this.component.key, value);
+      return value;
     }
   }, {
     key: 'label',
@@ -4279,6 +4374,11 @@ var BaseComponent = function () {
       if (this.labelElement) {
         this.labelElement.innerText = value;
       }
+    }
+  }, {
+    key: 'validationValue',
+    get: function get() {
+      return this.dataValue;
     }
   }, {
     key: 'errors',
@@ -5389,10 +5489,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
   }, {
     key: 'getValue',
     value: function getValue() {
-      if (!this.component.input) {
-        return;
-      }
-      return this.clicked;
+      return this.dataValue;
     }
   }, {
     key: 'build',
@@ -5403,7 +5500,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         this.component.hidden = true;
       }
 
-      this.clicked = false;
+      this.dataValue = false;
       this.hasError = false;
       this.createElement();
       this.createInput(this.element);
@@ -5479,7 +5576,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         }, true);
       }
       this.addEventListener(this.buttonElement, 'click', function (event) {
-        _this2.clicked = false;
+        _this2.dataValue = true;
         switch (_this2.component.action) {
           case 'submit':
             event.preventDefault();
@@ -5559,11 +5656,11 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       }
 
       function getUrlParameter(name) {
-        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
         var results = regex.exec(location.search);
         return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
-      };
+      }
 
       // If this is an OpenID Provider initiated login, perform the click event immediately
       if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
@@ -5662,9 +5759,27 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       this.setDisabled(this.buttonElement, disabled);
     }
   }, {
+    key: 'emptyValue',
+    get: function get() {
+      return false;
+    }
+  }, {
+    key: 'clicked',
+    get: function get() {
+      return this.dataValue;
+    }
+  }, {
     key: 'defaultValue',
     get: function get() {
       return false;
+    }
+  }, {
+    key: 'dataValue',
+    set: function set(value) {
+      if (!this.component.input) {
+        return;
+      }
+      _set(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'dataValue', value, this);
     }
   }, {
     key: 'className',
@@ -5831,6 +5946,20 @@ var _createClass = function () {
   };
 }();
 
+var _set = function set(object, property, value, receiver) {
+  var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent !== null) {
+      set(parent, property, value, receiver);
+    }
+  } else if ("value" in desc && desc.writable) {
+    desc.value = value;
+  } else {
+    var setter = desc.set;if (setter !== undefined) {
+      setter.call(receiver, value);
+    }
+  }return value;
+};
+
 var _get = function get(object, property, receiver) {
   if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
     var parent = Object.getPrototypeOf(object);if (parent === null) {
@@ -5980,6 +6109,11 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       }
     }
   }, {
+    key: 'isEmpty',
+    value: function isEmpty(value) {
+      return _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'isEmpty', this).call(this, value) || value === false;
+    }
+  }, {
     key: 'createLabel',
     value: function createLabel(container, input) {
       if (_get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'labelIsHidden', this).call(this)) {
@@ -6035,11 +6169,10 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
     key: 'updateValueByName',
     value: function updateValueByName() {
       var component = this.getRoot().getComponent(this.component.name);
-
       if (component) {
         component.setValue(this.component.value, { changed: true });
       } else {
-        this.data[this.component.name] = this.component.value;
+        _lodash2.default.set(this.data, this.component.name, this.component.value);
       }
     }
   }, {
@@ -6084,16 +6217,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
         this.input.value = 0;
         this.input.checked = 0;
       }
-      this.updateValue(flags);
-    }
-  }, {
-    key: 'getRawValue',
-    value: function getRawValue() {
-      if (this.component.name) {
-        return this.data[this.component.name];
-      }
-
-      return _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'getRawValue', this).call(this);
+      return this.updateValue(flags);
     }
   }, {
     key: 'getView',
@@ -6105,6 +6229,29 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
     value: function destroy() {
       _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'destroy', this).apply(this, Array.prototype.slice.apply(arguments));
       this.removeShortcut();
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return false;
+    }
+  }, {
+    key: 'dataValue',
+    get: function get() {
+      if (this.component.name) {
+        return _lodash2.default.get(this.data, this.component.name, this.emptyValue);
+      }
+
+      return _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'dataValue', this);
+    },
+    set: function set(value) {
+      if (this.component.name) {
+        _lodash2.default.set(this.data, this.component.name, value);
+        return value;
+      }
+
+      _set(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'dataValue', value, this);
+      return value;
     }
   }], [{
     key: 'schema',
@@ -6435,34 +6582,12 @@ function _interopRequireDefault(obj) {
 },{"../Components.form":1}],23:[function(require,module,exports){
 'use strict';
 
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ContainerComponent = undefined;
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
-
-var _get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;if (getter === undefined) {
-      return undefined;
-    }return getter.call(receiver);
-  }
-};
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -6493,12 +6618,12 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof2(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
@@ -6547,20 +6672,20 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
     key: 'build',
     value: function build() {
       this.createElement();
-      if (!_lodash2.default.has(this.data, this.component.key)) {
-        _lodash2.default.set(this.data, this.component.key, {});
+      if (!this.hasValue) {
+        this.dataValue = {};
       }
-      this.addComponents(this.getContainer(), _lodash2.default.get(this.data, this.component.key));
+      this.addComponents(this.getContainer(), this.dataValue);
     }
   }, {
     key: 'getValue',
     value: function getValue() {
       if (this.viewOnly) {
-        return this.value;
+        return this.dataValue;
       }
       var value = {};
       _lodash2.default.each(this.components, function (component) {
-        value[component.component.key] = component.getValue();
+        return _lodash2.default.set(value, component.component.key, component.getValue());
       });
       return value;
     }
@@ -6571,15 +6696,15 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
       if (!value || !_lodash2.default.isObject(value)) {
         return;
       }
-      if (this.data && this.data.hasOwnProperty(this.component.key) && _lodash2.default.isEmpty(this.data[this.component.key])) {
+      if (this.hasValue && _lodash2.default.isEmpty(this.dataValue)) {
         flags.noValidate = true;
       }
-      this.data[this.component.key] = value;
+      this.dataValue = value;
       _lodash2.default.each(this.components, function (component) {
         if (component.type === 'components') {
           component.setValue(value, flags);
-        } else if (value.hasOwnProperty(component.component.key)) {
-          component.setValue(value[component.component.key], flags);
+        } else if (_lodash2.default.has(value, component.component.key)) {
+          component.setValue(_lodash2.default.get(value, component.component.key), flags);
         } else {
           component.data = value;
           component.setValue(component.defaultValue, flags);
@@ -6588,10 +6713,9 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
       this.updateValue(flags);
     }
   }, {
-    key: 'defaultValue',
+    key: 'emptyValue',
     get: function get() {
-      var value = _get(ContainerComponent.prototype.__proto__ || Object.getPrototypeOf(ContainerComponent.prototype), 'defaultValue', this);
-      return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? value : {};
+      return {};
     }
   }]);
 
@@ -6704,6 +6828,11 @@ var ContentComponent = exports.ContentComponent = function (_BaseComponent) {
         this.element.innerHTML = this.interpolate(this.component.html, { data: this.data });
       }
     }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return '';
+    }
   }], [{
     key: 'schema',
     value: function schema() {
@@ -6806,6 +6935,8 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
+var _utils = require('../../utils');
+
 var _Number = require('../number/Number');
 
 function _interopRequireDefault(obj) {
@@ -6863,42 +6994,26 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
   function CurrencyComponent(component, options, data) {
     _classCallCheck(this, CurrencyComponent);
 
+    // Currency should default to have a delimiter unless otherwise specified.
+    if (component && !component.hasOwnProperty('delimiter')) {
+      component.delimiter = true;
+    }
+
     var _this = _possibleConstructorReturn(this, (CurrencyComponent.__proto__ || Object.getPrototypeOf(CurrencyComponent)).call(this, component, options, data));
 
-    _this.currency = _this.component.currency || 'USD';
-    _this.decimalLimit = _this.component.decimalLimit || 2;
-
-    // Get the prefix and suffix from the localized string.
-    var regex = '(.*)?100(' + (_this.decimalSeparator === '.' ? '\\.' : _this.decimalSeparator) + '0{' + _this.decimalLimit + '})?(.*)?';
-    var parts = 100 .toLocaleString(options.language, _this.getFormatOptions()).match(new RegExp(regex));
-    _this.prefix = parts[1] || '';
-    _this.suffix = parts[3] || '';
+    _this.decimalLimit = _lodash2.default.get(_this.component, 'decimalLimit', 2);
+    var affixes = (0, _utils.getCurrencyAffixes)({
+      currency: _this.component.currency,
+      decimalLimit: _this.decimalLimit,
+      decimalSeparator: _this.decimalSeparator,
+      lang: _this.options.language
+    });
+    _this.prefix = affixes.prefix;
+    _this.suffix = affixes.suffix;
     return _this;
   }
 
   _createClass(CurrencyComponent, [{
-    key: 'getFormatOptions',
-    value: function getFormatOptions() {
-      return {
-        style: 'currency',
-        currency: this.currency,
-        useGrouping: true,
-        maximumFractionDigits: _lodash2.default.get(this.component, 'decimalLimit', this.decimalLimit)
-      };
-    }
-  }, {
-    key: 'formatNumber',
-    value: function formatNumber(value) {
-      try {
-        // Strip out the prefix and suffix before parsing. This occurs when numbers are from an old renderer.
-        value = value.replace(this.prefix, '').replace(this.suffix, '');
-      } catch (e) {
-        // If value doesn't have a replace method, continue on as before.
-      }
-
-      return _get(CurrencyComponent.prototype.__proto__ || Object.getPrototypeOf(CurrencyComponent.prototype), 'formatNumber', this).call(this, value);
-    }
-  }, {
     key: 'parseNumber',
     value: function parseNumber(value) {
       // Strip out the prefix and suffix before parsing.
@@ -6909,25 +7024,45 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
   }, {
     key: 'setInputMask',
     value: function setInputMask(input) {
-      this.inputMask = (0, _vanillaTextMask2.default)({
+      input.mask = (0, _vanillaTextMask2.default)({
         inputElement: input,
         mask: (0, _textMaskAddons.createNumberMask)({
           prefix: this.prefix,
           suffix: this.suffix,
           thousandsSeparatorSymbol: _lodash2.default.get(this.component, 'thousandsSeparator', this.delimiter),
           decimalSymbol: _lodash2.default.get(this.component, 'decimalSymbol', this.decimalSeparator),
-          decimalLimit: _lodash2.default.get(this.component, 'decimalLimit', this.decimalLimit),
+          decimalLimit: this.decimalLimit,
           allowNegative: _lodash2.default.get(this.component, 'allowNegative', true),
           allowDecimal: _lodash2.default.get(this.component, 'allowDecimal', true)
         })
       });
+    }
+  }, {
+    key: 'clearInput',
+    value: function clearInput(input) {
+      try {
+        input = input.replace(this.prefix, '').replace(this.suffix, '');
+      } catch (err) {
+        // If value doesn't have a replace method, continue on as before.
+      }
+
+      return _get(CurrencyComponent.prototype.__proto__ || Object.getPrototypeOf(CurrencyComponent.prototype), 'clearInput', this).call(this, input);
+    }
+  }, {
+    key: 'formatValue',
+    value: function formatValue(value) {
+      if (this.component.requireDecimals && value && !(value.indexOf(this.decimalSeparator) !== -1)) {
+        return '' + value + this.decimalSeparator + _lodash2.default.repeat('0', this.decimalLimit);
+      }
+
+      return value;
     }
   }]);
 
   return CurrencyComponent;
 }(_Number.NumberComponent);
 
-},{"../number/Number":52,"lodash":305,"text-mask-addons":320,"vanilla-text-mask":323}],28:[function(require,module,exports){
+},{"../../utils":110,"../number/Number":52,"lodash":305,"text-mask-addons":320,"vanilla-text-mask":323}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7116,7 +7251,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function build() {
       this.createElement();
       this.createLabel(this.element);
-      if (!_lodash2.default.has(this.data, this.component.key) || !_lodash2.default.get(this.data, this.component.key).length) {
+      if (!this.dataValue.length) {
         this.addNewValue();
       }
       this.visibleColumns = true;
@@ -7152,14 +7287,14 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       this.rows = [];
 
       // Check if there is a Min Length Validation
-      if (this.component.validate && this.component.validate.minLength > this.data[this.component.key].length) {
-        var toAdd = this.component.validate.minLength - this.data[this.component.key].length;
+      if (this.component.validate && this.component.validate.minLength > this.dataValue.length) {
+        var toAdd = this.component.validate.minLength - this.dataValue.length;
         for (var i = 0; i < toAdd; i++) {
-          this.data[this.component.key].push({});
+          this.dataValue = this.dataValue.push({});
         }
       }
 
-      this.tableRows = _lodash2.default.get(this.data, this.component.key).map(function (row, rowIndex) {
+      this.tableRows = this.dataValue.map(function (row, rowIndex) {
         return _this2.buildRow(row, rowIndex);
       });
       this.tbody = this.ce('tbody', null, this.tableRows);
@@ -7208,9 +7343,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     key: 'checkAndRemoveAddButton',
     value: function checkAndRemoveAddButton() {
       //check validation and remove add button
-      if (this.component.validate && this.tableElement.lastChild.firstChild && this.component.validate.maxLength <= this.data[this.component.key].length) {
+      if (this.component.validate && this.tableElement.lastChild.firstChild && this.component.validate.maxLength <= this.dataValue.length) {
         this.tableElement.lastChild.firstChild.remove();
-      } else if (this.component.validate && !this.tableElement.lastChild.firstChild && this.component.validate.maxLength > this.data[this.component.key].length) {
+      } else if (this.component.validate && !this.tableElement.lastChild.firstChild && this.component.validate.maxLength > this.dataValue.length) {
         this.tableElement.lastChild.appendChild(this.ce('tr', null, this.ce('td', { colspan: this.component.components.length + 1 }, this.addButton())));
       }
     }
@@ -7219,7 +7354,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function buildRows(data) {
       var _this4 = this;
 
-      _lodash2.default.get(this.data, this.component.key).forEach(function (row, rowIndex) {
+      this.dataValue.forEach(function (row, rowIndex) {
         // New Row.
         if (!_this4.tableRows[rowIndex]) {
           _this4.tableRows[rowIndex] = _this4.buildRow(row, rowIndex, data);
@@ -7234,7 +7369,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           }
       });
       // Remove any extra rows.
-      for (var rowIndex = this.tableRows.length; rowIndex > _lodash2.default.get(this.data, this.component.key).length; rowIndex--) {
+      for (var rowIndex = this.tableRows.length; rowIndex > this.dataValue.length; rowIndex--) {
         this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
         this.tableRows.splice(rowIndex - 1, 1);
       }
@@ -7360,7 +7495,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         }
       }
 
-      _lodash2.default.set(this.data, this.component.key, value);
+      this.dataValue = value;
       this.buildRows();
       _lodash2.default.each(this.rows, function (row, index) {
         if (value.length <= index) {
@@ -7389,14 +7524,14 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     key: 'getValue',
     value: function getValue() {
       if (this.viewOnly) {
-        return this.value;
+        return this.dataValue;
       }
       var values = [];
       _lodash2.default.each(this.rows, function (row) {
         var value = {};
         _lodash2.default.each(row, function (col) {
           if (col && col.component && col.component.key) {
-            value[col.component.key] = col.getValue();
+            _lodash2.default.set(value, col.component.key, col.getValue());
           }
         });
         values.push(value);
@@ -7404,10 +7539,21 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       return values;
     }
   }, {
+    key: 'emptyValue',
+    get: function get() {
+      return [{}];
+    }
+  }, {
     key: 'defaultValue',
     get: function get() {
       var value = _get(DataGridComponent.prototype.__proto__ || Object.getPrototypeOf(DataGridComponent.prototype), 'defaultValue', this);
-      return (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object' ? value : {};
+      if (_lodash2.default.isArray(value)) {
+        return value;
+      }
+      if (value && (typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+        return [value];
+      }
+      return this.emptyValue;
     }
   }]);
 
@@ -7607,12 +7753,6 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       this.component.suffix = true;
       return info;
     }
-
-    /**
-     * Get the default date for the calendar.
-     * @return {*}
-     */
-
   }, {
     key: 'createWrapper',
 
@@ -7682,20 +7822,6 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
       return new Date(timestamp * 1000);
     }
   }, {
-    key: 'getRawValue',
-    value: function getRawValue() {
-      var values = [];
-      for (var i in this.inputs) {
-        if (this.inputs.hasOwnProperty(i)) {
-          if (!this.component.multiple) {
-            return this.getDate(this.inputs[i].value);
-          }
-          values.push(this.getDate(this.inputs[i].value));
-        }
-      }
-      return values;
-    }
-  }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
       if (!this.inputs[index]) {
@@ -7734,6 +7860,17 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
         calendar.setDate(value ? new Date(value) : new Date(), false);
       }
     }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return 0;
+    }
+
+    /**
+     * Get the default date for the calendar.
+     * @return {*}
+     */
+
   }, {
     key: 'defaultDate',
     get: function get() {
@@ -7783,6 +7920,20 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
           calendar.redraw();
         }
       });
+    }
+  }, {
+    key: 'validationValue',
+    get: function get() {
+      var values = [];
+      for (var i in this.inputs) {
+        if (this.inputs.hasOwnProperty(i)) {
+          if (!this.component.multiple) {
+            return this.getDate(this.inputs[i].value);
+          }
+          values.push(this.getDate(this.inputs[i].value));
+        }
+      }
+      return values;
     }
   }]);
 
@@ -7978,8 +8129,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
     var _this = _possibleConstructorReturn(this, (DayComponent.__proto__ || Object.getPrototypeOf(DayComponent)).call(this, component, options, data));
 
     _this.validators.push('date');
-
-    var dateFormatInfo = (0, _utils.getLocaleDateFormatInfo)(options.language);
+    var dateFormatInfo = (0, _utils.getLocaleDateFormatInfo)(_this.options.language);
     _this.dayFirst = _this.component.useLocaleSettings ? dateFormatInfo.dayFirst : _this.component.dayFirst;
     return _this;
   }
@@ -8245,16 +8395,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
      */
 
   }, {
-    key: 'getRawValue',
-
-    /**
-     * Return the raw value.
-     *
-     * @returns {Date}
-     */
-    value: function getRawValue() {
-      return this.date.format();
-    }
+    key: 'getValueAt',
 
     /**
      * Get the value at a specific index.
@@ -8262,9 +8403,6 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
      * @param index
      * @returns {*}
      */
-
-  }, {
-    key: 'getValueAt',
     value: function getValueAt(index) {
       this.inputs[index].value = this.date.format(this.format);
       return this.inputs[index].value;
@@ -8283,6 +8421,11 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
       }
       this._months = [{ value: 0, label: _lodash2.default.get(this.component, 'fields.month.placeholder', '') }, { value: 1, label: this.t('january') }, { value: 2, label: this.t('february') }, { value: 3, label: this.t('march') }, { value: 4, label: this.t('april') }, { value: 5, label: this.t('may') }, { value: 6, label: this.t('june') }, { value: 7, label: this.t('july') }, { value: 8, label: this.t('august') }, { value: 9, label: this.t('september') }, { value: 10, label: this.t('october') }, { value: 11, label: this.t('november') }, { value: 12, label: this.t('december') }];
       return this._months;
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return '';
     }
   }, {
     key: 'disabled',
@@ -8330,6 +8473,18 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
       var year = this.yearInput.value;
       return (0, _moment2.default)([parseInt(year, 10), parseInt(month, 10) - 1, parseInt(day, 10)]);
     }
+
+    /**
+     * Return the raw value.
+     *
+     * @returns {Date}
+     */
+
+  }, {
+    key: 'validationValue',
+    get: function get() {
+      return this.date.format();
+    }
   }]);
 
   return DayComponent;
@@ -8363,12 +8518,18 @@ function _interopRequireDefault(obj) {
 },{"../base/Base.form":6}],35:[function(require,module,exports){
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.EditGridComponent = undefined;
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 var _get = function get(object, property, receiver) {
   if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
@@ -8419,12 +8580,12 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof2(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof2(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
@@ -8472,7 +8633,6 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     var _this = _possibleConstructorReturn(this, (EditGridComponent.__proto__ || Object.getPrototypeOf(EditGridComponent)).call(this, component, options, data));
 
     _this.type = 'datagrid';
-    _this.rows = [];
     _this.editRows = [];
     return _this;
   }
@@ -8512,11 +8672,15 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
   }, {
     key: 'createHeader',
     value: function createHeader() {
-      return this.component.templates.header ? this.ce('li', { class: 'list-group-item list-group-header' }, this.renderTemplate(this.component.templates.header, {
+      var templateHeader = _lodash2.default.get(this.component, 'templates.header');
+      if (!templateHeader) {
+        return this.text('');
+      }
+      return this.ce('li', { class: 'list-group-item list-group-header' }, this.renderTemplate(templateHeader, {
         components: this.component.components,
         util: _utils2.default,
-        value: this.rows
-      })) : this.text('');
+        value: this.dataValue
+      }));
     }
   }, {
     key: 'createRow',
@@ -8524,6 +8688,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       var _this3 = this;
 
       var wrapper = this.ce('li', { class: 'list-group-item' });
+      var rowTemplate = _lodash2.default.get(this.component, 'templates.row', this.defaultRowTemplate);
 
       // Store info so we can detect changes later.
       wrapper.rowData = row;
@@ -8548,7 +8713,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           onClick: this.cancelRow.bind(this, rowIndex)
         }, this.component.removeRow || 'Cancel') : null])])));
       } else {
-        wrapper.appendChild(this.renderTemplate(this.component.templates.row, {
+        wrapper.appendChild(this.renderTemplate(rowTemplate, {
           row: row,
           rowIndex: rowIndex,
           components: this.component.components,
@@ -8570,11 +8735,15 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
   }, {
     key: 'createFooter',
     value: function createFooter() {
-      return this.component.templates.footer ? this.ce('li', { class: 'list-group-item list-group-footer' }, this.renderTemplate(this.component.templates.footer, {
+      var footerTemplate = _lodash2.default.get(this.component, 'templates.footer');
+      if (!footerTemplate) {
+        return this.text('');
+      }
+      return this.ce('li', { class: 'list-group-item list-group-footer' }, this.renderTemplate(footerTemplate, {
         components: this.component.components,
         util: _utils2.default,
-        value: this.rows
-      })) : this.text('');
+        value: this.dataValue
+      }));
     }
   }, {
     key: 'checkData',
@@ -8668,7 +8837,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     key: 'editRow',
     value: function editRow(rowIndex) {
       this.editRows[rowIndex].isOpen = true;
-      this.editRows[rowIndex].data = _lodash2.default.cloneDeep(this.rows[rowIndex]);
+      this.editRows[rowIndex].data = _lodash2.default.cloneDeep(this.dataValue[rowIndex]);
       this.refreshDOM();
     }
   }, {
@@ -8682,13 +8851,13 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       }
       this.removeRowComponents(rowIndex);
       // Remove if new.
-      if (!this.rows[rowIndex]) {
+      if (!this.dataValue[rowIndex]) {
         this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
         this.editRows.splice(rowIndex, 1);
-        this.rows.splice(rowIndex, 1);
+        this.splice(rowIndex);
       } else {
         this.editRows[rowIndex].isOpen = false;
-        this.editRows[rowIndex].data = this.rows[rowIndex];
+        this.editRows[rowIndex].data = this.dataValue[rowIndex];
       }
       this.refreshDOM();
     }
@@ -8705,7 +8874,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         return;
       }
       this.removeRowComponents(rowIndex);
-      this.rows[rowIndex] = this.editRows[rowIndex].data;
+      this.dataValue[rowIndex] = this.editRows[rowIndex].data;
       this.editRows[rowIndex].isOpen = false;
       this.checkValidity(this.data, true);
       this.updateValue();
@@ -8718,7 +8887,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         return;
       }
       this.removeRowComponents(rowIndex);
-      this.rows.splice(rowIndex, 1);
+      this.splice(rowIndex);
       this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
       this.updateValue();
@@ -8829,13 +8998,16 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         return;
       }
       if (!Array.isArray(value)) {
-        return;
+        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+          value = [value];
+        } else {
+          return;
+        }
       }
 
-      _lodash2.default.set(this.data, this.component.key, value);
-      this.rows = value;
+      this.dataValue = value;
       // Refresh editRow data when data changes.
-      this.rows.forEach(function (row, rowIndex) {
+      this.dataValue.forEach(function (row, rowIndex) {
         if (_this9.editRows[rowIndex]) {
           _this9.editRows[rowIndex].data = row;
         } else {
@@ -8846,8 +9018,8 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         }
       });
       // Remove any extra edit rows.
-      if (this.rows.length < this.editRows.length) {
-        for (var rowIndex = this.editRows.length - 1; rowIndex >= this.rows.length; rowIndex--) {
+      if (this.dataValue.length < this.editRows.length) {
+        for (var rowIndex = this.editRows.length - 1; rowIndex >= this.dataValue.length; rowIndex--) {
           this.removeRowComponents(rowIndex);
           this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
           this.editRows.splice(rowIndex, 1);
@@ -8865,7 +9037,17 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
   }, {
     key: 'getValue',
     value: function getValue() {
-      return this.rows;
+      return this.dataValue;
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return [];
+    }
+  }, {
+    key: 'defaultRowTemplate',
+    get: function get() {
+      return '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        <div class="col-sm-2">\n          {{ row[component.key] }}\n        </div>\n      {% }) %}\n      <div class="col-sm-2">\n        <div class="btn-group pull-right">\n          <div class="btn btn-default editRow">Edit</div>\n          <div class="btn btn-danger removeRow">Delete</div>\n        </div>\n      </div>\n    </div>';
     }
   }, {
     key: 'defaultValue',
@@ -9302,12 +9484,12 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   _createClass(FileComponent, [{
     key: 'getValue',
     value: function getValue() {
-      return _lodash2.default.get(this.data, this.component.key);
+      return this.dataValue;
     }
   }, {
     key: 'setValue',
     value: function setValue(value) {
-      _lodash2.default.set(this.data, this.component.key, value || []);
+      this.dataValue = value || [];
       this.refreshDOM();
     }
   }, {
@@ -9340,6 +9522,11 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         this.createLabel(this.element);
       }
       this.createDescription(this.element);
+
+      // Disable if needed.
+      if (this.shouldDisable) {
+        this.disabled = true;
+      }
     }
   }, {
     key: 'refreshDOM',
@@ -9371,7 +9558,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
     value: function buildFileList() {
       var _this2 = this;
 
-      return this.ce('ul', { class: 'list-group list-group-striped' }, [this.ce('li', { class: 'list-group-item list-group-header hidden-xs hidden-sm' }, this.ce('div', { class: 'row' }, [this.ce('div', { class: 'col-md-1' }), this.ce('div', { class: 'col-md-9' }, this.ce('strong', {}, 'File Name')), this.ce('div', { class: 'col-md-2' }, this.ce('strong', {}, 'Size'))])), _lodash2.default.get(this.data, this.component.key).map(function (fileInfo, index) {
+      return this.ce('ul', { class: 'list-group list-group-striped' }, [this.ce('li', { class: 'list-group-item list-group-header hidden-xs hidden-sm' }, this.ce('div', { class: 'row' }, [this.ce('div', { class: 'col-md-1' }), this.ce('div', { class: 'col-md-9' }, this.ce('strong', {}, 'File Name')), this.ce('div', { class: 'col-md-2' }, this.ce('strong', {}, 'Size'))])), this.dataValue.map(function (fileInfo, index) {
         return _this2.createFileListItem(fileInfo, index);
       })]);
     }
@@ -9384,6 +9571,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       return this.ce('input', {
         type: 'file',
         style: 'opacity: 0; position: absolute;',
+        tabindex: -1,
         onChange: function onChange() {
           _this3.upload(_this3.hiddenFileInputElement.files);
         }
@@ -9401,9 +9589,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             _this4.options.formio.makeRequest('', fileInfo.url, 'delete');
           }
           event.preventDefault();
-          _lodash2.default.get(_this4.data, _this4.component.key).splice(index, 1);
+          _this4.splice(index);
           _this4.refreshDOM();
-          _this4.triggerChange();
         }
       }) : null), this.ce('div', { class: 'col-md-9' }, this.createFileLink(fileInfo)), this.ce('div', { class: 'col-md-2' }, this.fileSize(fileInfo.size))]));
     }
@@ -9420,7 +9607,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
     value: function buildImageList() {
       var _this5 = this;
 
-      return this.ce('div', {}, _lodash2.default.get(this.data, this.component.key).map(function (fileInfo, index) {
+      return this.ce('div', {}, this.dataValue.map(function (fileInfo, index) {
         return _this5.createImageListItem(fileInfo, index);
       }));
     }
@@ -9448,9 +9635,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             _this6.options.formio.makeRequest('', fileInfo.url, 'delete');
           }
           event.preventDefault();
-          _lodash2.default.get(_this6.data, _this6.component.key).splice(index, 1);
+          _this6.splice(index);
           _this6.refreshDOM();
-          _this6.triggerChange();
         }
       }) : null]));
     }
@@ -9462,7 +9648,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       // Drop event must change this pointer so need a reference to parent this.
       var element = this;
       // If this is disabled or a single value with a value, don't show the upload div.
-      return this.ce('div', {}, !this.disabled && (this.component.multiple || _lodash2.default.get(this.data, this.component.key).length === 0) ? this.ce('div', {
+      return this.ce('div', {}, !this.disabled && (this.component.multiple || this.dataValue.length === 0) ? this.ce('div', {
         class: 'fileSelector',
         onDragover: function onDragover(event) {
           this.className = 'fileSelector fileDragOver';
@@ -9697,7 +9883,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             }, _this9.component.url).then(function (fileInfo) {
               _this9.removeChildFrom(uploadStatus, _this9.uploadStatusList);
               fileInfo.originalName = file.name;
-              _this9.setValue(_lodash2.default.get(_this9.data, _this9.component.key, []).push(fileInfo));
+              _this9.setValue(_this9.dataValue.push(fileInfo));
               _this9.triggerChange();
             }).catch(function (response) {
               fileUpload.status = 'error';
@@ -9728,6 +9914,11 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         alert(response);
       });
       event.preventDefault();
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return [];
     }
   }, {
     key: 'defaultValue',
@@ -9898,12 +10089,12 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
     return _this;
   }
 
-  /**
-   * Load the subform.
-   */
-
   _createClass(FormComponent, [{
     key: 'loadSubForm',
+
+    /**
+     * Load the subform.
+     */
     value: function loadSubForm() {
       // Only load the subform if the subform isn't loaded and the conditions apply.
       if (this.subFormLoaded || !_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, this.root ? this.root.data : this.data)) {
@@ -9964,11 +10155,6 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       if (dataValue && !this.component.reference) {
         this.setSubmission(dataValue);
       }
-
-      // Set language after everything is established.
-      if (this.options && this.options.language) {
-        this.language = this.options.language;
-      }
     }
   }, {
     key: 'checkValidity',
@@ -10013,7 +10199,8 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.submitted = true;
         return this.submit(true).then(function (submission) {
           // Set data to submission.
-          return _this2.data[_this2.component.key] = submission;
+          _this2.dataValue = submission;
+          return submission;
         });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeNext', this).call(this);
@@ -10061,9 +10248,6 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       // Set the data for this form.
       if (!_lodash2.default.has(this.data, this.component.key)) {
         _lodash2.default.set(this.data, this.component.key, this.defaultValue);
-        if (!_lodash2.default.has(this.data, this.component.key)) {
-          _lodash2.default.set(this.data, this.component.key, { data: {} });
-        }
       }
 
       // Add components using the data of the submission.
@@ -10119,14 +10303,13 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
       flags = this.getFlags.apply(this, arguments);
       if (!submission) {
-        this._submission = { data: {} };
-        _lodash2.default.set(this.data, this.component.key, this._submission);
+        this.dataValue = this._submission = this.emptyValue;
         this.readyResolve();
         return;
       }
 
       // Load the subform if we have data.
-      if (submission._id || !_lodash2.default.isEmpty(_lodash2.default.get(this.data, this.component.key))) {
+      if (submission._id || !_lodash2.default.isEmpty(this.dataValue)) {
         this.loadSubForm();
       }
 
@@ -10154,7 +10337,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         // Assume value has changed.
         return true;
       } else {
-        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, _lodash2.default.get(this.data, this.component.key).data);
+        var superValue = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags, this.dataValue.data);
         this.readyResolve();
         return superValue;
       }
@@ -10162,13 +10345,18 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   }, {
     key: 'getValue',
     value: function getValue() {
-      return _lodash2.default.get(this.data, this.component.key);
+      return this.dataValue;
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return { data: {} };
     }
   }, {
     key: 'subData',
     get: function get() {
       if (!_lodash2.default.has(this.data, this.component.key)) {
-        _lodash2.default.set(this.data, this.component.key, { data: {} });
+        _lodash2.default.set(this.data, this.component.key, this.emptyValue);
       }
       return _lodash2.default.get(this.data, this.component.key).data;
     }
@@ -10859,6 +11047,11 @@ var LocationComponent = exports.LocationComponent = function (_BaseComponent) {
         });
       });
     }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return '';
+    }
   }]);
 
   return LocationComponent;
@@ -10980,6 +11173,10 @@ var _textMaskAddons = require('text-mask-addons');
 
 var _Base = require('../base/Base');
 
+var _utils = require('../../utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -11045,63 +11242,35 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
 
     _this.validators = _this.validators.concat(['min', 'max']);
 
-    var formattedNumberString = 12345.6789.toLocaleString(options.language || 'en');
+    var separators = _utils2.default.getNumberSeparators(_this.options.language);
 
-    _this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || formattedNumberString.match(/345(.*)67/)[1];
+    _this.decimalSeparator = options.decimalSeparator = options.decimalSeparator || separators.decimalSeparator;
 
-    if (component.delimiter) {
+    if (_this.component.delimiter) {
       if (options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      _this.delimiter = options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
+      _this.delimiter = options.thousandsSeparator || separators.delimiter;
     } else {
       _this.delimiter = '';
     }
 
-    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-    _this.decimalLimit = 20;
-    if (_this.component.validate && _this.component.validate.step && _this.component.validate.step !== 'any') {
-      var parts = _this.component.validate.step.toString().split('.');
-      if (parts.length > 1) {
-        _this.decimalLimit = parts[1].length;
-      }
+    _this.decimalLimit = _utils2.default.getNumberDecimalLimit(_this.component);
+
+    // Currencies to override BrowserLanguage Config. Object key {}
+    if (_lodash2.default.has(_this.options, 'languageOverride.' + _this.options.language)) {
+      var override = _lodash2.default.get(_this.options, 'languageOverride.' + _this.options.language);
+      _this.decimalSeparator = override.decimalSeparator;
+      _this.delimiter = override.delimiter;
     }
     return _this;
   }
 
   _createClass(NumberComponent, [{
-    key: 'getFormatOptions',
-    value: function getFormatOptions() {
-      return {
-        style: 'decimal',
-        useGrouping: true,
-        maximumFractionDigits: _lodash2.default.get(this.component, 'decimalLimit', this.decimalLimit)
-      };
-    }
-  }, {
-    key: 'formatNumber',
-    value: function formatNumber(value) {
-      // If not a number, return empty string.
-      if (isNaN(value)) {
-        return '';
-      }
-
-      // If empty string, zero or other, don't format.
-      if (!value) {
-        return value;
-      }
-
-      if (this.component.validate && this.component.validate.integer) {
-        return parseInt(value, 10).toLocaleString(this.options.language || 'en', this.getFormatOptions());
-      } else {
-        return parseFloat(value).toLocaleString(this.options.language || 'en', this.getFormatOptions());
-      }
-    }
-  }, {
     key: 'parseNumber',
     value: function parseNumber(value) {
-      // Remove thousands separators and convert decimal separator to dot.
+      // Remove delimiters and convert decimal separator to dot.
       value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
 
       if (this.component.validate && this.component.validate.integer) {
@@ -11113,7 +11282,8 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
   }, {
     key: 'setInputMask',
     value: function setInputMask(input) {
-      this.inputMask = (0, _vanillaTextMask2.default)({
+      input.setAttribute('pattern', '\\d*');
+      input.mask = (0, _vanillaTextMask2.default)({
         inputElement: input,
         mask: (0, _textMaskAddons.createNumberMask)({
           prefix: '',
@@ -11151,16 +11321,39 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
       return this.parseNumber(val);
     }
   }, {
+    key: 'clearInput',
+    value: function clearInput(input) {
+      var value = parseFloat(input);
+
+      if (!_lodash2.default.isNaN(value)) {
+        value = String(value).replace('.', this.decimalSeparator);
+      } else {
+        value = null;
+      }
+
+      return value;
+    }
+  }, {
+    key: 'formatValue',
+    value: function formatValue(value) {
+      return value;
+    }
+  }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
-      this.inputs[index].value = this.formatNumber(value);
+      return _get(NumberComponent.prototype.__proto__ || Object.getPrototypeOf(NumberComponent.prototype), 'setValueAt', this).call(this, index, this.formatValue(this.clearInput(value)));
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return 0;
     }
   }]);
 
   return NumberComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":7,"lodash":305,"text-mask-addons":320,"vanilla-text-mask":323}],53:[function(require,module,exports){
+},{"../../utils":110,"../base/Base":7,"lodash":305,"text-mask-addons":320,"vanilla-text-mask":323}],53:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11833,6 +12026,10 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       var labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
       var wrappers = [];
 
+      if (this.component.inputType === 'radio') {
+        this.info.attr.name += this.id;
+      }
+
       _lodash2.default.each(this.component.values, function (value) {
         var wrapperClass = 'form-check ' + _this2.optionWrapperClass;
         var labelWrapper = _this2.ce('div', {
@@ -11848,7 +12045,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
         var labelSpan = _this2.ce('span');
 
         // Determine the attributes for this input.
-        var inputId = '' + _this2.component.key + _this2.row + '-' + value.value;
+        var inputId = '' + _this2.id + _this2.row + '-' + value.value;
         _this2.info.attr.id = inputId;
         _this2.info.attr.value = value.value;
         label.setAttribute('for', _this2.info.attr.id);
@@ -11931,7 +12128,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
     key: 'getValue',
     value: function getValue() {
       if (this.viewOnly) {
-        return this.value;
+        return this.dataValue;
       }
       var value = '';
       _lodash2.default.each(this.inputs, function (input) {
@@ -11988,7 +12185,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
       var changed = _get(RadioComponent.prototype.__proto__ || Object.getPrototypeOf(RadioComponent.prototype), 'updateValue', this).call(this, value, flags);
       if (changed) {
         //add/remove selected option class
-        var _value = _lodash2.default.get(this.data, this.component.key);
+        var _value = this.dataValue;
         var optionSelectedClass = 'radio-selected';
 
         _lodash2.default.each(this.wrappers, function (wrapper, index) {
@@ -12841,7 +13038,7 @@ var SelectComponent = function (_BaseComponent) {
       }
 
       option.element = document.createElement('option');
-      if (this.value === option.value) {
+      if (this.dataValue === option.value) {
         option.element.setAttribute('selected', 'selected');
         option.element.selected = 'selected';
       }
@@ -12862,7 +13059,7 @@ var SelectComponent = function (_BaseComponent) {
       if (!this.selectOptions.length) {
         if (this.choices) {
           // Add the currently selected choices if they don't already exist.
-          var currentChoices = Array.isArray(this.value) ? this.value : [this.value];
+          var currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
           _lodash2.default.each(currentChoices, function (choice) {
             _this3.addCurrentChoices(choice, items);
           });
@@ -12926,8 +13123,8 @@ var SelectComponent = function (_BaseComponent) {
       this.loading = false;
 
       // If a value is provided, then select it.
-      if (this.value) {
-        this.setValue(this.value, true);
+      if (this.dataValue) {
+        this.setValue(this.dataValue, true);
       } else {
         // If a default value is provided then select it.
         var defaultValue = this.defaultValue;
@@ -13152,7 +13349,7 @@ var SelectComponent = function (_BaseComponent) {
       var tabIndex = input.tabIndex;
       this.addPlaceholder(input);
       this.choices = new _choices2.default(input, choicesOptions);
-      this.choices.itemList.tabIndex = tabIndex;
+      this.choices.itemList.setAttribute('tabIndex', tabIndex);
       this.setInputStyles(this.choices.containerOuter);
 
       // If a search field is provided, then add an event listener to update items on search.
@@ -13220,8 +13417,8 @@ var SelectComponent = function (_BaseComponent) {
     key: 'getValue',
     value: function getValue(flags) {
       flags = flags || {};
-      if (!flags.changed && this.value) {
-        return this.value;
+      if (!flags.changed && this.dataValue) {
+        return this.dataValue;
       }
       var value = '';
       if (this.choices) {
@@ -13246,21 +13443,22 @@ var SelectComponent = function (_BaseComponent) {
     key: 'setValue',
     value: function setValue(value, flags) {
       flags = this.getFlags.apply(this, arguments);
-      var hasPreviousValue = Array.isArray(this.value) ? this.value.length : this.value;
+      var hasPreviousValue = Array.isArray(this.dataValue) ? this.dataValue.length : this.dataValue;
       var hasValue = Array.isArray(value) ? value.length : value;
-      _lodash2.default.set(this.data, this.component.key, value);
+      var changed = flags.changed || this.hasChanged(value, this.dataValue);
+      this.dataValue = value;
 
       // Do not set the value if we are loading... that will happen after it is done.
       if (this.loading) {
-        return;
+        return changed;
       }
 
       // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
       if (this.component.searchField && this.component.lazyLoad && !this.lazyLoadInit && !this.active && !this.selectOptions.length && hasValue) {
         this.loading = true;
         this.lazyLoadInit = true;
-        this.triggerUpdate(this.value, true);
-        return;
+        this.triggerUpdate(this.dataValue, true);
+        return changed;
       }
 
       // Add the value options.
@@ -13292,7 +13490,9 @@ var SelectComponent = function (_BaseComponent) {
           });
         }
       }
-      this.updateValue(flags);
+
+      this.updateOnChange(flags, changed);
+      return changed;
     }
 
     /**
@@ -13381,8 +13581,12 @@ var SelectComponent = function (_BaseComponent) {
         return;
       }
       if (disabled) {
+        this.setDisabled(this.choices.containerInner, true);
+        this.choices.itemList.removeAttribute('tabIndex');
         this.choices.disable();
       } else {
+        this.setDisabled(this.choices.containerInner, false);
+        this.choices.itemList.setAttribute('tabIndex', this.component.tabindex || 0);
         this.choices.enable();
       }
     }
@@ -13558,7 +13762,7 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
     key: 'getValue',
     value: function getValue() {
       if (this.viewOnly) {
-        return this.value;
+        return this.dataValue;
       }
       var value = {};
       _lodash2.default.each(this.inputs, function (input) {
@@ -14108,7 +14312,7 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
       var _this4 = this;
 
       if (this.viewOnly) {
-        return this.value;
+        return this.dataValue;
       }
       var value = {};
       var key = 'data[' + this.component.key + ']';
@@ -15257,6 +15461,43 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         return this.input;
       }
 
+      // Lazy load the quill css.
+      _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + this.component.wysiwyg.theme + '.css' }], true);
+
+      // Lazy load the quill library.
+      this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
+        _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
+        _this2.quill.root.spellcheck = _this2.component.spellcheck;
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        var txtArea = document.createElement('textarea');
+        txtArea.setAttribute('class', 'quill-source-code');
+        _this2.quill.addContainer('ql-custom').appendChild(txtArea);
+
+        // Allows users to skip toolbar items when tabbing though form
+        var elm = document.querySelectorAll('.ql-formats > button');
+        for (var i = 0; i < elm.length; i++) {
+          elm[i].setAttribute('tabindex', '-1');
+        }
+
+        var qlSource = document.querySelector('.ql-source');
+        if (qlSource) {
+          qlSource.addEventListener('click', function () {
+            if (txtArea.style.display === 'inherit') {
+              _this2.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+            }
+            txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
+          });
+        }
+        /** END CODEBLOCK **/
+
+        _this2.quill.on('text-change', function () {
+          txtArea.value = _this2.quill.root.innerHTML;
+          _this2.updateValue(true);
+        });
+        return _this2.input;
+      });
+
       // Normalize the configurations.
       if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
         console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
@@ -15346,7 +15587,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
     key: 'getValue',
     value: function getValue() {
       if (this.viewOnly) {
-        return this.value;
+        return this.dataValue;
       }
 
       if (!this.component.wysiwyg && !this.component.editor) {
@@ -15515,6 +15756,11 @@ var TextFieldComponent = exports.TextFieldComponent = function (_BaseComponent) 
       }
       info.changeEvent = 'input';
       return info;
+    }
+  }, {
+    key: 'emptyValue',
+    get: function get() {
+      return '';
     }
   }], [{
     key: 'schema',
@@ -16886,8 +17132,6 @@ function _inherits(subClass, superClass) {
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-_i18next2.default.initialized = false;
-
 // Initialize the available forms.
 _formio2.default.forms = {};
 
@@ -17094,10 +17338,9 @@ var FormioForm = function (_FormioComponents) {
     _this2.shortcuts = [];
 
     // Set language after everything is established.
-    if (options && options.language) {
-      i18n.lng = options.language;
-      _this2.language = options.language;
-    }
+    _this2.localize().then(function () {
+      _this2.language = _this2.options.language;
+    });
     return _this2;
   }
 
@@ -17466,7 +17709,7 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'setValue',
     value: function setValue(submission, flags, data) {
-      data = data || this.data;
+      data = data || _lodash2.default.cloneDeep(this.data);
       if (!submission) {
         return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, data, flags);
       }
@@ -17532,22 +17775,20 @@ var FormioForm = function (_FormioComponents) {
 
       return this.onElement.then(function () {
         _this9.clear();
-        //this.showElement(false);
-        return _this9.localize().then(function () {
-          _this9.build();
-          _this9.isBuilt = true;
-          _this9.onResize();
-          _this9.on('resetForm', function () {
-            return _this9.reset();
-          }, true);
-          _this9.on('refreshData', function () {
-            return _this9.updateValue();
-          });
-          setTimeout(function () {
-            _this9.onChange();
-            _this9.emit('render');
-          }, 1);
+        _this9.showElement(false);
+        _this9.build();
+        _this9.isBuilt = true;
+        _this9.onResize();
+        _this9.on('resetForm', function () {
+          return _this9.reset();
+        }, true);
+        _this9.on('refreshData', function () {
+          return _this9.updateValue();
         });
+        setTimeout(function () {
+          _this9.onChange();
+          _this9.emit('render');
+        }, 1);
       });
     }
 
@@ -19860,7 +20101,7 @@ window.addEventListener('message', function (event) {
  * DO NOT DELETE THIS! THIS WILL BREAK THE PDF RENDERING IF YOU DO.
  */
 
-"use strict";
+'use strict';
 
 /**
  * Taken from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
@@ -21414,13 +21655,13 @@ var FormioUtils = {
   checkCalculated: function checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      rowData[component.key] = FormioUtils.evaluate(component.calculateValue, {
+      _lodash2.default.set(rowData, component.key, FormioUtils.evaluate(component.calculateValue, {
         value: [],
         data: submission ? submission.data : rowData,
         row: rowData,
         util: this,
         component: { component: component }
-      }, 'value');
+      }, 'value'));
     }
   },
 
@@ -21768,6 +22009,49 @@ var FormioUtils = {
     }
 
     return true;
+  },
+  getNumberSeparators: function getNumberSeparators() {
+    var lang = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'en';
+
+    var formattedNumberString = 12345.6789.toLocaleString(lang);
+    return {
+      delimiter: formattedNumberString.match(/12(.*)345/)[1],
+      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+    };
+  },
+  getNumberDecimalLimit: function getNumberDecimalLimit(component) {
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    var decimalLimit = 20;
+    var step = _lodash2.default.get(component, 'validate.step', 'any');
+
+    if (step !== 'any') {
+      var parts = step.toString().split('.');
+      if (parts.length > 1) {
+        decimalLimit = parts[1].length;
+      }
+    }
+
+    return decimalLimit;
+  },
+  getCurrencyAffixes: function getCurrencyAffixes(_ref) {
+    var _ref$currency = _ref.currency,
+        currency = _ref$currency === undefined ? 'USD' : _ref$currency,
+        decimalLimit = _ref.decimalLimit,
+        decimalSeparator = _ref.decimalSeparator,
+        lang = _ref.lang;
+
+    // Get the prefix and suffix from the localized string.
+    var regex = '(.*)?100' + (decimalSeparator === '.' ? '\\.' : decimalSeparator) + '0{' + decimalLimit + '}(.*)?';
+    var parts = 100 .toLocaleString(lang, {
+      style: 'currency',
+      currency: currency,
+      useGrouping: true,
+      maximumFractionDigits: decimalLimit
+    }).replace('.', decimalSeparator).match(new RegExp(regex));
+    return {
+      prefix: parts[1] || '',
+      suffix: parts[2] || ''
+    };
   }
 };
 

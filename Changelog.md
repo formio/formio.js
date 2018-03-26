@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.30.0
+### Fixed
+ - Required validator for Checkbox component.
+ - Radio and SelectBoxes components for the case with multiple nested forms.
+ - Number and Currency components default value.
+ - Input mask problems where a single instance was used to manage multiple inputs.
+ - Issues with onChange events not firing for Select components.
+ - Streamlined the language inititalization.
+ 
+### Added
+ - Better data handling using getters and setters.
+ 
+### Changed
+ - Deprecating "getRawValue" with reverse compatibility in favor of component.dataValue.
+ - Made currency component to have a delimiter unless specified otherwise.
+
 ## 2.29.13
 ### Fixed
  - Problem with some crashes within the file component.
@@ -70,7 +86,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.29.2
 ### Changed
- - Upgraded i18next to 10.4.1 
+ - Upgraded i18next to 10.4.1
 
 ### Fixed
  - Problem where DataGrid could add duplicate columns.

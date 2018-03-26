@@ -23,6 +23,7 @@ export const component = {
     'eq': ''
   },
   'type': 'currency',
+  'requireDecimals': true,
   'delimiter': true,
   'tags': [
 

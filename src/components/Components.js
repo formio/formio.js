@@ -443,7 +443,7 @@ export class FormioComponents extends BaseComponent {
         changed |= component.setValue(value, flags);
       }
       else if (value && value.hasOwnProperty(component.component.key)) {
-        changed |= component.setValue(value[component.component.key], flags);
+        changed |= component.setValue(_.get(value, component.component.key), flags);
       }
       else {
         flags.noValidate = true;

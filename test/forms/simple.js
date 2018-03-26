@@ -15,8 +15,7 @@ module.exports = {
           email: 'test@example.com',
           password: '123test',
           verifyPassword: '123test',
-          date: Harness.getDate(),
-          submit: false
+          date: Harness.getDate()
         }
       });
       done();
