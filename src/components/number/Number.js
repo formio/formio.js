@@ -2,71 +2,45 @@ import maskInput from 'vanilla-text-mask';
 import _ from 'lodash';
 import {createNumberMask} from 'text-mask-addons';
 import {BaseComponent} from '../base/Base';
+import FormioUtils from '../../utils';
 
 export class NumberComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.validators = this.validators.concat(['min', 'max']);
 
-    const formattedNumberString = (12345.6789).toLocaleString(options.language || 'en');
+    const separators = FormioUtils.getNumberSeparators(this.options.language);
 
     this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
-      || formattedNumberString.match(/345(.*)67/)[1];
+      || separators.decimalSeparator;
 
-    if (component.delimiter) {
+    if (this.component.delimiter) {
       if (options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = options.thousandsSeparator || formattedNumberString.match(/12(.*)345/)[1];
+      this.delimiter = options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = '';
     }
 
-    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
-    this.decimalLimit = 20;
-    if (
-      this.component.validate &&
-      this.component.validate.step &&
-      this.component.validate.step !== 'any'
-    ) {
-      const parts = this.component.validate.step.toString().split('.');
-      if (parts.length > 1) {
-        this.decimalLimit = parts[1].length;
-      }
+    this.decimalLimit = FormioUtils.getNumberDecimalLimit(this.component);
+
+    // Currencies to override BrowserLanguage Config. Object key {}
+    if (_.has(this.options, `languageOverride.${this.options.language}`)) {
+      const override = _.get(this.options, `languageOverride.${this.options.language}`);
+      this.decimalSeparator = override.decimalSeparator;
+      this.delimiter = override.delimiter;
     }
   }
 
-  getFormatOptions() {
-    return {
-      style: 'decimal',
-      useGrouping: true,
-      maximumFractionDigits: _.get(this.component, 'decimalLimit', this.decimalLimit)
-    };
-  }
-
-  formatNumber(value) {
-    // If not a number, return empty string.
-    if (isNaN(value)) {
-      return '';
-    }
-
-    // If empty string, zero or other, don't format.
-    if (!value) {
-      return value;
-    }
-
-    if (this.component.validate && this.component.validate.integer) {
-      return parseInt(value, 10).toLocaleString(this.options.language || 'en', this.getFormatOptions());
-    }
-    else {
-      return parseFloat(value).toLocaleString(this.options.language || 'en', this.getFormatOptions());
-    }
+  get emptyValue() {
+    return 0;
   }
 
   parseNumber(value) {
-    // Remove thousands separators and convert decimal separator to dot.
+    // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
 
     if (this.component.validate && this.component.validate.integer) {
@@ -78,7 +52,8 @@ export class NumberComponent extends BaseComponent {
   }
 
   setInputMask(input) {
-    this.inputMask = maskInput({
+    input.setAttribute('pattern', '\\d*');
+    input.mask = maskInput({
       inputElement: input,
       mask: createNumberMask({
         prefix: '',
@@ -115,7 +90,24 @@ export class NumberComponent extends BaseComponent {
     return this.parseNumber(val);
   }
 
+  clearInput(input) {
+    let value = parseFloat(input);
+
+    if (!_.isNaN(value)) {
+      value = String(value).replace('.', this.decimalSeparator);
+    }
+    else {
+      value = null;
+    }
+
+    return value;
+  }
+
+  formatValue(value) {
+    return value;
+  }
+
   setValueAt(index, value) {
-    this.inputs[index].value = this.formatNumber(value);
+    return super.setValueAt(index, this.formatValue(this.clearInput(value)));
   }
 }

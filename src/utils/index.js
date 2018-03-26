@@ -316,8 +316,8 @@ const FormioUtils = {
       if (_.isString(component.calculateValue)) {
         try {
           const util = this;
-          rowData[component.key] = (new Function('data', 'row', 'util',
-            `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util);
+          _.set(rowData, component.key, (new Function('data', 'row', 'util',
+            `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util));
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -325,11 +325,11 @@ const FormioUtils = {
       }
       else {
         try {
-          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {
+          _.set(rowData, component.key, this.jsonLogic.apply(component.calculateValue, {
             data,
             row,
             _
-          });
+          }));
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -701,7 +701,47 @@ const FormioUtils = {
     }
 
     return true;
-  }
+  },
+  getNumberSeparators(lang = 'en') {
+    const formattedNumberString = (12345.6789).toLocaleString(lang);
+    return {
+      delimiter: formattedNumberString.match(/12(.*)345/)[1],
+      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+    };
+  },
+  getNumberDecimalLimit(component) {
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    let decimalLimit = 20;
+    const step = _.get(component, 'validate.step', 'any');
+
+    if (step !== 'any') {
+      const parts = step.toString().split('.');
+      if (parts.length > 1) {
+        decimalLimit = parts[1].length;
+      }
+    }
+
+    return decimalLimit;
+  },
+  getCurrencyAffixes({
+    currency = 'USD',
+    decimalLimit,
+    decimalSeparator,
+    lang,
+  }) {
+    // Get the prefix and suffix from the localized string.
+    const regex = `(.*)?100${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}(.*)?`;
+    const parts = (100).toLocaleString(lang, {
+      style: 'currency',
+      currency,
+      useGrouping: true,
+      maximumFractionDigits: decimalLimit
+    }).replace('.', decimalSeparator).match(new RegExp(regex));
+    return {
+      prefix: parts[1] || '',
+      suffix: parts[2] || ''
+    };
+  },
 };
 
 module.exports = global.FormioUtils = FormioUtils;

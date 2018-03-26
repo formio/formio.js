@@ -36,7 +36,7 @@ export class SelectBoxesComponent extends RadioComponent {
 
   getValue() {
     if (this.viewOnly) {
-      return this.value;
+      return this.dataValue;
     }
     const value = {};
     _.each(this.inputs, (input) => {

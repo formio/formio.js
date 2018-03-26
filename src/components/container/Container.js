@@ -12,25 +12,22 @@ export class ContainerComponent extends FormioComponents {
     this.element = this.ce('div', {
       class: `formio-container-component ${this.component.customClass}`
     });
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {};
+    if (!this.hasValue) {
+      this.dataValue = {};
     }
-    this.addComponents(this.element, this.data[this.component.key]);
+    this.addComponents(this.element, this.dataValue);
   }
 
-  get defaultValue() {
-    const value = super.defaultValue;
-    return typeof value === 'object' ? value : {};
+  get emptyValue() {
+    return {};
   }
 
   getValue() {
     if (this.viewOnly) {
-      return this.value;
+      return this.dataValue;
     }
     const value = {};
-    _.each(this.components, (component) => {
-      value[component.component.key] = component.getValue();
-    });
+    _.each(this.components, (component) => _.set(value, component.component.key, component.getValue()));
     return value;
   }
 
@@ -39,16 +36,16 @@ export class ContainerComponent extends FormioComponents {
     if (!value || !_.isObject(value)) {
       return;
     }
-    if(this.data && this.data.hasOwnProperty(this.component.key) && _.isEmpty(this.data[this.component.key])) {
+    if(this.hasValue && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
-    this.data[this.component.key] = value;
+    this.dataValue = value;
     _.each(this.components, (component) => {
       if (component.type === 'components') {
         component.setValue(value, flags);
       }
-      else if (value.hasOwnProperty(component.component.key)) {
-        component.setValue(value[component.component.key], flags);
+      else if (_.has(value, component.component.key)) {
+        component.setValue(_.get(value, component.component.key), flags);
       }
       else {
         component.data = value;

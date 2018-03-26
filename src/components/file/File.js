@@ -12,19 +12,16 @@ export class FileComponent extends BaseComponent {
     };
   }
 
-  getValue() {
-    return this.data[this.component.key];
+  get emptyValue() {
+    return [];
   }
 
-  addFileInfo(fileInfo) {
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = [];
-    }
-    this.data[this.component.key].push(fileInfo);
+  getValue() {
+    return this.dataValue;
   }
 
   setValue(value) {
-    this.data[this.component.key] = value || [];
+    this.dataValue = value || [];
     this.refreshDOM();
   }
 
@@ -61,6 +58,11 @@ export class FileComponent extends BaseComponent {
       this.createLabel(this.element);
     }
     this.createDescription(this.element);
+
+    // Disable if needed.
+    if (this.shouldDisable) {
+      this.disabled = true;
+    }
   }
 
   refreshDOM() {
@@ -102,7 +104,7 @@ export class FileComponent extends BaseComponent {
           ]
         )
       ),
-      this.data[this.component.key].map((fileInfo, index) => this.createFileListItem(fileInfo, index))
+      this.dataValue.map((fileInfo, index) => this.createFileListItem(fileInfo, index))
     ]);
   }
 
@@ -132,9 +134,8 @@ export class FileComponent extends BaseComponent {
                       this.options.formio.makeRequest('', fileInfo.url, 'delete');
                     }
                     event.preventDefault();
-                    this.data[this.component.key].splice(index, 1);
+                    this.splice(index);
                     this.refreshDOM();
-                    this.triggerChange();
                   }
                 }) :
                 null
@@ -156,7 +157,7 @@ export class FileComponent extends BaseComponent {
 
   buildImageList() {
     return this.ce('div', {},
-      this.data[this.component.key].map((fileInfo, index) => this.createImageListItem(fileInfo, index))
+      this.dataValue.map((fileInfo, index) => this.createImageListItem(fileInfo, index))
     );
   }
 
@@ -191,9 +192,8 @@ export class FileComponent extends BaseComponent {
                     this.options.formio.makeRequest('', fileInfo.url, 'delete');
                   }
                   event.preventDefault();
-                  this.data[this.component.key].splice(index, 1);
+                  this.splice(index);
                   this.refreshDOM();
-                  this.triggerChange();
                 }
               }) :
               null
@@ -209,7 +209,7 @@ export class FileComponent extends BaseComponent {
     // If this is disabled or a single value with a value, don't show the upload div.
     return this.ce('div', {},
       (
-        (!this.disabled && (this.component.multiple || this.data[this.component.key].length === 0)) ?
+        (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
           this.ce('div', {
             class: 'fileSelector',
             onDragover: function(event) {
@@ -484,8 +484,7 @@ export class FileComponent extends BaseComponent {
             .then(fileInfo => {
               this.removeChildFrom(uploadStatus, this.uploadStatusList);
               fileInfo.originalName = file.name;
-              this.addFileInfo(fileInfo);
-              this.refreshDOM();
+              this.setValue(this.dataValue.push(fileInfo));
               this.triggerChange();
             })
             .catch(response => {

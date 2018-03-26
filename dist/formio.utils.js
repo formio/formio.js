@@ -320,17 +320,17 @@ var FormioUtils = {
       if (_lodash2.default.isString(component.calculateValue)) {
         try {
           var util = this;
-          rowData[component.key] = new Function('data', 'row', 'util', 'var value = [];' + component.calculateValue.toString() + '; return value;')(data, row, util);
+          _lodash2.default.set(rowData, component.key, new Function('data', 'row', 'util', 'var value = [];' + component.calculateValue.toString() + '; return value;')(data, row, util));
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
       } else {
         try {
-          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {
+          _lodash2.default.set(rowData, component.key, this.jsonLogic.apply(component.calculateValue, {
             data: data,
             row: row,
             _: _lodash2.default
-          });
+          }));
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
@@ -679,6 +679,49 @@ var FormioUtils = {
     }
 
     return true;
+  },
+  getNumberSeparators: function getNumberSeparators() {
+    var lang = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'en';
+
+    var formattedNumberString = 12345.6789.toLocaleString(lang);
+    return {
+      delimiter: formattedNumberString.match(/12(.*)345/)[1],
+      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+    };
+  },
+  getNumberDecimalLimit: function getNumberDecimalLimit(component) {
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    var decimalLimit = 20;
+    var step = _lodash2.default.get(component, 'validate.step', 'any');
+
+    if (step !== 'any') {
+      var parts = step.toString().split('.');
+      if (parts.length > 1) {
+        decimalLimit = parts[1].length;
+      }
+    }
+
+    return decimalLimit;
+  },
+  getCurrencyAffixes: function getCurrencyAffixes(_ref) {
+    var _ref$currency = _ref.currency,
+        currency = _ref$currency === undefined ? 'USD' : _ref$currency,
+        decimalLimit = _ref.decimalLimit,
+        decimalSeparator = _ref.decimalSeparator,
+        lang = _ref.lang;
+
+    // Get the prefix and suffix from the localized string.
+    var regex = '(.*)?100' + (decimalSeparator === '.' ? '\\.' : decimalSeparator) + '0{' + decimalLimit + '}(.*)?';
+    var parts = 100 .toLocaleString(lang, {
+      style: 'currency',
+      currency: currency,
+      useGrouping: true,
+      maximumFractionDigits: decimalLimit
+    }).replace('.', decimalSeparator).match(new RegExp(regex));
+    return {
+      prefix: parts[1] || '',
+      suffix: parts[2] || ''
+    };
   }
 };
 

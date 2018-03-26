@@ -1,12 +1,9 @@
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
-
 import Formio from './formio';
 import Promise from 'native-promise-only';
 import {FormioComponents} from './components/Components';
-
-i18next.initialized = false;
 
 // Initialize the available forms.
 Formio.forms = {};
@@ -207,10 +204,9 @@ export default class FormioForm extends FormioComponents {
     this.shortcuts = [];
 
     // Set language after everything is established.
-    if (options && options.language) {
-      i18n.lng = options.language;
-      this.language = options.language;
-    }
+    this.localize().then(() => {
+      this.language = this.options.language;
+    });
   }
 
   /**
@@ -729,17 +725,15 @@ export default class FormioForm extends FormioComponents {
     return this.onElement.then(() => {
       this.clear();
       this.showElement(false);
-      return this.localize().then(() => {
-        this.build();
-        this.isBuilt = true;
-        this.onResize();
-        this.on('resetForm', () => this.reset(), true);
-        this.on('refreshData', () => this.updateValue());
-        setTimeout(() => {
-          this.onChange();
-          this.emit('render');
-        }, 1);
-      });
+      this.build();
+      this.isBuilt = true;
+      this.onResize();
+      this.on('resetForm', () => this.reset(), true);
+      this.on('refreshData', () => this.updateValue());
+      setTimeout(() => {
+        this.onChange();
+        this.emit('render');
+      }, 1);
     });
   }
 
