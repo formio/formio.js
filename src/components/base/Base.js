@@ -245,7 +245,7 @@ export class BaseComponent {
     this.eventListeners.push({
       type: type,
       listener: cb,
-      internal: internal
+      internal
     });
     return this.events.on(type, cb);
   }

@@ -111,6 +111,7 @@ export class FileComponent extends BaseComponent {
     return this.ce('input', {
       type: 'file',
       style: 'opacity: 0; position: absolute;',
+      tabindex: -1, // prevent focus
       onChange: () => {
         this.upload(this.hiddenFileInputElement.files);
       }
@@ -229,26 +230,36 @@ export class FileComponent extends BaseComponent {
           [
             this.ce('i', {class: this.iconClass('cloud-upload')}),
             this.text(' Drop files to attach, or '),
-            this.ce('a', {
-              href: '#',
-              onClick: event => {
-                event.preventDefault();
-                // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
-                // a click event on it.
-                if (typeof this.hiddenFileInputElement.trigger === 'function') {
-                  this.hiddenFileInputElement.trigger('click');
-                }
-                else {
-                  this.hiddenFileInputElement.click();
-                }
-              },
-              class: 'browse'
-            }, 'browse')
+            this.buildBrowseLink()
           ]
           ) :
           this.ce('div')
       )
     );
+  }
+
+  buildBrowseLink() {
+    this.browseLink = this.ce('a', {
+      href: '#',
+      onClick: (event) => {
+        event.preventDefault();
+        // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+        // a click event on it.
+        if (typeof this.hiddenFileInputElement.trigger === 'function') {
+          this.hiddenFileInputElement.trigger('click');
+        }
+        else {
+          this.hiddenFileInputElement.click();
+        }
+      },
+      class: 'browse'
+    }, 'browse');
+
+    if (this.component.autofocus) {
+      this.on('render', () => this.browseLink.focus(), true);
+    }
+
+    return this.browseLink;
   }
 
   buildUploadStatusList(container) {

@@ -196,9 +196,15 @@ export class DayComponent extends BaseComponent {
     // Add the columns to the day select in the right order.
     if (this.dayFirst && !_.get(this.component, 'fields.day.hide', false)) {
       inputGroup.appendChild(dayColumn);
+      if (this.component.autofocus) {
+        this.dayInput.setAttribute('autofocus', 'true');
+      }
     }
     if (!_.get(this.component, 'fields.month.hide', false)) {
       inputGroup.appendChild(monthColumn);
+      if (this.component.autofocus) {
+        this.monthInput.setAttribute('autofocus', 'true');
+      }
     }
     if (!this.dayFirst && !_.get(this.component, 'fields.day.hide', false)) {
       inputGroup.appendChild(dayColumn);
