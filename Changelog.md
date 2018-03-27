@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 ### Added
- - `moment` library in calculated value.
+ - `moment` library in calculated value and advanced conditional.
 
 ## 2.30.0
 ### Fixed

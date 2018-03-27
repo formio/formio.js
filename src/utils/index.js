@@ -315,8 +315,8 @@ const FormioUtils = {
       const data = submission ? submission.data : rowData;
       if (_.isString(component.calculateValue)) {
         try {
-          _.set(rowData, component.key, (new Function('data', 'row', 'util', 'moment',
-            `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, this, moment));
+          _.set(rowData, component.key, (new Function('component', 'data', 'row', 'util', 'moment',
+            `var value = [];${component.calculateValue.toString()}; return value;`))(component, data, row, this, moment));
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -381,8 +381,8 @@ const FormioUtils = {
    */
   checkCustomConditional(component, custom, row, data, variable, onError) {
     try {
-      return (new Function('component', 'row', 'data',
-        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, row, data);
+      return (new Function('component', 'data', 'row', 'util', 'moment',
+        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, data, row, this, moment);
     }
     catch (e) {
       console.warn(`An error occurred in a condition statement for component ${component.key}`, e);
