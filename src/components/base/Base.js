@@ -1723,7 +1723,6 @@ export class BaseComponent {
     flags.noCheck = true;
     let changed = false;
 
-    // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === 'string') {
       try {
         const value = (new Function('component', 'row', 'data',
