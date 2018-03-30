@@ -36,7 +36,7 @@ export class ContainerComponent extends FormioComponents {
     if (!value || !_.isObject(value)) {
       return;
     }
-    if(this.hasValue && _.isEmpty(this.dataValue)) {
+    if (this.hasValue && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
     this.dataValue = value;
