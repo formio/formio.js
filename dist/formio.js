@@ -484,8 +484,8 @@ var Formio = function () {
     }
   }, {
     key: 'currentUser',
-    value: function currentUser() {
-      return Formio.currentUser(this);
+    value: function currentUser(options) {
+      return Formio.currentUser(this, options);
     }
   }, {
     key: 'accessInfo',
@@ -1172,24 +1172,26 @@ var Formio = function () {
     }
   }, {
     key: 'currentUser',
-    value: function currentUser(formio) {
+    value: function currentUser(formio, options) {
       var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
       projectUrl += '/current';
       var user = this.getUser();
       if (user) {
         return Formio.pluginAlter('wrapStaticRequestPromise', _nativePromiseOnly2.default.resolve(user), {
           url: projectUrl,
-          method: 'GET'
+          method: 'GET',
+          options: options
         });
       }
       var token = Formio.getToken();
       if (!token) {
         return Formio.pluginAlter('wrapStaticRequestPromise', _nativePromiseOnly2.default.resolve(null), {
           url: projectUrl,
-          method: 'GET'
+          method: 'GET',
+          options: options
         });
       }
-      return Formio.makeRequest(formio, 'currentUser', projectUrl).then(function (response) {
+      return Formio.makeRequest(formio, 'currentUser', projectUrl, 'GET', null, options).then(function (response) {
         Formio.setUser(response);
         return response;
       });

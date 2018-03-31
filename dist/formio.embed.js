@@ -742,7 +742,7 @@ var Validator = exports.Validator = {
         var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         // Allow emails to be valid if the component is pristine and no value is provided.
-        return component.pristine && !value || re.test(value);
+        return !value || re.test(value);
       }
     },
     date: {
@@ -3277,7 +3277,6 @@ var BaseComponent = function () {
       flags.noCheck = true;
       var changed = false;
 
-      // If this is a string, then use eval to evalulate it.
       if (typeof this.component.calculateValue === 'string') {
         try {
           var value = new Function('component', 'row', 'data', 'value = []; ' + this.component.calculateValue + '; return value;')(this, this.data, data);
@@ -5311,7 +5310,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       if (this.component.validate && this.component.validate.minLength > this.dataValue.length) {
         var toAdd = this.component.validate.minLength - this.dataValue.length;
         for (var i = 0; i < toAdd; i++) {
-          this.dataValue = this.dataValue.push({});
+          this.dataValue.push({});
         }
       }
 
@@ -5373,6 +5372,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function buildRows(data) {
       var _this4 = this;
 
+      var addRemoveButton = this.addRemoveButton();
+
       this.dataValue.forEach(function (row, rowIndex) {
         // New Row.
         if (!_this4.tableRows[rowIndex]) {
@@ -5386,6 +5387,12 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
             _this4.tbody.replaceChild(newRow, _this4.tableRows[rowIndex]);
             _this4.tableRows[rowIndex] = newRow;
           }
+
+        if (addRemoveButton) {
+          _this4.ensureRemoveButtonIsPresent(rowIndex);
+        } else {
+          _this4.ensureRemoveButtonIsAbsent(rowIndex);
+        }
       });
       // Remove any extra rows.
       for (var rowIndex = this.tableRows.length; rowIndex > this.dataValue.length; rowIndex--) {
@@ -5396,6 +5403,28 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       this.checkAndRemoveAddButton();
     }
   }, {
+    key: 'ensureRemoveButtonIsPresent',
+    value: function ensureRemoveButtonIsPresent(index) {
+      var row = this.tableRows[index];
+
+      if (row.children.length > this.component.components.length) {
+        return;
+      }
+
+      row.appendChild(this.ce('td', null, this.removeButton(index)));
+    }
+  }, {
+    key: 'ensureRemoveButtonIsAbsent',
+    value: function ensureRemoveButtonIsAbsent(index) {
+      var row = this.tableRows[index];
+
+      if (row.children.length === this.component.components.length) {
+        return;
+      }
+
+      row.removeChild(row.lastChild);
+    }
+  }, {
     key: 'buildRow',
     value: function buildRow(row, index) {
       var _this5 = this;
@@ -5403,10 +5432,15 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       this.rows[index] = {};
       var element = this.ce('tr', null, [this.component.components.map(function (col, colIndex) {
         return _this5.buildComponent(col, colIndex, row, index);
-      }), !this.shouldDisable ? this.ce('td', null, this.removeButton(index)) : null]);
+      }), this.addRemoveButton() ? this.ce('td', null, this.removeButton(index)) : null]);
       element.data = _lodash2.default.cloneDeep(row);
       element.visibleColumns = _lodash2.default.cloneDeep(this.visibleColumns);
       return element;
+    }
+  }, {
+    key: 'addRemoveButton',
+    value: function addRemoveButton() {
+      return !this.shouldDisable && this.component.validate && this.dataValue.length > this.component.validate.minLength;
     }
   }, {
     key: 'removeRowComponents',
@@ -7480,7 +7514,8 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             }, _this9.component.url).then(function (fileInfo) {
               _this9.removeChildFrom(uploadStatus, _this9.uploadStatusList);
               fileInfo.originalName = file.name;
-              _this9.setValue(_this9.dataValue.push(fileInfo));
+              _this9.dataValue.push(fileInfo);
+              _this9.refreshDOM();
               _this9.triggerChange();
             }).catch(function (response) {
               fileUpload.status = 'error';
@@ -13225,8 +13260,8 @@ var Formio = function () {
     }
   }, {
     key: 'currentUser',
-    value: function currentUser() {
-      return Formio.currentUser(this);
+    value: function currentUser(options) {
+      return Formio.currentUser(this, options);
     }
   }, {
     key: 'accessInfo',
@@ -13913,24 +13948,26 @@ var Formio = function () {
     }
   }, {
     key: 'currentUser',
-    value: function currentUser(formio) {
+    value: function currentUser(formio, options) {
       var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
       projectUrl += '/current';
       var user = this.getUser();
       if (user) {
         return Formio.pluginAlter('wrapStaticRequestPromise', _nativePromiseOnly2.default.resolve(user), {
           url: projectUrl,
-          method: 'GET'
+          method: 'GET',
+          options: options
         });
       }
       var token = Formio.getToken();
       if (!token) {
         return Formio.pluginAlter('wrapStaticRequestPromise', _nativePromiseOnly2.default.resolve(null), {
           url: projectUrl,
-          method: 'GET'
+          method: 'GET',
+          options: options
         });
       }
-      return Formio.makeRequest(formio, 'currentUser', projectUrl).then(function (response) {
+      return Formio.makeRequest(formio, 'currentUser', projectUrl, 'GET', null, options).then(function (response) {
         Formio.setUser(response);
         return response;
       });
@@ -15744,8 +15781,7 @@ var FormioUtils = {
       var data = submission ? submission.data : rowData;
       if (_lodash2.default.isString(component.calculateValue)) {
         try {
-          var util = this;
-          _lodash2.default.set(rowData, component.key, new Function('data', 'row', 'util', 'var value = [];' + component.calculateValue.toString() + '; return value;')(data, row, util));
+          _lodash2.default.set(rowData, component.key, new Function('component', 'data', 'row', 'util', 'moment', 'var value = [];' + component.calculateValue.toString() + '; return value;')(component, data, row, this, _moment2.default));
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
@@ -15807,7 +15843,7 @@ var FormioUtils = {
    */
   checkCustomConditional: function checkCustomConditional(component, custom, row, data, variable, onError) {
     try {
-      return new Function('component', 'row', 'data', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, row, data);
+      return new Function('component', 'data', 'row', 'util', 'moment', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, data, row, this, _moment2.default);
     } catch (e) {
       console.warn('An error occurred in a condition statement for component ' + component.key, e);
       return onError;
@@ -15980,25 +16016,24 @@ var FormioUtils = {
       return null;
     }
 
-    var dateSetting = new Date(date);
-    if (FormioUtils.isValidDate(dateSetting)) {
-      return dateSetting;
+    var dateSetting = (0, _moment2.default)(date);
+    if (dateSetting.isValid()) {
+      return dateSetting.toDate();
     }
 
     try {
-      // Moment constant might be used in eval.
-      var moment = _moment2.default; // eslint-disable-line no-unused-vars
-      dateSetting = new Date(eval(date));
+      var value = new Function('moment', 'return ' + date + ';')(_moment2.default);
+      dateSetting = (0, _moment2.default)(value);
     } catch (e) {
       return null;
     }
 
     // Ensure this is a date.
-    if (!FormioUtils.isValidDate(dateSetting)) {
-      dateSetting = null;
+    if (!dateSetting.isValid()) {
+      return null;
     }
 
-    return dateSetting;
+    return dateSetting.toDate();
   },
   isValidDate: function isValidDate(date) {
     return _lodash2.default.isDate(date) && !_lodash2.default.isNaN(date.getDate());

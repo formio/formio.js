@@ -170,7 +170,7 @@ var Validator = exports.Validator = {
         var re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         // Allow emails to be valid if the component is pristine and no value is provided.
-        return component.pristine && !value || re.test(value);
+        return !value || re.test(value);
       }
     },
     date: {
@@ -2071,7 +2071,6 @@ var BaseComponent = function () {
       flags.noCheck = true;
       var changed = false;
 
-      // If this is a string, then use eval to evalulate it.
       if (typeof this.component.calculateValue === 'string') {
         try {
           var value = new Function('component', 'row', 'data', 'value = []; ' + this.component.calculateValue + '; return value;')(this, this.data, data);
@@ -4083,8 +4082,7 @@ var FormioUtils = {
       var data = submission ? submission.data : rowData;
       if (_lodash2.default.isString(component.calculateValue)) {
         try {
-          var util = this;
-          _lodash2.default.set(rowData, component.key, new Function('data', 'row', 'util', 'var value = [];' + component.calculateValue.toString() + '; return value;')(data, row, util));
+          _lodash2.default.set(rowData, component.key, new Function('component', 'data', 'row', 'util', 'moment', 'var value = [];' + component.calculateValue.toString() + '; return value;')(component, data, row, this, _moment2.default));
         } catch (e) {
           console.warn('An error occurred calculating a value for ' + component.key, e);
         }
@@ -4146,7 +4144,7 @@ var FormioUtils = {
    */
   checkCustomConditional: function checkCustomConditional(component, custom, row, data, variable, onError) {
     try {
-      return new Function('component', 'row', 'data', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, row, data);
+      return new Function('component', 'data', 'row', 'util', 'moment', 'var ' + variable + ' = true; ' + custom.toString() + '; return ' + variable + ';')(component, data, row, this, _moment2.default);
     } catch (e) {
       console.warn('An error occurred in a condition statement for component ' + component.key, e);
       return onError;
@@ -4319,25 +4317,24 @@ var FormioUtils = {
       return null;
     }
 
-    var dateSetting = new Date(date);
-    if (FormioUtils.isValidDate(dateSetting)) {
-      return dateSetting;
+    var dateSetting = (0, _moment2.default)(date);
+    if (dateSetting.isValid()) {
+      return dateSetting.toDate();
     }
 
     try {
-      // Moment constant might be used in eval.
-      var moment = _moment2.default; // eslint-disable-line no-unused-vars
-      dateSetting = new Date(eval(date));
+      var value = new Function('moment', 'return ' + date + ';')(_moment2.default);
+      dateSetting = (0, _moment2.default)(value);
     } catch (e) {
       return null;
     }
 
     // Ensure this is a date.
-    if (!FormioUtils.isValidDate(dateSetting)) {
-      dateSetting = null;
+    if (!dateSetting.isValid()) {
+      return null;
     }
 
-    return dateSetting;
+    return dateSetting.toDate();
   },
   isValidDate: function isValidDate(date) {
     return _lodash2.default.isDate(date) && !_lodash2.default.isNaN(date.getDate());
