@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - `moment` library in calculated value and advanced conditional.
 
+### Fixed
+ - Empty string in email validator.
+ - Min-max for DataGrid component.
+
 ## 2.30.0
 ### Fixed
  - Required validator for Checkbox component.
