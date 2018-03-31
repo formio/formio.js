@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
+### Added
+ - `moment` library in calculated value and advanced conditional.
+
 ### Fixed
  - Empty string in email validator.
  - Min-max for DataGrid component.
