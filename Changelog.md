@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Fixed
  - Empty string in email validator.
+ - Min-max for DataGrid component.
 
 ## 2.30.0
 ### Fixed
