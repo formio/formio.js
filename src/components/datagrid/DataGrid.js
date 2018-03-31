@@ -51,7 +51,7 @@ export class DataGridComponent extends FormioComponents {
     ) {
       const toAdd = this.component.validate.minLength - this.dataValue.length;
       for (let i = 0; i < toAdd; i++) {
-        this.dataValue = this.dataValue.push({});
+        this.dataValue.push({});
       }
     }
 
@@ -145,6 +145,8 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildRows(data) {
+    const addRemoveButton = this.addRemoveButton();
+
     this.dataValue.forEach((row, rowIndex) => {
       // New Row.
       if (!this.tableRows[rowIndex]) {
@@ -161,6 +163,13 @@ export class DataGridComponent extends FormioComponents {
         this.tbody.replaceChild(newRow, this.tableRows[rowIndex]);
         this.tableRows[rowIndex] = newRow;
       }
+
+      if (addRemoveButton) {
+        this.ensureRemoveButtonIsPresent(rowIndex);
+      }
+      else {
+        this.ensureRemoveButtonIsAbsent(rowIndex);
+      }
     });
     // Remove any extra rows.
     for (let rowIndex = this.tableRows.length; rowIndex > this.dataValue.length; rowIndex--) {
@@ -171,17 +180,42 @@ export class DataGridComponent extends FormioComponents {
     this.checkAndRemoveAddButton();
   }
 
+  ensureRemoveButtonIsPresent(index) {
+    const row = this.tableRows[index];
+
+    if (row.children.length > this.component.components.length) {
+      return;
+    }
+
+    row.appendChild(this.ce('td', null, this.removeButton(index)));
+  }
+
+  ensureRemoveButtonIsAbsent(index) {
+    const row = this.tableRows[index];
+
+    if (row.children.length === this.component.components.length) {
+      return;
+    }
+
+    row.removeChild(row.lastChild);
+  }
+
   buildRow(row, index) {
     this.rows[index] = {};
     const element = this.ce('tr', null,
       [
         this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index)),
-        !this.shouldDisable ? this.ce('td', null, this.removeButton(index)) : null
+        this.addRemoveButton() ? this.ce('td', null, this.removeButton(index)) : null
       ]
     );
     element.data = _.cloneDeep(row);
     element.visibleColumns = _.cloneDeep(this.visibleColumns);
     return element;
+  }
+
+  addRemoveButton() {
+    return !this.shouldDisable
+      && this.component.validate && this.dataValue.length > this.component.validate.minLength;
   }
 
   removeRowComponents(rowIndex) {
