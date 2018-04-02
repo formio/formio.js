@@ -4,6 +4,44 @@ import _ from 'lodash';
 import {BaseComponent} from '../base/Base';
 import Formio from '../../formio';
 
+// Duck-punch the setValueByChoice to ensure we compare using _.isEqual.
+Choices.prototype.setValueByChoice = function(value) {
+  if (!this.isTextElement) {
+    const choices = this.store.getChoices();
+    // If only one value has been passed, convert to array
+    const choiceValue = Array.isArray(value) ? value : [value];
+
+    // Loop through each value and
+    choiceValue.forEach((val) => {
+      const foundChoice = choices.find((choice) => {
+        // Check 'value' property exists and the choice isn't already selected
+        return _.isEqual(choice.value, val);
+      });
+
+      if (foundChoice) {
+        if (!foundChoice.selected) {
+          this._addItem(
+            foundChoice.value,
+            foundChoice.label,
+            foundChoice.id,
+            foundChoice.groupId,
+            foundChoice.customProperties,
+            foundChoice.placeholder,
+            foundChoice.keyCode
+          );
+        }
+        else if (!this.config.silent) {
+          console.warn('Attempting to select choice already selected');
+        }
+      }
+      else if (!this.config.silent) {
+        console.warn('Attempting to select choice that does not exist');
+      }
+    });
+  }
+  return this;
+};
+
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
