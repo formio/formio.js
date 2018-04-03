@@ -58,6 +58,7 @@ export class FileComponent extends BaseComponent {
       this.createLabel(this.element);
     }
     this.createDescription(this.element);
+    this.autofocus();
 
     // Disable if needed.
     if (this.shouldDisable) {
@@ -254,10 +255,6 @@ export class FileComponent extends BaseComponent {
       },
       class: 'browse'
     }, 'browse');
-
-    if (this.component.autofocus) {
-      this.on('render', () => this.browseLink.focus(), true);
-    }
 
     return this.browseLink;
   }
@@ -516,5 +513,9 @@ export class FileComponent extends BaseComponent {
         alert(response);
       });
     event.preventDefault();
+  }
+
+  focus() {
+    this.browseLink.focus();
   }
 }

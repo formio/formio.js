@@ -344,6 +344,8 @@ export class BaseComponent {
         this.disabled = true;
       }
 
+      this.autofocus();
+
       // Restore the value.
       this.restoreValue();
     }
@@ -2103,16 +2105,25 @@ export class BaseComponent {
       attributes.tabindex = this.component.tabindex;
     }
 
-    if (this.component.autofocus) {
-      attributes.autofocus = this.component.autofocus;
-    }
-
     return {
       type: 'input',
       component: this.component,
       changeEvent: 'change',
       attr: attributes
     };
+  }
+
+  autofocus() {
+    if (this.component.autofocus) {
+      this.on('render', () => this.focus(), true);
+    }
+  }
+
+  focus() {
+    const input = this.inputs[0];
+    if (input) {
+      input.focus();
+    }
   }
 }
 

@@ -48,9 +48,6 @@ export class SurveyComponent extends BaseComponent {
             value: value.value,
             id: `${this.id}-${question.value}-${value.value}`
           });
-          if (this.component.autofocus) {
-            input.setAttribute('autofocus', 'true');
-          }
           this.addInput(input, td);
           tr.appendChild(td);
         });
