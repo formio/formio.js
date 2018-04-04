@@ -24,7 +24,7 @@ describe('TextField Builder', () => {
       let preview = builder.componentPreview.innerHTML;
       assert(preview.indexOf('formio-component formio-component-textfield formio-component-textField') !== -1, 'Must have correct classes');
       assert(preview.indexOf('<label class="control-label" style="">Text Field</label>') !== -1, 'Must have a label');
-      assert(preview.indexOf('<input name="data[textField]" type="text" class="form-control"></div>') !== -1, 'Must have an input');
+      assert(preview.indexOf('<input name="data[textField]" type="text" class="form-control"') !== -1, 'Must have an input');
       done();
     });
   });

@@ -287,7 +287,7 @@ export class FormComponent extends FormioForm {
       return true;
     }
     else {
-      const superValue = super.setValue(submission, flags, this.dataValue.data);
+      const superValue = super.setValue(submission, flags);
       this.readyResolve();
       return superValue;
     }

@@ -667,24 +667,12 @@ export default class FormioForm extends FormioComponents {
     return schema;
   }
 
-  mergeData(_this, _that) {
-    _.mergeWith(_this, _that, (thisValue, thatValue) => {
-      if (Array.isArray(thisValue) && Array.isArray(thatValue) && thisValue.length !== thatValue.length) {
-        return thatValue;
-      }
-    });
-  }
-
-  setValue(submission, flags, data) {
-    data = data || _.cloneDeep(this.data);
-    if (!submission) {
-      return super.setValue(data, flags);
-    }
-    submission = submission || {data: {}};
-    this.mergeData(data, submission.data);
+  setValue(submission, flags) {
+    submission = submission || {data: this.data};
+    let changed = super.setValue(submission.data, flags);
     this._submission = submission;
-    this._submission.data = data;
-    return super.setValue(data, flags);
+    this._submission.data = this.data;
+    return changed;
   }
 
   getValue() {
@@ -694,7 +682,7 @@ export default class FormioForm extends FormioComponents {
     if (this.viewOnly) {
       return this._submission;
     }
-    const submission = _.clone(this._submission);
+    const submission = this._submission;
     submission.data = this.data;
     return submission;
   }
@@ -875,7 +863,6 @@ export default class FormioForm extends FormioComponents {
    */
   onChange(flags, changed) {
     super.onChange(flags, true);
-    this.mergeData(this._submission, this.submission);
     const value = _.clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
