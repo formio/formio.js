@@ -683,7 +683,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The "Add New" button html element.
    */
   addButton(justIcon) {
-    const addButton = this.ce('a', {
+    const addButton = this.ce('button', {
       class: 'btn btn-primary'
     });
     this.addEventListener(addButton, 'click', (event) => {
@@ -742,8 +742,7 @@ export class BaseComponent {
   removeButton(index) {
     const removeButton = this.ce('button', {
       type: 'button',
-      class: 'btn btn-default btn-secondary',
-      tabindex: '-1'
+      class: 'btn btn-default btn-secondary'
     });
 
     this.addEventListener(removeButton, 'click', (event) => {

@@ -188,4 +188,8 @@ export class DateTimeComponent extends BaseComponent {
       calendar.setDate(value ? new Date(value) : new Date(), false);
     }
   }
+
+  focus() {
+    this.inputs[0].calendar.altInput.focus();
+  }
 }
