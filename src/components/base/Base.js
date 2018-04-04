@@ -688,7 +688,7 @@ export class BaseComponent {
       table.appendChild(this.tbody);
 
       // Add a default value.
-      let dataValue = this.dataValue;
+      const dataValue = this.dataValue;
       if (!dataValue || !dataValue.length) {
         this.addNewValue();
       }
@@ -1851,7 +1851,7 @@ export class BaseComponent {
    */
   splice(index) {
     if (this.hasValue) {
-      let dataValue = this.dataValue || [];
+      const dataValue = this.dataValue || [];
       if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
         dataValue.splice(index, 1);
         this.dataValue = dataValue;

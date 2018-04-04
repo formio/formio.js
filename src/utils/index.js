@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import jsonLogic from 'json-logic-js';
-import momentModule from 'moment';
+import moment from 'moment';
 
 import {lodashOperators} from './jsonlogic/operators';
 
@@ -9,17 +9,17 @@ lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
 
 // Retrieve Any Date
 jsonLogic.add_operation('getDate', (date) => {
-  return momentModule(date).toISOString();
+  return moment(date).toISOString();
 });
 
 // Set Relative Minimum Date
 jsonLogic.add_operation('relativeMinDate', (relativeMinDate) => {
-  return momentModule().subtract(relativeMinDate, 'days').toISOString();
+  return moment().subtract(relativeMinDate, 'days').toISOString();
 });
 
 // Set Relative Maximum Date
 jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
-  return momentModule().add(relativeMaxDate, 'days').toISOString();
+  return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
 const FormioUtils = {
@@ -610,26 +610,25 @@ const FormioUtils = {
       return null;
     }
 
-    let dateSetting = new Date(date);
-    if (FormioUtils.isValidDate(dateSetting)) {
-      return dateSetting;
+    let dateSetting = moment(date);
+    if (dateSetting.isValid()) {
+      return dateSetting.toDate();
     }
 
     try {
-      // Moment constant might be used in eval.
-      const moment = momentModule; // eslint-disable-line no-unused-vars
-      dateSetting = new Date(eval(date));
+      const value = (new Function('moment', `return ${date};`))(moment);
+      dateSetting = moment(value);
     }
     catch (e) {
       return null;
     }
 
     // Ensure this is a date.
-    if (!FormioUtils.isValidDate(dateSetting)) {
-      dateSetting = null;
+    if (!dateSetting.isValid()) {
+      return null;
     }
 
-    return dateSetting;
+    return dateSetting.toDate();
   },
   isValidDate(date) {
     return _.isDate(date) && !_.isNaN(date.getDate());

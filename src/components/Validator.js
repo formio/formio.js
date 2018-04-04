@@ -151,7 +151,7 @@ export const Validator = {
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         // Allow emails to be valid if the component is pristine and no value is provided.
-        return (component.pristine && !value) || re.test(value);
+        return !value || re.test(value);
       }
     },
     date: {

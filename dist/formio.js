@@ -484,8 +484,8 @@ var Formio = function () {
     }
   }, {
     key: 'currentUser',
-    value: function currentUser() {
-      return Formio.currentUser(this);
+    value: function currentUser(options) {
+      return Formio.currentUser(this, options);
     }
   }, {
     key: 'accessInfo',
@@ -1172,24 +1172,26 @@ var Formio = function () {
     }
   }, {
     key: 'currentUser',
-    value: function currentUser(formio) {
+    value: function currentUser(formio, options) {
       var projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
       projectUrl += '/current';
       var user = this.getUser();
       if (user) {
         return Formio.pluginAlter('wrapStaticRequestPromise', _nativePromiseOnly2.default.resolve(user), {
           url: projectUrl,
-          method: 'GET'
+          method: 'GET',
+          options: options
         });
       }
       var token = Formio.getToken();
       if (!token) {
         return Formio.pluginAlter('wrapStaticRequestPromise', _nativePromiseOnly2.default.resolve(null), {
           url: projectUrl,
-          method: 'GET'
+          method: 'GET',
+          options: options
         });
       }
-      return Formio.makeRequest(formio, 'currentUser', projectUrl).then(function (response) {
+      return Formio.makeRequest(formio, 'currentUser', projectUrl, 'GET', null, options).then(function (response) {
         Formio.setUser(response);
         return response;
       });
@@ -3660,7 +3662,10 @@ var isArray = Array.isArray || function (xs) {
 
   function parseHeaders(rawHeaders) {
     var headers = new Headers()
-    rawHeaders.split(/\r?\n/).forEach(function(line) {
+    // Replace instances of \r\n and \n followed by at least one space or horizontal tab with a space
+    // https://tools.ietf.org/html/rfc7230#section-3.2
+    var preProcessedHeaders = rawHeaders.replace(/\r?\n[\t ]+/g, ' ')
+    preProcessedHeaders.split(/\r?\n/).forEach(function(line) {
       var parts = line.split(':')
       var key = parts.shift().trim()
       if (key) {
@@ -3679,7 +3684,7 @@ var isArray = Array.isArray || function (xs) {
     }
 
     this.type = 'default'
-    this.status = 'status' in options ? options.status : 200
+    this.status = options.status === undefined ? 200 : options.status
     this.ok = this.status >= 200 && this.status < 300
     this.statusText = 'statusText' in options ? options.statusText : 'OK'
     this.headers = new Headers(options.headers)
@@ -3746,6 +3751,8 @@ var isArray = Array.isArray || function (xs) {
 
       if (request.credentials === 'include') {
         xhr.withCredentials = true
+      } else if (request.credentials === 'omit') {
+        xhr.withCredentials = false
       }
 
       if ('responseType' in xhr && support.blob) {

@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.30.1
+### Added
+ - `moment` library in calculated value and advanced conditional.
+ - Add ability to pass options to currentUser function.
+
+### Changed
+ - Removed the duck-punch from choices library for strict equality since they pulled in our pull request.
+
+### Fixed
+ - Empty string in email validator.
+ - Min-max for DataGrid component.
+
 ## 2.30.0
 ### Fixed
  - Required validator for Checkbox component.
@@ -12,10 +24,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Input mask problems where a single instance was used to manage multiple inputs.
  - Issues with onChange events not firing for Select components.
  - Streamlined the language inititalization.
- 
+
 ### Added
  - Better data handling using getters and setters.
- 
+
 ### Changed
  - Deprecating "getRawValue" with reverse compatibility in favor of component.dataValue.
  - Made currency component to have a delimiter unless specified otherwise.

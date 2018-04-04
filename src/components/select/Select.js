@@ -490,7 +490,8 @@ export class SelectComponent extends BaseComponent {
       searchPlaceholderValue: placeholderValue,
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
-      searchEnabled: useSearch
+      searchEnabled: useSearch,
+      itemComparer: (choice, item) => _.isEqual(choice, item)
     };
 
     const tabIndex = input.tabIndex;
