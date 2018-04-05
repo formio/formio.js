@@ -3137,6 +3137,7 @@ var BaseComponent = function () {
   }, {
     key: 'deleteValue',
     value: function deleteValue() {
+      this.setValue(null);
       _lodash2.default.unset(this.data, this.component.key);
     }
 
@@ -3191,6 +3192,9 @@ var BaseComponent = function () {
   }, {
     key: 'hasChanged',
     value: function hasChanged(before, after) {
+      if ((before === undefined || before === null) && (after === undefined || after === null)) {
+        return false;
+      }
       return !_lodash2.default.isEqual(before, after);
     }
 
@@ -3823,7 +3827,7 @@ var BaseComponent = function () {
       if (!this.hasValue) {
         this.dataValue = this.emptyValue;
       }
-      return _lodash2.default.get(this.data, this.component.key, this.emptyValue);
+      return _lodash2.default.get(this.data, this.component.key);
     }
 
     /**

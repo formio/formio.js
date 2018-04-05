@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.30.2
+### Fixed
+ - Problem where values would not get reset before getting deleted with clear on hide.
+ - Issue where change events would fire continuously because of eroneous hasChanged checks.
+
 ## 2.30.1
 ### Added
  - `moment` library in calculated value and advanced conditional.

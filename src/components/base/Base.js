@@ -1567,7 +1567,7 @@ export class BaseComponent {
     if (!this.hasValue) {
       this.dataValue = this.emptyValue;
     }
-    return _.get(this.data, this.component.key, this.emptyValue);
+    return _.get(this.data, this.component.key);
   }
 
   /**
@@ -1603,6 +1603,7 @@ export class BaseComponent {
    * Deletes the value of the component.
    */
   deleteValue() {
+    this.setValue(null);
     _.unset(this.data, this.component.key);
   }
 
@@ -1648,6 +1649,12 @@ export class BaseComponent {
    * @return {boolean}
    */
   hasChanged(before, after) {
+    if (
+      ((before === undefined) || (before === null)) &&
+      ((after === undefined) || (after === null))
+    ) {
+      return false;
+    }
     return !_.isEqual(before, after);
   }
 
