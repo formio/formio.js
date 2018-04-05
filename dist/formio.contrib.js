@@ -405,6 +405,9 @@ var BaseComponent = function () {
          * The input label provided to this component.
          */
         label: '',
+        labelPosition: 'top',
+        labelWidth: 30,
+        labelMargin: 3,
 
         /**
          * The validation criteria for this component.
@@ -1242,7 +1245,7 @@ var BaseComponent = function () {
   }, {
     key: 'getLabelWidth',
     value: function getLabelWidth() {
-      if (_lodash2.default.isUndefined(this.component.labelWidth)) {
+      if (!this.component.labelWidth) {
         this.component.labelWidth = 30;
       }
 
@@ -1251,7 +1254,7 @@ var BaseComponent = function () {
   }, {
     key: 'getLabelMargin',
     value: function getLabelMargin() {
-      if (_lodash2.default.isUndefined(this.component.labelMargin)) {
+      if (!this.component.labelMargin) {
         this.component.labelMargin = 3;
       }
 
@@ -1401,17 +1404,20 @@ var BaseComponent = function () {
   }, {
     key: 'createTooltip',
     value: function createTooltip(container, component, classes) {
+      if (this.tooltip) {
+        return;
+      }
       component = component || this.component;
       classes = classes || this.iconClass('question-sign') + ' text-muted';
       if (!component.tooltip) {
         return;
       }
-      this.tooltip = this.ce('i', {
+      var ttElement = this.ce('i', {
         class: classes
       });
       container.appendChild(this.text(' '));
-      container.appendChild(this.tooltip);
-      new _tooltip2.default(this.tooltip, {
+      container.appendChild(ttElement);
+      this.tooltip = new _tooltip2.default(ttElement, {
         delay: {
           hide: 100
         },
@@ -1634,6 +1640,10 @@ var BaseComponent = function () {
           input.mask.destroy();
         }
       });
+      if (this.tooltip) {
+        this.tooltip.dispose();
+        this.tooltip = null;
+      }
       this.inputs = [];
     }
 

@@ -1859,6 +1859,9 @@ var BaseComponent = function () {
          * The input label provided to this component.
          */
         label: '',
+        labelPosition: 'top',
+        labelWidth: 30,
+        labelMargin: 3,
 
         /**
          * The validation criteria for this component.
@@ -2696,7 +2699,7 @@ var BaseComponent = function () {
   }, {
     key: 'getLabelWidth',
     value: function getLabelWidth() {
-      if (_lodash2.default.isUndefined(this.component.labelWidth)) {
+      if (!this.component.labelWidth) {
         this.component.labelWidth = 30;
       }
 
@@ -2705,7 +2708,7 @@ var BaseComponent = function () {
   }, {
     key: 'getLabelMargin',
     value: function getLabelMargin() {
-      if (_lodash2.default.isUndefined(this.component.labelMargin)) {
+      if (!this.component.labelMargin) {
         this.component.labelMargin = 3;
       }
 
@@ -2855,17 +2858,20 @@ var BaseComponent = function () {
   }, {
     key: 'createTooltip',
     value: function createTooltip(container, component, classes) {
+      if (this.tooltip) {
+        return;
+      }
       component = component || this.component;
       classes = classes || this.iconClass('question-sign') + ' text-muted';
       if (!component.tooltip) {
         return;
       }
-      this.tooltip = this.ce('i', {
+      var ttElement = this.ce('i', {
         class: classes
       });
       container.appendChild(this.text(' '));
-      container.appendChild(this.tooltip);
-      new _tooltip2.default(this.tooltip, {
+      container.appendChild(ttElement);
+      this.tooltip = new _tooltip2.default(ttElement, {
         delay: {
           hide: 100
         },
@@ -3088,6 +3094,10 @@ var BaseComponent = function () {
           input.mask.destroy();
         }
       });
+      if (this.tooltip) {
+        this.tooltip.dispose();
+        this.tooltip = null;
+      }
       this.inputs = [];
     }
 
@@ -4671,7 +4681,7 @@ var BaseEditDisplay = exports.BaseEditDisplay = [{
   },
   conditional: {
     json: {
-      or: [{ '===': [{ var: 'data.labelPosition' }, 'top'] }, { '===': [{ var: 'data.labelPosition' }, 'bottom'] }]
+      and: [{ '!==': [{ var: 'data.labelPosition' }, 'top'] }, { '!==': [{ var: 'data.labelPosition' }, 'bottom'] }]
     }
   }
 }, {
@@ -11844,24 +11854,6 @@ exports.default = function () {
       key: 'display',
       weight: 0,
       components: [{
-        type: 'number',
-        label: 'Label Width',
-        input: true,
-        key: 'labelWidth',
-        tooltip: 'The width of label on line in percentages.',
-        suffix: '%',
-        placeholder: 30,
-        weight: 31,
-        conditional: {
-          json: {
-            and: [{ '!==': [{ var: 'data.labelPosition' }, 'top'] }, { '!==': [{ var: 'data.labelPosition' }, 'bottom'] }]
-          }
-        },
-        validate: {
-          min: 0,
-          max: 100
-        }
-      }, {
         type: 'select',
         input: true,
         label: 'Options Label Position',
@@ -16550,21 +16542,21 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       // Update the preview.
       if (this.componentPreview) {
-        var preview = _builder2.default.create(component.component, {
+        this.preview = _builder2.default.create(component.component, {
           preview: true,
           events: new _eventemitter2.default({
             wildcard: false,
             maxListeners: 0
           })
         }, {}, true);
-        preview.on('componentEdit', function (comp) {
+        this.preview.on('componentEdit', function (comp) {
           _lodash2.default.merge(component.component, comp.component);
           _this3.editForm.redraw();
         });
-        preview.build();
-        preview.isBuilt = true;
+        this.preview.build();
+        this.preview.isBuilt = true;
         this.componentPreview.innerHTML = '';
-        this.componentPreview.appendChild(preview.getElement());
+        this.componentPreview.appendChild(this.preview.getElement());
       }
 
       // Ensure this component has a key.

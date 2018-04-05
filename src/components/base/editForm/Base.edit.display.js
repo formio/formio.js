@@ -54,9 +54,9 @@ export let BaseEditDisplay = [
     },
     conditional: {
       json: {
-        or: [
-          {'===': [{var: 'data.labelPosition'}, 'top']},
-          {'===': [{var: 'data.labelPosition'}, 'bottom']},
+        and: [
+          {'!==': [{var: 'data.labelPosition'}, 'top']},
+          {'!==': [{var: 'data.labelPosition'}, 'bottom']},
         ]
       }
     }

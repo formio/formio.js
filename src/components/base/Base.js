@@ -86,6 +86,9 @@ export class BaseComponent {
        * The input label provided to this component.
        */
       label: '',
+      labelPosition: 'top',
+      labelWidth: 30,
+      labelMargin: 3,
 
       /**
        * The validation criteria for this component.
@@ -949,7 +952,7 @@ export class BaseComponent {
   }
 
   getLabelWidth() {
-    if (_.isUndefined(this.component.labelWidth)) {
+    if (!this.component.labelWidth) {
       this.component.labelWidth = 30;
     }
 
@@ -957,7 +960,7 @@ export class BaseComponent {
   }
 
   getLabelMargin() {
-    if (_.isUndefined(this.component.labelMargin)) {
+    if (!this.component.labelMargin) {
       this.component.labelMargin = 3;
     }
 
@@ -1100,17 +1103,20 @@ export class BaseComponent {
    * @param {HTMLElement} container - The containing element that will contain this tooltip.
    */
   createTooltip(container, component, classes) {
+    if (this.tooltip) {
+      return;
+    }
     component = component || this.component;
     classes = classes || `${this.iconClass('question-sign')} text-muted`;
     if (!component.tooltip) {
       return;
     }
-    this.tooltip = this.ce('i', {
+    const ttElement = this.ce('i', {
       class: classes
     });
     container.appendChild(this.text(' '));
-    container.appendChild(this.tooltip);
-    new Tooltip(this.tooltip, {
+    container.appendChild(ttElement);
+    this.tooltip = new Tooltip(ttElement, {
       delay: {
         hide: 100
       },
@@ -1299,6 +1305,10 @@ export class BaseComponent {
         input.mask.destroy();
       }
     });
+    if (this.tooltip) {
+      this.tooltip.dispose();
+      this.tooltip = null;
+    }
     this.inputs = [];
   }
 

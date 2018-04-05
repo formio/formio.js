@@ -129,21 +129,21 @@ export class FormioFormBuilder extends FormioForm {
   updateComponent(component) {
     // Update the preview.
     if (this.componentPreview) {
-      const preview = Components.create(component.component, {
+      this.preview = Components.create(component.component, {
         preview: true,
         events: new EventEmitter({
           wildcard: false,
           maxListeners: 0
         })
       }, {}, true);
-      preview.on('componentEdit', (comp) => {
+      this.preview.on('componentEdit', (comp) => {
         _.merge(component.component, comp.component);
         this.editForm.redraw();
       });
-      preview.build();
-      preview.isBuilt = true;
+      this.preview.build();
+      this.preview.isBuilt = true;
       this.componentPreview.innerHTML = '';
-      this.componentPreview.appendChild(preview.getElement());
+      this.componentPreview.appendChild(this.preview.getElement());
     }
 
     // Ensure this component has a key.

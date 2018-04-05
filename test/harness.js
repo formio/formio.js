@@ -49,6 +49,17 @@ export const Harness = {
     formBuilder.editForm.submission = component;
   },
 
+  testBuilderProperty: function(property, before, after, previewRegEx, cb) {
+    Harness.testVisibility(formBuilder.editForm, `.formio-component-${property}`, true);
+    Harness.setComponentProperty(property, before, after, (preview) => {
+      if (previewRegEx) {
+        assert(preview.match(previewRegEx), `${property} not set correctly`);
+      }
+      Harness.getInputValue(formBuilder.editForm, `data[${property}]`, after);
+      cb();
+    });
+  },
+
   getDate: function() {
     let timestamp = (new Date()).getTime();
     timestamp = parseInt(timestamp / 1000, 10);
@@ -158,7 +169,7 @@ export const Harness = {
     return element.dispatchEvent(inputEvent);
   },
   getInputValue: function(component, name, value) {
-    const element = component.element.querySelector('input[name="' + name + '"]');
+    const element = component.element.querySelector('[name="' + name + '"]');
     assert(element, name + ' input not found');
     assert.equal(value, element.value);
   },

@@ -11,28 +11,6 @@ export default function(...extend) {
           weight: 0,
           components: [
             {
-              type: 'number',
-              label: 'Label Width',
-              input: true,
-              key: 'labelWidth',
-              tooltip: 'The width of label on line in percentages.',
-              suffix: '%',
-              placeholder: 30,
-              weight: 31,
-              conditional: {
-                json: {
-                  and: [
-                    {'!==': [{var: 'data.labelPosition'}, 'top']},
-                    {'!==': [{var: 'data.labelPosition'}, 'bottom']},
-                  ]
-                }
-              },
-              validate: {
-                min: 0,
-                max: 100
-              }
-            },
-            {
               type: 'select',
               input: true,
               label: 'Options Label Position',
