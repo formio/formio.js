@@ -381,8 +381,8 @@ class Formio {
     }
   }
 
-  currentUser() {
-    return Formio.currentUser(this);
+  currentUser(options) {
+    return Formio.currentUser(this, options);
   }
 
   accessInfo() {
@@ -1007,24 +1007,26 @@ class Formio {
     return Formio.makeRequest(formio, 'accessInfo', `${projectUrl}/access`);
   }
 
-  static currentUser(formio) {
+  static currentUser(formio, options) {
     let projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
     projectUrl += '/current';
     const user = this.getUser();
     if (user) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(user), {
         url: projectUrl,
-        method: 'GET'
+        method: 'GET',
+        options
       });
     }
     const token = Formio.getToken();
     if (!token) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
         url: projectUrl,
-        method: 'GET'
+        method: 'GET',
+        options
       });
     }
-    return Formio.makeRequest(formio, 'currentUser', projectUrl)
+    return Formio.makeRequest(formio, 'currentUser', projectUrl, 'GET', null, options)
       .then((response) => {
         Formio.setUser(response);
         return response;

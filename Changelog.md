@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Autofocus feature.
 
+## 2.30.1
+### Added
+ - `moment` library in calculated value and advanced conditional.
+ - Add ability to pass options to currentUser function.
+
+### Changed
+ - Removed the duck-punch from choices library for strict equality since they pulled in our pull request.
+
+### Fixed
+ - Empty string in email validator.
+ - Min-max for DataGrid component.
+
 ## 2.30.0
 ### Fixed
  - Required validator for Checkbox component.
