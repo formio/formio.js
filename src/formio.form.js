@@ -667,12 +667,20 @@ export default class FormioForm extends FormioComponents {
     return schema;
   }
 
+  mergeData(_this, _that) {
+    _.mergeWith(_this, _that, (thisValue, thatValue) => {
+      if (Array.isArray(thisValue) && Array.isArray(thatValue) && thisValue.length !== thatValue.length) {
+        return thatValue;
+      }
+    });
+  }
+
   setValue(submission, flags) {
-    submission = submission || {data: this.data};
-    let changed = super.setValue(submission.data, flags);
+    submission = (submission && submission.data) ? submission : {data: {}};
+    this.mergeData(this.data, submission.data);
+    submission.data = this.data;
     this._submission = submission;
-    this._submission.data = this.data;
-    return changed;
+    return super.setValue(submission.data, flags);
   }
 
   getValue() {
@@ -684,7 +692,7 @@ export default class FormioForm extends FormioComponents {
     }
     const submission = this._submission;
     submission.data = this.data;
-    return submission;
+    return this._submission;
   }
 
   /**
