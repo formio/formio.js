@@ -783,13 +783,14 @@ export class BaseComponent {
   /**
    * Rebuild the rows to contain the values of this component.
    */
-  buildRows() {
+  buildRows(values) {
     if (!this.tbody) {
       return;
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _.each(this.dataValue, (value, index) => {
+    values = values || this.dataValue;
+    _.each(values, (value, index) => {
       const tr = this.ce('tr');
       const td = this.ce('td');
       const input = this.createInput(td);
@@ -2167,7 +2168,7 @@ export class BaseComponent {
     if (this.component.multiple && !Array.isArray(value)) {
       value = [value];
     }
-    this.buildRows();
+    this.buildRows(value);
     const isArray = Array.isArray(value);
     for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {

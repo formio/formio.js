@@ -676,11 +676,16 @@ export default class FormioForm extends FormioComponents {
   }
 
   setValue(submission, flags) {
-    submission = (submission && submission.data) ? submission : {data: {}};
-    this.mergeData(this.data, submission.data);
-    submission.data = this.data;
+    if (!submission || !submission.data) {
+      submission = {data: {}};
+    }
+    let changed = super.setValue(submission.data, flags);
+    if (changed) {
+      this.mergeData(this.data, submission.data);
+      submission.data = this.data;
+    }
     this._submission = submission;
-    return super.setValue(submission.data, flags);
+    return changed;
   }
 
   getValue() {

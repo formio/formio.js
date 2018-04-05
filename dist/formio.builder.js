@@ -2532,7 +2532,7 @@ var BaseComponent = function () {
 
   }, {
     key: 'buildRows',
-    value: function buildRows() {
+    value: function buildRows(values) {
       var _this3 = this;
 
       if (!this.tbody) {
@@ -2540,7 +2540,8 @@ var BaseComponent = function () {
       }
       this.inputs = [];
       this.tbody.innerHTML = '';
-      _lodash2.default.each(this.dataValue, function (value, index) {
+      values = values || this.dataValue;
+      _lodash2.default.each(values, function (value, index) {
         var tr = _this3.ce('tr');
         var td = _this3.ce('td');
         var input = _this3.createInput(td);
@@ -3949,7 +3950,7 @@ var BaseComponent = function () {
       if (this.component.multiple && !Array.isArray(value)) {
         value = [value];
       }
-      this.buildRows();
+      this.buildRows(value);
       var isArray = Array.isArray(value);
       for (var i in this.inputs) {
         if (this.inputs.hasOwnProperty(i)) {
@@ -17673,11 +17674,16 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
-      submission = submission && submission.data ? submission : { data: {} };
-      this.mergeData(this.data, submission.data);
-      submission.data = this.data;
+      if (!submission || !submission.data) {
+        submission = { data: {} };
+      }
+      var changed = _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, submission.data, flags);
+      if (changed) {
+        this.mergeData(this.data, submission.data);
+        submission.data = this.data;
+      }
       this._submission = submission;
-      return _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, submission.data, flags);
+      return changed;
     }
   }, {
     key: 'getValue',
