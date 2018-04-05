@@ -110,4 +110,12 @@ export class NumberComponent extends BaseComponent {
   setValueAt(index, value) {
     return super.setValueAt(index, this.formatValue(this.clearInput(value)));
   }
+
+  focus() {
+    const input = this.inputs[0];
+    if (input) {
+      input.focus();
+      input.setSelectionRange(0, input.value.length);
+    }
+  }
 }

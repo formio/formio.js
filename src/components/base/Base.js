@@ -344,10 +344,10 @@ export class BaseComponent {
         this.disabled = true;
       }
 
-      this.autofocus();
-
       // Restore the value.
       this.restoreValue();
+
+      this.autofocus();
     }
   }
 

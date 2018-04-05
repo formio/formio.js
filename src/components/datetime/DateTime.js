@@ -190,6 +190,9 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   focus() {
-    this.inputs[0].calendar.altInput.focus();
+    const input = this.inputs[0];
+    if (input) {
+      input.calendar.altInput.focus();
+    }
   }
 }
