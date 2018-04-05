@@ -1,4 +1,4 @@
-import _mergeWith from 'lodash/mergeWith';
+import _ from 'lodash';
 import { EditFormUtils } from './editForm/utils';
 import { BaseEditDisplay } from './editForm/Base.edit.display';
 import { BaseEditData } from './editForm/Base.edit.data';
@@ -6,36 +6,40 @@ import { BaseEditValidation } from './editForm/Base.edit.validation';
 import { BaseEditAPI } from './editForm/Base.edit.api';
 import { BaseEditConditional } from './editForm/Base.edit.conditional';
 export default function(...extend) {
-  return _mergeWith({
-    components: [
+  return {
+    components: _.unionWith([
       {
-        weight: 0,
         type: 'tabs',
         key: 'tabs',
         components: [
           {
             label: 'Display',
             key: 'display',
+            weight: 0,
             components: BaseEditDisplay
           },
           {
             label: 'Data',
             key: 'data',
+            weight: 10,
             components: BaseEditData
           },
           {
             label: 'Validation',
             key: 'validation',
+            weight: 20,
             components: BaseEditValidation
           },
           {
             label: 'API',
             key: 'api',
+            weight: 30,
             components: BaseEditAPI
           },
           {
             label: 'Conditional',
             key: 'conditional',
+            weight: 40,
             components: BaseEditConditional
           }
         ]
@@ -44,6 +48,6 @@ export default function(...extend) {
         type: 'hidden',
         key: 'type'
       }
-    ]
-  }, ...extend, EditFormUtils.mergeComponents);
+    ], ...extend, EditFormUtils.unifyComponents)
+  };
 };

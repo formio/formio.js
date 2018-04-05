@@ -1,18 +1,15 @@
 import _ from 'lodash';
-
 export let EditFormUtils = {
-  mergeComponents: (objValue, srcValue) => {
-    if (_.isArray(objValue)) {
-      if (objValue[0] && objValue[0].components) {
-        return _.mergeWith(objValue, srcValue, EditFormUtils.mergeComponents);
+  unifyComponents: (objValue, srcValue) => {
+    if (objValue.key === srcValue.key) {
+      if (objValue.components) {
+        srcValue.components = _.filter(_.sortBy(
+          _.unionWith(objValue.components, srcValue.components, EditFormUtils.unifyComponents), 'weight'
+        ), item => !item.ignore);
       }
-      if (objValue[0] && objValue[0].type) {
-        return _.filter(_.sortBy(_.unionWith(srcValue, objValue, (a, b) => (a.key === b.key)), ['weight']), (item) => {
-          return !item.ignore;
-        });
-      }
-      return objValue.concat(srcValue);
+      return true;
     }
+    return _.isEqual(objValue, srcValue);
   },
   javaScriptValue: (title, property) => {
     return {

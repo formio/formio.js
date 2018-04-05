@@ -3,27 +3,24 @@ import { TextFieldEditDisplay } from './editForm/TextField.edit.display';
 import { TextFieldEditValidation } from './editForm/TextField.edit.validation';
 
 export default function(...extend) {
-  return BaseEditForm({
-    components: [
-      {
-        weight: 0,
-        type: 'tabs',
-        key: 'tabs',
-        components: [
-          {
-            label: 'Display',
-            key: 'display',
-            components: TextFieldEditDisplay
-          },
-          // Need to keep empty to align tabs to merge.
-          {},
-          {
-            label: 'Validation',
-            key: 'validation',
-            components: TextFieldEditValidation
-          }
-        ]
-      }
-    ]
-  }, ...extend);
+  return BaseEditForm([
+    {
+      type: 'tabs',
+      key: 'tabs',
+      components: [
+        {
+          label: 'Display',
+          key: 'display',
+          weight: 0,
+          components: TextFieldEditDisplay
+        },
+        {
+          label: 'Validation',
+          key: 'validation',
+          weight: 20,
+          components: TextFieldEditValidation
+        }
+      ]
+    }
+  ], ...extend);
 };
