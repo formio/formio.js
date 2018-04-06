@@ -717,7 +717,7 @@ class Formio {
             ? response.json()
             : response.text())
             .then((error) => {
-              return Promse.reject(error);
+              return Promise.reject(error);
             });
         }
 
