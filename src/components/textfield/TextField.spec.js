@@ -88,6 +88,16 @@ describe('TextField Builder', () => {
     });
   });
 
+  it ('Should allow you to set the input mask', (done) => {
+    Harness.testBuilderProperty('inputMask', '', '(999) 999-9999', null, () => {
+      assert.equal(builder.preview.inputs[0].placeholder, '(___) ___-____');
+      builder.preview.setValue('1234567890');
+      assert.equal(builder.preview.inputs[0].value, '(123) 456-7890');
+      assert.equal(builder.preview.getValue(), '(123) 456-7890');
+      done();
+    });
+  });
+
   it ('Should set the placeholder of the input', (done) => {
     Harness.setComponentProperty('labelPosition', 'right-right', 'top', () => {
       Harness.testBuilderProperty('placeholder', '', 'Enter something here', /input.*name="data\[textField\].*placeholder="Enter something here"/, done);
@@ -104,6 +114,34 @@ describe('TextField Builder', () => {
       builder.preview.tooltip.show();
       let toolTipText = builder.preview.element.querySelector('.tooltip-inner');
       assert.equal(toolTipText.innerHTML, 'This is something you should fill out.');
+      done();
+    });
+  });
+
+  it ('Should set the prefix of the input', (done) => {
+    Harness.testBuilderProperty('prefix', '', '$', /div class="input-group">.*<div class="input-group-addon">\$<\/div>.*input/, done);
+  });
+
+  it ('Should set the suffix of the input', (done) => {
+    Harness.testBuilderProperty('suffix', '', 'USD', /div class="input-group">.*input.*<div class="input-group-addon">\USD<\/div>/, done);
+  });
+
+  it ('Should set the custom css class of the input', (done) => {
+    Harness.testBuilderProperty('customClass', '', 'custom-text-field', null, () => {
+      assert(builder.preview.hasClass(builder.preview.element, 'custom-text-field'), 'Preview should have this custom class');
+      done();
+    });
+  });
+
+  it ('Should set the tab index of the input element', (done) => {
+    Harness.testBuilderProperty('tabindex', '', 10, null, () => {
+      assert.equal(builder.preview.inputs[0].tabIndex, 10);
+      done();
+    });
+  });
+
+  it ('Should allow you to set the multiple flag', (done) => {
+    Harness.testBuilderProperty('multiple', false, true, null, () => {
       done();
     });
   });
