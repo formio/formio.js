@@ -120,6 +120,7 @@ export class EditGridComponent extends FormioComponents {
       wrapper.appendChild(
         this.renderTemplate(rowTemplate,
           {
+            data: this.data,
             row,
             rowIndex,
             components: this.component.components,
