@@ -23,6 +23,10 @@ export class FieldsetComponent extends FormioComponents {
     };
   }
 
+  getContainer() {
+    return this.body;
+  }
+
   get className() {
     return `form-group ${super.className}`;
   }
@@ -36,8 +40,14 @@ export class FieldsetComponent extends FormioComponents {
       const legend = this.ce('legend');
       legend.appendChild(this.text(this.component.legend));
       this.createTooltip(legend);
+      this.setCollapseHeader(legend);
       this.element.appendChild(legend);
     }
+    this.body = this.ce('div', {
+      class: 'card-body'
+    });
     this.addComponents();
+    this.element.appendChild(this.body);
+    this.setCollapsed();
   }
 }
