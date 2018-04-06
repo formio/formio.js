@@ -6332,47 +6332,45 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [{
+  return _Components2.default.apply(undefined, [[{
+    weight: 0,
+    type: 'tabs',
+    key: 'tabs',
     components: [{
-      weight: 0,
-      type: 'tabs',
-      key: 'tabs',
+      label: 'Display',
+      key: 'display',
       components: [{
-        label: 'Display',
-        key: 'display',
+        weight: 150,
+        type: 'datagrid',
+        input: true,
+        key: 'columns',
+        label: 'Column Properties',
+        addAnother: 'Add Column',
+        tooltip: 'The width, offset, push, and pull settings for each column.',
         components: [{
-          weight: 150,
-          type: 'datagrid',
-          input: true,
-          key: 'columns',
-          label: 'Column Properties',
-          addAnother: 'Add Column',
-          tooltip: 'The width, offset, push, and pull settings for each column.',
-          components: [{
-            type: 'number',
-            key: 'width',
-            defaultValue: 6,
-            label: 'Width'
-          }, {
-            type: 'number',
-            key: 'offset',
-            defaultValue: 0,
-            label: 'Offset'
-          }, {
-            type: 'number',
-            key: 'push',
-            defaultValue: 0,
-            label: 'Push'
-          }, {
-            type: 'number',
-            key: 'pull',
-            defaultValue: 0,
-            label: 'Pull'
-          }]
+          type: 'number',
+          key: 'width',
+          defaultValue: 6,
+          label: 'Width'
+        }, {
+          type: 'number',
+          key: 'offset',
+          defaultValue: 0,
+          label: 'Offset'
+        }, {
+          type: 'number',
+          key: 'push',
+          defaultValue: 0,
+          label: 'Push'
+        }, {
+          type: 'number',
+          key: 'pull',
+          defaultValue: 0,
+          label: 'Pull'
         }]
       }]
     }]
-  }].concat(extend));
+  }]].concat(extend));
 };
 
 var _Components = require('../Components.form');
@@ -6527,11 +6525,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
-    extend[_key] = arguments[_key];
-  }
-
-  return _Components2.default.apply(undefined, [{}].concat(extend));
+  return _Components2.default.apply(undefined, arguments);
 };
 
 var _Components = require('../Components.form');
@@ -9233,11 +9227,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
-    extend[_key] = arguments[_key];
-  }
-
-  return _Components2.default.apply(undefined, [{}].concat(extend));
+  return _Components2.default.apply(undefined, arguments);
 };
 
 var _Components = require('../Components.form');
@@ -9974,7 +9964,36 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [{}].concat(extend));
+  return _Components2.default.apply(undefined, [[{
+    type: 'tabs',
+    key: 'tabs',
+    components: [{
+      label: 'Form',
+      key: 'form',
+      weight: 10,
+      components: [{
+        type: 'select',
+        input: true,
+        dataSrc: 'url',
+        data: {
+          url: '/form?limit=4294967295&select=_id,title'
+        },
+        template: '<span>{{ item.title }}</span>',
+        valueProperty: '_id',
+        label: 'Form',
+        key: 'form',
+        weight: 10,
+        tooltip: 'The form to load within this form component.'
+      }, {
+        type: 'checkbox',
+        input: true,
+        weight: 20,
+        key: 'reference',
+        label: 'Save as reference',
+        tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.'
+      }]
+    }]
+  }]].concat(extend));
 };
 
 var _Components = require('../Components.form');
@@ -10039,7 +10058,7 @@ var _formio3 = require('../../formio');
 
 var _formio4 = _interopRequireDefault(_formio3);
 
-var _Components = require('../Components');
+var _Base = require('../base/Base');
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -10073,7 +10092,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         extend[_key] = arguments[_key];
       }
 
-      return _Components.FormioComponents.schema.apply(_Components.FormioComponents, [{
+      return _Base.BaseComponent.schema.apply(_Base.BaseComponent, [{
         type: 'form',
         key: 'form',
         src: '',
@@ -10106,6 +10125,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
     delete _formio4.default.forms[_this.id];
     _this.type = 'formcomponent';
+    _this.formSrc = '';
     _this.component = component;
     _this.submitted = false;
     _this.data = data;
@@ -10140,17 +10160,21 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.component.submit = true;
       }
 
-      if (!this.component.src && !this.options.formio && this.component.form) {
-        this.component.src = _formio4.default.getBaseUrl();
+      if (!this.component.src && !this.options.formio && (this.component.form || this.component.path)) {
+        this.formSrc = _formio4.default.getBaseUrl();
         if (this.component.project) {
           // Check to see if it is a MongoID.
           if (_utils2.default.isMongoId(this.component.project)) {
-            this.component.src += '/project';
+            this.formSrc += '/project';
           }
-          this.component.src += '/' + this.component.project;
+          this.formSrc += '/' + this.component.project;
           srcOptions.project = this.component.src;
         }
-        this.component.src += '/form/' + this.component.form;
+        if (this.component.form) {
+          this.formSrc += '/form/' + this.component.form;
+        } else if (this.component.path) {
+          this.formSrc += '/' + this.component.path;
+        }
       }
 
       // Build the source based on the root src path.
@@ -10159,22 +10183,22 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         if (this.component.path) {
           var parts = rootSrc.split('/');
           parts.pop();
-          this.component.src = parts.join('/') + '/' + this.component.path;
+          this.formSrc = parts.join('/') + '/' + this.component.path;
         }
         if (this.component.form) {
-          this.component.src = rootSrc + '/' + this.component.form;
+          this.formSrc = rootSrc + '/' + this.component.form;
         }
       }
 
       // Add the source to this actual submission if the component is a reference.
       var dataValue = _lodash2.default.get(this.data, this.component.key);
-      if (dataValue && dataValue._id && this.component.reference && !(this.component.src.indexOf('/submission/') !== -1)) {
-        this.component.src += '/submission/' + dataValue._id;
+      if (dataValue && dataValue._id && this.component.reference && this.formSrc && !(this.formSrc.indexOf('/submission/') !== -1)) {
+        this.formSrc += '/submission/' + dataValue._id;
       }
 
       // Set the src if the property is provided in the JSON.
-      if (this.component.src) {
-        this.setSrc(this.component.src, srcOptions);
+      if (this.formSrc) {
+        this.setSrc(this.formSrc, srcOptions);
       }
 
       // Directly set the submission if it isn't a reference.
@@ -10374,6 +10398,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       return this.dataValue;
     }
   }, {
+    key: 'schema',
+    get: function get() {
+      return _lodash2.default.omit(this.component, ['id', 'components']);
+    }
+  }, {
     key: 'emptyValue',
     get: function get() {
       return { data: {} };
@@ -10391,7 +10420,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   return FormComponent;
 }(_formio2.default);
 
-},{"../../formio":95,"../../formio.form":93,"../../utils":110,"../Components":2,"lodash":290}],44:[function(require,module,exports){
+},{"../../formio":95,"../../formio.form":93,"../../utils":110,"../base/Base":7,"lodash":290}],44:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -10485,6 +10514,15 @@ var HiddenComponent = exports.HiddenComponent = function (_BaseComponent) {
       info.attr.type = 'hidden';
       info.changeEvent = 'change';
       return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      _get(HiddenComponent.prototype.__proto__ || Object.getPrototypeOf(HiddenComponent.prototype), 'build', this).call(this);
+      if (this.options.builder) {
+        // We need to see it in builder mode.
+        this.append(this.text(this.name));
+      }
     }
   }, {
     key: 'createLabel',
@@ -10784,9 +10822,7 @@ var FormioComponentsIndex = {
   file: _File.FileComponent,
   create: function create(component, options, data, nobuild) {
     var comp = null;
-    if (!component.type) {
-      return null;
-    } else if (this.hasOwnProperty(component.type)) {
+    if (component.type && this.hasOwnProperty(component.type)) {
       comp = new this[component.type](component, options, data);
     } else {
       comp = new _Unknown.UnknownComponent(component, options, data);
@@ -11369,54 +11405,52 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [{
+  return _Components2.default.apply(undefined, [[{
+    weight: 0,
+    type: 'tabs',
+    key: 'tabs',
     components: [{
-      weight: 0,
-      type: 'tabs',
-      key: 'tabs',
+      label: 'Display',
+      key: 'display',
       components: [{
-        label: 'Display',
-        key: 'display',
-        components: [{
-          weight: 10,
-          type: 'textfield',
-          input: true,
-          placeholder: 'Panel Title',
-          label: 'Title',
-          key: 'title',
-          tooltip: 'The title text that appears in the header of this panel.'
-        }, {
-          weight: 20,
-          type: 'textarea',
-          input: true,
-          key: 'tooltip',
-          label: 'Tooltip',
-          placeholder: 'To add a tooltip to this field, enter text here.',
-          tooltip: 'Adds a tooltip to the side of this field.'
-        }, {
-          weight: 30,
-          type: 'select',
-          input: true,
-          label: 'Theme',
-          key: 'theme',
-          dataSrc: 'values',
-          data: {
-            values: [{ label: 'Default', value: 'default' }, { label: 'Primary', value: 'primary' }, { label: 'Info', value: 'info' }, { label: 'Success', value: 'success' }, { label: 'Danger', value: 'danger' }, { label: 'Warning', value: 'warning' }]
-          }
-        }, {
-          weight: 40,
-          type: 'select',
-          input: true,
-          label: 'Show Breadcrumb',
-          key: 'breadcrumb',
-          dataSrc: 'values',
-          data: {
-            values: [{ label: 'Yes', value: 'default' }, { label: 'No', value: 'none' }]
-          }
-        }]
+        weight: 10,
+        type: 'textfield',
+        input: true,
+        placeholder: 'Panel Title',
+        label: 'Title',
+        key: 'title',
+        tooltip: 'The title text that appears in the header of this panel.'
+      }, {
+        weight: 20,
+        type: 'textarea',
+        input: true,
+        key: 'tooltip',
+        label: 'Tooltip',
+        placeholder: 'To add a tooltip to this field, enter text here.',
+        tooltip: 'Adds a tooltip to the side of this field.'
+      }, {
+        weight: 30,
+        type: 'select',
+        input: true,
+        label: 'Theme',
+        key: 'theme',
+        dataSrc: 'values',
+        data: {
+          values: [{ label: 'Default', value: 'default' }, { label: 'Primary', value: 'primary' }, { label: 'Info', value: 'info' }, { label: 'Success', value: 'success' }, { label: 'Danger', value: 'danger' }, { label: 'Warning', value: 'warning' }]
+        }
+      }, {
+        weight: 40,
+        type: 'select',
+        input: true,
+        label: 'Show Breadcrumb',
+        key: 'breadcrumb',
+        dataSrc: 'values',
+        data: {
+          values: [{ label: 'Yes', value: 'default' }, { label: 'No', value: 'none' }]
+        }
       }]
     }]
-  }].concat(extend));
+  }]].concat(extend));
 };
 
 var _Components = require('../Components.form');
@@ -14370,18 +14404,16 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [{
+  return _Components2.default.apply(undefined, [[{
+    weight: 0,
+    type: 'tabs',
+    key: 'tabs',
     components: [{
-      weight: 0,
-      type: 'tabs',
-      key: 'tabs',
-      components: [{
-        label: 'Display',
-        key: 'display',
-        components: _TableEditOptions.TableEditOptions
-      }]
+      label: 'Display',
+      key: 'display',
+      components: _TableEditOptions.TableEditOptions
     }]
-  }].concat(extend));
+  }]].concat(extend));
 };
 
 var _TableEditOptions = require('./TableEditOptions');
@@ -14674,35 +14706,33 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [{
+  return _Components2.default.apply(undefined, [[{
+    weight: 0,
+    type: 'tabs',
+    key: 'tabs',
     components: [{
-      weight: 0,
-      type: 'tabs',
-      key: 'tabs',
+      label: 'Display',
+      key: 'display',
       components: [{
-        label: 'Display',
-        key: 'display',
+        key: 'components',
+        type: 'datagrid',
+        input: true,
+        label: 'Tabs',
         components: [{
-          key: 'components',
-          type: 'datagrid',
+          type: 'textfield',
           input: true,
-          label: 'Tabs',
-          components: [{
-            type: 'textfield',
-            input: true,
-            key: 'label',
-            label: 'Label'
-          }, {
-            type: 'textfield',
-            input: true,
-            key: 'key',
-            label: 'Key',
-            calculateValue: { _camelCase: [{ var: 'row.label' }] }
-          }]
+          key: 'label',
+          label: 'Label'
+        }, {
+          type: 'textfield',
+          input: true,
+          key: 'key',
+          label: 'Key',
+          calculateValue: { _camelCase: [{ var: 'row.label' }] }
         }]
       }]
     }]
-  }].concat(extend));
+  }]].concat(extend));
 };
 
 var _Components = require('../Components.form');
@@ -16032,11 +16062,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
-    extend[_key] = arguments[_key];
-  }
-
-  return _Components2.default.apply(undefined, [{}].concat(extend));
+  return _Components2.default.apply(undefined, arguments);
 };
 
 var _Components = require('../Components.form');
@@ -17185,7 +17211,7 @@ var FormioForm = function (_FormioComponents) {
     _this2._src = '';
     _this2._loading = false;
     _this2._submission = {};
-    _this2._form = null;
+    _this2._form = {};
 
     /**
      * Determines if this form should submit the API on submit.

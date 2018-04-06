@@ -14,7 +14,7 @@ lib: builder
 
 <script type="text/javascript">
 Formio.builder(document.getElementById("builder"), null, {
-  baseUrl: 'https://sqpgeuzujwerjcu.form.io'
+  baseUrl: 'https://examples.form.io'
 }).then(function(builder) {
   var jsonElement = document.getElementById('json');
   Formio.createForm(document.getElementById('formio'), {components: []}).then(function(form) {

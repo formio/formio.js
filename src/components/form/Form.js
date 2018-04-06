@@ -2,11 +2,11 @@ import _ from 'lodash';
 import FormioForm from '../../formio.form';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
-import { FormioComponents } from "../Components";
+import { BaseComponent } from '../base/Base';
 
 export class FormComponent extends FormioForm {
   static schema(...extend) {
-    return FormioComponents.schema({
+    return BaseComponent.schema({
       type: 'form',
       key: 'form',
       src: '',
@@ -34,12 +34,17 @@ export class FormComponent extends FormioForm {
     // Ensure this component does not make it to the global forms array.
     delete Formio.forms[this.id];
     this.type = 'formcomponent';
+    this.formSrc = '';
     this.component = component;
     this.submitted = false;
     this.data = data;
     this.readyPromise = new Promise((resolve) => {
       this.readyResolve = resolve;
     });
+  }
+
+  get schema() {
+    return _.omit(this.component, ['id', 'components']);
   }
 
   get emptyValue() {
@@ -71,18 +76,23 @@ export class FormComponent extends FormioForm {
     if (
       !this.component.src &&
       !this.options.formio &&
-      this.component.form
+      (this.component.form || this.component.path)
     ) {
-      this.component.src = Formio.getBaseUrl();
+      this.formSrc = Formio.getBaseUrl();
       if (this.component.project) {
         // Check to see if it is a MongoID.
         if (FormioUtils.isMongoId(this.component.project)) {
-          this.component.src += '/project';
+          this.formSrc += '/project';
         }
-        this.component.src += `/${this.component.project}`;
+        this.formSrc += `/${this.component.project}`;
         srcOptions.project = this.component.src;
       }
-      this.component.src += `/form/${this.component.form}`;
+      if (this.component.form) {
+        this.formSrc += `/form/${this.component.form}`;
+      }
+      else if (this.component.path) {
+        this.formSrc += `/${this.component.path}`;
+      }
     }
 
     // Build the source based on the root src path.
@@ -91,10 +101,10 @@ export class FormComponent extends FormioForm {
       if (this.component.path) {
         const parts = rootSrc.split('/');
         parts.pop();
-        this.component.src = `${parts.join('/')}/${this.component.path}`;
+        this.formSrc = `${parts.join('/')}/${this.component.path}`;
       }
       if (this.component.form) {
-        this.component.src = `${rootSrc}/${this.component.form}`;
+        this.formSrc = `${rootSrc}/${this.component.form}`;
       }
     }
 
@@ -104,14 +114,15 @@ export class FormComponent extends FormioForm {
       dataValue &&
       dataValue._id &&
       this.component.reference &&
-      !this.component.src.includes('/submission/')
+      this.formSrc &&
+      !this.formSrc.includes('/submission/')
     ) {
-      this.component.src += `/submission/${dataValue._id}`;
+      this.formSrc += `/submission/${dataValue._id}`;
     }
 
     // Set the src if the property is provided in the JSON.
-    if (this.component.src) {
-      this.setSrc(this.component.src, srcOptions);
+    if (this.formSrc) {
+      this.setSrc(this.formSrc, srcOptions);
     }
 
     // Directly set the submission if it isn't a reference.

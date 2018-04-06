@@ -77,10 +77,7 @@ const FormioComponentsIndex = {
   file: FileComponent,
   create: function(component, options, data, nobuild) {
     let comp = null;
-    if (!component.type) {
-      return null;
-    }
-    else if (this.hasOwnProperty(component.type)) {
+    if (component.type && this.hasOwnProperty(component.type)) {
       comp = new this[component.type](component, options, data);
     }
     else {

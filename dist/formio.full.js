@@ -8512,7 +8512,7 @@ var _formio3 = require('../../formio');
 
 var _formio4 = _interopRequireDefault(_formio3);
 
-var _Components = require('../Components');
+var _Base = require('../base/Base');
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -8546,7 +8546,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         extend[_key] = arguments[_key];
       }
 
-      return _Components.FormioComponents.schema.apply(_Components.FormioComponents, [{
+      return _Base.BaseComponent.schema.apply(_Base.BaseComponent, [{
         type: 'form',
         key: 'form',
         src: '',
@@ -8579,6 +8579,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
 
     delete _formio4.default.forms[_this.id];
     _this.type = 'formcomponent';
+    _this.formSrc = '';
     _this.component = component;
     _this.submitted = false;
     _this.data = data;
@@ -8613,17 +8614,21 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.component.submit = true;
       }
 
-      if (!this.component.src && !this.options.formio && this.component.form) {
-        this.component.src = _formio4.default.getBaseUrl();
+      if (!this.component.src && !this.options.formio && (this.component.form || this.component.path)) {
+        this.formSrc = _formio4.default.getBaseUrl();
         if (this.component.project) {
           // Check to see if it is a MongoID.
           if (_utils2.default.isMongoId(this.component.project)) {
-            this.component.src += '/project';
+            this.formSrc += '/project';
           }
-          this.component.src += '/' + this.component.project;
+          this.formSrc += '/' + this.component.project;
           srcOptions.project = this.component.src;
         }
-        this.component.src += '/form/' + this.component.form;
+        if (this.component.form) {
+          this.formSrc += '/form/' + this.component.form;
+        } else if (this.component.path) {
+          this.formSrc += '/' + this.component.path;
+        }
       }
 
       // Build the source based on the root src path.
@@ -8632,22 +8637,22 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         if (this.component.path) {
           var parts = rootSrc.split('/');
           parts.pop();
-          this.component.src = parts.join('/') + '/' + this.component.path;
+          this.formSrc = parts.join('/') + '/' + this.component.path;
         }
         if (this.component.form) {
-          this.component.src = rootSrc + '/' + this.component.form;
+          this.formSrc = rootSrc + '/' + this.component.form;
         }
       }
 
       // Add the source to this actual submission if the component is a reference.
       var dataValue = _lodash2.default.get(this.data, this.component.key);
-      if (dataValue && dataValue._id && this.component.reference && !(this.component.src.indexOf('/submission/') !== -1)) {
-        this.component.src += '/submission/' + dataValue._id;
+      if (dataValue && dataValue._id && this.component.reference && this.formSrc && !(this.formSrc.indexOf('/submission/') !== -1)) {
+        this.formSrc += '/submission/' + dataValue._id;
       }
 
       // Set the src if the property is provided in the JSON.
-      if (this.component.src) {
-        this.setSrc(this.component.src, srcOptions);
+      if (this.formSrc) {
+        this.setSrc(this.formSrc, srcOptions);
       }
 
       // Directly set the submission if it isn't a reference.
@@ -8847,6 +8852,11 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
       return this.dataValue;
     }
   }, {
+    key: 'schema',
+    get: function get() {
+      return _lodash2.default.omit(this.component, ['id', 'components']);
+    }
+  }, {
     key: 'emptyValue',
     get: function get() {
       return { data: {} };
@@ -8864,7 +8874,7 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
   return FormComponent;
 }(_formio2.default);
 
-},{"../../formio":46,"../../formio.form":44,"../../utils":58,"../Components":1,"lodash":230}],20:[function(require,module,exports){
+},{"../../formio":46,"../../formio.form":44,"../../utils":58,"../base/Base":4,"lodash":230}],20:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -8937,6 +8947,15 @@ var HiddenComponent = exports.HiddenComponent = function (_BaseComponent) {
       info.attr.type = 'hidden';
       info.changeEvent = 'change';
       return info;
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      _get(HiddenComponent.prototype.__proto__ || Object.getPrototypeOf(HiddenComponent.prototype), 'build', this).call(this);
+      if (this.options.builder) {
+        // We need to see it in builder mode.
+        this.append(this.text(this.name));
+      }
     }
   }, {
     key: 'createLabel',
@@ -9215,9 +9234,7 @@ var FormioComponentsIndex = {
   file: _File.FileComponent,
   create: function create(component, options, data, nobuild) {
     var comp = null;
-    if (!component.type) {
-      return null;
-    } else if (this.hasOwnProperty(component.type)) {
+    if (component.type && this.hasOwnProperty(component.type)) {
       comp = new this[component.type](component, options, data);
     } else {
       comp = new _Unknown.UnknownComponent(component, options, data);
@@ -13711,7 +13728,7 @@ var FormioForm = function (_FormioComponents) {
     _this2._src = '';
     _this2._loading = false;
     _this2._submission = {};
-    _this2._form = null;
+    _this2._form = {};
 
     /**
      * Determines if this form should submit the API on submit.

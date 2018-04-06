@@ -16,6 +16,7 @@
   position: absolute;
   right: 0;
   z-index: 1000;
+  margin-top: -2px;
 }
 
 .formio-component:not(:hover) .component-btn-group {
@@ -30,6 +31,22 @@
   -webkit-box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
   -moz-box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
   box-shadow: 0px 0px 10px 1px rgba(48,113,169,0.6);
+}
+
+.formbuilder .formio-component-hidden, .formbuilder .formio-component-form {
+  height: 3em;
+  border: 2px dashed #ddd;
+}
+
+.formbuilder .formio-component-hidden {
+  text-align: center;
+  color: #aaa;
+  padding-top: 0.5em;
+}
+
+.formbuilder .row.formio-component-columns {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .btn-xxs, .btn-group-xxs > .btn, .component-btn-group .component-settings-button {

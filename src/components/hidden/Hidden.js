@@ -27,6 +27,14 @@ export class HiddenComponent extends BaseComponent {
     return info;
   }
 
+  build() {
+    super.build();
+    if (this.options.builder) {
+      // We need to see it in builder mode.
+      this.append(this.text(this.name));
+    }
+  }
+
   createLabel() {
     return;
   }

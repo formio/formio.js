@@ -99,7 +99,7 @@ export default class FormioForm extends FormioComponents {
     this._src = '';
     this._loading = false;
     this._submission = {};
-    this._form = null;
+    this._form = {};
 
     /**
      * Determines if this form should submit the API on submit.
