@@ -48,6 +48,12 @@ export default function(...extend) {
         type: 'hidden',
         key: 'type'
       }
-    ], ...extend, EditFormUtils.unifyComponents)
+    ].concat(_.map(extend, items => {
+      return {
+        type: 'tabs',
+        key: 'tabs',
+        components: items
+      };
+    })), EditFormUtils.unifyComponents)
   };
 };

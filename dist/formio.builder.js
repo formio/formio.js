@@ -11,15 +11,11 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
-    components: [{
-      key: 'data',
-      ignore: true
-    }, {
-      key: 'validation',
-      ignore: true
-    }]
+    key: 'data',
+    ignore: true
+  }, {
+    key: 'validation',
+    ignore: true
   }]].concat(extend));
 };
 
@@ -941,32 +937,28 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
+    weight: 0,
     components: [{
-      label: 'Display',
-      key: 'display',
-      weight: 0,
+      type: 'container',
+      key: 'map',
+      input: true,
+      weight: 610,
       components: [{
-        type: 'container',
-        key: 'map',
+        type: 'textfield',
         input: true,
-        weight: 610,
-        components: [{
-          type: 'textfield',
-          input: true,
-          label: 'Region Bias',
-          key: 'region',
-          tooltip: 'The region bias to use for this search. See <a href=\'https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes\' target=\'_blank\'>Region Biasing</a> for more information.',
-          placeholder: 'Dallas'
-        }, {
-          type: 'textfield',
-          input: true,
-          label: 'Google Maps API Key',
-          key: 'key',
-          tooltip: 'The API key for Google Maps. See <a href=\'https://developers.google.com/maps/documentation/geocoding/get-api-key\' target=\'_blank\'>Get an API Key</a> for more information.',
-          placeholder: 'xxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxx'
-        }]
+        label: 'Region Bias',
+        key: 'region',
+        tooltip: 'The region bias to use for this search. See <a href=\'https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes\' target=\'_blank\'>Region Biasing</a> for more information.',
+        placeholder: 'Dallas'
+      }, {
+        type: 'textfield',
+        input: true,
+        label: 'Google Maps API Key',
+        key: 'key',
+        tooltip: 'The API key for Google Maps. See <a href=\'https://developers.google.com/maps/documentation/geocoding/get-api-key\' target=\'_blank\'>Get an API Key</a> for more information.',
+        placeholder: 'xxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxx'
       }]
     }]
   }]].concat(extend));
@@ -1661,7 +1653,7 @@ exports.default = function () {
   }
 
   return {
-    components: _lodash2.default.unionWith.apply(_lodash2.default, [[{
+    components: _lodash2.default.unionWith([{
       type: 'tabs',
       key: 'tabs',
       components: [{
@@ -1693,7 +1685,13 @@ exports.default = function () {
     }, {
       type: 'hidden',
       key: 'type'
-    }]].concat(extend, [_utils.EditFormUtils.unifyComponents]))
+    }].concat(_lodash2.default.map(extend, function (items) {
+      return {
+        type: 'tabs',
+        key: 'tabs',
+        components: items
+      };
+    })), _utils.EditFormUtils.unifyComponents)
   };
 };
 
@@ -4614,7 +4612,7 @@ var BaseEditData = exports.BaseEditData = [{
   placeholder: 'Default Value',
   tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
   input: true
-}, _utils.EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue'), _utils.EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue'), {
+}, _utils.EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 110), _utils.EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 120), {
   weight: 400,
   type: 'checkbox',
   label: 'Encrypt',
@@ -4911,18 +4909,25 @@ function _interopRequireDefault(obj) {
 }
 
 var EditFormUtils = exports.EditFormUtils = {
+  sortAndFilterComponents: function sortAndFilterComponents(components) {
+    return _lodash2.default.filter(_lodash2.default.sortBy(components, 'weight'), function (item) {
+      return !item.ignore;
+    });
+  },
   unifyComponents: function unifyComponents(objValue, srcValue) {
-    if (objValue.key === srcValue.key) {
-      if (objValue.components) {
-        srcValue.components = _lodash2.default.filter(_lodash2.default.sortBy(_lodash2.default.unionWith(objValue.components, srcValue.components, EditFormUtils.unifyComponents), 'weight'), function (item) {
-          return !item.ignore;
-        });
+    if (objValue.key && srcValue.key) {
+      if (objValue.key === srcValue.key) {
+        if (objValue.components) {
+          srcValue.components = EditFormUtils.sortAndFilterComponents(_lodash2.default.unionWith(objValue.components, srcValue.components, EditFormUtils.unifyComponents));
+        }
+        return true;
+      } else {
+        return false;
       }
-      return true;
     }
     return _lodash2.default.isEqual(objValue, srcValue);
   },
-  javaScriptValue: function javaScriptValue(title, property) {
+  javaScriptValue: function javaScriptValue(title, property, weight) {
     return {
       type: 'panel',
       title: title,
@@ -4930,6 +4935,7 @@ var EditFormUtils = exports.EditFormUtils = {
       collapsible: true,
       collapsed: true,
       key: property + 'Panel',
+      weight: weight,
       components: [{
         type: 'panel',
         title: 'JavaScript Default',
@@ -5176,146 +5182,142 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
+    weight: 0,
     components: [{
-      label: 'Display',
-      key: 'display',
-      weight: 0,
+      type: 'select',
+      key: 'action',
+      label: 'Action',
+      input: true,
+      dataSrc: 'values',
+      weight: 110,
+      tooltip: 'This is the action to be performed by this button.',
+      data: {
+        values: [{ label: 'Submit', value: 'submit' }, { label: 'Event', value: 'event' }, { label: 'Custom', value: 'custom' }, { label: 'Reset', value: 'reset' }, { label: 'OAuth', value: 'oauth' }, { label: 'POST to URL', value: 'url' }]
+      }
+    }, {
+      type: 'textfield',
+      label: 'Button Event',
+      key: 'event',
+      input: true,
+      weight: 120,
+      tooltip: 'The event to fire when the button is clicked.',
+      conditional: {
+        json: { '===': [{ var: 'data.action' }, 'event'] }
+      }
+    }, {
+      type: 'textfield',
+      inputType: 'url',
+      key: 'url',
+      input: true,
+      weight: 120,
+      label: 'Button URL',
+      tooltip: 'The URL where the submission will be sent.',
+      placeholder: 'https://example.form.io',
+      conditional: {
+        json: { '===': [{ var: 'data.action' }, 'url'] }
+      }
+    }, {
+      type: 'datagrid',
+      key: 'headers',
+      input: true,
+      weight: 130,
+      label: 'Headers',
+      addAnother: 'Add Header',
+      tooltip: 'Headers Properties and Values for your request',
       components: [{
-        type: 'select',
-        key: 'action',
-        label: 'Action',
+        key: 'header',
+        label: 'Header',
         input: true,
-        dataSrc: 'values',
-        weight: 110,
-        tooltip: 'This is the action to be performed by this button.',
-        data: {
-          values: [{ label: 'Submit', value: 'submit' }, { label: 'Event', value: 'event' }, { label: 'Custom', value: 'custom' }, { label: 'Reset', value: 'reset' }, { label: 'OAuth', value: 'oauth' }, { label: 'POST to URL', value: 'url' }]
+        type: 'textfield'
+      }, {
+        key: 'value',
+        label: 'Value',
+        input: true,
+        type: 'textfield'
+      }],
+      conditional: {
+        json: { '===': [{ var: 'data.action' }, 'url'] }
+      }
+    }, {
+      type: 'textarea',
+      key: 'custom',
+      label: 'Button Custom Logic',
+      tooltip: 'The custom logic to evaluate when the button is clicked.',
+      rows: 5,
+      editor: 'ace',
+      input: true,
+      weight: 120,
+      placeholder: 'data[\'mykey\'] = data[\'anotherKey\'];',
+      conditional: {
+        json: { '===': [{ var: 'data.action' }, 'custom'] }
+      }
+    }, {
+      type: 'select',
+      key: 'theme',
+      label: 'Theme',
+      input: true,
+      tooltip: 'The color theme of this button.',
+      dataSrc: 'values',
+      weight: 140,
+      data: {
+        values: [{ label: 'Default', value: 'default' }, { label: 'Primary', value: 'primary' }, { label: 'Info', value: 'info' }, { label: 'Success', value: 'success' }, { label: 'Danger', value: 'danger' }, { label: 'Warning', value: 'warning' }]
+      }
+    }, {
+      type: 'select',
+      key: 'size',
+      label: 'Size',
+      input: true,
+      tooltip: 'The size of this button.',
+      dataSrc: 'values',
+      weight: 150,
+      data: {
+        values: [{ label: 'Extra Small', value: 'xs' }, { label: 'Small', value: 'sm' }, { label: 'Medium', value: 'md' }, { label: 'Large', value: 'lg' }]
+      }
+    }, {
+      type: 'textfield',
+      key: 'leftIcon',
+      label: 'Left Icon',
+      input: true,
+      placeholder: 'Enter icon classes',
+      tooltip: 'This is the full icon class string to show the icon. Example: \'fa fa-plus\'',
+      weight: 160
+    }, {
+      type: 'textfield',
+      key: 'rightIcon',
+      label: 'Right Icon',
+      input: true,
+      placeholder: 'Enter icon classes',
+      tooltip: 'This is the full icon class string to show the icon. Example: \'fa fa-plus\'',
+      weight: 170
+    }, {
+      type: 'select',
+      input: true,
+      weight: 180,
+      label: 'Shortcut',
+      key: 'shortcut',
+      tooltip: 'Shortcut for this component.',
+      dataSrc: 'custom',
+      data: {
+        custom: function custom(component, data) {
+          return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component.component);
         }
-      }, {
-        type: 'textfield',
-        label: 'Button Event',
-        key: 'event',
-        input: true,
-        weight: 120,
-        tooltip: 'The event to fire when the button is clicked.',
-        conditional: {
-          json: { '===': [{ var: 'data.action' }, 'event'] }
-        }
-      }, {
-        type: 'textfield',
-        inputType: 'url',
-        key: 'url',
-        input: true,
-        weight: 120,
-        label: 'Button URL',
-        tooltip: 'The URL where the submission will be sent.',
-        placeholder: 'https://example.form.io',
-        conditional: {
-          json: { '===': [{ var: 'data.action' }, 'url'] }
-        }
-      }, {
-        type: 'datagrid',
-        key: 'headers',
-        input: true,
-        weight: 130,
-        label: 'Headers',
-        addAnother: 'Add Header',
-        tooltip: 'Headers Properties and Values for your request',
-        components: [{
-          key: 'header',
-          label: 'Header',
-          input: true,
-          type: 'textfield'
-        }, {
-          key: 'value',
-          label: 'Value',
-          input: true,
-          type: 'textfield'
-        }],
-        conditional: {
-          json: { '===': [{ var: 'data.action' }, 'url'] }
-        }
-      }, {
-        type: 'textarea',
-        key: 'custom',
-        label: 'Button Custom Logic',
-        tooltip: 'The custom logic to evaluate when the button is clicked.',
-        rows: 5,
-        editor: 'ace',
-        input: true,
-        weight: 120,
-        placeholder: 'data[\'mykey\'] = data[\'anotherKey\'];',
-        conditional: {
-          json: { '===': [{ var: 'data.action' }, 'custom'] }
-        }
-      }, {
-        type: 'select',
-        key: 'theme',
-        label: 'Theme',
-        input: true,
-        tooltip: 'The color theme of this button.',
-        dataSrc: 'values',
-        weight: 140,
-        data: {
-          values: [{ label: 'Default', value: 'default' }, { label: 'Primary', value: 'primary' }, { label: 'Info', value: 'info' }, { label: 'Success', value: 'success' }, { label: 'Danger', value: 'danger' }, { label: 'Warning', value: 'warning' }]
-        }
-      }, {
-        type: 'select',
-        key: 'size',
-        label: 'Size',
-        input: true,
-        tooltip: 'The size of this button.',
-        dataSrc: 'values',
-        weight: 150,
-        data: {
-          values: [{ label: 'Extra Small', value: 'xs' }, { label: 'Small', value: 'sm' }, { label: 'Medium', value: 'md' }, { label: 'Large', value: 'lg' }]
-        }
-      }, {
-        type: 'textfield',
-        key: 'leftIcon',
-        label: 'Left Icon',
-        input: true,
-        placeholder: 'Enter icon classes',
-        tooltip: 'This is the full icon class string to show the icon. Example: \'fa fa-plus\'',
-        weight: 160
-      }, {
-        type: 'textfield',
-        key: 'rightIcon',
-        label: 'Right Icon',
-        input: true,
-        placeholder: 'Enter icon classes',
-        tooltip: 'This is the full icon class string to show the icon. Example: \'fa fa-plus\'',
-        weight: 170
-      }, {
-        type: 'select',
-        input: true,
-        weight: 180,
-        label: 'Shortcut',
-        key: 'shortcut',
-        tooltip: 'Shortcut for this component.',
-        dataSrc: 'custom',
-        data: {
-          custom: function custom(component, data) {
-            return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component.component);
-          }
-        }
-      }, {
-        type: 'checkbox',
-        key: 'block',
-        label: 'Block',
-        input: true,
-        weight: 610,
-        tooltip: 'This control should span the full width of the bounding container.'
-      }, {
-        type: 'checkbox',
-        key: 'disableOnInvalid',
-        label: 'Disable on Form Invalid',
-        tooltip: 'This will disable this field if the form is invalid.',
-        input: true,
-        weight: 620
-      }]
+      }
+    }, {
+      type: 'checkbox',
+      key: 'block',
+      label: 'Block',
+      input: true,
+      weight: 610,
+      tooltip: 'This control should span the full width of the bounding container.'
+    }, {
+      type: 'checkbox',
+      key: 'disableOnInvalid',
+      label: 'Disable on Form Invalid',
+      tooltip: 'This will disable this field if the form is invalid.',
+      input: true,
+      weight: 620
     }]
   }]].concat(extend));
 };
@@ -5805,76 +5807,72 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
+    weight: 0,
     components: [{
-      label: 'Display',
-      key: 'display',
-      weight: 0,
-      components: [{
-        type: 'select',
-        input: true,
-        label: 'Label Position',
-        key: 'labelPosition',
-        tooltip: 'Position for the label for this field.',
-        defaultValue: 'right',
-        dataSrc: 'values',
-        weight: 20,
-        data: {
-          values: [{ label: 'Top', value: 'top' }, { label: 'Left', value: 'left' }, { label: 'Right', value: 'right' }, { label: 'Bottom', value: 'bottom' }]
+      type: 'select',
+      input: true,
+      label: 'Label Position',
+      key: 'labelPosition',
+      tooltip: 'Position for the label for this field.',
+      defaultValue: 'right',
+      dataSrc: 'values',
+      weight: 20,
+      data: {
+        values: [{ label: 'Top', value: 'top' }, { label: 'Left', value: 'left' }, { label: 'Right', value: 'right' }, { label: 'Bottom', value: 'bottom' }]
+      }
+    }, {
+      type: 'select',
+      input: true,
+      weight: 350,
+      label: 'Shortcut',
+      key: 'shortcut',
+      tooltip: 'Shortcut for this component.',
+      dataSrc: 'custom',
+      data: {
+        custom: function custom(component, data) {
+          return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component.component);
         }
-      }, {
-        type: 'select',
-        input: true,
-        weight: 350,
-        label: 'Shortcut',
-        key: 'shortcut',
-        tooltip: 'Shortcut for this component.',
-        dataSrc: 'custom',
-        data: {
-          custom: function custom(component, data) {
-            return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component.component);
-          }
-        }
-      }, {
-        type: 'select',
-        input: true,
-        key: 'inputType',
-        label: 'Input Type',
-        tooltip: 'This is the input type used for this checkbox.',
-        dataSrc: 'values',
-        weight: 410,
-        data: {
-          values: [{ label: 'Checkbox', value: 'checkbox' }, { label: 'Radio', value: 'radio' }]
-        }
-      }, {
-        type: 'textfield',
-        input: true,
-        key: 'name',
-        label: 'Radio Key',
-        tooltip: 'The key used to trigger the radio button toggle.',
-        weight: 420,
-        conditional: {
-          json: { '===': [{ var: 'data.inputType' }, 'radio'] }
-        }
-      }, {
-        type: 'textfield',
-        input: true,
-        label: 'Radio Value',
-        key: 'value',
-        tooltip: 'The value used with this radio button.',
-        weight: 430,
-        conditional: {
-          json: { '===': [{ var: 'data.inputType' }, 'radio'] }
-        }
-      }, {
-        type: 'checkbox',
-        input: true,
-        weight: 440,
-        label: 'Datagrid Label',
-        key: 'datagridLabel',
-        tooltip: 'Show the label when in a datagrid.'
-      }]
+      }
+    }, {
+      type: 'select',
+      input: true,
+      key: 'inputType',
+      label: 'Input Type',
+      tooltip: 'This is the input type used for this checkbox.',
+      dataSrc: 'values',
+      weight: 410,
+      data: {
+        values: [{ label: 'Checkbox', value: 'checkbox' }, { label: 'Radio', value: 'radio' }]
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'name',
+      label: 'Radio Key',
+      tooltip: 'The key used to trigger the radio button toggle.',
+      weight: 420,
+      conditional: {
+        json: { '===': [{ var: 'data.inputType' }, 'radio'] }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      label: 'Radio Value',
+      key: 'value',
+      tooltip: 'The value used with this radio button.',
+      weight: 430,
+      conditional: {
+        json: { '===': [{ var: 'data.inputType' }, 'radio'] }
+      }
+    }, {
+      type: 'checkbox',
+      input: true,
+      weight: 440,
+      label: 'Datagrid Label',
+      key: 'datagridLabel',
+      tooltip: 'Show the label when in a datagrid.'
     }]
   }]].concat(extend));
 };
@@ -6333,41 +6331,36 @@ exports.default = function () {
   }
 
   return _Components2.default.apply(undefined, [[{
-    weight: 0,
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
     components: [{
-      label: 'Display',
-      key: 'display',
+      weight: 150,
+      type: 'datagrid',
+      input: true,
+      key: 'columns',
+      label: 'Column Properties',
+      addAnother: 'Add Column',
+      tooltip: 'The width, offset, push, and pull settings for each column.',
       components: [{
-        weight: 150,
-        type: 'datagrid',
-        input: true,
-        key: 'columns',
-        label: 'Column Properties',
-        addAnother: 'Add Column',
-        tooltip: 'The width, offset, push, and pull settings for each column.',
-        components: [{
-          type: 'number',
-          key: 'width',
-          defaultValue: 6,
-          label: 'Width'
-        }, {
-          type: 'number',
-          key: 'offset',
-          defaultValue: 0,
-          label: 'Offset'
-        }, {
-          type: 'number',
-          key: 'push',
-          defaultValue: 0,
-          label: 'Push'
-        }, {
-          type: 'number',
-          key: 'pull',
-          defaultValue: 0,
-          label: 'Pull'
-        }]
+        type: 'number',
+        key: 'width',
+        defaultValue: 6,
+        label: 'Width'
+      }, {
+        type: 'number',
+        key: 'offset',
+        defaultValue: 0,
+        label: 'Offset'
+      }, {
+        type: 'number',
+        key: 'push',
+        defaultValue: 0,
+        label: 'Push'
+      }, {
+        type: 'number',
+        key: 'pull',
+        defaultValue: 0,
+        label: 'Pull'
       }]
     }]
   }]].concat(extend));
@@ -7026,33 +7019,29 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
+    weight: 0,
     components: [{
-      label: 'Display',
-      key: 'display',
-      weight: 0,
-      components: [{
-        type: 'textfield',
-        label: 'Add Another Text',
-        key: 'addAnother',
-        tooltip: 'Set the text of the Add Another button.',
-        placeholder: 'Add Another',
-        weight: 410,
-        input: true
-      }, {
-        type: 'select',
-        label: 'Add Another Position',
-        key: 'addAnotherPosition',
-        dataSrc: 'values',
-        tooltip: 'Position for Add Another button with respect to Data Grid Array.',
-        defaultValue: 'bottom',
-        input: true,
-        data: {
-          values: [{ label: 'Top', value: 'top' }, { label: 'Bottom', value: 'bottom' }, { label: 'Both', value: 'both' }]
-        },
-        weight: 420
-      }]
+      type: 'textfield',
+      label: 'Add Another Text',
+      key: 'addAnother',
+      tooltip: 'Set the text of the Add Another button.',
+      placeholder: 'Add Another',
+      weight: 410,
+      input: true
+    }, {
+      type: 'select',
+      label: 'Add Another Position',
+      key: 'addAnotherPosition',
+      dataSrc: 'values',
+      tooltip: 'Position for Add Another button with respect to Data Grid Array.',
+      defaultValue: 'bottom',
+      input: true,
+      data: {
+        values: [{ label: 'Top', value: 'top' }, { label: 'Bottom', value: 'bottom' }, { label: 'Both', value: 'both' }]
+      },
+      weight: 420
     }]
   }]].concat(extend));
 };
@@ -7536,7 +7525,168 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  return _Base2.default.apply(undefined, arguments);
+  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Base2.default.apply(undefined, [[{
+    label: 'Display',
+    key: 'display',
+    weight: 0,
+    components: [{
+      type: 'checkbox',
+      input: true,
+      key: 'useLocaleSettings',
+      label: 'Use Locale Settings',
+      tooltip: 'Use locale settings to display date and time.',
+      weight: 50
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'format',
+      label: 'Format',
+      placeholder: 'Format',
+      tooltip: 'The moment.js format for saving the value of this field.',
+      weight: 51
+    }]
+  }, {
+    label: 'Date',
+    key: 'date',
+    weight: 1,
+    components: [{
+      type: 'checkbox',
+      input: true,
+      key: 'enableDate',
+      label: 'Enable Date Input',
+      weight: 0,
+      tooltip: 'Enables date input for this field.'
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'datePicker.minDate',
+      label: 'Minimum Date',
+      placeholder: 'yyyy-MM-dd',
+      tooltip: 'The minimum date that can be picked. You can also use Moment.js functions. For example: \n \n moment().subtract(10, \'days\')',
+      weight: 10
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'datePicker.maxDate',
+      label: 'Maximum Date',
+      placeholder: 'yyyy-MM-dd',
+      tooltip: 'The maximum date that can be picked. You can also use Moment.js functions. For example: \n \n moment().add(10, \'days\')',
+      weight: 20
+    }, {
+      type: 'select',
+      input: true,
+      key: 'datePicker.startingDay',
+      label: 'Starting Day',
+      tooltip: 'The first day of the week.',
+      weight: 30,
+      dataSrc: 'values',
+      data: {
+        values: [{ label: 'Sunday', value: 0 }, { label: 'Monday', value: 1 }, { label: 'Tuesday', value: 2 }, { label: 'Wednesday', value: 3 }, { label: 'Thursday', value: 4 }, { label: 'Friday', value: 5 }, { label: 'Saturday', value: 6 }]
+      }
+    }, {
+      type: 'select',
+      input: true,
+      key: 'datePicker.minMode',
+      label: 'Minimum Mode',
+      tooltip: 'The smallest unit of time view to display in the date picker.',
+      weight: 40,
+      dataSrc: 'values',
+      data: {
+        values: [{ label: 'Day', value: 'day' }, { label: 'Month', value: 'month' }, { label: 'Year', value: 'year' }]
+      }
+    }, {
+      type: 'select',
+      input: true,
+      key: 'datePicker.maxMode',
+      label: 'Maximum Mode',
+      tooltip: 'The largest unit of time view to display in the date picker.',
+      weight: 50,
+      dataSrc: 'values',
+      data: {
+        values: [{ label: 'Day', value: 'day' }, { label: 'Month', value: 'month' }, { label: 'Year', value: 'year' }]
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'datePicker.yearRows',
+      label: 'Number of Years Displayed (Rows)',
+      placeholder: 'Year Range (Rows)',
+      tooltip: 'The number of years to display in the years view (Rows).',
+      weight: 60
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'datePicker.yearColumns',
+      label: 'Number of Years Displayed (Columns)',
+      placeholder: 'Year Range (Columns)',
+      tooltip: 'The number of years to display in the years view (Columns).',
+      weight: 70
+    }, {
+      type: 'checkbox',
+      input: true,
+      key: 'datePicker.showWeeks',
+      label: 'Show Week Numbers',
+      tooltip: 'Displays the week numbers on the date picker.',
+      weight: 70
+    }]
+  }, {
+    label: 'Time',
+    key: 'time',
+    weight: 2,
+    components: [{
+      type: 'checkbox',
+      input: true,
+      key: 'enableTime',
+      label: 'Enable Time Input',
+      tooltip: 'Enables time input for this field.',
+      weight: 0
+    }, {
+      type: 'number',
+      input: true,
+      key: 'timePicker.hourStep',
+      label: 'Hour Step Size',
+      tooltip: 'The number of hours to increment/decrement in the time picker.',
+      weight: 10
+    }, {
+      type: 'number',
+      input: true,
+      key: 'timePicker.minuteStep',
+      label: 'Minute Step Size',
+      tooltip: 'The number of minutes to increment/decrement in the time picker.',
+      weight: 20
+    }, {
+      type: 'checkbox',
+      input: true,
+      key: 'timePicker.showMeridian',
+      label: '12 Hour Time (AM/PM)',
+      tooltip: 'Display time in 12 hour time with AM/PM.',
+      weight: 30
+    }, {
+      type: 'checkbox',
+      input: true,
+      key: 'timePicker.readonlyInput',
+      label: 'Read-Only Input',
+      tooltip: 'Makes the time picker input boxes read-only. The time can only be changed by the increment/decrement buttons.',
+      weight: 40
+    }]
+  }, {
+    label: 'Data',
+    key: 'data',
+    weight: 10,
+    components: [{
+      type: 'textfield',
+      input: true,
+      key: 'defaultDate',
+      label: 'Default Value',
+      placeholder: 'Default Value',
+      tooltip: 'You can use Moment.js functions to set the default value to a specific date. For example: \n \n moment().subtract(10, \'days\')',
+      weight: 1
+    }]
+  }]].concat(extend));
 };
 
 var _Base = require('../base/Base.form');
@@ -8463,71 +8613,67 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Templates',
+    key: 'templates',
+    weight: 5,
     components: [{
-      label: 'Templates',
-      key: 'templates',
-      weight: 5,
-      components: [{
-        type: 'textarea',
-        label: 'Header Template',
-        key: 'templates.header',
-        rows: 5,
-        editor: 'ace',
-        input: true,
-        placeholder: '/*** Lodash Template Code ***/',
-        description: 'Two available variables. "value" is the array of row data and "components" is the array of components in the grid.',
-        tooltip: 'This is the <a href="https://lodash.com/docs/4.17.5#template">Lodash Template</a> used to render the header of the Edit grid.'
-      }, {
-        type: 'textarea',
-        label: 'Row Template',
-        key: 'templates.row',
-        rows: 5,
-        editor: 'ace',
-        input: true,
-        placeholder: '/*** Lodash Template Code ***/',
-        description: 'Two available variables. "row" is an object of one row\'s data and "components" is the array of components in the grid. To add click events, add the classes "editRow" and "removeRow" to elements.',
-        tooltip: 'This is the <a href="https://lodash.com/docs/4.17.5#template">Lodash Template</a> used to render each row of the Edit grid.'
-      }, {
-        type: 'textarea',
-        label: 'Footer Template',
-        key: 'templates.footer',
-        rows: 5,
-        editor: 'ace',
-        input: true,
-        placeholder: '/*** Lodash Template Code ***/',
-        description: 'Two available variables. "value" is the array of row data and "components" is the array of components in the grid.',
-        tooltip: 'This is the <a href="https://lodash.com/docs/4.17.5#template">Lodash Template</a> used to render the footer of the Edit grid.'
-      }, {
-        type: 'textfield',
-        input: true,
-        key: 'rowClass',
-        label: 'Row CSS Class',
-        placeholder: 'Row CSS Class',
-        tooltip: 'CSS class to add to the edit row wrapper.'
-      }, {
-        type: 'textfield',
-        input: true,
-        key: 'addAnother',
-        label: 'Add Another Text',
-        placeholder: 'Add Another',
-        tooltip: 'Set the text of the Add Another button.'
-      }, {
-        type: 'textfield',
-        input: true,
-        key: 'saveRow',
-        label: 'Save Row Text',
-        placeholder: 'Save',
-        tooltip: 'Set the text of the Save Row button.'
-      }, {
-        type: 'textfield',
-        input: true,
-        key: 'removeRow',
-        label: 'Remove Row Text',
-        placeholder: 'Remove',
-        tooltip: 'Set the text of the remove Row button.'
-      }]
+      type: 'textarea',
+      label: 'Header Template',
+      key: 'templates.header',
+      rows: 5,
+      editor: 'ace',
+      input: true,
+      placeholder: '/*** Lodash Template Code ***/',
+      description: 'Two available variables. "value" is the array of row data and "components" is the array of components in the grid.',
+      tooltip: 'This is the <a href="https://lodash.com/docs/4.17.5#template">Lodash Template</a> used to render the header of the Edit grid.'
+    }, {
+      type: 'textarea',
+      label: 'Row Template',
+      key: 'templates.row',
+      rows: 5,
+      editor: 'ace',
+      input: true,
+      placeholder: '/*** Lodash Template Code ***/',
+      description: 'Two available variables. "row" is an object of one row\'s data and "components" is the array of components in the grid. To add click events, add the classes "editRow" and "removeRow" to elements.',
+      tooltip: 'This is the <a href="https://lodash.com/docs/4.17.5#template">Lodash Template</a> used to render each row of the Edit grid.'
+    }, {
+      type: 'textarea',
+      label: 'Footer Template',
+      key: 'templates.footer',
+      rows: 5,
+      editor: 'ace',
+      input: true,
+      placeholder: '/*** Lodash Template Code ***/',
+      description: 'Two available variables. "value" is the array of row data and "components" is the array of components in the grid.',
+      tooltip: 'This is the <a href="https://lodash.com/docs/4.17.5#template">Lodash Template</a> used to render the footer of the Edit grid.'
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'rowClass',
+      label: 'Row CSS Class',
+      placeholder: 'Row CSS Class',
+      tooltip: 'CSS class to add to the edit row wrapper.'
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'addAnother',
+      label: 'Add Another Text',
+      placeholder: 'Add Another',
+      tooltip: 'Set the text of the Add Another button.'
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'saveRow',
+      label: 'Save Row Text',
+      placeholder: 'Save',
+      tooltip: 'Set the text of the Save Row button.'
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'removeRow',
+      label: 'Remove Row Text',
+      placeholder: 'Remove',
+      tooltip: 'Set the text of the remove Row button.'
     }]
   }]].concat(extend));
 };
@@ -9366,12 +9512,110 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  return _Base2.default.apply(undefined, arguments);
+  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Base2.default.apply(undefined, [[{
+    label: 'File',
+    key: 'file',
+    weight: 5,
+    components: [{
+      type: 'select',
+      input: true,
+      key: 'storage',
+      label: 'Storage',
+      placeholder: 'Select your file storage provider',
+      weight: 0,
+      tooltip: 'Which storage to save the files in.',
+      valueProperty: 'value',
+      dataSrc: 'custom',
+      data: {
+        custom: function custom() {
+          return _lodash2.default.map(_formio2.default.providers.storage, function (storage, key) {
+            return {
+              label: storage.title,
+              value: key
+            };
+          });
+        }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'url',
+      label: 'Url',
+      weight: 10,
+      placeholder: 'Enter the url to post the files to.',
+      tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#server-side\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.',
+      conditional: {
+        json: { '===': [{ var: 'data.storage' }, 'url'] }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'dir',
+      label: 'Directory',
+      placeholder: '(optional) Enter a directory for the files',
+      tooltip: 'This will place all the files uploaded in this field in the directory',
+      weight: 20
+    }, {
+      type: 'checkbox',
+      input: true,
+      key: 'image',
+      label: 'Display as image(s)',
+      tooltip: 'Instead of a list of linked files, images will be rendered in the view.',
+      weight: 30
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'imageSize',
+      label: 'Image Size',
+      placeholder: '100',
+      tooltip: 'The image size for previewing images.',
+      weight: 40,
+      conditional: {
+        json: { '==': [{ var: 'data.image' }, true] }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'filePattern',
+      label: 'File Pattern',
+      placeholder: '.pdf,.jpg',
+      tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file patterns.',
+      weight: 50
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'fileMinSize',
+      label: 'File Minimum Size',
+      placeholder: '1MB',
+      tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
+      weight: 60
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'fileMaxSize',
+      label: 'File Maximum Size',
+      placeholder: '10MB',
+      tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
+      weight: 70
+    }]
+  }]].concat(extend));
 };
 
 var _Base = require('../base/Base.form');
 
 var _Base2 = _interopRequireDefault(_Base);
+
+var _formio = require('../../formio');
+
+var _formio2 = _interopRequireDefault(_formio);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -9379,7 +9623,7 @@ function _interopRequireDefault(obj) {
 
 ;
 
-},{"../base/Base.form":6}],41:[function(require,module,exports){
+},{"../../formio":95,"../base/Base.form":6,"lodash":290}],41:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -9965,33 +10209,29 @@ exports.default = function () {
   }
 
   return _Components2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Form',
+    key: 'form',
+    weight: 10,
     components: [{
+      type: 'select',
+      input: true,
+      dataSrc: 'url',
+      data: {
+        url: '/form?limit=4294967295&select=_id,title'
+      },
+      template: '<span>{{ item.title }}</span>',
+      valueProperty: '_id',
       label: 'Form',
       key: 'form',
       weight: 10,
-      components: [{
-        type: 'select',
-        input: true,
-        dataSrc: 'url',
-        data: {
-          url: '/form?limit=4294967295&select=_id,title'
-        },
-        template: '<span>{{ item.title }}</span>',
-        valueProperty: '_id',
-        label: 'Form',
-        key: 'form',
-        weight: 10,
-        tooltip: 'The form to load within this form component.'
-      }, {
-        type: 'checkbox',
-        input: true,
-        weight: 20,
-        key: 'reference',
-        label: 'Save as reference',
-        tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.'
-      }]
+      tooltip: 'The form to load within this form component.'
+    }, {
+      type: 'checkbox',
+      input: true,
+      weight: 20,
+      key: 'reference',
+      label: 'Save as reference',
+      tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.'
     }]
   }]].concat(extend));
 };
@@ -10566,7 +10806,61 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  return _Base2.default.apply(undefined, arguments);
+  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Base2.default.apply(undefined, [[{
+    label: 'Display',
+    key: 'display',
+    weight: 0,
+    components: [{
+      type: 'textfield',
+      input: true,
+      key: 'tag',
+      weight: 50,
+      label: 'HTML Tag',
+      placeholder: 'HTML Element Tag',
+      tooltip: 'The tag of this HTML element.'
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'className',
+      weight: 60,
+      label: 'CSS Class',
+      placeholder: 'CSS Class',
+      tooltip: 'The CSS class for this HTML element.'
+    }, {
+      type: 'datagrid',
+      input: true,
+      label: 'Attributes',
+      key: 'attrs',
+      tooltip: 'The attributes for this HTML element. Only safe attributes are allowed, such as src, href, and title.',
+      weight: 70,
+      components: [{
+        label: 'Attribute',
+        key: 'attr',
+        input: true,
+        type: 'textfield'
+      }, {
+        label: 'Value',
+        key: 'value',
+        input: true,
+        type: 'textfield'
+      }]
+    }, {
+      type: 'textarea',
+      input: true,
+      editor: 'ace',
+      rows: 10,
+      as: 'html',
+      label: 'Content',
+      tooltip: 'The content of this HTML element.',
+      defaultValue: '<div class="well">Content</div>',
+      key: 'content',
+      weight: 80
+    }]
+  }]].concat(extend));
 };
 
 var _Base = require('../base/Base.form');
@@ -11120,37 +11414,33 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Validation',
+    key: 'validation',
+    weight: 20,
     components: [{
-      label: 'Validation',
-      key: 'validation',
-      weight: 20,
-      components: [{
-        weight: 100,
-        type: 'checkbox',
-        label: 'Unique',
-        tooltip: 'Makes sure the data submitted for this field is unique, and has not been submitted before.',
-        key: 'validate.unique',
-        input: true,
-        ignore: true
-      }, {
-        type: 'number',
-        label: 'Minimum Value',
-        key: 'validate.min',
-        input: true,
-        placeholder: 'Minimum Value',
-        tooltip: 'The minimum value this field must have before the form can be submitted.',
-        weight: 150
-      }, {
-        type: 'number',
-        label: 'Maximum Value',
-        key: 'validate.max',
-        input: true,
-        placeholder: 'Maximum Value',
-        tooltip: 'The maximum value this field can have before the form can be submitted.',
-        weight: 160
-      }]
+      weight: 100,
+      type: 'checkbox',
+      label: 'Unique',
+      tooltip: 'Makes sure the data submitted for this field is unique, and has not been submitted before.',
+      key: 'validate.unique',
+      input: true,
+      ignore: true
+    }, {
+      type: 'number',
+      label: 'Minimum Value',
+      key: 'validate.min',
+      input: true,
+      placeholder: 'Minimum Value',
+      tooltip: 'The minimum value this field must have before the form can be submitted.',
+      weight: 150
+    }, {
+      type: 'number',
+      label: 'Maximum Value',
+      key: 'validate.max',
+      input: true,
+      placeholder: 'Maximum Value',
+      tooltip: 'The maximum value this field can have before the form can be submitted.',
+      weight: 160
     }]
   }]].concat(extend));
 };
@@ -11406,49 +11696,44 @@ exports.default = function () {
   }
 
   return _Components2.default.apply(undefined, [[{
-    weight: 0,
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
     components: [{
-      label: 'Display',
-      key: 'display',
-      components: [{
-        weight: 10,
-        type: 'textfield',
-        input: true,
-        placeholder: 'Panel Title',
-        label: 'Title',
-        key: 'title',
-        tooltip: 'The title text that appears in the header of this panel.'
-      }, {
-        weight: 20,
-        type: 'textarea',
-        input: true,
-        key: 'tooltip',
-        label: 'Tooltip',
-        placeholder: 'To add a tooltip to this field, enter text here.',
-        tooltip: 'Adds a tooltip to the side of this field.'
-      }, {
-        weight: 30,
-        type: 'select',
-        input: true,
-        label: 'Theme',
-        key: 'theme',
-        dataSrc: 'values',
-        data: {
-          values: [{ label: 'Default', value: 'default' }, { label: 'Primary', value: 'primary' }, { label: 'Info', value: 'info' }, { label: 'Success', value: 'success' }, { label: 'Danger', value: 'danger' }, { label: 'Warning', value: 'warning' }]
-        }
-      }, {
-        weight: 40,
-        type: 'select',
-        input: true,
-        label: 'Show Breadcrumb',
-        key: 'breadcrumb',
-        dataSrc: 'values',
-        data: {
-          values: [{ label: 'Yes', value: 'default' }, { label: 'No', value: 'none' }]
-        }
-      }]
+      weight: 10,
+      type: 'textfield',
+      input: true,
+      placeholder: 'Panel Title',
+      label: 'Title',
+      key: 'title',
+      tooltip: 'The title text that appears in the header of this panel.'
+    }, {
+      weight: 20,
+      type: 'textarea',
+      input: true,
+      key: 'tooltip',
+      label: 'Tooltip',
+      placeholder: 'To add a tooltip to this field, enter text here.',
+      tooltip: 'Adds a tooltip to the side of this field.'
+    }, {
+      weight: 30,
+      type: 'select',
+      input: true,
+      label: 'Theme',
+      key: 'theme',
+      dataSrc: 'values',
+      data: {
+        values: [{ label: 'Default', value: 'default' }, { label: 'Primary', value: 'primary' }, { label: 'Info', value: 'info' }, { label: 'Success', value: 'success' }, { label: 'Danger', value: 'danger' }, { label: 'Warning', value: 'warning' }]
+      }
+    }, {
+      weight: 40,
+      type: 'select',
+      input: true,
+      label: 'Show Breadcrumb',
+      key: 'breadcrumb',
+      dataSrc: 'values',
+      data: {
+        values: [{ label: 'Yes', value: 'default' }, { label: 'No', value: 'none' }]
+      }
     }]
   }]].concat(extend));
 };
@@ -11881,57 +12166,53 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
+    weight: 0,
     components: [{
-      label: 'Display',
-      key: 'display',
-      weight: 0,
+      type: 'select',
+      input: true,
+      label: 'Options Label Position',
+      key: 'optionsLabelPosition',
+      tooltip: 'Position for the label for options for this field.',
+      dataSrc: 'values',
+      weight: 32,
+      defaultValue: 'right',
+      data: {
+        values: [{ label: 'Top', value: 'top' }, { label: 'Left', value: 'left' }, { label: 'Right', value: 'right' }, { label: 'Bottom', value: 'bottom' }]
+      }
+    }, {
+      type: 'datagrid',
+      input: true,
+      label: 'Values',
+      key: 'values',
+      tooltip: 'The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.',
+      weight: 33,
+      defaultValue: [{ label: '', value: '' }],
       components: [{
+        label: 'Label',
+        key: 'label',
+        input: true,
+        type: 'textfield'
+      }, {
+        label: 'Value',
+        key: 'value',
+        input: true,
+        type: 'textfield',
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
+      }, {
         type: 'select',
         input: true,
-        label: 'Options Label Position',
-        key: 'optionsLabelPosition',
-        tooltip: 'Position for the label for options for this field.',
-        dataSrc: 'values',
-        weight: 32,
-        defaultValue: 'right',
+        weight: 180,
+        label: 'Shortcut',
+        key: 'shortcut',
+        tooltip: 'The shortcut key for this option.',
+        dataSrc: 'custom',
         data: {
-          values: [{ label: 'Top', value: 'top' }, { label: 'Left', value: 'left' }, { label: 'Right', value: 'right' }, { label: 'Bottom', value: 'bottom' }]
-        }
-      }, {
-        type: 'datagrid',
-        input: true,
-        label: 'Values',
-        key: 'values',
-        tooltip: 'The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.',
-        weight: 33,
-        defaultValue: [{ label: '', value: '' }],
-        components: [{
-          label: 'Label',
-          key: 'label',
-          input: true,
-          type: 'textfield'
-        }, {
-          label: 'Value',
-          key: 'value',
-          input: true,
-          type: 'textfield',
-          calculateValue: { _camelCase: [{ var: 'row.label' }] }
-        }, {
-          type: 'select',
-          input: true,
-          weight: 180,
-          label: 'Shortcut',
-          key: 'shortcut',
-          tooltip: 'The shortcut key for this option.',
-          dataSrc: 'custom',
-          data: {
-            custom: function custom(component, data) {
-              return BuilderUtils.getAvailableShortcuts(data.__form, component.component);
-            }
+          custom: function custom(component, data) {
+            return BuilderUtils.getAvailableShortcuts(data.__form, component.component);
           }
-        }]
+        }
       }]
     }]
   }]].concat(extend));
@@ -12451,308 +12732,304 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Data',
+    key: 'data',
+    weight: 10,
     components: [{
-      label: 'Data',
-      key: 'data',
+      type: 'select',
+      input: true,
+      weight: 0,
+      tooltip: 'The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.',
+      key: 'dataSrc',
+      defaultValue: 'values',
+      label: 'Data Source Type',
+      dataSrc: 'values',
+      data: {
+        values: [{ label: 'Values', value: 'values' }, { label: 'Raw JSON', value: 'json' }, { label: 'URL', value: 'url' }, { label: 'Resource', value: 'resource' }, { label: 'Custom', value: 'custom' }]
+      }
+    }, {
+      type: 'textarea',
+      as: 'json',
+      editor: 'ace',
+      weight: 10,
+      input: true,
+      key: 'data.json',
+      label: 'Data Source Raw JSON',
+      tooltip: 'A raw JSON array to use as a data source.',
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'json'] }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'url',
+      weight: 10,
+      label: 'Data Source URL',
+      placeholder: 'Data Source URL',
+      tooltip: 'A URL that returns a JSON array to use as the data source.',
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+      }
+    }, {
+      type: 'datagrid',
+      input: true,
+      label: 'Request Headers',
+      key: 'data.headers',
+      tooltip: 'Set any headers that should be sent along with the request to the url. This is useful for authentication.',
+      weight: 11,
+      components: [{
+        label: 'Key',
+        key: 'key',
+        input: true,
+        type: 'textfield'
+      }, {
+        label: 'Value',
+        key: 'value',
+        input: true,
+        type: 'textfield'
+      }],
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+      }
+    }, {
+      type: 'datagrid',
+      input: true,
+      label: 'Data Source Values',
+      key: 'data.values',
+      tooltip: 'Values to use as the data source. Labels are shown in the select field. Values are the corresponding values saved with the submission.',
       weight: 10,
       components: [{
-        type: 'select',
+        label: 'Label',
+        key: 'label',
         input: true,
-        weight: 0,
-        tooltip: 'The source to use for the select data. Values lets you provide your own values and labels. JSON lets you provide raw JSON data. URL lets you provide a URL to retrieve the JSON data from.',
-        key: 'dataSrc',
-        defaultValue: 'values',
-        label: 'Data Source Type',
-        dataSrc: 'values',
-        data: {
-          values: [{ label: 'Values', value: 'values' }, { label: 'Raw JSON', value: 'json' }, { label: 'URL', value: 'url' }, { label: 'Resource', value: 'resource' }, { label: 'Custom', value: 'custom' }]
-        }
+        type: 'textfield'
       }, {
-        type: 'textarea',
-        as: 'json',
-        editor: 'ace',
-        weight: 10,
+        label: 'Value',
+        key: 'value',
         input: true,
-        key: 'data.json',
-        label: 'Data Source Raw JSON',
-        tooltip: 'A raw JSON array to use as a data source.',
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'json'] }
-        }
-      }, {
         type: 'textfield',
-        input: true,
-        key: 'url',
-        weight: 10,
-        label: 'Data Source URL',
-        placeholder: 'Data Source URL',
-        tooltip: 'A URL that returns a JSON array to use as the data source.',
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-        }
-      }, {
-        type: 'datagrid',
-        input: true,
-        label: 'Request Headers',
-        key: 'data.headers',
-        tooltip: 'Set any headers that should be sent along with the request to the url. This is useful for authentication.',
-        weight: 11,
-        components: [{
-          label: 'Key',
-          key: 'key',
-          input: true,
-          type: 'textfield'
-        }, {
-          label: 'Value',
-          key: 'value',
-          input: true,
-          type: 'textfield'
-        }],
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-        }
-      }, {
-        type: 'datagrid',
-        input: true,
-        label: 'Data Source Values',
-        key: 'data.values',
-        tooltip: 'Values to use as the data source. Labels are shown in the select field. Values are the corresponding values saved with the submission.',
-        weight: 10,
-        components: [{
-          label: 'Label',
-          key: 'label',
-          input: true,
-          type: 'textfield'
-        }, {
-          label: 'Value',
-          key: 'value',
-          input: true,
-          type: 'textfield',
-          calculateValue: { _camelCase: [{ var: 'row.label' }] }
-        }],
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'values'] }
-        }
-      }, {
-        type: 'select',
-        input: true,
-        dataSrc: 'url',
-        data: {
-          url: '/form?type=resource&limit=4294967295&select=_id,title'
-        },
-        template: '<span>{{ item.title }}</span>',
-        valueProperty: '_id',
-        label: 'Resource',
-        key: 'resource',
-        weight: 10,
-        tooltip: 'The resource to be used with this field.',
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
-        }
-      }, {
-        type: 'select',
-        input: true,
-        label: 'Value Property',
-        key: 'valueProperty',
-        tooltip: 'The field to use as the value.',
-        weight: 11,
-        refreshOn: 'resource',
-        template: '<span>{{ item.label }}</span>',
-        valueProperty: 'key',
-        dataSrc: 'url',
-        onSetItems: function onSetItems(component, form) {
-          var newItems = [];
-          _utils2.default.eachComponent(form.components, function (component, path) {
-            newItems.push({
-              label: component.label || component.key,
-              key: path
-            });
-          });
-          return newItems;
-        },
-        data: {
-          url: '/form/{{ data.resource }}'
-        },
-        conditional: {
-          json: {
-            and: [{ '===': [{ var: 'data.dataSrc' }, 'resource'] }, { var: 'data.resource' }]
-          }
-        }
-      }, {
-        type: 'textfield',
-        input: true,
-        label: 'Data Path',
-        key: 'selectValues',
-        weight: 12,
-        description: 'The object path to the iterable items.',
-        tooltip: 'The property within the source data, where iterable items reside. For example: results.items or results[0].items',
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-        }
-      }, {
-        type: 'textfield',
-        input: true,
-        label: 'Value Property',
-        key: 'valueProperty',
-        weight: 13,
-        description: 'The selected item\'s property to save.',
-        tooltip: 'The property of each item in the data source to use as the select value. If not specified, the item itself will be used.',
-        conditional: {
-          json: {
-            and: [{ '!==': [{ var: 'data.dataSrc' }, 'values'] }, { '!==': [{ var: 'data.dataSrc' }, 'resource'] }, { '!==': [{ var: 'data.dataSrc' }, 'custom'] }]
-          }
-        }
-      }, {
-        type: 'textfield',
-        input: true,
-        label: 'Select Fields',
-        key: 'selectFields',
-        tooltip: 'The properties on the resource to return as part of the options. Separate property names by commas. If left blank, all properties will be returned.',
-        placeholder: 'Comma separated list of fields to select.',
-        weight: 14,
-        conditional: {
-          json: {
-            and: [{ '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.valueProperty' }, ''] }]
-          }
-        }
-      }, {
-        type: 'checkbox',
-        input: true,
-        key: 'disableLimit',
-        label: 'Disable limiting response',
-        tooltip: 'When enabled the request will not include the limit and skip options in the query string',
-        weight: 15,
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-        }
-      }, {
-        type: 'textfield',
-        input: true,
-        key: 'searchField',
-        label: 'Search Query Name',
-        weight: 16,
-        description: 'Name of URL query parameter',
-        tooltip: 'The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter.',
-        conditional: {
-          json: {
-            or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }]
-          }
-        }
-      }, {
-        type: 'textfield',
-        input: true,
-        key: 'filter',
-        label: 'Filter Query',
-        weight: 17,
-        description: 'The filter query for results.',
-        tooltip: 'Use this to provide additional filtering using query parameters.',
-        conditional: {
-          json: {
-            or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }]
-          }
-        }
-      }, {
-        type: 'number',
-        input: true,
-        key: 'limit',
-        label: 'Limit',
-        weight: 17,
-        description: 'Maximum number of items to view per page of results.',
-        tooltip: 'Use this to limit the number of items to request or view.',
-        conditional: {
-          json: {
-            or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.dataSrc' }, 'json'] }]
-          }
-        }
-      }, {
-        type: 'textarea',
-        input: true,
-        key: 'data.custom',
-        label: 'Custom Values',
-        editor: 'ace',
-        rows: 10,
-        weight: 14,
-        placeholder: 'values = data[\'mykey\'];',
-        tooltip: 'Write custom code to return the value options. The form data object is available.',
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'custom'] }
-        }
-      }, {
-        type: 'textarea',
-        input: true,
-        key: 'template',
-        label: 'Item Template',
-        editor: 'ace',
-        as: 'html',
-        rows: 3,
-        weight: 18,
-        tooltip: 'The HTML template for the result data items.'
-      }, {
-        type: 'select',
-        input: true,
-        key: 'refreshOn',
-        label: 'Refresh On',
-        weight: 19,
-        tooltip: 'Refresh data when another field changes.',
-        dataSrc: 'custom',
-        data: {
-          custom: '\n                  values.push({label: \'Any Change\', key: \'data\'});\n                  utils.eachComponent(data.__form.components, function(component, path) {\n                    if (component.key !== data.key) {\n                      values.push({\n                        label: component.label || component.key,\n                        value: path\n                      });\n                    }\n                  });\n                '
-        },
-        conditional: {
-          json: {
-            and: [{ '!==': [{ var: 'data.dataSrc' }, 'values'] }, { '!==': [{ var: 'data.dataSrc' }, 'json'] }]
-          }
-        }
-      }, {
-        type: 'checkbox',
-        input: true,
-        weight: 20,
-        key: 'clearOnRefresh',
-        label: 'Clear Value On Refresh',
-        tooltip: 'When the Refresh On field is changed, clear the selected value.',
-        conditional: {
-          json: {
-            or: [{ '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'custom'] }]
-          }
-        }
-      }, {
-        type: 'checkbox',
-        input: true,
-        weight: 21,
-        key: 'reference',
-        label: 'Save as reference',
-        tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
-        }
-      }, {
-        type: 'checkbox',
-        input: true,
-        weight: 21,
-        key: 'authenticate',
-        label: 'Formio Authenticate',
-        tooltip: 'Check this if you would like to use Formio Authentication with the request.',
-        conditional: {
-          json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
-        }
-      }]
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
+      }],
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'values'] }
+      }
     }, {
-      label: 'Validation',
-      key: 'validation',
-      weight: 20,
-      components: [{
-        weight: 50,
-        type: 'checkbox',
-        label: 'Perform server validation',
-        tooltip: 'Check this if you would like for the server to perform a validation check to ensure the selected value is an available option. This requires a Search query to ensure a record is found.',
-        key: 'validate.select',
-        input: true,
-        conditional: {
-          json: { var: 'data.searchField' }
+      type: 'select',
+      input: true,
+      dataSrc: 'url',
+      data: {
+        url: '/form?type=resource&limit=4294967295&select=_id,title'
+      },
+      template: '<span>{{ item.title }}</span>',
+      valueProperty: '_id',
+      label: 'Resource',
+      key: 'resource',
+      weight: 10,
+      tooltip: 'The resource to be used with this field.',
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
+      }
+    }, {
+      type: 'select',
+      input: true,
+      label: 'Value Property',
+      key: 'valueProperty',
+      tooltip: 'The field to use as the value.',
+      weight: 11,
+      refreshOn: 'resource',
+      template: '<span>{{ item.label }}</span>',
+      valueProperty: 'key',
+      dataSrc: 'url',
+      onSetItems: function onSetItems(component, form) {
+        var newItems = [];
+        _utils2.default.eachComponent(form.components, function (component, path) {
+          newItems.push({
+            label: component.label || component.key,
+            key: path
+          });
+        });
+        return newItems;
+      },
+      data: {
+        url: '/form/{{ data.resource }}'
+      },
+      conditional: {
+        json: {
+          and: [{ '===': [{ var: 'data.dataSrc' }, 'resource'] }, { var: 'data.resource' }]
         }
-      }]
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      label: 'Data Path',
+      key: 'selectValues',
+      weight: 12,
+      description: 'The object path to the iterable items.',
+      tooltip: 'The property within the source data, where iterable items reside. For example: results.items or results[0].items',
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      label: 'Value Property',
+      key: 'valueProperty',
+      weight: 13,
+      description: 'The selected item\'s property to save.',
+      tooltip: 'The property of each item in the data source to use as the select value. If not specified, the item itself will be used.',
+      conditional: {
+        json: {
+          and: [{ '!==': [{ var: 'data.dataSrc' }, 'values'] }, { '!==': [{ var: 'data.dataSrc' }, 'resource'] }, { '!==': [{ var: 'data.dataSrc' }, 'custom'] }]
+        }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      label: 'Select Fields',
+      key: 'selectFields',
+      tooltip: 'The properties on the resource to return as part of the options. Separate property names by commas. If left blank, all properties will be returned.',
+      placeholder: 'Comma separated list of fields to select.',
+      weight: 14,
+      conditional: {
+        json: {
+          and: [{ '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.valueProperty' }, ''] }]
+        }
+      }
+    }, {
+      type: 'checkbox',
+      input: true,
+      key: 'disableLimit',
+      label: 'Disable limiting response',
+      tooltip: 'When enabled the request will not include the limit and skip options in the query string',
+      weight: 15,
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'searchField',
+      label: 'Search Query Name',
+      weight: 16,
+      description: 'Name of URL query parameter',
+      tooltip: 'The name of the search querystring parameter used when sending a request to filter results with. The server at the URL must handle this query parameter.',
+      conditional: {
+        json: {
+          or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }]
+        }
+      }
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'filter',
+      label: 'Filter Query',
+      weight: 17,
+      description: 'The filter query for results.',
+      tooltip: 'Use this to provide additional filtering using query parameters.',
+      conditional: {
+        json: {
+          or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }]
+        }
+      }
+    }, {
+      type: 'number',
+      input: true,
+      key: 'limit',
+      label: 'Limit',
+      weight: 17,
+      description: 'Maximum number of items to view per page of results.',
+      tooltip: 'Use this to limit the number of items to request or view.',
+      conditional: {
+        json: {
+          or: [{ '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.dataSrc' }, 'json'] }]
+        }
+      }
+    }, {
+      type: 'textarea',
+      input: true,
+      key: 'data.custom',
+      label: 'Custom Values',
+      editor: 'ace',
+      rows: 10,
+      weight: 14,
+      placeholder: 'values = data[\'mykey\'];',
+      tooltip: 'Write custom code to return the value options. The form data object is available.',
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'custom'] }
+      }
+    }, {
+      type: 'textarea',
+      input: true,
+      key: 'template',
+      label: 'Item Template',
+      editor: 'ace',
+      as: 'html',
+      rows: 3,
+      weight: 18,
+      tooltip: 'The HTML template for the result data items.'
+    }, {
+      type: 'select',
+      input: true,
+      key: 'refreshOn',
+      label: 'Refresh On',
+      weight: 19,
+      tooltip: 'Refresh data when another field changes.',
+      dataSrc: 'custom',
+      data: {
+        custom: '\n              values.push({label: \'Any Change\', key: \'data\'});\n              utils.eachComponent(data.__form.components, function(component, path) {\n                if (component.key !== data.key) {\n                  values.push({\n                    label: component.label || component.key,\n                    value: path\n                  });\n                }\n              });\n            '
+      },
+      conditional: {
+        json: {
+          and: [{ '!==': [{ var: 'data.dataSrc' }, 'values'] }, { '!==': [{ var: 'data.dataSrc' }, 'json'] }]
+        }
+      }
+    }, {
+      type: 'checkbox',
+      input: true,
+      weight: 20,
+      key: 'clearOnRefresh',
+      label: 'Clear Value On Refresh',
+      tooltip: 'When the Refresh On field is changed, clear the selected value.',
+      conditional: {
+        json: {
+          or: [{ '===': [{ var: 'data.dataSrc' }, 'resource'] }, { '===': [{ var: 'data.dataSrc' }, 'url'] }, { '===': [{ var: 'data.dataSrc' }, 'custom'] }]
+        }
+      }
+    }, {
+      type: 'checkbox',
+      input: true,
+      weight: 21,
+      key: 'reference',
+      label: 'Save as reference',
+      tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
+      }
+    }, {
+      type: 'checkbox',
+      input: true,
+      weight: 21,
+      key: 'authenticate',
+      label: 'Formio Authenticate',
+      tooltip: 'Check this if you would like to use Formio Authentication with the request.',
+      conditional: {
+        json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
+      }
+    }]
+  }, {
+    label: 'Validation',
+    key: 'validation',
+    weight: 20,
+    components: [{
+      weight: 50,
+      type: 'checkbox',
+      label: 'Perform server validation',
+      tooltip: 'Check this if you would like for the server to perform a validation check to ensure the selected value is an available option. This requires a Search query to ensure a record is found.',
+      key: 'validate.select',
+      input: true,
+      conditional: {
+        json: { var: 'data.searchField' }
+      }
     }]
   }]].concat(extend));
 };
@@ -14405,14 +14682,9 @@ exports.default = function () {
   }
 
   return _Components2.default.apply(undefined, [[{
-    weight: 0,
-    type: 'tabs',
-    key: 'tabs',
-    components: [{
-      label: 'Display',
-      key: 'display',
-      components: _TableEditOptions.TableEditOptions
-    }]
+    label: 'Display',
+    key: 'display',
+    components: _TableEditOptions.TableEditOptions
   }]].concat(extend));
 };
 
@@ -14707,29 +14979,24 @@ exports.default = function () {
   }
 
   return _Components2.default.apply(undefined, [[{
-    weight: 0,
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
     components: [{
-      label: 'Display',
-      key: 'display',
+      key: 'components',
+      type: 'datagrid',
+      input: true,
+      label: 'Tabs',
       components: [{
-        key: 'components',
-        type: 'datagrid',
+        type: 'textfield',
         input: true,
-        label: 'Tabs',
-        components: [{
-          type: 'textfield',
-          input: true,
-          key: 'label',
-          label: 'Label'
-        }, {
-          type: 'textfield',
-          input: true,
-          key: 'key',
-          label: 'Key',
-          calculateValue: { _camelCase: [{ var: 'row.label' }] }
-        }]
+        key: 'label',
+        label: 'Label'
+      }, {
+        type: 'textfield',
+        input: true,
+        key: 'key',
+        label: 'Key',
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }]
     }]
   }]].concat(extend));
@@ -14967,38 +15234,34 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
+    label: 'Display',
+    key: 'display',
+    weight: 0,
     components: [{
-      label: 'Display',
-      key: 'display',
-      weight: 0,
-      components: [{
-        weight: 410,
-        type: 'textfield',
-        input: true,
-        key: 'delimeter',
-        label: 'Delimiter',
-        tooltip: 'What is used to separate the tags.</a>'
-      }, {
-        weight: 420,
-        type: 'number',
-        input: true,
-        key: 'maxTags',
-        label: 'Max Tags',
-        defaultValue: 0,
-        tooltip: 'The maximum amount of tags that can be added. 0 for infinity.'
-      }, {
-        weight: 430,
-        type: 'select',
-        input: true,
-        key: 'storeas',
-        label: 'Store As',
-        dataSrc: 'values',
-        data: {
-          values: [{ label: 'String (CSV)', value: 'string' }, { label: 'Array of Tags', value: 'array' }]
-        }
-      }]
+      weight: 410,
+      type: 'textfield',
+      input: true,
+      key: 'delimeter',
+      label: 'Delimiter',
+      tooltip: 'What is used to separate the tags.</a>'
+    }, {
+      weight: 420,
+      type: 'number',
+      input: true,
+      key: 'maxTags',
+      label: 'Max Tags',
+      defaultValue: 0,
+      tooltip: 'The maximum amount of tags that can be added. 0 for infinity.'
+    }, {
+      weight: 430,
+      type: 'select',
+      input: true,
+      key: 'storeas',
+      label: 'Store As',
+      dataSrc: 'values',
+      data: {
+        values: [{ label: 'String (CSV)', value: 'string' }, { label: 'Array of Tags', value: 'array' }]
+      }
     }]
   }]].concat(extend));
 };
@@ -15635,19 +15898,15 @@ exports.default = function () {
   }
 
   return _Base2.default.apply(undefined, [[{
-    type: 'tabs',
-    key: 'tabs',
-    components: [{
-      label: 'Display',
-      key: 'display',
-      weight: 0,
-      components: _TextFieldEdit.TextFieldEditDisplay
-    }, {
-      label: 'Validation',
-      key: 'validation',
-      weight: 20,
-      components: _TextFieldEdit2.TextFieldEditValidation
-    }]
+    label: 'Display',
+    key: 'display',
+    weight: 0,
+    components: _TextFieldEdit.TextFieldEditDisplay
+  }, {
+    label: 'Validation',
+    key: 'validation',
+    weight: 20,
+    components: _TextFieldEdit2.TextFieldEditValidation
   }]].concat(extend));
 };
 

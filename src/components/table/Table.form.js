@@ -4,16 +4,9 @@ import ComponentsEditForm from '../Components.form';
 export default function(...extend) {
   return ComponentsEditForm([
     {
-      weight: 0,
-      type: 'tabs',
-      key: 'tabs',
-      components: [
-        {
-          label: 'Display',
-          key: 'display',
-          components: TableEditOptions
-        }
-      ]
+      label: 'Display',
+      key: 'display',
+      components: TableEditOptions
     }
   ], ...extend);
 };

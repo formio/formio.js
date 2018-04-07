@@ -5,22 +5,16 @@ import { TextFieldEditValidation } from './editForm/TextField.edit.validation';
 export default function(...extend) {
   return BaseEditForm([
     {
-      type: 'tabs',
-      key: 'tabs',
-      components: [
-        {
-          label: 'Display',
-          key: 'display',
-          weight: 0,
-          components: TextFieldEditDisplay
-        },
-        {
-          label: 'Validation',
-          key: 'validation',
-          weight: 20,
-          components: TextFieldEditValidation
-        }
-      ]
+      label: 'Display',
+      key: 'display',
+      weight: 0,
+      components: TextFieldEditDisplay
+    },
+    {
+      label: 'Validation',
+      key: 'validation',
+      weight: 20,
+      components: TextFieldEditValidation
     }
   ], ...extend);
 };

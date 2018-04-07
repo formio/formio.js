@@ -9,8 +9,8 @@ export let BaseEditData = [
     tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
     input: true
   },
-  EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue'),
-  EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue'),
+  EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 110),
+  EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 120),
   {
     weight: 400,
     type: 'checkbox',
