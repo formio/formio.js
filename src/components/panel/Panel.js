@@ -29,7 +29,6 @@ export class PanelComponent extends FormioComponents {
 
   constructor(component, options, data) {
     super(component, options, data);
-    this.collapsed = !!this.component.collapsed;
   }
 
   getContainer() {
@@ -37,23 +36,7 @@ export class PanelComponent extends FormioComponents {
   }
 
   get className() {
-    return 'panel panel-' + this.component.theme + ' ' + super.className;
-  }
-
-  setCollapsed() {
-    if (this.collapsed) {
-      this.panelBody.setAttribute('hidden', true);
-      this.panelBody.style.visibility = 'hidden';
-    }
-    else {
-      this.panelBody.removeAttribute('hidden');
-      this.panelBody.style.visibility = 'visible';
-    }
-  }
-
-  toggleCollapse() {
-    this.collapsed = !this.collapsed;
-    this.setCollapsed();
+    return `panel panel-${this.component.theme} ${super.className}`;
   }
 
   build() {
@@ -76,12 +59,7 @@ export class PanelComponent extends FormioComponents {
       title.appendChild(this.text(this.component.title));
       this.createTooltip(title);
       heading.appendChild(title);
-
-      if (this.component.collapsible) {
-        this.addClass(heading, 'formio-clickable');
-        this.addEventListener(heading, 'click', (event) => this.toggleCollapse());
-      }
-
+      this.setCollapseHeader(heading);
       this.element.appendChild(heading);
     }
 

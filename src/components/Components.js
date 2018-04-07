@@ -16,6 +16,7 @@ export class FormioComponents extends BaseComponent {
     this.type = 'components';
     this.components = [];
     this.hidden = [];
+    this.collapsed = !!this.component.collapsed;
   }
 
   build() {
@@ -24,7 +25,7 @@ export class FormioComponents extends BaseComponent {
   }
 
   get schema() {
-    let schema = super.schema;
+    const schema = super.schema;
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;
@@ -132,7 +133,7 @@ export class FormioComponents extends BaseComponent {
     }
 
     if (before) {
-      let index = _.findIndex(this.components, {id: before.id});
+      const index = _.findIndex(this.components, {id: before.id});
       if (index !== -1) {
         this.components.splice(index, 0, comp);
       }
@@ -163,7 +164,7 @@ export class FormioComponents extends BaseComponent {
     element = element || this.getContainer();
     data = data || this.data;
     component.row = this.row;
-    let comp = this.createComponent(component, this.options, data, before ? before.component : null);
+    const comp = this.createComponent(component, this.options, data, before ? before.component : null);
     this.setHidden(comp);
     element = this.hook('addComponent', element, comp);
     if (before) {
@@ -243,7 +244,7 @@ export class FormioComponents extends BaseComponent {
   addComponents(element, data) {
     element = element || this.getContainer();
     data = data || this.data;
-    let components = this.hook('addComponents', this.component.components);
+    const components = this.hook('addComponents', this.component.components);
     _.each(components, (component) => this.addComponent(component, element, data));
   }
 
@@ -451,6 +452,35 @@ export class FormioComponents extends BaseComponent {
       }
     });
     return changed;
+  }
+
+  setCollapseHeader(header) {
+    if (this.component.collapsible) {
+      this.addClass(header, 'formio-clickable');
+      this.addEventListener(header, 'click', () => this.toggleCollapse());
+    }
+  }
+
+  setCollapsed(element) {
+    if (!this.component.collapsible) {
+      return;
+    }
+
+    const container = element || this.getContainer();
+
+    if (this.collapsed) {
+      container.setAttribute('hidden', true);
+      container.style.visibility = 'hidden';
+    }
+    else {
+      container.removeAttribute('hidden');
+      container.style.visibility = 'visible';
+    }
+  }
+
+  toggleCollapse() {
+    this.collapsed = !this.collapsed;
+    this.setCollapsed();
   }
 }
 
