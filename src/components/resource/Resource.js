@@ -1,5 +1,6 @@
 import {SelectComponent} from '../select/Select';
 import dialogPolyfill from 'dialog-polyfill';
+import FormioForm from '../../formio.form';
 export class ResourceComponent extends SelectComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -14,7 +15,7 @@ export class ResourceComponent extends SelectComponent {
    * @returns {HTMLElement} - The "Add Resource" button html element.
    */
   addButton() {
-    const addButton = this.ce('a', {
+    const addButton = this.ce('button', {
       class: 'btn btn-primary'
     });
     const addIcon   = this.ce('i', {
