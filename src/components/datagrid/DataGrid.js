@@ -257,10 +257,10 @@ export class DataGridComponent extends FormioComponents {
   }
 
   addRemoveButton() {
+    let minLength = this.component.validate ? this.component.validate.minLength : 0;
     return !this.shouldDisable &&
       !this.options.builder &&
-      this.component.validate &&
-      (this.dataValue.length > this.component.validate.minLength);
+      (!minLength || (this.dataValue.length > minLength));
   }
 
   removeRowComponents(rowIndex) {
