@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Autofocus feature.
 
+## 2.30.2
+### Fixed
+ - Problem where values would not get reset before getting deleted with clear on hide.
+ - Issue where change events would fire continuously because of eroneous hasChanged checks.
+
 ## 2.30.1
 ### Added
  - `moment` library in calculated value and advanced conditional.
