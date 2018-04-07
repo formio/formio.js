@@ -73,6 +73,10 @@ export class FormComponent extends FormioForm {
       this.component.submit = true;
     }
 
+    if (this.component.src) {
+      this.formSrc = this.component.src;
+    }
+
     if (
       !this.component.src &&
       !this.options.formio &&

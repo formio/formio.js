@@ -8619,6 +8619,10 @@ var FormComponent = exports.FormComponent = function (_FormioForm) {
         this.component.submit = true;
       }
 
+      if (this.component.src) {
+        this.formSrc = this.component.src;
+      }
+
       if (!this.component.src && !this.options.formio && (this.component.form || this.component.path)) {
         this.formSrc = _formio4.default.getBaseUrl();
         if (this.component.project) {
