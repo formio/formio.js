@@ -354,10 +354,11 @@ export class SelectComponent extends BaseComponent {
   updateCustomItems() {
     this.setItems(FormioUtils.evaluate(this.component.data.custom, {
       values: [],
-      component: this,
+      component: this.component,
       data: _.cloneDeep(this.root ? this.root.data : this.data),
       row: _.cloneDeep(this.data),
-      utils: FormioUtils
+      utils: FormioUtils,
+      instance: this
     }, 'values') || []);
   }
 

@@ -211,7 +211,8 @@ export class ButtonComponent extends BaseComponent {
             components,
             _,
             data: this.data,
-            component: this
+            component: this.component,
+            instance: this
           });
           break;
         }

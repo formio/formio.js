@@ -912,8 +912,9 @@ var Validator = exports.Validator = {
           valid: true,
           row: component.data,
           data: data,
-          component: component,
-          input: value
+          component: component.component,
+          input: value,
+          instance: component
         }, 'valid', true);
         if (valid === null) {
           return true;
@@ -3347,7 +3348,8 @@ var BaseComponent = function () {
                     row: _this9.data,
                     data: data,
                     component: newComponent,
-                    result: result
+                    result: result,
+                    instance: _this9
                   }, 'value');
                   if (!_lodash2.default.isEqual(oldValue, newValue)) {
                     _this9.setValue(newValue);
@@ -3778,9 +3780,10 @@ var BaseComponent = function () {
       flags.noCheck = true;
       return this.setValue(_utils2.default.evaluate(this.component.calculateValue, {
         value: [],
-        component: this,
+        component: this.component,
         data: data,
-        row: this.data
+        row: this.data,
+        instance: this
       }, 'value'), flags);
     }
 
@@ -4211,9 +4214,10 @@ var BaseComponent = function () {
       } else if (this.component.customDefaultValue) {
         defaultValue = _utils2.default.evaluate(this.component.customDefaultValue, {
           value: '',
-          component: this,
+          component: this.component,
           row: this.data,
-          data: this.root ? this.root.data : this.data
+          data: this.root ? this.root.data : this.data,
+          instance: this
         }, 'value');
       }
 
@@ -5301,7 +5305,7 @@ exports.default = function () {
       dataSrc: 'custom',
       data: {
         custom: function custom(component, data) {
-          return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component.component);
+          return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component);
         }
       }
     }, {
@@ -5583,7 +5587,8 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
                 components: components,
                 _: _lodash2.default,
                 data: _this2.data,
-                component: _this2
+                component: _this2.component,
+                instance: _this2
               });
               break;
             }
@@ -5832,7 +5837,7 @@ exports.default = function () {
       dataSrc: 'custom',
       data: {
         custom: function custom(component, data) {
-          return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component.component);
+          return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component);
         }
       }
     }, {
@@ -7253,7 +7258,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           }
           return th;
         }
-      }), this.shouldDisable ? null : this.ce('th', null, ['top', 'both'].indexOf(this.component.addAnotherPosition) !== -1 ? this.addButton(true) : null)]));
+      }), this.addRemoveButton() ? null : this.ce('th', null, ['top', 'both'].indexOf(this.component.addAnotherPosition) !== -1 ? this.addButton(true) : null)]));
       return thead;
     }
   }, {
@@ -7276,8 +7281,6 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function buildRows(data) {
       var _this4 = this;
 
-      var addRemoveButton = this.addRemoveButton();
-
       this.dataValue.forEach(function (row, rowIndex) {
         // New Row.
         if (!_this4.tableRows[rowIndex]) {
@@ -7292,7 +7295,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
             _this4.tableRows[rowIndex] = newRow;
           }
 
-        if (addRemoveButton) {
+        if (_this4.addRemoveButton()) {
           _this4.ensureRemoveButtonIsPresent(rowIndex);
         } else {
           _this4.ensureRemoveButtonIsAbsent(rowIndex);
@@ -7361,7 +7364,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   }, {
     key: 'addRemoveButton',
     value: function addRemoveButton() {
-      return !this.shouldDisable && !this.options.builder && this.component.validate && this.dataValue.length > this.component.validate.minLength;
+      var minLength = this.component.validate ? this.component.validate.minLength : 0;
+      return !this.shouldDisable && !this.options.builder && (!minLength || this.dataValue.length > minLength);
     }
   }, {
     key: 'removeRowComponents',
@@ -9093,7 +9097,8 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           valid: true,
           row: this.editRows[rowIndex].data,
           data: this.data,
-          component: this
+          component: this.component,
+          instance: this
         }, 'valid', true);
         if (valid === null) {
           valid = 'Invalid row validation for ' + this.component.key;
@@ -11140,7 +11145,39 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  return _Base2.default.apply(undefined, arguments);
+  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Base2.default.apply(undefined, [[{
+    label: 'Map',
+    key: 'map',
+    weight: 1,
+    components: [{
+      type: 'textfield',
+      input: true,
+      key: 'map.key',
+      label: 'API Key',
+      tooltip: 'The API key for Google Maps. See <a href=\'https://developers.google.com/maps/documentation/geocoding/get-api-key\' target=\'_blank\'>Get an API Key</a> for more information.',
+      placeholder: 'xxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxx',
+      weight: 0
+    }, {
+      type: 'textfield',
+      input: true,
+      label: 'Region Bias',
+      key: 'map.region',
+      tooltip: 'The region bias to use for this search. See <a href=\'https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes\' target=\'_blank\'>Region Biasing</a> for more information.',
+      placeholder: 'Dallas',
+      weight: 10
+    }, {
+      type: 'textfield',
+      input: true,
+      label: 'Google Map ID',
+      key: 'map.gmapId',
+      tooltip: 'This is the Google Maps ID you wish to use when showing the location map.',
+      weight: 20
+    }]
+  }]].concat(extend));
 };
 
 var _Base = require('../base/Base.form');
@@ -12210,10 +12247,17 @@ exports.default = function () {
         dataSrc: 'custom',
         data: {
           custom: function custom(component, data) {
-            return BuilderUtils.getAvailableShortcuts(data.__form, component.component);
+            return BuilderUtils.getAvailableShortcuts(data.__form, component);
           }
         }
       }]
+    }, {
+      type: 'checkbox',
+      input: true,
+      key: 'inline',
+      label: 'Inline Layout',
+      tooltip: 'Displays the checkboxes/radios horizontally.',
+      weight: 650
     }]
   }]].concat(extend));
 };
@@ -12548,7 +12592,55 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  return _Base2.default.apply(undefined, arguments);
+  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Base2.default.apply(undefined, [[{
+    label: 'Display',
+    key: 'display',
+    weight: 0,
+    components: [{
+      type: 'select',
+      input: true,
+      dataSrc: 'url',
+      data: {
+        url: '/form?type=resource&limit=4294967295&select=_id,title'
+      },
+      template: '<span>{{ item.title }}</span>',
+      valueProperty: '_id',
+      label: 'Resource',
+      key: 'resource',
+      weight: 50,
+      tooltip: 'The resource to be used with this field.'
+    }, {
+      type: 'tags',
+      input: true,
+      key: 'selectFields',
+      label: 'Select Fields',
+      tooltip: 'The properties on the resource to return as part of the options. If left blank, all properties will be returned.',
+      placeholder: 'Enter the fields to select.',
+      weight: 51
+    }, {
+      type: 'tags',
+      input: true,
+      key: 'searchFields',
+      label: 'Search Fields',
+      tooltip: 'A list of search filters based on the fields of the resource. See the <a target=\'_blank\' href=\'https://github.com/travist/resourcejs#filtering-the-results\'>Resource.js documentation</a> for the format of these filters.',
+      placeholder: 'The fields to query on the server',
+      weight: 52
+    }, {
+      type: 'textarea',
+      input: true,
+      key: 'template',
+      label: 'Item Template',
+      editor: 'ace',
+      as: 'html',
+      rows: 3,
+      weight: 53,
+      tooltip: 'The HTML template for the result data items.'
+    }]
+  }]].concat(extend));
 };
 
 var _Base = require('../base/Base.form');
@@ -13485,10 +13577,11 @@ var SelectComponent = function (_BaseComponent) {
     value: function updateCustomItems() {
       this.setItems(_utils2.default.evaluate(this.component.data.custom, {
         values: [],
-        component: this,
+        component: this.component,
         data: _lodash2.default.cloneDeep(this.root ? this.root.data : this.data),
         row: _lodash2.default.cloneDeep(this.data),
-        utils: _utils2.default
+        utils: _utils2.default,
+        instance: this
       }, 'values') || []);
     }
   }, {
@@ -13883,23 +13976,17 @@ var SelectComponent = function (_BaseComponent) {
 exports.SelectComponent = SelectComponent;
 
 },{"../../formio":95,"../../utils":110,"../base/Base":7,"choices.js":114,"lodash":290}],65:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
 exports.default = function () {
-  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
-    extend[_key] = arguments[_key];
-  }
-
-  return _Radio2.default.apply(undefined, [{}].concat(extend));
+  return _Radio2.default.apply(undefined, arguments);
 };
 
-var _builder = require("../../utils/builder");
-
-var _Radio = require("../radio/Radio.form");
+var _Radio = require('../radio/Radio.form');
 
 var _Radio2 = _interopRequireDefault(_Radio);
 
@@ -13909,7 +13996,7 @@ function _interopRequireDefault(obj) {
 
 ;
 
-},{"../../utils/builder":109,"../radio/Radio.form":59}],66:[function(require,module,exports){
+},{"../radio/Radio.form":59}],66:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -14106,7 +14193,56 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  return _Base2.default.apply(undefined, arguments);
+  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Base2.default.apply(undefined, [[{
+    label: 'Display',
+    key: 'display',
+    weight: 0,
+    components: [{
+      type: 'textfield',
+      input: true,
+      key: 'footer',
+      label: 'Footer Label',
+      tooltip: 'The footer text that appears below the signature area.',
+      placeholder: 'Footer Label',
+      weight: 10
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'width',
+      label: 'Width',
+      tooltip: 'The width of the signature area.',
+      placeholder: 'Width',
+      weight: 50
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'height',
+      label: 'Height',
+      tooltip: 'The height of the signature area.',
+      placeholder: 'Height',
+      weight: 51
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'backgroundColor',
+      label: 'Background Color',
+      tooltip: 'The background color of the signature area.',
+      placeholder: 'Background Color',
+      weight: 52
+    }, {
+      type: 'textfield',
+      input: true,
+      key: 'penColor',
+      label: 'Pen Color',
+      tooltip: 'The ink color for the signature area.',
+      placeholder: 'Pen Color',
+      weight: 53
+    }]
+  }]].concat(extend));
 };
 
 var _Base = require('../base/Base.form');
@@ -14429,7 +14565,56 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  return _Base2.default.apply(undefined, arguments);
+  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Base2.default.apply(undefined, [[{
+    label: 'Display',
+    key: 'display',
+    weight: 0,
+    components: [{
+      type: 'datagrid',
+      input: true,
+      label: 'Questions',
+      key: 'questions',
+      tooltip: 'The questions you would like to as in this survey question.',
+      weight: 50,
+      defaultValue: [{ label: '', value: '' }],
+      components: [{
+        label: 'Label',
+        key: 'label',
+        input: true,
+        type: 'textfield'
+      }, {
+        label: 'Value',
+        key: 'value',
+        input: true,
+        type: 'textfield',
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
+      }]
+    }, {
+      type: 'datagrid',
+      input: true,
+      label: 'Values',
+      key: 'values',
+      tooltip: 'The values that can be selected per question. Example: \'Satisfied\', \'Very Satisfied\', etc.',
+      weight: 50,
+      defaultValue: [{ label: '', value: '' }],
+      components: [{
+        label: 'Label',
+        key: 'label',
+        input: true,
+        type: 'textfield'
+      }, {
+        label: 'Value',
+        key: 'value',
+        input: true,
+        type: 'textfield',
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
+      }]
+    }]
+  }]].concat(extend));
 };
 
 var _Base = require('../base/Base.form');
@@ -15538,8 +15723,8 @@ exports.default = function () {
           label: 'Editor Settings',
           tooltip: 'Enter the WYSIWYG editor JSON configuration.',
           key: 'wysiwyg',
-          customDefaultValue: function customDefaultValue(value, component, row, data) {
-            return component.wysiwygDefault();
+          customDefaultValue: function customDefaultValue(value, component, row, data, instance) {
+            return instance.wysiwygDefault();
           },
           conditional: {
             json: {
@@ -16116,7 +16301,24 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  return _Base2.default.apply(undefined, arguments);
+  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
+    extend[_key] = arguments[_key];
+  }
+
+  return _Base2.default.apply(undefined, [[{
+    label: 'Display',
+    key: 'display',
+    weight: 0,
+    components: [{
+      type: 'textfield',
+      input: true,
+      key: 'format',
+      label: 'Format',
+      placeholder: 'Format',
+      tooltip: 'The moment.js format for saving the value of this field.',
+      weight: 50
+    }]
+  }]].concat(extend));
 };
 
 var _Base = require('../base/Base.form');
@@ -20554,7 +20756,8 @@ var FormioWizard = function (_FormioForm) {
             next: page,
             data: data,
             page: page,
-            form: form
+            form: form,
+            instance: this
           }, 'next');
           if (next === null) {
             return null;
@@ -21904,7 +22107,7 @@ var FormioUtils = {
         data: submission ? submission.data : rowData,
         row: rowData,
         util: this,
-        component: { component: component }
+        component: component
       }, 'value'));
     }
   },

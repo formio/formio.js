@@ -44,7 +44,8 @@ export default class FormioWizard extends FormioForm {
           next: page,
           data,
           page,
-          form
+          form,
+          instance: this
         }, 'next');
         if (next === null) {
           return null;

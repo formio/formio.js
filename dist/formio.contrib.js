@@ -253,8 +253,9 @@ var Validator = exports.Validator = {
           valid: true,
           row: component.data,
           data: data,
-          component: component,
-          input: value
+          component: component.component,
+          input: value,
+          instance: component
         }, 'valid', true);
         if (valid === null) {
           return true;
@@ -1895,7 +1896,8 @@ var BaseComponent = function () {
                     row: _this9.data,
                     data: data,
                     component: newComponent,
-                    result: result
+                    result: result,
+                    instance: _this9
                   }, 'value');
                   if (!_lodash2.default.isEqual(oldValue, newValue)) {
                     _this9.setValue(newValue);
@@ -2326,9 +2328,10 @@ var BaseComponent = function () {
       flags.noCheck = true;
       return this.setValue(_utils2.default.evaluate(this.component.calculateValue, {
         value: [],
-        component: this,
+        component: this.component,
         data: data,
-        row: this.data
+        row: this.data,
+        instance: this
       }, 'value'), flags);
     }
 
@@ -2759,9 +2762,10 @@ var BaseComponent = function () {
       } else if (this.component.customDefaultValue) {
         defaultValue = _utils2.default.evaluate(this.component.customDefaultValue, {
           value: '',
-          component: this,
+          component: this.component,
           row: this.data,
-          data: this.root ? this.root.data : this.data
+          data: this.root ? this.root.data : this.data,
+          instance: this
         }, 'value');
       }
 
@@ -3271,7 +3275,8 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
                 components: components,
                 _: _lodash2.default,
                 data: _this2.data,
-                component: _this2
+                component: _this2.component,
+                instance: _this2
               });
               break;
             }
@@ -4460,7 +4465,7 @@ var FormioUtils = {
         data: submission ? submission.data : rowData,
         row: rowData,
         util: this,
-        component: { component: component }
+        component: component
       }, 'value'));
     }
   },

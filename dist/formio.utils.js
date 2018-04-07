@@ -391,7 +391,7 @@ var FormioUtils = {
         data: submission ? submission.data : rowData,
         row: rowData,
         util: this,
-        component: { component: component }
+        component: component
       }, 'value'));
     }
   },

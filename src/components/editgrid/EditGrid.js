@@ -368,7 +368,8 @@ export class EditGridComponent extends FormioComponents {
         valid: true,
         row: this.editRows[rowIndex].data,
         data: this.data,
-        component: this
+        component: this.component,
+        instance: this
       }, 'valid', true);
       if (valid === null) {
         valid = `Invalid row validation for ${this.component.key}`;

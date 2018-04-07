@@ -155,7 +155,7 @@ export default function(...extend) {
           dataSrc: 'custom',
           data: {
             custom: (component, data) => {
-              return BuilderUtils.getAvailableShortcuts(data.__form, component.component);
+              return BuilderUtils.getAvailableShortcuts(data.__form, component);
             }
           }
         },

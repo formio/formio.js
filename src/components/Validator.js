@@ -235,8 +235,9 @@ export const Validator = {
           valid: true,
           row: component.data,
           data,
-          component,
-          input: value
+          component: component.component,
+          input: value,
+          instance: component
         }, 'valid', true);
         if (valid === null) {
           return true;

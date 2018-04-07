@@ -56,11 +56,19 @@ export default function(...extend) {
               dataSrc: 'custom',
               data: {
                 custom: (component, data) => {
-                  return BuilderUtils.getAvailableShortcuts(data.__form, component.component);
+                  return BuilderUtils.getAvailableShortcuts(data.__form, component);
                 }
               }
             }
           ]
+        },
+        {
+          type: 'checkbox',
+          input: true,
+          key: 'inline',
+          label: 'Inline Layout',
+          tooltip: 'Displays the checkboxes/radios horizontally.',
+          weight: 650
         }
       ]
     }

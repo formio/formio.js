@@ -717,9 +717,10 @@ export class BaseComponent {
         this.component.customDefaultValue,
         {
           value: '',
-          component: this,
+          component: this.component,
           row: this.data,
-          data: (this.root ? this.root.data : this.data)
+          data: (this.root ? this.root.data : this.data),
+          instance: this
         },
         'value'
       );
@@ -1527,7 +1528,8 @@ export class BaseComponent {
                   row: this.data,
                   data: data,
                   component: newComponent,
-                  result: result
+                  result: result,
+                  instance: this
                 },
                 'value'
               );
@@ -2002,9 +2004,10 @@ export class BaseComponent {
     flags.noCheck = true;
     return this.setValue(FormioUtils.evaluate(this.component.calculateValue, {
       value: [],
-      component: this,
+      component: this.component,
       data,
-      row: this.data
+      row: this.data,
+      instance: this
     }, 'value'), flags);
   }
 

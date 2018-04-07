@@ -881,8 +881,9 @@ var Validator = exports.Validator = {
           valid: true,
           row: component.data,
           data: data,
-          component: component,
-          input: value
+          component: component.component,
+          input: value,
+          instance: component
         }, 'valid', true);
         if (valid === null) {
           return true;
@@ -3189,7 +3190,8 @@ var BaseComponent = function () {
                     row: _this9.data,
                     data: data,
                     component: newComponent,
-                    result: result
+                    result: result,
+                    instance: _this9
                   }, 'value');
                   if (!_lodash2.default.isEqual(oldValue, newValue)) {
                     _this9.setValue(newValue);
@@ -3620,9 +3622,10 @@ var BaseComponent = function () {
       flags.noCheck = true;
       return this.setValue(_utils2.default.evaluate(this.component.calculateValue, {
         value: [],
-        component: this,
+        component: this.component,
         data: data,
-        row: this.data
+        row: this.data,
+        instance: this
       }, 'value'), flags);
     }
 
@@ -4053,9 +4056,10 @@ var BaseComponent = function () {
       } else if (this.component.customDefaultValue) {
         defaultValue = _utils2.default.evaluate(this.component.customDefaultValue, {
           value: '',
-          component: this,
+          component: this.component,
           row: this.data,
-          data: this.root ? this.root.data : this.data
+          data: this.root ? this.root.data : this.data,
+          instance: this
         }, 'value');
       }
 
@@ -4565,7 +4569,8 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
                 components: components,
                 _: _lodash2.default,
                 data: _this2.data,
-                component: _this2
+                component: _this2.component,
+                instance: _this2
               });
               break;
             }
@@ -5969,7 +5974,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           }
           return th;
         }
-      }), this.shouldDisable ? null : this.ce('th', null, ['top', 'both'].indexOf(this.component.addAnotherPosition) !== -1 ? this.addButton(true) : null)]));
+      }), this.addRemoveButton() ? null : this.ce('th', null, ['top', 'both'].indexOf(this.component.addAnotherPosition) !== -1 ? this.addButton(true) : null)]));
       return thead;
     }
   }, {
@@ -5992,8 +5997,6 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function buildRows(data) {
       var _this4 = this;
 
-      var addRemoveButton = this.addRemoveButton();
-
       this.dataValue.forEach(function (row, rowIndex) {
         // New Row.
         if (!_this4.tableRows[rowIndex]) {
@@ -6008,7 +6011,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
             _this4.tableRows[rowIndex] = newRow;
           }
 
-        if (addRemoveButton) {
+        if (_this4.addRemoveButton()) {
           _this4.ensureRemoveButtonIsPresent(rowIndex);
         } else {
           _this4.ensureRemoveButtonIsAbsent(rowIndex);
@@ -6077,7 +6080,8 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   }, {
     key: 'addRemoveButton',
     value: function addRemoveButton() {
-      return !this.shouldDisable && !this.options.builder && this.component.validate && this.dataValue.length > this.component.validate.minLength;
+      var minLength = this.component.validate ? this.component.validate.minLength : 0;
+      return !this.shouldDisable && !this.options.builder && (!minLength || this.dataValue.length > minLength);
     }
   }, {
     key: 'removeRowComponents',
@@ -7518,7 +7522,8 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           valid: true,
           row: this.editRows[rowIndex].data,
           data: this.data,
-          component: this
+          component: this.component,
+          instance: this
         }, 'valid', true);
         if (valid === null) {
           valid = 'Invalid row validation for ' + this.component.key;
@@ -10992,10 +10997,11 @@ var SelectComponent = function (_BaseComponent) {
     value: function updateCustomItems() {
       this.setItems(_utils2.default.evaluate(this.component.data.custom, {
         values: [],
-        component: this,
+        component: this.component,
         data: _lodash2.default.cloneDeep(this.root ? this.root.data : this.data),
         row: _lodash2.default.cloneDeep(this.data),
-        utils: _utils2.default
+        utils: _utils2.default,
+        instance: this
       }, 'values') || []);
     }
   }, {
@@ -16708,7 +16714,8 @@ var FormioWizard = function (_FormioForm) {
             next: page,
             data: data,
             page: page,
-            form: form
+            form: form,
+            instance: this
           }, 'next');
           if (next === null) {
             return null;
@@ -17944,7 +17951,7 @@ var FormioUtils = {
         data: submission ? submission.data : rowData,
         row: rowData,
         util: this,
-        component: { component: component }
+        component: component
       }, 'value'));
     }
   },

@@ -70,8 +70,8 @@ export default function(...extend) {
                 label: 'Editor Settings',
                 tooltip: 'Enter the WYSIWYG editor JSON configuration.',
                 key: 'wysiwyg',
-                customDefaultValue: (value, component, row, data) => {
-                  return component.wysiwygDefault();
+                customDefaultValue: (value, component, row, data, instance) => {
+                  return instance.wysiwygDefault();
                 },
                 conditional: {
                   json: {
