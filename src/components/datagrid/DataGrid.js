@@ -113,7 +113,7 @@ export class DataGridComponent extends FormioComponents {
               return th;
             }
           }),
-          this.shouldDisable ? null :
+          this.addRemoveButton() ? null :
             this.ce('th', null,
               ['top', 'both'].includes(this.component.addAnotherPosition) ? this.addButton(true) : null
             ),
@@ -171,8 +171,6 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildRows(data) {
-    const addRemoveButton = this.addRemoveButton();
-
     this.dataValue.forEach((row, rowIndex) => {
       // New Row.
       if (!this.tableRows[rowIndex]) {
@@ -190,7 +188,7 @@ export class DataGridComponent extends FormioComponents {
         this.tableRows[rowIndex] = newRow;
       }
 
-      if (addRemoveButton) {
+      if (this.addRemoveButton()) {
         this.ensureRemoveButtonIsPresent(rowIndex);
       }
       else {
