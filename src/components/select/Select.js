@@ -1,8 +1,46 @@
-import Choices from 'choices.js';
+import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
 
 import {BaseComponent} from '../base/Base';
 import Formio from '../../formio';
+
+// Duck-punch the setValueByChoice to ensure we compare using _.isEqual.
+Choices.prototype.setValueByChoice = function(value) {
+  if (!this.isTextElement) {
+    const choices = this.store.getChoices();
+    // If only one value has been passed, convert to array
+    const choiceValue = Array.isArray(value) ? value : [value];
+
+    // Loop through each value and
+    choiceValue.forEach((val) => {
+      const foundChoice = choices.find((choice) => {
+        // Check 'value' property exists and the choice isn't already selected
+        return _.isEqual(choice.value, val);
+      });
+
+      if (foundChoice) {
+        if (!foundChoice.selected) {
+          this._addItem(
+            foundChoice.value,
+            foundChoice.label,
+            foundChoice.id,
+            foundChoice.groupId,
+            foundChoice.customProperties,
+            foundChoice.placeholder,
+            foundChoice.keyCode
+          );
+        }
+        else if (!this.config.silent) {
+          console.warn('Attempting to select choice already selected');
+        }
+      }
+      else if (!this.config.silent) {
+        console.warn('Attempting to select choice that does not exist');
+      }
+    });
+  }
+  return this;
+};
 
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
@@ -414,7 +452,17 @@ export class SelectComponent extends BaseComponent {
     const tabIndex = input.tabIndex;
     this.addPlaceholder(input);
     this.choices = new Choices(input, choicesOptions);
-    this.choices.itemList.setAttribute('tabIndex', tabIndex);
+
+    if (this.component.multiple) {
+      this.focusableElement = this.choices.input;
+    }
+    else {
+      this.focusableElement = this.choices.containerInner;
+      this.choices.containerOuter.setAttribute('tabIndex', '-1');
+      this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
+    }
+    this.focusableElement.setAttribute('tabIndex', tabIndex);
+
     this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
@@ -444,12 +492,12 @@ export class SelectComponent extends BaseComponent {
     }
     if (disabled) {
       this.setDisabled(this.choices.containerInner, true);
-      this.choices.itemList.removeAttribute('tabIndex');
+      this.focusableElement.removeAttribute('tabIndex');
       this.choices.disable();
     }
     else {
       this.setDisabled(this.choices.containerInner, false);
-      this.choices.itemList.setAttribute('tabIndex', this.component.tabindex || 0);
+      this.focusableElement.setAttribute('tabIndex', this.component.tabindex || 0);
       this.choices.enable();
     }
   }
@@ -617,5 +665,9 @@ export class SelectComponent extends BaseComponent {
       this.choices.destroy();
       this.choices = null;
     }
+  }
+
+  focus() {
+    this.focusableElement.focus();
   }
 }

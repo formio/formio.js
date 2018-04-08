@@ -51,7 +51,8 @@ export class EditGridComponent extends FormioComponents {
     return this.ce('li', {class: 'list-group-item list-group-header'}, this.renderTemplate(templateHeader, {
       components: this.component.components,
       util: FormioUtils,
-      value: this.dataValue
+      value: this.dataValue,
+      data: this.data
     }));
   }
 
@@ -119,6 +120,7 @@ export class EditGridComponent extends FormioComponents {
       wrapper.appendChild(
         this.renderTemplate(rowTemplate,
           {
+            data: this.data,
             row,
             rowIndex,
             components: this.component.components,
@@ -152,7 +154,8 @@ export class EditGridComponent extends FormioComponents {
     return this.ce('li', {class: 'list-group-item list-group-footer'}, this.renderTemplate(footerTemplate, {
       components: this.component.components,
       util: FormioUtils,
-      value: this.dataValue
+      value: this.dataValue,
+      data: this.data
     }));
   }
 

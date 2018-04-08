@@ -58,6 +58,7 @@ export class FileComponent extends BaseComponent {
       this.createLabel(this.element);
     }
     this.createDescription(this.element);
+    this.autofocus();
 
     // Disable if needed.
     if (this.shouldDisable) {
@@ -113,7 +114,7 @@ export class FileComponent extends BaseComponent {
     return this.ce('input', {
       type: 'file',
       style: 'opacity: 0; position: absolute;',
-      tabindex: -1,
+      tabindex: -1, // prevent focus
       onChange: () => {
         this.upload(this.hiddenFileInputElement.files);
       }
@@ -230,26 +231,32 @@ export class FileComponent extends BaseComponent {
           [
             this.ce('i', {class: this.iconClass('cloud-upload')}),
             this.text(' Drop files to attach, or '),
-            this.ce('a', {
-              href: '#',
-              onClick: event => {
-                event.preventDefault();
-                // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
-                // a click event on it.
-                if (typeof this.hiddenFileInputElement.trigger === 'function') {
-                  this.hiddenFileInputElement.trigger('click');
-                }
-                else {
-                  this.hiddenFileInputElement.click();
-                }
-              },
-              class: 'browse'
-            }, 'browse')
+            this.buildBrowseLink()
           ]
           ) :
           this.ce('div')
       )
     );
+  }
+
+  buildBrowseLink() {
+    this.browseLink = this.ce('a', {
+      href: '#',
+      onClick: (event) => {
+        event.preventDefault();
+        // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
+        // a click event on it.
+        if (typeof this.hiddenFileInputElement.trigger === 'function') {
+          this.hiddenFileInputElement.trigger('click');
+        }
+        else {
+          this.hiddenFileInputElement.click();
+        }
+      },
+      class: 'browse'
+    }, 'browse');
+
+    return this.browseLink;
   }
 
   buildUploadStatusList(container) {
@@ -507,5 +514,9 @@ export class FileComponent extends BaseComponent {
         alert(response);
       });
     event.preventDefault();
+  }
+
+  focus() {
+    this.browseLink.focus();
   }
 }
