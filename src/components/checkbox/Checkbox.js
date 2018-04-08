@@ -58,6 +58,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+    this.autofocus();
   }
 
   get emptyValue() {

@@ -264,6 +264,8 @@ export class ButtonComponent extends BaseComponent {
     if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
       this.openOauth();
     }
+
+    this.autofocus();
   }
 
   openOauth() {
@@ -344,6 +346,10 @@ export class ButtonComponent extends BaseComponent {
   destroy() {
     super.destroy.apply(this, Array.prototype.slice.apply(arguments));
     this.removeShortcut(this.buttonElement);
+  }
+
+  focus() {
+    this.button.focus();
   }
 }
 

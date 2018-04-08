@@ -83,6 +83,7 @@ export class SurveyComponent extends BaseComponent {
       if (this.shouldDisable) {
         this.disabled = true;
       }
+      this.autofocus();
     }
   }
 

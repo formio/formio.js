@@ -232,4 +232,11 @@ export class DateTimeComponent extends BaseComponent {
       calendar.setDate(value ? new Date(value) : new Date(), false);
     }
   }
+
+  focus() {
+    const input = this.inputs[0];
+    if (input) {
+      input.calendar.altInput.focus();
+    }
+  }
 }

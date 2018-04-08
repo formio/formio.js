@@ -363,7 +363,7 @@ export class BaseComponent {
     this.eventListeners.push({
       type: type,
       listener: cb,
-      internal: internal
+      internal
     });
     return this.events.on(type, cb);
   }
@@ -488,6 +488,8 @@ export class BaseComponent {
 
       // Restore the value.
       this.restoreValue();
+
+      this.autofocus();
     }
   }
 
@@ -852,7 +854,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The "Add New" button html element.
    */
   addButton(justIcon) {
-    const addButton = this.ce('a', {
+    const addButton = this.ce('button', {
       class: 'btn btn-primary'
     });
     this.addEventListener(addButton, 'click', (event) => {
@@ -911,8 +913,7 @@ export class BaseComponent {
   removeButton(index) {
     const removeButton = this.ce('button', {
       type: 'button',
-      class: 'btn btn-default btn-secondary',
-      tabindex: '-1'
+      class: 'btn btn-default btn-secondary'
     });
 
     this.addEventListener(removeButton, 'click', (event) => {
@@ -2357,16 +2358,25 @@ export class BaseComponent {
       attributes.tabindex = this.component.tabindex;
     }
 
-    if (this.component.autofocus) {
-      attributes.autofocus = this.component.autofocus;
-    }
-
     return {
       type: 'input',
       component: this.component,
       changeEvent: 'change',
       attr: attributes
     };
+  }
+
+  autofocus() {
+    if (this.component.autofocus) {
+      this.on('render', () => this.focus(), true);
+    }
+  }
+
+  focus() {
+    const input = this.inputs[0];
+    if (input) {
+      input.focus();
+    }
   }
 }
 

@@ -823,6 +823,8 @@ var BaseComponent = function () {
 
         // Restore the value.
         this.restoreValue();
+
+        this.autofocus();
       }
     }
   }, {
@@ -1156,7 +1158,7 @@ var BaseComponent = function () {
     value: function addButton(justIcon) {
       var _this4 = this;
 
-      var addButton = this.ce('a', {
+      var addButton = this.ce('button', {
         class: 'btn btn-primary'
       });
       this.addEventListener(addButton, 'click', function (event) {
@@ -1208,8 +1210,7 @@ var BaseComponent = function () {
 
       var removeButton = this.ce('button', {
         type: 'button',
-        class: 'btn btn-default btn-secondary',
-        tabindex: '-1'
+        class: 'btn btn-default btn-secondary'
       });
 
       this.addEventListener(removeButton, 'click', function (event) {
@@ -2679,16 +2680,31 @@ var BaseComponent = function () {
         attributes.tabindex = this.component.tabindex;
       }
 
-      if (this.component.autofocus) {
-        attributes.autofocus = this.component.autofocus;
-      }
-
       return {
         type: 'input',
         component: this.component,
         changeEvent: 'change',
         attr: attributes
       };
+    }
+  }, {
+    key: 'autofocus',
+    value: function autofocus() {
+      var _this16 = this;
+
+      if (this.component.autofocus) {
+        this.on('render', function () {
+          return _this16.focus();
+        }, true);
+      }
+    }
+  }, {
+    key: 'focus',
+    value: function focus() {
+      var input = this.inputs[0];
+      if (input) {
+        input.focus();
+      }
     }
   }, {
     key: 'hasInput',
@@ -2921,7 +2937,7 @@ var BaseComponent = function () {
      */
 
     , set: function set(disabled) {
-      var _this16 = this;
+      var _this17 = this;
 
       // Do not allow a component to be disabled if it should be always...
       if (!disabled && this.shouldDisable) {
@@ -2932,7 +2948,7 @@ var BaseComponent = function () {
 
       // Disable all inputs.
       _lodash2.default.each(this.inputs, function (input) {
-        return _this16.setDisabled(input, disabled);
+        return _this17.setDisabled(input, disabled);
       });
     }
   }]);
@@ -3328,6 +3344,8 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
         this.openOauth();
       }
+
+      this.autofocus();
     }
   }, {
     key: 'openOauth',
@@ -3408,6 +3426,11 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     value: function destroy() {
       _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'destroy', this).apply(this, Array.prototype.slice.apply(arguments));
       this.removeShortcut(this.buttonElement);
+    }
+  }, {
+    key: 'focus',
+    value: function focus() {
+      this.button.focus();
     }
   }, {
     key: 'loading',

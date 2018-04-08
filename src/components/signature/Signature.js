@@ -119,7 +119,8 @@ export class SignatureComponent extends BaseComponent {
     this.input = this.createInput(this.element);
     this.padBody = this.ce('div', {
       class: 'signature-pad-body',
-      style: (`width: ${this.component.width};height: ${this.component.height}`)
+      style: (`width: ${this.component.width};height: ${this.component.height}`),
+      tabindex: this.component.tabindex || 0
     });
 
     // Create the refresh button.
@@ -182,6 +183,8 @@ export class SignatureComponent extends BaseComponent {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+
+    this.autofocus();
   }
 
   createViewOnlyLabel(container) {
@@ -193,5 +196,9 @@ export class SignatureComponent extends BaseComponent {
 
   getView(value) {
     return value ? 'Yes' : 'No';
+  }
+
+  focus() {
+    this.padBody.focus();
   }
 }

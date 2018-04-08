@@ -1,4 +1,4 @@
-import Choices from 'choices.js';
+import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
 import {BaseComponent} from '../base/Base';
 import Formio from '../../formio';
@@ -498,7 +498,17 @@ export class SelectComponent extends BaseComponent {
     const tabIndex = input.tabIndex;
     this.addPlaceholder(input);
     this.choices = new Choices(input, choicesOptions);
-    this.choices.itemList.setAttribute('tabIndex', tabIndex);
+
+    if (this.component.multiple) {
+      this.focusableElement = this.choices.input;
+    }
+    else {
+      this.focusableElement = this.choices.containerInner;
+      this.choices.containerOuter.setAttribute('tabIndex', '-1');
+      this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
+    }
+    this.focusableElement.setAttribute('tabIndex', tabIndex);
+
     this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
@@ -528,12 +538,12 @@ export class SelectComponent extends BaseComponent {
     }
     if (disabled) {
       this.setDisabled(this.choices.containerInner, true);
-      this.choices.itemList.removeAttribute('tabIndex');
+      this.focusableElement.removeAttribute('tabIndex');
       this.choices.disable();
     }
     else {
       this.setDisabled(this.choices.containerInner, false);
-      this.choices.itemList.setAttribute('tabIndex', this.component.tabindex || 0);
+      this.focusableElement.setAttribute('tabIndex', this.component.tabindex || 0);
       this.choices.enable();
     }
   }
@@ -709,5 +719,9 @@ export class SelectComponent extends BaseComponent {
       this.choices.destroy();
       this.choices = null;
     }
+  }
+
+  focus() {
+    this.focusableElement.focus();
   }
 }

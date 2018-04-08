@@ -1,4 +1,5 @@
 import {SelectComponent} from '../select/Select';
+import FormioForm from '../../formio.form';
 
 export class ResourceComponent extends SelectComponent {
   static schema(...extend) {
@@ -37,7 +38,7 @@ export class ResourceComponent extends SelectComponent {
    * @returns {HTMLElement} - The "Add Resource" button html element.
    */
   addButton() {
-    const addButton = this.ce('a', {
+    const addButton = this.ce('button', {
       class: 'btn btn-primary'
     });
     const addIcon   = this.ce('i', {
@@ -51,7 +52,7 @@ export class ResourceComponent extends SelectComponent {
       let dialog = this.createModal(this.component.addResourceLabel || 'Add Resource');
       let formioForm = this.ce('div');
       dialog.body.appendChild(formioForm);
-      var form = new FormioForm(formioForm);
+      const form = new FormioForm(formioForm);
 		  form.on('submit', (submission) => {
         this.setValue(submission);
         dialog.close();
