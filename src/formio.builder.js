@@ -4,7 +4,7 @@ import { FormioFormBuilder } from './formio.form.builder';
 import { FormioWizardBuilder } from './formio.wizard.builder';
 import { FormioPDFBuilder } from './formio.pdf.builder';
 
-class FormioBuilder {
+export class FormioBuilder {
   constructor(element, form, options) {
     this.instance = null;
     this.element = element;

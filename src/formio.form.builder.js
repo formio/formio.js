@@ -287,6 +287,7 @@ export class FormioFormBuilder extends FormioForm {
 
     this.addEventListener(cancelButton, 'click', (event) => {
       event.preventDefault();
+      this.emit('cancelComponent', component);
       this.dialog.close();
     });
 

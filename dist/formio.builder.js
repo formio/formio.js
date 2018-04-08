@@ -16845,6 +16845,11 @@ exports.default = function (element, form, options) {
 (function (global){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FormioBuilder = undefined;
+
 var _createClass = function () {
   function defineProperties(target, props) {
     for (var i = 0; i < props.length; i++) {
@@ -16869,7 +16874,7 @@ function _classCallCheck(instance, Constructor) {
   }
 }
 
-var FormioBuilder = function () {
+var FormioBuilder = exports.FormioBuilder = function () {
   function FormioBuilder(element, form, options) {
     _classCallCheck(this, FormioBuilder);
 
@@ -17291,6 +17296,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       this.addEventListener(cancelButton, 'click', function (event) {
         event.preventDefault();
+        _this4.emit('cancelComponent', component);
         _this4.dialog.close();
       });
 
