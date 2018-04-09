@@ -9,5 +9,7 @@ import FormioGrid from './formio.grid';
  * @return {*}
  */
 export default (element, form, options) => {
-  return new FormioGrid(element, form, options);
+  let instance = new FormioGrid(element, form, options);
+  instance.form = form;
+   return instance;
 };

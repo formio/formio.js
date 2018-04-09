@@ -12,7 +12,7 @@ import gridFactory from './gridFactory';
 export default (element, form, options) => {
   if (typeof form === 'string') {
       const instance = gridFactory(element, form, options);
-      return instance.ready.then(() => instance);
+    return instance.ready.then(() => instance);
   }
   else {
     return Promise.resolve(gridFactory(element, form, options));

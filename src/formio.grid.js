@@ -6,6 +6,20 @@ import Handsontable from 'handsontable-pro';
 import Promise from 'native-promise-only';
 import {FormioComponents} from './components/Components';
 
+const getOptions = function(options) {
+  options = _.defaults(options, {
+    submitOnEnter: false,
+    i18next: i18next
+  });
+  if (!options.events) {
+    options.events = new EventEmitter({
+      wildcard: false,
+      maxListeners: 0
+    });
+  }
+  return options;
+};
+
 /**
  * Renders a Form.io grid within the webpage.
  *
@@ -29,14 +43,18 @@ export default class FormioGrid extends FormioComponents{
    *
    */
   constructor(element, form, options) {
-    super(null, null);
+    super(null, getOptions(options));
     this.form = null;
 
     this.grid = null;
 
     this.formio = null;
-
-    this.data = [];
+    this.total = 0;
+    this.page = 0;
+    this.pages = 1;
+    this.firstItem = 0;
+    this.lastItem = 0;
+    this.skip = 0;
 
     this.options = options || {
       colHeaders: [],
@@ -51,6 +69,60 @@ export default class FormioGrid extends FormioComponents{
     this.element = element;
     // Get Form
     this.loadForm(form);
+
+    /**
+     * Promise that executes when the form is ready and rendered.
+     * @type {Promise}
+     *
+     * @example
+     * let form = new FormioForm(document.getElementById('formio'));
+     * form.ready.then(() => {
+    *   console.log('The form is ready!');
+    * });
+     * form.src = 'https://examples.form.io/example';
+     */
+    this.gridReady = new Promise((resolve, reject) => {
+      /**
+       * Called when the formReady state of this form has been resolved.
+       *
+       * @type {function}
+       */
+      this.gridReadyResolve = resolve;
+
+      /**
+       * Called when this form could not load and is rejected.
+       *
+       * @type {function}
+       */
+      this.gridReadyReject = reject;
+    });
+
+    /**
+     * Promise that executes when the submission is ready and rendered.
+     * @type {Promise}
+     *
+     * @example
+     * let form = new FormioForm(document.getElementById('formio'));
+     * form.ready.then(() => {
+     *   console.log('The form is ready!');
+     * });
+     * form.src = 'https://examples.form.io/example';
+     */
+    this.submissionReady = new Promise((resolve, reject) => {
+      /**
+       * Called when the formReady state of this form has been resolved.
+       *
+       * @type {function}
+       */
+      this.submissionReadyResolve = resolve;
+
+      /**
+       * Called when this form could not load and is rejected.
+       *
+       * @type {function}
+       */
+      this.submissionReadyReject = reject;
+    });
   }
 
   /**
@@ -58,7 +130,7 @@ export default class FormioGrid extends FormioComponents{
    */
   loadForm(form) {
     this.formio = new Formio(form, {formOnly: true});
-      this.formio.loadForm().then((form) => {
+    this.formio.loadForm().then((form) => {
       this.form = form;
       this.setupColumns();
       // Get Submission
@@ -66,7 +138,10 @@ export default class FormioGrid extends FormioComponents{
     });
   }
   onSelect(r, c, r2, c2, preventScrolling, selectionLayerLevel) {
-    this.emit('gridSelectRow', this.grid.getSourceDataAtRow(r, c));
+    if (c === 0) {
+      console.log(c);
+      this.emit('gridSelectedRow',this.grid.getSourceDataAtRow(r, c))
+    }
   }
   /**
    * Loads the submission if applicable.
@@ -77,8 +152,18 @@ export default class FormioGrid extends FormioComponents{
       this.onSubmission = this.formio.loadSubmissions().then((submission) => {
         console.log(submission); this.data = submission;
         this.createGrid();
-        } , (err) => err.catch((err) => err));
+        this.submissionReadyResolve();
+      } , (err) => err.catch((err) => err));
     }
+  }
+
+  /**
+   * Called when both the form and submission have been loaded.
+   *
+   * @returns {Promise} - The promise to trigger when both form and submission have loaded.
+   */
+  get ready() {
+    return this.gridReady.then(() => this.submissionReady);
   }
 
   /**
@@ -119,14 +204,15 @@ export default class FormioGrid extends FormioComponents{
    * Create Grid
    */
   createGrid() {
-   this.grid = new Handsontable(this.element, {
+    this.grid = new Handsontable(this.element, {
       data: this.data,
       colHeaders: this.options.colHeaders,
       columns: this.options.columns,
       sortIndicator: this.options.sortIndicator,
       columnSorting: this.options.columnSorting,
       afterSelection: this.options.afterSelection,
-    });
+    })
+    this.gridReadyResolve();
   }
 
   loadGrid(src) {
@@ -142,9 +228,66 @@ export default class FormioGrid extends FormioComponents{
     this.formio.loadForm().then((form) => {
       this.form = form;
       this.setupColumns();
+      this.refreshGrid()
     });
     this.setPage(0);
   }
+
+  refreshGrid(query) {
+    query = query || {};
+    query = _.assign(query, this.options.query);
+    if (!query.hasOwnProperty('limit')) {
+      query.limit = 10;
+    }
+    if (!query.hasOwnProperty('skip')) {
+      query.skip = 0;
+    }
+    this.loading = true;
+    this.formio
+      .loadSubmissions({ params: query })
+      .then(
+        (submissions) => {
+          this.firstItem = this.options.this.query.skip + 1;
+          this.lastItem = this.firstItem + submissions.length - 1;
+          this.total = submissions.serverCount;
+          this.skip = Math.floor(submissions.skip / query.limit) + 1;
+          this.data = [];
+          console.log(submissions);
+          _.each(submissions, (submission) => {
+            this.data.push(submission);
+          });
+          this.buildPagination();
+          this.loading = false;
+        },
+        (err) => (err)
+      )
+      .catch((err) => (err));
+  }
+
+  setPage(num) {
+    if (this.isLoading) {
+      return;
+    }
+    this.page = num !== -1 ? num : this.page;
+    if (!this.query.hasOwnProperty('limit')) {
+      this.query.limit = 10;
+    }
+    if (!this.query.hasOwnProperty('skip')) {
+      this.query.skip = 0;
+    }
+    this.query.skip = this.page * this.query.limit;
+    this.refreshGrid();
+  }
+
+  buildPagination() {
+    this.pages = this.data.length/this.query.limit;
+    console.log(this.pages);
+  }
+
+  pageChanged(page) {
+    this.setPage(page.page - 1);
+  }
+
   setupColumns() {
     let i = 0;
     FormioUtils.eachComponent(this.form.components, (component) => {
@@ -158,16 +301,6 @@ export default class FormioGrid extends FormioComponents{
       }
     });
   }
-}
-
-// Used to trigger a resize.
-Formio.onResize = (scale) => _.each(Formio.forms, (instance) => instance.onResize(scale));
-Formio.triggerResize = _.debounce(Formio.onResize, 200);
-if ('addEventListener' in window) {
-  window.addEventListener('resize', () => Formio.triggerResize(), false);
-}
-else if ('attachEvent' in window) {
-  window.attachEvent('onresize', () => Formio.triggerResize());
 }
 
 FormioGrid.setBaseUrl = Formio.setBaseUrl;
