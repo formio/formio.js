@@ -81,7 +81,6 @@ export class ButtonComponent extends BaseComponent {
       const error = this.ce('span', {
         class: 'help-block'
       });
-
       error.appendChild(this.text(this.errorMessage('error')));
       errorContainer.appendChild(error);
 
