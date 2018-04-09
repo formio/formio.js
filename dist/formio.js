@@ -841,7 +841,7 @@ var Formio = function () {
           }
           // Parse and return the error as a rejected promise to reject this promise
           return (response.headers.get('content-type').indexOf('application/json') !== -1 ? response.json() : response.text()).then(function (error) {
-            throw error;
+            return _nativePromiseOnly2.default.reject(error);
           });
         }
 
