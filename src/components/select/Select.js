@@ -182,7 +182,6 @@ export class SelectComponent extends BaseComponent {
 
     if (!this.choices && this.selectInput) {
       // Detach from DOM and clear input.
-      this.removeChildFrom(this.selectInput, this.selectContainer);
       this.selectInput.innerHTML = '';
     }
 
@@ -203,10 +202,6 @@ export class SelectComponent extends BaseComponent {
 
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, 'value', 'label', true);
-    }
-    else {
-      // Re-attach select input.
-      this.appendTo(this.selectInput, this.selectContainer);
     }
 
     // We are no longer loading.
@@ -427,7 +422,7 @@ export class SelectComponent extends BaseComponent {
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();
-      this.addEventListener(input, 'focus', () => this.activate());
+      this.addEventListener(input, 'focus', () => this.update());
       return;
     }
 
@@ -471,18 +466,20 @@ export class SelectComponent extends BaseComponent {
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
 
-    this.addEventListener(input, 'showDropdown', () => {
-      if (this.component.dataSrc === 'custom') {
-        this.updateCustomItems();
-      }
-
-      // Activate the control.
-      this.activate();
-    });
+    this.addEventListener(input, 'showDropdown', () => this.update());
 
     // Force the disabled state with getters and setters.
     this.disabled = this.disabled;
     this.triggerUpdate();
+  }
+
+  update() {
+    if (this.component.dataSrc === 'custom') {
+      this.updateCustomItems();
+    }
+
+    // Activate the control.
+    this.activate();
   }
 
   set disabled(disabled) {
