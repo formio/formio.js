@@ -9,14 +9,4 @@ describe('Form Component', () => {
       done();
     });
   });
-
-  it('Should pass along the base parameter when set with src.', (done) => {
-    Harness.testCreate(FormComponent, comps.comp2, {
-      base: 'https://remote.form.io'
-    }).then((component) => {
-      component.loadSubForm();
-      assert.equal(component.formio.projectUrl, 'https://remote.form.io/testproject');
-      done();
-    });
-  });
 });
