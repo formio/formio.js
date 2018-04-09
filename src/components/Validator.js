@@ -47,12 +47,14 @@ export const Validator = {
       }
     });
 
-    const customErrorMessage = _.get(component, 'component.validate.customMessage');
-    if (result && customErrorMessage) {
-      result = component.t(customErrorMessage, {
-        data: component.data
+    const customMessage = _.get(component, 'component.validate.customMessage');
+     const validateCustom = _.get(component, 'component.validate.custom');
+     if (result && (customMessage || validateCustom)) { 
+      result = component.t(result, { 
+        data: component.data 
       });
-    }
+     }
+
 
     return result;
   },
