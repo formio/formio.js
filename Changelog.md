@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Autofocus feature.
 
+### Fixed
+ - Interpolation for EditGrid.
+
 ## 2.30.2
 ### Fixed
  - Problem where values would not get reset before getting deleted with clear on hide.
