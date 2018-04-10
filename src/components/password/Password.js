@@ -20,6 +20,10 @@ export class PasswordComponent extends TextFieldComponent {
     };
   }
 
+  get defaultSchema() {
+    return PasswordComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.attr.type = 'password';

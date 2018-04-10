@@ -524,6 +524,11 @@ export class FormioFormBuilder extends FormioForm {
       sibling = null;
     }
 
+    // Make this element go before the submit button if it is still on the builder.
+    if (!sibling && this.submitButton && newParent.contains(this.submitButton.element)) {
+      sibling = this.submitButton.element;
+    }
+
     // If this is a new component, it will come from the builderElement
     if (
       builderElement &&
@@ -598,6 +603,21 @@ export class FormioFormBuilder extends FormioForm {
         return !target.classList.contains('no-drop');
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
+
+    // If there are no components, then we need to add a default submit button.
+    if (!this.getComponents().length) {
+      this.submitButton = this.addComponent({
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        size: 'md',
+        block: false,
+        action: 'submit',
+        disableOnInvalid: true,
+        theme: 'primary'
+      });
+    }
+
     this.builderReadyResolve();
   }
 

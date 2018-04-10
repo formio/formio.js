@@ -28,6 +28,10 @@ export class ContainerComponent extends FormioComponents {
     this.type = 'container';
   }
 
+  get defaultSchema() {
+    return ContainerComponent.schema();
+  }
+
   build() {
     this.createElement();
     if (!this.hasValue) {

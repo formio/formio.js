@@ -40,6 +40,10 @@ export class SignatureComponent extends BaseComponent {
     }
   }
 
+  get defaultSchema() {
+    return SignatureComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

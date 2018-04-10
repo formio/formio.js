@@ -60,6 +60,10 @@ export class NumberComponent extends BaseComponent {
     }
   }
 
+  get defaultSchema() {
+    return NumberComponent.schema();
+  }
+
   get emptyValue() {
     return 0;
   }

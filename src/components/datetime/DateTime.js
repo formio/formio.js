@@ -67,6 +67,10 @@ export class DateTimeComponent extends BaseComponent {
     };
   }
 
+  get defaultSchema() {
+    return DateTimeComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

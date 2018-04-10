@@ -53,13 +53,17 @@ export class EditGridComponent extends FormioComponents {
     this.editRows = [];
   }
 
+  get defaultSchema() {
+    return EditGridComponent.schema();
+  }
+
   get emptyValue() {
     return [];
   }
 
   build() {
     if (this.options.builder) {
-      return super.build();
+      return super.build(true);
     }
     this.createElement();
     this.createLabel(this.element);
@@ -135,8 +139,8 @@ export class EditGridComponent extends FormioComponents {
             [
               this.component.components.map(comp => {
                 const component = _.cloneDeep(comp);
-                component.row = `${this.row}-${rowIndex}`;
                 const options = _.clone(this.options);
+                options.row = `${this.row}-${rowIndex}`;
                 options.name += `[${rowIndex}]`;
                 const instance = this.createComponent(component, options, this.editRows[rowIndex].data);
                 this.editRows[rowIndex].components.push(instance);

@@ -2,7 +2,6 @@ import maskInput from 'vanilla-text-mask';
 import {createNumberMask} from 'text-mask-addons';
 import _ from 'lodash';
 import {getCurrencyAffixes} from '../../utils';
-
 import {NumberComponent} from '../number/Number';
 
 export class CurrencyComponent extends NumberComponent {
@@ -40,6 +39,10 @@ export class CurrencyComponent extends NumberComponent {
     });
     this.prefix = affixes.prefix;
     this.suffix = affixes.suffix;
+  }
+
+  get defaultSchema() {
+    return CurrencyComponent.schema();
   }
 
   parseNumber(value) {

@@ -24,6 +24,10 @@ export class RadioComponent extends BaseComponent {
     };
   }
 
+  get defaultSchema() {
+    return RadioComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

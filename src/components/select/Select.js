@@ -104,6 +104,10 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
+  get defaultSchema() {
+    return SelectComponent.schema();
+  }
+
   refreshItems() {
     this.triggerUpdate();
     if (this.component.clearOnRefresh) {

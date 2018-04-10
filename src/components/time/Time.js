@@ -23,6 +23,10 @@ export class TimeComponent extends TextFieldComponent {
     };
   }
 
+  get defaultSchema() {
+    return TimeComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.attr.type = 'time';

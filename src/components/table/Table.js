@@ -34,8 +34,12 @@ export class TableComponent extends FormioComponents {
     };
   }
 
+  get defaultSchema() {
+    return TableComponent.schema();
+  }
+
   get schema() {
-    let schema = super.schema;
+    let schema = _.omit(super.schema, 'components');
     schema.rows = [];
     this.eachComponent((component) => {
       if (!schema.rows || !schema.rows.length) {

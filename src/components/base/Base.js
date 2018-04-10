@@ -89,6 +89,16 @@ export class BaseComponent {
       labelPosition: 'top',
       labelWidth: 30,
       labelMargin: 3,
+      description: '',
+      errorLabel: '',
+      tooltip: '',
+      hideLabel: false,
+      tabindex: '',
+      disabled: false,
+      autofocus: false,
+      dbIndex: false,
+      customDefaultValue: '',
+      calculateValue: '',
 
       /**
        * The validation criteria for this component.
@@ -143,7 +153,8 @@ export class BaseComponent {
      */
     this.options = _.defaults(_.clone(options), {
       language: 'en',
-      highlightErrors: true
+      highlightErrors: true,
+      row: ''
     });
 
     // Use the i18next that is passed in, otherwise use the global version.
@@ -171,7 +182,7 @@ export class BaseComponent {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = component || {};
+    this.component = _.defaultsDeep(component || {}, this.defaultSchema);
 
     // Add the id to the component.
     this.component.id = this.id;
@@ -222,8 +233,7 @@ export class BaseComponent {
      * The row path of this component.
      * @type {number}
      */
-    this.row = component ? component.row : '';
-    this.row = this.row || '';
+    this.row = this.options.row;
 
     /**
      * Determines if this component is disabled, or not.
@@ -311,11 +321,45 @@ export class BaseComponent {
     return this.component.input || this.inputs.length;
   }
 
+  get defaultSchema() {
+    return BaseComponent.schema();
+  }
+
+  /**
+   * Returns only the schema that is different from the default.
+   *
+   * @param schema
+   * @param defaultSchema
+   */
+  getModifiedSchema(schema, defaultSchema) {
+    let modified = {};
+    _.each(schema, (val, key) => {
+      if (_.isObject(val) && defaultSchema.hasOwnProperty(key)) {
+        let subModified = this.getModifiedSchema(val, defaultSchema[key]);
+        if (!_.isEmpty(subModified)) {
+          modified[key] = subModified;
+        }
+      }
+      else if (
+        (key === 'type') ||
+        (key === 'key') ||
+        (key === 'label') ||
+        (key === 'input') ||
+        !defaultSchema.hasOwnProperty(key) ||
+        _.isArray(val) ||
+        (val !== defaultSchema[key])
+      ) {
+        modified[key] = val;
+      }
+    });
+    return modified;
+  }
+
   /**
    * Returns the JSON schema for this component.
    */
   get schema() {
-    return _.omit(this.component, 'id');
+    return this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema);
   }
 
   /**

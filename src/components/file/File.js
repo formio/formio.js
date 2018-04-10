@@ -37,6 +37,10 @@ export class FileComponent extends BaseComponent {
     };
   }
 
+  get defaultSchema() {
+    return FileComponent.schema();
+  }
+
   get emptyValue() {
     return [];
   }

@@ -19,6 +19,10 @@ export class HiddenComponent extends BaseComponent {
     };
   }
 
+  get defaultSchema() {
+    return HiddenComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

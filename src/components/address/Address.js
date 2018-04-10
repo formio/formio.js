@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import {TextFieldComponent} from '../textfield/TextField';
 import {BaseComponent} from '../base/Base';
+import {SurveyComponent} from "../survey/Survey";
 
 export class AddressComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -41,6 +42,10 @@ export class AddressComponent extends TextFieldComponent {
 
     // Keep track of the full addresses.
     this.addresses = [];
+  }
+
+  get defaultSchema() {
+    return AddressComponent.schema();
   }
 
   setValueAt(index, value) {

@@ -27,6 +27,10 @@ export class SelectBoxesComponent extends RadioComponent {
     this.component.inputType = 'checkbox';
   }
 
+  get defaultSchema() {
+    return SelectBoxesComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.attr.name += '[]';

@@ -1,9 +1,7 @@
-import _ from 'lodash';
 import { BaseComponent } from '../base/Base';
 import Promise from 'native-promise-only';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
-import formFactory from "../../formFactory";
 
 export class FormComponent extends BaseComponent {
   static schema(...extend) {
@@ -40,8 +38,8 @@ export class FormComponent extends BaseComponent {
     });
   }
 
-  get schema() {
-    return _.omit(this.component, ['id', 'components']);
+  get defaultSchema() {
+    return FormComponent.schema();
   }
 
   get emptyValue() {
@@ -128,6 +126,7 @@ export class FormComponent extends BaseComponent {
         }
       });
 
+      const formFactory = require('../../formFactory');
       this.subForm = formFactory(this.element, formObj, srcOptions);
       this.dataValue.data = this.subForm.data;
 

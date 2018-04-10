@@ -1,5 +1,4 @@
-import _each from 'lodash/each';
-import _clone from 'lodash/clone';
+import _ from 'lodash';
 import { FormioComponents } from '../Components';
 
 export class TabsComponent extends FormioComponents {
@@ -34,10 +33,14 @@ export class TabsComponent extends FormioComponents {
     this.currentTab = 0;
   }
 
+  get defaultSchema() {
+    return TabsComponent.schema();
+  }
+
   get schema() {
-    let schema = _clone(this.component);
+    let schema = _.clone(this.component);
     schema.components = [];
-    _each(this.component.components, (tab) => {
+    _.each(this.component.components, (tab) => {
       let tabSchema = tab;
       tabSchema.components = [];
       this.eachComponent((component) => tabSchema.components.push(component.schema));
@@ -55,7 +58,7 @@ export class TabsComponent extends FormioComponents {
     });
     this.tabs = [];
     this.tabLinks = [];
-    _each(this.component.components, (tab, index) => {
+    _.each(this.component.components, (tab, index) => {
       let tabPanel = this.ce('div', {
         role: 'tabpanel',
         class: 'tab-pane',
@@ -105,18 +108,18 @@ export class TabsComponent extends FormioComponents {
     let tab = this.component.components[this.currentTab];
     this.empty(this.tabs[this.currentTab]);
     let components = this.hook('addComponents', tab.components);
-    _each(components, (component) => this.addComponent(component, this.tabs[this.currentTab]));
+    _.each(components, (component) => this.addComponent(component, this.tabs[this.currentTab]));
     this.checkConditions(this.root ? this.root.data : {});
 
     if (this.tabLinks.length <= index) {
       return;
     }
 
-    _each(this.tabLinks, (tabLink) => {
+    _.each(this.tabLinks, (tabLink) => {
       this.removeClass(tabLink, 'active');
     });
     this.addClass(this.tabLinks[index], 'active');
-    _each(this.tabs, (tab) => {
+    _.each(this.tabs, (tab) => {
       this.removeClass(tab, 'active');
     });
     this.addClass(this.tabs[index], 'active');

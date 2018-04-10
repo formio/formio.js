@@ -28,6 +28,10 @@ export class ColumnsComponent extends FormioComponents {
     };
   }
 
+  get defaultSchema() {
+    return ColumnsComponent.schema();
+  }
+
   get schema() {
     let schema = _.omit(super.schema, 'components');
     schema.columns = [];

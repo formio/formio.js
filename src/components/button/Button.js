@@ -14,7 +14,7 @@ export class ButtonComponent extends BaseComponent {
       block: false,
       action: 'submit',
       disableOnInvalid: false,
-      theme: 'primary'
+      theme: 'default'
     }, ...extend);
   }
 
@@ -27,6 +27,10 @@ export class ButtonComponent extends BaseComponent {
       weight: 110,
       schema: ButtonComponent.schema()
     };
+  }
+
+  get defaultSchema() {
+    return ButtonComponent.schema();
   }
 
   elementInfo() {

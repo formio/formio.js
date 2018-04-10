@@ -28,6 +28,11 @@ export class EmailComponent extends TextFieldComponent {
     super(component, options, data);
     this.validators.push('email');
   }
+
+  get defaultSchema() {
+    return EmailComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.attr.type = 'email';

@@ -29,6 +29,10 @@ export class DataGridComponent extends FormioComponents {
     this.type = 'datagrid';
   }
 
+  get defaultSchema() {
+    return DataGridComponent.schema();
+  }
+
   get emptyValue() {
     return [{}];
   }

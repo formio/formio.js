@@ -26,6 +26,10 @@ export class CheckBoxComponent extends BaseComponent {
     };
   }
 
+  get defaultSchema() {
+    return CheckBoxComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

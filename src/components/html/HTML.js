@@ -23,6 +23,10 @@ export class HTMLComponent extends BaseComponent {
     };
   }
 
+  get defaultSchema() {
+    return HTMLComponent.schema();
+  }
+
   setHTML() {
     this.element.innerHTML = this.interpolate(this.component.content, {data: this.data, row: this.row});
   }

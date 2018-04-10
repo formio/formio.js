@@ -32,6 +32,10 @@ export class TextAreaComponent extends TextFieldComponent {
     this.options.submitOnEnter = false;
   }
 
+  get defaultSchema() {
+    return TextAreaComponent.schema();
+  }
+
   acePlaceholder() {
     if (!this.component.placeholder || !this.editor) {
       return;

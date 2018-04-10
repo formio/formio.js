@@ -21,4 +21,8 @@ export class PhoneNumberComponent extends TextFieldComponent {
       schema: PhoneNumberComponent.schema()
     };
   }
+
+  get defaultSchema() {
+    return PhoneNumberComponent.schema();
+  }
 }

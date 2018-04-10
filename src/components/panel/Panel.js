@@ -31,6 +31,10 @@ export class PanelComponent extends FormioComponents {
     super(component, options, data);
   }
 
+  get defaultSchema() {
+    return PanelComponent.schema();
+  }
+
   getContainer() {
     return this.panelBody;
   }

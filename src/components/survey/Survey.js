@@ -23,6 +23,10 @@ export class SurveyComponent extends BaseComponent {
     };
   }
 
+  get defaultSchema() {
+    return SurveyComponent.schema();
+  }
+
   build() {
     if (this.viewOnly) {
       this.viewOnlyBuild();

@@ -23,6 +23,10 @@ export class FieldsetComponent extends FormioComponents {
     };
   }
 
+  get defaultSchema() {
+    return FieldsetComponent.schema();
+  }
+
   getContainer() {
     return this.body;
   }

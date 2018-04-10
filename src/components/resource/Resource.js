@@ -33,6 +33,10 @@ export class ResourceComponent extends SelectComponent {
     };
   }
 
+  get defaultSchema() {
+    return ResourceComponent.schema();
+  }
+
   /**
    * Creates a new button to add a resource instance
    * @returns {HTMLElement} - The "Add Resource" button html element.

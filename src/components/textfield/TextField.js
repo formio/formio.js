@@ -6,6 +6,7 @@ export class TextFieldComponent extends BaseComponent {
       label: 'Text Field',
       key: 'textField',
       type: 'textfield',
+      mask: false,
       inputType: 'text',
       inputMask: '',
       validate: {
@@ -25,6 +26,10 @@ export class TextFieldComponent extends BaseComponent {
       weight: 0,
       schema: TextFieldComponent.schema()
     };
+  }
+
+  get defaultSchema() {
+    return TextFieldComponent.schema();
   }
 
   elementInfo() {

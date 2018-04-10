@@ -3,6 +3,7 @@ import _ from 'lodash';
 import Promise from 'native-promise-only';
 import FormioUtils from '../utils/index';
 import {BaseComponent} from './base/Base';
+import {FormComponent} from "./form/Form";
 
 export class FormioComponents extends BaseComponent {
   static schema(...extend) {
@@ -19,9 +20,16 @@ export class FormioComponents extends BaseComponent {
     this.collapsed = !!this.component.collapsed;
   }
 
-  build() {
+  build(showLabel) {
     this.createElement();
+    if (showLabel) {
+      this.createLabel(this.element);
+    }
     this.addComponents();
+  }
+
+  get defaultSchema() {
+    return FormioComponents.schema();
   }
 
   get schema() {
@@ -163,7 +171,6 @@ export class FormioComponents extends BaseComponent {
   addComponent(component, element, data, before) {
     element = element || this.getContainer();
     data = data || this.data;
-    component.row = this.row;
     const comp = this.createComponent(component, this.options, data, before ? before.component : null);
     this.setHidden(comp);
     element = this.hook('addComponent', element, comp);

@@ -1,5 +1,4 @@
 import {BaseComponent} from '../base/Base';
-import _ from 'lodash';
 
 export class ContentComponent extends BaseComponent {
   static schema(...extend) {
@@ -20,6 +19,10 @@ export class ContentComponent extends BaseComponent {
       weight: 100,
       schema: ContentComponent.schema()
     };
+  }
+
+  get defaultSchema() {
+    return ContentComponent.schema();
   }
 
   build() {

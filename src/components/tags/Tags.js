@@ -1,6 +1,4 @@
 import { BaseComponent } from '../base/Base';
-import _isArray from 'lodash/isArray';
-import _map from 'lodash/map';
 import Choices from 'choices.js';
 
 export class TagsComponent extends BaseComponent {
@@ -29,6 +27,10 @@ export class TagsComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
     this.component.delimeter = this.component.delimeter || ',';
+  }
+
+  get defaultSchema() {
+    return TagsComponent.schema();
   }
 
   elementInfo() {

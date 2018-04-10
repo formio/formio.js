@@ -53,6 +53,10 @@ export class DayComponent extends BaseComponent {
     this.hideYear = _.get(this.component, 'fields.year.hide', false);
   }
 
+  get defaultSchema() {
+    return DayComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

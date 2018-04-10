@@ -39,6 +39,10 @@ export class LocationComponent extends BaseComponent {
     BaseComponent.requireLibrary('googleMaps', 'google.maps.places', src);
   }
 
+  get defaultSchema() {
+    return LocationComponent.schema();
+  }
+
   get emptyValue() {
     return '';
   }
