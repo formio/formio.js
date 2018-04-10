@@ -47,11 +47,12 @@ export default class FormioGrid extends FormioComponents{
     this.form = null;
 
     this.grid = null;
+    this.query = {};
 
     this.formio = null;
     this.total = 0;
     this.page = 0;
-    this.pages = 1;
+    this.pages = 0;
     this.firstItem = 0;
     this.lastItem = 0;
     this.skip = 0;
@@ -63,12 +64,13 @@ export default class FormioGrid extends FormioComponents{
       columnSorting: true,
       afterSelection: (r, c, r2, c2, preventScrolling, selectionLayerLevel) => this.onSelect(r, c, r2, c2, preventScrolling, selectionLayerLevel)
     };
+    this.options.data = [];
 
 
     // Get Element
     this.element = element;
     // Get Form
-    this.loadForm(form);
+    this.loadGrid(form);
 
     /**
      * Promise that executes when the form is ready and rendered.
@@ -125,33 +127,28 @@ export default class FormioGrid extends FormioComponents{
     });
   }
 
-  /**
-   * Load Form
-   */
-  loadForm(form) {
-    this.formio = new Formio(form, {formOnly: true});
-    this.formio.loadForm().then((form) => {
-      this.form = form;
-      this.setupColumns();
-      // Get Submission
-      this.loadSubmissions(form);
-    });
-  }
   onSelect(r, c, r2, c2, preventScrolling, selectionLayerLevel) {
     if (c === 0) {
-      console.log(c);
       this.emit('gridSelectedRow',this.grid.getSourceDataAtRow(r, c))
     }
   }
   /**
    * Loads the submission if applicable.
    */
-  loadSubmissions() {
-    console.log(this.formio);
+  loadSubmissions(query) {
+    this.query = query || {};
+    if (!this.query.hasOwnProperty('limit')) {
+      this.query.limit = 10;
+    }
+    if (!this.query.hasOwnProperty('skip')) {
+      this.query.skip = 0;
+    }
+    this.loading = true;
     if (this.formio.submissionsUrl) {
-      this.onSubmission = this.formio.loadSubmissions().then((submission) => {
-        console.log(submission); this.data = submission;
+      this.onSubmission = this.formio.loadSubmissions({params:this.query}).then((submission) => {
+        this.options.data = submission;
         this.createGrid();
+        this.loading = false;
         this.submissionReadyResolve();
       } , (err) => err.catch((err) => err));
     }
@@ -204,14 +201,7 @@ export default class FormioGrid extends FormioComponents{
    * Create Grid
    */
   createGrid() {
-    this.grid = new Handsontable(this.element, {
-      data: this.data,
-      colHeaders: this.options.colHeaders,
-      columns: this.options.columns,
-      sortIndicator: this.options.sortIndicator,
-      columnSorting: this.options.columnSorting,
-      afterSelection: this.options.afterSelection,
-    })
+    this.grid = new Handsontable(this.element, this.options);
     this.gridReadyResolve();
   }
 
@@ -224,44 +214,60 @@ export default class FormioGrid extends FormioComponents{
     if (this.formio && src === this.src) {
       return;
     }
-    this.formio = new Formio(this.src, {formOnly: true});
+    this.formio = new Formio(src, {formOnly: true});
     this.formio.loadForm().then((form) => {
       this.form = form;
       this.setupColumns();
-      this.refreshGrid()
+      this.loadSubmissions();
+      this.buildPagination(this.query);
+      // Get Submission
+      this.setPage(0);
     });
-    this.setPage(0);
   }
 
+  /**
+   * Loads the submission if applicable.
+   */
   refreshGrid(query) {
-    query = query || {};
-    query = _.assign(query, this.options.query);
-    if (!query.hasOwnProperty('limit')) {
-      query.limit = 10;
+    this.query = query || {};
+    if (!this.query.hasOwnProperty('limit')) {
+      this.query.limit = 10;
     }
-    if (!query.hasOwnProperty('skip')) {
-      query.skip = 0;
+    if (!this.query.hasOwnProperty('skip')) {
+      this.query.skip = 0;
     }
+    console.log(this.query);
     this.loading = true;
-    this.formio
-      .loadSubmissions({ params: query })
-      .then(
-        (submissions) => {
-          this.firstItem = this.options.this.query.skip + 1;
-          this.lastItem = this.firstItem + submissions.length - 1;
-          this.total = submissions.serverCount;
-          this.skip = Math.floor(submissions.skip / query.limit) + 1;
-          this.data = [];
-          console.log(submissions);
-          _.each(submissions, (submission) => {
-            this.data.push(submission);
-          });
-          this.buildPagination();
-          this.loading = false;
-        },
-        (err) => (err)
-      )
-      .catch((err) => (err));
+    if (this.formio.submissionsUrl) {
+      this.onSubmission = this.formio.loadSubmissions({params:this.query}).then((submission) => {
+        this.total = submission.serverCount;
+        this.firstItem = this.query.skip + 1;
+        this.lastItem = this.firstItem + submission.length - 1;
+        this.skip = Math.floor(submission.skip / this.query.limit) + 1;
+        this.loading = false;
+        this.submissionReadyResolve();
+        this.options.data = submission;
+        this.grid.loadData(this.options.data)
+      } , (err) => err.catch((err) => err));
+    }
+  }
+
+  nextPage() {
+    if (this.page <= this.total ) {
+      this.setPage(this.page + 1)
+    }
+    else {
+      this.nextDisable = true;
+    }
+  }
+
+  prevPage() {
+    if(this.page >= 1 ) {
+      this.setPage(this.page - 1)
+    }
+    else {
+      this.prevDisable = true;
+    }
   }
 
   setPage(num) {
@@ -276,12 +282,29 @@ export default class FormioGrid extends FormioComponents{
       this.query.skip = 0;
     }
     this.query.skip = this.page * this.query.limit;
-    this.refreshGrid();
+    this.refreshPagination();
+    this.refreshGrid(this.query);
   }
 
-  buildPagination() {
-    this.pages = this.data.length/this.query.limit;
-    console.log(this.pages);
+  buildPagination(query) {
+    this.pages = Math.floor(this.total/query.limit);
+    this.element.appendChild(this.ce('div',{},
+      [this.ce('ul',{class:'pagination'},[
+        this.ce('li',{},[
+          this.ce('a',{class:this.prevDisable?'disable':'', onClick:()=>this.prevPage()},'< Prev')
+        ]),
+        this.ce('li',{},[
+          this.ce('span',{id: 'page'}, this.page)
+        ]),
+        this.ce('li',{},[
+          this.ce('a',{class:this.nextDisable?'disable':'', onClick:()=>this.nextPage()},'Next >')
+        ]),
+      ])]
+    ));
+  }
+
+  refreshPagination() {
+    document.getElementById('page').innerText = this.page + 1;
   }
 
   pageChanged(page) {
@@ -296,7 +319,7 @@ export default class FormioGrid extends FormioComponents{
           data: 'data.' + component.key,
           readOnly: true
         });
-        this.options.colHeaders.push(component.label || component.placeholder ||component.key)
+        this.options.colHeaders.push(component.label || component.placeholder ||component.key);
         i++;
       }
     });
