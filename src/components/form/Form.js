@@ -33,6 +33,7 @@ export class FormComponent extends BaseComponent {
     this.submitted = false;
     this.subForm = null;
     this.subData = {data: {}};
+    this.formSrc = '';
     this.subFormReady = new Promise((resolve, reject) => {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
@@ -85,7 +86,7 @@ export class FormComponent extends BaseComponent {
           this.formSrc += '/project';
         }
         this.formSrc += `/${this.component.project}`;
-        srcOptions.project = this.component.src;
+        srcOptions.project = this.formSrc;
       }
       if (this.component.form) {
         this.formSrc += `/form/${this.component.form}`;
@@ -96,7 +97,7 @@ export class FormComponent extends BaseComponent {
     }
 
     // Build the source based on the root src path.
-    if (!this.component.src && this.options.formio) {
+    if (!this.formSrc && this.options.formio) {
       const rootSrc = this.options.formio.formsUrl;
       if (this.component.path) {
         const parts = rootSrc.split('/');
@@ -115,11 +116,11 @@ export class FormComponent extends BaseComponent {
       this.formSrc &&
       !this.formSrc.includes('/submission/')
     ) {
-      this.component.src += `/submission/${submission._id}`;
+      this.formSrc += `/submission/${submission._id}`;
       loadSubmission = true;
     }
 
-    (new Formio(this.component.src)).loadForm({params: {live: 1}}).then((formObj) => {
+    (new Formio(this.formSrc)).loadForm({params: {live: 1}}).then((formObj) => {
       // Iterate through every component and hide the submit button.
       FormioUtils.eachComponent(formObj.components, (component) => {
         if ((component.type === 'button') && (component.action === 'submit')) {
@@ -132,7 +133,7 @@ export class FormComponent extends BaseComponent {
 
       // Forward along changes to parent form.
       this.subForm.on('change', () => this.onChange());
-      this.subForm.url = this.component.src;
+      this.subForm.url = this.formSrc;
       this.subForm.nosubmit = false;
       if (loadSubmission) {
         this.subForm.loadSubmission();
@@ -217,7 +218,7 @@ export class FormComponent extends BaseComponent {
   }
 
   setValue(submission, flags) {
-    if (submission && (submission._id || !_.isEmpty(submission.data))) {
+    if (submission) {
       this.loadSubForm(submission).then((form) => {
         if (submission._id && !flags.noload) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;

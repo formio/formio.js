@@ -1,7 +1,7 @@
 ---
 title: Form Builder
-layout: vtabs
-section: examples
+layout: default
+section: builder
 weight: 30
 lib: builder
 ---

@@ -8695,6 +8695,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     _this.submitted = false;
     _this.subForm = null;
     _this.subData = { data: {} };
+    _this.formSrc = '';
     _this.subFormReady = new _nativePromiseOnly2.default(function (resolve, reject) {
       _this.subFormReadyResolve = resolve;
       _this.subFormReadyReject = reject;
@@ -8741,7 +8742,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
             this.formSrc += '/project';
           }
           this.formSrc += '/' + this.component.project;
-          srcOptions.project = this.component.src;
+          srcOptions.project = this.formSrc;
         }
         if (this.component.form) {
           this.formSrc += '/form/' + this.component.form;
@@ -8751,7 +8752,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
       }
 
       // Build the source based on the root src path.
-      if (!this.component.src && this.options.formio) {
+      if (!this.formSrc && this.options.formio) {
         var rootSrc = this.options.formio.formsUrl;
         if (this.component.path) {
           var parts = rootSrc.split('/');
@@ -8765,11 +8766,11 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
 
       var loadSubmission = false;
       if (submission._id && this.component.reference && this.formSrc && !(this.formSrc.indexOf('/submission/') !== -1)) {
-        this.component.src += '/submission/' + submission._id;
+        this.formSrc += '/submission/' + submission._id;
         loadSubmission = true;
       }
 
-      new _formio2.default(this.component.src).loadForm({ params: { live: 1 } }).then(function (formObj) {
+      new _formio2.default(this.formSrc).loadForm({ params: { live: 1 } }).then(function (formObj) {
         // Iterate through every component and hide the submit button.
         _utils2.default.eachComponent(formObj.components, function (component) {
           if (component.type === 'button' && component.action === 'submit') {
@@ -8784,7 +8785,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         _this2.subForm.on('change', function () {
           return _this2.onChange();
         });
-        _this2.subForm.url = _this2.component.src;
+        _this2.subForm.url = _this2.formSrc;
         _this2.subForm.nosubmit = false;
         if (loadSubmission) {
           _this2.subForm.loadSubmission();
@@ -8885,7 +8886,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     value: function setValue(submission, flags) {
       var _this5 = this;
 
-      if (submission && (submission._id || !_lodash2.default.isEmpty(submission.data))) {
+      if (submission) {
         this.loadSubForm(submission).then(function (form) {
           if (submission._id && !flags.noload) {
             var submissionUrl = form.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;

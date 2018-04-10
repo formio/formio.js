@@ -63,6 +63,7 @@
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         <li {% if page.section == 'home' %}class="active"{% endif %}><a href="{{ site.baseurl }}"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li {% if page.section == 'builder' %}class="active"{% endif %}><a href="app/builder"><span class="glyphicon glyphicon-th-list"></span> Form Builder</a></li>
         <li {% if page.section == 'examples' %}class="active"{% endif %}><a href="app/examples"><span class="glyphicon glyphicon-check"></span> Examples</a></li>
         <li><a target="_blank" href="https://github.com/formio/formio.js/wiki"><span class="glyphicon glyphicon-book"></span> Documentation</a></li>
         <li {% if page.section == 'sdk'%}class="active"{% endif %}><a href="app/sdk"><span class="glyphicon glyphicon-list-alt"></span> SDK</a></li>
