@@ -207,7 +207,7 @@ export class DataGridComponent extends FormioComponents {
   ensureRemoveButtonIsPresent(index) {
     const row = this.tableRows[index];
 
-    if (row.children.length > this.component.components.length) {
+    if (this.options.builder || (row.children.length > this.component.components.length)) {
       return;
     }
 
@@ -217,7 +217,7 @@ export class DataGridComponent extends FormioComponents {
   ensureRemoveButtonIsAbsent(index) {
     const row = this.tableRows[index];
 
-    if (row.children.length === this.component.components.length) {
+    if (this.options.builder || (row.children.length === this.component.components.length)) {
       return;
     }
 

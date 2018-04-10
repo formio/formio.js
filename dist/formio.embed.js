@@ -6090,7 +6090,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function ensureRemoveButtonIsPresent(index) {
       var row = this.tableRows[index];
 
-      if (row.children.length > this.component.components.length) {
+      if (this.options.builder || row.children.length > this.component.components.length) {
         return;
       }
 
@@ -6101,7 +6101,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function ensureRemoveButtonIsAbsent(index) {
       var row = this.tableRows[index];
 
-      if (row.children.length === this.component.components.length) {
+      if (this.options.builder || row.children.length === this.component.components.length) {
         return;
       }
 
