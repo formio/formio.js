@@ -38,12 +38,13 @@ export class TabsComponent extends FormioComponents {
   }
 
   get schema() {
-    let schema = _.clone(this.component);
+    let schema = super.schema;
     schema.components = [];
-    _.each(this.component.components, (tab) => {
+    let allComponents = _.groupBy(this.getComponents(), 'component.tab');
+    _.each(this.component.components, (tab, index) => {
       let tabSchema = tab;
       tabSchema.components = [];
-      this.eachComponent((component) => tabSchema.components.push(component.schema));
+      _.each(allComponents[index], (component) => tabSchema.components.push(component.schema));
       schema.components.push(tabSchema);
     });
     return schema;
@@ -107,6 +108,7 @@ export class TabsComponent extends FormioComponents {
     // Get the current tab.
     let tab = this.component.components[this.currentTab];
     this.empty(this.tabs[this.currentTab]);
+    _.remove(this.components, (comp) => comp.component.tab === this.currentTab);
     let components = this.hook('addComponents', tab.components);
     _.each(components, (component) => this.addComponent(component, this.tabs[this.currentTab]));
     this.checkConditions(this.root ? this.root.data : {});
@@ -123,6 +125,20 @@ export class TabsComponent extends FormioComponents {
       this.removeClass(tab, 'active');
     });
     this.addClass(this.tabs[index], 'active');
+  }
+
+  /**
+   * Make sure to include the tab on the component as it is added.
+   *
+   * @param component
+   * @param element
+   * @param data
+   * @param before
+   * @return {BaseComponent}
+   */
+  addComponent(component, element, data, before) {
+    component.tab = this.currentTab;
+    return super.addComponent(component, element, data, before);
   }
 
   /**

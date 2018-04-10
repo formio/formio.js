@@ -4,12 +4,14 @@ export default function(...extend) {
     {
       label: 'Display',
       key: 'display',
+      weight: 0,
       components: [
         {
           key: 'components',
           type: 'datagrid',
           input: true,
           label: 'Tabs',
+          weight: 50,
           components: [
             {
               type: 'textfield',

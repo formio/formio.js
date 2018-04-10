@@ -15397,11 +15397,13 @@ exports.default = function () {
   return _Components2.default.apply(undefined, [[{
     label: 'Display',
     key: 'display',
+    weight: 0,
     components: [{
       key: 'components',
       type: 'datagrid',
       input: true,
       label: 'Tabs',
+      weight: 50,
       components: [{
         type: 'textfield',
         input: true,
@@ -15437,6 +15439,22 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.TabsComponent = undefined;
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
 
 var _createClass = function () {
   function defineProperties(target, props) {
@@ -15582,6 +15600,9 @@ var TabsComponent = exports.TabsComponent = function (_FormioComponents) {
       // Get the current tab.
       var tab = this.component.components[this.currentTab];
       this.empty(this.tabs[this.currentTab]);
+      _lodash2.default.remove(this.components, function (comp) {
+        return comp.component.tab === _this3.currentTab;
+      });
       var components = this.hook('addComponents', tab.components);
       _lodash2.default.each(components, function (component) {
         return _this3.addComponent(component, _this3.tabs[_this3.currentTab]);
@@ -15603,6 +15624,23 @@ var TabsComponent = exports.TabsComponent = function (_FormioComponents) {
     }
 
     /**
+     * Make sure to include the tab on the component as it is added.
+     *
+     * @param component
+     * @param element
+     * @param data
+     * @param before
+     * @return {BaseComponent}
+     */
+
+  }, {
+    key: 'addComponent',
+    value: function addComponent(component, element, data, before) {
+      component.tab = this.currentTab;
+      return _get(TabsComponent.prototype.__proto__ || Object.getPrototypeOf(TabsComponent.prototype), 'addComponent', this).call(this, component, element, data, before);
+    }
+
+    /**
      * Only add the components for the active tab.
      */
 
@@ -15619,14 +15657,13 @@ var TabsComponent = exports.TabsComponent = function (_FormioComponents) {
   }, {
     key: 'schema',
     get: function get() {
-      var _this4 = this;
-
-      var schema = _lodash2.default.clone(this.component);
+      var schema = _get(TabsComponent.prototype.__proto__ || Object.getPrototypeOf(TabsComponent.prototype), 'schema', this);
       schema.components = [];
-      _lodash2.default.each(this.component.components, function (tab) {
+      var allComponents = _lodash2.default.groupBy(this.getComponents(), 'component.tab');
+      _lodash2.default.each(this.component.components, function (tab, index) {
         var tabSchema = tab;
         tabSchema.components = [];
-        _this4.eachComponent(function (component) {
+        _lodash2.default.each(allComponents[index], function (component) {
           return tabSchema.components.push(component.schema);
         });
         schema.components.push(tabSchema);
