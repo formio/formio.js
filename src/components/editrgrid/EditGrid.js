@@ -8,6 +8,7 @@ export class EditGridComponent extends FormioComponents {
     super(component, options, data);
     this.type = 'datagrid';
     this.editRows = [];
+    this.create = _.bind(this.options.components.create, this.options.components, _, this.options, _, true);
   }
 
   get emptyValue() {
@@ -60,7 +61,7 @@ export class EditGridComponent extends FormioComponents {
     return `<div class="row">
       {% util.eachComponent(components, function(component) { %}
         <div class="col-sm-2">
-          {{ row[component.key] }}
+          {{ createComponent(component).getView(row[component.key]) }}
         </div>
       {% }) %}
       <div class="col-sm-2">
@@ -117,6 +118,7 @@ export class EditGridComponent extends FormioComponents {
       );
     }
     else {
+      const create = this.create;
       wrapper.appendChild(
         this.renderTemplate(rowTemplate,
           {
@@ -124,6 +126,9 @@ export class EditGridComponent extends FormioComponents {
             row,
             rowIndex,
             components: this.component.components,
+            createComponent(component) {
+              return create(component, row[component.key]);
+            },
             util: FormioUtils
           },
           [
