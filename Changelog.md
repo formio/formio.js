@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Autofocus feature.
+ - `getView(component, data)` option for EditGrid body template.
 
 ### Fixed
  - Interpolation for EditGrid.
