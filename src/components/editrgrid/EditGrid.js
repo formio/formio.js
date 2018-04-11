@@ -192,6 +192,16 @@ export class EditGridComponent extends FormioComponents {
     return valid;
   }
 
+  checkView(row) {
+    let data = {};
+    if(row.components) {
+      row.components.forEach(instance => {
+        data[instance.component.key] = instance.getView(instance.data[instance.component.key]);
+      });
+    }
+    return data;
+  }
+
   createAddButton() {
     this.element.appendChild(this.ce('div', {class: 'editgrid-add'},
       this.ce('button', {
@@ -219,7 +229,7 @@ export class EditGridComponent extends FormioComponents {
     this.editRows.forEach((editRow, rowIndex) => {
       if (!editRow.element) {
         // New row
-        editRow.element = this.createRow(editRow.data, rowIndex);
+        editRow.element = this.createRow(editRow.displayValue, rowIndex);
         this.tableElement.insertBefore(editRow.element, this.tableElement.children[rowIndex + 1]);
       }
       else if (
@@ -229,7 +239,7 @@ export class EditGridComponent extends FormioComponents {
       ) {
         // Row has changed due to an edit or delete.
         this.removeRowComponents(rowIndex);
-        const newRow = this.createRow(editRow.data, rowIndex);
+        const newRow = this.createRow(editRow.displayValue, rowIndex);
         this.tableElement.replaceChild(newRow, editRow.element);
         editRow.element = newRow;
       }
@@ -285,6 +295,7 @@ export class EditGridComponent extends FormioComponents {
     if (!this.validateRow(rowIndex, true)) {
       return;
     }
+    this.editRows[rowIndex].displayValue = this.checkView(this.editRows[rowIndex]);
     this.removeRowComponents(rowIndex);
     this.dataValue[rowIndex] = this.editRows[rowIndex].data;
     this.editRows[rowIndex].isOpen = false;
