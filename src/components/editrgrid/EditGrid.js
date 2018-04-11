@@ -8,7 +8,9 @@ export class EditGridComponent extends FormioComponents {
     super(component, options, data);
     this.type = 'datagrid';
     this.editRows = [];
-    this.create = _.bind(this.options.components.create, this.options.components, _, this.options, _, true);
+    if (this.options.components) {
+      this.create = _.bind(this.options.components.create, this.options.components, _, this.options, _, true);
+    }
   }
 
   get emptyValue() {
