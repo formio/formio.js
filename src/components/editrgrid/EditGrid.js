@@ -193,11 +193,9 @@ export class EditGridComponent extends FormioComponents {
   }
 
   checkView(row) {
-    console.log(row);
     let data = {};
     if(row.components) {
       row.components.forEach(instance => {
-        console.log(instance);
         data[instance.component.key] = instance.getView(instance.data[instance.component.key]);
       });
     }
