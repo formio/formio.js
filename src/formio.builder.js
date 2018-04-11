@@ -8,12 +8,14 @@ export class FormioBuilder {
   constructor(element, form, options) {
     this.instance = null;
     this.element = element;
-    this.form = form || {components: []};
+    this.form = form || {};
+    this.form.components = this.form.components || [];
     this.options = options;
   }
 
   newForm(form) {
     this.instance = null;
+    this.element.innerHTML = '';
     if (form.display === 'wizard') {
       this.instance = new FormioWizardBuilder(this.element, this.options);
     }
@@ -24,6 +26,11 @@ export class FormioBuilder {
       this.instance = new FormioFormBuilder(this.element, this.options);
     }
     return this.instance;
+  }
+
+  setDisplay(display) {
+    this.form.display = display;
+    return this.loadForm();
   }
 
   loadForm() {
@@ -59,4 +66,5 @@ Formio.builder = (element, form, options) => {
   return builder.loadForm();
 };
 
+Formio.Builder = FormioBuilder;
 exports.Formio = global.Formio = Formio;

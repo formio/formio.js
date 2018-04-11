@@ -40,7 +40,7 @@ export class FormioFormBuilder extends FormioForm {
     this.options.builder = true;
     this.options.hooks = this.options.hooks || {};
     this.options.hooks.addComponents = function(components) {
-      if (!components || !components.length) {
+      if (!components || (!components.length && !components.nodrop)) {
         // Return a simple alert so they know they can add something here.
         return [
           {
@@ -94,7 +94,7 @@ export class FormioFormBuilder extends FormioForm {
   }
 
   setBuilderElement() {
-    this.onElement.then(() => {
+    return this.onElement.then(() => {
       this.addClass(this.wrapper, 'row formbuilder');
       this.builderSidebar = this.ce('div', {
         class: 'col-xs-4 col-sm-3 col-md-2 formcomponents'
@@ -124,6 +124,7 @@ export class FormioFormBuilder extends FormioForm {
       component.parent.removeComponentById(component.id);
       this.form = this.schema;
     }
+    return remove;
   }
 
   updateComponent(component) {
@@ -591,6 +592,24 @@ export class FormioFormBuilder extends FormioForm {
     }
   }
 
+  /**
+   * Adds a submit button if there are no components.
+   */
+  addSubmitButton() {
+    if (!this.getComponents().length) {
+      this.submitButton = this.addComponent({
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        size: 'md',
+        block: false,
+        action: 'submit',
+        disableOnInvalid: true,
+        theme: 'primary'
+      });
+    }
+  }
+
   refreshDraggable() {
     if (this.dragula) {
       this.dragula.destroy();
@@ -605,19 +624,7 @@ export class FormioFormBuilder extends FormioForm {
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
 
     // If there are no components, then we need to add a default submit button.
-    if (!this.getComponents().length) {
-      this.submitButton = this.addComponent({
-        type: 'button',
-        label: 'Submit',
-        key: 'submit',
-        size: 'md',
-        block: false,
-        action: 'submit',
-        disableOnInvalid: true,
-        theme: 'primary'
-      });
-    }
-
+    this.addSubmitButton();
     this.builderReadyResolve();
   }
 

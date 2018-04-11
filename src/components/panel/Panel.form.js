@@ -5,6 +5,7 @@ export default function(...extend) {
     {
       label: 'Display',
       key: 'display',
+      weight: 0,
       components: [
         {
           weight: 10,

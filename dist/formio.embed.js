@@ -48,8 +48,6 @@ var _index2 = _interopRequireDefault(_index);
 
 var _Base = require('./base/Base');
 
-var _Form = require('./form/Form');
-
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -257,10 +255,13 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
   }, {
     key: 'addComponent',
-    value: function addComponent(component, element, data, before) {
+    value: function addComponent(component, element, data, before, noAdd) {
       element = element || this.getContainer();
       data = data || this.data;
       var comp = this.createComponent(component, this.options, data, before ? before.component : null);
+      if (noAdd) {
+        return comp;
+      }
       this.setHidden(comp);
       element = this.hook('addComponent', element, comp);
       if (before) {
@@ -343,21 +344,20 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         return null;
       }
     }
+  }, {
+    key: 'addComponents',
 
     /**
      *
      * @param element
      * @param data
      */
-
-  }, {
-    key: 'addComponents',
     value: function addComponents(element, data) {
       var _this4 = this;
 
       element = element || this.getContainer();
       data = data || this.data;
-      var components = this.hook('addComponents', this.component.components);
+      var components = this.hook('addComponents', this.componentComponents);
       _lodash2.default.each(components, function (component) {
         return _this4.addComponent(component, element, data);
       });
@@ -641,6 +641,11 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       return schema;
     }
   }, {
+    key: 'componentComponents',
+    get: function get() {
+      return this.component.components;
+    }
+  }, {
     key: 'disabled',
     set: function set(disabled) {
       _lodash2.default.each(this.components, function (component) {
@@ -671,7 +676,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
 FormioComponents.customComponents = {};
 
-},{"../utils/index":59,"./base/Base":4,"./form/Form":19,"./index":22,"lodash":82,"native-promise-only":84}],2:[function(require,module,exports){
+},{"../utils/index":59,"./base/Base":4,"./index":22,"lodash":82,"native-promise-only":84}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

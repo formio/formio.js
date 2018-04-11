@@ -75,7 +75,7 @@
     </div><!--/.nav-collapse -->
   </div>
 </nav>
-<div class="container" style="margin-top: 60px;">
+<div class="{% if page.fluid %}container-fluid{% endif %}{% if page.fluid == nil %}container{% endif %}" style="margin-top: 60px;">
   {{ content }}
 </div>
 <script async defer src="https://buttons.github.io/buttons.js"></script>

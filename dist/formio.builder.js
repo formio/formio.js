@@ -79,8 +79,6 @@ var _index2 = _interopRequireDefault(_index);
 
 var _Base = require('./base/Base');
 
-var _Form = require('./form/Form');
-
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -288,10 +286,13 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
   }, {
     key: 'addComponent',
-    value: function addComponent(component, element, data, before) {
+    value: function addComponent(component, element, data, before, noAdd) {
       element = element || this.getContainer();
       data = data || this.data;
       var comp = this.createComponent(component, this.options, data, before ? before.component : null);
+      if (noAdd) {
+        return comp;
+      }
       this.setHidden(comp);
       element = this.hook('addComponent', element, comp);
       if (before) {
@@ -374,21 +375,20 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
         return null;
       }
     }
+  }, {
+    key: 'addComponents',
 
     /**
      *
      * @param element
      * @param data
      */
-
-  }, {
-    key: 'addComponents',
     value: function addComponents(element, data) {
       var _this4 = this;
 
       element = element || this.getContainer();
       data = data || this.data;
-      var components = this.hook('addComponents', this.component.components);
+      var components = this.hook('addComponents', this.componentComponents);
       _lodash2.default.each(components, function (component) {
         return _this4.addComponent(component, element, data);
       });
@@ -672,6 +672,11 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       return schema;
     }
   }, {
+    key: 'componentComponents',
+    get: function get() {
+      return this.component.components;
+    }
+  }, {
     key: 'disabled',
     set: function set(disabled) {
       _lodash2.default.each(this.components, function (component) {
@@ -702,7 +707,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
 FormioComponents.customComponents = {};
 
-},{"../utils/index":110,"./base/Base":7,"./form/Form":43,"./index":48,"lodash":141,"native-promise-only":143}],3:[function(require,module,exports){
+},{"../utils/index":110,"./base/Base":7,"./index":48,"lodash":141,"native-promise-only":143}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -11912,6 +11917,7 @@ exports.default = function () {
   return _Components2.default.apply(undefined, [[{
     label: 'Display',
     key: 'display',
+    weight: 0,
     components: [{
       weight: 10,
       type: 'textfield',
@@ -17041,7 +17047,8 @@ var FormioBuilder = exports.FormioBuilder = function () {
 
     this.instance = null;
     this.element = element;
-    this.form = form || { components: [] };
+    this.form = form || {};
+    this.form.components = this.form.components || [];
     this.options = options;
   }
 
@@ -17049,6 +17056,7 @@ var FormioBuilder = exports.FormioBuilder = function () {
     key: 'newForm',
     value: function newForm(form) {
       this.instance = null;
+      this.element.innerHTML = '';
       if (form.display === 'wizard') {
         this.instance = new _formioWizard.FormioWizardBuilder(this.element, this.options);
       } else if (form.display === 'pdf') {
@@ -17057,6 +17065,12 @@ var FormioBuilder = exports.FormioBuilder = function () {
         this.instance = new _formioForm.FormioFormBuilder(this.element, this.options);
       }
       return this.instance;
+    }
+  }, {
+    key: 'setDisplay',
+    value: function setDisplay(display) {
+      this.form.display = display;
+      return this.loadForm();
     }
   }, {
     key: 'loadForm',
@@ -17102,6 +17116,7 @@ _formio.Formio.builder = function (element, form, options) {
   return builder.loadForm();
 };
 
+_formio.Formio.Builder = FormioBuilder;
 exports.Formio = global.Formio = _formio.Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
@@ -17229,7 +17244,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     _this.options.builder = true;
     _this.options.hooks = _this.options.hooks || {};
     _this.options.hooks.addComponents = function (components) {
-      if (!components || !components.length) {
+      if (!components || !components.length && !components.nodrop) {
         // Return a simple alert so they know they can add something here.
         return [{
           type: 'htmlelement',
@@ -17286,7 +17301,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     value: function setBuilderElement() {
       var _this2 = this;
 
-      this.onElement.then(function () {
+      return this.onElement.then(function () {
         _this2.addClass(_this2.wrapper, 'row formbuilder');
         _this2.builderSidebar = _this2.ce('div', {
           class: 'col-xs-4 col-sm-3 col-md-2 formcomponents'
@@ -17313,6 +17328,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         component.parent.removeComponentById(component.id);
         this.form = this.schema;
       }
+      return remove;
     }
   }, {
     key: 'updateComponent',
@@ -17758,6 +17774,27 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           this.form = this.schema;
         }
     }
+
+    /**
+     * Adds a submit button if there are no components.
+     */
+
+  }, {
+    key: 'addSubmitButton',
+    value: function addSubmitButton() {
+      if (!this.getComponents().length) {
+        this.submitButton = this.addComponent({
+          type: 'button',
+          label: 'Submit',
+          key: 'submit',
+          size: 'md',
+          block: false,
+          action: 'submit',
+          disableOnInvalid: true,
+          theme: 'primary'
+        });
+      }
+    }
   }, {
     key: 'refreshDraggable',
     value: function refreshDraggable() {
@@ -17778,19 +17815,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       });
 
       // If there are no components, then we need to add a default submit button.
-      if (!this.getComponents().length) {
-        this.submitButton = this.addComponent({
-          type: 'button',
-          label: 'Submit',
-          key: 'submit',
-          size: 'md',
-          block: false,
-          action: 'submit',
-          disableOnInvalid: true,
-          theme: 'primary'
-        });
-      }
-
+      this.addSubmitButton();
       this.builderReadyResolve();
     }
   }, {
@@ -20903,13 +20928,37 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FormioWizardBuilder = undefined;
 
-var _formio = require('./formio.wizard');
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
 
-var _formio2 = _interopRequireDefault(_formio);
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
 
-var _dragula = require('dragula');
+var _formioForm = require('./formio.form.builder');
 
-var _dragula2 = _interopRequireDefault(_dragula);
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -20924,17 +20973,17 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var FormioWizardBuilder = exports.FormioWizardBuilder = function (_FormioWizard) {
-  _inherits(FormioWizardBuilder, _FormioWizard);
+var FormioWizardBuilder = exports.FormioWizardBuilder = function (_FormioFormBuilder) {
+  _inherits(FormioWizardBuilder, _FormioFormBuilder);
 
   function FormioWizardBuilder() {
     _classCallCheck(this, FormioWizardBuilder);
@@ -20942,10 +20991,154 @@ var FormioWizardBuilder = exports.FormioWizardBuilder = function (_FormioWizard)
     return _possibleConstructorReturn(this, (FormioWizardBuilder.__proto__ || Object.getPrototypeOf(FormioWizardBuilder)).apply(this, arguments));
   }
 
-  return FormioWizardBuilder;
-}(_formio2.default);
+  _createClass(FormioWizardBuilder, [{
+    key: 'setBuilderElement',
+    value: function setBuilderElement() {
+      var _this2 = this;
 
-},{"./formio.wizard":100,"dragula":122}],100:[function(require,module,exports){
+      return _get(FormioWizardBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioWizardBuilder.prototype), 'setBuilderElement', this).call(this).then(function () {
+        var buildRegion = _this2.ce('div', {
+          class: 'col-xs-8 col-sm-9 col-md-10 formarea'
+        });
+
+        _this2.element.setAttribute('class', '');
+        _this2.element.noDrop = true;
+        _this2.wrapper.insertBefore(buildRegion, _this2.element);
+        _this2.pageBar = _this2.ce('ol', {
+          class: 'breadcrumb'
+        });
+
+        buildRegion.appendChild(_this2.pageBar);
+        buildRegion.appendChild(_this2.element);
+        _this2.currentPage = 0;
+      });
+    }
+  }, {
+    key: 'addSubmitButton',
+    value: function addSubmitButton() {
+      // Do nothing...
+    }
+  }, {
+    key: 'deleteComponent',
+    value: function deleteComponent(component) {
+      if (_get(FormioWizardBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioWizardBuilder.prototype), 'deleteComponent', this).call(this, component)) {
+        this.gotoPage(0);
+      }
+    }
+  }, {
+    key: 'addPage',
+    value: function addPage() {
+      var pageNum = this.pages.length + 1;
+      var newPage = {
+        title: 'Page ' + pageNum,
+        label: 'Page ' + pageNum,
+        type: 'panel',
+        key: 'page' + pageNum
+      };
+      this.component.components.push(newPage);
+      this.addComponent(newPage);
+      this.emit('saveComponent', newPage);
+      this.form = this.schema;
+      this.redraw();
+    }
+  }, {
+    key: 'addComponents',
+    value: function addComponents(element, data) {
+      var _this3 = this;
+
+      element = element || this.getContainer();
+      data = data || this.data;
+      var components = this.hook('addComponents', this.componentComponents);
+      _lodash2.default.each(components, function (component, index) {
+        _this3.addComponent(component, element, data, null, index !== _this3.currentPage);
+      });
+    }
+  }, {
+    key: 'gotoPage',
+    value: function gotoPage(page) {
+      this.currentPage = page;
+      this.redraw();
+    }
+
+    /**
+     * Only show the current page.
+     *
+     * @return {Array}
+     */
+
+  }, {
+    key: 'buildPageBar',
+    value: function buildPageBar() {
+      var _this4 = this;
+
+      var pages = this.pages;
+
+      // Always ensure we have a single page.
+      if (!pages.length) {
+        return this.addPage();
+      }
+
+      this.empty(this.pageBar);
+      _lodash2.default.each(pages, function (page, index) {
+        var pageLink = _this4.ce('a', {
+          title: page.title,
+          class: index === _this4.currentPage ? 'label label-primary' : 'label label-info'
+        }, _this4.text(page.title));
+        _this4.pageBar.appendChild(_this4.ce('li', null, pageLink));
+        _this4.addEventListener(pageLink, 'click', function (event) {
+          event.preventDefault();
+          _this4.gotoPage(index);
+        });
+      });
+
+      var newPage = this.ce('a', {
+        title: this.t('Create Page'),
+        class: 'label label-success'
+      }, [this.getIcon('plus'), this.text(' PAGE')]);
+
+      this.addEventListener(newPage, 'click', function (event) {
+        event.preventDefault();
+        _this4.addPage();
+      });
+
+      this.pageBar.appendChild(this.ce('li', null, newPage));
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      var _this5 = this;
+
+      _get(FormioWizardBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioWizardBuilder.prototype), 'build', this).call(this);
+      this.builderReady.then(function () {
+        return _this5.buildPageBar();
+      });
+    }
+  }, {
+    key: 'currentPage',
+    get: function get() {
+      return this._currentPage || 0;
+    },
+    set: function set(currentPage) {
+      this._currentPage = currentPage;
+    }
+  }, {
+    key: 'pages',
+    get: function get() {
+      return _lodash2.default.filter(this.component.components, { type: 'panel' });
+    }
+  }, {
+    key: 'componentComponents',
+    get: function get() {
+      var components = this.pages;
+      components.nodrop = true;
+      return components;
+    }
+  }]);
+
+  return FormioWizardBuilder;
+}(_formioForm.FormioFormBuilder);
+
+},{"./formio.form.builder":92,"lodash":141}],100:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };

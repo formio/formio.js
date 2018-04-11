@@ -3,7 +3,6 @@ import _ from 'lodash';
 import Promise from 'native-promise-only';
 import FormioUtils from '../utils/index';
 import {BaseComponent} from './base/Base';
-import {FormComponent} from "./form/Form";
 
 export class FormioComponents extends BaseComponent {
   static schema(...extend) {
@@ -168,10 +167,13 @@ export class FormioComponents extends BaseComponent {
    * @param {HTMLElement} before - A DOM element to insert this element before.
    * @return {BaseComponent} - The created component instance.
    */
-  addComponent(component, element, data, before) {
+  addComponent(component, element, data, before, noAdd) {
     element = element || this.getContainer();
     data = data || this.data;
     const comp = this.createComponent(component, this.options, data, before ? before.component : null);
+    if (noAdd) {
+      return comp;
+    }
     this.setHidden(comp);
     element = this.hook('addComponent', element, comp);
     if (before) {
@@ -243,6 +245,10 @@ export class FormioComponents extends BaseComponent {
     }
   }
 
+  get componentComponents() {
+    return this.component.components;
+  }
+
   /**
    *
    * @param element
@@ -251,7 +257,7 @@ export class FormioComponents extends BaseComponent {
   addComponents(element, data) {
     element = element || this.getContainer();
     data = data || this.data;
-    const components = this.hook('addComponents', this.component.components);
+    const components = this.hook('addComponents', this.componentComponents);
     _.each(components, (component) => this.addComponent(component, element, data));
   }
 
