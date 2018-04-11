@@ -91,7 +91,7 @@ var setDisplay = function(display) {
        jsonElement.innerHTML = '';
        formElement.innerHTML = '';
        jsonElement.appendChild(document.createTextNode(JSON.stringify(schema, null, 4)));
-       Formio.createForm(formElement, instance.schema).then(onForm);
+       Formio.createForm(formElement, schema).then(onForm);
      });
    
      instance.on('editComponent', function(event) {
