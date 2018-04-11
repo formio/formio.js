@@ -17355,14 +17355,13 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       }
 
       // Ensure this component has a key.
-      if (component.isNew && !component.uniqueKey) {
+      if (component.isNew) {
         if (!component.keyModified) {
           component.component.key = _lodash2.default.camelCase(component.component.label || component.component.placeholder || component.component.type);
         }
 
         // Set a unique key for this component.
         _builder3.BuilderUtils.uniquify(this._form, component.component);
-        component.uniqueKey = true;
       }
 
       // Set the full form on the component.
@@ -17453,7 +17452,6 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
           // See if this is a manually modified key.
           if (event.changed.component && event.changed.component.key === 'key') {
             componentCopy.keyModified = true;
-            componentCopy.uniqueKey = false;
           }
 
           // Set the component JSON to the new data.

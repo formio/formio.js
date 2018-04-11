@@ -148,7 +148,7 @@ export class FormioFormBuilder extends FormioForm {
     }
 
     // Ensure this component has a key.
-    if (component.isNew && !component.uniqueKey) {
+    if (component.isNew) {
       if (!component.keyModified) {
         component.component.key = _.camelCase(
           component.component.label ||
@@ -159,7 +159,6 @@ export class FormioFormBuilder extends FormioForm {
 
       // Set a unique key for this component.
       BuilderUtils.uniquify(this._form, component.component);
-      component.uniqueKey = true;
     }
 
     // Set the full form on the component.
@@ -270,7 +269,6 @@ export class FormioFormBuilder extends FormioForm {
         // See if this is a manually modified key.
         if (event.changed.component && (event.changed.component.key === 'key')) {
           componentCopy.keyModified = true;
-          componentCopy.uniqueKey = false;
         }
 
         // Set the component JSON to the new data.
