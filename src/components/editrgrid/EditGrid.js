@@ -63,7 +63,7 @@ export class EditGridComponent extends FormioComponents {
     return `<div class="row">
       {% util.eachComponent(components, function(component) { %}
         <div class="col-sm-2">
-          {{ createComponent(component).getView(row[component.key]) }}
+          {{ getView(component, row[component.key]) }}
         </div>
       {% }) %}
       <div class="col-sm-2">
@@ -128,8 +128,8 @@ export class EditGridComponent extends FormioComponents {
             row,
             rowIndex,
             components: this.component.components,
-            createComponent(component) {
-              return create(component, row[component.key]);
+            getView(component, data) {
+              return create(component, data).getView(data);
             },
             util: FormioUtils
           },
