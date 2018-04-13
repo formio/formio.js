@@ -16798,6 +16798,7 @@ var FormioPDF = function (_FormioForm) {
 
       this.iframe = this.ce('iframe', {
         src: this.getSrc(),
+        id: 'iframe-' + this.id,
         seamless: true,
         class: 'formio-iframe'
       });

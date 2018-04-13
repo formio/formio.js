@@ -145,7 +145,7 @@ export class BaseComponent {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = (component && component.id) ? component.id : `e${Math.random().toString(36).substring(7)}`;
+    this.id = (component && component.id) ? component.id : FormioUtils.getRandomComponentId();
 
     /**
      * The options for this component.
@@ -1323,6 +1323,20 @@ export class BaseComponent {
     }
   }
 
+  /**
+   * Remove an event listener from the object.
+   *
+   * @param obj
+   * @param evt
+   */
+  removeEventListener(obj, evt) {
+    _.each(this.eventHandlers, (handler) => {
+      if (handler.type === evt) {
+        obj.removeEventListener(evt, handler.func);
+      }
+    });
+  }
+
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.isBuilt) {
@@ -1529,7 +1543,8 @@ export class BaseComponent {
         this.component,
         this.data,
         data,
-        this.root ? this.root._form : {}
+        this.root ? this.root._form : {},
+        this
       ));
     }
 
@@ -1556,7 +1571,14 @@ export class BaseComponent {
     const newComponent = _.cloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
-      const result = FormioUtils.checkTrigger(newComponent, logic.trigger, this.data, data);
+      const result = FormioUtils.checkTrigger(
+        newComponent,
+        logic.trigger,
+        this.data,
+        data,
+        this.root ? this.root._form : {},
+        this
+      );
 
       if (result) {
         changed |= logic.actions.reduce((changed, action) => {
@@ -2113,7 +2135,7 @@ export class BaseComponent {
 
   checkValidity(data, dirty) {
     // Force valid if component is conditionally hidden.
-    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
       return true;
     }
 

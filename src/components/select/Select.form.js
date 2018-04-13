@@ -298,7 +298,7 @@ export default function(...extend) {
           data: {
             custom: `
               values.push({label: 'Any Change', key: 'data'});
-              utils.eachComponent(data.__form.components, function(component, path) {
+              utils.eachComponent(form.components, function(component, path) {
                 if (component.key !== data.key) {
                   values.push({
                     label: component.label || component.key,

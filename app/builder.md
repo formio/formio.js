@@ -8,7 +8,7 @@ lib: builder
 ---
 <div class="row">
   <div class="col-sm-8">
-    <h3 class="text-center text-muted">The <a href="https://github.com/formio/formio.js" target="_blank">Form Builder</a> allows you to build a <select class="form-control" id="form-select" style="display: inline-block; width: 150px;"><option value="form">Form</option><option value="wizard">Wizard</option></select></h3>
+    <h3 class="text-center text-muted">The <a href="https://github.com/formio/formio.js" target="_blank">Form Builder</a> allows you to build a <select class="form-control" id="form-select" style="display: inline-block; width: 150px;"><option value="form">Form</option><option value="wizard">Wizard</option><option value="pdf">PDF</option></select></h3>
     <div class="well" style="background-color: #fdfdfd;">
       <div id="builder"></div>
     </div>
@@ -71,7 +71,16 @@ node server</pre>
 </div>
 <script type="text/javascript">
 var subJSON = document.getElementById('subjson');
-var builder = new Formio.Builder(document.getElementById("builder"), null, {
+var builder = new Formio.Builder(document.getElementById("builder"), {
+  display: 'form',
+  components: [],
+  settings: {
+    pdf: {
+      "src": "http://localhost:4005/pdf/5acfab476a1276b6173ff01a/file/2adc8d03-cf0f-555f-9e79-099042627618",
+      "id": "2adc8d03-cf0f-555f-9e79-099042627618"
+    }
+  }
+}, {
   baseUrl: 'https://examples.form.io'
 });
 

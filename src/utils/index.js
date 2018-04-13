@@ -35,6 +35,9 @@ const FormioUtils = {
   evaluate(func, args, ret, tokenize) {
     let returnVal = null;
     let component = (args.component && args.component.component) ? args.component.component : {key: 'unknown'};
+    if (!args.form && args.instance) {
+      args.form = _.get(args.instance, 'root._form', {});
+    }
     if (typeof func === 'string') {
       if (ret) {
         func += `;return ${ret}`;
@@ -81,6 +84,39 @@ const FormioUtils = {
       console.warn(`Unknown function type for ${component.key}`);
     }
     return returnVal;
+  },
+
+  getRandomComponentId() {
+    return `e${Math.random().toString(36).substring(7)}`;
+  },
+
+  /**
+   * Get a property value of an element.
+   *
+   * @param style
+   * @param prop
+   * @return {number}
+   */
+  getPropertyValue(style, prop) {
+    let value = style.getPropertyValue(prop);
+    value = value ? value.replace(/[^0-9.]/g, '') : '0';
+    return parseFloat(value);
+  },
+
+  /**
+   * Get an elements bounding rectagle.
+   *
+   * @param element
+   * @return {{x: string, y: string, width: string, height: string}}
+   */
+  getElementRect(element) {
+    const style = window.getComputedStyle(element, null);
+    return {
+      x: FormioUtils.getPropertyValue(style, 'left'),
+      y: FormioUtils.getPropertyValue(style, 'top'),
+      width: FormioUtils.getPropertyValue(style, 'width'),
+      height: FormioUtils.getPropertyValue(style, 'height')
+    };
   },
 
   /**
@@ -421,11 +457,11 @@ const FormioUtils = {
    * @param data
    * @returns {*}
    */
-  checkCustomConditional(component, custom, row, data, form, variable, onError) {
+  checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
     if (typeof custom === 'string') {
       custom = `var ${variable} = true; ${custom}; return ${variable};`;
     }
-    let value = FormioUtils.evaluate(custom, {component, row, data, form});
+    let value = FormioUtils.evaluate(custom, {component, row, data, form, instance});
     if (value === null) {
       return onError;
     }
@@ -459,9 +495,9 @@ const FormioUtils = {
    *
    * @returns {boolean}
    */
-  checkCondition(component, row, data, form) {
+  checkCondition(component, row, data, form, instance) {
     if (component.customConditional) {
-      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true);
+      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
     }
     else if (component.conditional && component.conditional.when) {
       return this.checkSimpleConditional(component, component.conditional, row, data, true);
@@ -483,12 +519,12 @@ const FormioUtils = {
    * @param row
    * @returns {mixed}
    */
-  checkTrigger(component, trigger, row, data, form) {
+  checkTrigger(component, trigger, row, data, form, instance) {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
       case 'javascript':
-        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false);
+        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
       case 'json':
         return this.checkJsonConditional(component, trigger.json, row, data, form, false);
     }

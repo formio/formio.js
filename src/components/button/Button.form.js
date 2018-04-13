@@ -154,8 +154,8 @@ export default function(...extend) {
           tooltip: 'Shortcut for this component.',
           dataSrc: 'custom',
           data: {
-            custom: (component, data) => {
-              return BuilderUtils.getAvailableShortcuts(data.__form, component);
+            custom: (values, component, data, row, utils, instance, form) => {
+              return BuilderUtils.getAvailableShortcuts(form, component);
             }
           }
         },

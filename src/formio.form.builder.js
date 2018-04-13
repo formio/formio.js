@@ -161,9 +161,6 @@ export class FormioFormBuilder extends FormioForm {
       BuilderUtils.uniquify(this._form, component.component);
     }
 
-    // Set the full form on the component.
-    component.component.__form = this.schema;
-
     // Called when we update a component.
     this.emit('updateComponent', component);
   }
@@ -196,9 +193,7 @@ export class FormioFormBuilder extends FormioForm {
       class: 'btn btn-danger'
     }, this.t('Remove'));
 
-    let componentEdit = this.ce('div', {
-
-    }, [
+    let componentEdit = this.ce('div', {}, [
       this.ce('div', {
         class: 'row'
       }, [
@@ -298,9 +293,6 @@ export class FormioFormBuilder extends FormioForm {
 
     this.addEventListener(saveButton, 'click', (event) => {
       event.preventDefault();
-      if (componentCopy.component && componentCopy.component.__form) {
-        delete componentCopy.component.__form;
-      }
       component.isNew = false;
       component.component = componentCopy.component;
       if (component.dragEvents && component.dragEvents.onSave) {
@@ -451,6 +443,7 @@ export class FormioFormBuilder extends FormioForm {
     component.element.builderInfo = component;
     component.element.appendChild(this.text(component.title));
     this.insertInOrder(component, groupInfo.components, component.element, groupInfo.body);
+    return component;
   }
 
   buildSidebar() {

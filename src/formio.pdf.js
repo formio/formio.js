@@ -31,6 +31,9 @@ export default class FormioPDF extends FormioForm {
     if (this.options.zoom) {
       params.push(`zoom=${this.options.zoom}`);
     }
+    if (this.options.builder) {
+      params.push('builder=1');
+    }
     if (params.length) {
       iframeSrc += `?${params.join('&')}`;
     }
@@ -99,6 +102,7 @@ export default class FormioPDF extends FormioForm {
 
     this.iframe = this.ce('iframe', {
       src: this.getSrc(),
+      id: 'iframe-' + this.id,
       seamless: true,
       class: 'formio-iframe'
     });
@@ -138,6 +142,7 @@ window.addEventListener('message', (event) => {
   // If this form exists, then emit the event within this form.
   if (
     eventData &&
+    eventData.name &&
     eventData.formId &&
     Formio.forms.hasOwnProperty(eventData.formId)
   ) {

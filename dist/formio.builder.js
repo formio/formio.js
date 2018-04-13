@@ -526,7 +526,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
-      if (!_index2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
+      if (!_index2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
         return true;
       }
 
@@ -1979,7 +1979,7 @@ var BaseComponent = function () {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = component && component.id ? component.id : 'e' + Math.random().toString(36).substring(7);
+    this.id = component && component.id ? component.id : _utils2.default.getRandomComponentId();
 
     /**
      * The options for this component.
@@ -3156,6 +3156,23 @@ var BaseComponent = function () {
         obj.attachEvent('on' + evt, func);
       }
     }
+
+    /**
+     * Remove an event listener from the object.
+     *
+     * @param obj
+     * @param evt
+     */
+
+  }, {
+    key: 'removeEventListener',
+    value: function removeEventListener(obj, evt) {
+      _lodash2.default.each(this.eventHandlers, function (handler) {
+        if (handler.type === evt) {
+          obj.removeEventListener(evt, handler.func);
+        }
+      });
+    }
   }, {
     key: 'redraw',
     value: function redraw() {
@@ -3399,7 +3416,7 @@ var BaseComponent = function () {
       if (!this.hasCondition()) {
         result = this.show(true);
       } else {
-        result = this.show(_utils2.default.checkCondition(this.component, this.data, data, this.root ? this.root._form : {}));
+        result = this.show(_utils2.default.checkCondition(this.component, this.data, data, this.root ? this.root._form : {}, this));
       }
 
       if (this.fieldLogic(data)) {
@@ -3430,7 +3447,7 @@ var BaseComponent = function () {
       var newComponent = _lodash2.default.cloneDeep(this.originalComponent);
 
       var changed = logics.reduce(function (changed, logic) {
-        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this10.data, data);
+        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this10.data, data, _this10.root ? _this10.root._form : {}, _this10);
 
         if (result) {
           changed |= logic.actions.reduce(function (changed, action) {
@@ -3937,7 +3954,7 @@ var BaseComponent = function () {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
       // Force valid if component is conditionally hidden.
-      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
+      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
         return true;
       }
 
@@ -4662,7 +4679,7 @@ var BaseEditConditional = exports.BaseEditConditional = [{
     key: 'conditional.when',
     dataSrc: 'custom',
     data: {
-      custom: '\n            utils.eachComponent(data.__form.components, function(component, path) {\n              if (component.key !== data.key) {\n                values.push({\n                  label: component.label || component.key,\n                  value: path\n                });\n              }\n            });\n          '
+      custom: '\n            utils.eachComponent(form.components, function(component, path) {\n              if (component.key !== data.key) {\n                values.push({\n                  label: component.label || component.key,\n                  value: path\n                });\n              }\n            });\n          '
     }
   }, {
     type: 'textfield',
@@ -5419,8 +5436,8 @@ exports.default = function () {
       tooltip: 'Shortcut for this component.',
       dataSrc: 'custom',
       data: {
-        custom: function custom(component, data) {
-          return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component);
+        custom: function custom(values, component, data, row, utils, instance, form) {
+          return _builder.BuilderUtils.getAvailableShortcuts(form, component);
         }
       }
     }, {
@@ -5963,8 +5980,8 @@ exports.default = function () {
       tooltip: 'Shortcut for this component.',
       dataSrc: 'custom',
       data: {
-        custom: function custom(component, data) {
-          return _builder.BuilderUtils.getAvailableShortcuts(data.__form, component);
+        custom: function custom(values, component, data, row, utils, instance, form) {
+          return _builder.BuilderUtils.getAvailableShortcuts(form, component);
         }
       }
     }, {
@@ -9303,7 +9320,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     value: function checkValidity(data, dirty) {
       var _this8 = this;
 
-      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
+      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
         return true;
       }
 
@@ -12415,8 +12432,8 @@ exports.default = function () {
         tooltip: 'The shortcut key for this option.',
         dataSrc: 'custom',
         data: {
-          custom: function custom(component, data) {
-            return BuilderUtils.getAvailableShortcuts(data.__form, component);
+          custom: function custom(values, component, data, row, utils, instance, form) {
+            return BuilderUtils.getAvailableShortcuts(form, component);
           }
         }
       }]
@@ -13255,7 +13272,7 @@ exports.default = function () {
       tooltip: 'Refresh data when another field changes.',
       dataSrc: 'custom',
       data: {
-        custom: '\n              values.push({label: \'Any Change\', key: \'data\'});\n              utils.eachComponent(data.__form.components, function(component, path) {\n                if (component.key !== data.key) {\n                  values.push({\n                    label: component.label || component.key,\n                    value: path\n                  });\n                }\n              });\n            '
+        custom: '\n              values.push({label: \'Any Change\', key: \'data\'});\n              utils.eachComponent(form.components, function(component, path) {\n                if (component.key !== data.key) {\n                  values.push({\n                    label: component.label || component.key,\n                    value: path\n                  });\n                }\n              });\n            '
       },
       conditional: {
         json: {
@@ -17364,9 +17381,6 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         _builder3.BuilderUtils.uniquify(this._form, component.component);
       }
 
-      // Set the full form on the component.
-      component.component.__form = this.schema;
-
       // Called when we update a component.
       this.emit('updateComponent', component);
     }
@@ -17483,9 +17497,6 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       this.addEventListener(saveButton, 'click', function (event) {
         event.preventDefault();
-        if (componentCopy.component && componentCopy.component.__form) {
-          delete componentCopy.component.__form;
-        }
         component.isNew = false;
         component.component = componentCopy.component;
         if (component.dragEvents && component.dragEvents.onSave) {
@@ -17635,6 +17646,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       component.element.builderInfo = component;
       component.element.appendChild(this.text(component.title));
       this.insertInOrder(component, groupInfo.components, component.element, groupInfo.body);
+      return component;
     }
   }, {
     key: 'buildSidebar',
@@ -20603,13 +20615,55 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.FormioPDFBuilder = undefined;
 
+var _createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+  };
+}();
+
+var _set = function set(object, property, value, receiver) {
+  var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent !== null) {
+      set(parent, property, value, receiver);
+    }
+  } else if ("value" in desc && desc.writable) {
+    desc.value = value;
+  } else {
+    var setter = desc.set;if (setter !== undefined) {
+      setter.call(receiver, value);
+    }
+  }return value;
+};
+
+var _get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;var desc = Object.getOwnPropertyDescriptor(object, property);if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;if (getter === undefined) {
+      return undefined;
+    }return getter.call(receiver);
+  }
+};
+
+var _formioForm = require('./formio.form.builder');
+
+var _utils = require('./utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
 var _formio = require('./formio.pdf');
 
 var _formio2 = _interopRequireDefault(_formio);
-
-var _dragula = require('dragula');
-
-var _dragula2 = _interopRequireDefault(_dragula);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -20624,17 +20678,17 @@ function _classCallCheck(instance, Constructor) {
 function _possibleConstructorReturn(self, call) {
   if (!self) {
     throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }return call && ((typeof call === 'undefined' ? 'undefined' : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+  }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
 }
 
 function _inherits(subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === 'undefined' ? 'undefined' : _typeof(superClass)));
+    throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
   }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 }
 
-var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioPDF) {
-  _inherits(FormioPDFBuilder, _FormioPDF);
+var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) {
+  _inherits(FormioPDFBuilder, _FormioFormBuilder);
 
   function FormioPDFBuilder() {
     _classCallCheck(this, FormioPDFBuilder);
@@ -20642,10 +20696,138 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioPDF) {
     return _possibleConstructorReturn(this, (FormioPDFBuilder.__proto__ || Object.getPrototypeOf(FormioPDFBuilder)).apply(this, arguments));
   }
 
-  return FormioPDFBuilder;
-}(_formio2.default);
+  _createClass(FormioPDFBuilder, [{
+    key: 'addDropZone',
+    value: function addDropZone() {
+      var _this2 = this;
 
-},{"./formio.pdf":97,"dragula":122}],97:[function(require,module,exports){
+      if (this.dropZone) {
+        this.removeDropZone();
+      }
+      var iframeRect = _utils2.default.getElementRect(this.pdfForm.element);
+      this.dropZone = this.ce('div', {
+        style: 'position:absolute;width: 100%;height:' + iframeRect.height + 'px;'
+      });
+
+      this.pdfForm.prepend(this.dropZone);
+      this.addEventListener(this.dropZone, 'dragover', function (event) {
+        event.preventDefault();
+        return false;
+      });
+      this.addEventListener(this.dropZone, 'drop', function (event) {
+        event.preventDefault();
+        _this2.dragStop(event);
+        return false;
+      });
+    }
+  }, {
+    key: 'removeDropZone',
+    value: function removeDropZone() {
+      if (this.dropZone) {
+        this.removeEventListener(this.dropZone, 'dragover');
+        this.removeEventListener(this.dropZone, 'drop');
+        this.pdfForm.removeChild(this.dropZone);
+        this.dropZone = null;
+      }
+    }
+  }, {
+    key: 'updateComponent',
+    value: function updateComponent(component) {
+      _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'updateComponent', this).call(this, component);
+      this.pdfForm.postMessage({ name: 'updateElement', data: component.component });
+    }
+  }, {
+    key: 'deleteComponent',
+    value: function deleteComponent(component) {
+      if (_get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'deleteComponent', this).call(this, component)) {
+        this.pdfForm.postMessage({ name: 'removeElement', data: component.component });
+      }
+    }
+  }, {
+    key: 'dragStart',
+    value: function dragStart(event, component) {
+      event.dataTransfer.setData('text/plain', JSON.stringify(component.schema));
+      this.addDropZone();
+    }
+  }, {
+    key: 'dragStop',
+    value: function dragStop(event, prevX, prevY) {
+      event.preventDefault();
+      var dropData = event.dataTransfer.getData('text/plain');
+      if (!dropData || typeof dropData !== 'string') {
+        return false;
+      }
+
+      var schema = JSON.parse(dropData);
+      if (!schema) {
+        return false;
+      }
+
+      schema.id = _utils2.default.getRandomComponentId();
+      schema.overlay = {
+        top: event.offsetY,
+        left: event.offsetX,
+        width: 100,
+        height: 20
+      };
+
+      var component = this.addComponent(schema, this.getContainer(), this.data);
+      component.isNew = true;
+      this.editComponent(component);
+      this.pdfForm.postMessage({ name: 'addElement', data: schema });
+      this.removeDropZone();
+      return false;
+    }
+  }, {
+    key: 'addBuilderComponent',
+    value: function addBuilderComponent(component) {
+      var _this3 = this;
+
+      var builderComponent = _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'addBuilderComponent', this).call(this, component);
+      builderComponent.element.draggable = true;
+      builderComponent.element.setAttribute('draggable', true);
+      this.addEventListener(builderComponent.element, 'dragstart', function (event) {
+        return _this3.dragStart(event, component);
+      });
+    }
+  }, {
+    key: 'refreshDraggable',
+    value: function refreshDraggable() {
+      this.addSubmitButton();
+      this.builderReadyResolve();
+    }
+  }, {
+    key: 'build',
+    value: function build() {
+      var _this4 = this;
+
+      this.element.noDrop = true;
+      this.pdfForm = new _formio2.default(this.element, this.options);
+      this.pdfForm.on('iframe-componentClick', function (schema) {
+        return _this4.editComponent(_this4.getComponentById(schema.id));
+      });
+      this.pdfForm.on('iframe-componentUpdate', function (schema) {
+        return _this4.updateComponent(_this4.getComponentById(schema.id));
+      });
+      this.updateDraggable();
+      this.formReadyResolve();
+    }
+  }, {
+    key: 'form',
+    set: function set(form) {
+      var _this5 = this;
+
+      _set(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'form', form, this);
+      this.ready.then(function () {
+        _this5.pdfForm.form = form;
+      });
+    }
+  }]);
+
+  return FormioPDFBuilder;
+}(_formioForm.FormioFormBuilder);
+
+},{"./formio.form.builder":92,"./formio.pdf":97,"./utils":110}],97:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -20759,6 +20941,9 @@ var FormioPDF = function (_FormioForm) {
       if (this.options.zoom) {
         params.push('zoom=' + this.options.zoom);
       }
+      if (this.options.builder) {
+        params.push('builder=1');
+      }
       if (params.length) {
         iframeSrc += '?' + params.join('&');
       }
@@ -20836,6 +21021,7 @@ var FormioPDF = function (_FormioForm) {
 
       this.iframe = this.ce('iframe', {
         src: this.getSrc(),
+        id: 'iframe-' + this.id,
         seamless: true,
         class: 'formio-iframe'
       });
@@ -20873,7 +21059,7 @@ window.addEventListener('message', function (event) {
   }
 
   // If this form exists, then emit the event within this form.
-  if (eventData && eventData.formId && _formio2.default.forms.hasOwnProperty(eventData.formId)) {
+  if (eventData && eventData.name && eventData.formId && _formio2.default.forms.hasOwnProperty(eventData.formId)) {
     _formio2.default.forms[eventData.formId].emit('iframe-' + eventData.name, eventData.data);
   }
 });
@@ -21410,7 +21596,7 @@ var FormioWizard = function (_FormioForm) {
       _lodash2.default.each(form.components, function (component) {
         if (component.type === 'panel') {
           // Ensure that this page can be seen.
-          if (_utils2.default.checkCondition(component, _this4.data, _this4.data, _this4.wizard)) {
+          if (_utils2.default.checkCondition(component, _this4.data, _this4.data, _this4.wizard, _this4)) {
             _this4.pages.push(component);
           }
         } else if (component.type === 'hidden') {
@@ -21574,7 +21760,7 @@ var FormioWizard = function (_FormioForm) {
 
         if (_utils2.default.hasCondition(component)) {
           var hasPage = _this7.pages && _this7.pages[pageIndex] && _this7.pageId(_this7.pages[pageIndex]) === _this7.pageId(component);
-          var shouldShow = _utils2.default.checkCondition(component, _this7.data, _this7.data, _this7.wizard);
+          var shouldShow = _utils2.default.checkCondition(component, _this7.data, _this7.data, _this7.wizard, _this7);
           if (shouldShow && !hasPage || !shouldShow && hasPage) {
             rebuild = true;
             return false;
@@ -22295,6 +22481,9 @@ var FormioUtils = {
   evaluate: function evaluate(func, args, ret, tokenize) {
     var returnVal = null;
     var component = args.component && args.component.component ? args.component.component : { key: 'unknown' };
+    if (!args.form && args.instance) {
+      args.form = _lodash2.default.get(args.instance, 'root._form', {});
+    }
     if (typeof func === 'string') {
       if (ret) {
         func += ';return ' + ret;
@@ -22336,6 +22525,38 @@ var FormioUtils = {
       console.warn('Unknown function type for ' + component.key);
     }
     return returnVal;
+  },
+  getRandomComponentId: function getRandomComponentId() {
+    return 'e' + Math.random().toString(36).substring(7);
+  },
+
+  /**
+   * Get a property value of an element.
+   *
+   * @param style
+   * @param prop
+   * @return {number}
+   */
+  getPropertyValue: function getPropertyValue(style, prop) {
+    var value = style.getPropertyValue(prop);
+    value = value ? value.replace(/[^0-9.]/g, '') : '0';
+    return parseFloat(value);
+  },
+
+  /**
+   * Get an elements bounding rectagle.
+   *
+   * @param element
+   * @return {{x: string, y: string, width: string, height: string}}
+   */
+  getElementRect: function getElementRect(element) {
+    var style = window.getComputedStyle(element, null);
+    return {
+      x: FormioUtils.getPropertyValue(style, 'left'),
+      y: FormioUtils.getPropertyValue(style, 'top'),
+      width: FormioUtils.getPropertyValue(style, 'width'),
+      height: FormioUtils.getPropertyValue(style, 'height')
+    };
   },
 
   /**
@@ -22658,11 +22879,11 @@ var FormioUtils = {
    * @param data
    * @returns {*}
    */
-  checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError) {
+  checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
     if (typeof custom === 'string') {
       custom = 'var ' + variable + ' = true; ' + custom + '; return ' + variable + ';';
     }
-    var value = FormioUtils.evaluate(custom, { component: component, row: row, data: data, form: form });
+    var value = FormioUtils.evaluate(custom, { component: component, row: row, data: data, form: form, instance: instance });
     if (value === null) {
       return onError;
     }
@@ -22694,9 +22915,9 @@ var FormioUtils = {
    *
    * @returns {boolean}
    */
-  checkCondition: function checkCondition(component, row, data, form) {
+  checkCondition: function checkCondition(component, row, data, form, instance) {
     if (component.customConditional) {
-      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true);
+      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
     } else if (component.conditional && component.conditional.when) {
       return this.checkSimpleConditional(component, component.conditional, row, data, true);
     } else if (component.conditional && component.conditional.json) {
@@ -22716,12 +22937,12 @@ var FormioUtils = {
    * @param row
    * @returns {mixed}
    */
-  checkTrigger: function checkTrigger(component, trigger, row, data, form) {
+  checkTrigger: function checkTrigger(component, trigger, row, data, form, instance) {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
       case 'javascript':
-        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false);
+        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
       case 'json':
         return this.checkJsonConditional(component, trigger.json, row, data, form, false);
     }
