@@ -4,8 +4,17 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 2.31.0
+### Fixed
+ - Display of Dates within edit grids.
+
+### Changed
+ - Server errors now return a rejected promise instead of throwing an error.
+
 ### Added
+ - Nested form support for forms of different types.
+ - Data variable in editgrid templates
+ - Collapsible fieldsets
  - Autofocus feature.
 
 ## 2.30.2
