@@ -20719,6 +20719,9 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
       if (this.dropZone) {
         this.removeDropZone();
       }
+      if (!this.pdfForm) {
+        return;
+      }
       var iframeRect = _utils2.default.getElementRect(this.pdfForm.element);
       this.dropZone = this.ce('div', {
         style: 'position:absolute;width: 100%;height:' + iframeRect.height + 'px;'
@@ -20738,7 +20741,7 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
   }, {
     key: 'removeDropZone',
     value: function removeDropZone() {
-      if (this.dropZone) {
+      if (this.dropZone && this.pdfForm) {
         this.removeEventListener(this.dropZone, 'dragover');
         this.removeEventListener(this.dropZone, 'drop');
         this.pdfForm.removeChild(this.dropZone);
@@ -20746,15 +20749,25 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
       }
     }
   }, {
+    key: 'addComponent',
+    value: function addComponent(component, element, data, before, noAdd) {
+      if (this.pdfForm && component.overlay) {
+        this.pdfForm.postMessage({ name: 'addElement', data: component });
+      }
+      return _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'addComponent', this).call(this, component, element, data, before, noAdd);
+    }
+  }, {
     key: 'updateComponent',
     value: function updateComponent(component) {
       _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'updateComponent', this).call(this, component);
-      this.pdfForm.postMessage({ name: 'updateElement', data: component.component });
+      if (this.pdfForm && component.component.overlay) {
+        this.pdfForm.postMessage({ name: 'updateElement', data: component.component });
+      }
     }
   }, {
     key: 'deleteComponent',
     value: function deleteComponent(component) {
-      if (_get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'deleteComponent', this).call(this, component)) {
+      if (_get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'deleteComponent', this).call(this, component) && this.pdfForm && component.component.overlay) {
         this.pdfForm.postMessage({ name: 'removeElement', data: component.component });
       }
     }
@@ -20763,6 +20776,19 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
     value: function dragStart(event, component) {
       event.dataTransfer.setData('text/plain', JSON.stringify(component.schema));
       this.addDropZone();
+    }
+
+    // Do not clear the iframe.
+
+  }, {
+    key: 'clear',
+    value: function clear() {}
+  }, {
+    key: 'redraw',
+    value: function redraw() {
+      if (this.pdfForm) {
+        this.pdfForm.postMessage({ name: 'redraw' });
+      }
     }
   }, {
     key: 'dragStop',
@@ -20789,7 +20815,6 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
       var component = this.addComponent(schema, this.getContainer(), this.data);
       component.isNew = true;
       this.editComponent(component);
-      this.pdfForm.postMessage({ name: 'addElement', data: schema });
       this.removeDropZone();
       return false;
     }
@@ -20819,10 +20844,17 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
       this.element.noDrop = true;
       this.pdfForm = new _formio2.default(this.element, this.options);
       this.pdfForm.on('iframe-componentClick', function (schema) {
-        return _this4.editComponent(_this4.getComponentById(schema.id));
+        var component = _this4.getComponentById(schema.id);
+        if (component) {
+          _this4.editComponent(component);
+        }
       });
       this.pdfForm.on('iframe-componentUpdate', function (schema) {
-        return _this4.updateComponent(_this4.getComponentById(schema.id));
+        var component = _this4.getComponentById(schema.id);
+        if (component) {
+          component.component = schema;
+          _this4.emit('updateComponent', component);
+        }
       });
       this.updateDraggable();
       this.formReadyResolve();
@@ -20834,7 +20866,9 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
 
       _set(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'form', form, this);
       this.ready.then(function () {
-        _this5.pdfForm.form = form;
+        if (_this5.pdfForm) {
+          _this5.pdfForm.form = form;
+        }
       });
     }
   }]);
@@ -20942,6 +20976,17 @@ var FormioPDF = function (_FormioForm) {
         return _this2.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
       });
     }
+
+    // Do not clear the iframe.
+
+  }, {
+    key: 'clear',
+    value: function clear() {}
+  }, {
+    key: 'redraw',
+    value: function redraw() {
+      this.postMessage({ name: 'redraw' });
+    }
   }, {
     key: 'getSrc',
     value: function getSrc() {
@@ -21011,6 +21056,11 @@ var FormioPDF = function (_FormioForm) {
     key: 'build',
     value: function build() {
       var _this4 = this;
+
+      // Do not rebuild the iframe...
+      if (this.iframe) {
+        return;
+      }
 
       this.zoomIn = this.ce('span', {
         style: 'position:absolute;right:10px;top:10px;cursor:pointer;',

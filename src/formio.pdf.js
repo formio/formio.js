@@ -19,6 +19,12 @@ export default class FormioPDF extends FormioForm {
     this.iframeReady.then(() => this.iframe.contentWindow.postMessage(JSON.stringify(message), '*'));
   }
 
+  // Do not clear the iframe.
+  clear() {}
+  redraw() {
+    this.postMessage({name: 'redraw'});
+  }
+
   getSrc() {
     if (!this._form || !this._form.settings || !this._form.settings.pdf) {
       return '';
@@ -78,6 +84,11 @@ export default class FormioPDF extends FormioForm {
   }
 
   build() {
+    // Do not rebuild the iframe...
+    if (this.iframe) {
+      return;
+    }
+
     this.zoomIn = this.ce('span', {
       style: 'position:absolute;right:10px;top:10px;cursor:pointer;',
       class: 'btn btn-default btn-secondary no-disable'

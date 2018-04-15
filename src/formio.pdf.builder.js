@@ -7,6 +7,9 @@ export class FormioPDFBuilder extends FormioFormBuilder {
     if (this.dropZone) {
       this.removeDropZone();
     }
+    if (!this.pdfForm) {
+      return;
+    }
     let iframeRect = FormioUtils.getElementRect(this.pdfForm.element);
     this.dropZone = this.ce('div', {
       style: `position:absolute;width: 100%;height:${iframeRect.height}px;`
@@ -25,7 +28,7 @@ export class FormioPDFBuilder extends FormioFormBuilder {
   }
 
   removeDropZone() {
-    if (this.dropZone) {
+    if (this.dropZone && this.pdfForm) {
       this.removeEventListener(this.dropZone, 'dragover');
       this.removeEventListener(this.dropZone, 'drop');
       this.pdfForm.removeChild(this.dropZone);
@@ -33,13 +36,22 @@ export class FormioPDFBuilder extends FormioFormBuilder {
     }
   }
 
+  addComponent(component, element, data, before, noAdd) {
+    if (this.pdfForm && component.overlay) {
+      this.pdfForm.postMessage({name: 'addElement', data: component});
+    }
+    return super.addComponent(component, element, data, before, noAdd);
+  }
+
   updateComponent(component) {
     super.updateComponent(component);
-    this.pdfForm.postMessage({name: 'updateElement', data: component.component});
+    if (this.pdfForm && component.component.overlay) {
+      this.pdfForm.postMessage({name: 'updateElement', data: component.component});
+    }
   }
 
   deleteComponent(component) {
-    if (super.deleteComponent(component)) {
+    if (super.deleteComponent(component) && this.pdfForm && component.component.overlay) {
       this.pdfForm.postMessage({name: 'removeElement', data: component.component});
     }
   }
@@ -47,6 +59,14 @@ export class FormioPDFBuilder extends FormioFormBuilder {
   dragStart(event, component) {
     event.dataTransfer.setData('text/plain', JSON.stringify(component.schema));
     this.addDropZone();
+  }
+
+  // Do not clear the iframe.
+  clear() {}
+  redraw() {
+    if (this.pdfForm) {
+      this.pdfForm.postMessage({name: 'redraw'});
+    }
   }
 
   dragStop(event, prevX, prevY) {
@@ -76,7 +96,6 @@ export class FormioPDFBuilder extends FormioFormBuilder {
     );
     component.isNew = true;
     this.editComponent(component);
-    this.pdfForm.postMessage({name: 'addElement', data: schema});
     this.removeDropZone();
     return false;
   }
@@ -96,8 +115,19 @@ export class FormioPDFBuilder extends FormioFormBuilder {
   build() {
     this.element.noDrop = true;
     this.pdfForm = new FormioPDF(this.element, this.options);
-    this.pdfForm.on('iframe-componentClick', schema => this.editComponent(this.getComponentById(schema.id)));
-    this.pdfForm.on('iframe-componentUpdate', schema => this.updateComponent(this.getComponentById(schema.id)));
+    this.pdfForm.on('iframe-componentClick', schema => {
+      let component = this.getComponentById(schema.id);
+      if (component) {
+        this.editComponent(component);
+      }
+    });
+    this.pdfForm.on('iframe-componentUpdate', schema => {
+      let component = this.getComponentById(schema.id);
+      if (component) {
+        component.component = schema;
+        this.emit('updateComponent', component);
+      }
+    });
     this.updateDraggable();
     this.formReadyResolve();
   }
@@ -105,7 +135,9 @@ export class FormioPDFBuilder extends FormioFormBuilder {
   set form(form) {
     super.form = form;
     this.ready.then(() => {
-      this.pdfForm.form = form;
+      if (this.pdfForm) {
+        this.pdfForm.form = form;
+      }
     });
   }
 }

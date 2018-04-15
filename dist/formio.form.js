@@ -16597,6 +16597,17 @@ var FormioPDF = function (_FormioForm) {
         return _this2.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
       });
     }
+
+    // Do not clear the iframe.
+
+  }, {
+    key: 'clear',
+    value: function clear() {}
+  }, {
+    key: 'redraw',
+    value: function redraw() {
+      this.postMessage({ name: 'redraw' });
+    }
   }, {
     key: 'getSrc',
     value: function getSrc() {
@@ -16666,6 +16677,11 @@ var FormioPDF = function (_FormioForm) {
     key: 'build',
     value: function build() {
       var _this4 = this;
+
+      // Do not rebuild the iframe...
+      if (this.iframe) {
+        return;
+      }
 
       this.zoomIn = this.ce('span', {
         style: 'position:absolute;right:10px;top:10px;cursor:pointer;',

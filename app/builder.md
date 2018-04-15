@@ -108,11 +108,13 @@ var setDisplay = function(display) {
      });
      
      instance.on('updateComponent', function(event) {
-       console.log('updateComponent', event);
+       jsonElement.innerHTML = '';
+       jsonElement.appendChild(document.createTextNode(JSON.stringify(instance.schema, null, 4)));
      });
      
      instance.on('deleteComponent', function(event) {
-       console.log('deleteComponent', event);
+       jsonElement.innerHTML = '';
+       jsonElement.appendChild(document.createTextNode(JSON.stringify(instance.schema, null, 4)));
      });
      
      Formio.createForm(formElement, instance.schema).then(onForm);
