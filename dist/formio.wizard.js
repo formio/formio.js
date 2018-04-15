@@ -1,4 +1,4 @@
-(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -495,7 +495,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
-      if (!_index2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
+      if (!_index2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
         return true;
       }
 
@@ -1821,7 +1821,7 @@ var BaseComponent = function () {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = component && component.id ? component.id : 'e' + Math.random().toString(36).substring(7);
+    this.id = component && component.id ? component.id : _utils2.default.getRandomComponentId();
 
     /**
      * The options for this component.
@@ -2998,6 +2998,23 @@ var BaseComponent = function () {
         obj.attachEvent('on' + evt, func);
       }
     }
+
+    /**
+     * Remove an event listener from the object.
+     *
+     * @param obj
+     * @param evt
+     */
+
+  }, {
+    key: 'removeEventListener',
+    value: function removeEventListener(obj, evt) {
+      _lodash2.default.each(this.eventHandlers, function (handler) {
+        if (handler.type === evt) {
+          obj.removeEventListener(evt, handler.func);
+        }
+      });
+    }
   }, {
     key: 'redraw',
     value: function redraw() {
@@ -3241,7 +3258,7 @@ var BaseComponent = function () {
       if (!this.hasCondition()) {
         result = this.show(true);
       } else {
-        result = this.show(_utils2.default.checkCondition(this.component, this.data, data, this.root ? this.root._form : {}));
+        result = this.show(_utils2.default.checkCondition(this.component, this.data, data, this.root ? this.root._form : {}, this));
       }
 
       if (this.fieldLogic(data)) {
@@ -3272,7 +3289,7 @@ var BaseComponent = function () {
       var newComponent = _lodash2.default.cloneDeep(this.originalComponent);
 
       var changed = logics.reduce(function (changed, logic) {
-        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this10.data, data);
+        var result = _utils2.default.checkTrigger(newComponent, logic.trigger, _this10.data, data, _this10.root ? _this10.root._form : {}, _this10);
 
         if (result) {
           changed |= logic.actions.reduce(function (changed, action) {
@@ -3779,7 +3796,7 @@ var BaseComponent = function () {
     key: 'checkValidity',
     value: function checkValidity(data, dirty) {
       // Force valid if component is conditionally hidden.
-      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
+      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
         return true;
       }
 
@@ -7416,6 +7433,9 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
 
     _this.type = 'datagrid';
     _this.editRows = [];
+    if (_this.options.components) {
+      _this.create = _lodash2.default.bind(_this.options.components.create, _this.options.components, _lodash2.default, _this.options, _lodash2.default, true);
+    }
     return _this;
   }
 
@@ -7496,11 +7516,16 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           onClick: this.cancelRow.bind(this, rowIndex)
         }, this.component.removeRow || 'Cancel') : null])])));
       } else {
+        var create = this.create;
         wrapper.appendChild(this.renderTemplate(rowTemplate, {
           data: this.data,
           row: row,
           rowIndex: rowIndex,
           components: this.component.components,
+          getView: function getView(component, data) {
+            return create(component, data).getView(data);
+          },
+
           util: _utils2.default
         }, [{
           class: 'removeRow',
@@ -7726,7 +7751,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
     value: function checkValidity(data, dirty) {
       var _this8 = this;
 
-      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {})) {
+      if (!_utils2.default.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
         return true;
       }
 
@@ -7838,7 +7863,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
   }, {
     key: 'defaultRowTemplate',
     get: function get() {
-      return '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        <div class="col-sm-2">\n          {{ row[component.key] }}\n        </div>\n      {% }) %}\n      <div class="col-sm-2">\n        <div class="btn-group pull-right">\n          <div class="btn btn-default editRow">Edit</div>\n          <div class="btn btn-danger removeRow">Delete</div>\n        </div>\n      </div>\n    </div>';
+      return '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        <div class="col-sm-2">\n          {{ getView(component, row[component.key]) }}\n        </div>\n      {% }) %}\n      <div class="col-sm-2">\n        <div class="btn-group pull-right">\n          <div class="btn btn-default editRow">Edit</div>\n          <div class="btn btn-danger removeRow">Delete</div>\n        </div>\n      </div>\n    </div>';
     }
   }, {
     key: 'defaultValue',
@@ -11070,8 +11095,10 @@ var SelectComponent = function (_BaseComponent) {
       }
 
       if (!this.choices && this.selectInput) {
-        // Detach from DOM and clear input.
-        this.removeChildFrom(this.selectInput, this.selectContainer);
+        if (this.loading) {
+          this.removeChildFrom(this.selectInput, this.selectContainer);
+        }
+
         this.selectInput.innerHTML = '';
       }
 
@@ -11092,7 +11119,7 @@ var SelectComponent = function (_BaseComponent) {
 
       if (this.choices) {
         this.choices.setChoices(this.selectOptions, 'value', 'label', true);
-      } else {
+      } else if (this.loading) {
         // Re-attach select input.
         this.appendTo(this.selectInput, this.selectContainer);
       }
@@ -11303,7 +11330,7 @@ var SelectComponent = function (_BaseComponent) {
       if (this.component.widget === 'html5') {
         this.triggerUpdate();
         this.addEventListener(input, 'focus', function () {
-          return _this6.activate();
+          return _this6.update();
         });
         return;
       }
@@ -11356,17 +11383,22 @@ var SelectComponent = function (_BaseComponent) {
       }
 
       this.addEventListener(input, 'showDropdown', function () {
-        if (_this6.component.dataSrc === 'custom') {
-          _this6.updateCustomItems();
-        }
-
-        // Activate the control.
-        _this6.activate();
+        return _this6.update();
       });
 
       // Force the disabled state with getters and setters.
       this.disabled = this.disabled;
       this.triggerUpdate();
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      if (this.component.dataSrc === 'custom') {
+        this.updateCustomItems();
+      }
+
+      // Activate the control.
+      this.activate();
     }
   }, {
     key: 'show',
@@ -16579,6 +16611,9 @@ var FormioPDF = function (_FormioForm) {
       if (this.options.zoom) {
         params.push('zoom=' + this.options.zoom);
       }
+      if (this.options.builder) {
+        params.push('builder=1');
+      }
       if (params.length) {
         iframeSrc += '?' + params.join('&');
       }
@@ -16694,7 +16729,7 @@ window.addEventListener('message', function (event) {
   }
 
   // If this form exists, then emit the event within this form.
-  if (eventData && eventData.formId && _formio2.default.forms.hasOwnProperty(eventData.formId)) {
+  if (eventData && eventData.name && eventData.formId && _formio2.default.forms.hasOwnProperty(eventData.formId)) {
     _formio2.default.forms[eventData.formId].emit('iframe-' + eventData.name, eventData.data);
   }
 });
@@ -16973,7 +17008,7 @@ var FormioWizard = function (_FormioForm) {
       _lodash2.default.each(form.components, function (component) {
         if (component.type === 'panel') {
           // Ensure that this page can be seen.
-          if (_utils2.default.checkCondition(component, _this4.data, _this4.data, _this4.wizard)) {
+          if (_utils2.default.checkCondition(component, _this4.data, _this4.data, _this4.wizard, _this4)) {
             _this4.pages.push(component);
           }
         } else if (component.type === 'hidden') {
@@ -17137,7 +17172,7 @@ var FormioWizard = function (_FormioForm) {
 
         if (_utils2.default.hasCondition(component)) {
           var hasPage = _this7.pages && _this7.pages[pageIndex] && _this7.pageId(_this7.pages[pageIndex]) === _this7.pageId(component);
-          var shouldShow = _utils2.default.checkCondition(component, _this7.data, _this7.data, _this7.wizard);
+          var shouldShow = _utils2.default.checkCondition(component, _this7.data, _this7.data, _this7.wizard, _this7);
           if (shouldShow && !hasPage || !shouldShow && hasPage) {
             rebuild = true;
             return false;
@@ -17744,6 +17779,9 @@ var FormioUtils = {
   evaluate: function evaluate(func, args, ret, tokenize) {
     var returnVal = null;
     var component = args.component && args.component.component ? args.component.component : { key: 'unknown' };
+    if (!args.form && args.instance) {
+      args.form = _lodash2.default.get(args.instance, 'root._form', {});
+    }
     if (typeof func === 'string') {
       if (ret) {
         func += ';return ' + ret;
@@ -17785,6 +17823,38 @@ var FormioUtils = {
       console.warn('Unknown function type for ' + component.key);
     }
     return returnVal;
+  },
+  getRandomComponentId: function getRandomComponentId() {
+    return 'e' + Math.random().toString(36).substring(7);
+  },
+
+  /**
+   * Get a property value of an element.
+   *
+   * @param style
+   * @param prop
+   * @return {number}
+   */
+  getPropertyValue: function getPropertyValue(style, prop) {
+    var value = style.getPropertyValue(prop);
+    value = value ? value.replace(/[^0-9.]/g, '') : '0';
+    return parseFloat(value);
+  },
+
+  /**
+   * Get an elements bounding rectagle.
+   *
+   * @param element
+   * @return {{x: string, y: string, width: string, height: string}}
+   */
+  getElementRect: function getElementRect(element) {
+    var style = window.getComputedStyle(element, null);
+    return {
+      x: FormioUtils.getPropertyValue(style, 'left'),
+      y: FormioUtils.getPropertyValue(style, 'top'),
+      width: FormioUtils.getPropertyValue(style, 'width'),
+      height: FormioUtils.getPropertyValue(style, 'height')
+    };
   },
 
   /**
@@ -18107,11 +18177,11 @@ var FormioUtils = {
    * @param data
    * @returns {*}
    */
-  checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError) {
+  checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
     if (typeof custom === 'string') {
       custom = 'var ' + variable + ' = true; ' + custom + '; return ' + variable + ';';
     }
-    var value = FormioUtils.evaluate(custom, { component: component, row: row, data: data, form: form });
+    var value = FormioUtils.evaluate(custom, { component: component, row: row, data: data, form: form, instance: instance });
     if (value === null) {
       return onError;
     }
@@ -18143,9 +18213,9 @@ var FormioUtils = {
    *
    * @returns {boolean}
    */
-  checkCondition: function checkCondition(component, row, data, form) {
+  checkCondition: function checkCondition(component, row, data, form, instance) {
     if (component.customConditional) {
-      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true);
+      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
     } else if (component.conditional && component.conditional.when) {
       return this.checkSimpleConditional(component, component.conditional, row, data, true);
     } else if (component.conditional && component.conditional.json) {
@@ -18165,12 +18235,12 @@ var FormioUtils = {
    * @param row
    * @returns {mixed}
    */
-  checkTrigger: function checkTrigger(component, trigger, row, data, form) {
+  checkTrigger: function checkTrigger(component, trigger, row, data, form, instance) {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
       case 'javascript':
-        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false);
+        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
       case 'json':
         return this.checkJsonConditional(component, trigger.json, row, data, form, false);
     }
@@ -25581,7 +25651,7 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
 
 }).call(this,require('_process'))
 },{"_process":82}],61:[function(require,module,exports){
-/* flatpickr v4.4.3, @license MIT */
+/* flatpickr v4.4.4, @license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
@@ -25932,7 +26002,9 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
       enable: [],
       enableSeconds: false,
       enableTime: false,
-      errorHandler: console.warn,
+      errorHandler: function errorHandler(err) {
+        return typeof console !== "undefined" && console.warn(err);
+      },
       getWeek: getWeek,
       hourIncrement: 1,
       ignoredFocusElements: [],
@@ -26096,23 +26168,8 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
           updateValue(false);
         }
 
+        setCalendarWidth();
         self.showTimeInput = self.selectedDates.length > 0 || self.config.noCalendar;
-
-        if (self.daysContainer !== undefined) {
-          self.calendarContainer.style.visibility = "hidden";
-          self.calendarContainer.style.display = "block";
-          var daysWidth = (self.daysContainer.offsetWidth + 1) * self.config.showMonths;
-          self.daysContainer.style.width = daysWidth + "px";
-          self.calendarContainer.style.width = daysWidth + "px";
-
-          if (self.weekWrapper !== undefined) {
-            self.calendarContainer.style.width = daysWidth + self.weekWrapper.offsetWidth + "px";
-          }
-
-          self.calendarContainer.style.visibility = "visible";
-          self.calendarContainer.style.display = null;
-        }
-
         var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 
         if (!self.isMobile && isSafari) {
@@ -26124,6 +26181,23 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
 
       function bindToInstance(fn) {
         return fn.bind(self);
+      }
+
+      function setCalendarWidth() {
+        if (self.daysContainer !== undefined) {
+          self.calendarContainer.style.visibility = "hidden";
+          self.calendarContainer.style.display = "block";
+          var daysWidth = (self.days.offsetWidth + 1) * self.config.showMonths;
+          self.daysContainer.style.width = daysWidth + "px";
+          self.calendarContainer.style.width = daysWidth + "px";
+
+          if (self.weekWrapper !== undefined) {
+            self.calendarContainer.style.width = daysWidth + self.weekWrapper.offsetWidth + "px";
+          }
+
+          self.calendarContainer.style.removeProperty("visibility");
+          self.calendarContainer.style.removeProperty("display");
+        }
       }
 
       function updateTime(e) {
@@ -26394,9 +26468,10 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
         dayElement.$i = i;
         dayElement.setAttribute("aria-label", self.formatDate(date, self.config.ariaDateFormat));
 
-        if (compareDates(date, self.now) === 0) {
+        if (className.indexOf("hidden") === -1 && compareDates(date, self.now) === 0) {
           self.todayDateElem = dayElement;
           dayElement.classList.add("today");
+          dayElement.setAttribute("aria-current", "date");
         }
 
         if (dateIsEnabled) {
@@ -26428,29 +26503,71 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
         return dayElement;
       }
 
-      function focusOnDay(currentInd, offset) {
-        var currentIndex = currentInd !== undefined ? currentInd : document.activeElement.$i;
-        var newIndex = (currentIndex || 0) + offset || 0,
-            targetNode = Array.prototype.find.call(self.days.children, function (c, i) {
-          return i >= newIndex && c.className.indexOf("MonthDay") === -1 && isEnabled(c.dateObj);
-        });
+      function focusOnDayElem(targetNode) {
+        targetNode.focus();
+        if (self.config.mode === "range") onMouseOver(targetNode);
+      }
 
-        if (targetNode !== undefined) {
-          targetNode.focus();
-          if (self.config.mode === "range") onMouseOver(targetNode);
+      function getFirstAvailableDay(delta) {
+        var startMonth = delta > 0 ? 0 : self.config.showMonths - 1;
+        var endMonth = delta > 0 ? self.config.showMonths : -1;
+
+        for (var m = startMonth; m != endMonth; m += delta) {
+          var month = self.daysContainer.children[m];
+          var startIndex = delta > 0 ? 0 : month.children.length - 1;
+          var endIndex = delta > 0 ? month.children.length : -1;
+
+          for (var i = startIndex; i != endIndex; i += delta) {
+            var c = month.children[i];
+            if (c.className.indexOf("hidden") === -1 && isEnabled(c.dateObj)) return c;
+          }
         }
+
+        return undefined;
+      }
+
+      function getNextAvailableDay(current, delta) {
+        var givenMonth = current.className.indexOf("Month") === -1 ? current.dateObj.getMonth() : self.currentMonth;
+        var endMonth = delta > 0 ? self.config.showMonths : -1;
+        var loopDelta = delta > 0 ? 1 : -1;
+
+        for (var m = givenMonth - self.currentMonth; m != endMonth; m += loopDelta) {
+          var month = self.daysContainer.children[m];
+          var startIndex = givenMonth - self.currentMonth === m ? current.$i + delta : delta < 0 ? month.children.length - 1 : 0;
+          var numMonthDays = month.children.length;
+
+          for (var i = startIndex; i >= 0 && i < numMonthDays && i != (delta > 0 ? numMonthDays : -1); i += loopDelta) {
+            var c = month.children[i];
+            if (c.className.indexOf("hidden") === -1 && isEnabled(c.dateObj) && Math.abs(current.$i - i) >= Math.abs(delta)) return focusOnDayElem(c);
+          }
+        }
+
+        self.changeMonth(loopDelta);
+        focusOnDay(getFirstAvailableDay(loopDelta), 0);
+        return undefined;
+      }
+
+      function focusOnDay(current, offset) {
+        var dayFocused = isInView(document.activeElement);
+        var startElem = current !== undefined ? current : dayFocused ? document.activeElement : self.selectedDateElem !== undefined && isInView(self.selectedDateElem) ? self.selectedDateElem : self.todayDateElem !== undefined && isInView(self.todayDateElem) ? self.todayDateElem : getFirstAvailableDay(offset > 0 ? 1 : -1);
+        if (startElem === undefined) return self._input.focus();
+        if (!dayFocused) return focusOnDayElem(startElem);
+        getNextAvailableDay(startElem, offset);
       }
 
       function buildMonthDays(year, month) {
         var firstOfMonth = (new Date(year, month, 1).getDay() - self.l10n.firstDayOfWeek + 7) % 7;
         var prevMonthDays = self.utils.getDaysInMonth((month - 1 + 12) % 12);
         var daysInMonth = self.utils.getDaysInMonth(month),
-            days = window.document.createDocumentFragment();
+            days = window.document.createDocumentFragment(),
+            isMultiMonth = self.config.showMonths > 1,
+            prevMonthDayClass = isMultiMonth ? "prevMonthDay hidden" : "prevMonthDay",
+            nextMonthDayClass = isMultiMonth ? "nextMonthDay hidden" : "nextMonthDay";
         var dayNumber = prevMonthDays + 1 - firstOfMonth,
             dayIndex = 0;
 
         for (; dayNumber <= prevMonthDays; dayNumber++, dayIndex++) {
-          days.appendChild(createDay("prevMonthDay", new Date(year, month - 1, dayNumber), dayNumber, dayIndex));
+          days.appendChild(createDay(prevMonthDayClass, new Date(year, month - 1, dayNumber), dayNumber, dayIndex));
         }
 
         for (dayNumber = 1; dayNumber <= daysInMonth; dayNumber++, dayIndex++) {
@@ -26458,7 +26575,7 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
         }
 
         for (var dayNum = daysInMonth + 1; dayNum <= 42 - firstOfMonth && (self.config.showMonths === 1 || dayIndex % 7 !== 0); dayNum++, dayIndex++) {
-          days.appendChild(createDay("nextMonthDay", new Date(year, month + 1, dayNum % daysInMonth), dayNum, dayIndex));
+          days.appendChild(createDay(nextMonthDayClass, new Date(year, month + 1, dayNum % daysInMonth), dayNum, dayIndex));
         }
 
         var dayContainer = createElement("div", "dayContainer");
@@ -26515,14 +26632,8 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
         };
       }
 
-      function buildMonthNav() {
-        self.monthNav = createElement("div", "flatpickr-months");
-        self.yearElements = [];
-        self.monthElements = [];
-        self.prevMonthNav = createElement("span", "flatpickr-prev-month");
-        self.prevMonthNav.innerHTML = self.config.prevArrow;
-        self.nextMonthNav = createElement("span", "flatpickr-next-month");
-        self.nextMonthNav.innerHTML = self.config.nextArrow;
+      function buildMonths() {
+        clearNode(self.monthNav);
         self.monthNav.appendChild(self.prevMonthNav);
 
         for (var m = self.config.showMonths; m--;) {
@@ -26533,6 +26644,17 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
         }
 
         self.monthNav.appendChild(self.nextMonthNav);
+      }
+
+      function buildMonthNav() {
+        self.monthNav = createElement("div", "flatpickr-months");
+        self.yearElements = [];
+        self.monthElements = [];
+        self.prevMonthNav = createElement("span", "flatpickr-prev-month");
+        self.prevMonthNav.innerHTML = self.config.prevArrow;
+        self.nextMonthNav = createElement("span", "flatpickr-next-month");
+        self.nextMonthNav.innerHTML = self.config.nextArrow;
+        buildMonths();
         Object.defineProperty(self, "_hidePrevMonthArrow", {
           get: function get() {
             return self.__hidePrevMonthArrow;
@@ -26607,7 +26729,7 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
       }
 
       function buildWeekdays() {
-        if (!self.weekdayContainer) self.weekdayContainer = createElement("div", "flatpickr-weekdays");
+        if (!self.weekdayContainer) self.weekdayContainer = createElement("div", "flatpickr-weekdays");else clearNode(self.weekdayContainer);
 
         for (var i = self.config.showMonths; i--;) {
           var container = createElement("div", "flatpickr-weekdaycontainer");
@@ -26643,13 +26765,9 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
         };
       }
 
-      function changeMonth(value, is_offset, from_keyboard) {
+      function changeMonth(value, is_offset) {
         if (is_offset === void 0) {
           is_offset = true;
-        }
-
-        if (from_keyboard === void 0) {
-          from_keyboard = false;
         }
 
         var delta = is_offset ? value : value - self.currentMonth;
@@ -26665,10 +26783,6 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
         buildDays();
         triggerEvent("onMonthChange");
         updateNavigationCurrentMonth();
-
-        if (from_keyboard === true) {
-          focusOnDay(undefined, 0);
-        }
       }
 
       function clear(triggerChangeEvent) {
@@ -26804,7 +26918,13 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
         return !bool;
       }
 
+      function isInView(elem) {
+        if (self.daysContainer !== undefined) return elem.className.indexOf("hidden") === -1 && self.daysContainer.contains(elem);
+        return false;
+      }
+
       function onKeyDown(e) {
+        e.stopPropagation();
         var isInput = e.target === self._input;
         var calendarElem = isCalendarElem(e.target);
         var allowInput = self.config.allowInput;
@@ -26843,10 +26963,13 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
               if (!isTimeObj) {
                 e.preventDefault();
 
-                if (self.daysContainer) {
-                  var _delta = isInput ? 0 : e.keyCode === 39 ? 1 : -1;
+                if (self.daysContainer !== undefined && self.config.allowInput === false) {
+                  var _delta = e.keyCode === 39 ? 1 : -1;
 
-                  if (!e.ctrlKey) focusOnDay(undefined, _delta);else changeMonth(_delta, true, true);
+                  if (!e.ctrlKey) focusOnDay(undefined, _delta);else {
+                    changeMonth(_delta);
+                    focusOnDay(getFirstAvailableDay(1), 0);
+                  }
                 }
               } else if (self.hourElement) self.hourElement.focus();
 
@@ -26857,11 +26980,11 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
               e.preventDefault();
               var delta = e.keyCode === 40 ? 1 : -1;
 
-              if (self.daysContainer && e.target.$i !== undefined) {
+              if (self.daysContainer) {
                 if (e.ctrlKey) {
                   changeYear(self.currentYear - delta);
-                  focusOnDay(e.target.$i, 0);
-                } else if (!isTimeObj) focusOnDay(e.target.$i, delta * 7);
+                  focusOnDay(getFirstAvailableDay(1), 0);
+                } else if (!isTimeObj) focusOnDay(undefined, delta * 7);
               } else if (self.config.enableTime) {
                 if (!isTimeObj && self.hourElement) self.hourElement.focus();
                 updateTime(e);
@@ -27183,7 +27306,6 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
 
       function redraw() {
         if (self.config.noCalendar || self.isMobile) return;
-        updateWeekdays();
         updateNavigationCurrentMonth();
         buildDays();
       }
@@ -27246,7 +27368,7 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
           } else updateNavigationCurrentMonth();
         }
 
-        if (!shouldChangeMonth && self.config.mode !== "range" && self.config.showMonths === 1) focusOnDay(target.$i, 0);else self.selectedDateElem && self.selectedDateElem.focus();
+        if (!shouldChangeMonth && self.config.mode !== "range" && self.config.showMonths === 1) focusOnDayElem(target);else self.selectedDateElem && self.selectedDateElem.focus();
         if (self.hourElement !== undefined) setTimeout(function () {
           return self.hourElement !== undefined && self.hourElement.select();
         }, 451);
@@ -27264,7 +27386,8 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
       }
 
       var CALLBACKS = {
-        locale: [setupLocale]
+        locale: [setupLocale, updateWeekdays],
+        showMonths: [buildMonths, setCalendarWidth, buildWeekdays]
       };
 
       function set(option, value) {
@@ -52392,7 +52515,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 (function (global){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.14.1
+ * @version 1.14.3
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -52421,6 +52544,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 }(this, (function () { 'use strict';
 
 var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+
 var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
 var timeoutDuration = 0;
 for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
@@ -52547,40 +52671,25 @@ function getScrollParent(element) {
   return getScrollParent(getParentNode(element));
 }
 
+var isIE11 = isBrowser && !!(window.MSInputMethodContext && document.documentMode);
+var isIE10 = isBrowser && /MSIE 10/.test(navigator.userAgent);
+
 /**
- * Tells if you are running Internet Explorer
+ * Determines if the browser is Internet Explorer
  * @method
  * @memberof Popper.Utils
- * @argument {number} version to check
+ * @param {Number} version to check
  * @returns {Boolean} isIE
  */
-var cache = {};
-
-var isIE = function () {
-  var version = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'all';
-
-  version = version.toString();
-  if (cache.hasOwnProperty(version)) {
-    return cache[version];
+function isIE(version) {
+  if (version === 11) {
+    return isIE11;
   }
-  switch (version) {
-    case '11':
-      cache[version] = navigator.userAgent.indexOf('Trident') !== -1;
-      break;
-    case '10':
-      cache[version] = navigator.appVersion.indexOf('MSIE 10') !== -1;
-      break;
-    case 'all':
-      cache[version] = navigator.userAgent.indexOf('Trident') !== -1 || navigator.userAgent.indexOf('MSIE') !== -1;
-      break;
+  if (version === 10) {
+    return isIE10;
   }
-
-  //Set IE
-  cache.all = cache.all || Object.keys(cache).some(function (key) {
-    return cache[key];
-  });
-  return cache[version];
-};
+  return isIE11 || isIE10;
+}
 
 /**
  * Returns the offset parent of the given element
@@ -53333,6 +53442,7 @@ function update() {
 
   // compute the popper offsets
   data.offsets.popper = getPopperOffsets(this.popper, data.offsets.reference, data.placement);
+
   data.offsets.popper.position = this.options.positionFixed ? 'fixed' : 'absolute';
 
   // run the modifiers
@@ -53638,11 +53748,13 @@ function computeStyle(data, options) {
     position: popper.position
   };
 
-  // floor sides to avoid blurry text
+  // Avoid blurry text by using full pixel integers.
+  // For pixel-perfect positioning, top/bottom prefers rounded
+  // values, while left/right prefers floored values.
   var offsets = {
     left: Math.floor(popper.left),
-    top: Math.floor(popper.top),
-    bottom: Math.floor(popper.bottom),
+    top: Math.round(popper.top),
+    bottom: Math.round(popper.bottom),
     right: Math.floor(popper.right)
   };
 
@@ -54198,7 +54310,27 @@ function preventOverflow(data, options) {
     boundariesElement = getOffsetParent(boundariesElement);
   }
 
+  // NOTE: DOM access here
+  // resets the popper's position so that the document size can be calculated excluding
+  // the size of the popper element itself
+  var transformProp = getSupportedPropertyName('transform');
+  var popperStyles = data.instance.popper.style; // assignment to help minification
+  var top = popperStyles.top,
+      left = popperStyles.left,
+      transform = popperStyles[transformProp];
+
+  popperStyles.top = '';
+  popperStyles.left = '';
+  popperStyles[transformProp] = '';
+
   var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, boundariesElement, data.positionFixed);
+
+  // NOTE: DOM access here
+  // restores the original style properties after the offsets have been computed
+  popperStyles.top = top;
+  popperStyles.left = left;
+  popperStyles[transformProp] = transform;
+
   options.boundaries = boundaries;
 
   var order = options.priority;

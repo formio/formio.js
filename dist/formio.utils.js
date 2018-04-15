@@ -1,4 +1,4 @@
-(function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -75,6 +75,9 @@ var FormioUtils = {
   evaluate: function evaluate(func, args, ret, tokenize) {
     var returnVal = null;
     var component = args.component && args.component.component ? args.component.component : { key: 'unknown' };
+    if (!args.form && args.instance) {
+      args.form = _lodash2.default.get(args.instance, 'root._form', {});
+    }
     if (typeof func === 'string') {
       if (ret) {
         func += ';return ' + ret;
@@ -116,6 +119,38 @@ var FormioUtils = {
       console.warn('Unknown function type for ' + component.key);
     }
     return returnVal;
+  },
+  getRandomComponentId: function getRandomComponentId() {
+    return 'e' + Math.random().toString(36).substring(7);
+  },
+
+  /**
+   * Get a property value of an element.
+   *
+   * @param style
+   * @param prop
+   * @return {number}
+   */
+  getPropertyValue: function getPropertyValue(style, prop) {
+    var value = style.getPropertyValue(prop);
+    value = value ? value.replace(/[^0-9.]/g, '') : '0';
+    return parseFloat(value);
+  },
+
+  /**
+   * Get an elements bounding rectagle.
+   *
+   * @param element
+   * @return {{x: string, y: string, width: string, height: string}}
+   */
+  getElementRect: function getElementRect(element) {
+    var style = window.getComputedStyle(element, null);
+    return {
+      x: FormioUtils.getPropertyValue(style, 'left'),
+      y: FormioUtils.getPropertyValue(style, 'top'),
+      width: FormioUtils.getPropertyValue(style, 'width'),
+      height: FormioUtils.getPropertyValue(style, 'height')
+    };
   },
 
   /**
@@ -438,11 +473,11 @@ var FormioUtils = {
    * @param data
    * @returns {*}
    */
-  checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError) {
+  checkCustomConditional: function checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
     if (typeof custom === 'string') {
       custom = 'var ' + variable + ' = true; ' + custom + '; return ' + variable + ';';
     }
-    var value = FormioUtils.evaluate(custom, { component: component, row: row, data: data, form: form });
+    var value = FormioUtils.evaluate(custom, { component: component, row: row, data: data, form: form, instance: instance });
     if (value === null) {
       return onError;
     }
@@ -474,9 +509,9 @@ var FormioUtils = {
    *
    * @returns {boolean}
    */
-  checkCondition: function checkCondition(component, row, data, form) {
+  checkCondition: function checkCondition(component, row, data, form, instance) {
     if (component.customConditional) {
-      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true);
+      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
     } else if (component.conditional && component.conditional.when) {
       return this.checkSimpleConditional(component, component.conditional, row, data, true);
     } else if (component.conditional && component.conditional.json) {
@@ -496,12 +531,12 @@ var FormioUtils = {
    * @param row
    * @returns {mixed}
    */
-  checkTrigger: function checkTrigger(component, trigger, row, data, form) {
+  checkTrigger: function checkTrigger(component, trigger, row, data, form, instance) {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
       case 'javascript':
-        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false);
+        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
       case 'json':
         return this.checkJsonConditional(component, trigger.json, row, data, form, false);
     }
