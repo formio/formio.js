@@ -9,11 +9,12 @@ export class PhoneNumberComponent extends TextFieldComponent {
     //if component should have multiple masks
     const id = `${this.component.key}`;
     const attr = this.info.attr;
+    attr.class += ' formio-multiple-mask-input';
     attr.id = id;
     this.phoneNumberInput = this.ce('input', attr);
 
     const inputGroup = this.ce('div', {
-      class: 'input-group'
+      class: 'input-group formio-multiple-mask-container'
     });
     this.addPrefix(this.phoneNumberInput, inputGroup);
     this.addMaskInput(inputGroup);
@@ -33,6 +34,7 @@ export class PhoneNumberComponent extends TextFieldComponent {
   createMaskInput() {
     const id = `${this.component.key}-mask`;
     this.maskInput = this.ce('select', {
+      class: 'form-control formio-multiple-mask-select',
       id
     });
     const masks = this.masks;
@@ -66,12 +68,7 @@ export class PhoneNumberComponent extends TextFieldComponent {
 
   addMaskInput(inputGroup) {
     const maskInput = this.createMaskInput();
-    const maskAddon = this.ce('div', {
-      class: 'input-group-addon'
-    });
-    maskAddon.appendChild(maskInput);
-    inputGroup.appendChild(maskAddon);
-
-    return maskAddon;
+    inputGroup.appendChild(maskInput);
+    return maskInput;
   }
 }
