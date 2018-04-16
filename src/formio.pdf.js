@@ -16,7 +16,11 @@ export default class FormioPDF extends FormioForm {
   }
 
   postMessage(message) {
-    this.iframeReady.then(() => this.iframe.contentWindow.postMessage(JSON.stringify(message), '*'));
+    this.iframeReady.then(() => {
+      if (this.iframe && this.iframe.contentWindow) {
+        this.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
+      }
+    });
   }
 
   // Do not clear the iframe.

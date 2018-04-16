@@ -16778,7 +16778,9 @@ var FormioPDF = function (_FormioForm) {
       var _this2 = this;
 
       this.iframeReady.then(function () {
-        return _this2.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
+        if (_this2.iframe && _this2.iframe.contentWindow) {
+          _this2.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
+        }
       });
     }
 
