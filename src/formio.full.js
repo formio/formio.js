@@ -5,21 +5,15 @@ import * as polyfill from './formio.polyfill';
 import FormioWizard from './formio.wizard';
 import FormioPDF from './formio.pdf';
 import FormioForm from './formio.form';
-import FormioGrid from './formio.grid';
 import {FormioComponents} from './components/Components';
 import Formio from './formio';
 import createForm from './createForm';
-import createGrid from './createGrid';
 import formFactory from './formFactory';
-import gridFactory from './gridFactory';
 
 Formio.formFactory = formFactory;
 
-Formio.gridFactory = gridFactory;
-
 Formio.createForm = createForm;
 
-Formio.createGrid = createGrid;
 
 /**
  * Embed this form within the current page.
@@ -51,6 +45,5 @@ FormioForm.registerComponent = Formio.registerComponent = function(type, compone
 export default Formio;
 exports.Formio = global.Formio = Formio;
 exports.FormioForm = FormioForm;
-exports.FormioGrid = FormioGrid;
 exports.FormioWizard = FormioWizard;
 exports.FormioPDF = FormioPDF;

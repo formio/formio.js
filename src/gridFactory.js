@@ -1,4 +1,4 @@
-import FormioGrid from './formio.grid';
+import GridBuilder from './formio.grid.builder';
 
 /**
  * Provided a form object, this will return the form instance.
@@ -9,7 +9,7 @@ import FormioGrid from './formio.grid';
  * @return {*}
  */
 export default (element, form, options) => {
-  let instance = new FormioGrid(element, form, options);
+  let instance = new GridBuilder(element, form, options);
   instance.form = form;
    return instance;
 };
