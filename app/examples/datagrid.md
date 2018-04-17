@@ -15,6 +15,10 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'children',
         type: 'datagrid',
         input: true,
+        validate: {
+          minLength: 3,
+          maxLength: 6
+        },
         components: [
           {
             label: 'First Name',
@@ -132,6 +136,10 @@ Formio.createForm(document.getElementById('formio'), {
         key: 'children',
         type: 'datagrid',
         input: true,
+        validate: {
+          minLength: 3,
+          maxLength: 6
+        },
         components: [
           {
             label: 'First Name',
@@ -235,6 +243,10 @@ Formio.createForm(document.getElementById('formio'), {
       ]
     }
   };
+  
+  form.on('change', function() {
+    console.log(form.submission);
+  });
 });
 </script>
 </div>

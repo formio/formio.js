@@ -819,6 +819,9 @@ export class BaseComponent {
     this.buildRows();
     this.checkConditions(this.root ? this.root.data : this.data);
     this.restoreValue();
+    if (this.root) {
+      this.root.onChange();
+    }
   }
 
   /**
@@ -828,6 +831,10 @@ export class BaseComponent {
   removeValue(index) {
     this.splice(index);
     this.buildRows();
+    this.restoreValue();
+    if (this.root) {
+      this.root.onChange();
+    }
   }
 
   /**
@@ -1672,10 +1679,15 @@ export class BaseComponent {
   /**
    * Show or hide the root element of this component.
    *
+   * @param element
    * @param show
    */
-  showElement(show) {
-    const element = this.getElement();
+  showElement(element, show) {
+    if (typeof element === 'boolean') {
+      show = element;
+      element = this.getElement();
+    }
+
     if (element) {
       if (show) {
         element.removeAttribute('hidden');
