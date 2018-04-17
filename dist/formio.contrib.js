@@ -28075,7 +28075,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 
     addUnitAlias('date', 'D');
 
-    // PRIOROITY
+    // PRIORITY
     addUnitPriority('date', 9);
 
     // PARSING
@@ -28872,7 +28872,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     // Side effect imports
 
 
-    hooks.version = '2.22.0';
+    hooks.version = '2.22.1';
 
     setHookCallback(createLocal);
 
