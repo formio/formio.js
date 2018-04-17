@@ -2082,6 +2082,9 @@ var BaseComponent = function () {
       this.buildRows();
       this.checkConditions(this.root ? this.root.data : this.data);
       this.restoreValue();
+      if (this.root) {
+        this.root.onChange();
+      }
     }
 
     /**
@@ -2094,6 +2097,10 @@ var BaseComponent = function () {
     value: function removeValue(index) {
       this.splice(index);
       this.buildRows();
+      this.restoreValue();
+      if (this.root) {
+        this.root.onChange();
+      }
     }
 
     /**
@@ -2969,13 +2976,18 @@ var BaseComponent = function () {
     /**
      * Show or hide the root element of this component.
      *
+     * @param element
      * @param show
      */
 
   }, {
     key: 'showElement',
-    value: function showElement(show) {
-      var element = this.getElement();
+    value: function showElement(element, show) {
+      if (typeof element === 'boolean') {
+        show = element;
+        element = this.getElement();
+      }
+
       if (element) {
         if (show) {
           element.removeAttribute('hidden');
@@ -5294,10 +5306,39 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     var _this = _possibleConstructorReturn(this, (DataGridComponent.__proto__ || Object.getPrototypeOf(DataGridComponent)).call(this, component, options, data));
 
     _this.type = 'datagrid';
+    _this.numRows = 0;
+    _this.numColumns = 0;
+    _this.rows = [];
     return _this;
   }
 
   _createClass(DataGridComponent, [{
+    key: 'hasAddButton',
+    value: function hasAddButton() {
+      var maxLength = _lodash2.default.get(this.component, 'validate.maxLength');
+      return !this.shouldDisable && (!maxLength || this.dataValue.length < maxLength);
+    }
+  }, {
+    key: 'hasRemoveButtons',
+    value: function hasRemoveButtons() {
+      return !this.shouldDisable && this.dataValue.length > _lodash2.default.get(this.component, 'validate.minLength', 0);
+    }
+  }, {
+    key: 'hasTopSubmit',
+    value: function hasTopSubmit() {
+      return this.hasAddButton() && ['top', 'both'].indexOf(this.addAnotherPosition) !== -1;
+    }
+  }, {
+    key: 'hasBottomSubmit',
+    value: function hasBottomSubmit() {
+      return this.hasAddButton() && ['bottom', 'both'].indexOf(this.addAnotherPosition) !== -1;
+    }
+  }, {
+    key: 'hasChanged',
+    value: function hasChanged(before, after) {
+      return !_lodash2.default.isEqual(before, after);
+    }
+  }, {
     key: 'build',
     value: function build() {
       this.createElement();
@@ -5306,22 +5347,61 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         this.addNewValue();
       }
       this.visibleColumns = true;
-      this.buildTable();
+      this.buildRows();
       this.createDescription(this.element);
     }
   }, {
-    key: 'buildTable',
-    value: function buildTable() {
+    key: 'setVisibleComponents',
+    value: function setVisibleComponents() {
       var _this2 = this;
 
-      if (this.tableElement) {
-        this.removeChild(this.tableElement);
-        this.tableElement.innerHTML = '';
+      // Add new values based on minLength.
+      for (var dIndex = this.dataValue.length; dIndex < _lodash2.default.get(this.component, 'validate.minLength', 0); dIndex++) {
+        this.dataValue.push({});
       }
 
+      this.numColumns = this.hasRemoveButtons() ? 1 : 0;
+      this.numRows = this.dataValue.length;
+
+      if (this.visibleColumns === true) {
+        this.numColumns += this.component.components.length;
+        this.visibleComponents = this.component.components;
+        return this.visibleComponents;
+      }
+
+      this.visibleComponents = _lodash2.default.filter(this.component.components, function (comp) {
+        return _this2.visibleColumns[comp.key];
+      });
+      this.numColumns += this.visibleComponents.length;
+    }
+  }, {
+    key: 'needsRebuild',
+    value: function needsRebuild() {
+      var previousNumColumns = this.numColumns;
+      var previousNumRows = this.numRows;
+      this.setVisibleComponents();
+
+      if (!this.tableBuilt || this.numRows !== previousNumRows || this.numColumns != previousNumColumns) {
+        this.tableBuilt = true;
+        return true;
+      }
+
+      // No need to rebuild since rows and columns are the same.
+      return false;
+    }
+  }, {
+    key: 'buildRows',
+    value: function buildRows() {
+      var _this3 = this;
+
+      if (!this.needsRebuild()) {
+        return;
+      }
+
+      this.clear();
       var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
       _lodash2.default.each(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
-        if (_this2.component[prop]) {
+        if (_this3.component[prop]) {
           tableClass += 'table-' + prop + ' ';
         }
       });
@@ -5329,31 +5409,22 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         class: tableClass
       });
 
-      this.tableElement.appendChild(this.createHeader());
-
-      // Build rows the first time.
-      this.rows = [];
-
-      // Check if there is a Min Length Validation
-      if (this.component.validate && this.component.validate.minLength > this.dataValue.length) {
-        var toAdd = this.component.validate.minLength - this.dataValue.length;
-        for (var i = 0; i < toAdd; i++) {
-          this.dataValue.push({});
-        }
-      }
-
-      this.tableRows = this.dataValue.map(function (row, rowIndex) {
-        return _this2.buildRow(row, rowIndex);
+      // Build the rows.
+      var tableRows = [];
+      this.dataValue.forEach(function (row, rowIndex) {
+        return tableRows.push(_this3.buildRow(row, rowIndex));
       });
-      this.tbody = this.ce('tbody', null, this.tableRows);
-      // Add the body to the table and to the element.
-      this.tableElement.appendChild(this.tbody);
 
-      var addButton = this.createAddButton();
-      if (addButton) {
-        this.tableElement.appendChild(addButton);
+      // Create the header (must happen after build rows to get correct column length)
+      this.tableElement.appendChild(this.createHeader());
+      this.tableElement.appendChild(this.ce('tbody', null, tableRows));
+
+      // Create the add row button footer element.
+      if (this.hasBottomSubmit()) {
+        this.tableElement.appendChild(this.ce('tfoot', null, this.ce('tr', null, this.ce('td', { colspan: this.numColumns }, this.addButton()))));
       }
 
+      // Add the table to the element.
       this.element.appendChild(this.tableElement);
     }
 
@@ -5362,95 +5433,22 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   }, {
     key: 'createHeader',
     value: function createHeader() {
-      var _this3 = this;
-
-      var thead = this.ce('thead', null, this.ce('tr', null, [this.component.components.map(function (comp) {
-        if (_this3.visibleColumns === true || _this3.visibleColumns[comp.key]) {
-          var th = _this3.ce('th');
-          if (comp.validate && comp.validate.required) {
-            th.setAttribute('class', 'field-required');
-          }
-          var title = comp.label || comp.title;
-          if (title) {
-            th.appendChild(_this3.text(title));
-            _this3.createTooltip(th, comp);
-          }
-          return th;
-        }
-      }), this.shouldDisable ? null : this.ce('th', null, ['top', 'both'].indexOf(this.component.addAnotherPosition) !== -1 ? this.addButton(true) : null)]));
-      return thead;
-    }
-  }, {
-    key: 'createAddButton',
-    value: function createAddButton() {
-      return !this.shouldDisable && (!this.component.addAnotherPosition || this.component.addAnotherPosition === 'bottom' || this.component.addAnotherPosition === 'both') ? this.ce('tfoot', null, this.ce('tr', null, this.ce('td', { colspan: this.component.components.length + 1 }, this.addButton()))) : null;
-    }
-  }, {
-    key: 'checkAndRemoveAddButton',
-    value: function checkAndRemoveAddButton() {
-      //check validation and remove add button
-      if (this.component.validate && this.tableElement.lastChild.firstChild && this.component.validate.maxLength <= this.dataValue.length) {
-        this.tableElement.lastChild.firstChild.remove();
-      } else if (this.component.validate && !this.tableElement.lastChild.firstChild && this.component.validate.maxLength > this.dataValue.length) {
-        this.tableElement.lastChild.appendChild(this.ce('tr', null, this.ce('td', { colspan: this.component.components.length + 1 }, this.addButton())));
-      }
-    }
-  }, {
-    key: 'buildRows',
-    value: function buildRows(data) {
       var _this4 = this;
 
-      var addRemoveButton = this.addRemoveButton();
-
-      this.dataValue.forEach(function (row, rowIndex) {
-        // New Row.
-        if (!_this4.tableRows[rowIndex]) {
-          _this4.tableRows[rowIndex] = _this4.buildRow(row, rowIndex, data);
-          _this4.tbody.insertBefore(_this4.tableRows[rowIndex], _this4.tbody.children[rowIndex + 1]);
+      var hasTopButton = this.hasTopSubmit();
+      var hasEnd = this.hasRemoveButtons() || hasTopButton;
+      return this.ce('thead', null, this.ce('tr', null, [this.visibleComponents.map(function (comp) {
+        var th = _this4.ce('th');
+        if (comp.validate && comp.validate.required) {
+          th.setAttribute('class', 'field-required');
         }
-        // Update existing
-        else if (!_lodash2.default.isEqual(row, _this4.tableRows[rowIndex].data) || !_lodash2.default.isEqual(_this4.visibleColumns, _this4.tableRows[rowIndex].visibleColumns)) {
-            _this4.removeRowComponents(rowIndex);
-            var newRow = _this4.buildRow(row, rowIndex, data);
-            _this4.tbody.replaceChild(newRow, _this4.tableRows[rowIndex]);
-            _this4.tableRows[rowIndex] = newRow;
-          }
-
-        if (addRemoveButton) {
-          _this4.ensureRemoveButtonIsPresent(rowIndex);
-        } else {
-          _this4.ensureRemoveButtonIsAbsent(rowIndex);
+        var title = comp.label || comp.title;
+        if (title) {
+          th.appendChild(_this4.text(title));
+          _this4.createTooltip(th, comp);
         }
-      });
-      // Remove any extra rows.
-      for (var rowIndex = this.tableRows.length; rowIndex > this.dataValue.length; rowIndex--) {
-        this.removeChildFrom(this.tableRows[rowIndex - 1], this.tbody);
-        this.tableRows.splice(rowIndex - 1, 1);
-      }
-
-      this.checkAndRemoveAddButton();
-    }
-  }, {
-    key: 'ensureRemoveButtonIsPresent',
-    value: function ensureRemoveButtonIsPresent(index) {
-      var row = this.tableRows[index];
-
-      if (row.children.length > this.component.components.length) {
-        return;
-      }
-
-      row.appendChild(this.ce('td', null, this.removeButton(index)));
-    }
-  }, {
-    key: 'ensureRemoveButtonIsAbsent',
-    value: function ensureRemoveButtonIsAbsent(index) {
-      var row = this.tableRows[index];
-
-      if (row.children.length === this.component.components.length) {
-        return;
-      }
-
-      row.removeChild(row.lastChild);
+        return th;
+      }), hasEnd ? this.ce('th', null, hasTopButton ? this.addButton(true) : null) : null]));
     }
   }, {
     key: 'buildRow',
@@ -5458,28 +5456,22 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       var _this5 = this;
 
       this.rows[index] = {};
-      var element = this.ce('tr', null, [this.component.components.map(function (col, colIndex) {
+      return this.ce('tr', null, [this.component.components.map(function (col, colIndex) {
         return _this5.buildComponent(col, colIndex, row, index);
-      }), this.addRemoveButton() ? this.ce('td', null, this.removeButton(index)) : null]);
-      element.data = _lodash2.default.cloneDeep(row);
-      element.visibleColumns = _lodash2.default.cloneDeep(this.visibleColumns);
-      return element;
+      }), this.hasRemoveButtons() ? this.ce('td', null, this.removeButton(index)) : null]);
     }
   }, {
-    key: 'addRemoveButton',
-    value: function addRemoveButton() {
-      return !this.shouldDisable && this.component.validate && this.dataValue.length > this.component.validate.minLength;
-    }
-  }, {
-    key: 'removeRowComponents',
-    value: function removeRowComponents(rowIndex) {
+    key: 'destroy',
+    value: function destroy(all) {
       var _this6 = this;
 
-      // Clean up components list.
-      Object.keys(this.rows[rowIndex]).forEach(function (key) {
-        _this6.removeComponent(_this6.rows[rowIndex][key]);
+      _get(DataGridComponent.prototype.__proto__ || Object.getPrototypeOf(DataGridComponent.prototype), 'destroy', this).call(this, all);
+      _lodash2.default.each(this.rows, function (row) {
+        return _lodash2.default.each(row, function (col) {
+          return _this6.removeComponent(col, row);
+        });
       });
-      delete this.rows[rowIndex];
+      this.rows = [];
     }
   }, {
     key: 'buildComponent',
@@ -5490,11 +5482,6 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       var options = _lodash2.default.clone(this.options);
       options.name += '[' + colIndex + ']';
       var comp = this.createComponent(column, options, row);
-      if (row.hasOwnProperty(column.key)) {
-        comp.setValue(row[column.key]);
-      } else if (comp.type === 'components') {
-        comp.setValue(row);
-      }
       this.rows[rowIndex][column.key] = comp;
       if (this.visibleColumns === true || this.visibleColumns[column.key]) {
         return this.ce('td', null, comp.element);
@@ -5530,6 +5517,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       // If a rebuild is needed, then rebuild the table.
       if (rebuild) {
         this.buildRows();
+        this.restoreValue();
       }
 
       // Return if this table should show.
@@ -5550,6 +5538,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         }
       }
 
+      var changed = flags.changed || this.hasChanged(value, this.dataValue);
       this.dataValue = value;
       this.buildRows();
       _lodash2.default.each(this.rows, function (row, index) {
@@ -5567,6 +5556,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
           }
         });
       });
+      return changed;
     }
 
     /**
@@ -5597,6 +5587,11 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     key: 'emptyValue',
     get: function get() {
       return [{}];
+    }
+  }, {
+    key: 'addAnotherPosition',
+    get: function get() {
+      return _lodash2.default.get(this.component, 'addAnotherPosition', 'bottom');
     }
   }, {
     key: 'defaultValue',

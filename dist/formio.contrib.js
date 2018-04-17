@@ -876,6 +876,9 @@ var BaseComponent = function () {
       this.buildRows();
       this.checkConditions(this.root ? this.root.data : this.data);
       this.restoreValue();
+      if (this.root) {
+        this.root.onChange();
+      }
     }
 
     /**
@@ -888,6 +891,10 @@ var BaseComponent = function () {
     value: function removeValue(index) {
       this.splice(index);
       this.buildRows();
+      this.restoreValue();
+      if (this.root) {
+        this.root.onChange();
+      }
     }
 
     /**
@@ -1763,13 +1770,18 @@ var BaseComponent = function () {
     /**
      * Show or hide the root element of this component.
      *
+     * @param element
      * @param show
      */
 
   }, {
     key: 'showElement',
-    value: function showElement(show) {
-      var element = this.getElement();
+    value: function showElement(element, show) {
+      if (typeof element === 'boolean') {
+        show = element;
+        element = this.getElement();
+      }
+
       if (element) {
         if (show) {
           element.removeAttribute('hidden');
