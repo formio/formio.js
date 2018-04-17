@@ -5,6 +5,7 @@ import { BaseEditData } from './editForm/Base.edit.data';
 import { BaseEditValidation } from './editForm/Base.edit.validation';
 import { BaseEditAPI } from './editForm/Base.edit.api';
 import { BaseEditConditional } from './editForm/Base.edit.conditional';
+import { BaseEditLogic } from './editForm/Base.edit.logic';
 export default function(...extend) {
   return {
     components: _.unionWith([
@@ -41,6 +42,12 @@ export default function(...extend) {
             key: 'conditional',
             weight: 40,
             components: BaseEditConditional
+          },
+          {
+            label: 'Logic',
+            key: 'logic',
+            weight: 50,
+            components: BaseEditLogic
           }
         ]
       },
