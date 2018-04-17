@@ -52,9 +52,6 @@ export let BaseEditLogic = [
                 },
                 dataSrc: 'values',
                 template: '<span>{{ item.label }}</span>',
-                validate: {
-                  required: false
-                },
                 type: 'select',
               },
               {
@@ -177,17 +174,11 @@ export let BaseEditLogic = [
                 },
                 dataSrc: 'values',
                 template: '<span>{{ item.label }}</span>',
-                validate: {
-                  required: false
-                },
                 type: 'select',
               },
               {
 
                 type: 'select',
-                validate: {
-                  required: false
-                },
                 template: '<span>{{ item.label }}</span>',
                 dataSrc: 'json',
                 data: {
