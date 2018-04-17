@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.31.2
+### Fixed
+ - Problems with datagrid not rending properly and getting out of sync.
+ - Issues with the minLength and maxLength on data grid.
+ - Performance issues with datagrid to not re-render unless it needs to.
+ - Problem with multiple value setting not resetting values when removing rows.
+
 ## 2.31.1
 ### Changed
  - Updated build with latest dependencies.
