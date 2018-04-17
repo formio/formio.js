@@ -243,7 +243,6 @@ export class DataGridComponent extends FormioComponents {
     const changed = flags.changed || this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.buildRows();
-
     _.each(this.rows, (row, index) => {
       if (value.length <= index) {
         return;
@@ -256,7 +255,6 @@ export class DataGridComponent extends FormioComponents {
           col.setValue(value[index][key], flags);
         }
         else {
-          // Make sure to resync the data object, and set the default value.
           col.data = value[index];
           col.setValue(col.defaultValue, flags);
         }
