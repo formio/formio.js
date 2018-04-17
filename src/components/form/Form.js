@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import { BaseComponent } from '../base/Base';
 import Promise from 'native-promise-only';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
+import formFactory from "../../formFactory";
 
 export class FormComponent extends BaseComponent {
   static schema(...extend) {
@@ -126,7 +128,6 @@ export class FormComponent extends BaseComponent {
         }
       });
 
-      const formFactory = require('../../formFactory');
       this.subForm = formFactory(this.element, formObj, srcOptions);
       this.dataValue.data = this.subForm.data;
 
@@ -217,7 +218,7 @@ export class FormComponent extends BaseComponent {
   }
 
   setValue(submission, flags) {
-    if (submission) {
+    if (submission && (submission._id || !_.isEmpty(submission.data))) {
       this.loadSubForm(submission).then((form) => {
         if (submission._id && !flags.noload) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;

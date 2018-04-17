@@ -8720,6 +8720,10 @@ var _createClass = function () {
   };
 }();
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var _Base = require('../base/Base');
 
 var _nativePromiseOnly = require('native-promise-only');
@@ -8733,6 +8737,10 @@ var _utils2 = _interopRequireDefault(_utils);
 var _formio = require('../../formio');
 
 var _formio2 = _interopRequireDefault(_formio);
+
+var _formFactory = require('../../formFactory');
+
+var _formFactory2 = _interopRequireDefault(_formFactory);
 
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
@@ -8880,8 +8888,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
           }
         });
 
-        var formFactory = require('../../formFactory');
-        _this2.subForm = formFactory(_this2.element, formObj, srcOptions);
+        _this2.subForm = (0, _formFactory2.default)(_this2.element, formObj, srcOptions);
         _this2.dataValue.data = _this2.subForm.data;
 
         // Forward along changes to parent form.
@@ -8989,7 +8996,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     value: function setValue(submission, flags) {
       var _this5 = this;
 
-      if (submission) {
+      if (submission && (submission._id || !_lodash2.default.isEmpty(submission.data))) {
         this.loadSubForm(submission).then(function (form) {
           if (submission._id && !flags.noload) {
             var submissionUrl = form.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;
@@ -9022,7 +9029,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
   return FormComponent;
 }(_Base.BaseComponent);
 
-},{"../../formFactory":43,"../../formio":47,"../../utils":59,"../base/Base":4,"native-promise-only":84}],20:[function(require,module,exports){
+},{"../../formFactory":43,"../../formio":47,"../../utils":59,"../base/Base":4,"lodash":82,"native-promise-only":84}],20:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
