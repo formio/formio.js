@@ -7304,6 +7304,11 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
         return _this5.createImageListItem(fileInfo, index);
       }));
     }
+
+    // get fileService() {
+    //   return this.options.fileService || this.options.formio;
+    // }
+
   }, {
     key: 'createImageListItem',
     value: function createImageListItem(fileInfo, index) {
@@ -7607,7 +7612,13 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       }
       fileService.downloadFile(fileInfo).then(function (file) {
         if (file) {
-          window.open(file.url, '_blank');
+          var hiddenElement = document.createElement('a');
+          hiddenElement.href = 'data:' + file.type + ';base64,' + encodeURI(file.data);
+          hiddenElement.target = '_blank';
+          hiddenElement.download = file.originalName;
+          hiddenElement.click();
+
+          //window.open(file.url, '_blank');
         }
       }).catch(function (response) {
         // Is alert the best way to do this?
@@ -7635,7 +7646,13 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   }, {
     key: 'fileService',
     get: function get() {
-      return this.options.fileService || this.options.formio;
+      if (this.options.fileService) {
+        return this.options.fileService;
+      }
+      if (this.options.formio) {
+        return this.options.formio;
+      }
+      return new Formio();
     }
   }]);
 

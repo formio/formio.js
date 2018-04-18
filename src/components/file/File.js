@@ -1,4 +1,4 @@
-import {BaseComponent} from '../base/Base';
+import { BaseComponent } from '../base/Base';
 import FormioUtils from '../../utils';
 
 export class FileComponent extends BaseComponent {
@@ -91,15 +91,15 @@ export class FileComponent extends BaseComponent {
   }
 
   buildFileList() {
-    return this.ce('ul', {class: 'list-group list-group-striped'}, [
-      this.ce('li', {class: 'list-group-item list-group-header hidden-xs hidden-sm'},
-        this.ce('div', {class: 'row'},
+    return this.ce('ul', { class: 'list-group list-group-striped' }, [
+      this.ce('li', { class: 'list-group-item list-group-header hidden-xs hidden-sm' },
+        this.ce('div', { class: 'row' },
           [
-            this.ce('div', {class: 'col-md-1'}),
-            this.ce('div', {class: 'col-md-9'},
+            this.ce('div', { class: 'col-md-1' }),
+            this.ce('div', { class: 'col-md-9' },
               this.ce('strong', {}, 'File Name')
             ),
-            this.ce('div', {class: 'col-md-2'},
+            this.ce('div', { class: 'col-md-2' },
               this.ce('strong', {}, 'Size')
             )
           ]
@@ -122,10 +122,10 @@ export class FileComponent extends BaseComponent {
   }
 
   createFileListItem(fileInfo, index) {
-    return this.ce('li', {class: 'list-group-item'},
-      this.ce('div', {class: 'row'},
+    return this.ce('li', { class: 'list-group-item' },
+      this.ce('div', { class: 'row' },
         [
-          this.ce('div', {class: 'col-md-1'},
+          this.ce('div', { class: 'col-md-1' },
             (
               (!this.disabled && !this.shouldDisable) ?
                 this.ce('i', {
@@ -142,8 +142,8 @@ export class FileComponent extends BaseComponent {
                 null
             )
           ),
-          this.ce('div', {class: 'col-md-9'}, this.createFileLink(fileInfo)),
-          this.ce('div', {class: 'col-md-2'}, this.fileSize(fileInfo.size))
+          this.ce('div', { class: 'col-md-9' }, this.createFileLink(fileInfo)),
+          this.ce('div', { class: 'col-md-2' }, this.fileSize(fileInfo.size))
         ]
       )
     );
@@ -162,8 +162,18 @@ export class FileComponent extends BaseComponent {
     );
   }
 
+  // get fileService() {
+  //   return this.options.fileService || this.options.formio;
+  // }
+
   get fileService() {
-    return this.options.fileService || this.options.formio;
+    if (this.options.fileService) {
+      return this.options.fileService;
+    }
+    if (this.options.formio) {
+      return this.options.formio;
+    }
+    return new Formio();
   }
 
   createImageListItem(fileInfo, index) {
@@ -213,26 +223,26 @@ export class FileComponent extends BaseComponent {
         (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
           this.ce('div', {
             class: 'fileSelector',
-            onDragover: function(event) {
+            onDragover: function (event) {
               this.className = 'fileSelector fileDragOver';
               event.preventDefault();
             },
-            onDragleave: function(event) {
+            onDragleave: function (event) {
               this.className = 'fileSelector';
               event.preventDefault();
             },
-            onDrop: function(event) {
+            onDrop: function (event) {
               this.className = 'fileSelector';
               event.preventDefault();
               element.upload(event.dataTransfer.files);
               return false;
             }
           },
-          [
-            this.ce('i', {class: this.iconClass('cloud-upload')}),
-            this.text(' Drop files to attach, or '),
-            this.buildBrowseLink()
-          ]
+            [
+              this.ce('i', { class: this.iconClass('cloud-upload') }),
+              this.text(' Drop files to attach, or '),
+              this.buildBrowseLink()
+            ]
           ) :
           this.ce('div')
       )
@@ -267,7 +277,7 @@ export class FileComponent extends BaseComponent {
 
   addWarnings(container) {
     let hasWarnings = false;
-    const warnings = this.ce('div', {class: 'alert alert-warning'});
+    const warnings = this.ce('div', { class: 'alert alert-warning' });
     if (!this.component.storage) {
       hasWarnings = true;
       warnings.appendChild(this.ce('p').appendChild(this.text(
@@ -300,9 +310,9 @@ export class FileComponent extends BaseComponent {
 
   createUploadStatus(fileUpload) {
     let container;
-    return container = this.ce('div', {class: `file${fileUpload.status === 'error' ? ' has-error' : ''}`}, [
-      this.ce('div', {class: 'row'}, [
-        this.ce('div', {class: 'fileName control-label col-sm-10'}, [
+    return container = this.ce('div', { class: `file${fileUpload.status === 'error' ? ' has-error' : ''}` }, [
+      this.ce('div', { class: 'row' }, [
+        this.ce('div', { class: 'fileName control-label col-sm-10' }, [
           fileUpload.originalName,
           this.ce('i', {
             class: this.iconClass('remove'),
@@ -311,12 +321,12 @@ export class FileComponent extends BaseComponent {
             }
           })
         ]),
-        this.ce('div', {class: 'fileSize control-label col-sm-2 text-right'}, this.fileSize(fileUpload.size))
+        this.ce('div', { class: 'fileSize control-label col-sm-2 text-right' }, this.fileSize(fileUpload.size))
       ]),
-      this.ce('div', {class: 'row'}, [
-        this.ce('div', {class: 'col-sm-12'}, [
+      this.ce('div', { class: 'row' }, [
+        this.ce('div', { class: 'col-sm-12' }, [
           (fileUpload.status === 'progress' ?
-            this.ce('div', {class: 'progress'},
+            this.ce('div', { class: 'progress' },
               this.ce('div', {
                 class: 'progress-bar',
                 role: 'progressbar',
@@ -325,10 +335,10 @@ export class FileComponent extends BaseComponent {
                 'aria-valuemax': 100,
                 style: `width:${fileUpload.progress}%`
               },
-              this.ce('span', {class: 'sr-only'}, `${fileUpload.progress}% Complete`)
+                this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
               )
             ) :
-            this.ce('div', {class: `bg-${fileUpload.status}`}, fileUpload.message)
+            this.ce('div', { class: `bg-${fileUpload.status}` }, fileUpload.message)
           )
         ])
       ])
@@ -369,7 +379,7 @@ export class FileComponent extends BaseComponent {
         }
       }
     }
-    return {regexp: regexp, excludes: excludes};
+    return { regexp: regexp, excludes: excludes };
   }
 
   translateScalars(str) {
@@ -459,7 +469,7 @@ export class FileComponent extends BaseComponent {
           status: 'info',
           message: 'Starting upload'
         };
-        const dir = this.interpolate(this.component.dir || '', {data: this.data, row: this.row});
+        const dir = this.interpolate(this.component.dir || '', { data: this.data, row: this.row });
         const fileService = this.fileService;
         if (!fileService) {
           fileUpload.status = 'error';
@@ -498,14 +508,22 @@ export class FileComponent extends BaseComponent {
     }
   }
 
-  getFile(fileInfo, event)  {
+  getFile(fileInfo, event) {
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
-        window.open(file.url, '_blank');
+        // commented becouse this way is not supported any more by chrome due to security practices.
+        //window.open(file.url, '_blank');
+
+        // this is a workaround to render base64 files in Chrome. Still not working on IE/Edge
+        var hiddenElement = document.createElement('a');
+        hiddenElement.href = 'data:' + file.type + ';base64,' + encodeURI(file.data);
+        hiddenElement.target = '_blank';
+        hiddenElement.download = file.originalName;
+        hiddenElement.click();
       }
     })
       .catch((response) => {
