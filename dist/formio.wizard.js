@@ -7392,7 +7392,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       }
       if (!this.support.dnd) {
         hasWarnings = true;
-        warnings.appendChild(this.ce('p').appendChild(this.text('FFile Drag/Drop is not supported for this browser.')));
+        warnings.appendChild(this.ce('p').appendChild(this.text('File Drag/Drop is not supported for this browser.')));
       }
       if (!this.support.filereader) {
         hasWarnings = true;
