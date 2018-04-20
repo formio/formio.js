@@ -19,9 +19,11 @@ export default function(...extend) {
           data: {
             values: [
               {label: 'Submit', value: 'submit'},
+              {label: 'Save in state', value: 'saveState'},
               {label: 'Event', value: 'event'},
               {label: 'Custom', value: 'custom'},
               {label: 'Reset', value: 'reset'},
+              {label: 'Delete', value: 'delete'},
               {label: 'OAuth', value: 'oauth'},
               {label: 'POST to URL', value: 'url'}
             ]
@@ -36,6 +38,18 @@ export default function(...extend) {
           tooltip: 'The event to fire when the button is clicked.',
           conditional: {
             json: {'===': [{var: 'data.action'}, 'event']}
+          }
+        },
+        {
+          type: 'textfield',
+          label: 'Submission State',
+          placeholder: 'submitted',
+          key: 'state',
+          input: true,
+          weight: 120,
+          tooltip: 'Save the submission in a state. Defaults to \'submitted\'. \'draft\' will skip validation.',
+          conditional: {
+            json: {'===': [{var: 'data.action'}, 'saveState']}
           }
         },
         {

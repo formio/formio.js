@@ -36,7 +36,7 @@ export class ButtonComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'button';
-    info.attr.type = (this.component.action === 'submit') ? 'submit' : 'button';
+    info.attr.type = (['submit', 'saveState'].includes(this.component.action)) ? 'submit' : 'button';
     this.component.theme = this.component.theme || 'default';
     info.attr.class = `btn btn-${this.component.theme}`;
     if (this.component.size) {
@@ -183,7 +183,9 @@ export class ButtonComponent extends BaseComponent {
         case 'submit':
           event.preventDefault();
           event.stopPropagation();
-          this.emit('submitButton');
+          this.emit('submitButton', {
+            state: this.component.state || 'submitted'
+          });
           break;
         case 'event':
           this.emit(this.component.event, this.data);
@@ -229,6 +231,9 @@ export class ButtonComponent extends BaseComponent {
           break;
         case 'reset':
           this.emit('resetForm');
+          break;
+        case 'delete':
+          this.emit('deleteSubmission');
           break;
         case 'oauth':
           if (this.root === this) {

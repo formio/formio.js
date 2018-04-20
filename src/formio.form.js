@@ -739,6 +739,7 @@ export default class FormioForm extends FormioComponents {
       this.isBuilt = true;
       this.onResize();
       this.on('resetForm', () => this.reset(), true);
+      this.on('deleteSubmission', () => this.deleteSubmission(), true);
       this.on('refreshData', () => this.updateValue());
       setTimeout(() => {
         this.onChange();
@@ -786,7 +787,7 @@ export default class FormioForm extends FormioComponents {
    * Build the form.
    */
   build() {
-    this.on('submitButton', () => this.submit(), true);
+    this.on('submitButton', (options) => this.submit(false, options), true);
     this.addComponents();
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
   }
@@ -907,6 +908,17 @@ export default class FormioForm extends FormioComponents {
   }
 
   /**
+   * Send a delete request to the server.
+   */
+  deleteSubmission() {
+    return this.formio.deleteSubmission()
+      .then(() => {
+        this.emit('submissionDeleted', this.submission);
+        this.reset();
+      });
+  }
+
+  /**
    * Cancels the submission.
    *
    * @alias reset
@@ -921,7 +933,7 @@ export default class FormioForm extends FormioComponents {
     }
   }
 
-  executeSubmit() {
+  executeSubmit(options = {}) {
     return new Promise((resolve, reject) => {
       // Read-only forms should never submit.
       if (this.options.readOnly) {
@@ -929,6 +941,7 @@ export default class FormioForm extends FormioComponents {
       }
 
       const submission = this.submission || {};
+      submission.state = options.state || 'submitted';
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {
           this.showErrors(err);
@@ -938,7 +951,7 @@ export default class FormioForm extends FormioComponents {
         if (
           submission &&
           submission.data &&
-          this.checkValidity(submission.data, true)
+          (submission.state === 'draft' || this.checkValidity(submission.data, true))
         ) {
           this.loading = true;
           if (this.nosubmit || !this.formio) {
@@ -982,12 +995,12 @@ export default class FormioForm extends FormioComponents {
    *
    * @returns {Promise} - A promise when the form is done submitting.
    */
-  submit(before) {
+  submit(before, options) {
     if (!before) {
-      return this.beforeSubmit().then(() => this.executeSubmit());
+      return this.beforeSubmit(options).then(() => this.executeSubmit(options));
     }
     else {
-      return this.executeSubmit();
+      return this.executeSubmit(options);
     }
   }
 
