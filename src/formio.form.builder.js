@@ -498,6 +498,15 @@ export class FormioFormBuilder extends FormioForm {
     this.dragContainers = [];
   }
 
+  addComponentTo(parent, schema, element, sibling) {
+    return parent.addComponent(
+      schema,
+      element,
+      parent.data,
+      sibling
+    );
+  }
+
   onDrop(element, target, source, sibling) {
     let builderElement = source.querySelector('#' + element.id);
     let newParent = this.getParentElement(element);
@@ -533,12 +542,7 @@ export class FormioFormBuilder extends FormioForm {
       }
 
       // Add the new component.
-      let component = newParent.component.addComponent(
-        componentSchema,
-        newParent,
-        newParent.component.data,
-        sibling
-      );
+      let component = this.addComponentTo(newParent.component, componentSchema, newParent, sibling);
 
       // Set that this is a new component.
       component.isNew = true;

@@ -14410,12 +14410,12 @@ var FormioForm = function (_FormioComponents) {
         });
       }
 
-      // Set the form object.
-      this._form = form;
-      this.emit('formLoad', form);
-
       // Create the form.
-      return this.createForm(form);
+      this._form = form;
+      return this.createForm(form).then(function () {
+        _this6.emit('formLoad', form);
+        return form;
+      });
     }
 
     /**
@@ -14510,6 +14510,7 @@ var FormioForm = function (_FormioComponents) {
         _this8.formReadyResolve();
         _this8.onFormBuild = null;
         _this8.setValue(_this8.submission);
+        return form;
       }).catch(function (err) {
         console.warn(err);
         _this8.formReadyReject(err);
@@ -16609,32 +16610,35 @@ var FormioPDF = function (_FormioForm) {
   }, {
     key: 'setForm',
     value: function setForm(form) {
-      this.postMessage({ name: 'form', data: form });
-      return _get(FormioPDF.prototype.__proto__ || Object.getPrototypeOf(FormioPDF.prototype), 'setForm', this).call(this, form);
+      var _this3 = this;
+
+      return _get(FormioPDF.prototype.__proto__ || Object.getPrototypeOf(FormioPDF.prototype), 'setForm', this).call(this, form).then(function () {
+        _this3.postMessage({ name: 'form', data: form });
+      });
     }
   }, {
     key: 'setSubmission',
     value: function setSubmission(submission) {
-      var _this3 = this;
+      var _this4 = this;
 
       submission.readOnly = !!this.options.readOnly;
       this.postMessage({ name: 'submission', data: submission });
       return _get(FormioPDF.prototype.__proto__ || Object.getPrototypeOf(FormioPDF.prototype), 'setSubmission', this).call(this, submission).then(function () {
-        _this3.formio.getDownloadUrl().then(function (url) {
+        _this4.formio.getDownloadUrl().then(function (url) {
           // Add a download button if it has a download url.
           if (!url) {
             return;
           }
-          if (!_this3.downloadButton) {
-            _this3.downloadButton = _this3.ce('a', {
+          if (!_this4.downloadButton) {
+            _this4.downloadButton = _this4.ce('a', {
               href: url,
               target: '_blank',
               style: 'position:absolute;right:10px;top:110px;cursor:pointer;'
-            }, _this3.ce('img', {
+            }, _this4.ce('img', {
               src: require('./pdf.image'),
               style: 'width:3em;'
             }));
-            _this3.element.insertBefore(_this3.downloadButton, _this3.iframe);
+            _this4.element.insertBefore(_this4.downloadButton, _this4.iframe);
           }
         });
       });
@@ -16650,12 +16654,25 @@ var FormioPDF = function (_FormioForm) {
       return this._submission;
     }
   }, {
+    key: 'addComponent',
+    value: function addComponent(component, element, data, before) {
+      // Never add the component to the DOM.
+      _get(FormioPDF.prototype.__proto__ || Object.getPrototypeOf(FormioPDF.prototype), 'addComponent', this).call(this, component, element, data, before, true);
+    }
+
+    // Iframe should always be shown.
+
+  }, {
+    key: 'showElement',
+    value: function showElement(show) {}
+  }, {
     key: 'build',
     value: function build() {
-      var _this4 = this;
+      var _this5 = this;
 
       // Do not rebuild the iframe...
       if (this.iframe) {
+        this.addComponents();
         return;
       }
 
@@ -16667,7 +16684,7 @@ var FormioPDF = function (_FormioForm) {
       }));
       this.addEventListener(this.zoomIn, 'click', function (event) {
         event.preventDefault();
-        _this4.postMessage({ name: 'zoomIn' });
+        _this5.postMessage({ name: 'zoomIn' });
       });
 
       this.zoomOut = this.ce('span', {
@@ -16678,7 +16695,7 @@ var FormioPDF = function (_FormioForm) {
       }));
       this.addEventListener(this.zoomOut, 'click', function (event) {
         event.preventDefault();
-        _this4.postMessage({ name: 'zoomOut' });
+        _this5.postMessage({ name: 'zoomOut' });
       });
 
       this.iframe = this.ce('iframe', {
@@ -16697,10 +16714,12 @@ var FormioPDF = function (_FormioForm) {
         }, 'Submit');
 
         this.addEventListener(this.submitButton, 'click', function () {
-          _this4.postMessage({ name: 'getSubmission' });
+          _this5.postMessage({ name: 'getSubmission' });
         });
         this.appendChild(this.element, this.submitButton);
       }
+
+      this.addComponents();
     }
   }]);
 

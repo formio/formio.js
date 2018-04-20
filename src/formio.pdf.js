@@ -51,8 +51,9 @@ export default class FormioPDF extends FormioForm {
   }
 
   setForm(form) {
-    this.postMessage({name: 'form', data: form});
-    return super.setForm(form);
+    return super.setForm(form).then(() => {
+      this.postMessage({name: 'form', data: form});
+    });
   }
 
   setSubmission(submission) {
@@ -87,9 +88,17 @@ export default class FormioPDF extends FormioForm {
     return this._submission;
   }
 
+  addComponent(component, element, data, before) {
+    // Never add the component to the DOM.
+    super.addComponent(component, element, data, before, true);
+  }
+
+  // Iframe should always be shown.
+  showElement(show) {}
   build() {
     // Do not rebuild the iframe...
     if (this.iframe) {
+      this.addComponents();
       return;
     }
 
@@ -139,6 +148,8 @@ export default class FormioPDF extends FormioForm {
       });
       this.appendChild(this.element, this.submitButton);
     }
+
+    this.addComponents();
   }
 }
 

@@ -259,7 +259,7 @@ export let BaseEditLogic = [
               {
                 input: true,
                 label: 'Value (Javascript)',
-                key: value,
+                key: 'value',
                 editor: 'ace',
                 rows: 5,
                 placeholder: `value = data.myfield;`,

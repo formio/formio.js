@@ -584,12 +584,12 @@ export default class FormioForm extends FormioComponents {
       );
     }
 
-    // Set the form object.
-    this._form = form;
-    this.emit('formLoad', form);
-
     // Create the form.
-    return this.createForm(form);
+    this._form = form;
+    return this.createForm(form).then(() => {
+      this.emit('formLoad', form);
+      return form;
+    });
   }
 
   /**
@@ -720,6 +720,7 @@ export default class FormioForm extends FormioComponents {
       this.formReadyResolve();
       this.onFormBuild = null;
       this.setValue(this.submission);
+      return form;
     }).catch((err) => {
       console.warn(err);
       this.formReadyReject(err);
