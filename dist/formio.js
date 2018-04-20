@@ -927,8 +927,7 @@ var Formio = function () {
           err.message = 'Could not connect to API server (' + err.message + ')';
           err.networkError = true;
         }
-        // Propagate error so client can handle accordingly
-        throw err;
+        return _nativePromiseOnly2.default.reject(err);
       });
     }
   }, {

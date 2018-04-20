@@ -3786,7 +3786,7 @@ var BaseComponent = function () {
       }
 
       // Clone so that it creates a new instance.
-      return _lodash2.default.cloneDeep(defaultValue);
+      return _lodash2.default.clone(defaultValue);
     }
   }, {
     key: 'name',
@@ -7727,7 +7727,6 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
 
     _this.submitted = false;
     _this.subForm = null;
-    _this.subData = { data: {} };
     _this.subFormReady = new _nativePromiseOnly2.default(function (resolve, reject) {
       _this.subFormReadyResolve = resolve;
       _this.subFormReadyReject = reject;
@@ -7741,7 +7740,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     /**
      * Load the subform.
      */
-    value: function loadSubForm(submission) {
+    value: function loadSubForm() {
       var _this2 = this;
 
       // Only load the subform if the subform isn't loaded and the conditions apply.
@@ -7788,13 +7787,6 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         }
       }
 
-      var loadSubmission = false;
-      // Add the source to this actual submission if the component is a reference.
-      if (submission._id && this.component.reference && !(this.component.src.indexOf('/submission/') !== -1)) {
-        this.component.src += '/submission/' + submission._id;
-        loadSubmission = true;
-      }
-
       new _formio2.default(this.component.src).loadForm({ params: { live: 1 } }).then(function (formObj) {
         // Iterate through every component and hide the submit button.
         _utils2.default.eachComponent(formObj.components, function (component) {
@@ -7804,19 +7796,11 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         });
 
         _this2.subForm = (0, _formFactory2.default)(_this2.element, formObj, srcOptions);
-        _this2.dataValue.data = _this2.subForm.data;
-
-        // Forward along changes to parent form.
         _this2.subForm.on('change', function () {
           return _this2.onChange();
         });
         _this2.subForm.url = _this2.component.src;
         _this2.subForm.nosubmit = false;
-        if (loadSubmission) {
-          _this2.subForm.loadSubmission();
-        } else {
-          _this2.subForm.setSubmission(submission);
-        }
         _this2.subFormReadyResolve(_this2.subForm);
       }).catch(function (err) {
         return _this2.subFormReadyReject(err);
@@ -7840,7 +7824,8 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
       }
 
       if (_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, data)) {
-        this.loadSubForm(this.dataValue);
+        this.loadSubForm();
+        this.restoreValue();
         return true;
       }
 
@@ -7904,15 +7889,19 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     key: 'build',
     value: function build() {
       this.createElement();
-      this.restoreValue();
     }
   }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
       var _this5 = this;
 
+      // Determine if the submission has changed.
+      var changed = flags.changed || this.hasChanged(submission, this.dataValue);
+      this.dataValue = submission;
+
+      // Update the submission on the form.
       if (submission && (submission._id || !_lodash2.default.isEmpty(submission.data))) {
-        this.loadSubForm(submission).then(function (form) {
+        this.loadSubForm().then(function (form) {
           if (submission._id && !flags.noload) {
             var submissionUrl = form.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;
             form.setSrc(submissionUrl, _this5.options);
@@ -7921,13 +7910,15 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
           }
         });
       }
-      this.subData = submission;
-      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'updateValue', this).call(this, flags);
+
+      // Return if the value has changed.
+      this.updateOnChange(flags, changed);
+      return changed;
     }
   }, {
     key: 'getValue',
     value: function getValue() {
-      return this.subData;
+      return this.dataValue;
     }
   }, {
     key: 'emptyValue',
@@ -13709,8 +13700,7 @@ var Formio = function () {
           err.message = 'Could not connect to API server (' + err.message + ')';
           err.networkError = true;
         }
-        // Propagate error so client can handle accordingly
-        throw err;
+        return _nativePromiseOnly2.default.reject(err);
       });
     }
   }, {
