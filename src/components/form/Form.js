@@ -10,7 +10,6 @@ export class FormComponent extends BaseComponent {
     super(component, options, data);
     this.submitted = false;
     this.subForm = null;
-    this.subData = {data: {}};
     this.subFormReady = new Promise((resolve, reject) => {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
@@ -24,7 +23,7 @@ export class FormComponent extends BaseComponent {
   /**
    * Load the subform.
    */
-  loadSubForm(submission) {
+  loadSubForm() {
     // Only load the subform if the subform isn't loaded and the conditions apply.
     if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
       return this.subFormReady;
@@ -73,17 +72,6 @@ export class FormComponent extends BaseComponent {
       }
     }
 
-    let loadSubmission = false;
-    // Add the source to this actual submission if the component is a reference.
-    if (
-      submission._id &&
-      this.component.reference &&
-      !this.component.src.includes('/submission/')
-    ) {
-      this.component.src += `/submission/${submission._id}`;
-      loadSubmission = true;
-    }
-
     (new Formio(this.component.src)).loadForm({params: {live: 1}}).then((formObj) => {
       // Iterate through every component and hide the submit button.
       FormioUtils.eachComponent(formObj.components, (component) => {
@@ -93,18 +81,9 @@ export class FormComponent extends BaseComponent {
       });
 
       this.subForm = formFactory(this.element, formObj, srcOptions);
-      this.dataValue.data = this.subForm.data;
-
-      // Forward along changes to parent form.
       this.subForm.on('change', () => this.onChange());
       this.subForm.url = this.component.src;
       this.subForm.nosubmit = false;
-      if (loadSubmission) {
-        this.subForm.loadSubmission();
-      }
-      else {
-        this.subForm.setSubmission(submission);
-      }
       this.subFormReadyResolve(this.subForm);
     }).catch(err => this.subFormReadyReject(err));
     return this.subFormReady;
@@ -124,7 +103,8 @@ export class FormComponent extends BaseComponent {
     }
 
     if (super.checkConditions(data)) {
-      this.loadSubForm(this.dataValue);
+      this.loadSubForm();
+      this.restoreValue();
       return true;
     }
 
@@ -178,12 +158,16 @@ export class FormComponent extends BaseComponent {
 
   build() {
     this.createElement();
-    this.restoreValue();
   }
 
   setValue(submission, flags) {
+    // Determine if the submission has changed.
+    const changed = flags.changed || this.hasChanged(submission, this.dataValue);
+    this.dataValue = submission;
+
+    // Update the submission on the form.
     if (submission && (submission._id || !_.isEmpty(submission.data))) {
-      this.loadSubForm(submission).then((form) => {
+      this.loadSubForm().then((form) => {
         if (submission._id && !flags.noload) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
           form.setSrc(submissionUrl, this.options);
@@ -193,11 +177,13 @@ export class FormComponent extends BaseComponent {
         }
       });
     }
-    this.subData = submission;
-    return super.updateValue(flags);
+
+    // Return if the value has changed.
+    this.updateOnChange(flags, changed);
+    return changed;
   }
 
   getValue() {
-    return this.subData;
+    return this.dataValue;
   }
 }

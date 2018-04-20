@@ -2580,7 +2580,7 @@ var BaseComponent = function () {
       }
 
       // Clone so that it creates a new instance.
-      return _lodash2.default.cloneDeep(defaultValue);
+      return _lodash2.default.clone(defaultValue);
     }
   }, {
     key: 'name',

@@ -820,8 +820,7 @@ class Formio {
           err.message = `Could not connect to API server (${err.message})`;
           err.networkError = true;
         }
-        // Propagate error so client can handle accordingly
-        throw err;
+        return Promise.reject(err);
       });
   }
 
