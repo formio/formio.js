@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.31.3
+### Changed
+ - Server errors now return rejected promise instead of throwing an error (second place).
+
+### Fixed
+ -  Issues with nested form components not cloning properly.
+
 ## 2.31.2
 ### Fixed
  - Problems with datagrid not rending properly and getting out of sync.
