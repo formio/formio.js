@@ -255,6 +255,10 @@ export class BaseComponent {
     this.events.emit(`formio.${event}`, data);
   }
 
+  performInputMapping(input){
+    return input;
+  }
+
   /**
    * Returns an HTMLElement icon element.
    *
@@ -628,8 +632,7 @@ export class BaseComponent {
     _.each(this.dataValue, (value, index) => {
       const tr = this.ce('tr');
       const td = this.ce('td');
-      const input = this.createInput(td);
-      input.value = value;
+      this.buildInput(td, value, index);
       tr.appendChild(td);
 
       if (!this.shouldDisable) {
@@ -654,6 +657,11 @@ export class BaseComponent {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+  }
+
+  buildInput(container, value, index){
+    const input = this.createInput(container);
+    input.value = value;
   }
 
   bootstrap4Theme(name) {
@@ -1129,6 +1137,7 @@ export class BaseComponent {
       }
     });
     _.each(this.inputs, (input) => {
+      input = this.performInputMapping(input);
       if (input.mask) {
         input.mask.destroy();
       }
@@ -1374,7 +1383,7 @@ export class BaseComponent {
 
     // Add error classes
     this.addClass(this.element, 'has-error');
-    this.inputs.forEach((input) => this.addClass(input, 'is-invalid'));
+    this.inputs.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'alert alert-danger');
     }
@@ -1615,7 +1624,8 @@ export class BaseComponent {
    * @returns {*}
    */
   getValueAt(index) {
-    return this.inputs[index].value;
+    let input = this.performInputMapping(this.inputs[index]);
+    return input ? input.value : undefined;
   }
 
   /**
@@ -1866,7 +1876,7 @@ export class BaseComponent {
       this.removeChildFrom(this.errorElement, this.errorContainer);
     }
     this.removeClass(this.element, 'has-error');
-    this.inputs.forEach((input) => this.removeClass(input, 'is-invalid'));
+    this.inputs.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
     if (this.options.highlightErrors) {
       this.removeClass(this.element, 'alert alert-danger');
     }
@@ -1883,6 +1893,7 @@ export class BaseComponent {
       this.error = null;
     }
     _.each(this.inputs, (input) => {
+      input = this.performInputMapping(input);
       if (typeof input.setCustomValidity === 'function') {
         input.setCustomValidity(message, dirty);
       }
@@ -1899,11 +1910,12 @@ export class BaseComponent {
     if (value === null || value === undefined) {
       value = this.defaultValue;
     }
-    if (this.inputs[index].mask) {
-      this.inputs[index].mask.textMaskInputElement.update(value);
+    let input = this.performInputMapping(this.inputs[index]);
+    if (input.mask) {
+      input.mask.textMaskInputElement.update(value);
     }
     else {
-      this.inputs[index].value = value;
+      input.value = value;
     }
   }
 
@@ -1974,7 +1986,7 @@ export class BaseComponent {
     this._disabled = disabled;
 
     // Disable all inputs.
-    _.each(this.inputs, (input) => this.setDisabled(input, disabled));
+    _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));
   }
 
   setDisabled(element, disabled) {
@@ -2125,7 +2137,7 @@ export class BaseComponent {
   }
 
   focus() {
-    const input = this.inputs[0];
+    const input = this.performInputMapping(this.inputs[0]);
     if (input) {
       input.focus();
     }
