@@ -6505,6 +6505,9 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
 
     _this.type = 'datagrid';
     _this.editRows = [];
+    if (_this.options.components) {
+      _this.create = _lodash2.default.bind(_this.options.components.create, _this.options.components, _lodash2.default, _this.options, _lodash2.default, true);
+    }
     return _this;
   }
 
@@ -6582,11 +6585,16 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
           onClick: this.cancelRow.bind(this, rowIndex)
         }, this.component.removeRow || 'Cancel') : null])])));
       } else {
+        var create = this.create;
         wrapper.appendChild(this.renderTemplate(rowTemplate, {
           data: this.data,
           row: row,
           rowIndex: rowIndex,
           components: this.component.components,
+          getView: function getView(component, data) {
+            return create(component, data).getView(data);
+          },
+
           util: _utils2.default
         }, [{
           class: 'removeRow',
@@ -6922,7 +6930,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
   }, {
     key: 'defaultRowTemplate',
     get: function get() {
-      return '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        <div class="col-sm-2">\n          {{ row[component.key] }}\n        </div>\n      {% }) %}\n      <div class="col-sm-2">\n        <div class="btn-group pull-right">\n          <div class="btn btn-default editRow">Edit</div>\n          <div class="btn btn-danger removeRow">Delete</div>\n        </div>\n      </div>\n    </div>';
+      return '<div class="row">\n      {% util.eachComponent(components, function(component) { %}\n        <div class="col-sm-2">\n          {{ getView(component, row[component.key]) }}\n        </div>\n      {% }) %}\n      <div class="col-sm-2">\n        <div class="btn-group pull-right">\n          <div class="btn btn-default editRow">Edit</div>\n          <div class="btn btn-danger removeRow">Delete</div>\n        </div>\n      </div>\n    </div>';
     }
   }, {
     key: 'defaultValue',
@@ -7888,6 +7896,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         this.submitted = true;
         return this.subForm.submit(true).then(function (submission) {
           _this4.dataValue = _this4.component.reference ? {
+            data: submission.data,
             _id: submission._id,
             form: submission.form
           } : submission;
@@ -9580,8 +9589,10 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
 
       if (!this.choices && this.selectInput) {
-        // Detach from DOM and clear input.
-        this.removeChildFrom(this.selectInput, this.selectContainer);
+        if (this.loading) {
+          this.removeChildFrom(this.selectInput, this.selectContainer);
+        }
+
         this.selectInput.innerHTML = '';
       }
 
@@ -9602,7 +9613,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
 
       if (this.choices) {
         this.choices.setChoices(this.selectOptions, 'value', 'label', true);
-      } else {
+      } else if (this.loading) {
         // Re-attach select input.
         this.appendTo(this.selectInput, this.selectContainer);
       }
@@ -9807,7 +9818,7 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       if (this.component.widget === 'html5') {
         this.triggerUpdate();
         this.addEventListener(input, 'focus', function () {
-          return _this6.activate();
+          return _this6.update();
         });
         return;
       }
@@ -9860,17 +9871,22 @@ var SelectComponent = exports.SelectComponent = function (_BaseComponent) {
       }
 
       this.addEventListener(input, 'showDropdown', function () {
-        if (_this6.component.dataSrc === 'custom') {
-          _this6.updateCustomItems();
-        }
-
-        // Activate the control.
-        _this6.activate();
+        return _this6.update();
       });
 
       // Force the disabled state with getters and setters.
       this.disabled = this.disabled;
       this.triggerUpdate();
+    }
+  }, {
+    key: 'update',
+    value: function update() {
+      if (this.component.dataSrc === 'custom') {
+        this.updateCustomItems();
+      }
+
+      // Activate the control.
+      this.activate();
     }
   }, {
     key: 'addCurrentChoices',

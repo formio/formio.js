@@ -60,10 +60,21 @@ export default class GridBuilder extends FormioComponents{
     this.options = options || {
       colHeaders: [],
       columns: [],
+      height: 456,
+      width: '100%',
+      colWidths: 105,
+      rowHeaders: true,
       sortIndicator: true,
       columnSorting: true,
-      afterSelection: (r, c, r2, c2, preventScrolling, selectionLayerLevel) => this.onSelect(r, c, r2, c2, preventScrolling, selectionLayerLevel)
+      contextMenu: true,
+      autoRowSize: true,
+      manualColumnMove: true,
+      manualRowMove: true,
     };
+    if (!options || !options.hasOwnProperty('afterSelection')) {
+      this.options.afterSelection = (r, c, r2, c2, preventScrolling, selectionLayerLevel) => this.onSelect(r, c, r2, c2, preventScrolling, selectionLayerLevel)
+    }
+
     this.options.data = [];
 
 
@@ -132,6 +143,7 @@ export default class GridBuilder extends FormioComponents{
       this.emit('gridSelectedRow',this.grid.getSourceDataAtRow(r, c))
     }
   }
+
   /**
    * Loads the submission if applicable.
    */
@@ -149,6 +161,7 @@ export default class GridBuilder extends FormioComponents{
         this.options.data = submission;
         this.createGrid();
         this.loading = false;
+        this.setupColumns();
         this.submissionReadyResolve();
       } , (err) => err.catch((err) => err));
     }
@@ -217,7 +230,6 @@ export default class GridBuilder extends FormioComponents{
     this.formio = new Formio(src, {formOnly: true});
     this.formio.loadForm().then((form) => {
       this.form = form;
-      this.setupColumns();
       this.loadSubmissions();
       this.buildPagination(this.query);
       // Get Submission
@@ -236,7 +248,6 @@ export default class GridBuilder extends FormioComponents{
     if (!this.query.hasOwnProperty('skip')) {
       this.query.skip = 0;
     }
-    console.log(this.query);
     this.loading = true;
     if (this.formio.submissionsUrl) {
       this.onSubmission = this.formio.loadSubmissions({params:this.query}).then((submission) => {
@@ -312,15 +323,26 @@ export default class GridBuilder extends FormioComponents{
   }
 
   setupColumns() {
-    let i = 0;
     FormioUtils.eachComponent(this.form.components, (component) => {
       if (component.input && component.tableView) {
-        this.options.columns.push({
-          data: 'data.' + component.key,
-          readOnly: true
-        });
+        const coverRenderer = (instance, td, row, col, prop, value, cellProperties) => {
+            const span = this.ce('span', {},'Complex data');
+            td.appendChild(span);
+          return td;
+        };
+        if(component.components) {
+          this.options.columns.push({
+            data: 'data.' + component.key,
+            readOnly: true,
+            renderer: coverRenderer
+          });
+        } else {
+          this.options.columns.push({
+            data: 'data.' + component.key,
+            readOnly: true,
+          });
+        }
         this.options.colHeaders.push(component.label || component.placeholder ||component.key);
-        i++;
       }
     });
   }

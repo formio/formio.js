@@ -12,7 +12,6 @@ export class FormioGrid {
 
   loadGrid() {
     this.instance = null;
-    this.element.innerHTML = '';
     this.instance = gridFactory(this.element, this.form, this.options);
     return this.instance.ready.then(() => this.instance);
   }
