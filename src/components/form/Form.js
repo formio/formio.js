@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import { BaseComponent } from '../base/Base';
+import {BaseComponent} from '../base/Base';
 import Promise from 'native-promise-only';
 import FormioUtils from '../../utils';
 import Formio from '../../formio';
-import formFactory from "../../formFactory";
+import formFactory from '../../formFactory';
 
 export class FormComponent extends BaseComponent {
   constructor(component, options, data) {
