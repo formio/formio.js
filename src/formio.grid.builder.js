@@ -326,22 +326,27 @@ export default class GridBuilder extends FormioComponents{
     FormioUtils.eachComponent(this.form.components, (component) => {
       if (component.input && component.tableView) {
         const coverRenderer = (instance, td, row, col, prop, value, cellProperties) => {
+          if(['datagrid', 'form', 'resource'].indexOf(component.type) !== -1) {
             const span = this.ce('span', {},'Complex data');
             td.appendChild(span);
-          return td;
+            return td;
+          }
+          else if(['address'].indexOf(component.type) !== -1) {
+            const span = this.ce('span', {},value.formatted_address);
+            td.appendChild(span);
+            return td;
+          }
+          else {
+            const span = this.ce('span', {}, value);
+            td.appendChild(span);
+            return td;
+          }
         };
-        if(component.components) {
           this.options.columns.push({
             data: 'data.' + component.key,
             readOnly: true,
             renderer: coverRenderer
           });
-        } else {
-          this.options.columns.push({
-            data: 'data.' + component.key,
-            readOnly: true,
-          });
-        }
         this.options.colHeaders.push(component.label || component.placeholder ||component.key);
       }
     });
