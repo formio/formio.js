@@ -81,7 +81,7 @@ export class ButtonComponent extends BaseComponent {
       const error = this.ce('span', {
         class: 'help-block'
       });
-      error.appendChild(this.text('Please correct all errors before submitting.'));
+      error.appendChild(this.text(this.errorMessage('error')));
       errorContainer.appendChild(error);
 
       this.on('submitButton', () => {
