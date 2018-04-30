@@ -531,8 +531,8 @@ export class BaseComponent {
     else if (this.component.customDefaultValue) {
       if (typeof this.component.customDefaultValue === 'string') {
         try {
-          defaultValue = (new Function('component', 'row', 'data',
-            `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
+          defaultValue = (new Function('component', 'row', 'data', '_',
+            `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data, _);
         }
         catch (e) {
           defaultValue = null;
@@ -1712,7 +1712,8 @@ export class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.hasValue) {
+    let isEmpty = _.isEqual(this.dataValue, this.emptyValue);
+    if (this.hasValue && !isEmpty) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });

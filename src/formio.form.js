@@ -399,6 +399,7 @@ export default class FormioForm extends FormioComponents {
     else {
       this.submissionReadyResolve();
     }
+    return this.submissionReady;
   }
 
   /**
@@ -636,18 +637,19 @@ export default class FormioForm extends FormioComponents {
   /**
    * Sets a submission and returns the promise when it is ready.
    * @param submission
+   * @param flags
    * @return {Promise.<TResult>}
    */
-  setSubmission(submission) {
+  setSubmission(submission, flags) {
     return this.onSubmission = this.formReady.then(
       () => {
         // If nothing changed, still trigger an update.
-        if (!this.setValue(submission)) {
+        if (!this.setValue(submission, flags)) {
           this.triggerChange({
             noValidate: true
           });
         }
-        this.submissionReadyResolve();
+        this.submissionReadyResolve(submission);
       },
       (err) => this.submissionReadyReject(err)
     ).catch(
@@ -843,17 +845,15 @@ export default class FormioForm extends FormioComponents {
    * @param {Object} error - The error that occured.
    */
   onSubmissionError(error) {
-    if (!error) {
-      return;
-    }
+    if (error) {
+      // Normalize the error.
+      if (typeof error === 'string') {
+        error = {message: error};
+      }
 
-    // Normalize the error.
-    if (typeof error === 'string') {
-      error = {message: error};
-    }
-
-    if ('details' in error) {
-      error = error.details;
+      if ('details' in error) {
+        error = error.details;
+      }
     }
 
     return this.showErrors(error);
@@ -912,46 +912,49 @@ export default class FormioForm extends FormioComponents {
     }
   }
 
-  executeSubmit() {
+  submitForm() {
     return new Promise((resolve, reject) => {
       // Read-only forms should never submit.
       if (this.options.readOnly) {
-        return resolve(this.submission);
+        return resolve({
+          submission: this.submission,
+          saved: false
+        });
       }
 
       const submission = this.submission || {};
       this.hook('beforeSubmit', submission, (err) => {
         if (err) {
-          this.showErrors(err);
-          return reject(err.message || err);
+          return reject(err);
         }
 
-        if (
-          submission &&
-          submission.data &&
-          this.checkValidity(submission.data, true)
-        ) {
-          this.loading = true;
-          if (this.nosubmit || !this.formio) {
-            return resolve(this.onSubmit(submission, false));
-          }
-          return this.formio.saveSubmission(submission)
-            .then(
-              (result) => resolve(this.onSubmit(result, true))
-            )
-            .catch(
-              (err) => {
-                this.onSubmissionError(err);
-                reject(err);
-              }
-            );
-        }
-        else {
-          this.showErrors();
+        if (!submission || !submission.data) {
           return reject('Invalid Submission');
         }
+
+        if (!this.checkValidity(submission.data, true)) {
+          return reject();
+        }
+
+        this.loading = true;
+        if (this.nosubmit || !this.formio) {
+          return resolve({
+            submission: submission,
+            saved: false
+          });
+        }
+        this.formio.saveSubmission(submission).then(result => resolve({
+          submission: result,
+          saved: true
+        })).catch(reject);
       });
     });
+  }
+
+  executeSubmit() {
+    return this.submitForm()
+      .then(result => this.onSubmit(result.submission, result.saved))
+      .catch(err => Promise.reject(this.onSubmissionError(err)));
   }
 
   /**

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import {BaseComponent} from '../base/Base';
 import Promise from 'native-promise-only';
 import FormioUtils from '../../utils';
@@ -8,7 +7,6 @@ import formFactory from '../../formFactory';
 export class FormComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
-    this.submitted = false;
     this.subForm = null;
     this.subFormReady = new Promise((resolve, reject) => {
       this.subFormReadyResolve = resolve;
@@ -84,7 +82,9 @@ export class FormComponent extends BaseComponent {
       this.subForm.on('change', () => this.onChange());
       this.subForm.url = this.component.src;
       this.subForm.nosubmit = false;
+      this.restoreValue();
       this.subFormReadyResolve(this.subForm);
+      return this.subForm;
     }).catch(err => this.subFormReadyReject(err));
     return this.subFormReady;
   }
@@ -102,13 +102,7 @@ export class FormComponent extends BaseComponent {
       return this.subForm.checkConditions(this.dataValue.data);
     }
 
-    if (super.checkConditions(data)) {
-      this.loadSubForm();
-      this.restoreValue();
-      return true;
-    }
-
-    return false;
+    return super.checkConditions(data);
   }
 
   calculateValue(data, flags) {
@@ -124,11 +118,15 @@ export class FormComponent extends BaseComponent {
    */
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
-    if (this.subForm && this.component.submit && !this.submitted) {
-      this.submitted = true;
-      return this.subForm.submit(true).then(submission => {
-        this.dataValue = submission;
-        return submission;
+    if (this.component.submit) {
+      return this.loadSubForm().then((form) => {
+        return this.subForm.submitForm().then(result => {
+          this.dataValue = result.submission;
+          return this.dataValue;
+        }).catch(err => {
+          this.subForm.onSubmissionError(err);
+          return Promise.reject(err);
+        });
       });
     }
     else {
@@ -140,15 +138,28 @@ export class FormComponent extends BaseComponent {
    * Submit the form before the whole form is triggered.
    */
   beforeSubmit() {
-    // Ensure we submit the form.
-    if (this.subForm && this.component.submit && !this.submitted) {
-      this.submitted = true;
-      return this.subForm.submit(true).then(submission => {
-        this.dataValue = this.component.reference ? {
-          _id: submission._id,
-          form: submission.form
-        } : submission;
-        return this.dataValue;
+    const submission = this.dataValue;
+
+    // This submission has already been submitted, so just return the reference data.
+    if (submission && submission._id && submission.form) {
+      this.dataValue = this.component.reference ? {
+        _id: submission._id,
+        form: submission.form
+      } : submission;
+      return Promise.resolve(this.dataValue);
+    }
+
+    // This submission has not been submitted yet.
+    if (this.component.submit) {
+      return this.loadSubForm().then((form) => {
+        return this.subForm.submitForm().then(result => {
+          this.subForm.loading = false;
+          this.dataValue = this.component.reference ? {
+            _id: result.submission._id,
+            form: result.submission.form
+          } : result.submission;
+          return this.dataValue;
+        });
       });
     }
     else {
@@ -158,32 +169,35 @@ export class FormComponent extends BaseComponent {
 
   build() {
     this.createElement();
+
+    // Do not restore the value when building before submission.
+    if (!this.options.beforeSubmit) {
+      this.restoreValue();
+    }
   }
 
   setValue(submission, flags) {
-    // Determine if the submission has changed.
-    const changed = flags.changed || this.hasChanged(submission, this.dataValue);
-    this.dataValue = submission;
-
-    // Update the submission on the form.
-    if (submission && (submission._id || !_.isEmpty(submission.data))) {
-      this.loadSubForm().then((form) => {
-        if (submission._id && !flags.noload) {
-          const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
-          form.setSrc(submissionUrl, this.options);
-        }
-        else {
-          form.setSubmission(submission);
-        }
-      });
+    if (this.subForm) {
+      super.setValue(submission);
+      return this.subForm.setValue(submission, flags);
     }
 
-    // Return if the value has changed.
-    this.updateOnChange(flags, changed);
-    return changed;
+    this.loadSubForm().then((form) => {
+      if (submission && submission._id && form.formio && !flags.noload) {
+        const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+        form.setSrc(submissionUrl, this.options);
+      }
+      else {
+        form.setSubmission(submission, flags);
+      }
+    });
+    return false;
   }
 
   getValue() {
+    if (this.subForm) {
+      return this.subForm.getValue();
+    }
     return this.dataValue;
   }
 }
