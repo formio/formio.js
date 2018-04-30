@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -193,6 +193,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'createComponent',
     value: function createComponent(component, options, data) {
+      options = options || this.options;
+      data = data || this.data;
       if (!this.options.components) {
         this.options.components = require('./index');
         _lodash2.default.assign(this.options.components, FormioComponents.customComponents);
@@ -473,6 +475,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
       var _this5 = this;
 
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'destroy', this).call(this, all);
+      this.empty(this.getElement());
       var components = _lodash2.default.clone(this.components);
       _lodash2.default.each(components, function (comp) {
         return _this5.removeComponent(comp, _this5.components);
@@ -3261,7 +3264,8 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      if (this.hasValue) {
+      var isEmpty = _lodash2.default.isEqual(this.dataValue, this.emptyValue);
+      if (this.hasValue && !isEmpty) {
         this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
@@ -3755,7 +3759,7 @@ var BaseComponent = function () {
       } else if (this.component.customDefaultValue) {
         if (typeof this.component.customDefaultValue === 'string') {
           try {
-            defaultValue = new Function('component', 'row', 'data', 'var value = \'\'; ' + this.component.customDefaultValue + '; return value;')(this, this.data, this.data);
+            defaultValue = new Function('component', 'row', 'data', '_', 'var value = \'\'; ' + this.component.customDefaultValue + '; return value;')(this, this.data, this.data, _lodash2.default);
           } catch (e) {
             defaultValue = null;
             /* eslint-disable no-console */
@@ -5347,6 +5351,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         this.addNewValue();
       }
       this.visibleColumns = true;
+      this.errorContainer = this.element;
       this.buildRows();
       this.createDescription(this.element);
     }
@@ -5381,7 +5386,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       var previousNumRows = this.numRows;
       this.setVisibleComponents();
 
-      if (!this.tableBuilt || this.numRows !== previousNumRows || this.numColumns != previousNumColumns) {
+      if (!this.tableBuilt || this.numRows !== previousNumRows || this.numColumns !== previousNumColumns) {
         this.tableBuilt = true;
         return true;
       }
@@ -5399,6 +5404,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
 
       this.clear();
+      this.createLabel(this.element);
       var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
       _lodash2.default.each(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
         if (_this3.component[prop]) {
@@ -6847,15 +6853,20 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         return false;
       }
 
-      this.setCustomValidity();
+      var message = this.invalid || this.invalidMessage(data, dirty);
+      this.setCustomValidity(message, dirty);
       return true;
     }
   }, {
     key: 'setCustomValidity',
-    value: function setCustomValidity(message) {
+    value: function setCustomValidity(message, dirty) {
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
         this.removeChildFrom(this.errorElement, this.errorContainer);
+      }
+      this.removeClass(this.element, 'has-error');
+      if (this.options.highlightErrors) {
+        this.removeClass(this.element, 'alert alert-danger');
       }
       if (message) {
         this.emit('componentError', this.error);
@@ -6865,6 +6876,11 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         });
         errorMessage.appendChild(this.text(message));
         this.appendTo(errorMessage, this.errorElement);
+        // Add error classes
+        this.addClass(this.element, 'has-error');
+        if (dirty && this.options.highlightErrors) {
+          this.addClass(this.element, 'alert alert-danger');
+        }
       }
     }
   }, {
@@ -7533,23 +7549,6 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       if (this.component.storage && files && files.length) {
         // files is not really an array and does not have a forEach method, so fake it.
         Array.prototype.forEach.call(files, function (file) {
-          // Check file pattern
-          if (_this9.component.filePattern && !_this9.validatePattern(file, _this9.component.filePattern)) {
-            return;
-          }
-
-          // Check file minimum size
-          if (_this9.component.fileMinSize && !_this9.validateMinSize(file, _this9.component.fileMinSize)) {
-            return;
-          }
-
-          // Check file maximum size
-          if (_this9.component.fileMaxSize && !_this9.validateMaxSize(file, _this9.component.fileMaxSize)) {
-            return;
-          }
-
-          // Get a unique name for this file to keep file collisions from occurring.
-          var fileName = _utils2.default.uniqueName(file.name);
           var fileUpload = {
             originalName: file.name,
             name: fileName,
@@ -7557,6 +7556,27 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             status: 'info',
             message: 'Starting upload'
           };
+
+          // Check file pattern
+          if (_this9.component.filePattern && !_this9.validatePattern(file, _this9.component.filePattern)) {
+            fileUpload.status = 'error';
+            fileUpload.message = 'File is the wrong type; it must be ' + _this9.component.filePattern;
+          }
+
+          // Check file minimum size
+          if (_this9.component.fileMinSize && !_this9.validateMinSize(file, _this9.component.fileMinSize)) {
+            fileUpload.status = 'error';
+            fileUpload.message = 'File is too small; it must be at least ' + _this9.component.fileMinSize;
+          }
+
+          // Check file maximum size
+          if (_this9.component.fileMaxSize && !_this9.validateMaxSize(file, _this9.component.fileMaxSize)) {
+            fileUpload.status = 'error';
+            fileUpload.message = 'File is too big; it must be at most ' + _this9.component.fileMaxSize;
+          }
+
+          // Get a unique name for this file to keep file collisions from occurring.
+          var fileName = _utils2.default.uniqueName(file.name);
           var dir = _this9.interpolate(_this9.component.dir || '', { data: _this9.data, row: _this9.row });
           var fileService = _this9.fileService;
           if (!fileService) {
@@ -7567,7 +7587,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
           var uploadStatus = _this9.createUploadStatus(fileUpload);
           _this9.uploadStatusList.appendChild(uploadStatus);
 
-          if (fileService) {
+          if (fileUpload.status !== 'error') {
             fileService.uploadFile(_this9.component.storage, file, fileName, dir, function (evt) {
               fileUpload.status = 'progress';
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
@@ -7673,10 +7693,6 @@ var _get = function get(object, property, receiver) {
   }
 };
 
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
-
 var _Base = require('../base/Base');
 
 var _nativePromiseOnly = require('native-promise-only');
@@ -7725,7 +7741,6 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
 
     var _this = _possibleConstructorReturn(this, (FormComponent.__proto__ || Object.getPrototypeOf(FormComponent)).call(this, component, options, data));
 
-    _this.submitted = false;
     _this.subForm = null;
     _this.subFormReady = new _nativePromiseOnly2.default(function (resolve, reject) {
       _this.subFormReadyResolve = resolve;
@@ -7801,7 +7816,9 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         });
         _this2.subForm.url = _this2.component.src;
         _this2.subForm.nosubmit = false;
+        _this2.restoreValue();
         _this2.subFormReadyResolve(_this2.subForm);
+        return _this2.subForm;
       }).catch(function (err) {
         return _this2.subFormReadyReject(err);
       });
@@ -7823,13 +7840,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         return this.subForm.checkConditions(this.dataValue.data);
       }
 
-      if (_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, data)) {
-        this.loadSubForm();
-        this.restoreValue();
-        return true;
-      }
-
-      return false;
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, data);
     }
   }, {
     key: 'calculateValue',
@@ -7851,11 +7862,15 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
       var _this3 = this;
 
       // If we wish to submit the form on next page, then do that here.
-      if (this.subForm && this.component.submit && !this.submitted) {
-        this.submitted = true;
-        return this.subForm.submit(true).then(function (submission) {
-          _this3.dataValue = submission;
-          return submission;
+      if (this.component.submit) {
+        return this.loadSubForm().then(function (form) {
+          return _this3.subForm.submitForm().then(function (result) {
+            _this3.dataValue = result.submission;
+            return _this3.dataValue;
+          }).catch(function (err) {
+            _this3.subForm.onSubmissionError(err);
+            return _nativePromiseOnly2.default.reject(err);
+          });
         });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeNext', this).call(this);
@@ -7871,15 +7886,28 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     value: function beforeSubmit() {
       var _this4 = this;
 
-      // Ensure we submit the form.
-      if (this.subForm && this.component.submit && !this.submitted) {
-        this.submitted = true;
-        return this.subForm.submit(true).then(function (submission) {
-          _this4.dataValue = _this4.component.reference ? {
-            _id: submission._id,
-            form: submission.form
-          } : submission;
-          return _this4.dataValue;
+      var submission = this.dataValue;
+
+      // This submission has already been submitted, so just return the reference data.
+      if (submission && submission._id && submission.form) {
+        this.dataValue = this.component.reference ? {
+          _id: submission._id,
+          form: submission.form
+        } : submission;
+        return _nativePromiseOnly2.default.resolve(this.dataValue);
+      }
+
+      // This submission has not been submitted yet.
+      if (this.component.submit) {
+        return this.loadSubForm().then(function (form) {
+          return _this4.subForm.submitForm().then(function (result) {
+            _this4.subForm.loading = false;
+            _this4.dataValue = _this4.component.reference ? {
+              _id: result.submission._id,
+              form: result.submission.form
+            } : result.submission;
+            return _this4.dataValue;
+          });
         });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeSubmit', this).call(this);
@@ -7889,35 +7917,38 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     key: 'build',
     value: function build() {
       this.createElement();
+
+      // Do not restore the value when building before submission.
+      if (!this.options.beforeSubmit) {
+        this.restoreValue();
+      }
     }
   }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
       var _this5 = this;
 
-      // Determine if the submission has changed.
-      var changed = flags.changed || this.hasChanged(submission, this.dataValue);
-      this.dataValue = submission;
-
-      // Update the submission on the form.
-      if (submission && (submission._id || !_lodash2.default.isEmpty(submission.data))) {
-        this.loadSubForm().then(function (form) {
-          if (submission._id && !flags.noload) {
-            var submissionUrl = form.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;
-            form.setSrc(submissionUrl, _this5.options);
-          } else {
-            form.setSubmission(submission);
-          }
-        });
+      if (this.subForm) {
+        _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission);
+        return this.subForm.setValue(submission, flags);
       }
 
-      // Return if the value has changed.
-      this.updateOnChange(flags, changed);
-      return changed;
+      this.loadSubForm().then(function (form) {
+        if (submission && submission._id && form.formio && !flags.noload) {
+          var submissionUrl = form.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;
+          form.setSrc(submissionUrl, _this5.options);
+        } else {
+          form.setSubmission(submission, flags);
+        }
+      });
+      return false;
     }
   }, {
     key: 'getValue',
     value: function getValue() {
+      if (this.subForm) {
+        return this.subForm.getValue();
+      }
       return this.dataValue;
     }
   }, {
@@ -7930,7 +7961,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
   return FormComponent;
 }(_Base.BaseComponent);
 
-},{"../../formFactory":41,"../../formio":44,"../../utils":56,"../base/Base":4,"lodash":79,"native-promise-only":81}],20:[function(require,module,exports){
+},{"../../formFactory":41,"../../formio":44,"../../utils":56,"../base/Base":4,"native-promise-only":81}],20:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -11929,6 +11960,7 @@ var FormioForm = function (_FormioComponents) {
       } else {
         this.submissionReadyResolve();
       }
+      return this.submissionReady;
     }
 
     /**
@@ -12072,19 +12104,20 @@ var FormioForm = function (_FormioComponents) {
     /**
      * Sets a submission and returns the promise when it is ready.
      * @param submission
+     * @param flags
      * @return {Promise.<TResult>}
      */
-    value: function setSubmission(submission) {
+    value: function setSubmission(submission, flags) {
       var _this7 = this;
 
       return this.onSubmission = this.formReady.then(function () {
         // If nothing changed, still trigger an update.
-        if (!_this7.setValue(submission)) {
+        if (!_this7.setValue(submission, flags)) {
           _this7.triggerChange({
             noValidate: true
           });
         }
-        _this7.submissionReadyResolve();
+        _this7.submissionReadyResolve(submission);
       }, function (err) {
         return _this7.submissionReadyReject(err);
       }).catch(function (err) {
@@ -12311,17 +12344,15 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'onSubmissionError',
     value: function onSubmissionError(error) {
-      if (!error) {
-        return;
-      }
+      if (error) {
+        // Normalize the error.
+        if (typeof error === 'string') {
+          error = { message: error };
+        }
 
-      // Normalize the error.
-      if (typeof error === 'string') {
-        error = { message: error };
-      }
-
-      if ('details' in error) {
-        error = error.details;
+        if ('details' in error) {
+          error = error.details;
+        }
       }
 
       return this.showErrors(error);
@@ -12388,39 +12419,58 @@ var FormioForm = function (_FormioComponents) {
       }
     }
   }, {
-    key: 'executeSubmit',
-    value: function executeSubmit() {
+    key: 'submitForm',
+    value: function submitForm() {
       var _this11 = this;
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
         // Read-only forms should never submit.
         if (_this11.options.readOnly) {
-          return resolve(_this11.submission);
+          return resolve({
+            submission: _this11.submission,
+            saved: false
+          });
         }
 
         var submission = _this11.submission || {};
         _this11.hook('beforeSubmit', submission, function (err) {
           if (err) {
-            _this11.showErrors(err);
-            return reject(err.message || err);
+            return reject(err);
           }
 
-          if (submission && submission.data && _this11.checkValidity(submission.data, true)) {
-            _this11.loading = true;
-            if (_this11.nosubmit || !_this11.formio) {
-              return resolve(_this11.onSubmit(submission, false));
-            }
-            return _this11.formio.saveSubmission(submission).then(function (result) {
-              return resolve(_this11.onSubmit(result, true));
-            }).catch(function (err) {
-              _this11.onSubmissionError(err);
-              reject(err);
-            });
-          } else {
-            _this11.showErrors();
+          if (!submission || !submission.data) {
             return reject('Invalid Submission');
           }
+
+          if (!_this11.checkValidity(submission.data, true)) {
+            return reject();
+          }
+
+          _this11.loading = true;
+          if (_this11.nosubmit || !_this11.formio) {
+            return resolve({
+              submission: submission,
+              saved: false
+            });
+          }
+          _this11.formio.saveSubmission(submission).then(function (result) {
+            return resolve({
+              submission: result,
+              saved: true
+            });
+          }).catch(reject);
         });
+      });
+    }
+  }, {
+    key: 'executeSubmit',
+    value: function executeSubmit() {
+      var _this12 = this;
+
+      return this.submitForm().then(function (result) {
+        return _this12.onSubmit(result.submission, result.saved);
+      }).catch(function (err) {
+        return _nativePromiseOnly2.default.reject(_this12.onSubmissionError(err));
       });
     }
 
@@ -12447,11 +12497,11 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'submit',
     value: function submit(before) {
-      var _this12 = this;
+      var _this13 = this;
 
       if (!before) {
         return this.beforeSubmit().then(function () {
-          return _this12.executeSubmit();
+          return _this13.executeSubmit();
         });
       } else {
         return this.executeSubmit();
@@ -12460,7 +12510,7 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'submitUrl',
     value: function submitUrl(URL, headers) {
-      var _this13 = this;
+      var _this14 = this;
 
       if (!URL) {
         return console.warn('Missing URL argument');
@@ -12483,8 +12533,8 @@ var FormioForm = function (_FormioComponents) {
       if (API_URL && settings) {
         try {
           _formio2.default.makeStaticRequest(API_URL, settings.method, submission, settings.headers).then(function () {
-            _this13.emit('requestDone');
-            _this13.setAlert('success', '<p> Success </p>');
+            _this14.emit('requestDone');
+            _this14.setAlert('success', '<p> Success </p>');
           });
         } catch (e) {
           this.showErrors(e.statusText + ' ' + e.status);
@@ -12500,15 +12550,15 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'language',
     set: function set(lang) {
-      var _this14 = this;
+      var _this15 = this;
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
-        _this14.options.language = lang;
+        _this15.options.language = lang;
         _i18next2.default.changeLanguage(lang, function (err) {
           if (err) {
             return reject(err);
           }
-          _this14.redraw();
+          _this15.redraw();
           resolve();
         });
       });
@@ -12546,10 +12596,10 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'ready',
     get: function get() {
-      var _this15 = this;
+      var _this16 = this;
 
       return this.formReady.then(function () {
-        return _this15.submissionReady;
+        return _this16.submissionReady;
       });
     }
 
@@ -14435,6 +14485,7 @@ window.addEventListener('message', function (event) {
 });
 
 },{"./formio":44,"./formio.form":42,"./pdf.image":49,"native-promise-only":81}],46:[function(require,module,exports){
+/* eslint-disable */
 /**
  * DO NOT DELETE THIS! THIS WILL BREAK THE PDF RENDERING IF YOU DO.
  */
@@ -14643,16 +14694,29 @@ var FormioWizard = function (_FormioForm) {
       return this.page - 1;
     }
   }, {
+    key: 'beforeSubmit',
+    value: function beforeSubmit() {
+      var _this2 = this;
+
+      var ops = [];
+      var pageOptions = _lodash2.default.clone(this.options);
+      pageOptions.beforeSubmit = true;
+      _lodash2.default.each(this.pages, function (page) {
+        return ops.push(_this2.createComponent(page, pageOptions).beforeSubmit());
+      });
+      return _nativePromiseOnly2.default.all(ops);
+    }
+  }, {
     key: 'nextPage',
     value: function nextPage() {
-      var _this2 = this;
+      var _this3 = this;
 
       // Read-only forms should not worry about validation before going to next page, nor should they submit.
       if (this.options.readOnly) {
         this.history.push(this.page);
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(function () {
-          _this2._nextPage = _this2.getNextPage(_this2.submission.data, _this2.page);
-          _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+          _this3._nextPage = _this3.getNextPage(_this3.submission.data, _this3.page);
+          _this3.emit('nextPage', { page: _this3.page, submission: _this3.submission });
         });
       }
 
@@ -14662,10 +14726,10 @@ var FormioWizard = function (_FormioForm) {
           noValidate: true
         });
         return this.beforeNext().then(function () {
-          _this2.history.push(_this2.page);
-          return _this2.setPage(_this2.getNextPage(_this2.submission.data, _this2.page)).then(function () {
-            _this2._nextPage = _this2.getNextPage(_this2.submission.data, _this2.page);
-            _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+          _this3.history.push(_this3.page);
+          return _this3.setPage(_this3.getNextPage(_this3.submission.data, _this3.page)).then(function () {
+            _this3._nextPage = _this3.getNextPage(_this3.submission.data, _this3.page);
+            _this3.emit('nextPage', { page: _this3.page, submission: _this3.submission });
           });
         });
       } else {
@@ -14675,11 +14739,11 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'prevPage',
     value: function prevPage() {
-      var _this3 = this;
+      var _this4 = this;
 
       var prevPage = this.getPreviousPage();
       return this.setPage(prevPage).then(function () {
-        _this3.emit('prevPage', { page: _this3.page, submission: _this3.submission });
+        _this4.emit('prevPage', { page: _this4.page, submission: _this4.submission });
       });
     }
   }, {
@@ -14756,18 +14820,18 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'buildPages',
     value: function buildPages(form) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.pages = [];
       _lodash2.default.each(form.components, function (component) {
         if (component.type === 'panel') {
           // Ensure that this page can be seen.
-          if (_utils2.default.checkCondition(component, _this4.data, _this4.data)) {
-            _this4.pages.push(component);
+          if (_utils2.default.checkCondition(component, _this5.data, _this5.data)) {
+            _this5.pages.push(component);
           }
         } else if (component.type === 'hidden') {
           // Global components are hidden components that can propagate between pages.
-          _this4.globalComponents.push(component);
+          _this5.globalComponents.push(component);
         }
       });
       this.buildWizardHeader();
@@ -14786,12 +14850,12 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'build',
     value: function build() {
-      var _this5 = this;
+      var _this6 = this;
 
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'build', this).call(this);
       this.formReady.then(function () {
-        _this5.buildWizardHeader();
-        _this5.buildWizardNav();
+        _this6.buildWizardHeader();
+        _this6.buildWizardNav();
       });
     }
   }, {
@@ -14822,7 +14886,7 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'buildWizardHeader',
     value: function buildWizardHeader() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.wizardHeader) {
         this.wizardHeader.innerHTML = '';
@@ -14859,16 +14923,16 @@ var FormioWizard = function (_FormioForm) {
       var showHistory = currentPage.breadcrumb.toLowerCase() === 'history';
       _lodash2.default.each(this.pages, function (page, i) {
         // See if this page is in our history.
-        if (showHistory && _this6.page !== i && !(_this6.history.indexOf(i) !== -1)) {
+        if (showHistory && _this7.page !== i && !(_this7.history.indexOf(i) !== -1)) {
           return;
         }
 
         // Set clickable based on breadcrumb settings
-        var clickable = _this6.page !== i && _this6.options.breadcrumbSettings.clickable;
+        var clickable = _this7.page !== i && _this7.options.breadcrumbSettings.clickable;
         var pageClass = 'page-item ';
-        pageClass += i === _this6.page ? 'active' : clickable ? '' : 'disabled';
+        pageClass += i === _this7.page ? 'active' : clickable ? '' : 'disabled';
 
-        var pageButton = _this6.ce('li', {
+        var pageButton = _this7.ce('li', {
           class: pageClass,
           style: clickable ? 'cursor: pointer;' : ''
         });
@@ -14876,26 +14940,26 @@ var FormioWizard = function (_FormioForm) {
         // Navigate to the page as they click on it.
 
         if (clickable) {
-          _this6.addEventListener(pageButton, 'click', function (event) {
+          _this7.addEventListener(pageButton, 'click', function (event) {
             event.preventDefault();
-            _this6.setPage(i);
+            _this7.setPage(i);
           });
         }
 
-        var pageLabel = _this6.ce('span', {
+        var pageLabel = _this7.ce('span', {
           class: 'page-link'
         });
         var pageTitle = page.title;
         if (currentPage.breadcrumb.toLowerCase() === 'condensed') {
-          pageTitle = i === _this6.page || showHistory ? page.title : i + 1;
+          pageTitle = i === _this7.page || showHistory ? page.title : i + 1;
           if (!pageTitle) {
             pageTitle = i + 1;
           }
         }
 
-        pageLabel.appendChild(_this6.text(pageTitle));
+        pageLabel.appendChild(_this7.text(pageTitle));
         pageButton.appendChild(pageLabel);
-        _this6.wizardHeaderList.appendChild(pageButton);
+        _this7.wizardHeaderList.appendChild(pageButton);
       });
     }
   }, {
@@ -14912,7 +14976,7 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'onChange',
     value: function onChange(flags, changed) {
-      var _this7 = this;
+      var _this8 = this;
 
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'onChange', this).call(this, flags, changed);
 
@@ -14925,8 +14989,8 @@ var FormioWizard = function (_FormioForm) {
         }
 
         if (_utils2.default.hasCondition(component)) {
-          var hasPage = _this7.pages && _this7.pages[pageIndex] && _this7.pageId(_this7.pages[pageIndex]) === _this7.pageId(component);
-          var shouldShow = _utils2.default.checkCondition(component, _this7.data, _this7.data);
+          var hasPage = _this8.pages && _this8.pages[pageIndex] && _this8.pageId(_this8.pages[pageIndex]) === _this8.pageId(component);
+          var shouldShow = _utils2.default.checkCondition(component, _this8.data, _this8.data);
           if (shouldShow && !hasPage || !shouldShow && hasPage) {
             rebuild = true;
             return false;
@@ -14954,7 +15018,7 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'buildWizardNav',
     value: function buildWizardNav(nextPage) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (this.wizardNav) {
         this.wizardNav.innerHTML = '';
@@ -14968,35 +15032,35 @@ var FormioWizard = function (_FormioForm) {
       });
       this.element.appendChild(this.wizardNav);
       _lodash2.default.each([{ name: 'cancel', method: 'cancel', class: 'btn btn-default btn-secondary' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
-        if (!_this8.hasButton(button.name, nextPage)) {
+        if (!_this9.hasButton(button.name, nextPage)) {
           return;
         }
-        var buttonWrapper = _this8.ce('li', {
+        var buttonWrapper = _this9.ce('li', {
           class: 'list-inline-item'
         });
         var buttonProp = button.name + 'Button';
-        var buttonElement = _this8[buttonProp] = _this8.ce('button', {
+        var buttonElement = _this9[buttonProp] = _this9.ce('button', {
           class: button.class + ' btn-wizard-nav-' + button.name
         });
-        buttonElement.appendChild(_this8.text(_this8.t(button.name)));
-        _this8.addEventListener(_this8[buttonProp], 'click', function (event) {
+        buttonElement.appendChild(_this9.text(_this9.t(button.name)));
+        _this9.addEventListener(_this9[buttonProp], 'click', function (event) {
           event.preventDefault();
 
           // Disable the button until done.
           buttonElement.setAttribute('disabled', 'disabled');
-          _this8.setLoading(buttonElement, true);
+          _this9.setLoading(buttonElement, true);
 
           // Call the button method, then re-enable the button.
-          _this8[button.method]().then(function () {
+          _this9[button.method]().then(function () {
             buttonElement.removeAttribute('disabled');
-            _this8.setLoading(buttonElement, false);
+            _this9.setLoading(buttonElement, false);
           }).catch(function () {
             buttonElement.removeAttribute('disabled');
-            _this8.setLoading(buttonElement, false);
+            _this9.setLoading(buttonElement, false);
           });
         });
-        buttonWrapper.appendChild(_this8[buttonProp]);
-        _this8.wizardNav.appendChild(buttonWrapper);
+        buttonWrapper.appendChild(_this9[buttonProp]);
+        _this9.wizardNav.appendChild(buttonWrapper);
       });
     }
   }, {
@@ -50905,7 +50969,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 (function (global){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.12.9
+ * @version 1.14.3
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -50934,6 +50998,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 }(this, (function () { 'use strict';
 
 var isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+
 var longerTimeoutBrowsers = ['Edge', 'Trident', 'Firefox'];
 var timeoutDuration = 0;
 for (var i = 0; i < longerTimeoutBrowsers.length; i += 1) {
@@ -51053,11 +51118,31 @@ function getScrollParent(element) {
       overflowX = _getStyleComputedProp.overflowX,
       overflowY = _getStyleComputedProp.overflowY;
 
-  if (/(auto|scroll)/.test(overflow + overflowY + overflowX)) {
+  if (/(auto|scroll|overlay)/.test(overflow + overflowY + overflowX)) {
     return element;
   }
 
   return getScrollParent(getParentNode(element));
+}
+
+var isIE11 = isBrowser && !!(window.MSInputMethodContext && document.documentMode);
+var isIE10 = isBrowser && /MSIE 10/.test(navigator.userAgent);
+
+/**
+ * Determines if the browser is Internet Explorer
+ * @method
+ * @memberof Popper.Utils
+ * @param {Number} version to check
+ * @returns {Boolean} isIE
+ */
+function isIE(version) {
+  if (version === 11) {
+    return isIE11;
+  }
+  if (version === 10) {
+    return isIE10;
+  }
+  return isIE11 || isIE10;
 }
 
 /**
@@ -51068,16 +51153,23 @@ function getScrollParent(element) {
  * @returns {Element} offset parent
  */
 function getOffsetParent(element) {
+  if (!element) {
+    return document.documentElement;
+  }
+
+  var noOffsetParent = isIE(10) ? document.body : null;
+
   // NOTE: 1 DOM access here
-  var offsetParent = element && element.offsetParent;
+  var offsetParent = element.offsetParent;
+  // Skip hidden elements which don't have an offsetParent
+  while (offsetParent === noOffsetParent && element.nextElementSibling) {
+    offsetParent = (element = element.nextElementSibling).offsetParent;
+  }
+
   var nodeName = offsetParent && offsetParent.nodeName;
 
   if (!nodeName || nodeName === 'BODY' || nodeName === 'HTML') {
-    if (element) {
-      return element.ownerDocument.documentElement;
-    }
-
-    return document.documentElement;
+    return element ? element.ownerDocument.documentElement : document.documentElement;
   }
 
   // .offsetParent will return the closest TD or TABLE in case
@@ -51219,29 +51311,14 @@ function getBordersSize(styles, axis) {
   return parseFloat(styles['border' + sideA + 'Width'], 10) + parseFloat(styles['border' + sideB + 'Width'], 10);
 }
 
-/**
- * Tells if you are running Internet Explorer 10
- * @method
- * @memberof Popper.Utils
- * @returns {Boolean} isIE10
- */
-var isIE10 = undefined;
-
-var isIE10$1 = function () {
-  if (isIE10 === undefined) {
-    isIE10 = navigator.appVersion.indexOf('MSIE 10') !== -1;
-  }
-  return isIE10;
-};
-
 function getSize(axis, body, html, computedStyle) {
-  return Math.max(body['offset' + axis], body['scroll' + axis], html['client' + axis], html['offset' + axis], html['scroll' + axis], isIE10$1() ? html['offset' + axis] + computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')] + computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')] : 0);
+  return Math.max(body['offset' + axis], body['scroll' + axis], html['client' + axis], html['offset' + axis], html['scroll' + axis], isIE(10) ? html['offset' + axis] + computedStyle['margin' + (axis === 'Height' ? 'Top' : 'Left')] + computedStyle['margin' + (axis === 'Height' ? 'Bottom' : 'Right')] : 0);
 }
 
 function getWindowSizes() {
   var body = document.body;
   var html = document.documentElement;
-  var computedStyle = isIE10$1() && getComputedStyle(html);
+  var computedStyle = isIE(10) && getComputedStyle(html);
 
   return {
     height: getSize('Height', body, html, computedStyle),
@@ -51333,8 +51410,8 @@ function getBoundingClientRect(element) {
   // IE10 10 FIX: Please, don't ask, the element isn't
   // considered in DOM in some circumstances...
   // This isn't reproducible in IE10 compatibility mode of IE11
-  if (isIE10$1()) {
-    try {
+  try {
+    if (isIE(10)) {
       rect = element.getBoundingClientRect();
       var scrollTop = getScroll(element, 'top');
       var scrollLeft = getScroll(element, 'left');
@@ -51342,10 +51419,10 @@ function getBoundingClientRect(element) {
       rect.left += scrollLeft;
       rect.bottom += scrollTop;
       rect.right += scrollLeft;
-    } catch (err) {}
-  } else {
-    rect = element.getBoundingClientRect();
-  }
+    } else {
+      rect = element.getBoundingClientRect();
+    }
+  } catch (e) {}
 
   var result = {
     left: rect.left,
@@ -51377,7 +51454,9 @@ function getBoundingClientRect(element) {
 }
 
 function getOffsetRectRelativeToArbitraryNode(children, parent) {
-  var isIE10 = isIE10$1();
+  var fixedPosition = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+  var isIE10 = isIE(10);
   var isHTML = parent.nodeName === 'HTML';
   var childrenRect = getBoundingClientRect(children);
   var parentRect = getBoundingClientRect(parent);
@@ -51387,6 +51466,11 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
   var borderTopWidth = parseFloat(styles.borderTopWidth, 10);
   var borderLeftWidth = parseFloat(styles.borderLeftWidth, 10);
 
+  // In cases where the parent is fixed, we must ignore negative scroll in offset calc
+  if (fixedPosition && parent.nodeName === 'HTML') {
+    parentRect.top = Math.max(parentRect.top, 0);
+    parentRect.left = Math.max(parentRect.left, 0);
+  }
   var offsets = getClientRect({
     top: childrenRect.top - parentRect.top - borderTopWidth,
     left: childrenRect.left - parentRect.left - borderLeftWidth,
@@ -51414,7 +51498,7 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
     offsets.marginLeft = marginLeft;
   }
 
-  if (isIE10 ? parent.contains(scrollParent) : parent === scrollParent && scrollParent.nodeName !== 'BODY') {
+  if (isIE10 && !fixedPosition ? parent.contains(scrollParent) : parent === scrollParent && scrollParent.nodeName !== 'BODY') {
     offsets = includeScroll(offsets, parent);
   }
 
@@ -51422,13 +51506,15 @@ function getOffsetRectRelativeToArbitraryNode(children, parent) {
 }
 
 function getViewportOffsetRectRelativeToArtbitraryNode(element) {
+  var excludeScroll = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
   var html = element.ownerDocument.documentElement;
   var relativeOffset = getOffsetRectRelativeToArbitraryNode(element, html);
   var width = Math.max(html.clientWidth, window.innerWidth || 0);
   var height = Math.max(html.clientHeight, window.innerHeight || 0);
 
-  var scrollTop = getScroll(html);
-  var scrollLeft = getScroll(html, 'left');
+  var scrollTop = !excludeScroll ? getScroll(html) : 0;
+  var scrollLeft = !excludeScroll ? getScroll(html, 'left') : 0;
 
   var offset = {
     top: scrollTop - relativeOffset.top + relativeOffset.marginTop,
@@ -51460,6 +51546,26 @@ function isFixed(element) {
 }
 
 /**
+ * Finds the first parent of an element that has a transformed property defined
+ * @method
+ * @memberof Popper.Utils
+ * @argument {Element} element
+ * @returns {Element} first transformed parent or documentElement
+ */
+
+function getFixedPositionOffsetParent(element) {
+  // This check is needed to avoid errors in case one of the elements isn't defined for any reason
+  if (!element || !element.parentElement || isIE()) {
+    return document.documentElement;
+  }
+  var el = element.parentElement;
+  while (el && getStyleComputedProperty(el, 'transform') === 'none') {
+    el = el.parentElement;
+  }
+  return el || document.documentElement;
+}
+
+/**
  * Computed the boundaries limits and return them
  * @method
  * @memberof Popper.Utils
@@ -51467,16 +51573,20 @@ function isFixed(element) {
  * @param {HTMLElement} reference
  * @param {number} padding
  * @param {HTMLElement} boundariesElement - Element used to define the boundaries
+ * @param {Boolean} fixedPosition - Is in fixed position mode
  * @returns {Object} Coordinates of the boundaries
  */
 function getBoundaries(popper, reference, padding, boundariesElement) {
+  var fixedPosition = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
+
   // NOTE: 1 DOM access here
+
   var boundaries = { top: 0, left: 0 };
-  var offsetParent = findCommonOffsetParent(popper, reference);
+  var offsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
 
   // Handle viewport case
   if (boundariesElement === 'viewport') {
-    boundaries = getViewportOffsetRectRelativeToArtbitraryNode(offsetParent);
+    boundaries = getViewportOffsetRectRelativeToArtbitraryNode(offsetParent, fixedPosition);
   } else {
     // Handle other cases based on DOM element used as boundaries
     var boundariesNode = void 0;
@@ -51491,7 +51601,7 @@ function getBoundaries(popper, reference, padding, boundariesElement) {
       boundariesNode = boundariesElement;
     }
 
-    var offsets = getOffsetRectRelativeToArbitraryNode(boundariesNode, offsetParent);
+    var offsets = getOffsetRectRelativeToArbitraryNode(boundariesNode, offsetParent, fixedPosition);
 
     // In case of HTML, we need a different computation
     if (boundariesNode.nodeName === 'HTML' && !isFixed(offsetParent)) {
@@ -51592,11 +51702,14 @@ function computeAutoPlacement(placement, refRect, popper, reference, boundariesE
  * @param {Object} state
  * @param {Element} popper - the popper element
  * @param {Element} reference - the reference element (the popper will be relative to this)
+ * @param {Element} fixedPosition - is in fixed position mode
  * @returns {Object} An object containing the offsets which will be applied to the popper
  */
 function getReferenceOffsets(state, popper, reference) {
-  var commonOffsetParent = findCommonOffsetParent(popper, reference);
-  return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent);
+  var fixedPosition = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+
+  var commonOffsetParent = fixedPosition ? getFixedPositionOffsetParent(popper) : findCommonOffsetParent(popper, reference);
+  return getOffsetRectRelativeToArbitraryNode(reference, commonOffsetParent, fixedPosition);
 }
 
 /**
@@ -51769,7 +51882,7 @@ function update() {
   };
 
   // compute reference element offsets
-  data.offsets.reference = getReferenceOffsets(this.state, this.popper, this.reference);
+  data.offsets.reference = getReferenceOffsets(this.state, this.popper, this.reference, this.options.positionFixed);
 
   // compute auto placement, store placement inside the data object,
   // modifiers will be able to edit `placement` if needed
@@ -51779,9 +51892,12 @@ function update() {
   // store the computed placement inside `originalPlacement`
   data.originalPlacement = data.placement;
 
+  data.positionFixed = this.options.positionFixed;
+
   // compute the popper offsets
   data.offsets.popper = getPopperOffsets(this.popper, data.offsets.reference, data.placement);
-  data.offsets.popper.position = 'absolute';
+
+  data.offsets.popper.position = this.options.positionFixed ? 'fixed' : 'absolute';
 
   // run the modifiers
   data = runModifiers(this.modifiers, data);
@@ -51821,7 +51937,7 @@ function getSupportedPropertyName(property) {
   var prefixes = [false, 'ms', 'Webkit', 'Moz', 'O'];
   var upperProp = property.charAt(0).toUpperCase() + property.slice(1);
 
-  for (var i = 0; i < prefixes.length - 1; i++) {
+  for (var i = 0; i < prefixes.length; i++) {
     var prefix = prefixes[i];
     var toCheck = prefix ? '' + prefix + upperProp : property;
     if (typeof document.body.style[toCheck] !== 'undefined') {
@@ -51842,9 +51958,12 @@ function destroy() {
   // touch DOM only if `applyStyle` modifier is enabled
   if (isModifierEnabled(this.modifiers, 'applyStyle')) {
     this.popper.removeAttribute('x-placement');
-    this.popper.style.left = '';
     this.popper.style.position = '';
     this.popper.style.top = '';
+    this.popper.style.left = '';
+    this.popper.style.right = '';
+    this.popper.style.bottom = '';
+    this.popper.style.willChange = '';
     this.popper.style[getSupportedPropertyName('transform')] = '';
   }
 
@@ -52032,12 +52151,12 @@ function applyStyle(data) {
  * @method
  * @memberof Popper.modifiers
  * @param {HTMLElement} reference - The reference element used to position the popper
- * @param {HTMLElement} popper - The HTML element used as popper.
+ * @param {HTMLElement} popper - The HTML element used as popper
  * @param {Object} options - Popper.js options
  */
 function applyStyleOnLoad(reference, popper, options, modifierOptions, state) {
   // compute reference element offsets
-  var referenceOffsets = getReferenceOffsets(state, popper, reference);
+  var referenceOffsets = getReferenceOffsets(state, popper, reference, options.positionFixed);
 
   // compute auto placement, store placement inside the data object,
   // modifiers will be able to edit `placement` if needed
@@ -52048,7 +52167,7 @@ function applyStyleOnLoad(reference, popper, options, modifierOptions, state) {
 
   // Apply `position` to popper before anything else because
   // without the position applied we can't guarantee correct computations
-  setStyles(popper, { position: 'absolute' });
+  setStyles(popper, { position: options.positionFixed ? 'fixed' : 'absolute' });
 
   return options;
 }
@@ -52083,11 +52202,13 @@ function computeStyle(data, options) {
     position: popper.position
   };
 
-  // floor sides to avoid blurry text
+  // Avoid blurry text by using full pixel integers.
+  // For pixel-perfect positioning, top/bottom prefers rounded
+  // values, while left/right prefers floored values.
   var offsets = {
     left: Math.floor(popper.left),
-    top: Math.floor(popper.top),
-    bottom: Math.floor(popper.bottom),
+    top: Math.round(popper.top),
+    bottom: Math.round(popper.bottom),
     right: Math.floor(popper.right)
   };
 
@@ -52351,7 +52472,7 @@ function flip(data, options) {
     return data;
   }
 
-  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, options.boundariesElement);
+  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, options.boundariesElement, data.positionFixed);
 
   var placement = data.placement.split('-')[0];
   var placementOpposite = getOppositePlacement(placement);
@@ -52643,7 +52764,27 @@ function preventOverflow(data, options) {
     boundariesElement = getOffsetParent(boundariesElement);
   }
 
-  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, boundariesElement);
+  // NOTE: DOM access here
+  // resets the popper's position so that the document size can be calculated excluding
+  // the size of the popper element itself
+  var transformProp = getSupportedPropertyName('transform');
+  var popperStyles = data.instance.popper.style; // assignment to help minification
+  var top = popperStyles.top,
+      left = popperStyles.left,
+      transform = popperStyles[transformProp];
+
+  popperStyles.top = '';
+  popperStyles.left = '';
+  popperStyles[transformProp] = '';
+
+  var boundaries = getBoundaries(data.instance.popper, data.instance.reference, options.padding, boundariesElement, data.positionFixed);
+
+  // NOTE: DOM access here
+  // restores the original style properties after the offsets have been computed
+  popperStyles.top = top;
+  popperStyles.left = left;
+  popperStyles[transformProp] = transform;
+
   options.boundaries = boundaries;
 
   var order = options.priority;
@@ -53139,6 +53280,12 @@ var Defaults = {
    * @prop {Popper.placements} placement='bottom'
    */
   placement: 'bottom',
+
+  /**
+   * Set this to true if you want popper to position it self in 'fixed' mode
+   * @prop {Boolean} positionFixed=false
+   */
+  positionFixed: false,
 
   /**
    * Whether events (resize, scroll) are initially enabled
@@ -54190,7 +54337,7 @@ return SignaturePad;
 },{}],87:[function(require,module,exports){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
- * @version 1.1.7
+ * @version 1.2.0
  * @license
  * Copyright (c) 2016 Federico Zivolo and contributors
  *
@@ -54218,7 +54365,7 @@ return SignaturePad;
 	(global.Tooltip = factory(global.Popper));
 }(this, (function (Popper) { 'use strict';
 
-Popper = Popper && 'default' in Popper ? Popper['default'] : Popper;
+Popper = Popper && Popper.hasOwnProperty('default') ? Popper['default'] : Popper;
 
 /**
  * Check if the given variable is a function
@@ -54293,7 +54440,7 @@ var Tooltip = function () {
    * @class Tooltip
    * @param {HTMLElement} reference - The DOM node used as reference of the tooltip (it can be a jQuery element).
    * @param {Object} options
-   * @param {String} options.placement=bottom
+   * @param {String|PlacementFunction} options.placement=top
    *      Placement of the popper accepted values: `top(-start, -end), right(-start, -end), bottom(-start, -end),
    *      left(-start, -end)`
    * @param {HTMLElement|String|false} options.container=false - Append the tooltip to a specific element.
@@ -54301,7 +54448,7 @@ var Tooltip = function () {
    *      Delay showing and hiding the tooltip (ms) - does not apply to manual trigger type.
    *      If a number is supplied, delay is applied to both hide/show.
    *      Object structure is: `{ show: 500, hide: 100 }`
-   * @param {Boolean} options.html=false - Insert HTML into the tooltip. If false, the content will inserted with `innerText`.
+   * @param {Boolean} options.html=false - Insert HTML into the tooltip. If false, the content will inserted with `textContent`.
    * @param {String|PlacementFunction} options.placement='top' - One of the allowed placements, or a function returning one of them.
    * @param {String} [options.template='<div class="tooltip" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>']
    *      Base HTML to used when creating the tooltip.
@@ -54312,7 +54459,7 @@ var Tooltip = function () {
    * @param {String} [options.trigger='hover focus']
    *      How tooltip is triggered - click, hover, focus, manual.
    *      You may pass multiple triggers; separate them with a space. `manual` cannot be combined with any other trigger.
-   * @param {HTMLElement} options.boundariesElement
+   * @param {String|HTMLElement} options.boundariesElement
    *      The element used as boundaries for the tooltip. For more information refer to Popper.js'
    *      [boundariesElement docs](https://popper.js.org/popper-documentation.html)
    * @param {Number|String} options.offset=0 - Offset of the tooltip relative to its reference. For more information refer to Popper.js'
@@ -54381,6 +54528,14 @@ var Tooltip = function () {
    */
 
 
+  /**
+   * Updates the tooltip's title content
+   * @method Tooltip#updateTitleContent
+   * @memberof Tooltip
+   * @param {String|HTMLElement} title - The new content to use for the title
+   */
+
+
   //
   // Defaults
   //
@@ -54402,7 +54557,7 @@ var Tooltip = function () {
      * @param {String} template
      * @param {String|HTMLElement|TitleFunction} title
      * @param {Boolean} allowHtml
-     * @return {HTMLelement} tooltipNode
+     * @return {HTMLElement} tooltipNode
      */
     value: function _create(reference, template, title, allowHtml) {
       // create tooltip element
@@ -54418,20 +54573,25 @@ var Tooltip = function () {
 
       // add title to tooltip
       var titleNode = tooltipGenerator.querySelector(this.innerSelector);
+      this._addTitleContent(reference, title, allowHtml, titleNode);
+
+      // return the generated tooltip node
+      return tooltipNode;
+    }
+  }, {
+    key: '_addTitleContent',
+    value: function _addTitleContent(reference, title, allowHtml, titleNode) {
       if (title.nodeType === 1 || title.nodeType === 11) {
         // if title is a element node or document fragment, append it only if allowHtml is true
         allowHtml && titleNode.appendChild(title);
       } else if (isFunction(title)) {
-        // if title is a function, call it and set innerText or innerHtml depending by `allowHtml` value
+        // if title is a function, call it and set textContent or innerHtml depending by `allowHtml` value
         var titleText = title.call(reference);
-        allowHtml ? titleNode.innerHTML = titleText : titleNode.innerText = titleText;
+        allowHtml ? titleNode.innerHTML = titleText : titleNode.textContent = titleText;
       } else {
-        // if it's just a simple text, set innerText or innerHtml depending by `allowHtml` value
-        allowHtml ? titleNode.innerHTML = title : titleNode.innerText = title;
+        // if it's just a simple text, set textContent or innerHtml depending by `allowHtml` value
+        allowHtml ? titleNode.innerHTML = title : titleNode.textContent = title;
       }
-
-      // return the generated tooltip node
-      return tooltipNode;
     }
   }, {
     key: '_show',
@@ -54556,7 +54716,7 @@ var Tooltip = function () {
      * Append tooltip to container
      * @memberof Tooltip
      * @private
-     * @param {HTMLElement} tooltip
+     * @param {HTMLElement} tooltipNode
      * @param {HTMLElement|String|false} container
      */
 
@@ -54659,6 +54819,30 @@ var Tooltip = function () {
         _this4._hide(reference, options);
       }, computedDelay);
     }
+  }, {
+    key: '_updateTitleContent',
+    value: function _updateTitleContent(title) {
+      if (typeof this._tooltipNode === 'undefined') {
+        if (typeof this.options.title !== 'undefined') {
+          this.options.title = title;
+        }
+        return;
+      }
+      var titleNode = this._tooltipNode.parentNode.querySelector(this.innerSelector);
+      this._clearTitleContent(titleNode, this.options.html, this.reference.getAttribute('title') || this.options.title);
+      this._addTitleContent(this.reference, title, this.options.html, titleNode);
+      this.options.title = title;
+      this.popperInstance.update();
+    }
+  }, {
+    key: '_clearTitleContent',
+    value: function _clearTitleContent(titleNode, allowHtml, lastTitle) {
+      if (lastTitle.nodeType === 1 || lastTitle.nodeType === 11) {
+        allowHtml && titleNode.removeChild(lastTitle);
+      } else {
+        allowHtml ? titleNode.innerHTML = '' : titleNode.textContent = '';
+      }
+    }
   }]);
   return Tooltip;
 }();
@@ -54701,6 +54885,10 @@ var _initialiseProps = function _initialiseProps() {
     } else {
       return _this5.show();
     }
+  };
+
+  this.updateTitleContent = function (title) {
+    return _this5._updateTitleContent(title);
   };
 
   this.arrowSelector = '.tooltip-arrow, .tooltip__arrow';
