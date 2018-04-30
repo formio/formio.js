@@ -47,6 +47,7 @@ export class DataGridComponent extends FormioComponents {
       this.addNewValue();
     }
     this.visibleColumns = true;
+    this.errorContainer = this.element;
     this.buildRows();
     this.createDescription(this.element);
   }
@@ -71,14 +72,14 @@ export class DataGridComponent extends FormioComponents {
   }
 
   needsRebuild() {
-    let previousNumColumns = this.numColumns;
-    let previousNumRows = this.numRows;
+    const previousNumColumns = this.numColumns;
+    const previousNumRows = this.numRows;
     this.setVisibleComponents();
 
     if (
       (!this.tableBuilt) ||
       (this.numRows !== previousNumRows) ||
-      (this.numColumns != previousNumColumns)
+      (this.numColumns !== previousNumColumns)
     ) {
       this.tableBuilt = true;
       return true;
@@ -94,6 +95,7 @@ export class DataGridComponent extends FormioComponents {
     }
 
     this.clear();
+    this.createLabel(this.element);
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
     _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {

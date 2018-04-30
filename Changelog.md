@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - Disappering label for DataGrid.
+ - Validation for DataGrid.
+ - Validation for EditGrid.
+
 ## 2.31.2
 ### Fixed
  - Problems with datagrid not rending properly and getting out of sync.
