@@ -3269,8 +3269,7 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      var isEmpty = _lodash2.default.isEqual(this.dataValue, this.emptyValue);
-      if (this.hasValue && !isEmpty) {
+      if (this.hasValue && !this.isEmpty(this.dataValue)) {
         this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
@@ -3401,7 +3400,7 @@ var BaseComponent = function () {
   }, {
     key: 'isEmpty',
     value: function isEmpty(value) {
-      return value == null || value.length === 0;
+      return value == null || value.length === 0 || _lodash2.default.isEqual(value, this.emptyValue);
     }
 
     /**
@@ -6078,6 +6077,11 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
       return info;
     }
   }, {
+    key: 'isEmpty',
+    value: function isEmpty(value) {
+      return _get(DayComponent.prototype.__proto__ || Object.getPrototypeOf(DayComponent.prototype), 'isEmpty', this).call(this, value);
+    }
+  }, {
     key: 'createDayInput',
     value: function createDayInput(subinputAtTheBottom) {
       var _this2 = this;
@@ -6196,7 +6200,6 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
         step: '1',
         min: '1',
         placeholder: _lodash2.default.get(this.component, 'fields.year.placeholder', ''),
-        value: new Date().getFullYear(),
         id: id
       });
 

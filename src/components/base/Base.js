@@ -1852,7 +1852,7 @@ export class BaseComponent {
   }
 
   isEmpty(value) {
-    return value == null || value.length === 0 || _.isEmpty(value, this.emptyValue);
+    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue);
   }
 
   /**

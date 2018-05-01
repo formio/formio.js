@@ -2060,8 +2060,7 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      var isEmpty = _lodash2.default.isEqual(this.dataValue, this.emptyValue);
-      if (this.hasValue && !isEmpty) {
+      if (this.hasValue && !this.isEmpty(this.dataValue)) {
         this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
@@ -2192,7 +2191,7 @@ var BaseComponent = function () {
   }, {
     key: 'isEmpty',
     value: function isEmpty(value) {
-      return value == null || value.length === 0;
+      return value == null || value.length === 0 || _lodash2.default.isEqual(value, this.emptyValue);
     }
 
     /**

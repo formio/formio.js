@@ -52,7 +52,7 @@ export class DayComponent extends BaseComponent {
   }
 
   isEmpty(value) {
-    return super.isEmpty(value) || value === 'Invalid date';
+    return super.isEmpty(value);
   }
 
   createDayInput(subinputAtTheBottom) {
