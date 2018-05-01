@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Validation styling inside datagrid
  - Destroy method on wizard component not removing header and footer
 
+### Changed
+ - Upgrade i18next to 11.2.3
+
 ## 2.31.4
 ### Fixed
  - Disappering label for DataGrid.
