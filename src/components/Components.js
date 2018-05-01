@@ -104,6 +104,8 @@ export class FormioComponents extends BaseComponent {
    * @param data
    */
   createComponent(component, options, data) {
+    options = options || this.options;
+    data = data || this.data;
     if (!this.options.components) {
       this.options.components = require('./index');
       _.assign(this.options.components, FormioComponents.customComponents);

@@ -2060,7 +2060,8 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      if (this.hasValue) {
+      var isEmpty = _lodash2.default.isEqual(this.dataValue, this.emptyValue);
+      if (this.hasValue && !isEmpty) {
         this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
@@ -2554,7 +2555,7 @@ var BaseComponent = function () {
       } else if (this.component.customDefaultValue) {
         if (typeof this.component.customDefaultValue === 'string') {
           try {
-            defaultValue = new Function('component', 'row', 'data', 'var value = \'\'; ' + this.component.customDefaultValue + '; return value;')(this, this.data, this.data);
+            defaultValue = new Function('component', 'row', 'data', '_', 'var value = \'\'; ' + this.component.customDefaultValue + '; return value;')(this, this.data, this.data, _lodash2.default);
           } catch (e) {
             defaultValue = null;
             /* eslint-disable no-console */

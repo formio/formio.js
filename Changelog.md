@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.32.0
+### Fixed
+ - Nested form data handling.
+ - Default values on nested forms.
+ - DateTime component resetting values was not working.
+
 ## 2.31.4
 ### Fixed
  - Disappering label for DataGrid.
