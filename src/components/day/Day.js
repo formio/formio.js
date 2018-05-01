@@ -51,6 +51,10 @@ export class DayComponent extends BaseComponent {
     return '';
   }
 
+  isEmpty(value) {
+    return super.isEmpty(value) || value === 'Invalid date';
+  }
+
   createDayInput(subinputAtTheBottom) {
     const dayColumn = this.ce('div', {
       class: 'form-group col col-xs-3'
@@ -160,7 +164,6 @@ export class DayComponent extends BaseComponent {
       step: '1',
       min: '1',
       placeholder: _.get(this.component, 'fields.year.placeholder', ''),
-      value: (new Date().getFullYear()),
       id
     });
 

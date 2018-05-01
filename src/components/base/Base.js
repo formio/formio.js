@@ -1712,8 +1712,7 @@ export class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    let isEmpty = _.isEqual(this.dataValue, this.emptyValue);
-    if (this.hasValue && !isEmpty) {
+    if (this.hasValue && !this.isEmpty(this.dataValue)) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
@@ -1853,7 +1852,7 @@ export class BaseComponent {
   }
 
   isEmpty(value) {
-    return value == null || value.length === 0;
+    return value == null || value.length === 0 || _.isEmpty(value, this.emptyValue);
   }
 
   /**
