@@ -399,7 +399,7 @@ export class FormioComponents extends BaseComponent {
       if (component.type === 'components') {
         changed |= component.setValue(value, flags);
       }
-      else if (value && value.hasOwnProperty(component.component.key)) {
+      else if (value && value.hasOwnProperty(component.component.key) && !component.isEmpty(value[component.component.key])) {
         changed |= component.setValue(_.get(value, component.component.key), flags);
       }
       else {
