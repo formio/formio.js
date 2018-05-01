@@ -107,7 +107,7 @@ export class FormComponent extends BaseComponent {
 
   calculateValue(data, flags) {
     if (this.subForm) {
-      return this.subForm.calculateValue(this.dataValue.data, flags);
+      return this.subForm.calculateValue(this.subForm.data, flags);
     }
 
     return super.calculateValue(data, flags);

@@ -7862,7 +7862,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     key: 'calculateValue',
     value: function calculateValue(data, flags) {
       if (this.subForm) {
-        return this.subForm.calculateValue(this.dataValue.data, flags);
+        return this.subForm.calculateValue(this.subForm.data, flags);
       }
 
       return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'calculateValue', this).call(this, data, flags);
