@@ -5,10 +5,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## 2.32.0
+### Added
+ - Ability to save a submission in a state (Save in state on button)
+ - Ability to skip frontend validation if in draft state
+ - Delete action to button component
+ - Message on file component when validation fails
+
 ### Fixed
  - Nested form data handling.
  - Default values on nested forms.
  - DateTime component resetting values was not working.
+ - Validation styling inside datagrid
+ - Destroy method on wizard component not removing header and footer
 
 ## 2.31.4
 ### Fixed
