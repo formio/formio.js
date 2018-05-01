@@ -4,11 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 2.31.4
 ### Fixed
  - Disappering label for DataGrid.
  - Validation for DataGrid.
  - Validation for EditGrid.
+ - Destroy method should clear form element
+ - Stop talking about FFiles.
+
+### Added
+ - Add basic support for submission states.
+ - Docs about Seamless.js integration.
+ - Explain why files have been rejected when validation fails. 
+
+## 2.31.3
+ - Bad Release. Do not use!
 
 ## 2.31.2
 ### Fixed
