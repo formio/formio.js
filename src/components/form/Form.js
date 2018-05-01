@@ -177,27 +177,25 @@ export class FormComponent extends BaseComponent {
   }
 
   setValue(submission, flags) {
+    const changed = super.setValue(submission, flags);
     if (this.subForm) {
-      super.setValue(submission);
-      return this.subForm.setValue(submission, flags);
+      this.subForm.setValue(submission, flags);
     }
-
-    this.loadSubForm().then((form) => {
-      if (submission && submission._id && form.formio && !flags.noload) {
-        const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
-        form.setSrc(submissionUrl, this.options);
-      }
-      else {
-        form.setSubmission(submission, flags);
-      }
-    });
-    return false;
+    else {
+      this.loadSubForm().then((form) => {
+        if (submission && submission._id && form.formio && !flags.noload) {
+          const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+          form.setSrc(submissionUrl, this.options);
+        }
+        else {
+          form.setValue(submission, flags);
+        }
+      });
+    }
+    return changed;
   }
 
   getValue() {
-    if (this.subForm) {
-      return this.subForm.getValue();
-    }
     return this.dataValue;
   }
 }
