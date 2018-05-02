@@ -163,7 +163,7 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/select/Select.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Choices from &apos;choices.js&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Choices from &apos;choices.js/assets/scripts/dist/choices.js&apos;;
 import _ from &apos;lodash&apos;;
 
 import {BaseComponent} from &apos;../base/Base&apos;;
@@ -304,7 +304,7 @@ export class SelectComponent extends BaseComponent {
     }
 
     option.element = document.createElement(&apos;option&apos;);
-    if (this.value === option.value) {
+    if (this.dataValue === option.value) {
       option.element.setAttribute(&apos;selected&apos;, &apos;selected&apos;);
       option.element.selected = &apos;selected&apos;;
     }
@@ -322,7 +322,7 @@ export class SelectComponent extends BaseComponent {
     if (!this.selectOptions.length) {
       if (this.choices) {
         // Add the currently selected choices if they don&apos;t already exist.
-        const currentChoices = Array.isArray(this.value) ? this.value : [this.value];
+        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
         _.each(currentChoices, (choice) =&gt; {
           this.addCurrentChoices(choice, items);
         });
@@ -346,8 +346,10 @@ export class SelectComponent extends BaseComponent {
     }
 
     if (!this.choices &amp;&amp; this.selectInput) {
-      // Detach from DOM and clear input.
-      this.removeChildFrom(this.selectInput, this.selectContainer);
+      if (this.loading) {
+        this.removeChildFrom(this.selectInput, this.selectContainer);
+      }
+
       this.selectInput.innerHTML = &apos;&apos;;
     }
 
@@ -369,7 +371,7 @@ export class SelectComponent extends BaseComponent {
     if (this.choices) {
       this.choices.setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true);
     }
-    else {
+    else if (this.loading) {
       // Re-attach select input.
       this.appendTo(this.selectInput, this.selectContainer);
     }
@@ -378,8 +380,8 @@ export class SelectComponent extends BaseComponent {
     this.loading = false;
 
     // If a value is provided, then select it.
-    if (this.value) {
-      this.setValue(this.value, true);
+    if (this.dataValue) {
+      this.setValue(this.dataValue, true);
     }
     else {
       // If a default value is provided then select it.
@@ -592,7 +594,7 @@ export class SelectComponent extends BaseComponent {
 
     if (this.component.widget === &apos;html5&apos;) {
       this.triggerUpdate();
-      this.addEventListener(input, &apos;focus&apos;, () =&gt; this.activate());
+      this.addEventListener(input, &apos;focus&apos;, () =&gt; this.update());
       return;
     }
 
@@ -610,13 +612,24 @@ export class SelectComponent extends BaseComponent {
       searchPlaceholderValue: placeholderValue,
       shouldSort: false,
       position: (this.component.dropdown || &apos;auto&apos;),
-      searchEnabled: useSearch
+      searchEnabled: useSearch,
+      itemComparer: (choice, item) =&gt; _.isEqual(choice, item)
     };
 
     const tabIndex = input.tabIndex;
     this.addPlaceholder(input);
     this.choices = new Choices(input, choicesOptions);
-    this.choices.itemList.tabIndex = tabIndex;
+
+    if (this.component.multiple) {
+      this.focusableElement = this.choices.input;
+    }
+    else {
+      this.focusableElement = this.choices.containerInner;
+      this.choices.containerOuter.setAttribute(&apos;tabIndex&apos;, &apos;-1&apos;);
+      this.addEventListener(this.choices.containerOuter, &apos;focus&apos;, () =&gt; this.focusableElement.focus());
+    }
+    this.focusableElement.setAttribute(&apos;tabIndex&apos;, tabIndex);
+
     this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
@@ -625,18 +638,20 @@ export class SelectComponent extends BaseComponent {
       this.addEventListener(input, &apos;stopSearch&apos;, () =&gt; this.triggerUpdate());
     }
 
-    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; {
-      if (this.component.dataSrc === &apos;custom&apos;) {
-        this.updateCustomItems();
-      }
-
-      // Activate the control.
-      this.activate();
-    });
+    this.addEventListener(input, &apos;showDropdown&apos;, () =&gt; this.update());
 
     // Force the disabled state with getters and setters.
     this.disabled = this.disabled;
     this.triggerUpdate();
+  }
+
+  update() {
+    if (this.component.dataSrc === &apos;custom&apos;) {
+      this.updateCustomItems();
+    }
+
+    // Activate the control.
+    this.activate();
   }
 
   set disabled(disabled) {
@@ -645,9 +660,13 @@ export class SelectComponent extends BaseComponent {
       return;
     }
     if (disabled) {
+      this.setDisabled(this.choices.containerInner, true);
+      this.focusableElement.removeAttribute(&apos;tabIndex&apos;);
       this.choices.disable();
     }
     else {
+      this.setDisabled(this.choices.containerInner, false);
+      this.focusableElement.setAttribute(&apos;tabIndex&apos;, this.component.tabindex || 0);
       this.choices.enable();
     }
   }
@@ -679,8 +698,8 @@ export class SelectComponent extends BaseComponent {
 
   getValue(flags) {
     flags = flags || {};
-    if (!flags.changed &amp;&amp; this.value) {
-      return this.value;
+    if (!flags.changed &amp;&amp; this.dataValue) {
+      return this.dataValue;
     }
     let value = &apos;&apos;;
     if (this.choices) {
@@ -709,13 +728,14 @@ export class SelectComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
-    const hasPreviousValue = Array.isArray(this.value) ? this.value.length : this.value;
+    const hasPreviousValue = Array.isArray(this.dataValue) ? this.dataValue.length : this.dataValue;
     const hasValue = Array.isArray(value) ? value.length : value;
-    this.data[this.component.key] = value;
+    const changed = flags.changed || this.hasChanged(value, this.dataValue);
+    this.dataValue = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
     if (this.loading) {
-      return;
+      return changed;
     }
 
     // Determine if we need to perform an initial lazyLoad api call if searchField is provided.
@@ -729,8 +749,8 @@ export class SelectComponent extends BaseComponent {
     ) {
       this.loading = true;
       this.lazyLoadInit = true;
-      this.triggerUpdate(this.value, true);
-      return;
+      this.triggerUpdate(this.dataValue, true);
+      return changed;
     }
 
     // Add the value options.
@@ -768,7 +788,9 @@ export class SelectComponent extends BaseComponent {
         });
       }
     }
-    this.updateValue(flags);
+
+    this.updateOnChange(flags, changed);
+    return changed;
   }
 
   /**
@@ -813,13 +835,17 @@ export class SelectComponent extends BaseComponent {
       this.choices = null;
     }
   }
+
+  focus() {
+    this.focusableElement.focus();
+  }
 }
 </code></pre>
 
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
 <script src="script/search_index.js"></script>

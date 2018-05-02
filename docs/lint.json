@@ -47,23 +47,23 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 937,
+        "lineNumber": 938,
         "line": "  /**"
       },
       {
-        "lineNumber": 938,
+        "lineNumber": 939,
         "line": "   * Create the HTML element for the tooltip of this component."
       },
       {
-        "lineNumber": 939,
+        "lineNumber": 940,
         "line": "   * @param {HTMLElement} container - The containing element that will contain this tooltip."
       },
       {
-        "lineNumber": 940,
+        "lineNumber": 941,
         "line": "   */"
       },
       {
-        "lineNumber": 941,
+        "lineNumber": 942,
         "line": "  createTooltip(container, component, classes) {"
       }
     ],
@@ -81,27 +81,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1169,
+        "lineNumber": 1172,
         "line": "  /**"
       },
       {
-        "lineNumber": 1170,
+        "lineNumber": 1173,
         "line": "   * Append different types of children."
       },
       {
-        "lineNumber": 1171,
+        "lineNumber": 1174,
         "line": "   *"
       },
       {
-        "lineNumber": 1172,
+        "lineNumber": 1175,
         "line": "   * @param child"
       },
       {
-        "lineNumber": 1173,
+        "lineNumber": 1176,
         "line": "   */"
       },
       {
-        "lineNumber": 1174,
+        "lineNumber": 1177,
         "line": "  appendChild(element, child) {"
       }
     ],
@@ -118,47 +118,47 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1188,
+        "lineNumber": 1191,
         "line": "  /**"
       },
       {
-        "lineNumber": 1189,
+        "lineNumber": 1192,
         "line": "   * Alias for document.createElement."
       },
       {
-        "lineNumber": 1190,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1191,
-        "line": "   * @param {string} type - The type of element to create"
-      },
-      {
-        "lineNumber": 1192,
-        "line": "   * @param {Object} attr - The element attributes to add to the created element."
-      },
-      {
         "lineNumber": 1193,
-        "line": "   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both."
+        "line": "   *"
       },
       {
         "lineNumber": 1194,
-        "line": "   * @param {Object} events"
+        "line": "   * @param {string} type - The type of element to create"
       },
       {
         "lineNumber": 1195,
-        "line": "   *"
+        "line": "   * @param {Object} attr - The element attributes to add to the created element."
       },
       {
         "lineNumber": 1196,
-        "line": "   * @return {HTMLElement} - The created element."
+        "line": "   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both."
       },
       {
         "lineNumber": 1197,
-        "line": "   */"
+        "line": "   * @param {Object} events"
       },
       {
         "lineNumber": 1198,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1199,
+        "line": "   * @return {HTMLElement} - The created element."
+      },
+      {
+        "lineNumber": 1200,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1201,
         "line": "  ce(type, attr, children = null) {"
       }
     ],
@@ -179,35 +179,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1520,
+        "lineNumber": 1528,
         "line": "  /**"
       },
       {
-        "lineNumber": 1521,
+        "lineNumber": 1529,
         "line": "   * Add a new input to this comonent."
       },
       {
-        "lineNumber": 1522,
+        "lineNumber": 1530,
         "line": "   *"
       },
       {
-        "lineNumber": 1523,
+        "lineNumber": 1531,
         "line": "   * @param input"
       },
       {
-        "lineNumber": 1524,
+        "lineNumber": 1532,
         "line": "   * @param container"
       },
       {
-        "lineNumber": 1525,
+        "lineNumber": 1533,
         "line": "   * @param noSet"
       },
       {
-        "lineNumber": 1526,
+        "lineNumber": 1534,
         "line": "   */"
       },
       {
-        "lineNumber": 1527,
+        "lineNumber": 1535,
         "line": "  addInput(input, container) {"
       }
     ],
@@ -226,35 +226,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1637,
+        "lineNumber": 1729,
         "line": "  /**"
       },
       {
-        "lineNumber": 1638,
+        "lineNumber": 1730,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 1639,
+        "lineNumber": 1731,
         "line": "   *"
       },
       {
-        "lineNumber": 1640,
+        "lineNumber": 1732,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 1641,
+        "lineNumber": 1733,
         "line": "   *"
       },
       {
-        "lineNumber": 1642,
+        "lineNumber": 1734,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 1643,
+        "lineNumber": 1735,
         "line": "   */"
       },
       {
-        "lineNumber": 1644,
+        "lineNumber": 1736,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -314,31 +314,31 @@
     "filePath": "src/formio.form.js",
     "lines": [
       {
-        "lineNumber": 867,
+        "lineNumber": 862,
         "line": "  /**"
       },
       {
-        "lineNumber": 868,
+        "lineNumber": 863,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 869,
+        "lineNumber": 864,
         "line": "   *"
       },
       {
-        "lineNumber": 870,
+        "lineNumber": 865,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 871,
+        "lineNumber": 866,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 872,
+        "lineNumber": 867,
         "line": "   */"
       },
       {
-        "lineNumber": 873,
+        "lineNumber": 868,
         "line": "  onChange(flags, changed) {"
       }
     ],
@@ -349,6 +349,99 @@
     "docParams": [
       "changed",
       "flags"
+    ]
+  },
+  {
+    "name": "FormioForm#submit",
+    "filePath": "src/formio.form.js",
+    "lines": [
+      {
+        "lineNumber": 973,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 974,
+        "line": "   * Submits the form."
+      },
+      {
+        "lineNumber": 975,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 976,
+        "line": "   * @example"
+      },
+      {
+        "lineNumber": 977,
+        "line": "   * let form = new FormioForm(document.getElementById('formio'));"
+      },
+      {
+        "lineNumber": 978,
+        "line": "   * form.src = 'https://examples.form.io/example';"
+      },
+      {
+        "lineNumber": 979,
+        "line": "   * form.submission = {data: {"
+      },
+      {
+        "lineNumber": 980,
+        "line": "   *   firstName: 'Joe',"
+      },
+      {
+        "lineNumber": 981,
+        "line": "   *   lastName: 'Smith',"
+      },
+      {
+        "lineNumber": 982,
+        "line": "   *   email: 'joe@example.com'"
+      },
+      {
+        "lineNumber": 983,
+        "line": "   * }};"
+      },
+      {
+        "lineNumber": 984,
+        "line": "   * form.submit().then((submission) => {"
+      },
+      {
+        "lineNumber": 985,
+        "line": "   *   console.log(submission);"
+      },
+      {
+        "lineNumber": 986,
+        "line": "   * });"
+      },
+      {
+        "lineNumber": 987,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 988,
+        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+      },
+      {
+        "lineNumber": 989,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 990,
+        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+      },
+      {
+        "lineNumber": 991,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 992,
+        "line": "  submit(before, options) {"
+      }
+    ],
+    "codeParams": [
+      "before",
+      "options"
+    ],
+    "docParams": [
+      "before"
     ]
   }
 ]

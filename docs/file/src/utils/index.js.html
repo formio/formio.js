@@ -165,7 +165,7 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/utils/index.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
 import jsonLogic from &apos;json-logic-js&apos;;
-import momentModule from &apos;moment&apos;;
+import moment from &apos;moment&apos;;
 
 import {lodashOperators} from &apos;./jsonlogic/operators&apos;;
 
@@ -174,17 +174,17 @@ lodashOperators.forEach((name) =&gt; jsonLogic.add_operation(`_${name}`, _[name]
 
 // Retrieve Any Date
 jsonLogic.add_operation(&apos;getDate&apos;, (date) =&gt; {
-  return momentModule(date).toISOString();
+  return moment(date).toISOString();
 });
 
 // Set Relative Minimum Date
 jsonLogic.add_operation(&apos;relativeMinDate&apos;, (relativeMinDate) =&gt; {
-  return momentModule().subtract(relativeMinDate, &apos;days&apos;).toISOString();
+  return moment().subtract(relativeMinDate, &apos;days&apos;).toISOString();
 });
 
 // Set Relative Maximum Date
 jsonLogic.add_operation(&apos;relativeMaxDate&apos;, (relativeMaxDate) =&gt; {
-  return momentModule().add(relativeMaxDate, &apos;days&apos;).toISOString();
+  return moment().add(relativeMaxDate, &apos;days&apos;).toISOString();
 });
 
 const FormioUtils = {
@@ -480,9 +480,8 @@ const FormioUtils = {
       const data = submission ? submission.data : rowData;
       if (_.isString(component.calculateValue)) {
         try {
-          const util = this;
-          rowData[component.key] = (new Function(&apos;data&apos;, &apos;row&apos;, &apos;util&apos;,
-            `var value = [];${component.calculateValue.toString()}; return value;`))(data, row, util);
+          _.set(rowData, component.key, (new Function(&apos;component&apos;, &apos;data&apos;, &apos;row&apos;, &apos;util&apos;, &apos;moment&apos;,
+            `var value = [];${component.calculateValue.toString()}; return value;`))(component, data, row, this, moment));
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -490,11 +489,11 @@ const FormioUtils = {
       }
       else {
         try {
-          rowData[component.key] = this.jsonLogic.apply(component.calculateValue, {
+          _.set(rowData, component.key, this.jsonLogic.apply(component.calculateValue, {
             data,
             row,
             _
-          });
+          }));
         }
         catch (e) {
           console.warn(`An error occurred calculating a value for ${component.key}`, e);
@@ -547,8 +546,8 @@ const FormioUtils = {
    */
   checkCustomConditional(component, custom, row, data, variable, onError) {
     try {
-      return (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;,
-        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, row, data);
+      return (new Function(&apos;component&apos;, &apos;data&apos;, &apos;row&apos;, &apos;util&apos;, &apos;moment&apos;,
+        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, data, row, this, moment);
     }
     catch (e) {
       console.warn(`An error occurred in a condition statement for component ${component.key}`, e);
@@ -733,26 +732,25 @@ const FormioUtils = {
       return null;
     }
 
-    let dateSetting = new Date(date);
-    if (FormioUtils.isValidDate(dateSetting)) {
-      return dateSetting;
+    let dateSetting = moment(date);
+    if (dateSetting.isValid()) {
+      return dateSetting.toDate();
     }
 
     try {
-      // Moment constant might be used in eval.
-      const moment = momentModule; // eslint-disable-line no-unused-vars
-      dateSetting = new Date(eval(date));
+      const value = (new Function(&apos;moment&apos;, `return ${date};`))(moment);
+      dateSetting = moment(value);
     }
     catch (e) {
       return null;
     }
 
     // Ensure this is a date.
-    if (!FormioUtils.isValidDate(dateSetting)) {
-      dateSetting = null;
+    if (!dateSetting.isValid()) {
+      return null;
     }
 
-    return dateSetting;
+    return dateSetting.toDate();
   },
   isValidDate(date) {
     return _.isDate(date) &amp;&amp; !_.isNaN(date.getDate());
@@ -866,7 +864,52 @@ const FormioUtils = {
     }
 
     return true;
-  }
+  },
+  getNumberSeparators(lang = &apos;en&apos;) {
+    const formattedNumberString = (12345.6789).toLocaleString(lang);
+    return {
+      delimiter: formattedNumberString.match(/12(.*)345/)[1],
+      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+    };
+  },
+  getNumberDecimalLimit(component) {
+    // Determine the decimal limit. Defaults to 20 but can be overridden by validate.step or decimalLimit settings.
+    let decimalLimit = 20;
+    const step = _.get(component, &apos;validate.step&apos;, &apos;any&apos;);
+
+    if (step !== &apos;any&apos;) {
+      const parts = step.toString().split(&apos;.&apos;);
+      if (parts.length &gt; 1) {
+        decimalLimit = parts[1].length;
+      }
+    }
+
+    return decimalLimit;
+  },
+  getCurrencyAffixes({
+    currency = &apos;USD&apos;,
+    decimalLimit,
+    decimalSeparator,
+    lang,
+  }) {
+    // Get the prefix and suffix from the localized string.
+    let regex = &apos;(.*)?100&apos;;
+    if (decimalLimit) {
+      regex += `${decimalSeparator === &apos;.&apos; ? &apos;\\.&apos; : decimalSeparator}0{${decimalLimit}}`;
+    }
+    regex += &apos;(.*)?&apos;;
+    const parts = (100).toLocaleString(lang, {
+      style: &apos;currency&apos;,
+      currency,
+      useGrouping: true,
+      maximumFractionDigits: decimalLimit,
+      minimumFractionDigits: decimalLimit
+    }).replace(&apos;.&apos;, decimalSeparator).match(new RegExp(regex));
+    return {
+      prefix: parts[1] || &apos;&apos;,
+      suffix: parts[2] || &apos;&apos;
+    };
+  },
 };
 
 module.exports = global.FormioUtils = FormioUtils;
@@ -876,7 +919,7 @@ export default FormioUtils;
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
 <script src="script/search_index.js"></script>

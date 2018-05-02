@@ -163,26 +163,24 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/form/Form.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-
-import FormioForm from &apos;../../formio.form&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import {BaseComponent} from &apos;../base/Base&apos;;
+import Promise from &apos;native-promise-only&apos;;
 import FormioUtils from &apos;../../utils&apos;;
 import Formio from &apos;../../formio&apos;;
+import formFactory from &apos;../../formFactory&apos;;
 
-export class FormComponent extends FormioForm {
+export class FormComponent extends BaseComponent {
   constructor(component, options, data) {
-    data = data || {};
-    super(null, options);
-
-    // Ensure this component does not make it to the global forms array.
-    delete Formio.forms[this.id];
-    this.type = &apos;formcomponent&apos;;
-    this.component = component;
-    this.submitted = false;
-    this.data = data;
-    this.readyPromise = new Promise((resolve) =&gt; {
-      this.readyResolve = resolve;
+    super(component, options, data);
+    this.subForm = null;
+    this.subFormReady = new Promise((resolve, reject) =&gt; {
+      this.subFormReadyResolve = resolve;
+      this.subFormReadyReject = reject;
     });
+  }
+
+  get emptyValue() {
+    return {data: {}};
   }
 
   /**
@@ -191,7 +189,7 @@ export class FormComponent extends FormioForm {
   loadSubForm() {
     // Only load the subform if the subform isn&apos;t loaded and the conditions apply.
     if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
-      return true;
+      return this.subFormReady;
     }
     this.subFormLoaded = true;
     const srcOptions = {};
@@ -237,63 +235,50 @@ export class FormComponent extends FormioForm {
       }
     }
 
-    // Add the source to this actual submission if the component is a reference.
-    if (
-      this.data &amp;&amp;
-      this.data[this.component.key] &amp;&amp;
-      this.data[this.component.key]._id &amp;&amp;
-      this.component.reference &amp;&amp;
-      !this.component.src.includes(&apos;/submission/&apos;)
-    ) {
-      this.component.src += `/submission/${this.data[this.component.key]._id}`;
-    }
+    (new Formio(this.component.src)).loadForm({params: {live: 1}}).then((formObj) =&gt; {
+      // Iterate through every component and hide the submit button.
+      FormioUtils.eachComponent(formObj.components, (component) =&gt; {
+        if ((component.type === &apos;button&apos;) &amp;&amp; (component.action === &apos;submit&apos;)) {
+          component.hidden = true;
+        }
+      });
 
-    // Set the src if the property is provided in the JSON.
-    if (this.component.src) {
-      this.setSrc(this.component.src, srcOptions);
-    }
-
-    // Directly set the submission if it isn&apos;t a reference.
-    if (this.data &amp;&amp; this.data[this.component.key] &amp;&amp; !this.component.reference) {
-      this.setSubmission(this.data[this.component.key]);
-    }
-
-    // Set language after everything is established.
-    if (this.options &amp;&amp; this.options.language) {
-      this.language = this.options.language;
-    }
-  }
-
-  get subData() {
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = {data: {}};
-    }
-    return this.data[this.component.key].data;
+      this.subForm = formFactory(this.element, formObj, srcOptions);
+      this.subForm.on(&apos;change&apos;, () =&gt; {
+        this.dataValue = this.subForm.getValue();
+        this.onChange();
+      });
+      this.subForm.url = this.component.src;
+      this.subForm.nosubmit = false;
+      this.restoreValue();
+      this.subFormReadyResolve(this.subForm);
+      return this.subForm;
+    }).catch(err =&gt; this.subFormReadyReject(err));
+    return this.subFormReady;
   }
 
   checkValidity(data, dirty) {
-    // Maintain isolated data scope when passing root data for validity checks.
-    return super.checkValidity(this.subData, dirty);
+    if (this.subForm) {
+      return this.subForm.checkValidity(this.dataValue.data, dirty);
+    }
+
+    return super.checkValidity(data, dirty);
   }
 
-  checkConditions() {
-    if (this.subFormLoaded) {
-      return super.checkConditions(this.subData);
+  checkConditions(data) {
+    if (this.subForm) {
+      return this.subForm.checkConditions(this.dataValue.data);
     }
 
-    // Check the conditions against the component if the subform has not loaded.
-    if (super.checkConditions(this.root ? this.root.data : this.data)) {
-      // Only load the subform if this component is visible.
-      this.loadSubForm();
-      return true;
-    }
-
-    return false;
+    return super.checkConditions(data);
   }
 
   calculateValue(data, flags) {
-    // Maintain isolated data scope when calculating values.
-    return super.calculateValue(this.subData, flags);
+    if (this.subForm) {
+      return this.subForm.calculateValue(this.dataValue.data, flags);
+    }
+
+    return super.calculateValue(data, flags);
   }
 
   /**
@@ -302,10 +287,14 @@ export class FormComponent extends FormioForm {
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
     if (this.component.submit) {
-      this.submitted = true;
-      return this.submit(true).then(submission =&gt; {
-        // Set data to submission.
-        return this.data[this.component.key] = submission;
+      return this.loadSubForm().then((form) =&gt; {
+        return this.subForm.submitForm().then(result =&gt; {
+          this.dataValue = result.submission;
+          return this.dataValue;
+        }).catch(err =&gt; {
+          this.subForm.onSubmissionError(err);
+          return Promise.reject(err);
+        });
       });
     }
     else {
@@ -317,15 +306,28 @@ export class FormComponent extends FormioForm {
    * Submit the form before the whole form is triggered.
    */
   beforeSubmit() {
-    // Ensure we submit the form.
-    if (this.component.submit &amp;&amp; !this.submitted) {
-      return this.submit(true).then(submission =&gt; {
-        // Before we submit, we need to filter out the references.
-        this.data[this.component.key] = this.component.reference ? {
-          _id: submission._id,
-          form: submission.form
-        } : submission;
-        return this.data[this.component.key];
+    const submission = this.dataValue;
+
+    // This submission has already been submitted, so just return the reference data.
+    if (submission &amp;&amp; submission._id &amp;&amp; submission.form) {
+      this.dataValue = this.component.reference ? {
+        _id: submission._id,
+        form: submission.form
+      } : submission;
+      return Promise.resolve(this.dataValue);
+    }
+
+    // This submission has not been submitted yet.
+    if (this.component.submit) {
+      return this.loadSubForm().then((form) =&gt; {
+        return this.subForm.submitForm().then(result =&gt; {
+          this.subForm.loading = false;
+          this.dataValue = this.component.reference ? {
+            _id: result.submission._id,
+            form: result.submission.form
+          } : result.submission;
+          return this.dataValue;
+        });
       });
     }
     else {
@@ -334,113 +336,40 @@ export class FormComponent extends FormioForm {
   }
 
   build() {
-    if (!this.element) {
-      this.createElement();
-      this.setElement(this.element);
+    this.createElement();
+
+    // Do not restore the value when building before submission.
+    if (!this.options.beforeSubmit) {
+      this.restoreValue();
     }
-
-    // Iterate through every component and hide the submit button.
-    FormioUtils.eachComponent(this.component.components, (component) =&gt; {
-      if ((component.type === &apos;button&apos;) &amp;&amp; (component.action === &apos;submit&apos;)) {
-        component.hidden = true;
-      }
-    });
-
-    // Set the data for this form.
-    if (!this.data[this.component.key]) {
-      this.data[this.component.key] = this.defaultValue;
-      if (!this.data[this.component.key]) {
-        this.data[this.component.key] = {data: {}};
-      }
-    }
-
-    // Add components using the data of the submission.
-    this.addComponents(this.element, this.data[this.component.key].data);
-
-    // Restore default values.
-    this.restoreValue();
-
-    // Get the submission value.
-    const submission = this.getValue();
-
-    // Check conditions for this form.
-    this.checkConditions(submission);
-
-    // Check the data for default values.
-    this.checkData(submission.data, {
-      noValidate: true
-    });
-  }
-
-  whenReady() {
-    return this.ready.then(() =&gt; this.readyPromise);
-  }
-
-  emit(event, data) {
-    switch (event) {
-      case &apos;submit&apos;:
-        event = &apos;formComponentSubmit&apos;;
-        break;
-      case &apos;submitDone&apos;:
-        event = &apos;formComponentSubmitDone&apos;;
-        break;
-      case &apos;formLoad&apos;:
-        event = &apos;formComponentLoad&apos;;
-        break;
-      case &apos;render&apos;:
-        event = &apos;formComponentRender&apos;;
-        break;
-    }
-
-    super.emit(event, data);
   }
 
   setValue(submission, flags) {
-    flags = this.getFlags.apply(this, arguments);
-    if (!submission) {
-      this.data[this.component.key] = this._submission = {data: {}};
-      this.readyResolve();
-      return;
-    }
-
-    // Load the subform if we have data.
-    if (submission._id || !_.isEmpty(this.data[this.component.key])) {
-      this.loadSubForm();
-    }
-
-    // Set the url of this form to the url for a submission if it exists.
-    if (submission._id) {
-      const submissionUrl = `${this.options.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
-      this.setUrl(submissionUrl, this.options);
-      this.nosubmit = false;
-    }
-
-    if (submission._id &amp;&amp; !flags.noload) {
-      this.formio.submissionId = submission._id;
-      this.formio.submissionUrl = `${this.formio.submissionsUrl}/${submission._id}`;
-      this.formReady.then(() =&gt; {
-        this._loading = false;
-        this.loading = true;
-        this.formio.loadSubmission().then((result) =&gt; {
-          this.loading = false;
-          this.setValue(result, {
-            noload: true
-          });
-        });
-      });
-
-      // Assume value has changed.
-      return true;
+    const changed = super.setValue(submission, flags);
+    if (this.subForm) {
+      this.subForm.setValue(submission, flags);
     }
     else {
-      const superValue = super.setValue(submission, flags, this.data[this.component.key].data);
-      this.readyResolve();
-      return superValue;
+      this.loadSubForm().then((form) =&gt; {
+        if (submission &amp;&amp; submission._id &amp;&amp; form.formio &amp;&amp; !flags.noload) {
+          const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
+          form.setUrl(submissionUrl, this.options);
+          form.nosubmit = false;
+          form.loadSubmission();
+        }
+        else {
+          form.setValue(submission, flags);
+        }
+      });
     }
+    return changed;
   }
 
   getValue() {
-    return this.data[this.component.key];
+    if (this.subForm) {
+      return this.subForm.getValue();
+    }
+    return this.dataValue;
   }
 }
 </code></pre>
@@ -448,7 +377,7 @@ export class FormComponent extends FormioForm {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
 <script src="script/search_index.js"></script>

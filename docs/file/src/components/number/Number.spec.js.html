@@ -190,12 +190,12 @@ describe(&apos;Number Component&apos;, () =&gt; {
   });
   it(&apos;Should format numbers for USA locale&apos;, (done) =&gt; {
     Harness.testCreate(NumberComponent, comps.comp2, {language: &apos;en-US&apos;}).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
-      Harness.testSetInput(component, undefined, null, &apos;&apos;);
-      Harness.testSetInput(component, &apos;&apos;, null, &apos;&apos;);
-      Harness.testSetInput(component, {}, null, &apos;&apos;);
-      Harness.testSetInput(component, [], null, &apos;&apos;);
-      Harness.testSetInput(component, [&apos;&apos;], null, &apos;&apos;);
+      Harness.testSetInput(component, null, 0, &apos;0&apos;);
+      Harness.testSetInput(component, undefined, 0, &apos;0&apos;);
+      Harness.testSetInput(component, &apos;&apos;, 0, &apos;0&apos;);
+      Harness.testSetInput(component, {}, 0, &apos;0&apos;);
+      Harness.testSetInput(component, [], 0, &apos;0&apos;);
+      Harness.testSetInput(component, [&apos;&apos;], 0, &apos;0&apos;);
       Harness.testSetInput(component, [&apos;1&apos;], 1, &apos;1&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);
       Harness.testSetInput(component, 1, 1, &apos;1&apos;);
@@ -213,8 +213,8 @@ describe(&apos;Number Component&apos;, () =&gt; {
       Harness.testSetInput(component, 12.123456789, 12.123456789, &apos;12.123456789&apos;);
       Harness.testSetInput(component, -12.123456789, -12.123456789, &apos;-12.123456789&apos;);
       // These tests run into the maximum number of significant digits for floats.
-      Harness.testSetInput(component, 123456789.123456789, 123456789.123457, &apos;123,456,789.123457&apos;);
-      Harness.testSetInput(component, -123456789.123456789, -123456789.123457, &apos;-123,456,789.123457&apos;);
+      Harness.testSetInput(component, 123456789.123456789, 123456789.123456789, &apos;123,456,789.12345679&apos;);
+      Harness.testSetInput(component, -123456789.123456789, -123456789.123456789, &apos;-123,456,789.12345679&apos;);
       Harness.testSetInput(component, &apos;0&apos;, 0, &apos;0&apos;);
       Harness.testSetInput(component, &apos;1&apos;, 1, &apos;1&apos;);
       Harness.testSetInput(component, &apos;-1&apos;, -1, &apos;-1&apos;);
@@ -230,14 +230,14 @@ describe(&apos;Number Component&apos;, () =&gt; {
       Harness.testSetInput(component, &apos;-1234567890.12&apos;, -1234567890.12, &apos;-1,234,567,890.12&apos;);
       Harness.testSetInput(component, &apos;12.123456789&apos;, 12.123456789, &apos;12.123456789&apos;);
       Harness.testSetInput(component, &apos;-12.123456789&apos;, -12.123456789, &apos;-12.123456789&apos;);
-      Harness.testSetInput(component, &apos;123456789.123456789&apos;, 123456789.123457, &apos;123,456,789.123457&apos;);
-      Harness.testSetInput(component, &apos;-123456789.123456789&apos;, -123456789.123457, &apos;-123,456,789.123457&apos;);
+      Harness.testSetInput(component, &apos;123456789.123456789&apos;, 123456789.123456789, &apos;123,456,789.12345679&apos;);
+      Harness.testSetInput(component, &apos;-123456789.123456789&apos;, -123456789.123456789, &apos;-123,456,789.12345679&apos;);
       done();
     });
   });
   it(&apos;Should format numbers for British locale&apos;, (done) =&gt; {
     Harness.testCreate(NumberComponent, comps.comp2, {language: &apos;en-GB&apos;}).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, null, 0, &apos;0&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);
       Harness.testSetInput(component, 1, 1, &apos;1&apos;);
       Harness.testSetInput(component, -1, -1, &apos;-1&apos;);
@@ -259,7 +259,7 @@ describe(&apos;Number Component&apos;, () =&gt; {
   it(&apos;Should format numbers for French locale&apos;, (done) =&gt; {
     Harness.testCreate(NumberComponent, comps.comp2, {language: &apos;fr&apos;}).then((component) =&gt; {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
-      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, null, 0, &apos;0&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);
       Harness.testSetInput(component, 1, 1, &apos;1&apos;);
       Harness.testSetInput(component, -1, -1, &apos;-1&apos;);
@@ -280,7 +280,7 @@ describe(&apos;Number Component&apos;, () =&gt; {
   });
   it(&apos;Should format numbers for German locale&apos;, (done) =&gt; {
     Harness.testCreate(NumberComponent, comps.comp2, {language: &apos;de&apos;}).then((component) =&gt; {
-      Harness.testSetInput(component, null, null, &apos;&apos;);
+      Harness.testSetInput(component, null, 0, &apos;0&apos;);
       Harness.testSetInput(component, 0, 0, &apos;0&apos;);
       Harness.testSetInput(component, 1, 1, &apos;1&apos;);
       Harness.testSetInput(component, -1, -1, &apos;-1&apos;);
@@ -305,7 +305,7 @@ describe(&apos;Number Component&apos;, () =&gt; {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
 <script src="script/search_index.js"></script>

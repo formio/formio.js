@@ -197,6 +197,7 @@ export class BaseComponent {
      * @type {{}}
      */
     this.options = _.defaults(_.clone(options), {
+      language: &apos;en&apos;,
       highlightErrors: true
     });
 
@@ -309,12 +310,6 @@ export class BaseComponent {
      */
     this.root = this;
 
-    /**
-     * The Input mask instance for this component.
-     * @type {InputMask}
-     */
-    this.inputMask = null;
-
     this.options.name = this.options.name || &apos;data&apos;;
 
     /**
@@ -410,7 +405,7 @@ export class BaseComponent {
     this.eventListeners.push({
       type: type,
       listener: cb,
-      internal: internal
+      internal
     });
     return this.events.on(type, cb);
   }
@@ -516,6 +511,8 @@ export class BaseComponent {
 
       // Restore the value.
       this.restoreValue();
+
+      this.autofocus();
     }
   }
 
@@ -675,7 +672,8 @@ export class BaseComponent {
       table.appendChild(this.tbody);
 
       // Add a default value.
-      if (!this.data[this.component.key] || !this.data[this.component.key].length) {
+      const dataValue = this.dataValue;
+      if (!dataValue || !dataValue.length) {
         this.addNewValue();
       }
 
@@ -691,15 +689,15 @@ export class BaseComponent {
   }
 
   get defaultValue() {
-    let defaultValue = &apos;&apos;;
+    let defaultValue = this.emptyValue;
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
     else if (this.component.customDefaultValue) {
       if (typeof this.component.customDefaultValue === &apos;string&apos;) {
         try {
-          defaultValue = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;,
-            `var value = &apos;&apos;; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
+          defaultValue = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;, &apos;_&apos;,
+            `var value = &apos;&apos;; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data, _);
         }
         catch (e) {
           defaultValue = null;
@@ -733,7 +731,7 @@ export class BaseComponent {
     }
 
     // Clone so that it creates a new instance.
-    return _.cloneDeep(defaultValue);
+    return _.clone(defaultValue);
   }
 
   /**
@@ -749,7 +747,7 @@ export class BaseComponent {
    * Adds a new empty value to the data array.
    */
   addNewValue() {
-    let dataValue = _.get(this.data, this.component.key, []);
+    let dataValue = this.dataValue || [];
     if (!Array.isArray(dataValue)) {
       dataValue = [dataValue];
     }
@@ -761,7 +759,7 @@ export class BaseComponent {
     else {
       dataValue.push(defaultValue);
     }
-    _.set(this.data, this.component.key, dataValue);
+    this.dataValue = dataValue;
   }
 
   /**
@@ -772,6 +770,9 @@ export class BaseComponent {
     this.buildRows();
     this.checkConditions(this.root ? this.root.data : this.data);
     this.restoreValue();
+    if (this.root) {
+      this.root.onChange();
+    }
   }
 
   /**
@@ -779,11 +780,12 @@ export class BaseComponent {
    * @param {number} index - The index of the data element to remove.
    */
   removeValue(index) {
-    if (this.data.hasOwnProperty(this.component.key)) {
-      this.data[this.component.key].splice(index, 1);
-      this.triggerChange();
-    }
+    this.splice(index);
     this.buildRows();
+    this.restoreValue();
+    if (this.root) {
+      this.root.onChange();
+    }
   }
 
   /**
@@ -795,7 +797,7 @@ export class BaseComponent {
     }
     this.inputs = [];
     this.tbody.innerHTML = &apos;&apos;;
-    _.each(this.data[this.component.key], (value, index) =&gt; {
+    _.each(this.dataValue, (value, index) =&gt; {
       const tr = this.ce(&apos;tr&apos;);
       const td = this.ce(&apos;td&apos;);
       const input = this.createInput(td);
@@ -853,7 +855,7 @@ export class BaseComponent {
    * @returns {HTMLElement} - The &quot;Add New&quot; button html element.
    */
   addButton(justIcon) {
-    const addButton = this.ce(&apos;a&apos;, {
+    const addButton = this.ce(&apos;button&apos;, {
       class: &apos;btn btn-primary&apos;
     });
     this.addEventListener(addButton, &apos;click&apos;, (event) =&gt; {
@@ -912,8 +914,7 @@ export class BaseComponent {
   removeButton(index) {
     const removeButton = this.ce(&apos;button&apos;, {
       type: &apos;button&apos;,
-      class: &apos;btn btn-default btn-secondary&apos;,
-      tabindex: &apos;-1&apos;
+      class: &apos;btn btn-default btn-secondary&apos;
     });
 
     this.addEventListener(removeButton, &apos;click&apos;, (event) =&gt; {
@@ -1226,7 +1227,7 @@ export class BaseComponent {
     if (input &amp;&amp; this.component.inputMask) {
       const mask = FormioUtils.getInputMask(this.component.inputMask);
       this._inputMask = mask;
-      this.inputMask = maskInput({
+      input.mask = maskInput({
         inputElement: input,
         mask
       });
@@ -1289,9 +1290,6 @@ export class BaseComponent {
    * Remove all event handlers.
    */
   destroy(all) {
-    if (this.inputMask) {
-      this.inputMask.destroy();
-    }
     _.each(this.eventListeners, (listener) =&gt; {
       if (all || listener.internal) {
         this.events.off(listener.type, listener.listener);
@@ -1300,6 +1298,11 @@ export class BaseComponent {
     _.each(this.eventHandlers, (handler) =&gt; {
       if (handler.event) {
         window.removeEventListener(handler.event, handler.func);
+      }
+    });
+    _.each(this.inputs, (input) =&gt; {
+      if (input.mask) {
+        input.mask.destroy();
       }
     });
     this.inputs = [];
@@ -1569,10 +1572,15 @@ export class BaseComponent {
   /**
    * Show or hide the root element of this component.
    *
+   * @param element
    * @param show
    */
-  showElement(show) {
-    const element = this.getElement();
+  showElement(element, show) {
+    if (typeof element === &apos;boolean&apos;) {
+      show = element;
+      element = this.getElement();
+    }
+
     if (element) {
       if (show) {
         element.removeAttribute(&apos;hidden&apos;);
@@ -1592,9 +1600,9 @@ export class BaseComponent {
     // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
     if (this.component.clearOnHide !== false) {
       if (!show) {
-        delete this.data[this.component.key];
+        this.deleteValue();
       }
-      else if (!this.data || !this.data.hasOwnProperty(this.component.key)) {
+      else if (!this.hasValue) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -1647,7 +1655,7 @@ export class BaseComponent {
     // Set the changed variable.
     const changed = {
       component: this.component,
-      value: this.value,
+      value: this.dataValue,
       flags: flags
     };
 
@@ -1701,14 +1709,80 @@ export class BaseComponent {
   }
 
   /**
-   * Get the static value of this component.
+   * The empty value for this component.
+   *
+   * @return {null}
+   */
+  get emptyValue() {
+    return null;
+  }
+
+  /**
+   * Returns if this component has a value set.
+   *
+   */
+  get hasValue() {
+    return _.has(this.data, this.component.key);
+  }
+
+  /**
+   * Get the value of this component.
+   *
    * @return {*}
    */
   get value() {
-    if (!this.data) {
-      return null;
+    return this.dataValue;
+  }
+
+  /**
+   * Get the static value of this component.
+   * @return {*}
+   */
+  get dataValue() {
+    if (!this.component.key) {
+      return this.emptyValue;
     }
-    return this.data[this.component.key];
+    if (!this.hasValue) {
+      this.dataValue = this.emptyValue;
+    }
+    return _.get(this.data, this.component.key);
+  }
+
+  /**
+   * Sets the static value of this component.
+   *
+   * @param value
+   */
+  set dataValue(value) {
+    if (!this.component.key) {
+      return value;
+    }
+    _.set(this.data, this.component.key, value);
+    return value;
+  }
+
+  /**
+   * Splice a value from the dataValue.
+   *
+   * @param index
+   */
+  splice(index) {
+    if (this.hasValue) {
+      const dataValue = this.dataValue || [];
+      if (_.isArray(dataValue) &amp;&amp; dataValue.hasOwnProperty(index)) {
+        dataValue.splice(index, 1);
+        this.dataValue = dataValue;
+        this.triggerChange();
+      }
+    }
+  }
+
+  /**
+   * Deletes the value of the component.
+   */
+  deleteValue() {
+    this.setValue(null);
+    _.unset(this.data, this.component.key);
   }
 
   /**
@@ -1731,7 +1805,7 @@ export class BaseComponent {
       return;
     }
     if (this.viewOnly) {
-      return this.value;
+      return this.dataValue;
     }
     const values = [];
     for (const i in this.inputs) {
@@ -1753,7 +1827,28 @@ export class BaseComponent {
    * @return {boolean}
    */
   hasChanged(before, after) {
+    if (
+      ((before === undefined) || (before === null)) &amp;&amp;
+      ((after === undefined) || (after === null))
+    ) {
+      return false;
+    }
     return !_.isEqual(before, after);
+  }
+
+  /**
+   * Update the value on change.
+   *
+   * @param flags
+   * @param changed
+   */
+  updateOnChange(flags, changed) {
+    delete flags.changed;
+    if (!flags.noUpdateEvent &amp;&amp; changed) {
+      this.triggerChange(flags);
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -1767,17 +1862,14 @@ export class BaseComponent {
     }
 
     flags = flags || {};
-    const value = this.data[this.component.key];
-    this.data[this.component.key] = this.getValue(flags);
+    const value = this.getValue(flags);
+    const changed = flags.changed || this.hasChanged(value, this.dataValue);
+    this.dataValue = value;
     if (this.viewOnly) {
-      this.updateViewOnlyValue(this.value);
+      this.updateViewOnlyValue(value);
     }
 
-    const changed = flags.changed || this.hasChanged(value, this.data[this.component.key]);
-    delete flags.changed;
-    if (!flags.noUpdateEvent &amp;&amp; changed) {
-      this.triggerChange(flags);
-    }
+    this.updateOnChange(flags, changed);
     return changed;
   }
 
@@ -1785,14 +1877,14 @@ export class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.data &amp;&amp; this.data.hasOwnProperty(this.component.key)) {
-      this.setValue(this.data[this.component.key], {
+    if (this.hasValue &amp;&amp; !this.isEmpty(this.dataValue)) {
+      this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
     }
     else {
       const defaultValue = this.defaultValue;
-      if (!this.data.hasOwnProperty(this.component.key) &amp;&amp; defaultValue) {
+      if (defaultValue) {
         this.setValue(defaultValue, {
           noUpdateEvent: true
         });
@@ -1816,7 +1908,6 @@ export class BaseComponent {
     flags.noCheck = true;
     let changed = false;
 
-    // If this is a string, then use eval to evalulate it.
     if (typeof this.component.calculateValue === &apos;string&apos;) {
       try {
         const value = (new Function(&apos;component&apos;, &apos;row&apos;, &apos;data&apos;,
@@ -1917,11 +2008,16 @@ export class BaseComponent {
   }
 
   getRawValue() {
-    return this.data[this.component.key];
+    console.warn(&apos;component.getRawValue() has been deprecated. Use component.validationValue or component.dataValue instead.&apos;);
+    return this.validationValue;
+  }
+
+  get validationValue() {
+    return this.dataValue;
   }
 
   isEmpty(value) {
-    return value == null || value.length === 0;
+    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue);
   }
 
   /**
@@ -1980,7 +2076,12 @@ export class BaseComponent {
     if (value === null || value === undefined) {
       value = this.defaultValue;
     }
-    this.inputs[index].value = value;
+    if (this.inputs[index].mask) {
+      this.inputs[index].mask.textMaskInputElement.update(value);
+    }
+    else {
+      this.inputs[index].value = value;
+    }
   }
 
   getFlags() {
@@ -2186,16 +2287,25 @@ export class BaseComponent {
       attributes.tabindex = this.component.tabindex;
     }
 
-    if (this.component.autofocus) {
-      attributes.autofocus = this.component.autofocus;
-    }
-
     return {
       type: &apos;input&apos;,
       component: this.component,
       changeEvent: &apos;change&apos;,
       attr: attributes
     };
+  }
+
+  autofocus() {
+    if (this.component.autofocus) {
+      this.on(&apos;render&apos;, () =&gt; this.focus(), true);
+    }
+  }
+
+  focus() {
+    const input = this.inputs[0];
+    if (input) {
+      input.focus();
+    }
   }
 }
 
@@ -2292,7 +2402,7 @@ BaseComponent.libraryReady = function(name) {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
 <script src="script/search_index.js"></script>
