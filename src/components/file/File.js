@@ -515,15 +515,7 @@ export class FileComponent extends BaseComponent {
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
-        // commented becouse this way is not supported any more by chrome due to security practices.
-        //window.open(file.url, '_blank');
-
-        // this is a workaround to render base64 files in Chrome. Still not working on IE/Edge
-        var hiddenElement = document.createElement('a');
-        hiddenElement.href = 'data:' + file.type + ';base64,' + encodeURI(file.data);
-        hiddenElement.target = '_blank';
-        hiddenElement.download = file.originalName;
-        hiddenElement.click();
+        window.open(file.url, '_blank');
       }
     })
       .catch((response) => {
