@@ -79,9 +79,10 @@ export class SignatureComponent extends BaseComponent {
   }
 
   build() {
-    if (this.viewOnly) {
-      return this.viewOnlyBuild();
-    }
+    // no need to build a view only (which will display Yes/No) since we need to render the captured signuature instead.
+    // if (this.viewOnly) {
+    //   return this.viewOnlyBuild();
+    // }
 
     this.element = this.createElement();
     let classNames = this.element.getAttribute('class');
@@ -152,7 +153,8 @@ export class SignatureComponent extends BaseComponent {
     // Restore values.
     this.restoreValue();
 
-    if (this.shouldDisable) {
+    // disable the signature pad if the form in ViewOnly mode
+    if (this.shouldDisable || this.viewOnly) {
       this.disabled = true;
     }
 
