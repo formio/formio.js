@@ -176,16 +176,20 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   setValueAt(index, value) {
+    // Convert to a standard ISO-8601 format. Needed for proper IE function.
     if (value) {
-      // Convert to a standard ISO-8601 format. Needed for proper IE function.
       value = moment(value).toISOString();
+    }
 
-      const calendar = this.getCalendar(this.inputs[index]);
-      if (!calendar) {
-        return super.setValueAt(index, value);
+    super.setValueAt(index, value);
+    const calendar = this.getCalendar(this.inputs[index]);
+    if (calendar) {
+      if (value) {
+        calendar.setDate(new Date(value), false);
       }
-
-      calendar.setDate(value ? new Date(value) : new Date(), false);
+      else {
+        calendar.clear();
+      }
     }
   }
 

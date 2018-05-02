@@ -104,6 +104,8 @@ export class FormioComponents extends BaseComponent {
    * @param data
    */
   createComponent(component, options, data) {
+    options = options || this.options;
+    data = data || this.data;
     if (!this.options.components) {
       this.options.components = require('./index');
       _.assign(this.options.components, FormioComponents.customComponents);
@@ -328,6 +330,7 @@ export class FormioComponents extends BaseComponent {
 
   destroy(all) {
     super.destroy(all);
+    this.empty(this.getElement());
     const components = _.clone(this.components);
     _.each(components, (comp) => this.removeComponent(comp, this.components));
     this.components = [];

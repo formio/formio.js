@@ -531,8 +531,8 @@ export class BaseComponent {
     else if (this.component.customDefaultValue) {
       if (typeof this.component.customDefaultValue === 'string') {
         try {
-          defaultValue = (new Function('component', 'row', 'data',
-            `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data);
+          defaultValue = (new Function('component', 'row', 'data', '_',
+            `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data, _);
         }
         catch (e) {
           defaultValue = null;
@@ -1712,7 +1712,7 @@ export class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.hasValue) {
+    if (this.hasValue && !this.isEmpty(this.dataValue)) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
@@ -1852,7 +1852,7 @@ export class BaseComponent {
   }
 
   isEmpty(value) {
-    return value == null || value.length === 0;
+    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue);
   }
 
   /**

@@ -1014,7 +1014,7 @@ module.exports = {
         },
         "persistent": true,
         "protected": false,
-        "defaultValue": "",
+        "defaultValue": {},
         "values": [{
           "label": "Alpha",
           "value": "alpha"

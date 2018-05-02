@@ -4,6 +4,39 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.32.0
+### Added
+ - Ability to save a submission in a state (Save in state on button)
+ - Ability to skip frontend validation if in draft state
+ - Delete action to button component
+ - Message on file component when validation fails
+
+### Fixed
+ - Nested form data handling.
+ - Default values on nested forms.
+ - DateTime component resetting values was not working.
+ - Validation styling inside datagrid
+ - Destroy method on wizard component not removing header and footer
+
+### Changed
+ - Upgrade i18next to 11.2.3
+
+## 2.31.4
+### Fixed
+ - Disappering label for DataGrid.
+ - Validation for DataGrid.
+ - Validation for EditGrid.
+ - Destroy method should clear form element
+ - Stop talking about FFiles.
+
+### Added
+ - Add basic support for submission states.
+ - Docs about Seamless.js integration.
+ - Explain why files have been rejected when validation fails. 
+
+## 2.31.3
+ - Bad Release. Do not use!
+
 ## 2.31.2
 ### Fixed
  - Problems with datagrid not rending properly and getting out of sync.

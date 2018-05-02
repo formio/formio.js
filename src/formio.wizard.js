@@ -91,6 +91,14 @@ export default class FormioWizard extends FormioForm {
     return this.page - 1;
   }
 
+  beforeSubmit() {
+    const ops = [];
+    const pageOptions = _.clone(this.options);
+    pageOptions.beforeSubmit = true;
+    _.each(this.pages, page => ops.push(this.createComponent(page, pageOptions).beforeSubmit()));
+    return Promise.all(ops);
+  }
+
   nextPage() {
     // Read-only forms should not worry about validation before going to next page, nor should they submit.
     if (this.options.readOnly) {
