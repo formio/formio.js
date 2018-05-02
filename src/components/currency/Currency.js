@@ -25,29 +25,46 @@ export class CurrencyComponent extends NumberComponent {
 
   parseNumber(value) {
     // Strip out the prefix and suffix before parsing.
-    value = value.replace(this.prefix, '').replace(this.suffix, '');
+    if (this.prefix) {
+      value = value.replace(this.prefix, '');
+    }
+
+    if (this.suffix) {
+      value = value.replace(this.suffix, '');
+    }
 
     return super.parseNumber(value);
   }
 
   setInputMask(input) {
+    const numberMask = {
+      thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
+      decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
+      decimalLimit: this.decimalLimit,
+      allowNegative: _.get(this.component, 'allowNegative', true),
+      allowDecimal: _.get(this.component, 'allowDecimal', true)
+    };
+    if (this.prefix) {
+      numberMask.prefix = this.prefix;
+    }
+    if (this.suffix) {
+      numberMask.suffix = this.suffix;
+    }
+
     input.mask = maskInput({
       inputElement: input,
-      mask: createNumberMask({
-        prefix: this.prefix,
-        suffix: this.suffix,
-        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
-        decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-        decimalLimit: this.decimalLimit,
-        allowNegative: _.get(this.component, 'allowNegative', true),
-        allowDecimal: _.get(this.component, 'allowDecimal', true)
-      })
+      mask: createNumberMask(numberMask)
     });
   }
 
   clearInput(input) {
     try {
-      input = input.replace(this.prefix, '').replace(this.suffix, '');
+      if (this.prefix) {
+        input = input.replace(this.prefix, '');
+      }
+      if (this.suffix) {
+        input = input.replace(this.suffix, '');
+      }
     }
     catch (err) {
       // If value doesn't have a replace method, continue on as before.
