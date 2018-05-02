@@ -79,7 +79,10 @@ export class FormComponent extends BaseComponent {
       });
 
       this.subForm = formFactory(this.element, formObj, srcOptions);
-      this.subForm.on('change', () => this.onChange());
+      this.subForm.on('change', () => {
+        this.dataValue = this.subForm.getValue();
+        this.onChange();
+      });
       this.subForm.url = this.component.src;
       this.subForm.nosubmit = false;
       this.restoreValue();
@@ -107,7 +110,7 @@ export class FormComponent extends BaseComponent {
 
   calculateValue(data, flags) {
     if (this.subForm) {
-      return this.subForm.calculateValue(this.subForm.data, flags);
+      return this.subForm.calculateValue(this.dataValue.data, flags);
     }
 
     return super.calculateValue(data, flags);
@@ -185,7 +188,9 @@ export class FormComponent extends BaseComponent {
       this.loadSubForm().then((form) => {
         if (submission && submission._id && form.formio && !flags.noload) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
-          form.setSrc(submissionUrl, this.options);
+          form.setUrl(submissionUrl, this.options);
+          form.nosubmit = false;
+          form.loadSubmission();
         }
         else {
           form.setValue(submission, flags);
@@ -196,6 +201,9 @@ export class FormComponent extends BaseComponent {
   }
 
   getValue() {
+    if (this.subForm) {
+      return this.subForm.getValue();
+    }
     return this.dataValue;
   }
 }
