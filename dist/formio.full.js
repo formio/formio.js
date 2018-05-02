@@ -10420,9 +10420,9 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
     value: function build() {
       var _this2 = this;
 
-      if (this.viewOnly) {
-        return this.viewOnlyBuild();
-      }
+      // if (this.viewOnly) {
+      //   return this.viewOnlyBuild();
+      // }
 
       this.element = this.createElement();
       var classNames = this.element.getAttribute('class');
@@ -10495,7 +10495,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
       // Restore values.
       this.restoreValue();
 
-      if (this.shouldDisable) {
+      if (this.shouldDisable || this.viewOnly) {
         this.disabled = true;
       }
 
