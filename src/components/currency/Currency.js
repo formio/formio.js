@@ -37,23 +37,17 @@ export class CurrencyComponent extends NumberComponent {
   }
 
   setInputMask(input) {
-    const numberMask = {
-      thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
-      decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
-      decimalLimit: this.decimalLimit,
-      allowNegative: _.get(this.component, 'allowNegative', true),
-      allowDecimal: _.get(this.component, 'allowDecimal', true)
-    };
-    if (this.prefix) {
-      numberMask.prefix = this.prefix;
-    }
-    if (this.suffix) {
-      numberMask.suffix = this.suffix;
-    }
-
     input.mask = maskInput({
       inputElement: input,
-      mask: createNumberMask(numberMask)
+      mask: createNumberMask({
+        prefix: this.prefix,
+        suffix: this.suffix,
+        thousandsSeparatorSymbol: _.get(this.component, 'thousandsSeparator', this.delimiter),
+        decimalSymbol: _.get(this.component, 'decimalSymbol', this.decimalSeparator),
+        decimalLimit: this.decimalLimit,
+        allowNegative: _.get(this.component, 'allowNegative', true),
+        allowDecimal: _.get(this.component, 'allowDecimal', true)
+      })
     });
   }
 

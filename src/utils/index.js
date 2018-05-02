@@ -730,8 +730,7 @@ const FormioUtils = {
     // Get the prefix and suffix from the localized string.
     let regex = '(.*)?100';
     if (decimalLimit) {
-      regex += (decimalSeparator === '.') ? '\\.' : decimalSeparator;
-      regex += '0{' + decimalLimit + '}';
+      regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}`;
     }
     regex += '(.*)?';
     const parts = (100).toLocaleString(lang, {
