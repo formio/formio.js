@@ -79,9 +79,9 @@ export class SignatureComponent extends BaseComponent {
   }
 
   build() {
-    if (this.viewOnly) {
-      return this.viewOnlyBuild();
-    }
+    // if (this.viewOnly) {
+    //   return this.viewOnlyBuild();
+    // }
 
     this.element = this.createElement();
     let classNames = this.element.getAttribute('class');
@@ -152,7 +152,7 @@ export class SignatureComponent extends BaseComponent {
     // Restore values.
     this.restoreValue();
 
-    if (this.shouldDisable) {
+    if (this.shouldDisable || this.viewOnly) {
       this.disabled = true;
     }
 
