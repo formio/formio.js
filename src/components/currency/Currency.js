@@ -25,7 +25,13 @@ export class CurrencyComponent extends NumberComponent {
 
   parseNumber(value) {
     // Strip out the prefix and suffix before parsing.
-    value = value.replace(this.prefix, '').replace(this.suffix, '');
+    if (this.prefix) {
+      value = value.replace(this.prefix, '');
+    }
+
+    if (this.suffix) {
+      value = value.replace(this.suffix, '');
+    }
 
     return super.parseNumber(value);
   }
@@ -47,7 +53,12 @@ export class CurrencyComponent extends NumberComponent {
 
   clearInput(input) {
     try {
-      input = input.replace(this.prefix, '').replace(this.suffix, '');
+      if (this.prefix) {
+        input = input.replace(this.prefix, '');
+      }
+      if (this.suffix) {
+        input = input.replace(this.suffix, '');
+      }
     }
     catch (err) {
       // If value doesn't have a replace method, continue on as before.

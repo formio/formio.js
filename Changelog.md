@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - DateTime component resetting values was not working.
  - Validation styling inside datagrid
  - Destroy method on wizard component not removing header and footer
+ - Problem where number component would crash if decimalLimit was less than 2.
 
 ### Changed
  - Upgrade i18next to 11.2.3

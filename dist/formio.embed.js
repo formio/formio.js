@@ -5195,7 +5195,13 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
     key: 'parseNumber',
     value: function parseNumber(value) {
       // Strip out the prefix and suffix before parsing.
-      value = value.replace(this.prefix, '').replace(this.suffix, '');
+      if (this.prefix) {
+        value = value.replace(this.prefix, '');
+      }
+
+      if (this.suffix) {
+        value = value.replace(this.suffix, '');
+      }
 
       return _get(CurrencyComponent.prototype.__proto__ || Object.getPrototypeOf(CurrencyComponent.prototype), 'parseNumber', this).call(this, value);
     }
@@ -5219,7 +5225,12 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
     key: 'clearInput',
     value: function clearInput(input) {
       try {
-        input = input.replace(this.prefix, '').replace(this.suffix, '');
+        if (this.prefix) {
+          input = input.replace(this.prefix, '');
+        }
+        if (this.suffix) {
+          input = input.replace(this.suffix, '');
+        }
       } catch (err) {
         // If value doesn't have a replace method, continue on as before.
       }
@@ -16314,12 +16325,17 @@ var FormioUtils = {
         lang = _ref.lang;
 
     // Get the prefix and suffix from the localized string.
-    var regex = '(.*)?100' + (decimalSeparator === '.' ? '\\.' : decimalSeparator) + '0{' + decimalLimit + '}(.*)?';
+    var regex = '(.*)?100';
+    if (decimalLimit) {
+      regex += (decimalSeparator === '.' ? '\\.' : decimalSeparator) + '0{' + decimalLimit + '}';
+    }
+    regex += '(.*)?';
     var parts = 100 .toLocaleString(lang, {
       style: 'currency',
       currency: currency,
       useGrouping: true,
-      maximumFractionDigits: decimalLimit
+      maximumFractionDigits: decimalLimit,
+      minimumFractionDigits: decimalLimit
     }).replace('.', decimalSeparator).match(new RegExp(regex));
     return {
       prefix: parts[1] || '',
