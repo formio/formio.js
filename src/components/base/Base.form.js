@@ -6,9 +6,15 @@ import { BaseEditValidation } from './editForm/Base.edit.validation';
 import { BaseEditAPI } from './editForm/Base.edit.api';
 import { BaseEditConditional } from './editForm/Base.edit.conditional';
 import { BaseEditLogic } from './editForm/Base.edit.logic';
-export default function(...extend) {
+export default function (...extend) {
   return {
-    components: _.unionWith([
+    components: _.unionWith(_.map(extend, items => {
+      return {
+        type: 'tabs',
+        key: 'tabs',
+        components: items
+      };
+    }), [
       {
         type: 'tabs',
         key: 'tabs',
@@ -55,12 +61,6 @@ export default function(...extend) {
         type: 'hidden',
         key: 'type'
       }
-    ].concat(_.map(extend, items => {
-      return {
-        type: 'tabs',
-        key: 'tabs',
-        components: items
-      };
-    })), EditFormUtils.unifyComponents)
+    ], EditFormUtils.unifyComponents)
   };
 };
