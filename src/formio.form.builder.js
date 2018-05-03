@@ -3,6 +3,7 @@ import dragula from 'dragula';
 import Components from './components/builder';
 import {FormioComponents} from './components/Components';
 import { BuilderUtils } from './utils/builder';
+import FormioUtils from './utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -161,6 +162,17 @@ export class FormioFormBuilder extends FormioForm {
       BuilderUtils.uniquify(this._form, component.component);
     }
 
+    // Change the "default value" field to be reflective of this component.
+    if (this.defaultValueComponent) {
+      _.assign(this.defaultValueComponent, _.omit(component.component, [
+        'key',
+        'label',
+        'placeholder',
+        'tooltip',
+        'validate'
+      ]));
+    }
+
     // Called when we update a component.
     this.emit('updateComponent', component);
   }
@@ -250,10 +262,27 @@ export class FormioFormBuilder extends FormioForm {
 
     // Append the settings page to the dialog body.
     this.dialog.body.appendChild(componentEdit);
+
+    const editForm = Components[componentCopy.component.type].editForm();
+
+    // Change the defaultValue component to be reflective.
+    this.defaultValueComponent = FormioUtils.getComponent(editForm.components, 'defaultValue');
+    _.assign(this.defaultValueComponent, _.omit(componentCopy.component, [
+      'key',
+      'label',
+      'placeholder',
+      'tooltip',
+      'validate'
+    ]));
+
+    // Create the form instance.
     this.editForm = new FormioForm(formioForm);
 
     // Set the form to the edit form.
-    this.editForm.form = Components[componentCopy.component.type].editForm();
+    this.editForm.form = editForm;
+
+    // Pass along the form being edited.
+    this.editForm.editForm = this._form;
 
     // Update the preview with this component.
     this.updateComponent(componentCopy);

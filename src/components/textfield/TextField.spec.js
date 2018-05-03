@@ -100,7 +100,7 @@ describe('TextField Builder', () => {
 
   it ('Should set the placeholder of the input', (done) => {
     Harness.setComponentProperty('labelPosition', 'right-right', 'top', () => {
-      Harness.testBuilderProperty('placeholder', '', 'Enter something here', /input.*name="data\[textField\].*placeholder="Enter something here"/, done);
+      Harness.testBuilderProperty('placeholder', '', 'Enter something here', /input.*name="data\[firstName\].*placeholder="Enter something here"/, done);
     });
   });
 
