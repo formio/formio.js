@@ -2014,6 +2014,9 @@ var BaseComponent = function () {
       var _this = this;
 
       var modified = {};
+      if (!defaultSchema) {
+        return schema;
+      }
       _lodash2.default.each(schema, function (val, key) {
         if (_lodash2.default.isObject(val) && defaultSchema.hasOwnProperty(key)) {
           var subModified = _this.getModifiedSchema(val, defaultSchema[key]);

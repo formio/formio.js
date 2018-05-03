@@ -333,6 +333,9 @@ export class BaseComponent {
    */
   getModifiedSchema(schema, defaultSchema) {
     let modified = {};
+    if (!defaultSchema) {
+      return schema;
+    }
     _.each(schema, (val, key) => {
       if (_.isObject(val) && defaultSchema.hasOwnProperty(key)) {
         let subModified = this.getModifiedSchema(val, defaultSchema[key]);
