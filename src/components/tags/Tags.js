@@ -1,5 +1,6 @@
 import { BaseComponent } from '../base/Base';
 import Choices from 'choices.js';
+import _ from 'lodash';
 
 export class TagsComponent extends BaseComponent {
   static schema(...extend) {
@@ -57,6 +58,12 @@ export class TagsComponent extends BaseComponent {
 
   setValue(value) {
     if (this.choices) {
+      if (this.component.storeas === 'string' && (typeof value === 'string')) {
+        value = value.split(',');
+      }
+      if (value && !_.isArray(value)) {
+        value = [value];
+      }
       this.choices.removeActiveItems();
       this.choices.setValue(value);
     }

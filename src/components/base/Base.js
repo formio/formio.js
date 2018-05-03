@@ -742,7 +742,7 @@ export class BaseComponent {
       // Add a default value.
       const dataValue = this.dataValue;
       if (!dataValue || !dataValue.length) {
-        this.addNewValue();
+        this.addNewValue(this.defaultValue);
       }
 
       // Build the rows.
@@ -799,18 +799,20 @@ export class BaseComponent {
   /**
    * Adds a new empty value to the data array.
    */
-  addNewValue() {
+  addNewValue(value) {
+    if (value === undefined) {
+      value = this.emptyValue;
+    }
     let dataValue = this.dataValue || [];
     if (!Array.isArray(dataValue)) {
       dataValue = [dataValue];
     }
 
-    const defaultValue = this.defaultValue;
-    if (Array.isArray(defaultValue)) {
-      dataValue = dataValue.concat(defaultValue);
+    if (Array.isArray(value)) {
+      dataValue = dataValue.concat(value);
     }
     else {
-      dataValue.push(defaultValue);
+      dataValue.push(value);
     }
     this.dataValue = dataValue;
   }
