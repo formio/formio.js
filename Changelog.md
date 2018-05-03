@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
- - Multiple masks for phone number component
+ - Multiple masks for text field and phone number components
 
 ## 2.31.0
 ### Fixed
