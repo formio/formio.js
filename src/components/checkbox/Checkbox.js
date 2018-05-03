@@ -151,30 +151,6 @@ export class CheckBoxComponent extends BaseComponent {
     return input;
   }
 
-  updateValueByName() {
-    const component = this.getRoot().getComponent(this.component.name);
-    if (component) {
-      component.setValue(this.component.value, {changed: true});
-    }
-    else {
-      _.set(this.data, this.component.name, this.component.value);
-    }
-  }
-
-  addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => {
-      // If this input has a "name", then its other input elements are elsewhere on
-      // the form. To get the correct submission object, we need to refresh the whole
-      // data object.
-      if (this.component.name) {
-        this.updateValueByName();
-        this.emit('refreshData');
-      }
-
-      this.updateValue();
-    });
-  }
-
   getValueAt(index) {
     return !!this.inputs[index].checked;
   }
@@ -205,7 +181,7 @@ export class CheckBoxComponent extends BaseComponent {
 
   get dataValue() {
     if (this.component.name) {
-      return _.get(this.data, this.component.name, this.emptyValue);
+      return _.get(this.data, this.component.name, this.emptyValue) === this.component.value;
     }
 
     return super.dataValue;
@@ -213,7 +189,9 @@ export class CheckBoxComponent extends BaseComponent {
 
   set dataValue(value) {
     if (this.component.name) {
-      _.set(this.data, this.component.name, value);
+      if (value) {
+        _.set(this.data, this.component.name, this.component.value);
+      }
       return value;
     }
 
