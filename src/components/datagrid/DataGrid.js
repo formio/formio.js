@@ -218,6 +218,7 @@ export class DataGridComponent extends FormioComponents {
     let options = _.clone(this.options);
     options.name += `[${colIndex}]`;
     const comp = this.createComponent(column, options, row);
+    container.appendChild(comp.getElement());
     this.rows[rowIndex][column.key] = comp;
     return container;
   }

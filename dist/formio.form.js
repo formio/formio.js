@@ -6265,6 +6265,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       var options = _lodash2.default.clone(this.options);
       options.name += '[' + colIndex + ']';
       var comp = this.createComponent(column, options, row);
+      container.appendChild(comp.getElement());
       this.rows[rowIndex][column.key] = comp;
       return container;
     }
@@ -16561,8 +16562,7 @@ Formio.events = new _eventemitter.EventEmitter2({
   maxListeners: 0
 });
 
-// Support ES5 require and globals.
-module.exports = global.Formio = Formio;
+global.Formio = Formio;
 exports.default = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

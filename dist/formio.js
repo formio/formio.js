@@ -1423,8 +1423,7 @@ Formio.events = new _eventemitter.EventEmitter2({
   maxListeners: 0
 });
 
-// Support ES5 require and globals.
-module.exports = global.Formio = Formio;
+global.Formio = Formio;
 exports.default = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

@@ -826,5 +826,5 @@ const FormioUtils = {
   },
 };
 
-global.FormioUtils = FormioUtils;
+module.exports = global.FormioUtils = FormioUtils;
 export default FormioUtils;
