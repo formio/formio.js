@@ -79,10 +79,6 @@ export class SignatureComponent extends BaseComponent {
   }
 
   build() {
-    // no need to build a view only (which will display Yes/No) since we need to render the captured signuature instead.
-    // if (this.viewOnly) {
-    //   return this.viewOnlyBuild();
-    // }
 
     this.element = this.createElement();
     let classNames = this.element.getAttribute('class');
