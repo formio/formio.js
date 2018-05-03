@@ -172,8 +172,14 @@ export class EditGridComponent extends FormioComponents {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = &apos;datagrid&apos;;
-    this.rows = [];
     this.editRows = [];
+    if (this.options.components) {
+      this.create = _.bind(this.options.components.create, this.options.components, _, this.options, _, true);
+    }
+  }
+
+  get emptyValue() {
+    return [];
   }
 
   build() {
@@ -206,17 +212,37 @@ export class EditGridComponent extends FormioComponents {
   }
 
   createHeader() {
-    return this.component.templates.header ?
-      this.ce(&apos;li&apos;, {class: &apos;list-group-item list-group-header&apos;}, this.renderTemplate(this.component.templates.header, {
-        components: this.component.components,
-        util: FormioUtils,
-        value: this.rows
-      })) :
-      this.text(&apos;&apos;);
+    const templateHeader = _.get(this.component, &apos;templates.header&apos;);
+    if (!templateHeader) {
+      return this.text(&apos;&apos;);
+    }
+    return this.ce(&apos;li&apos;, {class: &apos;list-group-item list-group-header&apos;}, this.renderTemplate(templateHeader, {
+      components: this.component.components,
+      util: FormioUtils,
+      value: this.dataValue,
+      data: this.data
+    }));
+  }
+
+  get defaultRowTemplate() {
+    return `&lt;div class=&quot;row&quot;&gt;
+      {% util.eachComponent(components, function(component) { %}
+        &lt;div class=&quot;col-sm-2&quot;&gt;
+          {{ getView(component, row[component.key]) }}
+        &lt;/div&gt;
+      {% }) %}
+      &lt;div class=&quot;col-sm-2&quot;&gt;
+        &lt;div class=&quot;btn-group pull-right&quot;&gt;
+          &lt;div class=&quot;btn btn-default editRow&quot;&gt;Edit&lt;/div&gt;
+          &lt;div class=&quot;btn btn-danger removeRow&quot;&gt;Delete&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;`;
   }
 
   createRow(row, rowIndex) {
     const wrapper = this.ce(&apos;li&apos;, {class: &apos;list-group-item&apos;});
+    const rowTemplate = _.get(this.component, &apos;templates.row&apos;, this.defaultRowTemplate);
 
     // Store info so we can detect changes later.
     wrapper.rowData = row;
@@ -259,12 +285,17 @@ export class EditGridComponent extends FormioComponents {
       );
     }
     else {
+      const create = this.create;
       wrapper.appendChild(
-        this.renderTemplate(this.component.templates.row,
+        this.renderTemplate(rowTemplate,
           {
+            data: this.data,
             row,
             rowIndex,
             components: this.component.components,
+            getView(component, data) {
+              return create(component, data).getView(data);
+            },
             util: FormioUtils
           },
           [
@@ -288,13 +319,16 @@ export class EditGridComponent extends FormioComponents {
   }
 
   createFooter() {
-    return this.component.templates.footer ?
-      this.ce(&apos;li&apos;, {class: &apos;list-group-item list-group-footer&apos;}, this.renderTemplate(this.component.templates.footer, {
-        components: this.component.components,
-        util: FormioUtils,
-        value: this.rows
-      })) :
-      this.text(&apos;&apos;);
+    const footerTemplate = _.get(this.component, &apos;templates.footer&apos;);
+    if (!footerTemplate) {
+      return this.text(&apos;&apos;);
+    }
+    return this.ce(&apos;li&apos;, {class: &apos;list-group-item list-group-footer&apos;}, this.renderTemplate(footerTemplate, {
+      components: this.component.components,
+      util: FormioUtils,
+      value: this.dataValue,
+      data: this.data
+    }));
   }
 
   checkData(data, flags = {}, index) {
@@ -388,7 +422,7 @@ export class EditGridComponent extends FormioComponents {
 
   editRow(rowIndex) {
     this.editRows[rowIndex].isOpen = true;
-    this.editRows[rowIndex].data = _.cloneDeep(this.rows[rowIndex]);
+    this.editRows[rowIndex].data = _.cloneDeep(this.dataValue[rowIndex]);
     this.refreshDOM();
   }
 
@@ -401,14 +435,14 @@ export class EditGridComponent extends FormioComponents {
     }
     this.removeRowComponents(rowIndex);
     // Remove if new.
-    if (!this.rows[rowIndex]) {
+    if (!this.dataValue[rowIndex]) {
       this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
-      this.rows.splice(rowIndex, 1);
+      this.splice(rowIndex);
     }
     else {
       this.editRows[rowIndex].isOpen = false;
-      this.editRows[rowIndex].data = this.rows[rowIndex];
+      this.editRows[rowIndex].data = this.dataValue[rowIndex];
     }
     this.refreshDOM();
   }
@@ -424,7 +458,7 @@ export class EditGridComponent extends FormioComponents {
       return;
     }
     this.removeRowComponents(rowIndex);
-    this.rows[rowIndex] = this.editRows[rowIndex].data;
+    this.dataValue[rowIndex] = this.editRows[rowIndex].data;
     this.editRows[rowIndex].isOpen = false;
     this.checkValidity(this.data, true);
     this.updateValue();
@@ -436,7 +470,7 @@ export class EditGridComponent extends FormioComponents {
       return;
     }
     this.removeRowComponents(rowIndex);
-    this.rows.splice(rowIndex, 1);
+    this.splice(rowIndex);
     this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
@@ -518,14 +552,19 @@ export class EditGridComponent extends FormioComponents {
       return false;
     }
 
-    this.setCustomValidity();
+    const message = this.invalid || this.invalidMessage(data, dirty);
+    this.setCustomValidity(message, dirty);
     return true;
   }
 
-  setCustomValidity(message) {
+  setCustomValidity(message, dirty) {
     if (this.errorElement &amp;&amp; this.errorContainer) {
       this.errorElement.innerHTML = &apos;&apos;;
       this.removeChildFrom(this.errorElement, this.errorContainer);
+    }
+    this.removeClass(this.element, &apos;has-error&apos;);
+    if (this.options.highlightErrors) {
+      this.removeClass(this.element, &apos;alert alert-danger&apos;);
     }
     if (message) {
       this.emit(&apos;componentError&apos;, this.error);
@@ -535,6 +574,11 @@ export class EditGridComponent extends FormioComponents {
       });
       errorMessage.appendChild(this.text(message));
       this.appendTo(errorMessage, this.errorElement);
+      // Add error classes
+      this.addClass(this.element, &apos;has-error&apos;);
+      if (dirty &amp;&amp; this.options.highlightErrors) {
+        this.addClass(this.element, &apos;alert alert-danger&apos;);
+      }
     }
   }
 
@@ -548,12 +592,17 @@ export class EditGridComponent extends FormioComponents {
       return;
     }
     if (!Array.isArray(value)) {
-      return;
+      if (typeof value === &apos;object&apos;) {
+        value = [value];
+      }
+      else {
+        return;
+      }
     }
 
-    this.rows = this.data[this.component.key] = value;
+    this.dataValue = value;
     // Refresh editRow data when data changes.
-    this.rows.forEach((row, rowIndex) =&gt; {
+    this.dataValue.forEach((row, rowIndex) =&gt; {
       if (this.editRows[rowIndex]) {
         this.editRows[rowIndex].data = row;
       }
@@ -565,8 +614,8 @@ export class EditGridComponent extends FormioComponents {
       }
     });
     // Remove any extra edit rows.
-    if (this.rows.length &lt; this.editRows.length) {
-      for (let rowIndex = this.editRows.length - 1; rowIndex &gt;= this.rows.length; rowIndex--) {
+    if (this.dataValue.length &lt; this.editRows.length) {
+      for (let rowIndex = this.editRows.length - 1; rowIndex &gt;= this.dataValue.length; rowIndex--) {
         this.removeRowComponents(rowIndex);
         this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
         this.editRows.splice(rowIndex, 1);
@@ -581,7 +630,7 @@ export class EditGridComponent extends FormioComponents {
    * @returns {*}
    */
   getValue() {
-    return this.rows;
+    return this.dataValue;
   }
 }
 </code></pre>
@@ -589,7 +638,7 @@ export class EditGridComponent extends FormioComponents {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.0.4)</span><img src="./image/esdoc-logo-mini-black.png"></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(1.1.0)</span><img src="./image/esdoc-logo-mini-black.png"></a>
 </footer>
 
 <script src="script/search_index.js"></script>

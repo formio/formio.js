@@ -807,12 +807,17 @@ const FormioUtils = {
     lang,
   }) {
     // Get the prefix and suffix from the localized string.
-    const regex = `(.*)?100${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}(.*)?`;
+    let regex = '(.*)?100';
+    if (decimalLimit) {
+      regex += `${decimalSeparator === '.' ? '\\.' : decimalSeparator}0{${decimalLimit}}`;
+    }
+    regex += '(.*)?';
     const parts = (100).toLocaleString(lang, {
       style: 'currency',
       currency,
       useGrouping: true,
-      maximumFractionDigits: decimalLimit
+      maximumFractionDigits: decimalLimit,
+      minimumFractionDigits: decimalLimit
     }).replace('.', decimalSeparator).match(new RegExp(regex));
     return {
       prefix: parts[1] || '',
@@ -821,5 +826,5 @@ const FormioUtils = {
   },
 };
 
-module.exports = global.FormioUtils = FormioUtils;
+global.FormioUtils = FormioUtils;
 export default FormioUtils;

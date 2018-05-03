@@ -212,6 +212,8 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
   }, {
     key: 'createComponent',
     value: function createComponent(component, options, data, before) {
+      options = options || this.options;
+      data = data || this.data;
       if (!this.options.components) {
         this.options.components = require('./index');
         _lodash2.default.assign(this.options.components, FormioComponents.customComponents);
@@ -524,6 +526,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     value: function destroyComponents() {
       var _this5 = this;
 
+      this.empty(this.getElement());
       var components = _lodash2.default.clone(this.components);
       _lodash2.default.each(components, function (comp) {
         return _this5.removeComponent(comp, _this5.components);
@@ -676,7 +679,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
 
 FormioComponents.customComponents = {};
 
-},{"../utils/index":58,"./base/Base":4,"./index":22,"lodash":81,"native-promise-only":83}],2:[function(require,module,exports){
+},{"../utils/index":58,"./base/Base":4,"./index":22,"lodash":80,"native-promise-only":82}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -742,10 +745,15 @@ var Validator = exports.Validator = {
       }
     });
 
+    var validateCustom = _lodash2.default.get(component, 'component.validate.custom');
     var customErrorMessage = _lodash2.default.get(component, 'component.validate.customMessage');
-    if (result && customErrorMessage) {
-      result = component.t(customErrorMessage, {
+
+    if (result && (customErrorMessage || validateCustom)) {
+
+      result = component.t(customErrorMessage || result, {
+
         data: component.data
+
       });
     }
 
@@ -944,7 +952,7 @@ var Validator = exports.Validator = {
   }
 };
 
-},{"../utils":58,"lodash":81}],3:[function(require,module,exports){
+},{"../utils":58,"lodash":80}],3:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -1617,7 +1625,7 @@ var AddressComponent = exports.AddressComponent = function (_TextFieldComponent)
   return AddressComponent;
 }(_TextField.TextFieldComponent);
 
-},{"../base/Base":4,"../survey/Survey":33,"../textfield/TextField":38,"lodash":81}],4:[function(require,module,exports){
+},{"../base/Base":4,"../survey/Survey":33,"../textfield/TextField":38,"lodash":80}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -3716,7 +3724,7 @@ var BaseComponent = function () {
   }, {
     key: 'restoreValue',
     value: function restoreValue() {
-      if (this.hasValue) {
+      if (this.hasValue && !this.isEmpty(this.dataValue)) {
         this.setValue(this.dataValue, {
           noUpdateEvent: true
         });
@@ -3825,7 +3833,7 @@ var BaseComponent = function () {
   }, {
     key: 'isEmpty',
     value: function isEmpty(value) {
-      return value == null || value.length === 0;
+      return value == null || value.length === 0 || _lodash2.default.isEqual(value, this.emptyValue);
     }
 
     /**
@@ -4201,6 +4209,7 @@ var BaseComponent = function () {
           component: this.component,
           row: this.data,
           data: this.root ? this.root.data : this.data,
+          _: _lodash2.default,
           instance: this
         }, 'value');
       }
@@ -4213,7 +4222,7 @@ var BaseComponent = function () {
       }
 
       // Clone so that it creates a new instance.
-      return _lodash2.default.cloneDeep(defaultValue);
+      return _lodash2.default.clone(defaultValue);
     }
   }, {
     key: 'name',
@@ -4462,7 +4471,7 @@ BaseComponent.libraryReady = function (name) {
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
 
-},{"../../utils":58,"../Validator":2,"i18next":79,"lodash":81,"native-promise-only":83,"tooltip.js":89,"vanilla-text-mask":90}],5:[function(require,module,exports){
+},{"../../utils":58,"../Validator":2,"i18next":78,"lodash":80,"native-promise-only":82,"tooltip.js":88,"vanilla-text-mask":89}],5:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -4558,7 +4567,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
     value: function elementInfo() {
       var info = _get(ButtonComponent.prototype.__proto__ || Object.getPrototypeOf(ButtonComponent.prototype), 'elementInfo', this).call(this);
       info.type = 'button';
-      info.attr.type = this.component.action === 'submit' ? 'submit' : 'button';
+      info.attr.type = ['submit', 'saveState'].indexOf(this.component.action) !== -1 ? 'submit' : 'button';
       this.component.theme = this.component.theme || 'default';
       info.attr.class = 'btn btn-' + this.component.theme;
       if (this.component.size) {
@@ -4628,7 +4637,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         var error = this.ce('span', {
           class: 'help-block'
         });
-        error.appendChild(this.text('Please correct all errors before submitting.'));
+        error.appendChild(this.text(this.errorMessage('error')));
         errorContainer.appendChild(error);
 
         this.on('submitButton', function () {
@@ -4678,7 +4687,9 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
           case 'submit':
             event.preventDefault();
             event.stopPropagation();
-            _this2.emit('submitButton');
+            _this2.emit('submitButton', {
+              state: _this2.component.state || 'submitted'
+            });
             break;
           case 'event':
             _this2.emit(_this2.component.event, _this2.data);
@@ -4725,6 +4736,9 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
             break;
           case 'reset':
             _this2.emit('resetForm');
+            break;
+          case 'delete':
+            _this2.emit('deleteSubmission');
             break;
           case 'oauth':
             if (_this2.root === _this2) {
@@ -4935,7 +4949,7 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
   return ButtonComponent;
 }(_Base.BaseComponent);
 
-},{"../../utils":58,"../base/Base":4,"lodash":81}],6:[function(require,module,exports){
+},{"../../utils":58,"../base/Base":4,"lodash":80}],6:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5303,7 +5317,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   return CheckBoxComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"lodash":81}],7:[function(require,module,exports){
+},{"../base/Base":4,"lodash":80}],7:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5509,7 +5523,7 @@ var ColumnsComponent = exports.ColumnsComponent = function (_FormioComponents) {
   return ColumnsComponent;
 }(_Components.FormioComponents);
 
-},{"../Components":1,"lodash":81}],9:[function(require,module,exports){
+},{"../Components":1,"lodash":80}],9:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5657,7 +5671,7 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
   return ContainerComponent;
 }(_Components.FormioComponents);
 
-},{"../Components":1,"lodash":81}],10:[function(require,module,exports){
+},{"../Components":1,"lodash":80}],10:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -5899,7 +5913,13 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
     key: 'parseNumber',
     value: function parseNumber(value) {
       // Strip out the prefix and suffix before parsing.
-      value = value.replace(this.prefix, '').replace(this.suffix, '');
+      if (this.prefix) {
+        value = value.replace(this.prefix, '');
+      }
+
+      if (this.suffix) {
+        value = value.replace(this.suffix, '');
+      }
 
       return _get(CurrencyComponent.prototype.__proto__ || Object.getPrototypeOf(CurrencyComponent.prototype), 'parseNumber', this).call(this, value);
     }
@@ -5923,7 +5943,12 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
     key: 'clearInput',
     value: function clearInput(input) {
       try {
-        input = input.replace(this.prefix, '').replace(this.suffix, '');
+        if (this.prefix) {
+          input = input.replace(this.prefix, '');
+        }
+        if (this.suffix) {
+          input = input.replace(this.suffix, '');
+        }
       } catch (err) {
         // If value doesn't have a replace method, continue on as before.
       }
@@ -5949,7 +5974,7 @@ var CurrencyComponent = exports.CurrencyComponent = function (_NumberComponent) 
   return CurrencyComponent;
 }(_Number.NumberComponent);
 
-},{"../../utils":58,"../number/Number":24,"lodash":81,"text-mask-addons":88,"vanilla-text-mask":90}],12:[function(require,module,exports){
+},{"../../utils":58,"../number/Number":24,"lodash":80,"text-mask-addons":87,"vanilla-text-mask":89}],12:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -6099,6 +6124,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         this.addNewValue();
       }
       this.visibleColumns = true;
+      this.errorContainer = this.element;
       this.buildRows();
       this.createDescription(this.element);
     }
@@ -6133,7 +6159,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       var previousNumRows = this.numRows;
       this.setVisibleComponents();
 
-      if (!this.tableBuilt || this.numRows !== previousNumRows || this.numColumns != previousNumColumns) {
+      if (!this.tableBuilt || this.numRows !== previousNumRows || this.numColumns !== previousNumColumns) {
         this.tableBuilt = true;
         return true;
       }
@@ -6151,6 +6177,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
 
       this.clear();
+      this.createLabel(this.element);
       var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
       _lodash2.default.each(['striped', 'bordered', 'hover', 'condensed'], function (prop) {
         if (_this3.component[prop]) {
@@ -6369,7 +6396,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
   return DataGridComponent;
 }(_Components.FormioComponents);
 
-},{"../Components":1,"lodash":81}],13:[function(require,module,exports){
+},{"../Components":1,"lodash":80}],13:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -6632,16 +6659,19 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   }, {
     key: 'setValueAt',
     value: function setValueAt(index, value) {
+      // Convert to a standard ISO-8601 format. Needed for proper IE function.
       if (value) {
-        // Convert to a standard ISO-8601 format. Needed for proper IE function.
         value = (0, _moment2.default)(value).toISOString();
+      }
 
-        var calendar = this.getCalendar(this.inputs[index]);
-        if (!calendar) {
-          return _get(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'setValueAt', this).call(this, index, value);
+      _get(DateTimeComponent.prototype.__proto__ || Object.getPrototypeOf(DateTimeComponent.prototype), 'setValueAt', this).call(this, index, value);
+      var calendar = this.getCalendar(this.inputs[index]);
+      if (calendar) {
+        if (value) {
+          calendar.setDate(new Date(value), false);
+        } else {
+          calendar.clear();
         }
-
-        calendar.setDate(value ? new Date(value) : new Date(), false);
       }
     }
   }, {
@@ -6737,7 +6767,7 @@ var DateTimeComponent = exports.DateTimeComponent = function (_BaseComponent) {
   return DateTimeComponent;
 }(_Base.BaseComponent);
 
-},{"../../utils":58,"../base/Base":4,"flatpickr":64,"lodash":81,"moment":82}],14:[function(require,module,exports){
+},{"../../utils":58,"../base/Base":4,"flatpickr":64,"lodash":80,"moment":81}],14:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -6919,6 +6949,11 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
       return info;
     }
   }, {
+    key: 'isEmpty',
+    value: function isEmpty(value) {
+      return _get(DayComponent.prototype.__proto__ || Object.getPrototypeOf(DayComponent.prototype), 'isEmpty', this).call(this, value);
+    }
+  }, {
     key: 'createDayInput',
     value: function createDayInput(subinputAtTheBottom) {
       var _this2 = this;
@@ -7037,7 +7072,6 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
         step: '1',
         min: '1',
         placeholder: _lodash2.default.get(this.component, 'fields.year.placeholder', ''),
-        value: new Date().getFullYear(),
         id: id
       });
 
@@ -7281,7 +7315,7 @@ var DayComponent = exports.DayComponent = function (_BaseComponent) {
   return DayComponent;
 }(_Base.BaseComponent);
 
-},{"../../utils":58,"../base/Base":4,"lodash":81,"moment":82}],15:[function(require,module,exports){
+},{"../../utils":58,"../base/Base":4,"lodash":80,"moment":81}],15:[function(require,module,exports){
 'use strict';
 
 var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -7747,15 +7781,20 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         return false;
       }
 
-      this.setCustomValidity();
+      var message = this.invalid || this.invalidMessage(data, dirty);
+      this.setCustomValidity(message, dirty);
       return true;
     }
   }, {
     key: 'setCustomValidity',
-    value: function setCustomValidity(message) {
+    value: function setCustomValidity(message, dirty) {
       if (this.errorElement && this.errorContainer) {
         this.errorElement.innerHTML = '';
         this.removeChildFrom(this.errorElement, this.errorContainer);
+      }
+      this.removeClass(this.element, 'has-error');
+      if (this.options.highlightErrors) {
+        this.removeClass(this.element, 'alert alert-danger');
       }
       if (message) {
         this.emit('componentError', this.error);
@@ -7765,6 +7804,11 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
         });
         errorMessage.appendChild(this.text(message));
         this.appendTo(errorMessage, this.errorElement);
+        // Add error classes
+        this.addClass(this.element, 'has-error');
+        if (dirty && this.options.highlightErrors) {
+          this.addClass(this.element, 'alert alert-danger');
+        }
       }
     }
   }, {
@@ -7843,7 +7887,7 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
   return EditGridComponent;
 }(_Components.FormioComponents);
 
-},{"../../utils":58,"../Components":1,"lodash":81}],16:[function(require,module,exports){
+},{"../../utils":58,"../Components":1,"lodash":80}],16:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -8434,7 +8478,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       }
       if (!this.support.dnd) {
         hasWarnings = true;
-        warnings.appendChild(this.ce('p').appendChild(this.text('FFile Drag/Drop is not supported for this browser.')));
+        warnings.appendChild(this.ce('p').appendChild(this.text('File Drag/Drop is not supported for this browser.')));
       }
       if (!this.support.filereader) {
         hasWarnings = true;
@@ -8575,23 +8619,6 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
       if (this.component.storage && files && files.length) {
         // files is not really an array and does not have a forEach method, so fake it.
         Array.prototype.forEach.call(files, function (file) {
-          // Check file pattern
-          if (_this9.component.filePattern && !_this9.validatePattern(file, _this9.component.filePattern)) {
-            return;
-          }
-
-          // Check file minimum size
-          if (_this9.component.fileMinSize && !_this9.validateMinSize(file, _this9.component.fileMinSize)) {
-            return;
-          }
-
-          // Check file maximum size
-          if (_this9.component.fileMaxSize && !_this9.validateMaxSize(file, _this9.component.fileMaxSize)) {
-            return;
-          }
-
-          // Get a unique name for this file to keep file collisions from occurring.
-          var fileName = _utils2.default.uniqueName(file.name);
           var fileUpload = {
             originalName: file.name,
             name: fileName,
@@ -8599,6 +8626,27 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
             status: 'info',
             message: 'Starting upload'
           };
+
+          // Check file pattern
+          if (_this9.component.filePattern && !_this9.validatePattern(file, _this9.component.filePattern)) {
+            fileUpload.status = 'error';
+            fileUpload.message = 'File is the wrong type; it must be ' + _this9.component.filePattern;
+          }
+
+          // Check file minimum size
+          if (_this9.component.fileMinSize && !_this9.validateMinSize(file, _this9.component.fileMinSize)) {
+            fileUpload.status = 'error';
+            fileUpload.message = 'File is too small; it must be at least ' + _this9.component.fileMinSize;
+          }
+
+          // Check file maximum size
+          if (_this9.component.fileMaxSize && !_this9.validateMaxSize(file, _this9.component.fileMaxSize)) {
+            fileUpload.status = 'error';
+            fileUpload.message = 'File is too big; it must be at most ' + _this9.component.fileMaxSize;
+          }
+
+          // Get a unique name for this file to keep file collisions from occurring.
+          var fileName = _utils2.default.uniqueName(file.name);
           var dir = _this9.interpolate(_this9.component.dir || '', { data: _this9.data, row: _this9.row });
           var fileService = _this9.fileService;
           if (!fileService) {
@@ -8609,7 +8657,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
           var uploadStatus = _this9.createUploadStatus(fileUpload);
           _this9.uploadStatusList.appendChild(uploadStatus);
 
-          if (fileService) {
+          if (fileUpload.status !== 'error') {
             fileService.uploadFile(_this9.component.storage, file, fileName, dir, function (evt) {
               fileUpload.status = 'progress';
               fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
@@ -8684,7 +8732,7 @@ var FileComponent = exports.FileComponent = function (_BaseComponent) {
   return FileComponent;
 }(_Base.BaseComponent);
 
-},{"../../utils":58,"../base/Base":4,"lodash":81}],19:[function(require,module,exports){
+},{"../../utils":58,"../base/Base":4,"lodash":80}],19:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -8719,10 +8767,6 @@ var _createClass = function () {
     if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
   };
 }();
-
-var _lodash = require('lodash');
-
-var _lodash2 = _interopRequireDefault(_lodash);
 
 var _Base = require('../base/Base');
 
@@ -8802,9 +8846,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
 
     var _this = _possibleConstructorReturn(this, (FormComponent.__proto__ || Object.getPrototypeOf(FormComponent)).call(this, component, options, data));
 
-    _this.submitted = false;
     _this.subForm = null;
-    _this.subData = { data: {} };
     _this.formSrc = '';
     _this.subFormReady = new _nativePromiseOnly2.default(function (resolve, reject) {
       _this.subFormReadyResolve = resolve;
@@ -8819,7 +8861,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     /**
      * Load the subform.
      */
-    value: function loadSubForm(submission) {
+    value: function loadSubForm() {
       var _this2 = this;
 
       // Only load the subform if the subform isn't loaded and the conditions apply.
@@ -8874,12 +8916,6 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         }
       }
 
-      var loadSubmission = false;
-      if (submission._id && this.component.reference && this.formSrc && !(this.formSrc.indexOf('/submission/') !== -1)) {
-        this.formSrc += '/submission/' + submission._id;
-        loadSubmission = true;
-      }
-
       new _formio2.default(this.formSrc).loadForm({ params: { live: 1 } }).then(function (formObj) {
         // Iterate through every component and hide the submit button.
         _utils2.default.eachComponent(formObj.components, function (component) {
@@ -8889,20 +8925,15 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         });
 
         _this2.subForm = (0, _formFactory2.default)(_this2.element, formObj, srcOptions);
-        _this2.dataValue.data = _this2.subForm.data;
-
-        // Forward along changes to parent form.
         _this2.subForm.on('change', function () {
-          return _this2.onChange();
+          _this2.dataValue = _this2.subForm.getValue();
+          _this2.onChange();
         });
         _this2.subForm.url = _this2.formSrc;
         _this2.subForm.nosubmit = false;
-        if (loadSubmission) {
-          _this2.subForm.loadSubmission();
-        } else {
-          _this2.subForm.setSubmission(submission);
-        }
+        _this2.restoreValue();
         _this2.subFormReadyResolve(_this2.subForm);
+        return _this2.subForm;
       }).catch(function (err) {
         return _this2.subFormReadyReject(err);
       });
@@ -8924,12 +8955,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
         return this.subForm.checkConditions(this.dataValue.data);
       }
 
-      if (_get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, data)) {
-        this.loadSubForm(this.dataValue);
-        return true;
-      }
-
-      return false;
+      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'checkConditions', this).call(this, data);
     }
   }, {
     key: 'calculateValue',
@@ -8951,11 +8977,15 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
       var _this3 = this;
 
       // If we wish to submit the form on next page, then do that here.
-      if (this.subForm && this.component.submit && !this.submitted) {
-        this.submitted = true;
-        return this.subForm.submit(true).then(function (submission) {
-          _this3.dataValue = submission;
-          return submission;
+      if (this.component.submit) {
+        return this.loadSubForm().then(function (form) {
+          return _this3.subForm.submitForm().then(function (result) {
+            _this3.dataValue = result.submission;
+            return _this3.dataValue;
+          }).catch(function (err) {
+            _this3.subForm.onSubmissionError(err);
+            return _nativePromiseOnly2.default.reject(err);
+          });
         });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeNext', this).call(this);
@@ -8971,15 +9001,28 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     value: function beforeSubmit() {
       var _this4 = this;
 
-      // Ensure we submit the form.
-      if (this.subForm && this.component.submit && !this.submitted) {
-        this.submitted = true;
-        return this.subForm.submit(true).then(function (submission) {
-          _this4.dataValue = _this4.component.reference ? {
-            _id: submission._id,
-            form: submission.form
-          } : submission;
-          return _this4.dataValue;
+      var submission = this.dataValue;
+
+      // This submission has already been submitted, so just return the reference data.
+      if (submission && submission._id && submission.form) {
+        this.dataValue = this.component.reference ? {
+          _id: submission._id,
+          form: submission.form
+        } : submission;
+        return _nativePromiseOnly2.default.resolve(this.dataValue);
+      }
+
+      // This submission has not been submitted yet.
+      if (this.component.submit) {
+        return this.loadSubForm().then(function (form) {
+          return _this4.subForm.submitForm().then(function (result) {
+            _this4.subForm.loading = false;
+            _this4.dataValue = _this4.component.reference ? {
+              _id: result.submission._id,
+              form: result.submission.form
+            } : result.submission;
+            return _this4.dataValue;
+          });
         });
       } else {
         return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'beforeSubmit', this).call(this);
@@ -8989,30 +9032,41 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
     key: 'build',
     value: function build() {
       this.createElement();
-      this.restoreValue();
+
+      // Do not restore the value when building before submission.
+      if (!this.options.beforeSubmit) {
+        this.restoreValue();
+      }
     }
   }, {
     key: 'setValue',
     value: function setValue(submission, flags) {
       var _this5 = this;
 
-      if (submission && (submission._id || !_lodash2.default.isEmpty(submission.data))) {
-        this.loadSubForm(submission).then(function (form) {
-          if (submission._id && !flags.noload) {
+      var changed = _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'setValue', this).call(this, submission, flags);
+      if (this.subForm) {
+        this.subForm.setValue(submission, flags);
+      } else {
+        this.loadSubForm().then(function (form) {
+          if (submission && submission._id && form.formio && !flags.noload) {
             var submissionUrl = form.formio.formsUrl + '/' + submission.form + '/submission/' + submission._id;
-            form.setSrc(submissionUrl, _this5.options);
+            form.setUrl(submissionUrl, _this5.options);
+            form.nosubmit = false;
+            form.loadSubmission();
           } else {
-            form.setSubmission(submission);
+            form.setValue(submission, flags);
           }
         });
       }
-      this.subData = submission;
-      return _get(FormComponent.prototype.__proto__ || Object.getPrototypeOf(FormComponent.prototype), 'updateValue', this).call(this, flags);
+      return changed;
     }
   }, {
     key: 'getValue',
     value: function getValue() {
-      return this.subData;
+      if (this.subForm) {
+        return this.subForm.getValue();
+      }
+      return this.dataValue;
     }
   }, {
     key: 'defaultSchema',
@@ -9029,7 +9083,7 @@ var FormComponent = exports.FormComponent = function (_BaseComponent) {
   return FormComponent;
 }(_Base.BaseComponent);
 
-},{"../../formFactory":43,"../../formio":46,"../../utils":58,"../base/Base":4,"lodash":81,"native-promise-only":83}],20:[function(require,module,exports){
+},{"../../formFactory":43,"../../formio":46,"../../utils":58,"../base/Base":4,"native-promise-only":82}],20:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -9275,7 +9329,7 @@ var HTMLComponent = exports.HTMLComponent = function (_BaseComponent) {
   return HTMLComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"lodash":81}],22:[function(require,module,exports){
+},{"../base/Base":4,"lodash":80}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -9910,7 +9964,7 @@ var NumberComponent = exports.NumberComponent = function (_BaseComponent) {
   return NumberComponent;
 }(_Base.BaseComponent);
 
-},{"../../utils":58,"../base/Base":4,"lodash":81,"text-mask-addons":88,"vanilla-text-mask":90}],25:[function(require,module,exports){
+},{"../../utils":58,"../base/Base":4,"lodash":80,"text-mask-addons":87,"vanilla-text-mask":89}],25:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -10231,7 +10285,7 @@ var PhoneNumberComponent = exports.PhoneNumberComponent = function (_TextFieldCo
       }
 
       return _TextField.TextFieldComponent.schema.apply(_TextField.TextFieldComponent, [{
-        type: 'phonenumber',
+        type: 'phoneNumber',
         label: 'Phone Number',
         key: 'phoneNumber',
         inputType: 'tel',
@@ -10572,7 +10626,7 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
   return RadioComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"lodash":81}],29:[function(require,module,exports){
+},{"../base/Base":4,"lodash":80}],29:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -11606,7 +11660,7 @@ var SelectComponent = function (_BaseComponent) {
 
 exports.SelectComponent = SelectComponent;
 
-},{"../../formio":46,"../../utils":58,"../base/Base":4,"choices.js/assets/scripts/dist/choices.js":61,"lodash":81}],31:[function(require,module,exports){
+},{"../../formio":46,"../../utils":58,"../base/Base":4,"choices.js/assets/scripts/dist/choices.js":61,"lodash":80}],31:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -11800,7 +11854,7 @@ var SelectBoxesComponent = exports.SelectBoxesComponent = function (_RadioCompon
   return SelectBoxesComponent;
 }(_Radio.RadioComponent);
 
-},{"../radio/Radio":28,"lodash":81}],32:[function(require,module,exports){
+},{"../radio/Radio":28,"lodash":80}],32:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -12115,7 +12169,7 @@ var SignatureComponent = exports.SignatureComponent = function (_BaseComponent) 
   return SignatureComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"signature_pad/dist/signature_pad.js":87}],33:[function(require,module,exports){
+},{"../base/Base":4,"signature_pad/dist/signature_pad.js":86}],33:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -12348,7 +12402,7 @@ var SurveyComponent = exports.SurveyComponent = function (_BaseComponent) {
   return SurveyComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"lodash":81}],34:[function(require,module,exports){
+},{"../base/Base":4,"lodash":80}],34:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -12583,7 +12637,7 @@ var TableComponent = exports.TableComponent = function (_FormioComponents) {
   return TableComponent;
 }(_Components.FormioComponents);
 
-},{"../Components":1,"lodash":81}],35:[function(require,module,exports){
+},{"../Components":1,"lodash":80}],35:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -12828,7 +12882,7 @@ var TabsComponent = exports.TabsComponent = function (_FormioComponents) {
   return TabsComponent;
 }(_Components.FormioComponents);
 
-},{"../Components":1,"lodash":81}],36:[function(require,module,exports){
+},{"../Components":1,"lodash":80}],36:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -13608,7 +13662,7 @@ var TimeComponent = exports.TimeComponent = function (_TextFieldComponent) {
   return TimeComponent;
 }(_TextField.TextFieldComponent);
 
-},{"../textfield/TextField":38,"moment":82}],40:[function(require,module,exports){
+},{"../textfield/TextField":38,"moment":81}],40:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -13807,7 +13861,7 @@ exports.default = function (element, form, options) {
   }
 };
 
-},{"./formFactory":43,"./formio":46,"native-promise-only":83}],43:[function(require,module,exports){
+},{"./formFactory":43,"./formio":46,"native-promise-only":82}],43:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -14335,6 +14389,7 @@ var FormioForm = function (_FormioComponents) {
       } else {
         this.submissionReadyResolve();
       }
+      return this.submissionReady;
     }
 
     /**
@@ -14478,19 +14533,20 @@ var FormioForm = function (_FormioComponents) {
     /**
      * Sets a submission and returns the promise when it is ready.
      * @param submission
+     * @param flags
      * @return {Promise.<TResult>}
      */
-    value: function setSubmission(submission) {
+    value: function setSubmission(submission, flags) {
       var _this7 = this;
 
       return this.onSubmission = this.formReady.then(function () {
         // If nothing changed, still trigger an update.
-        if (!_this7.setValue(submission)) {
+        if (!_this7.setValue(submission, flags)) {
           _this7.triggerChange({
             noValidate: true
           });
         }
-        _this7.submissionReadyResolve();
+        _this7.submissionReadyResolve(submission);
       }, function (err) {
         return _this7.submissionReadyReject(err);
       }).catch(function (err) {
@@ -14584,6 +14640,9 @@ var FormioForm = function (_FormioComponents) {
         _this9.on('resetForm', function () {
           return _this9.reset();
         }, true);
+        _this9.on('deleteSubmission', function () {
+          return _this9.deleteSubmission();
+        }, true);
         _this9.on('refreshData', function () {
           return _this9.updateValue();
         });
@@ -14640,8 +14699,8 @@ var FormioForm = function (_FormioComponents) {
     value: function build() {
       var _this10 = this;
 
-      this.on('submitButton', function () {
-        return _this10.submit();
+      this.on('submitButton', function (options) {
+        return _this10.submit(false, options);
       }, true);
       this.addComponents();
       this.on('requestUrl', function (args) {
@@ -14719,17 +14778,15 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'onSubmissionError',
     value: function onSubmissionError(error) {
-      if (!error) {
-        return;
-      }
+      if (error) {
+        // Normalize the error.
+        if (typeof error === 'string') {
+          error = { message: error };
+        }
 
-      // Normalize the error.
-      if (typeof error === 'string') {
-        error = { message: error };
-      }
-
-      if ('details' in error) {
-        error = error.details;
+        if ('details' in error) {
+          error = error.details;
+        }
       }
 
       return this.showErrors(error);
@@ -14779,6 +14836,21 @@ var FormioForm = function (_FormioComponents) {
     }
 
     /**
+     * Send a delete request to the server.
+     */
+
+  }, {
+    key: 'deleteSubmission',
+    value: function deleteSubmission() {
+      var _this11 = this;
+
+      return this.formio.deleteSubmission().then(function () {
+        _this11.emit('submissionDeleted', _this11.submission);
+        _this11.reset();
+      });
+    }
+
+    /**
      * Cancels the submission.
      *
      * @alias reset
@@ -14795,39 +14867,62 @@ var FormioForm = function (_FormioComponents) {
       }
     }
   }, {
-    key: 'executeSubmit',
-    value: function executeSubmit() {
-      var _this11 = this;
+    key: 'submitForm',
+    value: function submitForm() {
+      var _this12 = this;
+
+      var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
         // Read-only forms should never submit.
-        if (_this11.options.readOnly) {
-          return resolve(_this11.submission);
+        if (_this12.options.readOnly) {
+          return resolve({
+            submission: _this12.submission,
+            saved: false
+          });
         }
 
-        var submission = _this11.submission || {};
-        _this11.hook('beforeSubmit', submission, function (err) {
+        var submission = _this12.submission || {};
+        submission.state = options.state || 'submitted';
+        var isDraft = submission.state === 'draft';
+        _this12.hook('beforeSubmit', submission, function (err) {
           if (err) {
-            _this11.showErrors(err);
-            return reject(err.message || err);
+            return reject(err);
           }
 
-          if (submission && submission.data && _this11.checkValidity(submission.data, true)) {
-            _this11.loading = true;
-            if (_this11.nosubmit || !_this11.formio) {
-              return resolve(_this11.onSubmit(submission, false));
-            }
-            return _this11.formio.saveSubmission(submission).then(function (result) {
-              return resolve(_this11.onSubmit(result, true));
-            }).catch(function (err) {
-              _this11.onSubmissionError(err);
-              reject(err);
-            });
-          } else {
-            _this11.showErrors();
+          if (!isDraft && !submission.data) {
             return reject('Invalid Submission');
           }
+
+          if (!isDraft && !_this12.checkValidity(submission.data, true)) {
+            return reject();
+          }
+
+          _this12.loading = true;
+          if (_this12.nosubmit || !_this12.formio) {
+            return resolve({
+              submission: submission,
+              saved: false
+            });
+          }
+          _this12.formio.saveSubmission(submission).then(function (result) {
+            return resolve({
+              submission: result,
+              saved: true
+            });
+          }).catch(reject);
         });
+      });
+    }
+  }, {
+    key: 'executeSubmit',
+    value: function executeSubmit(options) {
+      var _this13 = this;
+
+      return this.submitForm(options).then(function (result) {
+        return _this13.onSubmit(result.submission, result.saved);
+      }).catch(function (err) {
+        return _nativePromiseOnly2.default.reject(_this13.onSubmissionError(err));
       });
     }
 
@@ -14853,21 +14948,21 @@ var FormioForm = function (_FormioComponents) {
 
   }, {
     key: 'submit',
-    value: function submit(before) {
-      var _this12 = this;
+    value: function submit(before, options) {
+      var _this14 = this;
 
       if (!before) {
-        return this.beforeSubmit().then(function () {
-          return _this12.executeSubmit();
+        return this.beforeSubmit(options).then(function () {
+          return _this14.executeSubmit(options);
         });
       } else {
-        return this.executeSubmit();
+        return this.executeSubmit(options);
       }
     }
   }, {
     key: 'submitUrl',
     value: function submitUrl(URL, headers) {
-      var _this13 = this;
+      var _this15 = this;
 
       if (!URL) {
         return console.warn('Missing URL argument');
@@ -14890,8 +14985,8 @@ var FormioForm = function (_FormioComponents) {
       if (API_URL && settings) {
         try {
           _formio2.default.makeStaticRequest(API_URL, settings.method, submission, settings.headers).then(function () {
-            _this13.emit('requestDone');
-            _this13.setAlert('success', '<p> Success </p>');
+            _this15.emit('requestDone');
+            _this15.setAlert('success', '<p> Success </p>');
           });
         } catch (e) {
           this.showErrors(e.statusText + ' ' + e.status);
@@ -14907,15 +15002,15 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'language',
     set: function set(lang) {
-      var _this14 = this;
+      var _this16 = this;
 
       return new _nativePromiseOnly2.default(function (resolve, reject) {
-        _this14.options.language = lang;
+        _this16.options.language = lang;
         _i18next2.default.changeLanguage(lang, function (err) {
           if (err) {
             return reject(err);
           }
-          _this14.redraw();
+          _this16.redraw();
           resolve();
         });
       });
@@ -14953,10 +15048,10 @@ var FormioForm = function (_FormioComponents) {
   }, {
     key: 'ready',
     get: function get() {
-      var _this15 = this;
+      var _this17 = this;
 
       return this.formReady.then(function () {
-        return _this15.submissionReady;
+        return _this17.submissionReady;
       });
     }
 
@@ -15089,7 +15184,7 @@ FormioForm.setBaseUrl = _formio2.default.setBaseUrl;
 FormioForm.setApiUrl = _formio2.default.setApiUrl;
 FormioForm.setAppUrl = _formio2.default.setAppUrl;
 
-},{"./components/Components":1,"./formio":46,"./i18n":50,"eventemitter2":63,"i18next":79,"lodash":81,"native-promise-only":83}],45:[function(require,module,exports){
+},{"./components/Components":1,"./formio":46,"./i18n":50,"eventemitter2":63,"i18next":78,"lodash":80,"native-promise-only":82}],45:[function(require,module,exports){
 (function (global){
 'use strict';
 // DO NOT DELETE! THIS WILL BREAK PDF GENERATION.
@@ -16112,8 +16207,7 @@ var Formio = function () {
           err.message = 'Could not connect to API server (' + err.message + ')';
           err.networkError = true;
         }
-        // Propagate error so client can handle accordingly
-        throw err;
+        return _nativePromiseOnly2.default.reject(err);
       });
     }
   }, {
@@ -16614,7 +16708,7 @@ module.exports = global.Formio = Formio;
 exports.default = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./providers":52,"browser-cookies":60,"eventemitter2":63,"native-promise-only":83,"shallow-copy":86,"whatwg-fetch":91}],47:[function(require,module,exports){
+},{"./providers":52,"browser-cookies":60,"eventemitter2":63,"native-promise-only":82,"shallow-copy":85,"whatwg-fetch":90}],47:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
@@ -16887,7 +16981,8 @@ window.addEventListener('message', function (event) {
   }
 });
 
-},{"./formio":46,"./formio.form":44,"./pdf.image":51,"native-promise-only":83}],48:[function(require,module,exports){
+},{"./formio":46,"./formio.form":44,"./pdf.image":51,"native-promise-only":82}],48:[function(require,module,exports){
+/* eslint-disable */
 /**
  * DO NOT DELETE THIS! THIS WILL BREAK THE PDF RENDERING IF YOU DO.
  */
@@ -17080,16 +17175,29 @@ var FormioWizard = function (_FormioForm) {
       return this.page - 1;
     }
   }, {
+    key: 'beforeSubmit',
+    value: function beforeSubmit() {
+      var _this2 = this;
+
+      var ops = [];
+      var pageOptions = _lodash2.default.clone(this.options);
+      pageOptions.beforeSubmit = true;
+      _lodash2.default.each(this.pages, function (page) {
+        return ops.push(_this2.createComponent(page, pageOptions).beforeSubmit());
+      });
+      return _nativePromiseOnly2.default.all(ops);
+    }
+  }, {
     key: 'nextPage',
     value: function nextPage() {
-      var _this2 = this;
+      var _this3 = this;
 
       // Read-only forms should not worry about validation before going to next page, nor should they submit.
       if (this.options.readOnly) {
         this.history.push(this.page);
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(function () {
-          _this2._nextPage = _this2.getNextPage(_this2.submission.data, _this2.page);
-          _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+          _this3._nextPage = _this3.getNextPage(_this3.submission.data, _this3.page);
+          _this3.emit('nextPage', { page: _this3.page, submission: _this3.submission });
         });
       }
 
@@ -17099,10 +17207,10 @@ var FormioWizard = function (_FormioForm) {
           noValidate: true
         });
         return this.beforeNext().then(function () {
-          _this2.history.push(_this2.page);
-          return _this2.setPage(_this2.getNextPage(_this2.submission.data, _this2.page)).then(function () {
-            _this2._nextPage = _this2.getNextPage(_this2.submission.data, _this2.page);
-            _this2.emit('nextPage', { page: _this2.page, submission: _this2.submission });
+          _this3.history.push(_this3.page);
+          return _this3.setPage(_this3.getNextPage(_this3.submission.data, _this3.page)).then(function () {
+            _this3._nextPage = _this3.getNextPage(_this3.submission.data, _this3.page);
+            _this3.emit('nextPage', { page: _this3.page, submission: _this3.submission });
           });
         });
       } else {
@@ -17112,11 +17220,11 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'prevPage',
     value: function prevPage() {
-      var _this3 = this;
+      var _this4 = this;
 
       var prevPage = this.getPreviousPage();
       return this.setPage(prevPage).then(function () {
-        _this3.emit('prevPage', { page: _this3.page, submission: _this3.submission });
+        _this4.emit('prevPage', { page: _this4.page, submission: _this4.submission });
       });
     }
   }, {
@@ -17193,18 +17301,18 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'buildPages',
     value: function buildPages(form) {
-      var _this4 = this;
+      var _this5 = this;
 
       this.pages = [];
       _lodash2.default.each(form.components, function (component) {
         if (component.type === 'panel') {
           // Ensure that this page can be seen.
-          if (_utils2.default.checkCondition(component, _this4.data, _this4.data, _this4.wizard, _this4)) {
-            _this4.pages.push(component);
+          if (_utils2.default.checkCondition(component, _this5.data, _this5.data, _this5.wizard, _this5)) {
+            _this5.pages.push(component);
           }
         } else if (component.type === 'hidden') {
           // Global components are hidden components that can propagate between pages.
-          _this4.globalComponents.push(component);
+          _this5.globalComponents.push(component);
         }
       });
       this.buildWizardHeader();
@@ -17223,12 +17331,12 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'build',
     value: function build() {
-      var _this5 = this;
+      var _this6 = this;
 
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'build', this).call(this);
       this.formReady.then(function () {
-        _this5.buildWizardHeader();
-        _this5.buildWizardNav();
+        _this6.buildWizardHeader();
+        _this6.buildWizardNav();
       });
     }
   }, {
@@ -17259,7 +17367,7 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'buildWizardHeader',
     value: function buildWizardHeader() {
-      var _this6 = this;
+      var _this7 = this;
 
       if (this.wizardHeader) {
         this.wizardHeader.innerHTML = '';
@@ -17296,16 +17404,16 @@ var FormioWizard = function (_FormioForm) {
       var showHistory = currentPage.breadcrumb.toLowerCase() === 'history';
       _lodash2.default.each(this.pages, function (page, i) {
         // See if this page is in our history.
-        if (showHistory && _this6.page !== i && !(_this6.history.indexOf(i) !== -1)) {
+        if (showHistory && _this7.page !== i && !(_this7.history.indexOf(i) !== -1)) {
           return;
         }
 
         // Set clickable based on breadcrumb settings
-        var clickable = _this6.page !== i && _this6.options.breadcrumbSettings.clickable;
+        var clickable = _this7.page !== i && _this7.options.breadcrumbSettings.clickable;
         var pageClass = 'page-item ';
-        pageClass += i === _this6.page ? 'active' : clickable ? '' : 'disabled';
+        pageClass += i === _this7.page ? 'active' : clickable ? '' : 'disabled';
 
-        var pageButton = _this6.ce('li', {
+        var pageButton = _this7.ce('li', {
           class: pageClass,
           style: clickable ? 'cursor: pointer;' : ''
         });
@@ -17313,26 +17421,26 @@ var FormioWizard = function (_FormioForm) {
         // Navigate to the page as they click on it.
 
         if (clickable) {
-          _this6.addEventListener(pageButton, 'click', function (event) {
+          _this7.addEventListener(pageButton, 'click', function (event) {
             event.preventDefault();
-            _this6.setPage(i);
+            _this7.setPage(i);
           });
         }
 
-        var pageLabel = _this6.ce('span', {
+        var pageLabel = _this7.ce('span', {
           class: 'page-link'
         });
         var pageTitle = page.title;
         if (currentPage.breadcrumb.toLowerCase() === 'condensed') {
-          pageTitle = i === _this6.page || showHistory ? page.title : i + 1;
+          pageTitle = i === _this7.page || showHistory ? page.title : i + 1;
           if (!pageTitle) {
             pageTitle = i + 1;
           }
         }
 
-        pageLabel.appendChild(_this6.text(pageTitle));
+        pageLabel.appendChild(_this7.text(pageTitle));
         pageButton.appendChild(pageLabel);
-        _this6.wizardHeaderList.appendChild(pageButton);
+        _this7.wizardHeaderList.appendChild(pageButton);
       });
     }
   }, {
@@ -17349,7 +17457,7 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'onChange',
     value: function onChange(flags, changed) {
-      var _this7 = this;
+      var _this8 = this;
 
       _get(FormioWizard.prototype.__proto__ || Object.getPrototypeOf(FormioWizard.prototype), 'onChange', this).call(this, flags, changed);
 
@@ -17362,8 +17470,8 @@ var FormioWizard = function (_FormioForm) {
         }
 
         if (_utils2.default.hasCondition(component)) {
-          var hasPage = _this7.pages && _this7.pages[pageIndex] && _this7.pageId(_this7.pages[pageIndex]) === _this7.pageId(component);
-          var shouldShow = _utils2.default.checkCondition(component, _this7.data, _this7.data, _this7.wizard, _this7);
+          var hasPage = _this8.pages && _this8.pages[pageIndex] && _this8.pageId(_this8.pages[pageIndex]) === _this8.pageId(component);
+          var shouldShow = _utils2.default.checkCondition(component, _this8.data, _this8.data, _this8.wizard, _this8);
           if (shouldShow && !hasPage || !shouldShow && hasPage) {
             rebuild = true;
             return false;
@@ -17391,7 +17499,7 @@ var FormioWizard = function (_FormioForm) {
   }, {
     key: 'buildWizardNav',
     value: function buildWizardNav(nextPage) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (this.wizardNav) {
         this.wizardNav.innerHTML = '';
@@ -17405,35 +17513,35 @@ var FormioWizard = function (_FormioForm) {
       });
       this.element.appendChild(this.wizardNav);
       _lodash2.default.each([{ name: 'cancel', method: 'cancel', class: 'btn btn-default btn-secondary' }, { name: 'previous', method: 'prevPage', class: 'btn btn-primary' }, { name: 'next', method: 'nextPage', class: 'btn btn-primary' }, { name: 'submit', method: 'submit', class: 'btn btn-primary' }], function (button) {
-        if (!_this8.hasButton(button.name, nextPage)) {
+        if (!_this9.hasButton(button.name, nextPage)) {
           return;
         }
-        var buttonWrapper = _this8.ce('li', {
+        var buttonWrapper = _this9.ce('li', {
           class: 'list-inline-item'
         });
         var buttonProp = button.name + 'Button';
-        var buttonElement = _this8[buttonProp] = _this8.ce('button', {
+        var buttonElement = _this9[buttonProp] = _this9.ce('button', {
           class: button.class + ' btn-wizard-nav-' + button.name
         });
-        buttonElement.appendChild(_this8.text(_this8.t(button.name)));
-        _this8.addEventListener(_this8[buttonProp], 'click', function (event) {
+        buttonElement.appendChild(_this9.text(_this9.t(button.name)));
+        _this9.addEventListener(_this9[buttonProp], 'click', function (event) {
           event.preventDefault();
 
           // Disable the button until done.
           buttonElement.setAttribute('disabled', 'disabled');
-          _this8.setLoading(buttonElement, true);
+          _this9.setLoading(buttonElement, true);
 
           // Call the button method, then re-enable the button.
-          _this8[button.method]().then(function () {
+          _this9[button.method]().then(function () {
             buttonElement.removeAttribute('disabled');
-            _this8.setLoading(buttonElement, false);
+            _this9.setLoading(buttonElement, false);
           }).catch(function () {
             buttonElement.removeAttribute('disabled');
-            _this8.setLoading(buttonElement, false);
+            _this9.setLoading(buttonElement, false);
           });
         });
-        buttonWrapper.appendChild(_this8[buttonProp]);
-        _this8.wizardNav.appendChild(buttonWrapper);
+        buttonWrapper.appendChild(_this9[buttonProp]);
+        _this9.wizardNav.appendChild(buttonWrapper);
       });
     }
   }, {
@@ -17452,7 +17560,7 @@ FormioWizard.setBaseUrl = _formio4.default.setBaseUrl;
 FormioWizard.setApiUrl = _formio4.default.setApiUrl;
 FormioWizard.setAppUrl = _formio4.default.setAppUrl;
 
-},{"./formio":46,"./formio.form":44,"./utils":58,"lodash":81,"native-promise-only":83}],50:[function(require,module,exports){
+},{"./formio":46,"./formio.form":44,"./utils":58,"lodash":80,"native-promise-only":82}],50:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -17575,7 +17683,7 @@ var base64 = function base64() {
 base64.title = 'Base64';
 exports.default = base64;
 
-},{"native-promise-only":83}],54:[function(require,module,exports){
+},{"native-promise-only":82}],54:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17648,7 +17756,7 @@ var dropbox = function dropbox(formio) {
 dropbox.title = 'Dropbox';
 exports.default = dropbox;
 
-},{"native-promise-only":83}],55:[function(require,module,exports){
+},{"native-promise-only":82}],55:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17803,7 +17911,7 @@ var s3 = function s3(formio) {
 s3.title = 'S3';
 exports.default = s3;
 
-},{"native-promise-only":83}],57:[function(require,module,exports){
+},{"native-promise-only":82}],57:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -17893,7 +18001,7 @@ var url = function url(formio) {
 url.title = 'Url';
 exports.default = url;
 
-},{"native-promise-only":83}],58:[function(require,module,exports){
+},{"native-promise-only":82}],58:[function(require,module,exports){
 (function (global){
 'use strict';
 
@@ -18701,12 +18809,17 @@ var FormioUtils = {
         lang = _ref.lang;
 
     // Get the prefix and suffix from the localized string.
-    var regex = '(.*)?100' + (decimalSeparator === '.' ? '\\.' : decimalSeparator) + '0{' + decimalLimit + '}(.*)?';
+    var regex = '(.*)?100';
+    if (decimalLimit) {
+      regex += (decimalSeparator === '.' ? '\\.' : decimalSeparator) + '0{' + decimalLimit + '}';
+    }
+    regex += '(.*)?';
     var parts = 100 .toLocaleString(lang, {
       style: 'currency',
       currency: currency,
       useGrouping: true,
-      maximumFractionDigits: decimalLimit
+      maximumFractionDigits: decimalLimit,
+      minimumFractionDigits: decimalLimit
     }).replace('.', decimalSeparator).match(new RegExp(regex));
     return {
       prefix: parts[1] || '',
@@ -18719,7 +18832,7 @@ module.exports = global.FormioUtils = FormioUtils;
 exports.default = FormioUtils;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./jsonlogic/operators":59,"json-logic-js":80,"lodash":81,"moment":82}],59:[function(require,module,exports){
+},{"./jsonlogic/operators":59,"json-logic-js":79,"lodash":80,"moment":81}],59:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -25841,7 +25954,7 @@ return void 0!==t&&null!==t&&i===e},r=(t.isNode=function(e){return"object"===("u
 }();
 
 }).call(this,require('_process'))
-},{"_process":85}],64:[function(require,module,exports){
+},{"_process":84}],64:[function(require,module,exports){
 /* flatpickr v4.4.4, @license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -28145,7 +28258,6 @@ var Connector = function (_EventEmitter) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
       return callback && callback();
     }
-    var options = _extends({}, this.backend.options, this.options.backend);
 
     if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
@@ -28156,33 +28268,9 @@ var Connector = function (_EventEmitter) {
       return null; // pendings will trigger callback
     }
 
-    // load with multi-load
-    if (options.allowMultiLoading && this.backend.readMulti) {
-      this.read(toLoad.toLoadLanguages, toLoad.toLoadNamespaces, 'readMulti', null, null, function (err, data) {
-        if (err) _this5.logger.warn('loading namespaces ' + toLoad.toLoadNamespaces.join(', ') + ' for languages ' + toLoad.toLoadLanguages.join(', ') + ' via multiloading failed', err);
-        if (!err && data) _this5.logger.log('successfully loaded namespaces ' + toLoad.toLoadNamespaces.join(', ') + ' for languages ' + toLoad.toLoadLanguages.join(', ') + ' via multiloading', data);
-
-        toLoad.toLoad.forEach(function (name) {
-          var _name$split3 = name.split('|'),
-              _name$split4 = _slicedToArray(_name$split3, 2),
-              l = _name$split4[0],
-              n = _name$split4[1];
-
-          var bundle = utils.getPath(data, [l, n]);
-          if (bundle) {
-            _this5.loaded(name, err, bundle);
-          } else {
-            var error = 'loading namespace ' + n + ' for language ' + l + ' via multiloading failed';
-            _this5.loaded(name, error);
-            _this5.logger.error(error);
-          }
-        });
-      });
-    } else {
-      toLoad.toLoad.forEach(function (name) {
-        _this5.loadOne(name);
-      });
-    }
+    toLoad.toLoad.forEach(function (name) {
+      _this5.loadOne(name);
+    });
   };
 
   Connector.prototype.reload = function reload(languages, namespaces) {
@@ -28191,37 +28279,15 @@ var Connector = function (_EventEmitter) {
     if (!this.backend) {
       this.logger.warn('No backend was added via i18next.use. Will not load resources.');
     }
-    var options = _extends({}, this.backend.options, this.options.backend);
 
     if (typeof languages === 'string') languages = this.languageUtils.toResolveHierarchy(languages);
     if (typeof namespaces === 'string') namespaces = [namespaces];
 
-    // load with multi-load
-    if (options.allowMultiLoading && this.backend.readMulti) {
-      this.read(languages, namespaces, 'readMulti', null, null, function (err, data) {
-        if (err) _this6.logger.warn('reloading namespaces ' + namespaces.join(', ') + ' for languages ' + languages.join(', ') + ' via multiloading failed', err);
-        if (!err && data) _this6.logger.log('successfully reloaded namespaces ' + namespaces.join(', ') + ' for languages ' + languages.join(', ') + ' via multiloading', data);
-
-        languages.forEach(function (l) {
-          namespaces.forEach(function (n) {
-            var bundle = utils.getPath(data, [l, n]);
-            if (bundle) {
-              _this6.loaded(l + '|' + n, err, bundle);
-            } else {
-              var error = 'reloading namespace ' + n + ' for language ' + l + ' via multiloading failed';
-              _this6.loaded(l + '|' + n, error);
-              _this6.logger.error(error);
-            }
-          });
-        });
+    languages.forEach(function (l) {
+      namespaces.forEach(function (n) {
+        _this6.loadOne(l + '|' + n, 're');
       });
-    } else {
-      languages.forEach(function (l) {
-        namespaces.forEach(function (n) {
-          _this6.loadOne(l + '|' + n, 're');
-        });
-      });
-    }
+    });
   };
 
   Connector.prototype.loadOne = function loadOne(name) {
@@ -28229,10 +28295,10 @@ var Connector = function (_EventEmitter) {
 
     var prefix = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : '';
 
-    var _name$split5 = name.split('|'),
-        _name$split6 = _slicedToArray(_name$split5, 2),
-        lng = _name$split6[0],
-        ns = _name$split6[1];
+    var _name$split3 = name.split('|'),
+        _name$split4 = _slicedToArray(_name$split3, 2),
+        lng = _name$split4[0],
+        ns = _name$split4[1];
 
     this.read(lng, ns, 'read', null, null, function (err, data) {
       if (err) _this7.logger.warn(prefix + 'loading namespace ' + ns + ' for language ' + lng + ' failed', err);
@@ -28258,98 +28324,7 @@ var Connector = function (_EventEmitter) {
 }(_EventEmitter3.default);
 
 exports.default = Connector;
-},{"./EventEmitter.js":67,"./logger.js":76,"./utils.js":78}],66:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _logger = require('./logger.js');
-
-var _logger2 = _interopRequireDefault(_logger);
-
-var _EventEmitter2 = require('./EventEmitter.js');
-
-var _EventEmitter3 = _interopRequireDefault(_EventEmitter2);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defaults(obj, defaults) { var keys = Object.getOwnPropertyNames(defaults); for (var i = 0; i < keys.length; i++) { var key = keys[i]; var value = Object.getOwnPropertyDescriptor(defaults, key); if (value && value.configurable && obj[key] === undefined) { Object.defineProperty(obj, key, value); } } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : _defaults(subClass, superClass); }
-
-var Connector = function (_EventEmitter) {
-  _inherits(Connector, _EventEmitter);
-
-  function Connector(cache, store, services) {
-    var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
-
-    _classCallCheck(this, Connector);
-
-    var _this = _possibleConstructorReturn(this, _EventEmitter.call(this));
-
-    _this.cache = cache;
-    _this.store = store;
-    _this.services = services;
-    _this.options = options;
-    _this.logger = _logger2.default.create('cacheConnector');
-
-    if (_this.cache && _this.cache.init) _this.cache.init(services, options.cache, options);
-    return _this;
-  }
-
-  /* eslint consistent-return: 0 */
-
-
-  Connector.prototype.load = function load(languages, namespaces, callback) {
-    var _this2 = this;
-
-    if (!this.cache) return callback && callback();
-    var options = _extends({}, this.cache.options, this.options.cache);
-
-    var loadLngs = typeof languages === 'string' ? this.services.languageUtils.toResolveHierarchy(languages) : languages;
-
-    if (options.enabled) {
-      this.cache.load(loadLngs, function (err, data) {
-        if (err) _this2.logger.error('loading languages ' + loadLngs.join(', ') + ' from cache failed', err);
-        if (data) {
-          /* eslint no-restricted-syntax: 0 */
-          for (var l in data) {
-            if (Object.prototype.hasOwnProperty.call(data, l)) {
-              for (var n in data[l]) {
-                if (Object.prototype.hasOwnProperty.call(data[l], n)) {
-                  if (n !== 'i18nStamp') {
-                    var bundle = data[l][n];
-                    if (bundle) _this2.store.addResourceBundle(l, n, bundle);
-                  }
-                }
-              }
-            }
-          }
-        }
-        if (callback) callback();
-      });
-    } else if (callback) {
-      callback();
-    }
-  };
-
-  Connector.prototype.save = function save() {
-    if (this.cache && this.options.cache && this.options.cache.enabled) this.cache.save(this.store.data);
-  };
-
-  return Connector;
-}(_EventEmitter3.default);
-
-exports.default = Connector;
-},{"./EventEmitter.js":67,"./logger.js":76}],67:[function(require,module,exports){
+},{"./EventEmitter.js":66,"./logger.js":75,"./utils.js":77}],66:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28419,7 +28394,7 @@ var EventEmitter = function () {
 }();
 
 exports.default = EventEmitter;
-},{}],68:[function(require,module,exports){
+},{}],67:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28546,8 +28521,7 @@ var Interpolator = function () {
     // regular escape on demand
     while (match = this.regexp.exec(str)) {
       value = handleFormat(match[1].trim());
-      if (typeof value !== 'string') value = utils.makeString(value);
-      if (!value) {
+      if (value === undefined) {
         if (typeof this.options.missingInterpolationHandler === 'function') {
           var temp = this.options.missingInterpolationHandler(str, match);
           value = typeof temp === 'string' ? temp : '';
@@ -28555,6 +28529,8 @@ var Interpolator = function () {
           this.logger.warn('missed to pass in variable ' + match[1] + ' for interpolating ' + str);
           value = '';
         }
+      } else if (typeof value !== 'string') {
+        value = utils.makeString(value);
       }
       value = this.escapeValue ? regexSafe(this.escape(value)) : regexSafe(value);
       str = str.replace(match[0], value);
@@ -28622,7 +28598,7 @@ var Interpolator = function () {
 }();
 
 exports.default = Interpolator;
-},{"./logger.js":76,"./utils.js":78}],69:[function(require,module,exports){
+},{"./logger.js":75,"./utils.js":77}],68:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28756,7 +28732,7 @@ var LanguageUtil = function () {
 }();
 
 exports.default = LanguageUtil;
-},{"./logger.js":76}],70:[function(require,module,exports){
+},{"./logger.js":75}],69:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28946,7 +28922,7 @@ var PluralResolver = function () {
 }();
 
 exports.default = PluralResolver;
-},{"./logger.js":76}],71:[function(require,module,exports){
+},{"./logger.js":75}],70:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29108,7 +29084,7 @@ var ResourceStore = function (_EventEmitter) {
 }(_EventEmitter3.default);
 
 exports.default = ResourceStore;
-},{"./EventEmitter.js":67,"./utils.js":78}],72:[function(require,module,exports){
+},{"./EventEmitter.js":66,"./utils.js":77}],71:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29157,7 +29133,7 @@ var Translator = function (_EventEmitter) {
 
     var _this = _possibleConstructorReturn(this, _EventEmitter.call(this));
 
-    utils.copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector'], services, _this);
+    utils.copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat'], services, _this);
 
     _this.options = options;
     _this.logger = _logger2.default.create('translator');
@@ -29324,7 +29300,7 @@ var Translator = function (_EventEmitter) {
       }
 
       // extend
-      res = this.extendTranslation(res, keys, options);
+      res = this.extendTranslation(res, keys, options, resolved);
 
       // append namespace if still key
       if (usedKey && res === key && this.options.appendNamespaceToMissingKey) res = namespace + ':' + key;
@@ -29337,22 +29313,27 @@ var Translator = function (_EventEmitter) {
     return res;
   };
 
-  Translator.prototype.extendTranslation = function extendTranslation(res, key, options) {
+  Translator.prototype.extendTranslation = function extendTranslation(res, key, options, resolved) {
     var _this3 = this;
 
-    if (options.interpolation) this.interpolator.init(_extends({}, options, { interpolation: _extends({}, this.options.interpolation, options.interpolation) }));
+    if (this.i18nFormat && this.i18nFormat.parse) {
+      res = this.i18nFormat.parse(res, options, resolved.usedLng, resolved.usedNS, resolved.usedKey);
+    } else {
+      // i18next.parsing
+      if (options.interpolation) this.interpolator.init(_extends({}, options, { interpolation: _extends({}, this.options.interpolation, options.interpolation) }));
 
-    // interpolate
-    var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
-    if (this.options.interpolation.defaultVariables) data = _extends({}, this.options.interpolation.defaultVariables, data);
-    res = this.interpolator.interpolate(res, data, options.lng || this.language);
+      // interpolate
+      var data = options.replace && typeof options.replace !== 'string' ? options.replace : options;
+      if (this.options.interpolation.defaultVariables) data = _extends({}, this.options.interpolation.defaultVariables, data);
+      res = this.interpolator.interpolate(res, data, options.lng || this.language);
 
-    // nesting
-    if (options.nest !== false) res = this.interpolator.nest(res, function () {
-      return _this3.translate.apply(_this3, arguments);
-    }, options);
+      // nesting
+      if (options.nest !== false) res = this.interpolator.nest(res, function () {
+        return _this3.translate.apply(_this3, arguments);
+      }, options);
 
-    if (options.interpolation) this.interpolator.reset();
+      if (options.interpolation) this.interpolator.reset();
+    }
 
     // post process
     var postProcess = options.postProcess || this.options.postProcess;
@@ -29372,6 +29353,8 @@ var Translator = function (_EventEmitter) {
 
     var found = void 0;
     var usedKey = void 0;
+    var usedLng = void 0;
+    var usedNS = void 0;
 
     if (typeof keys === 'string') keys = [keys];
 
@@ -29391,24 +29374,30 @@ var Translator = function (_EventEmitter) {
 
       namespaces.forEach(function (ns) {
         if (_this4.isValidLookup(found)) return;
+        usedNS = ns;
 
         codes.forEach(function (code) {
           if (_this4.isValidLookup(found)) return;
+          usedLng = code;
 
           var finalKey = key;
           var finalKeys = [finalKey];
 
-          var pluralSuffix = void 0;
-          if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count);
+          if (_this4.i18nFormat && _this4.i18nFormat.addLookupKeys) {
+            _this4.i18nFormat.addLookupKeys(finalKeys, key, code, ns, options);
+          } else {
+            var pluralSuffix = void 0;
+            if (needsPluralHandling) pluralSuffix = _this4.pluralResolver.getSuffix(code, options.count);
 
-          // fallback for plural if context not found
-          if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
+            // fallback for plural if context not found
+            if (needsPluralHandling && needsContextHandling) finalKeys.push(finalKey + pluralSuffix);
 
-          // get key for context if needed
-          if (needsContextHandling) finalKeys.push(finalKey += '' + _this4.options.contextSeparator + options.context);
+            // get key for context if needed
+            if (needsContextHandling) finalKeys.push(finalKey += '' + _this4.options.contextSeparator + options.context);
 
-          // get key for plural if needed
-          if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
+            // get key for plural if needed
+            if (needsPluralHandling) finalKeys.push(finalKey += pluralSuffix);
+          }
 
           // iterate over finalKeys starting with most specific pluralkey (-> contextkey only) -> singularkey only
           var possibleKey = void 0;
@@ -29422,7 +29411,7 @@ var Translator = function (_EventEmitter) {
       });
     });
 
-    return { res: found, usedKey: usedKey };
+    return { res: found, usedKey: usedKey, usedLng: usedLng, usedNS: usedNS };
   };
 
   Translator.prototype.isValidLookup = function isValidLookup(res) {
@@ -29439,7 +29428,7 @@ var Translator = function (_EventEmitter) {
 }(_EventEmitter3.default);
 
 exports.default = Translator;
-},{"./EventEmitter.js":67,"./logger.js":76,"./postProcessor.js":77,"./utils.js":78}],73:[function(require,module,exports){
+},{"./EventEmitter.js":66,"./logger.js":75,"./postProcessor.js":76,"./utils.js":77}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29528,7 +29517,7 @@ function transformOptions(options) {
 
   return options;
 }
-},{}],74:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29570,10 +29559,6 @@ var _Interpolator2 = _interopRequireDefault(_Interpolator);
 var _BackendConnector = require('./BackendConnector.js');
 
 var _BackendConnector2 = _interopRequireDefault(_BackendConnector);
-
-var _CacheConnector = require('./CacheConnector.js');
-
-var _CacheConnector2 = _interopRequireDefault(_CacheConnector);
 
 var _defaults2 = require('./defaults.js');
 
@@ -29656,9 +29641,6 @@ var I18n = function (_EventEmitter) {
       var s = this.services;
       s.logger = _logger2.default;
       s.resourceStore = this.store;
-      s.resourceStore.on('added removed', function (lng, ns) {
-        s.cacheConnector.save();
-      });
       s.languageUtils = lu;
       s.pluralResolver = new _PluralResolver2.default(lu, { prepend: this.options.pluralSeparator, compatibilityJSON: this.options.compatibilityJSON, simplifyPluralSuffix: this.options.simplifyPluralSuffix });
       s.interpolator = new _Interpolator2.default(this.options);
@@ -29673,30 +29655,21 @@ var I18n = function (_EventEmitter) {
         _this2.emit.apply(_this2, [event].concat(args));
       });
 
-      s.backendConnector.on('loaded', function (loaded) {
-        s.cacheConnector.save();
-      });
-
-      s.cacheConnector = new _CacheConnector2.default(createClassOnDemand(this.modules.cache), s.resourceStore, s, this.options);
-      // pipe events from backendConnector
-      s.cacheConnector.on('*', function (event) {
-        for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
-          args[_key2 - 1] = arguments[_key2];
-        }
-
-        _this2.emit.apply(_this2, [event].concat(args));
-      });
-
       if (this.modules.languageDetector) {
         s.languageDetector = createClassOnDemand(this.modules.languageDetector);
         s.languageDetector.init(s, this.options.detection, this.options);
       }
 
+      if (this.modules.i18nFormat) {
+        s.i18nFormat = createClassOnDemand(this.modules.i18nFormat);
+        if (s.i18nFormat.init) s.i18nFormat.init(this);
+      }
+
       this.translator = new _Translator2.default(this.services, this.options);
       // pipe events from translator
       this.translator.on('*', function (event) {
-        for (var _len3 = arguments.length, args = Array(_len3 > 1 ? _len3 - 1 : 0), _key3 = 1; _key3 < _len3; _key3++) {
-          args[_key3 - 1] = arguments[_key3];
+        for (var _len2 = arguments.length, args = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+          args[_key2 - 1] = arguments[_key2];
         }
 
         _this2.emit.apply(_this2, [event].concat(args));
@@ -29773,9 +29746,7 @@ var I18n = function (_EventEmitter) {
         });
       }
 
-      this.services.cacheConnector.load(toLoad, this.options.ns, function () {
-        _this3.services.backendConnector.load(toLoad, _this3.options.ns, callback);
-      });
+      this.services.backendConnector.load(toLoad, this.options.ns, callback);
     } else {
       callback(null);
     }
@@ -29792,16 +29763,16 @@ var I18n = function (_EventEmitter) {
       this.modules.backend = module;
     }
 
-    if (module.type === 'cache') {
-      this.modules.cache = module;
-    }
-
     if (module.type === 'logger' || module.log && module.warn && module.error) {
       this.modules.logger = module;
     }
 
     if (module.type === 'languageDetector') {
       this.modules.languageDetector = module;
+    }
+
+    if (module.type === 'i18nFormat') {
+      this.modules.i18nFormat = module;
     }
 
     if (module.type === 'postProcessor') {
@@ -29858,8 +29829,8 @@ var I18n = function (_EventEmitter) {
     var _this5 = this;
 
     var fixedT = function fixedT(key, opts) {
-      for (var _len4 = arguments.length, rest = Array(_len4 > 2 ? _len4 - 2 : 0), _key4 = 2; _key4 < _len4; _key4++) {
-        rest[_key4 - 2] = arguments[_key4];
+      for (var _len3 = arguments.length, rest = Array(_len3 > 2 ? _len3 - 2 : 0), _key3 = 2; _key3 < _len3; _key3++) {
+        rest[_key3 - 2] = arguments[_key3];
       }
 
       var options = _extends({}, opts);
@@ -29957,8 +29928,8 @@ var I18n = function (_EventEmitter) {
     });
     clone.translator = new _Translator2.default(clone.services, clone.options);
     clone.translator.on('*', function (event) {
-      for (var _len5 = arguments.length, args = Array(_len5 > 1 ? _len5 - 1 : 0), _key5 = 1; _key5 < _len5; _key5++) {
-        args[_key5 - 1] = arguments[_key5];
+      for (var _len4 = arguments.length, args = Array(_len4 > 1 ? _len4 - 1 : 0), _key4 = 1; _key4 < _len4; _key4++) {
+        args[_key4 - 1] = arguments[_key4];
       }
 
       clone.emit.apply(clone, [event].concat(args));
@@ -29973,7 +29944,7 @@ var I18n = function (_EventEmitter) {
 }(_EventEmitter3.default);
 
 exports.default = new I18n();
-},{"./BackendConnector.js":65,"./CacheConnector.js":66,"./EventEmitter.js":67,"./Interpolator.js":68,"./LanguageUtils.js":69,"./PluralResolver.js":70,"./ResourceStore.js":71,"./Translator.js":72,"./defaults.js":73,"./logger.js":76,"./postProcessor.js":77}],75:[function(require,module,exports){
+},{"./BackendConnector.js":65,"./EventEmitter.js":66,"./Interpolator.js":67,"./LanguageUtils.js":68,"./PluralResolver.js":69,"./ResourceStore.js":70,"./Translator.js":71,"./defaults.js":72,"./logger.js":75,"./postProcessor.js":76}],74:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30003,7 +29974,7 @@ var on = exports.on = _i18next2.default.on.bind(_i18next2.default);
 var setDefaultNamespace = exports.setDefaultNamespace = _i18next2.default.setDefaultNamespace.bind(_i18next2.default);
 var t = exports.t = _i18next2.default.t.bind(_i18next2.default);
 var use = exports.use = _i18next2.default.use.bind(_i18next2.default);
-},{"./i18next.js":74}],76:[function(require,module,exports){
+},{"./i18next.js":73}],75:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30104,7 +30075,7 @@ var Logger = function () {
 }();
 
 exports.default = new Logger();
-},{}],77:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -30127,7 +30098,7 @@ exports.default = {
     return value;
   }
 };
-},{}],78:[function(require,module,exports){
+},{}],77:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30247,10 +30218,10 @@ function escape(data) {
 
   return data;
 }
-},{}],79:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 module.exports = require('./dist/commonjs/index.js').default;
 
-},{"./dist/commonjs/index.js":75}],80:[function(require,module,exports){
+},{"./dist/commonjs/index.js":74}],79:[function(require,module,exports){
 /* globals define,module */
 /*
 Using a Universal Module Loader that should be browser, require, and AMD friendly
@@ -30716,7 +30687,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
   return jsonLogic;
 }));
 
-},{}],81:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 (function (global){
 /**
  * @license
@@ -30732,7 +30703,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.5';
+  var VERSION = '4.17.10';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -31156,6 +31127,14 @@ http://ricostacruz.com/cheatsheets/umdjs.html
   /** Used to access faster Node.js helpers. */
   var nodeUtil = (function() {
     try {
+      // Use `util.types` for Node.js 10+.
+      var types = freeModule && freeModule.require && freeModule.require('util').types;
+
+      if (types) {
+        return types;
+      }
+
+      // Legacy `process.binding('util')` for Node.js < 10.
       return freeProcess && freeProcess.binding && freeProcess.binding('util');
     } catch (e) {}
   }());
@@ -47817,7 +47796,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],82:[function(require,module,exports){
+},{}],81:[function(require,module,exports){
 //! moment.js
 
 ;(function (global, factory) {
@@ -51479,7 +51458,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 
     addUnitAlias('date', 'D');
 
-    // PRIOROITY
+    // PRIORITY
     addUnitPriority('date', 9);
 
     // PARSING
@@ -52276,7 +52255,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
     // Side effect imports
 
 
-    hooks.version = '2.22.0';
+    hooks.version = '2.22.1';
 
     setHookCallback(createLocal);
 
@@ -52325,7 +52304,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 
 })));
 
-},{}],83:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 (function (global){
 /*! Native Promise Only
     v0.8.1 (c) Kyle Simpson
@@ -52702,7 +52681,7 @@ http://ricostacruz.com/cheatsheets/umdjs.html
 });
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],84:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 (function (global){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
@@ -55234,7 +55213,7 @@ return Popper;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],85:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -55420,7 +55399,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],86:[function(require,module,exports){
+},{}],85:[function(require,module,exports){
 module.exports = function (obj) {
     if (!obj || typeof obj !== 'object') return obj;
     
@@ -55457,7 +55436,7 @@ var isArray = Array.isArray || function (xs) {
     return {}.toString.call(xs) === '[object Array]';
 };
 
-},{}],87:[function(require,module,exports){
+},{}],86:[function(require,module,exports){
 /*!
  * Signature Pad v2.3.2
  * https://github.com/szimek/signature_pad
@@ -56069,9 +56048,9 @@ return SignaturePad;
 
 })));
 
-},{}],88:[function(require,module,exports){
+},{}],87:[function(require,module,exports){
 !function(e,t){"object"==typeof exports&&"object"==typeof module?module.exports=t():"function"==typeof define&&define.amd?define([],t):"object"==typeof exports?exports.textMaskAddons=t():e.textMaskAddons=t()}(this,function(){return function(e){function t(r){if(n[r])return n[r].exports;var o=n[r]={exports:{},id:r,loaded:!1};return e[r].call(o.exports,o,o.exports,t),o.loaded=!0,o.exports}var n={};return t.m=e,t.c=n,t.p="",t(0)}([function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}Object.defineProperty(t,"__esModule",{value:!0});var o=n(1);Object.defineProperty(t,"createAutoCorrectedDatePipe",{enumerable:!0,get:function(){return r(o).default}});var i=n(2);Object.defineProperty(t,"createNumberMask",{enumerable:!0,get:function(){return r(i).default}});var u=n(3);Object.defineProperty(t,"emailMask",{enumerable:!0,get:function(){return r(u).default}})},function(e,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:"mm dd yyyy";return function(t){var n=[],r=e.split(/[^dmyHMS]+/),o={dd:31,mm:12,yy:99,yyyy:9999,HH:23,MM:59,SS:59},i={dd:1,mm:1,yy:0,yyyy:1,HH:0,MM:0,SS:0},u=t.split("");r.forEach(function(t){var r=e.indexOf(t),i=parseInt(o[t].toString().substr(0,1),10);parseInt(u[r],10)>i&&(u[r+1]=u[r],u[r]=0,n.push(r))});var c=r.some(function(n){var r=e.indexOf(n),u=n.length,c=t.substr(r,u).replace(/\D/g,""),l=parseInt(c,10);return l>o[n]||c.length===u&&l<i[n]});return!c&&{value:u.join(""),indexesOfPipedChars:n}}}Object.defineProperty(t,"__esModule",{value:!0}),t.default=n},function(e,t){"use strict";function n(){function e(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:c,t=e.length;if(e===c||e[0]===g[0]&&1===t)return g.split(c).concat([v]).concat(m.split(c));if(e===P&&_)return g.split(c).concat(["0",P,v]).concat(m.split(c));var n=e[0]===s&&H;n&&(e=e.toString().substr(1));var u=e.lastIndexOf(P),l=u!==-1,a=void 0,h=void 0,b=void 0;if(e.slice($*-1)===m&&(e=e.slice(0,$*-1)),l&&(_||D)?(a=e.slice(e.slice(0,N)===g?N:0,u),h=e.slice(u+1,t),h=r(h.replace(f,c))):a=e.slice(0,N)===g?e.slice(N):e,L&&("undefined"==typeof L?"undefined":i(L))===p){var O="."===M?"[.]":""+M,S=(a.match(new RegExp(O,"g"))||[]).length;a=a.slice(0,L+S*V)}return a=a.replace(f,c),R||(a=a.replace(/^0+(0$|[^0])/,"$1")),a=x?o(a,M):a,b=r(a),(l&&_||D===!0)&&(e[u-1]!==P&&b.push(y),b.push(P,y),h&&(("undefined"==typeof C?"undefined":i(C))===p&&(h=h.slice(0,C)),b=b.concat(h)),D===!0&&e[u-1]===P&&b.push(v)),N>0&&(b=g.split(c).concat(b)),n&&(b.length===N&&b.push(v),b=[d].concat(b)),m.length>0&&(b=b.concat(m.split(c))),b}var t=arguments.length>0&&void 0!==arguments[0]?arguments[0]:{},n=t.prefix,g=void 0===n?u:n,h=t.suffix,m=void 0===h?c:h,b=t.includeThousandsSeparator,x=void 0===b||b,O=t.thousandsSeparatorSymbol,M=void 0===O?l:O,S=t.allowDecimal,_=void 0!==S&&S,j=t.decimalSymbol,P=void 0===j?a:j,w=t.decimalLimit,C=void 0===w?2:w,k=t.requireDecimal,D=void 0!==k&&k,E=t.allowNegative,H=void 0!==E&&E,I=t.allowLeadingZeroes,R=void 0!==I&&I,A=t.integerLimit,L=void 0===A?null:A,N=g&&g.length||0,$=m&&m.length||0,V=M&&M.length||0;return e.instanceOf="createNumberMask",e}function r(e){return e.split(c).map(function(e){return v.test(e)?v:e})}function o(e,t){return e.replace(/\B(?=(\d{3})+(?!\d))/g,t)}Object.defineProperty(t,"__esModule",{value:!0});var i="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};t.default=n;var u="$",c="",l=",",a=".",s="-",d=/-/,f=/\D+/g,p="number",v=/\d/,y="[]"},function(e,t,n){"use strict";function r(e){return e&&e.__esModule?e:{default:e}}function o(e,t){e=e.replace(O,v);var n=t.placeholderChar,r=t.currentCaretPosition,o=e.indexOf(y),s=e.lastIndexOf(p),d=s<o?-1:s,f=i(e,o+1,y),g=i(e,d-1,p),h=u(e,o,n),m=c(e,o,d,n),b=l(e,d,n,r);h=a(h),m=a(m),b=a(b,!0);var x=h.concat(f).concat(m).concat(g).concat(b);return x}function i(e,t,n){var r=[];return e[t]===n?r.push(n):r.push(g,n),r.push(g),r}function u(e,t){return t===-1?e:e.slice(0,t)}function c(e,t,n,r){var o=v;return t!==-1&&(o=n===-1?e.slice(t+1,e.length):e.slice(t+1,n)),o=o.replace(new RegExp("[\\s"+r+"]",m),v),o===y?f:o.length<1?h:o[o.length-1]===p?o.slice(0,o.length-1):o}function l(e,t,n,r){var o=v;return t!==-1&&(o=e.slice(t+1,e.length)),o=o.replace(new RegExp("[\\s"+n+".]",m),v),0===o.length?e[t-1]===p&&r!==e.length?f:v:o}function a(e,t){return e.split(v).map(function(e){return e===h?e:t?x:b})}Object.defineProperty(t,"__esModule",{value:!0});var s=n(4),d=r(s),f="*",p=".",v="",y="@",g="[]",h=" ",m="g",b=/[^\s]/,x=/[^.\s]/,O=/\s/g;t.default={mask:o,pipe:d.default}},function(e,t){"use strict";function n(e,t){var n=t.currentCaretPosition,i=t.rawValue,f=t.previousConformedValue,p=t.placeholderChar,v=e;v=r(v);var y=v.indexOf(c),g=null===i.match(new RegExp("[^@\\s."+p+"]"));if(g)return u;if(v.indexOf(a)!==-1||y!==-1&&n!==y+1||i.indexOf(o)===-1&&f!==u&&i.indexOf(l)!==-1)return!1;var h=v.indexOf(o),m=v.slice(h+1,v.length);return(m.match(d)||s).length>1&&v.substr(-1)===l&&n!==i.length&&(v=v.slice(0,v.length-1)),v}function r(e){var t=0;return e.replace(i,function(){return t++,1===t?o:u})}Object.defineProperty(t,"__esModule",{value:!0}),t.default=n;var o="@",i=/@/g,u="",c="@.",l=".",a="..",s=[],d=/\./g}])});
-},{}],89:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 /**!
  * @fileOverview Kickass library to create and place poppers near their reference elements.
  * @version 1.2.0
@@ -56663,9 +56642,9 @@ return Tooltip;
 })));
 
 
-},{"popper.js":84}],90:[function(require,module,exports){
-!function(e,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports.vanillaTextMask=r():e.vanillaTextMask=r()}(this,function(){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var t={};return r.m=e,r.c=t,r.p="",r(0)}([function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r=e.inputElement,t=(0,u.default)(e),n=function(e){var r=e.target.value;return t.update(r)};return r.addEventListener("input",n),t.update(r.value),{textMaskInputElement:t,destroy:function(){r.removeEventListener("input",n)}}}Object.defineProperty(r,"__esModule",{value:!0}),r.conformToMask=void 0,r.maskInput=o;var i=t(2);Object.defineProperty(r,"conformToMask",{enumerable:!0,get:function(){return n(i).default}});var a=t(5),u=n(a);r.default=o},function(e,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.placeholderChar="_"},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:a,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:a,t=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{},n=t.guide,u=void 0===n||n,l=t.previousConformedValue,s=void 0===l?a:l,f=t.placeholderChar,d=void 0===f?i.placeholderChar:f,c=t.placeholder,v=void 0===c?(0,o.convertMaskToPlaceholder)(r,d):c,p=t.currentCaretPosition,h=t.keepCharPositions,g=u===!1&&void 0!==s,m=e.length,y=s.length,b=v.length,C=r.length,P=m-y,x=P>0,k=p+(x?-P:0),O=k+Math.abs(P);if(h===!0&&!x){for(var M=a,T=k;T<O;T++)v[T]===d&&(M+=d);e=e.slice(0,k)+M+e.slice(k,m)}for(var w=e.split(a).map(function(e,r){return{char:e,isNew:r>=k&&r<O}}),_=m-1;_>=0;_--){var j=w[_].char;if(j!==d){var V=_>=k&&y===C;j===v[V?_-P:_]&&w.splice(_,1)}}var S=a,E=!1;e:for(var N=0;N<b;N++){var A=v[N];if(A===d){if(w.length>0)for(;w.length>0;){var I=w.shift(),L=I.char,R=I.isNew;if(L===d&&g!==!0){S+=d;continue e}if(r[N].test(L)){if(h===!0&&R!==!1&&s!==a&&u!==!1&&x){for(var J=w.length,q=null,F=0;F<J;F++){var W=w[F];if(W.char!==d&&W.isNew===!1)break;if(W.char===d){q=F;break}}null!==q?(S+=L,w.splice(q,1)):N--}else S+=L;continue e}E=!0}g===!1&&(S+=v.substr(N,b));break}S+=A}if(g&&x===!1){for(var z=null,B=0;B<S.length;B++)v[B]===d&&(z=B);S=null!==z?S.substr(0,z+1):a}return{conformedValue:S,meta:{someCharsRejected:E}}}Object.defineProperty(r,"__esModule",{value:!0}),r.default=n;var o=t(3),i=t(1),a=""},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:u.placeholderChar;if(e.indexOf(r)!==-1)throw new Error("Placeholder character must not be used as part of the mask. Please specify a character that is not present in your mask as your placeholder character.\n\n"+("The placeholder character that was received is: "+JSON.stringify(r)+"\n\n")+("The mask that was received is: "+JSON.stringify(e)));return e.map(function(e){return e instanceof RegExp?r:e}).join("")}function o(e){return"string"==typeof e||e instanceof String}function i(e){return"number"==typeof e&&void 0===e.length&&!isNaN(e)}function a(e){for(var r=[],t=void 0;t=e.indexOf(s),t!==-1;)r.push(t),e.splice(t,1);return{maskWithoutCaretTraps:e,indexes:r}}Object.defineProperty(r,"__esModule",{value:!0}),r.convertMaskToPlaceholder=n,r.isString=o,r.isNumber=i,r.processCaretTraps=a;var u=t(1),l=[],s="[]"},function(e,r){"use strict";function t(e){var r=e.previousConformedValue,t=void 0===r?o:r,i=e.previousPlaceholder,a=void 0===i?o:i,u=e.currentCaretPosition,l=void 0===u?0:u,s=e.conformedValue,f=e.rawValue,d=e.placeholderChar,c=e.placeholder,v=e.indexesOfPipedChars,p=void 0===v?n:v,h=e.caretTrapIndexes,g=void 0===h?n:h;if(0===l)return 0;var m=f.length,y=t.length,b=c.length,C=s.length,P=m-y,x=P>0,k=0===y,O=P>1&&!x&&!k;if(O)return l;var M=x&&(t===s||s===c),T=0,w=void 0,_=void 0;if(M)T=l-P;else{var j=s.toLowerCase(),V=f.toLowerCase(),S=V.substr(0,l).split(o),E=S.filter(function(e){return j.indexOf(e)!==-1});_=E[E.length-1];var N=a.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,A=c.substr(0,E.length).split(o).filter(function(e){return e!==d}).length,I=A!==N,L=void 0!==a[E.length-1]&&void 0!==c[E.length-2]&&a[E.length-1]!==d&&a[E.length-1]!==c[E.length-1]&&a[E.length-1]===c[E.length-2];!x&&(I||L)&&N>0&&c.indexOf(_)>-1&&void 0!==f[l]&&(w=!0,_=f[l]);for(var R=p.map(function(e){return j[e]}),J=R.filter(function(e){return e===_}).length,q=E.filter(function(e){return e===_}).length,F=c.substr(0,c.indexOf(d)).split(o).filter(function(e,r){return e===_&&f[r]!==e}).length,W=F+q+J+(w?1:0),z=0,B=0;B<C;B++){var D=j[B];if(T=B+1,D===_&&z++,z>=W)break}}if(x){for(var G=T,H=T;H<=b;H++)if(c[H]===d&&(G=H),c[H]===d||g.indexOf(H)!==-1||H===b)return G}else if(w){for(var K=T-1;K>=0;K--)if(s[K]===_||g.indexOf(K)!==-1||0===K)return K}else for(var Q=T;Q>=0;Q--)if(c[Q-1]===d||g.indexOf(Q)!==-1||0===Q)return Q}Object.defineProperty(r,"__esModule",{value:!0}),r.default=t;var n=[],o=""},function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r={previousConformedValue:void 0,previousPlaceholder:void 0};return{state:r,update:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:e,o=n.inputElement,s=n.mask,d=n.guide,m=n.pipe,b=n.placeholderChar,C=void 0===b?p.placeholderChar:b,P=n.keepCharPositions,x=void 0!==P&&P,k=n.showMask,O=void 0!==k&&k;if("undefined"==typeof t&&(t=o.value),t!==r.previousConformedValue){("undefined"==typeof s?"undefined":l(s))===y&&void 0!==s.pipe&&void 0!==s.mask&&(m=s.pipe,s=s.mask);var M=void 0,T=void 0;if(s instanceof Array&&(M=(0,v.convertMaskToPlaceholder)(s,C)),s!==!1){var w=a(t),_=o.selectionEnd,j=r.previousConformedValue,V=r.previousPlaceholder,S=void 0;if(("undefined"==typeof s?"undefined":l(s))===h){if(T=s(w,{currentCaretPosition:_,previousConformedValue:j,placeholderChar:C}),T===!1)return;var E=(0,v.processCaretTraps)(T),N=E.maskWithoutCaretTraps,A=E.indexes;T=N,S=A,M=(0,v.convertMaskToPlaceholder)(T,C)}else T=s;var I={previousConformedValue:j,guide:d,placeholderChar:C,pipe:m,placeholder:M,currentCaretPosition:_,keepCharPositions:x},L=(0,c.default)(w,T,I),R=L.conformedValue,J=("undefined"==typeof m?"undefined":l(m))===h,q={};J&&(q=m(R,u({rawValue:w},I)),q===!1?q={value:j,rejected:!0}:(0,v.isString)(q)&&(q={value:q}));var F=J?q.value:R,W=(0,f.default)({previousConformedValue:j,previousPlaceholder:V,conformedValue:F,placeholder:M,rawValue:w,currentCaretPosition:_,placeholderChar:C,indexesOfPipedChars:q.indexesOfPipedChars,caretTrapIndexes:S}),z=F===M&&0===W,B=O?M:g,D=z?B:F;r.previousConformedValue=D,r.previousPlaceholder=M,o.value!==D&&(o.value=D,i(o,W))}}}}}function i(e,r){document.activeElement===e&&(b?C(function(){return e.setSelectionRange(r,r,m)},0):e.setSelectionRange(r,r,m))}function a(e){if((0,v.isString)(e))return e;if((0,v.isNumber)(e))return String(e);if(void 0===e||null===e)return g;throw new Error("The 'value' provided to Text Mask needs to be a string or a number. The value received was:\n\n "+JSON.stringify(e))}Object.defineProperty(r,"__esModule",{value:!0});var u=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=o;var s=t(4),f=n(s),d=t(2),c=n(d),v=t(3),p=t(1),h="function",g="",m="none",y="object",b="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),C="undefined"!=typeof requestAnimationFrame?requestAnimationFrame:setTimeout}])});
-},{}],91:[function(require,module,exports){
+},{"popper.js":83}],89:[function(require,module,exports){
+!function(e,r){"object"==typeof exports&&"object"==typeof module?module.exports=r():"function"==typeof define&&define.amd?define([],r):"object"==typeof exports?exports.vanillaTextMask=r():e.vanillaTextMask=r()}(this,function(){return function(e){function r(n){if(t[n])return t[n].exports;var o=t[n]={exports:{},id:n,loaded:!1};return e[n].call(o.exports,o,o.exports,r),o.loaded=!0,o.exports}var t={};return r.m=e,r.c=t,r.p="",r(0)}([function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r=e.inputElement,t=(0,u.default)(e),n=function(e){var r=e.target.value;return t.update(r)};return r.addEventListener("input",n),t.update(r.value),{textMaskInputElement:t,destroy:function(){r.removeEventListener("input",n)}}}Object.defineProperty(r,"__esModule",{value:!0}),r.conformToMask=void 0,r.maskInput=o;var i=t(2);Object.defineProperty(r,"conformToMask",{enumerable:!0,get:function(){return n(i).default}});var a=t(5),u=n(a);r.default=o},function(e,r){"use strict";Object.defineProperty(r,"__esModule",{value:!0}),r.placeholderChar="_",r.strFunction="function"},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:l,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:u,t=arguments.length>2&&void 0!==arguments[2]?arguments[2]:{};if(!(0,i.isArray)(r)){if(("undefined"==typeof r?"undefined":o(r))!==a.strFunction)throw new Error("Text-mask:conformToMask; The mask property must be an array.");r=r(e,t),r=(0,i.processCaretTraps)(r).maskWithoutCaretTraps}var n=t.guide,s=void 0===n||n,f=t.previousConformedValue,d=void 0===f?l:f,c=t.placeholderChar,p=void 0===c?a.placeholderChar:c,v=t.placeholder,h=void 0===v?(0,i.convertMaskToPlaceholder)(r,p):v,m=t.currentCaretPosition,y=t.keepCharPositions,g=s===!1&&void 0!==d,b=e.length,C=d.length,k=h.length,x=r.length,P=b-C,T=P>0,O=m+(T?-P:0),M=O+Math.abs(P);if(y===!0&&!T){for(var w=l,S=O;S<M;S++)h[S]===p&&(w+=p);e=e.slice(0,O)+w+e.slice(O,b)}for(var _=e.split(l).map(function(e,r){return{char:e,isNew:r>=O&&r<M}}),j=b-1;j>=0;j--){var V=_[j].char;if(V!==p){var A=j>=O&&C===x;V===h[A?j-P:j]&&_.splice(j,1)}}var E=l,N=!1;e:for(var F=0;F<k;F++){var I=h[F];if(I===p){if(_.length>0)for(;_.length>0;){var L=_.shift(),R=L.char,J=L.isNew;if(R===p&&g!==!0){E+=p;continue e}if(r[F].test(R)){if(y===!0&&J!==!1&&d!==l&&s!==!1&&T){for(var W=_.length,q=null,z=0;z<W;z++){var B=_[z];if(B.char!==p&&B.isNew===!1)break;if(B.char===p){q=z;break}}null!==q?(E+=R,_.splice(q,1)):F--}else E+=R;continue e}N=!0}g===!1&&(E+=h.substr(F,k));break}E+=I}if(g&&T===!1){for(var D=null,G=0;G<E.length;G++)h[G]===p&&(D=G);E=null!==D?E.substr(0,D+1):l}return{conformedValue:E,meta:{someCharsRejected:N}}}Object.defineProperty(r,"__esModule",{value:!0});var o="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=n;var i=t(3),a=t(1),u=[],l=""},function(e,r,t){"use strict";function n(){var e=arguments.length>0&&void 0!==arguments[0]?arguments[0]:s,r=arguments.length>1&&void 0!==arguments[1]?arguments[1]:l.placeholderChar;if(!o(e))throw new Error("Text-mask:convertMaskToPlaceholder; The mask property must be an array.");if(e.indexOf(r)!==-1)throw new Error("Placeholder character must not be used as part of the mask. Please specify a character that is not present in your mask as your placeholder character.\n\n"+("The placeholder character that was received is: "+JSON.stringify(r)+"\n\n")+("The mask that was received is: "+JSON.stringify(e)));return e.map(function(e){return e instanceof RegExp?r:e}).join("")}function o(e){return Array.isArray&&Array.isArray(e)||e instanceof Array}function i(e){return"string"==typeof e||e instanceof String}function a(e){return"number"==typeof e&&void 0===e.length&&!isNaN(e)}function u(e){for(var r=[],t=void 0;t=e.indexOf(f),t!==-1;)r.push(t),e.splice(t,1);return{maskWithoutCaretTraps:e,indexes:r}}Object.defineProperty(r,"__esModule",{value:!0}),r.convertMaskToPlaceholder=n,r.isArray=o,r.isString=i,r.isNumber=a,r.processCaretTraps=u;var l=t(1),s=[],f="[]"},function(e,r){"use strict";function t(e){var r=e.previousConformedValue,t=void 0===r?o:r,i=e.previousPlaceholder,a=void 0===i?o:i,u=e.currentCaretPosition,l=void 0===u?0:u,s=e.conformedValue,f=e.rawValue,d=e.placeholderChar,c=e.placeholder,p=e.indexesOfPipedChars,v=void 0===p?n:p,h=e.caretTrapIndexes,m=void 0===h?n:h;if(0===l||!f.length)return 0;var y=f.length,g=t.length,b=c.length,C=s.length,k=y-g,x=k>0,P=0===g,T=k>1&&!x&&!P;if(T)return l;var O=x&&(t===s||s===c),M=0,w=void 0,S=void 0;if(O)M=l-k;else{var _=s.toLowerCase(),j=f.toLowerCase(),V=j.substr(0,l).split(o),A=V.filter(function(e){return _.indexOf(e)!==-1});S=A[A.length-1];var E=a.substr(0,A.length).split(o).filter(function(e){return e!==d}).length,N=c.substr(0,A.length).split(o).filter(function(e){return e!==d}).length,F=N!==E,I=void 0!==a[A.length-1]&&void 0!==c[A.length-2]&&a[A.length-1]!==d&&a[A.length-1]!==c[A.length-1]&&a[A.length-1]===c[A.length-2];!x&&(F||I)&&E>0&&c.indexOf(S)>-1&&void 0!==f[l]&&(w=!0,S=f[l]);for(var L=v.map(function(e){return _[e]}),R=L.filter(function(e){return e===S}).length,J=A.filter(function(e){return e===S}).length,W=c.substr(0,c.indexOf(d)).split(o).filter(function(e,r){return e===S&&f[r]!==e}).length,q=W+J+R+(w?1:0),z=0,B=0;B<C;B++){var D=_[B];if(M=B+1,D===S&&z++,z>=q)break}}if(x){for(var G=M,H=M;H<=b;H++)if(c[H]===d&&(G=H),c[H]===d||m.indexOf(H)!==-1||H===b)return G}else if(w){for(var K=M-1;K>=0;K--)if(s[K]===S||m.indexOf(K)!==-1||0===K)return K}else for(var Q=M;Q>=0;Q--)if(c[Q-1]===d||m.indexOf(Q)!==-1||0===Q)return Q}Object.defineProperty(r,"__esModule",{value:!0}),r.default=t;var n=[],o=""},function(e,r,t){"use strict";function n(e){return e&&e.__esModule?e:{default:e}}function o(e){var r={previousConformedValue:void 0,previousPlaceholder:void 0};return{state:r,update:function(t){var n=arguments.length>1&&void 0!==arguments[1]?arguments[1]:e,o=n.inputElement,s=n.mask,d=n.guide,m=n.pipe,g=n.placeholderChar,b=void 0===g?v.placeholderChar:g,C=n.keepCharPositions,k=void 0!==C&&C,x=n.showMask,P=void 0!==x&&x;if("undefined"==typeof t&&(t=o.value),t!==r.previousConformedValue){("undefined"==typeof s?"undefined":l(s))===y&&void 0!==s.pipe&&void 0!==s.mask&&(m=s.pipe,s=s.mask);var T=void 0,O=void 0;if(s instanceof Array&&(T=(0,p.convertMaskToPlaceholder)(s,b)),s!==!1){var M=a(t),w=o.selectionEnd,S=r.previousConformedValue,_=r.previousPlaceholder,j=void 0;if(("undefined"==typeof s?"undefined":l(s))===v.strFunction){if(O=s(M,{currentCaretPosition:w,previousConformedValue:S,placeholderChar:b}),O===!1)return;var V=(0,p.processCaretTraps)(O),A=V.maskWithoutCaretTraps,E=V.indexes;O=A,j=E,T=(0,p.convertMaskToPlaceholder)(O,b)}else O=s;var N={previousConformedValue:S,guide:d,placeholderChar:b,pipe:m,placeholder:T,currentCaretPosition:w,keepCharPositions:k},F=(0,c.default)(M,O,N),I=F.conformedValue,L=("undefined"==typeof m?"undefined":l(m))===v.strFunction,R={};L&&(R=m(I,u({rawValue:M},N)),R===!1?R={value:S,rejected:!0}:(0,p.isString)(R)&&(R={value:R}));var J=L?R.value:I,W=(0,f.default)({previousConformedValue:S,previousPlaceholder:_,conformedValue:J,placeholder:T,rawValue:M,currentCaretPosition:w,placeholderChar:b,indexesOfPipedChars:R.indexesOfPipedChars,caretTrapIndexes:j}),q=J===T&&0===W,z=P?T:h,B=q?z:J;r.previousConformedValue=B,r.previousPlaceholder=T,o.value!==B&&(o.value=B,i(o,W))}}}}}function i(e,r){document.activeElement===e&&(g?b(function(){return e.setSelectionRange(r,r,m)},0):e.setSelectionRange(r,r,m))}function a(e){if((0,p.isString)(e))return e;if((0,p.isNumber)(e))return String(e);if(void 0===e||null===e)return h;throw new Error("The 'value' provided to Text Mask needs to be a string or a number. The value received was:\n\n "+JSON.stringify(e))}Object.defineProperty(r,"__esModule",{value:!0});var u=Object.assign||function(e){for(var r=1;r<arguments.length;r++){var t=arguments[r];for(var n in t)Object.prototype.hasOwnProperty.call(t,n)&&(e[n]=t[n])}return e},l="function"==typeof Symbol&&"symbol"==typeof Symbol.iterator?function(e){return typeof e}:function(e){return e&&"function"==typeof Symbol&&e.constructor===Symbol&&e!==Symbol.prototype?"symbol":typeof e};r.default=o;var s=t(4),f=n(s),d=t(2),c=n(d),p=t(3),v=t(1),h="",m="none",y="object",g="undefined"!=typeof navigator&&/Android/i.test(navigator.userAgent),b="undefined"!=typeof requestAnimationFrame?requestAnimationFrame:setTimeout}])});
+},{}],90:[function(require,module,exports){
 (function(self) {
   'use strict';
 
