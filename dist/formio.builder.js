@@ -4707,7 +4707,7 @@ var BaseEditConditional = exports.BaseEditConditional = [{
     key: 'conditional.when',
     dataSrc: 'custom',
     data: {
-      custom: '\n            utils.eachComponent(form.components, function(component, path) {\n              if (component.key !== data.key) {\n                values.push({\n                  label: component.label || component.key,\n                  value: path\n                });\n              }\n            });\n          '
+      custom: '\n            utils.eachComponent(instance.root.editForm.components, function(component, path) {\n              if (component.key !== data.key) {\n                values.push({\n                  label: component.label || component.key,\n                  value: path\n                });\n              }\n            });\n          '
     }
   }, {
     type: 'textfield',
@@ -5047,7 +5047,7 @@ var BaseEditLogic = exports.BaseEditLogic = [{
           key: 'conditional.when',
           dataSrc: 'custom',
           data: {
-            custom: '\n                        utils.eachComponent(form.components, function(component, path) {\n                          if (component.key !== data.key) {\n                            values.push({\n                              label: component.label || component.key,\n                              value: path\n                            });\n                          }\n                        });\n                      '
+            custom: '\n                        utils.eachComponent(instance.root.editForm.components, function(component, path) {\n                          if (component.key !== data.key) {\n                            values.push({\n                              label: component.label || component.key,\n                              value: path\n                            });\n                          }\n                        });\n                      '
           }
         }, {
           type: 'textfield',
@@ -13549,7 +13549,7 @@ exports.default = function () {
       tooltip: 'Refresh data when another field changes.',
       dataSrc: 'custom',
       data: {
-        custom: '\n              values.push({label: \'Any Change\', key: \'data\'});\n              utils.eachComponent(form.components, function(component, path) {\n                if (component.key !== data.key) {\n                  values.push({\n                    label: component.label || component.key,\n                    value: path\n                  });\n                }\n              });\n            '
+        custom: '\n              values.push({label: \'Any Change\', key: \'data\'});\n              utils.eachComponent(instance.root.editForm.components, function(component, path) {\n                if (component.key !== data.key) {\n                  values.push({\n                    label: component.label || component.key,\n                    value: path\n                  });\n                }\n              });\n            '
       },
       conditional: {
         json: {
@@ -17498,6 +17498,10 @@ var _Components = require('./components/Components');
 
 var _builder3 = require('./utils/builder');
 
+var _utils = require('./utils');
+
+var _utils2 = _interopRequireDefault(_utils);
+
 var _eventemitter = require('eventemitter2');
 
 var _eventemitter2 = _interopRequireDefault(_eventemitter);
@@ -17690,6 +17694,11 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         _builder3.BuilderUtils.uniquify(this._form, component.component);
       }
 
+      // Change the "default value" field to be reflective of this component.
+      if (this.defaultValueComponent) {
+        _lodash2.default.assign(this.defaultValueComponent, _lodash2.default.omit(component.component, ['key', 'label', 'placeholder', 'tooltip', 'validate']));
+      }
+
       // Called when we update a component.
       this.emit('updateComponent', component);
     }
@@ -17761,10 +17770,21 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       // Append the settings page to the dialog body.
       this.dialog.body.appendChild(componentEdit);
+
+      var editForm = _builder2.default[componentCopy.component.type].editForm();
+
+      // Change the defaultValue component to be reflective.
+      this.defaultValueComponent = _utils2.default.getComponent(editForm.components, 'defaultValue');
+      _lodash2.default.assign(this.defaultValueComponent, _lodash2.default.omit(componentCopy.component, ['key', 'label', 'placeholder', 'tooltip', 'validate']));
+
+      // Create the form instance.
       this.editForm = new _formio2.default(formioForm);
 
       // Set the form to the edit form.
-      this.editForm.form = _builder2.default[componentCopy.component.type].editForm();
+      this.editForm.form = editForm;
+
+      // Pass along the form being edited.
+      this.editForm.editForm = this._form;
 
       // Update the preview with this component.
       this.updateComponent(componentCopy);
@@ -18159,7 +18179,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   return FormioFormBuilder;
 }(_formio2.default);
 
-},{"./components/Components":2,"./components/builder":15,"./formio.form":94,"./utils/builder":110,"dragula":123,"eventemitter2":124,"lodash":141,"native-promise-only":143}],94:[function(require,module,exports){
+},{"./components/Components":2,"./components/builder":15,"./formio.form":94,"./utils":111,"./utils/builder":110,"dragula":123,"eventemitter2":124,"lodash":141,"native-promise-only":143}],94:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
