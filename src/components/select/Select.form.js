@@ -1,7 +1,7 @@
 import BaseEditForm from '../base/Base.form';
 import FormioUtils from '../../utils';
 export default function(...extend) {
-  return BaseEditForm([
+  return BaseEditForm(...extend, [
     {
       label: 'Data',
       key: 'data',
@@ -376,5 +376,5 @@ export default function(...extend) {
         }
       ]
     }
-  ], ...extend);
+  ]);
 };
