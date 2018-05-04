@@ -100,7 +100,7 @@ export class FormioFormBuilder extends FormioForm {
   }
 
   scrollSidebar() {
-    const newTop = (window.scrollY - this.sideBarRect.top) + this.options.sideBarScrollOffset;
+    const newTop = (window.scrollY - this.sideBarTop) + this.options.sideBarScrollOffset;
     const shouldScroll = (newTop > 0);
     if (shouldScroll && ((newTop + this.sideBarElement.offsetHeight) < this.element.offsetHeight)) {
       this.sideBarElement.style.marginTop = `${newTop}px`;
@@ -123,9 +123,9 @@ export class FormioFormBuilder extends FormioForm {
       this.addClass(this.element, 'col-xs-8 col-sm-9 col-md-10 formarea');
       this.element.component = this;
       this.buildSidebar();
-      this.sideBarRect = this.sideBarElement.getBoundingClientRect();
+      this.sideBarTop = this.sideBarElement.getBoundingClientRect().top + window.scrollY;
       if (this.options.sideBarScroll) {
-        this.addEventListener(window, 'scroll', _.debounce(this.scrollSidebar.bind(this), 10));
+        this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
       }
     });
   }

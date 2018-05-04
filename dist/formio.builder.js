@@ -10,13 +10,13 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     key: 'data',
     ignore: true
   }, {
     key: 'validation',
     ignore: true
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('./base/Base.form');
@@ -995,7 +995,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -1020,7 +1020,7 @@ exports.default = function () {
         placeholder: 'xxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxx'
       }]
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -5579,7 +5579,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -5717,7 +5717,7 @@ exports.default = function () {
       input: true,
       weight: 620
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -6228,7 +6228,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -6296,7 +6296,7 @@ exports.default = function () {
       key: 'datagridLabel',
       tooltip: 'Show the label when in a datagrid.'
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -6758,7 +6758,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [[{
+  return _Components2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     components: [{
@@ -6791,7 +6791,7 @@ exports.default = function () {
         label: 'Pull'
       }]
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Components = require('../Components.form');
@@ -7469,7 +7469,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -7494,7 +7494,7 @@ exports.default = function () {
       },
       weight: 420
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -7942,7 +7942,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -8099,7 +8099,7 @@ exports.default = function () {
       tooltip: 'You can use Moment.js functions to set the default value to a specific date. For example: \n \n moment().subtract(10, \'days\')',
       weight: 1
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -9064,7 +9064,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Templates',
     key: 'templates',
     weight: 5,
@@ -9127,7 +9127,7 @@ exports.default = function () {
       placeholder: 'Remove',
       tooltip: 'Set the text of the remove Row button.'
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -10016,7 +10016,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'File',
     key: 'file',
     weight: 5,
@@ -10102,7 +10102,7 @@ exports.default = function () {
       tooltip: 'See <a href=\'https://github.com/danialfarid/ng-file-upload#full-reference\' target=\'_blank\'>https://github.com/danialfarid/ng-file-upload#full-reference</a> for how to specify file sizes.',
       weight: 70
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -11274,7 +11274,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -11324,7 +11324,7 @@ exports.default = function () {
       key: 'content',
       weight: 80
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -11613,7 +11613,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Map',
     key: 'map',
     weight: 1,
@@ -11641,7 +11641,7 @@ exports.default = function () {
       tooltip: 'This is the Google Maps ID you wish to use when showing the location map.',
       weight: 20
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -11919,7 +11919,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Validation',
     key: 'validation',
     weight: 20,
@@ -11948,7 +11948,7 @@ exports.default = function () {
       tooltip: 'The maximum value this field can have before the form can be submitted.',
       weight: 160
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -12215,7 +12215,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [[{
+  return _Components2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -12256,7 +12256,7 @@ exports.default = function () {
         values: [{ label: 'Yes', value: 'default' }, { label: 'No', value: 'none' }]
       }
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Components = require('../Components.form');
@@ -12429,11 +12429,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function () {
-  for (var _len = arguments.length, extend = Array(_len), _key = 0; _key < _len; _key++) {
-    extend[_key] = arguments[_key];
-  }
-
-  return _TextField2.default.apply(undefined, [{}].concat(extend));
+  return _TextField2.default.apply(undefined, arguments);
 };
 
 var _TextField = require('../textfield/TextField.form');
@@ -12565,7 +12561,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _TextField2.default.apply(undefined, [[]].concat(extend));
+  return _TextField2.default.apply(undefined, extend.concat([[]]));
 };
 
 var _TextField = require('../textfield/TextField.form');
@@ -12676,7 +12672,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -12733,7 +12729,7 @@ exports.default = function () {
       tooltip: 'Displays the checkboxes/radios horizontally.',
       weight: 650
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -13075,7 +13071,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -13119,7 +13115,7 @@ exports.default = function () {
       weight: 53,
       tooltip: 'The HTML template for the result data items.'
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -13315,7 +13311,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Data',
     key: 'data',
     weight: 10,
@@ -13615,7 +13611,7 @@ exports.default = function () {
         json: { var: 'data.searchField' }
       }
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -14722,7 +14718,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -14767,7 +14763,7 @@ exports.default = function () {
       placeholder: 'Pen Color',
       weight: 53
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -15107,7 +15103,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -15152,7 +15148,7 @@ exports.default = function () {
         calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }]
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -15410,11 +15406,11 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [[{
+  return _Components2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     components: _TableEditOptions.TableEditOptions
-  }]].concat(extend));
+  }]]));
 };
 
 var _TableEditOptions = require('./TableEditOptions');
@@ -15712,7 +15708,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Components2.default.apply(undefined, [[{
+  return _Components2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -15735,7 +15731,7 @@ exports.default = function () {
         calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }]
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Components = require('../Components.form');
@@ -16005,7 +16001,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -16035,7 +16031,7 @@ exports.default = function () {
         values: [{ label: 'String (CSV)', value: 'string' }, { label: 'Array of Tags', value: 'array' }]
       }
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -16264,72 +16260,65 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _TextField2.default.apply(undefined, [{
+  return _TextField2.default.apply(undefined, extend.concat([[{
+    label: 'Display',
+    key: 'display',
     components: [{
-      weight: 0,
-      type: 'tabs',
-      key: 'tabs',
-      components: [{
-        label: 'Display',
-        key: 'display',
-        components: [{
-          type: 'number',
-          input: true,
-          key: 'rows',
-          label: 'Rows',
-          weight: 210,
-          tooltip: 'This allows control over how many rows are visible in the text area.',
-          placeholder: 'Enter the amount of rows'
-        }, {
-          type: 'select',
-          input: true,
-          key: 'editor',
-          label: 'Editor',
-          tooltip: 'Select the type of WYSIWYG editor to use for this text area.',
-          dataSrc: 'values',
-          data: {
-            values: [{ label: 'None', value: '' }, { label: 'Quill', value: 'quill' }, { label: 'ACE', value: 'ace' }]
-          },
-          weight: 415
-        }, {
-          type: 'select',
-          input: true,
-          key: 'as',
-          label: 'Save As',
-          dataSrc: 'values',
-          tooltip: 'This setting determines how the value should be entered and stored in the database.',
-          clearOnHide: true,
-          data: {
-            values: [{ label: 'String', value: 'string' }, { label: 'JSON', value: 'json' }, { label: 'HTML', value: 'html' }]
-          },
-          conditional: {
-            json: {
-              or: [{ '===': [{ var: 'data.editor' }, 'quill'] }, { '===': [{ var: 'data.editor' }, 'ace'] }]
-            }
-          },
-          weight: 416
-        }, {
-          type: 'textarea',
-          input: true,
-          editor: 'ace',
-          rows: 10,
-          as: 'json',
-          label: 'Editor Settings',
-          tooltip: 'Enter the WYSIWYG editor JSON configuration.',
-          key: 'wysiwyg',
-          customDefaultValue: function customDefaultValue(value, component, row, data, instance) {
-            return instance.wysiwygDefault();
-          },
-          conditional: {
-            json: {
-              or: [{ '===': [{ var: 'data.editor' }, 'quill'] }, { '===': [{ var: 'data.editor' }, 'ace'] }]
-            }
-          },
-          weight: 417
-        }]
-      }]
+      type: 'number',
+      input: true,
+      key: 'rows',
+      label: 'Rows',
+      weight: 210,
+      tooltip: 'This allows control over how many rows are visible in the text area.',
+      placeholder: 'Enter the amount of rows'
+    }, {
+      type: 'select',
+      input: true,
+      key: 'editor',
+      label: 'Editor',
+      tooltip: 'Select the type of WYSIWYG editor to use for this text area.',
+      dataSrc: 'values',
+      data: {
+        values: [{ label: 'None', value: '' }, { label: 'Quill', value: 'quill' }, { label: 'ACE', value: 'ace' }]
+      },
+      weight: 415
+    }, {
+      type: 'select',
+      input: true,
+      key: 'as',
+      label: 'Save As',
+      dataSrc: 'values',
+      tooltip: 'This setting determines how the value should be entered and stored in the database.',
+      clearOnHide: true,
+      data: {
+        values: [{ label: 'String', value: 'string' }, { label: 'JSON', value: 'json' }, { label: 'HTML', value: 'html' }]
+      },
+      conditional: {
+        json: {
+          or: [{ '===': [{ var: 'data.editor' }, 'quill'] }, { '===': [{ var: 'data.editor' }, 'ace'] }]
+        }
+      },
+      weight: 416
+    }, {
+      type: 'textarea',
+      input: true,
+      editor: 'ace',
+      rows: 10,
+      as: 'json',
+      label: 'Editor Settings',
+      tooltip: 'Enter the WYSIWYG editor JSON configuration.',
+      key: 'wysiwyg',
+      customDefaultValue: function customDefaultValue(value, component, row, data, instance) {
+        return instance.wysiwygDefault();
+      },
+      conditional: {
+        json: {
+          or: [{ '===': [{ var: 'data.editor' }, 'quill'] }, { '===': [{ var: 'data.editor' }, 'ace'] }]
+        }
+      },
+      weight: 417
     }]
-  }].concat(extend));
+  }]]));
 };
 
 var _TextField = require('../textfield/TextField.form');
@@ -16681,7 +16670,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -16691,7 +16680,7 @@ exports.default = function () {
     key: 'validation',
     weight: 20,
     components: _TextFieldEdit2.TextFieldEditValidation
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -16935,7 +16924,7 @@ exports.default = function () {
     extend[_key] = arguments[_key];
   }
 
-  return _Base2.default.apply(undefined, [[{
+  return _Base2.default.apply(undefined, extend.concat([[{
     label: 'Display',
     key: 'display',
     weight: 0,
@@ -16948,7 +16937,7 @@ exports.default = function () {
       tooltip: 'The moment.js format for saving the value of this field.',
       weight: 50
     }]
-  }]].concat(extend));
+  }]]));
 };
 
 var _Base = require('../base/Base.form');
@@ -17661,7 +17650,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   _createClass(FormioFormBuilder, [{
     key: 'scrollSidebar',
     value: function scrollSidebar() {
-      var newTop = window.scrollY - this.sideBarRect.top + this.options.sideBarScrollOffset;
+      var newTop = window.scrollY - this.sideBarTop + this.options.sideBarScrollOffset;
       var shouldScroll = newTop > 0;
       if (shouldScroll && newTop + this.sideBarElement.offsetHeight < this.element.offsetHeight) {
         this.sideBarElement.style.marginTop = newTop + 'px';
@@ -17685,9 +17674,9 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         _this2.addClass(_this2.element, 'col-xs-8 col-sm-9 col-md-10 formarea');
         _this2.element.component = _this2;
         _this2.buildSidebar();
-        _this2.sideBarRect = _this2.sideBarElement.getBoundingClientRect();
+        _this2.sideBarTop = _this2.sideBarElement.getBoundingClientRect().top + window.scrollY;
         if (_this2.options.sideBarScroll) {
-          _this2.addEventListener(window, 'scroll', _lodash2.default.debounce(_this2.scrollSidebar.bind(_this2), 10));
+          _this2.addEventListener(window, 'scroll', _lodash2.default.throttle(_this2.scrollSidebar.bind(_this2), 10));
         }
       });
     }
