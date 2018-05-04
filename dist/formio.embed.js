@@ -2409,7 +2409,7 @@ var BaseComponent = function () {
         // Add a default value.
         var dataValue = this.dataValue;
         if (!dataValue || !dataValue.length) {
-          this.addNewValue();
+          this.addNewValue(this.defaultValue);
         }
 
         // Build the rows.
@@ -2440,17 +2440,19 @@ var BaseComponent = function () {
 
   }, {
     key: 'addNewValue',
-    value: function addNewValue() {
+    value: function addNewValue(value) {
+      if (value === undefined) {
+        value = this.emptyValue;
+      }
       var dataValue = this.dataValue || [];
       if (!Array.isArray(dataValue)) {
         dataValue = [dataValue];
       }
 
-      var defaultValue = this.defaultValue;
-      if (Array.isArray(defaultValue)) {
-        dataValue = dataValue.concat(defaultValue);
+      if (Array.isArray(value)) {
+        dataValue = dataValue.concat(value);
       } else {
-        dataValue.push(defaultValue);
+        dataValue.push(value);
       }
       this.dataValue = dataValue;
     }
@@ -4774,12 +4776,18 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
         var results = regex.exec(location.search);
-        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        if (!results) {
+          return results;
+        }
+        return decodeURIComponent(results[1].replace(/\+/g, ' '));
       }
 
       // If this is an OpenID Provider initiated login, perform the click event immediately
-      if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
-        this.openOauth();
+      if (this.component.action === 'oauth' && this.component.oauth && this.component.oauth.authURI) {
+        var iss = getUrlParameter('iss');
+        if (iss && this.component.oauth.authURI.indexOf(iss) === 0) {
+          this.openOauth();
+        }
       }
 
       this.autofocus();
@@ -12942,6 +12950,10 @@ var _choices = require('choices.js');
 
 var _choices2 = _interopRequireDefault(_choices);
 
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 function _interopRequireDefault(obj) {
   return obj && obj.__esModule ? obj : { default: obj };
 }
@@ -13034,6 +13046,12 @@ var TagsComponent = exports.TagsComponent = function (_BaseComponent) {
     key: 'setValue',
     value: function setValue(value) {
       if (this.choices) {
+        if (this.component.storeas === 'string' && typeof value === 'string') {
+          value = value.split(',');
+        }
+        if (value && !_lodash2.default.isArray(value)) {
+          value = [value];
+        }
         this.choices.removeActiveItems();
         this.choices.setValue(value);
       }
@@ -13080,7 +13098,7 @@ var TagsComponent = exports.TagsComponent = function (_BaseComponent) {
   return TagsComponent;
 }(_Base.BaseComponent);
 
-},{"../base/Base":4,"choices.js":63}],37:[function(require,module,exports){
+},{"../base/Base":4,"choices.js":63,"lodash":81}],37:[function(require,module,exports){
 'use strict';
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };

@@ -28,6 +28,11 @@ export class FormioBuilder {
     return this.instance;
   }
 
+  setForm(formObj) {
+    this.form = formObj;
+    return this.loadForm();
+  }
+
   setDisplay(display) {
     this.form.display = display;
     return this.loadForm();

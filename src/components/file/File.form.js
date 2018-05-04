@@ -2,7 +2,7 @@ import BaseEditForm from '../base/Base.form';
 import Formio from '../../formio';
 import _ from 'lodash';
 export default function(...extend) {
-  return BaseEditForm([
+  return BaseEditForm(...extend, [
     {
       label: 'File',
       key: 'file',
@@ -99,5 +99,5 @@ export default function(...extend) {
         }
       ]
     }
-  ], ...extend);
+  ]);
 };

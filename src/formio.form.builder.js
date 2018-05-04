@@ -38,6 +38,8 @@ export class FormioFormBuilder extends FormioForm {
     });
 
     this.groups = {};
+    this.options.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
+    this.options.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
     this.options.builder = true;
     this.options.hooks = this.options.hooks || {};
     this.options.hooks.addComponents = function(components) {
@@ -94,6 +96,20 @@ export class FormioFormBuilder extends FormioForm {
     this.setBuilderElement();
   }
 
+  scrollSidebar() {
+    const newTop = (window.scrollY - this.sideBarRect.top) + this.options.sideBarScrollOffset;
+    const shouldScroll = (newTop > 0);
+    if (shouldScroll && ((newTop + this.sideBarElement.offsetHeight) < this.element.offsetHeight)) {
+      this.sideBarElement.style.marginTop = `${newTop}px`;
+    }
+    else if (shouldScroll && (this.sideBarElement.offsetHeight < this.element.offsetHeight)) {
+      this.sideBarElement.style.marginTop = `${this.element.offsetHeight - this.sideBarElement.offsetHeight}px`;
+    }
+    else {
+      this.sideBarElement.style.marginTop = '0px';
+    }
+  }
+
   setBuilderElement() {
     return this.onElement.then(() => {
       this.addClass(this.wrapper, 'row formbuilder');
@@ -105,6 +121,10 @@ export class FormioFormBuilder extends FormioForm {
       this.element.component = this;
       this.buildSidebar();
       this.builderSidebar.appendChild(this.sideBarElement);
+      this.sideBarRect = this.sideBarElement.getBoundingClientRect();
+      if (this.options.sideBarScroll) {
+        this.addEventListener(window, 'scroll', _.debounce(this.scrollSidebar.bind(this), 10));
+      }
     });
   }
 
@@ -408,6 +428,7 @@ export class FormioFormBuilder extends FormioForm {
 
         // Match the form builder height to the sidebar.
         this.element.style.minHeight = this.builderSidebar.offsetHeight + 'px';
+        this.scrollSidebar();
       }
     });
 

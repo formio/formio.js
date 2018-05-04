@@ -1055,7 +1055,7 @@ var BaseComponent = function () {
         // Add a default value.
         var dataValue = this.dataValue;
         if (!dataValue || !dataValue.length) {
-          this.addNewValue();
+          this.addNewValue(this.defaultValue);
         }
 
         // Build the rows.
@@ -1086,17 +1086,19 @@ var BaseComponent = function () {
 
   }, {
     key: 'addNewValue',
-    value: function addNewValue() {
+    value: function addNewValue(value) {
+      if (value === undefined) {
+        value = this.emptyValue;
+      }
       var dataValue = this.dataValue || [];
       if (!Array.isArray(dataValue)) {
         dataValue = [dataValue];
       }
 
-      var defaultValue = this.defaultValue;
-      if (Array.isArray(defaultValue)) {
-        dataValue = dataValue.concat(defaultValue);
+      if (Array.isArray(value)) {
+        dataValue = dataValue.concat(value);
       } else {
-        dataValue.push(defaultValue);
+        dataValue.push(value);
       }
       this.dataValue = dataValue;
     }
@@ -3420,12 +3422,18 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
         var results = regex.exec(location.search);
-        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        if (!results) {
+          return results;
+        }
+        return decodeURIComponent(results[1].replace(/\+/g, ' '));
       }
 
       // If this is an OpenID Provider initiated login, perform the click event immediately
-      if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
-        this.openOauth();
+      if (this.component.action === 'oauth' && this.component.oauth && this.component.oauth.authURI) {
+        var iss = getUrlParameter('iss');
+        if (iss && this.component.oauth.authURI.indexOf(iss) === 0) {
+          this.openOauth();
+        }
       }
 
       this.autofocus();

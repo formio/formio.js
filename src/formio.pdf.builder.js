@@ -154,20 +154,27 @@ export class FormioPDFBuilder extends FormioFormBuilder {
             width: schema.width
           };
           this.editComponent(component);
-          this.pdfForm.on('iframe-componentUpdate', schema => {
-            let component = this.getComponentById(schema.id);
-            if (component) {
-              component.component = schema;
-              this.emit('updateComponent', component);
-            }
-          });
-          this.pdfForm.on('iframe-componentClick', schema => {
-            let component = this.getComponentById(schema.id);
-            if (component) {
-              this.editComponent(component);
-            }
-          });
           this.emit('updateComponent', component);
+        }
+        return component;
+      });
+      this.pdfForm.on('iframe-componentUpdate', schema => {
+        let component = this.getComponentById(schema.id);
+        if (component && component.component) {
+          component.component.overlay = {
+            left: schema.overlay.left,
+            top: schema.overlay.top,
+            height: schema.overlay.height,
+            width: schema.overlay.width
+          };
+          this.emit('updateComponent', component);
+        }
+        return component;
+      });
+      this.pdfForm.on('iframe-componentClick', schema => {
+        let component = this.getComponentById(schema.id);
+        if (component) {
+          this.editComponent(component);
         }
       });
     }

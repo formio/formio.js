@@ -1,6 +1,6 @@
 import ComponentsEditForm from '../Components.form';
 export default function(...extend) {
-  return ComponentsEditForm([
+  return ComponentsEditForm(...extend, [
     {
       label: 'Display',
       key: 'display',
@@ -42,5 +42,5 @@ export default function(...extend) {
         }
       ]
     }
-  ], ...extend);
+  ]);
 };
