@@ -6032,12 +6032,18 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
         var results = regex.exec(location.search);
-        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        if (!results) {
+          return results;
+        }
+        return decodeURIComponent(results[1].replace(/\+/g, ' '));
       }
 
       // If this is an OpenID Provider initiated login, perform the click event immediately
-      if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
-        this.openOauth();
+      if (this.component.action === 'oauth' && this.component.oauth && this.component.oauth.authURI) {
+        var iss = getUrlParameter('iss');
+        if (iss && this.component.oauth.authURI.indexOf(iss) === 0) {
+          this.openOauth();
+        }
       }
 
       this.autofocus();
@@ -17408,6 +17414,12 @@ var FormioBuilder = exports.FormioBuilder = function () {
       return this.instance;
     }
   }, {
+    key: 'setForm',
+    value: function setForm(formObj) {
+      this.form = formObj;
+      return this.loadForm();
+    }
+  }, {
     key: 'setDisplay',
     value: function setDisplay(display) {
       this.form.display = display;
@@ -17586,6 +17598,8 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     });
 
     _this.groups = {};
+    _this.options.sideBarScroll = _lodash2.default.get(_this.options, 'sideBarScroll', true);
+    _this.options.sideBarScrollOffset = _lodash2.default.get(_this.options, 'sideBarScrollOffset', 0);
     _this.options.builder = true;
     _this.options.hooks = _this.options.hooks || {};
     _this.options.hooks.addComponents = function (components) {
@@ -17642,6 +17656,19 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
   }
 
   _createClass(FormioFormBuilder, [{
+    key: 'scrollSidebar',
+    value: function scrollSidebar() {
+      var newTop = window.scrollY - this.sideBarRect.top + this.options.sideBarScrollOffset;
+      var shouldScroll = newTop > 0;
+      if (shouldScroll && newTop + this.sideBarElement.offsetHeight < this.element.offsetHeight) {
+        this.sideBarElement.style.marginTop = newTop + 'px';
+      } else if (shouldScroll && this.sideBarElement.offsetHeight < this.element.offsetHeight) {
+        this.sideBarElement.style.marginTop = this.element.offsetHeight - this.sideBarElement.offsetHeight + 'px';
+      } else {
+        this.sideBarElement.style.marginTop = '0px';
+      }
+    }
+  }, {
     key: 'setBuilderElement',
     value: function setBuilderElement() {
       var _this2 = this;
@@ -17656,6 +17683,10 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
         _this2.element.component = _this2;
         _this2.buildSidebar();
         _this2.builderSidebar.appendChild(_this2.sideBarElement);
+        _this2.sideBarRect = _this2.sideBarElement.getBoundingClientRect();
+        if (_this2.options.sideBarScroll) {
+          _this2.addEventListener(window, 'scroll', _lodash2.default.debounce(_this2.scrollSidebar.bind(_this2), 10));
+        }
       });
     }
   }, {
@@ -17929,6 +17960,7 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
           // Match the form builder height to the sidebar.
           _this5.element.style.minHeight = _this5.builderSidebar.offsetHeight + 'px';
+          _this5.scrollSidebar();
         }
       });
 
@@ -21255,20 +21287,27 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
               width: schema.width
             };
             _this6.editComponent(component);
-            _this6.pdfForm.on('iframe-componentUpdate', function (schema) {
-              var component = _this6.getComponentById(schema.id);
-              if (component) {
-                component.component = schema;
-                _this6.emit('updateComponent', component);
-              }
-            });
-            _this6.pdfForm.on('iframe-componentClick', function (schema) {
-              var component = _this6.getComponentById(schema.id);
-              if (component) {
-                _this6.editComponent(component);
-              }
-            });
             _this6.emit('updateComponent', component);
+          }
+          return component;
+        });
+        this.pdfForm.on('iframe-componentUpdate', function (schema) {
+          var component = _this6.getComponentById(schema.id);
+          if (component && component.component) {
+            component.component.overlay = {
+              left: schema.overlay.left,
+              top: schema.overlay.top,
+              height: schema.overlay.height,
+              width: schema.overlay.width
+            };
+            _this6.emit('updateComponent', component);
+          }
+          return component;
+        });
+        this.pdfForm.on('iframe-componentClick', function (schema) {
+          var component = _this6.getComponentById(schema.id);
+          if (component) {
+            _this6.editComponent(component);
           }
         });
       }
