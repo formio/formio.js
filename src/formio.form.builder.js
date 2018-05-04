@@ -16,8 +16,8 @@ export class FormioFormBuilder extends FormioForm {
     this.sidebarContainers = [];
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
 
-    // Setup default groups, but let them be overridden.
-    this.options.groups = _.defaultsDeep({}, this.options.groups, {
+    // Setup the builder options.
+    this.options.builder = _.defaultsDeep({}, this.options.builder, {
       basic: {
         title: 'Basic Components',
         weight: 0,
@@ -30,6 +30,10 @@ export class FormioFormBuilder extends FormioForm {
       layout: {
         title: 'Layout',
         weight: 20
+      },
+      data: {
+        title: 'Data',
+        weight: 30
       }
     });
 
@@ -40,7 +44,6 @@ export class FormioFormBuilder extends FormioForm {
     this.groups = {};
     this.options.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.options.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
-    this.options.builder = true;
     this.options.hooks = this.options.hooks || {};
     this.options.hooks.addComponents = function(components) {
       if (!components || (!components.length && !components.nodrop)) {
@@ -120,7 +123,6 @@ export class FormioFormBuilder extends FormioForm {
       this.addClass(this.element, 'col-xs-8 col-sm-9 col-md-10 formarea');
       this.element.component = this;
       this.buildSidebar();
-      this.builderSidebar.appendChild(this.sideBarElement);
       this.sideBarRect = this.sideBarElement.getBoundingClientRect();
       if (this.options.sideBarScroll) {
         this.addEventListener(window, 'scroll', _.debounce(this.scrollSidebar.bind(this), 10));
@@ -394,14 +396,19 @@ export class FormioFormBuilder extends FormioForm {
     });
 
     if (before) {
-      container.insertBefore(element, before);
+      try {
+        container.insertBefore(element, before);
+      }
+      catch (err) {
+        container.appendChild(element);
+      }
     }
     else {
       container.appendChild(element);
     }
   }
 
-  addBuilderGroup(info) {
+  addBuilderGroup(info, container) {
     if (!info || !info.key) {
       console.warn('Invalid Group Provided.');
       return;
@@ -423,6 +430,11 @@ export class FormioFormBuilder extends FormioForm {
           this.removeClass(group.panel, 'in');
           if ((groupId === clickedGroupId) && !wasIn) {
             this.addClass(group.panel, 'in');
+            let parent = group.parent;
+            while (parent) {
+              this.addClass(parent.panel, 'in');
+              parent = parent.parent;
+            }
           }
         });
 
@@ -463,10 +475,19 @@ export class FormioFormBuilder extends FormioForm {
 
     info.element.appendChild(info.panel);
     this.groups[info.key] = info;
-    this.insertInOrder(info, this.groups, info.element, this.sideBarElement);
+    this.insertInOrder(info, this.groups, info.element, container);
+
+    // Now see if this group has subgroups.
+    if (info.groups) {
+      _.each(info.groups, (subInfo, subGroup) => {
+        subInfo.key = subGroup;
+        subInfo.parent = info;
+        this.addBuilderGroup(subInfo, info.body);
+      });
+    }
   }
 
-  addBuilderComponent(component) {
+  addBuilderComponentInfo(component) {
     if (!component || !component.group || !this.groups[component.group]) {
       console.warn('Invalid group');
       return;
@@ -477,9 +498,22 @@ export class FormioFormBuilder extends FormioForm {
     if (!groupInfo.components) {
       groupInfo.components = {};
     }
+    if (!groupInfo.components.hasOwnProperty(component.key)) {
+      groupInfo.components[component.key] = component;
+    }
+    return component;
+  }
 
-    groupInfo.components[component.key] = component;
-
+  addBuilderComponent(component, group) {
+    if (!component) {
+      return;
+    }
+    if (!group && component.group && this.groups[component.group]) {
+      group = this.groups[component.group];
+    }
+    if (!group) {
+      return;
+    }
     component.element = this.ce('span', {
       id: `builder-${component.key}`,
       class: 'btn btn-primary btn-xs btn-block formcomponent drag-copy'
@@ -492,35 +526,53 @@ export class FormioFormBuilder extends FormioForm {
     }
     component.element.builderInfo = component;
     component.element.appendChild(this.text(component.title));
-    this.insertInOrder(component, groupInfo.components, component.element, groupInfo.body);
+    this.insertInOrder(component, group.components, component.element, group.body);
     return component;
   }
 
   buildSidebar() {
     this.groups = {};
+    this.sidebarContainers = [];
+    if (this.sideBarElement) {
+      this.removeChildFrom(this.sideBarElement, this.builderSidebar);
+    }
     this.sideBarElement = this.ce('div', {
       class: 'panel-group'
     });
 
     // Add the groups.
-    _.each(this.options.groups, (info, group) => {
-      info.key = group;
-      this.addBuilderGroup(info);
+    _.each(this.options.builder, (info, group) => {
+      if (info) {
+        info.key = group;
+        this.addBuilderGroup(info, this.sideBarElement);
+      }
     });
 
     // Get all of the components builder info grouped and sorted.
-    let components = _.filter(_.map(_.assign(Components, FormioComponents.customComponents), (component, type) => {
+    let components = {};
+    _.map(_.assign(Components, FormioComponents.customComponents), (component, type) => {
       let builderInfo = component.builderInfo;
       if (!builderInfo) {
         return null;
       }
 
       builderInfo.key = type;
-      return builderInfo;
-    }));
+      components[builderInfo.key] = builderInfo;
+      this.addBuilderComponentInfo(builderInfo);
+    });
 
-    // Iterate through every component.
-    _.each(components, (component) => this.addBuilderComponent(component));
+    // Add the components in each group.
+    _.each(this.groups, (info) =>
+      _.each(info.components, (comp, key) => {
+        if (comp) {
+          this.addBuilderComponent(comp === true ? components[key] : comp, info);
+        }
+      })
+    );
+
+    // Add the new sidebar element.
+    this.builderSidebar.appendChild(this.sideBarElement);
+    this.updateDraggable();
   }
 
   getParentElement(element) {

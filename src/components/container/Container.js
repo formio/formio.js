@@ -16,9 +16,9 @@ export class ContainerComponent extends FormioComponents {
     return {
       title: 'Container',
       icon: 'fa fa-folder-open',
-      group: 'advanced',
+      group: 'data',
       documentation: 'http://help.form.io/userguide/#container',
-      weight: 140,
+      weight: 10,
       schema: ContainerComponent.schema()
     };
   }
