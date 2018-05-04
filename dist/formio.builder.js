@@ -18082,13 +18082,18 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
 
       // Get all of the components builder info grouped and sorted.
       var components = {};
-      _lodash2.default.map(_lodash2.default.assign(_builder2.default, _Components.FormioComponents.customComponents), function (component, type) {
-        var builderInfo = component.builderInfo;
-        if (!builderInfo) {
+      var allComponents = _lodash2.default.filter(_lodash2.default.map(_lodash2.default.assign(_builder2.default, _Components.FormioComponents.customComponents), function (component, type) {
+        if (!component.builderInfo) {
           return null;
         }
-
-        builderInfo.key = type;
+        component.type = type;
+        return component;
+      }));
+      _lodash2.default.map(_lodash2.default.sortBy(allComponents, function (component) {
+        return component.builderInfo.weight;
+      }), function (component) {
+        var builderInfo = component.builderInfo;
+        builderInfo.key = component.type;
         components[builderInfo.key] = builderInfo;
         _this6.addBuilderComponentInfo(builderInfo);
       });

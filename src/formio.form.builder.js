@@ -550,13 +550,18 @@ export class FormioFormBuilder extends FormioForm {
 
     // Get all of the components builder info grouped and sorted.
     let components = {};
-    _.map(_.assign(Components, FormioComponents.customComponents), (component, type) => {
-      let builderInfo = component.builderInfo;
-      if (!builderInfo) {
+    let allComponents = _.filter(_.map(_.assign(Components, FormioComponents.customComponents), (component, type) => {
+      if (!component.builderInfo) {
         return null;
       }
-
-      builderInfo.key = type;
+      component.type = type;
+      return component;
+    }));
+    _.map(_.sortBy(allComponents, component => {
+      return component.builderInfo.weight;
+    }), (component) => {
+      let builderInfo = component.builderInfo;
+      builderInfo.key = component.type;
       components[builderInfo.key] = builderInfo;
       this.addBuilderComponentInfo(builderInfo);
     });
