@@ -3,6 +3,7 @@ import dragula from 'dragula';
 import Components from './components/builder';
 import {FormioComponents} from './components/Components';
 import { BuilderUtils } from './utils/builder';
+import FormioUtils from './utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -37,6 +38,8 @@ export class FormioFormBuilder extends FormioForm {
     });
 
     this.groups = {};
+    this.options.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
+    this.options.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
     this.options.builder = true;
     this.options.hooks = this.options.hooks || {};
     this.options.hooks.addComponents = function(components) {
@@ -93,6 +96,20 @@ export class FormioFormBuilder extends FormioForm {
     this.setBuilderElement();
   }
 
+  scrollSidebar() {
+    const newTop = (window.scrollY - this.sideBarRect.top) + this.options.sideBarScrollOffset;
+    const shouldScroll = (newTop > 0);
+    if (shouldScroll && ((newTop + this.sideBarElement.offsetHeight) < this.element.offsetHeight)) {
+      this.sideBarElement.style.marginTop = `${newTop}px`;
+    }
+    else if (shouldScroll && (this.sideBarElement.offsetHeight < this.element.offsetHeight)) {
+      this.sideBarElement.style.marginTop = `${this.element.offsetHeight - this.sideBarElement.offsetHeight}px`;
+    }
+    else {
+      this.sideBarElement.style.marginTop = '0px';
+    }
+  }
+
   setBuilderElement() {
     return this.onElement.then(() => {
       this.addClass(this.wrapper, 'row formbuilder');
@@ -104,6 +121,10 @@ export class FormioFormBuilder extends FormioForm {
       this.element.component = this;
       this.buildSidebar();
       this.builderSidebar.appendChild(this.sideBarElement);
+      this.sideBarRect = this.sideBarElement.getBoundingClientRect();
+      if (this.options.sideBarScroll) {
+        this.addEventListener(window, 'scroll', _.debounce(this.scrollSidebar.bind(this), 10));
+      }
     });
   }
 
@@ -159,6 +180,17 @@ export class FormioFormBuilder extends FormioForm {
 
       // Set a unique key for this component.
       BuilderUtils.uniquify(this._form, component.component);
+    }
+
+    // Change the "default value" field to be reflective of this component.
+    if (this.defaultValueComponent) {
+      _.assign(this.defaultValueComponent, _.omit(component.component, [
+        'key',
+        'label',
+        'placeholder',
+        'tooltip',
+        'validate'
+      ]));
     }
 
     // Called when we update a component.
@@ -250,10 +282,27 @@ export class FormioFormBuilder extends FormioForm {
 
     // Append the settings page to the dialog body.
     this.dialog.body.appendChild(componentEdit);
+
+    const editForm = Components[componentCopy.component.type].editForm();
+
+    // Change the defaultValue component to be reflective.
+    this.defaultValueComponent = FormioUtils.getComponent(editForm.components, 'defaultValue');
+    _.assign(this.defaultValueComponent, _.omit(componentCopy.component, [
+      'key',
+      'label',
+      'placeholder',
+      'tooltip',
+      'validate'
+    ]));
+
+    // Create the form instance.
     this.editForm = new FormioForm(formioForm);
 
     // Set the form to the edit form.
-    this.editForm.form = Components[componentCopy.component.type].editForm();
+    this.editForm.form = editForm;
+
+    // Pass along the form being edited.
+    this.editForm.editForm = this._form;
 
     // Update the preview with this component.
     this.updateComponent(componentCopy);
@@ -379,6 +428,7 @@ export class FormioFormBuilder extends FormioForm {
 
         // Match the form builder height to the sidebar.
         this.element.style.minHeight = this.builderSidebar.offsetHeight + 'px';
+        this.scrollSidebar();
       }
     });
 

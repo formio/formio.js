@@ -3,7 +3,7 @@ import {TextFieldComponent} from '../textfield/TextField';
 export class PhoneNumberComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
-      type: 'phonenumber',
+      type: 'phoneNumber',
       label: 'Phone Number',
       key: 'phoneNumber',
       inputType: 'tel',

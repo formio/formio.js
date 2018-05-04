@@ -433,14 +433,19 @@ export class EditGridComponent extends FormioComponents {
       return false;
     }
 
-    this.setCustomValidity();
+    const message = this.invalid || this.invalidMessage(data, dirty);
+    this.setCustomValidity(message, dirty);
     return true;
   }
 
-  setCustomValidity(message) {
+  setCustomValidity(message, dirty) {
     if (this.errorElement && this.errorContainer) {
       this.errorElement.innerHTML = '';
       this.removeChildFrom(this.errorElement, this.errorContainer);
+    }
+    this.removeClass(this.element, 'has-error');
+    if (this.options.highlightErrors) {
+      this.removeClass(this.element, 'alert alert-danger');
     }
     if (message) {
       this.emit('componentError', this.error);
@@ -450,6 +455,11 @@ export class EditGridComponent extends FormioComponents {
       });
       errorMessage.appendChild(this.text(message));
       this.appendTo(errorMessage, this.errorElement);
+      // Add error classes
+      this.addClass(this.element, 'has-error');
+      if (dirty && this.options.highlightErrors) {
+        this.addClass(this.element, 'alert alert-danger');
+      }
     }
   }
 

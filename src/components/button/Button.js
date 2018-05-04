@@ -36,7 +36,7 @@ export class ButtonComponent extends BaseComponent {
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'button';
-    info.attr.type = (this.component.action === 'submit') ? 'submit' : 'button';
+    info.attr.type = (['submit', 'saveState'].includes(this.component.action)) ? 'submit' : 'button';
     this.component.theme = this.component.theme || 'default';
     info.attr.class = `btn btn-${this.component.theme}`;
     if (this.component.size) {
@@ -133,7 +133,7 @@ export class ButtonComponent extends BaseComponent {
       const error = this.ce('span', {
         class: 'help-block'
       });
-      error.appendChild(this.text('Please correct all errors before submitting.'));
+      error.appendChild(this.text(this.errorMessage('error')));
       errorContainer.appendChild(error);
 
       this.on('submitButton', () => {
@@ -183,7 +183,9 @@ export class ButtonComponent extends BaseComponent {
         case 'submit':
           event.preventDefault();
           event.stopPropagation();
-          this.emit('submitButton');
+          this.emit('submitButton', {
+            state: this.component.state || 'submitted'
+          });
           break;
         case 'event':
           this.emit(this.component.event, this.data);
@@ -230,6 +232,9 @@ export class ButtonComponent extends BaseComponent {
         case 'reset':
           this.emit('resetForm');
           break;
+        case 'delete':
+          this.emit('deleteSubmission');
+          break;
         case 'oauth':
           if (this.root === this) {
             console.warn('You must add the OAuth button to a form for it to function properly');
@@ -259,14 +264,20 @@ export class ButtonComponent extends BaseComponent {
 
     function getUrlParameter(name) {
       name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
-      var regex = new RegExp(`[\\?&]${name}=([^&#]*)`);
-      var results = regex.exec(location.search);
-      return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+      const regex = new RegExp(`[\\?&]${name}=([^&#]*)`);
+      const results = regex.exec(location.search);
+      if (!results) {
+        return results;
+      }
+      return decodeURIComponent(results[1].replace(/\+/g, ' '));
     }
 
     // If this is an OpenID Provider initiated login, perform the click event immediately
-    if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
-      this.openOauth();
+    if ((this.component.action === 'oauth') && this.component.oauth && this.component.oauth.authURI) {
+      const iss = getUrlParameter('iss');
+      if (iss && (this.component.oauth.authURI.indexOf(iss) === 0)) {
+        this.openOauth();
+      }
     }
 
     this.autofocus();

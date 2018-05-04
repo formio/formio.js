@@ -1,7 +1,7 @@
 {
   "name": "formiojs",
   "description": "Common js library for client side interaction with <form.io>",
-  "version": "2.31.2",
+  "version": "2.32.0",
   "main": "dist/formio.min.js",
   "license": "MIT",
   "homepage": "https://github.com/formio/formio.js",
@@ -24,5 +24,9 @@
     "signature_pad": "^2.2.1",
     "fetch": "whatwg-fetch#^2.0.3",
     "flatpickr": "^4.3.2"
+  },
+  "devDependencies": {
+    "bootstrap": "3.3.7",
+    "bootswatch": "3.3.7"
   }
 }

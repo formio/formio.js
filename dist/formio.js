@@ -927,8 +927,7 @@ var Formio = function () {
           err.message = 'Could not connect to API server (' + err.message + ')';
           err.networkError = true;
         }
-        // Propagate error so client can handle accordingly
-        throw err;
+        return _nativePromiseOnly2.default.reject(err);
       });
     }
   }, {
@@ -1424,8 +1423,7 @@ Formio.events = new _eventemitter.EventEmitter2({
   maxListeners: 0
 });
 
-// Support ES5 require and globals.
-module.exports = global.Formio = Formio;
+global.Formio = Formio;
 exports.default = Formio;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

@@ -333,6 +333,9 @@ export class BaseComponent {
    */
   getModifiedSchema(schema, defaultSchema) {
     let modified = {};
+    if (!defaultSchema) {
+      return schema;
+    }
     _.each(schema, (val, key) => {
       if (_.isObject(val) && defaultSchema.hasOwnProperty(key)) {
         let subModified = this.getModifiedSchema(val, defaultSchema[key]);
@@ -739,7 +742,7 @@ export class BaseComponent {
       // Add a default value.
       const dataValue = this.dataValue;
       if (!dataValue || !dataValue.length) {
-        this.addNewValue();
+        this.addNewValue(this.defaultValue);
       }
 
       // Build the rows.
@@ -766,6 +769,7 @@ export class BaseComponent {
           component: this.component,
           row: this.data,
           data: (this.root ? this.root.data : this.data),
+          _,
           instance: this
         },
         'value'
@@ -780,7 +784,7 @@ export class BaseComponent {
     }
 
     // Clone so that it creates a new instance.
-    return _.cloneDeep(defaultValue);
+    return _.clone(defaultValue);
   }
 
   /**
@@ -795,18 +799,20 @@ export class BaseComponent {
   /**
    * Adds a new empty value to the data array.
    */
-  addNewValue() {
+  addNewValue(value) {
+    if (value === undefined) {
+      value = this.emptyValue;
+    }
     let dataValue = this.dataValue || [];
     if (!Array.isArray(dataValue)) {
       dataValue = [dataValue];
     }
 
-    const defaultValue = this.defaultValue;
-    if (Array.isArray(defaultValue)) {
-      dataValue = dataValue.concat(defaultValue);
+    if (Array.isArray(value)) {
+      dataValue = dataValue.concat(value);
     }
     else {
-      dataValue.push(defaultValue);
+      dataValue.push(value);
     }
     this.dataValue = dataValue;
   }
@@ -2052,7 +2058,7 @@ export class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.hasValue) {
+    if (this.hasValue && !this.isEmpty(this.dataValue)) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
@@ -2166,7 +2172,7 @@ export class BaseComponent {
   }
 
   isEmpty(value) {
-    return value == null || value.length === 0;
+    return value == null || value.length === 0 || _.isEqual(value, this.emptyValue);
   }
 
   /**
