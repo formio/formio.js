@@ -1,6 +1,6 @@
 import {StripeComponent} from './stripe/stripe/Stripe';
 import {StripeCheckoutComponent} from './stripe/checkout/StripeCheckout';
-module.exports = {
+export default {
   stripe: {
     stripe: StripeComponent,
     checkout: StripeCheckoutComponent

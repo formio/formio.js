@@ -1,21 +1,43 @@
 import _ from 'lodash';
-
 import {FormioComponents} from '../Components';
 
 export class ContainerComponent extends FormioComponents {
+  static schema(...extend) {
+    return FormioComponents.schema({
+      type: 'container',
+      key: 'container',
+      clearOnHide: true,
+      input: true,
+      components: []
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Container',
+      icon: 'fa fa-folder-open',
+      group: 'data',
+      documentation: 'http://help.form.io/userguide/#container',
+      weight: 10,
+      schema: ContainerComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'container';
   }
 
+  get defaultSchema() {
+    return ContainerComponent.schema();
+  }
+
   build() {
-    this.element = this.ce('div', {
-      class: `formio-container-component ${this.component.customClass}`
-    });
+    this.createElement();
     if (!this.hasValue) {
       this.dataValue = {};
     }
-    this.addComponents(this.element, this.dataValue);
+    this.addComponents(this.getContainer(), this.dataValue);
   }
 
   get emptyValue() {

@@ -1,8 +1,8 @@
 import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
-
 import {BaseComponent} from '../base/Base';
 import Formio from '../../formio';
+import FormioUtils from '../../utils';
 
 // Duck-punch the setValueByChoice to ensure we compare using _.isEqual.
 Choices.prototype.setValueByChoice = function(value) {
@@ -43,6 +43,39 @@ Choices.prototype.setValueByChoice = function(value) {
 };
 
 export class SelectComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'select',
+      label: 'Select',
+      key: 'select',
+      data: {
+        values: [],
+        json: '',
+        url: '',
+        resource: '',
+        custom: ''
+      },
+      dataSrc: 'values',
+      valueProperty: '',
+      refreshOn: '',
+      filter: '',
+      authenticate: false,
+      template: '<span>{{ item.label }}</span>',
+      selectFields: ''
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Select',
+      group: 'basic',
+      icon: 'fa fa-th-list',
+      weight: 70,
+      documentation: 'http://help.form.io/userguide/#select',
+      schema: SelectComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
 
@@ -71,6 +104,10 @@ export class SelectComponent extends BaseComponent {
     }
   }
 
+  get defaultSchema() {
+    return SelectComponent.schema();
+  }
+
   refreshItems() {
     this.triggerUpdate();
     if (this.component.clearOnRefresh) {
@@ -96,7 +133,8 @@ export class SelectComponent extends BaseComponent {
 
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.useTemplate) {
-      return this.t(data.label || data);
+      let itemLabel = data.label || data;
+      return (typeof itemLabel === 'string') ? this.t(itemLabel) : itemLabel;
     }
     if (typeof data === 'string') {
       return this.t(data);
@@ -177,6 +215,14 @@ export class SelectComponent extends BaseComponent {
       catch (err) {
         console.warn(err.message);
         items = [];
+      }
+    }
+
+    // Allow js processing (needed for form builder)
+    if (this.component.onSetItems && typeof this.component.onSetItems === 'function') {
+      let newItems = this.component.onSetItems(this, items);
+      if (newItems) {
+        items = newItems;
       }
     }
 
@@ -280,7 +326,7 @@ export class SelectComponent extends BaseComponent {
       .then((response) => this.setItems(response))
       .catch((err) => {
         this.loading = false;
-        this.events.emit('formio.error', err);
+        this.emit('error', err);
         console.warn(`Unable to load resources for ${this.component.key}`);
       });
   }
@@ -312,20 +358,24 @@ export class SelectComponent extends BaseComponent {
   }
 
   updateCustomItems() {
-    const data = _.cloneDeep(this.data);
-    const row = _.cloneDeep(this.row);
-    try {
-      this.setItems((new Function('data', 'row',
-        `var values = []; ${this.component.data.custom.toString()}; return values;`))(data, row));
-    }
-    catch (error) {
-      this.setItems([]);
-    }
+    this.setItems(FormioUtils.evaluate(this.component.data.custom, {
+      values: [],
+      component: this.component,
+      data: _.cloneDeep(this.root ? this.root.data : this.data),
+      row: _.cloneDeep(this.data),
+      utils: FormioUtils,
+      instance: this
+    }, 'values') || []);
   }
 
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
       console.warn(`Select component ${this.component.key} does not have data configuration.`);
+      return;
+    }
+
+    // Only load the data if it is visible.
+    if (!this.checkConditions()) {
       return;
     }
 
@@ -504,6 +554,14 @@ export class SelectComponent extends BaseComponent {
       this.focusableElement.setAttribute('tabIndex', this.component.tabindex || 0);
       this.choices.enable();
     }
+  }
+
+  show(show) {
+    // If we go from hidden to visible, trigger a refresh.
+    if (show && (this._visible !== show)) {
+      this.triggerUpdate();
+    }
+    return super.show(show);
   }
 
   addCurrentChoices(value, items) {

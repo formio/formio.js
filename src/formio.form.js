@@ -55,6 +55,11 @@ export default class FormioForm extends FormioComponents {
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
 
+    // Set the base url.
+    if (this.options.baseUrl) {
+      Formio.setBaseUrl(this.options.baseUrl);
+    }
+
     /**
      * The i18n configuration for this component.
      */
@@ -94,7 +99,7 @@ export default class FormioForm extends FormioComponents {
     this._src = '';
     this._loading = false;
     this._submission = {};
-    this._form = null;
+    this._form = {};
 
     /**
      * Determines if this form should submit the API on submit.
@@ -280,7 +285,7 @@ export default class FormioForm extends FormioComponents {
     this.wrapper = element;
     this.element = this.ce('div');
     this.wrapper.appendChild(this.element);
-    this.showElement(false);
+    //this.showElement(false);
     this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
     let classNames = this.element.getAttribute('class');
     classNames += ' formio-form';
@@ -580,12 +585,12 @@ export default class FormioForm extends FormioComponents {
       );
     }
 
-    // Set the form object.
-    this._form = form;
-    this.emit('formLoad', form);
-
     // Create the form.
-    return this.createForm(form);
+    this._form = form;
+    return this.createForm(form).then(() => {
+      this.emit('formLoad', form);
+      return form;
+    });
   }
 
   /**
@@ -658,7 +663,10 @@ export default class FormioForm extends FormioComponents {
   }
 
   get schema() {
-    return this._form;
+    let schema = this._form;
+    schema.components = [];
+    this.eachComponent((component) => schema.components.push(component.schema));
+    return schema;
   }
 
   mergeData(_this, _that) {
@@ -669,16 +677,17 @@ export default class FormioForm extends FormioComponents {
     });
   }
 
-  setValue(submission, flags, data) {
-    data = data || this.data;
-    if (!submission) {
-      return super.setValue(data, flags);
+  setValue(submission, flags) {
+    if (!submission || !submission.data) {
+      submission = {data: {}};
     }
-    submission = submission || {data: {}};
-    this.mergeData(data, submission.data);
+    let changed = super.setValue(submission.data, flags);
+    if (changed) {
+      this.mergeData(this.data, submission.data);
+      submission.data = this.data;
+    }
     this._submission = submission;
-    this._submission.data = data;
-    return super.setValue(data, flags);
+    return changed;
   }
 
   getValue() {
@@ -688,9 +697,9 @@ export default class FormioForm extends FormioComponents {
     if (this.viewOnly) {
       return this._submission;
     }
-    const submission = _.clone(this._submission);
+    const submission = this._submission;
     submission.data = this.data;
-    return submission;
+    return this._submission;
   }
 
   /**
@@ -713,6 +722,7 @@ export default class FormioForm extends FormioComponents {
       this.formReadyResolve();
       this.onFormBuild = null;
       this.setValue(this.submission);
+      return form;
     }).catch((err) => {
       console.warn(err);
       this.formReadyReject(err);
@@ -868,7 +878,6 @@ export default class FormioForm extends FormioComponents {
    */
   onChange(flags, changed) {
     super.onChange(flags, true);
-    this.mergeData(this._submission, this.submission);
     const value = _.clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);

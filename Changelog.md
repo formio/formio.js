@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 3.0.0-alpha.1
+#### Breaking Changes
+ - Changed the build structure which may affect how modules are imported into your application.
+ - Removed formio.form, formio.wizard, and formio.utils builds. They can be accessed through basic "formio.full" and "formio" builds respectively.
+ - Modified all JavaScript execution to make it more consistent.
+    - "component" now always refers to the JSON of the component (not the component instance)
+    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
+ 
+### Added
+ - Form Builder
+ - Tags component (advanced)
+ - Tabs component (layout)
+ - Collapsible panels
+ - A way to remove event listener using the "off" method.
+ - "hasClass" method to check for a class.
+ - "hasValue" method to check for a value within a component.
+ - Version number and license link in all builds.
+ 
+### Changed
+ - How logic executions work by moving them into a single location within FormioUtils called "execute".
+ - Made a single way to create modals for form builder and resource adding.
+ - Now include Formio utils in the basic "formio" library under Formio.Utils
+ 
+### Removed
+ - Lib folder since this will be included in the package build.
+ - Dist folder since this will be included in the package build.
+ 
+### Fixed
+ - Make sure to pass the full root data object within checkValidity.
+ - Folder name for EditGrid component.
+
 ## 2.32.1
 ### Fixed
  - Issue with the OAuth button where it would launch the modal at the wrong times.

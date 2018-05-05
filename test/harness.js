@@ -3,7 +3,63 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import i18n from '../src/i18n';
+import {FormioFormBuilder} from "../src/formio.form.builder";
+let formBuilderElement = null;
+let formBuilder = null;
+
 export const Harness = {
+  builderBefore: function(done) {
+    formBuilderElement = document.createElement('div');
+    document.body.appendChild(formBuilderElement);
+    formBuilder = new FormioFormBuilder(formBuilderElement);
+    formBuilder.form = {components: []};
+    formBuilder.builderReady.then(done);
+  },
+
+  builderAfter: function(done) {
+    formBuilder.destroy();
+    document.body.removeChild(formBuilderElement);
+  },
+
+  buildComponent: function(type) {
+    // Get the builder sidebar component.
+    let builderGroup = null;
+    _.each(formBuilder.groups, (group) => {
+      if (group.components[type]) {
+        builderGroup = group.body;
+        return false;
+      }
+    });
+    let component = document.getElementById(`builder-${type}`).cloneNode(true);
+    formBuilder.element.appendChild(component);
+    formBuilder.onDrop(component, formBuilder.element, builderGroup);
+    return formBuilder;
+  },
+
+  setComponentProperty: function(property, before, after, cb) {
+    let component = _.cloneDeep(formBuilder.editForm.submission);
+    assert.equal(_.get(component.data, property), before);
+    _.set(component.data, property, after);
+    formBuilder.off('updateComponent');
+    formBuilder.on('updateComponent', () => {
+      let preview = formBuilder.componentPreview.innerHTML;
+      assert.equal(_.get(formBuilder.editForm.submission.data, property), after);
+      cb(preview);
+    });
+    formBuilder.editForm.submission = component;
+  },
+
+  testBuilderProperty: function(property, before, after, previewRegEx, cb) {
+    Harness.testVisibility(formBuilder.editForm, `.formio-component-${property}`, true);
+    Harness.setComponentProperty(property, before, after, (preview) => {
+      if (previewRegEx) {
+        assert(preview.match(previewRegEx), `${property} not set correctly`);
+      }
+      Harness.getInputValue(formBuilder.editForm, `data[${property}]`, after);
+      cb();
+    });
+  },
+
   getDate: function() {
     let timestamp = (new Date()).getTime();
     timestamp = parseInt(timestamp / 1000, 10);
@@ -113,7 +169,7 @@ export const Harness = {
     return element.dispatchEvent(inputEvent);
   },
   getInputValue: function(component, name, value) {
-    const element = component.element.querySelector('input[name="' + name + '"]');
+    const element = component.element.querySelector('[name="' + name + '"]');
     assert(element, name + ' input not found');
     assert.equal(value, element.value);
   },

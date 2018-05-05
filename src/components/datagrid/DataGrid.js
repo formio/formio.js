@@ -1,14 +1,39 @@
 import _ from 'lodash';
-
 import {FormioComponents} from '../Components';
 
 export class DataGridComponent extends FormioComponents {
+  static schema(...extend) {
+    return FormioComponents.schema({
+      label: 'Data Grid',
+      key: 'dataGrid',
+      type: 'datagrid',
+      clearOnHide: true,
+      input: true,
+      components: []
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Data Grid',
+      icon: 'fa fa-th',
+      group: 'data',
+      documentation: 'http://help.form.io/userguide/#datagrid',
+      weight: 20,
+      schema: DataGridComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'datagrid';
     this.numRows = 0;
     this.numColumns = 0;
     this.rows = [];
+  }
+
+  get defaultSchema() {
+    return DataGridComponent.schema();
   }
 
   get emptyValue() {
@@ -21,11 +46,20 @@ export class DataGridComponent extends FormioComponents {
 
   hasAddButton() {
     const maxLength = _.get(this.component, 'validate.maxLength');
-    return !this.shouldDisable && (!maxLength || (this.dataValue.length < maxLength));
+    return !this.shouldDisable &&
+      !this.options.builder &&
+      !this.options.preview &&
+      (!maxLength || (this.dataValue.length < maxLength));
+  }
+
+  hasExtraColumn() {
+    return this.hasRemoveButtons() || this.options.builder;
   }
 
   hasRemoveButtons() {
-    return !this.shouldDisable && (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
+    return !this.shouldDisable &&
+      !this.options.builder &&
+      (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
 
   hasTopSubmit() {
@@ -58,7 +92,7 @@ export class DataGridComponent extends FormioComponents {
       this.dataValue.push({});
     }
 
-    this.numColumns = this.hasRemoveButtons() ? 1 : 0;
+    this.numColumns = this.hasExtraColumn() ? 1 : 0;
     this.numRows = this.dataValue.length;
 
     if (this.visibleColumns === true) {
@@ -132,7 +166,7 @@ export class DataGridComponent extends FormioComponents {
   // Build the header.
   createHeader() {
     const hasTopButton = this.hasTopSubmit();
-    const hasEnd = this.hasRemoveButtons() || hasTopButton;
+    const hasEnd = this.hasExtraColumn() || hasTopButton;
     return this.ce('thead', null, this.ce('tr', null,
       [
         this.visibleComponents.map(comp => {
@@ -165,10 +199,26 @@ export class DataGridComponent extends FormioComponents {
 
   buildRow(row, index) {
     this.rows[index] = {};
+    let lastColumn = null;
+    if (this.hasRemoveButtons()) {
+      lastColumn = this.ce('td', null, this.removeButton(index));
+    }
+    else if (this.options.builder) {
+      lastColumn = this.ce('td', {
+        id: `${this.id}-drag-container`,
+        class: 'drag-container'
+      }, this.ce('div', {
+        id: this.id + '-placeholder',
+        class: 'alert alert-info',
+        style: 'text-align:center; margin-bottom: 0px;',
+        role: 'alert'
+      }, this.text('Drag and Drop a form component')));
+      this.root.addDragContainer(lastColumn, this);
+    }
     return this.ce('tr', null,
       [
         this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index)),
-        this.hasRemoveButtons() ? this.ce('td', null, this.removeButton(index)) : null
+        lastColumn
       ]
     );
   }
@@ -180,16 +230,23 @@ export class DataGridComponent extends FormioComponents {
   }
 
   buildComponent(col, colIndex, row, rowIndex) {
-    const column = _.cloneDeep(col);
-    column.label = false;
-    column.row = `${rowIndex}-${colIndex}`;
-    const options = _.clone(this.options);
-    options.name += `[${colIndex}]`;
-    const comp = this.createComponent(column, options, row);
-    this.rows[rowIndex][column.key] = comp;
-    if ((this.visibleColumns === true) || this.visibleColumns[column.key]) {
-      return this.ce('td', null, comp.element);
+    if (!this.visibleColumns || (this.visibleColumns.hasOwnProperty(col.key) && !this.visibleColumns[col.key])) {
+      return;
     }
+
+    let container = this.ce('td');
+    container.noDrop = true;
+    let column = _.clone(col);
+    let options = _.clone(this.options);
+    options.name += `[${colIndex}]`;
+    const comp = this.createComponent(_.assign({}, column, {
+      label: false,
+      row: `${rowIndex}-${colIndex}`
+    }), options, row);
+    this.hook('addComponent', container, comp);
+    container.appendChild(comp.getElement());
+    this.rows[rowIndex][column.key] = comp;
+    return container;
   }
 
   checkConditions(data) {

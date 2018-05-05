@@ -16,7 +16,17 @@ export default class FormioPDF extends FormioForm {
   }
 
   postMessage(message) {
-    this.iframeReady.then(() => this.iframe.contentWindow.postMessage(JSON.stringify(message), '*'));
+    this.iframeReady.then(() => {
+      if (this.iframe && this.iframe.contentWindow) {
+        this.iframe.contentWindow.postMessage(JSON.stringify(message), '*');
+      }
+    });
+  }
+
+  // Do not clear the iframe.
+  clear() {}
+  redraw() {
+    this.postMessage({name: 'redraw'});
   }
 
   getSrc() {
@@ -31,6 +41,9 @@ export default class FormioPDF extends FormioForm {
     if (this.options.zoom) {
       params.push(`zoom=${this.options.zoom}`);
     }
+    if (this.options.builder) {
+      params.push('builder=1');
+    }
     if (params.length) {
       iframeSrc += `?${params.join('&')}`;
     }
@@ -38,8 +51,9 @@ export default class FormioPDF extends FormioForm {
   }
 
   setForm(form) {
-    this.postMessage({name: 'form', data: form});
-    return super.setForm(form);
+    return super.setForm(form).then(() => {
+      this.postMessage({name: 'form', data: form});
+    });
   }
 
   setSubmission(submission) {
@@ -74,7 +88,20 @@ export default class FormioPDF extends FormioForm {
     return this._submission;
   }
 
+  addComponent(component, element, data, before) {
+    // Never add the component to the DOM.
+    super.addComponent(component, element, data, before, true);
+  }
+
+  // Iframe should always be shown.
+  showElement(show) {}
   build() {
+    // Do not rebuild the iframe...
+    if (this.iframe) {
+      this.addComponents();
+      return;
+    }
+
     this.zoomIn = this.ce('span', {
       style: 'position:absolute;right:10px;top:10px;cursor:pointer;',
       class: 'btn btn-default btn-secondary no-disable'
@@ -99,6 +126,7 @@ export default class FormioPDF extends FormioForm {
 
     this.iframe = this.ce('iframe', {
       src: this.getSrc(),
+      id: 'iframe-' + this.id,
       seamless: true,
       class: 'formio-iframe'
     });
@@ -120,6 +148,8 @@ export default class FormioPDF extends FormioForm {
       });
       this.appendChild(this.element, this.submitButton);
     }
+
+    this.addComponents();
   }
 }
 
@@ -138,6 +168,7 @@ window.addEventListener('message', (event) => {
   // If this form exists, then emit the event within this form.
   if (
     eventData &&
+    eventData.name &&
     eventData.formId &&
     Formio.forms.hasOwnProperty(eventData.formId)
   ) {
