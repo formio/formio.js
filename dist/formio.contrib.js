@@ -1804,7 +1804,7 @@ var BaseComponent = function () {
     key: 'clearOnHide',
     value: function clearOnHide(show) {
       // clearOnHide defaults to true for old forms (without the value set) so only trigger if the value is false.
-      if (this.component.clearOnHide !== false) {
+      if (this.component.clearOnHide !== false && !this.options.readOnly) {
         if (!show) {
           this.deleteValue();
         } else if (!this.hasValue) {
@@ -3088,12 +3088,18 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
         name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
         var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
         var results = regex.exec(location.search);
-        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        if (!results) {
+          return results;
+        }
+        return decodeURIComponent(results[1].replace(/\+/g, ' '));
       }
 
       // If this is an OpenID Provider initiated login, perform the click event immediately
-      if (this.component.action === 'oauth' && this.component.oauth.authURI.indexOf(getUrlParameter('iss')) === 0) {
-        this.openOauth();
+      if (this.component.action === 'oauth' && this.component.oauth && this.component.oauth.authURI) {
+        var iss = getUrlParameter('iss');
+        if (iss && this.component.oauth.authURI.indexOf(iss) === 0) {
+          this.openOauth();
+        }
       }
 
       this.autofocus();

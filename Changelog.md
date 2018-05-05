@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.32.1
+### Fixed
+ - Issue with the OAuth button where it would launch the modal at the wrong times.
+ - Problems where clearOnHide would trigger on readOnly forms.
+
 ## 2.32.0
 ### Added
  - Ability to save a submission in a state (Save in state on button)
