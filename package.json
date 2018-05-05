@@ -13,10 +13,10 @@
     "full.js"
   ],
   "scripts": {
-    "prepublish": "npm run rebuild;npm run prepare;",
+    "prepublish": "npm test;npm run rebuild;npm run prepare;",
     "build": "esdoc;gulp build",
     "rebuild": "rm -rf node_modules;npm install;gulp build",
-    "prepare": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \"Build $Version\";git tag v$VERSION;git push origin --tags;",
+    "prepare": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \"Build $Version\";git tag v$VERSION;git push origin --tags;git push origin master;",
     "publish": "npm publish lib;",
     "lint": "eslint src",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
