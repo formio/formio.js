@@ -16,7 +16,7 @@ plugins.browserify = require('browserify');
 plugins.cleanCSS = require('gulp-clean-css');
 
 // Clean lib folder.
-gulp.task('clean', require('del').bind(null, ['lib']));
+gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 
 // Run babel on source code.
 gulp.task('babel', require('./gulp/babel')(gulp, plugins));
