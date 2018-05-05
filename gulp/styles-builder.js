@@ -17,9 +17,9 @@ module.exports = function(gulp, plugins) {
       .pipe(plugins.concat('formio.builder.css'))
       .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
       .pipe(plugins.replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
-      .pipe(gulp.dest('lib/dist'))
+      .pipe(gulp.dest('dist'))
       .pipe(plugins.rename('formio.builder.min.css'))
       .pipe(plugins.cleanCSS({compatibility: 'ie8'}))
-      .pipe(gulp.dest('lib/dist'));
+      .pipe(gulp.dest('dist'));
   };
 };

@@ -24,12 +24,12 @@ gulp.task('babel', require('./gulp/babel')(gulp, plugins));
 // Move choices.js icons into dist folder.
 gulp.task('icons', () => {
   return gulp.src('node_modules/choices.js/assets/icons/*')
-    .pipe(gulp.dest('lib/dist/icons'));
+    .pipe(gulp.dest('dist/icons'));
 });
 
 // Move font-awesome fonts into dist folder.
 gulp.task('builder-fonts', () => {
-  return gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('lib/dist/fonts'));
+  return gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts'));
 });
 
 // Generate styles
@@ -54,10 +54,8 @@ gulp.task('package-version', function() {
     .pipe(gulp.dest('lib'));
 });
 
-// Add dist files to application.
-gulp.task('application-libs', () => {
-  return gulp.src(['lib/dist/**/*.*']).pipe(gulp.dest('app/dist'))
-});
+// Copy over the dist folder into the lib folder.
+gulp.task('dist', () => gulp.src(['dist/**/*.*']).pipe(gulp.dest('lib/dist')));
 
 // Watch for changes.
 gulp.task('watch', require('./gulp/watch')(gulp, plugins));
@@ -72,7 +70,7 @@ gulp.task('build', gulpsync.sync([['clean'], 'babel', 'package-version', [
   'scripts-contrib',
   'scripts-full',
   'scripts-builder'
-], 'application-libs']));
+], 'dist']));
 
 // Default task. Build and watch.
 gulp.task('default', ['babel', 'scripts-full', 'watch']);

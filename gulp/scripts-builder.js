@@ -7,9 +7,9 @@ module.exports = function(gulp, plugins) {
       .bundle()
       .pipe(plugins.source('formio.builder.js'))
       .pipe(plugins.wrap(plugins.template, {version: plugins.packageJson.version}))
-      .pipe(gulp.dest('lib/dist'))
+      .pipe(gulp.dest('dist'))
       .pipe(plugins.rename('formio.builder.min.js'))
       .pipe(plugins.streamify(plugins.uglify()))
-      .pipe(gulp.dest('lib/dist'));
+      .pipe(gulp.dest('dist'));
   };
 };
