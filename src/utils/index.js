@@ -26,6 +26,100 @@ const FormioUtils = {
   jsonLogic, // Share
 
   /**
+   * Evaluate a method.
+   *
+   * @param func
+   * @param args
+   * @return {*}
+   */
+  evaluate(func, args, ret, tokenize) {
+    let returnVal = null;
+    let component = (args.component && args.component.component) ? args.component.component : {key: 'unknown'};
+    if (!args.form && args.instance) {
+      args.form = _.get(args.instance, 'root._form', {});
+    }
+    if (typeof func === 'string') {
+      if (ret) {
+        func += `;return ${ret}`;
+      }
+      let params = _.keys(args);
+
+      if (tokenize) {
+        // Replace all {{ }} references with actual data.
+        func = func.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
+          if ($2.indexOf('data.') === 0) {
+            return _.get(args.data, $2.replace('data.', ''));
+          }
+          else if ($2.indexOf('row.') === 0) {
+            return _.get(args.row, $2.replace('row.', ''));
+          }
+
+          // Support legacy...
+          return _.get(args.data, $2);
+        });
+      }
+
+      func = new Function(...params, func);
+    }
+    if (typeof func === 'function') {
+      let values = _.values(args);
+      try {
+        returnVal = func(...values);
+      }
+      catch (err) {
+        returnVal = null;
+        console.warn(`An error occured within custom function for ${component.key}`, err);
+      }
+    }
+    else if (typeof func === 'object') {
+      try {
+        returnVal = jsonLogic.apply(func, args);
+      }
+      catch (err) {
+        returnVal = null;
+        console.warn(`An error occured within custom function for ${component.key}`, err);
+      }
+    }
+    else {
+      console.warn(`Unknown function type for ${component.key}`);
+    }
+    return returnVal;
+  },
+
+  getRandomComponentId() {
+    return `e${Math.random().toString(36).substring(7)}`;
+  },
+
+  /**
+   * Get a property value of an element.
+   *
+   * @param style
+   * @param prop
+   * @return {number}
+   */
+  getPropertyValue(style, prop) {
+    let value = style.getPropertyValue(prop);
+    value = value ? value.replace(/[^0-9.]/g, '') : '0';
+    return parseFloat(value);
+  },
+
+  /**
+   * Get an elements bounding rectagle.
+   *
+   * @param element
+   * @return {{x: string, y: string, width: string, height: string}}
+   */
+  getElementRect(element) {
+    const style = window.getComputedStyle(element, null);
+    return {
+      x: FormioUtils.getPropertyValue(style, 'left'),
+      y: FormioUtils.getPropertyValue(style, 'top'),
+      width: FormioUtils.getPropertyValue(style, 'width'),
+      height: FormioUtils.getPropertyValue(style, 'height')
+    };
+  },
+
+  /**
    * Determines the boolean value of a setting.
    *
    * @param value
@@ -311,29 +405,13 @@ const FormioUtils = {
   checkCalculated(component, submission, rowData) {
     // Process calculated value stuff if present.
     if (component.calculateValue) {
-      const row = rowData;
-      const data = submission ? submission.data : rowData;
-      if (_.isString(component.calculateValue)) {
-        try {
-          _.set(rowData, component.key, (new Function('component', 'data', 'row', 'util', 'moment',
-            `var value = [];${component.calculateValue.toString()}; return value;`))(component, data, row, this, moment));
-        }
-        catch (e) {
-          console.warn(`An error occurred calculating a value for ${component.key}`, e);
-        }
-      }
-      else {
-        try {
-          _.set(rowData, component.key, this.jsonLogic.apply(component.calculateValue, {
-            data,
-            row,
-            _
-          }));
-        }
-        catch (e) {
-          console.warn(`An error occurred calculating a value for ${component.key}`, e);
-        }
-      }
+      _.set(rowData, component.key, FormioUtils.evaluate(component.calculateValue, {
+        value: [],
+        data: submission ? submission.data : rowData,
+        row: rowData,
+        util: this,
+        component
+      }, 'value'));
     }
   },
 
@@ -379,22 +457,23 @@ const FormioUtils = {
    * @param data
    * @returns {*}
    */
-  checkCustomConditional(component, custom, row, data, variable, onError) {
-    try {
-      return (new Function('component', 'data', 'row', 'util', 'moment',
-        `var ${variable} = true; ${custom.toString()}; return ${variable};`))(component, data, row, this, moment);
+  checkCustomConditional(component, custom, row, data, form, variable, onError, instance) {
+    if (typeof custom === 'string') {
+      custom = `var ${variable} = true; ${custom}; return ${variable};`;
     }
-    catch (e) {
-      console.warn(`An error occurred in a condition statement for component ${component.key}`, e);
+    let value = FormioUtils.evaluate(custom, {component, row, data, form, instance});
+    if (value === null) {
       return onError;
     }
+    return value;
   },
 
-  checkJsonConditional(component, json, row, data, onError) {
+  checkJsonConditional(component, json, row, data, form, onError) {
     try {
       return jsonLogic.apply(json, {
         data,
         row,
+        form,
         _
       });
     }
@@ -416,15 +495,15 @@ const FormioUtils = {
    *
    * @returns {boolean}
    */
-  checkCondition(component, row, data) {
+  checkCondition(component, row, data, form, instance) {
     if (component.customConditional) {
-      return this.checkCustomConditional(component, component.customConditional, row, data, 'show', true);
+      return this.checkCustomConditional(component, component.customConditional, row, data, form, 'show', true, instance);
     }
     else if (component.conditional && component.conditional.when) {
       return this.checkSimpleConditional(component, component.conditional, row, data, true);
     }
     else if (component.conditional && component.conditional.json) {
-      return this.checkJsonConditional(component, component.conditional.json, row, data);
+      return this.checkJsonConditional(component, component.conditional.json, row, data, form);
     }
 
     // Default to show.
@@ -440,14 +519,14 @@ const FormioUtils = {
    * @param row
    * @returns {mixed}
    */
-  checkTrigger(component, trigger, row, data) {
+  checkTrigger(component, trigger, row, data, form, instance) {
     switch (trigger.type) {
       case 'simple':
         return this.checkSimpleConditional(component, trigger.simple, row, data);
       case 'javascript':
-        return this.checkCustomConditional(component, trigger.javascript, row, data, 'result', false);
+        return this.checkCustomConditional(component, trigger.javascript, row, data, form, 'result', false, instance);
       case 'json':
-        return this.checkJsonConditional(component, trigger.json, row, data, false);
+        return this.checkJsonConditional(component, trigger.json, row, data, form, false);
     }
     // If none of the types matched, don't fire the trigger.
     return false;

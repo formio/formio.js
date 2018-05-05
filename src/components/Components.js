@@ -1,20 +1,41 @@
+'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-
 import FormioUtils from '../utils/index';
 import {BaseComponent} from './base/Base';
 
 export class FormioComponents extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      tree: true
+    }, ...extend);
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'components';
     this.components = [];
     this.hidden = [];
+    this.collapsed = !!this.component.collapsed;
   }
 
-  build() {
+  build(showLabel) {
     this.createElement();
+    if (showLabel) {
+      this.createLabel(this.element);
+    }
     this.addComponents();
+  }
+
+  get defaultSchema() {
+    return FormioComponents.schema();
+  }
+
+  get schema() {
+    const schema = super.schema;
+    schema.components = [];
+    this.eachComponent((component) => schema.components.push(component.schema));
+    return schema;
   }
 
   getComponents() {
@@ -30,13 +51,14 @@ export class FormioComponents extends BaseComponent {
   everyComponent(fn) {
     const components = this.getComponents();
     _.each(components, (component, index) => {
-      if (component.type === 'components') {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
+
+      if (typeof component.everyComponent === 'function') {
         if (component.everyComponent(fn) === false) {
           return false;
         }
-      }
-      else if (fn(component, components, index) === false) {
-        return false;
       }
     });
   }
@@ -103,7 +125,7 @@ export class FormioComponents extends BaseComponent {
    * @param component
    * @param data
    */
-  createComponent(component, options, data) {
+  createComponent(component, options, data, before) {
     options = options || this.options;
     data = data || this.data;
     if (!this.options.components) {
@@ -115,8 +137,27 @@ export class FormioComponents extends BaseComponent {
     comp.root = this.root || this;
     comp.build();
     comp.isBuilt = true;
-    this.components.push(comp);
+    if (component.internal) {
+      return comp;
+    }
+
+    if (before) {
+      const index = _.findIndex(this.components, {id: before.id});
+      if (index !== -1) {
+        this.components.splice(index, 0, comp);
+      }
+      else {
+        this.components.push(comp);
+      }
+    }
+    else {
+      this.components.push(comp);
+    }
     return comp;
+  }
+
+  getContainer() {
+    return this.element;
   }
 
   /**
@@ -125,15 +166,24 @@ export class FormioComponents extends BaseComponent {
    * @param {Object} component - The component JSON schema to add.
    * @param {HTMLElement} element - The DOM element to append this child to.
    * @param {Object} data - The submission data object to house the data for this component.
+   * @param {HTMLElement} before - A DOM element to insert this element before.
    * @return {BaseComponent} - The created component instance.
    */
-  addComponent(component, element, data) {
-    element = element || this.element;
+  addComponent(component, element, data, before, noAdd) {
+    element = element || this.getContainer();
     data = data || this.data;
-    component.row = this.row;
-    const comp = this.createComponent(component, this.options, data);
+    const comp = this.createComponent(component, this.options, data, before ? before.component : null);
+    if (noAdd) {
+      return comp;
+    }
     this.setHidden(comp);
-    element.appendChild(comp.getElement());
+    element = this.hook('addComponent', element, comp);
+    if (before) {
+      element.insertBefore(comp.getElement(), before);
+    }
+    else {
+      element.appendChild(comp.getElement());
+    }
     return comp;
   }
 
@@ -144,6 +194,7 @@ export class FormioComponents extends BaseComponent {
    * @param {Array<BaseComponent>} components - An array of components to remove this component from.
    */
   removeComponent(component, components) {
+    components = components || this.components;
     component.destroy();
     const element = component.getElement();
     if (element && element.parentNode) {
@@ -196,15 +247,20 @@ export class FormioComponents extends BaseComponent {
     }
   }
 
+  get componentComponents() {
+    return this.component.components;
+  }
+
   /**
    *
    * @param element
    * @param data
    */
   addComponents(element, data) {
-    element = element || this.element;
+    element = element || this.getContainer();
     data = data || this.data;
-    _.each(this.component.components, (component) => this.addComponent(component, element, data));
+    const components = this.hook('addComponents', this.componentComponents);
+    _.each(components, (component) => this.addComponent(component, element, data));
   }
 
   updateValue(flags) {
@@ -312,7 +368,7 @@ export class FormioComponents extends BaseComponent {
   }
 
   checkValidity(data, dirty) {
-    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
       return true;
     }
 
@@ -330,6 +386,10 @@ export class FormioComponents extends BaseComponent {
 
   destroy(all) {
     super.destroy(all);
+    this.destroyComponents();
+  }
+
+  destroyComponents() {
     this.empty(this.getElement());
     const components = _.clone(this.components);
     _.each(components, (comp) => this.removeComponent(comp, this.components));
@@ -408,6 +468,35 @@ export class FormioComponents extends BaseComponent {
       }
     });
     return changed;
+  }
+
+  setCollapseHeader(header) {
+    if (this.component.collapsible) {
+      this.addClass(header, 'formio-clickable');
+      this.addEventListener(header, 'click', () => this.toggleCollapse());
+    }
+  }
+
+  setCollapsed(element) {
+    if (!this.component.collapsible) {
+      return;
+    }
+
+    const container = element || this.getContainer();
+
+    if (this.collapsed) {
+      container.setAttribute('hidden', true);
+      container.style.visibility = 'hidden';
+    }
+    else {
+      container.removeAttribute('hidden');
+      container.style.visibility = 'visible';
+    }
+  }
+
+  toggleCollapse() {
+    this.collapsed = !this.collapsed;
+    this.setCollapsed();
   }
 }
 

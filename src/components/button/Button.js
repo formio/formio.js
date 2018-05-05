@@ -1,15 +1,47 @@
 import _ from 'lodash';
-
 import {BaseComponent} from '../base/Base';
 import FormioUtils from '../../utils';
 
 export class ButtonComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'button',
+      label: 'Submit',
+      key: 'submit',
+      size: 'md',
+      leftIcon: '',
+      rightIcon: '',
+      block: false,
+      action: 'submit',
+      disableOnInvalid: false,
+      theme: 'default'
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Button',
+      group: 'basic',
+      icon: 'fa fa-stop',
+      documentation: 'http://help.form.io/userguide/#button',
+      weight: 110,
+      schema: ButtonComponent.schema()
+    };
+  }
+
+  get defaultSchema() {
+    return ButtonComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'button';
     info.attr.type = (['submit', 'saveState'].includes(this.component.action)) ? 'submit' : 'button';
     this.component.theme = this.component.theme || 'default';
     info.attr.class = `btn btn-${this.component.theme}`;
+    if (this.component.size) {
+      info.attr.class += ` btn-${this.component.size}`;
+    }
     if (this.component.block) {
       info.attr.class += ' btn-block';
     }
@@ -20,12 +52,20 @@ export class ButtonComponent extends BaseComponent {
   }
 
   set loading(loading) {
-    this.setLoading(this.button, loading);
+    this.setLoading(this.buttonElement, loading);
   }
 
   set disabled(disabled) {
     super.disabled = disabled;
-    this.setDisabled(this.button, disabled);
+    this.setDisabled(this.buttonElement, disabled);
+  }
+
+  // No label needed for buttons.
+  createLabel() {}
+
+  createInput(container) {
+    this.buttonElement = super.createInput(container);
+    return this.buttonElement;
   }
 
   get emptyValue() {
@@ -65,14 +105,26 @@ export class ButtonComponent extends BaseComponent {
     this.dataValue = false;
     this.hasError = false;
     this.createElement();
-    this.element.appendChild(this.button = this.ce(this.info.type, this.info.attr));
-    this.addShortcut(this.button);
-    this.hook('input', this.button, this.element);
+    this.createInput(this.element);
+    this.addShortcut(this.buttonElement);
+    this.hook('input', this.buttonElement, this.element);
+    if (this.component.leftIcon) {
+      this.buttonElement.appendChild(this.ce('span', {
+        class: this.component.leftIcon
+      }));
+      this.buttonElement.appendChild(this.text("\u00A0"));
+    }
 
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
-      this.button.appendChild(this.labelElement);
-      this.createTooltip(this.button, null, this.iconClass('question-sign'));
+      this.buttonElement.appendChild(this.labelElement);
+      this.createTooltip(this.buttonElement, null, this.iconClass('question-sign'));
+    }
+    if (this.component.rightIcon) {
+      this.buttonElement.appendChild(this.text("\u00A0"));
+      this.buttonElement.appendChild(this.ce('span', {
+        class: this.component.rightIcon
+      }));
     }
     if (this.component.action === 'submit') {
       const errorContainer = this.ce('div', {
@@ -125,7 +177,7 @@ export class ButtonComponent extends BaseComponent {
         this.loading = false;
       }, true);
     }
-    this.addEventListener(this.button, 'click', (event) => {
+    this.addEventListener(this.buttonElement, 'click', (event) => {
       this.dataValue = true;
       switch (this.component.action) {
         case 'submit':
@@ -159,15 +211,15 @@ export class ButtonComponent extends BaseComponent {
             }
           });
 
-          try {
-            (new Function('form', 'flattened', 'components', '_merge', 'data',
-              this.component.custom.toString()))(form, flattened, components, _.merge, this.data);
-          }
-          catch (e) {
-            /* eslint-disable no-console */
-            console.warn(`An error occurred evaluating custom logic for ${this.key}`, e);
-            /* eslint-enable no-console */
-          }
+          FormioUtils.evaluate(this.component.custom, {
+            form,
+            flattened,
+            components,
+            _,
+            data: this.data,
+            component: this.component,
+            instance: this
+          });
           break;
         }
         case 'url':
@@ -308,7 +360,7 @@ export class ButtonComponent extends BaseComponent {
 
   destroy() {
     super.destroy.apply(this, Array.prototype.slice.apply(arguments));
-    this.removeShortcut(this.element);
+    this.removeShortcut(this.buttonElement);
   }
 
   focus() {

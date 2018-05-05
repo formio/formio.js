@@ -10,7 +10,51 @@ import {
   convertFormatToMoment,
 } from '../../utils';
 import moment from 'moment';
+
 export class DateTimeComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'datetime',
+      label: 'Date / Time',
+      key: 'dateTime',
+      format: 'yyyy-MM-dd HH:mm a',
+      enableDate: true,
+      enableTime: true,
+      defaultDate: '',
+      datepickerMode: 'day',
+      datePicker: {
+        showWeeks: true,
+        startingDay: 0,
+        initDate: '',
+        minMode: 'day',
+        maxMode: 'year',
+        yearRows: 4,
+        yearColumns: 5,
+        minDate: null,
+        maxDate: null
+      },
+      timePicker: {
+        hourStep: 1,
+        minuteStep: 1,
+        showMeridian: true,
+        readonlyInput: false,
+        mousewheel: true,
+        arrowkeys: true
+      }
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Date / Time',
+      group: 'advanced',
+      icon: 'fa fa-calendar-plus-o',
+      documentation: 'http://help.form.io/userguide/#datetime',
+      weight: 40,
+      schema: DateTimeComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
@@ -21,6 +65,10 @@ export class DateTimeComponent extends BaseComponent {
       date: dateFormatInfo.dayFirst ? 'd/m/Y ' : 'm/d/Y ',
       time: 'h:i K'
     };
+  }
+
+  get defaultSchema() {
+    return DateTimeComponent.schema();
   }
 
   elementInfo() {

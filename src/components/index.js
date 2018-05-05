@@ -5,7 +5,7 @@ import {ContainerComponent} from './container/Container';
 import {DataGridComponent} from './datagrid/DataGrid';
 import {DateTimeComponent} from './datetime/DateTime';
 import {DayComponent} from './day/Day';
-import {EditGridComponent} from './editrgrid/EditGrid';
+import {EditGridComponent} from './editgrid/EditGrid';
 import {HTMLComponent} from './html/HTML';
 import {HiddenComponent} from './hidden/Hidden';
 import {FormComponent} from './form/Form';
@@ -20,6 +20,7 @@ import {SignatureComponent} from './signature/Signature';
 import {SelectComponent} from './select/Select';
 import {ResourceComponent} from './resource/Resource';
 import {TextAreaComponent} from './textarea/TextArea';
+import {TagsComponent} from "./tags/Tags";
 import {ButtonComponent} from './button/Button';
 import {NumberComponent} from './number/Number';
 import {PasswordComponent} from './password/Password';
@@ -32,8 +33,9 @@ import {RadioComponent} from './radio/Radio';
 import {SelectBoxesComponent} from './selectboxes/SelectBoxes';
 import {SurveyComponent} from './survey/Survey';
 import {WellComponent} from './well/Well';
-import {GmapComponent} from './gmap/Gmap';
+import {LocationComponent} from './location/Location';
 import {FileComponent} from './file/File';
+import {TabsComponent} from "./tabs/Tabs";
 const FormioComponentsIndex = {
   address: AddressComponent,
   base: BaseComponent,
@@ -57,10 +59,12 @@ const FormioComponentsIndex = {
   select: SelectComponent,
   resource: ResourceComponent,
   textarea: TextAreaComponent,
+  tags: TagsComponent,
   button: ButtonComponent,
   number: NumberComponent,
   password: PasswordComponent,
   panel: PanelComponent,
+  tabs: TabsComponent,
   column: ColumnComponent,
   columns: ColumnsComponent,
   table: TableComponent,
@@ -69,14 +73,11 @@ const FormioComponentsIndex = {
   selectboxes: SelectBoxesComponent,
   survey: SurveyComponent,
   well: WellComponent,
-  gmap: GmapComponent,
+  location: LocationComponent,
   file: FileComponent,
   create: function(component, options, data, nobuild) {
     let comp = null;
-    if (!component.type) {
-      return null;
-    }
-    else if (this.hasOwnProperty(component.type)) {
+    if (component.type && this.hasOwnProperty(component.type)) {
       comp = new this[component.type](component, options, data);
     }
     else {

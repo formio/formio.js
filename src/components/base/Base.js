@@ -3,7 +3,6 @@ import Promise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
-
 import FormioUtils from '../../utils';
 import {Validator} from '../Validator';
 
@@ -11,6 +10,127 @@ import {Validator} from '../Validator';
  * This is the BaseComponent class which all elements within the FormioForm derive from.
  */
 export class BaseComponent {
+  static schema(...sources) {
+    return _.merge({
+      /**
+       * Determines if this component provides an input.
+       */
+      input: true,
+
+      /**
+       * The data key for this component (how the data is stored in the database).
+       */
+      key: '',
+
+      /**
+       * The input placeholder for this component.
+       */
+      placeholder: '',
+
+      /**
+       * The input prefix
+       */
+      prefix: '',
+
+      /**
+       * The custom CSS class to provide to this component.
+       */
+      customClass: '',
+
+      /**
+       * The input suffix.
+       */
+      suffix: '',
+
+      /**
+       * If this component should allow an array of values to be captured.
+       */
+      multiple: false,
+
+      /**
+       * The default value of this compoennt.
+       */
+      defaultValue: null,
+
+      /**
+       * If the data of this component should be protected (no GET api requests can see the data)
+       */
+      protected: false,
+
+      /**
+       * Validate if the value of this component should be unique within the form.
+       */
+      unique: false,
+
+      /**
+       * If the value of this component should be persisted within the backend api database.
+       */
+      persistent: false,
+
+      /**
+       * Determines if the component should be within the form, but not visible.
+       */
+      hidden: false,
+
+      /**
+       * If the component should be cleared when hidden.
+       */
+      clearOnHide: true,
+
+      /**
+       * If this component should be included as a column within a submission table.
+       */
+      tableView: true,
+
+      /**
+       * The input label provided to this component.
+       */
+      label: '',
+      labelPosition: 'top',
+      labelWidth: 30,
+      labelMargin: 3,
+      description: '',
+      errorLabel: '',
+      tooltip: '',
+      hideLabel: false,
+      tabindex: '',
+      disabled: false,
+      autofocus: false,
+      dbIndex: false,
+      customDefaultValue: '',
+      calculateValue: '',
+
+      /**
+       * The validation criteria for this component.
+       */
+      validate: {
+        /**
+         * If this component is required.
+         */
+        required: false,
+
+        /**
+         * Custom JavaScript validation.
+         */
+        custom: '',
+
+        /**
+         * If the custom validation should remain private (only the backend will see it and execute it).
+         */
+        customPrivate: false
+      },
+
+      /**
+       * The simple conditional settings for a component.
+       */
+      conditional: {
+        show: null,
+        when: null,
+        eq: ''
+      }
+    }, ...sources);
+  }
+
   /**
    * Initialize a new BaseComponent.
    *
@@ -25,7 +145,7 @@ export class BaseComponent {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = (component && component.id) ? component.id : Math.random().toString(36).substring(7);
+    this.id = (component && component.id) ? component.id : FormioUtils.getRandomComponentId();
 
     /**
      * The options for this component.
@@ -33,7 +153,8 @@ export class BaseComponent {
      */
     this.options = _.defaults(_.clone(options), {
       language: 'en',
-      highlightErrors: true
+      highlightErrors: true,
+      row: ''
     });
 
     // Use the i18next that is passed in, otherwise use the global version.
@@ -61,7 +182,10 @@ export class BaseComponent {
      * The Form.io component JSON schema.
      * @type {*}
      */
-    this.component = component || {};
+    this.component = _.defaultsDeep(component || {}, this.defaultSchema);
+
+    // Add the id to the component.
+    this.component.id = this.id;
 
     /**
      * The bounding HTML Element which this component is rendered.
@@ -109,8 +233,7 @@ export class BaseComponent {
      * The row path of this component.
      * @type {number}
      */
-    this.row = component ? component.row : '';
-    this.row = this.row || '';
+    this.row = this.options.row;
 
     /**
      * Determines if this component is disabled, or not.
@@ -189,10 +312,57 @@ export class BaseComponent {
        */
       this.info = this.elementInfo();
     }
+
+    // Allow anyone to hook into the component creation.
+    this.hook('component');
   }
 
   get hasInput() {
     return this.component.input || this.inputs.length;
+  }
+
+  get defaultSchema() {
+    return BaseComponent.schema();
+  }
+
+  /**
+   * Returns only the schema that is different from the default.
+   *
+   * @param schema
+   * @param defaultSchema
+   */
+  getModifiedSchema(schema, defaultSchema) {
+    let modified = {};
+    if (!defaultSchema) {
+      return schema;
+    }
+    _.each(schema, (val, key) => {
+      if (_.isObject(val) && defaultSchema.hasOwnProperty(key)) {
+        let subModified = this.getModifiedSchema(val, defaultSchema[key]);
+        if (!_.isEmpty(subModified)) {
+          modified[key] = subModified;
+        }
+      }
+      else if (
+        (key === 'type') ||
+        (key === 'key') ||
+        (key === 'label') ||
+        (key === 'input') ||
+        !defaultSchema.hasOwnProperty(key) ||
+        _.isArray(val) ||
+        (val !== defaultSchema[key])
+      ) {
+        modified[key] = val;
+      }
+    });
+    return modified;
+  }
+
+  /**
+   * Returns the JSON schema for this component.
+   */
+  get schema() {
+    return this.getModifiedSchema(_.omit(this.component, 'id'), this.defaultSchema);
   }
 
   /**
@@ -246,13 +416,32 @@ export class BaseComponent {
   }
 
   /**
+   * Removes all listeners for a certain event.
+   *
+   * @param event
+   */
+  off(event, cb) {
+    if (!this.events) {
+      return;
+    }
+    const type = `formio.${event}`;
+    _.each(this.eventListeners, (listener) => {
+      if ((listener.type == type) && (!cb || (cb === listener.listener))) {
+        this.events.off(listener.type, listener.listener);
+      }
+    });
+  }
+
+  /**
    * Emit a new event.
    *
    * @param {string} event - The event to emit.
    * @param {Object} data - The data to emit with the handler.
    */
   emit(event, data) {
-    this.events.emit(`formio.${event}`, data);
+    if (this.events) {
+      this.events.emit(`formio.${event}`, data);
+    }
   }
 
   /**
@@ -368,7 +557,7 @@ export class BaseComponent {
 
     if (this.element) {
       // Ensure you can get the component info from the element.
-      this.element.component = this.component;
+      this.element.component = this;
     }
 
     return this.element;
@@ -426,6 +615,49 @@ export class BaseComponent {
         element.removeChild(element.firstChild);
       }
     }
+  }
+
+  createModal(title) {
+    let self = this;
+    let modalBody = this.ce('div');
+    let modalOverlay = this.ce('div', {
+      class: 'formio-dialog-overlay'
+    });
+    let closeDialog = this.ce('button', {
+      class: 'formio-dialog-close pull-right btn btn-default btn-xs',
+      'aria-label': 'close'
+    });
+
+    let dialog = this.ce('div', {
+      class: 'formio-dialog formio-dialog-theme-default component-settings'
+    }, [
+      modalOverlay,
+      this.ce('div', {
+        class: 'formio-dialog-content'
+      }, [
+        modalBody,
+        closeDialog
+      ])
+    ]);
+
+    this.addEventListener(modalOverlay, 'click', (event) => {
+      event.preventDefault();
+      dialog.close();
+    });
+    this.addEventListener(closeDialog, 'click', (event) => {
+      event.preventDefault();
+      dialog.close();
+    });
+    this.addEventListener(dialog, 'close', () => {
+      this.removeChildFrom(dialog, document.body);
+    });
+    document.body.appendChild(dialog);
+    dialog.body = modalBody;
+    dialog.close = function() {
+      dialog.dispatchEvent(new CustomEvent('close'));
+      self.removeChildFrom(dialog, document.body);
+    };
+    return dialog;
   }
 
   /**
@@ -486,8 +718,9 @@ export class BaseComponent {
     });
 
     // Ensure you can get the component info from the element.
-    this.element.component = this.component;
+    this.element.component = this;
 
+    this.hook('element', this.element);
     return this.element;
   }
 
@@ -509,7 +742,7 @@ export class BaseComponent {
       // Add a default value.
       const dataValue = this.dataValue;
       if (!dataValue || !dataValue.length) {
-        this.addNewValue();
+        this.addNewValue(this.defaultValue);
       }
 
       // Build the rows.
@@ -529,33 +762,18 @@ export class BaseComponent {
       defaultValue = this.component.defaultValue;
     }
     else if (this.component.customDefaultValue) {
-      if (typeof this.component.customDefaultValue === 'string') {
-        try {
-          defaultValue = (new Function('component', 'row', 'data', '_',
-            `var value = ''; ${this.component.customDefaultValue}; return value;`))(this, this.data, this.data, _);
-        }
-        catch (e) {
-          defaultValue = null;
-          /* eslint-disable no-console */
-          console.warn(`An error occurred getting default value for ${this.component.key}`, e);
-          /* eslint-enable no-console */
-        }
-      }
-      else {
-        try {
-          defaultValue = FormioUtils.jsonLogic.apply(this.component.customDefaultValue, {
-            data: this.data,
-            row: this.data,
-            _
-          });
-        }
-        catch (err) {
-          defaultValue = null;
-          /* eslint-disable no-console */
-          console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-          /* eslint-enable no-console */
-        }
-      }
+      defaultValue = FormioUtils.evaluate(
+        this.component.customDefaultValue,
+        {
+          value: '',
+          component: this.component,
+          row: this.data,
+          data: (this.root ? this.root.data : this.data),
+          _,
+          instance: this
+        },
+        'value'
+      );
     }
 
     if (this._inputMask) {
@@ -581,18 +799,20 @@ export class BaseComponent {
   /**
    * Adds a new empty value to the data array.
    */
-  addNewValue() {
+  addNewValue(value) {
+    if (value === undefined) {
+      value = this.emptyValue;
+    }
     let dataValue = this.dataValue || [];
     if (!Array.isArray(dataValue)) {
       dataValue = [dataValue];
     }
 
-    const defaultValue = this.defaultValue;
-    if (Array.isArray(defaultValue)) {
-      dataValue = dataValue.concat(defaultValue);
+    if (Array.isArray(value)) {
+      dataValue = dataValue.concat(value);
     }
     else {
-      dataValue.push(defaultValue);
+      dataValue.push(value);
     }
     this.dataValue = dataValue;
   }
@@ -626,13 +846,14 @@ export class BaseComponent {
   /**
    * Rebuild the rows to contain the values of this component.
    */
-  buildRows() {
+  buildRows(values) {
     if (!this.tbody) {
       return;
     }
     this.inputs = [];
     this.tbody.innerHTML = '';
-    _.each(this.dataValue, (value, index) => {
+    values = values || this.dataValue;
+    _.each(values, (value, index) => {
       const tr = this.ce('tr');
       const td = this.ce('td');
       const input = this.createInput(td);
@@ -790,7 +1011,7 @@ export class BaseComponent {
   }
 
   getLabelWidth() {
-    if (_.isUndefined(this.component.labelWidth)) {
+    if (!this.component.labelWidth) {
       this.component.labelWidth = 30;
     }
 
@@ -798,7 +1019,7 @@ export class BaseComponent {
   }
 
   getLabelMargin() {
-    if (_.isUndefined(this.component.labelMargin)) {
+    if (!this.component.labelMargin) {
       this.component.labelMargin = 3;
     }
 
@@ -941,17 +1162,20 @@ export class BaseComponent {
    * @param {HTMLElement} container - The containing element that will contain this tooltip.
    */
   createTooltip(container, component, classes) {
+    if (this.tooltip) {
+      return;
+    }
     component = component || this.component;
     classes = classes || `${this.iconClass('question-sign')} text-muted`;
     if (!component.tooltip) {
       return;
     }
-    this.tooltip = this.ce('i', {
+    const ttElement = this.ce('i', {
       class: classes
     });
     container.appendChild(this.text(' '));
-    container.appendChild(this.tooltip);
-    new Tooltip(this.tooltip, {
+    container.appendChild(ttElement);
+    this.tooltip = new Tooltip(ttElement, {
       delay: {
         hide: 100
       },
@@ -1112,6 +1336,20 @@ export class BaseComponent {
     }
   }
 
+  /**
+   * Remove an event listener from the object.
+   *
+   * @param obj
+   * @param evt
+   */
+  removeEventListener(obj, evt) {
+    _.each(this.eventHandlers, (handler) => {
+      if (handler.type === evt) {
+        obj.removeEventListener(evt, handler.func);
+      }
+    });
+  }
+
   redraw() {
     // Don't bother if we have not built yet.
     if (!this.isBuilt) {
@@ -1140,6 +1378,10 @@ export class BaseComponent {
         input.mask.destroy();
       }
     });
+    if (this.tooltip) {
+      this.tooltip.dispose();
+      this.tooltip = null;
+    }
     this.inputs = [];
   }
 
@@ -1243,6 +1485,16 @@ export class BaseComponent {
   }
 
   /**
+   * Determines if an element has a class.
+   *
+   * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
+   */
+  hasClass(element, className) {
+    className = " " + className + " ";
+    return ((" " + element.className + " ").replace(/[\n\t\r]/g, " ").indexOf(className) > -1);
+  }
+
+  /**
    * Adds a class to a DOM element.
    *
    * @param element
@@ -1291,6 +1543,8 @@ export class BaseComponent {
    * Check for conditionals and hide/show the element based on those conditions.
    */
   checkConditions(data) {
+    data = data || (this.root ? this.root.data: {});
+
     // Check advanced conditions
     let result;
 
@@ -1298,7 +1552,13 @@ export class BaseComponent {
       result = this.show(true);
     }
     else {
-      result = this.show(FormioUtils.checkCondition(this.component, this.data, data));
+      result = this.show(FormioUtils.checkCondition(
+        this.component,
+        this.data,
+        data,
+        this.root ? this.root._form : {},
+        this
+      ));
     }
 
     if (this.fieldLogic(data)) {
@@ -1324,7 +1584,14 @@ export class BaseComponent {
     const newComponent = _.cloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
-      const result = FormioUtils.checkTrigger(newComponent, logic.trigger, this.data, data);
+      const result = FormioUtils.checkTrigger(
+        newComponent,
+        logic.trigger,
+        this.data,
+        data,
+        this.root ? this.root._form : {},
+        this
+      );
 
       if (result) {
         changed |= logic.actions.reduce((changed, action) => {
@@ -1333,9 +1600,20 @@ export class BaseComponent {
               FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
             case 'value': {
-              const newValue = (new Function('row', 'data', 'component', 'result',
-                action.value))(this.data, data, newComponent, result);
-              if (!_.isEqual(this.getValue(), newValue)) {
+              const oldValue = this.getValue();
+              const newValue = FormioUtils.evaluate(
+                action.value,
+                {
+                  value: _.clone(oldValue),
+                  row: this.data,
+                  data: data,
+                  component: newComponent,
+                  result: result,
+                  instance: this
+                },
+                'value'
+              );
+              if (!_.isEqual(oldValue, newValue)) {
                 this.setValue(newValue);
                 changed = true;
               }
@@ -1534,13 +1812,81 @@ export class BaseComponent {
    * @param noSet
    */
   addInput(input, container) {
+    if (!input) {
+      return;
+    }
     if (input && container) {
-      this.inputs.push(input);
       input = container.appendChild(input);
     }
+    this.inputs.push(input);
     this.hook('input', input, container);
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
+    return input;
+  }
+
+  get wysiwygDefault() {
+    return {
+      theme: 'snow',
+      placeholder: this.t(this.component.placeholder),
+      modules: {
+        toolbar: [
+          [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
+          [{'header': [1, 2, 3, 4, 5, 6, false]}],
+          [{'font': []}],
+          ['bold', 'italic', 'underline', 'strike', {'script': 'sub'}, {'script': 'super'}, 'clean'],
+          [{'color': []}, {'background': []}],
+          [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}, {'align': []}],
+          ['blockquote', 'code-block'],
+          ['link', 'image', 'video', 'formula', 'source']
+        ]
+      }
+    };
+  }
+
+  addQuill(element, settings, onChange) {
+    settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
+
+    // Lazy load the quill css.
+    BaseComponent.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
+      {type: 'styles', src: `https://cdn.quilljs.com/1.3.5/quill.${settings.theme}.css`}
+    ], true);
+
+    // Lazy load the quill library.
+    return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true)
+      .then(() => {
+        this.quill = new Quill(element, settings);
+
+        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
+        const txtArea = document.createElement('textarea');
+        txtArea.setAttribute('class', 'quill-source-code');
+        this.quill.addContainer('ql-custom').appendChild(txtArea);
+        let qlSource = document.querySelector('.ql-source');
+        if (qlSource) {
+          qlSource.addEventListener('click', () => {
+            if (txtArea.style.display === 'inherit') {
+              this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+            }
+            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
+          });
+        }
+        /** END CODEBLOCK **/
+
+        this.quill.on('text-change', () => {
+          txtArea.value = this.quill.root.innerHTML;
+          onChange(txtArea);
+        });
+
+        return this.quill;
+      });
+  }
+
+  get emptyValue() {
+    return null;
+  }
+
+  get hasValue() {
+    return _.has(this.data, this.component.key);
   }
 
   /**
@@ -1741,39 +2087,13 @@ export class BaseComponent {
 
     flags = flags || {};
     flags.noCheck = true;
-    let changed = false;
-
-    if (typeof this.component.calculateValue === 'string') {
-      try {
-        const value = (new Function('component', 'row', 'data',
-          `value = []; ${this.component.calculateValue}; return value;`))(this, this.data, data);
-        changed = this.setValue(value, flags);
-      }
-      catch (err) {
-        /* eslint-disable no-console */
-        console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-        changed = false;
-        /* eslint-enable no-console */
-      }
-    }
-    else {
-      try {
-        const val = FormioUtils.jsonLogic.apply(this.component.calculateValue, {
-          data,
-          row: this.data,
-          _
-        });
-        changed = this.setValue(val, flags);
-      }
-      catch (err) {
-        /* eslint-disable no-console */
-        console.warn(`An error occurred calculating a value for ${this.component.key}`, err);
-        changed = false;
-        /* eslint-enable no-console */
-      }
-    }
-
-    return changed;
+    return this.setValue(FormioUtils.evaluate(this.component.calculateValue, {
+      value: [],
+      component: this.component,
+      data,
+      row: this.data,
+      instance: this
+    }, 'value'), flags);
   }
 
   /**
@@ -1833,7 +2153,7 @@ export class BaseComponent {
 
   checkValidity(data, dirty) {
     // Force valid if component is conditionally hidden.
-    if (!FormioUtils.checkCondition(this.component, data, this.data)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
       return true;
     }
 
@@ -1946,7 +2266,7 @@ export class BaseComponent {
     if (this.component.multiple && !Array.isArray(value)) {
       value = [value];
     }
-    this.buildRows();
+    this.buildRows(value);
     const isArray = Array.isArray(value);
     for (const i in this.inputs) {
       if (this.inputs.hasOwnProperty(i)) {

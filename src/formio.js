@@ -1197,6 +1197,7 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
-// Support ES5 require and globals.
-module.exports = global.Formio = Formio;
+// Include the utils in the basic build.
+Formio.Utils = require('./utils');
+global.Formio = Formio;
 export default Formio;

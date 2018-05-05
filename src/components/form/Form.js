@@ -5,13 +5,40 @@ import Formio from '../../formio';
 import formFactory from '../../formFactory';
 
 export class FormComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'form',
+      key: 'form',
+      src: '',
+      reference: true,
+      form: '',
+      path: ''
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Nested Form',
+      icon: 'fa fa-wpforms',
+      group: 'advanced',
+      documentation: 'http://help.form.io/userguide/#form',
+      weight: 110,
+      schema: FormComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.subForm = null;
+    this.formSrc = '';
     this.subFormReady = new Promise((resolve, reject) => {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
+  }
+
+  get defaultSchema() {
+    return FormComponent.schema();
   }
 
   get emptyValue() {
@@ -40,37 +67,46 @@ export class FormComponent extends BaseComponent {
       this.component.submit = true;
     }
 
+    if (this.component.src) {
+      this.formSrc = this.component.src;
+    }
+
     if (
       !this.component.src &&
       !this.options.formio &&
-      this.component.form
+      (this.component.form || this.component.path)
     ) {
-      this.component.src = Formio.getBaseUrl();
+      this.formSrc = Formio.getBaseUrl();
       if (this.component.project) {
         // Check to see if it is a MongoID.
         if (FormioUtils.isMongoId(this.component.project)) {
-          this.component.src += '/project';
+          this.formSrc += '/project';
         }
-        this.component.src += `/${this.component.project}`;
-        srcOptions.project = this.component.src;
+        this.formSrc += `/${this.component.project}`;
+        srcOptions.project = this.formSrc;
       }
-      this.component.src += `/form/${this.component.form}`;
+      if (this.component.form) {
+        this.formSrc += `/form/${this.component.form}`;
+      }
+      else if (this.component.path) {
+        this.formSrc += `/${this.component.path}`;
+      }
     }
 
     // Build the source based on the root src path.
-    if (!this.component.src && this.options.formio) {
+    if (!this.formSrc && this.options.formio) {
       const rootSrc = this.options.formio.formsUrl;
       if (this.component.path) {
         const parts = rootSrc.split('/');
         parts.pop();
-        this.component.src = `${parts.join('/')}/${this.component.path}`;
+        this.formSrc = `${parts.join('/')}/${this.component.path}`;
       }
       if (this.component.form) {
-        this.component.src = `${rootSrc}/${this.component.form}`;
+        this.formSrc = `${rootSrc}/${this.component.form}`;
       }
     }
 
-    (new Formio(this.component.src)).loadForm({params: {live: 1}}).then((formObj) => {
+    (new Formio(this.formSrc)).loadForm({params: {live: 1}}).then((formObj) => {
       // Iterate through every component and hide the submit button.
       FormioUtils.eachComponent(formObj.components, (component) => {
         if ((component.type === 'button') && (component.action === 'submit')) {
@@ -83,7 +119,7 @@ export class FormComponent extends BaseComponent {
         this.dataValue = this.subForm.getValue();
         this.onChange();
       });
-      this.subForm.url = this.component.src;
+      this.subForm.url = this.formSrc;
       this.subForm.nosubmit = false;
       this.restoreValue();
       this.subFormReadyResolve(this.subForm);

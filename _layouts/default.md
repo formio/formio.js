@@ -23,16 +23,26 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   <link href="https://unpkg.com/bootstrap-vertical-tabs@1.2.2/bootstrap.vertical-tabs.min.css" rel="stylesheet">
-  <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
+  {% if page.lib %}
+    <link href="{{ site.baseurl }}/app/dist/formio.{{ page.lib }}.min.css" rel="stylesheet">
+  {% endif %}
+  {% if page.lib == nil %}
+    <link href="{{ site.baseurl }}/app/dist/formio.full.min.css" rel="stylesheet">
+  {% endif %}
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
-  <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
+  {% if page.lib %}
+    <script src="{{ site.baseurl }}/app/dist/formio.{{ page.lib }}.js"></script>
+  {% endif %}
+  {% if page.lib == nil %}
+    <script src="{{ site.baseurl }}/app/dist/formio.full.js"></script>
+  {% endif %}
   {% if page.contrib %}
-    <script src="{{ site.baseurl }}/dist/formio.contrib.js"></script>
+    <script src="{{ site.baseurl }}/app/dist/formio.contrib.js"></script>
   {% endif %}
 </head>
 <body>
@@ -53,6 +63,7 @@
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         <li {% if page.section == 'home' %}class="active"{% endif %}><a href="{{ site.baseurl }}"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li {% if page.section == 'builder' %}class="active"{% endif %}><a href="app/builder"><span class="glyphicon glyphicon-th-list"></span> Form Builder</a></li>
         <li {% if page.section == 'examples' %}class="active"{% endif %}><a href="app/examples"><span class="glyphicon glyphicon-check"></span> Examples</a></li>
         <li><a target="_blank" href="https://github.com/formio/formio.js/wiki"><span class="glyphicon glyphicon-book"></span> Documentation</a></li>
         <li {% if page.section == 'sdk'%}class="active"{% endif %}><a href="app/sdk"><span class="glyphicon glyphicon-list-alt"></span> SDK</a></li>
@@ -64,7 +75,7 @@
     </div><!--/.nav-collapse -->
   </div>
 </nav>
-<div class="container" style="margin-top: 60px;">
+<div class="{% if page.fluid %}container-fluid{% endif %}{% if page.fluid == nil %}container{% endif %}" style="margin-top: 60px;">
   {{ content }}
 </div>
 <script async defer src="https://buttons.github.io/buttons.js"></script>

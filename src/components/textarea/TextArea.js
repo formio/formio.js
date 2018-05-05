@@ -3,6 +3,28 @@ import {TextFieldComponent} from '../textfield/TextField';
 import {BaseComponent} from '../base/Base';
 
 export class TextAreaComponent extends TextFieldComponent {
+  static schema(...extend) {
+    return TextFieldComponent.schema({
+      type: 'textarea',
+      label: 'Text Area',
+      key: 'textArea',
+      rows: 3,
+      wysiwyg: false,
+      editor: ''
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Text Area',
+      group: 'basic',
+      icon: 'fa fa-font',
+      documentation: 'http://help.form.io/userguide/#textarea',
+      weight: 40,
+      schema: TextAreaComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
 
@@ -10,37 +32,31 @@ export class TextAreaComponent extends TextFieldComponent {
     this.options.submitOnEnter = false;
   }
 
-  wysiwygDefault() {
-    return {
-      theme: 'snow',
-      placeholder: this.component.placeholder,
-      modules: {
-        toolbar: [
-          [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
-          [{'header': [1, 2, 3, 4, 5, 6, false]}],
-          [{'font': []}],
-          ['bold', 'italic', 'underline', 'strike', {'script': 'sub'}, {'script': 'super'}, 'clean'],
-          [{'color': []}, {'background': []}],
-          [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}, {'align': []}],
-          ['blockquote', 'code-block'],
-          ['link', 'image', 'video', 'formula', 'source']
-        ]
-      }
-    };
+  get defaultSchema() {
+    return TextAreaComponent.schema();
+  }
+
+  acePlaceholder() {
+    if (!this.component.placeholder || !this.editor) {
+      return;
+    }
+    var shouldShow = !this.editor.session.getValue().length;
+    var node = this.editor.renderer.emptyMessageNode;
+    if (!shouldShow && node) {
+      this.editor.renderer.scroller.removeChild(this.editor.renderer.emptyMessageNode);
+      this.editor.renderer.emptyMessageNode = null;
+    } else if (shouldShow && !node) {
+      node = this.editor.renderer.emptyMessageNode = this.ce('div');
+      node.textContent = this.t(this.component.placeholder);
+      node.className = "ace_invisible ace_emptyMessage";
+      node.style.padding = "0 9px";
+      this.editor.renderer.scroller.appendChild(node);
+    }
   }
 
   createInput(container) {
-    if (!this.component.wysiwyg) {
+    if (!this.component.wysiwyg && !this.component.editor) {
       return super.createInput(container);
-    }
-
-    // Normalize the configurations.
-    if (this.component.wysiwyg.toolbarGroups) {
-      console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
-      this.component.wysiwyg = this.wysiwygDefault();
-    }
-    if (typeof this.component.wysiwyg === 'boolean') {
-      this.component.wysiwyg = this.wysiwygDefault();
     }
 
     // Add the input.
@@ -48,6 +64,21 @@ export class TextAreaComponent extends TextFieldComponent {
       class: 'formio-wysiwyg-editor'
     });
     container.appendChild(this.input);
+
+    if (this.component.editor === 'ace') {
+      this.editorReady = BaseComponent.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)
+        .then(() => {
+          let mode = this.component.as || 'javascript';
+          this.editor = ace.edit(this.input);
+          this.editor.on('change', () => this.updateValue({noUpdateEvent: true}));
+          this.editor.getSession().setTabSize(2);
+          this.editor.getSession().setMode("ace/mode/" + mode);
+          this.editor.on('input', () => this.acePlaceholder());
+          setTimeout(() => this.acePlaceholder(), 100);
+          return this.editor;
+        });
+      return this.input;
+    }
 
     // Lazy load the quill css.
     BaseComponent.requireLibrary(`quill-css-${this.component.wysiwyg.theme}`, 'Quill', [
@@ -67,7 +98,7 @@ export class TextAreaComponent extends TextFieldComponent {
 
         // Allows users to skip toolbar items when tabbing though form
         const elm = document.querySelectorAll('.ql-formats > button');
-        for (let i=0; i < elm.length; i++) {
+        for (let i = 0; i < elm.length; i++) {
           elm[i].setAttribute('tabindex', '-1');
         }
 
@@ -86,15 +117,53 @@ export class TextAreaComponent extends TextFieldComponent {
           txtArea.value = this.quill.root.innerHTML;
           this.updateValue(true);
         });
-
-        if (this.options.readOnly || this.component.disabled) {
-          this.quill.disable();
-        }
-
-        return this.quill;
+        return this.input;
       });
 
+    // Normalize the configurations.
+    if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
+      console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
+      this.component.wysiwyg = this.wysiwygDefault;
+      this.emit('componentEdit', this);
+    }
+    if (!this.component.wysiwyg || (typeof this.component.wysiwyg === 'boolean')) {
+      this.component.wysiwyg = this.wysiwygDefault;
+      this.emit('componentEdit', this);
+    }
+
+    // Add the quill editor.
+    this.editorReady = this.addQuill(
+      this.input,
+      this.component.wysiwyg, () => this.updateValue({noUpdateEvent: true})
+    ).then((quill) => {
+      quill.root.spellcheck = this.component.spellcheck;
+
+      // Allows users to skip toolbar items when tabbing though form
+      const elm = document.querySelectorAll('.ql-formats > button');
+      for (let i=0; i < elm.length; i++) {
+        elm[i].setAttribute('tabindex', '-1');
+      }
+
+      if (this.options.readOnly || this.component.disabled) {
+        quill.disable();
+      }
+
+      return quill;
+    });
+
     return this.input;
+  }
+
+  setConvertedValue(value) {
+    if (this.component.as && this.component.as === 'json' && value) {
+      try {
+        value = JSON.stringify(value);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+    return value;
   }
 
   isEmpty(value) {
@@ -115,20 +184,52 @@ export class TextAreaComponent extends TextFieldComponent {
   }
 
   setValue(value, flags) {
-    if (!this.component.wysiwyg) {
-      return super.setValue(value, flags);
+    value = value || '';
+    if (!this.component.wysiwyg && !this.component.editor) {
+      return super.setValue(this.setConvertedValue(value), flags);
     }
 
-    this.quillReady.then((quill) => {
-      quill.clipboard.dangerouslyPasteHTML(value);
-      this.updateValue(flags);
+    // Set the value when the editor is ready.
+    this.editorReady.then((editor) => {
+      if (this.component.editor === 'ace') {
+        editor.setValue(this.setConvertedValue(value));
+      }
+      else {
+        editor.clipboard.dangerouslyPasteHTML(this.setConvertedValue(value));
+        this.updateValue(flags);
+      }
     });
+  }
+
+  getConvertedValue(value) {
+    if (this.component.as && this.component.as === 'json' && value) {
+      try {
+        value = JSON.parse(value);
+      }
+      catch (err) {
+        console.warn(err);
+      }
+    }
+    return value;
   }
 
   getValue() {
     if (this.viewOnly) {
       return this.dataValue;
     }
+
+    if (!this.component.wysiwyg && !this.component.editor) {
+      return this.getConvertedValue(super.getValue());
+    }
+
+    if (this.component.editor === 'ace') {
+      return this.editor ? this.getConvertedValue(this.editor.getValue()) : '';
+    }
+
+    if (this.quill) {
+      return this.getConvertedValue(this.quill.root.innerHTML);
+    }
+
     return this.quill ? this.quill.root.innerHTML : super.getValue();
   }
 
