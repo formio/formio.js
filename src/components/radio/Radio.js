@@ -33,9 +33,6 @@ export class RadioComponent extends BaseComponent {
 
       this.addShortcut(label, value.shortcut);
 
-      // Create the SPAN around the textNode for better style hooks
-      const labelSpan = this.ce('span');
-
       // Determine the attributes for this input.
       const inputId = `${this.id}${this.row}-${value.value}`;
       this.info.attr.id = inputId;
@@ -48,7 +45,8 @@ export class RadioComponent extends BaseComponent {
         input.setAttribute(key, value);
       });
 
-      if (labelOnTheTopOrOnTheLeft) {
+      const labelSpan = this.ce('span');
+      if (value.label && labelOnTheTopOrOnTheLeft) {
         label.appendChild(labelSpan);
       }
 
@@ -57,8 +55,11 @@ export class RadioComponent extends BaseComponent {
 
       this.addInput(input, label);
 
-      labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
-      if (!labelOnTheTopOrOnTheLeft) {
+      if (value.label) {
+        labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
+      }
+
+      if (value.label && !labelOnTheTopOrOnTheLeft) {
         label.appendChild(labelSpan);
       }
       labelWrapper.appendChild(label);
