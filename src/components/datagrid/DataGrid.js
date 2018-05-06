@@ -274,6 +274,7 @@ export class DataGridComponent extends FormioComponents {
         value = [value];
       }
       else {
+        this.buildRows();
         return;
       }
     }

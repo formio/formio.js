@@ -7429,6 +7429,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
         if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
           value = [value];
         } else {
+          this.buildRows();
           return;
         }
       }
