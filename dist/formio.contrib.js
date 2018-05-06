@@ -1666,7 +1666,7 @@ var BaseComponent = function () {
     key: 'removeEventListener',
     value: function removeEventListener(obj, evt) {
       _lodash2.default.each(this.eventHandlers, function (handler) {
-        if (handler.type === evt) {
+        if (obj.removeEventListener && handler.type === evt) {
           obj.removeEventListener(evt, handler.func);
         }
       });

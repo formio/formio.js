@@ -483,6 +483,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'destroy',
     value: function destroy(all) {
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'destroy', this).call(this, all);
+      this.empty(this.getElement());
       this.destroyComponents();
     }
   }, {
@@ -490,7 +491,6 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     value: function destroyComponents() {
       var _this5 = this;
 
-      this.empty(this.getElement());
       var components = _lodash2.default.clone(this.components);
       _lodash2.default.each(components, function (comp) {
         return _this5.removeComponent(comp, _this5.components);
@@ -2944,7 +2944,7 @@ var BaseComponent = function () {
     key: 'removeEventListener',
     value: function removeEventListener(obj, evt) {
       _lodash2.default.each(this.eventHandlers, function (handler) {
-        if (handler.type === evt) {
+        if (obj.removeEventListener && handler.type === evt) {
           obj.removeEventListener(evt, handler.func);
         }
       });

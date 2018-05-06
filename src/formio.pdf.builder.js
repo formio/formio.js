@@ -3,6 +3,35 @@ import FormioUtils from './utils';
 import FormioPDF from './formio.pdf';
 
 export class FormioPDFBuilder extends FormioFormBuilder {
+  get defaultComponents() {
+    return {
+      pdf: {
+        title: 'PDF Fields',
+        weight: 0,
+        default: true,
+        components: {
+          textfield: true,
+          number: true,
+          password: true,
+          email: true,
+          phoneNumber: true,
+          currency: true,
+          checkbox: true,
+          signature: true,
+          select: true,
+          textarea: true,
+          datetime: true
+        }
+      },
+      basic: false,
+      advanced: false,
+      layout: false,
+      data: false,
+      premium: false,
+      resource: false
+    };
+  }
+
   addDropZone() {
     if (this.dropZone) {
       return;
@@ -29,6 +58,7 @@ export class FormioPDFBuilder extends FormioFormBuilder {
 
   render() {
     return this.onElement.then(() => {
+      this.clear();
       this.build();
       this.isBuilt = true;
       this.onResize();
@@ -54,10 +84,11 @@ export class FormioPDFBuilder extends FormioFormBuilder {
   }
 
   addComponentTo(parent, schema, element, sibling) {
+    const comp = super.addComponentTo(parent, schema, element, sibling);
     if (this.pdfForm && schema.overlay) {
       this.pdfForm.postMessage({name: 'addElement', data: schema});
     }
-    return super.addComponentTo(parent, schema, element, sibling);
+    return comp;
   }
 
   addComponent(component, element, data, before) {
@@ -83,8 +114,9 @@ export class FormioPDFBuilder extends FormioFormBuilder {
     this.activateDropZone();
   }
 
-  // Do not clear the iframe.
-  clear() {}
+  clear() {
+    this.destroyComponents();
+  }
   redraw() {
     if (this.pdfForm) {
       this.pdfForm.postMessage({name: 'redraw'});
@@ -103,7 +135,6 @@ export class FormioPDFBuilder extends FormioFormBuilder {
       return false;
     }
 
-    schema.id = FormioUtils.getRandomComponentId();
     schema.overlay = {
       top: event.offsetY,
       left: event.offsetX,
@@ -119,11 +150,14 @@ export class FormioPDFBuilder extends FormioFormBuilder {
   // Don't need to add a submit button here... the pdfForm will already do this.
   addSubmitButton() {}
 
-  addBuilderComponent(component) {
-    const builderComponent = super.addBuilderComponent(component);
-    builderComponent.element.draggable = true;
-    builderComponent.element.setAttribute('draggable', true);
-    this.addEventListener(builderComponent.element, 'dragstart', (event) => this.dragStart(event, component));
+  addBuilderComponent(component, group) {
+    const builderComponent = super.addBuilderComponent(component, group);
+    if (builderComponent) {
+      builderComponent.element.draggable = true;
+      builderComponent.element.setAttribute('draggable', true);
+      this.addEventListener(builderComponent.element, 'dragstart', (event) => this.dragStart(event, component));
+    }
+    return builderComponent;
   }
 
   refreshDraggable() {
@@ -188,6 +222,7 @@ export class FormioPDFBuilder extends FormioFormBuilder {
     return super.setForm(form).then(() => {
       return this.ready.then(() => {
         if (this.pdfForm) {
+          this.pdfForm.postMessage({name: 'form', data: form});
           return this.pdfForm.setForm(form);
         }
         return form;

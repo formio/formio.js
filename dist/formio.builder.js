@@ -511,6 +511,7 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     key: 'destroy',
     value: function destroy(all) {
       _get(FormioComponents.prototype.__proto__ || Object.getPrototypeOf(FormioComponents.prototype), 'destroy', this).call(this, all);
+      this.empty(this.getElement());
       this.destroyComponents();
     }
   }, {
@@ -518,7 +519,6 @@ var FormioComponents = exports.FormioComponents = function (_BaseComponent) {
     value: function destroyComponents() {
       var _this5 = this;
 
-      this.empty(this.getElement());
       var components = _lodash2.default.clone(this.components);
       _lodash2.default.each(components, function (comp) {
         return _this5.removeComponent(comp, _this5.components);
@@ -3100,7 +3100,7 @@ var BaseComponent = function () {
     key: 'removeEventListener',
     value: function removeEventListener(obj, evt) {
       _lodash2.default.each(this.eventHandlers, function (handler) {
-        if (handler.type === evt) {
+        if (obj.removeEventListener && handler.type === evt) {
           obj.removeEventListener(evt, handler.func);
         }
       });
@@ -15855,23 +15855,12 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
     _this.updateDraggable = _lodash2.default.debounce(_this.refreshDraggable.bind(_this), 200);
 
     // Setup the builder options.
-    _this.options.builder = _lodash2.default.defaultsDeep({}, _this.options.builder, {
-      basic: {
-        title: 'Basic Components',
-        weight: 0,
-        default: true
-      },
-      advanced: {
-        title: 'Advanced',
-        weight: 10
-      },
-      layout: {
-        title: 'Layout',
-        weight: 20
-      },
-      data: {
-        title: 'Data',
-        weight: 30
+    _this.options.builder = _lodash2.default.defaultsDeep({}, _this.options.builder, _this.defaultComponents);
+
+    // Turn off if explicitely said to do so...
+    _lodash2.default.each(_this.defaultComponents, function (config, key) {
+      if (config === false) {
+        _this.options.builder[key] = false;
       }
     });
 
@@ -16547,6 +16536,29 @@ var FormioFormBuilder = exports.FormioFormBuilder = function (_FormioForm) {
       _get(FormioFormBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioFormBuilder.prototype), 'build', this).call(this);
       this.updateDraggable();
       this.formReadyResolve();
+    }
+  }, {
+    key: 'defaultComponents',
+    get: function get() {
+      return {
+        basic: {
+          title: 'Basic Components',
+          weight: 0,
+          default: true
+        },
+        advanced: {
+          title: 'Advanced',
+          weight: 10
+        },
+        layout: {
+          title: 'Layout',
+          weight: 20
+        },
+        data: {
+          title: 'Data',
+          weight: 30
+        }
+      };
     }
   }, {
     key: 'ready',
@@ -19334,6 +19346,7 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
       var _this3 = this;
 
       return this.onElement.then(function () {
+        _this3.clear();
         _this3.build();
         _this3.isBuilt = true;
         _this3.onResize();
@@ -19366,10 +19379,11 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
   }, {
     key: 'addComponentTo',
     value: function addComponentTo(parent, schema, element, sibling) {
+      var comp = _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'addComponentTo', this).call(this, parent, schema, element, sibling);
       if (this.pdfForm && schema.overlay) {
         this.pdfForm.postMessage({ name: 'addElement', data: schema });
       }
-      return _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'addComponentTo', this).call(this, parent, schema, element, sibling);
+      return comp;
     }
   }, {
     key: 'addComponent',
@@ -19398,12 +19412,11 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
       event.dataTransfer.setData('text/plain', JSON.stringify(component.schema));
       this.activateDropZone();
     }
-
-    // Do not clear the iframe.
-
   }, {
     key: 'clear',
-    value: function clear() {}
+    value: function clear() {
+      this.destroyComponents();
+    }
   }, {
     key: 'redraw',
     value: function redraw() {
@@ -19425,7 +19438,6 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
         return false;
       }
 
-      schema.id = _utils2.default.getRandomComponentId();
       schema.overlay = {
         top: event.offsetY,
         left: event.offsetX,
@@ -19445,15 +19457,18 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
     value: function addSubmitButton() {}
   }, {
     key: 'addBuilderComponent',
-    value: function addBuilderComponent(component) {
+    value: function addBuilderComponent(component, group) {
       var _this4 = this;
 
-      var builderComponent = _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'addBuilderComponent', this).call(this, component);
-      builderComponent.element.draggable = true;
-      builderComponent.element.setAttribute('draggable', true);
-      this.addEventListener(builderComponent.element, 'dragstart', function (event) {
-        return _this4.dragStart(event, component);
-      });
+      var builderComponent = _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'addBuilderComponent', this).call(this, component, group);
+      if (builderComponent) {
+        builderComponent.element.draggable = true;
+        builderComponent.element.setAttribute('draggable', true);
+        this.addEventListener(builderComponent.element, 'dragstart', function (event) {
+          return _this4.dragStart(event, component);
+        });
+      }
+      return builderComponent;
     }
   }, {
     key: 'refreshDraggable',
@@ -19528,11 +19543,42 @@ var FormioPDFBuilder = exports.FormioPDFBuilder = function (_FormioFormBuilder) 
       return _get(FormioPDFBuilder.prototype.__proto__ || Object.getPrototypeOf(FormioPDFBuilder.prototype), 'setForm', this).call(this, form).then(function () {
         return _this7.ready.then(function () {
           if (_this7.pdfForm) {
+            _this7.pdfForm.postMessage({ name: 'form', data: form });
             return _this7.pdfForm.setForm(form);
           }
           return form;
         });
       });
+    }
+  }, {
+    key: 'defaultComponents',
+    get: function get() {
+      return {
+        pdf: {
+          title: 'PDF Fields',
+          weight: 0,
+          default: true,
+          components: {
+            textfield: true,
+            number: true,
+            password: true,
+            email: true,
+            phoneNumber: true,
+            currency: true,
+            checkbox: true,
+            signature: true,
+            select: true,
+            textarea: true,
+            datetime: true
+          }
+        },
+        basic: false,
+        advanced: false,
+        layout: false,
+        data: false,
+        premium: false,
+        resource: false
+      };
     }
   }, {
     key: 'dropZoneStyles',

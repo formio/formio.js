@@ -17,23 +17,12 @@ export class FormioFormBuilder extends FormioForm {
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
 
     // Setup the builder options.
-    this.options.builder = _.defaultsDeep({}, this.options.builder, {
-      basic: {
-        title: 'Basic Components',
-        weight: 0,
-        default: true,
-      },
-      advanced: {
-        title: 'Advanced',
-        weight: 10
-      },
-      layout: {
-        title: 'Layout',
-        weight: 20
-      },
-      data: {
-        title: 'Data',
-        weight: 30
+    this.options.builder = _.defaultsDeep({}, this.options.builder, this.defaultComponents);
+
+    // Turn off if explicitely said to do so...
+    _.each(this.defaultComponents, (config, key) => {
+      if (config === false) {
+        this.options.builder[key] = false;
       }
     });
 
@@ -97,6 +86,28 @@ export class FormioFormBuilder extends FormioForm {
       return container;
     };
     this.setBuilderElement();
+  }
+
+  get defaultComponents() {
+    return {
+      basic: {
+        title: 'Basic Components',
+        weight: 0,
+        default: true,
+      },
+      advanced: {
+        title: 'Advanced',
+        weight: 10
+      },
+      layout: {
+        title: 'Layout',
+        weight: 20
+      },
+      data: {
+        title: 'Data',
+        weight: 30
+      }
+    };
   }
 
   scrollSidebar() {

@@ -1344,7 +1344,7 @@ export class BaseComponent {
    */
   removeEventListener(obj, evt) {
     _.each(this.eventHandlers, (handler) => {
-      if (handler.type === evt) {
+      if (obj.removeEventListener && (handler.type === evt)) {
         obj.removeEventListener(evt, handler.func);
       }
     });
