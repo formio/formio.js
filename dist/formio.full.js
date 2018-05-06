@@ -5378,7 +5378,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
       this.visibleColumns = true;
       this.errorContainer = this.element;
-      this.buildRows();
+      this.restoreValue();
       this.createDescription(this.element);
     }
   }, {
@@ -5406,29 +5406,11 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       this.numColumns += this.visibleComponents.length;
     }
   }, {
-    key: 'needsRebuild',
-    value: function needsRebuild() {
-      var previousNumColumns = this.numColumns;
-      var previousNumRows = this.numRows;
-      this.setVisibleComponents();
-
-      if (!this.tableBuilt || this.numRows !== previousNumRows || this.numColumns !== previousNumColumns) {
-        this.tableBuilt = true;
-        return true;
-      }
-
-      // No need to rebuild since rows and columns are the same.
-      return false;
-    }
-  }, {
     key: 'buildRows',
     value: function buildRows() {
       var _this3 = this;
 
-      if (!this.needsRebuild()) {
-        return;
-      }
-
+      this.setVisibleComponents();
       this.clear();
       this.createLabel(this.element);
       var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
@@ -5548,7 +5530,6 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
 
       // If a rebuild is needed, then rebuild the table.
       if (rebuild) {
-        this.buildRows();
         this.restoreValue();
       }
 
@@ -5560,12 +5541,14 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function setValue(value, flags) {
       flags = this.getFlags.apply(this, arguments);
       if (!value) {
+        this.buildRows();
         return;
       }
       if (!Array.isArray(value)) {
         if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
           value = [value];
         } else {
+          this.buildRows();
           return;
         }
       }
@@ -9033,9 +9016,6 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
 
         _this2.addShortcut(label, value.shortcut);
 
-        // Create the SPAN around the textNode for better style hooks
-        var labelSpan = _this2.ce('span');
-
         // Determine the attributes for this input.
         var inputId = '' + _this2.id + _this2.row + '-' + value.value;
         _this2.info.attr.id = inputId;
@@ -9048,7 +9028,8 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
           input.setAttribute(key, value);
         });
 
-        if (labelOnTheTopOrOnTheLeft) {
+        var labelSpan = _this2.ce('span');
+        if (value.label && labelOnTheTopOrOnTheLeft) {
           label.appendChild(labelSpan);
         }
 
@@ -9057,8 +9038,11 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
 
         _this2.addInput(input, label);
 
-        labelSpan.appendChild(_this2.text(_this2.addShortcutToLabel(value.label, value.shortcut)));
-        if (!labelOnTheTopOrOnTheLeft) {
+        if (value.label) {
+          labelSpan.appendChild(_this2.text(_this2.addShortcutToLabel(value.label, value.shortcut)));
+        }
+
+        if (value.label && !labelOnTheTopOrOnTheLeft) {
           label.appendChild(labelSpan);
         }
         labelWrapper.appendChild(label);
@@ -24168,7 +24152,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 }).call(this,require('_process'))
 },{"_process":82}],62:[function(require,module,exports){
-/* flatpickr v4.4.6, @license MIT */
+/* flatpickr v4.4.4, @license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
@@ -24603,9 +24587,7 @@ return /******/ (function(modules) { // webpackBootstrap
           args[_key - 1] = arguments[_key];
         }
 
-        var _loop = function _loop() {
-          var source = args[_i];
-
+        var _loop = function _loop(source) {
           if (source) {
             Object.keys(source).forEach(function (key) {
               return target[key] = source[key];
@@ -24614,25 +24596,13 @@ return /******/ (function(modules) { // webpackBootstrap
         };
 
         for (var _i = 0; _i < args.length; _i++) {
-          _loop();
+          var source = args[_i];
+
+          _loop(source);
         }
 
         return target;
       };
-    }
-
-    if (typeof window.requestAnimationFrame !== "function") {
-      var vendors = ["ms", "moz", "webkit", "o"];
-
-      for (var x = 0, length = vendors.length; x < length && !window.requestAnimationFrame; ++x) {
-        window.requestAnimationFrame = window[vendors[x] + "RequestAnimationFrame"];
-      }
-
-      if (typeof window.requestAnimationFrame !== "function") {
-        window.requestAnimationFrame = function (cb) {
-          return setTimeout(cb, 16);
-        };
-      }
     }
 
     var DEBOUNCED_CHANGE_MS = 300;
@@ -24715,20 +24685,19 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       function setCalendarWidth() {
-        var config = self.config;
-        if (config.weekNumbers === false && config.showMonths === 1) return;else if (config.noCalendar !== true) {
-          window.requestAnimationFrame(function () {
-            self.calendarContainer.style.visibility = "hidden";
-            self.calendarContainer.style.display = "block";
+        if (self.daysContainer !== undefined) {
+          self.calendarContainer.style.visibility = "hidden";
+          self.calendarContainer.style.display = "block";
+          var daysWidth = (self.days.offsetWidth + 1) * self.config.showMonths;
+          self.daysContainer.style.width = daysWidth + "px";
+          self.calendarContainer.style.width = daysWidth + "px";
 
-            if (self.daysContainer !== undefined) {
-              var daysWidth = (self.days.offsetWidth + 1) * config.showMonths;
-              self.daysContainer.style.width = daysWidth + "px";
-              self.calendarContainer.style.width = daysWidth + (self.weekWrapper !== undefined ? self.weekWrapper.offsetWidth : 0) + "px";
-              self.calendarContainer.style.removeProperty("visibility");
-              self.calendarContainer.style.removeProperty("display");
-            }
-          });
+          if (self.weekWrapper !== undefined) {
+            self.calendarContainer.style.width = daysWidth + self.weekWrapper.offsetWidth + "px";
+          }
+
+          self.calendarContainer.style.removeProperty("visibility");
+          self.calendarContainer.style.removeProperty("display");
         }
       }
 
@@ -24808,8 +24777,9 @@ return /******/ (function(modules) { // webpackBootstrap
       function onYearInput(event) {
         var year = parseInt(event.target.value) + (event.delta || 0);
 
-        if (year / 1000 > 1 || event.key === "Enter" && !/[^\d]/.test(year.toString())) {
-          changeYear(year);
+        if (year.toString().length === 4 || event.key === "Enter") {
+          event.target.blur();
+          if (!/[^\d]/.test(year.toString())) changeYear(year);
         }
       }
 
@@ -24825,8 +24795,7 @@ return /******/ (function(modules) { // webpackBootstrap
         self._handlers.push({
           element: element,
           event: event,
-          handler: handler,
-          options: options
+          handler: handler
         });
       }
 
@@ -24862,7 +24831,8 @@ return /******/ (function(modules) { // webpackBootstrap
         bind(window.document.body, "keydown", onKeyDown);
         if (!self.config.static) bind(self._input, "keydown", onKeyDown);
         if (!self.config.inline && !self.config.static) bind(window, "resize", debouncedResize);
-        if (window.ontouchstart !== undefined) bind(window.document, "click", documentClick);else bind(window.document, "mousedown", onClick(documentClick));
+        if (window.ontouchstart !== undefined) bind(window.document, "touchstart", documentClick);
+        bind(window.document, "mousedown", onClick(documentClick));
         bind(window.document, "focus", documentClick, {
           capture: true
         });
@@ -25353,7 +25323,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
         for (var i = self._handlers.length; i--;) {
           var h = self._handlers[i];
-          h.element.removeEventListener(h.event, h.handler, h.options);
+          h.element.removeEventListener(h.event, h.handler);
         }
 
         self._handlers = [];
@@ -25455,6 +25425,7 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       function onKeyDown(e) {
+        e.stopPropagation();
         var isInput = e.target === self._input;
         var calendarElem = isCalendarElem(e.target);
         var allowInput = self.config.allowInput;
@@ -25493,7 +25464,7 @@ return /******/ (function(modules) { // webpackBootstrap
               if (!isTimeObj) {
                 e.preventDefault();
 
-                if (self.daysContainer !== undefined && (allowInput === false || isInView(document.activeElement))) {
+                if (self.daysContainer !== undefined && self.config.allowInput === false) {
                   var _delta = e.keyCode === 39 ? 1 : -1;
 
                   if (!e.ctrlKey) focusOnDay(undefined, _delta);else {
@@ -25525,17 +25496,12 @@ return /******/ (function(modules) { // webpackBootstrap
               break;
 
             case 9:
-              if (!isTimeObj) break;
-
               if (e.target === self.hourElement) {
                 e.preventDefault();
                 self.minuteElement.select();
               } else if (e.target === self.minuteElement && (self.secondElement || self.amPM)) {
                 e.preventDefault();
-                if (self.secondElement !== undefined) self.secondElement.focus();else if (self.amPM !== undefined) {
-                  e.preventDefault();
-                  self.amPM.focus();
-                }
+                if (self.secondElement !== undefined) self.secondElement.focus();else if (self.amPM !== undefined) self.amPM.focus();
               } else if (e.target === self.secondElement && self.amPM) {
                 e.preventDefault();
                 self.amPM.focus();
@@ -25546,27 +25512,34 @@ return /******/ (function(modules) { // webpackBootstrap
             default:
               break;
           }
-        }
 
-        if (self.amPM !== undefined && e.target === self.amPM) {
           switch (e.key) {
             case self.l10n.amPM[0].charAt(0):
             case self.l10n.amPM[0].charAt(0).toLowerCase():
-              self.amPM.textContent = self.l10n.amPM[0];
-              setHoursFromInputs();
-              updateValue();
+              if (self.amPM !== undefined && e.target === self.amPM) {
+                self.amPM.textContent = self.l10n.amPM[0];
+                setHoursFromInputs();
+                updateValue();
+              }
+
               break;
 
             case self.l10n.amPM[1].charAt(0):
             case self.l10n.amPM[1].charAt(0).toLowerCase():
-              self.amPM.textContent = self.l10n.amPM[1];
-              setHoursFromInputs();
-              updateValue();
+              if (self.amPM !== undefined && e.target === self.amPM) {
+                self.amPM.textContent = self.l10n.amPM[1];
+                setHoursFromInputs();
+                updateValue();
+              }
+
+              break;
+
+            default:
               break;
           }
-        }
 
-        triggerEvent("onKeyDown", e);
+          triggerEvent("onKeyDown", e);
+        }
       }
 
       function onMouseOver(elem) {
@@ -25575,11 +25548,14 @@ return /******/ (function(modules) { // webpackBootstrap
             initialDate = self.parseDate(self.selectedDates[0], undefined, true).getTime(),
             rangeStartDate = Math.min(hoverDate, self.selectedDates[0].getTime()),
             rangeEndDate = Math.max(hoverDate, self.selectedDates[0].getTime());
+        var months = self.daysContainer.children,
+            firstDay = months[0].children[0].dateObj.getTime(),
+            lastDay = months[months.length - 1].lastChild.dateObj.getTime();
         var containsDisabled = false;
         var minRange = 0,
             maxRange = 0;
 
-        for (var t = rangeStartDate; t < rangeEndDate; t += duration.DAY) {
+        for (var t = firstDay; t < lastDay; t += duration.DAY) {
           if (!isEnabled(new Date(t), true)) {
             containsDisabled = containsDisabled || t > rangeStartDate && t < rangeEndDate;
             if (t < initialDate && (!minRange || t > minRange)) minRange = t;else if (t > initialDate && (!maxRange || t < maxRange)) maxRange = t;
@@ -25639,7 +25615,7 @@ return /******/ (function(modules) { // webpackBootstrap
           }
 
           setTimeout(function () {
-            self.mobileInput !== undefined && self.mobileInput.focus();
+            self.mobileInput !== undefined && self.mobileInput.click();
           }, 0);
           triggerEvent("onOpen");
           return;
@@ -25665,11 +25641,9 @@ return /******/ (function(modules) { // webpackBootstrap
             updateValue();
           }
 
-          if (self.config.allowInput === false && (e === undefined || !self.timeContainer.contains(e.relatedTarget))) {
-            setTimeout(function () {
-              return self.hourElement.select();
-            }, 50);
-          }
+          setTimeout(function () {
+            return self.hourElement.select();
+          }, 50);
         }
       }
 
@@ -25721,14 +25695,13 @@ return /******/ (function(modules) { // webpackBootstrap
             self.config._disable = parseDateRules(dates);
           }
         });
-        var timeMode = userConfig.mode === "time";
 
-        if (!userConfig.dateFormat && (userConfig.enableTime || timeMode)) {
-          formats$$1.dateFormat = userConfig.noCalendar || timeMode ? "H:i" + (userConfig.enableSeconds ? ":S" : "") : flatpickr.defaultConfig.dateFormat + " H:i" + (userConfig.enableSeconds ? ":S" : "");
+        if (!userConfig.dateFormat && userConfig.enableTime) {
+          formats$$1.dateFormat = userConfig.noCalendar ? "H:i" + (userConfig.enableSeconds ? ":S" : "") : flatpickr.defaultConfig.dateFormat + " H:i" + (userConfig.enableSeconds ? ":S" : "");
         }
 
-        if (userConfig.altInput && (userConfig.enableTime || timeMode) && !userConfig.altFormat) {
-          formats$$1.altFormat = userConfig.noCalendar || timeMode ? "h:i" + (userConfig.enableSeconds ? ":S K" : " K") : flatpickr.defaultConfig.altFormat + (" h:i" + (userConfig.enableSeconds ? ":S" : "") + " K");
+        if (userConfig.altInput && userConfig.enableTime && !userConfig.altFormat) {
+          formats$$1.altFormat = userConfig.noCalendar ? "h:i" + (userConfig.enableSeconds ? ":S K" : " K") : flatpickr.defaultConfig.altFormat + (" h:i" + (userConfig.enableSeconds ? ":S" : "") + " K");
         }
 
         Object.defineProperty(self.config, "minDate", {
@@ -25762,12 +25735,6 @@ return /******/ (function(modules) { // webpackBootstrap
           },
           set: minMaxTimeSetter("max")
         });
-
-        if (userConfig.mode === "time") {
-          self.config.noCalendar = true;
-          self.config.enableTime = true;
-        }
-
         Object.assign(self.config, formats$$1, userConfig);
 
         for (var i = 0; i < boolOpts.length; i++) {
@@ -25780,7 +25747,10 @@ return /******/ (function(modules) { // webpackBootstrap
           }
         }
 
-        self.isMobile = !self.config.disableMobile && !self.config.inline && self.config.mode === "single" && !self.config.disable.length && !self.config.enable.length && !self.config.weekNumbers && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        if (self.config.mode === "time") {
+          self.config.noCalendar = true;
+          self.config.enableTime = true;
+        }
 
         for (var _i2 = 0; _i2 < self.config.plugins.length; _i2++) {
           var pluginConf = self.config.plugins[_i2](self) || {};
@@ -25792,6 +25762,7 @@ return /******/ (function(modules) { // webpackBootstrap
           }
         }
 
+        self.isMobile = !self.config.disableMobile && !self.config.inline && self.config.mode === "single" && !self.config.disable.length && !self.config.enable.length && !self.config.weekNumbers && /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         triggerEvent("onParseConfig");
       }
 
@@ -25810,17 +25781,15 @@ return /******/ (function(modules) { // webpackBootstrap
           return acc + child.offsetHeight;
         }, 0),
             calendarWidth = self.calendarContainer.offsetWidth,
-            configPos = self.config.position.split(" "),
-            configPosVertical = configPos[0],
-            configPosHorizontal = configPos.length > 1 ? configPos[1] : null,
+            configPos = self.config.position,
             inputBounds = positionElement.getBoundingClientRect(),
             distanceFromBottom = window.innerHeight - inputBounds.bottom,
-            showOnTop = configPosVertical === "above" || configPosVertical !== "below" && distanceFromBottom < calendarHeight && inputBounds.top > calendarHeight;
+            showOnTop = configPos === "above" || configPos !== "below" && distanceFromBottom < calendarHeight && inputBounds.top > calendarHeight;
         var top = window.pageYOffset + inputBounds.top + (!showOnTop ? positionElement.offsetHeight + 2 : -calendarHeight - 2);
         toggleClass(self.calendarContainer, "arrowTop", !showOnTop);
         toggleClass(self.calendarContainer, "arrowBottom", showOnTop);
         if (self.config.inline) return;
-        var left = window.pageXOffset + inputBounds.left - (configPosHorizontal != null && configPosHorizontal === "center" ? (calendarWidth - inputBounds.width) / 2 : 0);
+        var left = window.pageXOffset + inputBounds.left;
         var right = window.document.body.offsetWidth - inputBounds.right;
         var rightMost = left + calendarWidth > window.document.body.offsetWidth;
         toggleClass(self.calendarContainer, "rightMost", rightMost);
@@ -25940,7 +25909,6 @@ return /******/ (function(modules) { // webpackBootstrap
         });else if (inputDate instanceof Date || typeof inputDate === "number") dates = [self.parseDate(inputDate, format)];else if (typeof inputDate === "string") {
           switch (self.config.mode) {
             case "single":
-            case "time":
               dates = [self.parseDate(inputDate, format)];
               break;
 
@@ -25989,7 +25957,7 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       function parseDateRules(arr) {
-        return arr.slice().map(function (rule) {
+        return arr.map(function (rule) {
           if (typeof rule === "string" || typeof rule === "number" || rule instanceof Date) {
             return self.parseDate(rule, undefined, true);
           } else if (rule && typeof rule === "object" && rule.from && rule.to) return {
@@ -26088,9 +26056,9 @@ return /******/ (function(modules) { // webpackBootstrap
         });
       }
 
-      function toggle(e) {
-        if (self.isOpen === true) return self.close();
-        self.open(e);
+      function toggle() {
+        if (self.isOpen) return self.close();
+        self.open();
       }
 
       function triggerEvent(event, data) {
@@ -26165,13 +26133,13 @@ return /******/ (function(modules) { // webpackBootstrap
       }
 
       function onMonthNavClick(e) {
-        e.preventDefault();
         var isPrevMonth = self.prevMonthNav.contains(e.target);
         var isNextMonth = self.nextMonthNav.contains(e.target);
 
         if (isPrevMonth || isNextMonth) {
           changeMonth(isPrevMonth ? -1 : 1);
         } else if (self.yearElements.indexOf(e.target) >= 0) {
+          e.preventDefault();
           e.target.select();
         } else if (e.target.classList.contains("arrowUp")) {
           self.changeYear(self.currentYear + 1);
@@ -26288,10 +26256,6 @@ return /******/ (function(modules) { // webpackBootstrap
     Date.prototype.fp_incr = function (days) {
       return new Date(this.getFullYear(), this.getMonth(), this.getDate() + (typeof days === "string" ? parseInt(days, 10) : days));
     };
-
-    if (typeof window !== "undefined") {
-      window.flatpickr = flatpickr;
-    }
 
     return flatpickr;
 
@@ -27196,6 +27160,9 @@ var ResourceStore = function (_EventEmitter) {
 
     _this.data = data || {};
     _this.options = options;
+    if (_this.options.keySeparator === undefined) {
+      _this.options.keySeparator = '.';
+    }
     return _this;
   }
 
@@ -27215,8 +27182,7 @@ var ResourceStore = function (_EventEmitter) {
   ResourceStore.prototype.getResource = function getResource(lng, ns, key) {
     var options = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
 
-    var keySeparator = options.keySeparator || this.options.keySeparator;
-    if (keySeparator === undefined) keySeparator = '.';
+    var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
     var path = [lng, ns];
     if (key && typeof key !== 'string') path = path.concat(key);
@@ -27369,6 +27335,10 @@ var Translator = function (_EventEmitter) {
     utils.copy(['resourceStore', 'languageUtils', 'pluralResolver', 'interpolator', 'backendConnector', 'i18nFormat'], services, _this);
 
     _this.options = options;
+    if (_this.options.keySeparator === undefined) {
+      _this.options.keySeparator = '.';
+    }
+
     _this.logger = _logger2.default.create('translator');
     return _this;
   }
@@ -27387,7 +27357,8 @@ var Translator = function (_EventEmitter) {
   Translator.prototype.extractFromKey = function extractFromKey(key, options) {
     var nsSeparator = options.nsSeparator || this.options.nsSeparator;
     if (nsSeparator === undefined) nsSeparator = ':';
-    var keySeparator = options.keySeparator || this.options.keySeparator || '.';
+
+    var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
     var namespaces = options.ns || this.options.defaultNS;
     if (nsSeparator && key.indexOf(nsSeparator) > -1) {
@@ -27418,7 +27389,7 @@ var Translator = function (_EventEmitter) {
     if (typeof keys === 'string') keys = [keys];
 
     // separators
-    var keySeparator = options.keySeparator || this.options.keySeparator || '.';
+    var keySeparator = options.keySeparator !== undefined ? options.keySeparator : this.options.keySeparator;
 
     // get namespace(s)
 
@@ -27459,7 +27430,7 @@ var Translator = function (_EventEmitter) {
 
       // if we got a separator we loop over children - else we just return object as is
       // as having it set to false means no hierarchy so no lookup for nested values
-      if (options.keySeparator || this.options.keySeparator) {
+      if (keySeparator) {
         var copy = resType === '[object Array]' ? [] : {}; // apply child translation on a copy
 
         /* eslint no-restricted-syntax: 0 */
@@ -27551,7 +27522,7 @@ var Translator = function (_EventEmitter) {
 
     if (this.i18nFormat && this.i18nFormat.parse) {
       res = this.i18nFormat.parse(res, options, resolved.usedLng, resolved.usedNS, resolved.usedKey);
-    } else {
+    } else if (!options.skipInterpolation) {
       // i18next.parsing
       if (options.interpolation) this.interpolator.init(_extends({}, options, { interpolation: _extends({}, this.options.interpolation, options.interpolation) }));
 
@@ -27711,7 +27682,6 @@ function get() {
       if (args[2]) ret.tDescription = args[2];
       return ret;
     },
-
     interpolation: {
       escapeValue: true,
       format: function format(value, _format, lng) {
