@@ -1857,6 +1857,7 @@ export class BaseComponent {
     return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(element, settings);
+        this.quill.root.spellcheck = this.component.spellcheck;
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
         const txtArea = document.createElement('textarea');
@@ -1872,6 +1873,12 @@ export class BaseComponent {
           });
         }
         /** END CODEBLOCK **/
+
+        // Allows users to skip toolbar items when tabbing though form
+        const elm = document.querySelectorAll('.ql-formats > button');
+        for (let i = 0; i < elm.length; i++) {
+          elm[i].setAttribute('tabindex', '-1');
+        }
 
         this.quill.on('text-change', () => {
           txtArea.value = this.quill.root.innerHTML;
