@@ -1,3 +1,4 @@
+/* globals Quill */
 import maskInput, {conformToMask} from 'vanilla-text-mask';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -1849,11 +1850,11 @@ export class BaseComponent {
 
     // Lazy load the quill css.
     BaseComponent.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      {type: 'styles', src: `https://cdn.quilljs.com/1.3.5/quill.${settings.theme}.css`}
+      {type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css`}
     ], true);
 
     // Lazy load the quill library.
-    return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true)
+    return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(element, settings);
 
@@ -1865,12 +1866,18 @@ export class BaseComponent {
         if (qlSource) {
           qlSource.addEventListener('click', () => {
             if (txtArea.style.display === 'inherit') {
-              this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+              this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
             }
             txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
           });
         }
         /** END CODEBLOCK **/
+
+        // Allows users to skip toolbar items when tabbing though form
+        const elm = document.querySelectorAll('.ql-formats > button');
+        for (let i = 0; i < elm.length; i++) {
+          elm[i].setAttribute('tabindex', '-1');
+        }
 
         this.quill.on('text-change', () => {
           txtArea.value = this.quill.root.innerHTML;

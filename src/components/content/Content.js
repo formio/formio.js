@@ -38,7 +38,7 @@ export class ContentComponent extends BaseComponent {
       this.addQuill(editorElement, this.wysiwygDefault, (element) => {
         this.component.html = element.value;
       }).then((editor) => {
-        editor.clipboard.dangerouslyPasteHTML(this.component.html);
+        editor.setContents(editor.clipboard.convert(this.component.html));
       });
       this.element.appendChild(editorElement);
     }

@@ -1,4 +1,3 @@
-/* globals Quill */
 import {TextFieldComponent} from '../textfield/TextField';
 import {BaseComponent} from '../base/Base';
 
@@ -80,46 +79,6 @@ export class TextAreaComponent extends TextFieldComponent {
       return this.input;
     }
 
-    // Lazy load the quill css.
-    BaseComponent.requireLibrary(`quill-css-${this.component.wysiwyg.theme}`, 'Quill', [
-      {type: 'styles', src: `https://cdn.quilljs.com/1.3.5/quill.${this.component.wysiwyg.theme}.css`}
-    ], true);
-
-    // Lazy load the quill library.
-    this.quillReady = BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true)
-      .then(() => {
-        this.quill = new Quill(this.input, this.component.wysiwyg);
-        this.quill.root.spellcheck = this.component.spellcheck;
-
-        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-        const txtArea = document.createElement('textarea');
-        txtArea.setAttribute('class', 'quill-source-code');
-        this.quill.addContainer('ql-custom').appendChild(txtArea);
-
-        // Allows users to skip toolbar items when tabbing though form
-        const elm = document.querySelectorAll('.ql-formats > button');
-        for (let i = 0; i < elm.length; i++) {
-          elm[i].setAttribute('tabindex', '-1');
-        }
-
-        const qlSource = document.querySelector('.ql-source');
-        if (qlSource) {
-          qlSource.addEventListener('click', () => {
-            if (txtArea.style.display === 'inherit') {
-              this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
-            }
-            txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
-          });
-        }
-        /** END CODEBLOCK **/
-
-        this.quill.on('text-change', () => {
-          txtArea.value = this.quill.root.innerHTML;
-          this.updateValue(true);
-        });
-        return this.input;
-      });
-
     // Normalize the configurations.
     if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
       console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
@@ -137,13 +96,6 @@ export class TextAreaComponent extends TextFieldComponent {
       this.component.wysiwyg, () => this.updateValue({noUpdateEvent: true})
     ).then((quill) => {
       quill.root.spellcheck = this.component.spellcheck;
-
-      // Allows users to skip toolbar items when tabbing though form
-      const elm = document.querySelectorAll('.ql-formats > button');
-      for (let i=0; i < elm.length; i++) {
-        elm[i].setAttribute('tabindex', '-1');
-      }
-
       if (this.options.readOnly || this.component.disabled) {
         quill.disable();
       }
@@ -195,7 +147,7 @@ export class TextAreaComponent extends TextFieldComponent {
         editor.setValue(this.setConvertedValue(value));
       }
       else {
-        editor.clipboard.dangerouslyPasteHTML(this.setConvertedValue(value));
+        editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
         this.updateValue(flags);
       }
     });
