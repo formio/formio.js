@@ -5773,7 +5773,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
       this.visibleColumns = true;
       this.errorContainer = this.element;
-      this.buildRows();
+      this.restoreValue();
       this.createDescription(this.element);
     }
   }, {
@@ -5801,29 +5801,11 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       this.numColumns += this.visibleComponents.length;
     }
   }, {
-    key: 'needsRebuild',
-    value: function needsRebuild() {
-      var previousNumColumns = this.numColumns;
-      var previousNumRows = this.numRows;
-      this.setVisibleComponents();
-
-      if (!this.tableBuilt || this.numRows !== previousNumRows || this.numColumns !== previousNumColumns) {
-        this.tableBuilt = true;
-        return true;
-      }
-
-      // No need to rebuild since rows and columns are the same.
-      return false;
-    }
-  }, {
     key: 'buildRows',
     value: function buildRows() {
       var _this3 = this;
 
-      if (!this.needsRebuild()) {
-        return;
-      }
-
+      this.setVisibleComponents();
       this.clear();
       this.createLabel(this.element);
       var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
@@ -5965,7 +5947,6 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
 
       // If a rebuild is needed, then rebuild the table.
       if (rebuild) {
-        this.buildRows();
         this.restoreValue();
       }
 
@@ -5977,6 +5958,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function setValue(value, flags) {
       flags = this.getFlags.apply(this, arguments);
       if (!value) {
+        this.buildRows();
         return;
       }
       if (!Array.isArray(value)) {
@@ -9494,9 +9476,6 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
 
         _this2.addShortcut(label, value.shortcut);
 
-        // Create the SPAN around the textNode for better style hooks
-        var labelSpan = _this2.ce('span');
-
         // Determine the attributes for this input.
         var inputId = '' + _this2.id + _this2.row + '-' + value.value;
         _this2.info.attr.id = inputId;
@@ -9509,7 +9488,8 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
           input.setAttribute(key, value);
         });
 
-        if (labelOnTheTopOrOnTheLeft) {
+        var labelSpan = _this2.ce('span');
+        if (value.label && labelOnTheTopOrOnTheLeft) {
           label.appendChild(labelSpan);
         }
 
@@ -9518,8 +9498,11 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
 
         _this2.addInput(input, label);
 
-        labelSpan.appendChild(_this2.text(_this2.addShortcutToLabel(value.label, value.shortcut)));
-        if (!labelOnTheTopOrOnTheLeft) {
+        if (value.label) {
+          labelSpan.appendChild(_this2.text(_this2.addShortcutToLabel(value.label, value.shortcut)));
+        }
+
+        if (value.label && !labelOnTheTopOrOnTheLeft) {
           label.appendChild(labelSpan);
         }
         labelWrapper.appendChild(label);

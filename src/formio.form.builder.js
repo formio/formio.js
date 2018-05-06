@@ -329,7 +329,7 @@ export class FormioFormBuilder extends FormioForm {
         }
 
         // Set the component JSON to the new data.
-        componentCopy.component = event.data;
+        componentCopy.component = this.editForm.getValue().data;
 
         // Update the component.
         this.updateComponent(componentCopy);
