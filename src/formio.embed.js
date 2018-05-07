@@ -9,7 +9,7 @@ const queryString = thisScript.src.replace(/^[^?]+\??/,'');
 queryString.replace(/\?/g, '&').split('&').forEach((item) => {
   query[item.split('=')[0]] = item.split('=')[1] && decodeURIComponent(item.split('=')[1]);
 });
-query.styles = query.styles || (`${scriptSrc}/formio.form.min.css`);
+query.styles = query.styles || (`${scriptSrc}/formio.full.min.css`);
 Formio.embedForm(query).then((instance) => {
   instance.on('submit', (submission) => {
     let returnUrl = query.return || query.redirect;

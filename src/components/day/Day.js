@@ -1,10 +1,46 @@
 import _ from 'lodash';
 import moment from 'moment';
-
 import {BaseComponent} from '../base/Base';
 import {getLocaleDateFormatInfo} from '../../utils';
 
 export class DayComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'day',
+      label: 'Day',
+      key: 'day',
+      fields: {
+        day: {
+          type: 'number',
+          placeholder: '',
+          required: false
+        },
+        month: {
+          type: 'select',
+          placeholder: '',
+          required: false
+        },
+        year: {
+          type: 'number',
+          placeholder: '',
+          required: false
+        }
+      },
+      dayFirst: false
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Day',
+      group: 'advanced',
+      icon: 'fa fa-calendar',
+      documentation: 'http://help.form.io/userguide/#day',
+      weight: 50,
+      schema: DayComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
@@ -15,6 +51,10 @@ export class DayComponent extends BaseComponent {
     this.hideDay = _.get(this.component, 'fields.day.hide', false);
     this.hideMonth = _.get(this.component, 'fields.month.hide', false);
     this.hideYear = _.get(this.component, 'fields.year.hide', false);
+  }
+
+  get defaultSchema() {
+    return DayComponent.schema();
   }
 
   elementInfo() {
@@ -49,6 +89,10 @@ export class DayComponent extends BaseComponent {
 
   get emptyValue() {
     return '';
+  }
+
+  isEmpty(value) {
+    return super.isEmpty(value);
   }
 
   createDayInput(subinputAtTheBottom) {
@@ -160,7 +204,6 @@ export class DayComponent extends BaseComponent {
       step: '1',
       min: '1',
       placeholder: _.get(this.component, 'fields.year.placeholder', ''),
-      value: (new Date().getFullYear()),
       id
     });
 

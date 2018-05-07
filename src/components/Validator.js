@@ -1,5 +1,4 @@
 import _ from 'lodash';
-
 import FormioUtils from '../utils';
 
 export const Validator = {
@@ -47,12 +46,13 @@ export const Validator = {
       }
     });
 
+    const validateCustom = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
-    if (result && customErrorMessage) {
-      result = component.t(customErrorMessage, {
-        data: component.data
+     if (result && (customErrorMessage || validateCustom)) { 
+      result = component.t(customErrorMessage || result, { 
+        data: component.data 
       });
-    }
+     }
 
     return result;
   },
@@ -242,23 +242,18 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let custom = setting;
-
-        custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
-          if ($2.indexOf('data.') === 0) {
-            return _.get(data, $2.replace('data.', ''));
-          }
-          else if ($2.indexOf('row.') === 0) {
-            return _.get(component.data, $2.replace('row.', ''));
-          }
-
-          // Support legacy...
-          return _.get(data, $2);
-        });
-
-        /* jshint evil: true */
-        return (new Function('row', 'data', 'component', 'input',
-          `var valid = true; ${custom}; return valid;`))(component.data, data, component, value);
+        let valid = FormioUtils.evaluate(setting, {
+          valid: true,
+          row: component.data,
+          data,
+          component: component.component,
+          input: value,
+          instance: component
+        }, 'valid', true);
+        if (valid === null) {
+          return true;
+        }
+        return valid;
       }
     }
   }

@@ -337,6 +337,8 @@ module.exports = {
             assert.deepEqual(submission.data, {
               a: 'goTo2',
               b: 'b',
+              c: '',
+              d: '',
               e: 'e',
               f: 'f',
               g: 'g'
@@ -350,6 +352,8 @@ module.exports = {
           assert.deepEqual(submission.data, {
             a: 'goTo2',
             b: 'b',
+            c: '',
+            d: '',
             e: 'e',
             f: 'f',
             g: 'g'
@@ -411,7 +415,7 @@ module.exports = {
               a: 'a',
               b: 'b',
               c: 'directSubmit',
-              d: '',
+              d: ''
             });
 
             // Should show a submit button instead of next button
@@ -425,6 +429,9 @@ module.exports = {
                 b: 'b',
                 c: 'directSubmit',
                 d: '',
+                e: '',
+                f: '',
+                g: ''
               });
 
               // Call done.

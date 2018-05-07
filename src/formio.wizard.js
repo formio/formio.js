@@ -40,40 +40,23 @@ export default class FormioWizard extends FormioForm {
     if (form) {
       let page = ++currentPage;
       if (form.nextPage) {
-        // Allow for script execution.
-        if (typeof form.nextPage === 'string') {
-          try {
-            page = (new Function('next', 'data', `${form.nextPage.toString()}; return next;`))(page, data);
-            if (!isNaN(parseInt(page, 10)) && isFinite(page)) {
-              return page;
-            }
-            if (typeof page !== 'string') {
-              return page;
-            }
-
-            // Assume they passed back the key of the page to go to.
-            return this.getPageIndexByKey(page);
-          }
-          catch (e) {
-            console.warn(`An error occurred in a custom nextPage function statement for component ${form.key}`, e);
-            return page;
-          }
+        let next = FormioUtils.evaluate(form.nextPage, {
+          next: page,
+          data,
+          page,
+          form,
+          instance: this
+        }, 'next');
+        if (next === null) {
+          return null;
         }
-        // Or use JSON Logic.
-        else {
-          const result = FormioUtils.jsonLogic.apply(form.nextPage, {
-            data,
-            page,
-            form,
-            _
-          });
-          const newPage = parseInt(result, 10);
-          if (!isNaN(parseInt(newPage, 10)) && isFinite(newPage)) {
-            return newPage;
-          }
 
-          return this.getPageIndexByKey(result);
+        const pageNum = parseInt(next, 10);
+        if (!isNaN(parseInt(pageNum, 10)) && isFinite(pageNum)) {
+          return pageNum;
         }
+
+        return this.getPageIndexByKey(next);
       }
 
       return page;
@@ -89,6 +72,14 @@ export default class FormioWizard extends FormioForm {
     }
 
     return this.page - 1;
+  }
+
+  beforeSubmit() {
+    const ops = [];
+    const pageOptions = _.clone(this.options);
+    pageOptions.beforeSubmit = true;
+    _.each(this.pages, page => ops.push(this.createComponent(page, pageOptions).beforeSubmit()));
+    return Promise.all(ops);
   }
 
   nextPage() {
@@ -197,7 +188,7 @@ export default class FormioWizard extends FormioForm {
     _.each(form.components, (component) => {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
-        if (FormioUtils.checkCondition(component, this.data, this.data)) {
+        if (FormioUtils.checkCondition(component, this.data, this.data, this.wizard, this)) {
           this.pages.push(component);
         }
       }
@@ -360,7 +351,7 @@ export default class FormioWizard extends FormioForm {
       if (FormioUtils.hasCondition(component)) {
         const hasPage = this.pages && this.pages[pageIndex]
           && (this.pageId(this.pages[pageIndex]) === this.pageId(component));
-        const shouldShow = FormioUtils.checkCondition(component, this.data, this.data);
+        const shouldShow = FormioUtils.checkCondition(component, this.data, this.data, this.wizard, this);
         if ((shouldShow && !hasPage) || (!shouldShow && hasPage)) {
           rebuild = true;
           return false;

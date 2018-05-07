@@ -820,8 +820,7 @@ class Formio {
           err.message = `Could not connect to API server (${err.message})`;
           err.networkError = true;
         }
-        // Propagate error so client can handle accordingly
-        throw err;
+        return Promise.reject(err);
       });
   }
 
@@ -1198,6 +1197,7 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
-// Support ES5 require and globals.
-module.exports = global.Formio = Formio;
+// Include the utils in the basic build.
+Formio.Utils = require('./utils');
+global.Formio = Formio;
 export default Formio;

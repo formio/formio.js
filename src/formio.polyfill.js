@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * DO NOT DELETE THIS! THIS WILL BREAK THE PDF RENDERING IF YOU DO.
  */
