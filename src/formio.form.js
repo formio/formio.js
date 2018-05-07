@@ -285,7 +285,7 @@ export default class FormioForm extends FormioComponents {
     this.wrapper = element;
     this.element = this.ce('div');
     this.wrapper.appendChild(this.element);
-    //this.showElement(false);
+    this.showElement(false);
     this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
     let classNames = this.element.getAttribute('class');
     classNames += ' formio-form';
@@ -682,10 +682,8 @@ export default class FormioForm extends FormioComponents {
       submission = {data: {}};
     }
     let changed = super.setValue(submission.data, flags);
-    if (changed) {
-      this.mergeData(this.data, submission.data);
-      submission.data = this.data;
-    }
+    this.mergeData(this.data, submission.data);
+    submission.data = this.data;
     this._submission = submission;
     return changed;
   }
