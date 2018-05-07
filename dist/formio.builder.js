@@ -6304,7 +6304,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   }, {
     key: 'createLabel',
     value: function createLabel(container, input) {
-      if (_get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'labelIsHidden', this).call(this)) {
+      if (!this.component.label) {
         return null;
       }
 
@@ -6326,7 +6326,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       if (this.info.attr.id) {
         this.labelElement.setAttribute('for', this.info.attr.id);
       }
-      if (!this.options.inputsOnly && labelOnTheTopOrOnTheLeft) {
+      if (!this.labelIsHidden() && labelOnTheTopOrOnTheLeft) {
         this.setInputLabelStyle(this.labelElement);
         this.setInputStyle(input);
         this.labelSpan.appendChild(this.text(this.component.label));
@@ -6334,7 +6334,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       }
       this.addInput(input, this.labelElement);
 
-      if (!this.options.inputsOnly && !labelOnTheTopOrOnTheLeft) {
+      if (!this.labelIsHidden() && !labelOnTheTopOrOnTheLeft) {
         this.setInputLabelStyle(this.labelElement);
         this.setInputStyle(input);
         this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
