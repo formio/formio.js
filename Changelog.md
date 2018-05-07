@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Fixed
+ - `moment` library inside calculated value for DateTime component.
+
 ## 3.0.0-alpha.1
 #### Breaking Changes
  - Changed the build structure which may affect how modules are imported into your application.
