@@ -34,7 +34,7 @@ const FormioUtils = {
    */
   evaluate(func, args, ret, tokenize) {
     let returnVal = null;
-    let component = (args.component && args.component.component) ? args.component.component : {key: 'unknown'};
+    const component = (args.component && args.component.component) ? args.component.component : {key: 'unknown'};
     if (!args.form && args.instance) {
       args.form = _.get(args.instance, 'root._form', {});
     }
@@ -42,7 +42,7 @@ const FormioUtils = {
       if (ret) {
         func += `;return ${ret}`;
       }
-      let params = _.keys(args);
+      const params = _.keys(args);
 
       if (tokenize) {
         // Replace all {{ }} references with actual data.
@@ -62,7 +62,7 @@ const FormioUtils = {
       func = new Function(...params, func);
     }
     if (typeof func === 'function') {
-      let values = _.values(args);
+      const values = _.values(args);
       try {
         returnVal = func(...values);
       }
@@ -461,7 +461,7 @@ const FormioUtils = {
     if (typeof custom === 'string') {
       custom = `var ${variable} = true; ${custom}; return ${variable};`;
     }
-    let value = FormioUtils.evaluate(custom, {component, row, data, form, instance});
+    const value = FormioUtils.evaluate(custom, {component, row, data, form, instance});
     if (value === null) {
       return onError;
     }

@@ -6,6 +6,7 @@ import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
 import FormioUtils from '../../utils';
 import {Validator} from '../Validator';
+import moment from 'moment';
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
@@ -2100,7 +2101,8 @@ export class BaseComponent {
       component: this.component,
       data,
       row: this.data,
-      instance: this
+      instance: this,
+      moment
     }, 'value'), flags);
   }
 
