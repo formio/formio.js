@@ -1,4 +1,4 @@
-/*! formiojs v3.0.0-alpha.2 | https://unpkg.com/formiojs@3.0.0-alpha.2/LICENSE.txt */
+/*! formiojs v3.0.0-alpha.3 | https://unpkg.com/formiojs@3.0.0-alpha.3/LICENSE.txt */
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
@@ -1555,7 +1555,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BaseComponent = undefined;
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* globals Quill */
+
 
 var _vanillaTextMask = require('vanilla-text-mask');
 
@@ -3477,10 +3478,10 @@ var BaseComponent = function () {
       settings = _lodash2.default.isEmpty(settings) ? this.wysiwygDefault : settings;
 
       // Lazy load the quill css.
-      BaseComponent.requireLibrary('quill-css-' + settings.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + settings.theme + '.css' }], true);
+      BaseComponent.requireLibrary('quill-css-' + settings.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.6/quill.' + settings.theme + '.css' }], true);
 
       // Lazy load the quill library.
-      return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
+      return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true).then(function () {
         _this14.quill = new Quill(element, settings);
 
         /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
@@ -3491,12 +3492,18 @@ var BaseComponent = function () {
         if (qlSource) {
           qlSource.addEventListener('click', function () {
             if (txtArea.style.display === 'inherit') {
-              _this14.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+              _this14.quill.setContents(_this14.quill.clipboard.convert(txtArea.value));
             }
             txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
           });
         }
         /** END CODEBLOCK **/
+
+        // Allows users to skip toolbar items when tabbing though form
+        var elm = document.querySelectorAll('.ql-formats > button');
+        for (var i = 0; i < elm.length; i++) {
+          elm[i].setAttribute('tabindex', '-1');
+        }
 
         _this14.quill.on('text-change', function () {
           txtArea.value = _this14.quill.root.innerHTML;
@@ -5455,7 +5462,7 @@ var ContentComponent = exports.ContentComponent = function (_BaseComponent) {
         this.addQuill(editorElement, this.wysiwygDefault, function (element) {
           _this2.component.html = element.value;
         }).then(function (editor) {
-          editor.clipboard.dangerouslyPasteHTML(_this2.component.html);
+          editor.setContents(editor.clipboard.convert(_this2.component.html));
         });
         this.element.appendChild(editorElement);
       } else {
@@ -5766,7 +5773,7 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       }
       this.visibleColumns = true;
       this.errorContainer = this.element;
-      this.buildRows();
+      this.restoreValue();
       this.createDescription(this.element);
     }
   }, {
@@ -5794,29 +5801,11 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       this.numColumns += this.visibleComponents.length;
     }
   }, {
-    key: 'needsRebuild',
-    value: function needsRebuild() {
-      var previousNumColumns = this.numColumns;
-      var previousNumRows = this.numRows;
-      this.setVisibleComponents();
-
-      if (!this.tableBuilt || this.numRows !== previousNumRows || this.numColumns !== previousNumColumns) {
-        this.tableBuilt = true;
-        return true;
-      }
-
-      // No need to rebuild since rows and columns are the same.
-      return false;
-    }
-  }, {
     key: 'buildRows',
     value: function buildRows() {
       var _this3 = this;
 
-      if (!this.needsRebuild()) {
-        return;
-      }
-
+      this.setVisibleComponents();
       this.clear();
       this.createLabel(this.element);
       var tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
@@ -5958,7 +5947,6 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
 
       // If a rebuild is needed, then rebuild the table.
       if (rebuild) {
-        this.buildRows();
         this.restoreValue();
       }
 
@@ -5970,12 +5958,14 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
     value: function setValue(value, flags) {
       flags = this.getFlags.apply(this, arguments);
       if (!value) {
+        this.buildRows();
         return;
       }
       if (!Array.isArray(value)) {
         if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
           value = [value];
         } else {
+          this.buildRows();
           return;
         }
       }
@@ -9487,9 +9477,6 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
 
         _this2.addShortcut(label, value.shortcut);
 
-        // Create the SPAN around the textNode for better style hooks
-        var labelSpan = _this2.ce('span');
-
         // Determine the attributes for this input.
         var inputId = '' + _this2.id + _this2.row + '-' + value.value;
         _this2.info.attr.id = inputId;
@@ -9502,7 +9489,8 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
           input.setAttribute(key, value);
         });
 
-        if (labelOnTheTopOrOnTheLeft) {
+        var labelSpan = _this2.ce('span');
+        if (value.label && labelOnTheTopOrOnTheLeft) {
           label.appendChild(labelSpan);
         }
 
@@ -9511,8 +9499,11 @@ var RadioComponent = exports.RadioComponent = function (_BaseComponent) {
 
         _this2.addInput(input, label);
 
-        labelSpan.appendChild(_this2.text(_this2.addShortcutToLabel(value.label, value.shortcut)));
-        if (!labelOnTheTopOrOnTheLeft) {
+        if (value.label) {
+          labelSpan.appendChild(_this2.text(_this2.addShortcutToLabel(value.label, value.shortcut)));
+        }
+
+        if (value.label && !labelOnTheTopOrOnTheLeft) {
           label.appendChild(labelSpan);
         }
         labelWrapper.appendChild(label);
@@ -11843,8 +11834,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /* globals Quill */
-
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
 var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponent) {
   _inherits(TextAreaComponent, _TextFieldComponent);
@@ -11943,43 +11933,6 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         return this.input;
       }
 
-      // Lazy load the quill css.
-      _Base.BaseComponent.requireLibrary('quill-css-' + this.component.wysiwyg.theme, 'Quill', [{ type: 'styles', src: 'https://cdn.quilljs.com/1.3.5/quill.' + this.component.wysiwyg.theme + '.css' }], true);
-
-      // Lazy load the quill library.
-      this.quillReady = _Base.BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.5/quill.min.js', true).then(function () {
-        _this2.quill = new Quill(_this2.input, _this2.component.wysiwyg);
-        _this2.quill.root.spellcheck = _this2.component.spellcheck;
-
-        /** This block of code adds the [source] capabilities.  See https://codepen.io/anon/pen/ZyEjrQ **/
-        var txtArea = document.createElement('textarea');
-        txtArea.setAttribute('class', 'quill-source-code');
-        _this2.quill.addContainer('ql-custom').appendChild(txtArea);
-
-        // Allows users to skip toolbar items when tabbing though form
-        var elm = document.querySelectorAll('.ql-formats > button');
-        for (var i = 0; i < elm.length; i++) {
-          elm[i].setAttribute('tabindex', '-1');
-        }
-
-        var qlSource = document.querySelector('.ql-source');
-        if (qlSource) {
-          qlSource.addEventListener('click', function () {
-            if (txtArea.style.display === 'inherit') {
-              _this2.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
-            }
-            txtArea.style.display = txtArea.style.display === 'none' ? 'inherit' : 'none';
-          });
-        }
-        /** END CODEBLOCK **/
-
-        _this2.quill.on('text-change', function () {
-          txtArea.value = _this2.quill.root.innerHTML;
-          _this2.updateValue(true);
-        });
-        return _this2.input;
-      });
-
       // Normalize the configurations.
       if (this.component.wysiwyg && this.component.wysiwyg.toolbarGroups) {
         console.warn('The WYSIWYG settings are configured for CKEditor. For this renderer, you will need to use configurations for the Quill Editor. See https://quilljs.com/docs/configuration for more information.');
@@ -11996,13 +11949,6 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         return _this2.updateValue({ noUpdateEvent: true });
       }).then(function (quill) {
         quill.root.spellcheck = _this2.component.spellcheck;
-
-        // Allows users to skip toolbar items when tabbing though form
-        var elm = document.querySelectorAll('.ql-formats > button');
-        for (var i = 0; i < elm.length; i++) {
-          elm[i].setAttribute('tabindex', '-1');
-        }
-
         if (_this2.options.readOnly || _this2.component.disabled) {
           quill.disable();
         }
@@ -12048,7 +11994,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         if (_this3.component.editor === 'ace') {
           editor.setValue(_this3.setConvertedValue(value));
         } else {
-          editor.clipboard.dangerouslyPasteHTML(_this3.setConvertedValue(value));
+          editor.setContents(editor.clipboard.convert(_this3.setConvertedValue(value)));
           _this3.updateValue(flags);
         }
       });

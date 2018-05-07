@@ -82,7 +82,7 @@ export class DataGridComponent extends FormioComponents {
     }
     this.visibleColumns = true;
     this.errorContainer = this.element;
-    this.buildRows();
+    this.restoreValue();
     this.createDescription(this.element);
   }
 
@@ -105,29 +105,8 @@ export class DataGridComponent extends FormioComponents {
     this.numColumns += this.visibleComponents.length;
   }
 
-  needsRebuild() {
-    const previousNumColumns = this.numColumns;
-    const previousNumRows = this.numRows;
-    this.setVisibleComponents();
-
-    if (
-      (!this.tableBuilt) ||
-      (this.numRows !== previousNumRows) ||
-      (this.numColumns !== previousNumColumns)
-    ) {
-      this.tableBuilt = true;
-      return true;
-    }
-
-    // No need to rebuild since rows and columns are the same.
-    return false;
-  }
-
   buildRows() {
-    if (!this.needsRebuild()) {
-      return;
-    }
-
+    this.setVisibleComponents();
     this.clear();
     this.createLabel(this.element);
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
@@ -277,7 +256,6 @@ export class DataGridComponent extends FormioComponents {
 
     // If a rebuild is needed, then rebuild the table.
     if (rebuild) {
-      this.buildRows();
       this.restoreValue();
     }
 
@@ -288,6 +266,7 @@ export class DataGridComponent extends FormioComponents {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {
+      this.buildRows();
       return;
     }
     if (!Array.isArray(value)) {
@@ -295,6 +274,7 @@ export class DataGridComponent extends FormioComponents {
         value = [value];
       }
       else {
+        this.buildRows();
         return;
       }
     }

@@ -96,13 +96,6 @@ export class TextAreaComponent extends TextFieldComponent {
       this.component.wysiwyg, () => this.updateValue({noUpdateEvent: true})
     ).then((quill) => {
       quill.root.spellcheck = this.component.spellcheck;
-
-      // Allows users to skip toolbar items when tabbing though form
-      const elm = document.querySelectorAll('.ql-formats > button');
-      for (let i=0; i < elm.length; i++) {
-        elm[i].setAttribute('tabindex', '-1');
-      }
-
       if (this.options.readOnly || this.component.disabled) {
         quill.disable();
       }
