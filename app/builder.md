@@ -76,8 +76,8 @@ var builder = new Formio.Builder(document.getElementById("builder"), {
   components: [],
   settings: {
     pdf: {
-      "src": "http://localhost:4005/pdf/5acfab476a1276b6173ff01a/file/2adc8d03-cf0f-555f-9e79-099042627618",
-      "id": "2adc8d03-cf0f-555f-9e79-099042627618"
+      "id": "1ec0f8ee-6685-5d98-a847-26f67b67d6f0",
+      "src": "https://files.form.io/pdf/5692b91fd1028f01000407e3/file/1ec0f8ee-6685-5d98-a847-26f67b67d6f0"
     }
   }
 }, {
