@@ -11,9 +11,9 @@ export class HiddenComponent extends BaseComponent {
   static get builderInfo() {
     return {
       title: 'Hidden',
-      group: 'advanced',
+      group: 'data',
       icon: 'fa fa-user-secret',
-      weight: 80,
+      weight: 0,
       documentation: 'http://help.form.io/userguide/#hidden',
       schema: HiddenComponent.schema()
     };

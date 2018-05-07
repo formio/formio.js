@@ -5606,9 +5606,9 @@ var ContainerComponent = exports.ContainerComponent = function (_FormioComponent
       return {
         title: 'Container',
         icon: 'fa fa-folder-open',
-        group: 'advanced',
+        group: 'data',
         documentation: 'http://help.form.io/userguide/#container',
-        weight: 140,
+        weight: 10,
         schema: ContainerComponent.schema()
       };
     }
@@ -6080,9 +6080,9 @@ var DataGridComponent = exports.DataGridComponent = function (_FormioComponents)
       return {
         title: 'Data Grid',
         icon: 'fa fa-th',
-        group: 'advanced',
+        group: 'data',
         documentation: 'http://help.form.io/userguide/#datagrid',
-        weight: 150,
+        weight: 20,
         schema: DataGridComponent.schema()
       };
     }
@@ -7431,9 +7431,9 @@ var EditGridComponent = exports.EditGridComponent = function (_FormioComponents)
       return {
         title: 'Edit Grid',
         icon: 'fa fa-tasks',
-        group: 'advanced',
+        group: 'data',
         documentation: 'http://help.form.io/userguide/#editgrid',
-        weight: 160,
+        weight: 40,
         schema: EditGridComponent.schema()
       };
     }
@@ -9205,9 +9205,9 @@ var HiddenComponent = exports.HiddenComponent = function (_BaseComponent) {
     get: function get() {
       return {
         title: 'Hidden',
-        group: 'advanced',
+        group: 'data',
         icon: 'fa fa-user-secret',
-        weight: 80,
+        weight: 0,
         documentation: 'http://help.form.io/userguide/#hidden',
         schema: HiddenComponent.schema()
       };

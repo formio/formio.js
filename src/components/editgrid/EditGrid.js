@@ -40,9 +40,9 @@ export class EditGridComponent extends FormioComponents {
     return {
       title: 'Edit Grid',
       icon: 'fa fa-tasks',
-      group: 'advanced',
+      group: 'data',
       documentation: 'http://help.form.io/userguide/#editgrid',
-      weight: 160,
+      weight: 40,
       schema: EditGridComponent.schema()
     };
   }

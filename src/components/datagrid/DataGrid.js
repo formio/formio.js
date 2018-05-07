@@ -17,9 +17,9 @@ export class DataGridComponent extends FormioComponents {
     return {
       title: 'Data Grid',
       icon: 'fa fa-th',
-      group: 'advanced',
+      group: 'data',
       documentation: 'http://help.form.io/userguide/#datagrid',
-      weight: 150,
+      weight: 20,
       schema: DataGridComponent.schema()
     };
   }
