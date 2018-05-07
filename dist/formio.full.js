@@ -1584,6 +1584,10 @@ var _utils2 = _interopRequireDefault(_utils);
 
 var _Validator = require('../Validator');
 
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -3687,7 +3691,8 @@ var BaseComponent = function () {
         component: this.component,
         data: data,
         row: this.data,
-        instance: this
+        instance: this,
+        moment: _moment2.default
       }, 'value'), flags);
     }
 
@@ -4400,7 +4405,7 @@ BaseComponent.libraryReady = function (name) {
 
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
-},{"../../utils":58,"../Validator":2,"i18next":78,"lodash":80,"native-promise-only":82,"tooltip.js":88,"vanilla-text-mask":89}],5:[function(require,module,exports){
+},{"../../utils":58,"../Validator":2,"i18next":78,"lodash":80,"moment":81,"native-promise-only":82,"tooltip.js":88,"vanilla-text-mask":89}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5025,33 +5030,6 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       return input;
     }
   }, {
-    key: 'updateValueByName',
-    value: function updateValueByName() {
-      var component = this.getRoot().getComponent(this.component.name);
-      if (component) {
-        component.setValue(this.component.value, { changed: true });
-      } else {
-        _lodash2.default.set(this.data, this.component.name, this.component.value);
-      }
-    }
-  }, {
-    key: 'addInputEventListener',
-    value: function addInputEventListener(input) {
-      var _this2 = this;
-
-      this.addEventListener(input, this.info.changeEvent, function () {
-        // If this input has a "name", then its other input elements are elsewhere on
-        // the form. To get the correct submission object, we need to refresh the whole
-        // data object.
-        if (_this2.component.name) {
-          _this2.updateValueByName();
-          _this2.emit('refreshData');
-        }
-
-        _this2.updateValue();
-      });
-    }
-  }, {
     key: 'getValueAt',
     value: function getValueAt(index) {
       return !!this.inputs[index].checked;
@@ -5103,14 +5081,16 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
     key: 'dataValue',
     get: function get() {
       if (this.component.name) {
-        return _lodash2.default.get(this.data, this.component.name, this.emptyValue);
+        return _lodash2.default.get(this.data, this.component.name, this.emptyValue) === this.component.value;
       }
 
       return _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'dataValue', this);
     },
     set: function set(value) {
       if (this.component.name) {
-        _lodash2.default.set(this.data, this.component.name, value);
+        if (value) {
+          _lodash2.default.set(this.data, this.component.name, this.component.value);
+        }
         return value;
       }
 
