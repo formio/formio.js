@@ -191,16 +191,15 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let valid = true;
-        try {
-          valid = FormioUtils.jsonLogic.apply(setting, {
-            data,
-            row: component.data,
-            _
-          });
-        }
-        catch (err) {
-          valid = err.message;
+        let valid = FormioUtils.evaluate(setting, {
+          row: component.data,
+          data,
+          component: component.component,
+          input: value,
+          instance: component
+        });
+        if (valid === null) {
+          return true;
         }
         return valid;
       }

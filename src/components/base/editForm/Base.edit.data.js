@@ -9,8 +9,14 @@ export let BaseEditData = [
     tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
     input: true
   },
-  EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 110),
-  EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 120),
+  EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 110,
+    '<p><h4>Example:</h4><pre>value = data.firstName + " " + data.lastName;</pre></p>',
+    '<p><h4>Example:</h4><pre>{"cat": [{"var": "data.firstName"}, " ", {"var": "data.lastName"}]}</pre>'
+  ),
+  EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 120,
+    '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>',
+    '<p><h4>Example:</h4><pre>{"sum": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>'
+  ),
   {
     weight: 400,
     type: 'checkbox',
