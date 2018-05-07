@@ -884,15 +884,15 @@ var Validator = exports.Validator = {
         if (!setting) {
           return true;
         }
-        var valid = true;
-        try {
-          valid = _utils2.default.jsonLogic.apply(setting, {
-            data: data,
-            row: component.data,
-            _: _lodash2.default
-          });
-        } catch (err) {
-          valid = err.message;
+        var valid = _utils2.default.evaluate(setting, {
+          row: component.data,
+          data: data,
+          component: component.component,
+          input: value,
+          instance: component
+        });
+        if (valid === null) {
+          return true;
         }
         return valid;
       }
@@ -4610,6 +4610,10 @@ var BaseEditAPI = exports.BaseEditAPI = [{
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.BaseEditConditional = undefined;
+
+var _utils = require('./utils');
+
 var BaseEditConditional = exports.BaseEditConditional = [{
   type: 'panel',
   title: 'Simple',
@@ -4639,47 +4643,8 @@ var BaseEditConditional = exports.BaseEditConditional = [{
     label: 'Has the value:',
     key: 'conditional.eq'
   }]
-}, {
-  type: 'panel',
-  title: 'Advanced',
-  key: 'advanced-conditional',
-  theme: 'default',
-  collapsible: true,
-  collapsed: true,
-  components: [{
-    type: 'textarea',
-    key: 'customConditional',
-    rows: 5,
-    editor: 'ace',
-    input: true,
-    placeholder: 'show = (data[\'mykey\'] > 1);'
-  }, {
-    type: 'htmlelement',
-    tag: 'div',
-    content: '<small>' + '<p>Enter custom conditional code.</p>' + '<p>You must assign the <strong>show</strong> variable as either <strong>true</strong> or <strong>false</strong>.</p>' + '<p>The global variable <strong>data</strong> is provided, and allows you to access the data of any form component, by using its API key.</p>' + '<p><strong>Note: Advanced Conditional logic will override the results of the Simple Conditional logic.</strong></p>' + '</small>'
-  }]
-}, {
-  type: 'panel',
-  title: 'JSON Conditional',
-  key: 'json-conditional',
-  theme: 'default',
-  collapsible: true,
-  collapsed: true,
-  components: [{
-    type: 'textarea',
-    key: 'conditional.json',
-    rows: 5,
-    editor: 'ace',
-    as: 'json',
-    input: true,
-    placeholder: '{ ... }'
-  }, {
-    type: 'htmlelement',
-    tag: 'div',
-    content: '<small>' + '<p>Execute custom validation logic with JSON and <a href="http://jsonlogic.com/">JsonLogic</a>.</p>' + '<p>Submission data is available as JsonLogic variables, with the same api key as your components.</p>' + '<p><a href="http://formio.github.io/formio.js/app/examples/conditions.html" target="_blank">Click here for an example</a></p>' + '</small>'
-  }]
-}];
-},{}],10:[function(require,module,exports){
+}, _utils.EditFormUtils.javaScriptValue('Advanced Conditions', 'customConditional', 'conditional.json', 110, '<p>You must assign the <strong>show</strong> variable as either <strong>true</strong> or <strong>false</strong>.</p>' + '<p><strong>Note: Advanced Conditional logic will override the results of the Simple Conditional logic.</strong></p>' + '<h5>Example</h5><pre>show = !!data.showMe;</pre>', '<p><a href="http://formio.github.io/formio.js/app/examples/conditions.html" target="_blank">Click here for an example</a></p>')];
+},{"./utils":14}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4697,7 +4662,7 @@ var BaseEditData = exports.BaseEditData = [{
   placeholder: 'Default Value',
   tooltip: 'The will be the value for this field, before user interaction. Having a default value will override the placeholder text.',
   input: true
-}, _utils.EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 110), _utils.EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 120), {
+}, _utils.EditFormUtils.javaScriptValue('Custom Default Value', 'customDefaultValue', 'customDefaultValue', 110, '<p><h4>Example:</h4><pre>value = data.firstName + " " + data.lastName;</pre></p>', '<p><h4>Example:</h4><pre>{"cat": [{"var": "data.firstName"}, " ", {"var": "data.lastName"}]}</pre>'), _utils.EditFormUtils.javaScriptValue('Calculated Value', 'calculateValue', 'calculateValue', 120, '<p><h4>Example:</h4><pre>value = data.a + data.b + data.c;</pre></p>', '<p><h4>Example:</h4><pre>{"sum": [{"var": "data.a"}, {"var": "data.b"}, {"var": "data.c"}]}</pre><p><a target="_blank" href="http://formio.github.io/formio.js/app/examples/calculated.html">Click here for an example</a></p>'), {
   weight: 400,
   type: 'checkbox',
   label: 'Encrypt',
@@ -5132,6 +5097,10 @@ var BaseEditLogic = exports.BaseEditLogic = [{
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.BaseEditValidation = undefined;
+
+var _utils = require('./utils');
+
 var BaseEditValidation = exports.BaseEditValidation = [{
   weight: 0,
   type: 'checkbox',
@@ -5162,16 +5131,17 @@ var BaseEditValidation = exports.BaseEditValidation = [{
   style: { 'margin-bottom': '10px' },
   key: 'custom-validation-js',
   weight: 300,
-  components: [{
+  components: [_utils.EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'), {
     type: 'textarea',
     key: 'validate.custom',
     rows: 5,
     editor: 'ace',
+    hideLabel: true,
     input: true
   }, {
     type: 'htmlelement',
     tag: 'div',
-    content: '\n          <small>\n            <p>Enter custom validation code.</p>\n            <p>You must assign the <strong>valid</strong> variable as either <strong>true</strong> or an error message if validation fails.</p>\n            <p>The global variables <strong>input</strong>, <strong>component</strong>, and <strong>valid</strong> are provided.</p>\n          </small>'
+    content: '\n          <small>\n            <p>Enter custom validation code.</p>\n            <p>You must assign the <strong>valid</strong> variable as either <strong>true</strong> or an error message if validation fails.</p>\n            <h5>Example:</h5>\n            <pre>valid = (input === \'Joe\') ? true : \'Your name must be "Joe"\';</pre>\n          </small>'
   }, {
     type: 'well',
     components: [{
@@ -5194,17 +5164,20 @@ var BaseEditValidation = exports.BaseEditValidation = [{
   components: [{
     type: 'htmlelement',
     tag: 'div',
-    content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' + '<p>Submission data is available as JsonLogic variables, with the same api key as your components.</p>' + '<p><a href="http://formio.github.io/formio.js/app/examples/calculated.html" target="_blank">Click here for an example</a></p>'
+    content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' + '<h5>Example:</h5>' + '<pre>' + JSON.stringify({
+      "if": [{ "===": [{ "var": "input" }, "Bob"] }, true, "Your name must be 'Bob'!"]
+    }, null, 2) + '</pre>'
   }, {
     type: 'textarea',
     key: 'validate.json',
+    hideLabel: true,
     rows: 5,
     editor: 'ace',
     as: 'json',
     input: true
   }]
 }];
-},{}],14:[function(require,module,exports){
+},{"./utils":14}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5237,7 +5210,15 @@ var EditFormUtils = exports.EditFormUtils = {
     }
     return _lodash2.default.isEqual(objValue, srcValue);
   },
-  javaScriptValue: function javaScriptValue(title, property, weight) {
+  logicVariablesTable: function logicVariablesTable(additional) {
+    additional = additional || '';
+    return {
+      type: 'htmlelement',
+      tag: 'div',
+      content: '<p>The following variables are available in all scripts.</p>' + '<table class="table table-bordered table-condensed table-striped">' + additional + '<tr><th>form</th><td>The complete form JSON object</td></tr>' + '<tr><th>data</th><td>The complete submission data object.</td></tr>' + '<tr><th>row</th><td>Contextual "row" data, used within DataGrid, EditGrid, and Container components</td></tr>' + '<tr><th>component</th><td>The current component JSON</td></tr>' + '<tr><th>instance</th><td>The current component instance.</td></tr>' + '<tr><th>value</th><td>The current value of the component.</td></tr>' + '<tr><th>moment</th><td>The moment.js library for date manipulation.</td></tr>' + '</table><br/>'
+    };
+  },
+  javaScriptValue: function javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON) {
     return {
       type: 'panel',
       title: title,
@@ -5246,9 +5227,9 @@ var EditFormUtils = exports.EditFormUtils = {
       collapsed: true,
       key: property + 'Panel',
       weight: weight,
-      components: [{
+      components: [EditFormUtils.logicVariablesTable(), {
         type: 'panel',
-        title: 'JavaScript Default',
+        title: 'JavaScript',
         collapsible: true,
         collapsed: false,
         style: { 'margin-bottom': '10px' },
@@ -5258,27 +5239,29 @@ var EditFormUtils = exports.EditFormUtils = {
           key: property,
           rows: 5,
           editor: 'ace',
+          hideLabel: true,
           input: true
         }, {
           type: 'htmlelement',
           tag: 'div',
-          content: '<p>Enter custom default value code.</p>' + '<p>You must assign the <strong>value</strong> variable as the result you want for the default value.</p>' + '<p>The global variable data is provided, and allows you to access the data of any form component, by using its API key.</p>' + '<p>Default Values are only calculated on form load. Use Calculated Value for a value that will update with the form.</p>'
+          content: '<p>Enter custom javascript code.</p>' + exampleHTML
         }]
       }, {
         type: 'panel',
-        title: 'JSONLogic Default',
+        title: 'JSONLogic',
         collapsible: true,
         collapsed: true,
         key: property + '-json',
         components: [{
           type: 'htmlelement',
           tag: 'div',
-          content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' + '<p>Submission data is available as JsonLogic variables, with the same api key as your components.</p>' + '<p><a href="http://formio.github.io/formio.js/app/examples/calculated.html" target="_blank">Click here for an example</a></p>'
+          content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' + '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' + exampleJSON
         }, {
           type: 'textarea',
-          key: property,
+          key: propertyJSON,
           rows: 5,
           editor: 'ace',
+          hideLabel: true,
           as: 'json',
           input: true
         }]
@@ -14938,7 +14921,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
           var mode = _this2.component.as || 'javascript';
           _this2.editor = ace.edit(_this2.input);
           _this2.editor.on('change', function () {
-            return _this2.updateValue({ noUpdateEvent: true });
+            return _this2.updateValue();
           });
           _this2.editor.getSession().setTabSize(2);
           _this2.editor.getSession().setMode("ace/mode/" + mode);
@@ -14966,7 +14949,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
 
       // Add the quill editor.
       this.editorReady = this.addQuill(this.input, this.component.wysiwyg, function () {
-        return _this2.updateValue({ noUpdateEvent: true });
+        return _this2.updateValue();
       }).then(function (quill) {
         quill.root.spellcheck = _this2.component.spellcheck;
         if (_this2.options.readOnly || _this2.component.disabled) {

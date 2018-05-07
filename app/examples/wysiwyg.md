@@ -14,6 +14,9 @@ Formio.createForm(document.getElementById('formio'), {
       type: 'textfield',
       label: 'Title',
       placeholder: 'Enter the title.',
+      validate: {
+        required: true
+      },
       key: 'title',
       input: true,
       inputType: 'text'
@@ -21,8 +24,10 @@ Formio.createForm(document.getElementById('formio'), {
     {
       type: 'textarea',
       label: 'Content',
-      placeholder: 'Enter content here',
       wysiwyg: true,
+      validate: {
+        required: true
+      },
       key: 'content',
       input: true,
       inputType: 'text'
@@ -32,7 +37,8 @@ Formio.createForm(document.getElementById('formio'), {
       action: 'submit',
       label: 'Submit',
       theme: 'primary',
-      key: 'submit'
+      key: 'submit',
+      disableOnInvalid: true
     }
   ]
 });
@@ -47,6 +53,9 @@ Formio.createForm(document.getElementById('formio'), {
         type: 'textfield',
         label: 'Title',
         placeholder: 'Enter the title.',
+        validate: {
+          required: true
+        },
         key: 'title',
         input: true,
         inputType: 'text'
@@ -67,7 +76,8 @@ Formio.createForm(document.getElementById('formio'), {
         action: 'submit',
         label: 'Submit',
         theme: 'primary',
-        key: 'submit'
+        key: 'submit',
+        disableOnInvalid: true
       }
     ]
   }).then(function(form) {

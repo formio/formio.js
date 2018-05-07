@@ -856,15 +856,15 @@ var Validator = exports.Validator = {
         if (!setting) {
           return true;
         }
-        var valid = true;
-        try {
-          valid = _utils2.default.jsonLogic.apply(setting, {
-            data: data,
-            row: component.data,
-            _: _lodash2.default
-          });
-        } catch (err) {
-          valid = err.message;
+        var valid = _utils2.default.evaluate(setting, {
+          row: component.data,
+          data: data,
+          component: component.component,
+          input: value,
+          instance: component
+        });
+        if (valid === null) {
+          return true;
         }
         return valid;
       }
@@ -11898,7 +11898,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
           var mode = _this2.component.as || 'javascript';
           _this2.editor = ace.edit(_this2.input);
           _this2.editor.on('change', function () {
-            return _this2.updateValue({ noUpdateEvent: true });
+            return _this2.updateValue();
           });
           _this2.editor.getSession().setTabSize(2);
           _this2.editor.getSession().setMode("ace/mode/" + mode);
@@ -11926,7 +11926,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
 
       // Add the quill editor.
       this.editorReady = this.addQuill(this.input, this.component.wysiwyg, function () {
-        return _this2.updateValue({ noUpdateEvent: true });
+        return _this2.updateValue();
       }).then(function (quill) {
         quill.root.spellcheck = _this2.component.spellcheck;
         if (_this2.options.readOnly || _this2.component.disabled) {
