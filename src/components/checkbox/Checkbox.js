@@ -128,7 +128,7 @@ export class CheckBoxComponent extends BaseComponent {
   }
 
   createLabel(container, input) {
-    if (super.labelIsHidden()) {
+    if (!this.component.label) {
       return null;
     }
 
@@ -153,7 +153,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (this.info.attr.id) {
       this.labelElement.setAttribute('for', this.info.attr.id);
     }
-    if (!this.options.inputsOnly && labelOnTheTopOrOnTheLeft) {
+    if (!this.labelIsHidden() && labelOnTheTopOrOnTheLeft) {
       this.setInputLabelStyle(this.labelElement);
       this.setInputStyle(input);
       this.labelSpan.appendChild(this.text(this.component.label));
@@ -161,7 +161,7 @@ export class CheckBoxComponent extends BaseComponent {
     }
     this.addInput(input, this.labelElement);
 
-    if (!this.options.inputsOnly && !labelOnTheTopOrOnTheLeft) {
+    if (!this.labelIsHidden() && !labelOnTheTopOrOnTheLeft) {
       this.setInputLabelStyle(this.labelElement);
       this.setInputStyle(input);
       this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
