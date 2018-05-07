@@ -12804,7 +12804,7 @@ var FormioForm = function (_FormioComponents) {
       this.wrapper = element;
       this.element = this.ce('div');
       this.wrapper.appendChild(this.element);
-      //this.showElement(false);
+      this.showElement(false);
       this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
       var classNames = this.element.getAttribute('class');
       classNames += ' formio-form';
@@ -13107,10 +13107,8 @@ var FormioForm = function (_FormioComponents) {
         submission = { data: {} };
       }
       var changed = _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, submission.data, flags);
-      if (changed) {
-        this.mergeData(this.data, submission.data);
-        submission.data = this.data;
-      }
+      this.mergeData(this.data, submission.data);
+      submission.data = this.data;
       this._submission = submission;
       return changed;
     }
