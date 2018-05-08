@@ -69,7 +69,10 @@ export class TextAreaComponent extends TextFieldComponent {
         .then(() => {
           let mode = this.component.as || 'javascript';
           this.editor = ace.edit(this.input);
-          this.editor.on('change', () => this.updateValue({noUpdateEvent: true}));
+          this.editor.on('change', () => {
+            this.dataValue = this.getConvertedValue(this.editor.getValue());
+            this.updateValue();
+          });
           this.editor.getSession().setTabSize(2);
           this.editor.getSession().setMode("ace/mode/" + mode);
           this.editor.on('input', () => this.acePlaceholder());
@@ -93,7 +96,10 @@ export class TextAreaComponent extends TextFieldComponent {
     // Add the quill editor.
     this.editorReady = this.addQuill(
       this.input,
-      this.component.wysiwyg, () => this.updateValue({noUpdateEvent: true})
+      this.component.wysiwyg, () => {
+        this.dataValue = this.getConvertedValue(this.quill.root.innerHTML);
+        this.updateValue();
+      }
     ).then((quill) => {
       quill.root.spellcheck = this.component.spellcheck;
       if (this.options.readOnly || this.component.disabled) {
@@ -142,6 +148,7 @@ export class TextAreaComponent extends TextFieldComponent {
     }
 
     // Set the value when the editor is ready.
+    this.dataValue = value;
     this.editorReady.then((editor) => {
       if (this.component.editor === 'ace') {
         editor.setValue(this.setConvertedValue(value));
@@ -174,15 +181,11 @@ export class TextAreaComponent extends TextFieldComponent {
       return this.getConvertedValue(super.getValue());
     }
 
-    if (this.component.editor === 'ace') {
-      return this.editor ? this.getConvertedValue(this.editor.getValue()) : '';
+    if (this.editor || this.quill) {
+      return this.dataValue;
     }
 
-    if (this.quill) {
-      return this.getConvertedValue(this.quill.root.innerHTML);
-    }
-
-    return this.quill ? this.quill.root.innerHTML : super.getValue();
+    return super.getValue();
   }
 
   elementInfo() {

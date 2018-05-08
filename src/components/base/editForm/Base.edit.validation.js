@@ -1,3 +1,5 @@
+import { EditFormUtils } from "./utils";
+
 export let BaseEditValidation = [
   {
     weight: 0,
@@ -33,11 +35,13 @@ export let BaseEditValidation = [
     key: 'custom-validation-js',
     weight: 300,
     components: [
+      EditFormUtils.logicVariablesTable('<tr><th>input</th><td>The value that was input into this component</td></tr>'),
       {
         type: 'textarea',
         key: 'validate.custom',
         rows: 5,
         editor: 'ace',
+        hideLabel: true,
         input: true
       },
       {
@@ -47,7 +51,8 @@ export let BaseEditValidation = [
           <small>
             <p>Enter custom validation code.</p>
             <p>You must assign the <strong>valid</strong> variable as either <strong>true</strong> or an error message if validation fails.</p>
-            <p>The global variables <strong>input</strong>, <strong>component</strong>, and <strong>valid</strong> are provided.</p>
+            <h5>Example:</h5>
+            <pre>valid = (input === 'Joe') ? true : 'Your name must be "Joe"';</pre>
           </small>`
       },
       {
@@ -78,12 +83,19 @@ export let BaseEditValidation = [
         type: 'htmlelement',
         tag: 'div',
         content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
-        '<p>Submission data is available as JsonLogic variables, with the same api key as your components.</p>' +
-        '<p><a href="http://formio.github.io/formio.js/app/examples/calculated.html" target="_blank">Click here for an example</a></p>'
+          '<h5>Example:</h5>' +
+          '<pre>' + JSON.stringify({
+            "if": [
+              {"===": [{"var": "input"}, "Bob"]},
+              true,
+              "Your name must be 'Bob'!"
+            ]
+          }, null, 2) + '</pre>'
       },
       {
         type: 'textarea',
         key: 'validate.json',
+        hideLabel: true,
         rows: 5,
         editor: 'ace',
         as: 'json',

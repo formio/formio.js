@@ -213,15 +213,15 @@ var Validator = exports.Validator = {
         if (!setting) {
           return true;
         }
-        var valid = true;
-        try {
-          valid = _utils2.default.jsonLogic.apply(setting, {
-            data: data,
-            row: component.data,
-            _: _lodash2.default
-          });
-        } catch (err) {
-          valid = err.message;
+        var valid = _utils2.default.evaluate(setting, {
+          row: component.data,
+          data: data,
+          component: component.component,
+          input: value,
+          instance: component
+        });
+        if (valid === null) {
+          return true;
         }
         return valid;
       }
@@ -305,6 +305,10 @@ var _utils = require('../../utils');
 var _utils2 = _interopRequireDefault(_utils);
 
 var _Validator = require('../Validator');
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -2409,7 +2413,8 @@ var BaseComponent = function () {
         component: this.component,
         data: data,
         row: this.data,
-        instance: this
+        instance: this,
+        moment: _moment2.default
       }, 'value'), flags);
     }
 
@@ -3122,7 +3127,7 @@ BaseComponent.libraryReady = function (name) {
 
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
-},{"../../utils":8,"../Validator":1,"i18next":23,"lodash":25,"native-promise-only":27,"tooltip.js":29,"vanilla-text-mask":30}],3:[function(require,module,exports){
+},{"../../utils":8,"../Validator":1,"i18next":23,"lodash":25,"moment":26,"native-promise-only":27,"tooltip.js":29,"vanilla-text-mask":30}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {

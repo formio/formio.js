@@ -5,7 +5,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## [Unreleased]
+## [UNRELEASED]
+### Fixed
+ - `moment` library inside calculated value for DateTime component.
 ### Added
  - Multiple masks for text field and phone number components
 

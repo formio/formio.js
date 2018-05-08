@@ -856,15 +856,15 @@ var Validator = exports.Validator = {
         if (!setting) {
           return true;
         }
-        var valid = true;
-        try {
-          valid = _utils2.default.jsonLogic.apply(setting, {
-            data: data,
-            row: component.data,
-            _: _lodash2.default
-          });
-        } catch (err) {
-          valid = err.message;
+        var valid = _utils2.default.evaluate(setting, {
+          row: component.data,
+          data: data,
+          component: component.component,
+          input: value,
+          instance: component
+        });
+        if (valid === null) {
+          return true;
         }
         return valid;
       }
@@ -1583,6 +1583,10 @@ var _utils = require('../../utils');
 var _utils2 = _interopRequireDefault(_utils);
 
 var _Validator = require('../Validator');
+
+var _moment = require('moment');
+
+var _moment2 = _interopRequireDefault(_moment);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -3687,7 +3691,8 @@ var BaseComponent = function () {
         component: this.component,
         data: data,
         row: this.data,
-        instance: this
+        instance: this,
+        moment: _moment2.default
       }, 'value'), flags);
     }
 
@@ -4400,7 +4405,7 @@ BaseComponent.libraryReady = function (name) {
 
   return _nativePromiseOnly2.default.reject(name + ' library was not required.');
 };
-},{"../../utils":59,"../Validator":2,"i18next":79,"lodash":81,"native-promise-only":83,"tooltip.js":89,"vanilla-text-mask":90}],5:[function(require,module,exports){
+},{"../../utils":59,"../Validator":2,"i18next":79,"lodash":81,"moment":82,"native-promise-only":83,"tooltip.js":89,"vanilla-text-mask":90}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4975,7 +4980,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
   }, {
     key: 'createLabel',
     value: function createLabel(container, input) {
-      if (_get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'labelIsHidden', this).call(this)) {
+      if (!this.component.label) {
         return null;
       }
 
@@ -4997,7 +5002,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       if (this.info.attr.id) {
         this.labelElement.setAttribute('for', this.info.attr.id);
       }
-      if (!this.options.inputsOnly && labelOnTheTopOrOnTheLeft) {
+      if (!this.labelIsHidden() && labelOnTheTopOrOnTheLeft) {
         this.setInputLabelStyle(this.labelElement);
         this.setInputStyle(input);
         this.labelSpan.appendChild(this.text(this.component.label));
@@ -5005,7 +5010,7 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       }
       this.addInput(input, this.labelElement);
 
-      if (!this.options.inputsOnly && !labelOnTheTopOrOnTheLeft) {
+      if (!this.labelIsHidden() && !labelOnTheTopOrOnTheLeft) {
         this.setInputLabelStyle(this.labelElement);
         this.setInputStyle(input);
         this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
@@ -5023,33 +5028,6 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
       var input = this.ce(this.info.type, this.info.attr);
       this.errorContainer = container;
       return input;
-    }
-  }, {
-    key: 'updateValueByName',
-    value: function updateValueByName() {
-      var component = this.getRoot().getComponent(this.component.name);
-      if (component) {
-        component.setValue(this.component.value, { changed: true });
-      } else {
-        _lodash2.default.set(this.data, this.component.name, this.component.value);
-      }
-    }
-  }, {
-    key: 'addInputEventListener',
-    value: function addInputEventListener(input) {
-      var _this2 = this;
-
-      this.addEventListener(input, this.info.changeEvent, function () {
-        // If this input has a "name", then its other input elements are elsewhere on
-        // the form. To get the correct submission object, we need to refresh the whole
-        // data object.
-        if (_this2.component.name) {
-          _this2.updateValueByName();
-          _this2.emit('refreshData');
-        }
-
-        _this2.updateValue();
-      });
     }
   }, {
     key: 'getValueAt',
@@ -5103,14 +5081,16 @@ var CheckBoxComponent = exports.CheckBoxComponent = function (_BaseComponent) {
     key: 'dataValue',
     get: function get() {
       if (this.component.name) {
-        return _lodash2.default.get(this.data, this.component.name, this.emptyValue);
+        return _lodash2.default.get(this.data, this.component.name, this.emptyValue) === this.component.value;
       }
 
       return _get(CheckBoxComponent.prototype.__proto__ || Object.getPrototypeOf(CheckBoxComponent.prototype), 'dataValue', this);
     },
     set: function set(value) {
       if (this.component.name) {
-        _lodash2.default.set(this.data, this.component.name, value);
+        if (value) {
+          _lodash2.default.set(this.data, this.component.name, this.component.value);
+        }
         return value;
       }
 
@@ -11918,7 +11898,8 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
           var mode = _this2.component.as || 'javascript';
           _this2.editor = ace.edit(_this2.input);
           _this2.editor.on('change', function () {
-            return _this2.updateValue({ noUpdateEvent: true });
+            _this2.dataValue = _this2.getConvertedValue(_this2.editor.getValue());
+            _this2.updateValue();
           });
           _this2.editor.getSession().setTabSize(2);
           _this2.editor.getSession().setMode("ace/mode/" + mode);
@@ -11946,7 +11927,8 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
 
       // Add the quill editor.
       this.editorReady = this.addQuill(this.input, this.component.wysiwyg, function () {
-        return _this2.updateValue({ noUpdateEvent: true });
+        _this2.dataValue = _this2.getConvertedValue(_this2.quill.root.innerHTML);
+        _this2.updateValue();
       }).then(function (quill) {
         quill.root.spellcheck = _this2.component.spellcheck;
         if (_this2.options.readOnly || _this2.component.disabled) {
@@ -11990,6 +11972,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       }
 
       // Set the value when the editor is ready.
+      this.dataValue = value;
       this.editorReady.then(function (editor) {
         if (_this3.component.editor === 'ace') {
           editor.setValue(_this3.setConvertedValue(value));
@@ -12022,15 +12005,11 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         return this.getConvertedValue(_get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this));
       }
 
-      if (this.component.editor === 'ace') {
-        return this.editor ? this.getConvertedValue(this.editor.getValue()) : '';
+      if (this.editor || this.quill) {
+        return this.dataValue;
       }
 
-      if (this.quill) {
-        return this.getConvertedValue(this.quill.root.innerHTML);
-      }
-
-      return this.quill ? this.quill.root.innerHTML : _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this);
+      return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this);
     }
   }, {
     key: 'elementInfo',
@@ -12804,7 +12783,7 @@ var FormioForm = function (_FormioComponents) {
       this.wrapper = element;
       this.element = this.ce('div');
       this.wrapper.appendChild(this.element);
-      //this.showElement(false);
+      this.showElement(false);
       this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
       var classNames = this.element.getAttribute('class');
       classNames += ' formio-form';
@@ -13107,10 +13086,8 @@ var FormioForm = function (_FormioComponents) {
         submission = { data: {} };
       }
       var changed = _get(FormioForm.prototype.__proto__ || Object.getPrototypeOf(FormioForm.prototype), 'setValue', this).call(this, submission.data, flags);
-      if (changed) {
-        this.mergeData(this.data, submission.data);
-        submission.data = this.data;
-      }
+      this.mergeData(this.data, submission.data);
+      submission.data = this.data;
       this._submission = submission;
       return changed;
     }
