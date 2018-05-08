@@ -4,7 +4,21 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+### 3.0.0
+#### Breaking Changes
+ - Changed the structure of the library.
+   - Changed Formio utils import from ```import FormioUtils from 'formiojs/utils'``` to ```import 
+ - Removed formio.form, formio.wizard, and formio.utils builds. They can be accessed through basic "formio.full" and "formio" builds respectively.
+ - Deprected ability to "attach" Formio to existing form using Formio.form method.
+ - Modified all JavaScript execution to make it more consistent.
+   - "component" now always refers to the JSON of the component (not the component instance)
+   - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
+
+## 3.0.0-alpha.6
+### Changed
+ - The library structure
+ - Now using Webpack for the builds.
+
 ### Added
  - Multiple masks for text field and phone number components
 
@@ -20,14 +34,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problems where two text with same key not working in form builder.
  - `moment` library inside calculated value for DateTime component.
 
-## 3.0.0-alpha.1
-#### Breaking Changes
- - Changed the build structure which may affect how modules are imported into your application.
- - Removed formio.form, formio.wizard, and formio.utils builds. They can be accessed through basic "formio.full" and "formio" builds respectively.
- - Modified all JavaScript execution to make it more consistent.
-    - "component" now always refers to the JSON of the component (not the component instance)
-    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
- 
+## 3.0.0-alpha.1 
 ### Added
  - Form Builder
  - Tags component (advanced)

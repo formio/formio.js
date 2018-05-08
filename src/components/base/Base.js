@@ -14,7 +14,7 @@ import {
   checkCondition,
   checkTrigger,
   setActionProperty
-} from '../../utils';
+} from '../../utils/utils';
 import {Validator} from '../Validator';
 import moment from 'moment';
 

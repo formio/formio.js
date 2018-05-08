@@ -1,5 +1,5 @@
 import {BaseComponent} from '../base/Base';
-import {uniqueName} from '../../utils';
+import {uniqueName} from '../../utils/utils';
 
 export class FileComponent extends BaseComponent {
   static schema(...extend) {

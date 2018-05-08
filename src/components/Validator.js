@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import { boolValue, evaluate, getInputMask, matchInputMask } from '../utils';
+import { boolValue, evaluate, getInputMask, matchInputMask } from '../utils/utils';
 
 export const Validator = {
   get: _.get,

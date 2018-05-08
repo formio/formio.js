@@ -4,7 +4,7 @@
 import {expect} from 'chai';
 import _ from 'lodash';
 import writtenNumber from 'written-number';
-import * as utils from './index';
+import utils from './index';
 import components from './fixtures/components.json';
 import submission1 from './fixtures/submission1.json';
 

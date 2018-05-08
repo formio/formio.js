@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Form from './Form';
 import Formio from './Formio';
-import {evaluate, checkCondition, hasCondition} from './utils';
+import {evaluate, checkCondition, hasCondition} from './utils/utils';
 
 export default class Wizard extends Form {
   /**

@@ -1,5 +1,5 @@
 import BaseEditForm from '../base/Base.form';
-import {eachComponent} from '../../utils';
+import {eachComponent} from '../../utils/utils';
 export default function(...extend) {
   return BaseEditForm(...extend, [
     {

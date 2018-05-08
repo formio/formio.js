@@ -8,7 +8,7 @@ import {
   getLocaleDateFormatInfo,
   convertFormatToFlatpickr,
   convertFormatToMoment,
-} from '../../utils';
+} from '../../utils/utils';
 import moment from 'moment';
 
 export class DateTimeComponent extends BaseComponent {

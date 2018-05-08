@@ -1,5 +1,5 @@
 "use strict";
-import { Formio } from './index';
+import Formio from './Formio';
 import FormBuilder from './FormBuilder';
 import WizardBuilder from './WizardBuilder';
 import PDFBuilder from './PDFBuilder';

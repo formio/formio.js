@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import {FormioComponents} from '../Components';
-import * as FormioUtils from '../../utils';
+import FormioUtils from '../../utils/index';
 
 export class EditGridComponent extends FormioComponents {
   static schema(...extend) {

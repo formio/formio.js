@@ -2,7 +2,7 @@
 
 /* eslint-env mocha */
 import {expect} from 'chai';
-import {jsonLogic} from '../index';
+import {jsonLogic} from '../utils';
 
 describe('Lodash operators', () => {
   describe('Arrays', () => {

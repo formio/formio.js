@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {eachComponent} from './index';
+import {eachComponent} from './utils';
 
 export const BuilderUtils = {
   /**

@@ -1,7 +1,7 @@
 'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import {checkCondition} from '../utils/index';
+import {checkCondition} from '../utils/utils';
 import {BaseComponent} from './base/Base';
 
 export class FormioComponents extends BaseComponent {

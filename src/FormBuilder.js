@@ -3,7 +3,7 @@ import dragula from 'dragula';
 import Components from './components/builder';
 import {FormioComponents} from './components/Components';
 import { BuilderUtils } from './utils/builder';
-import {getComponent} from './utils';
+import {getComponent} from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
