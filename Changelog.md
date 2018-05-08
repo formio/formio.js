@@ -4,8 +4,13 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
+## 3.0.0-alpha.4
+### Added
+ - Better documentation around the javascript execution code.
+
 ### Fixed
+ - Issues with text area not working when set to required.
+ - Problems where two text with same key not working in form builder.
  - `moment` library inside calculated value for DateTime component.
 
 ## 3.0.0-alpha.1
