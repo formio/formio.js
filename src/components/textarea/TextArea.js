@@ -70,8 +70,7 @@ export class TextAreaComponent extends TextFieldComponent {
           let mode = this.component.as || 'javascript';
           this.editor = ace.edit(this.input);
           this.editor.on('change', () => {
-            this.dataValue = this.getConvertedValue(this.editor.getValue());
-            this.updateValue();
+            this.updateValue(null, this.getConvertedValue(this.editor.getValue()));
           });
           this.editor.getSession().setTabSize(2);
           this.editor.getSession().setMode("ace/mode/" + mode);
@@ -97,8 +96,7 @@ export class TextAreaComponent extends TextFieldComponent {
     this.editorReady = this.addQuill(
       this.input,
       this.component.wysiwyg, () => {
-        this.dataValue = this.getConvertedValue(this.quill.root.innerHTML);
-        this.updateValue();
+        this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
       }
     ).then((quill) => {
       quill.root.spellcheck = this.component.spellcheck;
@@ -185,7 +183,7 @@ export class TextAreaComponent extends TextFieldComponent {
       return this.dataValue;
     }
 
-    return super.getValue();
+    return this.component.multiple ? [''] : '';
   }
 
   elementInfo() {

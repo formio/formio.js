@@ -3787,17 +3787,17 @@ var BaseComponent = function () {
 
   }, {
     key: 'updateValue',
-    value: function updateValue(flags) {
+    value: function updateValue(flags, value) {
       if (!this.hasInput) {
         return false;
       }
 
       flags = flags || {};
-      var value = this.getValue(flags);
-      var changed = flags.changed || this.hasChanged(value, this.dataValue);
-      this.dataValue = value;
+      var newValue = value || this.getValue(flags);
+      var changed = flags.changed || this.hasChanged(newValue, this.dataValue);
+      this.dataValue = newValue;
       if (this.viewOnly) {
-        this.updateViewOnlyValue(value);
+        this.updateViewOnlyValue(newValue);
       }
 
       this.updateOnChange(flags, changed);
@@ -14921,8 +14921,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
           var mode = _this2.component.as || 'javascript';
           _this2.editor = ace.edit(_this2.input);
           _this2.editor.on('change', function () {
-            _this2.dataValue = _this2.getConvertedValue(_this2.editor.getValue());
-            _this2.updateValue();
+            _this2.updateValue(null, _this2.getConvertedValue(_this2.editor.getValue()));
           });
           _this2.editor.getSession().setTabSize(2);
           _this2.editor.getSession().setMode("ace/mode/" + mode);
@@ -14950,8 +14949,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
 
       // Add the quill editor.
       this.editorReady = this.addQuill(this.input, this.component.wysiwyg, function () {
-        _this2.dataValue = _this2.getConvertedValue(_this2.quill.root.innerHTML);
-        _this2.updateValue();
+        _this2.updateValue(null, _this2.getConvertedValue(_this2.quill.root.innerHTML));
       }).then(function (quill) {
         quill.root.spellcheck = _this2.component.spellcheck;
         if (_this2.options.readOnly || _this2.component.disabled) {
@@ -15032,7 +15030,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         return this.dataValue;
       }
 
-      return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this);
+      return this.component.multiple ? [''] : '';
     }
   }, {
     key: 'elementInfo',

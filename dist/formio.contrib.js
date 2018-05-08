@@ -2353,17 +2353,17 @@ var BaseComponent = function () {
 
   }, {
     key: 'updateValue',
-    value: function updateValue(flags) {
+    value: function updateValue(flags, value) {
       if (!this.hasInput) {
         return false;
       }
 
       flags = flags || {};
-      var value = this.getValue(flags);
-      var changed = flags.changed || this.hasChanged(value, this.dataValue);
-      this.dataValue = value;
+      var newValue = value || this.getValue(flags);
+      var changed = flags.changed || this.hasChanged(newValue, this.dataValue);
+      this.dataValue = newValue;
       if (this.viewOnly) {
-        this.updateViewOnlyValue(value);
+        this.updateViewOnlyValue(newValue);
       }
 
       this.updateOnChange(flags, changed);
