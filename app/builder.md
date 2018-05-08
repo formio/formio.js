@@ -71,7 +71,7 @@ node server</pre>
 </div>
 <script type="text/javascript">
 var subJSON = document.getElementById('subjson');
-var builder = new Formio.Builder(document.getElementById("builder"), {
+var builder = new Formio.FormBuilder(document.getElementById("builder"), {
   display: 'form',
   components: [],
   settings: {

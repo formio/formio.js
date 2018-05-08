@@ -1,7 +1,7 @@
-import FormBuilder from "./FormBuilder";
+import WebformBuilder from "./WebformBuilder";
 import _ from 'lodash';
 
-export default class WizardBuilder extends FormBuilder {
+export default class WizardBuilder extends WebformBuilder {
   setBuilderElement() {
     return super.setBuilderElement().then(() => {
       const buildRegion = this.ce('div', {

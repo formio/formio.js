@@ -1,5 +1,5 @@
 'use strict';
-import Form from './Form';
+import Webform from './Webform';
 import Harness from '../test/harness';
 import FormTests from '../test/forms/index';
 import assert from 'power-assert';
@@ -9,7 +9,7 @@ describe('Formio Form Renderer tests', () => {
   let simpleForm = null;
   it('Should create a simple form', (done) => {
     const formElement = document.createElement('div');
-    simpleForm = new Form(formElement);
+    simpleForm = new Webform(formElement);
     simpleForm.setForm({
       title: 'Simple Form',
       components: [
@@ -41,7 +41,7 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should translate a form from options', done => {
     const formElement = document.createElement('div');
-    const translateForm = new Form(formElement, {
+    const translateForm = new Webform(formElement, {
       language: 'es',
       i18n: {
         es: {
@@ -70,7 +70,7 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should translate a form after instantiate', done => {
     const formElement = document.createElement('div');
-    const translateForm = new Form(formElement, {
+    const translateForm = new Webform(formElement, {
       i18n: {
         es: {
           'Default Label': 'Spanish Label'
@@ -99,7 +99,7 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should add a translation after instantiate', done => {
     const formElement = document.createElement('div');
-    const translateForm = new Form(formElement, {
+    const translateForm = new Webform(formElement, {
       i18n: {
         language: 'es',
         es: {
@@ -132,7 +132,7 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should switch a translation after instantiate', done => {
     const formElement = document.createElement('div');
-    const translateForm = new Form(formElement);
+    const translateForm = new Webform(formElement);
     translateForm.setForm({
       title: 'Translate Form',
       components: [
@@ -157,7 +157,7 @@ describe('Formio Form Renderer tests', () => {
     each(formTest.tests, (formTestTest, title) => {
       it(title, (done) => {
         const formElement = document.createElement('div');
-        const form = new Form(formElement, {language: 'en'});
+        const form = new Webform(formElement, {language: 'en'});
         form.setForm(formTest.form).then(() => {
           formTestTest(form, done);
         }).catch((error) => {

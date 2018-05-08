@@ -2,7 +2,7 @@ import {BaseComponent} from '../base/Base';
 import Promise from 'native-promise-only';
 import {isMongoId, eachComponent} from '../../utils/utils';
 import Formio from '../../Formio';
-import formFactory from '../../formFactory';
+import Form from '../../Form';
 
 export class FormComponent extends BaseComponent {
   static schema(...extend) {
@@ -114,7 +114,7 @@ export class FormComponent extends BaseComponent {
         }
       });
 
-      this.subForm = formFactory(this.element, formObj, srcOptions);
+      this.subForm = (new Form(this.element, formObj, srcOptions)).create();
       this.subForm.on('change', () => {
         this.dataValue = this.subForm.getValue();
         this.onChange();

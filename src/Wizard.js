@@ -1,11 +1,11 @@
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 
-import Form from './Form';
+import Webform from './Webform';
 import Formio from './Formio';
 import {evaluate, checkCondition, hasCondition} from './utils/utils';
 
-export default class Wizard extends Form {
+export default class Wizard extends Webform {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.

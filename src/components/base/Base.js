@@ -1745,8 +1745,6 @@ export class BaseComponent {
     }
   }
 
-  onResize() {}
-
   /**
    * Allow for options to hook into the functionality of this renderer.
    * @return {*}

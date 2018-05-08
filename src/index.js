@@ -1,5 +1,4 @@
 export {default as Formio} from './Formio';
-export {default as createForm} from './createForm';
-export {default as formFactory} from './formFactory';
-export {default as Builder} from './Builder';
+export {default as Form} from './Form';
+export {default as FormBuilder} from './FormBuilder';
 export {default as Utils} from './utils';

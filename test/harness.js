@@ -3,14 +3,14 @@ import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import i18Defaults from '../src/i18n';
-import FormBuilder from "../src/FormBuilder";
+import WebformBuilder from "../src/WebformBuilder";
 let formBuilderElement = null;
 let formBuilder = null;
 const Harness = {
   builderBefore: function(done) {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new FormBuilder(formBuilderElement);
+    formBuilder = new WebformBuilder(formBuilderElement);
     formBuilder.form = {components: []};
     formBuilder.builderReady.then(done);
   },
