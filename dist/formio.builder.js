@@ -14921,7 +14921,8 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
           var mode = _this2.component.as || 'javascript';
           _this2.editor = ace.edit(_this2.input);
           _this2.editor.on('change', function () {
-            return _this2.updateValue();
+            _this2.dataValue = _this2.getConvertedValue(_this2.editor.getValue());
+            _this2.updateValue();
           });
           _this2.editor.getSession().setTabSize(2);
           _this2.editor.getSession().setMode("ace/mode/" + mode);
@@ -14949,7 +14950,8 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
 
       // Add the quill editor.
       this.editorReady = this.addQuill(this.input, this.component.wysiwyg, function () {
-        return _this2.updateValue();
+        _this2.dataValue = _this2.getConvertedValue(_this2.quill.root.innerHTML);
+        _this2.updateValue();
       }).then(function (quill) {
         quill.root.spellcheck = _this2.component.spellcheck;
         if (_this2.options.readOnly || _this2.component.disabled) {
@@ -14993,6 +14995,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
       }
 
       // Set the value when the editor is ready.
+      this.dataValue = value;
       this.editorReady.then(function (editor) {
         if (_this3.component.editor === 'ace') {
           editor.setValue(_this3.setConvertedValue(value));
@@ -15025,15 +15028,11 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         return this.getConvertedValue(_get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this));
       }
 
-      if (this.component.editor === 'ace') {
-        return this.editor ? this.getConvertedValue(this.editor.getValue()) : '';
+      if (this.editor || this.quill) {
+        return this.dataValue;
       }
 
-      if (this.quill) {
-        return this.getConvertedValue(this.quill.root.innerHTML);
-      }
-
-      return this.quill ? this.quill.root.innerHTML : _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this);
+      return _get(TextAreaComponent.prototype.__proto__ || Object.getPrototypeOf(TextAreaComponent.prototype), 'getValue', this).call(this);
     }
   }, {
     key: 'elementInfo',
