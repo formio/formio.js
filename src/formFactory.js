@@ -1,6 +1,7 @@
-import FormioWizard from './formio.wizard';
-import FormioPDF from './formio.pdf';
-import FormioForm from './formio.form';
+import Formio from './Formio';
+import Wizard from './Wizard';
+import PDF from './PDF';
+import Form from './Form';
 
 /**
  * Provided a form object, this will return the form instance.
@@ -10,19 +11,21 @@ import FormioForm from './formio.form';
  * @param options
  * @return {*}
  */
-export default (element, form, options) => {
+Formio.formFactory = (element, form, options) => {
   let instance = null;
   if (form && (form.display === 'wizard')) {
-    instance = new FormioWizard(element, options);
+    instance = new Wizard(element, options);
   }
   else if (form && (form.display === 'pdf')) {
-    instance = new FormioPDF(element, options);
+    instance = new PDF(element, options);
   }
   else {
-    instance = new FormioForm(element, options);
+    instance = new Form(element, options);
   }
   if (form) {
     instance.form = form;
   }
   return instance;
 };
+
+export default Formio.formFactory;

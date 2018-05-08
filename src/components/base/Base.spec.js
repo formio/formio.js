@@ -2,7 +2,7 @@
 import assert from 'power-assert';
 import _merge from 'lodash/merge';
 import {BaseComponent} from './Base';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 import {components as comps} from './fixtures/index';
 describe('Base Component', () => {
   it('Should build a base component', (done) => {

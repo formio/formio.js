@@ -2,7 +2,7 @@
 import assert from 'power-assert';
 import {PanelComponent} from './Panel';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('Panel Component', () => {
   it('Should build a panel component', (done) => {
     Harness.testCreate(PanelComponent, comps.comp1).then((component) => {

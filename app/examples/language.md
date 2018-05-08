@@ -189,6 +189,7 @@ Formio.createForm(document.getElementById('formio'), {
     }
   ]
 }, {
+  language: 'sp',
   i18n: {
     sp: {
       'First Name': 'Nombre de pila',

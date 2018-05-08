@@ -1,10 +1,10 @@
 "use strict";
-import { Formio } from './formio.full';
-import { FormioFormBuilder } from './formio.form.builder';
-import { FormioWizardBuilder } from './formio.wizard.builder';
-import { FormioPDFBuilder } from './formio.pdf.builder';
+import { Formio } from './index';
+import FormBuilder from './FormBuilder';
+import WizardBuilder from './WizardBuilder';
+import PDFBuilder from './PDFBuilder';
 
-export class FormioBuilder {
+export default class Builder {
   constructor(element, form, options) {
     this.instance = null;
     this.element = element;
@@ -17,13 +17,13 @@ export class FormioBuilder {
     this.instance = null;
     this.element.innerHTML = '';
     if (form.display === 'wizard') {
-      this.instance = new FormioWizardBuilder(this.element, this.options);
+      this.instance = new WizardBuilder(this.element, this.options);
     }
     else if (form.display === 'pdf') {
-      this.instance = new FormioPDFBuilder(this.element, this.options);
+      this.instance = new PDFBuilder(this.element, this.options);
     }
     else {
-      this.instance = new FormioFormBuilder(this.element, this.options);
+      this.instance = new FormBuilder(this.element, this.options);
     }
     return this.instance;
   }
@@ -67,9 +67,8 @@ export class FormioBuilder {
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.builder = (element, form, options) => {
-  let builder = new FormioBuilder(element, form, options);
+  let builder = new Builder(element, form, options);
   return builder.loadForm();
 };
 
-Formio.Builder = FormioBuilder;
-exports.Formio = global.Formio = Formio;
+Formio.Builder = Builder;

@@ -1,4 +1,6 @@
-export const WizardTests = [
-  require('./simple'),
-  require('./condional.next.page')
+import Simple from './simple';
+import Conditional from './condional.next.page';
+export default [
+  Simple,
+  Conditional
 ];

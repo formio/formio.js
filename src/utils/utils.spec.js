@@ -4,7 +4,7 @@
 import {expect} from 'chai';
 import _ from 'lodash';
 import writtenNumber from 'written-number';
-import utils from './index';
+import * as utils from './index';
 import components from './fixtures/components.json';
 import submission1 from './fixtures/submission1.json';
 
@@ -212,7 +212,7 @@ describe('getValue', () => {
 
 describe('parseFloat', () => {
   it('should clear input and parse value', () => {
-    expect(utils.parseFloat('12,345,678.90')).to.be.equal(12345678.90);
+    expect(utils.parseFloatExt('12,345,678.90')).to.be.equal(12345678.90);
   });
 });
 

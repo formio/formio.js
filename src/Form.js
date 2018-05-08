@@ -1,12 +1,18 @@
+// DO NOT DELETE! THIS WILL BREAK PDF GENERATION.
+import * as polyfill from './formio.polyfill';
+
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
-import Formio from './formio';
+import Formio from './Formio';
 import Promise from 'native-promise-only';
 import {FormioComponents} from './components/Components';
 
 // Initialize the available forms.
 Formio.forms = {};
+
+// Allow people to register components.
+Formio.registerComponent = (type, component) => (FormioComponents.customComponents[type] = component);
 
 const getOptions = function(options) {
   options = _.defaults(options, {
@@ -26,13 +32,13 @@ const getOptions = function(options) {
  * Renders a Form.io form within the webpage.
  *
  * @example
- * import FormioForm from 'formiojs/form';
- * let form = new FormioForm(document.getElementById('formio'));
+ * import Form from 'formiojs/Form';
+ * let form = new Form(document.getElementById('formio'));
  * form.src = 'https://examples.form.io/example';
  */
-export default class FormioForm extends FormioComponents {
+export default class Form extends FormioComponents {
   /**
-   * Creates a new FormioForm instance.
+   * Creates a new Form instance.
    *
    * @param {Object} element - The DOM element you wish to render this form within.
    * @param {Object} options - The options to create a new form instance.
@@ -42,8 +48,8 @@ export default class FormioForm extends FormioComponents {
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
    *
    * @example
-   * import FormioForm from 'formiojs/form';
-   * let form = new FormioForm(document.getElementById('formio'), {
+   * import Form from 'formiojs/Form';
+   * let form = new Form(document.getElementById('formio'), {
    *   readOnly: true
    * });
    * form.src = 'https://examples.form.io/example';
@@ -63,7 +69,7 @@ export default class FormioForm extends FormioComponents {
     /**
      * The i18n configuration for this component.
      */
-    let i18n = require('./i18n');
+    let i18n = require('./i18n').default;
     if (options && options.i18n && !options.i18nReady) {
       // Support legacy way of doing translations.
       if (options.i18n.resources) {
@@ -89,6 +95,11 @@ export default class FormioForm extends FormioComponents {
     }
     else {
       this.options.i18n = i18n;
+    }
+
+    // Set the language.
+    if (this.options.language) {
+      this.options.i18n.lng = this.options.language;
     }
 
     /**
@@ -142,7 +153,7 @@ export default class FormioForm extends FormioComponents {
      * @type {Promise}
      *
      * @example
-     * let form = new FormioForm(document.getElementById('formio'));
+     * let form = new Formio.Form(document.getElementById('formio'));
      * form.ready.then(() => {
      *   console.log('The form is ready!');
      * });
@@ -169,7 +180,7 @@ export default class FormioForm extends FormioComponents {
      * @type {Promise}
      *
      * @example
-     * let form = new FormioForm(document.getElementById('formio'));
+     * let form = new Formio.Form(document.getElementById('formio'));
      * form.ready.then(() => {
      *   console.log('The form is ready!');
      * });
@@ -434,7 +445,7 @@ export default class FormioForm extends FormioComponents {
    * @param {string} value - The value of the form embed url.
    *
    * @example
-   * let form = new FormioForm(document.getElementById('formio'));
+   * let form = new Formio.Form(document.getElementById('formio'));
    * form.formReady.then(() => {
    *   console.log('The form is formReady!');
    * });
@@ -542,7 +553,7 @@ export default class FormioForm extends FormioComponents {
    * Sets the JSON schema for the form to be rendered.
    *
    * @example
-   * let form = new FormioForm(document.getElementById('formio'));
+   * let form = new Formio.Form(document.getElementById('formio'));
    * form.setForm({
    *   components: [
    *     {
@@ -625,7 +636,7 @@ export default class FormioForm extends FormioComponents {
    * Sets the submission of a form.
    *
    * @example
-   * let form = new FormioForm(document.getElementById('formio'));
+   * let form = new Formio.Form(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
    *   firstName: 'Joe',
@@ -888,7 +899,7 @@ export default class FormioForm extends FormioComponents {
    * Resets the submission of a form and restores defaults.
    *
    * @example
-   * let form = new FormioForm(document.getElementById('formio'));
+   * let form = new Formio.Form(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
    *   firstName: 'Joe',
@@ -982,7 +993,7 @@ export default class FormioForm extends FormioComponents {
    * Submits the form.
    *
    * @example
-   * let form = new FormioForm(document.getElementById('formio'));
+   * let form = new Formio.Form(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
    *   firstName: 'Joe',
@@ -1056,6 +1067,7 @@ else if ('attachEvent' in window) {
   window.attachEvent('onresize', () => Formio.triggerResize());
 }
 
-FormioForm.setBaseUrl = Formio.setBaseUrl;
-FormioForm.setApiUrl = Formio.setApiUrl;
-FormioForm.setAppUrl = Formio.setAppUrl;
+Form.setBaseUrl = Formio.setBaseUrl;
+Form.setApiUrl = Formio.setApiUrl;
+Form.setAppUrl = Formio.setAppUrl;
+Formio.Form = Form;

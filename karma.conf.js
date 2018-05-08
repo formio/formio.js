@@ -1,12 +1,9 @@
 module.exports = function(config) {
   config.set({
     basePath: '',
-    frameworks: ['browserify', 'mocha'],
-    browserify: {
-      debug: true,
-      transform: [
-        ['babelify', {plugins: ['babel-plugin-espower']}]
-      ]
+    frameworks: ['mocha'],
+    webpack: {
+      mode: 'development'
     },
     files: [
       'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',
@@ -17,7 +14,7 @@ module.exports = function(config) {
     exclude: [
     ],
     preprocessors: {
-      'src/**/*.spec.js': 'browserify'
+      'src/**/*.spec.js': ['webpack']
     },
     reporters: ['progress'],
     port: 9876,

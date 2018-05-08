@@ -1,14 +1,14 @@
-import FormioForm from './formio.form';
+import Form from './Form';
 import dragula from 'dragula';
 import Components from './components/builder';
 import {FormioComponents} from './components/Components';
 import { BuilderUtils } from './utils/builder';
-import FormioUtils from './utils';
+import {getComponent} from './utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 
-export class FormioFormBuilder extends FormioForm {
+export default class FormBuilder extends Form {
   constructor(element, options) {
     super(element, options);
     let self = this;
@@ -299,7 +299,7 @@ export class FormioFormBuilder extends FormioForm {
     const editForm = Components[componentCopy.component.type].editForm();
 
     // Change the defaultValue component to be reflective.
-    this.defaultValueComponent = FormioUtils.getComponent(editForm.components, 'defaultValue');
+    this.defaultValueComponent = getComponent(editForm.components, 'defaultValue');
     _.assign(this.defaultValueComponent, _.omit(componentCopy.component, [
       'key',
       'label',
@@ -309,7 +309,7 @@ export class FormioFormBuilder extends FormioForm {
     ]));
 
     // Create the form instance.
-    this.editForm = new FormioForm(formioForm);
+    this.editForm = new Form(formioForm);
 
     // Set the form to the edit form.
     this.editForm.form = editForm;

@@ -2,7 +2,7 @@
 import assert from 'power-assert';
 import {WellComponent} from './Well';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('Well Component', () => {
   it('Should build a Well component', (done) => {
     Harness.testCreate(WellComponent, comps.comp1).then((component) => {

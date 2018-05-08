@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {BaseComponent} from '../base/Base';
-import FormioUtils from '../../utils';
+import {flattenComponents, evaluate} from '../../utils';
 
 export class ButtonComponent extends BaseComponent {
   static schema(...extend) {
@@ -201,7 +201,7 @@ export class ButtonComponent extends BaseComponent {
           // Get the FormioForm at the root of this component's tree
           const form = this.getRoot();
           // Get the form's flattened schema components
-          const flattened = FormioUtils.flattenComponents(form.component.components, true);
+          const flattened = flattenComponents(form.component.components, true);
           // Create object containing the corresponding HTML element components
           const components = {};
           _.each(flattened, (component, key) => {
@@ -211,7 +211,7 @@ export class ButtonComponent extends BaseComponent {
             }
           });
 
-          FormioUtils.evaluate(this.component.custom, {
+          evaluate(this.component.custom, {
             form,
             flattened,
             components,

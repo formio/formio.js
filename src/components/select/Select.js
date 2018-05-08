@@ -1,8 +1,8 @@
 import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
 import {BaseComponent} from '../base/Base';
-import Formio from '../../formio';
-import FormioUtils from '../../utils';
+import Formio from '../../Formio';
+import * as FormioUtils from '../../utils';
 
 // Duck-punch the setValueByChoice to ensure we compare using _.isEqual.
 Choices.prototype.setValueByChoice = function(value) {

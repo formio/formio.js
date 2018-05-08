@@ -1,7 +1,7 @@
 'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import FormioUtils from '../utils/index';
+import {checkCondition} from '../utils/index';
 import {BaseComponent} from './base/Base';
 
 export class FormioComponents extends BaseComponent {
@@ -129,7 +129,7 @@ export class FormioComponents extends BaseComponent {
     options = options || this.options;
     data = data || this.data;
     if (!this.options.components) {
-      this.options.components = require('./index');
+      this.options.components = require('./index').default;
       _.assign(this.options.components, FormioComponents.customComponents);
     }
     const comp = this.options.components.create(component, options, data, true);
@@ -368,7 +368,7 @@ export class FormioComponents extends BaseComponent {
   }
 
   checkValidity(data, dirty) {
-    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
       return true;
     }
 

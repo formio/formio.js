@@ -1,5 +1,5 @@
 import BaseEditForm from '../base/Base.form';
-import Formio from '../../formio';
+import Formio from '../../Formio';
 import _ from 'lodash';
 export default function(...extend) {
   return BaseEditForm(...extend, [

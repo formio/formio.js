@@ -4,7 +4,17 @@ import Promise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
-import FormioUtils from '../../utils';
+import {
+  getRandomComponentId,
+  evaluate,
+  matchInputMask,
+  getInputMask,
+  interpolate,
+  hasCondition,
+  checkCondition,
+  checkTrigger,
+  setActionProperty
+} from '../../utils';
 import {Validator} from '../Validator';
 import moment from 'moment';
 
@@ -147,7 +157,7 @@ export class BaseComponent {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = (component && component.id) ? component.id : FormioUtils.getRandomComponentId();
+    this.id = (component && component.id) ? component.id : getRandomComponentId();
 
     /**
      * The options for this component.
@@ -768,7 +778,7 @@ export class BaseComponent {
       defaultValue = this.component.defaultValue;
     }
     else if (this.component.customDefaultValue) {
-      defaultValue = FormioUtils.evaluate(
+      defaultValue = evaluate(
         this.component.customDefaultValue,
         {
           value: '',
@@ -784,7 +794,7 @@ export class BaseComponent {
 
     if (this._inputMask) {
       defaultValue = conformToMask(defaultValue, this._inputMask).conformedValue;
-      if (!FormioUtils.matchInputMask(defaultValue, this._inputMask)) {
+      if (!matchInputMask(defaultValue, this._inputMask)) {
         defaultValue = '';
       }
     }
@@ -1294,7 +1304,7 @@ export class BaseComponent {
    */
   setInputMask(input) {
     if (input && this.component.inputMask) {
-      const mask = FormioUtils.getInputMask(this.component.inputMask);
+      const mask = getInputMask(this.component.inputMask);
       this._inputMask = mask;
       input.mask = maskInput({
         inputElement: input,
@@ -1410,7 +1420,7 @@ export class BaseComponent {
     const div = this.ce('div');
 
     // Interpolate the template and populate
-    div.innerHTML = FormioUtils.interpolate(template, data);
+    div.innerHTML = interpolate(template, data);
 
     // Add actions to matching elements.
     actions.forEach(action => {
@@ -1546,7 +1556,7 @@ export class BaseComponent {
       return this._hasCondition;
     }
 
-    this._hasCondition = FormioUtils.hasCondition(this.component);
+    this._hasCondition = hasCondition(this.component);
     return this._hasCondition;
   }
 
@@ -1563,7 +1573,7 @@ export class BaseComponent {
       result = this.show(true);
     }
     else {
-      result = this.show(FormioUtils.checkCondition(
+      result = this.show(checkCondition(
         this.component,
         this.data,
         data,
@@ -1595,7 +1605,7 @@ export class BaseComponent {
     const newComponent = _.cloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
-      const result = FormioUtils.checkTrigger(
+      const result = checkTrigger(
         newComponent,
         logic.trigger,
         this.data,
@@ -1608,11 +1618,11 @@ export class BaseComponent {
         changed |= logic.actions.reduce((changed, action) => {
           switch (action.type) {
             case 'property':
-              FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result);
+              setActionProperty(newComponent, action, this.data, data, newComponent, result);
               break;
             case 'value': {
               const oldValue = this.getValue();
-              const newValue = FormioUtils.evaluate(
+              const newValue = evaluate(
                 action.value,
                 {
                   value: _.clone(oldValue),
@@ -2105,7 +2115,7 @@ export class BaseComponent {
 
     flags = flags || {};
     flags.noCheck = true;
-    return this.setValue(FormioUtils.evaluate(this.component.calculateValue, {
+    return this.setValue(evaluate(this.component.calculateValue, {
       value: [],
       component: this.component,
       data,
@@ -2172,7 +2182,7 @@ export class BaseComponent {
 
   checkValidity(data, dirty) {
     // Force valid if component is conditionally hidden.
-    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
       return true;
     }
 
@@ -2208,7 +2218,7 @@ export class BaseComponent {
   }
 
   interpolate(string, data) {
-    return FormioUtils.interpolate(string, data);
+    return interpolate(string, data);
   }
 
   setCustomValidity(message, dirty) {

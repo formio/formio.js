@@ -1,11 +1,11 @@
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 
-import FormioForm from './formio.form';
-import Formio from './formio';
-import FormioUtils from './utils';
+import Form from './Form';
+import Formio from './Formio';
+import {evaluate, checkCondition, hasCondition} from './utils';
 
-export default class FormioWizard extends FormioForm {
+export default class Wizard extends Form {
   /**
    * Constructor for wizard based forms
    * @param element Dom element to place this wizard.
@@ -40,7 +40,7 @@ export default class FormioWizard extends FormioForm {
     if (form) {
       let page = ++currentPage;
       if (form.nextPage) {
-        let next = FormioUtils.evaluate(form.nextPage, {
+        let next = evaluate(form.nextPage, {
           next: page,
           data,
           page,
@@ -188,7 +188,7 @@ export default class FormioWizard extends FormioForm {
     _.each(form.components, (component) => {
       if (component.type === 'panel') {
         // Ensure that this page can be seen.
-        if (FormioUtils.checkCondition(component, this.data, this.data, this.wizard, this)) {
+        if (checkCondition(component, this.data, this.data, this.wizard, this)) {
           this.pages.push(component);
         }
       }
@@ -348,10 +348,10 @@ export default class FormioWizard extends FormioForm {
         return;
       }
 
-      if (FormioUtils.hasCondition(component)) {
+      if (hasCondition(component)) {
         const hasPage = this.pages && this.pages[pageIndex]
           && (this.pageId(this.pages[pageIndex]) === this.pageId(component));
-        const shouldShow = FormioUtils.checkCondition(component, this.data, this.data, this.wizard, this);
+        const shouldShow = checkCondition(component, this.data, this.data, this.wizard, this);
         if ((shouldShow && !hasPage) || (!shouldShow && hasPage)) {
           rebuild = true;
           return false;
@@ -429,6 +429,6 @@ export default class FormioWizard extends FormioForm {
   }
 }
 
-FormioWizard.setBaseUrl = Formio.setBaseUrl;
-FormioWizard.setApiUrl = Formio.setApiUrl;
-FormioWizard.setAppUrl = Formio.setAppUrl;
+Wizard.setBaseUrl = Formio.setBaseUrl;
+Wizard.setApiUrl = Formio.setApiUrl;
+Wizard.setAppUrl = Formio.setAppUrl;

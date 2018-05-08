@@ -1,5 +1,5 @@
 import Promise from 'native-promise-only';
-import Formio from './formio';
+import Formio from './Formio';
 import formFactory from './formFactory';
 
 /**
@@ -11,7 +11,7 @@ import formFactory from './formFactory';
  *
  * @return {Promise} - When the form is instance is ready.
  */
-export default (element, form, options) => {
+Formio.createForm = (element, form, options) => {
   if (typeof form === 'string') {
     return (new Formio(form)).loadForm({params: {live: 1}}).then((formObj) => {
       const instance = formFactory(element, formObj, options);
@@ -25,3 +25,5 @@ export default (element, form, options) => {
     return Promise.resolve(formFactory(element, form, options));
   }
 };
+
+export default Formio.createForm;

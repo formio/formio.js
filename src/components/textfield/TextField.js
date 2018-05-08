@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import maskInput from 'vanilla-text-mask';
 
-import FormioUtils from '../../utils';
-
+import {getInputMask} from '../../utils';
 import {BaseComponent} from '../base/Base';
 
 export class TextFieldComponent extends BaseComponent {
@@ -89,7 +88,7 @@ export class TextFieldComponent extends BaseComponent {
       return super.setInputMask(input);
     }
     if (input && inputMask) {
-      const mask = FormioUtils.getInputMask(inputMask);
+      const mask = getInputMask(inputMask);
       input.mask = maskInput({
         inputElement: input,
         mask

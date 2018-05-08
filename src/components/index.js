@@ -91,5 +91,4 @@ const FormioComponentsIndex = {
   }
 };
 
-module.exports = FormioComponentsIndex;
 export default FormioComponentsIndex;

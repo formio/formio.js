@@ -1,16 +1,15 @@
 'use strict';
-import FormioForm from './formio.form';
-import {Harness} from '../test/harness';
-import {FormTests} from '../test/forms/index';
+import Form from './Form';
+import Harness from '../test/harness';
+import FormTests from '../test/forms/index';
 import assert from 'power-assert';
 import each from 'lodash/each';
-import i18next from 'i18next';
 
 describe('Formio Form Renderer tests', () => {
   let simpleForm = null;
   it('Should create a simple form', (done) => {
     const formElement = document.createElement('div');
-    simpleForm = new FormioForm(formElement);
+    simpleForm = new Form(formElement);
     simpleForm.setForm({
       title: 'Simple Form',
       components: [
@@ -42,7 +41,7 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should translate a form from options', done => {
     const formElement = document.createElement('div');
-    const translateForm = new FormioForm(formElement, {
+    const translateForm = new Form(formElement, {
       language: 'es',
       i18n: {
         es: {
@@ -71,7 +70,7 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should translate a form after instantiate', done => {
     const formElement = document.createElement('div');
-    const translateForm = new FormioForm(formElement, {
+    const translateForm = new Form(formElement, {
       i18n: {
         es: {
           'Default Label': 'Spanish Label'
@@ -100,7 +99,7 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should add a translation after instantiate', done => {
     const formElement = document.createElement('div');
-    const translateForm = new FormioForm(formElement, {
+    const translateForm = new Form(formElement, {
       i18n: {
         language: 'es',
         es: {
@@ -133,7 +132,7 @@ describe('Formio Form Renderer tests', () => {
 
   it('Should switch a translation after instantiate', done => {
     const formElement = document.createElement('div');
-    const translateForm = new FormioForm(formElement);
+    const translateForm = new Form(formElement);
     translateForm.setForm({
       title: 'Translate Form',
       components: [
@@ -158,7 +157,7 @@ describe('Formio Form Renderer tests', () => {
     each(formTest.tests, (formTestTest, title) => {
       it(title, (done) => {
         const formElement = document.createElement('div');
-        const form = new FormioForm(formElement, {language: 'en'});
+        const form = new Form(formElement, {language: 'en'});
         form.setForm(formTest.form).then(() => {
           formTestTest(form, done);
         }).catch((error) => {
