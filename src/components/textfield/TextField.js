@@ -146,7 +146,7 @@ export class TextFieldComponent extends BaseComponent {
     if (!this.isMultipleMasksField) {
       return super.performInputMapping(input);
     }
-    return input ? input.text : undefined;
+    return input && input.text ? input.text : input;
   }
 
   buildInput(container, value, index) {
@@ -161,7 +161,7 @@ export class TextFieldComponent extends BaseComponent {
     if (!this.isMultipleMasksField) {
       return super.isEmpty(value);
     }
-    return this.component.multiple ? value.length === 0 : (!value.maskName || !value.value);
+    return super.isEmpty(value) || (this.component.multiple ? value.length === 0 : (!value.maskName || !value.value));
   }
 
   createMaskInput(textInput) {
