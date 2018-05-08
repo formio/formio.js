@@ -26,13 +26,14 @@ export let BaseEditConditional = [
         label: 'When the form component:',
         key: 'conditional.when',
         dataSrc: 'custom',
+        valueProperty: 'value',
         data: {
           custom: `
             utils.eachComponent(instance.root.editForm.components, function(component, path) {
               if (component.key !== data.key) {
                 values.push({
                   label: component.label || component.key,
-                  value: path
+                  value: component.key
                 });
               }
             });
