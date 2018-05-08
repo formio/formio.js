@@ -2055,17 +2055,17 @@ export class BaseComponent {
    *
    * @param flags
    */
-  updateValue(flags) {
+  updateValue(flags, value) {
     if (!this.hasInput) {
       return false;
     }
 
     flags = flags || {};
-    const value = this.getValue(flags);
-    const changed = flags.changed || this.hasChanged(value, this.dataValue);
-    this.dataValue = value;
+    const newValue = value || this.getValue(flags);
+    const changed = flags.changed || this.hasChanged(newValue, this.dataValue);
+    this.dataValue = newValue;
     if (this.viewOnly) {
-      this.updateViewOnlyValue(value);
+      this.updateViewOnlyValue(newValue);
     }
 
     this.updateOnChange(flags, changed);
