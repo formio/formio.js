@@ -6,8 +6,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### 3.0.0
 #### Breaking Changes
- - Changed the overrall structure of the library.
- - Removed formio.form, formio.wizard, and formio.utils builds. They can be accessed through basic "formio.full" and "formio" builds respectively.
+ - Changed the overrall structure of the library and how "imports" work to make them more structured.
+    
+    ```js
+    // To render a new form.
+    import { Form } from 'formiojs';
+    const renderer = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
+    renderer.render();
+    ```
+    
+    ```js
+    // To render a form builder
+    import { FormBuilder } from 'formiojs';
+    const builder = new FormBuilder(document.getElementById('builder'), {components:[]});
+    builder.render();
+    ```
+    
+    
  - Deprected ability to "attach" Formio to existing form using Formio.form method.
  - Modified all JavaScript execution to make it more consistent.
    - "component" now always refers to the JSON of the component (not the component instance)
