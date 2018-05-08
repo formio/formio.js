@@ -6,8 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### 3.0.0
 #### Breaking Changes
- - Changed the structure of the library.
-   - Changed Formio utils import from ```import FormioUtils from 'formiojs/utils'``` to ```import 
+ - Changed the overrall structure of the library.
  - Removed formio.form, formio.wizard, and formio.utils builds. They can be accessed through basic "formio.full" and "formio" builds respectively.
  - Deprected ability to "attach" Formio to existing form using Formio.form method.
  - Modified all JavaScript execution to make it more consistent.
