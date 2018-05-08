@@ -2037,8 +2037,8 @@ var BaseComponent = function () {
   }, {
     key: 'show',
     value: function show(_show) {
-      // Execute only if visibility changes.
-      if (!_show === !this._visible) {
+      // Execute only if visibility changes or if we are in builder mode.
+      if (!_show === !this._visible || this.options.builder) {
         return _show;
       }
 

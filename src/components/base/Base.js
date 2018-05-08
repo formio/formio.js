@@ -1673,8 +1673,8 @@ export class BaseComponent {
    * @param show
    */
   show(show) {
-    // Execute only if visibility changes.
-    if (!show === !this._visible) {
+    // Execute only if visibility changes or if we are in builder mode.
+    if (!show === !this._visible || this.options.builder) {
       return show;
     }
 
