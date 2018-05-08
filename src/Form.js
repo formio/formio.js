@@ -7,8 +7,7 @@ export default class Form {
   constructor(element, form, options) {
     this.instance = null;
     this.element = element;
-    this.form = form || {};
-    this.form.components = this.form.components || [];
+    this.form = form;
     this.options = options;
   }
 
@@ -24,14 +23,14 @@ export default class Form {
     }
   }
 
-  setForm(form) {
-    form = form || this.form;
+  setForm(formParam) {
+    formParam = formParam || this.form;
     this.element.innerHTML = '';
-    if (typeof form === 'string') {
-      return (new Formio(form)).loadForm().then(form => {
+    if (typeof formParam === 'string') {
+      return (new Formio(formParam)).loadForm().then(form => {
         this.form = form;
         this.instance = this.create();
-        this.instance.url = this.form;
+        this.instance.url = formParam;
         this.instance.nosubmit = false;
         this.instance.loadSubmission();
         this.form = this.instance.form = form;
@@ -39,7 +38,7 @@ export default class Form {
       });
     }
     else {
-      this.form = form;
+      this.form = formParam;
       this.instance = this.create();
       this.instance.form = this.form;
       return this.instance.ready.then(() => this.instance);
