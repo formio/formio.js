@@ -34,6 +34,23 @@ Formio.createForm(document.getElementById('formio'), {
       input: true
     },
     {
+      type: 'phoneNumber',
+      key: 'phoneNumber',
+      label: 'Phone',
+      input: true,
+      allowMultipleMasks: true,
+      inputMasks: [
+        {
+          'label': 'US',
+          'mask': '(999) 999-9999'
+        },
+        {
+          'label': 'BY',
+          'mask': '+999 (99) 999-99-99'
+        }
+      ]
+    },
+    {
       type: 'select',
       key: 'select',
       label: 'Favorite Color',
@@ -162,6 +179,23 @@ Formio.createForm(document.getElementById('formio'), {
       label: 'Last Name',
       placeholder: 'Enter your last name',
       input: true
+    },
+    {
+      type: 'phoneNumber',
+      key: 'phoneNumber',
+      label: 'Phone',
+      input: true,
+      allowMultipleMasks: true,
+      inputMasks: [
+        {
+          'label': 'US',
+          'mask': '(999) 999-9999'
+        },
+        {
+          'label': 'BY',
+          'mask': '+999 (99) 999-99-99'
+        }
+      ]
     },
     {
       type: 'select',

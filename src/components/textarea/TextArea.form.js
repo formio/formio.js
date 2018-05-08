@@ -6,6 +6,14 @@ export default function (...extend) {
       key: 'display',
       components: [
         {
+          key: 'inputMask',
+          ignore: true
+        },
+        {
+          key: 'allowMultipleMasks',
+          ignore: true
+        },
+        {
           type: 'number',
           input: true,
           key: 'rows',

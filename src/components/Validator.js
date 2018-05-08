@@ -212,10 +212,20 @@ export const Validator = {
         });
       },
       check(component, setting, value) {
-        if (value && component._inputMask) {
-          return FormioUtils.matchInputMask(value, component._inputMask);
+        let inputMask;
+        if (component.isMultipleMasksField) {
+          const maskName = value ? value.maskName : undefined;
+          const formioInputMask = component.getMaskByName(maskName);
+          if (formioInputMask) {
+            inputMask = FormioUtils.getInputMask(formioInputMask);
+          }
+          value = value ? value.value : value;
+        } else {
+          inputMask = component._inputMask;
         }
-
+        if (value && inputMask) {
+          return FormioUtils.matchInputMask(value, inputMask);
+        }
         return true;
       }
     },
