@@ -33,7 +33,7 @@ export default class FormBuilder extends Form {
   }
 
   create() {
-    if (this.form.components) {
+    if (!this.form.components) {
       this.form.components = [];
     }
     if (this.form.display === 'wizard') {
