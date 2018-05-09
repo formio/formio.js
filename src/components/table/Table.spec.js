@@ -1,5 +1,5 @@
 'use strict';
-import {TableComponent} from './Table';
+import TableComponent from './Table';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Table Component', () => {

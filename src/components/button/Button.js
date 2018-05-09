@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 import {flattenComponents, evaluate} from '../../utils/utils';
 
-export class ButtonComponent extends BaseComponent {
+export default class ButtonComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'button',

@@ -1,5 +1,5 @@
 'use strict';
-import { TagsComponent } from './Tags';
+import TagsComponent from './Tags';
 import { components as comps } from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Tags Component', function() {

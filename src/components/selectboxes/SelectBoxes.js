@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import {RadioComponent} from '../radio/Radio';
+import RadioComponent from '../radio/Radio';
 
-export class SelectBoxesComponent extends RadioComponent {
+export default class SelectBoxesComponent extends RadioComponent {
   static schema(...extend) {
     return RadioComponent.schema({
       type: 'selectboxes',

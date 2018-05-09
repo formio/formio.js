@@ -22,7 +22,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     builder.render();
     ```
     
-    
+ - Changed FormioComponents name to NestedComponent.
+ - Changed FormioComponentsIndex name to Components
+ - Changed FormioForm name to Webform
+ - Changed FormioWizard name to Wizard
+ - Changed FormioPDF name to PDF
+ - Changed all exports on Components to be default exports. ```import TextFieldComponent from 'formiojs/components/textfield/TextField';```
  - Deprected ability to "attach" Formio to existing form using Formio.form method.
  - Modified all JavaScript execution to make it more consistent.
    - "component" now always refers to the JSON of the component (not the component instance)

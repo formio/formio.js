@@ -1,7 +1,7 @@
-import ComponentsEditForm from '../Components.form';
+import NestedComponentForm from '../NestedComponent.form';
 
 export default function(...extend) {
-  return ComponentsEditForm(...extend, [
+  return NestedComponentForm(...extend, [
     {
       label: 'Display',
       key: 'display',

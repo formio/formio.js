@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'power-assert';
-import {RadioComponent} from './Radio';
+import RadioComponent from './Radio';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Radio Component', () => {

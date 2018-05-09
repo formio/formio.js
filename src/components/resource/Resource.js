@@ -1,7 +1,7 @@
-import {SelectComponent} from '../select/Select';
+import SelectComponent from '../select/Select';
 import Webform from '../../Webform';
 
-export class ResourceComponent extends SelectComponent {
+export default class ResourceComponent extends SelectComponent {
   static schema(...extend) {
     return SelectComponent.schema({
       type: 'resource',

@@ -1,5 +1,5 @@
 'use strict';
-import {TimeComponent} from './Time';
+import TimeComponent from './Time';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Time Component', () => {

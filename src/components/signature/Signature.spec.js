@@ -1,5 +1,5 @@
 'use strict';
-import {SignatureComponent} from './Signature';
+import SignatureComponent from './Signature';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Signature Component', () => {

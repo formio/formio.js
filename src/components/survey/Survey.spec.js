@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'power-assert';
-import {SurveyComponent} from './Survey';
+import SurveyComponent from './Survey';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Survey Component', () => {

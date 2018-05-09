@@ -15,13 +15,13 @@ import {
   checkTrigger,
   setActionProperty
 } from '../../utils/utils';
-import {Validator} from '../Validator';
+import Validator from '../Validator';
 import moment from 'moment';
 
 /**
  * This is the BaseComponent class which all elements within the FormioForm derive from.
  */
-export class BaseComponent {
+export default class BaseComponent {
   static schema(...sources) {
     return _.merge({
       /**

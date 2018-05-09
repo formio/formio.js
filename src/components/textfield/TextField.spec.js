@@ -1,5 +1,5 @@
 'use strict';
-import {TextFieldComponent} from './TextField';
+import TextFieldComponent from './TextField';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 import assert from 'power-assert';

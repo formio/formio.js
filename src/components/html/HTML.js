@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 
-export class HTMLComponent extends BaseComponent {
+export default class HTMLComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'htmlelement',

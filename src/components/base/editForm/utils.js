@@ -1,5 +1,5 @@
 import _ from 'lodash';
-export let EditFormUtils = {
+const EditFormUtils = {
   sortAndFilterComponents: (components) => {
     return _.filter(_.sortBy(components, 'weight'), item => !item.ignore);
   },
@@ -100,3 +100,5 @@ export let EditFormUtils = {
     };
   }
 };
+
+export default EditFormUtils;

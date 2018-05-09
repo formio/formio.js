@@ -1,5 +1,5 @@
 'use strict';
-import {SelectBoxesComponent} from './SelectBoxes';
+import SelectBoxesComponent from './SelectBoxes';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('SelectBoxes Component', () => {

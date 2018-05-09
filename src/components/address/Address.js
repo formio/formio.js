@@ -1,11 +1,11 @@
 /* globals google */
 import _ from 'lodash';
 
-import {TextFieldComponent} from '../textfield/TextField';
-import {BaseComponent} from '../base/Base';
+import TextFieldComponent from '../textfield/TextField';
+import BaseComponent from '../base/Base';
 import {evaluate} from '../../utils/utils';
 
-export class AddressComponent extends TextFieldComponent {
+export default class AddressComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'address',

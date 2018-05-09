@@ -1,5 +1,5 @@
 'use strict';
-import { LocationComponent } from './Location';
+import LocationComponent from './Location';
 import { components as comps } from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Location Component', function() {

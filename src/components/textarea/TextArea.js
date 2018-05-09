@@ -1,7 +1,7 @@
-import {TextFieldComponent} from '../textfield/TextField';
-import {BaseComponent} from '../base/Base';
+import TextFieldComponent from '../textfield/TextField';
+import BaseComponent from '../base/Base';
 
-export class TextAreaComponent extends TextFieldComponent {
+export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'textarea',

@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'power-assert';
-import {EditGridComponent} from './EditGrid';
+import EditGridComponent from './EditGrid';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('EditGrid Component', () => {

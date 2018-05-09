@@ -1,5 +1,5 @@
 'use strict';
-import {StripeCheckoutComponent} from './StripeCheckout';
+import StripeCheckoutComponent from './StripeCheckout';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../../test/harness';
 describe('StripeCheckout Component', () => {

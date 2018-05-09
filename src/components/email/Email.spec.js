@@ -1,5 +1,5 @@
 'use strict';
-import {EmailComponent} from './Email';
+import EmailComponent from './Email';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Email Component', () => {

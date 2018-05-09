@@ -1,6 +1,6 @@
 import Formio from '../Formio';
-import {StripeComponent} from './stripe/stripe/Stripe';
-import {StripeCheckoutComponent} from './stripe/checkout/StripeCheckout';
+import StripeComponent from './stripe/stripe/Stripe';
+import StripeCheckoutComponent from './stripe/checkout/StripeCheckout';
 Formio.contrib = {
   stripe: {
     stripe: StripeComponent,

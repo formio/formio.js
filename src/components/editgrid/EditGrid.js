@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import {FormioComponents} from '../Components';
+import NestedComponent from '../NestedComponent';
 import FormioUtils from '../../utils/index';
 
-export class EditGridComponent extends FormioComponents {
+export default class EditGridComponent extends NestedComponent {
   static schema(...extend) {
-    return FormioComponents.schema({
+    return NestedComponent.schema({
       type: 'editgrid',
       label: 'Edit Grid',
       key: 'editGrid',

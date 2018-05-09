@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import { boolValue, evaluate, getInputMask, matchInputMask } from '../utils/utils';
-
-export const Validator = {
+import {boolValue, evaluate, getInputMask, matchInputMask} from '../utils/utils';
+export default {
   get: _.get,
   each: _.each,
   has: _.has,

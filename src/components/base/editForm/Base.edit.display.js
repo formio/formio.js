@@ -1,4 +1,4 @@
-export let BaseEditDisplay = [
+export default [
   {
     weight: 0,
     type: 'textfield',

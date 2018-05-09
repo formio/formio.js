@@ -1,5 +1,5 @@
 'use strict';
-import {StripeComponent} from './Stripe';
+import StripeComponent from './Stripe';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../../test/harness';
 describe('Stripe Component', () => {

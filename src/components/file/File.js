@@ -1,7 +1,7 @@
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 import {uniqueName} from '../../utils/utils';
 
-export class FileComponent extends BaseComponent {
+export default class FileComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'file',

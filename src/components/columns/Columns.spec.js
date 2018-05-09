@@ -1,5 +1,5 @@
 'use strict';
-import {ColumnsComponent} from './Columns';
+import ColumnsComponent from './Columns';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Columns Component', () => {

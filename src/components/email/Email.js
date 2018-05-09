@@ -1,6 +1,6 @@
-import {TextFieldComponent} from '../textfield/TextField';
+import TextFieldComponent from '../textfield/TextField';
 
-export class EmailComponent extends TextFieldComponent {
+export default class EmailComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'email',

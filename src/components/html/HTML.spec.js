@@ -1,5 +1,5 @@
 'use strict';
-import {HTMLComponent} from './HTML';
+import HTMLComponent from './HTML';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('HTML Component', () => {

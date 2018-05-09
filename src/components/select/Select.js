@@ -1,6 +1,6 @@
 import Choices from 'choices.js/assets/scripts/dist/choices.js';
 import _ from 'lodash';
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 import Formio from '../../Formio';
 import * as FormioUtils from '../../utils/utils';
 
@@ -42,7 +42,7 @@ Choices.prototype.setValueByChoice = function(value) {
   return this;
 };
 
-export class SelectComponent extends BaseComponent {
+export default class SelectComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'select',

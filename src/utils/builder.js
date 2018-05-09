@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import {eachComponent} from './utils';
-
-export const BuilderUtils = {
+export default {
   /**
    * Iterate the given key to make it unique.
    *

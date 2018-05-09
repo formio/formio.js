@@ -1,5 +1,5 @@
 'use strict';
-import {TextAreaComponent} from './TextArea';
+import TextAreaComponent from './TextArea';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('TextArea Component', () => {

@@ -1,6 +1,6 @@
-import { BaseComponent } from '../base/Base';
+import BaseComponent from '../base/Base';
 
-export class LocationComponent extends BaseComponent {
+export default class LocationComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'location',

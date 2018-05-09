@@ -1,5 +1,5 @@
-import { EditFormUtils } from './utils';
-export let BaseEditData = [
+import EditFormUtils from './utils';
+export default [
   {
     type: 'textfield',
     label: 'Default Value',

@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'power-assert';
-import {FormComponent} from './Form';
+import FormComponent from './Form';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Form Component', () => {

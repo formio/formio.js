@@ -1,6 +1,5 @@
-import { EditFormUtils } from "./utils";
-
-export let BaseEditConditional = [
+import EditFormUtils from "./utils";
+export default [
   {
     type: 'panel',
     title: 'Simple',

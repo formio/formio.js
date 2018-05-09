@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'power-assert';
-import {DataGridComponent} from './DataGrid';
+import DataGridComponent from './DataGrid';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('DataGrid Component', () => {

@@ -1,5 +1,5 @@
 'use strict';
-import {PasswordComponent} from './Password';
+import PasswordComponent from './Password';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Password Component', () => {

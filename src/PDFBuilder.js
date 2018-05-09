@@ -1,5 +1,5 @@
 import WebformBuilder from "./WebformBuilder";
-import { getElementRect } from './utils/utils';
+import {getElementRect} from './utils/utils';
 import PDF from './PDF';
 
 export default class PDFBuilder extends WebformBuilder {

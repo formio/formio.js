@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'power-assert';
-import {WellComponent} from './Well';
+import WellComponent from './Well';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Well Component', () => {

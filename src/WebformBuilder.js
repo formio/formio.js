@@ -1,8 +1,8 @@
 import Webform from './Webform';
 import dragula from 'dragula';
 import Components from './components/builder';
-import {FormioComponents} from './components/Components';
-import { BuilderUtils } from './utils/builder';
+import NestedComponent from './components/NestedComponent';
+import BuilderUtils from './utils/builder';
 import {getComponent} from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
@@ -560,7 +560,7 @@ export default class WebformBuilder extends Webform {
 
     // Get all of the components builder info grouped and sorted.
     let components = {};
-    let allComponents = _.filter(_.map(_.assign(Components, FormioComponents.customComponents), (component, type) => {
+    let allComponents = _.filter(_.map(_.assign(Components, NestedComponent.customComponents), (component, type) => {
       if (!component.builderInfo) {
         return null;
       }

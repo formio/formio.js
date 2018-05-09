@@ -1,4 +1,4 @@
-export const TextFieldEditValidation = [
+export default [
   {
     weight: 110,
     key: 'validate.minLength',

@@ -1,5 +1,5 @@
 'use strict';
-import {FieldsetComponent} from './Fieldset';
+import FieldsetComponent from './Fieldset';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Fieldset Component', () => {

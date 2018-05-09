@@ -6,13 +6,13 @@ import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
 import Formio from './Formio';
 import Promise from 'native-promise-only';
-import {FormioComponents} from './components/Components';
+import NestedComponent from './components/NestedComponent';
 
 // Initialize the available forms.
 Formio.forms = {};
 
 // Allow people to register components.
-Formio.registerComponent = (type, component) => (FormioComponents.customComponents[type] = component);
+Formio.registerComponent = (type, component) => (NestedComponent.customComponents[type] = component);
 
 const getOptions = function(options) {
   options = _.defaults(options, {
@@ -31,7 +31,7 @@ const getOptions = function(options) {
 /**
  * Renders a Form.io form within the webpage.
  */
-export default class Webform extends FormioComponents {
+export default class Webform extends NestedComponent {
   /**
    * Creates a new Form instance.
    *

@@ -1,7 +1,7 @@
 import moment from 'moment';
-import {TextFieldComponent} from '../textfield/TextField';
+import TextFieldComponent from '../textfield/TextField';
 
-export class TimeComponent extends TextFieldComponent {
+export default class TimeComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'time',

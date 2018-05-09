@@ -1,8 +1,8 @@
-import {FormioComponents} from '../Components';
+import NestedComponent from '../NestedComponent';
 
-export class PanelComponent extends FormioComponents {
+export default class PanelComponent extends NestedComponent {
   static schema(...extend) {
-    return FormioComponents.schema({
+    return NestedComponent.schema({
       label: 'Panel',
       type: 'panel',
       key: 'panel',

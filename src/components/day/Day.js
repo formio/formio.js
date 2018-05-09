@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import moment from 'moment';
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 import {getLocaleDateFormatInfo} from '../../utils/utils';
 
-export class DayComponent extends BaseComponent {
+export default class DayComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'day',

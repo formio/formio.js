@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'power-assert';
-import {ContainerComponent} from './Container';
+import ContainerComponent from './Container';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Container Component', () => {

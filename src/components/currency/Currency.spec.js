@@ -1,5 +1,5 @@
 'use strict';
-import {CurrencyComponent} from './Currency';
+import CurrencyComponent from './Currency';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Currency Component', () => {

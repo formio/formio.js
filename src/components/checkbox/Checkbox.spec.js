@@ -1,6 +1,6 @@
 'use strict';
 import assert from 'power-assert';
-import {CheckBoxComponent} from './Checkbox';
+import CheckBoxComponent from './Checkbox';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 describe('Checkbox Component', () => {

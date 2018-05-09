@@ -1,5 +1,5 @@
 'use strict';
-import {DayComponent} from './Day';
+import DayComponent from './Day';
 import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
 import assert from 'power-assert';
