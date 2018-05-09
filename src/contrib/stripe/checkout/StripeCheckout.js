@@ -1,10 +1,10 @@
 /* globals StripeCheckout */
 import _ from 'lodash';
 
-import {BaseComponent} from '../../../components/base/Base';
-import {ButtonComponent} from '../../../components/button/Button';
+import BaseComponent from '../../../components/base/Base';
+import ButtonComponent from '../../../components/button/Button';
 
-export class StripeCheckoutComponent extends ButtonComponent {
+export default class StripeCheckoutComponent extends ButtonComponent {
   constructor(component, options, data) {
     super(component, options, data);
 

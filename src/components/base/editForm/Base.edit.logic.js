@@ -1,4 +1,4 @@
-export let BaseEditLogic = [
+export default [
   {
     input: true,
     label: 'Advanced Logic',

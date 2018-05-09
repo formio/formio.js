@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import FormioUtils from './index';
-
-export const BuilderUtils = {
+import {eachComponent} from './utils';
+export default {
   /**
    * Iterate the given key to make it unique.
    *
@@ -32,12 +31,12 @@ export const BuilderUtils = {
   uniquify(form, component) {
     let changed = false;
     let formKeys = {};
-    FormioUtils.eachComponent(form.components, function(comp) {
+    eachComponent(form.components, function(comp) {
       formKeys[comp.key] = true;
     });
 
     // Recurse into all child components.
-    FormioUtils.eachComponent([component], (component) => {
+    eachComponent([component], (component) => {
       // Skip key uniquification if this component doesn't have a key.
       if (!component.key) {
         return;
@@ -71,7 +70,7 @@ export const BuilderUtils = {
   getBindedShortcuts(components, input) {
     var result = [];
 
-    FormioUtils.eachComponent(components, function(component) {
+    eachComponent(components, function(component) {
       if (component === input) {
         return;
       }

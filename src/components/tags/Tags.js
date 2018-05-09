@@ -1,8 +1,8 @@
-import { BaseComponent } from '../base/Base';
+import BaseComponent from '../base/Base';
 import Choices from 'choices.js';
 import _ from 'lodash';
 
-export class TagsComponent extends BaseComponent {
+export default class TagsComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'tags',

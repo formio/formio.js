@@ -1,6 +1,5 @@
-import { EditFormUtils } from "./utils";
-
-export let BaseEditValidation = [
+import EditFormUtils from "./utils";
+export default [
   {
     weight: 0,
     type: 'checkbox',

@@ -1,6 +1,6 @@
-import {TextFieldComponent} from '../textfield/TextField';
+import TextFieldComponent from '../textfield/TextField';
 
-export class PasswordComponent extends TextFieldComponent {
+export default class PasswordComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'password',

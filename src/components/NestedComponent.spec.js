@@ -1,12 +1,12 @@
 'use strict';
-import {FormioComponents} from './Components';
-import {Harness} from '../../test/harness';
+import NestedComponent from './NestedComponent';
+import Harness from '../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
-describe('FormioComponents class', () => {
+describe('NestedComponent class', () => {
   let component = null;
-  it('Should create a new FormioComponents class', (done) => {
-    Harness.testCreate(FormioComponents, {
+  it('Should create a new NestedComponent class', (done) => {
+    Harness.testCreate(NestedComponent, {
       components: [
         {
           type: 'textfield',
@@ -50,7 +50,7 @@ describe('FormioComponents class', () => {
   });
 
   it('Should create nested visibility elements.', (done) => {
-    Harness.testCreate(FormioComponents, {
+    Harness.testCreate(NestedComponent, {
       components: [
         {
           type: 'checkbox',

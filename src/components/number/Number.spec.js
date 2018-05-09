@@ -1,8 +1,8 @@
 'use strict';
 import _merge from 'lodash/merge';
-import {NumberComponent} from './Number';
+import NumberComponent from './Number';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('Number Component', () => {
   it('Should build an number component', (done) => {
     Harness.testCreate(NumberComponent, comps.comp1).then((component) => {

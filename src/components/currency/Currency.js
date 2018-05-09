@@ -1,10 +1,10 @@
 import maskInput from 'vanilla-text-mask';
 import {createNumberMask} from 'text-mask-addons';
 import _ from 'lodash';
-import {getCurrencyAffixes} from '../../utils';
-import {NumberComponent} from '../number/Number';
+import {getCurrencyAffixes} from '../../utils/utils';
+import NumberComponent from '../number/Number';
 
-export class CurrencyComponent extends NumberComponent {
+export default class CurrencyComponent extends NumberComponent {
   static schema(...extend) {
     return NumberComponent.schema({
       type: 'currency',

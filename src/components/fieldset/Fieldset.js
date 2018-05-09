@@ -1,8 +1,8 @@
-import {FormioComponents} from '../Components';
+import NestedComponent from '../NestedComponent';
 
-export class FieldsetComponent extends FormioComponents {
+export default class FieldsetComponent extends NestedComponent {
   static schema(...extend) {
-    return FormioComponents.schema({
+    return NestedComponent.schema({
       label: 'Field Set',
       key: 'fieldSet',
       type: 'fieldset',

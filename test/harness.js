@@ -2,16 +2,15 @@ import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
-import i18n from '../src/i18n';
-import {FormioFormBuilder} from "../src/formio.form.builder";
+import i18Defaults from '../src/i18n';
+import WebformBuilder from "../src/WebformBuilder";
 let formBuilderElement = null;
 let formBuilder = null;
-
-export const Harness = {
+const Harness = {
   builderBefore: function(done) {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
-    formBuilder = new FormioFormBuilder(formBuilderElement);
+    formBuilder = new WebformBuilder(formBuilderElement);
     formBuilder.form = {components: []};
     formBuilder.builderReady.then(done);
   },
@@ -74,7 +73,7 @@ export const Harness = {
       })
     }, options));
     return new Promise((resolve, reject) => {
-      i18next.init(i18n, (err) => {
+      i18next.init(i18Defaults, (err) => {
         if (err) {
           return reject(err);
         }
@@ -249,3 +248,4 @@ export const Harness = {
     return form.nextPage();
   }
 };
+export default Harness;

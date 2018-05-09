@@ -1,5 +1,5 @@
 'use strict';
-import Formio from './formio';
+import Formio from './Formio';
 import _each from 'lodash/each';
 import assert from 'power-assert';
 import sinon from 'sinon';

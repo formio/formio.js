@@ -1,7 +1,7 @@
 import assert from 'power-assert';
 import _cloneDeep from 'lodash/cloneDeep';
 
-module.exports = {
+export default {
   title: 'Clear on hide Form Test',
   form: {
     "components": [{

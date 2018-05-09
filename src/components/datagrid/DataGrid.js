@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import {FormioComponents} from '../Components';
+import NestedComponent from '../NestedComponent';
 
-export class DataGridComponent extends FormioComponents {
+export default class DataGridComponent extends NestedComponent {
   static schema(...extend) {
-    return FormioComponents.schema({
+    return NestedComponent.schema({
       label: 'Data Grid',
       key: 'dataGrid',
       type: 'datagrid',

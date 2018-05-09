@@ -1,7 +1,7 @@
 import _map from 'lodash/map';
 import assert from 'power-assert';
-import { Harness } from '../harness';
-module.exports = {
+import Harness from '../harness';
+export default {
   title: 'Wizard With Conditional Next Page',
   form: {
     _id: '58cdd541d482d500aaf48368',

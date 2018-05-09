@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   lng: 'en',
   resources: {
     en: {

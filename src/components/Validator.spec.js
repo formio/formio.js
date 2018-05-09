@@ -1,6 +1,6 @@
 'use strict';
-import {Validator} from './Validator';
-import {BaseComponent} from './base/Base';
+import Validator from './Validator';
+import BaseComponent from './base/Base';
 import assert from 'power-assert';
 describe('Validator Tests', () => {
   const baseComponent = new BaseComponent({});

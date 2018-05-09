@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import {FormioComponents} from '../Components';
+import NestedComponent from '../NestedComponent';
 
-export class ColumnsComponent extends FormioComponents {
+export default class ColumnsComponent extends NestedComponent {
   static schema(...extend) {
-    return FormioComponents.schema({
+    return NestedComponent.schema({
       label: 'Columns',
       key: 'columns',
       type: 'columns',

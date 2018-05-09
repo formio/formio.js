@@ -1,7 +1,7 @@
 'use strict';
-import {CurrencyComponent} from './Currency';
+import CurrencyComponent from './Currency';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('Currency Component', () => {
   it('Should build a currency component', (done) => {
     Harness.testCreate(CurrencyComponent, comps.comp1).then((component) => {

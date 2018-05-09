@@ -1,6 +1,6 @@
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 
-export class HiddenComponent extends BaseComponent {
+export default class HiddenComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'hidden',

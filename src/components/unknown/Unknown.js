@@ -1,6 +1,6 @@
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 
-export class UnknownComponent extends BaseComponent {
+export default class UnknownComponent extends BaseComponent {
   build() {
     this.createElement();
     this.element.appendChild(this.text(`Unknown component: ${this.component.type}`));

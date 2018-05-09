@@ -1,8 +1,8 @@
 'use strict';
 import assert from 'power-assert';
-import {ButtonComponent} from './Button';
+import ButtonComponent from './Button';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('Button Component', () => {
   it('Should build a button component', (done) => {
     Harness.testCreate(ButtonComponent, comps.comp1).then((component) => {

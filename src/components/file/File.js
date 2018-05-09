@@ -1,8 +1,7 @@
-import {BaseComponent} from '../base/Base';
-import _ from 'lodash';
-import FormioUtils from '../../utils';
+import BaseComponent from '../base/Base';
+import {uniqueName} from '../../utils/utils';
 
-export class FileComponent extends BaseComponent {
+export default class FileComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'file',
@@ -491,7 +490,7 @@ export class FileComponent extends BaseComponent {
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
-        const fileName = FormioUtils.uniqueName(file.name);
+        const fileName = uniqueName(file.name);
         const dir = this.interpolate(this.component.dir || '', {data: this.data, row: this.row});
         const fileService = this.fileService;
         if (!fileService) {

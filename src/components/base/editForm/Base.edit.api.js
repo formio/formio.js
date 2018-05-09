@@ -1,4 +1,4 @@
-export let BaseEditAPI = [
+export default [
   {
     weight: 0,
     type: 'textfield',

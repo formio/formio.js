@@ -1,11 +1,11 @@
 /* globals google */
 import _ from 'lodash';
 
-import {TextFieldComponent} from '../textfield/TextField';
-import {BaseComponent} from '../base/Base';
-import {SurveyComponent} from "../survey/Survey";
+import TextFieldComponent from '../textfield/TextField';
+import BaseComponent from '../base/Base';
+import {evaluate} from '../../utils/utils';
 
-export class AddressComponent extends TextFieldComponent {
+export default class AddressComponent extends TextFieldComponent {
   static schema(...extend) {
     return TextFieldComponent.schema({
       type: 'address',
@@ -265,7 +265,7 @@ export class AddressComponent extends TextFieldComponent {
    * @returns {Boolean}
    */
   autoCompleteFilterSuggestion(data) {
-    let result = FormioUtils.evaluate(this.component.map.autoCompleteFilter, {
+    let result = evaluate(this.component.map.autoCompleteFilter, {
       show: true,
       data
     }, 'show');

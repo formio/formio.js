@@ -1,10 +1,10 @@
 import maskInput from 'vanilla-text-mask';
 import _ from 'lodash';
 import {createNumberMask} from 'text-mask-addons';
-import {BaseComponent} from '../base/Base';
-import FormioUtils from '../../utils';
+import BaseComponent from '../base/Base';
+import {getNumberSeparators, getNumberDecimalLimit} from '../../utils/utils';
 
-export class NumberComponent extends BaseComponent {
+export default class NumberComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'number',
@@ -34,7 +34,7 @@ export class NumberComponent extends BaseComponent {
     super(component, options, data);
     this.validators = this.validators.concat(['min', 'max']);
 
-    const separators = FormioUtils.getNumberSeparators(this.options.language);
+    const separators = getNumberSeparators(this.options.language);
 
     this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
       || separators.decimalSeparator;
@@ -50,7 +50,7 @@ export class NumberComponent extends BaseComponent {
       this.delimiter = '';
     }
 
-    this.decimalLimit = FormioUtils.getNumberDecimalLimit(this.component);
+    this.decimalLimit = getNumberDecimalLimit(this.component);
 
     // Currencies to override BrowserLanguage Config. Object key {}
     if (_.has(this.options, `languageOverride.${this.options.language}`)) {

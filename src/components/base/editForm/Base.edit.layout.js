@@ -1,4 +1,4 @@
-export let BaseEditLayout = [
+export default [
   {
     type: 'textfield',
 

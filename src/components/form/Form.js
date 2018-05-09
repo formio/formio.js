@@ -1,10 +1,10 @@
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 import Promise from 'native-promise-only';
-import FormioUtils from '../../utils';
-import Formio from '../../formio';
-import formFactory from '../../formFactory';
+import {isMongoId, eachComponent} from '../../utils/utils';
+import Formio from '../../Formio';
+import Form from '../../Form';
 
-export class FormComponent extends BaseComponent {
+export default class FormComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'form',
@@ -79,7 +79,7 @@ export class FormComponent extends BaseComponent {
       this.formSrc = Formio.getBaseUrl();
       if (this.component.project) {
         // Check to see if it is a MongoID.
-        if (FormioUtils.isMongoId(this.component.project)) {
+        if (isMongoId(this.component.project)) {
           this.formSrc += '/project';
         }
         this.formSrc += `/${this.component.project}`;
@@ -108,13 +108,13 @@ export class FormComponent extends BaseComponent {
 
     (new Formio(this.formSrc)).loadForm({params: {live: 1}}).then((formObj) => {
       // Iterate through every component and hide the submit button.
-      FormioUtils.eachComponent(formObj.components, (component) => {
+      eachComponent(formObj.components, (component) => {
         if ((component.type === 'button') && (component.action === 'submit')) {
           component.hidden = true;
         }
       });
 
-      this.subForm = formFactory(this.element, formObj, srcOptions);
+      this.subForm = (new Form(this.element, formObj, srcOptions)).create();
       this.subForm.on('change', () => {
         this.dataValue = this.subForm.getValue();
         this.onChange();

@@ -1,5 +1,5 @@
 import BaseEditForm from '../base/Base.form';
-import FormioUtils from '../../utils';
+import {eachComponent} from '../../utils/utils';
 export default function(...extend) {
   return BaseEditForm(...extend, [
     {
@@ -132,7 +132,7 @@ export default function(...extend) {
           dataSrc: 'url',
           onSetItems: (component, form) => {
             let newItems = [];
-            FormioUtils.eachComponent(form.components, (component, path) => {
+            eachComponent(form.components, (component, path) => {
               newItems.push({
                 label: component.label || component.key,
                 key: path

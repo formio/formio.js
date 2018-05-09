@@ -1,7 +1,7 @@
 import SignaturePad from 'signature_pad/dist/signature_pad.js';
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 
-export class SignatureComponent extends BaseComponent {
+export default class SignatureComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       type: 'signature',

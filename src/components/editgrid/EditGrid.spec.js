@@ -1,8 +1,8 @@
 'use strict';
 import assert from 'power-assert';
-import {EditGridComponent} from './EditGrid';
+import EditGridComponent from './EditGrid';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('EditGrid Component', () => {
   it('Should build an empty edit grid component', done => {
     Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {

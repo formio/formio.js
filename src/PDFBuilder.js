@@ -1,8 +1,8 @@
-import { FormioFormBuilder } from "./formio.form.builder";
-import FormioUtils from './utils';
-import FormioPDF from './formio.pdf';
+import WebformBuilder from "./WebformBuilder";
+import {getElementRect} from './utils/utils';
+import PDF from './PDF';
 
-export class FormioPDFBuilder extends FormioFormBuilder {
+export default class PDFBuilder extends WebformBuilder {
   get defaultComponents() {
     return {
       pdf: {
@@ -51,7 +51,7 @@ export class FormioPDFBuilder extends FormioFormBuilder {
   }
 
   get dropZoneStyles() {
-    let iframeRect = FormioUtils.getElementRect(this.pdfForm.element);
+    let iframeRect = getElementRect(this.pdfForm.element);
     let iframeHeight = iframeRect ? iframeRect.height || 1000 : 1000;
     return `position:absolute;width: 100%;height:${iframeHeight}px;`;
   }
@@ -61,7 +61,6 @@ export class FormioPDFBuilder extends FormioFormBuilder {
       this.clear();
       this.build();
       this.isBuilt = true;
-      this.onResize();
       this.on('resetForm', () => this.reset(), true);
       this.on('refreshData', () => this.updateValue());
       setTimeout(() => {
@@ -177,7 +176,7 @@ export class FormioPDFBuilder extends FormioFormBuilder {
   build() {
     if (!this.pdfForm) {
       this.element.noDrop = true;
-      this.pdfForm = new FormioPDF(this.element, this.options);
+      this.pdfForm = new PDF(this.element, this.options);
       this.pdfForm.on('iframe-elementUpdate', schema => {
         let component = this.getComponentById(schema.id);
         if (component && component.component) {

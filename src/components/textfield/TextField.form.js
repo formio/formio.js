@@ -1,7 +1,6 @@
 import BaseEditForm from '../base/Base.form';
-import { TextFieldEditDisplay } from './editForm/TextField.edit.display';
-import { TextFieldEditValidation } from './editForm/TextField.edit.validation';
-
+import TextFieldEditDisplay from './editForm/TextField.edit.display';
+import TextFieldEditValidation from './editForm/TextField.edit.validation';
 export default function(...extend) {
   return BaseEditForm(...extend, [
     {

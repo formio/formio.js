@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import FormioUtils from '../utils';
-
-export const Validator = {
+import {boolValue, evaluate, getInputMask, matchInputMask} from '../utils/utils';
+export default {
   get: _.get,
   each: _.each,
   has: _.has,
@@ -66,7 +65,7 @@ export const Validator = {
         });
       },
       check(component, setting, value) {
-        if (!FormioUtils.boolValue(setting)) {
+        if (!boolValue(setting)) {
           return true;
         }
         return !component.isEmpty(value);
@@ -191,7 +190,7 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let valid = FormioUtils.evaluate(setting, {
+        let valid = evaluate(setting, {
           row: component.data,
           data,
           component: component.component,
@@ -217,14 +216,14 @@ export const Validator = {
           const maskName = value ? value.maskName : undefined;
           const formioInputMask = component.getMaskByName(maskName);
           if (formioInputMask) {
-            inputMask = FormioUtils.getInputMask(formioInputMask);
+            inputMask = getInputMask(formioInputMask);
           }
           value = value ? value.value : value;
         } else {
           inputMask = component._inputMask;
         }
         if (value && inputMask) {
-          return FormioUtils.matchInputMask(value, inputMask);
+          return matchInputMask(value, inputMask);
         }
         return true;
       }
@@ -241,7 +240,7 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let valid = FormioUtils.evaluate(setting, {
+        let valid = evaluate(setting, {
           valid: true,
           row: component.data,
           data,

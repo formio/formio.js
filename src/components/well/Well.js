@@ -1,8 +1,8 @@
-import {FormioComponents} from '../Components';
+import NestedComponent from '../NestedComponent';
 
-export class WellComponent extends FormioComponents {
+export default class WellComponent extends NestedComponent {
   static schema(...extend) {
-    return FormioComponents.schema({
+    return NestedComponent.schema({
       type: 'well',
       key: 'well',
       input: false,

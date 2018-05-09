@@ -1,7 +1,7 @@
-import {FormioFormBuilder} from "./formio.form.builder";
+import WebformBuilder from "./WebformBuilder";
 import _ from 'lodash';
 
-export class FormioWizardBuilder extends FormioFormBuilder {
+export default class WizardBuilder extends WebformBuilder {
   setBuilderElement() {
     return super.setBuilderElement().then(() => {
       const buildRegion = this.ce('div', {

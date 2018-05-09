@@ -1,8 +1,8 @@
 import Promise from 'native-promise-only';
-import Formio from './formio';
-import FormioForm from './formio.form';
+import Formio from './Formio';
+import Webform from './Webform';
 
-export default class FormioPDF extends FormioForm {
+export default class PDF extends Webform {
   constructor(element, options) {
     super(element, options);
 

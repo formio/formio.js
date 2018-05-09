@@ -1,8 +1,8 @@
 /* globals Stripe */
 import _ from 'lodash';
 
-import {Validator} from '../../../components/Validator';
-import {BaseComponent} from '../../../components/base/Base';
+import Validator from '../../../components/Validator';
+import BaseComponent from '../../../components/base/Base';
 
 // Register a custom validor to use card validition from Stripe
 if (typeof Validator.validators.stripe === 'undefined') {
@@ -32,7 +32,7 @@ if (typeof Validator.validators.stripe === 'undefined') {
 /**
  * This is the StripeComponent class.
  */
-export class StripeComponent extends BaseComponent {
+export default class StripeComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
 

@@ -1,4 +1,4 @@
-export const TextFieldEditDisplay = [
+export default [
   {
     weight: 410,
     type: 'textfield',

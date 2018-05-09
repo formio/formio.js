@@ -1,10 +1,10 @@
 'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import FormioUtils from '../utils/index';
-import {BaseComponent} from './base/Base';
+import {checkCondition} from '../utils/utils';
+import BaseComponent from './base/Base';
 
-export class FormioComponents extends BaseComponent {
+export default class NestedComponent extends BaseComponent {
   static schema(...extend) {
     return BaseComponent.schema({
       tree: true
@@ -28,7 +28,7 @@ export class FormioComponents extends BaseComponent {
   }
 
   get defaultSchema() {
-    return FormioComponents.schema();
+    return NestedComponent.schema();
   }
 
   get schema() {
@@ -129,8 +129,8 @@ export class FormioComponents extends BaseComponent {
     options = options || this.options;
     data = data || this.data;
     if (!this.options.components) {
-      this.options.components = require('./index');
-      _.assign(this.options.components, FormioComponents.customComponents);
+      this.options.components = require('./index').default;
+      _.assign(this.options.components, NestedComponent.customComponents);
     }
     const comp = this.options.components.create(component, options, data, true);
     comp.parent = this;
@@ -346,11 +346,6 @@ export class FormioComponents extends BaseComponent {
     return Promise.all(ops);
   }
 
-  onResize(scale) {
-    super.onResize(scale);
-    _.each(this.getComponents(), (comp) => comp.onResize(scale));
-  }
-
   calculateValue(data, flags) {
     let changed = super.calculateValue(data, flags);
     _.each(this.getComponents(), (comp) => {
@@ -368,7 +363,7 @@ export class FormioComponents extends BaseComponent {
   }
 
   checkValidity(data, dirty) {
-    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
       return true;
     }
 
@@ -500,4 +495,4 @@ export class FormioComponents extends BaseComponent {
   }
 }
 
-FormioComponents.customComponents = {};
+NestedComponent.customComponents = {};
