@@ -1054,4 +1054,6 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
-global.Formio = Formio;
+if (global) {
+  global.Formio = Formio;
+}
