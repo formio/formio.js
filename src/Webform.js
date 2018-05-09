@@ -391,6 +391,7 @@ export default class Webform extends FormioComponents {
    * Loads the submission if applicable.
    */
   loadSubmission() {
+    this.loadingSubmission = true;
     if (this.formio.submissionId) {
       this.onSubmission = this.formio.loadSubmission().then(
         (submission) => this.setSubmission(submission),
@@ -491,7 +492,9 @@ export default class Webform extends FormioComponents {
    * @returns {Promise} - The promise to trigger when both form and submission have loaded.
    */
   get ready() {
-    return this.formReady.then(() => this.submissionReady);
+    return this.formReady.then(() => {
+      return this.loadingSubmission ? this.submissionReady : true;
+    });
   }
 
   /**
