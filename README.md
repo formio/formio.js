@@ -37,7 +37,7 @@ This library has a very powerful JSON form builder, and can be used like the fol
 </html>
 ```
 
-This will create a robust Form builder embedded right within your own application.
+This will create a robust Form builder embedded right within your own application. See [Our Demo Page](https://formio.github.io/formio.js/app/builder) for an example.
  
 ## Form Rendering
 The following is a simple example on how to render a form within your HTML application.
