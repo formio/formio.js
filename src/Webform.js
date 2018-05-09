@@ -140,8 +140,9 @@ export default class Webform extends NestedComponent {
      * @type {Promise}
      *
      * @example
-     * let form = new Formio.Form(document.getElementById('formio'));
-     * form.ready.then(() => {
+     * import Webform from 'formiojs/Webform';
+     * let form = new Webform(document.getElementById('formio'));
+     * form.formReady.then(() => {
      *   console.log('The form is ready!');
      * });
      * form.src = 'https://examples.form.io/example';
@@ -167,11 +168,12 @@ export default class Webform extends NestedComponent {
      * @type {Promise}
      *
      * @example
-     * let form = new Formio.Form(document.getElementById('formio'));
-     * form.ready.then(() => {
-     *   console.log('The form is ready!');
+     * import Webform from 'formiojs/Webform';
+     * let form = new Webform(document.getElementById('formio'));
+     * form.submissionReady.then(() => {
+     *   console.log('The submission is ready!');
      * });
-     * form.src = 'https://examples.form.io/example';
+     * form.src = 'https://examples.form.io/example/submission/234234234234234243';
      */
     this.submissionReady = new Promise((resolve, reject) => {
       /**
@@ -433,7 +435,8 @@ export default class Webform extends NestedComponent {
    * @param {string} value - The value of the form embed url.
    *
    * @example
-   * let form = new Formio.Form(document.getElementById('formio'));
+   * import Webform from 'formiojs/Webform';
+   * let form = new Webform(document.getElementById('formio'));
    * form.formReady.then(() => {
    *   console.log('The form is formReady!');
    * });
@@ -543,7 +546,8 @@ export default class Webform extends NestedComponent {
    * Sets the JSON schema for the form to be rendered.
    *
    * @example
-   * let form = new Formio.Form(document.getElementById('formio'));
+   * import Webform from 'formiojs/Webform';
+   * let form = new Webform(document.getElementById('formio'));
    * form.setForm({
    *   components: [
    *     {
@@ -626,7 +630,8 @@ export default class Webform extends NestedComponent {
    * Sets the submission of a form.
    *
    * @example
-   * let form = new Formio.Form(document.getElementById('formio'));
+   * import Webform from 'formiojs/Webform';
+   * let form = new Webform(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
    *   firstName: 'Joe',
@@ -888,7 +893,8 @@ export default class Webform extends NestedComponent {
    * Resets the submission of a form and restores defaults.
    *
    * @example
-   * let form = new Formio.Form(document.getElementById('formio'));
+   * import Webform from 'formiojs/Webform';
+   * let form = new Webform(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
    *   firstName: 'Joe',
@@ -982,7 +988,8 @@ export default class Webform extends NestedComponent {
    * Submits the form.
    *
    * @example
-   * let form = new Formio.Form(document.getElementById('formio'));
+   * import Webform from 'formiojs/Webform';
+   * let form = new Webform(document.getElementById('formio'));
    * form.src = 'https://examples.form.io/example';
    * form.submission = {data: {
    *   firstName: 'Joe',
