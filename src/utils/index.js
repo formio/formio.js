@@ -1,5 +1,5 @@
 import * as FormioUtils from './utils';
-if (global) {
+if (typeof global === 'object') {
   global.FormioUtils = FormioUtils;
 }
 export default FormioUtils;
