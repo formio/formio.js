@@ -23,8 +23,8 @@ This library has a very powerful JSON form builder, and can be used like the fol
 <html>
   <head>
     <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
-    <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.builder.min.css'>
-    <script src='https://unpkg.com/formiojs@latest/dist/formio.builder.min.js'></script>
+    <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
+    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
     <script type='text/javascript'>
       window.onload = function() {
         Formio.builder(document.getElementById('builder'));
