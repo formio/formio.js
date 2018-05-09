@@ -4,17 +4,6 @@ var gulpsync = require('gulp-sync')(gulp);
 var plugins = require('gulp-load-plugins')();
 const webpack = require('webpack');
 const webpack_stream = require('webpack-stream');
-
-// Create wrap template for all built libraries.
-var template = '/*! formiojs v<%= version %> | https://unpkg.com/formiojs@<%= version %>/LICENSE.txt */';
-template += "\n";
-template += '<%= contents %>';
-plugins.template = template;
-
-// Get the package.json info for reference during builds.
-plugins.packageJson = require('./package.json');
-plugins.source = require('vinyl-source-stream');
-plugins.browserify = require('browserify');
 plugins.cleanCSS = require('gulp-clean-css');
 
 // Clean lib folder.
