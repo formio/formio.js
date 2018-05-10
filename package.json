@@ -12,7 +12,9 @@
     "embed.js",
     "full.js"
   ],
-  "pre-commit": ["lint"],
+  "pre-commit": [
+    "lint"
+  ],
   "scripts": {
     "build": "esdoc;gulp build",
     "rebuild": "rm -rf node_modules;npm install;gulp build",
@@ -117,6 +119,7 @@
     "marked": "^0.3.19",
     "mocha": "^5.0.5",
     "power-assert": "^1.5.0",
+    "pre-commit": "^1.2.2",
     "sinon": "^5.0.7",
     "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3",
