@@ -11025,7 +11025,7 @@ var TextAreaComponent = exports.TextAreaComponent = function (_TextFieldComponen
         /** END CODEBLOCK **/
 
         _this2.quill.on('text-change', function () {
-          _this2.dataValue = txtArea.value = _this2.quill.root.innerHTML;
+          txtArea.value = _this2.quill.root.innerHTML;
           _this2.updateValue();
         });
 

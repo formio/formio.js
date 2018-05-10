@@ -83,7 +83,7 @@ export class TextAreaComponent extends TextFieldComponent {
         /** END CODEBLOCK **/
 
         this.quill.on('text-change', () => {
-          this.dataValue = txtArea.value = this.quill.root.innerHTML;
+          txtArea.value = this.quill.root.innerHTML;
           this.updateValue();
         });
 
