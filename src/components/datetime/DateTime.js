@@ -128,7 +128,7 @@ export default class DateTimeComponent extends BaseComponent {
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
       minDate: getDateSetting(_.get(this.component, 'datePicker.minDate')),
       maxDate: getDateSetting(_.get(this.component, 'datePicker.maxDate')),
-      onChange: () => this.onChange(),
+      onChange: () => this.onChange({noValidate: true}),
       onClose: () => (this.closedOn = Date.now())
     };
   }
