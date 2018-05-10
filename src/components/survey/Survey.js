@@ -107,6 +107,10 @@ export default class SurveyComponent extends BaseComponent {
     this.updateValue(flags);
   }
 
+  get emptyValue() {
+    return {};
+  }
+
   getValue() {
     if (this.viewOnly) {
       return this.dataValue;
