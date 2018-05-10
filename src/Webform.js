@@ -914,9 +914,9 @@ export default class Webform extends NestedComponent {
    * setTimeout(() => form.reset(), 2000);
    */
   reset() {
-    // Reset the submission data.
-    this._submission.data = this.data = {};
-    this.setSubmission({data: {}});
+    // Reset the submission data and set to pristine.
+    this.setValue({data: {}});
+    this.setPristine(true);
   }
 
   /**
