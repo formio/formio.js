@@ -180,6 +180,7 @@ export default class ButtonComponent extends BaseComponent {
     this.addEventListener(this.buttonElement, 'click', (event) => {
       this.dataValue = true;
       switch (this.component.action) {
+        case 'saveState':
         case 'submit':
           event.preventDefault();
           event.stopPropagation();
