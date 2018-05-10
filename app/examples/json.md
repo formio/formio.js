@@ -128,7 +128,10 @@ Formio.createForm(document.getElementById('formio'), {
       format: 'yyyy-MM-dd hh:mm a"', 
       input: true, 
       tooltip: 'Enter date the item is <strong>due</strong>', 
-      description: 'Enter <strong>Due Date</strong>'
+      description: 'Enter <strong>Due Date</strong>',
+      validate: {
+        required: true
+      }
     },
     {
       type: 'day',
@@ -159,6 +162,12 @@ Formio.createForm(document.getElementById('formio'), {
       action: 'submit',
       label: 'Submit',
       theme: 'primary'
+    },
+    {
+      type: 'button',
+      action: 'reset',
+      label: 'Reset Form',
+      theme: 'success'
     }
   ]
 });
@@ -281,7 +290,10 @@ Formio.createForm(document.getElementById('formio'), {
       format: 'yyyy-MM-dd hh:mm a"', 
       input: true, 
       tooltip: 'Enter date the item is <strong>due</strong>', 
-      description: 'Enter <strong>Due Date</strong>'
+      description: 'Enter <strong>Due Date</strong>',
+      validate: {
+        required: true
+      }
     },
     {
       type: 'day',
@@ -312,7 +324,13 @@ Formio.createForm(document.getElementById('formio'), {
       action: 'submit',
       label: 'Submit',
       theme: 'primary'
-    }
+    },
+     {
+       type: 'button',
+       action: 'reset',
+       label: 'Reset Form',
+       theme: 'success'
+     }
   ]
 }).then(function(form) {
   form.on('change', function(changed) {
