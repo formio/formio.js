@@ -1882,9 +1882,10 @@ export default class BaseComponent {
         const txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
         this.quill.addContainer('ql-custom').appendChild(txtArea);
-        let qlSource = document.querySelector('.ql-source');
+        let qlSource = element.parentNode.querySelector('.ql-source');
         if (qlSource) {
-          qlSource.addEventListener('click', () => {
+          this.addEventListener(qlSource, 'click', (event) => {
+            event.preventDefault();
             if (txtArea.style.display === 'inherit') {
               this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
             }
@@ -1892,6 +1893,9 @@ export default class BaseComponent {
           });
         }
         /** END CODEBLOCK **/
+
+        // Make sure to select cursor when they click on the element.
+        this.addEventListener(element, 'click', () => this.quill.focus());
 
         // Allows users to skip toolbar items when tabbing though form
         const elm = document.querySelectorAll('.ql-formats > button');
