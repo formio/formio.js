@@ -69,11 +69,26 @@ export class ButtonComponent extends BaseComponent {
     this.addShortcut(this.button);
     this.hook('input', this.button, this.element);
 
+    if (this.component.leftIcon) {
+      this.button.appendChild(this.ce('span', {
+        class: this.component.leftIcon
+      }));
+      this.button.appendChild(this.text(' '));
+    }
+
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
       this.button.appendChild(this.labelElement);
       this.createTooltip(this.button, null, this.iconClass('question-sign'));
     }
+
+    if (this.component.rightIcon) {
+      this.button.appendChild(this.text(' '));
+      this.button.appendChild(this.ce('span', {
+        class: this.component.rightIcon
+      }));
+    }
+
     if (this.component.action === 'submit') {
       const errorContainer = this.ce('div', {
         class: 'has-error'

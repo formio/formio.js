@@ -7,6 +7,7 @@ plugins.browserify = require('browserify');
 plugins.cleanCSS = require('gulp-clean-css');
 gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 gulp.task('babel', require('./gulp/babel')(gulp, plugins));
+gulp.task('fonts', require('./gulp/fonts')(gulp, plugins));
 gulp.task('scripts-form', require('./gulp/scripts-form')(gulp, plugins));
 gulp.task('scripts-full', require('./gulp/scripts-full')(gulp, plugins));
 gulp.task('scripts-utils', require('./gulp/scripts-utils')(gulp, plugins));
@@ -20,5 +21,5 @@ gulp.task('icons', () => {
 });
 gulp.task('styles', require('./gulp/styles')(gulp, plugins));
 gulp.task('watch', require('./gulp/watch')(gulp, plugins));
-gulp.task('build', gulpsync.sync([['clean'], 'babel', ['icons', 'styles', 'scripts', 'scripts-utils', 'scripts-form', 'scripts-wizard', 'scripts-embed', 'scripts-contrib', 'scripts-full']]));
+gulp.task('build', gulpsync.sync([['clean'], 'babel', ['icons', 'fonts', 'styles', 'scripts', 'scripts-full']]));
 gulp.task('default', ['build', 'watch']);
