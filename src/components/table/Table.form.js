@@ -1,5 +1,5 @@
 import TableEditOptions from './TableEditOptions';
-import nestedComponentForm from '../NestedComponent.form';
+import nestedComponentForm from '../nested/NestedComponent.form';
 
 export default function(...extend) {
   return nestedComponentForm(...extend, [

@@ -181,6 +181,7 @@ export default class PDFBuilder extends WebformBuilder {
         let component = this.getComponentById(schema.id);
         if (component && component.component) {
           component.component.overlay = {
+            page: schema.page,
             left: schema.left,
             top: schema.top,
             height: schema.height,
@@ -195,6 +196,7 @@ export default class PDFBuilder extends WebformBuilder {
         let component = this.getComponentById(schema.id);
         if (component && component.component) {
           component.component.overlay = {
+            page: schema.overlay.page,
             left: schema.overlay.left,
             top: schema.overlay.top,
             height: schema.overlay.height,

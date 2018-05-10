@@ -1,3 +1,4 @@
+import NestedComponent from './nested/NestedComponent';
 import AddressComponent from './address/Address';
 import BaseComponent from './base/Base';
 import ContentComponent from './content/Content';
@@ -37,6 +38,7 @@ import LocationComponent from './location/Location';
 import FileComponent from './file/File';
 import TabsComponent from './tabs/Tabs';
 export default {
+  nested: NestedComponent,
   address: AddressComponent,
   base: BaseComponent,
   content: ContentComponent,
@@ -74,19 +76,5 @@ export default {
   survey: SurveyComponent,
   well: WellComponent,
   location: LocationComponent,
-  file: FileComponent,
-  create: function(component, options, data, nobuild) {
-    let comp = null;
-    if (component.type && this.hasOwnProperty(component.type)) {
-      comp = new this[component.type](component, options, data);
-    }
-    else {
-      comp = new UnknownComponent(component, options, data);
-    }
-    if (!nobuild) {
-      comp.build();
-      comp.isBuilt = true;
-    }
-    return comp;
-  }
+  file: FileComponent
 };

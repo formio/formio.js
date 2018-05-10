@@ -1,8 +1,9 @@
 'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import {checkCondition} from '../utils/utils';
-import BaseComponent from './base/Base';
+import {checkCondition} from '../../utils/utils';
+import BaseComponent from '../base/Base';
+import Components from '../Components';
 
 export default class NestedComponent extends BaseComponent {
   static schema(...extend) {
@@ -128,11 +129,7 @@ export default class NestedComponent extends BaseComponent {
   createComponent(component, options, data, before) {
     options = options || this.options;
     data = data || this.data;
-    if (!this.options.components) {
-      this.options.components = require('./index').default;
-      _.assign(this.options.components, NestedComponent.customComponents);
-    }
-    const comp = this.options.components.create(component, options, data, true);
+    const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
     comp.build();
@@ -494,5 +491,3 @@ export default class NestedComponent extends BaseComponent {
     this.setCollapsed();
   }
 }
-
-NestedComponent.customComponents = {};

@@ -8,13 +8,14 @@ import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
 import Formio from './Formio';
 import Promise from 'native-promise-only';
-import NestedComponent from './components/NestedComponent';
+import Components from './components/Components';
+import NestedComponent from './components/nested/NestedComponent';
 
 // Initialize the available forms.
 Formio.forms = {};
 
 // Allow people to register components.
-Formio.registerComponent = (type, component) => (NestedComponent.customComponents[type] = component);
+Formio.registerComponent = Components.setComponent;
 
 const getOptions = function(options) {
   options = _.defaults(options, {

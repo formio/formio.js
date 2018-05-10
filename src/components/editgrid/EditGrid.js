@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import NestedComponent from '../NestedComponent';
+import NestedComponent from '../nested/NestedComponent';
 import FormioUtils from '../../utils/index';
 
 export default class EditGridComponent extends NestedComponent {
