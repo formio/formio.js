@@ -150,6 +150,7 @@ export default class BaseComponent {
    * @param {Object} options - The options for this component.
    * @param {Object} data - The global data submission object this component will belong.
    */
+  /* eslint-disable max-statements */
   constructor(component, options, data) {
     this.originalComponent = _.cloneDeep(component);
     /**
@@ -328,6 +329,7 @@ export default class BaseComponent {
     // Allow anyone to hook into the component creation.
     this.hook('component');
   }
+  /* eslint-enable max-statements */
 
   get hasInput() {
     return this.component.input || this.inputs.length;
@@ -438,7 +440,7 @@ export default class BaseComponent {
     }
     const type = `formio.${event}`;
     _.each(this.eventListeners, (listener) => {
-      if ((listener.type == type) && (!cb || (cb === listener.listener))) {
+      if ((listener.type === type) && (!cb || (cb === listener.listener))) {
         this.events.off(listener.type, listener.listener);
       }
     });
@@ -456,7 +458,7 @@ export default class BaseComponent {
     }
   }
 
-  performInputMapping(input){
+  performInputMapping(input) {
     return input;
   }
 
@@ -633,7 +635,7 @@ export default class BaseComponent {
     }
   }
 
-  createModal(title) {
+  createModal() {
     let self = this;
     let modalBody = this.ce('div');
     let modalOverlay = this.ce('div', {
@@ -899,7 +901,7 @@ export default class BaseComponent {
     }
   }
 
-  buildInput(container, value, index){
+  buildInput(container, value) {
     const input = this.createInput(container);
     input.value = value;
   }
@@ -1511,8 +1513,8 @@ export default class BaseComponent {
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
    */
   hasClass(element, className) {
-    className = " " + className + " ";
-    return ((" " + element.className + " ").replace(/[\n\t\r]/g, " ").indexOf(className) > -1);
+    className = ' ' + className + ' ';
+    return ((' ' + element.className + ' ').replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
   }
 
   /**
@@ -2189,10 +2191,12 @@ export default class BaseComponent {
     return message ? false : true;
   }
 
+  /* eslint-disable max-len */
   getRawValue() {
     console.warn('component.getRawValue() has been deprecated. Use component.validationValue or component.dataValue instead.');
     return this.validationValue;
   }
+  /* eslint-enable max-len */
 
   get validationValue() {
     return this.dataValue;

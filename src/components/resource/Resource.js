@@ -57,10 +57,10 @@ export default class ResourceComponent extends SelectComponent {
       let formioForm = this.ce('div');
       dialog.body.appendChild(formioForm);
       const form = new Webform(formioForm);
-		  form.on('submit', (submission) => {
+      form.on('submit', (submission) => {
         this.setValue(submission);
         dialog.close();
-		  });
+      });
       form.src = Formio.getBaseUrl() + '/form/' + this.component.resource;
     });
 

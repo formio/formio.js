@@ -151,7 +151,8 @@ export default class WebformBuilder extends Webform {
     }
     let remove = true;
     if (component.type === 'components' && component.getComponents().length > 0) {
-      remove = window.confirm(this.t('Removing this component will also remove all of its children. Are you sure you want to do this?'));
+      const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
+      remove = window.confirm(this.t(message));
     }
     if (remove) {
       this.emit('deleteComponent', component);
@@ -592,7 +593,9 @@ export default class WebformBuilder extends Webform {
 
   getParentElement(element) {
     let containerComponent = element;
-    do { containerComponent = containerComponent.parentNode } while (containerComponent && !containerComponent.component);
+    do {
+      containerComponent = containerComponent.parentNode;
+    } while (containerComponent && !containerComponent.component);
     return containerComponent;
   }
 
@@ -727,7 +730,7 @@ export default class WebformBuilder extends Webform {
       this.dragula.destroy();
     }
     this.dragula = dragula(this.sidebarContainers.concat(this.dragContainers), {
-      copy: function(el, source) {
+      copy: function(el) {
         return el.classList.contains('drag-copy');
       },
       accepts: function(el, target) {

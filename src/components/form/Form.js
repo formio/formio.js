@@ -48,6 +48,7 @@ export default class FormComponent extends BaseComponent {
   /**
    * Load the subform.
    */
+  /* eslint-disable max-statements */
   loadSubForm() {
     // Only load the subform if the subform isn't loaded and the conditions apply.
     if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
@@ -127,6 +128,7 @@ export default class FormComponent extends BaseComponent {
     }).catch(err => this.subFormReadyReject(err));
     return this.subFormReady;
   }
+  /* eslint-enable max-statements */
 
   checkValidity(data, dirty) {
     if (this.subForm) {
@@ -158,7 +160,7 @@ export default class FormComponent extends BaseComponent {
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
     if (this.component.submit) {
-      return this.loadSubForm().then((form) => {
+      return this.loadSubForm().then(() => {
         return this.subForm.submitForm().then(result => {
           this.dataValue = result.submission;
           return this.dataValue;
@@ -190,7 +192,7 @@ export default class FormComponent extends BaseComponent {
 
     // This submission has not been submitted yet.
     if (this.component.submit) {
-      return this.loadSubForm().then((form) => {
+      return this.loadSubForm().then(() => {
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
           this.dataValue = this.component.reference ? {

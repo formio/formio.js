@@ -12,6 +12,7 @@
     "embed.js",
     "full.js"
   ],
+  "pre-commit": [ "gulp eslint" ],
   "scripts": {
     "build": "esdoc;gulp build",
     "rebuild": "rm -rf node_modules;npm install;gulp build",
@@ -78,7 +79,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.2",
+    "babel-eslint": "^8.2.3",
     "babel-plugin-array-includes": "^2.0.3",
     "babel-plugin-espower": "^2.4.0",
     "babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
@@ -95,6 +96,7 @@
     "gulp-babel": "^7.0.1",
     "gulp-clean-css": "^3.9.4",
     "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^4.0.2",
     "gulp-filter": "^5.1.0",
     "gulp-jshint": "^2.1.0",
     "gulp-load-plugins": "^1.0.0-rc.1",

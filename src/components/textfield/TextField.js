@@ -103,24 +103,27 @@ export default class TextFieldComponent extends BaseComponent {
     if (!this.isMultipleMasksField) {
       return super.setValueAt(index, value);
     }
+    let defaultValue = this.defaultValue;
     if (!value) {
-      if (this.defaultValue) {
-        value = this.defaultValue;
-      } else {
+      if (defaultValue) {
+        value = defaultValue;
+      }
+      else {
         value = {
           maskName: this.component.inputMasks[0].label
         };
       }
     }
     //if value is a string, treat it as text value itself and use default mask or first mask in the list
-    if (typeof value === "string") {
+    const defaultMaskName = _.get(defaultValue, 'maskName', '');
+    if (typeof value === 'string') {
       value = {
         value: value,
-        maskName: this.defaultValue && this.defaultValue.maskName ? this.defaultValue.maskName : this.component.inputMasks[0].label
+        maskName: defaultMaskName ? defaultMaskName : this.component.inputMasks[0].label
       };
     }
-    const maskName = value.maskName || "";
-    const textValue = value.value || "";
+    const maskName = value.maskName || '';
+    const textValue = value.value || '';
     const textInput = this.inputs[index] ? this.inputs[index].text : undefined;
     const maskInput = this.inputs[index] ? this.inputs[index].mask : undefined;
     if (textInput && maskInput) {
@@ -173,7 +176,7 @@ export default class TextFieldComponent extends BaseComponent {
     const maskOptions = this.maskOptions;
     this.selectOptions(maskInput, 'maskOption', maskOptions);
     // Change the text field mask when another mask is selected.
-    maskInput.onchange = function () {
+    maskInput.onchange = function() {
       self.updateMask(textInput, this.value);
     };
     return maskInput;
@@ -211,7 +214,7 @@ export default class TextFieldComponent extends BaseComponent {
       return {
         label: mask.label,
         value: mask.label
-      }
+      };
     });
   }
 

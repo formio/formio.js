@@ -19,6 +19,7 @@ const isObject = (val) => val && typeof val === 'object';
  *   let formio = new Formio('https://examples.form.io/example');
  */
 export default class Formio {
+  /* eslint-disable max-statements */
   constructor(path, options = {}) {
     // Ensure we have an instance of Formio.
     if (!(this instanceof Formio)) {
@@ -182,6 +183,7 @@ export default class Formio {
       Formio.projectUrl = this.projectUrl;
     }
   }
+  /* eslint-enable max-statements */
 
   delete(type, opts) {
     const _id = `${type}Id`;
@@ -507,6 +509,7 @@ export default class Formio {
 
   // Determine if the user can submit the form.
   canSubmit() {
+    /* eslint-disable max-statements, max-depth */
     return Promise.all([
       this.loadForm(),
       this.currentUser(),
@@ -569,6 +572,7 @@ export default class Formio {
       }
       return canSubmit;
     });
+    /* eslint-enable max-statements, max-depth */
   }
 
   getUrlParts(url) {

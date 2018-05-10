@@ -1,6 +1,7 @@
-import BaseEditForm from '../base/Base.form';
+import baseEditForm from '../base/Base.form';
+/* eslint-disable quotes, max-len */
 export default function(...extend) {
-  return BaseEditForm(...extend, [
+  return baseEditForm(...extend, [
     {
       label: 'Templates',
       key: 'templates',
@@ -74,4 +75,5 @@ export default function(...extend) {
       ]
     }
   ]);
-};
+}
+/* eslint-enable quotes, max-len */

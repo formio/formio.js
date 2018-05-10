@@ -97,6 +97,7 @@ export default class ButtonComponent extends BaseComponent {
     return className;
   }
 
+  /* eslint-disable max-statements */
   build() {
     if (this.viewOnly) {
       this.component.hidden = true;
@@ -112,7 +113,7 @@ export default class ButtonComponent extends BaseComponent {
       this.buttonElement.appendChild(this.ce('span', {
         class: this.component.leftIcon
       }));
-      this.buttonElement.appendChild(this.text("\u00A0"));
+      this.buttonElement.appendChild(this.text(' '));
     }
 
     if (this.component.label) {
@@ -121,7 +122,7 @@ export default class ButtonComponent extends BaseComponent {
       this.createTooltip(this.buttonElement, null, this.iconClass('question-sign'));
     }
     if (this.component.rightIcon) {
-      this.buttonElement.appendChild(this.text("\u00A0"));
+      this.buttonElement.appendChild(this.text(' '));
       this.buttonElement.appendChild(this.ce('span', {
         class: this.component.rightIcon
       }));
@@ -282,6 +283,7 @@ export default class ButtonComponent extends BaseComponent {
 
     this.autofocus();
   }
+  /* eslint-enable max-statements */
 
   openOauth() {
     if (!this.root.formio) {

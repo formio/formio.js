@@ -1,6 +1,7 @@
-import BaseEditForm from '../base/Base.form';
+import baseEditForm from '../base/Base.form';
+/* eslint-disable max-len */
 export default function(...extend) {
-  return BaseEditForm(...extend, [
+  return baseEditForm(...extend, [
     {
       label: 'Display',
       key: 'display',
@@ -52,4 +53,5 @@ export default function(...extend) {
       ]
     }
   ]);
-};
+}
+/* eslint-enable max-len */

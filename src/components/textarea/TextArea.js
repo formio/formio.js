@@ -44,11 +44,12 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (!shouldShow && node) {
       this.editor.renderer.scroller.removeChild(this.editor.renderer.emptyMessageNode);
       this.editor.renderer.emptyMessageNode = null;
-    } else if (shouldShow && !node) {
+    }
+    else if (shouldShow && !node) {
       node = this.editor.renderer.emptyMessageNode = this.ce('div');
       node.textContent = this.t(this.component.placeholder);
-      node.className = "ace_invisible ace_emptyMessage";
-      node.style.padding = "0 9px";
+      node.className = 'ace_invisible ace_emptyMessage';
+      node.style.padding = '0 9px';
       this.editor.renderer.scroller.appendChild(node);
     }
   }
@@ -73,7 +74,7 @@ export default class TextAreaComponent extends TextFieldComponent {
             this.updateValue(null, this.getConvertedValue(this.editor.getValue()));
           });
           this.editor.getSession().setTabSize(2);
-          this.editor.getSession().setMode("ace/mode/" + mode);
+          this.editor.getSession().setMode('ace/mode/' + mode);
           this.editor.on('input', () => this.acePlaceholder());
           setTimeout(() => this.acePlaceholder(), 100);
           return this.editor;

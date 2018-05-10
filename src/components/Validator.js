@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import {boolValue, evaluate, getInputMask, matchInputMask} from '../utils/utils';
+
 export default {
   get: _.get,
   each: _.each,
@@ -47,12 +48,11 @@ export default {
 
     const validateCustom = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
-     if (result && (customErrorMessage || validateCustom)) { 
-      result = component.t(customErrorMessage || result, { 
-        data: component.data 
+    if (result && (customErrorMessage || validateCustom)) {
+      result = component.t(customErrorMessage || result, {
+        data: component.data
       });
-     }
-
+    }
     return result;
   },
   validators: {
@@ -147,8 +147,10 @@ export default {
         });
       },
       check(component, setting, value) {
+        /* eslint-disable max-len */
         // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        /* eslint-enable max-len */
 
         // Allow emails to be valid if the component is pristine and no value is provided.
         return !value || re.test(value);
@@ -219,7 +221,8 @@ export default {
             inputMask = getInputMask(formioInputMask);
           }
           value = value ? value.value : value;
-        } else {
+        }
+        else {
           inputMask = component._inputMask;
         }
         if (value && inputMask) {

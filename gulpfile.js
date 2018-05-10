@@ -10,22 +10,47 @@ plugins.cleanCSS = require('gulp-clean-css');
 gulp.task('clean', require('del').bind(null, ['dist', 'lib']));
 
 // Run babel on source code.
-gulp.task('babel', require('./gulp/babel')(gulp, plugins));
+gulp.task('babel', ['eslint'], () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
+  .pipe(plugins.babel())
+  .pipe(gulp.dest('lib')));
 
 // Move choices.js icons into dist folder.
-gulp.task('icons', () => {
-  return gulp.src('node_modules/choices.js/assets/icons/*')
-    .pipe(gulp.dest('dist/icons'));
-});
+gulp.task('icons', () => gulp.src('node_modules/choices.js/assets/icons/*').pipe(gulp.dest('dist/icons')));
 
 // Move font-awesome fonts into dist folder.
-gulp.task('builder-fonts', () => {
-  return gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts'));
-});
+gulp.task('builder-fonts', () => gulp.src('node_modules/font-awesome/fonts/*').pipe(gulp.dest('dist/fonts')));
 
 // Generate styles
-gulp.task('styles-form', require('./gulp/styles-form')(gulp, plugins));
-gulp.task('styles-full', ['builder-fonts'], require('./gulp/styles-full')(gulp, plugins));
+const compileStyles = (styles, file) => {
+  const sassFilter = plugins.filter(['*.scss'], {restore: true});
+  return gulp.src(styles)
+    .pipe(sassFilter)
+    .pipe(plugins.sass().on('error', plugins.sass.logError))
+    .pipe(sassFilter.restore)
+    .pipe(plugins.concat(file + '.css'))
+    .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
+    .pipe(gulp.dest('dist'))
+    .pipe(plugins.rename(file + '.min.css'))
+    .pipe(plugins.cleanCSS({compatibility: 'ie8'}))
+    .pipe(gulp.dest('dist'));
+};
+gulp.task('styles-form', () => compileStyles([
+  './node_modules/flatpickr/dist/flatpickr.min.css',
+  './node_modules/choices.js/assets/styles/css/choices.min.css',
+  './node_modules/dialog-polyfill/dialog-polyfill.css',
+  './node_modules/@yaireo/tagify/dist/tagify.css',
+  './src/sass/formio.form.scss'
+], 'formio.form'));
+gulp.task('styles-full', ['builder-fonts'], () => compileStyles([
+  './node_modules/flatpickr/dist/flatpickr.min.css',
+  './node_modules/choices.js/assets/styles/css/choices.min.css',
+  './node_modules/dialog-polyfill/dialog-polyfill.css',
+  './node_modules/@yaireo/tagify/dist/tagify.css',
+  './node_modules/dragula/dist/dragula.css',
+  './node_modules/font-awesome/css/font-awesome.css',
+  './src/sass/formio.form.scss',
+  './src/sass/formio.form.builder.scss'
+], 'formio.full'));
 
 // Script builds.
 const webpackDev = require('./config/webpack.dev');
@@ -45,6 +70,15 @@ gulp.task('scripts-form', build('Form.js', 'formio.form.js'));
 gulp.task('scripts-embed', build('formio.embed.js', 'formio.embed.js'));
 gulp.task('scripts-contrib', build('contrib/index.js', 'formio.contrib.js'));
 
+// ESLint
+const eslintConfig = require('eslint-config-formio');
+eslintConfig.parser = 'babel-eslint';
+gulp.task('eslint', () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
+  .pipe(plugins.eslint(require('eslint-config-formio')))
+  .pipe(plugins.eslint.format())
+  .pipe(plugins.eslint.failAfterError())
+);
+
 // Copy the version and dependencies into the distribution package.json file.
 gulp.task('package-version', function() {
   const pkg = require('./package.json');
@@ -60,7 +94,7 @@ gulp.task('package-version', function() {
 gulp.task('dist', () => gulp.src(['dist/**/*.*']).pipe(gulp.dest('lib/dist')));
 
 // Watch for changes.
-gulp.task('watch', require('./gulp/watch')(gulp, plugins));
+gulp.task('watch', () => gulp.watch(['./src/**.js', './src/*/**.js'], ['formio.full.js']));
 
 // Create a new build.
 gulp.task('build', gulpsync.sync([['clean'], 'babel', 'package-version', [

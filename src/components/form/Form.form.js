@@ -1,6 +1,7 @@
-import NestedComponentForm from '../NestedComponent.form';
+import nestedComponentForm from '../NestedComponent.form';
+/* eslint-disable max-len */
 export default function(...extend) {
-  return NestedComponentForm([
+  return nestedComponentForm([
     {
       label: 'Form',
       key: 'form',
@@ -31,4 +32,5 @@ export default function(...extend) {
       ]
     }
   ], ...extend);
-};
+}
+/* eslint-disable max-len */

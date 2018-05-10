@@ -1,6 +1,6 @@
-import TextEditForm from '../textfield/TextField.form';
-export default function (...extend) {
-  return TextEditForm(...extend, [
+import textEditForm from '../textfield/TextField.form';
+export default function(...extend) {
+  return textEditForm(...extend, [
     {
       label: 'Display',
       key: 'display',
@@ -100,4 +100,4 @@ export default function (...extend) {
       ]
     }
   ]);
-};
+}

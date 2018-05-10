@@ -1,8 +1,8 @@
-import BaseEditForm from '../base/Base.form';
-import BuilderUtils from "../../utils/builder";
-
+import baseEditForm from '../base/Base.form';
+import BuilderUtils from '../../utils/builder';
+/* eslint-disable quotes */
 export default function(...extend) {
-  return BaseEditForm(...extend, [
+  return baseEditForm(...extend, [
     {
       label: 'Display',
       key: 'display',
@@ -178,4 +178,5 @@ export default function(...extend) {
       ]
     }
   ]);
-};
+}
+/* eslint-enable quotes */

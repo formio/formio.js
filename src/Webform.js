@@ -1,5 +1,7 @@
 // DO NOT DELETE! THIS WILL BREAK PDF GENERATION.
+/* eslint-disable no-unused-vars */
 import * as polyfill from './formio.polyfill';
+/* eslint-enable no-unused-vars */
 
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
@@ -42,6 +44,7 @@ export default class Webform extends NestedComponent {
    * @param {boolean} options.i18n - The translation file for this rendering. @see https://github.com/formio/formio.js/blob/master/i18n.js
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
    */
+  /* eslint-disable max-statements */
   constructor(element, options) {
     super(null, getOptions(options));
 
@@ -213,6 +216,7 @@ export default class Webform extends NestedComponent {
       this.language = this.options.language;
     });
   }
+  /* eslint-enable max-statements */
 
   /**
    * Sets the language for this form.
@@ -526,6 +530,7 @@ export default class Webform extends NestedComponent {
         });
         this.loader.appendChild(spinner);
       }
+      /* eslint-disable max-depth */
       if (this.loader) {
         try {
           if (loading) {
@@ -539,6 +544,7 @@ export default class Webform extends NestedComponent {
           // ingore
         }
       }
+      /* eslint-enable max-depth */
     }
   }
 
