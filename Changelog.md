@@ -22,6 +22,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
     builder.render();
     ```
     
+    ```js
+    // To import a component
+    import TextFieldComponent from 'formiojs/components/textfield/TextField';
+    ```
+    
  - Changed FormioComponents name to NestedComponent.
  - Changed FormioComponentsIndex name to Components
  - Changed FormioForm name to Webform
