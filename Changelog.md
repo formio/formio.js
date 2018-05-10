@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## 2.32.2
+### Fixed
+ - Fixed auto-focus issues with text area with wysiwyg.
+ - Fixed issues with DataGrid not setting the values properly and rebuilding the rows.
+
 ## 2.32.1
 ### Fixed
  - Issue with the OAuth button where it would launch the modal at the wrong times.
