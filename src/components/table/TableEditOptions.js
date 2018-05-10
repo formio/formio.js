@@ -1,4 +1,4 @@
-export const TableEditOptions = [
+export default [
   {
     type: 'checkbox',
     label: 'Striped',

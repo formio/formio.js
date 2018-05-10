@@ -433,7 +433,7 @@ export default class AddressComponent extends TextFieldComponent {
       item.attachEvent('onclick', clickListener);
     }
   }
-  /* eslint-enable max-statements */
+  /* eslint-enable max-depth, max-statements */
 
   /**
    * Get detailed information and set it as value
