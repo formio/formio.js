@@ -12,13 +12,13 @@
     "embed.js",
     "full.js"
   ],
-  "pre-commit": [ "gulp eslint" ],
+  "pre-commit": ["lint"],
   "scripts": {
     "build": "esdoc;gulp build",
     "rebuild": "rm -rf node_modules;npm install;gulp build",
     "tag": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
     "publish": "npm test;gulp build;npm run tag;npm publish lib;",
-    "lint": "eslint src",
+    "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "./node_modules/karma/bin/karma start --verbose --single-run",
     "test:watch": "./node_modules/karma/bin/karma start --no-single-run --auto-watch"
