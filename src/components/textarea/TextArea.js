@@ -75,7 +75,7 @@ export class TextAreaComponent extends TextFieldComponent {
         if (qlSource) {
           qlSource.addEventListener('click', () => {
             if (txtArea.style.display === 'inherit') {
-              this.quill.clipboard.dangerouslyPasteHTML(txtArea.value);
+              this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
             }
             txtArea.style.display = (txtArea.style.display === 'none') ? 'inherit' : 'none';
           });
@@ -83,8 +83,8 @@ export class TextAreaComponent extends TextFieldComponent {
         /** END CODEBLOCK **/
 
         this.quill.on('text-change', () => {
-          txtArea.value = this.quill.root.innerHTML;
-          this.updateValue(true);
+          this.dataValue = txtArea.value = this.quill.root.innerHTML;
+          this.updateValue();
         });
 
         if (this.options.readOnly || this.component.disabled) {
@@ -120,7 +120,7 @@ export class TextAreaComponent extends TextFieldComponent {
     }
 
     this.quillReady.then((quill) => {
-      quill.clipboard.dangerouslyPasteHTML(value);
+      quill.setContents(quill.clipboard.convert(value));
       this.updateValue(flags);
     });
   }
