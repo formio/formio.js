@@ -29,6 +29,7 @@ const compileStyles = (styles, file) => {
     .pipe(sassFilter.restore)
     .pipe(plugins.concat(file + '.css'))
     .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
+    .pipe(plugins.replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
     .pipe(gulp.dest('dist'))
     .pipe(plugins.rename(file + '.min.css'))
     .pipe(plugins.cleanCSS({compatibility: 'ie8'}))
