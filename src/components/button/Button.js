@@ -97,6 +97,10 @@ export default class ButtonComponent extends BaseComponent {
     return className;
   }
 
+  buttonMessage(message) {
+    return this.ce('span', {class: 'help-block'}, this.text(message));
+  }
+
   /* eslint-disable max-statements */
   build() {
     if (this.viewOnly) {
@@ -128,15 +132,7 @@ export default class ButtonComponent extends BaseComponent {
       }));
     }
     if (this.component.action === 'submit') {
-      const errorContainer = this.ce('div', {
-        class: 'has-error'
-      });
-      const error = this.ce('span', {
-        class: 'help-block'
-      });
-      error.appendChild(this.text(this.errorMessage('error')));
-      errorContainer.appendChild(error);
-
+      let message = this.ce('div');
       this.on('submitButton', () => {
         this.loading = true;
         this.disabled = true;
@@ -144,6 +140,11 @@ export default class ButtonComponent extends BaseComponent {
       this.on('submitDone', () => {
         this.loading = false;
         this.disabled = false;
+        this.empty(message);
+        message.addClass('has-success');
+        message.removeClass('has-error');
+        message.appendChild(this.buttonMessage('complete'));
+        this.append(message);
       }, true);
       this.on('change', (value) => {
         this.loading = false;
@@ -151,13 +152,20 @@ export default class ButtonComponent extends BaseComponent {
         this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
         if (isValid && this.hasError) {
           this.hasError = false;
-          this.removeChild(errorContainer);
+          this.empty(message);
+          this.removeChild(message);
+          message.removeClass('has-success');
+          message.removeClass('has-error');
         }
       }, true);
       this.on('error', () => {
         this.loading = false;
         this.hasError = true;
-        this.append(errorContainer);
+        this.empty(message);
+        message.removeClass('has-success');
+        message.addClass('has-error');
+        message.appendChild(this.buttonMessage(this.errorMessage('error')));
+        this.append(message);
       }, true);
     }
 
