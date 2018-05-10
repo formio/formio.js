@@ -877,6 +877,7 @@ export default class Webform extends NestedComponent {
       }
     }
 
+    this.setPristine(false);
     return this.showErrors(error);
   }
 

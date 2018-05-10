@@ -2232,11 +2232,6 @@ export default class BaseComponent {
       this.errorElement.innerHTML = '';
       this.removeChildFrom(this.errorElement, this.errorContainer);
     }
-    this.removeClass(this.element, 'has-error');
-    this.inputs.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
-    if (this.options.highlightErrors) {
-      this.removeClass(this.element, 'alert alert-danger');
-    }
     if (message) {
       this.error = {
         component: this.component,
@@ -2247,6 +2242,11 @@ export default class BaseComponent {
       this.addInputError(message, dirty);
     }
     else {
+      this.inputs.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      if (this.options.highlightErrors) {
+        this.removeClass(this.element, 'alert alert-danger');
+      }
+      this.removeClass(this.element, 'has-error');
       this.error = null;
     }
     _.each(this.inputs, (input) => {

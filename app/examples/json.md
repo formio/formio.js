@@ -24,14 +24,20 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'firstName',
       label: 'First Name',
       placeholder: 'Enter your first name.',
-      input: true
+      input: true,
+      validate: {
+        required: true
+      }
     },
     {
       type: 'textfield',
       key: 'lastName',
       label: 'Last Name',
       placeholder: 'Enter your last name',
-      input: true
+      input: true,
+      validate: {
+        required: true
+      }
     },
     {
       type: 'phoneNumber',
@@ -171,14 +177,20 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'firstName',
       label: 'First Name',
       placeholder: 'Enter your first name.',
-      input: true
+      input: true,
+      validate: {
+        required: true
+      }
     },
     {
       type: 'textfield',
       key: 'lastName',
       label: 'Last Name',
       placeholder: 'Enter your last name',
-      input: true
+      input: true,
+      validate: {
+        required: true
+      }
     },
     {
       type: 'phoneNumber',
