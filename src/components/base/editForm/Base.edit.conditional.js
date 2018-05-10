@@ -1,4 +1,5 @@
-import EditFormUtils from "./utils";
+import EditFormUtils from './utils';
+/* eslint-disable quotes, max-len */
 export default [
   {
     type: 'panel',
@@ -54,3 +55,4 @@ export default [
     '<p><a href="http://formio.github.io/formio.js/app/examples/conditions.html" target="_blank">Click here for an example</a></p>'
   )
 ];
+/* eslint-enable quotes, max-len */

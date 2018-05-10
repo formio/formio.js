@@ -1,3 +1,4 @@
+/* eslint-disable quotes, max-len */
 export default [
   {
     input: true,
@@ -274,3 +275,4 @@ export default [
     ]
   }
 ];
+/* eslint-enable quotes, max-len */

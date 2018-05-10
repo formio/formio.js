@@ -1,4 +1,5 @@
 import EditFormUtils from './utils';
+/* eslint-disable max-len */
 export default [
   {
     type: 'textfield',
@@ -34,3 +35,4 @@ export default [
     tooltip: 'Set this field as an index within the database. Increases performance for submission queries.'
   }
 ];
+/* eslint-enable max-len */

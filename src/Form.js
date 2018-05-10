@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 import Formio from './Formio';
 import Wizard from './Wizard';
 import PDF from './PDF';

@@ -20,7 +20,7 @@ import SignatureComponent from './signature/Signature';
 import SelectComponent from './select/Select';
 import ResourceComponent from './resource/Resource';
 import TextAreaComponent from './textarea/TextArea';
-import TagsComponent from "./tags/Tags";
+import TagsComponent from './tags/Tags';
 import ButtonComponent from './button/Button';
 import NumberComponent from './number/Number';
 import PasswordComponent from './password/Password';
@@ -35,7 +35,7 @@ import SurveyComponent from './survey/Survey';
 import WellComponent from './well/Well';
 import LocationComponent from './location/Location';
 import FileComponent from './file/File';
-import TabsComponent from "./tabs/Tabs";
+import TabsComponent from './tabs/Tabs';
 export default {
   address: AddressComponent,
   base: BaseComponent,

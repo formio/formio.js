@@ -322,9 +322,11 @@ export default class FileComponent extends BaseComponent {
     }
   }
 
+  /* eslint-disable max-len */
   fileSize(a, b, c, d, e) {
     return `${(b = Math, c = b.log, d = 1024, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2)} ${e ? `${'kMGTPEZY'[--e]}B` : 'Bytes'}`;
   }
+  /* eslint-enable max-len */
 
   createUploadStatus(fileUpload) {
     let container;
@@ -363,6 +365,7 @@ export default class FileComponent extends BaseComponent {
     ]);
   }
 
+  /* eslint-disable max-depth */
   globStringToRegex(str) {
     let regexp = '', excludes = [];
     if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
@@ -399,6 +402,7 @@ export default class FileComponent extends BaseComponent {
     }
     return {regexp: regexp, excludes: excludes};
   }
+  /* eslint-enable max-depth */
 
   translateScalars(str) {
     if (typeof str === 'string') {
@@ -463,6 +467,7 @@ export default class FileComponent extends BaseComponent {
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       Array.prototype.forEach.call(files, file => {
+        const fileName = uniqueName(file.name);
         const fileUpload = {
           originalName: file.name,
           name: fileName,
@@ -490,7 +495,6 @@ export default class FileComponent extends BaseComponent {
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
-        const fileName = uniqueName(file.name);
         const dir = this.interpolate(this.component.dir || '', {data: this.data, row: this.row});
         const fileService = this.fileService;
         if (!fileService) {

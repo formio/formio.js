@@ -6,7 +6,7 @@ import BaseEditValidation from './editForm/Base.edit.validation';
 import BaseEditAPI from './editForm/Base.edit.api';
 import BaseEditConditional from './editForm/Base.edit.conditional';
 import BaseEditLogic from './editForm/Base.edit.logic';
-export default function (...extend) {
+export default function(...extend) {
   return {
     components: _.unionWith(_.map(extend, items => {
       return {
@@ -63,4 +63,4 @@ export default function (...extend) {
       }
     ], EditFormUtils.unifyComponents)
   };
-};
+}

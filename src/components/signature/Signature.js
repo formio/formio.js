@@ -109,6 +109,7 @@ export default class SignatureComponent extends BaseComponent {
     }
   }
 
+  /* eslint-disable max-statements */
   build() {
     if (this.viewOnly) {
       return this.viewOnlyBuild();
@@ -190,6 +191,7 @@ export default class SignatureComponent extends BaseComponent {
 
     this.autofocus();
   }
+  /* eslint-enable max-statements */
 
   createViewOnlyLabel(container) {
     this.labelElement = this.ce('dt');

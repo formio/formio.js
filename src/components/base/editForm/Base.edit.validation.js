@@ -1,4 +1,5 @@
-import EditFormUtils from "./utils";
+import EditFormUtils from './utils';
+/* eslint-disable quotes, max-len */
 export default [
   {
     weight: 0,
@@ -103,3 +104,4 @@ export default [
     ]
   }
 ];
+/* eslint-enable quotes, max-len */

@@ -94,7 +94,7 @@ export default class PDF extends Webform {
   }
 
   // Iframe should always be shown.
-  showElement(show) {}
+  showElement() {}
   build() {
     // Do not rebuild the iframe...
     if (this.iframe) {

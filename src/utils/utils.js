@@ -21,7 +21,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export { jsonLogic };
+export {jsonLogic};
 
 /**
  * Evaluate a method.

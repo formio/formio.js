@@ -1,4 +1,4 @@
-import WebformBuilder from "./WebformBuilder";
+import WebformBuilder from './WebformBuilder';
 import _ from 'lodash';
 
 export default class WizardBuilder extends WebformBuilder {
@@ -63,7 +63,7 @@ export default class WizardBuilder extends WebformBuilder {
     data = data || this.data;
     const components = this.hook('addComponents', this.componentComponents);
     _.each(components, (component, index) => {
-      this.addComponent(component, element, data, null, (index !== this.currentPage))
+      this.addComponent(component, element, data, null, (index !== this.currentPage));
     });
   }
 

@@ -1,4 +1,4 @@
-import RadioEditForm from '../radio/Radio.form';
+import radioEditForm from '../radio/Radio.form';
 export default function(...extend) {
-  return RadioEditForm(...extend);
-};
+  return radioEditForm(...extend);
+}

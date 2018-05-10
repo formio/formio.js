@@ -12,12 +12,15 @@
     "embed.js",
     "full.js"
   ],
+  "pre-commit": [
+    "lint"
+  ],
   "scripts": {
     "build": "esdoc;gulp build",
     "rebuild": "rm -rf node_modules;npm install;gulp build",
     "tag": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
     "publish": "npm test;gulp build;npm run tag;npm publish lib;",
-    "lint": "eslint src",
+    "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "./node_modules/karma/bin/karma start --verbose --single-run",
     "test:watch": "./node_modules/karma/bin/karma start --no-single-run --auto-watch"
@@ -78,7 +81,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
-    "babel-eslint": "^8.2.2",
+    "babel-eslint": "^8.2.3",
     "babel-plugin-array-includes": "^2.0.3",
     "babel-plugin-espower": "^2.4.0",
     "babel-plugin-transform-optional-chaining": "^7.0.0-beta.3",
@@ -95,6 +98,7 @@
     "gulp-babel": "^7.0.1",
     "gulp-clean-css": "^3.9.4",
     "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^4.0.2",
     "gulp-filter": "^5.1.0",
     "gulp-jshint": "^2.1.0",
     "gulp-load-plugins": "^1.0.0-rc.1",
@@ -115,6 +119,7 @@
     "marked": "^0.3.19",
     "mocha": "^5.0.5",
     "power-assert": "^1.5.0",
+    "pre-commit": "^1.2.2",
     "sinon": "^5.0.7",
     "webpack": "^4.8.1",
     "webpack-cli": "^2.1.3",

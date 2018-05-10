@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Changed FormioForm name to Webform
  - Changed FormioWizard name to Wizard
  - Changed FormioPDF name to PDF
+ - Renamed GMap component to Location component
  - Changed all exports on Components to be default exports. ```import TextFieldComponent from 'formiojs/components/textfield/TextField';```
  - Deprected ability to "attach" Formio to existing form using Formio.form method.
  - Modified all JavaScript execution to make it more consistent.

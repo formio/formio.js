@@ -1,8 +1,8 @@
-import BaseEditForm from '../base/Base.form';
+import baseEditForm from '../base/Base.form';
 import TextFieldEditDisplay from './editForm/TextField.edit.display';
 import TextFieldEditValidation from './editForm/TextField.edit.validation';
 export default function(...extend) {
-  return BaseEditForm(...extend, [
+  return baseEditForm(...extend, [
     {
       label: 'Display',
       key: 'display',
@@ -16,4 +16,4 @@ export default function(...extend) {
       components: TextFieldEditValidation
     }
   ]);
-};
+}

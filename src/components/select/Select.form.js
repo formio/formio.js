@@ -1,7 +1,8 @@
-import BaseEditForm from '../base/Base.form';
+import baseEditForm from '../base/Base.form';
 import {eachComponent} from '../../utils/utils';
+/* eslint-disable max-len, quotes */
 export default function(...extend) {
-  return BaseEditForm(...extend, [
+  return baseEditForm(...extend, [
     {
       label: 'Data',
       key: 'data',
@@ -377,4 +378,5 @@ export default function(...extend) {
       ]
     }
   ]);
-};
+}
+/* eslint-enable max-len, quotes */

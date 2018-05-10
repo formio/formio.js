@@ -345,6 +345,7 @@ export default class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
+  /* eslint-disable max-depth, max-statements */
   autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input) {
     const item = document.createElement('div');
     item.classList.add('pac-item');
@@ -432,6 +433,7 @@ export default class AddressComponent extends TextFieldComponent {
       item.attachEvent('onclick', clickListener);
     }
   }
+  /* eslint-enable max-depth, max-statements */
 
   /**
    * Get detailed information and set it as value

@@ -1,8 +1,9 @@
-import BaseEditForm from '../base/Base.form';
+import baseEditForm from '../base/Base.form';
 import Formio from '../../Formio';
 import _ from 'lodash';
+/* eslint-disable quotes, max-len */
 export default function(...extend) {
-  return BaseEditForm(...extend, [
+  return baseEditForm(...extend, [
     {
       label: 'File',
       key: 'file',
@@ -100,4 +101,5 @@ export default function(...extend) {
       ]
     }
   ]);
-};
+}
+/* eslint-enable quotes, max-len */

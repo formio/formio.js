@@ -1,4 +1,4 @@
-import WebformBuilder from "./WebformBuilder";
+import WebformBuilder from './WebformBuilder';
 import {getElementRect} from './utils/utils';
 import PDF from './PDF';
 
@@ -122,7 +122,7 @@ export default class PDFBuilder extends WebformBuilder {
     }
   }
 
-  dragStop(event, prevX, prevY) {
+  dragStop(event) {
     event.preventDefault();
     let dropData = event.dataTransfer.getData('text/plain');
     if (!dropData || (typeof dropData !== 'string')) {
