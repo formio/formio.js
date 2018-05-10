@@ -1,12 +1,12 @@
 import Webform from './Webform';
 import dragula from 'dragula';
-import Components from './components/builder';
-import NestedComponent from './components/nested/NestedComponent';
+import Components from './components/Components';
 import BuilderUtils from './utils/builder';
 import {getComponent} from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
+require('./components/builder');
 
 export default class WebformBuilder extends Webform {
   constructor(element, options) {
@@ -213,7 +213,7 @@ export default class WebformBuilder extends Webform {
 
   editComponent(component) {
     let componentCopy = _.cloneDeep(component);
-    let componentClass = Components[componentCopy.component.type];
+    let componentClass = Components.components[componentCopy.component.type];
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
@@ -297,7 +297,7 @@ export default class WebformBuilder extends Webform {
     // Append the settings page to the dialog body.
     this.dialog.body.appendChild(componentEdit);
 
-    const editForm = Components[componentCopy.component.type].editForm();
+    const editForm = Components.components[componentCopy.component.type].editForm();
 
     // Change the defaultValue component to be reflective.
     this.defaultValueComponent = getComponent(editForm.components, 'defaultValue');
@@ -561,7 +561,7 @@ export default class WebformBuilder extends Webform {
 
     // Get all of the components builder info grouped and sorted.
     let components = {};
-    let allComponents = _.filter(_.map(_.assign(Components, NestedComponent.customComponents), (component, type) => {
+    let allComponents = _.filter(_.map(Components.components, (component, type) => {
       if (!component.builderInfo) {
         return null;
       }
