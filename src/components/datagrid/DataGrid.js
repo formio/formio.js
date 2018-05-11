@@ -124,7 +124,10 @@ export default class DataGridComponent extends NestedComponent {
     this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex)));
 
     // Create the header (must happen after build rows to get correct column length)
-    this.tableElement.appendChild(this.createHeader());
+    let header = this.createHeader();
+    if (header) {
+      this.tableElement.appendChild(header);
+    }
     this.tableElement.appendChild(this.ce('tbody', null, tableRows));
 
     // Create the add row button footer element.
@@ -146,7 +149,8 @@ export default class DataGridComponent extends NestedComponent {
   createHeader() {
     const hasTopButton = this.hasTopSubmit();
     const hasEnd = this.hasExtraColumn() || hasTopButton;
-    return this.ce('thead', null, this.ce('tr', null,
+    let needsHeader = false;
+    const thead = this.ce('thead', null, this.ce('tr', null,
       [
         this.visibleComponents.map(comp => {
           const th = this.ce('th');
@@ -154,7 +158,8 @@ export default class DataGridComponent extends NestedComponent {
             th.setAttribute('class', 'field-required');
           }
           const title = comp.label || comp.title;
-          if (title) {
+          if (title && !comp.dataGridLabel) {
+            needsHeader = true;
             th.appendChild(this.text(title));
             this.createTooltip(th, comp);
           }
@@ -163,6 +168,7 @@ export default class DataGridComponent extends NestedComponent {
         hasEnd ? this.ce('th', null, (hasTopButton ? this.addButton(true) : null)) : null,
       ]
     ));
+    return needsHeader ? thead : null;
   }
 
   get defaultValue() {
@@ -219,7 +225,7 @@ export default class DataGridComponent extends NestedComponent {
     let options = _.clone(this.options);
     options.name += `[${colIndex}]`;
     const comp = this.createComponent(_.assign({}, column, {
-      label: false,
+      label: column.dataGridLabel ? column.label : false,
       row: `${rowIndex}-${colIndex}`
     }), options, row);
     this.hook('addComponent', container, comp);
