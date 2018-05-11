@@ -498,6 +498,11 @@ export default class SelectComponent extends BaseComponent {
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
+      searchFields: ['label'],
+      fuseOptions: {
+        include: 'score',
+        threshold: 0.3
+      },
       itemComparer: (choice, item) => _.isEqual(choice, item)
     };
 
