@@ -110,6 +110,13 @@ export default class Webform extends NestedComponent {
     this.nosubmit = false;
 
     /**
+     * If the form has tried to be submitted, error or not.
+     *
+     * @type {boolean}
+     */
+    this.submitted = false;
+
+    /**
      * The Formio instance for this form.
      * @type {Formio}
      */
@@ -902,6 +909,14 @@ export default class Webform extends NestedComponent {
     this.emit('change', value);
   }
 
+  checkData(data, flags) {
+    const valid = super.checkData(data, flags);
+    if (this.submitted) {
+      this.showErrors();
+    }
+    return valid;
+  }
+
   /**
    * Send a delete request to the server.
    */
@@ -970,6 +985,7 @@ export default class Webform extends NestedComponent {
   }
 
   executeSubmit(options) {
+    this.submitted = true;
     return this.submitForm(options)
       .then(result => this.onSubmit(result.submission, result.saved))
       .catch(err => Promise.reject(this.onSubmissionError(err)));
