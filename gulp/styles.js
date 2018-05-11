@@ -13,6 +13,7 @@ module.exports = function(gulp, plugins) {
       .pipe(sassFilter.restore)
       .pipe(plugins.concat('formio.form.css'))
       .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
+      .pipe(plugins.replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
       .pipe(gulp.dest('dist/'))
       .pipe(plugins.rename('formio.full.css'))
       .pipe(gulp.dest('dist/'))
