@@ -54,6 +54,10 @@ dialog.fixed {
   min-height: 80px;
 }
 
+.formio-disabled-input .form-control.flatpickr-input {
+  background-color: #eee;
+}
+
 .formio-component.has-error .invalid-feedback {
   display: block;
 }
