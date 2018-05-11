@@ -35,7 +35,7 @@ export default class EmailComponent extends TextFieldComponent {
 
   elementInfo() {
     const info = super.elementInfo();
-    info.attr.type = 'email';
+    info.attr.type = this.component.mask ? 'password' : 'email';
     return info;
   }
 }
