@@ -1,0 +1,12 @@
+{
+  "parser": "babel-eslint",
+  "extends": "formio",
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "rules": {
+    "prefer-const": "error",
+    "prefer-template": "error"
+  }
+}

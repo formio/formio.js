@@ -4,6 +4,7 @@ import WebformBuilder from './WebformBuilder';
 import WizardBuilder from './WizardBuilder';
 import PDFBuilder from './PDFBuilder';
 import Form from './Form';
+
 export default class FormBuilder extends Form {
   /**
    * Creates an easy to use interface for embedding a form builder into your application..
@@ -58,7 +59,7 @@ export default class FormBuilder extends Form {
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.builder = (element, form, options) => {
-  let builder = new FormBuilder(element, form, options);
+  const builder = new FormBuilder(element, form, options);
   return builder.render();
 };
 

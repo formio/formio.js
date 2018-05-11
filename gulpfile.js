@@ -77,7 +77,7 @@ eslintConfig.parser = 'babel-eslint';
 gulp.task('eslint', () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
   .pipe(plugins.eslint(require('eslint-config-formio')))
   .pipe(plugins.eslint.format())
-  .pipe(plugins.eslint.failAfterError())
+  /*.pipe(plugins.eslint.failAfterError())*/
 );
 
 // Copy the version and dependencies into the distribution package.json file.

@@ -1,9 +1,10 @@
 import _ from 'lodash';
+
 const EditFormUtils = {
-  sortAndFilterComponents: (components) => {
-    return _.filter(_.sortBy(components, 'weight'), item => !item.ignore);
+  sortAndFilterComponents(components) {
+    return _.filter(_.sortBy(components, 'weight'), (item) => !item.ignore);
   },
-  unifyComponents: (objValue, srcValue) => {
+  unifyComponents(objValue, srcValue) {
     if (objValue.key && srcValue.key) {
       if (objValue.key === srcValue.key) {
         if (objValue.components) {
@@ -19,7 +20,7 @@ const EditFormUtils = {
     }
     return _.isEqual(objValue, srcValue);
   },
-  logicVariablesTable: (additional) => {
+  logicVariablesTable(additional) {
     additional = additional || '';
     return {
       type: 'htmlelement',
@@ -37,24 +38,24 @@ const EditFormUtils = {
       '</table><br/>'
     };
   },
-  javaScriptValue: (title, property, propertyJSON, weight, exampleHTML, exampleJSON) => {
+  javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON) {
     return {
       type: 'panel',
       title: title,
       theme: 'default',
       collapsible: true,
       collapsed: true,
-      key: property + 'Panel',
+      key: `${property}Panel`,
       weight: weight,
       components: [
-        EditFormUtils.logicVariablesTable(),
+        this.logicVariablesTable(),
         {
           type: 'panel',
           title: 'JavaScript',
           collapsible: true,
           collapsed: false,
           style: {'margin-bottom': '10px'},
-          key: property + '-js',
+          key: `${property}-js`,
           components: [
             {
               type: 'textarea',
@@ -67,7 +68,7 @@ const EditFormUtils = {
             {
               type: 'htmlelement',
               tag: 'div',
-              content: '<p>Enter custom javascript code.</p>' + exampleHTML
+              content: `<p>Enter custom javascript code.</p>${exampleHTML}`
             }
           ]
         },
@@ -76,14 +77,14 @@ const EditFormUtils = {
           title: 'JSONLogic',
           collapsible: true,
           collapsed: true,
-          key: property + '-json',
+          key: `${property}-json`,
           components: [
             {
               type: 'htmlelement',
               tag: 'div',
               content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
-                '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>'
-                + exampleJSON
+                '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' +
+                 exampleJSON
             },
             {
               type: 'textarea',
