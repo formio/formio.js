@@ -1,5 +1,6 @@
 import SelectComponent from '../select/Select';
 import Webform from '../../Webform';
+import _ from 'lodash';
 
 export default class ResourceComponent extends SelectComponent {
   static schema(...extend) {
@@ -61,7 +62,7 @@ export default class ResourceComponent extends SelectComponent {
         this.setValue(submission);
         dialog.close();
       });
-      form.src = Formio.getBaseUrl() + '/form/' + this.component.resource;
+      form.src = _.get(this.root, 'formio.projectUrl', Formio.getBaseUrl()) + '/form/' + this.component.resource;
     });
 
     return addButton;
