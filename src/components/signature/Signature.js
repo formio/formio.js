@@ -40,6 +40,10 @@ export default class SignatureComponent extends BaseComponent {
     }
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   get defaultSchema() {
     return SignatureComponent.schema();
   }
@@ -142,6 +146,13 @@ export default class SignatureComponent extends BaseComponent {
       height: this.component.height
     });
     this.padBody.appendChild(this.canvas);
+
+    // Add an asterisk if required.
+    if (_.get(this.component, 'validate.required', false)) {
+      this.padBody.appendChild(this.ce('span', {
+        class: 'form-control-feedback field-required-inline text-danger'
+      }, this.getIcon('asterisk')));
+    }
 
     this.signatureImage = this.ce('img', {
       style: ('width: 100%;display: none;')
