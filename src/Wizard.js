@@ -23,6 +23,17 @@ export default class Wizard extends Webform {
     this._nextPage = 0;
   }
 
+  eachPage(cb) {
+    const pageOptions = _.clone(this.options);
+    _.each(this.pages, page => cb(this.createComponent(page, pageOptions)));
+  }
+
+  resetValue() {
+    this.eachPage(page => page.resetValue());
+    this.dataValue = this.emptyValue;
+    this.setPristine(true);
+  }
+
   setPage(num) {
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
@@ -76,9 +87,10 @@ export default class Wizard extends Webform {
 
   beforeSubmit() {
     const ops = [];
-    const pageOptions = _.clone(this.options);
-    pageOptions.beforeSubmit = true;
-    _.each(this.pages, page => ops.push(this.createComponent(page, pageOptions).beforeSubmit()));
+    this.eachPage(page => {
+      page.options.beforeSubmit = true;
+      ops.push(page.beforeSubmit());
+    });
     return Promise.all(ops);
   }
 

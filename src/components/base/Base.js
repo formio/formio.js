@@ -2314,6 +2314,14 @@ export default class BaseComponent {
   }
 
   /**
+   * Resets the value of this component.
+   */
+  resetValue() {
+    this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
+    this.dataValue = this.emptyValue;
+  }
+
+  /**
    * Prints out the value of this component as a string value.
    */
   asString(value) {

@@ -429,6 +429,12 @@ export default class NestedComponent extends BaseComponent {
     return this.data;
   }
 
+  resetValue() {
+    _.each(this.getComponents(), (comp) => (comp.resetValue()));
+    this.dataValue = this.emptyValue;
+    this.setPristine(true);
+  }
+
   whenReady() {
     const promises = [];
     _.each(this.getComponents(), (component) => {

@@ -750,7 +750,7 @@ export default class Webform extends NestedComponent {
       this.showElement(false);
       this.build();
       this.isBuilt = true;
-      this.on('resetForm', () => this.reset(), true);
+      this.on('resetForm', () => this.resetValue(), true);
       this.on('deleteSubmission', () => this.deleteSubmission(), true);
       this.on('refreshData', () => this.updateValue());
       setTimeout(() => {
@@ -898,41 +898,13 @@ export default class Webform extends NestedComponent {
   }
 
   /**
-   * Resets the submission of a form and restores defaults.
-   *
-   * @example
-   * import Webform from 'formiojs/Webform';
-   * let form = new Webform(document.getElementById('formio'));
-   * form.src = 'https://examples.form.io/example';
-   * form.submission = {data: {
-   *   firstName: 'Joe',
-   *   lastName: 'Smith',
-   *   email: 'joe@example.com'
-   * }};
-   *
-   * // In two seconds, reset the data in the form.
-   * setTimeout(() => form.reset(), 2000);
-   */
-  reset() {
-    // Reset the submission data and set to pristine.
-    for (let key in this.data) {
-      if (this.data.hasOwnProperty(key)) {
-        delete this.data[key];
-      }
-    }
-
-    this._submission.data = this.data;
-    this.setPristine(true);
-  }
-
-  /**
    * Send a delete request to the server.
    */
   deleteSubmission() {
     return this.formio.deleteSubmission()
       .then(() => {
         this.emit('submissionDeleted', this.submission);
-        this.reset();
+        this.resetValue();
       });
   }
 
@@ -943,7 +915,7 @@ export default class Webform extends NestedComponent {
    */
   cancel(noconfirm) {
     if (noconfirm || confirm('Are you sure you want to cancel?')) {
-      this.reset();
+      this.resetValue();
       return true;
     }
     else {
