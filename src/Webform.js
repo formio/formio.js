@@ -760,6 +760,11 @@ export default class Webform extends NestedComponent {
     });
   }
 
+  resetValue() {
+    _.each(this.getComponents(), (comp) => (comp.resetValue()));
+    this.setPristine(true);
+  }
+
   /**
    * Sets a new alert to display in the error dialog of the form.
    *

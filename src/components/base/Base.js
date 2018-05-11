@@ -2318,7 +2318,7 @@ export default class BaseComponent {
    */
   resetValue() {
     this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
-    this.dataValue = this.emptyValue;
+    _.unset(this.data, this.component.key);
   }
 
   /**

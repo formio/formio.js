@@ -431,7 +431,7 @@ export default class NestedComponent extends BaseComponent {
 
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
-    this.dataValue = this.emptyValue;
+    _.unset(this.data, this.component.key);
     this.setPristine(true);
   }
 

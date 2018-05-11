@@ -30,7 +30,6 @@ export default class Wizard extends Webform {
 
   resetValue() {
     this.eachPage(page => page.resetValue());
-    this.dataValue = this.emptyValue;
     this.setPristine(true);
   }
 
