@@ -279,7 +279,7 @@ export default class DataGridComponent extends NestedComponent {
       }
     }
 
-    const changed = flags.changed || this.hasChanged(value, this.dataValue);
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.buildRows();
     _.each(this.rows, (row, index) => {

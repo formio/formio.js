@@ -1822,7 +1822,7 @@ export default class BaseComponent {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => this.updateValue({changed: true}));
+    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
   }
 
   /**
@@ -2056,7 +2056,6 @@ export default class BaseComponent {
    * @param changed
    */
   updateOnChange(flags, changed) {
-    delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
       return true;
@@ -2076,7 +2075,7 @@ export default class BaseComponent {
 
     flags = flags || {};
     const newValue = value || this.getValue(flags);
-    const changed = flags.changed || this.hasChanged(newValue, this.dataValue);
+    const changed = this.hasChanged(newValue, this.dataValue);
     this.dataValue = newValue;
     if (this.viewOnly) {
       this.updateViewOnlyValue(newValue);

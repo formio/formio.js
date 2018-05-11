@@ -81,7 +81,7 @@ export default class DateTimeComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    return 0;
+    return '';
   }
 
   /**
