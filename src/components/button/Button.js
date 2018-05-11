@@ -141,8 +141,8 @@ export default class ButtonComponent extends BaseComponent {
         this.loading = false;
         this.disabled = false;
         this.empty(message);
-        message.addClass('has-success');
-        message.removeClass('has-error');
+        this.addClass(message, 'has-success');
+        this.removeClass(message, 'has-error');
         message.appendChild(this.buttonMessage('complete'));
         this.append(message);
       }, true);
@@ -154,16 +154,16 @@ export default class ButtonComponent extends BaseComponent {
           this.hasError = false;
           this.empty(message);
           this.removeChild(message);
-          message.removeClass('has-success');
-          message.removeClass('has-error');
+          this.removeClass(message, 'has-success');
+          this.removeClass(message, 'has-error');
         }
       }, true);
       this.on('error', () => {
         this.loading = false;
         this.hasError = true;
         this.empty(message);
-        message.removeClass('has-success');
-        message.addClass('has-error');
+        this.removeClass(message, 'has-success');
+        this.addClass(message, 'has-error');
         message.appendChild(this.buttonMessage(this.errorMessage('error')));
         this.append(message);
       }, true);
