@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [UNRELEASED]
+### Added
+ - Font Awesome fonts.
+ - Button left/right icons.
+
 ## 2.32.2
 ### Fixed
  - Fixed auto-focus issues with text area with wysiwyg.
