@@ -2432,6 +2432,10 @@ dialog.fixed {
   padding-right: 10px;
 }
 
+.has-feedback .form-control[type=hidden] {
+  padding-right: 0px;
+}
+
 .has-error.bg-danger {
   padding: 4px;
 }
