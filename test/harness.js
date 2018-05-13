@@ -4,6 +4,10 @@ import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
 import i18Defaults from '../src/i18n';
 import WebformBuilder from "../src/WebformBuilder";
+import AllComponents from '../src/components/index';
+import Components from '../src/components/Components';
+Components.setComponents(AllComponents);
+
 let formBuilderElement = null;
 let formBuilder = null;
 const Harness = {
@@ -191,6 +195,7 @@ const Harness = {
         error.component = form.getComponent(error.component).component;
         assert.deepEqual(err[index], error);
       });
+      form.off('error');
       done();
     });
     this.testSetGet(form, submission);

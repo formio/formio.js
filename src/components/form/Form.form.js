@@ -1,4 +1,4 @@
-import nestedComponentForm from '../NestedComponent.form';
+import nestedComponentForm from '../nested/NestedComponent.form';
 /* eslint-disable max-len */
 export default function(...extend) {
   return nestedComponentForm([

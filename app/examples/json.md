@@ -24,14 +24,20 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'firstName',
       label: 'First Name',
       placeholder: 'Enter your first name.',
-      input: true
+      input: true,
+      validate: {
+        required: true
+      }
     },
     {
       type: 'textfield',
       key: 'lastName',
       label: 'Last Name',
       placeholder: 'Enter your last name',
-      input: true
+      input: true,
+      validate: {
+        required: true
+      }
     },
     {
       type: 'phoneNumber',
@@ -122,7 +128,10 @@ Formio.createForm(document.getElementById('formio'), {
       format: 'yyyy-MM-dd hh:mm a"', 
       input: true, 
       tooltip: 'Enter date the item is <strong>due</strong>', 
-      description: 'Enter <strong>Due Date</strong>'
+      description: 'Enter <strong>Due Date</strong>',
+      validate: {
+        required: true
+      }
     },
     {
       type: 'day',
@@ -153,6 +162,12 @@ Formio.createForm(document.getElementById('formio'), {
       action: 'submit',
       label: 'Submit',
       theme: 'primary'
+    },
+    {
+      type: 'button',
+      action: 'reset',
+      label: 'Reset Form',
+      theme: 'success'
     }
   ]
 });
@@ -171,14 +186,20 @@ Formio.createForm(document.getElementById('formio'), {
       key: 'firstName',
       label: 'First Name',
       placeholder: 'Enter your first name.',
-      input: true
+      input: true,
+      validate: {
+        required: true
+      }
     },
     {
       type: 'textfield',
       key: 'lastName',
       label: 'Last Name',
       placeholder: 'Enter your last name',
-      input: true
+      input: true,
+      validate: {
+        required: true
+      }
     },
     {
       type: 'phoneNumber',
@@ -269,7 +290,10 @@ Formio.createForm(document.getElementById('formio'), {
       format: 'yyyy-MM-dd hh:mm a"', 
       input: true, 
       tooltip: 'Enter date the item is <strong>due</strong>', 
-      description: 'Enter <strong>Due Date</strong>'
+      description: 'Enter <strong>Due Date</strong>',
+      validate: {
+        required: true
+      }
     },
     {
       type: 'day',
@@ -300,7 +324,13 @@ Formio.createForm(document.getElementById('formio'), {
       action: 'submit',
       label: 'Submit',
       theme: 'primary'
-    }
+    },
+     {
+       type: 'button',
+       action: 'reset',
+       label: 'Reset Form',
+       theme: 'success'
+     }
   ]
 }).then(function(form) {
   form.on('change', function(changed) {

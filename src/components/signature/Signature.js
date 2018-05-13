@@ -40,6 +40,10 @@ export default class SignatureComponent extends BaseComponent {
     }
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   get defaultSchema() {
     return SignatureComponent.schema();
   }
@@ -124,7 +128,7 @@ export default class SignatureComponent extends BaseComponent {
     this.input = this.createInput(this.element);
     this.padBody = this.ce('div', {
       class: 'signature-pad-body',
-      style: (`width: ${this.component.width};height: ${this.component.height}`),
+      style: (`width: ${this.component.width};height: ${this.component.height};padding:0;margin:0;`),
       tabindex: this.component.tabindex || 0
     });
 
@@ -142,6 +146,13 @@ export default class SignatureComponent extends BaseComponent {
       height: this.component.height
     });
     this.padBody.appendChild(this.canvas);
+
+    // Add an asterisk if required.
+    if (_.get(this.component, 'validate.required', false)) {
+      this.padBody.appendChild(this.ce('span', {
+        class: 'form-control-feedback field-required-inline text-danger'
+      }, this.getIcon('asterisk')));
+    }
 
     this.signatureImage = this.ce('img', {
       style: ('width: 100%;display: none;')
@@ -177,9 +188,14 @@ export default class SignatureComponent extends BaseComponent {
     });
 
     // Ensure the signature is always the size of its container.
+    this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
     setTimeout(function checkWidth() {
-      this.checkSize();
-      setTimeout(checkWidth.bind(this), 200);
+      if (this.padBody.offsetWidth) {
+        this.checkSize();
+      }
+      else {
+        setTimeout(checkWidth.bind(this), 200);
+      }
     }.bind(this), 200);
 
     // Restore values.

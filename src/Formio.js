@@ -1058,6 +1058,6 @@ Formio.events = new EventEmitter({
   maxListeners: 0
 });
 
-if (typeof global === 'object') {
+if (typeof global === 'object' && !global.Formio) {
   global.Formio = Formio;
 }

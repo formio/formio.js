@@ -1,4 +1,4 @@
-import NestedComponent from '../NestedComponent';
+import NestedComponent from '../nested/NestedComponent';
 export default class ColumnComponent extends NestedComponent {
   constructor(component, options, data) {
     super(component, options, data);

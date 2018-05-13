@@ -67,7 +67,7 @@ const build = (input, output) => {
 gulp.task('scripts-formio', build('Formio.js', 'formio.js'));
 gulp.task('scripts-utils', build('utils/utils.js', 'formio.utils.js'));
 gulp.task('scripts-full', build('index.js', 'formio.full.js'));
-gulp.task('scripts-form', build('Form.js', 'formio.form.js'));
+gulp.task('scripts-form', build('formio.form.js', 'formio.form.js'));
 gulp.task('scripts-embed', build('formio.embed.js', 'formio.embed.js'));
 gulp.task('scripts-contrib', build('contrib/index.js', 'formio.contrib.js'));
 

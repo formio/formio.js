@@ -8,13 +8,14 @@ import EventEmitter from 'eventemitter2';
 import i18next from 'i18next';
 import Formio from './Formio';
 import Promise from 'native-promise-only';
-import NestedComponent from './components/NestedComponent';
+import Components from './components/Components';
+import NestedComponent from './components/nested/NestedComponent';
 
 // Initialize the available forms.
 Formio.forms = {};
 
 // Allow people to register components.
-Formio.registerComponent = (type, component) => (NestedComponent.customComponents[type] = component);
+Formio.registerComponent = Components.setComponent;
 
 const getOptions = function(options) {
   options = _.defaults(options, {
@@ -107,6 +108,13 @@ export default class Webform extends NestedComponent {
      * @type {boolean}
      */
     this.nosubmit = false;
+
+    /**
+     * If the form has tried to be submitted, error or not.
+     *
+     * @type {boolean}
+     */
+    this.submitted = false;
 
     /**
      * The Formio instance for this form.
@@ -749,7 +757,7 @@ export default class Webform extends NestedComponent {
       this.showElement(false);
       this.build();
       this.isBuilt = true;
-      this.on('resetForm', () => this.reset(), true);
+      this.on('resetForm', () => this.resetValue(), true);
       this.on('deleteSubmission', () => this.deleteSubmission(), true);
       this.on('refreshData', () => this.updateValue());
       setTimeout(() => {
@@ -757,6 +765,11 @@ export default class Webform extends NestedComponent {
         this.emit('render');
       }, 1);
     });
+  }
+
+  resetValue() {
+    _.each(this.getComponents(), (comp) => (comp.resetValue()));
+    this.setPristine(true);
   }
 
   /**
@@ -876,6 +889,7 @@ export default class Webform extends NestedComponent {
       }
     }
 
+    this.setPristine(false);
     return this.showErrors(error);
   }
 
@@ -895,26 +909,12 @@ export default class Webform extends NestedComponent {
     this.emit('change', value);
   }
 
-  /**
-   * Resets the submission of a form and restores defaults.
-   *
-   * @example
-   * import Webform from 'formiojs/Webform';
-   * let form = new Webform(document.getElementById('formio'));
-   * form.src = 'https://examples.form.io/example';
-   * form.submission = {data: {
-   *   firstName: 'Joe',
-   *   lastName: 'Smith',
-   *   email: 'joe@example.com'
-   * }};
-   *
-   * // In two seconds, reset the data in the form.
-   * setTimeout(() => form.reset(), 2000);
-   */
-  reset() {
-    // Reset the submission data.
-    this._submission.data = this.data = {};
-    this.setSubmission({data: {}});
+  checkData(data, flags) {
+    const valid = super.checkData(data, flags);
+    if (this.submitted) {
+      this.showErrors();
+    }
+    return valid;
   }
 
   /**
@@ -924,7 +924,7 @@ export default class Webform extends NestedComponent {
     return this.formio.deleteSubmission()
       .then(() => {
         this.emit('submissionDeleted', this.submission);
-        this.reset();
+        this.resetValue();
       });
   }
 
@@ -935,7 +935,7 @@ export default class Webform extends NestedComponent {
    */
   cancel(noconfirm) {
     if (noconfirm || confirm('Are you sure you want to cancel?')) {
-      this.reset();
+      this.resetValue();
       return true;
     }
     else {
@@ -985,6 +985,7 @@ export default class Webform extends NestedComponent {
   }
 
   executeSubmit(options) {
+    this.submitted = true;
     return this.submitForm(options)
       .then(result => this.onSubmit(result.submission, result.saved))
       .catch(err => Promise.reject(this.onSubmissionError(err)));
