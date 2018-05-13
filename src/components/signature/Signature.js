@@ -115,7 +115,6 @@ export default class SignatureComponent extends BaseComponent {
 
   /* eslint-disable max-statements */
   build() {
-
     this.element = this.createElement();
     this.element.component = this;
     let classNames = this.element.getAttribute('class');

@@ -547,7 +547,7 @@ export default class FileComponent extends BaseComponent {
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
-        if (file.storage === "base64") {
+        if (file.storage === 'base64') {
           // this is a workaround to render base64 files in Chrome. Still not working on IE/Edge
           var hiddenElement = document.createElement('a');
           hiddenElement.href = 'data:' + file.type + ';base64,' + encodeURI(file.data);
