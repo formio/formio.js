@@ -238,7 +238,7 @@ export default class Wizard extends Webform {
     this.options.buttonSettings = _.defaults(this.options.buttonSettings, {
       showPrevious: true,
       showNext: true,
-      showCancel: true
+      showCancel: !this.options.readOnly
     });
 
     if (name === 'previous') {
@@ -252,7 +252,7 @@ export default class Wizard extends Webform {
       return this.options.buttonSettings.showCancel;
     }
     if (name === 'submit') {
-      return (nextPage === null) || (this.page === (this.pages.length - 1));
+      return !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
     }
     return true;
   }
