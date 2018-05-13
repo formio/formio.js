@@ -27,7 +27,7 @@ const hiddenData = {
   }
 };
 
-module.exports = {
+export default {
   title: 'Clear on hide Form Test',
   form: {
     "components": [{

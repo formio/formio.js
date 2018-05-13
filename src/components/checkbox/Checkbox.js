@@ -1,12 +1,40 @@
 import _ from 'lodash';
+import BaseComponent from '../base/Base';
 
-import {BaseComponent} from '../base/Base';
-export class CheckBoxComponent extends BaseComponent {
+export default class CheckBoxComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'checkbox',
+      inputType: 'checkbox',
+      label: 'Checkbox',
+      key: 'checkbox',
+      datagridLabel: true,
+      labelPosition: 'right',
+      value: '',
+      name: ''
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Checkbox',
+      group: 'basic',
+      icon: 'fa fa-check-square',
+      documentation: 'http://help.form.io/userguide/#checkbox',
+      weight: 50,
+      schema: CheckBoxComponent.schema()
+    };
+  }
+
+  get defaultSchema() {
+    return CheckBoxComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
-    info.attr.type = this.component.inputType;
+    info.attr.type = this.component.inputType || 'checkbox';
     info.attr.class = 'form-check-input';
     if (this.component.name) {
       info.attr.name = `data[${this.component.name}]`;
@@ -50,6 +78,7 @@ export class CheckBoxComponent extends BaseComponent {
       id: this.id,
       class: className
     });
+    this.element.component = this;
   }
 
   labelOnTheTopOrLeft() {
@@ -124,7 +153,7 @@ export class CheckBoxComponent extends BaseComponent {
     if (this.info.attr.id) {
       this.labelElement.setAttribute('for', this.info.attr.id);
     }
-    if (!this.options.inputsOnly && labelOnTheTopOrOnTheLeft) {
+    if (!this.labelIsHidden() && labelOnTheTopOrOnTheLeft) {
       this.setInputLabelStyle(this.labelElement);
       this.setInputStyle(input);
       this.labelSpan.appendChild(this.text(this.component.label));
@@ -132,7 +161,7 @@ export class CheckBoxComponent extends BaseComponent {
     }
     this.addInput(input, this.labelElement);
 
-    if (!this.options.inputsOnly && !labelOnTheTopOrOnTheLeft) {
+    if (!this.labelIsHidden() && !labelOnTheTopOrOnTheLeft) {
       this.setInputLabelStyle(this.labelElement);
       this.setInputStyle(input);
       this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
@@ -149,30 +178,6 @@ export class CheckBoxComponent extends BaseComponent {
     const input = this.ce(this.info.type, this.info.attr);
     this.errorContainer = container;
     return input;
-  }
-
-  updateValueByName() {
-    const component = this.getRoot().getComponent(this.component.name);
-    if (component) {
-      component.setValue(this.component.value, {changed: true});
-    }
-    else {
-      _.set(this.data, this.component.name, this.component.value);
-    }
-  }
-
-  addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => {
-      // If this input has a "name", then its other input elements are elsewhere on
-      // the form. To get the correct submission object, we need to refresh the whole
-      // data object.
-      if (this.component.name) {
-        this.updateValueByName();
-        this.emit('refreshData');
-      }
-
-      this.updateValue();
-    });
   }
 
   getValueAt(index) {
@@ -205,7 +210,7 @@ export class CheckBoxComponent extends BaseComponent {
 
   get dataValue() {
     if (this.component.name) {
-      return _.get(this.data, this.component.name, this.emptyValue);
+      return _.get(this.data, this.component.name, this.emptyValue) === this.component.value;
     }
 
     return super.dataValue;
@@ -213,7 +218,9 @@ export class CheckBoxComponent extends BaseComponent {
 
   set dataValue(value) {
     if (this.component.name) {
-      _.set(this.data, this.component.name, value);
+      if (value) {
+        _.set(this.data, this.component.name, this.component.value);
+      }
       return value;
     }
 

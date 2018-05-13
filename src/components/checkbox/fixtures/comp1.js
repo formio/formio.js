@@ -17,7 +17,7 @@ export const component = {
   'key': 'checkme',
   'datagridLabel': true,
   'label': 'Check me',
-  'hideLabel': true,
+  'hideLabel': false,
   'tableView': true,
   'inputType': 'checkbox',
   'input': true

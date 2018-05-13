@@ -2,8 +2,67 @@ import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
-import i18n from '../src/i18n';
-export const Harness = {
+import i18Defaults from '../src/i18n';
+import WebformBuilder from "../src/WebformBuilder";
+import AllComponents from '../src/components/index';
+import Components from '../src/components/Components';
+Components.setComponents(AllComponents);
+
+let formBuilderElement = null;
+let formBuilder = null;
+const Harness = {
+  builderBefore: function(done) {
+    formBuilderElement = document.createElement('div');
+    document.body.appendChild(formBuilderElement);
+    formBuilder = new WebformBuilder(formBuilderElement);
+    formBuilder.form = {components: []};
+    formBuilder.builderReady.then(done);
+  },
+
+  builderAfter: function(done) {
+    formBuilder.destroy();
+    document.body.removeChild(formBuilderElement);
+  },
+
+  buildComponent: function(type) {
+    // Get the builder sidebar component.
+    let builderGroup = null;
+    _.each(formBuilder.groups, (group) => {
+      if (group.components[type]) {
+        builderGroup = group.body;
+        return false;
+      }
+    });
+    let component = document.getElementById(`builder-${type}`).cloneNode(true);
+    formBuilder.element.appendChild(component);
+    formBuilder.onDrop(component, formBuilder.element, builderGroup);
+    return formBuilder;
+  },
+
+  setComponentProperty: function(property, before, after, cb) {
+    let component = _.cloneDeep(formBuilder.editForm.submission);
+    assert.equal(_.get(component.data, property), before);
+    _.set(component.data, property, after);
+    formBuilder.off('updateComponent');
+    formBuilder.on('updateComponent', () => {
+      let preview = formBuilder.componentPreview.innerHTML;
+      assert.equal(_.get(formBuilder.editForm.submission.data, property), after);
+      cb(preview);
+    });
+    formBuilder.editForm.submission = component;
+  },
+
+  testBuilderProperty: function(property, before, after, previewRegEx, cb) {
+    Harness.testVisibility(formBuilder.editForm, `.formio-component-${property}`, true);
+    Harness.setComponentProperty(property, before, after, (preview) => {
+      if (previewRegEx) {
+        assert(preview.match(previewRegEx), `${property} not set correctly`);
+      }
+      Harness.getInputValue(formBuilder.editForm, `data[${property}]`, after);
+      cb();
+    });
+  },
+
   getDate: function() {
     let timestamp = (new Date()).getTime();
     timestamp = parseInt(timestamp / 1000, 10);
@@ -18,7 +77,7 @@ export const Harness = {
       })
     }, options));
     return new Promise((resolve, reject) => {
-      i18next.init(i18n, (err) => {
+      i18next.init(i18Defaults, (err) => {
         if (err) {
           return reject(err);
         }
@@ -113,7 +172,7 @@ export const Harness = {
     return element.dispatchEvent(inputEvent);
   },
   getInputValue: function(component, name, value) {
-    const element = component.element.querySelector('input[name="' + name + '"]');
+    const element = component.element.querySelector('[name="' + name + '"]');
     assert(element, name + ' input not found');
     assert.equal(value, element.value);
   },
@@ -136,6 +195,7 @@ export const Harness = {
         error.component = form.getComponent(error.component).component;
         assert.deepEqual(err[index], error);
       });
+      form.off('error');
       done();
     });
     this.testSetGet(form, submission);
@@ -193,3 +253,4 @@ export const Harness = {
     return form.nextPage();
   }
 };
+export default Harness;

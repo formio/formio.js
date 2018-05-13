@@ -1,17 +1,44 @@
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 import Promise from 'native-promise-only';
-import FormioUtils from '../../utils';
-import Formio from '../../formio';
-import formFactory from '../../formFactory';
+import {isMongoId, eachComponent} from '../../utils/utils';
+import Formio from '../../Formio';
+import Form from '../../Form';
 
-export class FormComponent extends BaseComponent {
+export default class FormComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'form',
+      key: 'form',
+      src: '',
+      reference: true,
+      form: '',
+      path: ''
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Nested Form',
+      icon: 'fa fa-wpforms',
+      group: 'advanced',
+      documentation: 'http://help.form.io/userguide/#form',
+      weight: 110,
+      schema: FormComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.subForm = null;
+    this.formSrc = '';
     this.subFormReady = new Promise((resolve, reject) => {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
+  }
+
+  get defaultSchema() {
+    return FormComponent.schema();
   }
 
   get emptyValue() {
@@ -21,6 +48,7 @@ export class FormComponent extends BaseComponent {
   /**
    * Load the subform.
    */
+  /* eslint-disable max-statements */
   loadSubForm() {
     // Only load the subform if the subform isn't loaded and the conditions apply.
     if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
@@ -40,54 +68,69 @@ export class FormComponent extends BaseComponent {
       this.component.submit = true;
     }
 
+    if (this.component.src) {
+      this.formSrc = this.component.src;
+    }
+
     if (
       !this.component.src &&
       !this.options.formio &&
-      this.component.form
+      (this.component.form || this.component.path)
     ) {
-      this.component.src = Formio.getBaseUrl();
+      this.formSrc = Formio.getBaseUrl();
       if (this.component.project) {
         // Check to see if it is a MongoID.
-        if (FormioUtils.isMongoId(this.component.project)) {
-          this.component.src += '/project';
+        if (isMongoId(this.component.project)) {
+          this.formSrc += '/project';
         }
-        this.component.src += `/${this.component.project}`;
-        srcOptions.project = this.component.src;
+        this.formSrc += `/${this.component.project}`;
+        srcOptions.project = this.formSrc;
       }
-      this.component.src += `/form/${this.component.form}`;
+      if (this.component.form) {
+        this.formSrc += `/form/${this.component.form}`;
+      }
+      else if (this.component.path) {
+        this.formSrc += `/${this.component.path}`;
+      }
     }
 
     // Build the source based on the root src path.
-    if (!this.component.src && this.options.formio) {
+    if (!this.formSrc && this.options.formio) {
       const rootSrc = this.options.formio.formsUrl;
       if (this.component.path) {
         const parts = rootSrc.split('/');
         parts.pop();
-        this.component.src = `${parts.join('/')}/${this.component.path}`;
+        this.formSrc = `${parts.join('/')}/${this.component.path}`;
       }
       if (this.component.form) {
-        this.component.src = `${rootSrc}/${this.component.form}`;
+        this.formSrc = `${rootSrc}/${this.component.form}`;
       }
     }
 
-    (new Formio(this.component.src)).loadForm({params: {live: 1}}).then((formObj) => {
+    (new Formio(this.formSrc)).loadForm({params: {live: 1}}).then((formObj) => {
       // Iterate through every component and hide the submit button.
-      FormioUtils.eachComponent(formObj.components, (component) => {
+      eachComponent(formObj.components, (component) => {
         if ((component.type === 'button') && (component.action === 'submit')) {
           component.hidden = true;
         }
       });
 
-      this.subForm = formFactory(this.element, formObj, srcOptions);
-      this.subForm.on('change', () => this.onChange());
-      this.subForm.url = this.component.src;
-      this.subForm.nosubmit = false;
-      this.restoreValue();
-      this.subFormReadyResolve(this.subForm);
-      return this.subForm;
+      (new Form(this.element, formObj, srcOptions)).render().then((form) => {
+        this.subForm = form;
+        this.subForm.on('change', () => {
+          this.dataValue = this.subForm.getValue();
+          this.onChange();
+        });
+        this.subForm.url = this.formSrc;
+        this.subForm.nosubmit = false;
+        this.restoreValue();
+        this.subFormReadyResolve(this.subForm);
+        return this.subForm;
+      });
     }).catch(err => this.subFormReadyReject(err));
     return this.subFormReady;
   }
+  /* eslint-enable max-statements */
 
   checkValidity(data, dirty) {
     if (this.subForm) {
@@ -107,7 +150,7 @@ export class FormComponent extends BaseComponent {
 
   calculateValue(data, flags) {
     if (this.subForm) {
-      return this.subForm.calculateValue(this.subForm.data, flags);
+      return this.subForm.calculateValue(this.dataValue.data, flags);
     }
 
     return super.calculateValue(data, flags);
@@ -119,7 +162,7 @@ export class FormComponent extends BaseComponent {
   beforeNext() {
     // If we wish to submit the form on next page, then do that here.
     if (this.component.submit) {
-      return this.loadSubForm().then((form) => {
+      return this.loadSubForm().then(() => {
         return this.subForm.submitForm().then(result => {
           this.dataValue = result.submission;
           return this.dataValue;
@@ -151,7 +194,7 @@ export class FormComponent extends BaseComponent {
 
     // This submission has not been submitted yet.
     if (this.component.submit) {
-      return this.loadSubForm().then((form) => {
+      return this.loadSubForm().then(() => {
         return this.subForm.submitForm().then(result => {
           this.subForm.loading = false;
           this.dataValue = this.component.reference ? {
@@ -185,7 +228,9 @@ export class FormComponent extends BaseComponent {
       this.loadSubForm().then((form) => {
         if (submission && submission._id && form.formio && !flags.noload) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
-          form.setSrc(submissionUrl, this.options);
+          form.setUrl(submissionUrl, this.options);
+          form.nosubmit = false;
+          form.loadSubmission();
         }
         else {
           form.setValue(submission, flags);
@@ -196,6 +241,9 @@ export class FormComponent extends BaseComponent {
   }
 
   getValue() {
+    if (this.subForm) {
+      return this.subForm.getValue();
+    }
     return this.dataValue;
   }
 }

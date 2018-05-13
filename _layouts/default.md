@@ -17,10 +17,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>JavaScript Powered Forms and Form.io SDK</title>
   {% if page.template %}
-    <link href="{{ site.baseurl }}/bower_components/bootswatch/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/{{ page.template }}/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   {% if page.template == nil %}
-    <link href="{{ site.baseurl }}/bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   {% endif %}
   <link href="https://unpkg.com/bootstrap-vertical-tabs@1.2.2/bootstrap.vertical-tabs.min.css" rel="stylesheet">
   <link href="{{ site.baseurl }}/dist/formio.full.min.css" rel="stylesheet">
@@ -32,7 +32,7 @@
   <![endif]-->
   <script src="{{ site.baseurl }}/dist/formio.full.js"></script>
   {% if page.contrib %}
-    <script src="{{ site.baseurl }}/dist/formio.contrib.js"></script>
+    <script src="{{ site.baseurl }}/dist/formio.contrib.min.js"></script>
   {% endif %}
 </head>
 <body>
@@ -53,6 +53,7 @@
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         <li {% if page.section == 'home' %}class="active"{% endif %}><a href="{{ site.baseurl }}"><span class="glyphicon glyphicon-home"></span></a></li>
+        <li {% if page.section == 'builder' %}class="active"{% endif %}><a href="app/builder"><span class="glyphicon glyphicon-th-list"></span> Form Builder</a></li>
         <li {% if page.section == 'examples' %}class="active"{% endif %}><a href="app/examples"><span class="glyphicon glyphicon-check"></span> Examples</a></li>
         <li><a target="_blank" href="https://github.com/formio/formio.js/wiki"><span class="glyphicon glyphicon-book"></span> Documentation</a></li>
         <li {% if page.section == 'sdk'%}class="active"{% endif %}><a href="app/sdk"><span class="glyphicon glyphicon-list-alt"></span> SDK</a></li>
@@ -64,7 +65,7 @@
     </div><!--/.nav-collapse -->
   </div>
 </nav>
-<div class="container" style="margin-top: 60px;">
+<div class="{% if page.fluid %}container-fluid{% endif %}{% if page.fluid == nil %}container{% endif %}" style="margin-top: 60px;">
   {{ content }}
 </div>
 <script async defer src="https://buttons.github.io/buttons.js"></script>

@@ -1,11 +1,29 @@
 import maskInput from 'vanilla-text-mask';
 import {createNumberMask} from 'text-mask-addons';
 import _ from 'lodash';
-import {getCurrencyAffixes} from '../../utils';
+import {getCurrencyAffixes} from '../../utils/utils';
+import NumberComponent from '../number/Number';
 
-import {NumberComponent} from '../number/Number';
+export default class CurrencyComponent extends NumberComponent {
+  static schema(...extend) {
+    return NumberComponent.schema({
+      type: 'currency',
+      label: 'Currency',
+      key: 'currency'
+    }, ...extend);
+  }
 
-export class CurrencyComponent extends NumberComponent {
+  static get builderInfo() {
+    return {
+      title: 'Currency',
+      group: 'advanced',
+      icon: 'fa fa-usd',
+      documentation: 'http://help.form.io/userguide/#currency',
+      weight: 70,
+      schema: CurrencyComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     // Currency should default to have a delimiter unless otherwise specified.
     if (component && !component.hasOwnProperty('delimiter')) {
@@ -23,9 +41,19 @@ export class CurrencyComponent extends NumberComponent {
     this.suffix = affixes.suffix;
   }
 
+  get defaultSchema() {
+    return CurrencyComponent.schema();
+  }
+
   parseNumber(value) {
     // Strip out the prefix and suffix before parsing.
-    value = value.replace(this.prefix, '').replace(this.suffix, '');
+    if (this.prefix) {
+      value = value.replace(this.prefix, '');
+    }
+
+    if (this.suffix) {
+      value = value.replace(this.suffix, '');
+    }
 
     return super.parseNumber(value);
   }
@@ -47,7 +75,12 @@ export class CurrencyComponent extends NumberComponent {
 
   clearInput(input) {
     try {
-      input = input.replace(this.prefix, '').replace(this.suffix, '');
+      if (this.prefix) {
+        input = input.replace(this.prefix, '');
+      }
+      if (this.suffix) {
+        input = input.replace(this.suffix, '');
+      }
     }
     catch (err) {
       // If value doesn't have a replace method, continue on as before.

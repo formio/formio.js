@@ -1,25 +1,51 @@
 import _ from 'lodash';
+import NestedComponent from '../nested/NestedComponent';
 
-import {FormioComponents} from '../Components';
+export default class ContainerComponent extends NestedComponent {
+  static schema(...extend) {
+    return NestedComponent.schema({
+      type: 'container',
+      key: 'container',
+      clearOnHide: true,
+      input: true,
+      components: []
+    }, ...extend);
+  }
 
-export class ContainerComponent extends FormioComponents {
+  static get builderInfo() {
+    return {
+      title: 'Container',
+      icon: 'fa fa-folder-open',
+      group: 'data',
+      documentation: 'http://help.form.io/userguide/#container',
+      weight: 10,
+      schema: ContainerComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'container';
   }
 
+  get defaultSchema() {
+    return ContainerComponent.schema();
+  }
+
   build() {
-    this.element = this.ce('div', {
-      class: `formio-container-component ${this.component.customClass}`
-    });
+    this.createElement();
     if (!this.hasValue) {
       this.dataValue = {};
     }
-    this.addComponents(this.element, this.dataValue);
+    this.addComponents(this.getContainer(), this.dataValue);
   }
 
   get emptyValue() {
     return {};
+  }
+
+  hasChanged(before, after) {
+    return !_.isEqual(before, after);
   }
 
   getValue() {
@@ -39,6 +65,7 @@ export class ContainerComponent extends FormioComponents {
     if (this.hasValue && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     _.each(this.components, (component) => {
       if (component.type === 'components') {
@@ -53,5 +80,6 @@ export class ContainerComponent extends FormioComponents {
       }
     });
     this.updateValue(flags);
+    return changed;
   }
 }

@@ -1,6 +1,6 @@
-import {Harness} from "../harness";
+import Harness from "../harness";
 
-module.exports = {
+export default {
   title: "Field Logic Tests",
   form: {
     components: [

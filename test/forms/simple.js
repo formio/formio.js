@@ -1,6 +1,5 @@
-import assert from 'power-assert';
-import { Harness } from '../harness';
-module.exports = {
+import Harness from '../harness';
+export default {
   title: 'Simple Form Test',
 
   /** https://lyozsrwunugzxwe.form.io/basic */

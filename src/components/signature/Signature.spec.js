@@ -1,7 +1,7 @@
 'use strict';
-import {SignatureComponent} from './Signature';
+import SignatureComponent from './Signature';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('Signature Component', () => {
   it('Should build a Signature component', (done) => {
     Harness.testCreate(SignatureComponent, comps.comp1).then((component) => {

@@ -1,9 +1,8 @@
-import Formio from './formio';
-global.Formio = Formio;
-export {default as FormioForm} from './formio.form';
-export {default as FormioWizard} from './formio.wizard';
-export {default as FormioPDF} from './formio.pdf';
-export {default as createForm} from './createForm';
-export {default as formFactory} from './formFactory';
-export {Formio};
-export default Formio;
+import AllComponents from './components/index';
+import Components from './components/Components';
+Components.setComponents(AllComponents);
+export {default as Formio} from './Formio';
+export {default as Form} from './Form';
+export {default as FormBuilder} from './FormBuilder';
+export {default as Utils} from './utils';
+export {Components};

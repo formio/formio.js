@@ -1,13 +1,41 @@
-import {SelectComponent} from '../select/Select';
-import dialogPolyfill from 'dialog-polyfill';
-import FormioForm from '../../formio.form';
-export class ResourceComponent extends SelectComponent {
+import SelectComponent from '../select/Select';
+import Webform from '../../Webform';
+import _ from 'lodash';
+
+export default class ResourceComponent extends SelectComponent {
+  static schema(...extend) {
+    return SelectComponent.schema({
+      type: 'resource',
+      label: 'Resource',
+      key: 'resource',
+      dataSrc: 'resource',
+      resource: '',
+      project: '',
+      template: '<span>{{ item.data }}</span>'
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Resource',
+      group: 'advanced',
+      icon: 'fa fa-files-o',
+      weight: 90,
+      documentation: 'http://help.form.io/userguide/#resource',
+      schema: ResourceComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.component.dataSrc = 'resource';
     this.component.data = {
       resource: this.component.resource
     };
+  }
+
+  get defaultSchema() {
+    return ResourceComponent.schema();
   }
 
   /**
@@ -26,52 +54,15 @@ export class ResourceComponent extends SelectComponent {
 
     this.addEventListener(addButton, 'click', (event) => {
       event.preventDefault();
-
-      // HTML for dialog
-      const template = `${'<div class="row">' +
-                       '<div class="col-sm-12">' +
-                         '<b id="close" class="formio-dialog-close pull-right">X</b>' +
-                       '</div>' +
-                     '</div>' +
-                     '<div class="row">' +
-                       '<div class="col-sm-12">' +
-                         '<div class="panel panel-default">' +
-                           '<div class="panel-heading">' +
-                             '<h3 class="panel-title">'}${this.component.addResourceLabel || 'Add Resource'}</h3>` +
-                           '</div>' +
-                           '<div class="panel-body">' +
-                             '<div id="formio"></div>' +
-                           '</div>' +
-                         '</div>' +
-                       '</div>' +
-                     '</div>';
-
-      this.dialog = this.ce('dialog', {
-        class: 'formio-dialog'
-      });
-      this.dialog.innerHTML = template;
-      addButton.ownerDocument.body.appendChild(this.dialog);
-      dialogPolyfill.registerDialog(this.dialog);
-
-      const self  = this;
-      const close = this.dialog.querySelector('#close');
-      const form  = new FormioForm(this.dialog.querySelector('#formio'));
-
-      close.onclick = function() {
-        self.dialog.close();
-      };
-
+      let dialog = this.createModal(this.component.addResourceLabel || 'Add Resource');
+      let formioForm = this.ce('div');
+      dialog.body.appendChild(formioForm);
+      const form = new Webform(formioForm);
       form.on('submit', (submission) => {
-        self.setValue(submission);
-        self.dialog.close();
+        this.setValue(submission);
+        dialog.close();
       });
-      form.src = `${Formio.getBaseUrl()}/form/${self.component.resource}`;
-
-      this.dialog.onclose = function() {
-        self.removeChildFrom(self.dialog, self.dialog.parentElement);
-      };
-
-      this.dialog.showModal();
+      form.src = _.get(this.root, 'formio.projectUrl', Formio.getBaseUrl()) + '/form/' + this.component.resource;
     });
 
     return addButton;

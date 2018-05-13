@@ -1,10 +1,34 @@
 /* globals google */
 import _ from 'lodash';
 
-import {TextFieldComponent} from '../textfield/TextField';
-import {BaseComponent} from '../base/Base';
+import TextFieldComponent from '../textfield/TextField';
+import BaseComponent from '../base/Base';
+import {evaluate} from '../../utils/utils';
 
-export class AddressComponent extends TextFieldComponent {
+export default class AddressComponent extends TextFieldComponent {
+  static schema(...extend) {
+    return TextFieldComponent.schema({
+      type: 'address',
+      label: 'Address',
+      key: 'address',
+      map: {
+        region: '',
+        key: ''
+      }
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Address Field',
+      group: 'advanced',
+      icon: 'fa fa-home',
+      documentation: 'http://help.form.io/userguide/#address',
+      weight: 30,
+      schema: AddressComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=googleMapsCallback';
@@ -18,6 +42,10 @@ export class AddressComponent extends TextFieldComponent {
 
     // Keep track of the full addresses.
     this.addresses = [];
+  }
+
+  get defaultSchema() {
+    return AddressComponent.schema();
   }
 
   setValueAt(index, value) {
@@ -237,16 +265,14 @@ export class AddressComponent extends TextFieldComponent {
    * @returns {Boolean}
    */
   autoCompleteFilterSuggestion(data) {
-    try {
-      const result = (new Function('data',
-        `var show = true; ${this.component.map.autoCompleteFilter.toString()}; return show;`))(data);
-      return result.toString() === 'true';
-    }
-    catch (e) {
-      console.warn(
-        `An error occurred in a custom autoComplete filter statement for component ${this.component.key}`, e);
+    let result = evaluate(this.component.map.autoCompleteFilter, {
+      show: true,
+      data
+    }, 'show');
+    if (result === null) {
       return true;
     }
+    return result.toString() === 'true';
   }
 
   /**
@@ -319,6 +345,7 @@ export class AddressComponent extends TextFieldComponent {
    * @param input
    *   Input field to listen
    */
+  /* eslint-disable max-depth, max-statements */
   autoCompleteSuggestionBuilder(suggestion, suggestionContainer, input) {
     const item = document.createElement('div');
     item.classList.add('pac-item');
@@ -406,6 +433,7 @@ export class AddressComponent extends TextFieldComponent {
       item.attachEvent('onclick', clickListener);
     }
   }
+  /* eslint-enable max-depth, max-statements */
 
   /**
    * Get detailed information and set it as value

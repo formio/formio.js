@@ -1,7 +1,31 @@
-import {BaseComponent} from '../base/Base';
-import FormioUtils from '../../utils';
+import BaseComponent from '../base/Base';
+import {uniqueName} from '../../utils/utils';
 
-export class FileComponent extends BaseComponent {
+export default class FileComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'file',
+      label: 'Upload',
+      key: 'file',
+      image: false,
+      imageSize: '200',
+      filePattern: '*',
+      fileMinSize: '0KB',
+      fileMaxSize: '1GB'
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'File',
+      group: 'advanced',
+      icon: 'fa fa-file',
+      documentation: 'http://help.form.io/userguide/#file',
+      weight: 100,
+      schema: FileComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.support = {
@@ -10,6 +34,10 @@ export class FileComponent extends BaseComponent {
       formdata: !!window.FormData,
       progress: 'upload' in new XMLHttpRequest
     };
+  }
+
+  get defaultSchema() {
+    return FileComponent.schema();
   }
 
   get emptyValue() {
@@ -300,9 +328,11 @@ export class FileComponent extends BaseComponent {
     }
   }
 
+  /* eslint-disable max-len */
   fileSize(a, b, c, d, e) {
     return `${(b = Math, c = b.log, d = 1024, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2)} ${e ? `${'kMGTPEZY'[--e]}B` : 'Bytes'}`;
   }
+  /* eslint-enable max-len */
 
   createUploadStatus(fileUpload) {
     let container;
@@ -341,6 +371,7 @@ export class FileComponent extends BaseComponent {
     ]);
   }
 
+  /* eslint-disable max-depth */
   globStringToRegex(str) {
     let regexp = '', excludes = [];
     if (str.length > 2 && str[0] === '/' && str[str.length - 1] === '/') {
@@ -377,6 +408,7 @@ export class FileComponent extends BaseComponent {
     }
     return {regexp: regexp, excludes: excludes};
   }
+  /* eslint-enable max-depth */
 
   translateScalars(str) {
     if (typeof str === 'string') {
@@ -441,6 +473,7 @@ export class FileComponent extends BaseComponent {
     if (this.component.storage && files && files.length) {
       // files is not really an array and does not have a forEach method, so fake it.
       Array.prototype.forEach.call(files, file => {
+        const fileName = uniqueName(file.name);
         const fileUpload = {
           originalName: file.name,
           name: fileName,
@@ -468,7 +501,6 @@ export class FileComponent extends BaseComponent {
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
-        const fileName = FormioUtils.uniqueName(file.name);
         const dir = this.interpolate(this.component.dir || '', {data: this.data, row: this.row});
         const fileService = this.fileService;
         if (!fileService) {

@@ -1,8 +1,33 @@
 import _ from 'lodash';
+import BaseComponent from '../base/Base';
 
-import {BaseComponent} from '../base/Base';
+export default class RadioComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'radio',
+      inputType: 'radio',
+      label: 'Radio',
+      key: 'radio',
+      values: [{label: '', value: ''}],
+      fieldSet: false
+    }, ...extend);
+  }
 
-export class RadioComponent extends BaseComponent {
+  static get builderInfo() {
+    return {
+      title: 'Radio',
+      group: 'basic',
+      icon: 'fa fa-dot-circle-o',
+      weight: 80,
+      documentation: 'http://help.form.io/userguide/#radio',
+      schema: RadioComponent.schema()
+    };
+  }
+
+  get defaultSchema() {
+    return RadioComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -33,9 +58,6 @@ export class RadioComponent extends BaseComponent {
 
       this.addShortcut(label, value.shortcut);
 
-      // Create the SPAN around the textNode for better style hooks
-      const labelSpan = this.ce('span');
-
       // Determine the attributes for this input.
       const inputId = `${this.id}${this.row}-${value.value}`;
       this.info.attr.id = inputId;
@@ -48,7 +70,8 @@ export class RadioComponent extends BaseComponent {
         input.setAttribute(key, value);
       });
 
-      if (labelOnTheTopOrOnTheLeft) {
+      const labelSpan = this.ce('span');
+      if (value.label && labelOnTheTopOrOnTheLeft) {
         label.appendChild(labelSpan);
       }
 
@@ -57,8 +80,11 @@ export class RadioComponent extends BaseComponent {
 
       this.addInput(input, label);
 
-      labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
-      if (!labelOnTheTopOrOnTheLeft) {
+      if (value.label) {
+        labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
+      }
+
+      if (value.label && !labelOnTheTopOrOnTheLeft) {
         label.appendChild(labelSpan);
       }
       labelWrapper.appendChild(label);

@@ -1,7 +1,5 @@
-import assert from 'power-assert';
-import _each from 'lodash/each';
-import { Harness } from '../harness';
-module.exports = {
+import Harness from '../harness';
+export default {
   title: 'Conditional Form Test',
   form: {
     components: [

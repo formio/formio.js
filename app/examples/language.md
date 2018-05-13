@@ -12,8 +12,8 @@ is done like the following.
 <link rel="stylesheet" href="https://unpkg.com/formiojs@latest/dist/formio.full.min.css">
 <script src="https://unpkg.com/formiojs@latest/dist/formio.full.min.js"></script>
 <div class="btn-group">
-  <button type="button" class="btn btn-default" onclick="setLanguage('en')">English</button>
   <button type="button" class="btn btn-default" onclick="setLanguage('sp')">Español</button>
+  <button type="button" class="btn btn-default" onclick="setLanguage('en')">English</button>
   <button type="button" class="btn btn-default" onclick="setLanguage('ch')">中文</button>
 </div>
 <div id="formio"></div>
@@ -80,6 +80,7 @@ Formio.createForm(document.getElementById('formio'), {
     }
   ]
 }, {
+  language: 'sp',
   i18n: {
     sp: {
       'First Name': 'Nombre de pila',
@@ -126,8 +127,8 @@ Formio.createForm(document.getElementById('formio'), {
 <h3>Result</h3>
 <div class="well">
 <div class="btn-group">
-  <button type="button" class="btn btn-default" onclick="setLanguage('en')">English</button>
   <button type="button" class="btn btn-default" onclick="setLanguage('sp')">Español</button>
+  <button type="button" class="btn btn-default" onclick="setLanguage('en')">English</button>
   <button type="button" class="btn btn-default" onclick="setLanguage('ch')">中文</button>
 </div>
 <div id="formio" style="margin-top: 20px;"></div>
@@ -189,6 +190,7 @@ Formio.createForm(document.getElementById('formio'), {
     }
   ]
 }, {
+  language: 'sp',
   i18n: {
     sp: {
       'First Name': 'Nombre de pila',

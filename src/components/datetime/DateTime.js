@@ -1,16 +1,60 @@
 import Flatpickr from 'flatpickr';
 import _ from 'lodash';
 
-import {BaseComponent} from '../base/Base';
+import BaseComponent from '../base/Base';
 
 import {
   getDateSetting,
   getLocaleDateFormatInfo,
   convertFormatToFlatpickr,
   convertFormatToMoment,
-} from '../../utils';
+} from '../../utils/utils';
 import moment from 'moment';
-export class DateTimeComponent extends BaseComponent {
+
+export default class DateTimeComponent extends BaseComponent {
+  static schema(...extend) {
+    return BaseComponent.schema({
+      type: 'datetime',
+      label: 'Date / Time',
+      key: 'dateTime',
+      format: 'yyyy-MM-dd HH:mm a',
+      enableDate: true,
+      enableTime: true,
+      defaultDate: '',
+      datepickerMode: 'day',
+      datePicker: {
+        showWeeks: true,
+        startingDay: 0,
+        initDate: '',
+        minMode: 'day',
+        maxMode: 'year',
+        yearRows: 4,
+        yearColumns: 5,
+        minDate: null,
+        maxDate: null
+      },
+      timePicker: {
+        hourStep: 1,
+        minuteStep: 1,
+        showMeridian: true,
+        readonlyInput: false,
+        mousewheel: true,
+        arrowkeys: true
+      }
+    }, ...extend);
+  }
+
+  static get builderInfo() {
+    return {
+      title: 'Date / Time',
+      group: 'advanced',
+      icon: 'fa fa-calendar-plus-o',
+      documentation: 'http://help.form.io/userguide/#datetime',
+      weight: 40,
+      schema: DateTimeComponent.schema()
+    };
+  }
+
   constructor(component, options, data) {
     super(component, options, data);
     this.validators.push('date');
@@ -23,6 +67,10 @@ export class DateTimeComponent extends BaseComponent {
     };
   }
 
+  get defaultSchema() {
+    return DateTimeComponent.schema();
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -33,7 +81,7 @@ export class DateTimeComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    return 0;
+    return '';
   }
 
   /**
@@ -80,7 +128,7 @@ export class DateTimeComponent extends BaseComponent {
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
       minDate: getDateSetting(_.get(this.component, 'datePicker.minDate')),
       maxDate: getDateSetting(_.get(this.component, 'datePicker.maxDate')),
-      onChange: () => this.onChange(),
+      onChange: () => this.onChange({noValidate: true}),
       onClose: () => (this.closedOn = Date.now())
     };
   }

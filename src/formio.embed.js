@@ -1,4 +1,7 @@
-import {Formio} from './formio.full';
+import AllComponents from './components/index';
+import Components from './components/Components';
+Components.setComponents(AllComponents);
+import Form from './Form';
 const query = {};
 const scripts = document.getElementsByTagName('script');
 const thisScript = scripts[ scripts.length - 1 ];
@@ -9,8 +12,8 @@ const queryString = thisScript.src.replace(/^[^?]+\??/,'');
 queryString.replace(/\?/g, '&').split('&').forEach((item) => {
   query[item.split('=')[0]] = item.split('=')[1] && decodeURIComponent(item.split('=')[1]);
 });
-query.styles = query.styles || (`${scriptSrc}/formio.form.min.css`);
-Formio.embedForm(query).then((instance) => {
+query.styles = query.styles || (`${scriptSrc}/formio.full.min.css`);
+Form.embed(query).then((instance) => {
   instance.on('submit', (submission) => {
     let returnUrl = query.return || query.redirect;
 

@@ -212,7 +212,7 @@ describe('getValue', () => {
 
 describe('parseFloat', () => {
   it('should clear input and parse value', () => {
-    expect(utils.parseFloat('12,345,678.90')).to.be.equal(12345678.90);
+    expect(utils.parseFloatExt('12,345,678.90')).to.be.equal(12345678.90);
   });
 });
 

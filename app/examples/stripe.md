@@ -82,9 +82,6 @@ Formio.registerComponent('stripe', StripeComponent);
 ```
 
 ```js
-// Register the contrib component.
-Formio.registerComponent('stripe', Formio.contrib.stripe.stripe);
-
 Formio.createForm(document.getElementById('formio'), {
   components: [
     {
@@ -145,8 +142,6 @@ Formio.createForm(document.getElementById('formio'), {
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-Formio.registerComponent('stripe', Formio.contrib.stripe.stripe);
-
 Formio.createForm(document.getElementById('formio'), {
   components: [
     {

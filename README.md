@@ -16,7 +16,30 @@ To install this SDK into your project, you can use the following command within 
 npm install --save formiojs
 ```
  
-## Simple Example
+## Form Building
+This library has a very powerful JSON form builder, and can be used like the following.
+
+```html
+<html>
+  <head>
+    <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
+    <script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
+    <script type='text/javascript'>
+      window.onload = function() {
+        Formio.builder(document.getElementById('builder'));
+      };
+    </script>
+  </head>
+  <body>
+    <div id='builder'></div>
+  </body>
+</html>
+```
+
+This will create a robust Form builder embedded right within your own application. See [Our Demo Page](https://formio.github.io/formio.js/app/builder) for an example.
+ 
+## Form Rendering
 The following is a simple example on how to render a form within your HTML application.
 
 ```html

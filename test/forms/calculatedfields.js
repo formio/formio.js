@@ -1,6 +1,6 @@
 import assert from 'power-assert';
-import { Harness } from '../harness';
-module.exports = {
+import Harness from '../harness';
+export default {
   title: 'Calculated Fields Test',
   form: {
     components: [

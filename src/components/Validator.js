@@ -1,8 +1,7 @@
 import _ from 'lodash';
+import {boolValue, evaluate, getInputMask, matchInputMask} from '../utils/utils';
 
-import FormioUtils from '../utils';
-
-export const Validator = {
+export default {
   get: _.get,
   each: _.each,
   has: _.has,
@@ -49,12 +48,11 @@ export const Validator = {
 
     const validateCustom = _.get(component, 'component.validate.custom');
     const customErrorMessage = _.get(component, 'component.validate.customMessage');
-     if (result && (customErrorMessage || validateCustom)) { 
-      result = component.t(customErrorMessage || result, { 
-        data: component.data 
+    if (result && (customErrorMessage || validateCustom)) {
+      result = component.t(customErrorMessage || result, {
+        data: component.data
       });
-     }
-
+    }
     return result;
   },
   validators: {
@@ -67,7 +65,7 @@ export const Validator = {
         });
       },
       check(component, setting, value) {
-        if (!FormioUtils.boolValue(setting)) {
+        if (!boolValue(setting)) {
           return true;
         }
         return !component.isEmpty(value);
@@ -149,8 +147,10 @@ export const Validator = {
         });
       },
       check(component, setting, value) {
+        /* eslint-disable max-len */
         // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
         const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        /* eslint-enable max-len */
 
         // Allow emails to be valid if the component is pristine and no value is provided.
         return !value || re.test(value);
@@ -192,16 +192,15 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let valid = true;
-        try {
-          valid = FormioUtils.jsonLogic.apply(setting, {
-            data,
-            row: component.data,
-            _
-          });
-        }
-        catch (err) {
-          valid = err.message;
+        let valid = evaluate(setting, {
+          row: component.data,
+          data,
+          component: component.component,
+          input: value,
+          instance: component
+        });
+        if (valid === null) {
+          return true;
         }
         return valid;
       }
@@ -214,10 +213,21 @@ export const Validator = {
         });
       },
       check(component, setting, value) {
-        if (value && component._inputMask) {
-          return FormioUtils.matchInputMask(value, component._inputMask);
+        let inputMask;
+        if (component.isMultipleMasksField) {
+          const maskName = value ? value.maskName : undefined;
+          const formioInputMask = component.getMaskByName(maskName);
+          if (formioInputMask) {
+            inputMask = getInputMask(formioInputMask);
+          }
+          value = value ? value.value : value;
         }
-
+        else {
+          inputMask = component._inputMask;
+        }
+        if (value && inputMask) {
+          return matchInputMask(value, inputMask);
+        }
         return true;
       }
     },
@@ -233,23 +243,18 @@ export const Validator = {
         if (!setting) {
           return true;
         }
-        let custom = setting;
-
-        custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
-          if ($2.indexOf('data.') === 0) {
-            return _.get(data, $2.replace('data.', ''));
-          }
-          else if ($2.indexOf('row.') === 0) {
-            return _.get(component.data, $2.replace('row.', ''));
-          }
-
-          // Support legacy...
-          return _.get(data, $2);
-        });
-
-        /* jshint evil: true */
-        return (new Function('row', 'data', 'component', 'input',
-          `var valid = true; ${custom}; return valid;`))(component.data, data, component, value);
+        let valid = evaluate(setting, {
+          valid: true,
+          row: component.data,
+          data,
+          component: component.component,
+          input: value,
+          instance: component
+        }, 'valid', true);
+        if (valid === null) {
+          return true;
+        }
+        return valid;
       }
     }
   }

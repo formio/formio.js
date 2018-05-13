@@ -1,7 +1,7 @@
 'use strict';
-import {SelectBoxesComponent} from './SelectBoxes';
+import SelectBoxesComponent from './SelectBoxes';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('SelectBoxes Component', () => {
   it('Should build a SelectBoxes component', (done) => {
     Harness.testCreate(SelectBoxesComponent, comps.comp1).then((component) => {

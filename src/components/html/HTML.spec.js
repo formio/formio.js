@@ -1,7 +1,7 @@
 'use strict';
-import {HTMLComponent} from './HTML';
+import HTMLComponent from './HTML';
 import {components as comps} from './fixtures/index';
-import {Harness} from '../../../test/harness';
+import Harness from '../../../test/harness';
 describe('HTML Component', () => {
   it('Should build an html component', (done) => {
     Harness.testCreate(HTMLComponent, comps.comp1).then((component) => {
