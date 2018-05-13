@@ -123,6 +123,6 @@ export default class StripeCheckoutComponent extends ButtonComponent {
   }
 }
 
-if (typeof global === 'object' && global.Formio) {
+if (typeof global === 'object' && global.Formio && global.Formio.registerComponent) {
   global.Formio.registerComponent('stripeCheckout', StripeCheckoutComponent);
 }

@@ -263,6 +263,6 @@ export default class StripeComponent extends BaseComponent {
   }
 }
 
-if (typeof global === 'object' && global.Formio) {
+if (typeof global === 'object' && global.Formio && global.Formio.registerComponent) {
   global.Formio.registerComponent('stripe', StripeComponent);
 }
