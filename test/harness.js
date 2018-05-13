@@ -195,6 +195,7 @@ const Harness = {
         error.component = form.getComponent(error.component).component;
         assert.deepEqual(err[index], error);
       });
+      form.off('error');
       done();
     });
     this.testSetGet(form, submission);

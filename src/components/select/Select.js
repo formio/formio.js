@@ -326,7 +326,10 @@ export default class SelectComponent extends BaseComponent {
       .then((response) => this.setItems(response))
       .catch((err) => {
         this.loading = false;
-        this.emit('error', err);
+        this.emit('componentError', {
+          component: this.component,
+          message: err.toString()
+        });
         console.warn(`Unable to load resources for ${this.component.key}`);
       });
   }
