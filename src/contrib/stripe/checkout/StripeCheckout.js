@@ -1,9 +1,7 @@
 /* globals StripeCheckout */
 import _ from 'lodash';
-
 import BaseComponent from '../../../components/base/Base';
 import ButtonComponent from '../../../components/button/Button';
-
 export default class StripeCheckoutComponent extends ButtonComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -123,4 +121,8 @@ export default class StripeCheckoutComponent extends ButtonComponent {
       });
     });
   }
+}
+
+if (typeof global === 'object' && global.Formio) {
+  global.Formio.registerComponent('stripeCheckout', StripeCheckoutComponent);
 }
