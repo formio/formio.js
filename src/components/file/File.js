@@ -191,7 +191,13 @@ export default class FileComponent extends BaseComponent {
   }
 
   get fileService() {
-    return this.options.fileService || this.options.formio;
+    if (this.options.fileService) {
+      return this.options.fileService;
+    }
+    if (this.options.formio) {
+      return this.options.formio;
+    }
+    return new Formio();
   }
 
   createImageListItem(fileInfo, index) {
@@ -541,7 +547,17 @@ export default class FileComponent extends BaseComponent {
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
-        window.open(file.url, '_blank');
+        if (file.storage === "base64") {
+          // this is a workaround to render base64 files in Chrome. Still not working on IE/Edge
+          var hiddenElement = document.createElement('a');
+          hiddenElement.href = 'data:' + file.type + ';base64,' + encodeURI(file.data);
+          hiddenElement.target = '_blank';
+          hiddenElement.download = file.originalName;
+          hiddenElement.click();
+        }
+        else {
+          window.open(file.url, '_blank');
+        }
       }
     })
       .catch((response) => {

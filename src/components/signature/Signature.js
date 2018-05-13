@@ -115,9 +115,6 @@ export default class SignatureComponent extends BaseComponent {
 
   /* eslint-disable max-statements */
   build() {
-    if (this.viewOnly) {
-      return this.viewOnlyBuild();
-    }
 
     this.element = this.createElement();
     this.element.component = this;
@@ -201,7 +198,8 @@ export default class SignatureComponent extends BaseComponent {
     // Restore values.
     this.restoreValue();
 
-    if (this.shouldDisable) {
+    // disable the signature pad if the form in ViewOnly mode
+    if (this.shouldDisable || this.viewOnly) {
       this.disabled = true;
     }
 
