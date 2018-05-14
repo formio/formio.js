@@ -4,31 +4,31 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 875,
+        "lineNumber": 895,
         "line": "  /**"
       },
       {
-        "lineNumber": 876,
+        "lineNumber": 896,
         "line": "   * Trigger the change event for this form."
       },
       {
-        "lineNumber": 877,
+        "lineNumber": 897,
         "line": "   *"
       },
       {
-        "lineNumber": 878,
+        "lineNumber": 898,
         "line": "   * @param changed"
       },
       {
-        "lineNumber": 879,
+        "lineNumber": 899,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 880,
+        "lineNumber": 900,
         "line": "   */"
       },
       {
-        "lineNumber": 881,
+        "lineNumber": 901,
         "line": "  onChange(flags, changed) {"
       }
     ],
@@ -46,87 +46,87 @@
     "filePath": "src/Webform.js",
     "lines": [
       {
-        "lineNumber": 986,
+        "lineNumber": 993,
         "line": "  /**"
       },
       {
-        "lineNumber": 987,
+        "lineNumber": 994,
         "line": "   * Submits the form."
       },
       {
-        "lineNumber": 988,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 989,
-        "line": "   * @example"
-      },
-      {
-        "lineNumber": 990,
-        "line": "   * import Webform from 'formiojs/Webform';"
-      },
-      {
-        "lineNumber": 991,
-        "line": "   * let form = new Webform(document.getElementById('formio'));"
-      },
-      {
-        "lineNumber": 992,
-        "line": "   * form.src = 'https://examples.form.io/example';"
-      },
-      {
-        "lineNumber": 993,
-        "line": "   * form.submission = {data: {"
-      },
-      {
-        "lineNumber": 994,
-        "line": "   *   firstName: 'Joe',"
-      },
-      {
         "lineNumber": 995,
-        "line": "   *   lastName: 'Smith',"
+        "line": "   *"
       },
       {
         "lineNumber": 996,
-        "line": "   *   email: 'joe@example.com'"
+        "line": "   * @example"
       },
       {
         "lineNumber": 997,
-        "line": "   * }};"
+        "line": "   * import Webform from 'formiojs/Webform';"
       },
       {
         "lineNumber": 998,
-        "line": "   * form.submit().then((submission) => {"
+        "line": "   * let form = new Webform(document.getElementById('formio'));"
       },
       {
         "lineNumber": 999,
-        "line": "   *   console.log(submission);"
+        "line": "   * form.src = 'https://examples.form.io/example';"
       },
       {
         "lineNumber": 1000,
-        "line": "   * });"
+        "line": "   * form.submission = {data: {"
       },
       {
         "lineNumber": 1001,
-        "line": "   *"
+        "line": "   *   firstName: 'Joe',"
       },
       {
         "lineNumber": 1002,
-        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+        "line": "   *   lastName: 'Smith',"
       },
       {
         "lineNumber": 1003,
-        "line": "   *"
+        "line": "   *   email: 'joe@example.com'"
       },
       {
         "lineNumber": 1004,
-        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+        "line": "   * }};"
       },
       {
         "lineNumber": 1005,
-        "line": "   */"
+        "line": "   * form.submit().then((submission) => {"
       },
       {
         "lineNumber": 1006,
+        "line": "   *   console.log(submission);"
+      },
+      {
+        "lineNumber": 1007,
+        "line": "   * });"
+      },
+      {
+        "lineNumber": 1008,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1009,
+        "line": "   * @param {boolean} before - If this submission occured from the before handlers."
+      },
+      {
+        "lineNumber": 1010,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1011,
+        "line": "   * @returns {Promise} - A promise when the form is done submitting."
+      },
+      {
+        "lineNumber": 1012,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1013,
         "line": "  submit(before, options) {"
       }
     ],
@@ -139,134 +139,31 @@
     ]
   },
   {
-    "name": "NestedComponent#createComponent",
-    "filePath": "src/components/NestedComponent.js",
-    "lines": [
-      {
-        "lineNumber": 121,
-        "line": "  /**"
-      },
-      {
-        "lineNumber": 122,
-        "line": "   * Create a new component and add it to the components array."
-      },
-      {
-        "lineNumber": 123,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 124,
-        "line": "   * @param component"
-      },
-      {
-        "lineNumber": 125,
-        "line": "   * @param data"
-      },
-      {
-        "lineNumber": 126,
-        "line": "   */"
-      },
-      {
-        "lineNumber": 127,
-        "line": "  createComponent(component, options, data, before) {"
-      }
-    ],
-    "codeParams": [
-      "component",
-      "options",
-      "data",
-      "before"
-    ],
-    "docParams": [
-      "component",
-      "data"
-    ]
-  },
-  {
-    "name": "NestedComponent#addComponent",
-    "filePath": "src/components/NestedComponent.js",
-    "lines": [
-      {
-        "lineNumber": 162,
-        "line": "  /**"
-      },
-      {
-        "lineNumber": 163,
-        "line": "   * Add a new component to the components array."
-      },
-      {
-        "lineNumber": 164,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 165,
-        "line": "   * @param {Object} component - The component JSON schema to add."
-      },
-      {
-        "lineNumber": 166,
-        "line": "   * @param {HTMLElement} element - The DOM element to append this child to."
-      },
-      {
-        "lineNumber": 167,
-        "line": "   * @param {Object} data - The submission data object to house the data for this component."
-      },
-      {
-        "lineNumber": 168,
-        "line": "   * @param {HTMLElement} before - A DOM element to insert this element before."
-      },
-      {
-        "lineNumber": 169,
-        "line": "   * @return {BaseComponent} - The created component instance."
-      },
-      {
-        "lineNumber": 170,
-        "line": "   */"
-      },
-      {
-        "lineNumber": 171,
-        "line": "  addComponent(component, element, data, before, noAdd) {"
-      }
-    ],
-    "codeParams": [
-      "component",
-      "element",
-      "data",
-      "before",
-      "noAdd"
-    ],
-    "docParams": [
-      "component",
-      "element",
-      "data",
-      "before"
-    ]
-  },
-  {
     "name": "BaseComponent#off",
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 429,
+        "lineNumber": 431,
         "line": "  /**"
       },
       {
-        "lineNumber": 430,
+        "lineNumber": 432,
         "line": "   * Removes all listeners for a certain event."
       },
       {
-        "lineNumber": 431,
+        "lineNumber": 433,
         "line": "   *"
       },
       {
-        "lineNumber": 432,
+        "lineNumber": 434,
         "line": "   * @param event"
       },
       {
-        "lineNumber": 433,
+        "lineNumber": 435,
         "line": "   */"
       },
       {
-        "lineNumber": 434,
+        "lineNumber": 436,
         "line": "  off(event, cb) {"
       }
     ],
@@ -283,23 +180,23 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1179,
+        "lineNumber": 1184,
         "line": "  /**"
       },
       {
-        "lineNumber": 1180,
+        "lineNumber": 1185,
         "line": "   * Create the HTML element for the tooltip of this component."
       },
       {
-        "lineNumber": 1181,
+        "lineNumber": 1186,
         "line": "   * @param {HTMLElement} container - The containing element that will contain this tooltip."
       },
       {
-        "lineNumber": 1182,
+        "lineNumber": 1187,
         "line": "   */"
       },
       {
-        "lineNumber": 1183,
+        "lineNumber": 1188,
         "line": "  createTooltip(container, component, classes) {"
       }
     ],
@@ -317,27 +214,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1435,
+        "lineNumber": 1440,
         "line": "  /**"
       },
       {
-        "lineNumber": 1436,
+        "lineNumber": 1441,
         "line": "   * Append different types of children."
       },
       {
-        "lineNumber": 1437,
+        "lineNumber": 1442,
         "line": "   *"
       },
       {
-        "lineNumber": 1438,
+        "lineNumber": 1443,
         "line": "   * @param child"
       },
       {
-        "lineNumber": 1439,
+        "lineNumber": 1444,
         "line": "   */"
       },
       {
-        "lineNumber": 1440,
+        "lineNumber": 1445,
         "line": "  appendChild(element, child) {"
       }
     ],
@@ -354,32 +251,12 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1454,
+        "lineNumber": 1459,
         "line": "  /**"
       },
       {
-        "lineNumber": 1455,
-        "line": "   * Alias for document.createElement."
-      },
-      {
-        "lineNumber": 1456,
-        "line": "   *"
-      },
-      {
-        "lineNumber": 1457,
-        "line": "   * @param {string} type - The type of element to create"
-      },
-      {
-        "lineNumber": 1458,
-        "line": "   * @param {Object} attr - The element attributes to add to the created element."
-      },
-      {
-        "lineNumber": 1459,
-        "line": "   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both."
-      },
-      {
         "lineNumber": 1460,
-        "line": "   * @param {Object} events"
+        "line": "   * Alias for document.createElement."
       },
       {
         "lineNumber": 1461,
@@ -387,14 +264,34 @@
       },
       {
         "lineNumber": 1462,
-        "line": "   * @return {HTMLElement} - The created element."
+        "line": "   * @param {string} type - The type of element to create"
       },
       {
         "lineNumber": 1463,
-        "line": "   */"
+        "line": "   * @param {Object} attr - The element attributes to add to the created element."
       },
       {
         "lineNumber": 1464,
+        "line": "   * @param {Various} children - Child elements. Can be a DOM Element, string or array of both."
+      },
+      {
+        "lineNumber": 1465,
+        "line": "   * @param {Object} events"
+      },
+      {
+        "lineNumber": 1466,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 1467,
+        "line": "   * @return {HTMLElement} - The created element."
+      },
+      {
+        "lineNumber": 1468,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 1469,
         "line": "  ce(type, attr, children = null) {"
       }
     ],
@@ -415,35 +312,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 1825,
+        "lineNumber": 1830,
         "line": "  /**"
       },
       {
-        "lineNumber": 1826,
+        "lineNumber": 1831,
         "line": "   * Add a new input to this comonent."
       },
       {
-        "lineNumber": 1827,
+        "lineNumber": 1832,
         "line": "   *"
       },
       {
-        "lineNumber": 1828,
+        "lineNumber": 1833,
         "line": "   * @param input"
       },
       {
-        "lineNumber": 1829,
+        "lineNumber": 1834,
         "line": "   * @param container"
       },
       {
-        "lineNumber": 1830,
+        "lineNumber": 1835,
         "line": "   * @param noSet"
       },
       {
-        "lineNumber": 1831,
+        "lineNumber": 1836,
         "line": "   */"
       },
       {
-        "lineNumber": 1832,
+        "lineNumber": 1837,
         "line": "  addInput(input, container) {"
       }
     ],
@@ -462,27 +359,27 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2060,
+        "lineNumber": 2068,
         "line": "  /**"
       },
       {
-        "lineNumber": 2061,
+        "lineNumber": 2069,
         "line": "   * Update a value of this component."
       },
       {
-        "lineNumber": 2062,
+        "lineNumber": 2070,
         "line": "   *"
       },
       {
-        "lineNumber": 2063,
+        "lineNumber": 2071,
         "line": "   * @param flags"
       },
       {
-        "lineNumber": 2064,
+        "lineNumber": 2072,
         "line": "   */"
       },
       {
-        "lineNumber": 2065,
+        "lineNumber": 2073,
         "line": "  updateValue(flags, value) {"
       }
     ],
@@ -499,35 +396,35 @@
     "filePath": "src/components/base/Base.js",
     "lines": [
       {
-        "lineNumber": 2101,
+        "lineNumber": 2109,
         "line": "  /**"
       },
       {
-        "lineNumber": 2102,
+        "lineNumber": 2110,
         "line": "   * Perform a calculated value operation."
       },
       {
-        "lineNumber": 2103,
+        "lineNumber": 2111,
         "line": "   *"
       },
       {
-        "lineNumber": 2104,
+        "lineNumber": 2112,
         "line": "   * @param data - The global data object."
       },
       {
-        "lineNumber": 2105,
+        "lineNumber": 2113,
         "line": "   *"
       },
       {
-        "lineNumber": 2106,
+        "lineNumber": 2114,
         "line": "   * @return {boolean} - If the value changed during calculation."
       },
       {
-        "lineNumber": 2107,
+        "lineNumber": 2115,
         "line": "   */"
       },
       {
-        "lineNumber": 2108,
+        "lineNumber": 2116,
         "line": "  calculateValue(data, flags) {"
       }
     ],
@@ -537,6 +434,109 @@
     ],
     "docParams": [
       "data"
+    ]
+  },
+  {
+    "name": "NestedComponent#createComponent",
+    "filePath": "src/components/nested/NestedComponent.js",
+    "lines": [
+      {
+        "lineNumber": 122,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 123,
+        "line": "   * Create a new component and add it to the components array."
+      },
+      {
+        "lineNumber": 124,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 125,
+        "line": "   * @param component"
+      },
+      {
+        "lineNumber": 126,
+        "line": "   * @param data"
+      },
+      {
+        "lineNumber": 127,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 128,
+        "line": "  createComponent(component, options, data, before) {"
+      }
+    ],
+    "codeParams": [
+      "component",
+      "options",
+      "data",
+      "before"
+    ],
+    "docParams": [
+      "component",
+      "data"
+    ]
+  },
+  {
+    "name": "NestedComponent#addComponent",
+    "filePath": "src/components/nested/NestedComponent.js",
+    "lines": [
+      {
+        "lineNumber": 159,
+        "line": "  /**"
+      },
+      {
+        "lineNumber": 160,
+        "line": "   * Add a new component to the components array."
+      },
+      {
+        "lineNumber": 161,
+        "line": "   *"
+      },
+      {
+        "lineNumber": 162,
+        "line": "   * @param {Object} component - The component JSON schema to add."
+      },
+      {
+        "lineNumber": 163,
+        "line": "   * @param {HTMLElement} element - The DOM element to append this child to."
+      },
+      {
+        "lineNumber": 164,
+        "line": "   * @param {Object} data - The submission data object to house the data for this component."
+      },
+      {
+        "lineNumber": 165,
+        "line": "   * @param {HTMLElement} before - A DOM element to insert this element before."
+      },
+      {
+        "lineNumber": 166,
+        "line": "   * @return {BaseComponent} - The created component instance."
+      },
+      {
+        "lineNumber": 167,
+        "line": "   */"
+      },
+      {
+        "lineNumber": 168,
+        "line": "  addComponent(component, element, data, before, noAdd) {"
+      }
+    ],
+    "codeParams": [
+      "component",
+      "element",
+      "data",
+      "before",
+      "noAdd"
+    ],
+    "docParams": [
+      "component",
+      "element",
+      "data",
+      "before"
     ]
   },
   {
