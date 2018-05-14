@@ -1,6 +1,7 @@
 import BaseComponent from '../base/Base';
 import {uniqueName} from '../../utils/utils';
 import download from 'downloadjs';
+import Formio from '../../Formio';
 
 export default class FileComponent extends BaseComponent {
   static schema(...extend) {

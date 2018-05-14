@@ -124,7 +124,7 @@ export default class DataGridComponent extends NestedComponent {
     this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex)));
 
     // Create the header (must happen after build rows to get correct column length)
-    let header = this.createHeader();
+    const header = this.createHeader();
     if (header) {
       this.tableElement.appendChild(header);
     }
