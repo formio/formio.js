@@ -688,6 +688,9 @@ export default class BaseComponent {
     if (this.component.key) {
       className += `formio-component-${this.component.key} `;
     }
+    if (this.component.disabled) {
+      className += 'formio-disabled-input ';
+    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -1822,7 +1825,7 @@ export default class BaseComponent {
    * @param input
    */
   addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => this.updateValue({changed: true}));
+    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
   }
 
   /**
@@ -1882,9 +1885,10 @@ export default class BaseComponent {
         const txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
         this.quill.addContainer('ql-custom').appendChild(txtArea);
-        const qlSource = document.querySelector('.ql-source');
+        const qlSource = element.parentNode.querySelector('.ql-source');
         if (qlSource) {
-          qlSource.addEventListener('click', () => {
+          this.addEventListener(qlSource, 'click', (event) => {
+            event.preventDefault();
             if (txtArea.style.display === 'inherit') {
               this.quill.setContents(this.quill.clipboard.convert(txtArea.value));
             }
@@ -1892,6 +1896,9 @@ export default class BaseComponent {
           });
         }
         /** END CODEBLOCK **/
+
+        // Make sure to select cursor when they click on the element.
+        this.addEventListener(element, 'click', () => this.quill.focus());
 
         // Allows users to skip toolbar items when tabbing though form
         const elm = document.querySelectorAll('.ql-formats > button');
@@ -2044,7 +2051,6 @@ export default class BaseComponent {
    * @param changed
    */
   updateOnChange(flags, changed) {
-    delete flags.changed;
     if (!flags.noUpdateEvent && changed) {
       this.triggerChange(flags);
       return true;
@@ -2064,7 +2070,7 @@ export default class BaseComponent {
 
     flags = flags || {};
     const newValue = value || this.getValue(flags);
-    const changed = flags.changed || this.hasChanged(newValue, this.dataValue);
+    const changed = this.hasChanged(newValue, this.dataValue);
     this.dataValue = newValue;
     if (this.viewOnly) {
       this.updateViewOnlyValue(newValue);
@@ -2220,11 +2226,6 @@ export default class BaseComponent {
       this.errorElement.innerHTML = '';
       this.removeChildFrom(this.errorElement, this.errorContainer);
     }
-    this.removeClass(this.element, 'has-error');
-    this.inputs.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
-    if (this.options.highlightErrors) {
-      this.removeClass(this.element, 'alert alert-danger');
-    }
     if (message) {
       this.error = {
         component: this.component,
@@ -2235,6 +2236,11 @@ export default class BaseComponent {
       this.addInputError(message, dirty);
     }
     else {
+      this.inputs.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      if (this.options.highlightErrors) {
+        this.removeClass(this.element, 'alert alert-danger');
+      }
+      this.removeClass(this.element, 'has-error');
       this.error = null;
     }
     _.each(this.inputs, (input) => {
@@ -2299,6 +2305,14 @@ export default class BaseComponent {
       }
     }
     return this.updateValue(flags);
+  }
+
+  /**
+   * Resets the value of this component.
+   */
+  resetValue() {
+    this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
+    _.unset(this.data, this.component.key);
   }
 
   /**

@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 487,
+  "end": 486,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 487,
+    "end": 486,
     "loc": {
       "start": {
         "line": 1,
@@ -70,9 +70,9 @@
                   "line": 1,
                   "column": 19
                 },
-                "identifierName": "BaseEditForm"
+                "identifierName": "baseEditForm"
               },
-              "name": "BaseEditForm"
+              "name": "baseEditForm"
             }
           }
         ],
@@ -219,9 +219,9 @@
                         "line": 3,
                         "column": 21
                       },
-                      "identifierName": "BaseEditForm"
+                      "identifierName": "baseEditForm"
                     },
-                    "name": "BaseEditForm"
+                    "name": "baseEditForm"
                   },
                   "arguments": [
                     {
@@ -914,21 +914,6 @@
           "leadingComments": [],
           "trailingComments": []
         }
-      },
-      {
-        "type": "EmptyStatement",
-        "start": 485,
-        "end": 486,
-        "loc": {
-          "start": {
-            "line": 21,
-            "column": 1
-          },
-          "end": {
-            "line": 21,
-            "column": 2
-          }
-        }
       }
     ],
     "directives": []
@@ -975,7 +960,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "BaseEditForm",
+      "value": "baseEditForm",
       "start": 7,
       "end": 19,
       "loc": {
@@ -1318,7 +1303,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "BaseEditForm",
+      "value": "baseEditForm",
       "start": 92,
       "end": 104,
       "loc": {
@@ -2794,32 +2779,6 @@
     },
     {
       "type": {
-        "label": ";",
-        "beforeExpr": true,
-        "startsExpr": false,
-        "rightAssociative": false,
-        "isLoop": false,
-        "isAssign": false,
-        "prefix": false,
-        "postfix": false,
-        "binop": null,
-        "updateContext": null
-      },
-      "start": 485,
-      "end": 486,
-      "loc": {
-        "start": {
-          "line": 21,
-          "column": 1
-        },
-        "end": {
-          "line": 21,
-          "column": 2
-        }
-      }
-    },
-    {
-      "type": {
         "label": "eof",
         "beforeExpr": false,
         "startsExpr": false,
@@ -2831,8 +2790,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 487,
-      "end": 487,
+      "start": 486,
+      "end": 486,
       "loc": {
         "start": {
           "line": 22,

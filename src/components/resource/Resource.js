@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import SelectComponent from '../select/Select';
 import Webform from '../../Webform';
 import Formio from '../../Formio';
@@ -62,7 +64,7 @@ export default class ResourceComponent extends SelectComponent {
         this.setValue(submission);
         dialog.close();
       });
-      form.src = `${Formio.getBaseUrl()}/form/${this.component.resource}`;
+      form.src = `${_.get(this.root, 'formio.projectUrl', Formio.getBaseUrl())}/form/${this.component.resource}`;
     });
 
     return addButton;

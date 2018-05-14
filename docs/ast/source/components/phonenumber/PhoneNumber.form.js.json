@@ -8,8 +8,8 @@
       "column": 0
     },
     "end": {
-      "line": 4,
-      "column": 2
+      "line": 5,
+      "column": 0
     }
   },
   "program": {
@@ -22,8 +22,8 @@
         "column": 0
       },
       "end": {
-        "line": 4,
-        "column": 2
+        "line": 5,
+        "column": 0
       }
     },
     "sourceType": "module",
@@ -70,9 +70,9 @@
                   "line": 1,
                   "column": 24
                 },
-                "identifierName": "TextFieldEditForm"
+                "identifierName": "textFieldEditForm"
               },
-              "name": "TextFieldEditForm"
+              "name": "textFieldEditForm"
             }
           }
         ],
@@ -219,9 +219,9 @@
                         "line": 3,
                         "column": 26
                       },
-                      "identifierName": "TextFieldEditForm"
+                      "identifierName": "textFieldEditForm"
                     },
-                    "name": "TextFieldEditForm"
+                    "name": "textFieldEditForm"
                   },
                   "arguments": [
                     {
@@ -281,21 +281,6 @@
           "leadingComments": [],
           "trailingComments": []
         }
-      },
-      {
-        "type": "EmptyStatement",
-        "start": 142,
-        "end": 143,
-        "loc": {
-          "start": {
-            "line": 4,
-            "column": 1
-          },
-          "end": {
-            "line": 4,
-            "column": 2
-          }
-        }
       }
     ],
     "directives": []
@@ -342,7 +327,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "TextFieldEditForm",
+      "value": "textFieldEditForm",
       "start": 7,
       "end": 24,
       "loc": {
@@ -685,7 +670,7 @@
         "postfix": false,
         "binop": null
       },
-      "value": "TextFieldEditForm",
+      "value": "textFieldEditForm",
       "start": 107,
       "end": 124,
       "loc": {
@@ -932,32 +917,6 @@
     },
     {
       "type": {
-        "label": ";",
-        "beforeExpr": true,
-        "startsExpr": false,
-        "rightAssociative": false,
-        "isLoop": false,
-        "isAssign": false,
-        "prefix": false,
-        "postfix": false,
-        "binop": null,
-        "updateContext": null
-      },
-      "start": 142,
-      "end": 143,
-      "loc": {
-        "start": {
-          "line": 4,
-          "column": 1
-        },
-        "end": {
-          "line": 4,
-          "column": 2
-        }
-      }
-    },
-    {
-      "type": {
         "label": "eof",
         "beforeExpr": false,
         "startsExpr": false,
@@ -973,12 +932,12 @@
       "end": 143,
       "loc": {
         "start": {
-          "line": 4,
-          "column": 2
+          "line": 5,
+          "column": 0
         },
         "end": {
-          "line": 4,
-          "column": 2
+          "line": 5,
+          "column": 0
         }
       }
     }

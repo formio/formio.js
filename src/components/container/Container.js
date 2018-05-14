@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import NestedComponent from '../NestedComponent';
+import NestedComponent from '../nested/NestedComponent';
 
 export default class ContainerComponent extends NestedComponent {
   static schema(...extend) {
@@ -44,6 +44,10 @@ export default class ContainerComponent extends NestedComponent {
     return {};
   }
 
+  hasChanged(before, after) {
+    return !_.isEqual(before, after);
+  }
+
   getValue() {
     if (this.viewOnly) {
       return this.dataValue;
@@ -61,6 +65,7 @@ export default class ContainerComponent extends NestedComponent {
     if (this.hasValue && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     _.each(this.components, (component) => {
       if (component.type === 'components') {
@@ -75,5 +80,6 @@ export default class ContainerComponent extends NestedComponent {
       }
     });
     this.updateValue(flags);
+    return changed;
   }
 }

@@ -1,11 +1,13 @@
-import Formio from '../Formio';
 import StripeComponent from './stripe/stripe/Stripe';
 import StripeCheckoutComponent from './stripe/checkout/StripeCheckout';
-Formio.contrib = {
+const Contrib = {
   stripe: {
     stripe: StripeComponent,
     checkout: StripeCheckoutComponent
   }
 };
 
-export default Formio.contrib;
+export default Contrib;
+if (typeof global === 'object' && global.Formio) {
+  global.Formio.contrib = Contrib;
+}

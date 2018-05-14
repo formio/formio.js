@@ -1,4 +1,4 @@
-import NestedComponent from '../NestedComponent';
+import NestedComponent from '../nested/NestedComponent';
 
 export default class PanelComponent extends NestedComponent {
   static schema(...extend) {

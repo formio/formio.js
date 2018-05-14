@@ -1,4 +1,4 @@
-import BuilderUtils from '../../utils/builder';
+import BuilderUtils from '../../../utils/builder';
 
 export default [
   {

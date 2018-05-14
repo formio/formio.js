@@ -1,6 +1,6 @@
 'use strict';
 import NestedComponent from './NestedComponent';
-import Harness from '../../test/harness';
+import Harness from '../../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
 describe('NestedComponent class', () => {

@@ -1,3 +1,6 @@
+import AllComponents from './components/index';
+import Components from './components/Components';
+Components.setComponents(AllComponents);
 import Form from './Form';
 const query = {};
 const scripts = document.getElementsByTagName('script');

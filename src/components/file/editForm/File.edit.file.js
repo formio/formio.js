@@ -1,4 +1,4 @@
-import Formio from '../../Formio';
+import Formio from '../../../Formio';
 import _ from 'lodash';
 
 export default [

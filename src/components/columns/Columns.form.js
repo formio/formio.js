@@ -1,4 +1,4 @@
-import nestedComponentForm from '../NestedComponent.form';
+import nestedComponentForm from '../nested/NestedComponent.form';
 
 import ColumnsEditDisplay from './editForm/Columns.edit.display';
 
