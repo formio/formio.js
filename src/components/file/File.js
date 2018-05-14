@@ -1,5 +1,6 @@
 import BaseComponent from '../base/Base';
 import {uniqueName} from '../../utils/utils';
+import download from 'downloadjs';
 
 export default class FileComponent extends BaseComponent {
   static schema(...extend) {
@@ -548,12 +549,7 @@ export default class FileComponent extends BaseComponent {
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
         if (file.storage === 'base64') {
-          // this is a workaround to render base64 files in Chrome. Still not working on IE/Edge
-          var hiddenElement = document.createElement('a');
-          hiddenElement.href = 'data:' + file.type + ';base64,' + encodeURI(file.data);
-          hiddenElement.target = '_blank';
-          hiddenElement.download = file.originalName;
-          hiddenElement.click();
+         download(file.url, file.originalName, file.type);
         }
         else {
           window.open(file.url, '_blank');
