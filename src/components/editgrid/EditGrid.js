@@ -1,6 +1,6 @@
 import _ from 'lodash';
-
-import NestedComponent from '../NestedComponent';
+import NestedComponent from '../nested/NestedComponent';
+import Components from '../Components';
 import FormioUtils from '../../utils/index';
 
 export default class EditGridComponent extends NestedComponent {
@@ -51,9 +51,6 @@ export default class EditGridComponent extends NestedComponent {
     super(component, options, data);
     this.type = 'datagrid';
     this.editRows = [];
-    if (this.options.components) {
-      this.create = _.bind(this.options.components.create, this.options.components, _, this.options, _, true);
-    }
   }
 
   get defaultSchema() {
@@ -170,7 +167,6 @@ export default class EditGridComponent extends NestedComponent {
       );
     }
     else {
-      const create = this.create;
       wrapper.appendChild(
         this.renderTemplate(rowTemplate,
           {
@@ -178,9 +174,7 @@ export default class EditGridComponent extends NestedComponent {
             row,
             rowIndex,
             components: this.component.components,
-            getView(component, data) {
-              return create(component, data).getView(data);
-            },
+            getView: (component, data) => Components.create(component, this.options, data, true).getView(data),
             util: FormioUtils
           },
           [

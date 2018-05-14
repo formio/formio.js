@@ -65,9 +65,6 @@ Formio.registerComponent('stripeCheckout', StripeCheckoutComponent);
 ```
 
 ```js
-// Register the contrib component.
-Formio.registerComponent('stripeCheckout', Formio.contrib.stripe.checkout);
-
 Formio.createForm(document.getElementById('formio'), {
   components: [
     {
@@ -155,8 +152,6 @@ Formio.createForm(document.getElementById('formio'), {
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-Formio.registerComponent('stripeCheckout', Formio.contrib.stripe.checkout);
-
 Formio.createForm(document.getElementById('formio'), {
   components: [
     {

@@ -25,12 +25,12 @@ describe('Number Component', () => {
   });
   it('Should format numbers for USA locale', (done) => {
     Harness.testCreate(NumberComponent, comps.comp2, {language: 'en-US'}).then((component) => {
-      Harness.testSetInput(component, null, 0, '0');
-      Harness.testSetInput(component, undefined, 0, '0');
-      Harness.testSetInput(component, '', 0, '0');
-      Harness.testSetInput(component, {}, 0, '0');
-      Harness.testSetInput(component, [], 0, '0');
-      Harness.testSetInput(component, [''], 0, '0');
+      Harness.testSetInput(component, null, null, '');
+      Harness.testSetInput(component, undefined, null, '');
+      Harness.testSetInput(component, '', null, '');
+      Harness.testSetInput(component, {}, null, '');
+      Harness.testSetInput(component, [], null, '');
+      Harness.testSetInput(component, [''], null, '');
       Harness.testSetInput(component, ['1'], 1, '1');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
@@ -72,7 +72,7 @@ describe('Number Component', () => {
   });
   it('Should format numbers for British locale', (done) => {
     Harness.testCreate(NumberComponent, comps.comp2, {language: 'en-GB'}).then((component) => {
-      Harness.testSetInput(component, null, 0, '0');
+      Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
       Harness.testSetInput(component, -1, -1, '-1');
@@ -94,7 +94,7 @@ describe('Number Component', () => {
   it('Should format numbers for French locale', (done) => {
     Harness.testCreate(NumberComponent, comps.comp2, {language: 'fr'}).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
-      Harness.testSetInput(component, null, 0, '0');
+      Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
       Harness.testSetInput(component, -1, -1, '-1');
@@ -115,7 +115,7 @@ describe('Number Component', () => {
   });
   it('Should format numbers for German locale', (done) => {
     Harness.testCreate(NumberComponent, comps.comp2, {language: 'de'}).then((component) => {
-      Harness.testSetInput(component, null, 0, '0');
+      Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0');
       Harness.testSetInput(component, 1, 1, '1');
       Harness.testSetInput(component, -1, -1, '-1');

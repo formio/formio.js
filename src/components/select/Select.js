@@ -292,7 +292,10 @@ export default class SelectComponent extends BaseComponent {
       .then((response) => this.setItems(response))
       .catch((err) => {
         this.loading = false;
-        this.emit('error', err);
+        this.emit('componentError', {
+          component: this.component,
+          message: err.toString()
+        });
         console.warn(`Unable to load resources for ${this.component.key}`);
       });
   }
@@ -472,6 +475,11 @@ export default class SelectComponent extends BaseComponent {
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
+      searchFields: ['label'],
+      fuseOptions: {
+        include: 'score',
+        threshold: 0.3
+      },
       itemComparer: _.isEqual
     };
 
@@ -563,9 +571,8 @@ export default class SelectComponent extends BaseComponent {
     return this.itemTemplate(data);
   }
 
-  getValue(flags) {
-    flags = flags || {};
-    if (!flags.changed && this.dataValue) {
+  getValue() {
+    if (this.viewOnly || this.loading || !this.selectOptions.length) {
       return this.dataValue;
     }
     let value = '';
@@ -597,7 +604,7 @@ export default class SelectComponent extends BaseComponent {
     flags = this.getFlags.apply(this, arguments);
     const hasPreviousValue = Array.isArray(this.dataValue) ? this.dataValue.length : this.dataValue;
     const hasValue = Array.isArray(value) ? value.length : value;
-    const changed = flags.changed || this.hasChanged(value, this.dataValue);
+    const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
 
     // Do not set the value if we are loading... that will happen after it is done.

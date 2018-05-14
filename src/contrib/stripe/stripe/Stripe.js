@@ -1,6 +1,5 @@
 /* globals Stripe */
 import _ from 'lodash';
-
 import Validator from '../../../components/Validator';
 import BaseComponent from '../../../components/base/Base';
 
@@ -262,4 +261,8 @@ export default class StripeComponent extends BaseComponent {
       }
     });
   }
+}
+
+if (typeof global === 'object' && global.Formio && global.Formio.registerComponent) {
+  global.Formio.registerComponent('stripe', StripeComponent);
 }

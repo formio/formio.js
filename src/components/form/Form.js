@@ -115,16 +115,18 @@ export default class FormComponent extends BaseComponent {
         }
       });
 
-      this.subForm = (new Form(this.element, formObj, srcOptions)).create();
-      this.subForm.on('change', () => {
-        this.dataValue = this.subForm.getValue();
-        this.onChange();
+      (new Form(this.element, formObj, srcOptions)).render().then((form) => {
+        this.subForm = form;
+        this.subForm.on('change', () => {
+          this.dataValue = this.subForm.getValue();
+          this.onChange();
+        });
+        this.subForm.url = this.formSrc;
+        this.subForm.nosubmit = false;
+        this.restoreValue();
+        this.subFormReadyResolve(this.subForm);
+        return this.subForm;
       });
-      this.subForm.url = this.formSrc;
-      this.subForm.nosubmit = false;
-      this.restoreValue();
-      this.subFormReadyResolve(this.subForm);
-      return this.subForm;
     }).catch(err => this.subFormReadyReject(err));
     return this.subFormReady;
   }

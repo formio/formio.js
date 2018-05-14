@@ -23,6 +23,16 @@ export default class Wizard extends Webform {
     this._nextPage = 0;
   }
 
+  eachPage(cb) {
+    const pageOptions = _.clone(this.options);
+    _.each(this.pages, page => cb(this.createComponent(page, pageOptions)));
+  }
+
+  resetValue() {
+    this.eachPage(page => page.resetValue());
+    this.setPristine(true);
+  }
+
   setPage(num) {
     if (!this.wizard.full && num >= 0 && num < this.pages.length) {
       this.page = num;
@@ -76,9 +86,10 @@ export default class Wizard extends Webform {
 
   beforeSubmit() {
     const ops = [];
-    const pageOptions = _.clone(this.options);
-    pageOptions.beforeSubmit = true;
-    _.each(this.pages, page => ops.push(this.createComponent(page, pageOptions).beforeSubmit()));
+    this.eachPage(page => {
+      page.options.beforeSubmit = true;
+      ops.push(page.beforeSubmit());
+    });
     return Promise.all(ops);
   }
 
@@ -227,7 +238,7 @@ export default class Wizard extends Webform {
     this.options.buttonSettings = _.defaults(this.options.buttonSettings, {
       showPrevious: true,
       showNext: true,
-      showCancel: true
+      showCancel: !this.options.readOnly
     });
 
     if (name === 'previous') {
@@ -241,7 +252,7 @@ export default class Wizard extends Webform {
       return this.options.buttonSettings.showCancel;
     }
     if (name === 'submit') {
-      return (nextPage === null) || (this.page === (this.pages.length - 1));
+      return !this.options.readOnly && ((nextPage === null) || (this.page === (this.pages.length - 1)));
     }
     return true;
   }
