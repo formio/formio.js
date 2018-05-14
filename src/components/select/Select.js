@@ -1,46 +1,8 @@
-import Choices from 'choices.js/assets/scripts/dist/choices.js';
+import Choices from 'choices.js';
 import _ from 'lodash';
 
 import {BaseComponent} from '../base/Base';
 import Formio from '../../formio';
-
-// Duck-punch the setValueByChoice to ensure we compare using _.isEqual.
-Choices.prototype.setValueByChoice = function(value) {
-  if (!this.isTextElement) {
-    const choices = this.store.getChoices();
-    // If only one value has been passed, convert to array
-    const choiceValue = Array.isArray(value) ? value : [value];
-
-    // Loop through each value and
-    choiceValue.forEach((val) => {
-      const foundChoice = choices.find((choice) => {
-        // Check 'value' property exists and the choice isn't already selected
-        return _.isEqual(choice.value, val);
-      });
-
-      if (foundChoice) {
-        if (!foundChoice.selected) {
-          this._addItem(
-            foundChoice.value,
-            foundChoice.label,
-            foundChoice.id,
-            foundChoice.groupId,
-            foundChoice.customProperties,
-            foundChoice.placeholder,
-            foundChoice.keyCode
-          );
-        }
-        else if (!this.config.silent) {
-          console.warn('Attempting to select choice already selected');
-        }
-      }
-      else if (!this.config.silent) {
-        console.warn('Attempting to select choice that does not exist');
-      }
-    });
-  }
-  return this;
-};
 
 export class SelectComponent extends BaseComponent {
   constructor(component, options, data) {
@@ -197,6 +159,10 @@ export class SelectComponent extends BaseComponent {
 
     // Add the value options.
     this.addValueOptions(items);
+
+    if (this.component.widget === 'html5' && !this.component.placeholder) {
+      this.addOption(null, '');
+    }
 
     // Iterate through each of the items.
     _.each(items, (item) => {
@@ -430,25 +396,33 @@ export class SelectComponent extends BaseComponent {
     if (this.component.widget === 'html5') {
       this.triggerUpdate();
       this.addEventListener(input, 'focus', () => this.update());
+      this.addEventListener(input, 'keydown', (event) => {
+        const {keyCode} = event;
+
+        if ([8, 46].includes(keyCode)) {
+          this.setValue(null);
+        }
+      });
       return;
     }
 
     const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
     const placeholderValue = this.t(this.component.placeholder);
     const choicesOptions = {
-      removeItemButton: this.component.removeItemButton || (this.component.multiple || false),
+      removeItemButton: _.get(this.component, 'removeItemButton', true),
       itemSelectText: '',
       classNames: {
         containerOuter: 'choices form-group formio-choices',
         containerInner: 'form-control'
       },
+      addItemText: false,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       searchPlaceholderValue: placeholderValue,
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
-      itemComparer: (choice, item) => _.isEqual(choice, item)
+      itemComparer: _.isEqual
     };
 
     const tabIndex = input.tabIndex;
@@ -597,7 +571,7 @@ export class SelectComponent extends BaseComponent {
         this.choices
           .removeActiveItems()
           .setChoices(this.selectOptions, 'value', 'label', true)
-          .setValueByChoice(Array.isArray(value) ? value : [value]);
+          .setValueByChoice(value);
       }
       else if (hasPreviousValue) {
         this.choices.removeActiveItems();
