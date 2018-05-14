@@ -133,7 +133,7 @@ export default class SelectComponent extends BaseComponent {
 
     // Perform a fast interpretation if we should not use the template.
     if (data && !this.useTemplate) {
-      let itemLabel = data.label || data;
+      const itemLabel = data.label || data;
       return (typeof itemLabel === 'string') ? this.t(itemLabel) : itemLabel;
     }
     if (typeof data === 'string') {
@@ -220,7 +220,7 @@ export default class SelectComponent extends BaseComponent {
 
     // Allow js processing (needed for form builder)
     if (this.component.onSetItems && typeof this.component.onSetItems === 'function') {
-      let newItems = this.component.onSetItems(this, items);
+      const newItems = this.component.onSetItems(this, items);
       if (newItems) {
         items = newItems;
       }

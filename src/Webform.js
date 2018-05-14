@@ -675,7 +675,7 @@ export default class Webform extends NestedComponent {
   }
 
   get schema() {
-    let schema = this._form;
+    const schema = this._form;
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;
@@ -693,7 +693,7 @@ export default class Webform extends NestedComponent {
     if (!submission || !submission.data) {
       submission = {data: {}};
     }
-    let changed = super.setValue(submission.data, flags);
+    const changed = super.setValue(submission.data, flags);
     this.mergeData(this.data, submission.data);
     submission.data = this.data;
     this._submission = submission;

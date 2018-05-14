@@ -11,7 +11,7 @@ import _ from 'lodash';
 export default class WebformBuilder extends Webform {
   constructor(element, options) {
     super(element, options);
-    let self = this;
+    const self = this;
     this.dragContainers = [];
     this.sidebarContainers = [];
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
@@ -44,7 +44,7 @@ export default class WebformBuilder extends Webform {
             tag: 'div',
             className: 'alert alert-info',
             attrs: [
-              {attr: 'id', value: this.id + '-placeholder'},
+              {attr: 'id', value: `${this.id}-placeholder`},
               {attr: 'style', value: 'text-align:center; margin-bottom: 0px;'},
               {attr: 'role', value: 'alert'}
             ],
@@ -63,12 +63,12 @@ export default class WebformBuilder extends Webform {
         // Make sure the component position is relative so the buttons align properly.
         comp.getElement().style.position = 'relative';
 
-        let removeButton = this.ce('div', {
+        const removeButton = this.ce('div', {
           class: 'btn btn-xxs btn-danger component-settings-button component-settings-button-remove'
         }, this.ce('span', {class: 'glyphicon glyphicon-remove'}));
         this.addEventListener(removeButton, 'click', () => self.deleteComponent(comp));
 
-        let editButton = this.ce('div', {
+        const editButton = this.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit'
         }, this.ce('span', {class: 'glyphicon glyphicon-cog'}));
         this.addEventListener(editButton, 'click', () => self.editComponent(comp));
@@ -212,34 +212,34 @@ export default class WebformBuilder extends Webform {
   }
 
   editComponent(component) {
-    let componentCopy = _.cloneDeep(component);
-    let componentClass = Components[componentCopy.component.type];
+    const componentCopy = _.cloneDeep(component);
+    const componentClass = Components[componentCopy.component.type];
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
     }
     this.dialog = this.createModal(componentCopy.name);
-    let formioForm = this.ce('div');
+    const formioForm = this.ce('div');
     this.componentPreview = this.ce('div', {
       class: 'component-preview'
     });
-    let componentInfo = componentClass ? componentClass.builderInfo : {};
+    const componentInfo = componentClass ? componentClass.builderInfo : {};
 
-    let saveButton = this.ce('button', {
+    const saveButton = this.ce('button', {
       class: 'btn btn-success',
       style: 'margin-right: 10px;'
     }, this.t('Save'));
 
-    let cancelButton = this.ce('button', {
+    const cancelButton = this.ce('button', {
       class: 'btn btn-default',
       style: 'margin-right: 10px;'
     }, this.t('Cancel'));
 
-    let removeButton = this.ce('button', {
+    const removeButton = this.ce('button', {
       class: 'btn btn-danger'
     }, this.t('Remove'));
 
-    let componentEdit = this.ce('div', {}, [
+    const componentEdit = this.ce('div', {}, [
       this.ce('div', {
         class: 'row'
       }, [
@@ -247,7 +247,7 @@ export default class WebformBuilder extends Webform {
           class: 'col col-sm-6'
         }, this.ce('p', {
           class: 'lead'
-        }, componentInfo.title + ' Component')),
+        }, `${componentInfo.title} Component`)),
         this.ce('div', {
           class: 'col col-sm-6'
         }, [
@@ -259,7 +259,7 @@ export default class WebformBuilder extends Webform {
             target: '_blank'
           }, this.ce('i', {
             class: 'glyphicon glyphicon-new-window'
-          }, ' ' + this.t('Help'))))
+          }, ` ${this.t('Help')}`)))
         ])
       ]),
       this.ce('div', {
@@ -427,17 +427,17 @@ export default class WebformBuilder extends Webform {
     }
 
     info = _.clone(info);
-    let groupAnchor = this.ce('a', {
+    const groupAnchor = this.ce('a', {
       href: `#group-${info.key}`
     }, this.text(info.title));
 
     // Add a listener when it is clicked.
     this.addEventListener(groupAnchor, 'click', (event) => {
       event.preventDefault();
-      let clickedGroupId = event.target.getAttribute('href').replace('#group-', '');
+      const clickedGroupId = event.target.getAttribute('href').replace('#group-', '');
       if (this.groups[clickedGroupId]) {
-        let clickedGroup = this.groups[clickedGroupId];
-        let wasIn = this.hasClass(clickedGroup.panel, 'in');
+        const clickedGroup = this.groups[clickedGroupId];
+        const wasIn = this.hasClass(clickedGroup.panel, 'in');
         _.each(this.groups, (group, groupId) => {
           this.removeClass(group.panel, 'in');
           if ((groupId === clickedGroupId) && !wasIn) {
@@ -451,7 +451,7 @@ export default class WebformBuilder extends Webform {
         });
 
         // Match the form builder height to the sidebar.
-        this.element.style.minHeight = this.builderSidebar.offsetHeight + 'px';
+        this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
         this.scrollSidebar();
       }
     });
@@ -505,7 +505,7 @@ export default class WebformBuilder extends Webform {
     }
 
     component = _.clone(component);
-    let groupInfo = this.groups[component.group];
+    const groupInfo = this.groups[component.group];
     if (!groupInfo.components) {
       groupInfo.components = {};
     }
@@ -560,8 +560,8 @@ export default class WebformBuilder extends Webform {
     });
 
     // Get all of the components builder info grouped and sorted.
-    let components = {};
-    let allComponents = _.filter(_.map(_.assign(Components, NestedComponent.customComponents), (component, type) => {
+    const components = {};
+    const allComponents = _.filter(_.map(_.assign(Components, NestedComponent.customComponents), (component, type) => {
       if (!component.builderInfo) {
         return null;
       }
@@ -571,7 +571,7 @@ export default class WebformBuilder extends Webform {
     _.map(_.sortBy(allComponents, component => {
       return component.builderInfo.weight;
     }), (component) => {
-      let builderInfo = component.builderInfo;
+      const builderInfo = component.builderInfo;
       builderInfo.key = component.type;
       components[builderInfo.key] = builderInfo;
       this.addBuilderComponentInfo(builderInfo);
@@ -628,14 +628,14 @@ export default class WebformBuilder extends Webform {
   }
 
   onDrop(element, target, source, sibling) {
-    let builderElement = source.querySelector('#' + element.id);
-    let newParent = this.getParentElement(element);
+    const builderElement = source.querySelector(`#${element.id}`);
+    const newParent = this.getParentElement(element);
     if (!newParent || !newParent.component) {
       return console.warn('Could not find parent component.');
     }
 
     // Remove any instances of the placeholder.
-    let placeholder = document.getElementById(newParent.component.id + '-placeholder');
+    const placeholder = document.getElementById(`${newParent.component.id}-placeholder`);
     if (placeholder) {
       placeholder.parentNode.removeChild(placeholder);
     }
@@ -656,13 +656,13 @@ export default class WebformBuilder extends Webform {
       builderElement.builderInfo &&
       builderElement.builderInfo.schema
     ) {
-      let componentSchema = _.clone(builderElement.builderInfo.schema);
+      const componentSchema = _.clone(builderElement.builderInfo.schema);
       if (target.dragEvents && target.dragEvents.onDrop) {
         target.dragEvents.onDrop(element, target, source, sibling, componentSchema);
       }
 
       // Add the new component.
-      let component = this.addComponentTo(newParent.component, componentSchema, newParent, sibling);
+      const component = this.addComponentTo(newParent.component, componentSchema, newParent, sibling);
 
       // Set that this is a new component.
       component.isNew = true;
@@ -680,7 +680,7 @@ export default class WebformBuilder extends Webform {
     }
     // Check to see if this is a moved component.
     else if (element.component) {
-      let componentSchema = element.component.schema;
+      const componentSchema = element.component.schema;
       if (target.dragEvents && target.dragEvents.onDrop) {
         target.dragEvents.onDrop(element, target, source, sibling, componentSchema);
       }
@@ -691,7 +691,7 @@ export default class WebformBuilder extends Webform {
       }
 
       // Add the component to its new parent.
-      let component = newParent.component.addComponent(
+      const component = newParent.component.addComponent(
         componentSchema,
         newParent,
         newParent.component.data,

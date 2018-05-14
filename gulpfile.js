@@ -3,7 +3,7 @@ var gulp = require('gulp');
 var gulpsync = require('gulp-sync')(gulp);
 var plugins = require('gulp-load-plugins')();
 const webpack = require('webpack');
-const webpack_stream = require('webpack-stream');
+const webpackStream = require('webpack-stream');
 plugins.cleanCSS = require('gulp-clean-css');
 
 // Clean lib folder.
@@ -27,11 +27,11 @@ const compileStyles = (styles, file) => {
     .pipe(sassFilter)
     .pipe(plugins.sass().on('error', plugins.sass.logError))
     .pipe(sassFilter.restore)
-    .pipe(plugins.concat(file + '.css'))
+    .pipe(plugins.concat(`${file}.css`))
     .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
     .pipe(plugins.replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
     .pipe(gulp.dest('dist'))
-    .pipe(plugins.rename(file + '.min.css'))
+    .pipe(plugins.rename(`${file}.min.css`))
     .pipe(plugins.cleanCSS({compatibility: 'ie8'}))
     .pipe(gulp.dest('dist'));
 };
@@ -56,8 +56,8 @@ gulp.task('styles-full', ['builder-fonts'], () => compileStyles([
 // Script builds.
 const webpackDev = require('./config/webpack.dev');
 const webpackProd = require('./config/webpack.prod');
-const buildDev = (input, output) => webpack_stream(webpackDev(input, output), webpack).pipe(gulp.dest('dist'));
-const buildProd = (input, output) => webpack_stream(webpackProd(input, output), webpack).pipe(gulp.dest('dist'));
+const buildDev = (input, output) => webpackStream(webpackDev(input, output), webpack).pipe(gulp.dest('dist'));
+const buildProd = (input, output) => webpackStream(webpackProd(input, output), webpack).pipe(gulp.dest('dist'));
 const build = (input, output) => {
   const prodFile = output.replace(/\.js$/, '.min.js');
   gulp.task(output, () => buildDev(input, output));
@@ -72,12 +72,10 @@ gulp.task('scripts-embed', build('formio.embed.js', 'formio.embed.js'));
 gulp.task('scripts-contrib', build('contrib/index.js', 'formio.contrib.js'));
 
 // ESLint
-const eslintConfig = require('eslint-config-formio');
-eslintConfig.parser = 'babel-eslint';
 gulp.task('eslint', () => gulp.src(['./src/**/*.js', '!./src/**/*.spec.js'])
-  .pipe(plugins.eslint(require('eslint-config-formio')))
+  .pipe(plugins.eslint())
   .pipe(plugins.eslint.format())
-  /*.pipe(plugins.eslint.failAfterError())*/
+  .pipe(plugins.eslint.failAfterError())
 );
 
 // Copy the version and dependencies into the distribution package.json file.

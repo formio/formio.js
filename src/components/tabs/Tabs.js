@@ -38,11 +38,11 @@ export default class TabsComponent extends NestedComponent {
   }
 
   get schema() {
-    let schema = super.schema;
+    const schema = super.schema;
     schema.components = [];
-    let allComponents = _.groupBy(this.getComponents(), 'component.tab');
+    const allComponents = _.groupBy(this.getComponents(), 'component.tab');
     _.each(this.component.components, (tab, index) => {
-      let tabSchema = tab;
+      const tabSchema = tab;
       tabSchema.components = [];
       _.each(allComponents[index], (component) => tabSchema.components.push(component.schema));
       schema.components.push(tabSchema);
@@ -60,19 +60,19 @@ export default class TabsComponent extends NestedComponent {
     this.tabs = [];
     this.tabLinks = [];
     _.each(this.component.components, (tab, index) => {
-      let tabPanel = this.ce('div', {
+      const tabPanel = this.ce('div', {
         role: 'tabpanel',
         class: 'tab-pane',
         id: tab.key
       });
-      let tabLink = this.ce('a', {
-        href: '#' + tab.key
+      const tabLink = this.ce('a', {
+        href: `#${tab.key}`
       }, tab.label);
       this.addEventListener(tabLink, 'click', (event) => {
         event.preventDefault();
         this.setTab(index);
       });
-      let tabElement = this.ce('li', {
+      const tabElement = this.ce('li', {
         role: 'presentation'
       }, tabLink);
       this.tabLinks.push(tabElement);
@@ -106,10 +106,10 @@ export default class TabsComponent extends NestedComponent {
     this.currentTab = index;
 
     // Get the current tab.
-    let tab = this.component.components[this.currentTab];
+    const tab = this.component.components[this.currentTab];
     this.empty(this.tabs[this.currentTab]);
     _.remove(this.components, (comp) => comp.component.tab === this.currentTab);
-    let components = this.hook('addComponents', tab.components);
+    const components = this.hook('addComponents', tab.components);
     _.each(components, (component) => this.addComponent(component, this.tabs[this.currentTab]));
     this.checkConditions(this.root ? this.root.data : {});
 

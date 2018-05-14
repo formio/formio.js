@@ -39,7 +39,7 @@ export default class TableComponent extends NestedComponent {
   }
 
   get schema() {
-    let schema = _.omit(super.schema, 'components');
+    const schema = _.omit(super.schema, 'components');
     schema.rows = [];
     this.eachComponent((component) => {
       if (!schema.rows || !schema.rows.length) {

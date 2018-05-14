@@ -25,6 +25,7 @@ const EditFormUtils = {
     return {
       type: 'htmlelement',
       tag: 'div',
+      /* eslint-disable prefer-template */
       content: '<p>The following variables are available in all scripts.</p>' +
       '<table class="table table-bordered table-condensed table-striped">' +
       additional +
@@ -36,6 +37,7 @@ const EditFormUtils = {
       '<tr><th>value</th><td>The current value of the component.</td></tr>' +
       '<tr><th>moment</th><td>The moment.js library for date manipulation.</td></tr>' +
       '</table><br/>'
+      /* eslint-enable prefer-template */
     };
   },
   javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON) {
@@ -82,9 +84,11 @@ const EditFormUtils = {
             {
               type: 'htmlelement',
               tag: 'div',
+              /* eslint-disable prefer-template */
               content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
                 '<p>Full <a href="https://lodash.com/docs" target="_blank">Lodash</a> support is provided using an "_" before each operation, such as <code>{"_sum": {var: "data.a"}}</code></p>' +
                  exampleJSON
+              /* eslint-enable prefer-template */
             },
             {
               type: 'textarea',

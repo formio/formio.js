@@ -45,11 +45,11 @@ export default class WizardBuilder extends WebformBuilder {
 
   addPage() {
     const pageNum = (this.pages.length + 1);
-    let newPage = {
-      title: 'Page ' + pageNum,
-      label: 'Page ' + pageNum,
+    const newPage = {
+      title: `Page ${pageNum}`,
+      label: `Page ${pageNum}`,
       type: 'panel',
-      key: 'page' + pageNum
+      key: `page${pageNum}`
     };
     this.component.components.push(newPage);
     this.addComponent(newPage);
@@ -78,7 +78,7 @@ export default class WizardBuilder extends WebformBuilder {
    * @return {Array}
    */
   get componentComponents() {
-    let components = this.pages;
+    const components = this.pages;
     components.nodrop = true;
     return components;
   }
