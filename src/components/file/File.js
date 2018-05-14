@@ -548,12 +548,7 @@ export default class FileComponent extends BaseComponent {
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
-        if (file.storage === 'base64') {
-         download(file.url, file.originalName, file.type);
-        }
-        else {
-          window.open(file.url, '_blank');
-        }
+        download(file.url, file.originalName, file.type);
       }
     })
       .catch((response) => {
