@@ -751,7 +751,7 @@ export default class Webform extends NestedComponent {
    * Render the form within the HTML element.
    * @returns {Promise.<TResult>}
    */
-  render() {
+  display() {
     return this.onElement.then(() => {
       this.clear();
       this.showElement(false);
@@ -765,6 +765,16 @@ export default class Webform extends NestedComponent {
         this.emit('render');
       }, 1);
     });
+  }
+
+  render() {
+    console.log('render webform');
+    return Promise.resolve();
+  }
+
+  hydrate() {
+    console.log('hydrate webform');
+    return Promise.resolve();
   }
 
   resetValue() {

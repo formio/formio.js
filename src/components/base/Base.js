@@ -558,6 +558,14 @@ export default class BaseComponent {
     }
   }
 
+  render() {
+    console.log('render base');
+  }
+
+  hydrate() {
+    console.log('hydrate base');
+  }
+
   get viewOnly() {
     return this.options.readOnly && this.options.viewAsHtml;
   }

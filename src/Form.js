@@ -18,52 +18,59 @@ export default class Form {
    * @example
    * import Form from 'formiojs/Form';
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
-   * form.render();
+   * form.display();
    */
-  constructor(element, form, options) {
+  constructor(element, source, options) {
     this.instance = null;
     this.element = element;
-    this.form = form;
+    this.form = source;
     this.options = options;
   }
 
-  create() {
-    if (this.form.display === 'wizard') {
-      return new Wizard(this.element, this.options);
-    }
-    else if (this.form.display === 'pdf') {
-      return new PDF(this.element, this.options);
-    }
-    else {
-      return new Webform(this.element, this.options);
+  create(display) {
+    switch (display) {
+      case 'wizard':
+        return new Wizard(this.element, this.options);
+      case 'pdf':
+        return new PDF(this.element, this.options);
+      default:
+        return new Webform(this.element, this.options);
     }
   }
 
-  setForm(formParam) {
-    formParam = formParam || this.form;
-    this.element.innerHTML = '';
-    if (typeof formParam === 'string') {
-      return (new Formio(formParam)).loadForm().then(form => {
-        this.form = form;
-        this.instance = this.create();
-        this.instance.url = formParam;
+  set form(value) {
+    if (typeof value === 'string') {
+      return this.ready = (new Formio(value)).loadForm().then(form => {
+        this.instance = this.create(form.display);
+        this.instance.url = value;
         this.instance.nosubmit = false;
         this.instance.loadSubmission();
-        this.form = this.instance.form = form;
+        this._form = this.instance.form = form;
         return this.instance.ready.then(() => this.instance);
       });
     }
     else {
-      this.form = formParam;
-      this.instance = this.create();
-      this.instance.form = this.form;
-      return this.instance.ready.then(() => this.instance);
+      this.instance = this.create(value.display);
+      this._form = this.instance.form = value;
+      return this.ready = this.instance.ready.then(() => this.instance);
     }
+  }
+
+  get form() {
+    return this._form;
   }
 
   setDisplay(display) {
     this.form.display = display;
-    return this.render();
+    return this.display();
+  }
+
+  empty() {
+    if (this.element) {
+      while (this.element.firstChild) {
+        this.element.removeChild(this.element.firstChild);
+      }
+    }
   }
 
   static embed(embed) {
@@ -76,11 +83,32 @@ export default class Form {
     code += `<div id="${id}" class="${className}"></div>`;
     document.write(code);
     const formElement = document.getElementById(id);
-    return (new Form(formElement, embed.src)).render();
+    return (new Form(formElement, embed.src)).display();
   }
 
-  render(form) {
-    return this.setForm(form);
+  display() {
+    return this.render().then(() =>
+      this.hydrate().then(() =>
+        this.instance
+      )
+    );
+  }
+
+  render() {
+    this.empty();
+    return this.ready.then(() =>
+      this.instance.render().then(() =>
+        this.instance
+      )
+    );
+  }
+
+  hydrate() {
+    return this.ready.then(() =>
+      this.instance.hydrate().then(() =>
+        this.instance
+      )
+    );
   }
 }
 
@@ -97,7 +125,7 @@ Formio.embedForm = (embed) => Form.embed(embed);
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.createForm = (element, form, options) => {
-  return (new Form(element, form, options)).render();
+  return (new Form(element, form, options)).display();
 };
 
 Formio.Form = Form;
