@@ -7,7 +7,7 @@ export default [
     label: 'Property Name',
     tooltip: 'The name of this field in the API endpoint.',
     validate: {
-      pattern: '[A-Za-z0-9\-\.]+',
+      pattern: '[A-Za-z0-9-.]+',
       patternMessage: 'The property name must only contain alpha numeric characters.'
     }
   },

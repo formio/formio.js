@@ -1,3 +1,4 @@
+/* global ace */
 import TextFieldComponent from '../textfield/TextField';
 import BaseComponent from '../base/Base';
 
@@ -68,13 +69,13 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (this.component.editor === 'ace') {
       this.editorReady = BaseComponent.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)
         .then(() => {
-          let mode = this.component.as || 'javascript';
+          const mode = this.component.as || 'javascript';
           this.editor = ace.edit(this.input);
           this.editor.on('change', () => {
             this.updateValue(null, this.getConvertedValue(this.editor.getValue()));
           });
           this.editor.getSession().setTabSize(2);
-          this.editor.getSession().setMode('ace/mode/' + mode);
+          this.editor.getSession().setMode(`ace/mode/${mode}`);
           this.editor.on('input', () => this.acePlaceholder());
           setTimeout(() => this.acePlaceholder(), 100);
           return this.editor;

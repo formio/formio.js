@@ -265,7 +265,7 @@ export default class AddressComponent extends TextFieldComponent {
    * @returns {Boolean}
    */
   autoCompleteFilterSuggestion(data) {
-    let result = evaluate(this.component.map.autoCompleteFilter, {
+    const result = evaluate(this.component.map.autoCompleteFilter, {
       show: true,
       data
     }, 'show');

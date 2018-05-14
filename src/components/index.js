@@ -37,6 +37,7 @@ import WellComponent from './well/Well';
 import LocationComponent from './location/Location';
 import FileComponent from './file/File';
 import TabsComponent from './tabs/Tabs';
+
 export default {
   nested: NestedComponent,
   address: AddressComponent,

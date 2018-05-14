@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import WebformBuilder from './WebformBuilder';
 import {getElementRect} from './utils/utils';
 import PDF from './PDF';
@@ -51,8 +53,8 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   get dropZoneStyles() {
-    let iframeRect = getElementRect(this.pdfForm.element);
-    let iframeHeight = iframeRect ? iframeRect.height || 1000 : 1000;
+    const iframeRect = getElementRect(this.pdfForm.element);
+    const iframeHeight = iframeRect ? iframeRect.height || 1000 : 1000;
     return `position:absolute;width: 100%;height:${iframeHeight}px;`;
   }
 
@@ -72,13 +74,13 @@ export default class PDFBuilder extends WebformBuilder {
 
   activateDropZone() {
     if (this.dropZone) {
-      this.dropZone.setAttribute('style', this.dropZoneStyles + 'display:inherit;');
+      this.dropZone.setAttribute('style', `${this.dropZoneStyles}display:inherit;`);
     }
   }
 
   disableDropZone() {
     if (this.dropZone) {
-      this.dropZone.setAttribute('style', this.dropZoneStyles + 'display:none;');
+      this.dropZone.setAttribute('style', `${this.dropZoneStyles}display:none;`);
     }
   }
 
@@ -124,12 +126,12 @@ export default class PDFBuilder extends WebformBuilder {
 
   dragStop(event) {
     event.preventDefault();
-    let dropData = event.dataTransfer.getData('text/plain');
+    const dropData = event.dataTransfer.getData('text/plain');
     if (!dropData || (typeof dropData !== 'string')) {
       return false;
     }
 
-    let schema = JSON.parse(dropData);
+    const schema = JSON.parse(dropData);
     if (!schema) {
       return false;
     }
@@ -178,7 +180,7 @@ export default class PDFBuilder extends WebformBuilder {
       this.element.noDrop = true;
       this.pdfForm = new PDF(this.element, this.options);
       this.pdfForm.on('iframe-elementUpdate', schema => {
-        let component = this.getComponentById(schema.id);
+        const component = this.getComponentById(schema.id);
         if (component && component.component) {
           component.component.overlay = {
             page: schema.page,
@@ -193,7 +195,7 @@ export default class PDFBuilder extends WebformBuilder {
         return component;
       });
       this.pdfForm.on('iframe-componentUpdate', schema => {
-        let component = this.getComponentById(schema.id);
+        const component = this.getComponentById(schema.id);
         if (component && component.component) {
           component.component.overlay = {
             page: schema.overlay.page,
@@ -207,7 +209,7 @@ export default class PDFBuilder extends WebformBuilder {
         return component;
       });
       this.pdfForm.on('iframe-componentClick', schema => {
-        let component = this.getComponentById(schema.id);
+        const component = this.getComponentById(schema.id);
         if (component) {
           this.editComponent(component);
         }

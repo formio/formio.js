@@ -103,7 +103,7 @@ export default class TextFieldComponent extends BaseComponent {
     if (!this.isMultipleMasksField) {
       return super.setValueAt(index, value);
     }
-    let defaultValue = this.defaultValue;
+    const defaultValue = this.defaultValue;
     if (!value) {
       if (defaultValue) {
         value = defaultValue;
@@ -184,7 +184,7 @@ export default class TextFieldComponent extends BaseComponent {
 
   addTextInputs(textInput, maskInput, container) {
     if (textInput && maskInput && container) {
-      let input = {
+      const input = {
         mask: maskInput,
         text: textInput
       };

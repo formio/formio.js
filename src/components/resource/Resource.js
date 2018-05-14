@@ -1,6 +1,8 @@
+import _ from 'lodash';
+
 import SelectComponent from '../select/Select';
 import Webform from '../../Webform';
-import _ from 'lodash';
+import Formio from '../../Formio';
 
 export default class ResourceComponent extends SelectComponent {
   static schema(...extend) {
@@ -54,15 +56,15 @@ export default class ResourceComponent extends SelectComponent {
 
     this.addEventListener(addButton, 'click', (event) => {
       event.preventDefault();
-      let dialog = this.createModal(this.component.addResourceLabel || 'Add Resource');
-      let formioForm = this.ce('div');
+      const dialog = this.createModal(this.component.addResourceLabel || 'Add Resource');
+      const formioForm = this.ce('div');
       dialog.body.appendChild(formioForm);
       const form = new Webform(formioForm);
       form.on('submit', (submission) => {
         this.setValue(submission);
         dialog.close();
       });
-      form.src = _.get(this.root, 'formio.projectUrl', Formio.getBaseUrl()) + '/form/' + this.component.resource;
+      form.src = `${_.get(this.root, 'formio.projectUrl', Formio.getBaseUrl())}/form/${this.component.resource}`;
     });
 
     return addButton;

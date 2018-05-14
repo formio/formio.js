@@ -486,19 +486,19 @@ export default class FileComponent extends BaseComponent {
         // Check file pattern
         if (this.component.filePattern && !this.validatePattern(file, this.component.filePattern)) {
           fileUpload.status = 'error';
-          fileUpload.message = 'File is the wrong type; it must be ' + this.component.filePattern;
+          fileUpload.message = `File is the wrong type; it must be ${this.component.filePattern}`;
         }
 
         // Check file minimum size
         if (this.component.fileMinSize && !this.validateMinSize(file, this.component.fileMinSize)) {
           fileUpload.status = 'error';
-          fileUpload.message = 'File is too small; it must be at least ' + this.component.fileMinSize;
+          fileUpload.message = `File is too small; it must be at least ${this.component.fileMinSize}`;
         }
 
         // Check file maximum size
         if (this.component.fileMaxSize && !this.validateMaxSize(file, this.component.fileMaxSize)) {
           fileUpload.status = 'error';
-          fileUpload.message = 'File is too big; it must be at most ' + this.component.fileMaxSize;
+          fileUpload.message = `File is too big; it must be at most ${this.component.fileMaxSize}`;
         }
 
         // Get a unique name for this file to keep file collisions from occurring.

@@ -34,6 +34,7 @@ import SelectboxesForm from './selectboxes/SelectBoxes.form';
 import SurveyForm from './survey/Survey.form';
 import WellForm from './well/Well.form';
 import FileForm from './file/File.form';
+
 Components.address.editForm = AddressForm;
 Components.content.editForm = ContentForm;
 Components.container.editForm = ContainerForm;
@@ -69,4 +70,5 @@ Components.selectboxes.editForm = SelectboxesForm;
 Components.survey.editForm = SurveyForm;
 Components.well.editForm = WellForm;
 Components.file.editForm = FileForm;
+
 export default Components;

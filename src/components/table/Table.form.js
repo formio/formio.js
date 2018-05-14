@@ -1,12 +1,12 @@
-import TableEditOptions from './TableEditOptions';
 import nestedComponentForm from '../nested/NestedComponent.form';
+
+import TableEditDisplay from './editForm/Table.edit.display';
 
 export default function(...extend) {
   return nestedComponentForm(...extend, [
     {
-      label: 'Display',
       key: 'display',
-      components: TableEditOptions
+      components: TableEditDisplay
     }
   ]);
 }
