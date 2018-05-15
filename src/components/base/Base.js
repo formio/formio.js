@@ -346,13 +346,13 @@ export default class BaseComponent {
    * @param defaultSchema
    */
   getModifiedSchema(schema, defaultSchema) {
-    let modified = {};
+    const modified = {};
     if (!defaultSchema) {
       return schema;
     }
     _.each(schema, (val, key) => {
       if (_.isObject(val) && defaultSchema.hasOwnProperty(key)) {
-        let subModified = this.getModifiedSchema(val, defaultSchema[key]);
+        const subModified = this.getModifiedSchema(val, defaultSchema[key]);
         if (!_.isEmpty(subModified)) {
           modified[key] = subModified;
         }
@@ -636,17 +636,17 @@ export default class BaseComponent {
   }
 
   createModal() {
-    let self = this;
-    let modalBody = this.ce('div');
-    let modalOverlay = this.ce('div', {
+    const self = this;
+    const modalBody = this.ce('div');
+    const modalOverlay = this.ce('div', {
       class: 'formio-dialog-overlay'
     });
-    let closeDialog = this.ce('button', {
+    const closeDialog = this.ce('button', {
       class: 'formio-dialog-close pull-right btn btn-default btn-xs',
       'aria-label': 'close'
     });
 
-    let dialog = this.ce('div', {
+    const dialog = this.ce('div', {
       class: 'formio-dialog formio-dialog-theme-default component-settings'
     }, [
       modalOverlay,
@@ -1516,8 +1516,8 @@ export default class BaseComponent {
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
    */
   hasClass(element, className) {
-    className = ' ' + className + ' ';
-    return ((' ' + element.className + ' ').replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
+    className = ` ${className} `;
+    return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
   }
 
   /**
@@ -1885,7 +1885,7 @@ export default class BaseComponent {
         const txtArea = document.createElement('textarea');
         txtArea.setAttribute('class', 'quill-source-code');
         this.quill.addContainer('ql-custom').appendChild(txtArea);
-        let qlSource = element.parentNode.querySelector('.ql-source');
+        const qlSource = element.parentNode.querySelector('.ql-source');
         if (qlSource) {
           this.addEventListener(qlSource, 'click', (event) => {
             event.preventDefault();
@@ -1913,14 +1913,6 @@ export default class BaseComponent {
 
         return this.quill;
       });
-  }
-
-  get emptyValue() {
-    return null;
-  }
-
-  get hasValue() {
-    return _.has(this.data, this.component.key);
   }
 
   /**
@@ -2007,7 +1999,7 @@ export default class BaseComponent {
    * @returns {*}
    */
   getValueAt(index) {
-    let input = this.performInputMapping(this.inputs[index]);
+    const input = this.performInputMapping(this.inputs[index]);
     return input ? input.value : undefined;
   }
 
@@ -2269,7 +2261,7 @@ export default class BaseComponent {
     if (value === null || value === undefined) {
       value = this.defaultValue;
     }
-    let input = this.performInputMapping(this.inputs[index]);
+    const input = this.performInputMapping(this.inputs[index]);
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
     }

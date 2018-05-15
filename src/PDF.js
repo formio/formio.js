@@ -126,7 +126,7 @@ export default class PDF extends Webform {
 
     this.iframe = this.ce('iframe', {
       src: this.getSrc(),
-      id: 'iframe-' + this.id,
+      id: `iframe-${this.id}`,
       seamless: true,
       class: 'formio-iframe'
     });

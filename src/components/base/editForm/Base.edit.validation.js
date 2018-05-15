@@ -82,6 +82,7 @@ export default [
       {
         type: 'htmlelement',
         tag: 'div',
+        /* eslint-disable prefer-template */
         content: '<p>Execute custom logic using <a href="http://jsonlogic.com/" target="_blank">JSONLogic</a>.</p>' +
           '<h5>Example:</h5>' +
           '<pre>' + JSON.stringify({
@@ -91,6 +92,7 @@ export default [
               "Your name must be 'Bob'!"
             ]
           }, null, 2) + '</pre>'
+        /* eslint-enable prefer-template */
       },
       {
         type: 'textarea',

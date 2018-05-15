@@ -48,9 +48,9 @@ export default class Wizard extends Webform {
     const form = this.pages[currentPage];
     // Check conditional nextPage
     if (form) {
-      let page = ++currentPage;
+      const page = ++currentPage;
       if (form.nextPage) {
-        let next = evaluate(form.nextPage, {
+        const next = evaluate(form.nextPage, {
           next: page,
           data,
           page,

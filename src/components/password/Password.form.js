@@ -1,18 +1,12 @@
 import textEditForm from '../textfield/TextField.form';
+
+import PasswordEditDisplay from './editForm/Password.edit.display';
+
 export default function(...extend) {
   return textEditForm(...extend, [
     {
       key: 'display',
-      components: [
-        {
-          key: 'inputMask',
-          ignore: true
-        },
-        {
-          key: 'allowMultipleMasks',
-          ignore: true
-        }
-      ]
+      components: PasswordEditDisplay
     }
   ]);
 }

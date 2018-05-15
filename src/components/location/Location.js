@@ -1,3 +1,4 @@
+/* global google */
 import BaseComponent from '../base/Base';
 
 export default class LocationComponent extends BaseComponent {

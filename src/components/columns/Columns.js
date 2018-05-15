@@ -33,7 +33,7 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   get schema() {
-    let schema = _.omit(super.schema, 'components');
+    const schema = _.omit(super.schema, 'components');
     schema.columns = [];
     this.eachComponent((component) => schema.columns.push(component.schema));
     return schema;
@@ -44,7 +44,7 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   addComponents() {
-    let container = this.getContainer();
+    const container = this.getContainer();
     container.noDrop = true;
     _.each(this.component.columns, (column) => {
       column.type = 'column';

@@ -192,7 +192,7 @@ export default {
         if (!setting) {
           return true;
         }
-        let valid = evaluate(setting, {
+        const valid = evaluate(setting, {
           row: component.data,
           data,
           component: component.component,
@@ -243,7 +243,7 @@ export default {
         if (!setting) {
           return true;
         }
-        let valid = evaluate(setting, {
+        const valid = evaluate(setting, {
           valid: true,
           row: component.data,
           data,

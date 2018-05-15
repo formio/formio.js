@@ -124,7 +124,7 @@ export default class DataGridComponent extends NestedComponent {
     this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex)));
 
     // Create the header (must happen after build rows to get correct column length)
-    let header = this.createHeader();
+    const header = this.createHeader();
     if (header) {
       this.tableElement.appendChild(header);
     }
@@ -193,7 +193,7 @@ export default class DataGridComponent extends NestedComponent {
         id: `${this.id}-drag-container`,
         class: 'drag-container'
       }, this.ce('div', {
-        id: this.id + '-placeholder',
+        id: `${this.id}-placeholder`,
         class: 'alert alert-info',
         style: 'text-align:center; margin-bottom: 0px;',
         role: 'alert'
@@ -219,10 +219,10 @@ export default class DataGridComponent extends NestedComponent {
       return;
     }
 
-    let container = this.ce('td');
+    const container = this.ce('td');
     container.noDrop = true;
-    let column = _.clone(col);
-    let options = _.clone(this.options);
+    const column = _.clone(col);
+    const options = _.clone(this.options);
     options.name += `[${colIndex}]`;
     const comp = this.createComponent(_.assign({}, column, {
       label: column.dataGridLabel ? column.label : false,
