@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Possibility to unselect value for Select component.
+### Fixed
+ - Require Decimal behavior for Number and Currency components
 
 ### 3.0.0
 #### Breaking Changes
