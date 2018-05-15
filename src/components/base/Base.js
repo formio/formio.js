@@ -528,42 +528,63 @@ export default class BaseComponent {
    * Builds the component.
    */
   build() {
+    console.log('build base', this.component.key);
     if (this.viewOnly) {
       this.viewOnlyBuild();
     }
     else {
-      this.createElement();
-
-      const labelAtTheBottom = this.component.labelPosition === 'bottom';
-      if (!labelAtTheBottom) {
-        this.createLabel(this.element);
-      }
-      if (!this.createWrapper()) {
-        this.createInput(this.element);
-      }
-      if (labelAtTheBottom) {
-        this.createLabel(this.element);
-      }
-      this.createDescription(this.element);
-
-      // Disable if needed.
-      if (this.shouldDisable) {
-        this.disabled = true;
-      }
-
-      // Restore the value.
-      this.restoreValue();
-
-      this.autofocus();
+      // this.createElement();
+      //
+      // const labelAtTheBottom = this.component.labelPosition === 'bottom';
+      // if (!labelAtTheBottom) {
+      //   this.createLabel(this.element);
+      // }
+      // if (!this.createWrapper()) {
+      //   this.createInput(this.element);
+      // }
+      // if (labelAtTheBottom) {
+      //   this.createLabel(this.element);
+      // }
+      // this.createDescription(this.element);
+      //
+      // // Disable if needed.
+      // if (this.shouldDisable) {
+      //   this.disabled = true;
+      // }
+      //
+      // // Restore the value.
+      // this.restoreValue();
+      //
+      // this.autofocus();
     }
   }
 
-  render() {
-    console.log('render base');
+  insertChild(parent, html, container = '') {
+    // Get next inserted index.
+    const index = [...parent.children].indexOf(parent.lastChild) + 1;
+    parent.insertAdjacentHTML('beforeend', html);
+    // Since it searches innerHTML, the initial div is superfluous.
+    container = container.replace(/^div\/?/, '');
+    if (container) {
+      return document.evaluate(container, parent.children[index], null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+    }
+    else {
+      return parent.children[index];
+    }
   }
 
-  hydrate() {
-    console.log('hydrate base');
+  render(parent) {
+    const template = this.options.templates['base'];
+    return this.insertChild(parent, this.interpolate(template.root, {
+      id: this.id,
+      classes: this.className,
+      styles: this.customStyle
+    }), template.children);
+  }
+
+  hydrate(element) {
+    console.log('hydrate base', this.component.key);
+    return Promise.resolve();
   }
 
   get viewOnly() {

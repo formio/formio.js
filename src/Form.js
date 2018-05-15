@@ -20,9 +20,8 @@ export default class Form {
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
    * form.display();
    */
-  constructor(element, source, options) {
+  constructor(source, options) {
     this.instance = null;
-    this.element = element;
     this.form = source;
     this.options = options;
   }
@@ -30,15 +29,16 @@ export default class Form {
   create(display) {
     switch (display) {
       case 'wizard':
-        return new Wizard(this.element, this.options);
+        return new Wizard(this.options);
       case 'pdf':
-        return new PDF(this.element, this.options);
+        return new PDF(this.options);
       default:
-        return new Webform(this.element, this.options);
+        return new Webform(this.options);
     }
   }
 
   set form(value) {
+    console.log('set form');
     if (typeof value === 'string') {
       return this.ready = (new Formio(value)).loadForm().then(form => {
         this.instance = this.create(form.display);
@@ -86,29 +86,26 @@ export default class Form {
     return (new Form(formElement, embed.src)).display();
   }
 
-  display() {
-    return this.render().then(() =>
-      this.hydrate().then(() =>
+  display(element) {
+    this.element = element;
+    return this.render(this.element).then(() =>
+      this.hydrate(this.element).then(() =>
         this.instance
       )
     );
   }
 
-  render() {
+  render(element) {
+    this.element = element;
+    console.log('render');
     this.empty();
-    return this.ready.then(() =>
-      this.instance.render().then(() =>
-        this.instance
-      )
-    );
+    return this.ready.then(instance => instance.render(element));
   }
 
-  hydrate() {
-    return this.ready.then(() =>
-      this.instance.hydrate().then(() =>
-        this.instance
-      )
-    );
+  hydrate(element) {
+    this.element = element;
+    console.log('hydrate');
+    return this.ready.then(instance => instance.hydrate(this.element));
   }
 }
 

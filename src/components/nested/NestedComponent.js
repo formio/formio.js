@@ -157,31 +157,47 @@ export default class NestedComponent extends BaseComponent {
     return this.element;
   }
 
+  get componentComponents() {
+    return this.component.components;
+  }
+
+  /**
+   *
+   * @param element
+   * @param data
+   */
+  addComponents(data) {
+    console.log('addComponents');
+    data = data || this.data;
+    const components = this.hook('addComponents', this.componentComponents);
+    _.each(components, (component) => this.addComponent(component, data));
+  }
+
   /**
    * Add a new component to the components array.
    *
    * @param {Object} component - The component JSON schema to add.
-   * @param {HTMLElement} element - The DOM element to append this child to.
    * @param {Object} data - The submission data object to house the data for this component.
    * @param {HTMLElement} before - A DOM element to insert this element before.
    * @return {BaseComponent} - The created component instance.
    */
-  addComponent(component, element, data, before, noAdd) {
-    element = element || this.getContainer();
+  addComponent(component, data, before, noAdd) {
     data = data || this.data;
     const comp = this.createComponent(component, this.options, data, before ? before.component : null);
     if (noAdd) {
       return comp;
     }
     this.setHidden(comp);
-    element = this.hook('addComponent', element, comp);
-    if (before) {
-      element.insertBefore(comp.getElement(), before);
-    }
-    else {
-      element.appendChild(comp.getElement());
-    }
     return comp;
+  }
+
+  render(parent) {
+    console.log('renderComponents');
+    return this.components.map(component => component.render(parent));
+  }
+
+  hydrateComponents(element) {
+    return Promise.all[this.components.map(component => component.hydrate(element))];
   }
 
   /**
@@ -242,22 +258,6 @@ export default class NestedComponent extends BaseComponent {
       }
       return null;
     }
-  }
-
-  get componentComponents() {
-    return this.component.components;
-  }
-
-  /**
-   *
-   * @param element
-   * @param data
-   */
-  addComponents(element, data) {
-    element = element || this.getContainer();
-    data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents);
-    _.each(components, (component) => this.addComponent(component, element, data));
   }
 
   updateValue(flags) {

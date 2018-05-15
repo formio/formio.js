@@ -1,3 +1,4 @@
 export default {
-  template: '<h1>Test</h1>'
+  root: '<div id="{{id}}" class="{{classes}}"{% if (styles) { %} styles="{{styles}}"{% } %}></div>',
+  children: 'div'
 };

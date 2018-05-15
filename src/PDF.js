@@ -25,6 +25,7 @@ export default class PDF extends Webform {
 
   // Do not clear the iframe.
   clear() {}
+
   redraw() {
     this.postMessage({name: 'redraw'});
   }

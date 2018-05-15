@@ -54,6 +54,12 @@ export default class TextFieldComponent extends BaseComponent {
     return info;
   }
 
+  render(parent) {
+    const element = super.render(parent);
+    const template = this.options.templates['textfield'];
+    return this.insertChild(element, this.interpolate(template.root));
+  }
+
   get emptyValue() {
     return '';
   }
