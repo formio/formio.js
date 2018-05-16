@@ -59,7 +59,7 @@ export default class SelectComponent extends BaseComponent {
         if (this.component.refreshOn === 'data') {
           this.refreshItems();
         }
-        else if (event.changed && (event.changed.component.key === this.component.refreshOn)) {
+        else if (event.changed && (event.changed.key === this.component.refreshOn)) {
           this.refreshItems();
         }
       });
@@ -296,7 +296,7 @@ export default class SelectComponent extends BaseComponent {
           component: this.component,
           message: err.toString()
         });
-        console.warn(`Unable to load resources for ${this.component.key}`);
+        console.warn(`Unable to load resources for ${this.key}`);
       });
   }
 
@@ -339,7 +339,7 @@ export default class SelectComponent extends BaseComponent {
 
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
-      console.warn(`Select component ${this.component.key} does not have data configuration.`);
+      console.warn(`Select component ${this.key} does not have data configuration.`);
       return;
     }
 
@@ -371,7 +371,7 @@ export default class SelectComponent extends BaseComponent {
           this.loadItems(resourceUrl, searchInput, this.requestHeaders);
         }
         catch (err) {
-          console.warn(`Unable to load resources for ${this.component.key}`);
+          console.warn(`Unable to load resources for ${this.key}`);
         }
         break;
       }

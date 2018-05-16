@@ -30,6 +30,10 @@ export default class CheckBoxComponent extends BaseComponent {
     return CheckBoxComponent.schema();
   }
 
+  get defaultValue() {
+    return this.component.name ? '' : false;
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -180,8 +184,25 @@ export default class CheckBoxComponent extends BaseComponent {
     return input;
   }
 
+  get key() {
+    return this.component.name ? this.component.name : super.key;
+  }
+
   getValueAt(index) {
+    if (this.component.name) {
+      return this.inputs[index].checked ? this.component.value : '';
+    }
     return !!this.inputs[index].checked;
+  }
+
+  getValue() {
+    const value = super.getValue();
+    if (this.component.name) {
+      return value ? value : this.dataValue;
+    }
+    else {
+      return value;
+    }
   }
 
   setValue(value, flags) {
@@ -189,7 +210,11 @@ export default class CheckBoxComponent extends BaseComponent {
     if (!this.input) {
       return;
     }
-    if (value === 'on') {
+    if (this.component.name) {
+      this.input.value = (value === this.component.value) ? 1 : 0;
+      this.input.checked = (value === this.component.value) ? 1 : 0;
+    }
+    else if (value === 'on') {
       this.input.value = 1;
       this.input.checked = 1;
     }
@@ -206,26 +231,6 @@ export default class CheckBoxComponent extends BaseComponent {
       this.input.checked = 0;
     }
     return this.updateValue(flags);
-  }
-
-  get dataValue() {
-    if (this.component.name) {
-      return _.get(this.data, this.component.name, this.emptyValue) === this.component.value;
-    }
-
-    return super.dataValue;
-  }
-
-  set dataValue(value) {
-    if (this.component.name) {
-      if (value) {
-        _.set(this.data, this.component.name, this.component.value);
-      }
-      return value;
-    }
-
-    super.dataValue = value;
-    return value;
   }
 
   getView(value) {

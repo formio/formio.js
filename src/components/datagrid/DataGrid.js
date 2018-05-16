@@ -321,12 +321,8 @@ export default class DataGridComponent extends NestedComponent {
     _.each(this.rows, (row) => {
       const value = {};
       _.each(row, (col) => {
-        if (
-          col &&
-          col.component &&
-          col.component.key
-        ) {
-          _.set(value, col.component.key, col.getValue());
+        if (col && col.key) {
+          _.set(value, col.key, col.getValue());
         }
       });
       values.push(value);

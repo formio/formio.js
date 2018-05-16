@@ -315,8 +315,8 @@ export default class BaseComponent {
 
     if (this.component) {
       this.type = this.component.type;
-      if (this.hasInput && this.component.key) {
-        this.options.name += `[${this.component.key}]`;
+      if (this.hasInput && this.key) {
+        this.options.name += `[${this.key}]`;
       }
 
       /**
@@ -337,6 +337,10 @@ export default class BaseComponent {
 
   get defaultSchema() {
     return BaseComponent.schema();
+  }
+
+  get key() {
+    return _.get(this.component, 'key', '');
   }
 
   /**
@@ -685,8 +689,8 @@ export default class BaseComponent {
   get className() {
     let className = this.hasInput ? 'form-group has-feedback ' : '';
     className += `formio-component formio-component-${this.component.type} `;
-    if (this.component.key) {
-      className += `formio-component-${this.component.key} `;
+    if (this.key) {
+      className += `formio-component-${this.key} `;
     }
     if (this.component.disabled) {
       className += 'formio-disabled-input ';
@@ -964,7 +968,7 @@ export default class BaseComponent {
    * @returns {string} - The name of the component.
    */
   get name() {
-    return this.t(this.component.label || this.component.placeholder || this.component.key);
+    return this.t(this.component.label || this.component.placeholder || this.key);
   }
 
   /**
@@ -975,7 +979,7 @@ export default class BaseComponent {
     return this.t(this.component.errorLabel
       || this.component.label
       || this.component.placeholder
-      || this.component.key);
+      || this.key);
   }
 
   /**
@@ -1741,7 +1745,7 @@ export default class BaseComponent {
       if (!show) {
         this.deleteValue();
       }
-      else if (!this.hasValue) {
+      else if (!this.hasValue()) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -1928,8 +1932,8 @@ export default class BaseComponent {
    * Returns if this component has a value set.
    *
    */
-  get hasValue() {
-    return _.has(this.data, this.component.key);
+  hasValue(data) {
+    return _.has(data || this.data, this.key);
   }
 
   /**
@@ -1946,13 +1950,13 @@ export default class BaseComponent {
    * @return {*}
    */
   get dataValue() {
-    if (!this.component.key) {
+    if (!this.key) {
       return this.emptyValue;
     }
-    if (!this.hasValue) {
+    if (!this.hasValue()) {
       this.dataValue = this.emptyValue;
     }
-    return _.get(this.data, this.component.key);
+    return _.get(this.data, this.key);
   }
 
   /**
@@ -1961,10 +1965,10 @@ export default class BaseComponent {
    * @param value
    */
   set dataValue(value) {
-    if (!this.component.key) {
+    if (!this.key) {
       return value;
     }
-    _.set(this.data, this.component.key, value);
+    _.set(this.data, this.key, value);
     return value;
   }
 
@@ -1974,7 +1978,7 @@ export default class BaseComponent {
    * @param index
    */
   splice(index) {
-    if (this.hasValue) {
+    if (this.hasValue()) {
       const dataValue = this.dataValue || [];
       if (_.isArray(dataValue) && dataValue.hasOwnProperty(index)) {
         dataValue.splice(index, 1);
@@ -1989,7 +1993,7 @@ export default class BaseComponent {
    */
   deleteValue() {
     this.setValue(null);
-    _.unset(this.data, this.component.key);
+    _.unset(this.data, this.key);
   }
 
   /**
@@ -2084,7 +2088,7 @@ export default class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.hasValue && !this.isEmpty(this.dataValue)) {
+    if (this.hasValue() && !this.isEmpty(this.dataValue)) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
@@ -2312,7 +2316,7 @@ export default class BaseComponent {
    */
   resetValue() {
     this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
-    _.unset(this.data, this.component.key);
+    _.unset(this.data, this.key);
   }
 
   /**

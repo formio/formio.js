@@ -380,7 +380,7 @@ export default class EditGridComponent extends NestedComponent {
         instance: this
       }, 'valid', true);
       if (valid === null) {
-        valid = `Invalid row validation for ${this.component.key}`;
+        valid = `Invalid row validation for ${this.key}`;
       }
 
       this.editRows[rowIndex].errorContainer.innerHTML = '';
