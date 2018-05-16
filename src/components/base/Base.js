@@ -692,7 +692,7 @@ export default class BaseComponent {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
-    if (this.component.disabled) {
+    if (this.shouldDisable) {
       className += 'formio-disabled-input ';
     }
     if (this.component.customClass) {

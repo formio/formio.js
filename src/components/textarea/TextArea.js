@@ -56,7 +56,7 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   createInput(container) {
-    if (!this.component.wysiwyg && !this.component.editor) {
+    if (!this.hasQuill && !this.component.editor) {
       return super.createInput(container);
     }
 
@@ -133,9 +133,13 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
+  get hasQuill() {
+    return this.component.wysiwyg && !this.options.readOnly;
+  }
+
   get defaultValue() {
     let defaultValue = super.defaultValue;
-    if (this.component.wysiwyg && !defaultValue) {
+    if (this.hasQuill && !defaultValue) {
       defaultValue = '<p><br></p>';
     }
     return defaultValue;
@@ -143,7 +147,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   setValue(value, flags) {
     value = value || '';
-    if (!this.component.wysiwyg && !this.component.editor) {
+    if (!this.hasQuill && !this.component.editor) {
       return super.setValue(this.setConvertedValue(value), flags);
     }
 
@@ -177,7 +181,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       return this.dataValue;
     }
 
-    if (!this.component.wysiwyg && !this.component.editor) {
+    if (!this.hasQuill && !this.component.editor) {
       return this.getConvertedValue(super.getValue());
     }
 
