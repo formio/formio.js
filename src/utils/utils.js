@@ -32,7 +32,7 @@ export {jsonLogic};
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
-  const component = (args.component && args.component.component) ? args.component.component : {key: 'unknown'};
+  const component = args.component ? args.component : {key: 'unknown'};
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
@@ -57,7 +57,12 @@ export function evaluate(func, args, ret, tokenize) {
       });
     }
 
-    func = new Function(...params, func);
+    try {
+      func = new Function(...params, func);
+    }
+    catch (err) {
+      console.warn(`An error occured within the custom function for ${component.key}`, err);
+    }
   }
   if (typeof func === 'function') {
     const values = _.values(args);
