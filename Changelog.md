@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Possibility to unselect value for Select component.
+ - Possibility to show hidden fields using options
 ### Fixed
  - Require Decimal behavior for Number and Currency components
 

@@ -1697,8 +1697,8 @@ export default class BaseComponent {
    * @param show
    */
   show(show) {
-    // Execute only if visibility changes or if we are in builder mode.
-    if (!show === !this._visible || this.options.builder) {
+    // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
+    if (!show === !this._visible || this.options.builder || this.options.showHiddenFields) {
       return show;
     }
 
