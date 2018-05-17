@@ -88,12 +88,4 @@ export default class CurrencyComponent extends NumberComponent {
 
     return super.clearInput(input);
   }
-
-  formatValue(value) {
-    if (this.component.requireDecimals && value && !value.includes(this.decimalSeparator)) {
-      return `${value}${this.decimalSeparator}${_.repeat('0', this.decimalLimit)}`;
-    }
-
-    return value;
-  }
 }
