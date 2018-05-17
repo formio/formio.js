@@ -62,6 +62,8 @@ export function evaluate(func, args, ret, tokenize) {
     }
     catch (err) {
       console.warn(`An error occured within the custom function for ${component.key}`, err);
+      returnVal = null;
+      func = false;
     }
   }
   if (typeof func === 'function') {
@@ -83,7 +85,7 @@ export function evaluate(func, args, ret, tokenize) {
       console.warn(`An error occured within custom function for ${component.key}`, err);
     }
   }
-  else {
+  else if (func) {
     console.warn(`Unknown function type for ${component.key}`);
   }
   return returnVal;
