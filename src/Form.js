@@ -88,11 +88,10 @@ export default class Form {
 
   display(element) {
     this.element = element;
-    return this.render(this.element).then(() =>
-      this.hydrate(this.element).then(() =>
-        this.instance
-      )
-    );
+    return this.render(this.element).then(html => {
+      element.innerHTML = html;
+      return this.hydrate(this.element).then(() => this.instance);
+    });
   }
 
   render() {

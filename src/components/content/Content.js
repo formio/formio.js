@@ -1,8 +1,8 @@
-import BaseComponent from '../_classes/base/Base';
+import Component from '../_classes/component/Component';
 
-export default class ContentComponent extends BaseComponent {
+export default class ContentComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'content',
       key: 'content',
       input: false,

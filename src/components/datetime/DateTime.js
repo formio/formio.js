@@ -1,7 +1,7 @@
 import Flatpickr from 'flatpickr';
 import _ from 'lodash';
 
-import BaseComponent from '../_classes/base/Base';
+import Component from '../_classes/component/Component';
 
 import {
   getDateSetting,
@@ -11,9 +11,9 @@ import {
 } from '../../utils/utils';
 import moment from 'moment';
 
-export default class DateTimeComponent extends BaseComponent {
+export default class DateTimeComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',

@@ -1,10 +1,10 @@
 import SignaturePad from 'signature_pad/dist/signature_pad.js';
-import BaseComponent from '../_classes/base/Base';
+import Component from '../_classes/component/Component';
 import _ from 'lodash';
 
-export default class SignatureComponent extends BaseComponent {
+export default class SignatureComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'signature',
       label: 'Signature',
       key: 'signature',

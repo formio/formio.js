@@ -731,7 +731,6 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   build() {
-    console.log('build webform');
     if (this.component) {
       this.component.components = this.form.components;
     }
@@ -740,6 +739,33 @@ export default class Webform extends NestedComponent {
     }
     this.addComponents();
     this.setValue(this.submission);
+    // this.showElement(false);
+    this.isBuilt = true;
+    this.formReadyResolve();
+    return this.formReady;
+  }
+
+  display(element) {
+    return this.onElement.then(() => {
+      return this.ready.then(() => {
+        element.innerHTML = this.render();
+        this.hydrate(element);
+      });
+    });
+  }
+
+  render() {
+    const template = this.options.templates['webform'];
+    return this.interpolate(template.form, {
+      classes: 'formio-form',
+      children: super.render()
+    });
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {webform: 'single'});
+    super.hydrate(this.refs.webform);
+    this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     this.on('resetForm', () => this.resetValue(), true);
@@ -749,39 +775,10 @@ export default class Webform extends NestedComponent {
       this.onChange();
       this.emit('render');
     }, 1);
-    // this.showElement(false);
-    this.isBuilt = true;
-    this.formReadyResolve();
-    return this.formReady;
-  }
-
-  display(element) {
-    console.log('display webform');
-    return this.onElement.then(() => {
-      return this.ready.then(() => {
-        this.render(element);
-        this.hydrate(element);
-      });
-    });
-  }
-
-  render() {
-    console.log('render webform');
-    const template = this.options.templates['webform'];
-    return this.interpolate(template.form, {
-      classes: 'formio-form',
-      children: super.render()
-    });
-  }
-
-  hydrate(element) {
-    console.log('hydrate webform');
-    // this.element.addEventListener('keydown', this.executeShortcuts.bind(this));
-    return this.hydrateComponents(element);
   }
 
   dehydrate() {
-    this.element.removeEventListener('keydown', this.executeShortcuts.bind(this));
+    this.refs.webform.removeEventListener('keydown', this.executeShortcuts.bind(this));
   }
 
   resetValue() {

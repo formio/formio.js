@@ -1,15 +1,15 @@
 import component from './component';
-import button from './button';
+import field from './field';
 import input from './input';
+import multiValueRow from './multiValueRow';
+import multiValueTable from './multiValueTable';
 import webform from './webform';
-import multiValue from './multiValue';
-import singleValue from './singleValue';
 
 export default {
   component,
-  button,
+  field,
   input,
+  multiValueRow,
+  multiValueTable,
   webform,
-  multiValue,
-  singleValue,
 };

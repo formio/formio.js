@@ -1,6 +1,6 @@
 import NestedComponent from './_classes/nested/NestedComponent';
 import AddressComponent from './address/Address';
-import BaseComponent from './_classes/base/Base';
+import Component from './_classes/component/Component';
 import ContentComponent from './content/Content';
 import ContainerComponent from './container/Container';
 import DataGridComponent from './datagrid/DataGrid';
@@ -41,7 +41,7 @@ import TabsComponent from './tabs/Tabs';
 export default {
   nested: NestedComponent,
   address: AddressComponent,
-  base: BaseComponent,
+  base: Component,
   content: ContentComponent,
   container: ContainerComponent,
   datagrid: DataGridComponent,

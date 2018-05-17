@@ -196,8 +196,8 @@ export default class NestedComponent extends Component {
     return this.components.map(component => component.render()).join('');
   }
 
-  hydrateComponents(element) {
-    return Promise.all[this.components.map(component => component.hydrate(element))];
+  hydrate(element) {
+    return Promise.all[this.components.map((component, index) => component.hydrate(element.children[index]))];
   }
 
   /**

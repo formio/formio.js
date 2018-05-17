@@ -6,7 +6,7 @@ export default {
     style="{{label.style}}"
   >
     {{component.label}}
-    {% if (component.tooltip) { %} <i class="{{label.tooltipClass}}"></i>{% } %}
+    {% if (component.tooltip) { %} <i ref="tooltip" class="{{label.tooltipClass}}"></i>{% } %}
   </label>
 {% } %}
 {{element}}

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import Input from '../input/Input';
+import Input from '../_classes/input/Input';
 import {flattenComponents, evaluate} from '../../utils/utils';
 
 export default class ButtonComponent extends Input {
@@ -107,8 +107,12 @@ export default class ButtonComponent extends Input {
     return this.ce('span', {class: 'help-block'}, this.text(message));
   }
 
-  /* eslint-disable max-statements */
   build() {
+
+  }
+
+  /* eslint-disable max-statements */
+  oldbuild() {
     if (this.viewOnly) {
       this.component.hidden = true;
     }
@@ -137,6 +141,9 @@ export default class ButtonComponent extends Input {
         class: this.component.rightIcon
       }));
     }
+  }
+
+  hydrateDisabled(element) {
     if (this.component.action === 'submit') {
       const message = this.ce('div');
       this.on('submitButton', () => {

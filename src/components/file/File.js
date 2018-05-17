@@ -1,11 +1,11 @@
-import BaseComponent from '../_classes/base/Base';
+import Component from '../_classes/component/Component';
 import {uniqueName} from '../../utils/utils';
 import download from 'downloadjs';
 import Formio from '../../Formio';
 
-export default class FileComponent extends BaseComponent {
+export default class FileComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'file',
       label: 'Upload',
       key: 'file',

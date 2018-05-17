@@ -1,4 +1,4 @@
-import baseEditForm from '../_classes/base/Base.form';
+import baseEditForm from '../_classes/component/Component.form';
 
 import NumberEditValidation from './editForm/Number.edit.validation';
 

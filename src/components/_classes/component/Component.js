@@ -185,6 +185,11 @@ export default class Component {
     this.events = this.options.events;
 
     /**
+     * References to dom elements
+     */
+    this.refs = {};
+
+    /**
      * The data object in which this component resides.
      * @type {*}
      */
@@ -216,12 +221,6 @@ export default class Component {
      * @type {null}
      */
     this.labelElement = null;
-
-    /**
-     * The HTMLElement for which the errors are rendered for this component (usually underneath the component).
-     * @type {null}
-     */
-    this.errorElement = null;
 
     /**
      * The existing error that this component has.
@@ -515,7 +514,6 @@ export default class Component {
    * Builds the component.
    */
   build() {
-    console.log('build base', this.component.key);
     if (this.viewOnly) {
       this.viewOnlyBuild();
     }
@@ -601,18 +599,24 @@ export default class Component {
     }
   }
 
-  insertChild(parent, html) {
-    // Get next inserted index.
-    const index = parent.children.length;
-    parent.insertAdjacentHTML('beforeend', html);
-    const element = parent.children[index];
-
-    // Search through the new children for a container.
-    const container = element.querySelector('[ref="container"]');
-    return container ? container : element;
+  loadRefs(element, refs) {
+    for (const ref in refs) {
+      if (refs[ref] === 'single') {
+        this.refs[ref] = element.querySelector(`[ref="${ref}"]`);
+      }
+      else {
+        this.refs[ref] = element.querySelectorAll(`[ref="${ref}"]`);
+      }
+    }
   }
 
-  render(children) {
+  display(element) {
+    this.empty(element);
+    element.innerHTML = this.render();
+    this.hydrate(element);
+  }
+
+  render(children = '') {
     const template = this.options.templates['component'];
     return this.interpolate(template.form, {
       id: this.id,
@@ -623,7 +627,7 @@ export default class Component {
   }
 
   hydrate(element) {
-    console.log('hydrate base', this.component.key);
+    this.loadRefs(element, {errorContainer: 'single'});
     return Promise.resolve();
   }
 
@@ -946,34 +950,6 @@ export default class Component {
   }
 
   /**
-   * Adds a new button to add new rows to the multiple input elements.
-   * @returns {HTMLElement} - The "Add New" button html element.
-   */
-  addButton(justIcon) {
-    const addButton = this.ce('button', {
-      class: 'btn btn-primary'
-    });
-    this.addEventListener(addButton, 'click', (event) => {
-      event.preventDefault();
-      this.addValue();
-    });
-
-    const addIcon = this.ce('i', {
-      class: this.iconClass('plus')
-    });
-
-    if (justIcon) {
-      addButton.appendChild(addIcon);
-      return addButton;
-    }
-    else {
-      addButton.appendChild(addIcon);
-      addButton.appendChild(this.text(this.component.addAnother || ' Add Another'));
-      return addButton;
-    }
-  }
-
-  /**
    * The readible name for this component.
    * @returns {string} - The name of the component.
    */
@@ -999,29 +975,6 @@ export default class Component {
    */
   errorMessage(type) {
     return (this.component.errors && this.component.errors[type]) ? this.component.errors[type] :  type;
-  }
-
-  /**
-   * Creates a new "remove" row button and returns the html element of that button.
-   * @param {number} index - The index of the row that should be removed.
-   * @returns {HTMLElement} - The html element of the remove button.
-   */
-  removeButton(index) {
-    const removeButton = this.ce('button', {
-      type: 'button',
-      class: 'btn btn-default btn-secondary'
-    });
-
-    this.addEventListener(removeButton, 'click', (event) => {
-      event.preventDefault();
-      this.removeValue(index);
-    });
-
-    const removeIcon = this.ce('i', {
-      class: this.iconClass('remove-circle')
-    });
-    removeButton.appendChild(removeIcon);
-    return removeButton;
   }
 
   labelOnTheLeft(position) {
@@ -1063,24 +1016,6 @@ export default class Component {
     }
 
     return this.component.labelMargin;
-  }
-
-  setInputStyles(input) {
-    if (this.labelIsHidden()) {
-      return;
-    }
-
-    if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
-      const totalLabelWidth = this.getLabelWidth() + this.getLabelMargin();
-      input.style.width = `${100 - totalLabelWidth}%`;
-
-      if (this.labelOnTheLeft(this.component.labelPosition)) {
-        input.style.marginLeft = `${totalLabelWidth}%`;
-      }
-      else {
-        input.style.marginRight = `${totalLabelWidth}%`;
-      }
-    }
   }
 
   labelIsHidden() {
@@ -1203,44 +1138,6 @@ export default class Component {
    */
   maskPlaceholder(mask) {
     return mask.map((char) => (char instanceof RegExp) ? '_' : char).join('');
-  }
-
-  /**
-   * Sets the input mask for an input.
-   * @param {HTMLElement} input - The html input to apply the mask to.
-   */
-  setInputMask(input) {
-    if (input && this.component.inputMask) {
-      const mask = getInputMask(this.component.inputMask);
-      this._inputMask = mask;
-      input.mask = maskInput({
-        inputElement: input,
-        mask
-      });
-      if (mask.numeric) {
-        input.setAttribute('pattern', '\\d*');
-      }
-      if (!this.component.placeholder) {
-        input.setAttribute('placeholder', this.maskPlaceholder(mask));
-      }
-    }
-  }
-
-  /**
-   * Creates a new input element.
-   * @param {HTMLElement} container - The container which should hold this new input element.
-   * @returns {HTMLElement} - Either the input or the group that contains the input.
-   */
-  createInput(container) {
-    // const input = this.ce(this.info.type, this.info.attr);
-    // this.setInputMask(input);
-    // const inputGroup = this.addInputGroup(input, container);
-    // this.addPrefix(input, inputGroup);
-    // this.addInput(input, inputGroup || container);
-    // this.addSuffix(input, inputGroup);
-    // this.errorContainer = container;
-    // this.setInputStyles(inputGroup || input);
-    // return inputGroup || input;
   }
 
   /**
@@ -1577,12 +1474,12 @@ export default class Component {
       return;
     }
 
-    if (this.errorElement) {
+    if (this.refs.errorContainer) {
       const errorMessage = this.ce('p', {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));
-      this.errorElement.appendChild(errorMessage);
+      this.refs.errorContainer.appendChild(errorMessage);
     }
 
     // Add error classes
@@ -2119,9 +2016,9 @@ export default class Component {
   }
 
   setCustomValidity(message, dirty) {
-    if (this.errorElement && this.errorContainer) {
-      this.errorElement.innerHTML = '';
-      this.removeChildFrom(this.errorElement, this.errorContainer);
+    if (this.refs.errorContainer && this.errorContainer) {
+      this.refs.errorContainer.innerHTML = '';
+      this.removeChildFrom(this.refs.errorContainer, this.errorContainer);
     }
     if (message) {
       this.error = {

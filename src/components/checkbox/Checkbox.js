@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import BaseComponent from '../_classes/base/Base';
+import Component from '../_classes/component/Component';
 
-export default class CheckBoxComponent extends BaseComponent {
+export default class CheckBoxComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'checkbox',
       inputType: 'checkbox',
       label: 'Checkbox',

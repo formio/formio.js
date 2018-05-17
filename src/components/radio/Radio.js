@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import BaseComponent from '../_classes/base/Base';
+import Component from '../_classes/component/Component';
 
-export default class RadioComponent extends BaseComponent {
+export default class RadioComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'radio',
       inputType: 'radio',
       label: 'Radio',

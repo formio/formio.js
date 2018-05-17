@@ -1,9 +1,9 @@
 /* global google */
-import BaseComponent from '../_classes/base/Base';
+import Component from '../_classes/component/Component';
 
-export default class LocationComponent extends BaseComponent {
+export default class LocationComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'location',
       label: 'Location',
       key: 'location',
@@ -37,7 +37,7 @@ export default class LocationComponent extends BaseComponent {
     if (component.map && component.map.region) {
       src += `&region=${component.map.region}`;
     }
-    BaseComponent.requireLibrary('googleMaps', 'google.maps.places', src);
+    Component.requireLibrary('googleMaps', 'google.maps.places', src);
   }
 
   get defaultSchema() {
@@ -73,7 +73,7 @@ export default class LocationComponent extends BaseComponent {
   addInput(input, container) {
     super.addInput(input, container);
     const that = this;
-    BaseComponent.libraryReady('googleMaps').then(() => {
+    Component.libraryReady('googleMaps').then(() => {
       let autocompleteOptions = {};
       if (this.component.map) {
         autocompleteOptions = this.component.map.autocompleteOptions || {};
@@ -116,7 +116,7 @@ export default class LocationComponent extends BaseComponent {
   }
 
   initGoogleMap() {
-    BaseComponent.libraryReady('googleMaps').then(() => {
+    Component.libraryReady('googleMaps').then(() => {
       const defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
       const options = {
         zoom: 19,

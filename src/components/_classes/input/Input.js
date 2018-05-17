@@ -1,5 +1,5 @@
 import Multivalue from '../multivalue/Multivalue';
-import Tooltip from 'tooltip.js';
+import {getInputMask} from '../../../utils/utils';
 
 export default class Input extends Multivalue {
   get labelInfo() {
@@ -61,6 +61,44 @@ export default class Input extends Multivalue {
       attr
     };
   }
+  /**
+   * Sets the input mask for an input.
+   * @param {HTMLElement} input - The html input to apply the mask to.
+   */
+  setInputMask(input) {
+    if (input && this.component.inputMask) {
+      const mask = getInputMask(this.component.inputMask);
+      this._inputMask = mask;
+      // input.mask = maskInput({
+      //   inputElement: input,
+      //   mask
+      // });
+      if (mask.numeric) {
+        input.setAttribute('pattern', '\\d*');
+      }
+      if (!this.component.placeholder) {
+        input.setAttribute('placeholder', this.maskPlaceholder(mask));
+      }
+    }
+  }
+
+  setInputStyles(input) {
+    if (this.labelIsHidden()) {
+      return;
+    }
+
+    if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
+      const totalLabelWidth = this.getLabelWidth() + this.getLabelMargin();
+      input.style.width = `${100 - totalLabelWidth}%`;
+
+      if (this.labelOnTheLeft(this.component.labelPosition)) {
+        input.style.marginLeft = `${totalLabelWidth}%`;
+      }
+      else {
+        input.style.marginRight = `${totalLabelWidth}%`;
+      }
+    }
+  }
 
   renderElement() {
     const template = this.options.templates['input'];
@@ -71,16 +109,7 @@ export default class Input extends Multivalue {
     });
   }
 
-  hydrate(element) {
-    super.hydrate(element);
-
-    this.tooltip = new Tooltip(this.refs.tooltip, {
-      delay: {
-        hide: 100
-      },
-      placement: 'right',
-      html: true,
-      title: this.component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
-    });
+  hydrateElement(element) {
+    console.log('hydrate element', element);
   }
 }

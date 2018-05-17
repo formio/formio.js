@@ -134,7 +134,7 @@ export default class TabsComponent extends NestedComponent {
    * @param element
    * @param data
    * @param before
-   * @return {BaseComponent}
+   * @return {Component}
    */
   addComponent(component, element, data, before) {
     component.tab = this.currentTab;

@@ -1,4 +1,4 @@
-import baseEditForm from '../_classes/base/Base.form';
+import baseEditForm from '../_classes/component/Component.form';
 
 import TimeEditDisplay from './editForm/Time.edit.display';
 
