@@ -1,4 +1,4 @@
-import BaseComponent from '../base/Base';
+import BaseComponent from '../_classes/base/Base';
 import Choices from 'choices.js';
 import _ from 'lodash';
 

@@ -1,6 +1,6 @@
 /* global ace */
 import TextFieldComponent from '../textfield/TextField';
-import BaseComponent from '../base/Base';
+import BaseComponent from '../_classes/base/Base';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {

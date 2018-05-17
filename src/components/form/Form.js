@@ -1,4 +1,4 @@
-import BaseComponent from '../base/Base';
+import BaseComponent from '../_classes/base/Base';
 import Promise from 'native-promise-only';
 import {isMongoId, eachComponent} from '../../utils/utils';
 import Formio from '../../Formio';

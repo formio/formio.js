@@ -1,9 +1,15 @@
-import base from './base';
-import textfield from './textfield';
+import component from './component';
+import button from './button';
+import input from './input';
 import webform from './webform';
+import multiValue from './multiValue';
+import singleValue from './singleValue';
 
 export default {
-  base,
-  textfield,
-  webform
+  component,
+  button,
+  input,
+  webform,
+  multiValue,
+  singleValue,
 };

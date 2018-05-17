@@ -95,11 +95,10 @@ export default class Form {
     );
   }
 
-  render(element) {
-    this.element = element;
+  render() {
     console.log('render');
     this.empty();
-    return this.ready.then(instance => instance.render(element));
+    return this.ready.then(instance => instance.render());
   }
 
   hydrate(element) {

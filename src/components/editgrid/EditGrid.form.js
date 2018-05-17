@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../_classes/base/Base.form';
 
 import EditGridEditTemplates from './editForm/EditGrid.edit.templates';
 

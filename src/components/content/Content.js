@@ -1,4 +1,4 @@
-import BaseComponent from '../base/Base';
+import BaseComponent from '../_classes/base/Base';
 
 export default class ContentComponent extends BaseComponent {
   static schema(...extend) {

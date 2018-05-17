@@ -1,10 +1,10 @@
 import _ from 'lodash';
-import BaseComponent from '../base/Base';
+import Input from '../input/Input';
 import {flattenComponents, evaluate} from '../../utils/utils';
 
-export default class ButtonComponent extends BaseComponent {
+export default class ButtonComponent extends Input {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Input.schema({
       type: 'button',
       label: 'Submit',
       key: 'submit',
@@ -33,7 +33,7 @@ export default class ButtonComponent extends BaseComponent {
     return ButtonComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'button';
     info.attr.type = (['submit', 'saveState'].includes(this.component.action)) ? 'submit' : 'button';
@@ -49,6 +49,12 @@ export default class ButtonComponent extends BaseComponent {
       info.attr.class += ` ${this.component.customClass}`;
     }
     return info;
+  }
+
+  get labelInfo() {
+    return {
+      hidden: true
+    };
   }
 
   set loading(loading) {

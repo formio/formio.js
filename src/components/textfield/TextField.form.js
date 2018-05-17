@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../_classes/base/Base.form';
 
 import TextFieldEditData from './editForm/TextField.edit.data';
 import TextFieldEditDisplay from './editForm/TextField.edit.display';

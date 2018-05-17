@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 
-export default class SurveyComponent extends BaseComponent {
+export default class SurveyComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'survey',
       label: 'Survey',
       key: 'survey',

@@ -2,7 +2,6 @@
 import maskInput, {conformToMask} from 'vanilla-text-mask';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
-import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
 import {
   getRandomComponentId,
@@ -14,14 +13,14 @@ import {
   checkCondition,
   checkTrigger,
   setActionProperty
-} from '../../utils/utils';
-import Validator from '../Validator';
+} from '../../../utils/utils';
+import Validator from '../../Validator';
 import moment from 'moment';
 
 /**
- * This is the BaseComponent class which all elements within the FormioForm derive from.
+ * This is the Component class which all elements within the FormioForm derive from.
  */
-export default class BaseComponent {
+export default class Component {
   static schema(...sources) {
     return _.merge({
       /**
@@ -144,7 +143,7 @@ export default class BaseComponent {
   }
 
   /**
-   * Initialize a new BaseComponent.
+   * Initialize a new Component.
    *
    * @param {Object} component - The component JSON you wish to initialize.
    * @param {Object} options - The options for this component.
@@ -237,7 +236,7 @@ export default class BaseComponent {
     this.inputs = [];
 
     /**
-     * The basic component information which tells the BaseComponent how to render the input element of the components that derive from this class.
+     * The basic component information which tells the Component how to render the input element of the components that derive from this class.
      * @type {null}
      */
     this.info = null;
@@ -270,14 +269,14 @@ export default class BaseComponent {
     /**
      * Points to the parent component.
      *
-     * @type {BaseComponent}
+     * @type {Component}
      */
     this.parent = null;
 
     /**
      * Points to the root component, usually the FormComponent.
      *
-     * @type {BaseComponent}
+     * @type {Component}
      */
     this.root = this;
 
@@ -336,7 +335,7 @@ export default class BaseComponent {
   }
 
   get defaultSchema() {
-    return BaseComponent.schema();
+    return Component.schema();
   }
 
   /**
@@ -402,7 +401,7 @@ export default class BaseComponent {
    * Register for a new event within this component.
    *
    * @example
-   * let component = new BaseComponent({
+   * let component = new Component({
    *   type: 'textfield',
    *   label: 'First Name',
    *   key: 'firstName'
@@ -460,18 +459,6 @@ export default class BaseComponent {
 
   performInputMapping(input) {
     return input;
-  }
-
-  /**
-   * Returns an HTMLElement icon element.
-   *
-   * @param {string} name - The name of the icon to retrieve.
-   * @returns {HTMLElement} - The icon element.
-   */
-  getIcon(name) {
-    return this.ce('i', {
-      class: this.iconClass(name)
-    });
   }
 
   getBrowserLanguage() {
@@ -559,27 +546,80 @@ export default class BaseComponent {
     }
   }
 
-  insertChild(parent, html, container = '') {
-    // Get next inserted index.
-    const index = [...parent.children].indexOf(parent.lastChild) + 1;
-    parent.insertAdjacentHTML('beforeend', html);
-    // Since it searches innerHTML, the initial div is superfluous.
-    container = container.replace(/^div\/?/, '');
-    if (container) {
-      return document.evaluate(container, parent.children[index], null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+  /**
+   * Create the outside wrapping element for this component.
+   * @returns {HTMLElement}
+   */
+  createElement() {
+    // If the element is already created, don't recreate.
+    if (this.element) {
+      return this.element;
+    }
+
+    this.element = this.ce('div', {
+      id: this.id,
+      class: this.className,
+      style: this.customStyle
+    });
+
+    // Ensure you can get the component info from the element.
+    this.element.component = this;
+
+    this.hook('element', this.element);
+    return this.element;
+  }
+
+  /**
+   * Create the input wrapping element. For multiple, this may be the table wrapper for the elements.
+   * @returns {boolean}
+   */
+  createWrapper() {
+    if (!this.component.multiple) {
+      return false;
     }
     else {
-      return parent.children[index];
+      const table = this.ce('table', {
+        class: 'table table-bordered'
+      });
+      this.tbody = this.ce('tbody');
+      table.appendChild(this.tbody);
+
+      // Add a default value.
+      const dataValue = this.dataValue;
+      if (!dataValue || !dataValue.length) {
+        this.addNewValue(this.defaultValue);
+      }
+
+      // Build the rows.
+      this.buildRows();
+
+      this.setInputStyles(table);
+
+      // Add the table to the element.
+      this.append(table);
+      return true;
     }
   }
 
-  render(parent) {
-    const template = this.options.templates['base'];
-    return this.insertChild(parent, this.interpolate(template.root, {
+  insertChild(parent, html) {
+    // Get next inserted index.
+    const index = parent.children.length;
+    parent.insertAdjacentHTML('beforeend', html);
+    const element = parent.children[index];
+
+    // Search through the new children for a container.
+    const container = element.querySelector('[ref="container"]');
+    return container ? container : element;
+  }
+
+  render(children) {
+    const template = this.options.templates['component'];
+    return this.interpolate(template.form, {
       id: this.id,
       classes: this.className,
-      styles: this.customStyle
-    }), template.children);
+      styles: this.customStyle,
+      children
+    });
   }
 
   hydrate(element) {
@@ -749,61 +789,6 @@ export default class BaseComponent {
    */
   getElement() {
     return this.element;
-  }
-
-  /**
-   * Create the outside wrapping element for this component.
-   * @returns {HTMLElement}
-   */
-  createElement() {
-    // If the element is already created, don't recreate.
-    if (this.element) {
-      return this.element;
-    }
-
-    this.element = this.ce('div', {
-      id: this.id,
-      class: this.className,
-      style: this.customStyle
-    });
-
-    // Ensure you can get the component info from the element.
-    this.element.component = this;
-
-    this.hook('element', this.element);
-    return this.element;
-  }
-
-  /**
-   * Create the input wrapping element. For multiple, this may be the table wrapper for the elements.
-   * @returns {boolean}
-   */
-  createWrapper() {
-    if (!this.component.multiple) {
-      return false;
-    }
-    else {
-      const table = this.ce('table', {
-        class: 'table table-bordered'
-      });
-      this.tbody = this.ce('tbody');
-      table.appendChild(this.tbody);
-
-      // Add a default value.
-      const dataValue = this.dataValue;
-      if (!dataValue || !dataValue.length) {
-        this.addNewValue(this.defaultValue);
-      }
-
-      // Build the rows.
-      this.buildRows();
-
-      this.setInputStyles(table);
-
-      // Add the table to the element.
-      this.append(table);
-      return true;
-    }
   }
 
   get defaultValue() {
@@ -1212,118 +1197,6 @@ export default class BaseComponent {
   }
 
   /**
-   * Create the HTML element for the tooltip of this component.
-   * @param {HTMLElement} container - The containing element that will contain this tooltip.
-   */
-  createTooltip(container, component, classes) {
-    if (this.tooltip) {
-      return;
-    }
-    component = component || this.component;
-    classes = classes || `${this.iconClass('question-sign')} text-muted`;
-    if (!component.tooltip) {
-      return;
-    }
-    const ttElement = this.ce('i', {
-      class: classes
-    });
-    container.appendChild(this.text(' '));
-    container.appendChild(ttElement);
-    this.tooltip = new Tooltip(ttElement, {
-      delay: {
-        hide: 100
-      },
-      placement: 'right',
-      html: true,
-      title: component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
-    });
-  }
-
-  /**
-   * Creates the description block for this input field.
-   * @param container
-   */
-  createDescription(container) {
-    if (!this.component.description) {
-      return;
-    }
-    this.description = this.ce('div', {
-      class: 'help-block'
-    });
-    this.description.innerHTML = this.t(this.component.description);
-    container.appendChild(this.description);
-  }
-
-  /**
-   * Creates a new error element to hold the errors of this element.
-   */
-  createErrorElement() {
-    if (!this.errorContainer) {
-      return;
-    }
-    this.errorElement = this.ce('div', {
-      class: 'formio-errors invalid-feedback'
-    });
-    this.errorContainer.appendChild(this.errorElement);
-  }
-
-  /**
-   * Adds a prefix html element.
-   *
-   * @param {HTMLElement} input - The input element.
-   * @param {HTMLElement} inputGroup - The group that will hold this prefix.
-   * @returns {HTMLElement} - The html element for this prefix.
-   */
-  addPrefix(input, inputGroup) {
-    let prefix = null;
-    if (this.component.prefix) {
-      prefix = this.ce('div', {
-        class: 'input-group-addon'
-      });
-      prefix.appendChild(this.text(this.component.prefix));
-      inputGroup.appendChild(prefix);
-    }
-    return prefix;
-  }
-
-  /**
-   * Adds a suffix html element.
-   *
-   * @param {HTMLElement} input - The input element.
-   * @param {HTMLElement} inputGroup - The group that will hold this suffix.
-   * @returns {HTMLElement} - The html element for this suffix.
-   */
-  addSuffix(input, inputGroup) {
-    let suffix = null;
-    if (this.component.suffix) {
-      suffix = this.ce('div', {
-        class: 'input-group-addon'
-      });
-      suffix.appendChild(this.text(this.component.suffix));
-      inputGroup.appendChild(suffix);
-    }
-    return suffix;
-  }
-
-  /**
-   * Adds a new input group to hold the input html elements.
-   *
-   * @param {HTMLElement} input - The input html element.
-   * @param {HTMLElement} container - The containing html element for this group.
-   * @returns {HTMLElement} - The input group element.
-   */
-  addInputGroup(input, container) {
-    let inputGroup = null;
-    if (this.component.prefix || this.component.suffix) {
-      inputGroup = this.ce('div', {
-        class: 'input-group'
-      });
-      container.appendChild(inputGroup);
-    }
-    return inputGroup;
-  }
-
-  /**
    * Creates a new input mask placeholder.
    * @param {HTMLElement} mask - The input mask.
    * @returns {string} - The placeholder that will exist within the input as they type.
@@ -1359,15 +1232,15 @@ export default class BaseComponent {
    * @returns {HTMLElement} - Either the input or the group that contains the input.
    */
   createInput(container) {
-    const input = this.ce(this.info.type, this.info.attr);
-    this.setInputMask(input);
-    const inputGroup = this.addInputGroup(input, container);
-    this.addPrefix(input, inputGroup);
-    this.addInput(input, inputGroup || container);
-    this.addSuffix(input, inputGroup);
-    this.errorContainer = container;
-    this.setInputStyles(inputGroup || input);
-    return inputGroup || input;
+    // const input = this.ce(this.info.type, this.info.attr);
+    // this.setInputMask(input);
+    // const inputGroup = this.addInputGroup(input, container);
+    // this.addPrefix(input, inputGroup);
+    // this.addInput(input, inputGroup || container);
+    // this.addSuffix(input, inputGroup);
+    // this.errorContainer = container;
+    // this.setInputStyles(inputGroup || input);
+    // return inputGroup || input;
   }
 
   /**
@@ -1901,12 +1774,12 @@ export default class BaseComponent {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
 
     // Lazy load the quill css.
-    BaseComponent.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
+    Component.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       {type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css`}
     ], true);
 
     // Lazy load the quill library.
-    return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
+    return Component.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(element, settings);
 
@@ -2214,16 +2087,9 @@ export default class BaseComponent {
     }
 
     const message = this.invalid || this.invalidMessage(data, dirty);
-    this.setCustomValidity(message, dirty);
+    // this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
-
-  /* eslint-disable max-len */
-  getRawValue() {
-    console.warn('component.getRawValue() has been deprecated. Use component.validationValue or component.dataValue instead.');
-    return this.validationValue;
-  }
-  /* eslint-enable max-len */
 
   get validationValue() {
     return this.dataValue;
@@ -2247,7 +2113,9 @@ export default class BaseComponent {
   }
 
   interpolate(string, data) {
-    return interpolate(string, data);
+    // the replace will stip out extra whitespace from the templates.
+    return interpolate(string, data).replace(/\r?\n|\r/g, '').replace(/ +(?= )/g,'');
+    // return interpolate(string, data).replace(/\>[\s]+\</g, "><").replace(/\"[\s]+\>/g,  '" >');
   }
 
   setCustomValidity(message, dirty) {
@@ -2532,13 +2400,13 @@ export default class BaseComponent {
   }
 }
 
-BaseComponent.externalLibraries = {};
-BaseComponent.requireLibrary = function(name, property, src, polling) {
-  if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
-    BaseComponent.externalLibraries[name] = {};
-    BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {
-      BaseComponent.externalLibraries[name].resolve = resolve;
-      BaseComponent.externalLibraries[name].reject = reject;
+Component.externalLibraries = {};
+Component.requireLibrary = function(name, property, src, polling) {
+  if (!Component.externalLibraries.hasOwnProperty(name)) {
+    Component.externalLibraries[name] = {};
+    Component.externalLibraries[name].ready = new Promise((resolve, reject) => {
+      Component.externalLibraries[name].resolve = resolve;
+      Component.externalLibraries[name].reject = reject;
     });
 
     const callbackName = `${name}Callback`;
@@ -2546,13 +2414,13 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
     if (!polling && !window[callbackName]) {
       window[callbackName] = function() {
         this.resolve();
-      }.bind(BaseComponent.externalLibraries[name]);
+      }.bind(Component.externalLibraries[name]);
     }
 
     // See if the plugin already exists.
     const plugin = _.get(window, property);
     if (plugin) {
-      BaseComponent.externalLibraries[name].resolve(plugin);
+      Component.externalLibraries[name].resolve(plugin);
     }
     else {
       src = Array.isArray(src) ? src : [src];
@@ -2597,7 +2465,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
         setTimeout(function checkLibrary() {
           const plugin = _.get(window, property);
           if (plugin) {
-            BaseComponent.externalLibraries[name].resolve(plugin);
+            Component.externalLibraries[name].resolve(plugin);
           }
           else {
             // check again after 200 ms.
@@ -2607,15 +2475,15 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
       }
     }
   }
-  return BaseComponent.externalLibraries[name].ready;
+  return Component.externalLibraries[name].ready;
 };
 
-BaseComponent.libraryReady = function(name) {
+Component.libraryReady = function(name) {
   if (
-    BaseComponent.externalLibraries.hasOwnProperty(name) &&
-    BaseComponent.externalLibraries[name].ready
+    Component.externalLibraries.hasOwnProperty(name) &&
+    Component.externalLibraries[name].ready
   ) {
-    return BaseComponent.externalLibraries[name].ready;
+    return Component.externalLibraries[name].ready;
   }
 
   return Promise.reject(`${name} library was not required.`);

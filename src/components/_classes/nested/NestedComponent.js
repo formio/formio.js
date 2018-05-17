@@ -1,13 +1,13 @@
 'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import {checkCondition} from '../../utils/utils';
-import BaseComponent from '../base/Base';
-import Components from '../Components';
+import {checkCondition} from '../../../utils/utils';
+import Component from '../component/Component';
+import Components from '../../Components';
 
-export default class NestedComponent extends BaseComponent {
+export default class NestedComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       tree: true
     }, ...extend);
   }
@@ -179,7 +179,7 @@ export default class NestedComponent extends BaseComponent {
    * @param {Object} component - The component JSON schema to add.
    * @param {Object} data - The submission data object to house the data for this component.
    * @param {HTMLElement} before - A DOM element to insert this element before.
-   * @return {BaseComponent} - The created component instance.
+   * @return {Component} - The created component instance.
    */
   addComponent(component, data, before, noAdd) {
     data = data || this.data;
@@ -191,9 +191,9 @@ export default class NestedComponent extends BaseComponent {
     return comp;
   }
 
-  render(parent) {
+  render() {
     console.log('renderComponents');
-    return this.components.map(component => component.render(parent));
+    return this.components.map(component => component.render()).join('');
   }
 
   hydrateComponents(element) {
@@ -203,8 +203,8 @@ export default class NestedComponent extends BaseComponent {
   /**
    * Remove a component from the components array.
    *
-   * @param {BaseComponent} component - The component to remove from the components.
-   * @param {Array<BaseComponent>} components - An array of components to remove this component from.
+   * @param {Component} component - The component to remove from the components.
+   * @param {Array<Component>} components - An array of components to remove this component from.
    */
   removeComponent(component, components) {
     components = components || this.components;

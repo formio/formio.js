@@ -1,7 +1,7 @@
 /* globals Stripe */
 import _ from 'lodash';
 import Validator from '../../../components/Validator';
-import BaseComponent from '../../../components/base/Base';
+import BaseComponent from '../../../components/_classes/base/Base';
 
 // Register a custom validor to use card validition from Stripe
 if (typeof Validator.validators.stripe === 'undefined') {

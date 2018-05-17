@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../_classes/base/Base.form';
 
 import DateTimeEditData from './editForm/DateTime.edit.data';
 import DateTimeEditDate from './editForm/DateTime.edit.date';

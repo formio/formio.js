@@ -1,12 +1,12 @@
 import Choices from 'choices.js';
 import _ from 'lodash';
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 import Formio from '../../Formio';
 import * as FormioUtils from '../../utils/utils';
 
-export default class SelectComponent extends BaseComponent {
+export default class SelectComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'select',
       label: 'Select',
       key: 'select',

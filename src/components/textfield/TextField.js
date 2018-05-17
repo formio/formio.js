@@ -2,11 +2,11 @@ import _ from 'lodash';
 import maskInput from 'vanilla-text-mask';
 
 import {getInputMask} from '../../utils/utils';
-import BaseComponent from '../base/Base';
+import Input from '../_classes/input/Input';
 
-export default class TextFieldComponent extends BaseComponent {
+export default class TextFieldComponent extends Input {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Input.schema({
       label: 'Text Field',
       key: 'textField',
       type: 'textfield',
@@ -36,8 +36,8 @@ export default class TextFieldComponent extends BaseComponent {
     return TextFieldComponent.schema();
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.type = 'input';
 
     if (this.component.hasOwnProperty('spellcheck')) {
@@ -50,14 +50,7 @@ export default class TextFieldComponent extends BaseComponent {
     else {
       info.attr.type = 'text';
     }
-    info.changeEvent = 'input';
     return info;
-  }
-
-  render(parent) {
-    const element = super.render(parent);
-    const template = this.options.templates['textfield'];
-    return this.insertChild(element, this.interpolate(template.root));
   }
 
   get emptyValue() {

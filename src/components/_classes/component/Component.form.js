@@ -1,11 +1,11 @@
 import _ from 'lodash';
 
-import BaseEditConditional from './editForm/Base.edit.conditional';
-import BaseEditData from './editForm/Base.edit.data';
-import BaseEditAPI from './editForm/Base.edit.api';
-import BaseEditDisplay from './editForm/Base.edit.display';
-import BaseEditLogic from './editForm/Base.edit.logic';
-import BaseEditValidation from './editForm/Base.edit.validation';
+import ComponentEditConditional from './editForm/Component.edit.conditional';
+import ComponentEditData from './editForm/Component.edit.data';
+import ComponentEditAPI from './editForm/Component.edit.api';
+import ComponentEditDisplay from './editForm/Component.edit.display';
+import ComponentEditLogic from './editForm/Component.edit.logic';
+import ComponentEditValidation from './editForm/Component.edit.validation';
 import EditFormUtils from './editForm/utils';
 
 export default function(...extend) {
@@ -23,37 +23,37 @@ export default function(...extend) {
             label: 'Display',
             key: 'display',
             weight: 0,
-            components: BaseEditDisplay
+            components: ComponentEditDisplay
           },
           {
             label: 'Data',
             key: 'data',
             weight: 10,
-            components: BaseEditData
+            components: ComponentEditData
           },
           {
             label: 'Validation',
             key: 'validation',
             weight: 20,
-            components: BaseEditValidation
+            components: ComponentEditValidation
           },
           {
             label: 'API',
             key: 'api',
             weight: 30,
-            components: BaseEditAPI
+            components: ComponentEditAPI
           },
           {
             label: 'Conditional',
             key: 'conditional',
             weight: 40,
-            components: BaseEditConditional
+            components: ComponentEditConditional
           },
           {
             label: 'Logic',
             key: 'logic',
             weight: 50,
-            components: BaseEditLogic
+            components: ComponentEditLogic
           }
         ]
       },

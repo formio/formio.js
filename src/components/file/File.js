@@ -1,4 +1,4 @@
-import BaseComponent from '../base/Base';
+import BaseComponent from '../_classes/base/Base';
 import {uniqueName} from '../../utils/utils';
 import download from 'downloadjs';
 import Formio from '../../Formio';

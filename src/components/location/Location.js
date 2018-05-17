@@ -1,5 +1,5 @@
 /* global google */
-import BaseComponent from '../base/Base';
+import BaseComponent from '../_classes/base/Base';
 
 export default class LocationComponent extends BaseComponent {
   static schema(...extend) {

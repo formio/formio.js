@@ -1,4 +1,3 @@
 export default {
-  root: '<div class="{{classes}}" ></div>',
-  children: 'div'
+  form: '<div class="{{classes}}" ref="webform">{{children}}</div>',
 };

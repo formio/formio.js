@@ -9,7 +9,7 @@ import i18next from 'i18next';
 import Formio from './Formio';
 import Promise from 'native-promise-only';
 import Components from './components/Components';
-import NestedComponent from './components/nested/NestedComponent';
+import NestedComponent from './components/_classes/nested/NestedComponent';
 import templates from './templates';
 
 // Initialize the available forms.
@@ -765,10 +765,13 @@ export default class Webform extends NestedComponent {
     });
   }
 
-  render(parent) {
+  render() {
     console.log('render webform');
     const template = this.options.templates['webform'];
-    return super.render(this.insertChild(parent, this.interpolate(template.root, {classes: 'formio-form'}), template.children));
+    return this.interpolate(template.form, {
+      classes: 'formio-form',
+      children: super.render()
+    });
   }
 
   hydrate(element) {

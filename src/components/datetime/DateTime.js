@@ -1,7 +1,7 @@
 import Flatpickr from 'flatpickr';
 import _ from 'lodash';
 
-import BaseComponent from '../base/Base';
+import BaseComponent from '../_classes/base/Base';
 
 import {
   getDateSetting,

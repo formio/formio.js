@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import BaseComponent from '../base/Base';
+import BaseComponent from '../_classes/base/Base';
 
 export default class RadioComponent extends BaseComponent {
   static schema(...extend) {
