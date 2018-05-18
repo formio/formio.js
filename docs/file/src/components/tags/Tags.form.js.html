@@ -245,45 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/tags/Tags.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
+
+import TagsEditDisplay from &apos;./editForm/Tags.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          weight: 410,
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;delimeter&apos;,
-          label: &apos;Delimiter&apos;,
-          tooltip: &apos;What is used to separate the tags.&lt;/a&gt;&apos;
-        },
-        {
-          weight: 420,
-          type: &apos;number&apos;,
-          input: true,
-          key: &apos;maxTags&apos;,
-          label: &apos;Max Tags&apos;,
-          defaultValue: 0,
-          tooltip: &apos;The maximum amount of tags that can be added. 0 for infinity.&apos;
-        },
-        {
-          weight: 430,
-          type: &apos;select&apos;,
-          input: true,
-          key: &apos;storeas&apos;,
-          label: &apos;Store As&apos;,
-          dataSrc: &apos;values&apos;,
-          data: {
-            values: [
-              {label: &apos;String (CSV)&apos;, value: &apos;string&apos;},
-              {label: &apos;Array of Tags&apos;, value: &apos;array&apos;}
-            ]
-          }
-        }
-      ]
+      components: TagsEditDisplay
     }
   ]);
 }

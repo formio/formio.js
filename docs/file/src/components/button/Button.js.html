@@ -378,7 +378,7 @@ export default class ButtonComponent extends BaseComponent {
       }));
     }
     if (this.component.action === &apos;submit&apos;) {
-      let message = this.ce(&apos;div&apos;);
+      const message = this.ce(&apos;div&apos;);
       this.on(&apos;submitButton&apos;, () =&gt; {
         this.loading = true;
         this.disabled = true;

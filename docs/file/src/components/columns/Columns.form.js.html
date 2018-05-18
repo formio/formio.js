@@ -245,48 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/columns/Columns.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import nestedComponentForm from &apos;../nested/NestedComponent.form&apos;;
+
+import ColumnsEditDisplay from &apos;./editForm/Columns.edit.display&apos;;
+
 export default function(...extend) {
   return nestedComponentForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      components: [
-        {
-          weight: 150,
-          type: &apos;datagrid&apos;,
-          input: true,
-          key: &apos;columns&apos;,
-          label: &apos;Column Properties&apos;,
-          addAnother: &apos;Add Column&apos;,
-          tooltip: &apos;The width, offset, push, and pull settings for each column.&apos;,
-          components: [
-            {
-              type: &apos;number&apos;,
-              key: &apos;width&apos;,
-              defaultValue: 6,
-              label: &apos;Width&apos;
-            },
-            {
-              type: &apos;number&apos;,
-              key: &apos;offset&apos;,
-              defaultValue: 0,
-              label: &apos;Offset&apos;
-            },
-            {
-              type: &apos;number&apos;,
-              key: &apos;push&apos;,
-              defaultValue: 0,
-              label: &apos;Push&apos;
-            },
-            {
-              type: &apos;number&apos;,
-              key: &apos;pull&apos;,
-              defaultValue: 0,
-              label: &apos;Pull&apos;
-            }
-          ]
-        }
-      ]
+      components: ColumnsEditDisplay
     }
   ]);
 }

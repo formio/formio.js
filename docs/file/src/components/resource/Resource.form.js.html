@@ -245,62 +245,17 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/resource/Resource.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
-/* eslint-disable max-len */
+
+import ResourceEditDisplay from &apos;./editForm/Resource.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          type: &apos;select&apos;,
-          input: true,
-          dataSrc: &apos;url&apos;,
-          data: {
-            url: &apos;/form?type=resource&amp;limit=4294967295&amp;select=_id,title&apos;
-          },
-          template: &apos;&lt;span&gt;{{ item.title }}&lt;/span&gt;&apos;,
-          valueProperty: &apos;_id&apos;,
-          label: &apos;Resource&apos;,
-          key: &apos;resource&apos;,
-          weight: 50,
-          tooltip: &apos;The resource to be used with this field.&apos;
-        },
-        {
-          type: &apos;tags&apos;,
-          input: true,
-          key: &apos;selectFields&apos;,
-          label: &apos;Select Fields&apos;,
-          tooltip: &apos;The properties on the resource to return as part of the options. If left blank, all properties will be returned.&apos;,
-          placeholder: &apos;Enter the fields to select.&apos;,
-          weight: 51
-        },
-        {
-          type: &apos;tags&apos;,
-          input: true,
-          key: &apos;searchFields&apos;,
-          label: &apos;Search Fields&apos;,
-          tooltip: &apos;A list of search filters based on the fields of the resource. See the &lt;a target=\&apos;_blank\&apos; href=\&apos;https://github.com/travist/resourcejs#filtering-the-results\&apos;&gt;Resource.js documentation&lt;/a&gt; for the format of these filters.&apos;,
-          placeholder: &apos;The fields to query on the server&apos;,
-          weight: 52
-        },
-        {
-          type: &apos;textarea&apos;,
-          input: true,
-          key: &apos;template&apos;,
-          label: &apos;Item Template&apos;,
-          editor: &apos;ace&apos;,
-          as: &apos;html&apos;,
-          rows: 3,
-          weight: 53,
-          tooltip: &apos;The HTML template for the result data items.&apos;
-        }
-      ]
+      components: ResourceEditDisplay
     }
   ]);
 }
-/* eslint-enable max-len */
 </code></pre>
 
 </div>

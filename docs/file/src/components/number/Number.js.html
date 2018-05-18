@@ -379,6 +379,10 @@ export default class NumberComponent extends BaseComponent {
   }
 
   formatValue(value) {
+    if (this.component.requireDecimal &amp;&amp; value &amp;&amp; !value.includes(this.decimalSeparator)) {
+      return `${value}${this.decimalSeparator}${_.repeat(&apos;0&apos;, this.decimalLimit)}`;
+    }
+
     return value;
   }
 

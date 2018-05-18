@@ -281,7 +281,7 @@ export default class TagsComponent extends BaseComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = &apos;input&apos;;
     info.attr.type = &apos;text&apos;;
     info.changeEvent = &apos;change&apos;;
@@ -317,7 +317,7 @@ export default class TagsComponent extends BaseComponent {
 
   getValue() {
     if (this.choices) {
-      let value = this.choices.getValue(true);
+      const value = this.choices.getValue(true);
       return (this.component.storeas === &apos;string&apos;) ? value.join(this.component.delimeter) : value;
     }
     return null;

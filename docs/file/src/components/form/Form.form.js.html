@@ -245,41 +245,19 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/form/Form.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import nestedComponentForm from &apos;../nested/NestedComponent.form&apos;;
-/* eslint-disable max-len */
+
+import FormEditForm from &apos;./editForm/Form.edit.form&apos;;
+
 export default function(...extend) {
   return nestedComponentForm([
     {
       label: &apos;Form&apos;,
       key: &apos;form&apos;,
       weight: 10,
-      components: [
-        {
-          type: &apos;select&apos;,
-          input: true,
-          dataSrc: &apos;url&apos;,
-          data: {
-            url: &apos;/form?limit=4294967295&amp;select=_id,title&apos;
-          },
-          template: &apos;&lt;span&gt;{{ item.title }}&lt;/span&gt;&apos;,
-          valueProperty: &apos;_id&apos;,
-          label: &apos;Form&apos;,
-          key: &apos;form&apos;,
-          weight: 10,
-          tooltip: &apos;The form to load within this form component.&apos;
-        },
-        {
-          type: &apos;checkbox&apos;,
-          input: true,
-          weight: 20,
-          key: &apos;reference&apos;,
-          label: &apos;Save as reference&apos;,
-          tooltip: &apos;Using this option will save this field as a reference and link its value to the value of the origin record.&apos;
-        }
-      ]
+      components: FormEditForm
     }
   ], ...extend);
 }
-/* eslint-disable max-len */
 </code></pre>
 
 </div>

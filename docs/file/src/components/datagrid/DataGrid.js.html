@@ -370,7 +370,7 @@ export default class DataGridComponent extends NestedComponent {
     this.dataValue.forEach((row, rowIndex) =&gt; tableRows.push(this.buildRow(row, rowIndex)));
 
     // Create the header (must happen after build rows to get correct column length)
-    let header = this.createHeader();
+    const header = this.createHeader();
     if (header) {
       this.tableElement.appendChild(header);
     }
@@ -439,7 +439,7 @@ export default class DataGridComponent extends NestedComponent {
         id: `${this.id}-drag-container`,
         class: &apos;drag-container&apos;
       }, this.ce(&apos;div&apos;, {
-        id: this.id + &apos;-placeholder&apos;,
+        id: `${this.id}-placeholder`,
         class: &apos;alert alert-info&apos;,
         style: &apos;text-align:center; margin-bottom: 0px;&apos;,
         role: &apos;alert&apos;
@@ -465,10 +465,10 @@ export default class DataGridComponent extends NestedComponent {
       return;
     }
 
-    let container = this.ce(&apos;td&apos;);
+    const container = this.ce(&apos;td&apos;);
     container.noDrop = true;
-    let column = _.clone(col);
-    let options = _.clone(this.options);
+    const column = _.clone(col);
+    const options = _.clone(this.options);
     options.name += `[${colIndex}]`;
     const comp = this.createComponent(_.assign({}, column, {
       label: column.dataGridLabel ? column.label : false,
@@ -567,12 +567,8 @@ export default class DataGridComponent extends NestedComponent {
     _.each(this.rows, (row) =&gt; {
       const value = {};
       _.each(row, (col) =&gt; {
-        if (
-          col &amp;&amp;
-          col.component &amp;&amp;
-          col.component.key
-        ) {
-          _.set(value, col.component.key, col.getValue());
+        if (col &amp;&amp; col.key) {
+          _.set(value, col.key, col.getValue());
         }
       });
       values.push(value);

@@ -245,23 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/time/Time.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
+
+import TimeEditDisplay from &apos;./editForm/Time.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;format&apos;,
-          label: &apos;Format&apos;,
-          placeholder: &apos;Format&apos;,
-          tooltip: &apos;The moment.js format for saving the value of this field.&apos;,
-          weight: 50
-        }
-      ]
+      components: TimeEditDisplay
     }
   ]);
 }

@@ -245,64 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/panel/Panel.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import nestedComponentForm from &apos;../nested/NestedComponent.form&apos;;
+
+import PanelEditDisplay from &apos;./editForm/Panel.edit.display&apos;;
+
 export default function(...extend) {
   return nestedComponentForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          weight: 10,
-          type: &apos;textfield&apos;,
-          input: true,
-          placeholder: &apos;Panel Title&apos;,
-          label: &apos;Title&apos;,
-          key: &apos;title&apos;,
-          tooltip: &apos;The title text that appears in the header of this panel.&apos;
-        },
-        {
-          weight: 20,
-          type: &apos;textarea&apos;,
-          input: true,
-          key: &apos;tooltip&apos;,
-          label: &apos;Tooltip&apos;,
-          placeholder: &apos;To add a tooltip to this field, enter text here.&apos;,
-          tooltip: &apos;Adds a tooltip to the side of this field.&apos;
-        },
-        {
-          weight: 30,
-          type: &apos;select&apos;,
-          input: true,
-          label: &apos;Theme&apos;,
-          key: &apos;theme&apos;,
-          dataSrc: &apos;values&apos;,
-          data: {
-            values: [
-              {label: &apos;Default&apos;, value: &apos;default&apos;},
-              {label: &apos;Primary&apos;, value: &apos;primary&apos;},
-              {label: &apos;Info&apos;, value: &apos;info&apos;},
-              {label: &apos;Success&apos;, value: &apos;success&apos;},
-              {label: &apos;Danger&apos;, value: &apos;danger&apos;},
-              {label: &apos;Warning&apos;, value: &apos;warning&apos;}
-            ]
-          }
-        },
-        {
-          weight: 40,
-          type: &apos;select&apos;,
-          input: true,
-          label: &apos;Show Breadcrumb&apos;,
-          key: &apos;breadcrumb&apos;,
-          dataSrc: &apos;values&apos;,
-          data: {
-            values: [
-              {label: &apos;Yes&apos;, value: &apos;default&apos;},
-              {label: &apos;No&apos;, value: &apos;none&apos;}
-            ]
-          }
-        }
-      ]
+      components: PanelEditDisplay
     }
   ]);
 }

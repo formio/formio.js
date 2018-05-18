@@ -328,6 +328,7 @@ export default [
       {
         type: &apos;htmlelement&apos;,
         tag: &apos;div&apos;,
+        /* eslint-disable prefer-template */
         content: &apos;&lt;p&gt;Execute custom logic using &lt;a href=&quot;http://jsonlogic.com/&quot; target=&quot;_blank&quot;&gt;JSONLogic&lt;/a&gt;.&lt;/p&gt;&apos; +
           &apos;&lt;h5&gt;Example:&lt;/h5&gt;&apos; +
           &apos;&lt;pre&gt;&apos; + JSON.stringify({
@@ -337,6 +338,7 @@ export default [
               &quot;Your name must be &apos;Bob&apos;!&quot;
             ]
           }, null, 2) + &apos;&lt;/pre&gt;&apos;
+        /* eslint-enable prefer-template */
       },
       {
         type: &apos;textarea&apos;,

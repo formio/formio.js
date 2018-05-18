@@ -245,20 +245,23 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textfield/TextField.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
+
+import TextFieldEditData from &apos;./editForm/TextField.edit.data&apos;;
 import TextFieldEditDisplay from &apos;./editForm/TextField.edit.display&apos;;
 import TextFieldEditValidation from &apos;./editForm/TextField.edit.validation&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
       components: TextFieldEditDisplay
     },
     {
-      label: &apos;Validation&apos;,
+      key: &apos;data&apos;,
+      components: TextFieldEditData
+    },
+    {
       key: &apos;validation&apos;,
-      weight: 20,
       components: TextFieldEditValidation
     }
   ]);

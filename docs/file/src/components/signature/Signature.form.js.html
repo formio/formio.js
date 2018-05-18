@@ -245,59 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/signature/Signature.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
+
+import SignatureEditDisplay from &apos;./editForm/Signature.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;footer&apos;,
-          label: &apos;Footer Label&apos;,
-          tooltip: &apos;The footer text that appears below the signature area.&apos;,
-          placeholder: &apos;Footer Label&apos;,
-          weight: 10
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;width&apos;,
-          label: &apos;Width&apos;,
-          tooltip: &apos;The width of the signature area.&apos;,
-          placeholder: &apos;Width&apos;,
-          weight: 50
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;height&apos;,
-          label: &apos;Height&apos;,
-          tooltip: &apos;The height of the signature area.&apos;,
-          placeholder: &apos;Height&apos;,
-          weight: 51
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;backgroundColor&apos;,
-          label: &apos;Background Color&apos;,
-          tooltip: &apos;The background color of the signature area.&apos;,
-          placeholder: &apos;Background Color&apos;,
-          weight: 52
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;penColor&apos;,
-          label: &apos;Pen Color&apos;,
-          tooltip: &apos;The ink color for the signature area.&apos;,
-          placeholder: &apos;Pen Color&apos;,
-          weight: 53
-        }
-      ]
+      components: SignatureEditDisplay
     }
   ]);
 }

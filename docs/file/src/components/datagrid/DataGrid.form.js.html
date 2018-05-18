@@ -245,40 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/datagrid/DataGrid.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
+
+import DataGridEditDisplay from &apos;./editForm/DataGrid.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          type: &apos;textfield&apos;,
-          label: &apos;Add Another Text&apos;,
-          key: &apos;addAnother&apos;,
-          tooltip: &apos;Set the text of the Add Another button.&apos;,
-          placeholder: &apos;Add Another&apos;,
-          weight: 410,
-          input: true
-        },
-        {
-          type: &apos;select&apos;,
-          label: &apos;Add Another Position&apos;,
-          key: &apos;addAnotherPosition&apos;,
-          dataSrc: &apos;values&apos;,
-          tooltip: &apos;Position for Add Another button with respect to Data Grid Array.&apos;,
-          defaultValue: &apos;bottom&apos;,
-          input: true,
-          data: {
-            values: [
-              {label: &apos;Top&apos;, value: &apos;top&apos;},
-              {label: &apos;Bottom&apos;, value: &apos;bottom&apos;},
-              {label: &apos;Both&apos;, value: &apos;both&apos;}
-            ]
-          },
-          weight: 420
-        }
-      ]
+      components: DataGridEditDisplay
     }
   ]);
 }
