@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Possibility to show hidden fields using options
 ### Fixed
  - Require Decimal behavior for Number and Currency components
+ - Hide Label functionality for Panel component
+ - Tooltip being hidden for Panels when label is hidden
 
 ### 3.0.0
 #### Breaking Changes
