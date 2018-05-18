@@ -4,15 +4,6 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
-### Added
- - Possibility to unselect value for Select component.
- - Possibility to show hidden fields using options
-### Fixed
- - Require Decimal behavior for Number and Currency components
- - Hide Label functionality for Panel component
- - Tooltip being hidden for Panels when label is hidden
-
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -47,6 +38,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Modified all JavaScript execution to make it more consistent.
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
+
+## 3.0.0-alpha.14
+### Added
+ - Possibility to unselect value for Select component.
+ - Possibility to show hidden fields using options
+
+### Fixed
+ - How TextArea is rendered when it is configured as wysiwyg and is being viewed as readOnly
+ - Problem where malformed functions in "custom" parameters could crash renderer.
+ - Issues with the Checkbox component configured as a Radio not setting values correctly.
+ - Require Decimal behavior for Number and Currency components
+ - Hide Label functionality for Panel component
+ - Tooltip being hidden for Panels when label is hidden
+
+### Changed
+ - Upgraded i18next@11.3.2 flatpickr@4.5.0
 
 ## 3.0.0-alpha.6
 ### Changed
