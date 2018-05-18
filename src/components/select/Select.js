@@ -59,7 +59,11 @@ export default class SelectComponent extends BaseComponent {
         if (this.component.refreshOn === 'data') {
           this.refreshItems();
         }
-        else if (event.changed && (event.changed.key === this.component.refreshOn)) {
+        else if (
+          event.changed &&
+          event.changed.component &&
+          (event.changed.component.key === this.component.refreshOn)
+        ) {
           this.refreshItems();
         }
       });
