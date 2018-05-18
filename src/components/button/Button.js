@@ -48,6 +48,8 @@ export default class ButtonComponent extends Input {
     if (this.component.customClass) {
       info.attr.class += ` ${this.component.customClass}`;
     }
+    info.content = this.t(this.component.label);
+    console.log(info);
     return info;
   }
 
@@ -58,20 +60,20 @@ export default class ButtonComponent extends Input {
   }
 
   set loading(loading) {
-    this.setLoading(this.buttonElement, loading);
+    this.setLoading(this.refs.button, loading);
   }
 
   set disabled(disabled) {
     super.disabled = disabled;
-    this.setDisabled(this.buttonElement, disabled);
+    this.setDisabled(this.refs.button, disabled);
   }
 
   // No label needed for buttons.
   createLabel() {}
 
   createInput(container) {
-    this.buttonElement = super.createInput(container);
-    return this.buttonElement;
+    this.refs.button = super.createInput(container);
+    return this.refs.button;
   }
 
   get emptyValue() {
@@ -107,9 +109,7 @@ export default class ButtonComponent extends Input {
     return this.ce('span', {class: 'help-block'}, this.text(message));
   }
 
-  build() {
-
-  }
+  build() {}
 
   /* eslint-disable max-statements */
   oldbuild() {
@@ -121,29 +121,33 @@ export default class ButtonComponent extends Input {
     this.hasError = false;
     this.createElement();
     this.createInput(this.element);
-    this.addShortcut(this.buttonElement);
-    this.hook('input', this.buttonElement, this.element);
+    this.addShortcut(this.refs.button);
+    this.hook('input', this.refs.button, this.element);
     if (this.component.leftIcon) {
-      this.buttonElement.appendChild(this.ce('span', {
+      this.refs.button.appendChild(this.ce('span', {
         class: this.component.leftIcon
       }));
-      this.buttonElement.appendChild(this.text(' '));
+      this.refs.button.appendChild(this.text(' '));
     }
 
     if (this.component.label) {
       this.labelElement = this.text(this.addShortcutToLabel());
-      this.buttonElement.appendChild(this.labelElement);
-      this.createTooltip(this.buttonElement, null, this.iconClass('question-sign'));
+      this.refs.button.appendChild(this.labelElement);
+      this.createTooltip(this.refs.button, null, this.iconClass('question-sign'));
     }
     if (this.component.rightIcon) {
-      this.buttonElement.appendChild(this.text(' '));
-      this.buttonElement.appendChild(this.ce('span', {
+      this.refs.button.appendChild(this.text(' '));
+      this.refs.button.appendChild(this.ce('span', {
         class: this.component.rightIcon
       }));
     }
   }
 
-  hydrateDisabled(element) {
+  hydrate(element) {
+    super.hydrate(element);
+    this.loadRefs = {input: 'single'};
+    this.refs.button = this.refs.input[0];
+
     if (this.component.action === 'submit') {
       const message = this.ce('div');
       this.on('submitButton', () => {
@@ -199,7 +203,7 @@ export default class ButtonComponent extends Input {
         this.loading = false;
       }, true);
     }
-    this.addEventListener(this.buttonElement, 'click', (event) => {
+    this.addEventListener(this.refs.button, 'click', (event) => {
       this.dataValue = true;
       switch (this.component.action) {
         case 'saveState':
@@ -384,7 +388,7 @@ export default class ButtonComponent extends Input {
 
   destroy() {
     super.destroy.apply(this, Array.prototype.slice.apply(arguments));
-    this.removeShortcut(this.buttonElement);
+    this.removeShortcut(this.refs.button);
   }
 
   focus() {

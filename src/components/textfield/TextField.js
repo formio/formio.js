@@ -50,6 +50,7 @@ export default class TextFieldComponent extends Input {
     else {
       info.attr.type = 'text';
     }
+    info.changeEvent = 'input';
     return info;
   }
 
@@ -57,30 +58,30 @@ export default class TextFieldComponent extends Input {
     return '';
   }
 
-  createInput(container) {
-    if (!this.isMultipleMasksField) {
-      return super.createInput(container);
-    }
-    //if component should have multiple masks
-    const id = `${this.component.key}`;
-    const attr = this.info.attr;
-    attr.class += ' formio-multiple-mask-input';
-    attr.id = id;
-    const textInput = this.ce('input', attr);
-
-    const inputGroup = this.ce('div', {
-      class: 'input-group formio-multiple-mask-container'
-    });
-    this.addPrefix(textInput, inputGroup);
-    const maskInput = this.createMaskInput(textInput);
-    this.addTextInputs(textInput, maskInput, inputGroup);
-    this.addSuffix(textInput, inputGroup);
-
-    this.errorContainer = container;
-    this.setInputStyles(inputGroup);
-    container.appendChild(inputGroup);
-    return inputGroup;
-  }
+  // createInput(container) {
+  //   if (!this.isMultipleMasksField) {
+  //     return super.createInput(container);
+  //   }
+  //   //if component should have multiple masks
+  //   const id = `${this.component.key}`;
+  //   const attr = this.info.attr;
+  //   attr.class += ' formio-multiple-mask-input';
+  //   attr.id = id;
+  //   const textInput = this.ce('input', attr);
+  //
+  //   const inputGroup = this.ce('div', {
+  //     class: 'input-group formio-multiple-mask-container'
+  //   });
+  //   this.addPrefix(textInput, inputGroup);
+  //   const maskInput = this.createMaskInput(textInput);
+  //   this.addTextInputs(textInput, maskInput, inputGroup);
+  //   this.addSuffix(textInput, inputGroup);
+  //
+  //   this.errorContainer = container;
+  //   this.setInputStyles(inputGroup);
+  //   container.appendChild(inputGroup);
+  //   return inputGroup;
+  // }
 
   setInputMask(input, inputMask) {
     if (!this.isMultipleMasksField) {
@@ -123,8 +124,8 @@ export default class TextFieldComponent extends Input {
     }
     const maskName = value.maskName || '';
     const textValue = value.value || '';
-    const textInput = this.inputs[index] ? this.inputs[index].text : undefined;
-    const maskInput = this.inputs[index] ? this.inputs[index].mask : undefined;
+    const textInput = this.refs.input[index] ? this.refs.input[index].text : undefined;
+    const maskInput = this.refs.input[index] ? this.refs.input[index].mask : undefined;
     if (textInput && maskInput) {
       maskInput.value = maskName;
       textInput.value = textValue;
@@ -136,7 +137,7 @@ export default class TextFieldComponent extends Input {
     if (!this.isMultipleMasksField) {
       return super.getValueAt(index);
     }
-    const textField = this.inputs[index];
+    const textField = this.refs.input[index];
     return {
       value: textField && textField.text ? textField.text.value : undefined,
       maskName: textField && textField.mask ? textField.mask.value : undefined
@@ -150,13 +151,13 @@ export default class TextFieldComponent extends Input {
     return input && input.text ? input.text : input;
   }
 
-  buildInput(container, value, index) {
-    if (!this.isMultipleMasksField) {
-      return super.buildInput(container, value, index);
-    }
-    this.createInput(container);
-    this.setValueAt(index, value);
-  }
+  // buildInput(container, value, index) {
+  //   if (!this.isMultipleMasksField) {
+  //     return super.buildInput(container, value, index);
+  //   }
+  //   this.createInput(container);
+  //   this.setValueAt(index, value);
+  // }
 
   isEmpty(value) {
     if (!this.isMultipleMasksField) {
@@ -181,50 +182,16 @@ export default class TextFieldComponent extends Input {
     return maskInput;
   }
 
-  addTextInputs(textInput, maskInput, container) {
-    if (textInput && maskInput && container) {
-      const input = {
-        mask: maskInput,
-        text: textInput
-      };
-      this.inputs.push(input);
-      container.appendChild(maskInput);
-      container.appendChild(textInput);
-    }
-    this.hook('input', textInput, container);
-    this.addInputEventListener(textInput);
-    this.addInputSubmitListener(textInput);
-  }
-
-  updateMask(textInput, newMaskName) {
-    const newMask = this.getMaskByName(newMaskName);
-    //destroy previous mask
-    if (textInput.mask) {
-      textInput.mask.destroy();
-    }
-    //set new text field mask
-    this.setInputMask(textInput, newMask);
-    //update text field value after new mask is applied
-    this.updateValue();
-  }
-
-  get maskOptions() {
-    return _.map(this.component.inputMasks, mask => {
-      return {
-        label: mask.label,
-        value: mask.label
-      };
-    });
-  }
-
-  get isMultipleMasksField() {
-    return this.component.allowMultipleMasks && !!this.component.inputMasks && !!this.component.inputMasks.length;
-  }
-
-  getMaskByName(maskName) {
-    const inputMask = _.find(this.component.inputMasks, (inputMask) => {
-      return inputMask.label === maskName;
-    });
-    return inputMask ? inputMask.mask : undefined;
-  }
+  // addTextInputs(textInput, maskInput, container) {
+  //   if (textInput && maskInput && container) {
+  //     const input = {
+  //       mask: maskInput,
+  //       text: textInput
+  //     };
+  //   this.refs.input.push(input);
+  //     container.appendChild(maskInput);
+  //     container.appendChild(textInput);
+  //   }
+  //   this.hook('input', textInput, container);
+  // }
 }

@@ -229,18 +229,6 @@ export default class Component {
     this.error = '';
 
     /**
-     * An array of all of the input HTML Elements that have been added to this component.
-     * @type {Array}
-     */
-    this.inputs = [];
-
-    /**
-     * The basic component information which tells the Component how to render the input element of the components that derive from this class.
-     * @type {null}
-     */
-    this.info = null;
-
-    /**
      * The row path of this component.
      * @type {number}
      */
@@ -330,7 +318,7 @@ export default class Component {
   /* eslint-enable max-statements */
 
   get hasInput() {
-    return this.component.input || this.inputs.length;
+    return this.component.input || this.refs.input.length;
   }
 
   get defaultSchema() {
@@ -454,6 +442,14 @@ export default class Component {
     if (this.events) {
       this.events.emit(`formio.${event}`, data);
     }
+  }
+
+  getTemplate(name) {
+    return this.options.templates[name][this.options.mode || 'form'];
+  }
+
+  renderTemplate(name, data) {
+    return this.interpolate(this.getTemplate(name), data);
   }
 
   performInputMapping(input) {
@@ -616,9 +612,8 @@ export default class Component {
     this.hydrate(element);
   }
 
-  render(children = '') {
-    const template = this.options.templates['component'];
-    return this.interpolate(template.form, {
+  render(children = `Unknown component: ${this.component.type}`) {
+    return this.renderTemplate('component', {
       id: this.id,
       classes: this.className,
       styles: this.customStyle,
@@ -627,6 +622,7 @@ export default class Component {
   }
 
   hydrate(element) {
+    this.element = element;
     this.loadRefs(element, {errorContainer: 'single'});
     return Promise.resolve();
   }
@@ -836,46 +832,12 @@ export default class Component {
   }
 
   /**
-   * Adds a new empty value to the data array.
-   */
-  addNewValue(value) {
-    if (value === undefined) {
-      value = this.emptyValue;
-    }
-    let dataValue = this.dataValue || [];
-    if (!Array.isArray(dataValue)) {
-      dataValue = [dataValue];
-    }
-
-    if (Array.isArray(value)) {
-      dataValue = dataValue.concat(value);
-    }
-    else {
-      dataValue.push(value);
-    }
-    this.dataValue = dataValue;
-  }
-
-  /**
-   * Adds a new empty value to the data array, and add a new row to contain it.
-   */
-  addValue() {
-    this.addNewValue();
-    this.buildRows();
-    this.checkConditions(this.root ? this.root.data : this.data);
-    this.restoreValue();
-    if (this.root) {
-      this.root.onChange();
-    }
-  }
-
-  /**
    * Removes a value out of the data array and rebuild the rows.
    * @param {number} index - The index of the data element to remove.
    */
   removeValue(index) {
     this.splice(index);
-    this.buildRows();
+    this.redraw();
     this.restoreValue();
     if (this.root) {
       this.root.onChange();
@@ -1176,11 +1138,13 @@ export default class Component {
 
   redraw() {
     // Don't bother if we have not built yet.
-    if (!this.isBuilt) {
+    if (!this.element) {
       return;
     }
     this.clear();
-    this.build();
+    this.destroy();
+    this.element.innerHTML = this.render();
+    this.hydrate(this.element);
   }
 
   /**
@@ -1197,7 +1161,7 @@ export default class Component {
         window.removeEventListener(handler.event, handler.func);
       }
     });
-    _.each(this.inputs, (input) => {
+    _.each(this.refs.input, (input) => {
       input = this.performInputMapping(input);
       if (input.mask) {
         input.mask.destroy();
@@ -1207,7 +1171,7 @@ export default class Component {
       this.tooltip.dispose();
       this.tooltip = null;
     }
-    this.inputs = [];
+    this.refs.input = [];
   }
 
   /**
@@ -1219,7 +1183,7 @@ export default class Component {
    *
    * @return {HTMLElement} - The created element.
    */
-  renderTemplate(template, data, actions = []) {
+  renderTemplateOld(template, data, actions = []) {
     // Create a container div.
     const div = this.ce('div');
 
@@ -1484,7 +1448,7 @@ export default class Component {
 
     // Add error classes
     this.addClass(this.element, 'has-error');
-    this.inputs.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
+    this.refs.input.forEach((input) => this.addClass(this.performInputMapping(input), 'is-invalid'));
     if (dirty && this.options.highlightErrors) {
       this.addClass(this.element, 'alert alert-danger');
     }
@@ -1604,29 +1568,6 @@ export default class Component {
     }
   }
 
-  addInputSubmitListener(input) {
-    if (!this.options.submitOnEnter) {
-      return;
-    }
-    this.addEventListener(input, 'keypress', (event) => {
-      const key = event.keyCode || event.which;
-      if (key === 13) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.emit('submitButton');
-      }
-    });
-  }
-
-  /**
-   * Add new input element listeners.
-   *
-   * @param input
-   */
-  addInputEventListener(input) {
-    this.addEventListener(input, this.info.changeEvent, () => this.updateValue());
-  }
-
   /**
    * Add a new input to this comonent.
    *
@@ -1635,17 +1576,7 @@ export default class Component {
    * @param noSet
    */
   addInput(input, container) {
-    if (!input) {
-      return;
-    }
-    if (input && container) {
-      input = container.appendChild(input);
-    }
-    this.inputs.push(input);
-    this.hook('input', input, container);
-    this.addInputEventListener(input);
-    this.addInputSubmitListener(input);
-    return input;
+    console.log('called Component.addInput');
   }
 
   get wysiwygDefault() {
@@ -1798,7 +1729,7 @@ export default class Component {
    * @returns {*}
    */
   getValueAt(index) {
-    const input = this.performInputMapping(this.inputs[index]);
+    const input = this.performInputMapping(this.refs.input[index]);
     return input ? input.value : undefined;
   }
 
@@ -1815,8 +1746,8 @@ export default class Component {
       return this.dataValue;
     }
     const values = [];
-    for (const i in this.inputs) {
-      if (this.inputs.hasOwnProperty(i)) {
+    for (const i in this.refs.input) {
+      if (this.refs.input.hasOwnProperty(i)) {
         if (!this.component.multiple) {
           return this.getValueAt(i);
         }
@@ -2030,14 +1961,14 @@ export default class Component {
       this.addInputError(message, dirty);
     }
     else {
-      this.inputs.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
+      this.refs.input.forEach((input) => this.removeClass(this.performInputMapping(input), 'is-invalid'));
       if (this.options.highlightErrors) {
         this.removeClass(this.element, 'alert alert-danger');
       }
       this.removeClass(this.element, 'has-error');
       this.error = null;
     }
-    _.each(this.inputs, (input) => {
+    _.each(this.refs.input, (input) => {
       input = this.performInputMapping(input);
       if (typeof input.setCustomValidity === 'function') {
         input.setCustomValidity(message, dirty);
@@ -2055,7 +1986,7 @@ export default class Component {
     if (value === null || value === undefined) {
       value = this.defaultValue;
     }
-    const input = this.performInputMapping(this.inputs[index]);
+    const input = this.performInputMapping(this.refs.input[index]);
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
     }
@@ -2091,10 +2022,10 @@ export default class Component {
     if (this.component.multiple && !Array.isArray(value)) {
       value = [value];
     }
-    this.buildRows(value);
+    // this.buildRows(value);
     const isArray = Array.isArray(value);
-    for (const i in this.inputs) {
-      if (this.inputs.hasOwnProperty(i)) {
+    for (const i in this.refs.input) {
+      if (this.refs.input.hasOwnProperty(i)) {
         this.setValueAt(i, isArray ? value[i] : value);
       }
     }
@@ -2139,7 +2070,7 @@ export default class Component {
     this._disabled = disabled;
 
     // Disable all inputs.
-    _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));
+    _.each(this.refs.input, (input) => this.setDisabled(this.performInputMapping(input), disabled));
   }
 
   setDisabled(element, disabled) {
@@ -2290,7 +2221,7 @@ export default class Component {
   }
 
   focus() {
-    const input = this.performInputMapping(this.inputs[0]);
+    const input = this.performInputMapping(this.refs.input[0]);
     if (input) {
       input.focus();
     }

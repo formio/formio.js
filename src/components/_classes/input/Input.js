@@ -1,45 +1,8 @@
 import Multivalue from '../multivalue/Multivalue';
 import {getInputMask} from '../../../utils/utils';
+import _ from 'lodash';
 
 export default class Input extends Multivalue {
-  get labelInfo() {
-    const label = {};
-    label.hidden = this.labelIsHidden();
-
-    label.className = 'control-label';
-    label.style = '';
-    label.labelPosition = this.component.labelPosition;
-    label.tooltipClass = `${this.iconClass('question-sign')} text-muted`;
-
-    // Determine label styles/classes depending on position.
-    if (label.labelPosition === 'bottom') {
-      label.className += ' control-label--bottom';
-    }
-    else if (label.labelPosition && label.labelPosition !== 'top') {
-      label.labelWidth = this.getLabelWidth();
-      label.labelMargin = this.getLabelMargin();
-
-      // Label is on the left or right.
-      if (this.labelOnTheLeft(label.labelPosition)) {
-        label.style += `float: left; width: ${label.labelWidth}%; margin-right: ${label.labelMargin}%; `;
-      }
-      else if (this.labelOnTheRight(label.labelPosition)) {
-        label.style += `float: right; width: ${label.labelWidth}%; margin-left: ${label.labelMargin}%; `;
-      }
-      if (this.rightAlignedLabel(label.labelPosition)) {
-        label.style += 'text-align: right; ';
-      }
-    }
-
-    if (this.hasInput && this.component.validate && this.component.validate.required) {
-      label.className += ' field-required';
-    }
-    if (this.info.attr.id) {
-      label.for = this.info.attr.id;
-    }
-    return label;
-  }
-
   get inputInfo() {
     const attr = {
       name: this.options.name,
@@ -58,9 +21,44 @@ export default class Input extends Multivalue {
 
     return {
       type: 'input',
+      changeEvent: 'input',
+      content: '',
       attr
     };
   }
+
+  updateMask(textInput, newMaskName) {
+    const newMask = this.getMaskByName(newMaskName);
+    //destroy previous mask
+    if (textInput.mask) {
+      textInput.mask.destroy();
+    }
+    //set new text field mask
+    this.setInputMask(textInput, newMask);
+    //update text field value after new mask is applied
+    this.updateValue();
+  }
+
+  get maskOptions() {
+    return _.map(this.component.inputMasks, mask => {
+      return {
+        label: mask.label,
+        value: mask.label
+      };
+    });
+  }
+
+  get isMultipleMasksField() {
+    return this.component.allowMultipleMasks && !!this.component.inputMasks && !!this.component.inputMasks.length;
+  }
+
+  getMaskByName(maskName) {
+    const inputMask = _.find(this.component.inputMasks, (inputMask) => {
+      return inputMask.label === maskName;
+    });
+    return inputMask ? inputMask.mask : undefined;
+  }
+
   /**
    * Sets the input mask for an input.
    * @param {HTMLElement} input - The html input to apply the mask to.
@@ -100,16 +98,27 @@ export default class Input extends Multivalue {
     }
   }
 
-  renderElement() {
-    const template = this.options.templates['input'];
-    return this.interpolate(template.form, {
+  renderElement(value, index) {
+    return this.renderTemplate('input', {
       component: this.component,
-      label: this.labelInfo,
       input: this.inputInfo,
+      value,
+      index
     });
   }
 
-  hydrateElement(element) {
-    console.log('hydrate element', element);
+  hydrateElement(element, index) {
+    this.addEventListener(this.refs.input[index], this.inputInfo.changeEvent, () => this.updateValue());
+
+    if (this.options.submitOnEnter) {
+      this.addEventListener(this.refs.input[index], 'keypress', (event) => {
+        const key = event.keyCode || event.which;
+        if (key === 13) {
+          event.preventDefault();
+          event.stopPropagation();
+          this.emit('submitButton');
+        }
+      });
+    }
   }
 }

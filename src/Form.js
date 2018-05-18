@@ -20,10 +20,22 @@ export default class Form {
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
    * form.display();
    */
-  constructor(source, options) {
+  constructor() {
     this.instance = null;
-    this.form = source;
-    this.options = options;
+    if (arguments[0] instanceof HTMLElement) {
+      this.options = arguments[2];
+      this.form = arguments[1];
+      this.display(arguments[0]);
+    }
+    else {
+      this.options = arguments[1];
+      this.form = arguments[0];
+    }
+
+    return this.ready = new Promise((resolve, reject) => {
+      this.readyResolve = resolve;
+      this.readyReject = reject;
+    });
   }
 
   create(display) {
@@ -38,7 +50,6 @@ export default class Form {
   }
 
   set form(value) {
-    console.log('set form');
     if (typeof value === 'string') {
       return this.ready = (new Formio(value)).loadForm().then(form => {
         this.instance = this.create(form.display);
@@ -46,13 +57,19 @@ export default class Form {
         this.instance.nosubmit = false;
         this.instance.loadSubmission();
         this._form = this.instance.form = form;
-        return this.instance.ready.then(() => this.instance);
+        return this.instance.ready.then(() => {
+          this.readyResolve(this.instance);
+          return this.ready;
+        });
       });
     }
     else {
       this.instance = this.create(value.display);
       this._form = this.instance.form = value;
-      return this.ready = this.instance.ready.then(() => this.instance);
+      return this.instance.ready.then(() => {
+        this.readyResolve(this.instance);
+        return this.ready;
+      });
     }
   }
 
@@ -88,21 +105,19 @@ export default class Form {
 
   display(element) {
     this.element = element;
-    return this.render(this.element).then(html => {
-      element.innerHTML = html;
+    return this.render().then(html => {
+      this.element.innerHTML = html;
       return this.hydrate(this.element).then(() => this.instance);
     });
   }
 
   render() {
-    console.log('render');
     this.empty();
     return this.ready.then(instance => instance.render());
   }
 
   hydrate(element) {
     this.element = element;
-    console.log('hydrate');
     return this.ready.then(instance => instance.hydrate(this.element));
   }
 }

@@ -98,7 +98,7 @@ export default class EditGridComponent extends NestedComponent {
     if (!templateHeader) {
       return this.text('');
     }
-    return this.ce('li', {class: 'list-group-item list-group-header'}, this.renderTemplate(templateHeader, {
+    return this.ce('li', {class: 'list-group-item list-group-header'}, this.renderTemplateOld(templateHeader, {
       components: this.component.components,
       util: FormioUtils,
       value: this.dataValue,
@@ -168,7 +168,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       wrapper.appendChild(
-        this.renderTemplate(rowTemplate,
+        this.renderTemplateOld(rowTemplate,
           {
             data: this.data,
             row,
@@ -202,7 +202,7 @@ export default class EditGridComponent extends NestedComponent {
     if (!footerTemplate) {
       return this.text('');
     }
-    return this.ce('li', {class: 'list-group-item list-group-footer'}, this.renderTemplate(footerTemplate, {
+    return this.ce('li', {class: 'list-group-item list-group-footer'}, this.renderTemplateOld(footerTemplate, {
       components: this.component.components,
       util: FormioUtils,
       value: this.dataValue,

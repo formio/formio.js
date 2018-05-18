@@ -29,7 +29,6 @@ import PanelComponent from './panel/Panel';
 import ColumnComponent from './columns/Column';
 import ColumnsComponent from './columns/Columns';
 import TableComponent from './table/Table';
-import UnknownComponent from './unknown/Unknown';
 import RadioComponent from './radio/Radio';
 import SelectBoxesComponent from './selectboxes/SelectBoxes';
 import SurveyComponent from './survey/Survey';
@@ -71,7 +70,6 @@ export default {
   column: ColumnComponent,
   columns: ColumnsComponent,
   table: TableComponent,
-  unknown: UnknownComponent,
   radio: RadioComponent,
   selectboxes: SelectBoxesComponent,
   survey: SurveyComponent,

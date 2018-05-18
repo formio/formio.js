@@ -13,25 +13,21 @@ export default class Multivalue extends Field {
     }
 
     // If multiple value field.
-    console.log(this.dataValue, this.dataValue.map(this.renderRow.bind(this)).join(''));
-
-    const template = this.options.templates['multiValueTable'];
-    return super.render(this.interpolate(template.form, {
+    return super.render(this.renderTemplate('multiValueTable', {
       rows: this.dataValue.map(this.renderRow.bind(this)).join(''),
       addAnother: this.addAnother,
     }));
   }
 
   renderRow(value, index) {
-    const template = this.options.templates['multiValueRow'];
-    return this.interpolate(template.form, {
+    return this.renderTemplate('multiValueRow', {
       index,
-      element: `<div ref="element">${this.renderElement(this.dataValue)}</div>`,
+      element: `${this.renderElement(value, index)}`,
     });
   }
 
   hydrate(dom) {
-    this.loadRefs(dom, {tooltip: 'single', element: 'multiple'});
+    this.loadRefs(dom, {tooltip: 'single', addButton: 'single', input: 'multiple', removeRow: 'multiple'});
 
     if (this.refs.tooltip) {
       this.tooltip = new Tooltip(this.refs.tooltip, {
@@ -44,26 +40,56 @@ export default class Multivalue extends Field {
       });
     }
 
-    if (this.refs.element) {
-      this.refs.element.forEach(this.hydrateElement.bind(this));
-    }
+    this.refs.input.forEach(this.hydrateElement.bind(this));
+    this.refs.removeRow.forEach((removeButton, index) => {
+      this.addEventListener(removeButton, 'click', (event) => {
+        event.preventDefault();
+        this.removeValue(index);
+      });
+    });
 
-    // this.addEventListener(addButton, 'click', (event) => {
-    //   event.preventDefault();
-    //   this.addValue();
-    // });
-    //
-    // this.addEventListener(removeButton, 'click', (event) => {
-    //   event.preventDefault();
-    //   this.removeValue(index);
-    // });
+    // If single value field.
+    if (this.component.multiple) {
+      this.addEventListener(this.refs.addButton, 'click', (event) => {
+        event.preventDefault();
+        this.addValue();
+      });
+    }
 
     super.hydrate(dom);
   }
 
-  dehydrate() {
-    if (this.tooltip) {
-      this.tooltip.dispose();
+  /**
+   * Adds a new empty value to the data array.
+   */
+  addNewValue(value) {
+    if (value === undefined) {
+      value = this.emptyValue;
+    }
+    let dataValue = this.dataValue || [];
+    if (!Array.isArray(dataValue)) {
+      dataValue = [dataValue];
+    }
+
+    if (Array.isArray(value)) {
+      dataValue = dataValue.concat(value);
+    }
+    else {
+      dataValue.push(value);
+    }
+    this.dataValue = dataValue;
+  }
+
+  /**
+   * Adds a new empty value to the data array, and add a new row to contain it.
+   */
+  addValue() {
+    this.addNewValue();
+    this.redraw();
+    this.checkConditions(this.root ? this.root.data : this.data);
+    this.restoreValue();
+    if (this.root) {
+      this.root.onChange();
     }
   }
 }

@@ -32,7 +32,7 @@ export {jsonLogic};
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
-  const component = (args.component && args.component.component) ? args.component.component : {key: 'unknown'};
+  const component = (args.component && args.component.component) ? args.component.component : {key: 'component'};
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }

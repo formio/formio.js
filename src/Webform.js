@@ -221,6 +221,14 @@ export default class Webform extends NestedComponent {
 
     // Set the template
     this.template = this.options.template;
+
+    if (this.component) {
+      this.component.components = this.form.components;
+    }
+    else {
+      this.component = this.form;
+    }
+    this.addComponents();
   }
   /* eslint-enable max-statements */
 
@@ -288,7 +296,6 @@ export default class Webform extends NestedComponent {
    * @param {HTMLElement} element - The element to set as the outside wrapper element for this form.
    */
   setElement(element) {
-    console.log('setElement webform');
     if (!element) {
       return;
     }
@@ -593,7 +600,6 @@ export default class Webform extends NestedComponent {
    * @returns {*}
    */
   setForm(form) {
-    console.log('setForm webform');
     if (form.display === 'wizard') {
       console.warn('You need to instantiate the Wizard class to use this form as a wizard.');
     }
@@ -613,7 +619,6 @@ export default class Webform extends NestedComponent {
     // Create the form.
     this._form = form;
     return this.build().then(() => {
-      console.log('build done');
       this.emit('formLoad', form);
       return form;
     });
@@ -755,8 +760,7 @@ export default class Webform extends NestedComponent {
   }
 
   render() {
-    const template = this.options.templates['webform'];
-    return this.interpolate(template.form, {
+    return this.renderTemplate('webform', {
       classes: 'formio-form',
       children: super.render()
     });
@@ -775,10 +779,6 @@ export default class Webform extends NestedComponent {
       this.onChange();
       this.emit('render');
     }, 1);
-  }
-
-  dehydrate() {
-    this.refs.webform.removeEventListener('keydown', this.executeShortcuts.bind(this));
   }
 
   resetValue() {

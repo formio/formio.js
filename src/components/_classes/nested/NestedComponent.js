@@ -132,7 +132,7 @@ export default class NestedComponent extends Component {
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
-    comp.build();
+    // comp.build();
     comp.isBuilt = true;
     if (component.internal) {
       return comp;
@@ -167,7 +167,6 @@ export default class NestedComponent extends Component {
    * @param data
    */
   addComponents(data) {
-    console.log('addComponents');
     data = data || this.data;
     const components = this.hook('addComponents', this.componentComponents);
     _.each(components, (component) => this.addComponent(component, data));
@@ -187,12 +186,11 @@ export default class NestedComponent extends Component {
     if (noAdd) {
       return comp;
     }
-    this.setHidden(comp);
+    // this.setHidden(comp);
     return comp;
   }
 
   render() {
-    console.log('renderComponents');
     return this.components.map(component => component.render()).join('');
   }
 
