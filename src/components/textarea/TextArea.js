@@ -36,6 +36,15 @@ export default class TextAreaComponent extends TextFieldComponent {
     return TextAreaComponent.schema();
   }
 
+  setupValueElement(element) {
+    let value = this.getValue();
+    value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
+    if (this.component.wysiwyg) {
+      value = this.interpolate(value, {data: this.data});
+    }
+    element.innerHTML = value;
+  }
+
   acePlaceholder() {
     if (!this.component.placeholder || !this.editor) {
       return;
@@ -55,9 +64,25 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
+  get isPlain() {
+    return (!this.component.wysiwyg && !this.component.editor);
+  }
+
+  get htmlView() {
+    return this.options.readOnly && this.component.wysiwyg;
+  }
+
   createInput(container) {
-    if (!this.component.wysiwyg && !this.component.editor) {
+    if (this.isPlain) {
       return super.createInput(container);
+    }
+
+    if (this.htmlView) {
+      this.input = this.ce('div', {
+        class: 'well'
+      });
+      container.appendChild(this.input);
+      return this.input;
     }
 
     // Add the input.
@@ -143,21 +168,28 @@ export default class TextAreaComponent extends TextFieldComponent {
 
   setValue(value, flags) {
     value = value || '';
-    if (!this.component.wysiwyg && !this.component.editor) {
+    if (this.isPlain) {
       return super.setValue(this.setConvertedValue(value), flags);
     }
 
     // Set the value when the editor is ready.
     this.dataValue = value;
-    this.editorReady.then((editor) => {
-      if (this.component.editor === 'ace') {
-        editor.setValue(this.setConvertedValue(value));
-      }
-      else {
-        editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
-        this.updateValue(flags);
-      }
-    });
+
+    if (this.htmlView) {
+      // For HTML view, just view the contents.
+      this.input.innerHTML = this.interpolate(value, {data: this.data});
+    }
+    else if (this.editorReady) {
+      this.editorReady.then((editor) => {
+        if (this.component.editor === 'ace') {
+          editor.setValue(this.setConvertedValue(value));
+        }
+        else {
+          editor.setContents(editor.clipboard.convert(this.setConvertedValue(value)));
+          this.updateValue(flags);
+        }
+      });
+    }
   }
 
   getConvertedValue(value) {
@@ -173,11 +205,11 @@ export default class TextAreaComponent extends TextFieldComponent {
   }
 
   getValue() {
-    if (this.viewOnly) {
+    if (this.viewOnly || this.htmlView) {
       return this.dataValue;
     }
 
-    if (!this.component.wysiwyg && !this.component.editor) {
+    if (this.isPlain) {
       return this.getConvertedValue(super.getValue());
     }
 
