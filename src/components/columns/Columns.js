@@ -36,9 +36,11 @@ export default class ColumnsComponent extends NestedComponent {
   get schema() {
     const schema = _.omit(super.schema, 'components');
     schema.columns = [];
-    this.component.columns.forEach((column) => {
-      schema.columns.push(Components.create(column, this.options, this.data, true).schema);
-    });
+    if (this.component.columns && this.component.columns.length) {
+      this.component.columns.forEach((column) => {
+        schema.columns.push(Components.create(column, this.options, this.data, true).schema);
+      });
+    }
     return schema;
   }
 
