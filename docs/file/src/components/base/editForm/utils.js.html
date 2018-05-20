@@ -245,11 +245,12 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/base/editForm/utils.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
 const EditFormUtils = {
-  sortAndFilterComponents: (components) =&gt; {
-    return _.filter(_.sortBy(components, &apos;weight&apos;), item =&gt; !item.ignore);
+  sortAndFilterComponents(components) {
+    return _.filter(_.sortBy(components, &apos;weight&apos;), (item) =&gt; !item.ignore);
   },
-  unifyComponents: (objValue, srcValue) =&gt; {
+  unifyComponents(objValue, srcValue) {
     if (objValue.key &amp;&amp; srcValue.key) {
       if (objValue.key === srcValue.key) {
         if (objValue.components) {
@@ -265,11 +266,12 @@ const EditFormUtils = {
     }
     return _.isEqual(objValue, srcValue);
   },
-  logicVariablesTable: (additional) =&gt; {
+  logicVariablesTable(additional) {
     additional = additional || &apos;&apos;;
     return {
       type: &apos;htmlelement&apos;,
       tag: &apos;div&apos;,
+      /* eslint-disable prefer-template */
       content: &apos;&lt;p&gt;The following variables are available in all scripts.&lt;/p&gt;&apos; +
       &apos;&lt;table class=&quot;table table-bordered table-condensed table-striped&quot;&gt;&apos; +
       additional +
@@ -281,26 +283,27 @@ const EditFormUtils = {
       &apos;&lt;tr&gt;&lt;th&gt;value&lt;/th&gt;&lt;td&gt;The current value of the component.&lt;/td&gt;&lt;/tr&gt;&apos; +
       &apos;&lt;tr&gt;&lt;th&gt;moment&lt;/th&gt;&lt;td&gt;The moment.js library for date manipulation.&lt;/td&gt;&lt;/tr&gt;&apos; +
       &apos;&lt;/table&gt;&lt;br/&gt;&apos;
+      /* eslint-enable prefer-template */
     };
   },
-  javaScriptValue: (title, property, propertyJSON, weight, exampleHTML, exampleJSON) =&gt; {
+  javaScriptValue(title, property, propertyJSON, weight, exampleHTML, exampleJSON) {
     return {
       type: &apos;panel&apos;,
       title: title,
       theme: &apos;default&apos;,
       collapsible: true,
       collapsed: true,
-      key: property + &apos;Panel&apos;,
+      key: `${property}Panel`,
       weight: weight,
       components: [
-        EditFormUtils.logicVariablesTable(),
+        this.logicVariablesTable(),
         {
           type: &apos;panel&apos;,
           title: &apos;JavaScript&apos;,
           collapsible: true,
           collapsed: false,
           style: {&apos;margin-bottom&apos;: &apos;10px&apos;},
-          key: property + &apos;-js&apos;,
+          key: `${property}-js`,
           components: [
             {
               type: &apos;textarea&apos;,
@@ -313,7 +316,7 @@ const EditFormUtils = {
             {
               type: &apos;htmlelement&apos;,
               tag: &apos;div&apos;,
-              content: &apos;&lt;p&gt;Enter custom javascript code.&lt;/p&gt;&apos; + exampleHTML
+              content: `&lt;p&gt;Enter custom javascript code.&lt;/p&gt;${exampleHTML}`
             }
           ]
         },
@@ -322,14 +325,16 @@ const EditFormUtils = {
           title: &apos;JSONLogic&apos;,
           collapsible: true,
           collapsed: true,
-          key: property + &apos;-json&apos;,
+          key: `${property}-json`,
           components: [
             {
               type: &apos;htmlelement&apos;,
               tag: &apos;div&apos;,
+              /* eslint-disable prefer-template */
               content: &apos;&lt;p&gt;Execute custom logic using &lt;a href=&quot;http://jsonlogic.com/&quot; target=&quot;_blank&quot;&gt;JSONLogic&lt;/a&gt;.&lt;/p&gt;&apos; +
-                &apos;&lt;p&gt;Full &lt;a href=&quot;https://lodash.com/docs&quot; target=&quot;_blank&quot;&gt;Lodash&lt;/a&gt; support is provided using an &quot;_&quot; before each operation, such as &lt;code&gt;{&quot;_sum&quot;: {var: &quot;data.a&quot;}}&lt;/code&gt;&lt;/p&gt;&apos;
-                + exampleJSON
+                &apos;&lt;p&gt;Full &lt;a href=&quot;https://lodash.com/docs&quot; target=&quot;_blank&quot;&gt;Lodash&lt;/a&gt; support is provided using an &quot;_&quot; before each operation, such as &lt;code&gt;{&quot;_sum&quot;: {var: &quot;data.a&quot;}}&lt;/code&gt;&lt;/p&gt;&apos; +
+                 exampleJSON
+              /* eslint-enable prefer-template */
             },
             {
               type: &apos;textarea&apos;,

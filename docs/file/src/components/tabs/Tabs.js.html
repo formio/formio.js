@@ -284,11 +284,11 @@ export default class TabsComponent extends NestedComponent {
   }
 
   get schema() {
-    let schema = super.schema;
+    const schema = super.schema;
     schema.components = [];
-    let allComponents = _.groupBy(this.getComponents(), &apos;component.tab&apos;);
+    const allComponents = _.groupBy(this.getComponents(), &apos;component.tab&apos;);
     _.each(this.component.components, (tab, index) =&gt; {
-      let tabSchema = tab;
+      const tabSchema = tab;
       tabSchema.components = [];
       _.each(allComponents[index], (component) =&gt; tabSchema.components.push(component.schema));
       schema.components.push(tabSchema);
@@ -306,19 +306,19 @@ export default class TabsComponent extends NestedComponent {
     this.tabs = [];
     this.tabLinks = [];
     _.each(this.component.components, (tab, index) =&gt; {
-      let tabPanel = this.ce(&apos;div&apos;, {
+      const tabPanel = this.ce(&apos;div&apos;, {
         role: &apos;tabpanel&apos;,
         class: &apos;tab-pane&apos;,
         id: tab.key
       });
-      let tabLink = this.ce(&apos;a&apos;, {
-        href: &apos;#&apos; + tab.key
+      const tabLink = this.ce(&apos;a&apos;, {
+        href: `#${tab.key}`
       }, tab.label);
       this.addEventListener(tabLink, &apos;click&apos;, (event) =&gt; {
         event.preventDefault();
         this.setTab(index);
       });
-      let tabElement = this.ce(&apos;li&apos;, {
+      const tabElement = this.ce(&apos;li&apos;, {
         role: &apos;presentation&apos;
       }, tabLink);
       this.tabLinks.push(tabElement);
@@ -352,10 +352,10 @@ export default class TabsComponent extends NestedComponent {
     this.currentTab = index;
 
     // Get the current tab.
-    let tab = this.component.components[this.currentTab];
+    const tab = this.component.components[this.currentTab];
     this.empty(this.tabs[this.currentTab]);
     _.remove(this.components, (comp) =&gt; comp.component.tab === this.currentTab);
-    let components = this.hook(&apos;addComponents&apos;, tab.components);
+    const components = this.hook(&apos;addComponents&apos;, tab.components);
     _.each(components, (component) =&gt; this.addComponent(component, this.tabs[this.currentTab]));
     this.checkConditions(this.root ? this.root.data : {});
 

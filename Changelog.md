@@ -39,6 +39,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
 
+## 3.0.0-alpha.15
+### Fixed
+ - Problem with the Columns builder where it was not adding columns.
+
 ## 3.0.0-alpha.14
 ### Added
  - Possibility to unselect value for Select component.

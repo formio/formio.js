@@ -245,43 +245,17 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/address/Address.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
-/* eslint-disable quotes, max-len */
+
+import AddressEditDisplay from &apos;./editForm/Address.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          type: &apos;container&apos;,
-          key: &apos;map&apos;,
-          input: true,
-          weight: 610,
-          components: [
-            {
-              type: &apos;textfield&apos;,
-              input: true,
-              label: &apos;Region Bias&apos;,
-              key: &apos;region&apos;,
-              tooltip: `The region bias to use for this search. See &lt;a href=&apos;https://developers.google.com/maps/documentation/geocoding/intro#RegionCodes&apos; target=&apos;_blank&apos;&gt;Region Biasing&lt;/a&gt; for more information.`,
-              placeholder: &apos;Dallas&apos;
-            },
-            {
-              type: &apos;textfield&apos;,
-              input: true,
-              label: &apos;Google Maps API Key&apos;,
-              key: &apos;key&apos;,
-              tooltip: `The API key for Google Maps. See &lt;a href=&apos;https://developers.google.com/maps/documentation/geocoding/get-api-key&apos; target=&apos;_blank&apos;&gt;Get an API Key&lt;/a&gt; for more information.`,
-              placeholder: &apos;xxxxxxxxxxxxxxxxxxx-xxxxxxxxxxxxxxxxxxx&apos;
-            }
-          ]
-        }
-      ]
+      components: AddressEditDisplay
     }
   ]);
 }
-/* eslint-enable quotes, max-len */
 </code></pre>
 
 </div>

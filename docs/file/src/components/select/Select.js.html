@@ -244,49 +244,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/select/Select.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Choices from &apos;choices.js/assets/scripts/dist/choices.js&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import Choices from &apos;choices.js&apos;;
 import _ from &apos;lodash&apos;;
 import BaseComponent from &apos;../base/Base&apos;;
 import Formio from &apos;../../Formio&apos;;
 import * as FormioUtils from &apos;../../utils/utils&apos;;
-
-// Duck-punch the setValueByChoice to ensure we compare using _.isEqual.
-Choices.prototype.setValueByChoice = function(value) {
-  if (!this.isTextElement) {
-    const choices = this.store.getChoices();
-    // If only one value has been passed, convert to array
-    const choiceValue = Array.isArray(value) ? value : [value];
-
-    // Loop through each value and
-    choiceValue.forEach((val) =&gt; {
-      const foundChoice = choices.find((choice) =&gt; {
-        // Check &apos;value&apos; property exists and the choice isn&apos;t already selected
-        return _.isEqual(choice.value, val);
-      });
-
-      if (foundChoice) {
-        if (!foundChoice.selected) {
-          this._addItem(
-            foundChoice.value,
-            foundChoice.label,
-            foundChoice.id,
-            foundChoice.groupId,
-            foundChoice.customProperties,
-            foundChoice.placeholder,
-            foundChoice.keyCode
-          );
-        }
-        else if (!this.config.silent) {
-          console.warn(&apos;Attempting to select choice already selected&apos;);
-        }
-      }
-      else if (!this.config.silent) {
-        console.warn(&apos;Attempting to select choice that does not exist&apos;);
-      }
-    });
-  }
-  return this;
-};
 
 export default class SelectComponent extends BaseComponent {
   static schema(...extend) {
@@ -343,7 +305,11 @@ export default class SelectComponent extends BaseComponent {
         if (this.component.refreshOn === &apos;data&apos;) {
           this.refreshItems();
         }
-        else if (event.changed &amp;&amp; (event.changed.component.key === this.component.refreshOn)) {
+        else if (
+          event.changed &amp;&amp;
+          event.changed.component &amp;&amp;
+          (event.changed.component.key === this.component.refreshOn)
+        ) {
           this.refreshItems();
         }
       });
@@ -379,7 +345,7 @@ export default class SelectComponent extends BaseComponent {
 
     // Perform a fast interpretation if we should not use the template.
     if (data &amp;&amp; !this.useTemplate) {
-      let itemLabel = data.label || data;
+      const itemLabel = data.label || data;
       return (typeof itemLabel === &apos;string&apos;) ? this.t(itemLabel) : itemLabel;
     }
     if (typeof data === &apos;string&apos;) {
@@ -466,7 +432,7 @@ export default class SelectComponent extends BaseComponent {
 
     // Allow js processing (needed for form builder)
     if (this.component.onSetItems &amp;&amp; typeof this.component.onSetItems === &apos;function&apos;) {
-      let newItems = this.component.onSetItems(this, items);
+      const newItems = this.component.onSetItems(this, items);
       if (newItems) {
         items = newItems;
       }
@@ -489,6 +455,10 @@ export default class SelectComponent extends BaseComponent {
 
     // Add the value options.
     this.addValueOptions(items);
+
+    if (this.component.widget === &apos;html5&apos; &amp;&amp; !this.component.placeholder) {
+      this.addOption(null, &apos;&apos;);
+    }
 
     // Iterate through each of the items.
     _.each(items, (item) =&gt; {
@@ -576,7 +546,7 @@ export default class SelectComponent extends BaseComponent {
           component: this.component,
           message: err.toString()
         });
-        console.warn(`Unable to load resources for ${this.component.key}`);
+        console.warn(`Unable to load resources for ${this.key}`);
       });
   }
 
@@ -619,7 +589,7 @@ export default class SelectComponent extends BaseComponent {
 
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
-      console.warn(`Select component ${this.component.key} does not have data configuration.`);
+      console.warn(`Select component ${this.key} does not have data configuration.`);
       return;
     }
 
@@ -651,7 +621,7 @@ export default class SelectComponent extends BaseComponent {
           this.loadItems(resourceUrl, searchInput, this.requestHeaders);
         }
         catch (err) {
-          console.warn(`Unable to load resources for ${this.component.key}`);
+          console.warn(`Unable to load resources for ${this.key}`);
         }
         break;
       }
@@ -729,18 +699,26 @@ export default class SelectComponent extends BaseComponent {
     if (this.component.widget === &apos;html5&apos;) {
       this.triggerUpdate();
       this.addEventListener(input, &apos;focus&apos;, () =&gt; this.update());
+      this.addEventListener(input, &apos;keydown&apos;, (event) =&gt; {
+        const {keyCode} = event;
+
+        if ([8, 46].includes(keyCode)) {
+          this.setValue(null);
+        }
+      });
       return;
     }
 
     const useSearch = this.component.hasOwnProperty(&apos;searchEnabled&apos;) ? this.component.searchEnabled : true;
     const placeholderValue = this.t(this.component.placeholder);
     const choicesOptions = {
-      removeItemButton: this.component.removeItemButton || (this.component.multiple || false),
+      removeItemButton: _.get(this.component, &apos;removeItemButton&apos;, true),
       itemSelectText: &apos;&apos;,
       classNames: {
         containerOuter: &apos;choices form-group formio-choices&apos;,
         containerInner: &apos;form-control&apos;
       },
+      addItemText: false,
       placeholder: !!this.component.placeholder,
       placeholderValue: placeholderValue,
       searchPlaceholderValue: placeholderValue,
@@ -752,7 +730,7 @@ export default class SelectComponent extends BaseComponent {
         include: &apos;score&apos;,
         threshold: 0.3
       },
-      itemComparer: (choice, item) =&gt; _.isEqual(choice, item)
+      itemComparer: _.isEqual
     };
 
     const tabIndex = input.tabIndex;
@@ -908,7 +886,7 @@ export default class SelectComponent extends BaseComponent {
         this.choices
           .removeActiveItems()
           .setChoices(this.selectOptions, &apos;value&apos;, &apos;label&apos;, true)
-          .setValueByChoice(Array.isArray(value) ? value : [value]);
+          .setValueByChoice(value);
       }
       else if (hasPreviousValue) {
         this.choices.removeActiveItems();

@@ -246,6 +246,8 @@
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/file/File.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import BaseComponent from &apos;../base/Base&apos;;
 import {uniqueName} from &apos;../../utils/utils&apos;;
+import download from &apos;downloadjs&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 export default class FileComponent extends BaseComponent {
   static schema(...extend) {
@@ -731,19 +733,19 @@ export default class FileComponent extends BaseComponent {
         // Check file pattern
         if (this.component.filePattern &amp;&amp; !this.validatePattern(file, this.component.filePattern)) {
           fileUpload.status = &apos;error&apos;;
-          fileUpload.message = &apos;File is the wrong type; it must be &apos; + this.component.filePattern;
+          fileUpload.message = `File is the wrong type; it must be ${this.component.filePattern}`;
         }
 
         // Check file minimum size
         if (this.component.fileMinSize &amp;&amp; !this.validateMinSize(file, this.component.fileMinSize)) {
           fileUpload.status = &apos;error&apos;;
-          fileUpload.message = &apos;File is too small; it must be at least &apos; + this.component.fileMinSize;
+          fileUpload.message = `File is too small; it must be at least ${this.component.fileMinSize}`;
         }
 
         // Check file maximum size
         if (this.component.fileMaxSize &amp;&amp; !this.validateMaxSize(file, this.component.fileMaxSize)) {
           fileUpload.status = &apos;error&apos;;
-          fileUpload.message = &apos;File is too big; it must be at most &apos; + this.component.fileMaxSize;
+          fileUpload.message = `File is too big; it must be at most ${this.component.fileMaxSize}`;
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
@@ -793,17 +795,7 @@ export default class FileComponent extends BaseComponent {
     }
     fileService.downloadFile(fileInfo).then((file) =&gt; {
       if (file) {
-        if (file.storage === &apos;base64&apos;) {
-          // this is a workaround to render base64 files in Chrome. Still not working on IE/Edge
-          var hiddenElement = document.createElement(&apos;a&apos;);
-          hiddenElement.href = &apos;data:&apos; + file.type + &apos;;base64,&apos; + encodeURI(file.data);
-          hiddenElement.target = &apos;_blank&apos;;
-          hiddenElement.download = file.originalName;
-          hiddenElement.click();
-        }
-        else {
-          window.open(file.url, &apos;_blank&apos;);
-        }
+        download(file.url, file.originalName, file.type);
       }
     })
       .catch((response) =&gt; {

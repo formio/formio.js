@@ -245,22 +245,22 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/base/Base.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import EditFormUtils from &apos;./editForm/utils&apos;;
-import BaseEditDisplay from &apos;./editForm/Base.edit.display&apos;;
-import BaseEditData from &apos;./editForm/Base.edit.data&apos;;
-import BaseEditValidation from &apos;./editForm/Base.edit.validation&apos;;
-import BaseEditAPI from &apos;./editForm/Base.edit.api&apos;;
+
 import BaseEditConditional from &apos;./editForm/Base.edit.conditional&apos;;
+import BaseEditData from &apos;./editForm/Base.edit.data&apos;;
+import BaseEditAPI from &apos;./editForm/Base.edit.api&apos;;
+import BaseEditDisplay from &apos;./editForm/Base.edit.display&apos;;
 import BaseEditLogic from &apos;./editForm/Base.edit.logic&apos;;
+import BaseEditValidation from &apos;./editForm/Base.edit.validation&apos;;
+import EditFormUtils from &apos;./editForm/utils&apos;;
+
 export default function(...extend) {
   return {
-    components: _.unionWith(_.map(extend, items =&gt; {
-      return {
-        type: &apos;tabs&apos;,
-        key: &apos;tabs&apos;,
-        components: items
-      };
-    }), [
+    components: _.unionWith(extend.map((items) =&gt; ({
+      type: &apos;tabs&apos;,
+      key: &apos;tabs&apos;,
+      components: items
+    })), [
       {
         type: &apos;tabs&apos;,
         key: &apos;tabs&apos;,

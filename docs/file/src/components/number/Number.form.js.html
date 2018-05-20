@@ -245,41 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/number/Number.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
+
+import NumberEditValidation from &apos;./editForm/Number.edit.validation&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Validation&apos;,
       key: &apos;validation&apos;,
-      weight: 20,
-      components: [
-        {
-          weight: 100,
-          type: &apos;checkbox&apos;,
-          label: &apos;Unique&apos;,
-          tooltip: &apos;Makes sure the data submitted for this field is unique, and has not been submitted before.&apos;,
-          key: &apos;validate.unique&apos;,
-          input: true,
-          ignore: true
-        },
-        {
-          type: &apos;number&apos;,
-          label: &apos;Minimum Value&apos;,
-          key: &apos;validate.min&apos;,
-          input: true,
-          placeholder: &apos;Minimum Value&apos;,
-          tooltip: &apos;The minimum value this field must have before the form can be submitted.&apos;,
-          weight: 150
-        },
-        {
-          type: &apos;number&apos;,
-          label: &apos;Maximum Value&apos;,
-          key: &apos;validate.max&apos;,
-          input: true,
-          placeholder: &apos;Maximum Value&apos;,
-          tooltip: &apos;The maximum value this field can have before the form can be submitted.&apos;,
-          weight: 160
-        }
-      ]
+      components: NumberEditValidation
     }
   ]);
 }

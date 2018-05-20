@@ -245,71 +245,17 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/html/HTML.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
-/* eslint-disable quotes, max-len */
+
+import HTMLEditDisplay from &apos;./editForm/HTML.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;tag&apos;,
-          weight: 50,
-          label: &apos;HTML Tag&apos;,
-          placeholder: &apos;HTML Element Tag&apos;,
-          tooltip: &apos;The tag of this HTML element.&apos;
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;className&apos;,
-          weight: 60,
-          label: &apos;CSS Class&apos;,
-          placeholder: &apos;CSS Class&apos;,
-          tooltip: &apos;The CSS class for this HTML element.&apos;
-        },
-        {
-          type: &apos;datagrid&apos;,
-          input: true,
-          label: &apos;Attributes&apos;,
-          key: &apos;attrs&apos;,
-          tooltip: &apos;The attributes for this HTML element. Only safe attributes are allowed, such as src, href, and title.&apos;,
-          weight: 70,
-          components: [
-            {
-              label: &apos;Attribute&apos;,
-              key: &apos;attr&apos;,
-              input: true,
-              type: &apos;textfield&apos;
-            },
-            {
-              label: &apos;Value&apos;,
-              key: &apos;value&apos;,
-              input: true,
-              type: &apos;textfield&apos;
-            }
-          ]
-        },
-        {
-          type: &apos;textarea&apos;,
-          input: true,
-          editor: &apos;ace&apos;,
-          rows: 10,
-          as: &apos;html&apos;,
-          label: &apos;Content&apos;,
-          tooltip: &apos;The content of this HTML element.&apos;,
-          defaultValue: `&lt;div class=&quot;well&quot;&gt;Content&lt;/div&gt;`,
-          key: &apos;content&apos;,
-          weight: 80
-        }
-      ]
+      components: HTMLEditDisplay
     }
   ]);
 }
-/* eslint-enable quotes, max-len */
 </code></pre>
 
 </div>

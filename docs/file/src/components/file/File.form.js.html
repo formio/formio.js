@@ -245,110 +245,19 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/file/File.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
-import Formio from &apos;../../Formio&apos;;
-import _ from &apos;lodash&apos;;
-/* eslint-disable quotes, max-len */
+
+import FileEditFile from &apos;./editForm/File.edit.file&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
       label: &apos;File&apos;,
       key: &apos;file&apos;,
       weight: 5,
-      components: [
-        {
-          type: &apos;select&apos;,
-          input: true,
-          key: &apos;storage&apos;,
-          label: &apos;Storage&apos;,
-          placeholder: &apos;Select your file storage provider&apos;,
-          weight: 0,
-          tooltip: &apos;Which storage to save the files in.&apos;,
-          valueProperty: &apos;value&apos;,
-          dataSrc: &apos;custom&apos;,
-          data: {
-            custom: () =&gt; {
-              return _.map(Formio.providers.storage, function(storage, key) {
-                return {
-                  label: storage.title,
-                  value: key
-                };
-              });
-            }
-          }
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;url&apos;,
-          label: &apos;Url&apos;,
-          weight: 10,
-          placeholder: &apos;Enter the url to post the files to.&apos;,
-          tooltip: `See &lt;a href=&apos;https://github.com/danialfarid/ng-file-upload#server-side&apos; target=&apos;_blank&apos;&gt;https://github.com/danialfarid/ng-file-upload#server-side&lt;/a&gt; for how to set up the server.`,
-          conditional: {
-            json: {&apos;===&apos;: [{var: &apos;data.storage&apos;}, &apos;url&apos;]}
-          }
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;dir&apos;,
-          label: &apos;Directory&apos;,
-          placeholder: &apos;(optional) Enter a directory for the files&apos;,
-          tooltip: &apos;This will place all the files uploaded in this field in the directory&apos;,
-          weight: 20
-        },
-        {
-          type: &apos;checkbox&apos;,
-          input: true,
-          key: &apos;image&apos;,
-          label: &apos;Display as image(s)&apos;,
-          tooltip: &apos;Instead of a list of linked files, images will be rendered in the view.&apos;,
-          weight: 30
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;imageSize&apos;,
-          label: &apos;Image Size&apos;,
-          placeholder: &apos;100&apos;,
-          tooltip: &apos;The image size for previewing images.&apos;,
-          weight: 40,
-          conditional: {
-            json: {&apos;==&apos;: [{var: &apos;data.image&apos;}, true]}
-          }
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;filePattern&apos;,
-          label: &apos;File Pattern&apos;,
-          placeholder: &apos;.pdf,.jpg&apos;,
-          tooltip: &apos;See &lt;a href=\&apos;https://github.com/danialfarid/ng-file-upload#full-reference\&apos; target=\&apos;_blank\&apos;&gt;https://github.com/danialfarid/ng-file-upload#full-reference&lt;/a&gt; for how to specify file patterns.&apos;,
-          weight: 50
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;fileMinSize&apos;,
-          label: &apos;File Minimum Size&apos;,
-          placeholder: &apos;1MB&apos;,
-          tooltip: &apos;See &lt;a href=\&apos;https://github.com/danialfarid/ng-file-upload#full-reference\&apos; target=\&apos;_blank\&apos;&gt;https://github.com/danialfarid/ng-file-upload#full-reference&lt;/a&gt; for how to specify file sizes.&apos;,
-          weight: 60
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;fileMaxSize&apos;,
-          label: &apos;File Maximum Size&apos;,
-          placeholder: &apos;10MB&apos;,
-          tooltip: &apos;See &lt;a href=\&apos;https://github.com/danialfarid/ng-file-upload#full-reference\&apos; target=\&apos;_blank\&apos;&gt;https://github.com/danialfarid/ng-file-upload#full-reference&lt;/a&gt; for how to specify file sizes.&apos;,
-          weight: 70
-        }
-      ]
+      components: FileEditFile
     }
   ]);
 }
-/* eslint-enable quotes, max-len */
 </code></pre>
 
 </div>
