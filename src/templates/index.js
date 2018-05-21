@@ -1,8 +1,8 @@
 import bootstrap from './bootstrap';
-import materialdesign from './materialdesign';
-import semanticui from './semanticui';
+import material from './material';
+import semantic from './semantic';
 export default {
   bootstrap,
-  materialdesign,
-  semanticui
+  material,
+  semantic
 };

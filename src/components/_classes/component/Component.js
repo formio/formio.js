@@ -509,7 +509,7 @@ export default class Component {
   /**
    * Builds the component.
    */
-  build() {
+  buildOld() {
     if (this.viewOnly) {
       this.viewOnlyBuild();
     }
@@ -606,7 +606,7 @@ export default class Component {
     }
   }
 
-  display(element) {
+  build(element) {
     this.empty(element);
     element.innerHTML = this.render();
     this.hydrate(element);
@@ -623,7 +623,7 @@ export default class Component {
 
   hydrate(element) {
     this.element = element;
-    this.loadRefs(element, {errorContainer: 'single'});
+    this.loadRefs(element, {messageContainer: 'single'});
     return Promise.resolve();
   }
 
@@ -1438,12 +1438,12 @@ export default class Component {
       return;
     }
 
-    if (this.refs.errorContainer) {
+    if (this.refs.messageContainer) {
       const errorMessage = this.ce('p', {
         class: 'help-block'
       });
       errorMessage.appendChild(this.text(message));
-      this.refs.errorContainer.appendChild(errorMessage);
+      this.refs.messageContainer.appendChild(errorMessage);
     }
 
     // Add error classes
@@ -1943,13 +1943,12 @@ export default class Component {
   interpolate(string, data) {
     // the replace will stip out extra whitespace from the templates.
     return interpolate(string, data).replace(/\r?\n|\r/g, '').replace(/ +(?= )/g,'');
-    // return interpolate(string, data).replace(/\>[\s]+\</g, "><").replace(/\"[\s]+\>/g,  '" >');
   }
 
   setCustomValidity(message, dirty) {
-    if (this.refs.errorContainer && this.errorContainer) {
-      this.refs.errorContainer.innerHTML = '';
-      this.removeChildFrom(this.refs.errorContainer, this.errorContainer);
+    if (this.refs.messageContainer && this.messageContainer) {
+      this.refs.messageContainer.innerHTML = '';
+      this.removeChildFrom(this.refs.messageContainer, this.messageContainer);
     }
     if (message) {
       this.error = {

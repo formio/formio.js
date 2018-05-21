@@ -609,7 +609,7 @@ export default class Webform extends NestedComponent {
 
     if (this.onFormBuild) {
       return this.onFormBuild.then(
-        () => this.build(),
+        () => this.init(),
         (err) => this.formReadyReject(err)
       ).catch(
         (err) => this.formReadyReject(err)
@@ -618,7 +618,7 @@ export default class Webform extends NestedComponent {
 
     // Create the form.
     this._form = form;
-    return this.build().then(() => {
+    return this.init().then(() => {
       this.emit('formLoad', form);
       return form;
     });
@@ -735,7 +735,7 @@ export default class Webform extends NestedComponent {
   /**
    * Build the form.
    */
-  build() {
+  init() {
     if (this.component) {
       this.component.components = this.form.components;
     }
@@ -750,7 +750,7 @@ export default class Webform extends NestedComponent {
     return this.formReady;
   }
 
-  display(element) {
+  build(element) {
     return this.onElement.then(() => {
       return this.ready.then(() => {
         element.innerHTML = this.render();

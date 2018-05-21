@@ -18,14 +18,14 @@ export default class Form {
    * @example
    * import Form from 'formiojs/Form';
    * const form = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
-   * form.display();
+   * form.build();
    */
   constructor() {
     this.instance = null;
     if (arguments[0] instanceof HTMLElement) {
       this.options = arguments[2];
       this.form = arguments[1];
-      this.display(arguments[0]);
+      this.build(arguments[0]);
     }
     else {
       this.options = arguments[1];
@@ -79,7 +79,7 @@ export default class Form {
 
   setDisplay(display) {
     this.form.display = display;
-    return this.display();
+    return this.build();
   }
 
   empty() {
@@ -100,10 +100,10 @@ export default class Form {
     code += `<div id="${id}" class="${className}"></div>`;
     document.write(code);
     const formElement = document.getElementById(id);
-    return (new Form(formElement, embed.src)).display();
+    return (new Form(formElement, embed.src)).build();
   }
 
-  display(element) {
+  build(element) {
     this.element = element;
     return this.render().then(html => {
       this.element.innerHTML = html;
@@ -135,7 +135,7 @@ Formio.embedForm = (embed) => Form.embed(embed);
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.createForm = (element, form, options) => {
-  return (new Form(element, form, options)).display();
+  return (new Form(element, form, options)).build();
 };
 
 Formio.Form = Form;

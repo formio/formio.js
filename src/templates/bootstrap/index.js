@@ -1,3 +1,4 @@
+import button from './button';
 import component from './component';
 import field from './field';
 import input from './input';
@@ -6,6 +7,7 @@ import multiValueTable from './multiValueTable';
 import webform from './webform';
 
 export default {
+  button,
   component,
   field,
   input,

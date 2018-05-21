@@ -1,12 +1,12 @@
 import maskInput from 'vanilla-text-mask';
 import _ from 'lodash';
 import {createNumberMask} from 'text-mask-addons';
-import Component from '../_classes/component/Component';
+import Input from '../_classes/input/Input';
 import {getNumberSeparators, getNumberDecimalLimit} from '../../utils/utils';
 
-export default class NumberComponent extends Component {
+export default class NumberComponent extends Input {
   static schema(...extend) {
-    return Component.schema({
+    return Input.schema({
       type: 'number',
       label: 'Number',
       key: 'number',
@@ -97,8 +97,8 @@ export default class NumberComponent extends Component {
     });
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.attr.type = 'text';
     info.attr.inputmode = 'numeric';
     info.changeEvent = 'input';

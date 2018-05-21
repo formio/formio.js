@@ -41,13 +41,11 @@ export default class Field extends Component {
   }
 
   render(element) {
-    const template = this.options.templates['field'];
-    const html = this.interpolate(template.form, {
+    return super.render(this.renderTemplate('field', {
       component: this.component,
       label: this.labelInfo,
       element: element
-    });
-    return super.render(html);
+    }));
   }
 
   hydrate(dom) {
