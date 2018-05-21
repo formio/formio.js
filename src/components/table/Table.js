@@ -2,6 +2,14 @@ import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 
 export default class TableComponent extends NestedComponent {
+  static get defaultTable() {
+    return [
+      [{components: []}, {components: []}, {components: []}],
+      [{components: []}, {components: []}, {components: []}],
+      [{components: []}, {components: []}, {components: []}]
+    ];
+  }
+
   static schema(...extend) {
     return NestedComponent.schema({
       type: 'table',
@@ -9,11 +17,7 @@ export default class TableComponent extends NestedComponent {
       key: 'table',
       numRows: 3,
       numCols: 3,
-      rows: [
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}]
-      ],
+      rows: TableComponent.defaultTable,
       header: [],
       caption: '',
       striped: false,
@@ -43,11 +47,7 @@ export default class TableComponent extends NestedComponent {
     schema.rows = [];
     this.eachComponent((component) => {
       if (!schema.rows || !schema.rows.length) {
-        schema.rows = [
-          [{components: []}, {components: []}, {components: []}],
-          [{components: []}, {components: []}, {components: []}],
-          [{components: []}, {components: []}, {components: []}]
-        ];
+        schema.rows = TableComponent.defaultTable;
       }
       if (!schema.rows[component.tableRow]) {
         schema.rows[component.tableRow] = [];
@@ -58,11 +58,7 @@ export default class TableComponent extends NestedComponent {
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
     if (!schema.rows.length) {
-      schema.rows = [
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}]
-      ];
+      schema.rows = TableComponent.defaultTable;
     }
     return schema;
   }

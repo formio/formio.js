@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import Components from '../Components';
 import NestedComponent from '../nested/NestedComponent';
 
 export default class ColumnsComponent extends NestedComponent {
@@ -36,11 +35,12 @@ export default class ColumnsComponent extends NestedComponent {
   get schema() {
     const schema = _.omit(super.schema, 'components');
     schema.columns = [];
-    if (this.component.columns && this.component.columns.length) {
-      this.component.columns.forEach((column) => {
-        schema.columns.push(Components.create(column, this.options, this.data, true).schema);
-      });
-    }
+    this.eachComponent((component) => {
+      if (!schema.columns[component.columnIndex]) {
+        schema.columns[component.columnIndex] = {components: []};
+      }
+      schema.columns[component.columnIndex].components.push(component.schema);
+    });
     return schema;
   }
 
@@ -51,9 +51,10 @@ export default class ColumnsComponent extends NestedComponent {
   addComponents() {
     const container = this.getContainer();
     container.noDrop = true;
-    _.each(this.component.columns, (column) => {
+    _.each(this.component.columns, (column, index) => {
       column.type = 'column';
-      this.addComponent(column, container, this.data);
+      const comp = this.addComponent(column, container, this.data);
+      comp.columnIndex = index;
     });
   }
 }
