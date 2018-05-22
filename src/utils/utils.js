@@ -232,8 +232,12 @@ export function eachComponent(components, fn, includeAll, path, parent) {
       }
 
       else if (hasRows) {
-        component.rows.forEach((row) => row.forEach((column) =>
-          eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null)));
+        component.rows.forEach((row) => {
+          if (Array.isArray(row)) {
+            row.forEach((column) =>
+              eachComponent(column.components, fn, includeAll, subPath(), parent ? component : null));
+          }
+        });
       }
 
       else if (hasComps) {
