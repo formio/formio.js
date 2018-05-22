@@ -317,6 +317,17 @@ export default [
     type: 'checkbox',
     input: true,
     weight: 20,
+    key: 'searchEnabled',
+    label: 'Enable Static Search',
+    tooltip: 'When checked, the select dropdown will allow for searching within the static list of items provided.',
+    conditional: {
+      json: {'===': [{var: 'data.dataSrc'}, 'url']}
+    }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 20,
     key: 'clearOnRefresh',
     label: 'Clear Value On Refresh',
     tooltip: 'When the Refresh On field is changed, clear the selected value.',

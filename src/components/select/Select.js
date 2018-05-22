@@ -463,7 +463,14 @@ export default class SelectComponent extends BaseComponent {
       return;
     }
 
-    const useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
+    let useSearch = this.component.hasOwnProperty('searchEnabled') ? this.component.searchEnabled : true;
+
+    // Do not enable the static search feature if we are using dataSrc of URL AND we have a searchField. It can be
+    // assumed that the results returned from the URL will provide their own backend "search" capability.
+    if ((this.component.dataSrc === 'url') && this.component.searchField) {
+      useSearch = false;
+    }
+
     const placeholderValue = this.t(this.component.placeholder);
     const choicesOptions = {
       removeItemButton: _.get(this.component, 'removeItemButton', true),
