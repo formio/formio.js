@@ -39,6 +39,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
 
+## 3.0.0-alpha.16
+### Fixed
+ - Issues with the columns builder not including its components.
+ - Problems with the decimal place identifier not working for number components.
+ - Problems with the file upload not able to get the "formio" instance from the root object.
+
+### Changed
+ - Made the default table configuration a static property for ease of maintenance.
+
 ## 3.0.0-alpha.15
 ### Fixed
  - Problem with the Columns builder where it was not adding columns.
