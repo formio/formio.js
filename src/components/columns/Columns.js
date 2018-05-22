@@ -35,12 +35,13 @@ export default class ColumnsComponent extends NestedComponent {
   get schema() {
     const schema = _.omit(super.schema, 'components');
     schema.columns = [];
-    this.eachComponent((component) => {
-      if (!schema.columns[component.columnIndex]) {
-        schema.columns[component.columnIndex] = {components: []};
-      }
-      schema.columns[component.columnIndex].components.push(component.schema);
+    this.eachComponent((component, index) => {
+      _.merge(component.component, _.omit(this.component.columns[index], 'components'));
+      schema.columns.push(component.schema);
     });
+    for (let i = this.components.length; i < this.component.columns.length; i++) {
+      schema.columns.push(this.component.columns[i]);
+    }
     return schema;
   }
 
@@ -51,10 +52,9 @@ export default class ColumnsComponent extends NestedComponent {
   addComponents() {
     const container = this.getContainer();
     container.noDrop = true;
-    _.each(this.component.columns, (column, index) => {
+    _.each(this.component.columns, (column) => {
       column.type = 'column';
-      const comp = this.addComponent(column, container, this.data);
-      comp.columnIndex = index;
+      this.addComponent(column, container, this.data);
     });
   }
 }
