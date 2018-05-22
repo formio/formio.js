@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import Components from '../Components';
 import NestedComponent from '../nested/NestedComponent';
 
 export default class ColumnsComponent extends NestedComponent {
@@ -36,10 +35,12 @@ export default class ColumnsComponent extends NestedComponent {
   get schema() {
     const schema = _.omit(super.schema, 'components');
     schema.columns = [];
-    if (this.component.columns && this.component.columns.length) {
-      this.component.columns.forEach((column) => {
-        schema.columns.push(Components.create(column, this.options, this.data, true).schema);
-      });
+    this.eachComponent((component, index) => {
+      _.merge(component.component, _.omit(this.component.columns[index], 'components'));
+      schema.columns.push(component.schema);
+    });
+    for (let i = this.components.length; i < this.component.columns.length; i++) {
+      schema.columns.push(this.component.columns[i]);
     }
     return schema;
   }

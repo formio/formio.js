@@ -199,6 +199,9 @@ export default class FileComponent extends BaseComponent {
     if (this.options.formio) {
       return this.options.formio;
     }
+    if (this.root && this.root.formio) {
+      return this.root.formio;
+    }
     return new Formio();
   }
 
