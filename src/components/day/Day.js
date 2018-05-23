@@ -48,9 +48,18 @@ export default class DayComponent extends BaseComponent {
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
       : this.component.dayFirst;
-    this.hideDay = _.get(this.component, 'fields.day.hide', false);
-    this.hideMonth = _.get(this.component, 'fields.month.hide', false);
-    this.hideYear = _.get(this.component, 'fields.year.hide', false);
+  }
+
+  get showDay() {
+    return !_.get(this.component, 'fields.day.hide', false);
+  }
+
+  get showMonth() {
+    return !_.get(this.component, 'fields.month.hide', false);
+  }
+
+  get showYear() {
+    return !_.get(this.component, 'fields.year.hide', false);
   }
 
   get defaultSchema() {
@@ -246,16 +255,16 @@ export default class DayComponent extends BaseComponent {
     const [dayColumn, monthColumn, yearColumn] = this.createInputs(subinputAtTheBottom);
 
     // Add the columns to the day select in the right order.
-    if (this.dayFirst && !this.hideDay) {
+    if (this.dayFirst && this.showDay) {
       inputGroup.appendChild(dayColumn);
     }
-    if (!this.hideMonth) {
+    if (this.showMonth) {
       inputGroup.appendChild(monthColumn);
     }
-    if (!this.dayFirst && !this.hideDay) {
+    if (!this.dayFirst && this.showDay) {
       inputGroup.appendChild(dayColumn);
     }
-    if (!this.hideYear) {
+    if (this.showYear) {
       inputGroup.appendChild(yearColumn);
     }
 
@@ -322,16 +331,16 @@ export default class DayComponent extends BaseComponent {
       return;
     }
     const parts = value.split('/');
-    if (this.component.dayFirst && !_.get(this.component, 'fields.day.hide', false)) {
+    if (this.component.dayFirst && this.showDay) {
       this.dayInput.value = parseInt(parts.shift(), 10);
     }
-    if (!_.get(this.component, 'fields.month.hide', false)) {
+    if (this.showMonth) {
       this.monthInput.value = parseInt(parts.shift(), 10);
     }
-    if (!this.component.dayFirst && !_.get(this.component, 'fields.day.hide', false)) {
+    if (!this.component.dayFirst && this.showDay) {
       this.dayInput.value = parseInt(parts.shift(), 10);
     }
-    if (!_.get(this.component, 'fields.year.hide', false)) {
+    if (this.showYear) {
       this.yearInput.value = parseInt(parts.shift(), 10);
     }
   }
@@ -342,16 +351,16 @@ export default class DayComponent extends BaseComponent {
    */
   get format() {
     let format = '';
-    if (this.component.dayFirst && !_.get(this.component, 'fields.day.hide', false)) {
+    if (this.component.dayFirst && this.showDay) {
       format += 'D/';
     }
-    if (!_.get(this.component, 'fields.month.hide', false)) {
+    if (this.showMonth) {
       format += 'M/';
     }
-    if (!this.component.dayFirst && !_.get(this.component, 'fields.day.hide', false)) {
+    if (!this.component.dayFirst && this.showDay) {
       format += 'D/';
     }
-    if (!_.get(this.component, 'fields.year.hide', false)) {
+    if (this.showYear) {
       format += 'YYYY';
     }
     return format;
@@ -362,10 +371,22 @@ export default class DayComponent extends BaseComponent {
    * @returns {Date}
    */
   get date() {
-    const day = this.dayInput.value;
-    const month = this.monthInput.value;
-    const year = this.yearInput.value;
-    return moment([parseInt(year, 10), (parseInt(month, 10) - 1), parseInt(day, 10)]);
+    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
+    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
+    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
+    if (this.showDay && !day) {
+      // Invalid so return empty string.
+      return '';
+    }
+    if (this.showMonth && (month === -1)) {
+      // Invalid so return empty string.
+      return '';
+    }
+    if (this.showYear && !year) {
+      // Invalid so return empty string.
+      return '';
+    }
+    return moment([day, month, year]);
   }
 
   /**
@@ -374,7 +395,12 @@ export default class DayComponent extends BaseComponent {
    * @returns {Date}
    */
   get validationValue() {
-    return this.date.format();
+    const date = this.date;
+    if (!date) {
+      return '';
+    }
+
+    return date.format();
   }
 
   /**
@@ -384,23 +410,27 @@ export default class DayComponent extends BaseComponent {
    * @returns {*}
    */
   getValueAt(index) {
-    this.inputs[index].value = this.date.format(this.format);
+    const date = this.date;
+    this.inputs[index].value = date ? date.format(this.format) : date;
     return this.inputs[index].value;
   }
 
   getView() {
     const date = this.date;
+    if (!date) {
+      return null;
+    }
     return date.isValid() ? date.format(this.format) : null;
   }
 
   focus() {
-    if (this.dayFirst && !this.hideDay || !this.dayFirst && this.hideMonth && !this.hideDay) {
+    if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {
       this.dayInput.focus();
     }
-    else if (this.dayFirst && this.hideDay && !this.hideMonth || !this.dayFirst && !this.hideMonth) {
+    else if (this.dayFirst && !this.showDay && this.showMonth || !this.dayFirst && this.showMonth) {
       this.monthInput.focus();
     }
-    else if (this.hideDay && this.hideMonth && !this.hideYear) {
+    else if (!this.showDay && !this.showDay && this.showYear) {
       this.yearInput.focus();
     }
   }
