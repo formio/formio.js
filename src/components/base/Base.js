@@ -2159,7 +2159,17 @@ export default class BaseComponent {
    * @param dirty
    * @return {*}
    */
-  invalidMessage(data, dirty) {
+  invalidMessage(data, dirty, ignoreCondition) {
+    // Force valid if component is conditionally hidden.
+    if (!ignoreCondition && !checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      return '';
+    }
+
+    // See if this is forced invalid.
+    if (this.invalid) {
+      return this.invalid;
+    }
+
     // No need to check for errors if there is no input or if it is pristine.
     if (!this.hasInput || (!dirty && this.pristine)) {
       return '';
@@ -2185,7 +2195,7 @@ export default class BaseComponent {
       return true;
     }
 
-    const message = this.invalid || this.invalidMessage(data, dirty);
+    const message = this.invalidMessage(data, dirty, true);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
