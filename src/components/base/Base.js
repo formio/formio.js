@@ -806,7 +806,12 @@ export default class BaseComponent {
     }
 
     // Clone so that it creates a new instance.
-    return _.clone(defaultValue);
+    defaultValue = _.clone(defaultValue);
+    if (this.component.multiple && !Array.isArray(defaultValue)) {
+      defaultValue = [defaultValue];
+    }
+
+    return defaultValue;
   }
 
   /**
