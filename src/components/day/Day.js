@@ -222,6 +222,9 @@ export default class DayComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
+    if (!this.yearInput || !this.monthInput || !this.dayInput) {
+      return;
+    }
     if (disabled) {
       this.yearInput.setAttribute('disabled', 'disabled');
       this.monthInput.setAttribute('disabled', 'disabled');
