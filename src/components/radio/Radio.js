@@ -38,7 +38,7 @@ export default class RadioComponent extends BaseComponent {
 
   createInput(container) {
     const inputGroup = this.ce('div', {
-      class: 'input-group'
+      class: 'form-group'
     });
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
     const wrappers = [];
