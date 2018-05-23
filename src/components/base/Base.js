@@ -692,9 +692,6 @@ export default class BaseComponent {
     if (this.key) {
       className += `formio-component-${this.key} `;
     }
-    if (this.shouldDisable) {
-      className += 'formio-disabled-input ';
-    }
     if (this.component.customClass) {
       className += this.component.customClass;
     }
@@ -2347,6 +2344,14 @@ export default class BaseComponent {
     }
 
     this._disabled = disabled;
+
+    // Add/remove the disabled class from the element.
+    if (disabled) {
+      this.addClass(this.getElement(), 'formio-disabled-input');
+    }
+    else {
+      this.removeClass(this.getElement(), 'formio-disabled-input');
+    }
 
     // Disable all inputs.
     _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));
