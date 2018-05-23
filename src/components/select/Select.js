@@ -610,6 +610,9 @@ export default class SelectComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
+    if (this.component.multiple && !Array.isArray(value)) {
+      value = [value];
+    }
     const hasPreviousValue = Array.isArray(this.dataValue) ? this.dataValue.length : this.dataValue;
     const hasValue = Array.isArray(value) ? value.length : value;
     const changed = this.hasChanged(value, this.dataValue);
