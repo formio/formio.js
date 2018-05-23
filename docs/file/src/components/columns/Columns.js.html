@@ -245,7 +245,6 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/columns/Columns.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
-import Components from &apos;../Components&apos;;
 import NestedComponent from &apos;../nested/NestedComponent&apos;;
 
 export default class ColumnsComponent extends NestedComponent {
@@ -260,7 +259,8 @@ export default class ColumnsComponent extends NestedComponent {
       ],
       clearOnHide: false,
       input: false,
-      tableView: false
+      tableView: false,
+      persistent: false
     }, ...extend);
   }
 
@@ -282,10 +282,12 @@ export default class ColumnsComponent extends NestedComponent {
   get schema() {
     const schema = _.omit(super.schema, &apos;components&apos;);
     schema.columns = [];
-    if (this.component.columns &amp;&amp; this.component.columns.length) {
-      this.component.columns.forEach((column) =&gt; {
-        schema.columns.push(Components.create(column, this.options, this.data, true).schema);
-      });
+    this.eachComponent((component, index) =&gt; {
+      _.merge(component.component, _.omit(this.component.columns[index], &apos;components&apos;));
+      schema.columns.push(component.schema);
+    });
+    for (let i = this.components.length; i &lt; this.component.columns.length; i++) {
+      schema.columns.push(this.component.columns[i]);
     }
     return schema;
   }

@@ -326,14 +326,6 @@ export default class PDF extends Webform {
     });
   }
 
-  setValue(submission) {
-    this._submission = submission || {data: {}};
-  }
-
-  getValue() {
-    return this._submission;
-  }
-
   addComponent(component, element, data, before) {
     // Never add the component to the DOM.
     super.addComponent(component, element, data, before, true);

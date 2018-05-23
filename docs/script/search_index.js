@@ -2196,12 +2196,6 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/pdf.js~pdf#_submission",
-    "class/src/PDF.js~PDF.html#instance-member-_submission",
-    "src/PDF.js~PDF#_submission",
-    "member"
-  ],
-  [
     "src/pdf.js~pdf#addcomponent",
     "class/src/PDF.js~PDF.html#instance-method-addComponent",
     "src/PDF.js~PDF#addComponent",
@@ -2238,12 +2232,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "src/pdf.js~pdf#getvalue",
-    "class/src/PDF.js~PDF.html#instance-method-getValue",
-    "src/PDF.js~PDF#getValue",
-    "method"
-  ],
-  [
     "src/pdf.js~pdf#iframe",
     "class/src/PDF.js~PDF.html#instance-member-iframe",
     "src/PDF.js~PDF#iframe",
@@ -2277,12 +2265,6 @@ window.esdocSearchIndex = [
     "src/pdf.js~pdf#setsubmission",
     "class/src/PDF.js~PDF.html#instance-method-setSubmission",
     "src/PDF.js~PDF#setSubmission",
-    "method"
-  ],
-  [
-    "src/pdf.js~pdf#setvalue",
-    "class/src/PDF.js~PDF.html#instance-method-setValue",
-    "src/PDF.js~PDF#setValue",
     "method"
   ],
   [
@@ -2797,13 +2779,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-get-src",
+    "class/src/Webform.js~Webform.html#instance-set-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
   [
     "src/webform.js~webform#src",
-    "class/src/Webform.js~Webform.html#instance-set-src",
+    "class/src/Webform.js~Webform.html#instance-get-src",
     "src/Webform.js~Webform#src",
     "member"
   ],
@@ -2869,13 +2851,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-set-url",
+    "class/src/Webform.js~Webform.html#instance-get-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
   [
     "src/webform.js~webform#url",
-    "class/src/Webform.js~Webform.html#instance-get-url",
+    "class/src/Webform.js~Webform.html#instance-set-url",
     "src/Webform.js~Webform#url",
     "member"
   ],
@@ -3397,13 +3379,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
   [
     "src/wizardbuilder.js~wizardbuilder#currentpage",
-    "class/src/WizardBuilder.js~WizardBuilder.html#instance-set-currentPage",
+    "class/src/WizardBuilder.js~WizardBuilder.html#instance-get-currentPage",
     "src/WizardBuilder.js~WizardBuilder#currentPage",
     "member"
   ],
@@ -4003,13 +3985,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#datavalue",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-dataValue",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-dataValue",
     "src/components/base/Base.js~BaseComponent#dataValue",
     "member"
   ],
@@ -4735,13 +4717,13 @@ window.esdocSearchIndex = [
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
   [
     "src/components/base/base.js~basecomponent#visible",
-    "class/src/components/base/Base.js~BaseComponent.html#instance-set-visible",
+    "class/src/components/base/Base.js~BaseComponent.html#instance-get-visible",
     "src/components/base/Base.js~BaseComponent#visible",
     "member"
   ],
@@ -5044,6 +5026,18 @@ window.esdocSearchIndex = [
     "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-method-createLabel",
     "src/components/checkbox/Checkbox.js~CheckBoxComponent#createLabel",
     "method"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-get-dataValue",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
+    "member"
+  ],
+  [
+    "src/components/checkbox/checkbox.js~checkboxcomponent#datavalue",
+    "class/src/components/checkbox/Checkbox.js~CheckBoxComponent.html#instance-set-dataValue",
+    "src/components/checkbox/Checkbox.js~CheckBoxComponent#dataValue",
+    "member"
   ],
   [
     "src/components/checkbox/checkbox.js~checkboxcomponent#defaultschema",
@@ -8877,6 +8871,12 @@ window.esdocSearchIndex = [
     "src/components/table/table.js~tablecomponent.builderinfo",
     "class/src/components/table/Table.js~TableComponent.html#static-get-builderInfo",
     "src/components/table/Table.js~TableComponent.builderInfo",
+    "member"
+  ],
+  [
+    "src/components/table/table.js~tablecomponent.defaulttable",
+    "class/src/components/table/Table.js~TableComponent.html#static-get-defaultTable",
+    "src/components/table/Table.js~TableComponent.defaultTable",
     "member"
   ],
   [

@@ -267,6 +267,7 @@ export default class SelectComponent extends BaseComponent {
       valueProperty: &apos;&apos;,
       refreshOn: &apos;&apos;,
       filter: &apos;&apos;,
+      searchEnabled: true,
       authenticate: false,
       template: &apos;&lt;span&gt;{{ item.label }}&lt;/span&gt;&apos;,
       selectFields: &apos;&apos;
@@ -418,7 +419,7 @@ export default class SelectComponent extends BaseComponent {
     }
   }
 
-  setItems(items) {
+  setItems(items, fromSearch) {
     // If the items is a string, then parse as JSON.
     if (typeof items == &apos;string&apos;) {
       try {
@@ -454,7 +455,9 @@ export default class SelectComponent extends BaseComponent {
     }
 
     // Add the value options.
-    this.addValueOptions(items);
+    if (!fromSearch) {
+      this.addValueOptions(items);
+    }
 
     if (this.component.widget === &apos;html5&apos; &amp;&amp; !this.component.placeholder) {
       this.addOption(null, &apos;&apos;);
@@ -539,7 +542,7 @@ export default class SelectComponent extends BaseComponent {
     options.header = headers;
     this.loading = true;
     Formio.makeRequest(this.options.formio, &apos;select&apos;, url, method, body, options)
-      .then((response) =&gt; this.setItems(response))
+      .then((response) =&gt; this.setItems(response, !!search))
       .catch((err) =&gt; {
         this.loading = false;
         this.emit(&apos;componentError&apos;, {
@@ -725,6 +728,7 @@ export default class SelectComponent extends BaseComponent {
       shouldSort: false,
       position: (this.component.dropdown || &apos;auto&apos;),
       searchEnabled: useSearch,
+      searchChoices: !this.component.searchField,
       searchFields: [&apos;label&apos;],
       fuseOptions: {
         include: &apos;score&apos;,

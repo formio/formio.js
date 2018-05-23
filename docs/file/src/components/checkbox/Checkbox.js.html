@@ -430,6 +430,22 @@ export default class CheckBoxComponent extends BaseComponent {
     return input;
   }
 
+  set dataValue(value) {
+    const setValue = (super.dataValue = value);
+    if (this.component.name) {
+      _.set(this.data, this.component.key, setValue === this.component.value);
+    }
+    return setValue;
+  }
+
+  get dataValue() {
+    const getValue = super.dataValue;
+    if (this.component.name) {
+      _.set(this.data, this.component.key, getValue === this.component.value);
+    }
+    return getValue;
+  }
+
   get key() {
     return this.component.name ? this.component.name : super.key;
   }
