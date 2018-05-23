@@ -77,7 +77,7 @@ export default class BaseComponent {
       /**
        * If the value of this component should be persisted within the backend api database.
        */
-      persistent: false,
+      persistent: true,
 
       /**
        * Determines if the component should be within the form, but not visible.

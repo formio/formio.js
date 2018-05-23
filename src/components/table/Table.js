@@ -23,7 +23,8 @@ export default class TableComponent extends NestedComponent {
       striped: false,
       bordered: false,
       hover: false,
-      condensed: false
+      condensed: false,
+      persistent: false
     }, ...extend);
   }
 

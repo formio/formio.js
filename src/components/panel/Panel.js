@@ -12,7 +12,8 @@ export default class PanelComponent extends NestedComponent {
       components: [],
       clearOnHide: false,
       input: false,
-      tableView: false
+      tableView: false,
+      persistent: false
     }, ...extend);
   }
 
