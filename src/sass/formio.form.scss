@@ -615,3 +615,11 @@ body.formio-dialog-open {
   margin-top: -10px;
   margin-left: -10px;
 }
+
+.is-disabled .choices__list--multiple .choices__item {
+  padding: 5px 10px;
+}
+
+.is-disabled .choices__list--multiple .choices__item .choices__button {
+  display: none;
+}

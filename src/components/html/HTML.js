@@ -8,7 +8,8 @@ export default class HTMLComponent extends BaseComponent {
       tag: 'p',
       attrs: [],
       content: '',
-      input: false
+      input: false,
+      persistent: false
     }, ...extend);
   }
 

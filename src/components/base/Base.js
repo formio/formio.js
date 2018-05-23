@@ -77,7 +77,7 @@ export default class BaseComponent {
       /**
        * If the value of this component should be persisted within the backend api database.
        */
-      persistent: false,
+      persistent: true,
 
       /**
        * Determines if the component should be within the form, but not visible.
@@ -691,9 +691,6 @@ export default class BaseComponent {
     className += `formio-component formio-component-${this.component.type} `;
     if (this.key) {
       className += `formio-component-${this.key} `;
-    }
-    if (this.shouldDisable) {
-      className += 'formio-disabled-input ';
     }
     if (this.component.customClass) {
       className += this.component.customClass;
@@ -2162,7 +2159,17 @@ export default class BaseComponent {
    * @param dirty
    * @return {*}
    */
-  invalidMessage(data, dirty) {
+  invalidMessage(data, dirty, ignoreCondition) {
+    // Force valid if component is conditionally hidden.
+    if (!ignoreCondition && !checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      return '';
+    }
+
+    // See if this is forced invalid.
+    if (this.invalid) {
+      return this.invalid;
+    }
+
     // No need to check for errors if there is no input or if it is pristine.
     if (!this.hasInput || (!dirty && this.pristine)) {
       return '';
@@ -2188,7 +2195,7 @@ export default class BaseComponent {
       return true;
     }
 
-    const message = this.invalid || this.invalidMessage(data, dirty);
+    const message = this.invalidMessage(data, dirty, true);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
@@ -2347,6 +2354,14 @@ export default class BaseComponent {
     }
 
     this._disabled = disabled;
+
+    // Add/remove the disabled class from the element.
+    if (disabled) {
+      this.addClass(this.getElement(), 'formio-disabled-input');
+    }
+    else {
+      this.removeClass(this.getElement(), 'formio-disabled-input');
+    }
 
     // Disable all inputs.
     _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));

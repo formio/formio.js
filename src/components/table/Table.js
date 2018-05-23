@@ -23,7 +23,8 @@ export default class TableComponent extends NestedComponent {
       striped: false,
       bordered: false,
       hover: false,
-      condensed: false
+      condensed: false,
+      persistent: false
     }, ...extend);
   }
 
@@ -78,9 +79,9 @@ export default class TableComponent extends NestedComponent {
           id: `${this.id}-${rowIndex}-${colIndex}`
         });
         _.each(column.components, (comp) => {
-          comp.tableRow = rowIndex;
-          comp.tableColumn = colIndex;
-          this.addComponent(comp, td, data);
+          const component = this.addComponent(comp, td, data);
+          component.tableRow = rowIndex;
+          component.tableColumn = colIndex;
         });
 
         if (this.options.builder) {
@@ -91,14 +92,8 @@ export default class TableComponent extends NestedComponent {
               style: 'text-align:center; margin-bottom: 0px;',
               role: 'alert'
             }, this.text('Drag and Drop a form component')));
-            td.tableRow = rowIndex;
-            td.tableColumn = colIndex;
           }
           this.root.addDragContainer(td, this, {
-            onDrop: (element, target, source, sibling, component) => {
-              component.tableRow = target.tableRow;
-              component.tableColumn = target.tableColumn;
-            },
             onSave: (component) => {
               component.tableRow = rowIndex;
               component.tableColumn = colIndex;

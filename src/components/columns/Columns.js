@@ -13,7 +13,8 @@ export default class ColumnsComponent extends NestedComponent {
       ],
       clearOnHide: false,
       input: false,
-      tableView: false
+      tableView: false,
+      persistent: false
     }, ...extend);
   }
 

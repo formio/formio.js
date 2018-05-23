@@ -13,6 +13,7 @@ export default class ButtonComponent extends BaseComponent {
       rightIcon: '',
       block: false,
       action: 'submit',
+      persistent: false,
       disableOnInvalid: false,
       theme: 'default'
     }, ...extend);

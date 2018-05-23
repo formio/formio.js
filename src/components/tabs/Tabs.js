@@ -7,6 +7,7 @@ export default class TabsComponent extends NestedComponent {
       type: 'tabs',
       input: false,
       key: 'tabs',
+      persistent: false,
       components: [
         {
           label: 'Tab 1',
