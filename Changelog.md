@@ -39,6 +39,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
 
+## 3.0.0-alpha.17
+### Fixed
+ - Issues with the table builder where it would remove elements when building existing forms.
+ - Select component to not have static search enabled for URL based selects with searchField set.
+ - Fix possible issue with eachComponent that tries to iterate over a non array.
+ - Fix the PDF renderer so that it will submit the form correctly.
+ - Fixed issue with the errors disappearing after they show up.
+ - Fixed issue with Checkbox configured as radio where original boolean would not get set with submission.
+ - Fixed the input disabled class to be dynamic based on the disabled state of the component.
+ - Fixed issue where isValid method would return false on hidden required fields.
+ - Fixed issue where the x button on multiple select dropdowns was showing in read only mode.
+
+### Changed
+ - Make sure to default persistence to true unless otherwise stated.
+
+### Added
+ - A way to turn of the static search for select fields in the form builder.
+
 ## 3.0.0-alpha.16
 ### Fixed
  - Issues with the columns builder not including its components.
