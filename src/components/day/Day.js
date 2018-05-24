@@ -97,7 +97,7 @@ export default class DayComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    return '';
+    return null;
   }
 
   isEmpty(value) {
@@ -328,7 +328,7 @@ export default class DayComponent extends BaseComponent {
    */
   setValueAt(index, value) {
     if (!value) {
-      return;
+      return null;
     }
     const parts = value.split('/');
     if (this.component.dayFirst && this.showDay) {
@@ -375,16 +375,16 @@ export default class DayComponent extends BaseComponent {
     const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
     const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
     if (this.showDay && !day) {
-      // Invalid so return empty string.
-      return '';
+      // Invalid so return null
+      return null;
     }
     if (this.showMonth && (month === -1)) {
-      // Invalid so return empty string.
-      return '';
+      // Invalid so return null
+      return null;
     }
     if (this.showYear && !year) {
-      // Invalid so return empty string.
-      return '';
+      // Invalid so return null
+      return null;
     }
     return moment([day, month, year]);
   }
@@ -397,7 +397,7 @@ export default class DayComponent extends BaseComponent {
   get validationValue() {
     const date = this.date;
     if (!date) {
-      return '';
+      return null;
     }
 
     return date.format();
@@ -411,8 +411,14 @@ export default class DayComponent extends BaseComponent {
    */
   getValueAt(index) {
     const date = this.date;
-    this.inputs[index].value = date ? date.format(this.format) : date;
-    return this.inputs[index].value;
+    if (date) {
+      this.inputs[index].value = date.format(this.format);
+      return this.inputs[index].value;
+    }
+    else {
+      this.inputs[index].value = '';
+      return null;
+    }
   }
 
   getView() {

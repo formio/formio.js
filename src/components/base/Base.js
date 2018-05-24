@@ -1965,6 +1965,9 @@ export default class BaseComponent {
     if (!this.key) {
       return value;
     }
+    if (value === null) {
+      return value;
+    }
     _.set(this.data, this.key, value);
     return value;
   }
