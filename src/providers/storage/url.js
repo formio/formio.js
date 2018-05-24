@@ -30,7 +30,7 @@ const url = function(formio) {
             let respData = {};
             try {
               respData = (typeof xhr.response === 'string') ? JSON.parse(xhr.response) : {};
-              respData = (respData && respData.data) ? respData.data : {};
+              respData = (respData && respData.data) ? respData.data : respData;
             }
             catch (err) {
               respData = {};
