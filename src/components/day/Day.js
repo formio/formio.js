@@ -386,7 +386,7 @@ export default class DayComponent extends BaseComponent {
       // Invalid so return null
       return null;
     }
-    return moment([day, month, year]);
+    return moment([year, month, day]);
   }
 
   /**
