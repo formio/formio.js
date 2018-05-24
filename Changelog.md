@@ -39,6 +39,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
 
+## 3.0.0-alpha.18
+### Fixed
+ - Issue with multiple settings on Select component not allowing a submission.
+ - Problem with the Day component setting disabled where it would cause javascript error.
+ - Styling problems with Bootstrap 4 and radio and checkbox controls.
+ - Default value issues with the Day component.
+ - Problems with non-set values getting set within the submission data.
+
 ## 3.0.0-alpha.17
 ### Fixed
  - Issues with the table builder where it would remove elements when building existing forms.
