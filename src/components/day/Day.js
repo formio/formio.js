@@ -378,7 +378,7 @@ export default class DayComponent extends BaseComponent {
       // Invalid so return null
       return null;
     }
-    if (this.showMonth && (month === -1)) {
+    if (this.showMonth && (month < 0)) {
       // Invalid so return null
       return null;
     }
