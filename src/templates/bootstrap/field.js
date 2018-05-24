@@ -5,20 +5,20 @@ export default {
     class="{{label.className}}" 
     style="{{label.style}}"
   >
-    {{component.label}}
+    {{t(component.label)}}
     {% if (component.tooltip) { %} <i ref="tooltip" class="{{label.tooltipClass}}"></i>{% } %}
   </label>
 {% } %}
 {{element}}
 {% if (!label.hidden && label.labelPosition === 'bottom') { %}
-  <label class="{{label.className}}" style="{{label.style}}">{{component.label}}
+  <label class="{{label.className}}" style="{{label.style}}">{{t(component.label)}}
   {% if (component.tooltip) { %}
     <i class="{{label.tooltipClass}}"></i>
   {% } %}
   </label>
 {% } %}
 {% if (component.description) { %}
-  <div class="help-block">{{component.description}}</div>
+  <div class="help-block">{{t(component.description)}}</div>
 {% } %}
 `,
 };

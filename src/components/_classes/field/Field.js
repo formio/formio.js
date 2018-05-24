@@ -1,5 +1,4 @@
 import Component from '../component/Component';
-import Tooltip from 'tooltip.js';
 
 export default class Field extends Component {
   get labelInfo() {
@@ -42,26 +41,12 @@ export default class Field extends Component {
 
   render(element) {
     return super.render(this.renderTemplate('field', {
-      component: this.component,
       label: this.labelInfo,
       element: element
     }));
   }
 
   hydrate(dom) {
-    this.loadRefs(dom, {tooltip: 'single', field: 'single'});
-
-    if (this.refs.tooltip) {
-      this.tooltip = new Tooltip(this.refs.tooltip, {
-        delay: {
-          hide: 100
-        },
-        placement: 'right',
-        html: true,
-        title: this.component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
-      });
-    }
-
     super.hydrate(dom);
   }
 

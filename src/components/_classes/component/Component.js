@@ -1,5 +1,6 @@
 /* globals Quill */
 import maskInput, {conformToMask} from 'vanilla-text-mask';
+import Tooltip from 'tooltip.js';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 import i18next from 'i18next';
@@ -449,6 +450,8 @@ export default class Component {
   }
 
   renderTemplate(name, data) {
+    data.component = this.component;
+    data.t = this.t;
     return this.interpolate(this.getTemplate(name), data);
   }
 
@@ -623,7 +626,18 @@ export default class Component {
 
   hydrate(element) {
     this.element = element;
-    this.loadRefs(element, {messageContainer: 'single'});
+    this.loadRefs(element, {messageContainer: 'single', tooltip: 'single'});
+
+    if (this.refs.tooltip) {
+      this.tooltip = new Tooltip(this.refs.tooltip, {
+        delay: {
+          hide: 100
+        },
+        placement: 'right',
+        html: true,
+        title: this.component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
+      });
+    }
     return Promise.resolve();
   }
 

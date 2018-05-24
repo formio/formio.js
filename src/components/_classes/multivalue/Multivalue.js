@@ -27,18 +27,7 @@ export default class Multivalue extends Field {
   }
 
   hydrate(dom) {
-    this.loadRefs(dom, {tooltip: 'single', addButton: 'single', input: 'multiple', removeRow: 'multiple'});
-
-    if (this.refs.tooltip) {
-      this.tooltip = new Tooltip(this.refs.tooltip, {
-        delay: {
-          hide: 100
-        },
-        placement: 'right',
-        html: true,
-        title: this.component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
-      });
-    }
+    this.loadRefs(dom, {addButton: 'single', input: 'multiple', removeRow: 'multiple'});
 
     this.refs.input.forEach(this.hydrateElement.bind(this));
     this.refs.removeRow.forEach((removeButton, index) => {

@@ -30,7 +30,7 @@ export default class CheckBoxComponent extends Component {
     return CheckBoxComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
@@ -40,45 +40,46 @@ export default class CheckBoxComponent extends Component {
       info.attr.name = `data[${this.component.name}]`;
     }
     info.attr.value = this.component.value ? this.component.value : 0;
+    info.label = this.t(this.component.label);
+    info.labelClass = this.className;
     return info;
   }
 
-  build() {
-    if (this.viewOnly) {
-      return this.viewOnlyBuild();
-    }
-
-    if (!this.component.input) {
-      return;
-    }
-    this.createElement();
-    this.input = this.createInput(this.element);
-    this.createLabel(this.element, this.input);
-    if (!this.labelElement) {
-      this.addInput(this.input, this.element);
-    }
-    this.createDescription(this.element);
-    this.restoreValue();
-    if (this.shouldDisable) {
-      this.disabled = true;
-    }
-    this.autofocus();
+  render() {
+    return super.render(this.renderTemplate('checkbox', {
+      component: this.component,
+      input: this.inputInfo,
+    }));
   }
+
+  hydrate(element) {
+    this.loadRefs(element, {input: 'single'});
+    this.addEventListener(this.refs.input, this.inputInfo.changeEvent, () => this.updateValue());
+  }
+    // build() {
+  //   if (this.viewOnly) {
+  //     return this.viewOnlyBuild();
+  //   }
+  //
+  //   if (!this.component.input) {
+  //     return;
+  //   }
+  //   this.createElement();
+  //   this.input = this.createInput(this.element);
+  //   this.createLabel(this.element, this.input);
+  //   if (!this.labelElement) {
+  //     this.addInput(this.input, this.element);
+  //   }
+  //   this.createDescription(this.element);
+  //   this.restoreValue();
+  //   if (this.shouldDisable) {
+  //     this.disabled = true;
+  //   }
+  //   this.autofocus();
+  // }
 
   get emptyValue() {
     return false;
-  }
-
-  createElement() {
-    let className = `form-check ${this.className}`;
-    if (this.component.label) {
-      className += ' checkbox';
-    }
-    this.element = this.ce('div', {
-      id: this.id,
-      class: className
-    });
-    this.element.component = this;
   }
 
   labelOnTheTopOrLeft() {
@@ -127,11 +128,7 @@ export default class CheckBoxComponent extends Component {
     return super.isEmpty(value) || value === false;
   }
 
-  createLabel(container, input) {
-    if (!this.component.label) {
-      return null;
-    }
-
+  get className() {
     let className = 'control-label form-check-label';
     if (this.component.input
       && !this.options.inputsOnly
@@ -139,10 +136,17 @@ export default class CheckBoxComponent extends Component {
       && this.component.validate.required) {
       className += ' field-required';
     }
+    return className;
+  }
 
-    this.labelElement = this.ce('label', {
-      class: className
-    });
+  createLabel(container, input) {
+    if (!this.component.label) {
+      return null;
+    }
+
+    // this.labelElement = this.ce('label', {
+    //   class: className
+    // });
     this.addShortcut();
 
     const labelOnTheTopOrOnTheLeft = this.labelOnTheTopOrLeft();
@@ -169,15 +173,6 @@ export default class CheckBoxComponent extends Component {
     }
     this.createTooltip(this.labelElement);
     container.appendChild(this.labelElement);
-  }
-
-  createInput(container) {
-    if (!this.component.input) {
-      return;
-    }
-    const input = this.ce(this.info.type, this.info.attr);
-    this.errorContainer = container;
-    return input;
   }
 
   getValueAt(index) {
