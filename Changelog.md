@@ -40,6 +40,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
 
+## 3.0.0-alpha.19
+### Fixed
+ - File data for url file uploads getting lost if it doesn't contain a .date property.
+
 ## 3.0.0-alpha.18
 ### Fixed
  - Issue with multiple settings on Select component not allowing a submission.
