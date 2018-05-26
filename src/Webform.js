@@ -911,7 +911,7 @@ export default class Webform extends NestedComponent {
 
   checkData(data, flags) {
     const valid = super.checkData(data, flags);
-    if ((!flags || flags.noValidate) && this.submitted) {
+    if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
     }
     return valid;
