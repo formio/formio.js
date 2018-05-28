@@ -927,6 +927,8 @@ export default class BaseComponent {
         return 'fa fa-question-circle';
       case 'remove-circle':
         return 'fa fa-times-circle-o';
+      case 'new-window':
+        return 'fa fa-window-restore';
       default:
         return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
     }
