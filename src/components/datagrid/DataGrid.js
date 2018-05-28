@@ -46,7 +46,8 @@ export default class DataGridComponent extends NestedComponent {
 
   hasAddButton() {
     const maxLength = _.get(this.component, 'validate.maxLength');
-    return !this.shouldDisable &&
+    return !this.component.disableAddingRemovingRows &&
+    !this.shouldDisable &&
       !this.options.builder &&
       !this.options.preview &&
       (!maxLength || (this.dataValue.length < maxLength));
@@ -57,7 +58,8 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   hasRemoveButtons() {
-    return !this.shouldDisable &&
+    return !this.component.disableAddingRemovingRows &&
+      !this.shouldDisable &&
       !this.options.builder &&
       (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
