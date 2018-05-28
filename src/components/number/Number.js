@@ -64,10 +64,6 @@ export default class NumberComponent extends BaseComponent {
     return NumberComponent.schema();
   }
 
-  get emptyValue() {
-    return '';
-  }
-
   parseNumber(value) {
     // Remove delimiters and convert decimal separator to dot.
     value = value.split(this.delimiter).join('').replace(this.decimalSeparator, '.');
