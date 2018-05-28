@@ -355,7 +355,7 @@ export default class BaseComponent {
       return schema;
     }
     _.each(schema, (val, key) => {
-      if (_.isObject(val) && defaultSchema.hasOwnProperty(key)) {
+      if (!_.isArray(val) && _.isObject(val) && defaultSchema.hasOwnProperty(key)) {
         const subModified = this.getModifiedSchema(val, defaultSchema[key]);
         if (!_.isEmpty(subModified)) {
           modified[key] = subModified;
@@ -2195,6 +2195,7 @@ export default class BaseComponent {
   checkValidity(data, dirty) {
     // Force valid if component is conditionally hidden.
     if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      this.setCustomValidity('');
       return true;
     }
 

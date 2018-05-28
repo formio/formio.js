@@ -2,12 +2,16 @@ import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 
 export default class TableComponent extends NestedComponent {
-  static get defaultTable() {
-    return [
-      [{components: []}, {components: []}, {components: []}],
-      [{components: []}, {components: []}, {components: []}],
-      [{components: []}, {components: []}, {components: []}]
-    ];
+  static emptyTable(numRows, numCols) {
+    const rows = [];
+    for (let i = 0; i < numRows; i++) {
+      const cols = [];
+      for (let j = 0; j < numCols; j++) {
+        cols.push({components: []});
+      }
+      rows.push(cols);
+    }
+    return rows;
   }
 
   static schema(...extend) {
@@ -17,7 +21,7 @@ export default class TableComponent extends NestedComponent {
       key: 'table',
       numRows: 3,
       numCols: 3,
-      rows: TableComponent.defaultTable,
+      rows: TableComponent.emptyTable(3, 3),
       header: [],
       caption: '',
       striped: false,
@@ -48,7 +52,7 @@ export default class TableComponent extends NestedComponent {
     schema.rows = [];
     this.eachComponent((component) => {
       if (!schema.rows || !schema.rows.length) {
-        schema.rows = TableComponent.defaultTable;
+        schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
       }
       if (!schema.rows[component.tableRow]) {
         schema.rows[component.tableRow] = [];
@@ -59,7 +63,7 @@ export default class TableComponent extends NestedComponent {
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
     if (!schema.rows.length) {
-      schema.rows = TableComponent.defaultTable;
+      schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
     }
     return schema;
   }
