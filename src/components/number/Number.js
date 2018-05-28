@@ -109,7 +109,7 @@ export default class NumberComponent extends BaseComponent {
     const val = this.inputs[index].value;
 
     if (!val) {
-      return null;
+      return undefined;
     }
 
     return this.parseNumber(val);
