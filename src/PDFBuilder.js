@@ -86,6 +86,7 @@ export default class PDFBuilder extends WebformBuilder {
 
   addComponentTo(parent, schema, element, sibling) {
     const comp = super.addComponentTo(parent, schema, element, sibling);
+    comp.isNew = true;
     if (this.pdfForm && schema.overlay) {
       this.pdfForm.postMessage({name: 'addElement', data: schema});
     }
