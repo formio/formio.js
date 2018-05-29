@@ -65,6 +65,10 @@ export default {
         });
       },
       check(component, setting, value) {
+        if (typeof component.validateRequired === 'function') {
+          return component.validateRequired(setting, value);
+        }
+
         if (!boolValue(setting)) {
           return true;
         }
