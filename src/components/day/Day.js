@@ -109,22 +109,22 @@ export default class DayComponent extends BaseComponent {
   }
 
   validateRequired(setting, value) {
+    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
+    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
+    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
+    if (this.dayRequired && !day) {
+      return false;
+    }
+
+    if (this.monthRequired && month < 0) {
+      return false;
+    }
+
+    if (this.yearRequired && !year) {
+      return false;
+    }
+
     if (!boolValue(setting)) {
-      const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
-      const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
-      const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
-      if (this.dayRequired && !day) {
-        return false;
-      }
-
-      if (this.monthRequired && month < 0) {
-        return false;
-      }
-
-      if (this.yearRequired && !year) {
-        return false;
-      }
-
       return true;
     }
     return !this.isEmpty(value);

@@ -6,7 +6,15 @@ export default {
   each: _.each,
   has: _.has,
   checkValidator(component, validator, setting, value, data) {
-    const result = validator.check.call(this, component, setting, value, data);
+    let result = null;
+
+    // Allow each component to override their own validators by implementing the validator.method
+    if (validator.method && (typeof component[validator.method] === 'function')) {
+      result = component[validator.method](setting, value, data);
+    }
+    else {
+      result = validator.check.call(this, component, setting, value, data);
+    }
     if (typeof result === 'string') {
       return result;
     }
@@ -58,6 +66,7 @@ export default {
   validators: {
     required: {
       key: 'validate.required',
+      method: 'validateRequired',
       message(component) {
         return component.t(component.errorMessage('required'), {
           field: component.errorLabel,
@@ -65,10 +74,6 @@ export default {
         });
       },
       check(component, setting, value) {
-        if (typeof component.validateRequired === 'function') {
-          return component.validateRequired(setting, value);
-        }
-
         if (!boolValue(setting)) {
           return true;
         }
