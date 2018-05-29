@@ -117,7 +117,7 @@ export default class Wizard extends Webform {
       });
     }
     else {
-      return Promise.reject(this.showErrors());
+      return Promise.reject(this.showErrors(null, true));
     }
   }
 
