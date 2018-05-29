@@ -1,3 +1,5 @@
+/* global $ */
+
 import Webform from './Webform';
 import dragula from 'dragula';
 import Components from './components/Components';
@@ -430,36 +432,42 @@ export default class WebformBuilder extends Webform {
     const groupAnchor = this.ce('button', {
       class: 'btn btn-block builder-group-button',
       'data-toggle': 'collapse',
+      'data-parent': `#${container.id}`,
       'data-target': `#group-${info.key}`
     }, this.text(info.title));
 
-    // Add a listener when it is clicked.
-    this.addEventListener(groupAnchor, 'click', (event) => {
-      event.preventDefault();
-      const clickedGroupId = event.target.getAttribute('data-target').replace('#group-', '');
-      if (this.groups[clickedGroupId]) {
-        const clickedGroup = this.groups[clickedGroupId];
-        const wasIn = this.hasClass(clickedGroup.panel, 'in');
-        _.each(this.groups, (group, groupId) => {
-          this.removeClass(group.panel, 'in');
-          this.removeClass(group.panel, 'show');
-          if ((groupId === clickedGroupId) && !wasIn) {
-            this.addClass(group.panel, 'in');
-            this.addClass(group.panel, 'show');
-            let parent = group.parent;
-            while (parent) {
-              this.addClass(parent.panel, 'in');
-              this.addClass(parent.panel, 'show');
-              parent = parent.parent;
-            }
-          }
-        });
+    // See if we have bootstrap.js installed.
+    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().toggle === 'function');
 
-        // Match the form builder height to the sidebar.
-        this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
-        this.scrollSidebar();
-      }
-    });
+    // Add a listener when it is clicked.
+    if (!hasBootstrapJS) {
+      this.addEventListener(groupAnchor, 'click', (event) => {
+        event.preventDefault();
+        const clickedGroupId = event.target.getAttribute('data-target').replace('#group-', '');
+        if (this.groups[clickedGroupId]) {
+          const clickedGroup = this.groups[clickedGroupId];
+          const wasIn = this.hasClass(clickedGroup.panel, 'in');
+          _.each(this.groups, (group, groupId) => {
+            this.removeClass(group.panel, 'in');
+            this.removeClass(group.panel, 'show');
+            if ((groupId === clickedGroupId) && !wasIn) {
+              this.addClass(group.panel, 'in');
+              this.addClass(group.panel, 'show');
+              let parent = group.parent;
+              while (parent) {
+                this.addClass(parent.panel, 'in');
+                this.addClass(parent.panel, 'show');
+                parent = parent.parent;
+              }
+            }
+          });
+
+          // Match the form builder height to the sidebar.
+          this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
+          this.scrollSidebar();
+        }
+      });
+    }
 
     info.element = this.ce('div', {
       class: 'card panel panel-default form-builder-panel',
@@ -474,6 +482,7 @@ export default class WebformBuilder extends Webform {
       ])
     ]);
     info.body = this.ce('div', {
+      id: `group-container-${info.key}`,
       class: 'card-body panel-body no-drop'
     });
 
@@ -482,7 +491,10 @@ export default class WebformBuilder extends Webform {
 
     let groupBodyClass = 'panel-collapse collapse';
     if (info.default) {
-      groupBodyClass += ' in show';
+      groupBodyClass += ' in';
+      if (!hasBootstrapJS) {
+        groupBodyClass += ' show';
+      }
     }
 
     info.panel = this.ce('div', {
@@ -553,6 +565,7 @@ export default class WebformBuilder extends Webform {
       this.removeChildFrom(this.sideBarElement, this.builderSidebar);
     }
     this.sideBarElement = this.ce('div', {
+      id: `builder-sidebar-${this.id}`,
       class: 'accordion panel-group'
     });
 

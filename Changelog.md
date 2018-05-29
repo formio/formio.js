@@ -41,6 +41,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
 
+## 3.0.0-rc.2
+### Fixed
+ - Issue with Bootstrap.js messing up the form builder accordion.
+
 ## 3.0.0-alpha.20
 ### Added
  - Possibility to Disable Adding / Removing rows for Data Grid
