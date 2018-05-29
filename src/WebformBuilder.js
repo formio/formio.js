@@ -437,7 +437,7 @@ export default class WebformBuilder extends Webform {
     }, this.text(info.title));
 
     // See if we have bootstrap.js installed.
-    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().toggle === 'function');
+    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().collapse === 'function');
 
     // Add a listener when it is clicked.
     if (!hasBootstrapJS) {
