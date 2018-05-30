@@ -214,15 +214,14 @@ export default class CheckBoxComponent extends BaseComponent {
   getValue() {
     const value = super.getValue();
     if (this.component.name) {
-      return value ? value : this.dataValue;
+      return value ? this.setCheckedState(value) : this.setCheckedState(this.dataValue);
     }
     else {
       return value;
     }
   }
 
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+  setCheckedState(value) {
     if (!this.input) {
       return;
     }
@@ -246,7 +245,20 @@ export default class CheckBoxComponent extends BaseComponent {
       this.input.value = 0;
       this.input.checked = 0;
     }
-    return this.updateValue(flags);
+    if (this.input.checked) {
+      this.input.setAttribute('checked', true);
+    }
+    else {
+      this.input.removeAttribute('checked');
+    }
+    return value;
+  }
+
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
+    if (this.setCheckedState(value) !== undefined) {
+      return this.updateValue(flags);
+    }
   }
 
   getView(value) {
