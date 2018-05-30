@@ -30,6 +30,17 @@ export default class CheckBoxComponent extends Component {
     return CheckBoxComponent.schema();
   }
 
+  get className() {
+    let className = 'control-label form-check-label';
+    if (this.component.input
+      && !this.options.inputsOnly
+      && this.component.validate
+      && this.component.validate.required) {
+      className += ' field-required';
+    }
+    return className;
+  }
+
   get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
@@ -49,134 +60,79 @@ export default class CheckBoxComponent extends Component {
     return super.render(this.renderTemplate('checkbox', {
       component: this.component,
       input: this.inputInfo,
+      checked: this.dataValue,
     }));
   }
 
   hydrate(element) {
-    this.loadRefs(element, {input: 'single'});
-    this.addEventListener(this.refs.input, this.inputInfo.changeEvent, () => this.updateValue());
+    this.loadRefs(element, {input: 'multiple'});
+    this.input = this.refs.input[0];
+    this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue());
+    //   this.autofocus();
+    //   this.addShortcut();
+    //   if (this.shouldDisable) {
+    //     this.disabled = true;
+    //   }
+    super.hydrate(element);
   }
     // build() {
   //   if (this.viewOnly) {
   //     return this.viewOnlyBuild();
   //   }
-  //
-  //   if (!this.component.input) {
-  //     return;
-  //   }
-  //   this.createElement();
-  //   this.input = this.createInput(this.element);
-  //   this.createLabel(this.element, this.input);
-  //   if (!this.labelElement) {
-  //     this.addInput(this.input, this.element);
-  //   }
-  //   this.createDescription(this.element);
-  //   this.restoreValue();
-  //   if (this.shouldDisable) {
-  //     this.disabled = true;
-  //   }
-  //   this.autofocus();
   // }
 
   get emptyValue() {
     return false;
   }
 
-  labelOnTheTopOrLeft() {
-    return ['top', 'left'].includes(this.component.labelPosition);
-  }
-
-  labelOnTheTopOrBottom() {
-    return ['top', 'bottom'].includes(this.component.labelPosition);
-  }
-
-  setInputLabelStyle(label) {
-    if (this.component.labelPosition === 'left') {
-      _.assign(label.style, {
-        textAlign: 'center',
-        paddingLeft: 0,
-      });
-    }
-
-    if (this.labelOnTheTopOrBottom()) {
-      _.assign(label.style, {
-        display: 'block',
-        textAlign: 'center',
-        paddingLeft: 0,
-      });
-    }
-  }
-
-  setInputStyle(input) {
-    if (this.component.labelPosition === 'left') {
-      _.assign(input.style, {
-        position: 'initial',
-        marginLeft: '7px'
-      });
-    }
-
-    if (this.labelOnTheTopOrBottom()) {
-      _.assign(input.style, {
-        width: '100%',
-        position: 'initial',
-        marginLeft: 0
-      });
-    }
-  }
+  // labelOnTheTopOrLeft() {
+  //   return ['top', 'left'].includes(this.component.labelPosition);
+  // }
+  //
+  // labelOnTheTopOrBottom() {
+  //   return ['top', 'bottom'].includes(this.component.labelPosition);
+  // }
+  //
+  // setInputLabelStyle(label) {
+  //   if (this.component.labelPosition === 'left') {
+  //     _.assign(label.style, {
+  //       textAlign: 'center',
+  //       paddingLeft: 0,
+  //     });
+  //   }
+  //
+  //   if (this.labelOnTheTopOrBottom()) {
+  //     _.assign(label.style, {
+  //       display: 'block',
+  //       textAlign: 'center',
+  //       paddingLeft: 0,
+  //     });
+  //   }
+  // }
+  //
+  // setInputStyle(input) {
+  //   if (this.component.labelPosition === 'left') {
+  //     _.assign(input.style, {
+  //       position: 'initial',
+  //       marginLeft: '7px'
+  //     });
+  //   }
+  //
+  //   if (this.labelOnTheTopOrBottom()) {
+  //     _.assign(input.style, {
+  //       width: '100%',
+  //       position: 'initial',
+  //       marginLeft: 0
+  //     });
+  //   }
+  // }
 
   isEmpty(value) {
     return super.isEmpty(value) || value === false;
   }
 
-  get className() {
-    let className = 'control-label form-check-label';
-    if (this.component.input
-      && !this.options.inputsOnly
-      && this.component.validate
-      && this.component.validate.required) {
-      className += ' field-required';
-    }
-    return className;
-  }
-
-  createLabel(container, input) {
-    if (!this.component.label) {
-      return null;
-    }
-
-    // this.labelElement = this.ce('label', {
-    //   class: className
-    // });
-    this.addShortcut();
-
-    const labelOnTheTopOrOnTheLeft = this.labelOnTheTopOrLeft();
-
-    // Create the SPAN around the textNode for better style hooks
-    this.labelSpan = this.ce('span');
-
-    if (this.info.attr.id) {
-      this.labelElement.setAttribute('for', this.info.attr.id);
-    }
-    if (!this.labelIsHidden() && labelOnTheTopOrOnTheLeft) {
-      this.setInputLabelStyle(this.labelElement);
-      this.setInputStyle(input);
-      this.labelSpan.appendChild(this.text(this.component.label));
-      this.labelElement.appendChild(this.labelSpan);
-    }
-    this.addInput(input, this.labelElement);
-
-    if (!this.labelIsHidden() && !labelOnTheTopOrOnTheLeft) {
-      this.setInputLabelStyle(this.labelElement);
-      this.setInputStyle(input);
-      this.labelSpan.appendChild(this.text(this.addShortcutToLabel()));
-      this.labelElement.appendChild(this.labelSpan);
-    }
-    this.createTooltip(this.labelElement);
-    container.appendChild(this.labelElement);
-  }
-
   getValueAt(index) {
-    return !!this.inputs[index].checked;
+    return !!this.refs.input[index].checked;
   }
 
   setValue(value, flags) {

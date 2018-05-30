@@ -57,47 +57,47 @@ export default class RadioComponent extends Field {
     super.hydrate(element);
   }
 
-  optionsLabelOnTheTopOrLeft() {
-    return ['top', 'left'].includes(this.component.optionsLabelPosition);
-  }
-
-  optionsLabelOnTheTopOrBottom() {
-    return ['top', 'bottom'].includes(this.component.optionsLabelPosition);
-  }
-
-  setInputLabelStyle(label) {
-    if (this.component.optionsLabelPosition === 'left') {
-      _.assign(label.style, {
-        textAlign: 'center',
-        paddingLeft: 0,
-      });
-    }
-
-    if (this.optionsLabelOnTheTopOrBottom()) {
-      _.assign(label.style, {
-        display: 'block',
-        textAlign: 'center',
-        paddingLeft: 0,
-      });
-    }
-  }
-
-  setInputStyle(input) {
-    if (this.component.optionsLabelPosition === 'left') {
-      _.assign(input.style, {
-        position: 'initial',
-        marginLeft: '7px'
-      });
-    }
-
-    if (this.optionsLabelOnTheTopOrBottom()) {
-      _.assign(input.style, {
-        width: '100%',
-        position: 'initial',
-        marginLeft: 0
-      });
-    }
-  }
+  // optionsLabelOnTheTopOrLeft() {
+  //   return ['top', 'left'].includes(this.component.optionsLabelPosition);
+  // }
+  //
+  // optionsLabelOnTheTopOrBottom() {
+  //   return ['top', 'bottom'].includes(this.component.optionsLabelPosition);
+  // }
+  //
+  // setInputLabelStyle(label) {
+  //   if (this.component.optionsLabelPosition === 'left') {
+  //     _.assign(label.style, {
+  //       textAlign: 'center',
+  //       paddingLeft: 0,
+  //     });
+  //   }
+  //
+  //   if (this.optionsLabelOnTheTopOrBottom()) {
+  //     _.assign(label.style, {
+  //       display: 'block',
+  //       textAlign: 'center',
+  //       paddingLeft: 0,
+  //     });
+  //   }
+  // }
+  //
+  // setInputStyle(input) {
+  //   if (this.component.optionsLabelPosition === 'left') {
+  //     _.assign(input.style, {
+  //       position: 'initial',
+  //       marginLeft: '7px'
+  //     });
+  //   }
+  //
+  //   if (this.optionsLabelOnTheTopOrBottom()) {
+  //     _.assign(input.style, {
+  //       width: '100%',
+  //       position: 'initial',
+  //       marginLeft: 0
+  //     });
+  //   }
+  // }
 
   getValue() {
     if (this.viewOnly) {
