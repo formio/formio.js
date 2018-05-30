@@ -111,6 +111,9 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   setInputStyle(input) {
+    if (!input) {
+      return;
+    }
     if (this.component.labelPosition === 'left') {
       _.assign(input.style, {
         position: 'initial',
