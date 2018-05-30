@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Changed FormioForm name to Webform
  - Changed FormioWizard name to Wizard
  - Changed FormioPDF name to PDF
+ - Moved Formio.fieldData to FormioUtils.fieldData
  - Input elements within a DataGrid now refer to the "rowIndex" instead of the column index within the "name" attributes.
  - Chnaged the wrapper classes for Radio and Select Boxes components to be "form-group" instead of "input-group" to make it compatible with both Bootstrap 4 and Bootstrap 3.
  - Renamed GMap component to Location component
