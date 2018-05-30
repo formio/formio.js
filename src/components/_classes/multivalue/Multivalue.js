@@ -1,5 +1,4 @@
 import Field from '../field/Field';
-import Tooltip from 'tooltip.js';
 
 export default class Multivalue extends Field {
   get addAnother() {

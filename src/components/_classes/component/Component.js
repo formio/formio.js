@@ -319,7 +319,7 @@ export default class Component {
   /* eslint-enable max-statements */
 
   get hasInput() {
-    return this.component.input || this.refs.input.length;
+    return this.component.input || (this.refs.input && this.refs.input.length);
   }
 
   get defaultSchema() {
@@ -451,7 +451,7 @@ export default class Component {
 
   renderTemplate(name, data) {
     data.component = this.component;
-    data.t = this.t;
+    data.t = this.t.bind(this);
     return this.interpolate(this.getTemplate(name), data);
   }
 

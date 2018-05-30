@@ -2,6 +2,7 @@ import button from './button';
 import checkbox from './checkbox';
 import component from './component';
 import field from './field';
+import html from './html';
 import input from './input';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
@@ -12,6 +13,7 @@ export default {
   checkbox,
   component,
   field,
+  html,
   input,
   multiValueRow,
   multiValueTable,
