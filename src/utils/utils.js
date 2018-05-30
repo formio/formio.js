@@ -655,7 +655,14 @@ export function getDateSetting(date) {
     return null;
   }
 
-  let dateSetting = date.indexOf('moment(') === -1 ? moment(date) : null;
+  if (date instanceof Date) {
+    return date;
+  }
+  else if (typeof date.toDate === 'function') {
+    return date.isValid() ? date.toDate() : null;
+  }
+
+  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
