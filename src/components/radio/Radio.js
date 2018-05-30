@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import Component from '../_classes/component/Component';
+import Field from '../_classes/field/Field';
 
-export default class RadioComponent extends Component {
+export default class RadioComponent extends Field {
   static schema(...extend) {
-    return Component.schema({
+    return Field.schema({
       type: 'radio',
       inputType: 'radio',
       label: 'Radio',
@@ -28,7 +28,7 @@ export default class RadioComponent extends Component {
     return RadioComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
@@ -36,71 +36,25 @@ export default class RadioComponent extends Component {
     return info;
   }
 
-  createInput(container) {
-    const inputGroup = this.ce('div', {
-      class: 'input-group'
-    });
-    const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
-    const wrappers = [];
-
-    if (this.component.inputType === 'radio') {
-      this.info.attr.name += this.id;
-    }
-
-    _.each(this.component.values, (value) => {
-      const wrapperClass = `form-check ${this.optionWrapperClass}`;
-      const labelWrapper = this.ce('div', {
-        class: wrapperClass
-      });
-      const label = this.ce('label', {
-        class: 'control-label form-check-label'
-      });
-
-      this.addShortcut(label, value.shortcut);
-
-      // Determine the attributes for this input.
-      const inputId = `${this.id}${this.row}-${value.value}`;
-      this.info.attr.id = inputId;
-      this.info.attr.value = value.value;
-      label.setAttribute('for', this.info.attr.id);
-
-      // Create the input.
-      const input = this.ce('input');
-      _.each(this.info.attr, (value, key) => {
-        input.setAttribute(key, value);
-      });
-
-      const labelSpan = this.ce('span');
-      if (value.label && labelOnTheTopOrOnTheLeft) {
-        label.appendChild(labelSpan);
-      }
-
-      this.setInputLabelStyle(label);
-      this.setInputStyle(input);
-
-      this.addInput(input, label);
-
-      if (value.label) {
-        labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
-      }
-
-      if (value.label && !labelOnTheTopOrOnTheLeft) {
-        label.appendChild(labelSpan);
-      }
-      labelWrapper.appendChild(label);
-
-      inputGroup.appendChild(labelWrapper);
-      wrappers.push(labelWrapper);
-    });
-    this.wrappers = wrappers;
-    container.appendChild(inputGroup);
-    this.errorContainer = container;
+  render(value, index) {
+    return super.render(this.renderTemplate('radio', {
+      component: this.component,
+      input: this.inputInfo,
+      inline: this.component.inline,
+      values: this.component.values,
+      value,
+      id: this.id,
+      row: this.row,
+    }));
   }
 
-  get optionWrapperClass() {
-    const inputType = this.component.inputType;
-    const wrapperClass = (this.component.inline ? `form-check-inline ${inputType}-inline` : inputType);
-    return wrapperClass;
+  hydrate(element) {
+    this.loadRefs(element, {input: 'multiple', wrapper: 'multiple'});
+    this.refs.input.forEach(input => {
+      this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
+    });
+    // this.addShortcut(label, value.shortcut);
+    super.hydrate(element);
   }
 
   optionsLabelOnTheTopOrLeft() {
@@ -150,7 +104,10 @@ export default class RadioComponent extends Component {
       return this.dataValue;
     }
     let value = '';
-    _.each(this.inputs, (input) => {
+    if (!this.refs.input) {
+      return value;
+    }
+    this.refs.input.forEach((input) => {
       if (input.checked) {
         value = input.value;
         if (value === 'true') {
@@ -181,8 +138,8 @@ export default class RadioComponent extends Component {
   }
 
   setValueAt(index, value) {
-    if (this.inputs && this.inputs[index]) {
-      let inputValue = this.inputs[index].value;
+    if (this.refs.input && this.refs.input[index]) {
+      let inputValue = this.refs.input[index].value;
       if (inputValue === 'true') {
         inputValue = true;
       }
@@ -193,19 +150,19 @@ export default class RadioComponent extends Component {
         inputValue = parseInt(inputValue, 10);
       }
 
-      this.inputs[index].checked = (inputValue === value);
+      this.refs.input[index].checked = (inputValue === value);
     }
   }
 
-  updateValue(value, flags) {
-    const changed = super.updateValue(value, flags);
-    if (changed) {
+  updateValue(flags, value) {
+    const changed = super.updateValue(flags, value);
+    if (changed && this.refs.wrapper) {
       //add/remove selected option class
       const value = this.dataValue;
       const optionSelectedClass = 'radio-selected';
 
-      _.each(this.wrappers, (wrapper, index) => {
-        const input = this.inputs[index];
+      this.refs.wrapper.forEach((wrapper, index) => {
+        const input = this.refs.input[index];
         if (input.value === value) {
           //add class to container when selected
           this.addClass(wrapper, optionSelectedClass);

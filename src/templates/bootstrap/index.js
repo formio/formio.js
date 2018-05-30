@@ -6,6 +6,7 @@ import html from './html';
 import input from './input';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
+import radio from './radio';
 import webform from './webform';
 
 export default {
@@ -17,5 +18,6 @@ export default {
   input,
   multiValueRow,
   multiValueTable,
+  radio,
   webform,
 };

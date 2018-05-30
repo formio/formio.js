@@ -1,5 +1,5 @@
 export default {
   form: `
-<{{tag}} ref="html" {{attrs}}>{{content}}</{{tag}}>
+<{{tag}} ref="html"{{attrs}}>{{content}}</{{tag}}>
 `,
 };
