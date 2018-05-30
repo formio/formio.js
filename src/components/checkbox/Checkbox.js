@@ -229,7 +229,7 @@ export default class CheckBoxComponent extends BaseComponent {
       return;
     }
     if (this.component.name) {
-      this.input.value = (value === this.component.value) ? 1 : 0;
+      this.input.value = (value === this.component.value) ? this.component.value : 0;
       this.input.checked = (value === this.component.value) ? 1 : 0;
     }
     else if (value === 'on') {
