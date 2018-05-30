@@ -71,6 +71,21 @@ export default class DateTimeComponent extends BaseComponent {
     return DateTimeComponent.schema();
   }
 
+  get defaultValue() {
+    const defaultValue = super.defaultValue;
+    if (defaultValue) {
+      return defaultValue;
+    }
+
+    // Check the default date.
+    const defaultDate = this.defaultDate;
+    if (defaultDate) {
+      return defaultDate.toISOString();
+    }
+
+    return '';
+  }
+
   elementInfo() {
     const info = super.elementInfo();
     info.type = 'input';

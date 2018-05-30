@@ -655,16 +655,29 @@ export function getDateSetting(date) {
     return null;
   }
 
-  let dateSetting = moment(date);
-  if (dateSetting.isValid()) {
+  let dateSetting = date.indexOf('moment(') === -1 ? moment(date) : null;
+  if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
 
+  dateSetting = null;
   try {
     const value = (new Function('moment', `return ${date};`))(moment);
-    dateSetting = moment(value);
+    if (typeof value === 'string') {
+      dateSetting = moment(value);
+    }
+    else if (typeof value.toDate === 'function') {
+      dateSetting = moment(value.toDate().toUTCString());
+    }
+    else if (value instanceof Date) {
+      dateSetting = moment(value);
+    }
   }
   catch (e) {
+    return null;
+  }
+
+  if (!dateSetting) {
     return null;
   }
 
