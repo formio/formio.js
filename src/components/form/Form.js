@@ -62,6 +62,12 @@ export default class FormComponent extends BaseComponent {
     if (this.options && this.options.project) {
       srcOptions.project = this.options.project;
     }
+    if (this.options && this.options.readOnly) {
+      srcOptions.readOnly = this.options.readOnly;
+    }
+    if (this.options && this.options.viewAsHtml) {
+      srcOptions.viewAsHtml = this.options.viewAsHtml;
+    }
 
     // Make sure that if reference is provided, the form must submit.
     if (this.component.reference) {
