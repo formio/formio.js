@@ -822,7 +822,7 @@ export default class Webform extends NestedComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
-  showErrors(error) {
+  showErrors(error, triggerEvent) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -846,7 +846,9 @@ export default class Webform extends NestedComponent {
     });
     message += '</ul>';
     this.setAlert('danger', message);
-    this.emit('error', errors);
+    if (triggerEvent) {
+      this.emit('error', errors);
+    }
     return errors;
   }
 
@@ -890,7 +892,7 @@ export default class Webform extends NestedComponent {
     }
 
     this.setPristine(false);
-    return this.showErrors(error);
+    return this.showErrors(error, true);
   }
 
   /**

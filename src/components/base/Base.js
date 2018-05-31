@@ -1794,6 +1794,7 @@ export default class BaseComponent {
 
     // Set the changed variable.
     const changed = {
+      instance: this,
       component: this.component,
       value: this.dataValue,
       flags: flags

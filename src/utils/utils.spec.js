@@ -318,8 +318,7 @@ describe('getDateSetting', () => {
 
   it('should return valid Date on serialized date provided', () => {
     const date = new Date(0);
-
-    expect(utils.getDateSetting(date)).to.be.eql(date).but.not.equal(date);
+    expect(utils.getDateSetting(date)).to.be.eql(date);
     expect(utils.getDateSetting(date.valueOf())).to.be.eql(date);
     expect(utils.getDateSetting(date.toString())).to.be.eql(date);
     expect(utils.getDateSetting(date.toISOString())).to.be.eql(date);

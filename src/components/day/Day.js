@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import BaseComponent from '../base/Base';
-import {getLocaleDateFormatInfo} from '../../utils/utils';
+import {boolValue, getLocaleDateFormatInfo} from '../../utils/utils';
 
 export default class DayComponent extends BaseComponent {
   static schema(...extend) {
@@ -50,12 +50,24 @@ export default class DayComponent extends BaseComponent {
       : this.component.dayFirst;
   }
 
+  get dayRequired() {
+    return this.showDay && _.get(this.component, 'fields.day.required', false);
+  }
+
   get showDay() {
     return !_.get(this.component, 'fields.day.hide', false);
   }
 
+  get monthRequired() {
+    return this.showMonth && _.get(this.component, 'fields.month.required', false);
+  }
+
   get showMonth() {
     return !_.get(this.component, 'fields.month.hide', false);
+  }
+
+  get yearRequired() {
+    return this.showYear && _.get(this.component, 'fields.year.required', false);
   }
 
   get showYear() {
@@ -96,12 +108,26 @@ export default class DayComponent extends BaseComponent {
     return this._months;
   }
 
-  get emptyValue() {
-    return null;
-  }
+  validateRequired(setting, value) {
+    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
+    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
+    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
+    if (this.dayRequired && !day) {
+      return false;
+    }
 
-  isEmpty(value) {
-    return super.isEmpty(value);
+    if (this.monthRequired && month < 0) {
+      return false;
+    }
+
+    if (this.yearRequired && !year) {
+      return false;
+    }
+
+    if (!boolValue(setting)) {
+      return true;
+    }
+    return !this.isEmpty(value);
   }
 
   createDayInput(subinputAtTheBottom) {

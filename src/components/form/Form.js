@@ -46,6 +46,34 @@ export default class FormComponent extends BaseComponent {
   }
 
   /**
+   * Render a subform.
+   *
+   * @param form
+   * @param options
+   */
+  renderSubForm(form, options) {
+    // Iterate through every component and hide the submit button.
+    eachComponent(form.components, (component) => {
+      if ((component.type === 'button') && (component.action === 'submit')) {
+        component.hidden = true;
+      }
+    });
+
+    (new Form(this.element, form, options)).render().then((instance) => {
+      this.subForm = instance;
+      this.subForm.on('change', () => {
+        this.dataValue = this.subForm.getValue();
+        this.onChange();
+      });
+      this.subForm.url = this.formSrc;
+      this.subForm.nosubmit = false;
+      this.restoreValue();
+      this.subFormReadyResolve(this.subForm);
+      return this.subForm;
+    });
+  }
+
+  /**
    * Load the subform.
    */
   /* eslint-disable max-statements */
@@ -113,27 +141,15 @@ export default class FormComponent extends BaseComponent {
       }
     }
 
-    (new Formio(this.formSrc)).loadForm({params: {live: 1}}).then((formObj) => {
-      // Iterate through every component and hide the submit button.
-      eachComponent(formObj.components, (component) => {
-        if ((component.type === 'button') && (component.action === 'submit')) {
-          component.hidden = true;
-        }
-      });
-
-      (new Form(this.element, formObj, srcOptions)).render().then((form) => {
-        this.subForm = form;
-        this.subForm.on('change', () => {
-          this.dataValue = this.subForm.getValue();
-          this.onChange();
-        });
-        this.subForm.url = this.formSrc;
-        this.subForm.nosubmit = false;
-        this.restoreValue();
-        this.subFormReadyResolve(this.subForm);
-        return this.subForm;
-      });
-    }).catch(err => this.subFormReadyReject(err));
+    // Determine if we already have a loaded form object.
+    if (this.component && this.component.components && this.component.components.length) {
+      this.renderSubForm(this.component, srcOptions);
+    }
+    else {
+      (new Formio(this.formSrc)).loadForm({params: {live: 1}})
+        .then((formObj) => this.renderSubForm(formObj, srcOptions))
+        .catch(err => this.subFormReadyReject(err));
+    }
     return this.subFormReady;
   }
   /* eslint-enable max-statements */

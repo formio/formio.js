@@ -655,16 +655,36 @@ export function getDateSetting(date) {
     return null;
   }
 
-  let dateSetting = moment(date);
-  if (dateSetting.isValid()) {
+  if (date instanceof Date) {
+    return date;
+  }
+  else if (typeof date.toDate === 'function') {
+    return date.isValid() ? date.toDate() : null;
+  }
+
+  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
 
+  dateSetting = null;
   try {
     const value = (new Function('moment', `return ${date};`))(moment);
-    dateSetting = moment(value);
+    if (typeof value === 'string') {
+      dateSetting = moment(value);
+    }
+    else if (typeof value.toDate === 'function') {
+      dateSetting = moment(value.toDate().toUTCString());
+    }
+    else if (value instanceof Date) {
+      dateSetting = moment(value);
+    }
   }
   catch (e) {
+    return null;
+  }
+
+  if (!dateSetting) {
     return null;
   }
 
@@ -841,4 +861,54 @@ export function getCurrencyAffixes({
     prefix: parts[1] || '',
     suffix: parts[2] || ''
   };
+}
+
+/**
+ * Fetch the field data provided a component.
+ *
+ * @param data
+ * @param component
+ * @return {*}
+ */
+export function fieldData(data, component) {
+  if (!data) {
+    return '';
+  }
+  if (!component || !component.key) {
+    return data;
+  }
+  if (component.key.includes('.')) {
+    let value = data;
+    const parts = component.key.split('.');
+    let key = '';
+    for (let i = 0; i < parts.length; i++) {
+      key = parts[i];
+
+      // Handle nested resources
+      if (value.hasOwnProperty('_id')) {
+        value = value.data;
+      }
+
+      // Return if the key is not found on the value.
+      if (!value.hasOwnProperty(key)) {
+        return;
+      }
+
+      // Convert old single field data in submissions to multiple
+      if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {
+        value[key] = [value[key]];
+      }
+
+      // Set the value of this key.
+      value = value[key];
+    }
+    return value;
+  }
+  else {
+    // Convert old single field data in submissions to multiple
+    if (component.multiple && !Array.isArray(data[component.key])) {
+      data[component.key] = [data[component.key]];
+    }
+    return data[component.key];
+  }
 }

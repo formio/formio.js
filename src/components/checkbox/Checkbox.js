@@ -111,6 +111,9 @@ export default class CheckBoxComponent extends BaseComponent {
   }
 
   setInputStyle(input) {
+    if (!input) {
+      return;
+    }
     if (this.component.labelPosition === 'left') {
       _.assign(input.style, {
         position: 'initial',
@@ -214,20 +217,19 @@ export default class CheckBoxComponent extends BaseComponent {
   getValue() {
     const value = super.getValue();
     if (this.component.name) {
-      return value ? value : this.dataValue;
+      return value ? this.setCheckedState(value) : this.setCheckedState(this.dataValue);
     }
     else {
       return value;
     }
   }
 
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
+  setCheckedState(value) {
     if (!this.input) {
       return;
     }
     if (this.component.name) {
-      this.input.value = (value === this.component.value) ? 1 : 0;
+      this.input.value = (value === this.component.value) ? this.component.value : 0;
       this.input.checked = (value === this.component.value) ? 1 : 0;
     }
     else if (value === 'on') {
@@ -246,7 +248,20 @@ export default class CheckBoxComponent extends BaseComponent {
       this.input.value = 0;
       this.input.checked = 0;
     }
-    return this.updateValue(flags);
+    if (this.input.checked) {
+      this.input.setAttribute('checked', true);
+    }
+    else {
+      this.input.removeAttribute('checked');
+    }
+    return value;
+  }
+
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
+    if (this.setCheckedState(value) !== undefined) {
+      return this.updateValue(flags);
+    }
   }
 
   getView(value) {

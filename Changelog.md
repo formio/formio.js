@@ -4,10 +4,6 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
-### Fixed
- - `viewAsHtml` for nested forms.
-
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -36,6 +32,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Changed FormioForm name to Webform
  - Changed FormioWizard name to Wizard
  - Changed FormioPDF name to PDF
+ - Moved Formio.fieldData to FormioUtils.fieldData
  - Input elements within a DataGrid now refer to the "rowIndex" instead of the column index within the "name" attributes.
  - Chnaged the wrapper classes for Radio and Select Boxes components to be "form-group" instead of "input-group" to make it compatible with both Bootstrap 4 and Bootstrap 3.
  - Renamed GMap component to Location component
@@ -45,9 +42,24 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
 
-## [UNRELEASED]
+## 3.0.0-rc.3
 ### Fixed
  - i18n in File component.
+ - `viewAsHtml` for nested forms.
+ - Fix the Day component required validation to work with independent inputs.
+ - Fixed the checkbox DOM states to mirror the actual state of the checkbox.
+ - Ensure we don't call setInputStyle without an input.
+ - Fixed the datetime default date and fixed console warning from moment.
+
+### Changed
+ - Only trigger error events on nextPage and submissionError events.
+ - Set the value to the checkbox component value when using component name, like in Radio configuration.
+ - Moving the fieldData method to FormioUtils.
+ - Allow for fully loaded nested forms to render without hitting the server.
+
+### Added
+ - Adding the component instance to the change events.
+ - Adding the pdf source information to the form object.
 
 ## 3.0.0-rc.2
 ### Fixed
