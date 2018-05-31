@@ -42,7 +42,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
 
-## 3.0.0-rc.3
+## 3.0.0-rc.4
 ### Fixed
  - i18n in File component.
  - `viewAsHtml` for nested forms.
@@ -60,6 +60,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Adding the component instance to the change events.
  - Adding the pdf source information to the form object.
+
+## 3.0.0-rc.3
+ - Bad release
 
 ## 3.0.0-rc.2
 ### Fixed
