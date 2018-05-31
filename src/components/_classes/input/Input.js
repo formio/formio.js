@@ -99,10 +99,12 @@ export default class Input extends Multivalue {
   }
 
   renderElement(value, index) {
+    const info = this.inputInfo;
+    info.attr = info.attr || {};
+    info.attr.value = value;
     return this.renderTemplate('input', {
       component: this.component,
-      input: this.inputInfo,
-      value,
+      input: info,
       index
     });
   }

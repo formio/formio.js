@@ -1,5 +1,9 @@
 export default {
   form: `
-<{{tag}} ref="html"{{attrs}}>{{content}}</{{tag}}>
+<{{tag}} ref="html"
+  {% for (var attr in attrs) { %}
+  {{attr}}="{{attrs[attr]}}"
+  {% } %}
+>{{content}}</{{tag}}>
 `,
 };

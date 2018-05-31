@@ -31,14 +31,14 @@ export default class CheckBoxComponent extends Component {
   }
 
   get className() {
-    let className = 'control-label form-check-label';
+    let className = super.className;
     if (this.component.input
       && !this.options.inputsOnly
       && this.component.validate
       && this.component.validate.required) {
       className += ' field-required';
     }
-    return className;
+    return `${className} checkbox`;
   }
 
   get inputInfo() {

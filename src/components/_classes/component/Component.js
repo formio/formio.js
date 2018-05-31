@@ -191,6 +191,11 @@ export default class Component {
     this.refs = {};
 
     /**
+     * The value of the component
+     */
+    this._value = null;
+
+    /**
      * The data object in which this component resides.
      * @type {*}
      */
@@ -1682,7 +1687,14 @@ export default class Component {
    * @return {*}
    */
   get value() {
-    return this.dataValue;
+    return this._value;
+  }
+
+  /**
+   * Set the value of this component.
+   */
+  set value(value) {
+    this._value = value;
   }
 
   /**

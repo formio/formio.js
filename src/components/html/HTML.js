@@ -30,15 +30,11 @@ export default class HTMLComponent extends Component {
     return this.component.content ? this.interpolate(this.component.content, {data: this.data, row: this.row}) : '';
   }
 
-  get attrs() {
-    return this.component.attrs ? this.component.attrs.reduce((text, attr) => `${text} ${attr.attr}="${attr.value}"`, '') : '';
-  }
-
   render() {
     return super.render(this.renderTemplate('html', {
       component: this.component,
       tag: this.component.tag,
-      attrs: this.attrs,
+      attrs: this.component.attrs || {},
       content: this.content,
     }));
   }
