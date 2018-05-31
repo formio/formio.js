@@ -33,8 +33,8 @@ export default class EmailComponent extends TextFieldComponent {
     return EmailComponent.schema();
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.attr.type = this.component.mask ? 'password' : 'email';
     return info;
   }

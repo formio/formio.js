@@ -1,3 +1,4 @@
+import maskInput from 'vanilla-text-mask';
 import Multivalue from '../multivalue/Multivalue';
 import {getInputMask} from '../../../utils/utils';
 import _ from 'lodash';
@@ -68,33 +69,15 @@ export default class Input extends Multivalue {
     if (input && this.component.inputMask) {
       const mask = getInputMask(this.component.inputMask);
       this._inputMask = mask;
-      // input.mask = maskInput({
-      //   inputElement: input,
-      //   mask
-      // });
+      input.mask = maskInput({
+        inputElement: input,
+        mask
+      });
       if (mask.numeric) {
         input.setAttribute('pattern', '\\d*');
       }
       if (!this.component.placeholder) {
         input.setAttribute('placeholder', this.maskPlaceholder(mask));
-      }
-    }
-  }
-
-  setInputStyles(input) {
-    if (this.labelIsHidden()) {
-      return;
-    }
-
-    if (this.labelOnTheLeftOrRight(this.component.labelPosition)) {
-      const totalLabelWidth = this.getLabelWidth() + this.getLabelMargin();
-      input.style.width = `${100 - totalLabelWidth}%`;
-
-      if (this.labelOnTheLeft(this.component.labelPosition)) {
-        input.style.marginLeft = `${totalLabelWidth}%`;
-      }
-      else {
-        input.style.marginRight = `${totalLabelWidth}%`;
       }
     }
   }
@@ -123,5 +106,7 @@ export default class Input extends Multivalue {
         }
       });
     }
+
+    this.setInputMask(this.refs.input[index]);
   }
 }
