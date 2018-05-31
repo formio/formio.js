@@ -323,7 +323,7 @@ export default class BaseComponent {
       /**
        * If the value of this component should be persisted within the backend api database.
        */
-      persistent: false,
+      persistent: true,
 
       /**
        * Determines if the component should be within the form, but not visible.
@@ -561,8 +561,8 @@ export default class BaseComponent {
 
     if (this.component) {
       this.type = this.component.type;
-      if (this.hasInput &amp;&amp; this.component.key) {
-        this.options.name += `[${this.component.key}]`;
+      if (this.hasInput &amp;&amp; this.key) {
+        this.options.name += `[${this.key}]`;
       }
 
       /**
@@ -585,6 +585,10 @@ export default class BaseComponent {
     return BaseComponent.schema();
   }
 
+  get key() {
+    return _.get(this.component, &apos;key&apos;, &apos;&apos;);
+  }
+
   /**
    * Returns only the schema that is different from the default.
    *
@@ -592,13 +596,13 @@ export default class BaseComponent {
    * @param defaultSchema
    */
   getModifiedSchema(schema, defaultSchema) {
-    let modified = {};
+    const modified = {};
     if (!defaultSchema) {
       return schema;
     }
     _.each(schema, (val, key) =&gt; {
       if (_.isObject(val) &amp;&amp; defaultSchema.hasOwnProperty(key)) {
-        let subModified = this.getModifiedSchema(val, defaultSchema[key]);
+        const subModified = this.getModifiedSchema(val, defaultSchema[key]);
         if (!_.isEmpty(subModified)) {
           modified[key] = subModified;
         }
@@ -882,17 +886,17 @@ export default class BaseComponent {
   }
 
   createModal() {
-    let self = this;
-    let modalBody = this.ce(&apos;div&apos;);
-    let modalOverlay = this.ce(&apos;div&apos;, {
+    const self = this;
+    const modalBody = this.ce(&apos;div&apos;);
+    const modalOverlay = this.ce(&apos;div&apos;, {
       class: &apos;formio-dialog-overlay&apos;
     });
-    let closeDialog = this.ce(&apos;button&apos;, {
+    const closeDialog = this.ce(&apos;button&apos;, {
       class: &apos;formio-dialog-close pull-right btn btn-default btn-xs&apos;,
       &apos;aria-label&apos;: &apos;close&apos;
     });
 
-    let dialog = this.ce(&apos;div&apos;, {
+    const dialog = this.ce(&apos;div&apos;, {
       class: &apos;formio-dialog formio-dialog-theme-default component-settings&apos;
     }, [
       modalOverlay,
@@ -931,11 +935,8 @@ export default class BaseComponent {
   get className() {
     let className = this.hasInput ? &apos;form-group has-feedback &apos; : &apos;&apos;;
     className += `formio-component formio-component-${this.component.type} `;
-    if (this.component.key) {
-      className += `formio-component-${this.component.key} `;
-    }
-    if (this.component.disabled) {
-      className += &apos;formio-disabled-input &apos;;
+    if (this.key) {
+      className += `formio-component-${this.key} `;
     }
     if (this.component.customClass) {
       className += this.component.customClass;
@@ -1210,7 +1211,7 @@ export default class BaseComponent {
    * @returns {string} - The name of the component.
    */
   get name() {
-    return this.t(this.component.label || this.component.placeholder || this.component.key);
+    return this.t(this.component.label || this.component.placeholder || this.key);
   }
 
   /**
@@ -1221,7 +1222,7 @@ export default class BaseComponent {
     return this.t(this.component.errorLabel
       || this.component.label
       || this.component.placeholder
-      || this.component.key);
+      || this.key);
   }
 
   /**
@@ -1762,8 +1763,8 @@ export default class BaseComponent {
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&amp;fn=jQuery.fn.hasClass
    */
   hasClass(element, className) {
-    className = &apos; &apos; + className + &apos; &apos;;
-    return ((&apos; &apos; + element.className + &apos; &apos;).replace(/[\n\t\r]/g, &apos; &apos;).indexOf(className) &gt; -1);
+    className = ` ${className} `;
+    return ((` ${element.className} `).replace(/[\n\t\r]/g, &apos; &apos;).indexOf(className) &gt; -1);
   }
 
   /**
@@ -1943,8 +1944,8 @@ export default class BaseComponent {
    * @param show
    */
   show(show) {
-    // Execute only if visibility changes or if we are in builder mode.
-    if (!show === !this._visible || this.options.builder) {
+    // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
+    if (!show === !this._visible || this.options.builder || this.options.showHiddenFields) {
       return show;
     }
 
@@ -1987,7 +1988,7 @@ export default class BaseComponent {
       if (!show) {
         this.deleteValue();
       }
-      else if (!this.hasValue) {
+      else if (!this.hasValue()) {
         // If shown, ensure the default is set.
         this.setValue(this.defaultValue, {
           noUpdateEvent: true
@@ -2131,7 +2132,7 @@ export default class BaseComponent {
         const txtArea = document.createElement(&apos;textarea&apos;);
         txtArea.setAttribute(&apos;class&apos;, &apos;quill-source-code&apos;);
         this.quill.addContainer(&apos;ql-custom&apos;).appendChild(txtArea);
-        let qlSource = element.parentNode.querySelector(&apos;.ql-source&apos;);
+        const qlSource = element.parentNode.querySelector(&apos;.ql-source&apos;);
         if (qlSource) {
           this.addEventListener(qlSource, &apos;click&apos;, (event) =&gt; {
             event.preventDefault();
@@ -2161,14 +2162,6 @@ export default class BaseComponent {
       });
   }
 
-  get emptyValue() {
-    return null;
-  }
-
-  get hasValue() {
-    return _.has(this.data, this.component.key);
-  }
-
   /**
    * The empty value for this component.
    *
@@ -2182,8 +2175,8 @@ export default class BaseComponent {
    * Returns if this component has a value set.
    *
    */
-  get hasValue() {
-    return _.has(this.data, this.component.key);
+  hasValue(data) {
+    return _.has(data || this.data, this.key);
   }
 
   /**
@@ -2200,13 +2193,13 @@ export default class BaseComponent {
    * @return {*}
    */
   get dataValue() {
-    if (!this.component.key) {
+    if (!this.key) {
       return this.emptyValue;
     }
-    if (!this.hasValue) {
+    if (!this.hasValue()) {
       this.dataValue = this.emptyValue;
     }
-    return _.get(this.data, this.component.key);
+    return _.get(this.data, this.key);
   }
 
   /**
@@ -2215,10 +2208,10 @@ export default class BaseComponent {
    * @param value
    */
   set dataValue(value) {
-    if (!this.component.key) {
+    if (!this.key) {
       return value;
     }
-    _.set(this.data, this.component.key, value);
+    _.set(this.data, this.key, value);
     return value;
   }
 
@@ -2228,7 +2221,7 @@ export default class BaseComponent {
    * @param index
    */
   splice(index) {
-    if (this.hasValue) {
+    if (this.hasValue()) {
       const dataValue = this.dataValue || [];
       if (_.isArray(dataValue) &amp;&amp; dataValue.hasOwnProperty(index)) {
         dataValue.splice(index, 1);
@@ -2243,7 +2236,7 @@ export default class BaseComponent {
    */
   deleteValue() {
     this.setValue(null);
-    _.unset(this.data, this.component.key);
+    _.unset(this.data, this.key);
   }
 
   /**
@@ -2253,7 +2246,7 @@ export default class BaseComponent {
    * @returns {*}
    */
   getValueAt(index) {
-    let input = this.performInputMapping(this.inputs[index]);
+    const input = this.performInputMapping(this.inputs[index]);
     return input ? input.value : undefined;
   }
 
@@ -2338,7 +2331,7 @@ export default class BaseComponent {
    * Restore the value of a control.
    */
   restoreValue() {
-    if (this.hasValue &amp;&amp; !this.isEmpty(this.dataValue)) {
+    if (this.hasValue() &amp;&amp; !this.isEmpty(this.dataValue)) {
       this.setValue(this.dataValue, {
         noUpdateEvent: true
       });
@@ -2412,7 +2405,17 @@ export default class BaseComponent {
    * @param dirty
    * @return {*}
    */
-  invalidMessage(data, dirty) {
+  invalidMessage(data, dirty, ignoreCondition) {
+    // Force valid if component is conditionally hidden.
+    if (!ignoreCondition &amp;&amp; !checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      return &apos;&apos;;
+    }
+
+    // See if this is forced invalid.
+    if (this.invalid) {
+      return this.invalid;
+    }
+
     // No need to check for errors if there is no input or if it is pristine.
     if (!this.hasInput || (!dirty &amp;&amp; this.pristine)) {
       return &apos;&apos;;
@@ -2438,7 +2441,7 @@ export default class BaseComponent {
       return true;
     }
 
-    const message = this.invalid || this.invalidMessage(data, dirty);
+    const message = this.invalidMessage(data, dirty, true);
     this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
@@ -2515,7 +2518,7 @@ export default class BaseComponent {
     if (value === null || value === undefined) {
       value = this.defaultValue;
     }
-    let input = this.performInputMapping(this.inputs[index]);
+    const input = this.performInputMapping(this.inputs[index]);
     if (input.mask) {
       input.mask.textMaskInputElement.update(value);
     }
@@ -2566,7 +2569,7 @@ export default class BaseComponent {
    */
   resetValue() {
     this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
-    _.unset(this.data, this.component.key);
+    _.unset(this.data, this.key);
   }
 
   /**
@@ -2597,6 +2600,14 @@ export default class BaseComponent {
     }
 
     this._disabled = disabled;
+
+    // Add/remove the disabled class from the element.
+    if (disabled) {
+      this.addClass(this.getElement(), &apos;formio-disabled-input&apos;);
+    }
+    else {
+      this.removeClass(this.getElement(), &apos;formio-disabled-input&apos;);
+    }
 
     // Disable all inputs.
     _.each(this.inputs, (input) =&gt; this.setDisabled(this.performInputMapping(input), disabled));

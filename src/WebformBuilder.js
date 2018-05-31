@@ -1,3 +1,5 @@
+/* global $ */
+
 import Webform from './Webform';
 import dragula from 'dragula';
 import Components from './components/Components';
@@ -65,12 +67,12 @@ export default class WebformBuilder extends Webform {
 
         const removeButton = this.ce('div', {
           class: 'btn btn-xxs btn-danger component-settings-button component-settings-button-remove'
-        }, this.ce('span', {class: 'glyphicon glyphicon-remove'}));
+        }, this.getIcon('remove'));
         this.addEventListener(removeButton, 'click', () => self.deleteComponent(comp));
 
         const editButton = this.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit'
-        }, this.ce('span', {class: 'glyphicon glyphicon-cog'}));
+        }, this.getIcon('cog'));
         this.addEventListener(editButton, 'click', () => self.editComponent(comp));
 
         // Add the edit buttons to the component.
@@ -258,7 +260,7 @@ export default class WebformBuilder extends Webform {
             href: componentInfo.documentation || '#',
             target: '_blank'
           }, this.ce('i', {
-            class: 'glyphicon glyphicon-new-window'
+            class: this.iconClass('new-window')
           }, ` ${this.t('Help')}`)))
         ])
       ]),
@@ -272,15 +274,15 @@ export default class WebformBuilder extends Webform {
           class: 'col col-sm-6'
         }, [
           this.ce('div', {
-            class: 'panel panel-default preview-panel'
+            class: 'card panel panel-default preview-panel'
           }, [
             this.ce('div', {
-              class: 'panel-heading'
+              class: 'card-header panel-heading'
             }, this.ce('h3', {
-              class: 'panel-title'
+              class: 'card-title panel-title'
             }, this.t('Preview'))),
             this.ce('div', {
-              class: 'panel-body'
+              class: 'card-body panel-body'
             }, this.componentPreview)
           ]),
           this.ce('div', {
@@ -427,49 +429,61 @@ export default class WebformBuilder extends Webform {
     }
 
     info = _.clone(info);
-    const groupAnchor = this.ce('a', {
-      href: `#group-${info.key}`
+    const groupAnchor = this.ce('button', {
+      class: 'btn btn-block builder-group-button',
+      'data-toggle': 'collapse',
+      'data-parent': `#${container.id}`,
+      'data-target': `#group-${info.key}`
     }, this.text(info.title));
 
-    // Add a listener when it is clicked.
-    this.addEventListener(groupAnchor, 'click', (event) => {
-      event.preventDefault();
-      const clickedGroupId = event.target.getAttribute('href').replace('#group-', '');
-      if (this.groups[clickedGroupId]) {
-        const clickedGroup = this.groups[clickedGroupId];
-        const wasIn = this.hasClass(clickedGroup.panel, 'in');
-        _.each(this.groups, (group, groupId) => {
-          this.removeClass(group.panel, 'in');
-          if ((groupId === clickedGroupId) && !wasIn) {
-            this.addClass(group.panel, 'in');
-            let parent = group.parent;
-            while (parent) {
-              this.addClass(parent.panel, 'in');
-              parent = parent.parent;
-            }
-          }
-        });
+    // See if we have bootstrap.js installed.
+    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().collapse === 'function');
 
-        // Match the form builder height to the sidebar.
-        this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
-        this.scrollSidebar();
-      }
-    });
+    // Add a listener when it is clicked.
+    if (!hasBootstrapJS) {
+      this.addEventListener(groupAnchor, 'click', (event) => {
+        event.preventDefault();
+        const clickedGroupId = event.target.getAttribute('data-target').replace('#group-', '');
+        if (this.groups[clickedGroupId]) {
+          const clickedGroup = this.groups[clickedGroupId];
+          const wasIn = this.hasClass(clickedGroup.panel, 'in');
+          _.each(this.groups, (group, groupId) => {
+            this.removeClass(group.panel, 'in');
+            this.removeClass(group.panel, 'show');
+            if ((groupId === clickedGroupId) && !wasIn) {
+              this.addClass(group.panel, 'in');
+              this.addClass(group.panel, 'show');
+              let parent = group.parent;
+              while (parent) {
+                this.addClass(parent.panel, 'in');
+                this.addClass(parent.panel, 'show');
+                parent = parent.parent;
+              }
+            }
+          });
+
+          // Match the form builder height to the sidebar.
+          this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
+          this.scrollSidebar();
+        }
+      });
+    }
 
     info.element = this.ce('div', {
-      class: 'panel panel-default form-builder-panel',
+      class: 'card panel panel-default form-builder-panel',
       id: `group-panel-${info.key}`
     }, [
       this.ce('div', {
-        class: 'panel-heading'
+        class: 'card-header panel-heading form-builder-group-header'
       }, [
-        this.ce('h4', {
-          class: 'panel-title'
+        this.ce('h5', {
+          class: 'mb-0 panel-title'
         }, groupAnchor)
       ])
     ]);
     info.body = this.ce('div', {
-      class: 'panel-body no-drop'
+      id: `group-container-${info.key}`,
+      class: 'card-body panel-body no-drop'
     });
 
     // Add this group body to the drag containers.
@@ -478,6 +492,9 @@ export default class WebformBuilder extends Webform {
     let groupBodyClass = 'panel-collapse collapse';
     if (info.default) {
       groupBodyClass += ' in';
+      if (!hasBootstrapJS) {
+        groupBodyClass += ' show';
+      }
     }
 
     info.panel = this.ce('div', {
@@ -548,7 +565,8 @@ export default class WebformBuilder extends Webform {
       this.removeChildFrom(this.sideBarElement, this.builderSidebar);
     }
     this.sideBarElement = this.ce('div', {
-      class: 'panel-group'
+      id: `builder-sidebar-${this.id}`,
+      class: 'accordion panel-group'
     });
 
     // Add the groups.

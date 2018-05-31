@@ -245,36 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/tabs/Tabs.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import nestedComponentForm from &apos;../nested/NestedComponent.form&apos;;
+
+import TabsEditDisplay from &apos;./editForm/Tabs.edit.display&apos;;
+
 export default function(...extend) {
   return nestedComponentForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          key: &apos;components&apos;,
-          type: &apos;datagrid&apos;,
-          input: true,
-          label: &apos;Tabs&apos;,
-          weight: 50,
-          components: [
-            {
-              type: &apos;textfield&apos;,
-              input: true,
-              key: &apos;label&apos;,
-              label: &apos;Label&apos;
-            },
-            {
-              type: &apos;textfield&apos;,
-              input: true,
-              key: &apos;key&apos;,
-              label: &apos;Key&apos;,
-              calculateValue: {_camelCase: [{var: &apos;row.label&apos;}]}
-            }
-          ]
-        }
-      ]
+      components: TabsEditDisplay
     }
   ]);
 }

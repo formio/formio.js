@@ -245,105 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/textarea/TextArea.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import textEditForm from &apos;../textfield/TextField.form&apos;;
+
+import TextAreaEditDisplay from &apos;./editForm/TextArea.edit.display&apos;;
+
 export default function(...extend) {
   return textEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      components: [
-        {
-          key: &apos;inputMask&apos;,
-          ignore: true
-        },
-        {
-          key: &apos;allowMultipleMasks&apos;,
-          ignore: true
-        },
-        {
-          type: &apos;number&apos;,
-          input: true,
-          key: &apos;rows&apos;,
-          label: &apos;Rows&apos;,
-          weight: 210,
-          tooltip: &apos;This allows control over how many rows are visible in the text area.&apos;,
-          placeholder: &apos;Enter the amount of rows&apos;
-        },
-        {
-          type: &apos;select&apos;,
-          input: true,
-          key: &apos;editor&apos;,
-          label: &apos;Editor&apos;,
-          tooltip: &apos;Select the type of WYSIWYG editor to use for this text area.&apos;,
-          dataSrc: &apos;values&apos;,
-          data: {
-            values: [
-              {label: &apos;None&apos;, value: &apos;&apos;},
-              {label: &apos;Quill&apos;, value: &apos;quill&apos;},
-              {label: &apos;ACE&apos;, value: &apos;ace&apos;}
-            ]
-          },
-          weight: 415
-        },
-        {
-          type: &apos;select&apos;,
-          input: true,
-          key: &apos;as&apos;,
-          label: &apos;Save As&apos;,
-          dataSrc: &apos;values&apos;,
-          tooltip: &apos;This setting determines how the value should be entered and stored in the database.&apos;,
-          clearOnHide: true,
-          data: {
-            values: [
-              {label: &apos;String&apos;, value: &apos;string&apos;},
-              {label: &apos;JSON&apos;, value: &apos;json&apos;},
-              {label: &apos;HTML&apos;, value: &apos;html&apos;}
-            ]
-          },
-          conditional: {
-            json: {
-              or: [
-                {&apos;===&apos;: [
-                  {var: &apos;data.editor&apos;},
-                  &apos;quill&apos;
-                ]},
-                {&apos;===&apos;: [
-                  {var: &apos;data.editor&apos;},
-                  &apos;ace&apos;
-                ]}
-              ]
-            }
-          },
-          weight: 416
-        },
-        {
-          type: &apos;textarea&apos;,
-          input: true,
-          editor: &apos;ace&apos;,
-          rows: 10,
-          as: &apos;json&apos;,
-          label: &apos;Editor Settings&apos;,
-          tooltip: &apos;Enter the WYSIWYG editor JSON configuration.&apos;,
-          key: &apos;wysiwyg&apos;,
-          customDefaultValue: (value, component, row, data, instance) =&gt; {
-            return instance.wysiwygDefault();
-          },
-          conditional: {
-            json: {
-              or: [
-                {&apos;===&apos;: [
-                  {var: &apos;data.editor&apos;},
-                  &apos;quill&apos;
-                ]},
-                {&apos;===&apos;: [
-                  {var: &apos;data.editor&apos;},
-                  &apos;ace&apos;
-                ]}
-              ]
-            }
-          },
-          weight: 417
-        }
-      ]
+      components: TextAreaEditDisplay
     }
   ]);
 }

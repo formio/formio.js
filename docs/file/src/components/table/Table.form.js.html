@@ -244,15 +244,15 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/table/Table.form.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import TableEditOptions from &apos;./TableEditOptions&apos;;
-import nestedComponentForm from &apos;../nested/NestedComponent.form&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import nestedComponentForm from &apos;../nested/NestedComponent.form&apos;;
+
+import TableEditDisplay from &apos;./editForm/Table.edit.display&apos;;
 
 export default function(...extend) {
   return nestedComponentForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      components: TableEditOptions
+      components: TableEditDisplay
     }
   ]);
 }

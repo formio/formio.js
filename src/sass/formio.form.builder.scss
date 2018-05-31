@@ -23,6 +23,16 @@
   display: none;
 }
 
+.builder-group-button {
+  background-color: transparent;
+  white-space: normal;
+  text-align: left;
+}
+
+.form-builder-group-header {
+  padding: 0;
+}
+
 .formio-dialog .tab-content {
   padding-top: 12px;
 }
@@ -64,7 +74,11 @@
 
 .formcomponents .formcomponent {
   text-align: left;
-  padding-left: 15px;
+  padding: 5px 5px 5px 8px;
+  margin-top: 0.2rem;
+  font-size: 0.8em;
+  line-height: 1.2;
+  border-radius: 0.3em;
 }
 
 .form-builder-panel .panel-body {

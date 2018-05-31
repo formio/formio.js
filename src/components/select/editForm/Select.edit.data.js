@@ -36,7 +36,7 @@ export default [
   {
     type: 'textfield',
     input: true,
-    key: 'url',
+    key: 'data.url',
     weight: 10,
     label: 'Data Source URL',
     placeholder: 'Data Source URL',
@@ -312,6 +312,15 @@ export default [
         ]
       }
     }
+  },
+  {
+    type: 'checkbox',
+    input: true,
+    weight: 20,
+    key: 'searchEnabled',
+    label: 'Enable Static Search',
+    defaultValue: true,
+    tooltip: 'When checked, the select dropdown will allow for searching within the static list of items provided.'
   },
   {
     type: 'checkbox',

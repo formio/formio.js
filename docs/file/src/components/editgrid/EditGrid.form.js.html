@@ -245,84 +245,19 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/editgrid/EditGrid.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
-/* eslint-disable quotes, max-len */
+
+import EditGridEditTemplates from &apos;./editForm/EditGrid.edit.templates&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
       label: &apos;Templates&apos;,
       key: &apos;templates&apos;,
       weight: 5,
-      components: [
-        {
-          type: &apos;textarea&apos;,
-          label: &apos;Header Template&apos;,
-          key: &apos;templates.header&apos;,
-          rows: 5,
-          editor: &apos;ace&apos;,
-          input: true,
-          placeholder: `/*** Lodash Template Code ***/`,
-          description: &apos;Two available variables. &quot;value&quot; is the array of row data and &quot;components&quot; is the array of components in the grid.&apos;,
-          tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render the header of the Edit grid.&apos;
-        },
-        {
-          type: &apos;textarea&apos;,
-          label: &apos;Row Template&apos;,
-          key: &apos;templates.row&apos;,
-          rows: 5,
-          editor: &apos;ace&apos;,
-          input: true,
-          placeholder: `/*** Lodash Template Code ***/`,
-          description: &apos;Two available variables. &quot;row&quot; is an object of one row\&apos;s data and &quot;components&quot; is the array of components in the grid. To add click events, add the classes &quot;editRow&quot; and &quot;removeRow&quot; to elements.&apos;,
-          tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render each row of the Edit grid.&apos;
-        },
-        {
-          type: &apos;textarea&apos;,
-          label: &apos;Footer Template&apos;,
-          key: &apos;templates.footer&apos;,
-          rows: 5,
-          editor: &apos;ace&apos;,
-          input: true,
-          placeholder: `/*** Lodash Template Code ***/`,
-          description: &apos;Two available variables. &quot;value&quot; is the array of row data and &quot;components&quot; is the array of components in the grid.&apos;,
-          tooltip: &apos;This is the &lt;a href=&quot;https://lodash.com/docs/4.17.5#template&quot;&gt;Lodash Template&lt;/a&gt; used to render the footer of the Edit grid.&apos;
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;rowClass&apos;,
-          label: &apos;Row CSS Class&apos;,
-          placeholder: &apos;Row CSS Class&apos;,
-          tooltip: &apos;CSS class to add to the edit row wrapper.&apos;
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;addAnother&apos;,
-          label: &apos;Add Another Text&apos;,
-          placeholder: &apos;Add Another&apos;,
-          tooltip: &apos;Set the text of the Add Another button.&apos;
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;saveRow&apos;,
-          label: &apos;Save Row Text&apos;,
-          placeholder: &apos;Save&apos;,
-          tooltip: &apos;Set the text of the Save Row button.&apos;
-        },
-        {
-          type: &apos;textfield&apos;,
-          input: true,
-          key: &apos;removeRow&apos;,
-          label: &apos;Remove Row Text&apos;,
-          placeholder: &apos;Remove&apos;,
-          tooltip: &apos;Set the text of the remove Row button.&apos;
-        }
-      ]
+      components: EditGridEditTemplates
     }
   ]);
 }
-/* eslint-enable quotes, max-len */
 </code></pre>
 
 </div>

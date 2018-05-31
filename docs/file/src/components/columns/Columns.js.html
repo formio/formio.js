@@ -259,7 +259,8 @@ export default class ColumnsComponent extends NestedComponent {
       ],
       clearOnHide: false,
       input: false,
-      tableView: false
+      tableView: false,
+      persistent: false
     }, ...extend);
   }
 
@@ -279,9 +280,15 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   get schema() {
-    let schema = _.omit(super.schema, &apos;components&apos;);
+    const schema = _.omit(super.schema, &apos;components&apos;);
     schema.columns = [];
-    this.eachComponent((component) =&gt; schema.columns.push(component.schema));
+    this.eachComponent((component, index) =&gt; {
+      _.merge(component.component, _.omit(this.component.columns[index], &apos;components&apos;));
+      schema.columns.push(component.schema);
+    });
+    for (let i = this.components.length; i &lt; this.component.columns.length; i++) {
+      schema.columns.push(this.component.columns[i]);
+    }
     return schema;
   }
 
@@ -290,7 +297,7 @@ export default class ColumnsComponent extends NestedComponent {
   }
 
   addComponents() {
-    let container = this.getContainer();
+    const container = this.getContainer();
     container.noDrop = true;
     _.each(this.component.columns, (column) =&gt; {
       column.type = &apos;column&apos;;

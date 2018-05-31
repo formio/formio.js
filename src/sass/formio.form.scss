@@ -611,3 +611,15 @@ body.formio-dialog-open {
   margin-bottom: 0;
 }
 
+.formio-hide-label-panel-tooltip {
+  margin-top: -10px;
+  margin-left: -10px;
+}
+
+.is-disabled .choices__list--multiple .choices__item {
+  padding: 5px 10px;
+}
+
+.is-disabled .choices__list--multiple .choices__item .choices__button {
+  display: none;
+}

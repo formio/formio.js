@@ -8,7 +8,8 @@ export default class FieldsetComponent extends NestedComponent {
       type: 'fieldset',
       legend: '',
       components: [],
-      input: false
+      input: false,
+      persistent: false
     }, ...extend);
   }
 

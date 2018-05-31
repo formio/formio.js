@@ -1,5 +1,27 @@
 export default [
   {
+    key: 'label',
+    ignore: true
+  },
+  {
+    type: 'number',
+    label: 'Number of Rows',
+    key: 'numRows',
+    input: true,
+    weight: 1,
+    placeholder: 'Number of Rows',
+    tooltip: 'Enter the number or rows that should be displayed by this table.'
+  },
+  {
+    type: 'number',
+    label: 'Number of Columns',
+    key: 'numCols',
+    input: true,
+    weight: 2,
+    placeholder: 'Number of Columns',
+    tooltip: 'Enter the number or columns that should be displayed by this table.'
+  },
+  {
     type: 'checkbox',
     label: 'Striped',
     key: 'striped',

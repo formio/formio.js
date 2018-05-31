@@ -21,6 +21,7 @@ export default class SelectComponent extends Component {
       valueProperty: '',
       refreshOn: '',
       filter: '',
+      searchEnabled: true,
       authenticate: false,
       template: '<span>{{ item.label }}</span>',
       selectFields: ''
@@ -59,7 +60,11 @@ export default class SelectComponent extends Component {
         if (this.component.refreshOn === 'data') {
           this.refreshItems();
         }
-        else if (event.changed && (event.changed.component.key === this.component.refreshOn)) {
+        else if (
+          event.changed &&
+          event.changed.component &&
+          (event.changed.component.key === this.component.refreshOn)
+        ) {
           this.refreshItems();
         }
       });
@@ -168,7 +173,7 @@ export default class SelectComponent extends Component {
     }
   }
 
-  setItems(items) {
+  setItems(items, fromSearch) {
     // If the items is a string, then parse as JSON.
     if (typeof items == 'string') {
       try {
@@ -204,7 +209,9 @@ export default class SelectComponent extends Component {
     }
 
     // Add the value options.
-    this.addValueOptions(items);
+    if (!fromSearch) {
+      this.addValueOptions(items);
+    }
 
     if (this.component.widget === 'html5' && !this.component.placeholder) {
       this.addOption(null, '');
@@ -289,14 +296,14 @@ export default class SelectComponent extends Component {
     options.header = headers;
     this.loading = true;
     Formio.makeRequest(this.options.formio, 'select', url, method, body, options)
-      .then((response) => this.setItems(response))
+      .then((response) => this.setItems(response, !!search))
       .catch((err) => {
         this.loading = false;
         this.emit('componentError', {
           component: this.component,
           message: err.toString()
         });
-        console.warn(`Unable to load resources for ${this.component.key}`);
+        console.warn(`Unable to load resources for ${this.key}`);
       });
   }
 
@@ -339,7 +346,7 @@ export default class SelectComponent extends Component {
 
   updateItems(searchInput, forceUpdate) {
     if (!this.component.data) {
-      console.warn(`Select component ${this.component.key} does not have data configuration.`);
+      console.warn(`Select component ${this.key} does not have data configuration.`);
       return;
     }
 
@@ -371,7 +378,7 @@ export default class SelectComponent extends Component {
           this.loadItems(resourceUrl, searchInput, this.requestHeaders);
         }
         catch (err) {
-          console.warn(`Unable to load resources for ${this.component.key}`);
+          console.warn(`Unable to load resources for ${this.key}`);
         }
         break;
       }
@@ -475,6 +482,7 @@ export default class SelectComponent extends Component {
       shouldSort: false,
       position: (this.component.dropdown || 'auto'),
       searchEnabled: useSearch,
+      searchChoices: !this.component.searchField,
       searchFields: ['label'],
       fuseOptions: {
         include: 'score',
@@ -602,6 +610,9 @@ export default class SelectComponent extends Component {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
+    if (this.component.multiple && !Array.isArray(value)) {
+      value = [value];
+    }
     const hasPreviousValue = Array.isArray(this.dataValue) ? this.dataValue.length : this.dataValue;
     const hasValue = Array.isArray(value) ? value.length : value;
     const changed = this.hasChanged(value, this.dataValue);

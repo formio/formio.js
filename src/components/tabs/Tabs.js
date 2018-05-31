@@ -7,6 +7,7 @@ export default class TabsComponent extends NestedComponent {
       type: 'tabs',
       input: false,
       key: 'tabs',
+      persistent: false,
       components: [
         {
           label: 'Tab 1',
@@ -66,6 +67,7 @@ export default class TabsComponent extends NestedComponent {
         id: tab.key
       });
       const tabLink = this.ce('a', {
+        class: 'nav-link',
         href: `#${tab.key}`
       }, tab.label);
       this.addEventListener(tabLink, 'click', (event) => {
@@ -73,8 +75,10 @@ export default class TabsComponent extends NestedComponent {
         this.setTab(index);
       });
       const tabElement = this.ce('li', {
+        class: 'nav-item',
         role: 'presentation'
       }, tabLink);
+      tabElement.tabLink = tabLink;
       this.tabLinks.push(tabElement);
       this.tabs.push(tabPanel);
       this.tabBar.appendChild(tabElement);
@@ -119,8 +123,10 @@ export default class TabsComponent extends NestedComponent {
 
     _.each(this.tabLinks, (tabLink) => {
       this.removeClass(tabLink, 'active');
+      this.removeClass(tabLink.tabLink, 'active');
     });
     this.addClass(this.tabLinks[index], 'active');
+    this.addClass(this.tabLinks[index].tabLink, 'active');
     _.each(this.tabs, (tab) => {
       this.removeClass(tab, 'active');
     });

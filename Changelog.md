@@ -4,10 +4,6 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
-### Added
- - Possibility to unselect value for Select component.
-
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -36,12 +32,91 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Changed FormioForm name to Webform
  - Changed FormioWizard name to Wizard
  - Changed FormioPDF name to PDF
+ - Input elements within a DataGrid now refer to the "rowIndex" instead of the column index within the "name" attributes.
+ - Chnaged the wrapper classes for Radio and Select Boxes components to be "form-group" instead of "input-group" to make it compatible with both Bootstrap 4 and Bootstrap 3.
  - Renamed GMap component to Location component
  - Changed all exports on Components to be default exports. ```import TextFieldComponent from 'formiojs/components/textfield/TextField';```
  - Deprected ability to "attach" Formio to existing form using Formio.form method.
  - Modified all JavaScript execution to make it more consistent.
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
+
+## 3.0.0-rc.2
+### Fixed
+ - Issue with Bootstrap.js messing up the form builder accordion.
+
+## 3.0.0-alpha.20
+### Added
+ - Possibility to Disable Adding / Removing rows for Data Grid
+ - Adding numRows and numCols to table builder.
+ 
+### Fixed
+ - Hide the label component for table editing.
+ - Fixing the schema creation to not turn arrays into objects.
+ - Fixing how datagrid appends names to inputs.
+ - Ensure that the error check is fired when changed and submission. Also reset errors when conditionally hidden.
+ - Ensure new components added with builder get unique api keys.
+ - Fixed issues with number component where it would not submit.
+ - Fixed an issue where the number component would not reset its value.
+
+## 3.0.0-alpha.19
+### Fixed
+ - File data for url file uploads getting lost if it doesn't contain a .date property.
+
+## 3.0.0-alpha.18
+### Fixed
+ - Issue with multiple settings on Select component not allowing a submission.
+ - Problem with the Day component setting disabled where it would cause javascript error.
+ - Styling problems with Bootstrap 4 and radio and checkbox controls.
+ - Default value issues with the Day component.
+ - Problems with non-set values getting set within the submission data.
+
+## 3.0.0-alpha.17
+### Fixed
+ - Issues with the table builder where it would remove elements when building existing forms.
+ - Select component to not have static search enabled for URL based selects with searchField set.
+ - Fix possible issue with eachComponent that tries to iterate over a non array.
+ - Fix the PDF renderer so that it will submit the form correctly.
+ - Fixed issue with the errors disappearing after they show up.
+ - Fixed issue with Checkbox configured as radio where original boolean would not get set with submission.
+ - Fixed the input disabled class to be dynamic based on the disabled state of the component.
+ - Fixed issue where isValid method would return false on hidden required fields.
+ - Fixed issue where the x button on multiple select dropdowns was showing in read only mode.
+
+### Changed
+ - Make sure to default persistence to true unless otherwise stated.
+
+### Added
+ - A way to turn of the static search for select fields in the form builder.
+
+## 3.0.0-alpha.16
+### Fixed
+ - Issues with the columns builder not including its components.
+ - Problems with the decimal place identifier not working for number components.
+ - Problems with the file upload not able to get the "formio" instance from the root object.
+
+### Changed
+ - Made the default table configuration a static property for ease of maintenance.
+
+## 3.0.0-alpha.15
+### Fixed
+ - Problem with the Columns builder where it was not adding columns.
+
+## 3.0.0-alpha.14
+### Added
+ - Possibility to unselect value for Select component.
+ - Possibility to show hidden fields using options
+
+### Fixed
+ - How TextArea is rendered when it is configured as wysiwyg and is being viewed as readOnly
+ - Problem where malformed functions in "custom" parameters could crash renderer.
+ - Issues with the Checkbox component configured as a Radio not setting values correctly.
+ - Require Decimal behavior for Number and Currency components
+ - Hide Label functionality for Panel component
+ - Tooltip being hidden for Panels when label is hidden
+
+### Changed
+ - Upgraded i18next@11.3.2 flatpickr@4.5.0
 
 ## 3.0.0-alpha.6
 ### Changed

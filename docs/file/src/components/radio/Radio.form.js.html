@@ -245,84 +245,17 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/radio/Radio.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
-import BuilderUtils from &apos;../../utils/builder&apos;;
-/* eslint-disable max-len */
+
+import RadioEditDisplay from &apos;./editForm/Radio.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          type: &apos;select&apos;,
-          input: true,
-          label: &apos;Options Label Position&apos;,
-          key: &apos;optionsLabelPosition&apos;,
-          tooltip: &apos;Position for the label for options for this field.&apos;,
-          dataSrc: &apos;values&apos;,
-          weight: 32,
-          defaultValue: &apos;right&apos;,
-          data: {
-            values: [
-              {label: &apos;Top&apos;, value: &apos;top&apos;},
-              {label: &apos;Left&apos;, value: &apos;left&apos;},
-              {label: &apos;Right&apos;, value: &apos;right&apos;},
-              {label: &apos;Bottom&apos;, value: &apos;bottom&apos;}
-            ]
-          }
-        },
-        {
-          type: &apos;datagrid&apos;,
-          input: true,
-          label: &apos;Values&apos;,
-          key: &apos;values&apos;,
-          tooltip: &apos;The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.&apos;,
-          weight: 33,
-          defaultValue: [{label: &apos;&apos;, value: &apos;&apos;}],
-          components: [
-            {
-              label: &apos;Label&apos;,
-              key: &apos;label&apos;,
-              input: true,
-              type: &apos;textfield&apos;
-            },
-            {
-              label: &apos;Value&apos;,
-              key: &apos;value&apos;,
-              input: true,
-              type: &apos;textfield&apos;,
-              calculateValue: {_camelCase: [{var: &apos;row.label&apos;}]}
-            },
-            {
-              type: &apos;select&apos;,
-              input: true,
-              weight: 180,
-              label: &apos;Shortcut&apos;,
-              key: &apos;shortcut&apos;,
-              tooltip: &apos;The shortcut key for this option.&apos;,
-              dataSrc: &apos;custom&apos;,
-              data: {
-                custom: (values, component, data, row, utils, instance, form) =&gt; {
-                  return BuilderUtils.getAvailableShortcuts(form, component);
-                }
-              }
-            }
-          ]
-        },
-        {
-          type: &apos;checkbox&apos;,
-          input: true,
-          key: &apos;inline&apos;,
-          label: &apos;Inline Layout&apos;,
-          tooltip: &apos;Displays the checkboxes/radios horizontally.&apos;,
-          weight: 650
-        }
-      ]
+      components: RadioEditDisplay
     }
   ]);
 }
-/* eslint-enable max-len */
 </code></pre>
 
 </div>

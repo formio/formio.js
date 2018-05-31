@@ -6,6 +6,7 @@ export default class WellComponent extends NestedComponent {
       type: 'well',
       key: 'well',
       input: false,
+      persistent: false,
       components: []
     }, ...extend);
   }

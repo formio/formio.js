@@ -68,7 +68,7 @@ export default class SurveyComponent extends Component {
           });
           const input = this.ce('input', {
             type: 'radio',
-            name: `data[${this.component.key}][${question.value}]`,
+            name: `data[${this.key}][${question.value}]`,
             value: value.value,
             id: `${this.id}-${question.value}-${value.value}`
           });
@@ -96,7 +96,7 @@ export default class SurveyComponent extends Component {
     if (!value) {
       return;
     }
-    const key = `data[${this.component.key}]`;
+    const key = `data[${this.key}]`;
     _.each(this.component.questions, (question) => {
       _.each(this.inputs, (input) => {
         if (input.name === (`${key}[${question.value}]`)) {
@@ -116,7 +116,7 @@ export default class SurveyComponent extends Component {
       return this.dataValue;
     }
     const value = {};
-    const key = `data[${this.component.key}]`;
+    const key = `data[${this.key}]`;
     _.each(this.component.questions, (question) => {
       _.each(this.inputs, (input) => {
         if (input.checked && (input.name === (`${key}[${question.value}]`))) {

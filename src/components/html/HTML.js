@@ -7,7 +7,8 @@ export default class HTMLComponent extends Component {
       tag: 'p',
       attrs: [],
       content: '',
-      input: false
+      input: false,
+      persistent: false
     }, ...extend);
   }
 

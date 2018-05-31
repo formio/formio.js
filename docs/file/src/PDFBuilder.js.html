@@ -244,7 +244,9 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/PDFBuilder.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import WebformBuilder from &apos;./WebformBuilder&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
+import WebformBuilder from &apos;./WebformBuilder&apos;;
 import {getElementRect} from &apos;./utils/utils&apos;;
 import PDF from &apos;./PDF&apos;;
 
@@ -297,8 +299,8 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   get dropZoneStyles() {
-    let iframeRect = getElementRect(this.pdfForm.element);
-    let iframeHeight = iframeRect ? iframeRect.height || 1000 : 1000;
+    const iframeRect = getElementRect(this.pdfForm.element);
+    const iframeHeight = iframeRect ? iframeRect.height || 1000 : 1000;
     return `position:absolute;width: 100%;height:${iframeHeight}px;`;
   }
 
@@ -318,13 +320,13 @@ export default class PDFBuilder extends WebformBuilder {
 
   activateDropZone() {
     if (this.dropZone) {
-      this.dropZone.setAttribute(&apos;style&apos;, this.dropZoneStyles + &apos;display:inherit;&apos;);
+      this.dropZone.setAttribute(&apos;style&apos;, `${this.dropZoneStyles}display:inherit;`);
     }
   }
 
   disableDropZone() {
     if (this.dropZone) {
-      this.dropZone.setAttribute(&apos;style&apos;, this.dropZoneStyles + &apos;display:none;&apos;);
+      this.dropZone.setAttribute(&apos;style&apos;, `${this.dropZoneStyles}display:none;`);
     }
   }
 
@@ -370,12 +372,12 @@ export default class PDFBuilder extends WebformBuilder {
 
   dragStop(event) {
     event.preventDefault();
-    let dropData = event.dataTransfer.getData(&apos;text/plain&apos;);
+    const dropData = event.dataTransfer.getData(&apos;text/plain&apos;);
     if (!dropData || (typeof dropData !== &apos;string&apos;)) {
       return false;
     }
 
-    let schema = JSON.parse(dropData);
+    const schema = JSON.parse(dropData);
     if (!schema) {
       return false;
     }
@@ -424,7 +426,7 @@ export default class PDFBuilder extends WebformBuilder {
       this.element.noDrop = true;
       this.pdfForm = new PDF(this.element, this.options);
       this.pdfForm.on(&apos;iframe-elementUpdate&apos;, schema =&gt; {
-        let component = this.getComponentById(schema.id);
+        const component = this.getComponentById(schema.id);
         if (component &amp;&amp; component.component) {
           component.component.overlay = {
             page: schema.page,
@@ -439,7 +441,7 @@ export default class PDFBuilder extends WebformBuilder {
         return component;
       });
       this.pdfForm.on(&apos;iframe-componentUpdate&apos;, schema =&gt; {
-        let component = this.getComponentById(schema.id);
+        const component = this.getComponentById(schema.id);
         if (component &amp;&amp; component.component) {
           component.component.overlay = {
             page: schema.overlay.page,
@@ -453,7 +455,7 @@ export default class PDFBuilder extends WebformBuilder {
         return component;
       });
       this.pdfForm.on(&apos;iframe-componentClick&apos;, schema =&gt; {
-        let component = this.getComponentById(schema.id);
+        const component = this.getComponentById(schema.id);
         if (component) {
           this.editComponent(component);
         }

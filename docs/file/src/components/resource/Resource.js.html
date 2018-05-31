@@ -244,9 +244,11 @@
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/resource/Resource.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import SelectComponent from &apos;../select/Select&apos;;
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import _ from &apos;lodash&apos;;
+
+import SelectComponent from &apos;../select/Select&apos;;
 import Webform from &apos;../../Webform&apos;;
-import _ from &apos;lodash&apos;;
+import Formio from &apos;../../Formio&apos;;
 
 export default class ResourceComponent extends SelectComponent {
   static schema(...extend) {
@@ -300,15 +302,15 @@ export default class ResourceComponent extends SelectComponent {
 
     this.addEventListener(addButton, &apos;click&apos;, (event) =&gt; {
       event.preventDefault();
-      let dialog = this.createModal(this.component.addResourceLabel || &apos;Add Resource&apos;);
-      let formioForm = this.ce(&apos;div&apos;);
+      const dialog = this.createModal(this.component.addResourceLabel || &apos;Add Resource&apos;);
+      const formioForm = this.ce(&apos;div&apos;);
       dialog.body.appendChild(formioForm);
       const form = new Webform(formioForm);
       form.on(&apos;submit&apos;, (submission) =&gt; {
         this.setValue(submission);
         dialog.close();
       });
-      form.src = _.get(this.root, &apos;formio.projectUrl&apos;, Formio.getBaseUrl()) + &apos;/form/&apos; + this.component.resource;
+      form.src = `${_.get(this.root, &apos;formio.projectUrl&apos;, Formio.getBaseUrl())}/form/${this.component.resource}`;
     });
 
     return addButton;

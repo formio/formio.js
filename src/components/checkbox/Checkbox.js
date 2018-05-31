@@ -30,6 +30,10 @@ export default class CheckBoxComponent extends Component {
     return CheckBoxComponent.schema();
   }
 
+  get defaultValue() {
+    return this.component.name ? '' : false;
+  }
+
   get className() {
     let className = super.className;
     if (this.component.input
@@ -42,7 +46,7 @@ export default class CheckBoxComponent extends Component {
   }
 
   get inputInfo() {
-    const info = super.elementInfo();
+      const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
     info.attr.type = this.component.inputType || 'checkbox';
@@ -85,54 +89,45 @@ export default class CheckBoxComponent extends Component {
     return false;
   }
 
-  // labelOnTheTopOrLeft() {
-  //   return ['top', 'left'].includes(this.component.labelPosition);
-  // }
-  //
-  // labelOnTheTopOrBottom() {
-  //   return ['top', 'bottom'].includes(this.component.labelPosition);
-  // }
-  //
-  // setInputLabelStyle(label) {
-  //   if (this.component.labelPosition === 'left') {
-  //     _.assign(label.style, {
-  //       textAlign: 'center',
-  //       paddingLeft: 0,
-  //     });
-  //   }
-  //
-  //   if (this.labelOnTheTopOrBottom()) {
-  //     _.assign(label.style, {
-  //       display: 'block',
-  //       textAlign: 'center',
-  //       paddingLeft: 0,
-  //     });
-  //   }
-  // }
-  //
-  // setInputStyle(input) {
-  //   if (this.component.labelPosition === 'left') {
-  //     _.assign(input.style, {
-  //       position: 'initial',
-  //       marginLeft: '7px'
-  //     });
-  //   }
-  //
-  //   if (this.labelOnTheTopOrBottom()) {
-  //     _.assign(input.style, {
-  //       width: '100%',
-  //       position: 'initial',
-  //       marginLeft: 0
-  //     });
-  //   }
-  // }
-
   isEmpty(value) {
     return super.isEmpty(value) || value === false;
   }
 
+  set dataValue(value) {
+    const setValue = (super.dataValue = value);
+    if (this.component.name) {
+      _.set(this.data, this.component.key, setValue === this.component.value);
+    }
+    return setValue;
+  }
+
+  get dataValue() {
+    const getValue = super.dataValue;
+    if (this.component.name) {
+      _.set(this.data, this.component.key, getValue === this.component.value);
+    }
+    return getValue;
+  }
+
+  get key() {
+    return this.component.name ? this.component.name : super.key;
+  }
+
   getValueAt(index) {
+    if (this.component.name) {
+      return this.refs.input[index].checked ? this.component.value : '';
+    }
     return !!this.refs.input[index].checked;
+  }
+
+  getValue() {
+    const value = super.getValue();
+    if (this.component.name) {
+      return value ? value : this.dataValue;
+    }
+    else {
+      return value;
+    }
   }
 
   setValue(value, flags) {
@@ -140,7 +135,11 @@ export default class CheckBoxComponent extends Component {
     if (!this.input) {
       return;
     }
-    if (value === 'on') {
+    if (this.component.name) {
+      this.input.value = (value === this.component.value) ? 1 : 0;
+      this.input.checked = (value === this.component.value) ? 1 : 0;
+    }
+    else if (value === 'on') {
       this.input.value = 1;
       this.input.checked = 1;
     }
@@ -157,26 +156,6 @@ export default class CheckBoxComponent extends Component {
       this.input.checked = 0;
     }
     return this.updateValue(flags);
-  }
-
-  get dataValue() {
-    if (this.component.name) {
-      return _.get(this.data, this.component.name, this.emptyValue) === this.component.value;
-    }
-
-    return super.dataValue;
-  }
-
-  set dataValue(value) {
-    if (this.component.name) {
-      if (value) {
-        _.set(this.data, this.component.name, this.component.value);
-      }
-      return value;
-    }
-
-    super.dataValue = value;
-    return value;
   }
 
   getView(value) {

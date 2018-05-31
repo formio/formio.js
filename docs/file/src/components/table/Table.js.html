@@ -248,6 +248,14 @@
 import NestedComponent from &apos;../nested/NestedComponent&apos;;
 
 export default class TableComponent extends NestedComponent {
+  static get defaultTable() {
+    return [
+      [{components: []}, {components: []}, {components: []}],
+      [{components: []}, {components: []}, {components: []}],
+      [{components: []}, {components: []}, {components: []}]
+    ];
+  }
+
   static schema(...extend) {
     return NestedComponent.schema({
       type: &apos;table&apos;,
@@ -255,17 +263,14 @@ export default class TableComponent extends NestedComponent {
       key: &apos;table&apos;,
       numRows: 3,
       numCols: 3,
-      rows: [
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}]
-      ],
+      rows: TableComponent.defaultTable,
       header: [],
       caption: &apos;&apos;,
       striped: false,
       bordered: false,
       hover: false,
-      condensed: false
+      condensed: false,
+      persistent: false
     }, ...extend);
   }
 
@@ -285,15 +290,11 @@ export default class TableComponent extends NestedComponent {
   }
 
   get schema() {
-    let schema = _.omit(super.schema, &apos;components&apos;);
+    const schema = _.omit(super.schema, &apos;components&apos;);
     schema.rows = [];
     this.eachComponent((component) =&gt; {
       if (!schema.rows || !schema.rows.length) {
-        schema.rows = [
-          [{components: []}, {components: []}, {components: []}],
-          [{components: []}, {components: []}, {components: []}],
-          [{components: []}, {components: []}, {components: []}]
-        ];
+        schema.rows = TableComponent.defaultTable;
       }
       if (!schema.rows[component.tableRow]) {
         schema.rows[component.tableRow] = [];
@@ -304,11 +305,7 @@ export default class TableComponent extends NestedComponent {
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
     if (!schema.rows.length) {
-      schema.rows = [
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}]
-      ];
+      schema.rows = TableComponent.defaultTable;
     }
     return schema;
   }
@@ -328,9 +325,9 @@ export default class TableComponent extends NestedComponent {
           id: `${this.id}-${rowIndex}-${colIndex}`
         });
         _.each(column.components, (comp) =&gt; {
-          comp.tableRow = rowIndex;
-          comp.tableColumn = colIndex;
-          this.addComponent(comp, td, data);
+          const component = this.addComponent(comp, td, data);
+          component.tableRow = rowIndex;
+          component.tableColumn = colIndex;
         });
 
         if (this.options.builder) {
@@ -341,14 +338,8 @@ export default class TableComponent extends NestedComponent {
               style: &apos;text-align:center; margin-bottom: 0px;&apos;,
               role: &apos;alert&apos;
             }, this.text(&apos;Drag and Drop a form component&apos;)));
-            td.tableRow = rowIndex;
-            td.tableColumn = colIndex;
           }
           this.root.addDragContainer(td, this, {
-            onDrop: (element, target, source, sibling, component) =&gt; {
-              component.tableRow = target.tableRow;
-              component.tableColumn = target.tableColumn;
-            },
             onSave: (component) =&gt; {
               component.tableRow = rowIndex;
               component.tableColumn = colIndex;

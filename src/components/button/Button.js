@@ -14,6 +14,7 @@ export default class ButtonComponent extends Field {
       rightIcon: '',
       block: false,
       action: 'submit',
+      persistent: false,
       disableOnInvalid: false,
       theme: 'default'
     }, ...extend);

@@ -2,6 +2,18 @@ import _ from 'lodash';
 import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class TableComponent extends NestedComponent {
+  static emptyTable(numRows, numCols) {
+    const rows = [];
+    for (let i = 0; i < numRows; i++) {
+      const cols = [];
+      for (let j = 0; j < numCols; j++) {
+        cols.push({components: []});
+      }
+      rows.push(cols);
+    }
+    return rows;
+  }
+
   static schema(...extend) {
     return NestedComponent.schema({
       type: 'table',
@@ -9,17 +21,14 @@ export default class TableComponent extends NestedComponent {
       key: 'table',
       numRows: 3,
       numCols: 3,
-      rows: [
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}]
-      ],
+      rows: TableComponent.emptyTable(3, 3),
       header: [],
       caption: '',
       striped: false,
       bordered: false,
       hover: false,
-      condensed: false
+      condensed: false,
+      persistent: false
     }, ...extend);
   }
 
@@ -43,11 +52,7 @@ export default class TableComponent extends NestedComponent {
     schema.rows = [];
     this.eachComponent((component) => {
       if (!schema.rows || !schema.rows.length) {
-        schema.rows = [
-          [{components: []}, {components: []}, {components: []}],
-          [{components: []}, {components: []}, {components: []}],
-          [{components: []}, {components: []}, {components: []}]
-        ];
+        schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
       }
       if (!schema.rows[component.tableRow]) {
         schema.rows[component.tableRow] = [];
@@ -58,11 +63,7 @@ export default class TableComponent extends NestedComponent {
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
     if (!schema.rows.length) {
-      schema.rows = [
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}],
-        [{components: []}, {components: []}, {components: []}]
-      ];
+      schema.rows = TableComponent.emptyTable(this.component.numRows, this.component.numCols);
     }
     return schema;
   }
@@ -82,9 +83,9 @@ export default class TableComponent extends NestedComponent {
           id: `${this.id}-${rowIndex}-${colIndex}`
         });
         _.each(column.components, (comp) => {
-          comp.tableRow = rowIndex;
-          comp.tableColumn = colIndex;
-          this.addComponent(comp, td, data);
+          const component = this.addComponent(comp, td, data);
+          component.tableRow = rowIndex;
+          component.tableColumn = colIndex;
         });
 
         if (this.options.builder) {
@@ -95,14 +96,8 @@ export default class TableComponent extends NestedComponent {
               style: 'text-align:center; margin-bottom: 0px;',
               role: 'alert'
             }, this.text('Drag and Drop a form component')));
-            td.tableRow = rowIndex;
-            td.tableColumn = colIndex;
           }
           this.root.addDragContainer(td, this, {
-            onDrop: (element, target, source, sibling, component) => {
-              component.tableRow = target.tableRow;
-              component.tableColumn = target.tableColumn;
-            },
             onSave: (component) => {
               component.tableRow = rowIndex;
               component.tableColumn = colIndex;

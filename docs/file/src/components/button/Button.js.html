@@ -259,6 +259,7 @@ export default class ButtonComponent extends BaseComponent {
       rightIcon: &apos;&apos;,
       block: false,
       action: &apos;submit&apos;,
+      persistent: false,
       disableOnInvalid: false,
       theme: &apos;default&apos;
     }, ...extend);
@@ -378,7 +379,7 @@ export default class ButtonComponent extends BaseComponent {
       }));
     }
     if (this.component.action === &apos;submit&apos;) {
-      let message = this.ce(&apos;div&apos;);
+      const message = this.ce(&apos;div&apos;);
       this.on(&apos;submitButton&apos;, () =&gt; {
         this.loading = true;
         this.disabled = true;

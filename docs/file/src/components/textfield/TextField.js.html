@@ -309,7 +309,7 @@ export default class TextFieldComponent extends BaseComponent {
       return super.createInput(container);
     }
     //if component should have multiple masks
-    const id = `${this.component.key}`;
+    const id = `${this.key}`;
     const attr = this.info.attr;
     attr.class += &apos; formio-multiple-mask-input&apos;;
     attr.id = id;
@@ -349,7 +349,7 @@ export default class TextFieldComponent extends BaseComponent {
     if (!this.isMultipleMasksField) {
       return super.setValueAt(index, value);
     }
-    let defaultValue = this.defaultValue;
+    const defaultValue = this.defaultValue;
     if (!value) {
       if (defaultValue) {
         value = defaultValue;
@@ -413,7 +413,7 @@ export default class TextFieldComponent extends BaseComponent {
   }
 
   createMaskInput(textInput) {
-    const id = `${this.component.key}-mask`;
+    const id = `${this.key}-mask`;
     const maskInput = this.ce(&apos;select&apos;, {
       class: &apos;form-control formio-multiple-mask-select&apos;,
       id
@@ -430,7 +430,7 @@ export default class TextFieldComponent extends BaseComponent {
 
   addTextInputs(textInput, maskInput, container) {
     if (textInput &amp;&amp; maskInput &amp;&amp; container) {
-      let input = {
+      const input = {
         mask: maskInput,
         text: textInput
       };

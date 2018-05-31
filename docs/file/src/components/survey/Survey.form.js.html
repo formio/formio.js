@@ -245,62 +245,14 @@
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/components/survey/Survey.form.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">import baseEditForm from &apos;../base/Base.form&apos;;
+
+import SurveyEditDisplay from &apos;./editForm/Survey.edit.display&apos;;
+
 export default function(...extend) {
   return baseEditForm(...extend, [
     {
-      label: &apos;Display&apos;,
       key: &apos;display&apos;,
-      weight: 0,
-      components: [
-        {
-          type: &apos;datagrid&apos;,
-          input: true,
-          label: &apos;Questions&apos;,
-          key: &apos;questions&apos;,
-          tooltip: &apos;The questions you would like to as in this survey question.&apos;,
-          weight: 50,
-          defaultValue: [{label: &apos;&apos;, value: &apos;&apos;}],
-          components: [
-            {
-              label: &apos;Label&apos;,
-              key: &apos;label&apos;,
-              input: true,
-              type: &apos;textfield&apos;
-            },
-            {
-              label: &apos;Value&apos;,
-              key: &apos;value&apos;,
-              input: true,
-              type: &apos;textfield&apos;,
-              calculateValue: {_camelCase: [{var: &apos;row.label&apos;}]}
-            }
-          ]
-        },
-        {
-          type: &apos;datagrid&apos;,
-          input: true,
-          label: &apos;Values&apos;,
-          key: &apos;values&apos;,
-          tooltip: &apos;The values that can be selected per question. Example: \&apos;Satisfied\&apos;, \&apos;Very Satisfied\&apos;, etc.&apos;,
-          weight: 50,
-          defaultValue: [{label: &apos;&apos;, value: &apos;&apos;}],
-          components: [
-            {
-              label: &apos;Label&apos;,
-              key: &apos;label&apos;,
-              input: true,
-              type: &apos;textfield&apos;
-            },
-            {
-              label: &apos;Value&apos;,
-              key: &apos;value&apos;,
-              input: true,
-              type: &apos;textfield&apos;,
-              calculateValue: {_camelCase: [{var: &apos;row.label&apos;}]}
-            }
-          ]
-        }
-      ]
+      components: SurveyEditDisplay
     }
   ]);
 }

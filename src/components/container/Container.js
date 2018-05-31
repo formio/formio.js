@@ -34,7 +34,7 @@ export default class ContainerComponent extends NestedComponent {
 
   build() {
     this.createElement();
-    if (!this.hasValue) {
+    if (!this.hasValue()) {
       this.dataValue = {};
     }
     this.addComponents(this.getContainer(), this.dataValue);
@@ -53,7 +53,7 @@ export default class ContainerComponent extends NestedComponent {
       return this.dataValue;
     }
     const value = {};
-    _.each(this.components, (component) => _.set(value, component.component.key, component.getValue()));
+    _.each(this.components, (component) => _.set(value, component.key, component.getValue()));
     return value;
   }
 
@@ -62,7 +62,7 @@ export default class ContainerComponent extends NestedComponent {
     if (!value || !_.isObject(value)) {
       return;
     }
-    if (this.hasValue && _.isEmpty(this.dataValue)) {
+    if (this.hasValue() && _.isEmpty(this.dataValue)) {
       flags.noValidate = true;
     }
     const changed = this.hasChanged(value, this.dataValue);
@@ -71,8 +71,8 @@ export default class ContainerComponent extends NestedComponent {
       if (component.type === 'components') {
         component.setValue(value, flags);
       }
-      else if (_.has(value, component.component.key)) {
-        component.setValue(_.get(value, component.component.key), flags);
+      else if (_.has(value, component.key)) {
+        component.setValue(_.get(value, component.key), flags);
       }
       else {
         component.data = value;

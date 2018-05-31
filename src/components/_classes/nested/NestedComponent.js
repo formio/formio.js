@@ -399,7 +399,7 @@ export default class NestedComponent extends Component {
       component.visible = false;
     }
     else {
-      component.visible = (!this.hidden || !this.hidden.includes(component.component.key));
+      component.visible = (!this.hidden || !this.hidden.includes(component.key));
     }
   }
 
@@ -429,7 +429,7 @@ export default class NestedComponent extends Component {
 
   resetValue() {
     _.each(this.getComponents(), (comp) => (comp.resetValue()));
-    _.unset(this.data, this.component.key);
+    _.unset(this.data, this.key);
     this.setPristine(true);
   }
 
@@ -455,8 +455,8 @@ export default class NestedComponent extends Component {
       if (component.type === 'components') {
         changed |= component.setValue(value, flags);
       }
-      else if (value && value.hasOwnProperty(component.component.key)) {
-        changed |= component.setValue(_.get(value, component.component.key), flags);
+      else if (value && component.hasValue(value)) {
+        changed |= component.setValue(_.get(value, component.key), flags);
       }
       else {
         flags.noValidate = true;

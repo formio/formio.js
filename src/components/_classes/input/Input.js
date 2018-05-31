@@ -20,6 +20,7 @@ export default class Input extends Multivalue {
     }
 
     return {
+      id: this.key,
       type: 'input',
       changeEvent: 'input',
       content: '',
