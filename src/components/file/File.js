@@ -127,10 +127,10 @@ export default class FileComponent extends BaseComponent {
           [
             this.ce('div', {class: 'col-md-1'}),
             this.ce('div', {class: 'col-md-9'},
-              this.ce('strong', {}, 'File Name')
+              this.ce('strong', {}, this.text('File Name'))
             ),
             this.ce('div', {class: 'col-md-2'},
-              this.ce('strong', {}, 'Size')
+              this.ce('strong', {}, this.text('Size'))
             )
           ]
         )
@@ -293,7 +293,7 @@ export default class FileComponent extends BaseComponent {
         }
       },
       class: 'browse'
-    }, 'browse');
+    }, this.text('browse'));
 
     return this.browseLink;
   }
