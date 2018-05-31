@@ -21,6 +21,11 @@ export default class Form {
    * form.build();
    */
   constructor() {
+    this.ready = new Promise((resolve, reject) => {
+      this.readyResolve = resolve;
+      this.readyReject = reject;
+    });
+
     this.instance = null;
     if (arguments[0] instanceof HTMLElement) {
       this.options = arguments[2];
@@ -32,10 +37,7 @@ export default class Form {
       this.form = arguments[0];
     }
 
-    return this.ready = new Promise((resolve, reject) => {
-      this.readyResolve = resolve;
-      this.readyReject = reject;
-    });
+    return  this.ready;
   }
 
   create(display) {
