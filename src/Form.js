@@ -37,7 +37,7 @@ export default class Form {
       this.form = arguments[0];
     }
 
-    return  this.ready;
+    return this.ready;
   }
 
   create(display) {
@@ -137,7 +137,7 @@ Formio.embedForm = (embed) => Form.embed(embed);
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.createForm = (element, form, options) => {
-  return (new Form(element, form, options)).build();
+  return (new Form(element, form, options));
 };
 
 Formio.Form = Form;

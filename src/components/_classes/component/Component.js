@@ -1958,7 +1958,7 @@ export default class Component {
     }
 
     const message = this.invalidMessage(data, dirty, true);
-    // this.setCustomValidity(message, dirty);
+    this.setCustomValidity(message, dirty);
     return message ? false : true;
   }
 
@@ -1989,9 +1989,11 @@ export default class Component {
   }
 
   setCustomValidity(message, dirty) {
-    if (this.refs.messageContainer && this.messageContainer) {
-      this.refs.messageContainer.innerHTML = '';
-      this.removeChildFrom(this.refs.messageContainer, this.messageContainer);
+    if (this.refs.messageContainer) {
+      this.empty(this.refs.messageContainer);
+    }
+    if (!this.refs.input) {
+      return;
     }
     if (message) {
       this.error = {
@@ -1999,7 +2001,6 @@ export default class Component {
         message: message
       };
       this.emit('componentError', this.error);
-      this.createErrorElement();
       this.addInputError(message, dirty);
     }
     else {
