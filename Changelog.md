@@ -4,10 +4,6 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [UNRELEASED]
-### Fixed
- - `viewAsHtml` for nested forms.
-
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -49,6 +45,21 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## 3.0.0-rc.3
 ### Fixed
  - i18n in File component.
+ - `viewAsHtml` for nested forms.
+ - Fix the Day component required validation to work with independent inputs.
+ - Fixed the checkbox DOM states to mirror the actual state of the checkbox.
+ - Ensure we don't call setInputStyle without an input.
+ - Fixed the datetime default date and fixed console warning from moment.
+
+### Changed
+ - Only trigger error events on nextPage and submissionError events.
+ - Set the value to the checkbox component value when using component name, like in Radio configuration.
+ - Moving the fieldData method to FormioUtils.
+ - Allow for fully loaded nested forms to render without hitting the server.
+
+### Added
+ - Adding the component instance to the change events.
+ - Adding the pdf source information to the form object.
 
 ## 3.0.0-rc.2
 ### Fixed
