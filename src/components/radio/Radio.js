@@ -54,7 +54,11 @@ export default class RadioComponent extends BaseComponent {
       this.addShortcut(label, value.shortcut);
 
       // Determine the attributes for this input.
-      const inputId = `${this.id}${this.row}-${value.value}`;
+      let inputId = this.id;
+      if (this.component.row) {
+        inputId += `-${this.component.row}`;
+      }
+      inputId += `-${value.value}`;
       this.info.attr.id = inputId;
       this.info.attr.value = value.value;
       label.setAttribute('for', this.info.attr.id);
