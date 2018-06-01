@@ -2123,7 +2123,7 @@ export default class BaseComponent {
     flags.noCheck = true;
     return this.setValue(this.evaluate(this.component.calculateValue, {
       value: [],
-      data,
+      data
     }, 'value'), flags);
   }
 
