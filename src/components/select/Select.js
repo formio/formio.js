@@ -53,6 +53,11 @@ export default class SelectComponent extends BaseComponent {
     // If this component has been activated.
     this.activated = false;
 
+    // Determine when the items have been loaded.
+    this.itemsLoaded = new Promise((resolve) => {
+      this.itemsLoadedResolve = resolve;
+    });
+
     // If they wish to refresh on a value, then add that here.
     if (this.component.refreshOn) {
       this.on('change', (event) => {
@@ -68,6 +73,10 @@ export default class SelectComponent extends BaseComponent {
         }
       });
     }
+  }
+
+  get dataReady() {
+    return this.itemsLoaded;
   }
 
   get defaultSchema() {
@@ -172,6 +181,7 @@ export default class SelectComponent extends BaseComponent {
     }
   }
 
+  /* eslint-disable max-statements */
   setItems(items, fromSearch) {
     // If the items is a string, then parse as JSON.
     if (typeof items == 'string') {
@@ -243,7 +253,11 @@ export default class SelectComponent extends BaseComponent {
         this.setValue(defaultValue);
       }
     }
+
+    // Say we are done loading the items.
+    this.itemsLoadedResolve();
   }
+  /* eslint-enable max-statements */
 
   loadItems(url, search, headers, options, method, body) {
     options = options || {};
@@ -297,6 +311,7 @@ export default class SelectComponent extends BaseComponent {
       .then((response) => this.setItems(response, !!search))
       .catch((err) => {
         this.loading = false;
+        this.itemsLoadedResolve();
         this.emit('componentError', {
           component: this.component,
           message: err.toString()
