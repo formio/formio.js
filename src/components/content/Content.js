@@ -43,7 +43,7 @@ export default class ContentComponent extends BaseComponent {
       this.element.appendChild(editorElement);
     }
     else {
-      this.element.innerHTML = this.interpolate(this.component.html, {data: this.data});
+      this.element.innerHTML = this.interpolate(this.component.html);
     }
   }
 

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {boolValue, evaluate, getInputMask, matchInputMask} from '../utils/utils';
+import {boolValue, getInputMask, matchInputMask} from '../utils/utils';
 
 export default {
   get: _.get,
@@ -201,12 +201,9 @@ export default {
         if (!setting) {
           return true;
         }
-        const valid = evaluate(setting, {
-          row: component.data,
+        const valid = component.evaluate(setting, {
           data,
-          component: component.component,
-          input: value,
-          instance: component
+          input: value
         });
         if (valid === null) {
           return true;
@@ -252,13 +249,10 @@ export default {
         if (!setting) {
           return true;
         }
-        const valid = evaluate(setting, {
+        const valid = component.evaluate(setting, {
           valid: true,
-          row: component.data,
           data,
-          component: component.component,
-          input: value,
-          instance: component
+          input: value
         }, 'valid', true);
         if (valid === null) {
           return true;

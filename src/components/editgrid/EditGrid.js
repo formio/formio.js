@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 import Components from '../Components';
-import FormioUtils from '../../utils/index';
+import {checkCondition} from '../../utils/utils';
 
 export default class EditGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -98,11 +98,11 @@ export default class EditGridComponent extends NestedComponent {
     if (!templateHeader) {
       return this.text('');
     }
-    return this.ce('li', {class: 'list-group-item list-group-header'}, this.renderTemplate(templateHeader, {
+    return this.ce('li', {
+      class: 'list-group-item list-group-header'
+    }, this.renderTemplate(templateHeader, {
       components: this.component.components,
-      util: FormioUtils,
-      value: this.dataValue,
-      data: this.data
+      value: this.dataValue
     }));
   }
 
@@ -170,12 +170,10 @@ export default class EditGridComponent extends NestedComponent {
       wrapper.appendChild(
         this.renderTemplate(rowTemplate,
           {
-            data: this.data,
             row,
             rowIndex,
             components: this.component.components,
-            getView: (component, data) => Components.create(component, this.options, data, true).getView(data),
-            util: FormioUtils
+            getView: (component, data) => Components.create(component, this.options, data, true).getView(data)
           },
           [
             {
@@ -202,11 +200,11 @@ export default class EditGridComponent extends NestedComponent {
     if (!footerTemplate) {
       return this.text('');
     }
-    return this.ce('li', {class: 'list-group-item list-group-footer'}, this.renderTemplate(footerTemplate, {
+    return this.ce('li', {
+      class: 'list-group-item list-group-footer'
+    }, this.renderTemplate(footerTemplate, {
       components: this.component.components,
-      util: FormioUtils,
-      value: this.dataValue,
-      data: this.data
+      value: this.dataValue
     }));
   }
 
@@ -372,12 +370,9 @@ export default class EditGridComponent extends NestedComponent {
     });
 
     if (this.component.validate && this.component.validate.row) {
-      let valid = FormioUtils.evaluate(this.component.validate.row, {
+      let valid = this.evaluate(this.component.validate.row, {
         valid: true,
-        row: this.editRows[rowIndex].data,
-        data: this.data,
-        component: this.component,
-        instance: this
+        row: this.editRows[rowIndex].data
       }, 'valid', true);
       if (valid === null) {
         valid = `Invalid row validation for ${this.key}`;
@@ -396,7 +391,8 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkValidity(data, dirty) {
-    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      this.setCustomValidity('');
       return true;
     }
 

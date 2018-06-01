@@ -3,7 +3,6 @@ import _ from 'lodash';
 
 import TextFieldComponent from '../textfield/TextField';
 import BaseComponent from '../base/Base';
-import {evaluate} from '../../utils/utils';
 
 export default class AddressComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -265,7 +264,7 @@ export default class AddressComponent extends TextFieldComponent {
    * @returns {Boolean}
    */
   autoCompleteFilterSuggestion(data) {
-    const result = evaluate(this.component.map.autoCompleteFilter, {
+    const result = this.evaluate(this.component.map.autoCompleteFilter, {
       show: true,
       data
     }, 'show');

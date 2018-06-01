@@ -506,7 +506,7 @@ export default class FileComponent extends BaseComponent {
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
-        const dir = this.interpolate(this.component.dir || '', {data: this.data, row: this.row});
+        const dir = this.interpolate(this.component.dir || '');
         const fileService = this.fileService;
         if (!fileService) {
           fileUpload.status = 'error';
