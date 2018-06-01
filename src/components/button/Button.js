@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
-import {flattenComponents, evaluate} from '../../utils/utils';
+import {flattenComponents} from '../../utils/utils';
 
 export default class ButtonComponent extends BaseComponent {
   static schema(...extend) {
@@ -222,14 +222,10 @@ export default class ButtonComponent extends BaseComponent {
             }
           });
 
-          evaluate(this.component.custom, {
+          this.evaluate(this.component.custom, {
             form,
             flattened,
-            components,
-            _,
-            data: this.data,
-            component: this.component,
-            instance: this
+            components
           });
           break;
         }

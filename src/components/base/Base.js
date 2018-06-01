@@ -4,17 +4,7 @@ import Promise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
-import {
-  getRandomComponentId,
-  evaluate,
-  matchInputMask,
-  getInputMask,
-  interpolate,
-  hasCondition,
-  checkCondition,
-  checkTrigger,
-  setActionProperty
-} from '../../utils/utils';
+import * as FormioUtils from '../../utils/utils';
 import Validator from '../Validator';
 import moment from 'moment';
 
@@ -158,7 +148,7 @@ export default class BaseComponent {
      * can also be provided from the component.id value passed into the constructor.
      * @type {string}
      */
-    this.id = (component && component.id) ? component.id : getRandomComponentId();
+    this.id = (component && component.id) ? component.id : FormioUtils.getRandomComponentId();
 
     /**
      * The options for this component.
@@ -778,29 +768,42 @@ export default class BaseComponent {
     }
   }
 
+  /**
+   * Create an evaluation context for all script executions and interpolations.
+   *
+   * @param additional
+   * @return {*}
+   */
+  evalContext(additional) {
+    additional = additional || {};
+    return Object.assign({
+      component: this.component,
+      row: this.data,
+      data: (this.root ? this.root.data : this.data),
+      _,
+      utils: FormioUtils,
+      util: FormioUtils,
+      moment,
+      instance: this
+    }, additional);
+  }
+
   get defaultValue() {
     let defaultValue = this.emptyValue;
     if (this.component.defaultValue) {
       defaultValue = this.component.defaultValue;
     }
     else if (this.component.customDefaultValue) {
-      defaultValue = evaluate(
+      defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        {
-          value: '',
-          component: this.component,
-          row: this.data,
-          data: (this.root ? this.root.data : this.data),
-          _,
-          instance: this
-        },
+        {value: ''},
         'value'
       );
     }
 
     if (this._inputMask) {
       defaultValue = conformToMask(defaultValue, this._inputMask).conformedValue;
-      if (!matchInputMask(defaultValue, this._inputMask)) {
+      if (!FormioUtils.matchInputMask(defaultValue, this._inputMask)) {
         defaultValue = '';
       }
     }
@@ -1312,7 +1315,7 @@ export default class BaseComponent {
    */
   setInputMask(input) {
     if (input && this.component.inputMask) {
-      const mask = getInputMask(this.component.inputMask);
+      const mask = FormioUtils.getInputMask(this.component.inputMask);
       this._inputMask = mask;
       input.mask = maskInput({
         inputElement: input,
@@ -1428,7 +1431,7 @@ export default class BaseComponent {
     const div = this.ce('div');
 
     // Interpolate the template and populate
-    div.innerHTML = interpolate(template, data);
+    div.innerHTML = this.interpolate(template, data);
 
     // Add actions to matching elements.
     actions.forEach(action => {
@@ -1564,7 +1567,7 @@ export default class BaseComponent {
       return this._hasCondition;
     }
 
-    this._hasCondition = hasCondition(this.component);
+    this._hasCondition = FormioUtils.hasCondition(this.component);
     return this._hasCondition;
   }
 
@@ -1581,7 +1584,7 @@ export default class BaseComponent {
       result = this.show(true);
     }
     else {
-      result = this.show(checkCondition(
+      result = this.show(FormioUtils.checkCondition(
         this.component,
         this.data,
         data,
@@ -1613,7 +1616,7 @@ export default class BaseComponent {
     const newComponent = _.cloneDeep(this.originalComponent);
 
     let changed = logics.reduce((changed, logic) => {
-      const result = checkTrigger(
+      const result = FormioUtils.checkTrigger(
         newComponent,
         logic.trigger,
         this.data,
@@ -1626,19 +1629,17 @@ export default class BaseComponent {
         changed |= logic.actions.reduce((changed, action) => {
           switch (action.type) {
             case 'property':
-              setActionProperty(newComponent, action, this.data, data, newComponent, result);
+              FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
               break;
             case 'value': {
               const oldValue = this.getValue();
-              const newValue = evaluate(
+              const newValue = this.evaluate(
                 action.value,
                 {
                   value: _.clone(oldValue),
-                  row: this.data,
-                  data: data,
+                  data,
                   component: newComponent,
-                  result: result,
-                  instance: this
+                  result
                 },
                 'value'
               );
@@ -2120,13 +2121,9 @@ export default class BaseComponent {
 
     flags = flags || {};
     flags.noCheck = true;
-    return this.setValue(evaluate(this.component.calculateValue, {
+    return this.setValue(this.evaluate(this.component.calculateValue, {
       value: [],
-      component: this.component,
       data,
-      row: this.data,
-      instance: this,
-      moment
     }, 'value'), flags);
   }
 
@@ -2167,7 +2164,13 @@ export default class BaseComponent {
    */
   invalidMessage(data, dirty, ignoreCondition) {
     // Force valid if component is conditionally hidden.
-    if (!ignoreCondition && !checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!ignoreCondition && !FormioUtils.checkCondition(
+      this.component,
+      data,
+      this.data,
+      this.root ? this.root._form : {},
+      this
+    )) {
       return '';
     }
 
@@ -2197,7 +2200,7 @@ export default class BaseComponent {
 
   checkValidity(data, dirty) {
     // Force valid if component is conditionally hidden.
-    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
       this.setCustomValidity('');
       return true;
     }
@@ -2236,7 +2239,11 @@ export default class BaseComponent {
   }
 
   interpolate(string, data) {
-    return interpolate(string, data);
+    return FormioUtils.interpolate(string, this.evalContext(data));
+  }
+
+  evaluate(func, args, ret, tokenize) {
+    return FormioUtils.evaluate(func, this.evalContext(args), ret, tokenize);
   }
 
   setCustomValidity(message, dirty) {

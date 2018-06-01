@@ -470,7 +470,7 @@ export function checkCustomConditional(component, custom, row, data, form, varia
   if (typeof custom === 'string') {
     custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
-  const value = evaluate(custom, {component, row, data, form, instance});
+  const value = instance.evaluate(custom, {row, data, form});
   if (value === null) {
     return onError;
   }
@@ -512,7 +512,7 @@ export function checkCondition(component, row, data, form, instance) {
     return checkSimpleConditional(component, component.conditional, row, data, true);
   }
   else if (component.conditional && component.conditional.json) {
-    return checkJsonConditional(component, component.conditional.json, row, data, form);
+    return checkJsonConditional(component, component.conditional.json, row, data, form, instance);
   }
 
   // Default to show.
@@ -541,7 +541,7 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   return false;
 }
 
-export function setActionProperty(component, action, row, data, result) {
+export function setActionProperty(component, action, row, data, result, instance) {
   switch (action.property.type) {
     case 'boolean':
       if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
@@ -549,7 +549,7 @@ export function setActionProperty(component, action, row, data, result) {
       }
       break;
     case 'string': {
-      const newValue = interpolate(action.text, {
+      const newValue = instance.interpolate(action.text, {
         data,
         row,
         component,
