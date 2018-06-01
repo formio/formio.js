@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Renamed GMap component to Location component
  - Changed all exports on Components to be default exports. ```import TextFieldComponent from 'formiojs/components/textfield/TextField';```
  - Deprected ability to "attach" Formio to existing form using Formio.form method.
+ - Changed the name and ids of Radio buttons within DataGrids to reflect their position in the grid.
  - Modified all JavaScript execution and template interpolation to make it more consistent.
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
@@ -48,6 +49,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Moved all of the function and interplation context objects to use the same method so all available items within are consistent.
  - Problem where the errors of components inside of nested components would not reset the error messages.
+ - Problem where Radios within datagrids were getting same name attributes and click events would select the wrong row.
 
 ## 3.0.0-rc.5
 ### Fixed
