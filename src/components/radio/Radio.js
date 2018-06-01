@@ -55,8 +55,8 @@ export default class RadioComponent extends BaseComponent {
 
       // Determine the attributes for this input.
       let inputId = this.id;
-      if (this.component.row) {
-        inputId += `-${this.component.row}`;
+      if (this.options.row) {
+        inputId += `-${this.options.row}`;
       }
       inputId += `-${value.value}`;
       this.info.attr.id = inputId;
