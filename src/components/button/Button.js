@@ -56,6 +56,29 @@ export default class ButtonComponent extends BaseComponent {
     this.setLoading(this.buttonElement, loading);
   }
 
+  set success(success) {
+    this.setSuccess(this.buttonElement, success);
+  }
+
+  setSuccess(element, success) {
+    element.success = success;
+
+    if (!element.successIcon && success) {
+      element.successIcon = this.ce('i', {
+        class: `${this.iconClass('ok')} button-icon-right`
+      });
+    }
+
+    if (element.successIcon) {
+      if (success) {
+        this.appendTo(element.successIcon, element);
+      }
+      else {
+        this.removeChildFrom(element.successIcon, element);
+      }
+    }
+  }
+
   set disabled(disabled) {
     super.disabled = disabled;
     this.setDisabled(this.buttonElement, disabled);
@@ -136,21 +159,25 @@ export default class ButtonComponent extends BaseComponent {
       const message = this.ce('div');
       this.on('submitButton', () => {
         this.loading = true;
+        this.success = false;
         this.disabled = true;
       }, true);
       this.on('submitDone', () => {
-        this.loading = false;
+        this.loading  = false;
+        this.success = true;
         this.disabled = false;
         this.empty(message);
+        this.addClass(this.buttonElement, 'btn-success');
         this.addClass(message, 'has-success');
         this.removeClass(message, 'has-error');
-        message.appendChild(this.buttonMessage('complete'));
         this.append(message);
       }, true);
       this.on('change', (value) => {
         this.loading = false;
+        this.success = false;
         const isValid = this.root.isValid(value.data, true);
         this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+        this.removeClass(this.buttonElement, 'btn-success');
         if (isValid && this.hasError) {
           this.hasError = false;
           this.empty(message);
@@ -161,7 +188,9 @@ export default class ButtonComponent extends BaseComponent {
       }, true);
       this.on('error', () => {
         this.loading = false;
+        this.success = false;
         this.hasError = true;
+        this.removeClass(this.buttonElement, 'btn-success');
         this.empty(message);
         this.removeClass(message, 'has-success');
         this.addClass(message, 'has-error');
