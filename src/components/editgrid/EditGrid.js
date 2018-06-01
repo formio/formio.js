@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 import Components from '../Components';
-import {checkCondition} from '../../utils/index';
+import {checkCondition} from '../../utils/utils';
 
 export default class EditGridComponent extends NestedComponent {
   static schema(...extend) {

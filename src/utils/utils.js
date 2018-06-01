@@ -470,7 +470,9 @@ export function checkCustomConditional(component, custom, row, data, form, varia
   if (typeof custom === 'string') {
     custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
-  const value = instance.evaluate(custom, {row, data, form});
+  const value = (instance && instance.evaluate) ?
+    instance.evaluate(custom, {row, data, form}) :
+    evaluate(custom, {row, data, form});
   if (value === null) {
     return onError;
   }
@@ -549,12 +551,15 @@ export function setActionProperty(component, action, row, data, result, instance
       }
       break;
     case 'string': {
-      const newValue = instance.interpolate(action.text, {
+      const evalData = {
         data,
         row,
         component,
         result
-      });
+      };
+      const newValue = (instance && instance.interpolate) ?
+        instance.interpolate(action.text, evalData) :
+        interpolate(action.text, evalData);
       if (newValue !== _.get(component, action.property.value, '')) {
         _.set(component, action.property.value, newValue);
       }
