@@ -500,6 +500,14 @@ export default class SelectComponent extends BaseComponent {
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
+      // Make sure to clear the search when no value is provided.
+      if (this.choices && this.choices.input) {
+        this.addEventListener(this.choices.input, 'input', (event) => {
+          if (!event.target.value) {
+            this.triggerUpdate();
+          }
+        });
+      }
       this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
@@ -601,12 +609,13 @@ export default class SelectComponent extends BaseComponent {
 
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
+    const previousValue = this.dataValue;
     if (this.component.multiple && !Array.isArray(value)) {
       value = [value];
     }
-    const hasPreviousValue = Array.isArray(this.dataValue) ? this.dataValue.length : this.dataValue;
+    const hasPreviousValue = Array.isArray(previousValue) ? previousValue.length : previousValue;
     const hasValue = Array.isArray(value) ? value.length : value;
-    const changed = this.hasChanged(value, this.dataValue);
+    const changed = this.hasChanged(value, previousValue);
     this.dataValue = value;
 
     // Do not set the value if we are loading... that will happen after it is done.
@@ -635,9 +644,13 @@ export default class SelectComponent extends BaseComponent {
     if (this.choices) {
       // Now set the value.
       if (hasValue) {
-        this.choices
-          .removeActiveItems()
-          .setChoices(this.selectOptions, 'value', 'label', true)
+        this.choices.removeActiveItems();
+        // Add the currently selected choices if they don't already exist.
+        const currentChoices = Array.isArray(this.dataValue) ? this.dataValue : [this.dataValue];
+        _.each(currentChoices, (choice) => {
+          this.addCurrentChoices(choice, this.selectOptions);
+        });
+        this.choices.setChoices(this.selectOptions, 'value', 'label', true)
           .setValueByChoice(value);
       }
       else if (hasPreviousValue) {
