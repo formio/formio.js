@@ -252,15 +252,15 @@ export default class FileComponent extends BaseComponent {
         (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
           this.ce('div', {
             class: 'fileSelector',
-            onDragover: function(event) {
+            onDragover(event) {
               this.className = 'fileSelector fileDragOver';
               event.preventDefault();
             },
-            onDragleave: function(event) {
+            onDragleave(event) {
               this.className = 'fileSelector';
               event.preventDefault();
             },
-            onDrop: function(event) {
+            onDrop(event) {
               this.className = 'fileSelector';
               event.preventDefault();
               element.upload(event.dataTransfer.files);
