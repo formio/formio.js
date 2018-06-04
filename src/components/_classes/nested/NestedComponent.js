@@ -359,6 +359,7 @@ export default class NestedComponent extends Component {
 
   checkValidity(data, dirty) {
     if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      this.setCustomValidity('');
       return true;
     }
 
@@ -385,6 +386,11 @@ export default class NestedComponent extends Component {
     _.each(components, (comp) => this.removeComponent(comp, this.components));
     this.components = [];
     this.hidden = [];
+  }
+
+  setCustomValidity(message, dirty) {
+    super.setCustomValidity(message, dirty);
+    _.each(this.getComponents(), (comp) => comp.setCustomValidity(message, dirty));
   }
 
   set disabled(disabled) {

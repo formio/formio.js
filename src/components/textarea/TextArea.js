@@ -48,7 +48,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     let value = this.getValue();
     value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
     if (this.component.wysiwyg) {
-      value = this.interpolate(value, {data: this.data});
+      value = this.interpolate(value);
     }
     element.innerHTML = value;
   }
@@ -184,7 +184,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     if (this.htmlView) {
       // For HTML view, just view the contents.
-      this.input.innerHTML = this.interpolate(value, {data: this.data});
+      this.input.innerHTML = this.interpolate(value);
     }
     else if (this.editorReady) {
       this.editorReady.then((editor) => {

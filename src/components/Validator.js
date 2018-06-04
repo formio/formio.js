@@ -1,12 +1,20 @@
 import _ from 'lodash';
-import {boolValue, evaluate, getInputMask, matchInputMask} from '../utils/utils';
+import {boolValue, getInputMask, matchInputMask} from '../utils/utils';
 
 export default {
   get: _.get,
   each: _.each,
   has: _.has,
   checkValidator(component, validator, setting, value, data) {
-    const result = validator.check.call(this, component, setting, value, data);
+    let result = null;
+
+    // Allow each component to override their own validators by implementing the validator.method
+    if (validator.method && (typeof component[validator.method] === 'function')) {
+      result = component[validator.method](setting, value, data);
+    }
+    else {
+      result = validator.check.call(this, component, setting, value, data);
+    }
     if (typeof result === 'string') {
       return result;
     }
@@ -58,6 +66,7 @@ export default {
   validators: {
     required: {
       key: 'validate.required',
+      method: 'validateRequired',
       message(component) {
         return component.t(component.errorMessage('required'), {
           field: component.errorLabel,
@@ -192,12 +201,9 @@ export default {
         if (!setting) {
           return true;
         }
-        const valid = evaluate(setting, {
-          row: component.data,
+        const valid = component.evaluate(setting, {
           data,
-          component: component.component,
-          input: value,
-          instance: component
+          input: value
         });
         if (valid === null) {
           return true;
@@ -243,13 +249,10 @@ export default {
         if (!setting) {
           return true;
         }
-        const valid = evaluate(setting, {
+        const valid = component.evaluate(setting, {
           valid: true,
-          row: component.data,
           data,
-          component: component.component,
-          input: value,
-          instance: component
+          input: value
         }, 'valid', true);
         if (valid === null) {
           return true;

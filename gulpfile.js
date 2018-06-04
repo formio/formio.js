@@ -42,6 +42,15 @@ gulp.task('styles-form', () => compileStyles([
   './node_modules/@yaireo/tagify/dist/tagify.css',
   './src/sass/formio.form.scss'
 ], 'formio.form'));
+gulp.task('styles-builder', () => compileStyles([
+  './node_modules/flatpickr/dist/flatpickr.min.css',
+  './node_modules/choices.js/assets/styles/css/choices.min.css',
+  './node_modules/dialog-polyfill/dialog-polyfill.css',
+  './node_modules/@yaireo/tagify/dist/tagify.css',
+  './node_modules/dragula/dist/dragula.css',
+  './src/sass/formio.form.scss',
+  './src/sass/formio.form.builder.scss'
+], 'formio.builder'));
 gulp.task('styles-full', ['builder-fonts'], () => compileStyles([
   './node_modules/flatpickr/dist/flatpickr.min.css',
   './node_modules/choices.js/assets/styles/css/choices.min.css',
@@ -99,6 +108,7 @@ gulp.task('watch', () => gulp.watch(['./src/**.js', './src/*/**.js'], ['formio.f
 gulp.task('build', gulpsync.sync([['clean'], 'babel', 'package-version', [
   'icons',
   'styles-form',
+  'styles-builder',
   'styles-full',
   'scripts-formio',
   'scripts-utils',

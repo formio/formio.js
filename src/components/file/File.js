@@ -127,10 +127,10 @@ export default class FileComponent extends Component {
           [
             this.ce('div', {class: 'col-md-1'}),
             this.ce('div', {class: 'col-md-9'},
-              this.ce('strong', {}, 'File Name')
+              this.ce('strong', {}, this.text('File Name'))
             ),
             this.ce('div', {class: 'col-md-2'},
-              this.ce('strong', {}, 'Size')
+              this.ce('strong', {}, this.text('Size'))
             )
           ]
         )
@@ -293,7 +293,7 @@ export default class FileComponent extends Component {
         }
       },
       class: 'browse'
-    }, 'browse');
+    }, this.text('browse'));
 
     return this.browseLink;
   }
@@ -506,7 +506,7 @@ export default class FileComponent extends Component {
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
-        const dir = this.interpolate(this.component.dir || '', {data: this.data, row: this.row});
+        const dir = this.interpolate(this.component.dir || '');
         const fileService = this.fileService;
         if (!fileService) {
           fileUpload.status = 'error';

@@ -53,6 +53,11 @@ export default class PDF extends Webform {
 
   setForm(form) {
     return super.setForm(form).then(() => {
+      if (this.formio) {
+        form.projectUrl = this.formio.projectUrl;
+        form.url = this.formio.formUrl;
+        form.base = this.formio.base;
+      }
       this.postMessage({name: 'form', data: form});
     });
   }

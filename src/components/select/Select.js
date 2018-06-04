@@ -2,7 +2,6 @@ import Choices from 'choices.js';
 import _ from 'lodash';
 import Component from '../_classes/component/Component';
 import Formio from '../../Formio';
-import * as FormioUtils from '../../utils/utils';
 
 export default class SelectComponent extends Component {
   static schema(...extend) {
@@ -262,7 +261,6 @@ export default class SelectComponent extends Component {
 
     // Allow for url interpolation.
     url = this.interpolate(url, {
-      data: this.data,
       formioBase: Formio.getBaseUrl()
     });
 
@@ -278,7 +276,7 @@ export default class SelectComponent extends Component {
 
     // Add filter capability
     if (this.component.filter) {
-      const filter = this.interpolate(this.component.filter, {data: this.data});
+      const filter = this.interpolate(this.component.filter);
       url += (!url.includes('?') ? '?' : '&') + filter;
     }
 
@@ -319,9 +317,7 @@ export default class SelectComponent extends Component {
       try {
         _.each(this.component.data.headers, (header) => {
           if (header.key) {
-            headers.set(header.key, this.interpolate(header.value, {
-              data: this.data
-            }));
+            headers.set(header.key, this.interpolate(header.value));
           }
         });
       }
@@ -334,13 +330,8 @@ export default class SelectComponent extends Component {
   }
 
   updateCustomItems() {
-    this.setItems(FormioUtils.evaluate(this.component.data.custom, {
-      values: [],
-      component: this.component,
-      data: _.cloneDeep(this.root ? this.root.data : this.data),
-      row: _.cloneDeep(this.data),
-      utils: FormioUtils,
-      instance: this
+    this.setItems(this.evaluate(this.component.data.custom, {
+      values: []
     }, 'values') || []);
   }
 

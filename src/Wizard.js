@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Webform from './Webform';
 import Formio from './Formio';
-import {evaluate, checkCondition, hasCondition} from './utils/utils';
+import {checkCondition, hasCondition} from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -50,12 +50,11 @@ export default class Wizard extends Webform {
     if (form) {
       const page = ++currentPage;
       if (form.nextPage) {
-        const next = evaluate(form.nextPage, {
+        const next = this.evaluate(form.nextPage, {
           next: page,
           data,
           page,
-          form,
-          instance: this
+          form
         }, 'next');
         if (next === null) {
           return null;
@@ -117,7 +116,7 @@ export default class Wizard extends Webform {
       });
     }
     else {
-      return Promise.reject(this.showErrors());
+      return Promise.reject(this.showErrors(null, true));
     }
   }
 
