@@ -441,11 +441,9 @@ export default class NestedComponent extends BaseComponent {
     this.setPristine(true);
   }
 
-  whenReady() {
+  get dataReady() {
     const promises = [];
-    _.each(this.getComponents(), (component) => {
-      promises.push(component.whenReady());
-    });
+    _.each(this.getComponents(), (component) => promises.push(component.dataReady));
     return Promise.all(promises);
   }
 

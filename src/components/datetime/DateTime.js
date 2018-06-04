@@ -159,6 +159,7 @@ export default class DateTimeComponent extends BaseComponent {
         else {
           calendar._input.removeAttribute('disabled');
         }
+        calendar.close();
         calendar.redraw();
       }
     });
@@ -258,7 +259,7 @@ export default class DateTimeComponent extends BaseComponent {
 
   focus() {
     const input = this.inputs[0];
-    if (input) {
+    if (input && !this.options.readOnly) {
       input.calendar.altInput.focus();
     }
   }

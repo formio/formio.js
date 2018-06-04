@@ -49,6 +49,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - 'Hide Input Labels' property for Day component.
 
+## 3.0.0-rc.8
+### Fixed
+ - Problem with the Select component where it would remove selected items while searching.
+ - Issues with the "ready" call after setSubmission would call to early when Select items have not been loaded.
+ - Problem with the DateTime component onFocus event opening the calendar on readOnly forms.
+ - Problem where the DateTime calendar would still be open when the component is disabled.
+
+### Added
+ - Option to allow the HTML and Content components to refresh when a value changes in the data.
+
+### Changed
+ - Added deprecation notice to "whenReady" method and replace it with dataReady getter property.
+
 ## 3.0.0-rc.7
 ### Added
  - A builder css build without font-awesome to fix issues with framework library implementations.

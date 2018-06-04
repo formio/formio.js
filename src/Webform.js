@@ -674,7 +674,7 @@ export default class Webform extends NestedComponent {
             noValidate: true
           });
         }
-        this.submissionReadyResolve(submission);
+        return this.dataReady.then(() => this.submissionReadyResolve(submission));
       },
       (err) => this.submissionReadyReject(err)
     ).catch(

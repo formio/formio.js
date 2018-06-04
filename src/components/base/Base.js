@@ -2301,7 +2301,13 @@ export default class BaseComponent {
     } : (arguments[1] || {});
   }
 
+  // Maintain reverse compatibility.
   whenReady() {
+    console.warn('The whenReady() method has been deprecated. Please use the dataReady property instead.');
+    return this.dataReady;
+  }
+
+  get dataReady() {
     return Promise.resolve();
   }
 
