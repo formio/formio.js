@@ -128,6 +128,11 @@ export default class SurveyComponent extends BaseComponent {
     return value;
   }
 
+  validateRequired(setting, value) {
+    return this.component.questions.reduce((result, question) =>
+      result && Boolean(value[question.value]), true);
+  }
+
   getView(value) {
     if (!value) {
       return '';
