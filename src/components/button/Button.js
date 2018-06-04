@@ -26,7 +26,7 @@ export default class ButtonComponent extends BaseComponent {
       icon: 'fa fa-stop',
       documentation: 'http://help.form.io/userguide/#button',
       weight: 110,
-      schema: ButtonComponent.schema()
+      schema: this.schema()
     };
   }
 

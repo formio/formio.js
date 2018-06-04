@@ -2,28 +2,28 @@ import UnknownComponent from './unknown/Unknown';
 import _ from 'lodash';
 export default class Components {
   static get components() {
-    if (!Components._components) {
-      Components._components = {};
+    if (!this._components) {
+      this._components = {};
     }
-    return Components._components;
+    return this._components;
   }
 
   static setComponents(comps) {
-    _.assign(Components.components, comps);
+    _.assign(this.components, comps);
   }
 
   static addComponent(name, comp) {
-    return Components.setComponent(name, comp);
+    return this.setComponent(name, comp);
   }
 
   static setComponent(name, comp) {
-    Components.components[name] = comp;
+    this.components[name] = comp;
   }
 
   static create(component, options, data, nobuild) {
     let comp = null;
-    if (component.type && Components.components.hasOwnProperty(component.type)) {
-      comp = new Components.components[component.type](component, options, data);
+    if (component.type && this.components.hasOwnProperty(component.type)) {
+      comp = new this.components[component.type](component, options, data);
     }
     else {
       comp = new UnknownComponent(component, options, data);

@@ -20,7 +20,7 @@ export default class HTMLComponent extends BaseComponent {
       icon: 'fa fa-code',
       weight: 90,
       documentation: 'http://help.form.io/userguide/#html-element-component',
-      schema: HTMLComponent.schema()
+      schema: this.schema()
     };
   }
 

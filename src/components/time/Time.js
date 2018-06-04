@@ -19,7 +19,7 @@ export default class TimeComponent extends TextFieldComponent {
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#time',
       weight: 60,
-      schema: TimeComponent.schema()
+      schema: this.schema()
     };
   }
 

@@ -24,7 +24,7 @@ export default class FileComponent extends BaseComponent {
       icon: 'fa fa-file',
       documentation: 'http://help.form.io/userguide/#file',
       weight: 100,
-      schema: FileComponent.schema()
+      schema: this.schema()
     };
   }
 

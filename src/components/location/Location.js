@@ -22,7 +22,7 @@ export default class LocationComponent extends BaseComponent {
       group: 'advanced',
       icon: 'fa fa-map',
       weight: 500,
-      schema: LocationComponent.schema()
+      schema: this.schema()
     };
   }
 
