@@ -125,7 +125,7 @@ const Harness = {
     return element.dispatchEvent(clickEvent);
   },
   testElements: function(component, query, number) {
-    let elements = component.element.querySelectorAll(query);
+    const elements = component.element.querySelectorAll(query);
     if (number !== undefined) {
       assert.equal(elements.length, number);
     }
