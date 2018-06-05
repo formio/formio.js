@@ -1,4 +1,3 @@
-'use strict';
 import Formio from './Formio';
 import _each from 'lodash/each';
 import assert from 'power-assert';
@@ -14,13 +13,13 @@ const baseUrl = `${protocol}://api.${domain}`;
 Formio.setBaseUrl(baseUrl);
 Formio.setToken(null);
 
-var generateID = function() {
-  return chance.string({length: 24, pool: '0123456789abcdef'});
+const generateID = function() {
+  return chance.string({ length: 24, pool: '0123456789abcdef' });
 };
 
-var runTests = function(cb, options) {
-  var tests = {};
-  var noBefore = cb(tests);
+const runTests = function(fn, options) {
+  const tests = {};
+  const noBefore = fn(tests);
   if (!noBefore) {
     beforeEach(() => {
       Formio.setBaseUrl(baseUrl);
@@ -34,8 +33,8 @@ var runTests = function(cb, options) {
         test();
       }
       else {
-        var formio = new Formio(path, options);
-        for (var param in test) {
+        const formio = new Formio(path, options);
+        for (const param in test) {
           assert.equal(formio[param], test[param], `${param} is not equal. ${formio[param]} == ${test[param]}\n`);
         }
       }
@@ -305,9 +304,9 @@ describe('Formio Constructor Tests', () => {
 });
 
 describe('Localhost Constructor Tests', () => {
-  var testBaseUrl = 'localhost:3000';
-  var projectName = 'myproject';
-  var projectUrl = `${protocol}://${projectName}.${testBaseUrl}`;
+  const testBaseUrl = 'localhost:3000';
+  const projectName = 'myproject';
+  const projectUrl = `${protocol}://${projectName}.${testBaseUrl}`;
   runTests((tests) => {
     tests[`${projectUrl}/user/actionform/?test=foo`] = {
       projectUrl: projectUrl,
@@ -339,13 +338,13 @@ describe('Localhost Constructor Tests', () => {
       submissionId: '',
       query: ''
     };
-  }, {base: baseUrl});
+  }, { base: baseUrl });
 });
 
 describe('Subdomain Constructor Tests', () => {
-  var testBaseUrl = 'foo.blah.form.io';
-  var projectName = 'myproject';
-  var projectUrl = `${protocol}://${projectName}.${testBaseUrl}`;
+  const testBaseUrl = 'foo.blah.form.io';
+  const projectName = 'myproject';
+  const projectUrl = `${protocol}://${projectName}.${testBaseUrl}`;
   runTests((tests) => {
     tests[`${projectUrl}/user/actionform/?test=foo`] = {
       projectUrl: projectUrl,
@@ -377,13 +376,13 @@ describe('Subdomain Constructor Tests', () => {
       submissionId: '',
       query: ''
     };
-  }, {base: baseUrl});
+  }, { base: baseUrl });
 });
 
 describe('Subdirectory Constructor Tests', () => {
-  var testBaseUrl = 'foo.blah.form.io';
-  var projectName = 'myproject';
-  var projectUrl = `${protocol}://${testBaseUrl}/${projectName}`;
+  const testBaseUrl = 'foo.blah.form.io';
+  const projectName = 'myproject';
+  const projectUrl = `${protocol}://${testBaseUrl}/${projectName}`;
   runTests((tests) => {
     tests[`${projectUrl}/user/actionform/?test=foo`] = {
       projectUrl: projectUrl,
@@ -430,7 +429,7 @@ describe('Subdirectory Constructor Tests', () => {
       submissionId: '',
       query: ''
     };
-  }, {base: `${protocol}://${testBaseUrl}`});
+  }, { base: `${protocol}://${testBaseUrl}` });
 });
 
 describe('Simple Form Constructor Tests', () => {
@@ -492,14 +491,14 @@ describe('Open Source Constructor Tests', () => {
       submissionId: '',
       query: '?test=foo'
     };
-  }, {base: formBaseUrl, project: formBaseUrl});
+  }, { base: formBaseUrl, project: formBaseUrl });
 });
 
 describe('Plugins', () => {
-  var plugin = null;
+  let plugin = null;
   beforeEach(() => {
     assert.equal(Formio.getPlugin('test-plugin'), undefined, 'No plugin may be returned under the name `test-plugin`');
-    plugin = {init: sinon.spy()};
+    plugin = { init: sinon.spy() };
     Formio.registerPlugin(plugin, 'test-plugin');
     assert.ok(plugin.init.calledOnce, 'plugin.init must be called exactly once');
     assert.ok(plugin.init.calledOn(plugin), 'plugin.init must be called on plugin as `this`');
@@ -518,8 +517,8 @@ describe('Plugins', () => {
   });
 
   // Test a request to see if the plugin flow order is correct
-  var testRequest = function testRequest(url, method, type) {
-    var fnName;
+  const testRequest = function testRequest(url, method, type) {
+    let fnName;
     switch (method) {
       case 'GET': fnName = `load${_.capitalize(type)}`; break;
       case 'POST':
@@ -529,13 +528,13 @@ describe('Plugins', () => {
 
     it(`Plugin ${method} ${fnName}`, (done) => {
       let step = 0;
-      var formio = new Formio(url);
+      const formio = new Formio(url);
       method = method.toUpperCase();
-      var testData = {testRequest: 'TEST_REQUEST'};
-      var testOpts = {testOption: true};
-      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
+      const testData = { testRequest: 'TEST_REQUEST' };
+      const testOpts = { testOption: true };
+      const testResult = { _id: 'TEST_ID', testResult: 'TEST_RESULT' };
 
-      var expectedArgs = {
+      const expectedArgs = {
         formio: formio,
         type: type,
         method: method,
@@ -573,7 +572,7 @@ describe('Plugins', () => {
         });
       };
 
-      var promise;
+      let promise;
       if (_.startsWith(fnName, 'save')) {
         promise = formio[fnName](testData, testOpts);
       }
@@ -591,7 +590,7 @@ describe('Plugins', () => {
     });
   };
 
-  var tests = [
+  const tests = [
     {
       url: 'https://api.localhost:3000/project/myproject',
       method: 'GET',
@@ -696,11 +695,11 @@ describe('Plugins', () => {
     testRequest(test.url, test.method, test.type);
   });
 
-  var testStaticRequest = function testStaticRequest(fnName, url, method) {
+  const testStaticRequest = function testStaticRequest(fnName, url, method) {
     it(`Plugin ${fnName}`, (done) => {
-      var step = 0;
-      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
-      var expectedArgs = {
+      let step = 0;
+      const testResult = { _id: 'TEST_ID', testResult: 'TEST_RESULT' };
+      const expectedArgs = {
         url: url,
         method: method,
         data: null,
@@ -745,7 +744,7 @@ describe('Plugins', () => {
     });
   };
 
-  var staticTests = [
+  const staticTests = [
     {
       fnName: 'loadProjects',
       url: 'https://api.localhost:3000/project',
@@ -762,19 +761,20 @@ describe('Plugins', () => {
     testStaticRequest(test.fnName, test.url, test.method, test.type);
   });
 
-  var testFileRequest = function testFileRequest(fnName, formUrl, args) {
+  const testFileRequest = function testFileRequest(fnName, formUrl, args) {
     it(`Plugin ${fnName}`, (done) => {
-      var step = 0;
-      var testResult = {_id: 'TEST_ID', testResult: 'TEST_RESULT'};
+      let step = 0;
+      const testResult = { _id: 'TEST_ID', testResult: 'TEST_RESULT' };
+      let expectedArgs;
 
-      if (fnName == 'downloadFile') {
-        var expectedArgs = {
+      if (fnName === 'downloadFile') {
+        expectedArgs = {
           method: 'download',
           file: args[0]
         };
       }
       else if (fnName === 'uploadFile') {
-        var expectedArgs = {
+        expectedArgs = {
           provider: args[0],
           method: 'upload',
           file: args[1],
@@ -812,7 +812,7 @@ describe('Plugins', () => {
         });
       };
 
-      var formio = new Formio(formUrl);
+      const formio = new Formio(formUrl);
       formio[fnName].apply(null, args)
         .then((result) => {
           assert.equal(++step, 7, 'post request promise should resolve last');
@@ -822,7 +822,7 @@ describe('Plugins', () => {
     });
   };
 
-  var fileTests = [
+  const fileTests = [
     {
       fnName: 'uploadFile',
       formUrl: 'https://api.localhost:3000/project/123/form/123',
@@ -870,17 +870,17 @@ describe('Plugins', () => {
   });
 });
 describe('Test Formio.js capabilities', () => {
-  var testCapability = function(test) {
+  const testCapability = function(test) {
     it(test.name, (done) => {
       if (test.mock) {
-        var mock = test.mock();
+        const mock = test.mock();
         if (mock instanceof Array) {
           _.each(mock, (_mock) => {
-            fetchMock.mock(_mock.url, _mock.response, {method: _mock.method});
+            fetchMock.mock(_mock.url, _mock.response, { method: _mock.method });
           });
         }
         else {
-          fetchMock.mock(mock.url, mock.response, {method: mock.method});
+          fetchMock.mock(mock.url, mock.response, { method: mock.method });
         }
       }
       Promise.resolve()
@@ -900,41 +900,41 @@ describe('Test Formio.js capabilities', () => {
     });
   };
 
-  var user;
-  var userPassword;
-  var userToken = chance.string({length: 450});
-  var userFormId = generateID();
-  var project;
-  var form;
-  var submission;
+  let user;
+  let userPassword;
+  let userToken = chance.string({ length: 450 });
+  const userFormId = generateID();
+  let project;
+  let form;
+  let submission;
 
-  var tests = [
+  const tests = [
     {
       name: 'Registering user.',
-      test: function() {
-        var req = {
+      test() {
+        const req = {
           data: {
             'user.name': chance.string({
               length: 10,
               pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
             }),
             'user.email': chance.email(),
-            'user.password': chance.string({length: 12})
+            'user.password': chance.string({ length: 12 })
           }
         };
-        var formio = new Formio(`${Formio.getBaseUrl()}/user/register`);
+        const formio = new Formio(`${Formio.getBaseUrl()}/user/register`);
         return formio.saveSubmission(req)
           .then((response) => {
             assert.deepEqual(response, user, 'saveSubmission response should match test user');
             assert.equal(Formio.getToken(), userToken, 'Formio should save the user token');
           });
       },
-      mock: function() {
+      mock() {
         return [
           {
             url: `${Formio.getBaseUrl()}/current`,
             method: 'GET',
-            response: function() {
+            response() {
               return {
                 headers: {
                   'Content-Type': 'application/json',
@@ -947,9 +947,9 @@ describe('Test Formio.js capabilities', () => {
           {
             url: `${Formio.getBaseUrl()}/user/register/submission`,
             method: 'POST',
-            response: function(url, opts) {
-              var body = JSON.parse(opts.body);
-              var userId = generateID();
+            response(url, opts) {
+              const body = JSON.parse(opts.body);
+              const userId = generateID();
               user = {
                 _id: userId,
                 created: new Date().toISOString(),
@@ -978,27 +978,27 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Logging in.',
-      test: function() {
-        var req = {
+      test() {
+        const req = {
           data: {
             'user.email': user.data.email,
             'user.password': userPassword
           }
         };
-        var formio = new Formio(`${Formio.getBaseUrl()}/user/login`);
+        const formio = new Formio(`${Formio.getBaseUrl()}/user/login`);
         return formio.saveSubmission(req)
           .then((response) => {
             assert.deepEqual(response, user, 'saveSubmission response should match test user');
             assert.equal(Formio.getToken(), userToken, 'Formio should save the user token');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/user/login/submission`,
           method: 'POST',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
-            userToken = chance.string({length: 450});
+          response(url, opts) {
+            const body = JSON.parse(opts.body);
+            userToken = chance.string({ length: 450 });
             assert.equal(body.data['user.email'], user.data.email, 'Login email must be correct.');
             assert.equal(body.data['user.password'], userPassword, 'Login password must be correct.');
             return {
@@ -1014,7 +1014,7 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Current user.',
-      test: function() {
+      test() {
         return Formio.currentUser()
           .then((response) => {
             assert.deepEqual(response, user, 'currentUser response should match test user');
@@ -1024,12 +1024,12 @@ describe('Test Formio.js capabilities', () => {
             assert.deepEqual(response, user, 'currentUser response should match test user');
           });
       },
-      mock: function() {
-        var called = false;
+      mock() {
+        let called = false;
         return {
           url: `${Formio.getBaseUrl()}/current`,
           method: 'GET',
-          response: function() {
+          response() {
             assert.ok(!called, 'User should be requested only once.');
             called = true;
             return {
@@ -1045,9 +1045,9 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Create Project',
-      test: function() {
-        var formio = new Formio();
-        var req = {
+      test() {
+        const formio = new Formio();
+        const req = {
           title: chance.string({
             length: 10,
             pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -1056,7 +1056,7 @@ describe('Test Formio.js capabilities', () => {
             length: 10,
             pool: 'abcdefghijklmnopqrstuvwxyz'
           }),
-          description: chance.paragraph({sentences: 1}),
+          description: chance.paragraph({ sentences: 1 }),
           settings: {
             cors: '*'
           },
@@ -1067,13 +1067,13 @@ describe('Test Formio.js capabilities', () => {
             assert.deepEqual(response, project, 'saveProject response should match test user');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project`,
           method: 'POST',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
-            var projectId = generateID();
+          response(url, opts) {
+            const body = JSON.parse(opts.body);
+            const projectId = generateID();
             project = {
               _id: projectId,
               created: new Date().toISOString(),
@@ -1104,7 +1104,7 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Getting Projects',
-      test: function() {
+      test() {
         return Formio.loadProjects()
           .then((projects) => {
             assert.equal(projects.length, 1, 'Should return only one project.');
@@ -1114,11 +1114,11 @@ describe('Test Formio.js capabilities', () => {
             assert.deepEqual(projects[0], project, 'Should match project');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project`,
           method: 'GET',
-          response: function() {
+          response() {
             return {
               headers: {
                 'Content-Type': 'application/json',
@@ -1134,18 +1134,18 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Read Project',
-      test: function() {
-        var formio = new Formio(`${Formio.getBaseUrl()}/project/${project._id}`);
+      test() {
+        const formio = new Formio(`${Formio.getBaseUrl()}/project/${project._id}`);
         return formio.loadProject()
           .then((response) => {
             assert.deepEqual(response, project, 'Should match project');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}`,
           method: 'GET',
-          response: function() {
+          response() {
             return {
               headers: {
                 'Content-Type': 'application/json',
@@ -1159,9 +1159,9 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Update Project',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}`);
-        var newProject = _.cloneDeep(project);
+      test() {
+        const formio = new Formio(`/project/${project._id}`);
+        const newProject = _.cloneDeep(project);
         newProject.name = chance.string({
           length: 10,
           pool: 'abcdefghijklmnopqrstuvwxyz'
@@ -1170,18 +1170,18 @@ describe('Test Formio.js capabilities', () => {
           length: 10,
           pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
         });
-        newProject.description = chance.paragraph({sentences: 1});
+        newProject.description = chance.paragraph({ sentences: 1 });
         return formio.saveProject(newProject)
           .then((response) => {
             assert.deepEqual(response, project, 'Project should match');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}`,
           method: 'PUT',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
+          response(url, opts) {
+            const body = JSON.parse(opts.body);
             project = body;
             return {
               headers: {
@@ -1196,9 +1196,9 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Create Form',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form`);
-        var req = {
+      test() {
+        const formio = new Formio(`/project/${project._id}/form`);
+        const req = {
           title: chance.string({
             length: 10,
             pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -1262,13 +1262,13 @@ describe('Test Formio.js capabilities', () => {
             assert.deepEqual(response, form, 'Form should match');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form`,
           method: 'POST',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
-            var formId = generateID();
+          response(url, opts) {
+            const body = JSON.parse(opts.body);
+            const formId = generateID();
             form = _.cloneDeep(body);
             _.assign(form, {
               _id: formId,
@@ -1290,8 +1290,8 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Load Forms',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form`);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form`);
         return formio.loadForms()
           .then((forms) => {
             assert.equal(forms.length, 1, 'Should return only one form.');
@@ -1301,11 +1301,11 @@ describe('Test Formio.js capabilities', () => {
             assert.deepEqual(forms[0], form, 'Should match form');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form`,
           method: 'GET',
-          response: function() {
+          response() {
             return {
               headers: {
                 'Content-Type': 'application/json',
@@ -1321,18 +1321,18 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Read Form',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}`);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}`);
         return formio.loadForm()
           .then((response) => {
             assert.deepEqual(response, form, 'Form should match');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
           method: 'GET',
-          response: function() {
+          response() {
             return {
               headers: {
                 'Content-Type': 'application/json',
@@ -1346,9 +1346,9 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Update Form',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}`);
-        var newForm = _.cloneDeep(form);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}`);
+        const newForm = _.cloneDeep(form);
         newForm.title = chance.string({
           length: 10,
           pool: 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -1366,12 +1366,12 @@ describe('Test Formio.js capabilities', () => {
             assert.deepEqual(response, form, 'Form should match');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
           method: 'PUT',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
+          response(url, opts) {
+            const body = JSON.parse(opts.body);
             form = body;
             return {
               headers: {
@@ -1386,9 +1386,9 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Create Submission',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
-        var req = {
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
+        const req = {
           data: {
             fieldLabel: chance.string()
           }
@@ -1398,13 +1398,13 @@ describe('Test Formio.js capabilities', () => {
             assert.deepEqual(response, submission, 'Submission should match');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission`,
           method: 'POST',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
-            var submissionId = generateID();
+          response(url, opts) {
+            const body = JSON.parse(opts.body);
+            const submissionId = generateID();
             submission = {
               _id: submissionId,
               created: new Date().toISOString(),
@@ -1429,8 +1429,8 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Load Submissions',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}/submission`);
         return formio.loadSubmissions()
           .then((submissions) => {
             assert.equal(submissions.length, 1, 'Should return only one submission.');
@@ -1440,11 +1440,11 @@ describe('Test Formio.js capabilities', () => {
             assert.deepEqual(submissions[0], submission, 'Should match submission');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission`,
           method: 'GET',
-          response: function() {
+          response() {
             return {
               headers: {
                 'Content-Type': 'application/json',
@@ -1460,18 +1460,18 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Read Submission',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
         return formio.loadSubmission()
           .then((response) => {
             assert.deepEqual(response, submission, 'Submission should match');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
           method: 'GET',
-          response: function() {
+          response() {
             return {
               headers: {
                 'Content-Type': 'application/json',
@@ -1485,21 +1485,21 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Update Submission',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
-        var newSubmission = _.cloneDeep(submission);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+        const newSubmission = _.cloneDeep(submission);
         newSubmission.data.fieldLabel = chance.string();
         return formio.saveSubmission(newSubmission)
           .then((response) => {
             assert.deepEqual(response, submission, 'Submission should match');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
           method: 'PUT',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
+          response(url, opts) {
+            const body = JSON.parse(opts.body);
             submission = body;
             return {
               headers: {
@@ -1514,21 +1514,21 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Update Submission without ID',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}`);
-        var newSubmission = _.cloneDeep(submission);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}`);
+        const newSubmission = _.cloneDeep(submission);
         newSubmission.data.fieldLabel = chance.string();
         return formio.saveSubmission(newSubmission)
           .then((response) => {
             assert.deepEqual(response, submission, 'Submission should match');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
           method: 'PUT',
-          response: function(url, opts) {
-            var body = JSON.parse(opts.body);
+          response(url, opts) {
+            const body = JSON.parse(opts.body);
             submission = body;
             return {
               headers: {
@@ -1546,14 +1546,14 @@ describe('Test Formio.js capabilities', () => {
     // // Action Info
     {
       name: 'Delete Submission',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}/submission/${submission._id}`);
         return formio.deleteSubmission()
           .then((response) => {
             assert.equal(response, 'OK', 'Submission should be deleted.');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}/submission/${submission._id}`,
           method: 'DELETE',
@@ -1570,14 +1570,14 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Delete Form',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}/form/${form._id}`);
+      test() {
+        const formio = new Formio(`/project/${project._id}/form/${form._id}`);
         return formio.deleteForm()
           .then((response) => {
             assert.equal(response, 'OK', 'Submission should be deleted.');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/form/${form._id}`,
           method: 'DELETE',
@@ -1594,14 +1594,14 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Delete Project',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}`);
+      test() {
+        const formio = new Formio(`/project/${project._id}`);
         return formio.deleteProject()
           .then((response) => {
             assert.equal(response, 'OK', 'Submission should be deleted.');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}`,
           method: 'DELETE',
@@ -1618,7 +1618,7 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Getting Projects',
-      test: function() {
+      test() {
         return Formio.loadProjects()
           .then((projects) => {
             assert.equal(projects.length, 0, 'Should return no projects.');
@@ -1627,11 +1627,11 @@ describe('Test Formio.js capabilities', () => {
             assert.equal(projects.serverCount, 0, 'serverCount should be 0.');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project`,
           method: 'GET',
-          response: function() {
+          response() {
             return {
               headers: {
                 'Content-Type': 'application/json',
@@ -1647,17 +1647,17 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Temporary Token',
-      test: function() {
-        var formio = new Formio(`/project/${project._id}`);
+      test() {
+        const formio = new Formio(`/project/${project._id}`);
         return formio.getTempToken(200, 'GET:/current').then((tempToken) => {
           assert.equal(tempToken, userToken);
         });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/project/${project._id}/token`,
           method: 'GET',
-          response: function() {
+          response() {
             return {
               status: 200,
               body: userToken,
@@ -1672,17 +1672,17 @@ describe('Test Formio.js capabilities', () => {
     },
     {
       name: 'Logging Out',
-      test: function() {
+      test() {
         return Formio.logout()
           .then(() => {
             assert.equal(Formio.getToken(), '', 'Logged out');
           });
       },
-      mock: function() {
+      mock() {
         return {
           url: `${Formio.getBaseUrl()}/logout`,
           method: 'GET',
-          response: function() {
+          response() {
             userToken = null;
             return {
               status: 200,
@@ -1701,15 +1701,13 @@ describe('Test Formio.js capabilities', () => {
   tests.forEach(testCapability);
 });
 describe('Formio.currentUser', () => {
-  var plugin = null;
+  let plugin = null;
   beforeEach(() => {
     plugin = {
-      wrapStaticRequestPromise: sinon.spy((promise, promiseArgs) => {
-        return promise;
-      }),
+      wrapStaticRequestPromise: sinon.spy((promise) => promise),
       staticRequest: sinon.spy(() => {
         // Return dummy user
-        var userId = generateID();
+        const userId = generateID();
         return Promise.resolve({
           _id: userId,
           created: new Date().toISOString(),
@@ -1734,7 +1732,7 @@ describe('Formio.currentUser', () => {
 
   it('Initial currentUser() should make static request', (done) => {
     // Force token
-    Formio.token = chance.string({length: 30});
+    Formio.token = chance.string({ length: 30 });
     Formio.currentUser()
       .then(() => {
         assert.ok(plugin.staticRequest.calledOnce, 'staticRequest should be called once');

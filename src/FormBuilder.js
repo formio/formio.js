@@ -1,4 +1,3 @@
-'use strict';
 import Formio from './Formio';
 import WebformBuilder from './WebformBuilder';
 import WizardBuilder from './WizardBuilder';

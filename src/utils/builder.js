@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {eachComponent} from './utils';
+import { eachComponent } from './utils';
 export default {
   /**
    * Iterate the given key to make it unique.
@@ -68,7 +68,7 @@ export default {
   },
 
   getBindedShortcuts(components, input) {
-    var result = [];
+    const result = [];
 
     eachComponent(components, function(component) {
       if (component === input) {

@@ -49,8 +49,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     if (!this.component.placeholder || !this.editor) {
       return;
     }
-    var shouldShow = !this.editor.session.getValue().length;
-    var node = this.editor.renderer.emptyMessageNode;
+    const shouldShow = !this.editor.session.getValue().length;
+    let node = this.editor.renderer.emptyMessageNode;
     if (!shouldShow && node) {
       this.editor.renderer.scroller.removeChild(this.editor.renderer.emptyMessageNode);
       this.editor.renderer.emptyMessageNode = null;

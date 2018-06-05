@@ -1,12 +1,15 @@
-'use strict';
-import DayComponent from './Day';
-import {components as comps} from './fixtures/index';
-import Harness from '../../../test/harness';
 import assert from 'power-assert';
-import _each from 'lodash/each';
+
+import Harness from '../../../test/harness';
+import DayComponent from './Day';
+
+import {
+  comp1
+} from './fixtures';
+
 describe('Day Component', () => {
   it('Should build a day component', (done) => {
-    Harness.testCreate(DayComponent, comps.comp1).then((component) => {
+    Harness.testCreate(DayComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="number"]', 2);
       Harness.testElements(component, 'select', 1);
       done();
@@ -14,8 +17,8 @@ describe('Day Component', () => {
   });
 
   it('Should change the max day when the month changes', (done) => {
-    Harness.testCreate(DayComponent, comps.comp1).then((component) => {
-      const months = Harness.testElements(component, 'option', 13);
+    Harness.testCreate(DayComponent, comp1).then((component) => {
+      Harness.testElements(component, 'option', 13);
       assert(!!component.yearInput, 'There should be a year');
       // Set the year to a non-leap year.
       component.yearInput.value = 2017;
@@ -43,7 +46,7 @@ describe('Day Component', () => {
   });
 
   it('Should put the month select first', (done) => {
-    Harness.testCreate(DayComponent, comps.comp1).then((component) => {
+    Harness.testCreate(DayComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, '.form-control', 4);
       assert.equal(inputs[0].id, `${component.component.key}-month`);
       assert.equal(inputs[1].id, `${component.component.key}-day`);
@@ -55,8 +58,8 @@ describe('Day Component', () => {
   });
 
   it('Should put the day select first on configuration', (done) => {
-    comps.comp1.dayFirst = true;
-    Harness.testCreate(DayComponent, comps.comp1).then((component) => {
+    comp1.dayFirst = true;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, '.form-control', 4);
       assert.equal(inputs[0].id, `${component.component.key}-day`);
       assert.equal(inputs[1].id, `${component.component.key}-month`);
@@ -68,8 +71,8 @@ describe('Day Component', () => {
   });
 
   it('Should not allow invalid days', (done) => {
-    comps.comp1.dayFirst = false;
-    Harness.testCreate(DayComponent, comps.comp1).then((component) => {
+    comp1.dayFirst = false;
+    Harness.testCreate(DayComponent, comp1).then((component) => {
       component.on('componentError', (err) => {
         assert.equal(err.message, 'Date is not a valid date.');
         assert.equal(err.component.key, 'date');
@@ -85,7 +88,7 @@ describe('Day Component', () => {
   });
 
   it('Should not allow invalid months', (done) => {
-    Harness.testCreate(DayComponent, comps.comp1).then((component) => {
+    Harness.testCreate(DayComponent, comp1).then((component) => {
       component.on('componentError', (err) => {
         assert.equal(err.message, 'Date is not a valid date.');
         assert.equal(err.component.key, 'date');

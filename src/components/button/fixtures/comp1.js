@@ -1,4 +1,4 @@
-export const component = {
+export default {
   'type': 'button',
   'theme': 'primary',
   'disableOnInvalid': false,

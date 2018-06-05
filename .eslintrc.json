@@ -1,4 +1,5 @@
 {
+  "parser": "babel-eslint",
   "extends": "formio",
   "parserOptions": {
     "ecmaVersion": 2015,
@@ -7,7 +8,8 @@
   "env": {
     "browser": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "mocha": true
   },
   "rules": {
     "max-len": [
@@ -20,6 +22,10 @@
     ],
     "no-console": "off",
     "prefer-const": "error",
-    "prefer-template": "error"
+    "prefer-template": "error",
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ]
   }
 }

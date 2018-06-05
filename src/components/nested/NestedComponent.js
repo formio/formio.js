@@ -1,7 +1,6 @@
-'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import {checkCondition} from '../../utils/utils';
+import { checkCondition } from '../../utils/utils';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
 
@@ -139,7 +138,7 @@ export default class NestedComponent extends BaseComponent {
     }
 
     if (before) {
-      const index = _.findIndex(this.components, {id: before.id});
+      const index = _.findIndex(this.components, { id: before.id });
       if (index !== -1) {
         this.components.splice(index, 0, comp);
       }
@@ -197,7 +196,7 @@ export default class NestedComponent extends BaseComponent {
     if (element && element.parentNode) {
       this.removeChildFrom(element, element.parentNode);
     }
-    _.remove(components, {id: component.id});
+    _.remove(components, { id: component.id });
   }
 
   /**

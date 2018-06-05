@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import BaseComponent from '../base/Base';
-import {boolValue, getLocaleDateFormatInfo} from '../../utils/utils';
+import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends BaseComponent {
   static schema(...extend) {
@@ -91,19 +91,19 @@ export default class DayComponent extends BaseComponent {
       return this._months;
     }
     this._months = [
-      {value: 0, label: _.get(this.component, 'fields.month.placeholder', '')},
-      {value: 1, label: this.t('january')},
-      {value: 2, label: this.t('february')},
-      {value: 3, label: this.t('march')},
-      {value: 4, label: this.t('april')},
-      {value: 5, label: this.t('may')},
-      {value: 6, label: this.t('june')},
-      {value: 7, label: this.t('july')},
-      {value: 8, label: this.t('august')},
-      {value: 9, label: this.t('september')},
-      {value: 10, label: this.t('october')},
-      {value: 11, label: this.t('november')},
-      {value: 12, label: this.t('december')}
+      { value: 0, label: _.get(this.component, 'fields.month.placeholder', '') },
+      { value: 1, label: this.t('january') },
+      { value: 2, label: this.t('february') },
+      { value: 3, label: this.t('march') },
+      { value: 4, label: this.t('april') },
+      { value: 5, label: this.t('may') },
+      { value: 6, label: this.t('june') },
+      { value: 7, label: this.t('july') },
+      { value: 8, label: this.t('august') },
+      { value: 9, label: this.t('september') },
+      { value: 10, label: this.t('october') },
+      { value: 11, label: this.t('november') },
+      { value: 12, label: this.t('december') }
     ];
     return this._months;
   }
@@ -310,7 +310,7 @@ export default class DayComponent extends BaseComponent {
   }
 
   setSubinputLabelStyle(label) {
-    const {inputsLabelPosition} = this.component;
+    const { inputsLabelPosition } = this.component;
 
     if (inputsLabelPosition === 'left') {
       _.assign(label.style, {
@@ -332,7 +332,7 @@ export default class DayComponent extends BaseComponent {
   }
 
   setSubinputStyle(input) {
-    const {inputsLabelPosition} = this.component;
+    const { inputsLabelPosition } = this.component;
 
     if (['left', 'right'].includes(inputsLabelPosition)) {
       input.style.width = '67%';

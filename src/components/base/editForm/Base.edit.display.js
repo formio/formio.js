@@ -31,12 +31,12 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'Top', value: 'top'},
-        {label: 'Left (Left-aligned)', value: 'left-left'},
-        {label: 'Left (Right-aligned)', value: 'left-right'},
-        {label: 'Right (Left-aligned)', value: 'right-left'},
-        {label: 'Right (Right-aligned)', value: 'right-right'},
-        {label: 'Bottom', value: 'bottom'}
+        { label: 'Top', value: 'top' },
+        { label: 'Left (Left-aligned)', value: 'left-left' },
+        { label: 'Left (Right-aligned)', value: 'left-right' },
+        { label: 'Right (Left-aligned)', value: 'right-left' },
+        { label: 'Right (Right-aligned)', value: 'right-right' },
+        { label: 'Bottom', value: 'bottom' }
       ]
     }
   },
@@ -57,8 +57,8 @@ export default [
     conditional: {
       json: {
         and: [
-          {'!==': [{var: 'data.labelPosition'}, 'top']},
-          {'!==': [{var: 'data.labelPosition'}, 'bottom']},
+          { '!==': [{ var: 'data.labelPosition' }, 'top'] },
+          { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
         ]
       }
     }
@@ -80,8 +80,8 @@ export default [
     conditional: {
       json: {
         and: [
-          {'!==': [{var: 'data.labelPosition'}, 'top']},
-          {'!==': [{var: 'data.labelPosition'}, 'bottom']},
+          { '!==': [{ var: 'data.labelPosition' }, 'top'] },
+          { '!==': [{ var: 'data.labelPosition' }, 'bottom'] },
         ]
       }
     }

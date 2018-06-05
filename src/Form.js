@@ -1,8 +1,8 @@
-'use strict';
 import Formio from './Formio';
 import Wizard from './Wizard';
 import PDF from './PDF';
 import Webform from './Webform';
+
 export default class Form {
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
