@@ -152,6 +152,7 @@ export default class FileComponent extends BaseComponent {
   }
 
   createFileListItem(fileInfo, index) {
+    const fileService = this.fileService;
     return this.ce('li', {class: 'list-group-item'},
       this.ce('div', {class: 'row'},
         [
@@ -162,7 +163,7 @@ export default class FileComponent extends BaseComponent {
                   class: this.iconClass('remove'),
                   onClick: event => {
                     if (fileInfo && (this.component.storage === 'url')) {
-                      this.options.formio.makeRequest('', fileInfo.url, 'delete');
+                      fileService.makeRequest('', fileInfo.url, 'delete');
                     }
                     event.preventDefault();
                     this.splice(index);
@@ -229,7 +230,7 @@ export default class FileComponent extends BaseComponent {
                 class: this.iconClass('remove'),
                 onClick: event => {
                   if (fileInfo && (this.component.storage === 'url')) {
-                    this.options.formio.makeRequest('', fileInfo.url, 'delete');
+                    fileService.makeRequest('', fileInfo.url, 'delete');
                   }
                   event.preventDefault();
                   this.splice(index);
