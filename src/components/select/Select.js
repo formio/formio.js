@@ -81,7 +81,7 @@ export default class SelectComponent extends Component {
     }
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'select';
     info.changeEvent = 'change';

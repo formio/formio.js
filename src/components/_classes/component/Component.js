@@ -1,12 +1,13 @@
 /* globals Quill */
-import maskInput, {conformToMask} from 'vanilla-text-mask';
+import {conformToMask} from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 import i18next from 'i18next';
-import * as FormioUtils from '../../utils/utils';
-import Validator from '../Validator';
+import * as FormioUtils from '../../../utils/utils';
+import Validator from '../../Validator';
 import moment from 'moment';
+import templates from '../../../templates';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -445,12 +446,18 @@ export default class Component {
   }
 
   getTemplate(name) {
-    return this.options.templates[name][this.options.mode || 'form'];
+    const mode = this.options.mode || 'form';
+    // Default back to bootstrap if not defined.
+    if (!this.options.templates[name]) {
+      return templates['bootstrap'][name][mode];
+    }
+    return this.options.templates[name][mode];
   }
 
   renderTemplate(name, data) {
     data.component = this.component;
     data.t = this.t.bind(this);
+    data.id = data.id || this.id;
     return this.interpolate(this.getTemplate(name), data);
   }
 
@@ -1599,7 +1606,7 @@ export default class Component {
    * @param container
    * @param noSet
    */
-  addInput(input, container) {
+  addInput() {
     console.log('called Component.addInput');
   }
 

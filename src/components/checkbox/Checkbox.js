@@ -62,7 +62,6 @@ export default class CheckBoxComponent extends Component {
 
   render() {
     return super.render(this.renderTemplate('checkbox', {
-      component: this.component,
       input: this.inputInfo,
       checked: this.dataValue,
     }));
