@@ -182,9 +182,14 @@ export default class Component {
     this.refs = {};
 
     /**
-     * The value of the component
+     * If the component has been hydrated
      */
-    this._value = null;
+    this.hydrated = false;
+
+    /**
+     * If the component has been rendered
+     */
+    this.rendered = false;
 
     /**
      * The data object in which this component resides.
@@ -300,6 +305,10 @@ export default class Component {
       this.type = this.component.type;
       if (this.hasInput && this.key) {
         this.options.name += `[${this.key}]`;
+        /**
+         * The value of the component. Initially set it to the default.
+         */
+        this.dataValue = this.defaultValue;
       }
 
       /**
@@ -622,6 +631,7 @@ export default class Component {
   }
 
   render(children = `Unknown component: ${this.component.type}`) {
+    this.rendered = true;
     return this.renderTemplate('component', {
       id: this.id,
       classes: this.className,
@@ -631,6 +641,7 @@ export default class Component {
   }
 
   hydrate(element) {
+    this.hydrated = true;
     this.element = element;
     this.loadRefs(element, {messageContainer: 'single', tooltip: 'single'});
 
@@ -826,30 +837,6 @@ export default class Component {
       moment,
       instance: this
     }, additional);
-  }
-
-  get defaultValue() {
-    let defaultValue = this.emptyValue;
-    if (this.component.defaultValue) {
-      defaultValue = this.component.defaultValue;
-    }
-    else if (this.component.customDefaultValue) {
-      defaultValue = this.evaluate(
-        this.component.customDefaultValue,
-        {value: ''},
-        'value'
-      );
-    }
-
-    if (this._inputMask) {
-      defaultValue = conformToMask(defaultValue, this._inputMask).conformedValue;
-      if (!FormioUtils.matchInputMask(defaultValue, this._inputMask)) {
-        defaultValue = '';
-      }
-    }
-
-    // Clone so that it creates a new instance.
-    return _.clone(defaultValue);
   }
 
   /**
@@ -1694,22 +1681,6 @@ export default class Component {
   }
 
   /**
-   * Get the value of this component.
-   *
-   * @return {*}
-   */
-  get value() {
-    return this._value;
-  }
-
-  /**
-   * Set the value of this component.
-   */
-  set value(value) {
-    this._value = value;
-  }
-
-  /**
    * Get the static value of this component.
    * @return {*}
    */
@@ -1763,15 +1734,28 @@ export default class Component {
     _.unset(this.data, this.key);
   }
 
-  /**
-   * Get the value at a specific index.
-   *
-   * @param index
-   * @returns {*}
-   */
-  getValueAt(index) {
-    const input = this.performInputMapping(this.refs.input[index]);
-    return input ? input.value : undefined;
+  get defaultValue() {
+    let defaultValue = this.emptyValue;
+    if (this.component.defaultValue) {
+      defaultValue = this.component.defaultValue;
+    }
+    else if (this.component.customDefaultValue) {
+      defaultValue = this.evaluate(
+        this.component.customDefaultValue,
+        {value: ''},
+        'value'
+      );
+    }
+
+    if (this._inputMask) {
+      defaultValue = conformToMask(defaultValue, this._inputMask).conformedValue;
+      if (!FormioUtils.matchInputMask(defaultValue, this._inputMask)) {
+        defaultValue = '';
+      }
+    }
+
+    // Clone so that it creates a new instance.
+    return _.clone(defaultValue);
   }
 
   /**
@@ -1796,6 +1780,118 @@ export default class Component {
       }
     }
     return values;
+  }
+
+  /**
+   * Get the value at a specific index.
+   *
+   * @param index
+   * @returns {*}
+   */
+  getValueAt(index) {
+    const input = this.performInputMapping(this.refs.input[index]);
+    return input ? input.value : undefined;
+  }
+
+  /**
+   * Set the value of this component.
+   *
+   * @param value
+   * @param flags
+   *
+   * @return {boolean} - If the value changed.
+   */
+  setValue(value, flags) {
+    this._value = value;
+
+    // If we aren't connected to the dom yet, skip updating values.
+    if (!this.hydrated) {
+      return;
+    }
+
+    flags = this.getFlags.apply(this, arguments);
+    if (!this.hasInput) {
+      return false;
+    }
+    if (this.component.multiple && !Array.isArray(value)) {
+      value = [value];
+    }
+    // this.buildRows(value);
+    const isArray = Array.isArray(value);
+    for (const i in this.refs.input) {
+      if (this.refs.input.hasOwnProperty(i)) {
+        this.setValueAt(i, isArray ? value[i] : value);
+      }
+    }
+    return this.updateValue(flags);
+  }
+
+  /**
+   * Set the value at a specific index.
+   *
+   * @param index
+   * @param value
+   */
+  setValueAt(index, value) {
+    if (value === null || value === undefined) {
+      value = this.defaultValue;
+    }
+    const input = this.performInputMapping(this.refs.input[index]);
+    if (input.mask) {
+      input.mask.textMaskInputElement.update(value);
+    }
+    else {
+      input.value = value;
+    }
+  }
+
+  /**
+   * Restore the value of a control.
+   */
+  restoreValue() {
+    if (this.hasValue() && !this.isEmpty(this.dataValue)) {
+      this.setValue(this.dataValue, {
+        noUpdateEvent: true
+      });
+    }
+    else {
+      const defaultValue = this.defaultValue;
+      if (defaultValue) {
+        this.setValue(defaultValue, {
+          noUpdateEvent: true
+        });
+      }
+    }
+  }
+
+  /**
+   * Update a value of this component.
+   *
+   * @param flags
+   */
+  updateValue(flags, value) {
+    if (!this.hasInput) {
+      return false;
+    }
+
+    flags = flags || {};
+    const newValue = value || this.getValue();
+    const changed = this.hasChanged(newValue, this.dataValue);
+    this.dataValue = newValue;
+    if (this.viewOnly) {
+      this.updateViewOnlyValue(newValue);
+    }
+
+    this.updateOnChange(flags, changed);
+    return changed;
+  }
+
+  /**
+   * Resets the value of this component.
+   */
+  resetValue() {
+    this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
+    _.unset(this.data, this.key);
   }
 
   /**
@@ -1827,47 +1923,6 @@ export default class Component {
       return true;
     }
     return false;
-  }
-
-  /**
-   * Update a value of this component.
-   *
-   * @param flags
-   */
-  updateValue(flags, value) {
-    if (!this.hasInput) {
-      return false;
-    }
-
-    flags = flags || {};
-    const newValue = value || this.getValue(flags);
-    const changed = this.hasChanged(newValue, this.dataValue);
-    this.dataValue = newValue;
-    if (this.viewOnly) {
-      this.updateViewOnlyValue(newValue);
-    }
-
-    this.updateOnChange(flags, changed);
-    return changed;
-  }
-
-  /**
-   * Restore the value of a control.
-   */
-  restoreValue() {
-    if (this.hasValue() && !this.isEmpty(this.dataValue)) {
-      this.setValue(this.dataValue, {
-        noUpdateEvent: true
-      });
-    }
-    else {
-      const defaultValue = this.defaultValue;
-      if (defaultValue) {
-        this.setValue(defaultValue, {
-          noUpdateEvent: true
-        });
-      }
-    }
   }
 
   /**
@@ -2034,25 +2089,6 @@ export default class Component {
     });
   }
 
-  /**
-   * Set the value at a specific index.
-   *
-   * @param index
-   * @param value
-   */
-  setValueAt(index, value) {
-    if (value === null || value === undefined) {
-      value = this.defaultValue;
-    }
-    const input = this.performInputMapping(this.refs.input[index]);
-    if (input.mask) {
-      input.mask.textMaskInputElement.update(value);
-    }
-    else {
-      input.value = value;
-    }
-  }
-
   getFlags() {
     return (typeof arguments[1] === 'boolean') ? {
       noUpdateEvent: arguments[1],
@@ -2062,40 +2098,6 @@ export default class Component {
 
   whenReady() {
     return Promise.resolve();
-  }
-
-  /**
-   * Set the value of this component.
-   *
-   * @param value
-   * @param flags
-   *
-   * @return {boolean} - If the value changed.
-   */
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
-    if (!this.hasInput) {
-      return false;
-    }
-    if (this.component.multiple && !Array.isArray(value)) {
-      value = [value];
-    }
-    // this.buildRows(value);
-    const isArray = Array.isArray(value);
-    for (const i in this.refs.input) {
-      if (this.refs.input.hasOwnProperty(i)) {
-        this.setValueAt(i, isArray ? value[i] : value);
-      }
-    }
-    return this.updateValue(flags);
-  }
-
-  /**
-   * Resets the value of this component.
-   */
-  resetValue() {
-    this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
-    _.unset(this.data, this.key);
   }
 
   /**

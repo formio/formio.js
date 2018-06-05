@@ -1,6 +1,13 @@
 import Field from '../field/Field';
 
 export default class Multivalue extends Field {
+  get defaultValue() {
+    if (this.component.multiple) {
+      return [super.defaultValue];
+    }
+    return super.defaultValue;
+  }
+
   get addAnother() {
     return this.t(this.component.addAnother || ' Add Another');
   }

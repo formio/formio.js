@@ -53,7 +53,7 @@ export default class Form {
 
   set form(value) {
     if (typeof value === 'string') {
-      return this.ready = (new Formio(value)).loadForm().then(form => {
+      return (new Formio(value)).loadForm().then(form => {
         this.instance = this.create(form.display);
         this.instance.url = value;
         this.instance.nosubmit = false;
