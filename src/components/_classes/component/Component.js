@@ -655,6 +655,7 @@ export default class Component {
         title: this.component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
       });
     }
+    this.restoreValue();
     return Promise.resolve();
   }
 
