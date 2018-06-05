@@ -15,7 +15,10 @@ export default {
   </{{input.type}}>
   <label class="{{input.labelClass}}" for="{{id}}">
     {{input.content}}
-    <span>{{input.label}}</span> {% if (component.tooltip) { %}<i ref="tooltip" class="glyphicon glyphicon-question-sign text-muted"></i>{% } %}
+    <span>{{input.label}}</span> 
+    {% if (component.tooltip) { %}
+      <i ref="tooltip" class="glyphicon glyphicon-question-sign text-muted"></i>
+    {% } %}
   </label>
 </div>
 `,

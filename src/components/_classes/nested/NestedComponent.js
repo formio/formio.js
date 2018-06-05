@@ -132,7 +132,7 @@ export default class NestedComponent extends Component {
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
-    // comp.build();
+    comp.init();
     comp.isBuilt = true;
     if (component.internal) {
       return comp;
@@ -190,11 +190,11 @@ export default class NestedComponent extends Component {
     return comp;
   }
 
-  render() {
+  renderComponents() {
     return this.components.map(component => component.render()).join('');
   }
 
-  hydrate(element) {
+  hydrateComponents(element) {
     return Promise.all[this.components.map((component, index) => component.hydrate(element.children[index]))];
   }
 

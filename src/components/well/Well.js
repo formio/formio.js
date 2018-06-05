@@ -27,6 +27,22 @@ export default class WellComponent extends NestedComponent {
   }
 
   get className() {
-    return `card card-body bg-faded well formio-component formio-component-well ${this.component.customClass}`;
+    return `${this.component.customClass}`;
+  }
+
+  init() {
+    this.addComponents();
+  }
+
+  render() {
+    return this.renderTemplate('well', {
+      children: super.renderComponents(),
+      className: this.className
+    });
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {well: 'single'});
+    super.hydrateComponents(this.refs.well);
   }
 }

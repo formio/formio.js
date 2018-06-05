@@ -762,13 +762,13 @@ export default class Webform extends NestedComponent {
   render() {
     return this.renderTemplate('webform', {
       classes: 'formio-form',
-      children: super.render()
+      children: super.renderComponents(this.components)
     });
   }
 
   hydrate(element) {
     this.loadRefs(element, {webform: 'single'});
-    super.hydrate(this.refs.webform);
+    super.hydrateComponents(this.refs.webform, this.components);
     this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);

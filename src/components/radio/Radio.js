@@ -37,13 +37,13 @@ export default class RadioComponent extends Field {
     return info;
   }
 
-  render(value, index) {
+  render() {
     return super.render(this.renderTemplate('radio', {
       component: this.component,
       input: this.inputInfo,
       inline: this.component.inline,
       values: this.component.values,
-      value,
+      value: this.dataValue,
       id: this.id,
       row: this.row,
     }));

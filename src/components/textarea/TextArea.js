@@ -72,6 +72,16 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
+  renderElement(value, index) {
+    const info = this.inputInfo;
+    info.attr = info.attr || {};
+    info.content = value;
+    return this.renderTemplate('input', {
+      input: info,
+      index
+    });
+  }
+
   hydrateElement(element, index) {
     if (this.isPlain) {
       this.addEventListener(this.refs.input[index], this.inputInfo.changeEvent, () => this.updateValue());

@@ -323,6 +323,10 @@ export default class Component {
   }
   /* eslint-enable max-statements */
 
+  init() {
+    // Can be overridden
+  }
+
   get hasInput() {
     return this.component.input || (this.refs.input && this.refs.input.length);
   }
@@ -458,6 +462,9 @@ export default class Component {
     const mode = this.options.mode || 'form';
     // Default back to bootstrap if not defined.
     if (!this.options.templates[name]) {
+      if (!templates['bootstrap'][name]) {
+        return `Unknown template: ${name}`;
+      }
       return templates['bootstrap'][name][mode];
     }
     return this.options.templates[name][mode];
@@ -2052,7 +2059,12 @@ export default class Component {
 
   interpolate(string, data) {
     // the replace will stip out extra whitespace from the templates.
-    return FormioUtils.interpolate(string, this.evalContext(data)).replace(/\r?\n|\r/g, '').replace(/ +(?= )/g,'');
+    const result = FormioUtils.interpolate(string, this.evalContext(data));
+    if (!result) {
+      console.error('An error occurred interpolating a template');
+      return;
+    }
+    return result.replace(/\r?\n|\r/g, '').replace(/ +(?= )/g,'');
   }
 
   evaluate(func, args, ret, tokenize) {

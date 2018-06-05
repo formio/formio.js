@@ -36,23 +36,22 @@ export default class FieldsetComponent extends NestedComponent {
     return `form-group ${super.className}`;
   }
 
-  build() {
-    this.element = this.ce('fieldset', {
-      id: this.id,
-      class: this.className
-    });
-    if (this.component.legend) {
-      const legend = this.ce('legend');
-      legend.appendChild(this.text(this.component.legend));
-      this.createTooltip(legend);
-      this.setCollapseHeader(legend);
-      this.element.appendChild(legend);
-    }
-    this.body = this.ce('div', {
-      class: 'card-body'
-    });
+  init() {
     this.addComponents();
-    this.element.appendChild(this.body);
-    this.setCollapsed();
+  }
+
+  render() {
+    return this.renderTemplate('fieldset', {
+      children: super.renderComponents(),
+      className: this.className
+    });
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {fieldset: 'single'});
+    super.hydrateComponents(this.refs.fieldset);
+    // this.setCollapsed();
+    // this.createTooltip(title);
+    // this.setCollapseHeader(heading);
   }
 }

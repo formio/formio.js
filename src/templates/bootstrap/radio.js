@@ -1,20 +1,22 @@
 export default {
   form: `
 <div class="input-group">
-  {% values.forEach(function(value) { %}
+  {% values.forEach(function(item) { %}
   <div class="form-check{{inline ? '-inline' : ''}} {{input.attr.type}}{{inline ? '-inline' : ''}}" ref="wrapper">
-    <label class="control-label form-check-label" for="{{id}}{{row}}-{{value.value}}">
+    <label class="control-label form-check-label" for="{{id}}{{row}}-{{item.value}}">
       <{{input.type}} 
         ref="input" 
         name="{{input.attr.name}}" 
         type="{{input.attr.type}}" 
         class="{{input.attr.class}}" 
         lang="{{input.attr.lang}}" 
-        value="{{value.value}}"
-        {% if (value === value.value || (Array.isArray(value) && value.contains(value.value))) { %}checked=true{% } %}
-        id="{{id}}{{row}}-{{value.value}}" 
+        value="{{item.value}}"
+        {% if (value === item.value || (typeof value === 'object' && value.hasOwnProperty(item.value) && value[item.value])) { %}
+          checked=true
+        {% } %}
+        id="{{id}}{{row}}-{{item.value}}" 
       >
-      <span>{{t(value.label)}}</span>
+      <span>{{t(item.label)}}</span>
     </label>
   </div>
   {% }) %}

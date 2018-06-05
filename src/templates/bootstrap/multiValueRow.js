@@ -5,8 +5,9 @@ export default {
     {{element}}
   </td>
   <td>
-    <button type="button" class="btn btn-default btn-secondary" ref="removeRow"><i
-      class="glyphicon glyphicon-remove-circle"></i></button>
+    <button type="button" class="btn btn-default btn-secondary" ref="removeRow">
+      <i class="glyphicon glyphicon-remove-circle"></i>
+    </button>
   </td>
 </tr>
 `,
