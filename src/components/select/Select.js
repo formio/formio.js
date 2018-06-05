@@ -57,22 +57,6 @@ export default class SelectComponent extends BaseComponent {
     this.itemsLoaded = new Promise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
-
-    // If they wish to refresh on a value, then add that here.
-    if (this.component.refreshOn) {
-      this.on('change', (event) => {
-        if (this.component.refreshOn === 'data') {
-          this.refreshItems();
-        }
-        else if (
-          event.changed &&
-          event.changed.component &&
-          (event.changed.component.key === this.component.refreshOn)
-        ) {
-          this.refreshItems();
-        }
-      });
-    }
   }
 
   get dataReady() {
@@ -453,8 +437,26 @@ export default class SelectComponent extends BaseComponent {
     return !this.component.lazyLoad || this.activated;
   }
 
+  /* eslint-disable max-statements */
   addInput(input, container) {
     super.addInput(input, container);
+
+    // If they wish to refresh on a value, then add that here.
+    if (this.component.refreshOn) {
+      this.on('change', (event) => {
+        if (this.component.refreshOn === 'data') {
+          this.refreshItems();
+        }
+        else if (
+          event.changed &&
+          event.changed.component &&
+          (event.changed.component.key === this.component.refreshOn)
+        ) {
+          this.refreshItems();
+        }
+      });
+    }
+
     if (this.component.multiple) {
       input.setAttribute('multiple', true);
     }
@@ -533,6 +535,7 @@ export default class SelectComponent extends BaseComponent {
     this.disabled = this.disabled;
     this.triggerUpdate();
   }
+  /* eslint-enable max-statements */
 
   update() {
     if (this.component.dataSrc === 'custom') {

@@ -7,12 +7,7 @@ export default class PDF extends Webform {
     super(element, options);
 
     // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve) => this.on('iframe-ready', resolve));
-
-    // Handle an iframe submission.
-    this.on('iframe-submission', (submission) => {
-      this.setSubmission(submission).then(() => this.submit());
-    });
+    this.iframeReady = new Promise((resolve) => (this.iframeReadyResolve = resolve));
   }
 
   postMessage(message) {
@@ -127,6 +122,14 @@ export default class PDF extends Webform {
       seamless: true,
       class: 'formio-iframe'
     });
+
+    // Handle an iframe submission.
+    this.on('iframe-submission', (submission) => {
+      this.setSubmission(submission).then(() => this.submit());
+    });
+
+    // Trigger when this form is ready.
+    this.on('iframe-ready', () => this.iframeReadyResolve());
 
     this.appendChild(this.element, [
       this.zoomIn,

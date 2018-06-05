@@ -63,7 +63,7 @@ export default class PDFBuilder extends WebformBuilder {
       this.clear();
       this.build();
       this.isBuilt = true;
-      this.on('resetForm', () => this.resetValue(), true);
+      this.on('resetForm', () => this.resetValue());
       this.on('refreshData', () => this.updateValue());
       setTimeout(() => {
         this.onChange();
@@ -116,8 +116,17 @@ export default class PDFBuilder extends WebformBuilder {
     this.activateDropZone();
   }
 
+  removeEventListeners(all) {
+    super.removeEventListeners(all);
+    _.each(this.groups, (group) => {
+      _.each(group.components, (builderComponent) => {
+        this.removeEventListener(builderComponent, 'dragstart');
+      });
+    });
+  }
+
   clear() {
-    this.destroyComponents();
+    this.destroy();
   }
   redraw() {
     if (this.pdfForm) {
@@ -168,54 +177,53 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   destroy() {
-    super.destroy();
-    _.each(this.groups, (group) => {
-      _.each(group.components, (builderComponent) => {
-        this.removeEventListener(builderComponent, 'dragstart');
-      });
-    });
+    this.removeEventListeners();
+    this.destroyComponents();
   }
 
   build() {
     if (!this.pdfForm) {
       this.element.noDrop = true;
       this.pdfForm = new PDF(this.element, this.options);
-      this.pdfForm.on('iframe-elementUpdate', schema => {
-        const component = this.getComponentById(schema.id);
-        if (component && component.component) {
-          component.component.overlay = {
-            page: schema.page,
-            left: schema.left,
-            top: schema.top,
-            height: schema.height,
-            width: schema.width
-          };
-          this.editComponent(component);
-          this.emit('updateComponent', component);
-        }
-        return component;
-      });
-      this.pdfForm.on('iframe-componentUpdate', schema => {
-        const component = this.getComponentById(schema.id);
-        if (component && component.component) {
-          component.component.overlay = {
-            page: schema.overlay.page,
-            left: schema.overlay.left,
-            top: schema.overlay.top,
-            height: schema.overlay.height,
-            width: schema.overlay.width
-          };
-          this.emit('updateComponent', component);
-        }
-        return component;
-      });
-      this.pdfForm.on('iframe-componentClick', schema => {
-        const component = this.getComponentById(schema.id);
-        if (component) {
-          this.editComponent(component);
-        }
-      });
     }
+    this.pdfForm.removeEventListeners(true);
+    this.pdfForm.events.removeAllListeners();
+    this.pdfForm.destroyComponents();
+    this.pdfForm.on('iframe-elementUpdate', schema => {
+      const component = this.getComponentById(schema.id);
+      if (component && component.component) {
+        component.component.overlay = {
+          page: schema.page,
+          left: schema.left,
+          top: schema.top,
+          height: schema.height,
+          width: schema.width
+        };
+        this.editComponent(component);
+        this.emit('updateComponent', component);
+      }
+      return component;
+    });
+    this.pdfForm.on('iframe-componentUpdate', schema => {
+      const component = this.getComponentById(schema.id);
+      if (component && component.component) {
+        component.component.overlay = {
+          page: schema.overlay.page,
+          left: schema.overlay.left,
+          top: schema.overlay.top,
+          height: schema.overlay.height,
+          width: schema.overlay.width
+        };
+        this.emit('updateComponent', component);
+      }
+      return component;
+    });
+    this.pdfForm.on('iframe-componentClick', schema => {
+      const component = this.getComponentById(schema.id);
+      if (component) {
+        this.editComponent(component);
+      }
+    });
     this.addComponents();
     this.addDropZone();
     this.updateDraggable();

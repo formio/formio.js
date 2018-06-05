@@ -297,12 +297,6 @@ export default class BaseComponent {
     // Determine if the component has been built.
     this.isBuilt = false;
 
-    /**
-     * An array of the event listeners so that the destroy command can deregister them.
-     * @type {Array}
-     */
-    this.eventListeners = [];
-
     if (this.component) {
       this.type = this.component.type;
       if (this.hasInput && this.key) {
@@ -408,18 +402,20 @@ export default class BaseComponent {
    *
    * @param {string} event - The event you wish to register the handler for.
    * @param {function} cb - The callback handler to handle this event.
-   * @param {boolean} internal - This is an internal event handler.
    */
-  on(event, cb, internal) {
+  on(event, cb) {
     if (!this.events) {
       return;
     }
     const type = `formio.${event}`;
-    this.eventListeners.push({
-      type: type,
-      listener: cb,
-      internal
-    });
+
+    // Store the component id in the handler so that we can determine which events are for this component.
+    cb.id = this.id;
+
+    // Make sure this component does not register twice.
+    this.off(event);
+
+    // Register for this event.
     return this.events.on(type, cb);
   }
 
@@ -428,14 +424,18 @@ export default class BaseComponent {
    *
    * @param event
    */
-  off(event, cb) {
+  off(event) {
     if (!this.events) {
       return;
     }
     const type = `formio.${event}`;
-    _.each(this.eventListeners, (listener) => {
-      if ((listener.type === type) && (!cb || (cb === listener.listener))) {
-        this.events.off(listener.type, listener.listener);
+
+    // Iterate through all the internal events.
+    _.each(this.events.listeners(type), (listener) => {
+      // Ensure this event is for this component.
+      if (listener && (listener.id === this.id)) {
+        // Turn off this event handler.
+        this.events.off(type, listener);
       }
     });
   }
@@ -1352,18 +1352,18 @@ export default class BaseComponent {
    *
    * @param obj
    *   The DOM element to add the event to.
-   * @param evt
+   * @param type
    *   The event name to add.
    * @param func
    *   The callback function to be executed when the listener is triggered.
    */
-  addEventListener(obj, evt, func) {
-    this.eventHandlers.push({type: evt, func: func});
+  addEventListener(obj, type, func) {
+    this.eventHandlers.push({id: this.id, obj, type, func});
     if ('addEventListener' in obj) {
-      obj.addEventListener(evt, func, false);
+      obj.addEventListener(type, func, false);
     }
     else if ('attachEvent' in obj) {
-      obj.attachEvent(`on${evt}`, func);
+      obj.attachEvent(`on${type}`, func);
     }
   }
 
@@ -1371,14 +1371,19 @@ export default class BaseComponent {
    * Remove an event listener from the object.
    *
    * @param obj
-   * @param evt
+   * @param type
    */
-  removeEventListener(obj, evt) {
-    _.each(this.eventHandlers, (handler) => {
-      if (obj.removeEventListener && (handler.type === evt)) {
-        obj.removeEventListener(evt, handler.func);
+  removeEventListener(obj, type) {
+    const indexes = [];
+    _.each(this.eventHandlers, (handler, index) => {
+      if ((handler.id === this.id) && obj.removeEventListener && (handler.type === type)) {
+        obj.removeEventListener(type, handler.func);
+        indexes.push(index);
       }
     });
+    if (indexes.length) {
+      _.pullAt(this.eventHandlers, indexes);
+    }
   }
 
   redraw() {
@@ -1390,20 +1395,22 @@ export default class BaseComponent {
     this.build();
   }
 
-  /**
-   * Remove all event handlers.
-   */
-  destroy(all) {
-    _.each(this.eventListeners, (listener) => {
-      if (all || listener.internal) {
-        this.events.off(listener.type, listener.listener);
-      }
+  removeEventListeners() {
+    _.each(this.events._events, (events, type) => {
+      _.each(events, (listener) => {
+        if ((this.id === listener.id)) {
+          this.events.off(type, listener);
+        }
+      });
     });
     _.each(this.eventHandlers, (handler) => {
-      if (handler.event) {
-        window.removeEventListener(handler.event, handler.func);
+      if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
+        handler.obj.removeEventListener(handler.type, handler.func);
       }
     });
+  }
+
+  destroyInputs() {
     _.each(this.inputs, (input) => {
       input = this.performInputMapping(input);
       if (input.mask) {
@@ -1415,6 +1422,14 @@ export default class BaseComponent {
       this.tooltip = null;
     }
     this.inputs = [];
+  }
+
+  /**
+   * Remove all event handlers.
+   */
+  destroy(all) {
+    this.removeEventListeners(all);
+    this.destroyInputs();
   }
 
   /**
@@ -1969,7 +1984,8 @@ export default class BaseComponent {
     if (!this.key) {
       return value;
     }
-    if (value === null) {
+    if ((value === null) || (value === undefined)) {
+      _.unset(this.data, this.key);
       return value;
     }
     _.set(this.data, this.key, value);
@@ -2530,7 +2546,7 @@ export default class BaseComponent {
 
   autofocus() {
     if (this.component.autofocus) {
-      this.on('render', () => this.focus(), true);
+      this.on('render', () => this.focus());
     }
   }
 
