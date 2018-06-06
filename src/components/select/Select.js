@@ -1,11 +1,11 @@
 import Choices from 'choices.js';
 import _ from 'lodash';
-import Component from '../_classes/component/Component';
+import Field from '../_classes/field/Field';
 import Formio from '../../Formio';
 
-export default class SelectComponent extends Component {
+export default class SelectComponent extends Field {
   static schema(...extend) {
-    return Component.schema({
+    return Field.schema({
       type: 'select',
       label: 'Select',
       key: 'select',
@@ -40,6 +40,7 @@ export default class SelectComponent extends Component {
 
   constructor(component, options, data) {
     super(component, options, data);
+    this.component.widget = 'html5';
 
     // Trigger an update.
     this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
@@ -88,10 +89,6 @@ export default class SelectComponent extends Component {
     return info;
   }
 
-  createWrapper() {
-    return false;
-  }
-
   itemTemplate(data) {
     if (!data) {
       return '';
@@ -118,11 +115,6 @@ export default class SelectComponent extends Component {
 
   itemValue(data) {
     return (this.component.valueProperty && _.isObject(data)) ? _.get(data, this.component.valueProperty) : data;
-  }
-
-  createInput(container) {
-    this.selectContainer = container;
-    this.selectInput = super.createInput(container);
   }
 
   /**
@@ -153,7 +145,7 @@ export default class SelectComponent extends Component {
         option.element.setAttribute(key, value);
       });
     }
-    this.selectInput.appendChild(option.element);
+    this.refs.input[0].appendChild(option.element);
   }
 
   addValueOptions(items) {
@@ -167,7 +159,7 @@ export default class SelectComponent extends Component {
         });
       }
       else if (!this.component.multiple) {
-        this.addPlaceholder(this.selectInput);
+        // this.addPlaceholder(this.refs.input[0]);
       }
     }
   }
@@ -192,12 +184,12 @@ export default class SelectComponent extends Component {
       }
     }
 
-    if (!this.choices && this.selectInput) {
+    if (!this.choices && this.refs.input[0]) {
       if (this.loading) {
-        this.removeChildFrom(this.selectInput, this.selectContainer);
+        this.removeChildFrom(this.refs.input[0], this.selectContainer);
       }
 
-      this.selectInput.innerHTML = '';
+      this.refs.input[0].innerHTML = '';
     }
 
     this.selectOptions = [];
@@ -226,7 +218,7 @@ export default class SelectComponent extends Component {
     }
     else if (this.loading) {
       // Re-attach select input.
-      this.appendTo(this.selectInput, this.selectContainer);
+      this.appendTo(this.refs.input[0], this.selectContainer);
     }
 
     // We are no longer loading.
@@ -438,8 +430,21 @@ export default class SelectComponent extends Component {
     return !this.component.lazyLoad || this.activated;
   }
 
-  addInput(input, container) {
-    super.addInput(input, container);
+  render(value) {
+    const info = this.inputInfo;
+    info.attr = info.attr || {};
+    info.attr.value = value;
+    return super.render(this.renderTemplate('select', {
+      input: info,
+      index: null
+    }));
+  }
+
+  hydrate(element) {
+    super.hydrate(element);
+    this.loadRefs(element, {input: 'multiple'});
+    const input = this.refs.input[0];
+
     if (this.component.multiple) {
       input.setAttribute('multiple', true);
     }
@@ -496,7 +501,7 @@ export default class SelectComponent extends Component {
     }
     this.focusableElement.setAttribute('tabIndex', tabIndex);
 
-    this.setInputStyles(this.choices.containerOuter);
+    // this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {
