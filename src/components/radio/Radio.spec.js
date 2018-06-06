@@ -16,7 +16,7 @@ describe('Radio Component', () => {
     Harness.testCreate(RadioComponent, comps.comp1).then((component) => {
       const labels = component.element.querySelectorAll('label');
       component.element.querySelectorAll('input').forEach((input) => {
-        assert(input.getAttribute('class').indexOf('form-check-input') !== -1, 'No form-check-input on radios.');
+        assert(input.getAttribute('class').includes('form-check-input'), 'No form-check-input on radios.');
       });
       const spans = component.element.querySelectorAll('span');
       assert.equal(spans[0].innerHTML, 'Red');

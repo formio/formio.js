@@ -52,7 +52,7 @@ export default class Formio {
       this.base = Formio.baseUrl;
     }
     else {
-      this.base = window.location.href.match(/http[s]?:\/\/api./)[0];
+      this.base = window.location.href.match(/https?:\/\/api\./)[0];
     }
 
     if (!path) {
@@ -79,7 +79,7 @@ export default class Formio {
     }
 
     // Normalize to an absolute path.
-    if ((path.indexOf('http') !== 0) && (path.indexOf('//') !== 0)) {
+    if (!(path.startsWith('http') || path.startsWith('//'))) {
       path = this.base + path;
     }
 
@@ -582,7 +582,7 @@ export default class Formio {
   static getUrlParts(url, formio) {
     const base = (formio && formio.base) ? formio.base : Formio.baseUrl;
     let regex = '^(http[s]?:\\/\\/)';
-    if (base && url.indexOf(base) === 0) {
+    if (base && url.startsWith(base)) {
       regex += `(${base.replace(/^http[s]?:\/\//, '')})`;
     }
     else {

@@ -301,7 +301,7 @@ export default class SelectComponent extends BaseComponent {
 
     if (!_.isEmpty(query)) {
       // Add the query string.
-      url += (!(url.indexOf('?') !== -1) ? '?' : '&') + Formio.serialize(query);
+      url += (!url.includes('?') ? '?' : '&') + Formio.serialize(query);
     }
 
     // Make the request.
@@ -377,11 +377,11 @@ export default class SelectComponent extends BaseComponent {
           // If we are lazyLoading, wait until activated.
           return;
         }
-        let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
-        resourceUrl += (`/${this.component.data.resource}/submission`);
+
+        const indexUrl = `${this.resourceUrl}/submission`;
 
         try {
-          this.loadItems(resourceUrl, searchInput, this.requestHeaders);
+          this.loadItems(indexUrl, searchInput, this.requestHeaders);
         }
         catch (err) {
           console.warn(`Unable to load resources for ${this.key}`);
@@ -417,6 +417,13 @@ export default class SelectComponent extends BaseComponent {
         break;
       }
     }
+  }
+
+  get resourceUrl() {
+    return `${this.options.formio
+      ? this.options.formio.formsUrl
+      : `${Formio.getProjectUrl()}/form`
+    }/${this.component.data.resource}`;
   }
 
   addPlaceholder(input) {

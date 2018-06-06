@@ -1,8 +1,5 @@
-import _ from 'lodash';
-
 import SelectComponent from '../select/Select';
 import Webform from '../../Webform';
-import Formio from '../../Formio';
 
 export default class ResourceComponent extends SelectComponent {
   static schema(...extend) {
@@ -12,7 +9,6 @@ export default class ResourceComponent extends SelectComponent {
       key: 'resource',
       dataSrc: 'resource',
       resource: '',
-      project: '',
       template: '<span>{{ item.data }}</span>'
     }, ...extend);
   }
@@ -56,15 +52,17 @@ export default class ResourceComponent extends SelectComponent {
 
     this.addEventListener(addButton, 'click', (event) => {
       event.preventDefault();
+
       const dialog = this.createModal(this.component.addResourceLabel || 'Add Resource');
       const formioForm = this.ce('div');
       dialog.body.appendChild(formioForm);
+
       const form = new Webform(formioForm);
+      form.src = this.resourceUrl;
       form.on('submit', (submission) => {
         this.setValue(submission);
         dialog.close();
       });
-      form.src = `${_.get(this.root, 'formio.projectUrl', Formio.getBaseUrl())}/form/${this.component.resource}`;
     });
 
     return addButton;
@@ -73,23 +71,17 @@ export default class ResourceComponent extends SelectComponent {
   addInput(input, container) {
     // Add Resource button
     if (this.component.addResource) {
-      const table    = this.ce('table', {
-        class: 'table table-bordered'
-      });
-      const template = '<tbody>' +
-                       '<tr>' +
-                         '<td id="select">' +
-                         '</td>' +
-                       '</tr>' +
-                       '<tr>' +
-                         '<td id="button" colspan="2">' +
-                         '</td>' +
-                       '</tr>' +
-                     '</tbody>';
+      const selectContainer = this.ce('td', {id: `${this.id}-select`});
+      const buttonContainer = this.ce('td', {id: `${this.id}-button`});
+      const table = this.ce('table', {class: 'table table-bordered'},
+        this.ce('tbody', null, [
+          this.ce('tr', null, selectContainer),
+          this.ce('tr', null, buttonContainer)
+      ]));
+
       container.appendChild(table);
-      table.innerHTML = template;
-      table.querySelector('#button').appendChild(this.addButton());
-      super.addInput(input, table.querySelector('#select'));
+      buttonContainer.appendChild(this.addButton());
+      super.addInput(input, selectContainer);
     }
     else {
       super.addInput(input, container);

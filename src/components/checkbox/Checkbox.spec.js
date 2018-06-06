@@ -8,7 +8,7 @@ describe('Checkbox Component', () => {
     Harness.testCreate(CheckBoxComponent, comps.comp1).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="checkbox"]', 1);
       for (let i=0; i < inputs.length; i++) {
-        assert(inputs[i].getAttribute('class').indexOf('form-check-input') !== -1, 'No form-check-input class');
+        assert(inputs[i].getAttribute('class').includes('form-check-input'), 'No form-check-input class');
         assert.equal(inputs[i].name, `data[${comps.comp1.key}]`);
       }
       Harness.testElements(component, 'span', 1);
@@ -19,10 +19,10 @@ describe('Checkbox Component', () => {
   it('Span should have correct text label', (done) => {
     Harness.testCreate(CheckBoxComponent, comps.comp1).then((component) => {
       const componentClass = component.element.getAttribute('class');
-      assert(componentClass.indexOf('form-check') !== -1, 'No form-check class.');
+      assert(componentClass.includes('form-check'), 'No form-check class.');
       const labels = component.element.querySelectorAll('label');
       assert.equal(labels.length, 1);
-      assert(labels[0].getAttribute('class').indexOf('form-check-label') !== -1, 'No form-check-label class');
+      assert(labels[0].getAttribute('class').includes('form-check-label'), 'No form-check-label class');
       const spans = labels[0].querySelectorAll('span');
       assert.equal(spans.length, 1);
       assert.equal(spans[0].innerHTML, 'Check me');

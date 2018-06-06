@@ -312,11 +312,11 @@ export default class Webform extends NestedComponent {
     }
 
     if (element.nodeName === 'INPUT') {
-      return [
+      return ![
         'text',
         'email',
         'password'
-      ].indexOf(element.type) === -1;
+      ].includes(element.type);
     }
 
     return true;

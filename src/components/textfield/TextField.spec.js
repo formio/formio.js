@@ -22,9 +22,9 @@ describe('TextField Builder', () => {
     builder.editForm.formReady.then(() => {
       // Make sure default preview is correct.
       let preview = builder.componentPreview.innerHTML;
-      assert(preview.indexOf('formio-component formio-component-textfield formio-component-textField') !== -1, 'Must have correct classes');
-      assert(preview.indexOf('<label class="control-label" style="">Text Field</label>') !== -1, 'Must have a label');
-      assert(preview.indexOf('<input name="data[textField]" type="text" class="form-control"') !== -1, 'Must have an input');
+      assert(preview.includes('formio-component formio-component-textfield formio-component-textField'), 'Must have correct classes');
+      assert(preview.includes('<label class="control-label" style="">Text Field</label>'), 'Must have a label');
+      assert(preview.includes('<input name="data[textField]" type="text" class="form-control"'), 'Must have an input');
       done();
     });
   });
@@ -32,16 +32,16 @@ describe('TextField Builder', () => {
   it ('Should allow you to change the label', (done) => {
     Harness.setComponentProperty('label', 'Text Field', 'First Name', (preview) => {
       assert(preview.match(/label.*input/), 'Label must be on top.');
-      assert(preview.indexOf('<label class="control-label" style="">First Name</label>') !== -1, 'Must have a label');
+      assert(preview.includes('<label class="control-label" style="">First Name</label>'), 'Must have a label');
       done();
     });
   });
 
   it ('Should allow you to hide/show the label', (done) => {
     Harness.setComponentProperty('hideLabel', false, true, (preview) => {
-      assert(preview.indexOf('<label class="control-label"') === -1, 'Must not have a label');
+      assert(!preview.includes('<label class="control-label"'), 'Must not have a label');
       Harness.setComponentProperty('hideLabel', true, false, (preview) => {
-        assert(preview.indexOf('<label class="control-label"') !== -1, 'Must have a label');
+        assert(preview.includes('<label class="control-label"'), 'Must have a label');
         done();
       });
     });

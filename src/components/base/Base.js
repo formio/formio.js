@@ -1504,7 +1504,7 @@ export default class BaseComponent {
   attr(element, attr) {
     _.each(attr, (value, key) => {
       if (typeof value !== 'undefined') {
-        if (key.indexOf('on') === 0) {
+        if (key.startsWith('on')) {
           // If this is an event, add a listener.
           this.addEventListener(element, key.substr(2).toLowerCase(), value);
         }
@@ -1523,7 +1523,7 @@ export default class BaseComponent {
    */
   hasClass(element, className) {
     className = ` ${className} `;
-    return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
+    return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').includes(className));
   }
 
   /**
@@ -1536,7 +1536,7 @@ export default class BaseComponent {
    */
   addClass(element, className) {
     const classes = element.getAttribute('class');
-    if (!classes || classes.indexOf(className) === -1) {
+    if (!classes || !classes.includes(className)) {
       element.setAttribute('class', `${classes} ${className}`);
     }
   }

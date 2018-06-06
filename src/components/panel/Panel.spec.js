@@ -14,11 +14,11 @@ describe('Panel Component', () => {
   it('Panel should have correct classes', (done) => {
     Harness.testCreate(PanelComponent, comps.comp1).then((component) => {
       const panelClass = component.element.getAttribute('class');
-      assert(panelClass.indexOf('card border-secondary') !== -1, 'No Bootstrap 4 classes');
-      assert(panelClass.indexOf('panel panel-default') !== -1, 'No Bootstrap 3 classes');
-      assert(component.element.childNodes[0].getAttribute('class').indexOf('card-header panel-heading') !== -1);
-      assert(component.element.childNodes[0].childNodes[0].getAttribute('class').indexOf('card-title panel-title') !== -1);
-      assert(component.element.childNodes[1].getAttribute('class').indexOf('card-body panel-body') !== -1);
+      assert(panelClass.includes('card border-secondary'), 'No Bootstrap 4 classes');
+      assert(panelClass.includes('panel panel-default'), 'No Bootstrap 3 classes');
+      assert(component.element.childNodes[0].getAttribute('class').includes('card-header panel-heading'));
+      assert(component.element.childNodes[0].childNodes[0].getAttribute('class').includes('card-title panel-title'));
+      assert(component.element.childNodes[1].getAttribute('class').includes('card-body panel-body'));
       done();
     });
   });

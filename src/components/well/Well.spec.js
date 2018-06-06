@@ -14,8 +14,8 @@ describe('Well Component', () => {
   it('Should include the correct classes', (done) => {
     Harness.testCreate(WellComponent, comps.comp1).then((component) => {
       const componentClass = component.element.getAttribute('class');
-      assert(componentClass.indexOf('card card-body bg-faded') !== -1, 'Bootstrap 4 classes not present.');
-      assert(componentClass.indexOf('well') !== -1, 'Bootstrap 3 classes not present.');
+      assert(componentClass.includes('card card-body bg-faded'), 'Bootstrap 4 classes not present.');
+      assert(componentClass.includes('well'), 'Bootstrap 3 classes not present.');
       done();
     });
   });

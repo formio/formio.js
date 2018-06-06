@@ -282,7 +282,7 @@ export default class ButtonComponent extends BaseComponent {
     // If this is an OpenID Provider initiated login, perform the click event immediately
     if ((this.component.action === 'oauth') && this.component.oauth && this.component.oauth.authURI) {
       const iss = getUrlParameter('iss');
-      if (iss && (this.component.oauth.authURI.indexOf(iss) === 0)) {
+      if (iss && this.component.oauth.authURI.startsWith(iss)) {
         this.openOauth();
       }
     }

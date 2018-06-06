@@ -35,7 +35,7 @@ Form.embed(query).then((instance) => {
     if (returnUrl) {
       const formSrc = instance.formio ? instance.formio.formUrl : '';
       const hasQuery = !!returnUrl.match(/\?/);
-      const isOrigin = returnUrl.indexOf(location.origin) === 0;
+      const isOrigin = returnUrl.startsWith(location.origin);
       returnUrl += hasQuery ? '&' : '?';
       returnUrl += `sub=${submission._id}`;
       if (!isOrigin && formSrc) {

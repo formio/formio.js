@@ -45,10 +45,10 @@ export function evaluate(func, args, ret, tokenize) {
     if (tokenize) {
       // Replace all {{ }} references with actual data.
       func = func.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
-        if ($2.indexOf('data.') === 0) {
+        if ($2.startsWith('data.')) {
           return _.get(args.data, $2.replace('data.', ''));
         }
-        else if ($2.indexOf('row.') === 0) {
+        else if ($2.startsWith('row.')) {
           return _.get(args.row, $2.replace('row.', ''));
         }
 
@@ -667,7 +667,7 @@ export function getDateSetting(date) {
     return date.isValid() ? date.toDate() : null;
   }
 
-  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  let dateSetting = ((typeof date !== 'string') || !date.includes('moment(')) ? moment(date) : null;
   if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }

@@ -22,12 +22,16 @@ gulp.task('builder-fonts', () => gulp.src('node_modules/font-awesome/fonts/*').p
 
 // Generate styles
 const compileStyles = (styles, file) => {
-  const sassFilter = plugins.filter(['*.scss'], {restore: true});
+  const sassFilter = plugins.filter(['**/*.scss'], {restore: true});
   return gulp.src(styles)
     .pipe(sassFilter)
-    .pipe(plugins.sass().on('error', plugins.sass.logError))
+    .pipe(plugins.sass({
+      outputStyle: 'expanded'
+    }).on('error', plugins.sass.logError))
+    .pipe(plugins.replace('@charset "UTF-8";\n', ''))
     .pipe(sassFilter.restore)
     .pipe(plugins.concat(`${file}.css`))
+    .pipe(plugins.insert.prepend('@charset "UTF-8";\n'))
     .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
     .pipe(plugins.replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
     .pipe(gulp.dest('dist'))

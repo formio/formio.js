@@ -399,11 +399,11 @@ export default class FileComponent extends BaseComponent {
         }
       }
       else {
-        if (str.indexOf('!') === 0) {
+        if (str.startsWith('!')) {
           excludes.push(`^((?!${this.globStringToRegex(str.substring(1)).regexp}).)*$`);
         }
         else {
-          if (str.indexOf('.') === 0) {
+          if (str.startsWith('.')) {
             str = `*${str}`;
           }
           regexp = `^${str.replace(new RegExp('[.\\\\+*?\\[\\^\\]$(){}=!<>|:\\-]', 'g'), '\\$&')}$`;

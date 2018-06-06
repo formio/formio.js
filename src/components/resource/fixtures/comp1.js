@@ -20,7 +20,6 @@ export const component = {
   'selectFields': '',
   'template': '<span>{{ item.data }}</span>',
   'defaultValue': '',
-  'project': '58c21742e4d02b009660a6ee',
   'resource': '58c21742e4d02b009660a6f2',
   'placeholder': 'Select the user',
   'key': 'user',
