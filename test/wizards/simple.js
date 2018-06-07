@@ -1,6 +1,8 @@
 import _map from 'lodash/map';
 import assert from 'power-assert';
+
 import Harness from '../harness';
+
 export default {
   title: 'Simple Wizard',
   form: {
@@ -208,8 +210,8 @@ export default {
       // Check current page
       assert.equal(form.page, 0);
       Harness.testElements(form, 'input[type="text"]', 2);
-      let buttonsToValid = ['Cancel', 'Next'];
-      let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+      const buttonsToValid = ['Cancel', 'Next'];
+      const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
       assert.deepEqual(buttonsText, buttonsToValid);
 
       // Try to go to previous page. Stay on page 0
@@ -223,11 +225,9 @@ export default {
           assert.equal(form.page, 0);
           assert.equal(error, 'Page not found');
         })
-
-
         .then(() => {
           // Try to submit
-          return form.submit()
+          return form.submit();
         })
         .then(() => {
           // Should returns a reject
@@ -236,28 +236,24 @@ export default {
         .catch((errors) => {
           assert.equal(errors[0].message, '');
         })
-
-
         .then(() => {
           // Try to go to next page. Stay on page 0
           return Harness.testWizardNextPage(form, [{
             component: 'a',
             message: 'a is required'
-          }])
+          }]);
         })
         .then(() => {
           // Should returns a reject
           done('Should not be called');
         })
-        .catch((error) => {
+        .catch(() => {
           // Catch next page error
           assert.equal(form.page, 0);
         })
-
-
         .then(() => {
           // Write data
-          let wizardData = {
+          const wizardData = {
             a: 'a',
             b: 'b'
           };
@@ -278,12 +274,10 @@ export default {
           // Check next page
           assert.equal(form.page, 1);
           Harness.testElements(form, 'input[type="text"]', 2);
-          let buttonsToValid = ['Cancel', 'Previous', 'Next'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Previous', 'Next'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Click on cancel.
           return form.cancel(true);
@@ -300,15 +294,13 @@ export default {
           });
           assert.equal(form.page, 0);
           Harness.testElements(form, 'input[type="text"]', 2);
-          let buttonsToValid = ['Cancel', 'Next'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Next'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Write data
-          let wizardData = {
+          const wizardData = {
             a: 'a',
             b: 'b',
             c: '',
@@ -331,15 +323,13 @@ export default {
           // Check next page
           assert.equal(form.page, 1);
           Harness.testElements(form, 'input[type="text"]', 2);
-          let buttonsToValid = ['Cancel', 'Previous', 'Next'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Previous', 'Next'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Write data
-          let wizardData = {
+          const wizardData = {
             a: 'a',
             b: 'b',
             c: 'c',
@@ -370,12 +360,10 @@ export default {
           // Check previous page
           assert.equal(form.page, 0);
           Harness.testElements(form, 'input[type="text"]', 2);
-          let buttonsToValid = ['Cancel', 'Next'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Next'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Go to next page.
           return Harness.testWizardNextPage(form);
@@ -388,12 +376,10 @@ export default {
           // Check next page
           assert.equal(form.page, 1);
           Harness.testElements(form, 'input[type="text"]', 2);
-          let buttonsToValid = ['Cancel', 'Previous', 'Next'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Previous', 'Next'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Go to last page.
           return Harness.testWizardNextPage(form, null, (data) => {
@@ -418,15 +404,13 @@ export default {
           // Check last page
           assert.equal(form.page, 2);
           Harness.testElements(form, 'input[type="text"]', 3);
-          let buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Write data
-          let wizardData = {
+          const wizardData = {
             a: 'a',
             b: 'b',
             c: 'c',
@@ -471,12 +455,10 @@ export default {
           // Should returns a success
           done(error);
         })
-
-
         // Call done
         .then(() => {
           done();
-        })
+        });
     },
     'Test wizard control': (wizard, done) => {
       done();

@@ -51,7 +51,7 @@ export default class DateTimeComponent extends BaseComponent {
       icon: 'fa fa-calendar-plus-o',
       documentation: 'http://help.form.io/userguide/#datetime',
       weight: 40,
-      schema: DateTimeComponent.schema()
+      schema: this.schema()
     };
   }
 
@@ -143,8 +143,8 @@ export default class DateTimeComponent extends BaseComponent {
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
       minDate: getDateSetting(_.get(this.component, 'datePicker.minDate')),
       maxDate: getDateSetting(_.get(this.component, 'datePicker.maxDate')),
-      onChange: () => this.onChange({noValidate: true}),
-      onClose: () => (this.closedOn = Date.now())
+      onChange: () => this.onChange({ noValidate: true }),
+      onClose: () => this.closedOn = Date.now()
     };
   }
 

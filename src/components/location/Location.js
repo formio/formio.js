@@ -22,7 +22,7 @@ export default class LocationComponent extends BaseComponent {
       group: 'advanced',
       icon: 'fa fa-map',
       weight: 500,
-      schema: LocationComponent.schema()
+      schema: this.schema()
     };
   }
 
@@ -161,8 +161,8 @@ export default class LocationComponent extends BaseComponent {
     });
     this.marker.addListener('dragend', (event) => {
       const geocoder = new google.maps.Geocoder;
-      const latlng = {lat: parseFloat(event.latLng.lat()), lng: parseFloat(event.latLng.lng())};
-      geocoder.geocode({'location': latlng}, (results, status) => {
+      const latlng = { lat: parseFloat(event.latLng.lat()), lng: parseFloat(event.latLng.lng()) };
+      geocoder.geocode({ 'location': latlng }, (results, status) => {
         if (status === google.maps.GeocoderStatus.OK) {
           if (results[1]) {
             that.setValue(results[0].formatted_address);

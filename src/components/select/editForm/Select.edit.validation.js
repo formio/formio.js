@@ -7,7 +7,7 @@ export default [
     key: 'validate.select',
     input: true,
     conditional: {
-      json: {var: 'data.searchField'}
+      json: { var: 'data.searchField' }
     }
   }
 ];

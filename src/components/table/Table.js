@@ -7,7 +7,7 @@ export default class TableComponent extends NestedComponent {
     for (let i = 0; i < numRows; i++) {
       const cols = [];
       for (let j = 0; j < numCols; j++) {
-        cols.push({components: []});
+        cols.push({ components: [] });
       }
       rows.push(cols);
     }
@@ -21,7 +21,7 @@ export default class TableComponent extends NestedComponent {
       key: 'table',
       numRows: 3,
       numCols: 3,
-      rows: TableComponent.emptyTable(3, 3),
+      rows: this.emptyTable(3, 3),
       header: [],
       caption: '',
       striped: false,
@@ -39,7 +39,7 @@ export default class TableComponent extends NestedComponent {
       icon: 'fa fa-table',
       weight: 40,
       documentation: 'http://help.form.io/userguide/#table',
-      schema: TableComponent.schema()
+      schema: this.schema()
     };
   }
 
@@ -58,7 +58,7 @@ export default class TableComponent extends NestedComponent {
         schema.rows[component.tableRow] = [];
       }
       if (!schema.rows[component.tableRow][component.tableColumn]) {
-        schema.rows[component.tableRow][component.column] = {components: []};
+        schema.rows[component.tableRow][component.column] = { components: [] };
       }
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
@@ -98,7 +98,7 @@ export default class TableComponent extends NestedComponent {
             }, this.text('Drag and Drop a form component')));
           }
           this.root.addDragContainer(td, this, {
-            onSave: (component) => {
+            onSave(component) {
               component.tableRow = rowIndex;
               component.tableColumn = colIndex;
             }

@@ -1,20 +1,20 @@
-export const component = {
-  "input": true,
-  "tableView": false,
-  "label": "Tags",
-  "key": "tags",
-  "placeholder": "",
-  "prefix": "",
-  "suffix": "",
-  "protected": true,
-  "persistent": true,
-  "type": "tags",
-  "tags": [
+export default {
+  'input': true,
+  'tableView': false,
+  'label': 'Tags',
+  'key': 'tags',
+  'placeholder': '',
+  'prefix': '',
+  'suffix': '',
+  'protected': true,
+  'persistent': true,
+  'type': 'tags',
+  'tags': [
 
   ],
-  "conditional": {
-    "show": "",
-    "when": null,
-    "eq": ""
+  'conditional': {
+    'show': '',
+    'when': null,
+    'eq': ''
   }
 };

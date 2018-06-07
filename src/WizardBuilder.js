@@ -30,7 +30,7 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get pages() {
-    return _.filter(this.component.components, {type: 'panel'});
+    return _.filter(this.component.components, { type: 'panel' });
   }
 
   addSubmitButton() {

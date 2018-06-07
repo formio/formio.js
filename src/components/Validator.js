@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {boolValue, getInputMask, matchInputMask} from '../utils/utils';
+import { boolValue, getInputMask, matchInputMask } from '../utils/utils';
 
 export default {
   get: _.get,

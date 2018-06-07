@@ -1,6 +1,8 @@
 import _map from 'lodash/map';
 import assert from 'power-assert';
+
 import Harness from '../harness';
+
 export default {
   title: 'Wizard With Conditional Next Page',
   form: {
@@ -214,18 +216,16 @@ export default {
      *    'c' == 'directSubmit' => Submit direclty and bypass page 2
      */
 
-    'Wizard With Condinal Next Page: ByPass page': (form, done) => {
-
+    'Wizard With Condinal Next Page: ByPass page'(form, done) {
       // Check current page
       assert.equal(form.page, 0);
       Harness.testElements(form, 'input[type="text"]', 2);
-      let buttonsToValid = ['Cancel', 'Next'];
-      let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+      const buttonsToValid = ['Cancel', 'Next'];
+      const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
       assert.deepEqual(buttonsText, buttonsToValid);
 
-
       // Write data
-      let wizardData = {
+      const wizardData = {
         a: 'goTo2',
         b: 'b'
       };
@@ -243,15 +243,13 @@ export default {
           // Check next page
           assert.equal(form.page, 2);
           Harness.testElements(form, 'input[type="text"]', 3);
-          let buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Write data
-          let wizardData = {
+          const wizardData = {
             a: 'goTo2',
             b: 'b',
             e: 'e',
@@ -284,12 +282,10 @@ export default {
           // Check previous page
           assert.equal(form.page, 0);
           Harness.testElements(form, 'input[type="text"]', 2);
-          let buttonsToValid = ['Cancel', 'Next'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Next'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Go to last page.
           return Harness.testWizardNextPage(form, null, (data) => {
@@ -312,15 +308,13 @@ export default {
           // Check last page
           assert.equal(form.page, 2);
           Harness.testElements(form, 'input[type="text"]', 3);
-          let buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Write data
-          let wizardData = {
+          const wizardData = {
             a: 'goTo2',
             b: 'b',
             e: 'e',
@@ -367,21 +361,18 @@ export default {
         // Call done
         .then(() => {
           done();
-        })
+        });
     },
-
-    'Wizard With Condinal Next Page: Direct Submit': (form, done) => {
-
+    'Wizard With Condinal Next Page: Direct Submit'(form, done) {
       // Check current page
       assert.equal(form.page, 0);
       Harness.testElements(form, 'input[type="text"]', 2);
-      let buttonsToValid = ['Cancel', 'Next'];
-      let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+      const buttonsToValid = ['Cancel', 'Next'];
+      const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
       assert.deepEqual(buttonsText, buttonsToValid);
 
-
       // Write data
-      let wizardData = {
+      const wizardData = {
         a: 'a',
         b: 'b'
       };
@@ -399,12 +390,10 @@ export default {
           // Check next page
           assert.equal(form.page, 1);
           Harness.testElements(form, 'input[type="text"]', 2);
-          let buttonsToValid = ['Cancel', 'Previous', 'Next'];
-          let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+          const buttonsToValid = ['Cancel', 'Previous', 'Next'];
+          const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
           assert.deepEqual(buttonsText, buttonsToValid);
         })
-
-
         .then(() => {
           // Check updateWizardNav event
           form.on('updateWizardNav', (change) => {
@@ -419,8 +408,8 @@ export default {
             });
 
             // Should show a submit button instead of next button
-            let buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
-            let buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
+            const buttonsToValid = ['Cancel', 'Previous', 'Submit Form'];
+            const buttonsText =  _map(Harness.testElements(form, 'button'), (button) => button.innerText);
             assert.deepEqual(buttonsText, buttonsToValid);
             form.submit().then((submission) => {
               // Check submission
@@ -440,7 +429,7 @@ export default {
           });
 
           // Write data
-          let wizardData = {
+          const wizardData = {
             a: 'a',
             b: 'b',
             c: 'directSubmit',

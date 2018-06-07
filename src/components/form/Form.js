@@ -1,6 +1,6 @@
 import BaseComponent from '../base/Base';
 import Promise from 'native-promise-only';
-import {isMongoId, eachComponent} from '../../utils/utils';
+import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
 
@@ -23,7 +23,7 @@ export default class FormComponent extends BaseComponent {
       group: 'advanced',
       documentation: 'http://help.form.io/userguide/#form',
       weight: 110,
-      schema: FormComponent.schema()
+      schema: this.schema()
     };
   }
 
@@ -42,7 +42,7 @@ export default class FormComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    return {data: {}};
+    return { data: {} };
   }
 
   /**
@@ -146,7 +146,7 @@ export default class FormComponent extends BaseComponent {
       this.renderSubForm(this.component, srcOptions);
     }
     else {
-      (new Formio(this.formSrc)).loadForm({params: {live: 1}})
+      (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => this.renderSubForm(formObj, srcOptions))
         .catch(err => this.subFormReadyReject(err));
     }

@@ -9,7 +9,7 @@ export default {
   'validate': {
     'customPrivate': false,
     'custom': '',
-    'required': false
+    'required': true
   },
   'persistent': true,
   'protected': false,
