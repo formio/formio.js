@@ -31,7 +31,7 @@ export default [
     title: 'Custom Validation',
     collapsible: true,
     collapsed: true,
-    style: {'margin-bottom': '10px'},
+    style: { 'margin-bottom': '10px' },
     key: 'custom-validation-js',
     weight: 300,
     components: [
@@ -87,7 +87,7 @@ export default [
           '<h5>Example:</h5>' +
           '<pre>' + JSON.stringify({
             "if": [
-              {"===": [{"var": "input"}, "Bob"]},
+              { "===": [{ "var": "input" }, "Bob"] },
               true,
               "Your name must be 'Bob'!"
             ]

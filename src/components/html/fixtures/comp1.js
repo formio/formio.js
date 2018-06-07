@@ -1,4 +1,4 @@
-export const component = {
+export default {
   'key': 'html1',
   'input': false,
   'tag': 'img',

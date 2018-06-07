@@ -1,10 +1,13 @@
-'use strict';
-import HiddenComponent from './Hidden';
-import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
+import HiddenComponent from './Hidden';
+
+import {
+  comp1
+} from './fixtures';
+
 describe('Hidden Component', () => {
   it('Should build a hidden component', (done) => {
-    Harness.testCreate(HiddenComponent, comps.comp1).then((component) => {
+    Harness.testCreate(HiddenComponent, comp1).then(() => {
       done();
     });
   });

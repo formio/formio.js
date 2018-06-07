@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import WebformBuilder from './WebformBuilder';
-import {getElementRect} from './utils/utils';
+import { getElementRect } from './utils/utils';
 import PDF from './PDF';
 
 export default class PDFBuilder extends WebformBuilder {
@@ -88,7 +88,7 @@ export default class PDFBuilder extends WebformBuilder {
     const comp = super.addComponentTo(parent, schema, element, sibling);
     comp.isNew = true;
     if (this.pdfForm && schema.overlay) {
-      this.pdfForm.postMessage({name: 'addElement', data: schema});
+      this.pdfForm.postMessage({ name: 'addElement', data: schema });
     }
     return comp;
   }
@@ -99,14 +99,14 @@ export default class PDFBuilder extends WebformBuilder {
 
   updateComponent(component) {
     if (this.pdfForm && component.component) {
-      this.pdfForm.postMessage({name: 'updateElement', data: component.component});
+      this.pdfForm.postMessage({ name: 'updateElement', data: component.component });
     }
     return super.updateComponent(component);
   }
 
   deleteComponent(component) {
     if (this.pdfForm && component.component) {
-      this.pdfForm.postMessage({name: 'removeElement', data: component.component});
+      this.pdfForm.postMessage({ name: 'removeElement', data: component.component });
     }
     return super.deleteComponent(component);
   }
@@ -121,7 +121,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
   redraw() {
     if (this.pdfForm) {
-      this.pdfForm.postMessage({name: 'redraw'});
+      this.pdfForm.postMessage({ name: 'redraw' });
     }
   }
 
@@ -226,7 +226,7 @@ export default class PDFBuilder extends WebformBuilder {
     return super.setForm(form).then(() => {
       return this.ready.then(() => {
         if (this.pdfForm) {
-          this.pdfForm.postMessage({name: 'form', data: form});
+          this.pdfForm.postMessage({ name: 'form', data: form });
           return this.pdfForm.setForm(form);
         }
         return form;

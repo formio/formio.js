@@ -115,7 +115,7 @@ export default class SelectComponent extends BaseComponent {
       return this.t(data);
     }
 
-    const template = this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
+    const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       return template.replace(label, this.t(label));
@@ -413,7 +413,7 @@ export default class SelectComponent extends BaseComponent {
             body = null;
           }
         }
-        this.loadItems(url, searchInput, this.requestHeaders, {noToken: true}, method, body);
+        this.loadItems(url, searchInput, this.requestHeaders, { noToken: true }, method, body);
         break;
       }
     }
@@ -463,7 +463,7 @@ export default class SelectComponent extends BaseComponent {
       this.triggerUpdate();
       this.addEventListener(input, 'focus', () => this.update());
       this.addEventListener(input, 'keydown', (event) => {
-        const {keyCode} = event;
+        const { keyCode } = event;
 
         if ([8, 46].includes(keyCode)) {
           this.setValue(null);

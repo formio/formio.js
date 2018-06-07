@@ -1,8 +1,8 @@
 import maskInput from 'vanilla-text-mask';
 import _ from 'lodash';
-import {createNumberMask} from 'text-mask-addons';
+import { createNumberMask } from 'text-mask-addons';
 import BaseComponent from '../base/Base';
-import {getNumberSeparators, getNumberDecimalLimit} from '../../utils/utils';
+import { getNumberSeparators, getNumberDecimalLimit } from '../../utils/utils';
 
 export default class NumberComponent extends BaseComponent {
   static schema(...extend) {

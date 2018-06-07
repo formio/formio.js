@@ -1,4 +1,4 @@
-export const component = {
+export default {
   'type': 'stripeCheckout',
   'theme': 'primary',
   'disableOnInvalid': false,

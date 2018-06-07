@@ -8,7 +8,7 @@ export default class RadioComponent extends BaseComponent {
       inputType: 'radio',
       label: 'Radio',
       key: 'radio',
-      values: [{label: '', value: ''}],
+      values: [{ label: '', value: '' }],
       fieldSet: false
     }, ...extend);
   }

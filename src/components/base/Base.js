@@ -1,5 +1,5 @@
 /* globals Quill */
-import maskInput, {conformToMask} from 'vanilla-text-mask';
+import maskInput, { conformToMask } from 'vanilla-text-mask';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
@@ -795,7 +795,7 @@ export default class BaseComponent {
     else if (this.component.customDefaultValue) {
       defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        {value: ''},
+        { value: '' },
         'value'
       );
     }
@@ -1357,7 +1357,7 @@ export default class BaseComponent {
    *   The callback function to be executed when the listener is triggered.
    */
   addEventListener(obj, evt, func) {
-    this.eventHandlers.push({type: evt, func: func});
+    this.eventHandlers.push({ type: evt, func: func });
     if ('addEventListener' in obj) {
       obj.addEventListener(evt, func, false);
     }
@@ -1859,12 +1859,12 @@ export default class BaseComponent {
       placeholder: this.t(this.component.placeholder),
       modules: {
         toolbar: [
-          [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
-          [{'header': [1, 2, 3, 4, 5, 6, false]}],
-          [{'font': []}],
-          ['bold', 'italic', 'underline', 'strike', {'script': 'sub'}, {'script': 'super'}, 'clean'],
-          [{'color': []}, {'background': []}],
-          [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}, {'align': []}],
+          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'font': [] }],
+          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
           ['blockquote', 'code-block'],
           ['link', 'image', 'video', 'formula', 'source']
         ]
@@ -1877,7 +1877,7 @@ export default class BaseComponent {
 
     // Lazy load the quill css.
     BaseComponent.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      {type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css`}
+      { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
@@ -2341,7 +2341,7 @@ export default class BaseComponent {
    * Resets the value of this component.
    */
   resetValue() {
-    this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
+    this.setValue(this.emptyValue, { noUpdateEvent: true, noValidate: true });
     _.unset(this.data, this.key);
   }
 

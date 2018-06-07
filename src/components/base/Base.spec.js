@@ -1,23 +1,28 @@
-'use strict';
 import assert from 'power-assert';
 import _merge from 'lodash/merge';
-import BaseComponent from './Base';
+
 import Harness from '../../../test/harness';
-import {components as comps} from './fixtures/index';
+import BaseComponent from './Base';
+
+import {
+  comp1,
+  comp2
+} from './fixtures';
+
 describe('Base Component', () => {
   it('Should build a base component', (done) => {
-    Harness.testCreate(BaseComponent, comps.comp1).then((component) => {
+    Harness.testCreate(BaseComponent, comp1).then((component) => {
       const inputs = Harness.testElements(component, 'input[type="text"]', 1);
       for (let i=0; i < inputs.length; i++) {
-        assert.equal(inputs[i].name, `data[${comps.comp1.key}]`);
+        assert.equal(inputs[i].name, `data[${comp1.key}]`);
       }
       done();
     });
   });
 
   it('Should provide required validation', (done) => {
-    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
-      validate: {required: true}
+    Harness.testCreate(BaseComponent, _merge({}, comp1, {
+      validate: { required: true }
     })).then((component) => Harness.testComponent(component, {
       bad: {
         value: '',
@@ -31,8 +36,8 @@ describe('Base Component', () => {
   });
 
   it('Should provide minLength validation', (done) => {
-    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
-      validate: {minLength: 2}
+    Harness.testCreate(BaseComponent, _merge({}, comp1, {
+      validate: { minLength: 2 }
     })).then((component) => Harness.testComponent(component, {
       bad: {
         value: 't',
@@ -46,8 +51,8 @@ describe('Base Component', () => {
   });
 
   it('Should provide maxLength validation', (done) => {
-    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
-      validate: {maxLength: 5}
+    Harness.testCreate(BaseComponent, _merge({}, comp1, {
+      validate: { maxLength: 5 }
     })).then((component) => Harness.testComponent(component, {
       bad: {
         value: 'testte',
@@ -61,7 +66,7 @@ describe('Base Component', () => {
   });
 
   it('Should provide custom validation', (done) => {
-    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
+    Harness.testCreate(BaseComponent, _merge({}, comp1, {
       validate: {
         custom: 'valid = (input !== "Joe") ? true : "You cannot be Joe"'
       }
@@ -78,13 +83,13 @@ describe('Base Component', () => {
   });
 
   it('Should provide json validation', (done) => {
-    Harness.testCreate(BaseComponent, _merge({}, comps.comp1, {
+    Harness.testCreate(BaseComponent, _merge({}, comp1, {
       validate: {
         json: {
           'if': [
             {
               '===': [
-                {var: 'data.firstName'},
+                { var: 'data.firstName' },
                 'Joe'
               ]
             },
@@ -106,7 +111,7 @@ describe('Base Component', () => {
   });
 
   it('Should allow for multiple values', (done) => {
-    Harness.testCreate(BaseComponent, comps.comp2).then((component) => {
+    Harness.testCreate(BaseComponent, comp2).then((component) => {
       Harness.testElements(component, 'table', 1);
       Harness.testElements(component, 'table tr', 2);
       Harness.testElements(component, 'table tr:first-child td', 2);

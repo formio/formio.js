@@ -12,10 +12,10 @@ export default [
     defaultValue: 'right',
     data: {
       values: [
-        {label: 'Top', value: 'top'},
-        {label: 'Left', value: 'left'},
-        {label: 'Right', value: 'right'},
-        {label: 'Bottom', value: 'bottom'}
+        { label: 'Top', value: 'top' },
+        { label: 'Left', value: 'left' },
+        { label: 'Right', value: 'right' },
+        { label: 'Bottom', value: 'bottom' }
       ]
     }
   },
@@ -26,7 +26,7 @@ export default [
     key: 'values',
     tooltip: 'The radio button values that can be picked for this field. Values are text submitted with the form data. Labels are text that appears next to the radio buttons on the form.',
     weight: 33,
-    defaultValue: [{label: '', value: ''}],
+    defaultValue: [{ label: '', value: '' }],
     components: [
       {
         label: 'Label',
@@ -39,7 +39,7 @@ export default [
         key: 'value',
         input: true,
         type: 'textfield',
-        calculateValue: {_camelCase: [{var: 'row.label'}]}
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
       },
       {
         type: 'select',
@@ -50,7 +50,7 @@ export default [
         tooltip: 'The shortcut key for this option.',
         dataSrc: 'custom',
         data: {
-          custom: (values, component, data, row, utils, instance, form) => {
+          custom(values, component, data, row, utils, instance, form) {
             return BuilderUtils.getAvailableShortcuts(form, component);
           }
         }

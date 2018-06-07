@@ -1,10 +1,13 @@
-'use strict';
-import EmailComponent from './Email';
-import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
+import EmailComponent from './Email';
+
+import {
+  comp1
+} from './fixtures';
+
 describe('Email Component', () => {
   it('Should build a email component', (done) => {
-    Harness.testCreate(EmailComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EmailComponent, comp1).then(() => {
       done();
     });
   });

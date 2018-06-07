@@ -1,4 +1,4 @@
-export const component = {
+export default {
   'input': true,
   'tableView': true,
   'inputMask': '(999) 999-9999',

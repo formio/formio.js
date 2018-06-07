@@ -1,10 +1,9 @@
-'use strict';
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
 import Promise from 'native-promise-only';
 import 'whatwg-fetch';
-import {EventEmitter2 as EventEmitter} from 'eventemitter2';
+import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import providers from './providers';
@@ -474,7 +473,7 @@ export default class Formio {
                 throw ('Storage provider not found');
               }
             }
-            return result || {url: ''};
+            return result || { url: '' };
           });
       });
 
@@ -500,7 +499,7 @@ export default class Formio {
                 throw ('Storage provider not found');
               }
             }
-            return result || {url: ''};
+            return result || { url: '' };
           });
       });
 
@@ -666,7 +665,7 @@ export default class Formio {
     // For reverse compatibility, if they provided the ignoreCache parameter,
     // then change it back to the options format where that is a parameter.
     if (isBoolean(opts)) {
-      opts = {ignoreCache: opts};
+      opts = { ignoreCache: opts };
     }
     if (!opts || !isObject(opts)) {
       opts = {};
@@ -841,7 +840,7 @@ export default class Formio {
         return localStorage.removeItem('formioToken');
       }
       catch (err) {
-        return cookies.erase('formioToken', {path: '/'});
+        return cookies.erase('formioToken', { path: '/' });
       }
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
@@ -849,7 +848,7 @@ export default class Formio {
       localStorage.setItem('formioToken', token);
     }
     catch (err) {
-      cookies.set('formioToken', token, {path: '/'});
+      cookies.set('formioToken', token, { path: '/' });
     }
     return this.currentUser(); // Run this so user is updated if null
   }
@@ -876,7 +875,7 @@ export default class Formio {
         return localStorage.removeItem('formioUser');
       }
       catch (err) {
-        return cookies.erase('formioUser', {path: '/'});
+        return cookies.erase('formioUser', { path: '/' });
       }
     }
     // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
@@ -884,7 +883,7 @@ export default class Formio {
       localStorage.setItem('formioUser', JSON.stringify(user));
     }
     catch (err) {
-      cookies.set('formioUser', JSON.stringify(user), {path: '/'});
+      cookies.set('formioUser', JSON.stringify(user), { path: '/' });
     }
   }
 

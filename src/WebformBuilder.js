@@ -4,7 +4,7 @@ import Webform from './Webform';
 import dragula from 'dragula';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
-import {getComponent} from './utils/utils';
+import { getComponent } from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -45,9 +45,9 @@ export default class WebformBuilder extends Webform {
             tag: 'div',
             className: 'alert alert-info',
             attrs: [
-              {attr: 'id', value: `${this.id}-placeholder`},
-              {attr: 'style', value: 'text-align:center; margin-bottom: 0px;'},
-              {attr: 'role', value: 'alert'}
+              { attr: 'id', value: `${this.id}-placeholder` },
+              { attr: 'style', value: 'text-align:center; margin-bottom: 0px;' },
+              { attr: 'role', value: 'alert' }
             ],
             content: 'Drag and Drop a form component'
           }
@@ -339,7 +339,7 @@ export default class WebformBuilder extends Webform {
     });
 
     // Modify the component information in the edit form.
-    this.editForm.formReady.then(() => this.editForm.setValue({data: componentCopy.component}, {
+    this.editForm.formReady.then(() => this.editForm.setValue({ data: componentCopy.component }, {
       noUpdateEvent: true
     }));
 

@@ -79,6 +79,7 @@ export default class SurveyComponent extends BaseComponent {
       });
       this.table.appendChild(tbody);
       this.element.appendChild(this.table);
+      this.errorContainer = this.element;
       if (labelAtTheBottom) {
         this.createLabel(this.element);
       }
@@ -126,6 +127,11 @@ export default class SurveyComponent extends BaseComponent {
       });
     });
     return value;
+  }
+
+  validateRequired(setting, value) {
+    return this.component.questions.reduce((result, question) =>
+      result && Boolean(value[question.value]), true);
   }
 
   getView(value) {

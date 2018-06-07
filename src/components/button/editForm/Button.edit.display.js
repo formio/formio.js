@@ -11,12 +11,12 @@ export default [
     tooltip: 'This is the action to be performed by this button.',
     data: {
       values: [
-        {label: 'Submit', value: 'submit'},
-        {label: 'Event', value: 'event'},
-        {label: 'Custom', value: 'custom'},
-        {label: 'Reset', value: 'reset'},
-        {label: 'OAuth', value: 'oauth'},
-        {label: 'POST to URL', value: 'url'}
+        { label: 'Submit', value: 'submit' },
+        { label: 'Event', value: 'event' },
+        { label: 'Custom', value: 'custom' },
+        { label: 'Reset', value: 'reset' },
+        { label: 'OAuth', value: 'oauth' },
+        { label: 'POST to URL', value: 'url' }
       ]
     }
   },
@@ -28,7 +28,7 @@ export default [
     weight: 120,
     tooltip: 'The event to fire when the button is clicked.',
     conditional: {
-      json: {'===': [{var: 'data.action'}, 'event']}
+      json: { '===': [{ var: 'data.action' }, 'event'] }
     }
   },
   {
@@ -41,7 +41,7 @@ export default [
     tooltip: 'The URL where the submission will be sent.',
     placeholder: 'https://example.form.io',
     conditional: {
-      json: {'===': [{var: 'data.action'}, 'url']}
+      json: { '===': [{ var: 'data.action' }, 'url'] }
     }
   },
   {
@@ -67,7 +67,7 @@ export default [
       }
     ],
     conditional: {
-      json: {'===': [{var: 'data.action'}, 'url']}
+      json: { '===': [{ var: 'data.action' }, 'url'] }
     }
   },
   {
@@ -81,7 +81,7 @@ export default [
     weight: 120,
     placeholder: "data['mykey'] = data['anotherKey'];",
     conditional: {
-      json: {'===': [{var: 'data.action'}, 'custom']}
+      json: { '===': [{ var: 'data.action' }, 'custom'] }
     }
   },
   {
@@ -94,12 +94,12 @@ export default [
     weight: 140,
     data: {
       values: [
-        {label: 'Default', value: 'default'},
-        {label: 'Primary', value: 'primary'},
-        {label: 'Info', value: 'info'},
-        {label: 'Success', value: 'success'},
-        {label: 'Danger', value: 'danger'},
-        {label: 'Warning', value: 'warning'}
+        { label: 'Default', value: 'default' },
+        { label: 'Primary', value: 'primary' },
+        { label: 'Info', value: 'info' },
+        { label: 'Success', value: 'success' },
+        { label: 'Danger', value: 'danger' },
+        { label: 'Warning', value: 'warning' }
       ]
     }
   },
@@ -113,10 +113,10 @@ export default [
     weight: 150,
     data: {
       values: [
-        {label: 'Extra Small', value: 'xs'},
-        {label: 'Small', value: 'sm'},
-        {label: 'Medium', value: 'md'},
-        {label: 'Large', value: 'lg'}
+        { label: 'Extra Small', value: 'xs' },
+        { label: 'Small', value: 'sm' },
+        { label: 'Medium', value: 'md' },
+        { label: 'Large', value: 'lg' }
       ]
     }
   },

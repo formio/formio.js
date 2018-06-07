@@ -1,4 +1,4 @@
-import AllComponents from './components/index';
+import AllComponents from './components';
 import Components from './components/Components';
 Components.setComponents(AllComponents);
 import Form from './Form';

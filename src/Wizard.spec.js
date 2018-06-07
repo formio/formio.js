@@ -1,7 +1,8 @@
-'use strict';
-import Wizard from './Wizard';
-import WizardTests from '../test/wizards/index';
 import each from 'lodash/each';
+
+import WizardTests from '../test/wizards';
+import Wizard from './Wizard';
+
 describe('Form Wizard Renderer tests', () => {
   each(WizardTests, (wizardTest) => {
     each(wizardTest.tests, (wizardTestTest, title) => {

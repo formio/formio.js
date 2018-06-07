@@ -8,8 +8,8 @@ export default class ColumnsComponent extends NestedComponent {
       key: 'columns',
       type: 'columns',
       columns: [
-        {components: [], width: 6, offset: 0, push: 0, pull: 0},
-        {components: [], width: 6, offset: 0, push: 0, pull: 0}
+        { components: [], width: 6, offset: 0, push: 0, pull: 0 },
+        { components: [], width: 6, offset: 0, push: 0, pull: 0 }
       ],
       clearOnHide: false,
       input: false,
