@@ -27,9 +27,9 @@ export default [
     input: true,
     data: {
       values: [
-        {label: 'Top', value: 'top'},
-        {label: 'Bottom', value: 'bottom'},
-        {label: 'Both', value: 'both'}
+        { label: 'Top', value: 'top' },
+        { label: 'Bottom', value: 'bottom' },
+        { label: 'Both', value: 'both' }
       ]
     },
     weight: 420,

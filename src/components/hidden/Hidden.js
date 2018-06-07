@@ -15,7 +15,7 @@ export default class HiddenComponent extends BaseComponent {
       icon: 'fa fa-user-secret',
       weight: 0,
       documentation: 'http://help.form.io/userguide/#hidden',
-      schema: HiddenComponent.schema()
+      schema: this.schema()
     };
   }
 

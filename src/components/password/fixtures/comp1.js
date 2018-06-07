@@ -1,4 +1,4 @@
-export const component = {
+export default {
   'input': true,
   'tableView': false,
   'inputType': 'password',

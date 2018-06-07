@@ -1,4 +1,4 @@
-import {eachComponent} from '../../../utils/utils';
+import { eachComponent } from '../../../utils/utils';
 
 export default [
   {
@@ -12,11 +12,11 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'Values', value: 'values'},
-        {label: 'Raw JSON', value: 'json'},
-        {label: 'URL', value: 'url'},
-        {label: 'Resource', value: 'resource'},
-        {label: 'Custom', value: 'custom'}
+        { label: 'Values', value: 'values' },
+        { label: 'Raw JSON', value: 'json' },
+        { label: 'URL', value: 'url' },
+        { label: 'Resource', value: 'resource' },
+        { label: 'Custom', value: 'custom' }
       ]
     }
   },
@@ -30,7 +30,7 @@ export default [
     label: 'Data Source Raw JSON',
     tooltip: 'A raw JSON array to use as a data source.',
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'json']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'json'] }
     }
   },
   {
@@ -42,7 +42,7 @@ export default [
     placeholder: 'Data Source URL',
     tooltip: 'A URL that returns a JSON array to use as the data source.',
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'url']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
   },
   {
@@ -67,7 +67,7 @@ export default [
       }
     ],
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'url']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
   },
   {
@@ -89,11 +89,11 @@ export default [
         key: 'value',
         input: true,
         type: 'textfield',
-        calculateValue: {_camelCase: [{var: 'row.label'}]}
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }
     ],
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'values']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'values'] }
     }
   },
   {
@@ -110,7 +110,7 @@ export default [
     weight: 10,
     tooltip: 'The resource to be used with this field.',
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'resource']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
     }
   },
   {
@@ -124,7 +124,7 @@ export default [
     template: '<span>{{ item.label }}</span>',
     valueProperty: 'key',
     dataSrc: 'url',
-    onSetItems: (component, form) => {
+    onSetItems(component, form) {
       const newItems = [];
 
       eachComponent(form.components, (component, path) => {
@@ -142,8 +142,8 @@ export default [
     conditional: {
       json: {
         and: [
-          {'===': [{var: 'data.dataSrc'}, 'resource']},
-          {var: 'data.resource'}
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { var: 'data.resource' }
         ]
       }
     }
@@ -157,7 +157,7 @@ export default [
     description: 'The object path to the iterable items.',
     tooltip: 'The property within the source data, where iterable items reside. For example: results.items or results[0].items',
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'url']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
   },
   {
@@ -171,9 +171,9 @@ export default [
     conditional: {
       json: {
         and: [
-          {'!==': [{var: 'data.dataSrc'}, 'values']},
-          {'!==': [{var: 'data.dataSrc'}, 'resource']},
-          {'!==': [{var: 'data.dataSrc'}, 'custom']}
+          { '!==': [{ var: 'data.dataSrc' }, 'values'] },
+          { '!==': [{ var: 'data.dataSrc' }, 'resource'] },
+          { '!==': [{ var: 'data.dataSrc' }, 'custom'] }
         ]
       }
     }
@@ -189,8 +189,8 @@ export default [
     conditional: {
       json: {
         and: [
-          {'===': [{var: 'data.dataSrc'}, 'resource']},
-          {'===': [{var: 'data.valueProperty'}, '']}
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { '===': [{ var: 'data.valueProperty' }, ''] }
         ]
       }
     }
@@ -203,7 +203,7 @@ export default [
     tooltip: 'When enabled the request will not include the limit and skip options in the query string',
     weight: 15,
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'url']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
   },
   {
@@ -217,8 +217,8 @@ export default [
     conditional: {
       json: {
         or: [
-          {'===': [{var: 'data.dataSrc'}, 'url']},
-          {'===': [{var: 'data.dataSrc'}, 'resource']}
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] }
         ]
       }
     }
@@ -234,8 +234,8 @@ export default [
     conditional: {
       json: {
         or: [
-          {'===': [{var: 'data.dataSrc'}, 'url']},
-          {'===': [{var: 'data.dataSrc'}, 'resource']}
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] }
         ]
       }
     }
@@ -251,9 +251,9 @@ export default [
     conditional: {
       json: {
         or: [
-          {'===': [{var: 'data.dataSrc'}, 'url']},
-          {'===': [{var: 'data.dataSrc'}, 'resource']},
-          {'===': [{var: 'data.dataSrc'}, 'json']}
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { '===': [{ var: 'data.dataSrc' }, 'json'] }
         ]
       }
     }
@@ -269,7 +269,7 @@ export default [
     placeholder: "values = data['mykey'];",
     tooltip: 'Write custom code to return the value options. The form data object is available.',
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'custom']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'custom'] }
     }
   },
   {
@@ -307,8 +307,8 @@ export default [
     conditional: {
       json: {
         and: [
-          {'!==': [{var: 'data.dataSrc'}, 'values']},
-          {'!==': [{var: 'data.dataSrc'}, 'json']}
+          { '!==': [{ var: 'data.dataSrc' }, 'values'] },
+          { '!==': [{ var: 'data.dataSrc' }, 'json'] }
         ]
       }
     }
@@ -332,9 +332,9 @@ export default [
     conditional: {
       json: {
         or: [
-          {'===': [{var: 'data.dataSrc'}, 'resource']},
-          {'===': [{var: 'data.dataSrc'}, 'url']},
-          {'===': [{var: 'data.dataSrc'}, 'custom']}
+          { '===': [{ var: 'data.dataSrc' }, 'resource'] },
+          { '===': [{ var: 'data.dataSrc' }, 'url'] },
+          { '===': [{ var: 'data.dataSrc' }, 'custom'] }
         ]
       }
     }
@@ -347,7 +347,7 @@ export default [
     label: 'Save as reference',
     tooltip: 'Using this option will save this field as a reference and link its value to the value of the origin record.',
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'resource']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'resource'] }
     }
   },
   {
@@ -358,7 +358,7 @@ export default [
     label: 'Formio Authenticate',
     tooltip: 'Check this if you would like to use Formio Authentication with the request.',
     conditional: {
-      json: {'===': [{var: 'data.dataSrc'}, 'url']}
+      json: { '===': [{ var: 'data.dataSrc' }, 'url'] }
     }
   }
 ];

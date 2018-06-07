@@ -1,11 +1,15 @@
-'use strict';
 import assert from 'power-assert';
-import RadioComponent from './Radio';
-import {components as comps} from './fixtures/index';
+
 import Harness from '../../../test/harness';
+import RadioComponent from './Radio';
+
+import {
+  comp1
+} from './fixtures';
+
 describe('Radio Component', () => {
   it('Should build a radio component', (done) => {
-    Harness.testCreate(RadioComponent, comps.comp1).then((component) => {
+    Harness.testCreate(RadioComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="radio"]', 4);
       Harness.testElements(component, 'span', 4);
       done();
@@ -13,8 +17,7 @@ describe('Radio Component', () => {
   });
 
   it('Span should have correct text label', (done) => {
-    Harness.testCreate(RadioComponent, comps.comp1).then((component) => {
-      const labels = component.element.querySelectorAll('label');
+    Harness.testCreate(RadioComponent, comp1).then((component) => {
       component.element.querySelectorAll('input').forEach((input) => {
         assert(input.getAttribute('class').indexOf('form-check-input') !== -1, 'No form-check-input on radios.');
       });

@@ -30,7 +30,7 @@ export default [
     placeholder: 'Enter the url to post the files to.',
     tooltip: "See <a href='https://github.com/danialfarid/ng-file-upload#server-side' target='_blank'>https://github.com/danialfarid/ng-file-upload#server-side</a> for how to set up the server.",
     conditional: {
-      json: {'===': [{var: 'data.storage'}, 'url']}
+      json: { '===': [{ var: 'data.storage' }, 'url'] }
     }
   },
   {
@@ -59,7 +59,7 @@ export default [
     tooltip: 'The image size for previewing images.',
     weight: 40,
     conditional: {
-      json: {'==': [{var: 'data.image'}, true]}
+      json: { '==': [{ var: 'data.image' }, true] }
     }
   },
   {

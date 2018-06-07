@@ -20,7 +20,7 @@ export default class DataGridComponent extends NestedComponent {
       group: 'data',
       documentation: 'http://help.form.io/userguide/#datagrid',
       weight: 20,
-      schema: DataGridComponent.schema()
+      schema: this.schema()
     };
   }
 
@@ -136,7 +136,7 @@ export default class DataGridComponent extends NestedComponent {
     if (this.hasBottomSubmit()) {
       this.tableElement.appendChild(this.ce('tfoot', null,
         this.ce('tr', null,
-          this.ce('td', {colspan: this.numColumns},
+          this.ce('td', { colspan: this.numColumns },
             this.addButton()
           )
         )

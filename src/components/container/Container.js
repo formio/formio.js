@@ -19,7 +19,7 @@ export default class ContainerComponent extends NestedComponent {
       group: 'data',
       documentation: 'http://help.form.io/userguide/#container',
       weight: 10,
-      schema: ContainerComponent.schema()
+      schema: this.schema()
     };
   }
 

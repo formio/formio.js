@@ -20,7 +20,7 @@ export default class FieldsetComponent extends NestedComponent {
       group: 'layout',
       documentation: 'http://help.form.io/userguide/#fieldset',
       weight: 20,
-      schema: FieldsetComponent.schema()
+      schema: this.schema()
     };
   }
 

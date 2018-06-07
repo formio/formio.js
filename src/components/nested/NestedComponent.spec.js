@@ -1,8 +1,9 @@
-'use strict';
-import NestedComponent from './NestedComponent';
-import Harness from '../../../test/harness';
 import assert from 'power-assert';
 import each from 'lodash/each';
+
+import Harness from '../../../test/harness';
+import NestedComponent from './NestedComponent';
+
 describe('NestedComponent class', () => {
   let component = null;
   it('Should create a new NestedComponent class', (done) => {
@@ -63,7 +64,7 @@ describe('NestedComponent class', () => {
           key: 'parent',
           title: 'Parent Panel',
           conditional: {
-            json: {var: 'data.showPanel'}
+            json: { var: 'data.showPanel' }
           },
           components: [
             {
@@ -72,7 +73,7 @@ describe('NestedComponent class', () => {
               label: 'Child 1',
               input: true,
               conditional: {
-                json: {var: 'data.showChild'}
+                json: { var: 'data.showChild' }
               }
             },
             {
@@ -81,7 +82,7 @@ describe('NestedComponent class', () => {
               label: 'Child 2',
               input: true,
               conditional: {
-                json: {var: 'data.forceParent'},
+                json: { var: 'data.forceParent' },
               }
             }
           ]

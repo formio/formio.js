@@ -2,16 +2,18 @@ import i18next from 'i18next';
 import assert from 'power-assert';
 import _ from 'lodash';
 import EventEmitter from 'eventemitter2';
+
 import i18Defaults from '../src/i18n';
-import WebformBuilder from "../src/WebformBuilder";
-import AllComponents from '../src/components/index';
+import WebformBuilder from '../src/WebformBuilder';
+import AllComponents from '../src/components';
 import Components from '../src/components/Components';
+
 Components.setComponents(AllComponents);
 
 let formBuilderElement = null;
 let formBuilder = null;
 const Harness = {
-  builderBefore: function(done) {
+  builderBefore(done) {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
     formBuilder = new WebformBuilder(formBuilderElement);
@@ -19,12 +21,12 @@ const Harness = {
     formBuilder.builderReady.then(done);
   },
 
-  builderAfter: function(done) {
+  builderAfter() {
     formBuilder.destroy();
     document.body.removeChild(formBuilderElement);
   },
 
-  buildComponent: function(type) {
+  buildComponent(type) {
     // Get the builder sidebar component.
     let builderGroup = null;
     _.each(formBuilder.groups, (group) => {
@@ -33,26 +35,26 @@ const Harness = {
         return false;
       }
     });
-    let component = document.getElementById(`builder-${type}`).cloneNode(true);
+    const component = document.getElementById(`builder-${type}`).cloneNode(true);
     formBuilder.element.appendChild(component);
     formBuilder.onDrop(component, formBuilder.element, builderGroup);
     return formBuilder;
   },
 
-  setComponentProperty: function(property, before, after, cb) {
-    let component = _.cloneDeep(formBuilder.editForm.submission);
+  setComponentProperty(property, before, after, cb) {
+    const component = _.cloneDeep(formBuilder.editForm.submission);
     assert.equal(_.get(component.data, property), before);
     _.set(component.data, property, after);
     formBuilder.off('updateComponent');
     formBuilder.on('updateComponent', () => {
-      let preview = formBuilder.componentPreview.innerHTML;
+      const preview = formBuilder.componentPreview.innerHTML;
       assert.equal(_.get(formBuilder.editForm.submission.data, property), after);
       cb(preview);
     });
     formBuilder.editForm.submission = component;
   },
 
-  testBuilderProperty: function(property, before, after, previewRegEx, cb) {
+  testBuilderProperty(property, before, after, previewRegEx, cb) {
     Harness.testVisibility(formBuilder.editForm, `.formio-component-${property}`, true);
     Harness.setComponentProperty(property, before, after, (preview) => {
       if (previewRegEx) {
@@ -63,14 +65,14 @@ const Harness = {
     });
   },
 
-  getDate: function() {
+  getDate() {
     let timestamp = (new Date()).getTime();
     timestamp = parseInt(timestamp / 1000, 10);
     return (new Date(timestamp * 1000)).toISOString();
   },
-  testCreate: function(Component, componentSettings, options = {}) {
-    let compSettings = _.cloneDeep(componentSettings);
-    var component = new Component(compSettings, _.merge({
+  testCreate(Component, componentSettings, options = {}) {
+    const compSettings = _.cloneDeep(componentSettings);
+    const component = new Component(compSettings, _.merge({
       events: new EventEmitter({
         wildcard: false,
         maxListeners: 0
@@ -82,15 +84,15 @@ const Harness = {
           return reject(err);
         }
         component.build();
-        assert(!!component.element, 'No ' + component.type + ' element created.');
+        assert(Boolean(component.element), `No ${component.type} element created.`);
         return resolve(component);
       });
     });
   },
-  testConditionals: function(form, submission, hidden, done) {
+  testConditionals(form, submission, hidden, done) {
     form.on('change', () => {
       form.everyComponent((comp) => {
-        if (hidden.indexOf(comp.component.key) !== -1) {
+        if (hidden.includes(comp.component.key)) {
           // Should be hidden.
           assert(comp.element.hidden, 'Element should not be visible');
           assert.equal(comp.element.style.visibility, 'hidden');
@@ -105,9 +107,9 @@ const Harness = {
     });
     form.submission = submission;
   },
-  testVisibility: function(component, query, visible) {
-    let element = component.element.querySelector(query);
-    assert(element, query + ' not found');
+  testVisibility(component, query, visible) {
+    const element = component.element.querySelector(query);
+    assert(element, `${query} not found`);
     if (visible) {
       assert((element.style.visibility === '') || (element.style.visibility === 'visible'), 'Element must be visible');
     }
@@ -115,7 +117,7 @@ const Harness = {
       assert(element.style.visibility === 'hidden', 'Element must be hidden');
     }
   },
-  clickElement: function(component, query) {
+  clickElement(component, query) {
     const clickEvent = new MouseEvent('click', {
       view: window,
       bubbles: true,
@@ -124,72 +126,72 @@ const Harness = {
     const element = this.testElement(component, query, true);
     return element.dispatchEvent(clickEvent);
   },
-  testElements: function(component, query, number) {
-    let elements = component.element.querySelectorAll(query);
+  testElements(component, query, number) {
+    const elements = component.element.querySelectorAll(query);
     if (number !== undefined) {
       assert.equal(elements.length, number);
     }
     return elements;
   },
-  testElement: function(component, query, exists) {
-    let element = component.element.querySelector(query);
+  testElement(component, query, exists) {
+    const element = component.element.querySelector(query);
     if (exists !== undefined) {
-      assert.equal(!!element, !!exists);
+      assert.equal(Boolean(element), Boolean(exists));
     }
     return element;
   },
-  testInnerHtml: function(component, query, content) {
-    let element = component.element.querySelector(query);
-    assert(element, query + ' not found');
+  testInnerHtml(component, query, content) {
+    const element = component.element.querySelector(query);
+    assert(element, `${query} not found`);
     assert.equal(element.innerHTML.trim(), content);
   },
-  testAttribute: function(component, query, attribute, value) {
-    let element = component.element.querySelector(query);
-    assert(element, query + ' not found');
+  testAttribute(component, query, attribute, value) {
+    const element = component.element.querySelector(query);
+    assert(element, `${query} not found`);
     assert.equal(element.getAttribute(attribute), value);
   },
-  testHasClass: function(component, query, className) {
-    let element = component.element.querySelector(query);
-    assert(element, query + ' not found');
-    assert(element.className.split(' ').indexOf(className) !== -1);
+  testHasClass(component, query, className) {
+    const element = component.element.querySelector(query);
+    assert(element, `${query} not found`);
+    assert(element.className.split(' ').includes(className));
   },
-  testElementAttribute: function(element, attribute, expected) {
+  testElementAttribute(element, attribute, expected) {
     if (element !== undefined && element.getAttribute(attribute)) {
       assert.equal(expected, element.getAttribute(attribute));
     }
     return element;
   },
-  testSetGet: function(component, value) {
+  testSetGet(component, value) {
     component.setValue(value);
     assert.deepEqual(component.getValue(), value);
     return component;
   },
-  setInputValue: function(component, name, value) {
+  setInputValue(component, name, value) {
     const inputEvent = new Event('input', {bubbles: true, cancelable: true});
-    const element = component.element.querySelector('input[name="' + name + '"]');
-    assert(element, name + ' input not found');
+    const element = component.element.querySelector(`input[name="${name}"]`);
+    assert(element, `${name} input not found`);
     element.value = value;
     return element.dispatchEvent(inputEvent);
   },
-  getInputValue: function(component, name, value) {
-    const element = component.element.querySelector('[name="' + name + '"]');
-    assert(element, name + ' input not found');
+  getInputValue(component, name, value) {
+    const element = component.element.querySelector(`[name="${name}"]`);
+    assert(element, `${name} input not found`);
     assert.equal(value, element.value);
   },
-  testSetInput: function(component, input, output, visible, index = 0) {
+  testSetInput(component, input, output, visible, index = 0) {
     component.setValue(input);
     assert.deepEqual(component.getValue(), output);
     assert.deepEqual(component.inputs[index].value, visible);
     return component;
   },
-  testSubmission: function(form, submission, onChange) {
+  testSubmission(form, submission, onChange) {
     if (onChange) {
       form.on('change', onChange);
     }
     this.testSetGet(form, submission);
     assert.deepEqual(form.data, submission.data);
   },
-  testErrors: function(form, submission, errors, done) {
+  testErrors(form, submission, errors, done) {
     form.on('error', (err) => {
       _.each(errors, (error, index) => {
         error.component = form.getComponent(error.component).component;
@@ -202,10 +204,10 @@ const Harness = {
     assert.deepEqual(form.data, submission.data);
     form.submit();
   },
-  testComponent: function(component, test, done) {
+  testComponent(component, test, done) {
     let testBad = true;
     component.on('componentChange', (change) => {
-      let valid = component.checkValidity();
+      const valid = component.checkValidity();
       if (valid && !testBad) {
         assert.equal(change.value, test.good.value);
         done();
@@ -224,7 +226,7 @@ const Harness = {
     // Set the value.
     component.setValue(test.bad.value);
   },
-  testWizardPrevPage: function(form, errors, onPrevPage) {
+  testWizardPrevPage(form, errors, onPrevPage) {
     if (errors) {
       form.on('error', (err) => {
         _.each(errors, (error, index) => {
@@ -238,7 +240,7 @@ const Harness = {
     }
     return form.prevPage();
   },
-  testWizardNextPage: function(form, errors, onNextPage) {
+  testWizardNextPage(form, errors, onNextPage) {
     if (errors) {
       form.on('error', (err) => {
         _.each(errors, (error, index) => {

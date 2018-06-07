@@ -17,7 +17,7 @@ export default [
         input: true,
         key: 'key',
         label: 'Key',
-        calculateValue: {_camelCase: [{var: 'row.label'}]}
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }
     ]
   }
