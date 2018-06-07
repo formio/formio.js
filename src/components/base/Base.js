@@ -412,9 +412,6 @@ export default class BaseComponent {
     // Store the component id in the handler so that we can determine which events are for this component.
     cb.id = this.id;
 
-    // Make sure this component does not register twice.
-    this.off(event);
-
     // Register for this event.
     return this.events.on(type, cb);
   }
