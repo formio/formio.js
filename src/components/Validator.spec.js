@@ -1,7 +1,8 @@
-'use strict';
-import Validator from './Validator';
-import BaseComponent from './base/Base';
 import assert from 'power-assert';
+
+import BaseComponent from './base/Base';
+import Validator from './Validator';
+
 describe('Validator Tests', () => {
   const baseComponent = new BaseComponent({});
 
@@ -50,7 +51,7 @@ describe('Validator Tests', () => {
   it('Should test for pattern', () => {
     assert.equal(Validator.validators.pattern.check(baseComponent, 'A.*', 'A'), true);
     assert.equal(Validator.validators.pattern.check(baseComponent, 'A.*', 'Aaaa'), true);
-    assert.equal(Validator.validators.pattern.check(baseComponent, '\w+', 'test'), false);
+    assert.equal(Validator.validators.pattern.check(baseComponent, 'w+', 'test'), false);
     assert.equal(Validator.validators.pattern.check(baseComponent, '\\w+', 'test'), true);
     assert.equal(Validator.validators.pattern.check(baseComponent, '\\w+@\\w+', 'test@a'), true);
     assert.equal(Validator.validators.pattern.check(baseComponent, '\\w+@\\w+', 'test@example.com'), false);
@@ -58,10 +59,10 @@ describe('Validator Tests', () => {
 
   it('Should test for json', () => {
     assert.equal(Validator.validators.json.check(baseComponent, {
-      or: [{'_isEqual': [{var: 'data.test'}, ['1', '2', '3']]}, 'Should be false.']
-    }, null, {test: ['1', '2', '3']}), true);
+      or: [{ '_isEqual': [{ var: 'data.test' }, ['1', '2', '3']] }, 'Should be false.']
+    }, null, { test: ['1', '2', '3'] }), true);
     assert.equal(Validator.validators.json.check(baseComponent, {
-      or: [{'_isEqual': [{var: 'data.test'}, ['1', '2', '3']]}, 'Should be false.']
-    }, null, {test: ['1', '2', '4']}), 'Should be false.');
+      or: [{ '_isEqual': [{ var: 'data.test' }, ['1', '2', '3']] }, 'Should be false.']
+    }, null, { test: ['1', '2', '4'] }), 'Should be false.');
   });
 });

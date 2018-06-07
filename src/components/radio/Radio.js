@@ -8,7 +8,7 @@ export default class RadioComponent extends BaseComponent {
       inputType: 'radio',
       label: 'Radio',
       key: 'radio',
-      values: [{label: '', value: ''}],
+      values: [{ label: '', value: '' }],
       fieldSet: false
     }, ...extend);
   }
@@ -20,7 +20,7 @@ export default class RadioComponent extends BaseComponent {
       icon: 'fa fa-dot-circle-o',
       weight: 80,
       documentation: 'http://help.form.io/userguide/#radio',
-      schema: RadioComponent.schema()
+      schema: this.schema()
     };
   }
 

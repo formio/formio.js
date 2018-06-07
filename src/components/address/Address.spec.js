@@ -1,10 +1,13 @@
-'use strict';
-import AddressComponent from './Address';
-import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
+import AddressComponent from './Address';
+
+import {
+  comp1
+} from './fixtures';
+
 describe('Address Component', () => {
   it('Should build an address component', (done) => {
-    Harness.testCreate(AddressComponent, comps.comp1).then((component) => {
+    Harness.testCreate(AddressComponent, comp1).then(() => {
       done();
     });
   });

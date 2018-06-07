@@ -1,7 +1,7 @@
 import maskInput from 'vanilla-text-mask';
-import {createNumberMask} from 'text-mask-addons';
+import { createNumberMask } from 'text-mask-addons';
 import _ from 'lodash';
-import {getCurrencyAffixes} from '../../utils/utils';
+import { getCurrencyAffixes } from '../../utils/utils';
 import NumberComponent from '../number/Number';
 
 export default class CurrencyComponent extends NumberComponent {
@@ -20,7 +20,7 @@ export default class CurrencyComponent extends NumberComponent {
       icon: 'fa fa-usd',
       documentation: 'http://help.form.io/userguide/#currency',
       weight: 70,
-      schema: CurrencyComponent.schema()
+      schema: this.schema()
     };
   }
 

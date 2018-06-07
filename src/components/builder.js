@@ -1,4 +1,4 @@
-import Components from './index';
+import Components from '.';
 import AddressForm from './address/Address.form';
 import ContentForm from './content/Content.form';
 import ContainerForm from './container/Container.form';

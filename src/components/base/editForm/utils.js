@@ -56,7 +56,7 @@ const EditFormUtils = {
           title: 'JavaScript',
           collapsible: true,
           collapsed: false,
-          style: {'margin-bottom': '10px'},
+          style: { 'margin-bottom': '10px' },
           key: `${property}-js`,
           components: [
             {

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import maskInput from 'vanilla-text-mask';
 
-import {getInputMask} from '../../utils/utils';
+import { getInputMask } from '../../utils/utils';
 import BaseComponent from '../base/Base';
 
 export default class TextFieldComponent extends BaseComponent {
@@ -28,7 +28,7 @@ export default class TextFieldComponent extends BaseComponent {
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#textfield',
       weight: 0,
-      schema: TextFieldComponent.schema()
+      schema: this.schema()
     };
   }
 

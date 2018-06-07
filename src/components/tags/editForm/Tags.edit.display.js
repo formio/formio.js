@@ -25,8 +25,8 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'String (CSV)', value: 'string'},
-        {label: 'Array of Tags', value: 'array'}
+        { label: 'String (CSV)', value: 'string' },
+        { label: 'Array of Tags', value: 'array' }
       ]
     }
   }

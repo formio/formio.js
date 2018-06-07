@@ -1,15 +1,19 @@
-'use strict';
 import assert from 'power-assert';
-import ButtonComponent from './Button';
-import {components as comps} from './fixtures/index';
+
 import Harness from '../../../test/harness';
+import ButtonComponent from './Button';
+
+import {
+  comp1
+} from './fixtures';
+
 describe('Button Component', () => {
   it('Should build a button component', (done) => {
-    Harness.testCreate(ButtonComponent, comps.comp1).then((component) => {
+    Harness.testCreate(ButtonComponent, comp1).then((component) => {
       const buttons = Harness.testElements(component, 'button[type="submit"]', 1);
-      for (let i=0; i < buttons.length; i++) {
-        assert.equal(buttons[i].name, `data[${comps.comp1.key}]`);
-        assert.equal(buttons[i].innerHTML, comps.comp1.label);
+      for (const button of buttons) {
+        assert.equal(button.name, `data[${comp1.key}]`);
+        assert.equal(button.innerHTML, comp1.label);
       }
       done();
     });

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
-import {flattenComponents} from '../../utils/utils';
+import { flattenComponents } from '../../utils/utils';
 
 export default class ButtonComponent extends BaseComponent {
   static schema(...extend) {
@@ -26,7 +26,7 @@ export default class ButtonComponent extends BaseComponent {
       icon: 'fa fa-stop',
       documentation: 'http://help.form.io/userguide/#button',
       weight: 110,
-      schema: ButtonComponent.schema()
+      schema: this.schema()
     };
   }
 
@@ -99,7 +99,7 @@ export default class ButtonComponent extends BaseComponent {
   }
 
   buttonMessage(message) {
-    return this.ce('span', {class: 'help-block'}, this.text(message));
+    return this.ce('span', { class: 'help-block' }, this.text(message));
   }
 
   /* eslint-disable max-statements */
@@ -342,7 +342,7 @@ export default class ButtonComponent extends BaseComponent {
             this.root.setAlert('danger', 'OAuth state does not match. Please try logging in again.');
             return;
           }
-          const submission = {data: {}, oauth: {}};
+          const submission = { data: {}, oauth: {} };
           submission.oauth[settings.provider] = params;
           submission.oauth[settings.provider].redirectURI = window.location.origin
             || `${window.location.protocol}//${window.location.host}`;

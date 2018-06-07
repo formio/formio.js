@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import jsonLogic from 'json-logic-js';
 import moment from 'moment';
-import {lodashOperators} from './jsonlogic/operators';
+import { lodashOperators } from './jsonlogic/operators';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
@@ -21,7 +21,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export {jsonLogic};
+export { jsonLogic };
 
 /**
  * Evaluate a method.
@@ -32,7 +32,7 @@ export {jsonLogic};
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
-  const component = args.component ? args.component : {key: 'unknown'};
+  const component = args.component ? args.component : { key: 'unknown' };
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
@@ -415,7 +415,7 @@ export function checkCalculated(component, submission, rowData) {
   // Process calculated value stuff if present.
   if (component.calculateValue) {
     _.set(rowData, component.key, evaluate(component.calculateValue, {
-      value: [],
+      value: undefined,
       data: submission ? submission.data : rowData,
       row: rowData,
       util: this,
@@ -436,10 +436,10 @@ export function checkCalculated(component, submission, rowData) {
 export function checkSimpleConditional(component, condition, row, data) {
   let value = null;
   if (row) {
-    value = getValue({data: row}, condition.when);
+    value = getValue({ data: row }, condition.when);
   }
   if (data && _.isNil(value)) {
-    value = getValue({data: data}, condition.when);
+    value = getValue({ data: data }, condition.when);
   }
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value)) {
@@ -471,8 +471,8 @@ export function checkCustomConditional(component, custom, row, data, form, varia
     custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
   const value = (instance && instance.evaluate) ?
-    instance.evaluate(custom, {row, data, form}) :
-    evaluate(custom, {row, data, form});
+    instance.evaluate(custom, { row, data, form }) :
+    evaluate(custom, { row, data, form });
   if (value === null) {
     return onError;
   }

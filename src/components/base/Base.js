@@ -1,5 +1,5 @@
 /* globals Quill */
-import maskInput, {conformToMask} from 'vanilla-text-mask';
+import maskInput, { conformToMask } from 'vanilla-text-mask';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 import Tooltip from 'tooltip.js';
@@ -630,7 +630,6 @@ export default class BaseComponent {
   }
 
   createModal() {
-    const self = this;
     const modalBody = this.ce('div');
     const modalOverlay = this.ce('div', {
       class: 'formio-dialog-overlay'
@@ -665,9 +664,9 @@ export default class BaseComponent {
     });
     document.body.appendChild(dialog);
     dialog.body = modalBody;
-    dialog.close = function() {
+    dialog.close = () => {
       dialog.dispatchEvent(new CustomEvent('close'));
-      self.removeChildFrom(dialog, document.body);
+      this.removeChildFrom(dialog, document.body);
     };
     return dialog;
   }
@@ -796,7 +795,7 @@ export default class BaseComponent {
     else if (this.component.customDefaultValue) {
       defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        {value: ''},
+        { value: '' },
         'value'
       );
     }
@@ -1358,7 +1357,7 @@ export default class BaseComponent {
    *   The callback function to be executed when the listener is triggered.
    */
   addEventListener(obj, type, func) {
-    this.eventHandlers.push({id: this.id, obj, type, func});
+    this.eventHandlers.push({ id: this.id, obj, type, func });
     if ('addEventListener' in obj) {
       obj.addEventListener(type, func, false);
     }
@@ -1775,7 +1774,6 @@ export default class BaseComponent {
    */
   hook() {
     const name = arguments[0];
-    const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
     if (
       this.options &&
       this.options.hooks &&
@@ -1785,6 +1783,7 @@ export default class BaseComponent {
     }
     else {
       // If this is an async hook instead of a sync.
+      const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
       if (fn) {
         return fn(null, arguments[1]);
       }
@@ -1875,12 +1874,12 @@ export default class BaseComponent {
       placeholder: this.t(this.component.placeholder),
       modules: {
         toolbar: [
-          [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
-          [{'header': [1, 2, 3, 4, 5, 6, false]}],
-          [{'font': []}],
-          ['bold', 'italic', 'underline', 'strike', {'script': 'sub'}, {'script': 'super'}, 'clean'],
-          [{'color': []}, {'background': []}],
-          [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}, {'align': []}],
+          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'font': [] }],
+          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
           ['blockquote', 'code-block'],
           ['link', 'image', 'video', 'formula', 'source']
         ]
@@ -1893,7 +1892,7 @@ export default class BaseComponent {
 
     // Lazy load the quill css.
     BaseComponent.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      {type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css`}
+      { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
@@ -2358,7 +2357,7 @@ export default class BaseComponent {
    * Resets the value of this component.
    */
   resetValue() {
-    this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
+    this.setValue(this.emptyValue, { noUpdateEvent: true, noValidate: true });
     _.unset(this.data, this.key);
   }
 
@@ -2559,7 +2558,7 @@ export default class BaseComponent {
 }
 
 BaseComponent.externalLibraries = {};
-BaseComponent.requireLibrary = function(name, property, src, polling) {
+BaseComponent.requireLibrary = (name, property, src, polling) => {
   if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
     BaseComponent.externalLibraries[name] = {};
     BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {
@@ -2570,9 +2569,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
     const callbackName = `${name}Callback`;
 
     if (!polling && !window[callbackName]) {
-      window[callbackName] = function() {
-        this.resolve();
-      }.bind(BaseComponent.externalLibraries[name]);
+      window[callbackName] = () => BaseComponent.externalLibraries[name].resolve();
     }
 
     // See if the plugin already exists.
@@ -2620,14 +2617,12 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
 
       // if no callback is provided, then check periodically for the script.
       if (polling) {
-        setTimeout(function checkLibrary() {
+        const interval = setInterval(() => {
           const plugin = _.get(window, property);
+
           if (plugin) {
+            clearInterval(interval);
             BaseComponent.externalLibraries[name].resolve(plugin);
-          }
-          else {
-            // check again after 200 ms.
-            setTimeout(checkLibrary, 200);
           }
         }, 200);
       }
@@ -2636,7 +2631,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
   return BaseComponent.externalLibraries[name].ready;
 };
 
-BaseComponent.libraryReady = function(name) {
+BaseComponent.libraryReady = (name) => {
   if (
     BaseComponent.externalLibraries.hasOwnProperty(name) &&
     BaseComponent.externalLibraries[name].ready

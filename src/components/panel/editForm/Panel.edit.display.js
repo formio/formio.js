@@ -26,12 +26,12 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'Default', value: 'default'},
-        {label: 'Primary', value: 'primary'},
-        {label: 'Info', value: 'info'},
-        {label: 'Success', value: 'success'},
-        {label: 'Danger', value: 'danger'},
-        {label: 'Warning', value: 'warning'}
+        { label: 'Default', value: 'default' },
+        { label: 'Primary', value: 'primary' },
+        { label: 'Info', value: 'info' },
+        { label: 'Success', value: 'success' },
+        { label: 'Danger', value: 'danger' },
+        { label: 'Warning', value: 'warning' }
       ]
     }
   },
@@ -44,8 +44,8 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'Yes', value: 'default'},
-        {label: 'No', value: 'none'}
+        { label: 'Yes', value: 'default' },
+        { label: 'No', value: 'none' }
       ]
     }
   }

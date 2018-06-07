@@ -1,4 +1,4 @@
-export const component = {
+export default {
   'key': 'fieldset1',
   'input': false,
   'tableView': true,
