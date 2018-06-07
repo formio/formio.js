@@ -35,10 +35,11 @@ const url = (formio) => ({
             respData = {};
           }
 
+          const url = respData.hasOwnProperty('url') ? respData.url : `${xhr.responseURL}/${fileName}`;
           resolve({
             storage: 'url',
             name: fileName,
-            url: `${xhr.responseURL}/${fileName}`,
+            url,
             size: file.size,
             type: file.type,
             data: respData
