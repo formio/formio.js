@@ -48,6 +48,7 @@ export default class DayComponent extends BaseComponent {
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
       : this.component.dayFirst;
+    this.hideInputLabels = this.component.hideInputLabels;
   }
 
   get dayRequired() {
@@ -91,7 +92,7 @@ export default class DayComponent extends BaseComponent {
       return this._months;
     }
     this._months = [
-      {value: 0, label: _.get(this.component, 'fields.month.placeholder', '')},
+      {value: 0, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')},
       {value: 1, label: this.t('january')},
       {value: 2, label: this.t('february')},
       {value: 3, label: this.t('march')},
@@ -137,13 +138,19 @@ export default class DayComponent extends BaseComponent {
 
     const id = `${this.component.key}-day`;
 
-    const dayLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.day.required', false) ? 'field-required' : ''
-    });
-    dayLabel.appendChild(this.text(this.t('day')));
-    this.setSubinputLabelStyle(dayLabel);
-    if (!subinputAtTheBottom) {
+    const dayLabel = !this.hideInputLabels
+      ? this.ce('label', {
+        for: id,
+        class: _.get(this.component, 'fields.day.required', false) ? 'field-required' : ''
+      })
+      : null;
+
+    if (dayLabel) {
+      dayLabel.appendChild(this.text(this.t('day')));
+      this.setSubinputLabelStyle(dayLabel);
+    }
+
+    if (dayLabel && !subinputAtTheBottom) {
       dayColumn.appendChild(dayLabel);
     }
 
@@ -154,7 +161,7 @@ export default class DayComponent extends BaseComponent {
       step: '1',
       min: '1',
       max: '31',
-      placeholder: _.get(this.component, 'fields.day.placeholder', ''),
+      placeholder: _.get(this.component, 'fields.day.placeholder') || (this.hideInputLabels ? this.t('Day') : ''),
       id
     });
     this.hook('input', this.dayInput, dayInputWrapper);
@@ -163,7 +170,7 @@ export default class DayComponent extends BaseComponent {
     this.setSubinputStyle(dayInputWrapper);
     dayColumn.appendChild(dayInputWrapper);
 
-    if (subinputAtTheBottom) {
+    if (dayLabel && subinputAtTheBottom) {
       dayColumn.appendChild(dayLabel);
     }
 
@@ -177,13 +184,19 @@ export default class DayComponent extends BaseComponent {
 
     const id = `${this.component.key}-month`;
 
-    const monthLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.month.required', false) ? 'field-required' : ''
-    });
-    monthLabel.appendChild(this.text(this.t('month')));
-    this.setSubinputLabelStyle(monthLabel);
-    if (!subinputAtTheBottom) {
+    const monthLabel = !this.hideInputLabels
+      ? this.ce('label', {
+        for: id,
+        class: _.get(this.component, 'fields.month.required', false) ? 'field-required' : ''
+      })
+      : null;
+
+    if (monthLabel) {
+      monthLabel.appendChild(this.text(this.t('month')));
+      this.setSubinputLabelStyle(monthLabel);
+    }
+
+    if (monthLabel && !subinputAtTheBottom) {
       monthColumn.appendChild(monthLabel);
     }
 
@@ -208,7 +221,7 @@ export default class DayComponent extends BaseComponent {
     this.setSubinputStyle(monthInputWrapper);
     monthColumn.appendChild(monthInputWrapper);
 
-    if (subinputAtTheBottom) {
+    if (monthLabel && subinputAtTheBottom) {
       monthColumn.appendChild(monthLabel);
     }
 
@@ -222,13 +235,19 @@ export default class DayComponent extends BaseComponent {
 
     const id = `${this.component.key}-year`;
 
-    const yearLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.year.required', false) ? 'field-required' : ''
-    });
-    yearLabel.appendChild(this.text(this.t('year')));
-    this.setSubinputLabelStyle(yearLabel);
-    if (!subinputAtTheBottom) {
+    const yearLabel = !this.hideInputLabels
+      ? this.ce('label', {
+        for: id,
+        class: _.get(this.component, 'fields.year.required', false) ? 'field-required' : ''
+      })
+      : null;
+
+    if (yearLabel) {
+      yearLabel.appendChild(this.text(this.t('year')));
+      this.setSubinputLabelStyle(yearLabel);
+    }
+
+    if (yearLabel && !subinputAtTheBottom) {
       yearColumn.appendChild(yearLabel);
     }
 
@@ -238,7 +257,7 @@ export default class DayComponent extends BaseComponent {
       type: 'number',
       step: '1',
       min: '1',
-      placeholder: _.get(this.component, 'fields.year.placeholder', ''),
+      placeholder: _.get(this.component, 'fields.year.placeholder') || (this.hideInputLabels ? this.t('Year') : ''),
       id
     });
 
@@ -248,7 +267,7 @@ export default class DayComponent extends BaseComponent {
     this.setSubinputStyle(yearInputWrapper);
     yearColumn.appendChild(yearInputWrapper);
 
-    if (subinputAtTheBottom) {
+    if (yearLabel && subinputAtTheBottom) {
       yearColumn.appendChild(yearLabel);
     }
 

@@ -17,7 +17,7 @@ Formio.forms = {};
 // Allow people to register components.
 Formio.registerComponent = Components.setComponent;
 
-const getOptions = function(options) {
+function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
     i18next: i18next
@@ -29,7 +29,7 @@ const getOptions = function(options) {
     });
   }
   return options;
-};
+}
 
 /**
  * Renders a Form.io form within the webpage.

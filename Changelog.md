@@ -45,6 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## [UNRELEASED]
+### Added
+ - 'Hide Input Labels' property for Day component.
+
 ## 3.0.0-rc.8
 ### Fixed
  - Problem with the Select component where it would remove selected items while searching.
@@ -57,7 +61,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
  - Added deprecation notice to "whenReady" method and replace it with dataReady getter property.
- 
+
 ## 3.0.0-rc.7
 ### Added
  - A builder css build without font-awesome to fix issues with framework library implementations.
