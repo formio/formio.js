@@ -415,7 +415,7 @@ export function checkCalculated(component, submission, rowData) {
   // Process calculated value stuff if present.
   if (component.calculateValue) {
     _.set(rowData, component.key, evaluate(component.calculateValue, {
-      value: [],
+      value: undefined,
       data: submission ? submission.data : rowData,
       row: rowData,
       util: this,

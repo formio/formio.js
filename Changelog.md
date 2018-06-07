@@ -46,6 +46,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "data" always refers to the global data of the submission.
 
 ## [UNRELEASED]
+### Changed
+ - Default value for calculated logic.
 ### Fixed
  - Required validation for Survey component.
 ### Added
