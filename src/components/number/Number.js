@@ -26,7 +26,7 @@ export default class NumberComponent extends BaseComponent {
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#number',
       weight: 10,
-      schema: NumberComponent.schema()
+      schema: this.schema()
     };
   }
 

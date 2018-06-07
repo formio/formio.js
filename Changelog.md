@@ -48,6 +48,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Fixed
  - Required validation for Survey component.
+### Added
+ - 'Hide Input Labels' property for Day component.
 
 ## 3.0.0-rc.8
 ### Fixed

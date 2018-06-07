@@ -630,7 +630,6 @@ export default class BaseComponent {
   }
 
   createModal() {
-    const self = this;
     const modalBody = this.ce('div');
     const modalOverlay = this.ce('div', {
       class: 'formio-dialog-overlay'
@@ -665,9 +664,9 @@ export default class BaseComponent {
     });
     document.body.appendChild(dialog);
     dialog.body = modalBody;
-    dialog.close = function() {
+    dialog.close = () => {
       dialog.dispatchEvent(new CustomEvent('close'));
-      self.removeChildFrom(dialog, document.body);
+      this.removeChildFrom(dialog, document.body);
     };
     return dialog;
   }
@@ -1760,7 +1759,6 @@ export default class BaseComponent {
    */
   hook() {
     const name = arguments[0];
-    const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
     if (
       this.options &&
       this.options.hooks &&
@@ -1770,6 +1768,7 @@ export default class BaseComponent {
     }
     else {
       // If this is an async hook instead of a sync.
+      const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
       if (fn) {
         return fn(null, arguments[1]);
       }
@@ -2543,7 +2542,7 @@ export default class BaseComponent {
 }
 
 BaseComponent.externalLibraries = {};
-BaseComponent.requireLibrary = function(name, property, src, polling) {
+BaseComponent.requireLibrary = (name, property, src, polling) => {
   if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
     BaseComponent.externalLibraries[name] = {};
     BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {
@@ -2554,9 +2553,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
     const callbackName = `${name}Callback`;
 
     if (!polling && !window[callbackName]) {
-      window[callbackName] = function() {
-        this.resolve();
-      }.bind(BaseComponent.externalLibraries[name]);
+      window[callbackName] = () => BaseComponent.externalLibraries[name].resolve();
     }
 
     // See if the plugin already exists.
@@ -2604,14 +2601,12 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
 
       // if no callback is provided, then check periodically for the script.
       if (polling) {
-        setTimeout(function checkLibrary() {
+        const interval = setInterval(() => {
           const plugin = _.get(window, property);
+
           if (plugin) {
+            clearInterval(interval);
             BaseComponent.externalLibraries[name].resolve(plugin);
-          }
-          else {
-            // check again after 200 ms.
-            setTimeout(checkLibrary, 200);
           }
         }, 200);
       }
@@ -2620,7 +2615,7 @@ BaseComponent.requireLibrary = function(name, property, src, polling) {
   return BaseComponent.externalLibraries[name].ready;
 };
 
-BaseComponent.libraryReady = function(name) {
+BaseComponent.libraryReady = (name) => {
   if (
     BaseComponent.externalLibraries.hasOwnProperty(name) &&
     BaseComponent.externalLibraries[name].ready

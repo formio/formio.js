@@ -24,7 +24,7 @@ export default class FileComponent extends BaseComponent {
       icon: 'fa fa-file',
       documentation: 'http://help.form.io/userguide/#file',
       weight: 100,
-      schema: FileComponent.schema()
+      schema: this.schema()
     };
   }
 
@@ -150,6 +150,7 @@ export default class FileComponent extends BaseComponent {
   }
 
   createFileListItem(fileInfo, index) {
+    const fileService = this.fileService;
     return this.ce('li', { class: 'list-group-item' },
       this.ce('div', { class: 'row' },
         [
@@ -160,7 +161,7 @@ export default class FileComponent extends BaseComponent {
                   class: this.iconClass('remove'),
                   onClick: event => {
                     if (fileInfo && (this.component.storage === 'url')) {
-                      this.options.formio.makeRequest('', fileInfo.url, 'delete');
+                      fileService.makeRequest('', fileInfo.url, 'delete');
                     }
                     event.preventDefault();
                     this.splice(index);
@@ -227,7 +228,7 @@ export default class FileComponent extends BaseComponent {
                 class: this.iconClass('remove'),
                 onClick: event => {
                   if (fileInfo && (this.component.storage === 'url')) {
-                    this.options.formio.makeRequest('', fileInfo.url, 'delete');
+                    fileService.makeRequest('', fileInfo.url, 'delete');
                   }
                   event.preventDefault();
                   this.splice(index);
@@ -250,15 +251,15 @@ export default class FileComponent extends BaseComponent {
         (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
           this.ce('div', {
             class: 'fileSelector',
-            onDragover: function(event) {
+            onDragover(event) {
               this.className = 'fileSelector fileDragOver';
               event.preventDefault();
             },
-            onDragleave: function(event) {
+            onDragleave(event) {
               this.className = 'fileSelector';
               event.preventDefault();
             },
-            onDrop: function(event) {
+            onDrop(event) {
               this.className = 'fileSelector';
               event.preventDefault();
               element.upload(event.dataTransfer.files);

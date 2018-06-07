@@ -21,7 +21,7 @@ export default class TableComponent extends NestedComponent {
       key: 'table',
       numRows: 3,
       numCols: 3,
-      rows: TableComponent.emptyTable(3, 3),
+      rows: this.emptyTable(3, 3),
       header: [],
       caption: '',
       striped: false,
@@ -39,7 +39,7 @@ export default class TableComponent extends NestedComponent {
       icon: 'fa fa-table',
       weight: 40,
       documentation: 'http://help.form.io/userguide/#table',
-      schema: TableComponent.schema()
+      schema: this.schema()
     };
   }
 

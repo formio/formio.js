@@ -58,9 +58,7 @@ export default {
   },
 
   getAlphaShortcuts() {
-    return _.range('A'.charCodeAt(), 'Z'.charCodeAt() + 1).map(function(charCode) {
-      return String.fromCharCode(charCode);
-    });
+    return _.range('A'.charCodeAt(), 'Z'.charCodeAt() + 1).map((charCode) => String.fromCharCode(charCode));
   },
 
   getAdditionalShortcuts(type) {
@@ -79,7 +77,7 @@ export default {
         result.push(component.shortcut);
       }
       if (component.values) {
-        component.values.forEach(function(value) {
+        component.values.forEach((value) => {
           if (value.shortcut) {
             result.push(value.shortcut);
           }
