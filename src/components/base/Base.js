@@ -419,7 +419,7 @@ export default class BaseComponent {
     return this.events.on(type, cb);
   }
 
-  /**
+  /**removeEventListeners
    * Removes all listeners for a certain event.
    *
    * @param event
@@ -1398,7 +1398,7 @@ export default class BaseComponent {
   removeEventListeners() {
     _.each(this.events._events, (events, type) => {
       _.each(events, (listener) => {
-        if ((this.id === listener.id)) {
+        if (listener && (this.id === listener.id)) {
           this.events.off(type, listener);
         }
       });
