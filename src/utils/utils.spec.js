@@ -252,6 +252,17 @@ describe('checkCalculated', () => {
     utils.checkCalculated(component, null, data);
     expect(data.sum).to.be.equal(6);
   });
+
+  it('should return undefined if no logic provided', () => {
+    const component = {
+      key: 'sum',
+      calculateValue: '/* do nothing */'
+    };
+    const data = {};
+
+    utils.checkCalculated(component, null, data);
+    expect(data.sum).to.be.undefined;
+  });
 });
 
 describe('checkCondition', () => {
