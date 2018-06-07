@@ -20,7 +20,7 @@ export default class DataGridComponent extends NestedComponent {
       group: 'data',
       documentation: 'http://help.form.io/userguide/#datagrid',
       weight: 20,
-      schema: DataGridComponent.schema()
+      schema: this.schema()
     };
   }
 

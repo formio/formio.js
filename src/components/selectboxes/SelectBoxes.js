@@ -18,7 +18,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       icon: 'fa fa-plus-square',
       weight: 60,
       documentation: 'http://help.form.io/userguide/#selectboxes',
-      schema: SelectBoxesComponent.schema()
+      schema: this.schema()
     };
   }
 
