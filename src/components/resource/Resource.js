@@ -24,7 +24,7 @@ export default class ResourceComponent extends SelectComponent {
       icon: 'fa fa-files-o',
       weight: 90,
       documentation: 'http://help.form.io/userguide/#resource',
-      schema: this.schema()
+      schema: ResourceComponent.schema()
     };
   }
 

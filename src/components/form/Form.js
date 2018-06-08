@@ -23,7 +23,7 @@ export default class FormComponent extends BaseComponent {
       group: 'advanced',
       documentation: 'http://help.form.io/userguide/#form',
       weight: 110,
-      schema: this.schema()
+      schema: FormComponent.schema()
     };
   }
 

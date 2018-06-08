@@ -37,7 +37,7 @@ export default class DayComponent extends BaseComponent {
       icon: 'fa fa-calendar',
       documentation: 'http://help.form.io/userguide/#day',
       weight: 50,
-      schema: this.schema()
+      schema: DayComponent.schema()
     };
   }
 

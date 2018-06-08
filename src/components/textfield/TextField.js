@@ -28,7 +28,7 @@ export default class TextFieldComponent extends BaseComponent {
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#textfield',
       weight: 0,
-      schema: this.schema()
+      schema: TextFieldComponent.schema()
     };
   }
 

@@ -25,7 +25,7 @@ export default class TabsComponent extends NestedComponent {
       icon: 'fa fa-folder-o',
       weight: 50,
       documentation: 'http://help.form.io/userguide/#tabs',
-      schema: this.schema()
+      schema: TabsComponent.schema()
     };
   }
 

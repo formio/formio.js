@@ -20,7 +20,7 @@ export default class EmailComponent extends TextFieldComponent {
       icon: 'fa fa-at',
       documentation: 'http://help.form.io/userguide/#email',
       weight: 10,
-      schema: this.schema()
+      schema: EmailComponent.schema()
     };
   }
 

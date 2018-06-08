@@ -17,7 +17,7 @@ export default class ContentComponent extends BaseComponent {
       icon: 'fa fa-html5',
       documentation: 'http://help.form.io/userguide/#content-component',
       weight: 100,
-      schema: this.schema()
+      schema: ContentComponent.schema()
     };
   }
 

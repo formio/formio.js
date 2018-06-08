@@ -20,7 +20,7 @@ export default class SurveyComponent extends BaseComponent {
       icon: 'fa fa-list',
       weight: 170,
       documentation: 'http://help.form.io/userguide/#survey',
-      schema: this.schema()
+      schema: SurveyComponent.schema()
     };
   }
 

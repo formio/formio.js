@@ -82,7 +82,7 @@ export default class Form {
     code += `<div id="${id}" class="${className}"></div>`;
     document.write(code);
     const formElement = document.getElementById(id);
-    return (new this(formElement, embed.src)).render();
+    return (new Form(formElement, embed.src)).render();
   }
 
   render(form) {

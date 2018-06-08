@@ -21,7 +21,7 @@ export default class TagsComponent extends BaseComponent {
       group: 'advanced',
       documentation: 'http://help.form.io/userguide/#tags',
       weight: 50,
-      schema: this.schema()
+      schema: TagsComponent.schema()
     };
   }
 

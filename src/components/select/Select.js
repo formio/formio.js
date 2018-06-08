@@ -34,7 +34,7 @@ export default class SelectComponent extends BaseComponent {
       icon: 'fa fa-th-list',
       weight: 70,
       documentation: 'http://help.form.io/userguide/#select',
-      schema: this.schema()
+      schema: SelectComponent.schema()
     };
   }
 

@@ -24,7 +24,7 @@ export default class PanelComponent extends NestedComponent {
       group: 'layout',
       documentation: 'http://help.form.io/userguide/#panels',
       weight: 30,
-      schema: this.schema()
+      schema: PanelComponent.schema()
     };
   }
 

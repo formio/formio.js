@@ -22,7 +22,7 @@ export default class CheckBoxComponent extends BaseComponent {
       icon: 'fa fa-check-square',
       documentation: 'http://help.form.io/userguide/#checkbox',
       weight: 50,
-      schema: this.schema()
+      schema: CheckBoxComponent.schema()
     };
   }
 
