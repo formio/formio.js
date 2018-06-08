@@ -12,9 +12,13 @@ export default class Multivalue extends Field {
     return this.t(this.component.addAnother || ' Add Another');
   }
 
+  useWrapper() {
+    return this.component.hasOwnProperty('multiple') && this.component.multiple;
+  }
+
   render() {
     // If single value field.
-    if (!this.component.multiple) {
+    if (!this.useWrapper()) {
       return super.render(`<div ref="element">${this.renderElement(this.dataValue)}</div>`);
     }
 

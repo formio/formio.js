@@ -7,7 +7,7 @@ export default {
 <div class="input-group-addon">{{component.prefix}}</div>
 {% } %}
 <{{input.type}} 
-  ref="input" 
+  ref="{{input.ref ? input.ref : 'input'}}" 
   {% for (var attr in input.attr) { %}
   {{attr}}="{{input.attr[attr]}}"
   {% } %}

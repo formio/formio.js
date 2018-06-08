@@ -24,8 +24,8 @@ export default class EmailComponent extends TextFieldComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     this.validators.push('email');
   }
 

@@ -470,7 +470,7 @@ export default class Component {
     return this.options.templates[name][mode];
   }
 
-  renderTemplate(name, data) {
+  renderTemplate(name, data = {}) {
     data.component = this.component;
     data.t = this.t.bind(this);
     data.id = data.id || this.id;
@@ -919,23 +919,8 @@ export default class Component {
   }
 
   iconClass(name, spinning) {
-    if (!this.options.icons || this.options.icons === 'glyphicon') {
-      return spinning ? `glyphicon glyphicon-${name} glyphicon-spin` : `glyphicon glyphicon-${name}`;
-    }
-    switch (name) {
-      case 'zoom-in':
-        return 'fa fa-search-plus';
-      case 'zoom-out':
-        return 'fa fa-search-minus';
-      case 'question-sign':
-        return 'fa fa-question-circle';
-      case 'remove-circle':
-        return 'fa fa-times-circle-o';
-      case 'new-window':
-        return 'fa fa-window-restore';
-      default:
-        return spinning ? `fa fa-${name} fa-spin` : `fa fa-${name}`;
-    }
+    const iconset = (!this.options.icons || this.options.icons === 'glyphicon') ? 'glypicon' : this.options.icons;
+    return this.options.templates.iconClass(iconset, name, spinning);
   }
 
   /**
@@ -1892,6 +1877,15 @@ export default class Component {
 
     this.updateOnChange(flags, changed);
     return changed;
+  }
+
+  getIcon(name, content, styles, ref = 'icon') {
+    return this.renderTemplate('icon', {
+      className: this.iconClass(name),
+      ref,
+      styles,
+      content
+    });
   }
 
   /**

@@ -1,11 +1,11 @@
 import Choices from 'choices.js';
 import _ from 'lodash';
-import Field from '../_classes/field/Field';
+import Input from '../_classes/input/Input';
 import Formio from '../../Formio';
 
-export default class SelectComponent extends Field {
+export default class SelectComponent extends Input {
   static schema(...extend) {
-    return Field.schema({
+    return Input.schema({
       type: 'select',
       label: 'Select',
       key: 'select',
@@ -89,7 +89,11 @@ export default class SelectComponent extends Field {
     return info;
   }
 
-  itemTemplate(data) {
+  useWrapper() {
+    return false;
+  }
+
+    itemTemplate(data) {
     if (!data) {
       return '';
     }
