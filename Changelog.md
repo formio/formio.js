@@ -45,12 +45,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
-## [UNRELEASED]
+## 3.0.0-rc.9
 ### Changed
  - Default value for calculated logic.
+
 ### Fixed
+ - Issues with the event system where some events would get canceled by other components.
  - Required validation for Survey component.
+ - Fixed an issue where the file service is not defined when removing images from file component.
+
 ### Added
+ - Allow url uploads to respond with their own url.
  - 'Hide Input Labels' property for Day component.
 
 ## 3.0.0-rc.8
