@@ -12,6 +12,7 @@ import multiValueTable from './multiValueTable';
 import panel from './panel';
 import radio from './radio';
 import select from './select';
+import selectOption from './selectOption';
 import webform from './webform';
 import well from './well';
 
@@ -53,6 +54,7 @@ export default {
   panel,
   radio,
   select,
+  selectOption,
   webform,
   well,
 };

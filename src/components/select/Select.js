@@ -1,11 +1,11 @@
 import Choices from 'choices.js';
 import _ from 'lodash';
-import Input from '../_classes/input/Input';
 import Formio from '../../Formio';
+import Field from '../_classes/field/Field';
 
-export default class SelectComponent extends Input {
+export default class SelectComponent extends Field {
   static schema(...extend) {
-    return Input.schema({
+    return Field.schema({
       type: 'select',
       label: 'Select',
       key: 'select',
@@ -38,9 +38,8 @@ export default class SelectComponent extends Input {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
-    this.component.widget = 'html5';
+  init() {
+    super.init();
 
     // Trigger an update.
     this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
@@ -89,11 +88,7 @@ export default class SelectComponent extends Input {
     return info;
   }
 
-  useWrapper() {
-    return false;
-  }
-
-    itemTemplate(data) {
+  itemTemplate(data) {
     if (!data) {
       return '';
     }
@@ -127,29 +122,23 @@ export default class SelectComponent extends Input {
    * @param value
    * @param label
    */
-  addOption(value, label, attr) {
+  addOption(value, label, attrs = {}) {
     const option = {
       value: value,
       label: label
     };
 
     this.selectOptions.push(option);
+
     if (this.choices) {
       return;
     }
 
-    option.element = document.createElement('option');
-    if (this.dataValue === option.value) {
-      option.element.setAttribute('selected', 'selected');
-      option.element.selected = 'selected';
-    }
-    option.element.innerHTML = label;
-    if (attr) {
-      _.each(attr, (value, key) => {
-        option.element.setAttribute(key, value);
-      });
-    }
-    this.refs.input[0].appendChild(option.element);
+    this.refs.selectContainer.insertAdjacentHTML('beforeend', this.renderTemplate('selectOption', {
+      selected: this.dataValue === option.value,
+      option,
+      attrs,
+    }));
   }
 
   addValueOptions(items) {
@@ -163,7 +152,7 @@ export default class SelectComponent extends Input {
         });
       }
       else if (!this.component.multiple) {
-        // this.addPlaceholder(this.refs.input[0]);
+        this.addPlaceholder();
       }
     }
   }
@@ -188,12 +177,12 @@ export default class SelectComponent extends Input {
       }
     }
 
-    if (!this.choices && this.refs.input[0]) {
+    if (!this.choices && this.refs.selectContainer) {
       if (this.loading) {
-        this.removeChildFrom(this.refs.input[0], this.selectContainer);
+        // this.removeChildFrom(this.refs.input[0], this.selectContainer);
       }
 
-      this.refs.input[0].innerHTML = '';
+      this.empty(this.refs.selectContainer);
     }
 
     this.selectOptions = [];
@@ -222,7 +211,7 @@ export default class SelectComponent extends Input {
     }
     else if (this.loading) {
       // Re-attach select input.
-      this.appendTo(this.refs.input[0], this.selectContainer);
+      // this.appendTo(this.refs.input[0], this.selectContainer);
     }
 
     // We are no longer loading.
@@ -400,14 +389,11 @@ export default class SelectComponent extends Input {
     }
   }
 
-  addPlaceholder(input) {
-    if (!this.component.placeholder || !input) {
+  addPlaceholder() {
+    if (!this.component.placeholder) {
       return;
     }
-    const placeholder = document.createElement('option');
-    placeholder.setAttribute('placeholder', true);
-    placeholder.appendChild(this.text(this.component.placeholder));
-    input.appendChild(placeholder);
+    this.addOption('', this.component.placeholder, {placeholder: true});
   }
 
   /**
@@ -434,10 +420,10 @@ export default class SelectComponent extends Input {
     return !this.component.lazyLoad || this.activated;
   }
 
-  render(value) {
+  render() {
     const info = this.inputInfo;
     info.attr = info.attr || {};
-    info.attr.value = value;
+    info.multiple = this.component.multiple;
     return super.render(this.renderTemplate('select', {
       input: info,
       index: null
@@ -446,12 +432,9 @@ export default class SelectComponent extends Input {
 
   hydrate(element) {
     super.hydrate(element);
-    this.loadRefs(element, {input: 'multiple'});
-    const input = this.refs.input[0];
-
-    if (this.component.multiple) {
-      input.setAttribute('multiple', true);
-    }
+    this.loadRefs(element, {selectContainer: 'single'});
+    const input = this.refs.selectContainer;
+    console.log(this.refs);
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();
@@ -492,7 +475,7 @@ export default class SelectComponent extends Input {
     };
 
     const tabIndex = input.tabIndex;
-    this.addPlaceholder(input);
+    this.addPlaceholder();
     this.choices = new Choices(input, choicesOptions);
 
     if (this.component.multiple) {
