@@ -1,6 +1,5 @@
 export default {
   form: `
-<div class="grouped fields">
 {% if (!label.hidden && label.labelPosition !== 'bottom') { %}
   <label 
     class="{{label.className}}" 
@@ -21,6 +20,5 @@ export default {
 {% if (component.description) { %}
   <div class="help-block">{{t(component.description)}}</div>
 {% } %}
-</div>
 `,
 };

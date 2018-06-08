@@ -252,7 +252,7 @@ export default class Webform extends NestedComponent {
   }
 
   set template(template) {
-    this.options.templates = templates[template];
+    this.options.templates = _.merge({}, templates[template], this.options.templates || {});
   }
 
   /**

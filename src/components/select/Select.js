@@ -40,6 +40,7 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
+    this.component.widget = 'html5';
 
     // Trigger an update.
     this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
@@ -434,7 +435,6 @@ export default class SelectComponent extends Field {
     super.hydrate(element);
     this.loadRefs(element, {selectContainer: 'single'});
     const input = this.refs.selectContainer;
-    console.log(this.refs);
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();

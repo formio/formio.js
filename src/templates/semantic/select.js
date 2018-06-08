@@ -1,19 +1,21 @@
 export default {
   form: `
-<div class="ui selection dropdown fluid {{ component.suffix ? ' right' : '' }}{{ (component.prefix || component.suffix) ? ' labeled' : '' }}">
-  {% if (component.prefix) { %}
-  <label class="ui label">{{component.prefix}}</label>
-  {% } %}
-  <input type="hidden" ref="input"></input>
+{% if (component.widget === 'html5') { %}
+<div class="ui selection search dropdown fluid">
+  <input type="hidden" name="{{id}}">
   <i class="dropdown icon"></i>
-  <div class="default text">Gender</div>
-  <div class="menu">
-    <div class="item" data-value="1">Male</div>
-    <div class="item" data-value="0">Female</div>
+  <div class="default text">{{t(component.placeholder)}}</div>
+  <div class="menu" ref="selectContainer">
   </div>
-  {% if (component.suffix) { %}
-  <div class="ui label">{{component.suffix}}</div>
-  {% } %}
 </div>
+{% } else { %}
+<select
+  ref="selectContainer"
+  {{ input.multiple ? 'multiple' : '' }}
+  {% for (var attr in input.attr) { %}
+  {{attr}}="{{input.attr[attr]}}"
+  {% } %}
+></select>
+{% } %}
 `,
 };
