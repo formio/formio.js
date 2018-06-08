@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
+import { boolValue } from '../../utils/utils';
 
 export default class SurveyComponent extends BaseComponent {
   static schema(...extend) {
@@ -130,6 +131,9 @@ export default class SurveyComponent extends BaseComponent {
   }
 
   validateRequired(setting, value) {
+    if (!boolValue(setting)) {
+      return true;
+    }
     return this.component.questions.reduce((result, question) =>
       result && Boolean(value[question.value]), true);
   }
