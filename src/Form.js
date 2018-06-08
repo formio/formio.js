@@ -45,6 +45,9 @@ export default class Form {
     if (typeof formParam === 'string') {
       return (new Formio(formParam)).loadForm().then(form => {
         this.form = form;
+        if (this.instance) {
+          this.instance.destroy();
+        }
         this.instance = this.create();
         this.instance.url = formParam;
         this.instance.nosubmit = false;
@@ -55,6 +58,9 @@ export default class Form {
     }
     else {
       this.form = formParam;
+      if (this.instance) {
+        this.instance.destroy();
+      }
       this.instance = this.create();
       this.instance.form = this.form;
       return this.instance.ready.then(() => this.instance);
@@ -76,7 +82,7 @@ export default class Form {
     code += `<div id="${id}" class="${className}"></div>`;
     document.write(code);
     const formElement = document.getElementById(id);
-    return (new this(formElement, embed.src)).render();
+    return (new Form(formElement, embed.src)).render();
   }
 
   render(form) {

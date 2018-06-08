@@ -18,10 +18,10 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'Top', value: 'top'},
-        {label: 'Left', value: 'left'},
-        {label: 'Right', value: 'right'},
-        {label: 'Bottom', value: 'bottom'}
+        { label: 'Top', value: 'top' },
+        { label: 'Left', value: 'left' },
+        { label: 'Right', value: 'right' },
+        { label: 'Bottom', value: 'bottom' }
       ]
     }
   },

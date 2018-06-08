@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
+import { boolValue } from '../../utils/utils';
 
 export default class SurveyComponent extends BaseComponent {
   static schema(...extend) {
@@ -19,7 +20,7 @@ export default class SurveyComponent extends BaseComponent {
       icon: 'fa fa-list',
       weight: 170,
       documentation: 'http://help.form.io/userguide/#survey',
-      schema: this.schema()
+      schema: SurveyComponent.schema()
     };
   }
 
@@ -130,6 +131,9 @@ export default class SurveyComponent extends BaseComponent {
   }
 
   validateRequired(setting, value) {
+    if (!boolValue(setting)) {
+      return true;
+    }
     return this.component.questions.reduce((result, question) =>
       result && Boolean(value[question.value]), true);
   }

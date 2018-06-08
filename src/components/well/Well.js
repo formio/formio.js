@@ -18,7 +18,7 @@ export default class WellComponent extends NestedComponent {
       group: 'layout',
       documentation: 'http://help.form.io/userguide/#well',
       weight: 60,
-      schema: this.schema()
+      schema: WellComponent.schema()
     };
   }
 

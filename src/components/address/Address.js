@@ -24,7 +24,7 @@ export default class AddressComponent extends TextFieldComponent {
       icon: 'fa fa-home',
       documentation: 'http://help.form.io/userguide/#address',
       weight: 30,
-      schema: this.schema()
+      schema: AddressComponent.schema()
     };
   }
 

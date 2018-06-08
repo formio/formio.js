@@ -20,7 +20,7 @@ export default class CurrencyComponent extends NumberComponent {
       icon: 'fa fa-usd',
       documentation: 'http://help.form.io/userguide/#currency',
       weight: 70,
-      schema: this.schema()
+      schema: CurrencyComponent.schema()
     };
   }
 

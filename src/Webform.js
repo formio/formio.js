@@ -757,8 +757,8 @@ export default class Webform extends NestedComponent {
       this.showElement(false);
       this.build();
       this.isBuilt = true;
-      this.on('resetForm', () => this.resetValue(), true);
-      this.on('deleteSubmission', () => this.deleteSubmission(), true);
+      this.on('resetForm', () => this.resetValue());
+      this.on('deleteSubmission', () => this.deleteSubmission());
       this.on('refreshData', () => this.updateValue());
       setTimeout(() => {
         this.onChange();
@@ -811,9 +811,9 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   build() {
-    this.on('submitButton', (options) => this.submit(false, options), true);
+    this.on('submitButton', (options) => this.submit(false, options));
     this.addComponents();
-    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
+    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)));
   }
 
   /**

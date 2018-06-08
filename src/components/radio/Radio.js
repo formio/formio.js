@@ -20,7 +20,7 @@ export default class RadioComponent extends BaseComponent {
       icon: 'fa fa-dot-circle-o',
       weight: 80,
       documentation: 'http://help.form.io/userguide/#radio',
-      schema: this.schema()
+      schema: RadioComponent.schema()
     };
   }
 

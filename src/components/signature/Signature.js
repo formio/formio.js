@@ -25,7 +25,7 @@ export default class SignatureComponent extends BaseComponent {
       icon: 'fa fa-pencil',
       weight: 120,
       documentation: 'http://help.form.io/userguide/#signature',
-      schema: this.schema()
+      schema: SignatureComponent.schema()
     };
   }
 

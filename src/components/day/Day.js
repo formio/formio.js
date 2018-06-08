@@ -37,7 +37,7 @@ export default class DayComponent extends BaseComponent {
       icon: 'fa fa-calendar',
       documentation: 'http://help.form.io/userguide/#day',
       weight: 50,
-      schema: this.schema()
+      schema: DayComponent.schema()
     };
   }
 
@@ -92,7 +92,7 @@ export default class DayComponent extends BaseComponent {
       return this._months;
     }
     this._months = [
-      {value: 0, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '')},
+      { value: 0, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
       { value: 1, label: this.t('january') },
       { value: 2, label: this.t('february') },
       { value: 3, label: this.t('march') },

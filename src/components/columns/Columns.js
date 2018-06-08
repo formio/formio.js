@@ -25,7 +25,7 @@ export default class ColumnsComponent extends NestedComponent {
       group: 'layout',
       documentation: 'http://help.form.io/userguide/#columns',
       weight: 10,
-      schema: this.schema()
+      schema: ColumnsComponent.schema()
     };
   }
 

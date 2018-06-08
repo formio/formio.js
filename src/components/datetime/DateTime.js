@@ -51,7 +51,7 @@ export default class DateTimeComponent extends BaseComponent {
       icon: 'fa fa-calendar-plus-o',
       documentation: 'http://help.form.io/userguide/#datetime',
       weight: 40,
-      schema: this.schema()
+      schema: DateTimeComponent.schema()
     };
   }
 

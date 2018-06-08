@@ -26,7 +26,7 @@ export default class ButtonComponent extends BaseComponent {
       icon: 'fa fa-stop',
       documentation: 'http://help.form.io/userguide/#button',
       weight: 110,
-      schema: this.schema()
+      schema: ButtonComponent.schema()
     };
   }
 
@@ -137,7 +137,7 @@ export default class ButtonComponent extends BaseComponent {
       this.on('submitButton', () => {
         this.loading = true;
         this.disabled = true;
-      }, true);
+      });
       this.on('submitDone', () => {
         this.loading = false;
         this.disabled = false;
@@ -146,7 +146,7 @@ export default class ButtonComponent extends BaseComponent {
         this.removeClass(message, 'has-error');
         message.appendChild(this.buttonMessage('complete'));
         this.append(message);
-      }, true);
+      });
       this.on('change', (value) => {
         this.loading = false;
         const isValid = this.root.isValid(value.data, true);
@@ -158,7 +158,7 @@ export default class ButtonComponent extends BaseComponent {
           this.removeClass(message, 'has-success');
           this.removeClass(message, 'has-error');
         }
-      }, true);
+      });
       this.on('error', () => {
         this.loading = false;
         this.hasError = true;
@@ -167,25 +167,25 @@ export default class ButtonComponent extends BaseComponent {
         this.addClass(message, 'has-error');
         message.appendChild(this.buttonMessage(this.errorMessage('error')));
         this.append(message);
-      }, true);
+      });
     }
 
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
         this.loading = true;
         this.disabled = true;
-      }, true);
+      });
       this.on('requestDone', () => {
         this.loading = false;
         this.disabled = false;
-      }, true);
+      });
       this.on('change', (value) => {
         this.loading = false;
         this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
-      }, true);
+      });
       this.on('error', () => {
         this.loading = false;
-      }, true);
+      });
     }
     this.addEventListener(this.buttonElement, 'click', (event) => {
       this.dataValue = true;
