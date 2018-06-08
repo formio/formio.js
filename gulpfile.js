@@ -22,17 +22,21 @@ gulp.task('builder-fonts', () => gulp.src('node_modules/font-awesome/fonts/*').p
 
 // Generate styles
 const compileStyles = (styles, file) => {
-  const sassFilter = plugins.filter(['*.scss'], {restore: true});
+  const sassFilter = plugins.filter(['**/*.scss'], { restore: true });
   return gulp.src(styles)
     .pipe(sassFilter)
-    .pipe(plugins.sass().on('error', plugins.sass.logError))
+    .pipe(plugins.sass({
+      outputStyle: 'expanded'
+    }).on('error', plugins.sass.logError))
     .pipe(sassFilter.restore)
     .pipe(plugins.concat(`${file}.css`))
+    .pipe(plugins.replace('@charset "UTF-8";\n', ''))
     .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
     .pipe(plugins.replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
+    .pipe(plugins.insert.prepend('@charset "UTF-8";\n'))
     .pipe(gulp.dest('dist'))
     .pipe(plugins.rename(`${file}.min.css`))
-    .pipe(plugins.cleanCSS({compatibility: 'ie8'}))
+    .pipe(plugins.cleanCSS({ compatibility: 'ie8' }))
     .pipe(gulp.dest('dist'));
 };
 gulp.task('styles-form', () => compileStyles([
