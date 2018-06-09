@@ -867,6 +867,9 @@ export default class Webform extends NestedComponent {
       noCheck: true
     });
     this.setAlert('success', `<p>${this.t('complete')}</p>`);
+    if (!submission.hasOwnProperty('saved')) {
+      submission.saved = saved;
+    }
     this.emit('submit', submission);
     if (saved) {
       this.emit('submitDone', submission);
