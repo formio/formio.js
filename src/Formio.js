@@ -702,6 +702,9 @@ export default class Formio {
 
     // Allow plugins to alter the options.
     options = Formio.pluginAlter('requestOptions', options, url);
+    if (options.namespace) {
+      opts.namespace = options.namespace;
+    }
 
     const requestToken = options.headers.get('x-jwt-token');
     return fetch(url, options)
@@ -831,13 +834,13 @@ export default class Formio {
 
   static setToken(token, opts) {
     token = token || '';
-    opts = opts || {};
+    opts = (typeof opts === 'string') ? { namespace: opts } : opts || {};
     var tokenName = `${opts.namespace || 'formio'}Token`;
     if (!this.tokens) {
       this.tokens = {};
     }
 
-    if (this.tokens[tokenName] && (this.tokens[tokenName] === token)) {
+    if (this.tokens[tokenName] === token) {
       return;
     }
 
@@ -863,7 +866,7 @@ export default class Formio {
   }
 
   static getToken(options) {
-    options = options || {};
+    options = (typeof options === 'string') ? { namespace: options } : options || {};
     var tokenName = `${options.namespace || 'formio'}Token`;
     if (!this.tokens) {
       this.tokens = {};
