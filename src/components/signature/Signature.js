@@ -29,8 +29,8 @@ export default class SignatureComponent extends Component {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     this.currentWidth = 0;
     this.scale = 1;
     if (!this.component.width) {
@@ -49,7 +49,7 @@ export default class SignatureComponent extends Component {
     return SignatureComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'hidden';
@@ -115,7 +115,7 @@ export default class SignatureComponent extends Component {
   }
 
   /* eslint-disable max-statements */
-  build() {
+  hydrate(element) {
     this.element = this.createElement();
     this.element.component = this;
     let classNames = this.element.getAttribute('class');

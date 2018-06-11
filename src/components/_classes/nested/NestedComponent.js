@@ -20,14 +20,6 @@ export default class NestedComponent extends Component {
     this.collapsed = !!this.component.collapsed;
   }
 
-  build(showLabel) {
-    this.createElement();
-    if (showLabel) {
-      this.createLabel(this.element);
-    }
-    this.addComponents();
-  }
-
   get defaultSchema() {
     return NestedComponent.schema();
   }
@@ -190,12 +182,14 @@ export default class NestedComponent extends Component {
     return comp;
   }
 
-  renderComponents() {
-    return this.components.map(component => component.render()).join('');
+  renderComponents(components) {
+    components = components || this.components;
+    return components.map(component => component.render()).join('');
   }
 
-  hydrateComponents(element) {
-    return Promise.all[this.components.map((component, index) => component.hydrate(element.children[index]))];
+  hydrateComponents(element, components) {
+    components = components || this.components;
+    return Promise.all[components.map((component, index) => component.hydrate(element.children[index]))];
   }
 
   /**

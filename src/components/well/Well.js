@@ -37,7 +37,7 @@ export default class WellComponent extends NestedComponent {
   render() {
     return this.renderTemplate('well', {
       children: super.renderComponents(),
-      className: this.className
+      className: this.className,
     });
   }
 

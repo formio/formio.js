@@ -43,7 +43,7 @@ export default class FieldsetComponent extends NestedComponent {
   render() {
     return this.renderTemplate('fieldset', {
       children: super.renderComponents(),
-      className: this.className
+      className: this.className,
     });
   }
 

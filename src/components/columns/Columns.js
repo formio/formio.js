@@ -50,12 +50,29 @@ export default class ColumnsComponent extends NestedComponent {
     return `row ${super.className}`;
   }
 
-  addComponents() {
-    const container = this.getContainer();
-    container.noDrop = true;
-    _.each(this.component.columns, (column) => {
-      column.type = 'column';
-      this.addComponent(column, container, this.data);
+  init() {
+    this.columns = [];
+    _.each(this.component.columns, (column, index) => {
+      this.columns[index] = [];
+      _.each(column.components, (component) => {
+        this.columns[index].push(this.createComponent(component));
+      });
     });
+  }
+
+  render() {
+    return super.render(this.renderTemplate('columns', {
+      columnComponents: this.columns.map(column => super.renderComponents(column))
+    }));
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {column: 'multiple'});
+    this.refs.column.forEach((column, index) => this.hydrateComponents(column, this.columns[index]));
+  }
+
+  destroy(all) {
+    super.destroy(all);
+    delete this.columns;
   }
 }

@@ -40,7 +40,6 @@ export default class SelectComponent extends Field {
 
   init() {
     super.init();
-    this.component.widget = 'html5';
 
     // Trigger an update.
     this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
@@ -84,7 +83,6 @@ export default class SelectComponent extends Field {
 
   get inputInfo() {
     const info = super.elementInfo();
-    info.widget = this.component.widget;
     info.type = 'select';
     info.changeEvent = 'change';
     return info;
@@ -437,6 +435,7 @@ export default class SelectComponent extends Field {
     super.hydrate(element);
     this.loadRefs(element, {selectContainer: 'single'});
     const input = this.refs.selectContainer;
+    this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
 
     if (this.component.widget === 'html5') {
       this.triggerUpdate();
@@ -489,8 +488,6 @@ export default class SelectComponent extends Field {
       this.addEventListener(this.choices.containerOuter, 'focus', () => this.focusableElement.focus());
     }
     this.focusableElement.setAttribute('tabIndex', tabIndex);
-
-    // this.setInputStyles(this.choices.containerOuter);
 
     // If a search field is provided, then add an event listener to update items on search.
     if (this.component.searchField) {

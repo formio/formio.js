@@ -1,5 +1,6 @@
 import button from './button';
 import checkbox from './checkbox';
+import columns from './columns';
 import component from './component';
 import day from './day';
 import field from './field';
@@ -42,6 +43,7 @@ export default {
   },
   button,
   checkbox,
+  columns,
   component,
   day,
   field,
