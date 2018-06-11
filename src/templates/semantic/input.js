@@ -5,7 +5,7 @@ export default {
 <label class="ui label">{{component.prefix}}</label>
 {% } %}
 <{{input.type}} 
-  ref="input" 
+  ref="{{input.ref ? input.ref : 'input'}}" 
   {% for (var attr in input.attr) { %}
   {{attr}}="{{input.attr[attr]}}"
   {% } %}

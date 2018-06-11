@@ -4,25 +4,25 @@ export default {
   {% if (dayFirst && showDay) { %}
   <div class="form-group col col-xs-3">
     <label for="{{component.key}}-day" class="">{{t('Day')}}</label>
-    {{day}}
+    <div>{{day}}</div>
   </div>
   {% } %}
   {% if (showMonth) { %}
   <div class="form-group col col-xs-4">
     <label for="{{component.key}}-month" class="">{{t('Month')}}</label>
-    {{month}}
+    <div>{{month}}</div>
   </div>
   {% } %}
   {% if (!dayFirst && showDay) { %}
   <div class="form-group col col-xs-3">
     <label for="{{component.key}}-day" class="">{{t('Day')}}</label>
-    {{day}}
+    <div>{{day}}</div>
   </div>
   {% } %}
   {% if (showYear) { %}
   <div class="form-group col col-xs-5">
     <label for="{{component.key}}-year" class="">{{t('Year')}}</label>
-    {{year}}
+    <div>{{year}}</div>
   </div>
   {% } %}
 </div>

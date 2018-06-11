@@ -107,7 +107,16 @@ export default class DayComponent extends Field {
   }
 
   selectDefinition(name) {
-
+    return {
+      multiple: false,
+      ref: name,
+      widget: 'html5',
+      attr: {
+        class: 'form-control',
+        name,
+        lang: this.options.language
+      }
+    };
   }
 
   get days() {
@@ -131,19 +140,19 @@ export default class DayComponent extends Field {
       return this._months;
     }
     this._months = [
-      {value: 0, label: _.get(this.component, 'fields.month.placeholder', '')},
-      {value: 1, label: this.t('january')},
-      {value: 2, label: this.t('february')},
-      {value: 3, label: this.t('march')},
-      {value: 4, label: this.t('april')},
-      {value: 5, label: this.t('may')},
-      {value: 6, label: this.t('june')},
-      {value: 7, label: this.t('july')},
-      {value: 8, label: this.t('august')},
-      {value: 9, label: this.t('september')},
-      {value: 10, label: this.t('october')},
-      {value: 11, label: this.t('november')},
-      {value: 12, label: this.t('december')}
+      {value: '', label: _.get(this.component, 'fields.month.placeholder', '')},
+      {value: 0, label: this.t('january')},
+      {value: 1, label: this.t('february')},
+      {value: 2, label: this.t('march')},
+      {value: 3, label: this.t('april')},
+      {value: 4, label: this.t('may')},
+      {value: 5, label: this.t('june')},
+      {value: 6, label: this.t('july')},
+      {value: 7, label: this.t('august')},
+      {value: 8, label: this.t('september')},
+      {value: 9, label: this.t('october')},
+      {value: 10, label: this.t('november')},
+      {value: 11, label: this.t('december')}
     ];
     return this._months;
   }
@@ -192,12 +201,18 @@ export default class DayComponent extends Field {
       });
     }
     else if (this.component.fields[name].type === 'select') {
-      return `Select ${name}`;
+      return this.renderTemplate('select', {
+        input: this.selectDefinition(name),
+        options: this[`${name}s`].reduce((html, option) =>
+          html + this.renderTemplate('selectOption', {option, selected: false, attrs: {}}), ''
+        ),
+      });
     }
   }
 
   hydrate(element) {
     this.loadRefs(element, {day: 'single', month: 'single', year: 'single', input: 'multiple'});
+    super.hydrate(element);
     if (this.refs.day) {
       this.addEventListener(this.refs.day, 'change', () => this.updateValue());
     }
@@ -317,11 +332,25 @@ export default class DayComponent extends Field {
     }
   }
 
+  getFieldValue(name) {
+    let val = 0;
+    if (!this.refs[name]) {
+      return val;
+    }
+    if (this.component.fields[name].type === 'number') {
+      val = this.refs[name].value;
+    }
+    else if (this.component.fields[name].type === 'select') {
+      val = this.refs[name].options[this.refs[name].selectedIndex].value;
+    }
+    return _.isNaN(val) ? 0 : parseInt(val, 10);
+  }
+
   get parts() {
     return {
-      day: (!this.refs.day || _.isNaN(this.refs.day.value)) ? 0 : parseInt(this.refs.day.value, 10),
-      month: (!this.refs.month || _.isNaN(this.refs.month.value)) ? -1 : (parseInt(this.refs.month.value, 10) - 1),
-      year: (!this.refs.year || _.isNaN(this.refs.year.value)) ? 0 : parseInt(this.refs.year.value, 10)
+      day: this.getFieldValue('day'),
+      month: this.getFieldValue('month'),
+      year: this.getFieldValue('year'),
     };
   }
 

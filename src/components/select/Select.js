@@ -84,6 +84,7 @@ export default class SelectComponent extends Field {
 
   get inputInfo() {
     const info = super.elementInfo();
+    info.widget = this.component.widget;
     info.type = 'select';
     info.changeEvent = 'change';
     return info;
@@ -427,7 +428,8 @@ export default class SelectComponent extends Field {
     info.multiple = this.component.multiple;
     return super.render(this.renderTemplate('select', {
       input: info,
-      index: null
+      options: '',
+      index: null,
     }));
   }
 
