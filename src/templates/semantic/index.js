@@ -8,6 +8,7 @@ import fieldset from './fieldset';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
+import message from './message';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
 import panel from './panel';
@@ -39,9 +40,15 @@ export default {
       '15': 'fifteen',
       '16': 'sixteen'
     };
+    const classes = {
+      'has-error': 'error',
+      'is-invalid': 'error',
+    };
     switch (type) {
       case 'columns':
         return columns.hasOwnProperty(text.toString()) ? columns[text.toString()] : text;
+      case 'class':
+        return classes.hasOwnProperty(text.toString()) ? classes[text.toString()] : text;
     }
     return text;
   },
@@ -55,6 +62,7 @@ export default {
   fieldset,
   icon,
   input,
+  message,
   multiValueRow,
   multiValueTable,
   panel,

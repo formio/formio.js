@@ -1292,6 +1292,8 @@ export default class Component {
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
    */
   hasClass(element, className) {
+    // Allow templates to intercept.
+    className = this.options.templates.transform('class', className);
     className = ` ${className} `;
     return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
   }
@@ -1305,6 +1307,8 @@ export default class Component {
    *   The name of the class to add.
    */
   addClass(element, className) {
+    // Allow templates to intercept.
+    className = this.options.templates.transform('class', className);
     const classes = element.getAttribute('class');
     if (!classes || classes.indexOf(className) === -1) {
       element.setAttribute('class', `${classes} ${className}`);
@@ -1320,6 +1324,8 @@ export default class Component {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
+    // Allow templates to intercept.
+    className = this.options.templates.transform('class', className);
     let cls = element.getAttribute('class');
     if (cls) {
       cls = cls.replace(new RegExp(className, 'g'), '');
@@ -1450,11 +1456,14 @@ export default class Component {
     }
 
     if (this.refs.messageContainer) {
-      const errorMessage = this.ce('p', {
-        class: 'help-block'
+      this.refs.messageContainer.innerHTML = this.renderTemplate('message', {
+        message
       });
-      errorMessage.appendChild(this.text(message));
-      this.refs.messageContainer.appendChild(errorMessage);
+      // const errorMessage = this.ce('p', {
+      //   class: 'help-block'
+      // });
+      // errorMessage.appendChild(this.text(message));
+      // this.refs.messageContainer.appendChild(errorMessage);
     }
 
     // Add error classes

@@ -9,6 +9,7 @@ import html from './html';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
+import message from './message';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
 import panel from './panel';
@@ -33,6 +34,7 @@ export default {
   html,
   icon,
   input,
+  message,
   multiValueRow,
   multiValueTable,
   panel,
