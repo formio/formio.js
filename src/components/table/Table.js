@@ -143,18 +143,4 @@ export default class TableComponent extends NestedComponent {
     //       });
     //     }
   // }
-
-  buildHeader() {
-    if (this.component.header && this.component.header.length) {
-      const thead = this.ce('thead');
-      const thr = this.ce('tr');
-      _.each(this.component.header, (header) => {
-        const th = this.ce('th');
-        th.appendChild(this.text(header));
-        thr.appendChild(th);
-      });
-      thead.appendChild(thr);
-      this.table.appendChild(thead);
-    }
-  }
 }

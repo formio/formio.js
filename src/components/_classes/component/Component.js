@@ -473,6 +473,7 @@ export default class Component {
   renderTemplate(name, data = {}) {
     data.component = this.component;
     data.t = this.t.bind(this);
+    data.transform = this.options.templates.transform;
     data.id = data.id || this.id;
     return this.interpolate(this.getTemplate(name), data);
   }
