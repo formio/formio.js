@@ -48,6 +48,10 @@ export default class PanelComponent extends NestedComponent {
     return `panel panel-${this.component.theme} ${super.className}`;
   }
 
+  get panelId() {
+    return `panel-${this.id}`;
+  }
+
   render() {
     return this.renderTemplate('panel', {
       bootstrap4Theme: this.bootstrap4Theme,
@@ -56,8 +60,8 @@ export default class PanelComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {panel: 'single'});
-    super.hydrateComponents(this.refs.panel);
+    this.loadRefs(element, {[this.panelId]: 'single'});
+    super.hydrateComponents(this.refs[this.panelId]);
     // this.setCollapsed();
     // this.createTooltip(title);
     // this.setCollapseHeader(heading);

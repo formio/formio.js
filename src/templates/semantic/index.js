@@ -12,6 +12,7 @@ import panel from './panel';
 import radio from './radio';
 import select from './select';
 import selectOption from './selectOption';
+import table from './table';
 import webform from './webform';
 import well from './well';
 
@@ -33,6 +34,7 @@ export default {
   radio,
   select,
   selectOption,
+  table,
   webform,
   well,
 };

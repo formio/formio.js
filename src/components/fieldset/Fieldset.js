@@ -36,6 +36,10 @@ export default class FieldsetComponent extends NestedComponent {
     return `form-group ${super.className}`;
   }
 
+  get fieldsetId() {
+    return `fieldset-${this.id}`;
+  }
+
   init() {
     this.addComponents();
   }
@@ -48,8 +52,8 @@ export default class FieldsetComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {fieldset: 'single'});
-    super.hydrateComponents(this.refs.fieldset);
+    this.loadRefs(element, {[this.fieldsetId]: 'single'});
+    super.hydrateComponents(this.refs[this.fieldsetId]);
     // this.setCollapsed();
     // this.createTooltip(title);
     // this.setCollapseHeader(heading);

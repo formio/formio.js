@@ -50,6 +50,10 @@ export default class ColumnsComponent extends NestedComponent {
     return `row ${super.className}`;
   }
 
+  get columnId() {
+    return `column-${this.id}`;
+  }
+
   init() {
     this.columns = [];
     _.each(this.component.columns, (column, index) => {
@@ -62,13 +66,14 @@ export default class ColumnsComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('columns', {
-      columnComponents: this.columns.map(column => super.renderComponents(column))
+      id: this.id,
+      columnComponents: this.columns.map(column => this.renderComponents(column))
     }));
   }
 
   hydrate(element) {
-    this.loadRefs(element, {column: 'multiple'});
-    this.refs.column.forEach((column, index) => this.hydrateComponents(column, this.columns[index]));
+    this.loadRefs(element, {[this.columnId]: 'multiple'});
+    this.refs[this.columnId].forEach((column, index) => this.hydrateComponents(column, this.columns[index]));
   }
 
   destroy(all) {

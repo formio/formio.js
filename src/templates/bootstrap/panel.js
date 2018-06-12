@@ -4,7 +4,7 @@ export default {
   <div class="card-header panel-heading">
     <h4 class="mb-0 card-title panel-title">{{t(component.title)}}</h4>
   </div>
-  <div class="card-body panel-body" ref="panel">
+  <div class="card-body panel-body" ref="panel-{{id}}">
     {{children}}
   </div>
 </div>

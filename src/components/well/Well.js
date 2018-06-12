@@ -30,6 +30,10 @@ export default class WellComponent extends NestedComponent {
     return `${this.component.customClass}`;
   }
 
+  get wellId() {
+    return `well-${this.id}`;
+  }
+
   init() {
     this.addComponents();
   }
@@ -42,7 +46,7 @@ export default class WellComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {well: 'single'});
-    super.hydrateComponents(this.refs.well);
+    this.loadRefs(element, {[this.wellId]: 'single'});
+    super.hydrateComponents(this.refs[this.wellId]);
   }
 }
