@@ -60,6 +60,11 @@ export default class FileComponent extends BaseComponent {
     return Array.isArray(value) ? value : [];
   }
 
+  // File is always an array.
+  validateMultiple() {
+    return false;
+  }
+
   build() {
     // Restore the value.
     this.restoreValue();
