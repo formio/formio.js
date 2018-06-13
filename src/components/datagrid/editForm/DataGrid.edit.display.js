@@ -1,12 +1,21 @@
 export default [
   {
+    type: 'checkbox',
+    label: 'Disable Adding / Removing Rows',
+    key: 'disableAddingRemovingRows',
+    tooltip: 'Check if you want to hide Add Another button and Remove Row button',
+    weight: 405,
+    input: true
+  },
+  {
     type: 'textfield',
     label: 'Add Another Text',
     key: 'addAnother',
     tooltip: 'Set the text of the Add Another button.',
     placeholder: 'Add Another',
     weight: 410,
-    input: true
+    input: true,
+    customConditional: 'show = !data.disableAddingRemovingRows'
   },
   {
     type: 'select',
@@ -18,11 +27,12 @@ export default [
     input: true,
     data: {
       values: [
-        {label: 'Top', value: 'top'},
-        {label: 'Bottom', value: 'bottom'},
-        {label: 'Both', value: 'both'}
+        { label: 'Top', value: 'top' },
+        { label: 'Bottom', value: 'bottom' },
+        { label: 'Both', value: 'both' }
       ]
     },
-    weight: 420
+    weight: 420,
+    customConditional: 'show = !data.disableAddingRemovingRows'
   }
 ];

@@ -1,6 +1,6 @@
 import BaseComponent from '../base/Base';
 import Promise from 'native-promise-only';
-import {isMongoId, eachComponent} from '../../utils/utils';
+import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
 
@@ -42,7 +42,35 @@ export default class FormComponent extends BaseComponent {
   }
 
   get emptyValue() {
-    return {data: {}};
+    return { data: {} };
+  }
+
+  /**
+   * Render a subform.
+   *
+   * @param form
+   * @param options
+   */
+  renderSubForm(form, options) {
+    // Iterate through every component and hide the submit button.
+    eachComponent(form.components, (component) => {
+      if ((component.type === 'button') && (component.action === 'submit')) {
+        component.hidden = true;
+      }
+    });
+
+    (new Form(this.element, form, options)).render().then((instance) => {
+      this.subForm = instance;
+      this.subForm.on('change', () => {
+        this.dataValue = this.subForm.getValue();
+        this.onChange();
+      });
+      this.subForm.url = this.formSrc;
+      this.subForm.nosubmit = false;
+      this.restoreValue();
+      this.subFormReadyResolve(this.subForm);
+      return this.subForm;
+    });
   }
 
   /**
@@ -61,6 +89,12 @@ export default class FormComponent extends BaseComponent {
     }
     if (this.options && this.options.project) {
       srcOptions.project = this.options.project;
+    }
+    if (this.options && this.options.readOnly) {
+      srcOptions.readOnly = this.options.readOnly;
+    }
+    if (this.options && this.options.viewAsHtml) {
+      srcOptions.viewAsHtml = this.options.viewAsHtml;
     }
 
     // Make sure that if reference is provided, the form must submit.
@@ -107,27 +141,15 @@ export default class FormComponent extends BaseComponent {
       }
     }
 
-    (new Formio(this.formSrc)).loadForm({params: {live: 1}}).then((formObj) => {
-      // Iterate through every component and hide the submit button.
-      eachComponent(formObj.components, (component) => {
-        if ((component.type === 'button') && (component.action === 'submit')) {
-          component.hidden = true;
-        }
-      });
-
-      (new Form(this.element, formObj, srcOptions)).render().then((form) => {
-        this.subForm = form;
-        this.subForm.on('change', () => {
-          this.dataValue = this.subForm.getValue();
-          this.onChange();
-        });
-        this.subForm.url = this.formSrc;
-        this.subForm.nosubmit = false;
-        this.restoreValue();
-        this.subFormReadyResolve(this.subForm);
-        return this.subForm;
-      });
-    }).catch(err => this.subFormReadyReject(err));
+    // Determine if we already have a loaded form object.
+    if (this.component && this.component.components && this.component.components.length) {
+      this.renderSubForm(this.component, srcOptions);
+    }
+    else {
+      (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
+        .then((formObj) => this.renderSubForm(formObj, srcOptions))
+        .catch(err => this.subFormReadyReject(err));
+    }
     return this.subFormReady;
   }
   /* eslint-enable max-statements */

@@ -6,7 +6,7 @@ export default [
     key: 'questions',
     tooltip: 'The questions you would like to as in this survey question.',
     weight: 50,
-    defaultValue: [{label: '', value: ''}],
+    defaultValue: [{ label: '', value: '' }],
     components: [
       {
         label: 'Label',
@@ -19,7 +19,7 @@ export default [
         key: 'value',
         input: true,
         type: 'textfield',
-        calculateValue: {_camelCase: [{var: 'row.label'}]}
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }
     ]
   },
@@ -30,7 +30,7 @@ export default [
     key: 'values',
     tooltip: 'The values that can be selected per question. Example: \'Satisfied\', \'Very Satisfied\', etc.',
     weight: 50,
-    defaultValue: [{label: '', value: ''}],
+    defaultValue: [{ label: '', value: '' }],
     components: [
       {
         label: 'Label',
@@ -43,7 +43,7 @@ export default [
         key: 'value',
         input: true,
         type: 'textfield',
-        calculateValue: {_camelCase: [{var: 'row.label'}]}
+        calculateValue: { _camelCase: [{ var: 'row.label' }] }
       }
     ]
   }

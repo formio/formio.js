@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Webform from './Webform';
 import Formio from './Formio';
-import {evaluate, checkCondition, hasCondition} from './utils/utils';
+import { checkCondition, hasCondition } from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -50,12 +50,11 @@ export default class Wizard extends Webform {
     if (form) {
       const page = ++currentPage;
       if (form.nextPage) {
-        const next = evaluate(form.nextPage, {
+        const next = this.evaluate(form.nextPage, {
           next: page,
           data,
           page,
-          form,
-          instance: this
+          form
         }, 'next');
         if (next === null) {
           return null;
@@ -99,7 +98,7 @@ export default class Wizard extends Webform {
       this.history.push(this.page);
       return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
         this._nextPage = this.getNextPage(this.submission.data, this.page);
-        this.emit('nextPage', {page: this.page, submission: this.submission});
+        this.emit('nextPage', { page: this.page, submission: this.submission });
       });
     }
 
@@ -112,19 +111,19 @@ export default class Wizard extends Webform {
         this.history.push(this.page);
         return this.setPage(this.getNextPage(this.submission.data, this.page)).then(() => {
           this._nextPage = this.getNextPage(this.submission.data, this.page);
-          this.emit('nextPage', {page: this.page, submission: this.submission});
+          this.emit('nextPage', { page: this.page, submission: this.submission });
         });
       });
     }
     else {
-      return Promise.reject(this.showErrors());
+      return Promise.reject(this.showErrors(null, true));
     }
   }
 
   prevPage() {
     const prevPage = this.getPreviousPage();
     return this.setPage(prevPage).then(() => {
-      this.emit('prevPage', {page: this.page, submission: this.submission});
+      this.emit('prevPage', { page: this.page, submission: this.submission });
     });
   }
 
@@ -384,7 +383,7 @@ export default class Wizard extends Webform {
     const nextPage = this.getNextPage(this.submission.data, this.page);
     if (this._nextPage !== nextPage) {
       this.buildWizardNav(nextPage);
-      this.emit('updateWizardNav', {oldpage: this._nextPage, newpage: nextPage, submission: this.submission});
+      this.emit('updateWizardNav', { oldpage: this._nextPage, newpage: nextPage, submission: this.submission });
       this._nextPage = nextPage;
     }
   }
@@ -402,10 +401,10 @@ export default class Wizard extends Webform {
     });
     this.element.appendChild(this.wizardNav);
     _.each([
-      {name: 'cancel',    method: 'cancel',   class: 'btn btn-default btn-secondary'},
-      {name: 'previous',  method: 'prevPage', class: 'btn btn-primary'},
-      {name: 'next',      method: 'nextPage', class: 'btn btn-primary'},
-      {name: 'submit',    method: 'submit',   class: 'btn btn-primary'}
+      { name: 'cancel',    method: 'cancel',   class: 'btn btn-default btn-secondary' },
+      { name: 'previous',  method: 'prevPage', class: 'btn btn-primary' },
+      { name: 'next',      method: 'nextPage', class: 'btn btn-primary' },
+      { name: 'submit',    method: 'submit',   class: 'btn btn-primary' }
     ], (button) => {
       if (!this.hasButton(button.name, nextPage)) {
         return;

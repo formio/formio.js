@@ -7,37 +7,127 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
-    
+
     ```js
     // To render a new form.
     import { Form } from 'formiojs';
     const renderer = new Form(document.getElementById('formio'), 'https://examples.form.io/example');
     renderer.render();
     ```
-    
+
     ```js
     // To render a form builder
     import { FormBuilder } from 'formiojs';
     const builder = new FormBuilder(document.getElementById('builder'), {components:[]});
     builder.render();
     ```
-    
+
     ```js
     // To import a component
     import TextFieldComponent from 'formiojs/components/textfield/TextField';
     ```
-    
+
  - Changed FormioComponents name to NestedComponent.
  - Changed FormioComponentsIndex name to Components
  - Changed FormioForm name to Webform
  - Changed FormioWizard name to Wizard
  - Changed FormioPDF name to PDF
+ - Moved Formio.fieldData to FormioUtils.fieldData
+ - Input elements within a DataGrid now refer to the "rowIndex" instead of the column index within the "name" attributes.
+ - Chnaged the wrapper classes for Radio and Select Boxes components to be "form-group" instead of "input-group" to make it compatible with both Bootstrap 4 and Bootstrap 3.
  - Renamed GMap component to Location component
  - Changed all exports on Components to be default exports. ```import TextFieldComponent from 'formiojs/components/textfield/TextField';```
  - Deprected ability to "attach" Formio to existing form using Formio.form method.
- - Modified all JavaScript execution to make it more consistent.
+ - Changed the name and ids of Radio buttons within DataGrids to reflect their position in the grid.
+ - Modified all JavaScript execution and template interpolation to make it more consistent.
    - "component" now always refers to the JSON of the component (not the component instance)
    - "instance" now refers to the component instance. Use at your own risk of SDK changes within each component!
+   - "row" always points to the "data" context object for that instance (typically row in DataGrid)
+   - "data" always refers to the global data of the submission.
+
+## 3.0.0-rc.9
+### Changed
+ - Default value for calculated logic.
+
+### Fixed
+ - Issues with the event system where some events would get canceled by other components.
+ - Required validation for Survey component.
+ - Fixed an issue where the file service is not defined when removing images from file component.
+
+### Added
+ - Allow url uploads to respond with their own url.
+ - 'Hide Input Labels' property for Day component.
+
+## 3.0.0-rc.8
+### Fixed
+ - Problem with the Select component where it would remove selected items while searching.
+ - Issues with the "ready" call after setSubmission would call to early when Select items have not been loaded.
+ - Problem with the DateTime component onFocus event opening the calendar on readOnly forms.
+ - Problem where the DateTime calendar would still be open when the component is disabled.
+
+### Added
+ - Option to allow the HTML and Content components to refresh when a value changes in the data.
+
+### Changed
+ - Added deprecation notice to "whenReady" method and replace it with dataReady getter property.
+
+## 3.0.0-rc.7
+### Added
+ - A builder css build without font-awesome to fix issues with framework library implementations.
+
+## 3.0.0-rc.6
+### Fixed
+ - Moved all of the function and interplation context objects to use the same method so all available items within are consistent.
+ - Problem where the errors of components inside of nested components would not reset the error messages.
+ - Problem where Radios within datagrids were getting same name attributes and click events would select the wrong row.
+
+## 3.0.0-rc.5
+### Fixed
+ - Fixed bad deployment.
+
+## 3.0.0-rc.4
+### Fixed
+ - i18n in File component.
+ - `viewAsHtml` for nested forms.
+ - Fix the Day component required validation to work with independent inputs.
+ - Fixed the checkbox DOM states to mirror the actual state of the checkbox.
+ - Ensure we don't call setInputStyle without an input.
+ - Fixed the datetime default date and fixed console warning from moment.
+
+### Changed
+ - Only trigger error events on nextPage and submissionError events.
+ - Set the value to the checkbox component value when using component name, like in Radio configuration.
+ - Moving the fieldData method to FormioUtils.
+ - Allow for fully loaded nested forms to render without hitting the server.
+
+### Added
+ - Adding the component instance to the change events.
+ - Adding the pdf source information to the form object.
+
+## 3.0.0-rc.3
+ - Bad release
+
+## 3.0.0-rc.2
+### Fixed
+ - Issue with Bootstrap.js messing up the form builder accordion.
+
+## 3.0.0-alpha.20
+### Added
+ - Possibility to Disable Adding / Removing rows for Data Grid
+ - Adding numRows and numCols to table builder.
+
+### Fixed
+ - Hide the label component for table editing.
+ - Fixing the schema creation to not turn arrays into objects.
+ - Fixing how datagrid appends names to inputs.
+ - Ensure that the error check is fired when changed and submission. Also reset errors when conditionally hidden.
+ - Ensure new components added with builder get unique api keys.
+ - Fixed issues with number component where it would not submit.
+ - Fixed an issue where the number component would not reset its value.
+
+## 3.0.0-alpha.19
+### Fixed
+ - File data for url file uploads getting lost if it doesn't contain a .date property.
 
 ## 3.0.0-alpha.18
 ### Fixed
@@ -114,7 +204,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problems where two text with same key not working in form builder.
  - `moment` library inside calculated value for DateTime component.
 
-## 3.0.0-alpha.1 
+## 3.0.0-alpha.1
 ### Added
  - Form Builder
  - Tags component (advanced)
@@ -124,16 +214,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - "hasClass" method to check for a class.
  - "hasValue" method to check for a value within a component.
  - Version number and license link in all builds.
- 
+
 ### Changed
  - How logic executions work by moving them into a single location within FormioUtils called "execute".
  - Made a single way to create modals for form builder and resource adding.
  - Now include Formio utils in the basic "formio" library under Formio.Utils
- 
+
 ### Removed
  - Lib folder since this will be included in the package build.
  - Dist folder since this will be included in the package build.
- 
+
 ### Fixed
  - Make sure to pass the full root data object within checkValidity.
  - Folder name for EditGrid component.
@@ -172,7 +262,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Add basic support for submission states.
  - Docs about Seamless.js integration.
- - Explain why files have been rejected when validation fails. 
+ - Explain why files have been rejected when validation fails.
 
 ## 2.31.3
  - Bad Release. Do not use!

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import jsonLogic from 'json-logic-js';
 import moment from 'moment';
-import {lodashOperators} from './jsonlogic/operators';
+import { lodashOperators } from './jsonlogic/operators';
 
 // Configure JsonLogic
 lodashOperators.forEach((name) => jsonLogic.add_operation(`_${name}`, _[name]));
@@ -21,7 +21,7 @@ jsonLogic.add_operation('relativeMaxDate', (relativeMaxDate) => {
   return moment().add(relativeMaxDate, 'days').toISOString();
 });
 
-export {jsonLogic};
+export { jsonLogic };
 
 /**
  * Evaluate a method.
@@ -32,7 +32,7 @@ export {jsonLogic};
  */
 export function evaluate(func, args, ret, tokenize) {
   let returnVal = null;
-  const component = args.component ? args.component : {key: 'unknown'};
+  const component = args.component ? args.component : { key: 'unknown' };
   if (!args.form && args.instance) {
     args.form = _.get(args.instance, 'root._form', {});
   }
@@ -415,7 +415,7 @@ export function checkCalculated(component, submission, rowData) {
   // Process calculated value stuff if present.
   if (component.calculateValue) {
     _.set(rowData, component.key, evaluate(component.calculateValue, {
-      value: [],
+      value: undefined,
       data: submission ? submission.data : rowData,
       row: rowData,
       util: this,
@@ -436,10 +436,10 @@ export function checkCalculated(component, submission, rowData) {
 export function checkSimpleConditional(component, condition, row, data) {
   let value = null;
   if (row) {
-    value = getValue({data: row}, condition.when);
+    value = getValue({ data: row }, condition.when);
   }
   if (data && _.isNil(value)) {
-    value = getValue({data: data}, condition.when);
+    value = getValue({ data: data }, condition.when);
   }
   // FOR-400 - Fix issue where falsey values were being evaluated as show=true
   if (_.isNil(value)) {
@@ -470,7 +470,9 @@ export function checkCustomConditional(component, custom, row, data, form, varia
   if (typeof custom === 'string') {
     custom = `var ${variable} = true; ${custom}; return ${variable};`;
   }
-  const value = evaluate(custom, {component, row, data, form, instance});
+  const value = (instance && instance.evaluate) ?
+    instance.evaluate(custom, { row, data, form }) :
+    evaluate(custom, { row, data, form });
   if (value === null) {
     return onError;
   }
@@ -512,7 +514,7 @@ export function checkCondition(component, row, data, form, instance) {
     return checkSimpleConditional(component, component.conditional, row, data, true);
   }
   else if (component.conditional && component.conditional.json) {
-    return checkJsonConditional(component, component.conditional.json, row, data, form);
+    return checkJsonConditional(component, component.conditional.json, row, data, form, instance);
   }
 
   // Default to show.
@@ -541,7 +543,7 @@ export function checkTrigger(component, trigger, row, data, form, instance) {
   return false;
 }
 
-export function setActionProperty(component, action, row, data, result) {
+export function setActionProperty(component, action, row, data, result, instance) {
   switch (action.property.type) {
     case 'boolean':
       if (_.get(component, action.property.value, false).toString() !== action.state.toString()) {
@@ -549,12 +551,15 @@ export function setActionProperty(component, action, row, data, result) {
       }
       break;
     case 'string': {
-      const newValue = interpolate(action.text, {
+      const evalData = {
         data,
         row,
         component,
         result
-      });
+      };
+      const newValue = (instance && instance.interpolate) ?
+        instance.interpolate(action.text, evalData) :
+        interpolate(action.text, evalData);
       if (newValue !== _.get(component, action.property.value, '')) {
         _.set(component, action.property.value, newValue);
       }
@@ -655,16 +660,36 @@ export function getDateSetting(date) {
     return null;
   }
 
-  let dateSetting = moment(date);
-  if (dateSetting.isValid()) {
+  if (date instanceof Date) {
+    return date;
+  }
+  else if (typeof date.toDate === 'function') {
+    return date.isValid() ? date.toDate() : null;
+  }
+
+  let dateSetting = ((typeof date !== 'string') || (date.indexOf('moment(') === -1)) ? moment(date) : null;
+  if (dateSetting && dateSetting.isValid()) {
     return dateSetting.toDate();
   }
 
+  dateSetting = null;
   try {
     const value = (new Function('moment', `return ${date};`))(moment);
-    dateSetting = moment(value);
+    if (typeof value === 'string') {
+      dateSetting = moment(value);
+    }
+    else if (typeof value.toDate === 'function') {
+      dateSetting = moment(value.toDate().toUTCString());
+    }
+    else if (value instanceof Date) {
+      dateSetting = moment(value);
+    }
   }
   catch (e) {
+    return null;
+  }
+
+  if (!dateSetting) {
     return null;
   }
 
@@ -841,4 +866,54 @@ export function getCurrencyAffixes({
     prefix: parts[1] || '',
     suffix: parts[2] || ''
   };
+}
+
+/**
+ * Fetch the field data provided a component.
+ *
+ * @param data
+ * @param component
+ * @return {*}
+ */
+export function fieldData(data, component) {
+  if (!data) {
+    return '';
+  }
+  if (!component || !component.key) {
+    return data;
+  }
+  if (component.key.includes('.')) {
+    let value = data;
+    const parts = component.key.split('.');
+    let key = '';
+    for (let i = 0; i < parts.length; i++) {
+      key = parts[i];
+
+      // Handle nested resources
+      if (value.hasOwnProperty('_id')) {
+        value = value.data;
+      }
+
+      // Return if the key is not found on the value.
+      if (!value.hasOwnProperty(key)) {
+        return;
+      }
+
+      // Convert old single field data in submissions to multiple
+      if (key === parts[parts.length - 1] && component.multiple && !Array.isArray(value[key])) {
+        value[key] = [value[key]];
+      }
+
+      // Set the value of this key.
+      value = value[key];
+    }
+    return value;
+  }
+  else {
+    // Convert old single field data in submissions to multiple
+    if (component.multiple && !Array.isArray(data[component.key])) {
+      data[component.key] = [data[component.key]];
+    }
+    return data[component.key];
+  }
 }

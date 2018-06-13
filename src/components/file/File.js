@@ -1,5 +1,5 @@
 import BaseComponent from '../base/Base';
-import {uniqueName} from '../../utils/utils';
+import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import Formio from '../../Formio';
 
@@ -121,16 +121,16 @@ export default class FileComponent extends BaseComponent {
   }
 
   buildFileList() {
-    return this.ce('ul', {class: 'list-group list-group-striped'}, [
-      this.ce('li', {class: 'list-group-item list-group-header hidden-xs hidden-sm'},
-        this.ce('div', {class: 'row'},
+    return this.ce('ul', { class: 'list-group list-group-striped' }, [
+      this.ce('li', { class: 'list-group-item list-group-header hidden-xs hidden-sm' },
+        this.ce('div', { class: 'row' },
           [
-            this.ce('div', {class: 'col-md-1'}),
-            this.ce('div', {class: 'col-md-9'},
-              this.ce('strong', {}, 'File Name')
+            this.ce('div', { class: 'col-md-1' }),
+            this.ce('div', { class: 'col-md-9' },
+              this.ce('strong', {}, this.text('File Name'))
             ),
-            this.ce('div', {class: 'col-md-2'},
-              this.ce('strong', {}, 'Size')
+            this.ce('div', { class: 'col-md-2' },
+              this.ce('strong', {}, this.text('Size'))
             )
           ]
         )
@@ -145,24 +145,23 @@ export default class FileComponent extends BaseComponent {
       type: 'file',
       style: 'opacity: 0; position: absolute;',
       tabindex: -1, // prevent focus
-      onChange: () => {
-        this.upload(this.hiddenFileInputElement.files);
-      }
+      onChange: () => this.upload(this.hiddenFileInputElement.files)
     });
   }
 
   createFileListItem(fileInfo, index) {
-    return this.ce('li', {class: 'list-group-item'},
-      this.ce('div', {class: 'row'},
+    const fileService = this.fileService;
+    return this.ce('li', { class: 'list-group-item' },
+      this.ce('div', { class: 'row' },
         [
-          this.ce('div', {class: 'col-md-1'},
+          this.ce('div', { class: 'col-md-1' },
             (
               (!this.disabled && !this.shouldDisable) ?
                 this.ce('i', {
                   class: this.iconClass('remove'),
                   onClick: event => {
                     if (fileInfo && (this.component.storage === 'url')) {
-                      this.options.formio.makeRequest('', fileInfo.url, 'delete');
+                      fileService.makeRequest('', fileInfo.url, 'delete');
                     }
                     event.preventDefault();
                     this.splice(index);
@@ -172,8 +171,8 @@ export default class FileComponent extends BaseComponent {
                 null
             )
           ),
-          this.ce('div', {class: 'col-md-9'}, this.createFileLink(fileInfo)),
-          this.ce('div', {class: 'col-md-2'}, this.fileSize(fileInfo.size))
+          this.ce('div', { class: 'col-md-9' }, this.createFileLink(fileInfo)),
+          this.ce('div', { class: 'col-md-2' }, this.fileSize(fileInfo.size))
         ]
       )
     );
@@ -229,7 +228,7 @@ export default class FileComponent extends BaseComponent {
                 class: this.iconClass('remove'),
                 onClick: event => {
                   if (fileInfo && (this.component.storage === 'url')) {
-                    this.options.formio.makeRequest('', fileInfo.url, 'delete');
+                    fileService.makeRequest('', fileInfo.url, 'delete');
                   }
                   event.preventDefault();
                   this.splice(index);
@@ -252,15 +251,15 @@ export default class FileComponent extends BaseComponent {
         (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
           this.ce('div', {
             class: 'fileSelector',
-            onDragover: function(event) {
+            onDragover(event) {
               this.className = 'fileSelector fileDragOver';
               event.preventDefault();
             },
-            onDragleave: function(event) {
+            onDragleave(event) {
               this.className = 'fileSelector';
               event.preventDefault();
             },
-            onDrop: function(event) {
+            onDrop(event) {
               this.className = 'fileSelector';
               event.preventDefault();
               element.upload(event.dataTransfer.files);
@@ -268,7 +267,7 @@ export default class FileComponent extends BaseComponent {
             }
           },
           [
-            this.ce('i', {class: this.iconClass('cloud-upload')}),
+            this.ce('i', { class: this.iconClass('cloud-upload') }),
             this.text(' Drop files to attach, or '),
             this.buildBrowseLink()
           ]
@@ -293,7 +292,7 @@ export default class FileComponent extends BaseComponent {
         }
       },
       class: 'browse'
-    }, 'browse');
+    }, this.text('browse'));
 
     return this.browseLink;
   }
@@ -306,7 +305,7 @@ export default class FileComponent extends BaseComponent {
 
   addWarnings(container) {
     let hasWarnings = false;
-    const warnings = this.ce('div', {class: 'alert alert-warning'});
+    const warnings = this.ce('div', { class: 'alert alert-warning' });
     if (!this.component.storage) {
       hasWarnings = true;
       warnings.appendChild(this.ce('p').appendChild(this.text(
@@ -341,23 +340,21 @@ export default class FileComponent extends BaseComponent {
 
   createUploadStatus(fileUpload) {
     let container;
-    return container = this.ce('div', {class: `file${fileUpload.status === 'error' ? ' has-error' : ''}`}, [
-      this.ce('div', {class: 'row'}, [
-        this.ce('div', {class: 'fileName control-label col-sm-10'}, [
+    return container = this.ce('div', { class: `file${fileUpload.status === 'error' ? ' has-error' : ''}` }, [
+      this.ce('div', { class: 'row' }, [
+        this.ce('div', { class: 'fileName control-label col-sm-10' }, [
           fileUpload.originalName,
           this.ce('i', {
             class: this.iconClass('remove'),
-            onClick: () => {
-              this.removeChildFrom(container, this.uploadStatusList);
-            }
+            onClick: () => this.removeChildFrom(container, this.uploadStatusList)
           })
         ]),
-        this.ce('div', {class: 'fileSize control-label col-sm-2 text-right'}, this.fileSize(fileUpload.size))
+        this.ce('div', { class: 'fileSize control-label col-sm-2 text-right' }, this.fileSize(fileUpload.size))
       ]),
-      this.ce('div', {class: 'row'}, [
-        this.ce('div', {class: 'col-sm-12'}, [
+      this.ce('div', { class: 'row' }, [
+        this.ce('div', { class: 'col-sm-12' }, [
           (fileUpload.status === 'progress' ?
-            this.ce('div', {class: 'progress'},
+            this.ce('div', { class: 'progress' },
               this.ce('div', {
                 class: 'progress-bar',
                 role: 'progressbar',
@@ -366,10 +363,10 @@ export default class FileComponent extends BaseComponent {
                 'aria-valuemax': 100,
                 style: `width:${fileUpload.progress}%`
               },
-              this.ce('span', {class: 'sr-only'}, `${fileUpload.progress}% Complete`)
+              this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
               )
             ) :
-            this.ce('div', {class: `bg-${fileUpload.status}`}, fileUpload.message)
+            this.ce('div', { class: `bg-${fileUpload.status}` }, fileUpload.message)
           )
         ])
       ])
@@ -411,7 +408,7 @@ export default class FileComponent extends BaseComponent {
         }
       }
     }
-    return {regexp: regexp, excludes: excludes};
+    return { regexp: regexp, excludes: excludes };
   }
   /* eslint-enable max-depth */
 
@@ -506,7 +503,7 @@ export default class FileComponent extends BaseComponent {
         }
 
         // Get a unique name for this file to keep file collisions from occurring.
-        const dir = this.interpolate(this.component.dir || '', {data: this.data, row: this.row});
+        const dir = this.interpolate(this.component.dir || '');
         const fileService = this.fileService;
         if (!fileService) {
           fileUpload.status = 'error';

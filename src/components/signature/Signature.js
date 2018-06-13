@@ -186,14 +186,12 @@ export default class SignatureComponent extends BaseComponent {
 
     // Ensure the signature is always the size of its container.
     this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
-    setTimeout(function checkWidth() {
+    const interval = setInterval(() => {
       if (this.padBody.offsetWidth) {
+        clearInterval(interval);
         this.checkSize();
       }
-      else {
-        setTimeout(checkWidth.bind(this), 200);
-      }
-    }.bind(this), 200);
+    }, 200);
 
     // Restore values.
     this.restoreValue();

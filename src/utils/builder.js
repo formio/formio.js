@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {eachComponent} from './utils';
+import { eachComponent } from './utils';
 export default {
   /**
    * Iterate the given key to make it unique.
@@ -58,9 +58,7 @@ export default {
   },
 
   getAlphaShortcuts() {
-    return _.range('A'.charCodeAt(), 'Z'.charCodeAt() + 1).map(function(charCode) {
-      return String.fromCharCode(charCode);
-    });
+    return _.range('A'.charCodeAt(), 'Z'.charCodeAt() + 1).map((charCode) => String.fromCharCode(charCode));
   },
 
   getAdditionalShortcuts(type) {
@@ -68,7 +66,7 @@ export default {
   },
 
   getBindedShortcuts(components, input) {
-    var result = [];
+    const result = [];
 
     eachComponent(components, function(component) {
       if (component === input) {
@@ -79,7 +77,7 @@ export default {
         result.push(component.shortcut);
       }
       if (component.values) {
-        component.values.forEach(function(value) {
+        component.values.forEach((value) => {
           if (value.shortcut) {
             result.push(value.shortcut);
           }

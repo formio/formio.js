@@ -1,11 +1,14 @@
-'use strict';
-import StripeCheckoutComponent from './StripeCheckout';
-import {components as comps} from './fixtures/index';
 import Harness from '../../../../test/harness';
+import StripeCheckoutComponent from './StripeCheckout';
+
+import {
+  comp1
+} from './fixtures';
+
 describe('StripeCheckout Component', () => {
   it('Should build an stripeCheckout component', (done) => {
-    Harness.testCreate(StripeCheckoutComponent, comps.comp1).then((component) => {
+    Harness.testCreate(StripeCheckoutComponent, comp1).then(() => {
       done();
-  });
+    });
   });
 });

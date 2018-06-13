@@ -17,7 +17,7 @@ Formio.forms = {};
 // Allow people to register components.
 Formio.registerComponent = Components.setComponent;
 
-const getOptions = function(options) {
+function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
     i18next: i18next
@@ -29,7 +29,7 @@ const getOptions = function(options) {
     });
   }
   return options;
-};
+}
 
 /**
  * Renders a Form.io form within the webpage.
@@ -69,7 +69,7 @@ export default class Webform extends NestedComponent {
       else {
         _.each(options.i18n, (lang, code) => {
           if (!i18n.resources[code]) {
-            i18n.resources[code] = {translation: lang};
+            i18n.resources[code] = { translation: lang };
           }
           else {
             _.assign(i18n.resources[code].translation, lang);
@@ -323,7 +323,7 @@ export default class Webform extends NestedComponent {
   }
 
   executeShortcuts(event) {
-    const {target} = event;
+    const { target } = event;
     if (!this.keyboardCatchableElement(target)) {
       return;
     }
@@ -429,7 +429,7 @@ export default class Webform extends NestedComponent {
   setSrc(value, options) {
     if (this.setUrl(value, options)) {
       this.nosubmit = false;
-      this.formio.loadForm({params: {live: 1}}).then(
+      this.formio.loadForm({ params: { live: 1 } }).then(
         (form) => {
           const setForm = this.setForm(form);
           this.loadSubmission();
@@ -674,7 +674,7 @@ export default class Webform extends NestedComponent {
             noValidate: true
           });
         }
-        this.submissionReadyResolve(submission);
+        return this.dataReady.then(() => this.submissionReadyResolve(submission));
       },
       (err) => this.submissionReadyReject(err)
     ).catch(
@@ -699,7 +699,7 @@ export default class Webform extends NestedComponent {
 
   setValue(submission, flags) {
     if (!submission || !submission.data) {
-      submission = {data: {}};
+      submission = { data: {} };
     }
     const changed = super.setValue(submission.data, flags);
     this.mergeData(this.data, submission.data);
@@ -757,8 +757,8 @@ export default class Webform extends NestedComponent {
       this.showElement(false);
       this.build();
       this.isBuilt = true;
-      this.on('resetForm', () => this.resetValue(), true);
-      this.on('deleteSubmission', () => this.deleteSubmission(), true);
+      this.on('resetForm', () => this.resetValue());
+      this.on('deleteSubmission', () => this.deleteSubmission());
       this.on('refreshData', () => this.updateValue());
       setTimeout(() => {
         this.onChange();
@@ -811,9 +811,9 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   build() {
-    this.on('submitButton', (options) => this.submit(false, options), true);
+    this.on('submitButton', (options) => this.submit(false, options));
     this.addComponents();
-    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
+    this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)));
   }
 
   /**
@@ -822,7 +822,7 @@ export default class Webform extends NestedComponent {
    * @param {Object} error - An optional additional error to display along with the component errors.
    * @returns {*}
    */
-  showErrors(error) {
+  showErrors(error, triggerEvent) {
     this.loading = false;
     let errors = this.errors;
     if (error) {
@@ -846,7 +846,9 @@ export default class Webform extends NestedComponent {
     });
     message += '</ul>';
     this.setAlert('danger', message);
-    this.emit('error', errors);
+    if (triggerEvent) {
+      this.emit('error', errors);
+    }
     return errors;
   }
 
@@ -881,7 +883,7 @@ export default class Webform extends NestedComponent {
     if (error) {
       // Normalize the error.
       if (typeof error === 'string') {
-        error = {message: error};
+        error = { message: error };
       }
 
       if ('details' in error) {
@@ -890,7 +892,7 @@ export default class Webform extends NestedComponent {
     }
 
     this.setPristine(false);
-    return this.showErrors(error);
+    return this.showErrors(error, true);
   }
 
   /**
@@ -911,7 +913,7 @@ export default class Webform extends NestedComponent {
 
   checkData(data, flags) {
     const valid = super.checkData(data, flags);
-    if ((!flags || flags.noValidate) && this.submitted) {
+    if ((_.isEmpty(flags) || flags.noValidate) && this.submitted) {
       this.showErrors();
     }
     return valid;

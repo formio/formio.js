@@ -61,8 +61,8 @@ export default class PanelComponent extends NestedComponent {
       const heading = this.ce('div', {
         class: 'card-header panel-heading'
       });
-      const title = this.ce('h3', {
-        class: 'card-title panel-title'
+      const title = this.ce('h4', {
+        class: 'mb-0 card-title panel-title'
       });
       title.appendChild(this.text(this.component.title));
       this.createTooltip(title);

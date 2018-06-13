@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import NestedComponent from '../nested/NestedComponent';
 import Components from '../Components';
-import FormioUtils from '../../utils/index';
+import { checkCondition } from '../../utils/utils';
 
 export default class EditGridComponent extends NestedComponent {
   static schema(...extend) {
@@ -78,7 +78,7 @@ export default class EditGridComponent extends NestedComponent {
     this.buildTable();
     this.createDescription(this.element);
     this.createAddButton();
-    this.element.appendChild(this.errorContainer = this.ce('div', {class: 'has-error'}));
+    this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));
   }
 
   buildTable() {
@@ -92,7 +92,7 @@ export default class EditGridComponent extends NestedComponent {
         tableClass += `table-${prop} `;
       }
     });
-    this.tableElement = this.ce('ul', {class: tableClass}, [
+    this.tableElement = this.ce('ul', { class: tableClass }, [
       this.headerElement = this.createHeader(),
       this.rowElements = _.map(this.rows, this.createRow.bind(this)),
       this.footerElement = this.createFooter(),
@@ -106,11 +106,11 @@ export default class EditGridComponent extends NestedComponent {
     if (!templateHeader) {
       return this.text('');
     }
-    return this.ce('li', {class: 'list-group-item list-group-header'}, this.renderTemplate(templateHeader, {
+    return this.ce('li', {
+      class: 'list-group-item list-group-header'
+    }, this.renderTemplate(templateHeader, {
       components: this.component.components,
-      util: FormioUtils,
-      value: this.dataValue,
-      data: this.data
+      value: this.dataValue
     }));
   }
 
@@ -126,8 +126,8 @@ export default class EditGridComponent extends NestedComponent {
 
     if (wrapper.rowOpen) {
       wrapper.appendChild(
-        this.ce('div', {class: 'editgrid-edit'},
-          this.ce('div', {class: 'editgrid-body'},
+        this.ce('div', { class: 'editgrid-edit' },
+          this.ce('div', { class: 'editgrid-body' },
             [
               this.component.components.map(comp => {
                 const component = _.cloneDeep(comp);
@@ -138,7 +138,7 @@ export default class EditGridComponent extends NestedComponent {
                 this.editRows[rowIndex].components.push(instance);
                 return instance.element;
               }),
-              this.ce('div', {class: 'editgrid-actions'},
+              this.ce('div', { class: 'editgrid-actions' },
                 [
                   this.ce('button', {
                     class: 'btn btn-primary',
@@ -162,12 +162,10 @@ export default class EditGridComponent extends NestedComponent {
       wrapper.appendChild(
         this.renderTemplate(rowTemplate,
           {
-            data: this.data,
             row,
             rowIndex,
             components: this.component.components,
-            getView: (component, data) => Components.create(component, this.options, data, true).getView(data),
-            util: FormioUtils
+            getView: (component, data) => Components.create(component, this.options, data, true).getView(data)
           },
           [
             {
@@ -184,8 +182,8 @@ export default class EditGridComponent extends NestedComponent {
         )
       );
     }
-    wrapper.appendChild(this.editRows[rowIndex].errorContainer = this.ce('div', {class: 'has-error'}));
-    this.checkData(this.data, {noValidate: true}, rowIndex);
+    wrapper.appendChild(this.editRows[rowIndex].errorContainer = this.ce('div', { class: 'has-error' }));
+    this.checkData(this.data, { noValidate: true }, rowIndex);
     return wrapper;
   }
 
@@ -194,11 +192,11 @@ export default class EditGridComponent extends NestedComponent {
     if (!footerTemplate) {
       return this.text('');
     }
-    return this.ce('li', {class: 'list-group-item list-group-footer'}, this.renderTemplate(footerTemplate, {
+    return this.ce('li', {
+      class: 'list-group-item list-group-footer'
+    }, this.renderTemplate(footerTemplate, {
       components: this.component.components,
-      util: FormioUtils,
-      value: this.dataValue,
-      data: this.data
+      value: this.dataValue
     }));
   }
 
@@ -236,14 +234,14 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   createAddButton() {
-    this.element.appendChild(this.ce('div', {class: 'editgrid-add'},
+    this.element.appendChild(this.ce('div', { class: 'editgrid-add' },
       this.ce('button', {
         class: 'btn btn-primary',
         role: 'button',
         onClick: this.addRow.bind(this)
       },
       [
-        this.ce('span', {class: this.iconClass('plus'), 'aria-hidden': true}),
+        this.ce('span', { class: this.iconClass('plus'), 'aria-hidden': true }),
         ' ',
         this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
       ])
@@ -364,12 +362,9 @@ export default class EditGridComponent extends NestedComponent {
     });
 
     if (this.component.validate && this.component.validate.row) {
-      let valid = FormioUtils.evaluate(this.component.validate.row, {
+      let valid = this.evaluate(this.component.validate.row, {
         valid: true,
-        row: this.editRows[rowIndex].data,
-        data: this.data,
-        component: this.component,
-        instance: this
+        row: this.editRows[rowIndex].data
       }, 'valid', true);
       if (valid === null) {
         valid = `Invalid row validation for ${this.key}`;
@@ -378,7 +373,7 @@ export default class EditGridComponent extends NestedComponent {
       this.editRows[rowIndex].errorContainer.innerHTML = '';
       if (valid !== true) {
         this.editRows[rowIndex].errorContainer.appendChild(
-          this.ce('div', {class: 'editgrid-row-error help-block'}, valid)
+          this.ce('div', { class: 'editgrid-row-error help-block' }, valid)
         );
         return false;
       }
@@ -388,7 +383,8 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   checkValidity(data, dirty) {
-    if (!FormioUtils.checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+    if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      this.setCustomValidity('');
       return true;
     }
 

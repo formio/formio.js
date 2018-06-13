@@ -7,12 +7,7 @@ export default class PDF extends Webform {
     super(element, options);
 
     // Resolve when the iframe is ready.
-    this.iframeReady = new Promise((resolve) => this.on('iframe-ready', resolve));
-
-    // Handle an iframe submission.
-    this.on('iframe-submission', (submission) => {
-      this.setSubmission(submission).then(() => this.submit());
-    });
+    this.iframeReady = new Promise((resolve) => (this.iframeReadyResolve = resolve));
   }
 
   postMessage(message) {
@@ -26,7 +21,7 @@ export default class PDF extends Webform {
   // Do not clear the iframe.
   clear() {}
   redraw() {
-    this.postMessage({name: 'redraw'});
+    this.postMessage({ name: 'redraw' });
   }
 
   getSrc() {
@@ -52,13 +47,18 @@ export default class PDF extends Webform {
 
   setForm(form) {
     return super.setForm(form).then(() => {
-      this.postMessage({name: 'form', data: form});
+      if (this.formio) {
+        form.projectUrl = this.formio.projectUrl;
+        form.url = this.formio.formUrl;
+        form.base = this.formio.base;
+      }
+      this.postMessage({ name: 'form', data: form });
     });
   }
 
   setSubmission(submission) {
     submission.readOnly = !!this.options.readOnly;
-    this.postMessage({name: 'submission', data: submission});
+    this.postMessage({ name: 'submission', data: submission });
     return super.setSubmission(submission).then(() => {
       this.formio.getDownloadUrl().then((url) => {
         // Add a download button if it has a download url.
@@ -102,7 +102,7 @@ export default class PDF extends Webform {
     }));
     this.addEventListener(this.zoomIn, 'click', (event) => {
       event.preventDefault();
-      this.postMessage({name: 'zoomIn'});
+      this.postMessage({ name: 'zoomIn' });
     });
 
     this.zoomOut = this.ce('span', {
@@ -113,7 +113,7 @@ export default class PDF extends Webform {
     }));
     this.addEventListener(this.zoomOut, 'click', (event) => {
       event.preventDefault();
-      this.postMessage({name: 'zoomOut'});
+      this.postMessage({ name: 'zoomOut' });
     });
 
     this.iframe = this.ce('iframe', {
@@ -122,6 +122,14 @@ export default class PDF extends Webform {
       seamless: true,
       class: 'formio-iframe'
     });
+
+    // Handle an iframe submission.
+    this.on('iframe-submission', (submission) => {
+      this.setSubmission(submission).then(() => this.submit());
+    });
+
+    // Trigger when this form is ready.
+    this.on('iframe-ready', () => this.iframeReadyResolve());
 
     this.appendChild(this.element, [
       this.zoomIn,
@@ -136,7 +144,7 @@ export default class PDF extends Webform {
       }, 'Submit');
 
       this.addEventListener(this.submitButton, 'click', () => {
-        this.postMessage({name: 'getSubmission'});
+        this.postMessage({ name: 'getSubmission' });
       });
       this.appendChild(this.element, this.submitButton);
     }

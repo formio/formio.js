@@ -1,7 +1,6 @@
-'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import {checkCondition} from '../../utils/utils';
+import { checkCondition } from '../../utils/utils';
 import BaseComponent from '../base/Base';
 import Components from '../Components';
 
@@ -139,7 +138,7 @@ export default class NestedComponent extends BaseComponent {
     }
 
     if (before) {
-      const index = _.findIndex(this.components, {id: before.id});
+      const index = _.findIndex(this.components, { id: before.id });
       if (index !== -1) {
         this.components.splice(index, 0, comp);
       }
@@ -197,7 +196,7 @@ export default class NestedComponent extends BaseComponent {
     if (element && element.parentNode) {
       this.removeChildFrom(element, element.parentNode);
     }
-    _.remove(components, {id: component.id});
+    _.remove(components, { id: component.id });
   }
 
   /**
@@ -361,6 +360,7 @@ export default class NestedComponent extends BaseComponent {
 
   checkValidity(data, dirty) {
     if (!checkCondition(this.component, data, this.data, this.root ? this.root._form : {}, this)) {
+      this.setCustomValidity('');
       return true;
     }
 
@@ -387,6 +387,11 @@ export default class NestedComponent extends BaseComponent {
     _.each(components, (comp) => this.removeComponent(comp, this.components));
     this.components = [];
     this.hidden = [];
+  }
+
+  setCustomValidity(message, dirty) {
+    super.setCustomValidity(message, dirty);
+    _.each(this.getComponents(), (comp) => comp.setCustomValidity(message, dirty));
   }
 
   set disabled(disabled) {
@@ -435,11 +440,9 @@ export default class NestedComponent extends BaseComponent {
     this.setPristine(true);
   }
 
-  whenReady() {
+  get dataReady() {
     const promises = [];
-    _.each(this.getComponents(), (component) => {
-      promises.push(component.whenReady());
-    });
+    _.each(this.getComponents(), (component) => promises.push(component.dataReady));
     return Promise.all(promises);
   }
 

@@ -12,10 +12,10 @@ export default [
     weight: 20,
     data: {
       values: [
-        {label: 'Top', value: 'top'},
-        {label: 'Left', value: 'left'},
-        {label: 'Right', value: 'right'},
-        {label: 'Bottom', value: 'bottom'}
+        { label: 'Top', value: 'top' },
+        { label: 'Left', value: 'left' },
+        { label: 'Right', value: 'right' },
+        { label: 'Bottom', value: 'bottom' }
       ]
     }
   },
@@ -43,8 +43,8 @@ export default [
     weight: 410,
     data: {
       values: [
-        {label: 'Checkbox', value: 'checkbox'},
-        {label: 'Radio', value: 'radio'}
+        { label: 'Checkbox', value: 'checkbox' },
+        { label: 'Radio', value: 'radio' }
       ]
     }
   },
@@ -56,7 +56,7 @@ export default [
     tooltip: 'The key used to trigger the radio button toggle.',
     weight: 420,
     conditional: {
-      json: {'===': [{var: 'data.inputType'}, 'radio']}
+      json: { '===': [{ var: 'data.inputType' }, 'radio'] }
     }
   },
   {
@@ -67,7 +67,7 @@ export default [
     tooltip: 'The value used with this radio button.',
     weight: 430,
     conditional: {
-      json: {'===': [{var: 'data.inputType'}, 'radio']}
+      json: { '===': [{ var: 'data.inputType' }, 'radio'] }
     }
   },
   {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import BaseComponent from '../base/Base';
-import {flattenComponents, evaluate} from '../../utils/utils';
+import { flattenComponents } from '../../utils/utils';
 
 export default class ButtonComponent extends BaseComponent {
   static schema(...extend) {
@@ -99,7 +99,7 @@ export default class ButtonComponent extends BaseComponent {
   }
 
   buttonMessage(message) {
-    return this.ce('span', {class: 'help-block'}, this.text(message));
+    return this.ce('span', { class: 'help-block' }, this.text(message));
   }
 
   /* eslint-disable max-statements */
@@ -137,7 +137,7 @@ export default class ButtonComponent extends BaseComponent {
       this.on('submitButton', () => {
         this.loading = true;
         this.disabled = true;
-      }, true);
+      });
       this.on('submitDone', () => {
         this.loading = false;
         this.disabled = false;
@@ -146,7 +146,7 @@ export default class ButtonComponent extends BaseComponent {
         this.removeClass(message, 'has-error');
         message.appendChild(this.buttonMessage('complete'));
         this.append(message);
-      }, true);
+      });
       this.on('change', (value) => {
         this.loading = false;
         const isValid = this.root.isValid(value.data, true);
@@ -158,7 +158,7 @@ export default class ButtonComponent extends BaseComponent {
           this.removeClass(message, 'has-success');
           this.removeClass(message, 'has-error');
         }
-      }, true);
+      });
       this.on('error', () => {
         this.loading = false;
         this.hasError = true;
@@ -167,25 +167,25 @@ export default class ButtonComponent extends BaseComponent {
         this.addClass(message, 'has-error');
         message.appendChild(this.buttonMessage(this.errorMessage('error')));
         this.append(message);
-      }, true);
+      });
     }
 
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
         this.loading = true;
         this.disabled = true;
-      }, true);
+      });
       this.on('requestDone', () => {
         this.loading = false;
         this.disabled = false;
-      }, true);
+      });
       this.on('change', (value) => {
         this.loading = false;
         this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
-      }, true);
+      });
       this.on('error', () => {
         this.loading = false;
-      }, true);
+      });
     }
     this.addEventListener(this.buttonElement, 'click', (event) => {
       this.dataValue = true;
@@ -222,14 +222,10 @@ export default class ButtonComponent extends BaseComponent {
             }
           });
 
-          evaluate(this.component.custom, {
+          this.evaluate(this.component.custom, {
             form,
             flattened,
-            components,
-            _,
-            data: this.data,
-            component: this.component,
-            instance: this
+            components
           });
           break;
         }
@@ -346,7 +342,7 @@ export default class ButtonComponent extends BaseComponent {
             this.root.setAlert('danger', 'OAuth state does not match. Please try logging in again.');
             return;
           }
-          const submission = {data: {}, oauth: {}};
+          const submission = { data: {}, oauth: {} };
           submission.oauth[settings.provider] = params;
           submission.oauth[settings.provider].redirectURI = window.location.origin
             || `${window.location.protocol}//${window.location.host}`;

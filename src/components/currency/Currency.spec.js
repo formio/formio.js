@@ -1,16 +1,21 @@
-'use strict';
-import CurrencyComponent from './Currency';
-import {components as comps} from './fixtures/index';
 import Harness from '../../../test/harness';
+import CurrencyComponent from './Currency';
+
+import {
+  comp1
+} from './fixtures';
+
 describe('Currency Component', () => {
   it('Should build a currency component', (done) => {
-    Harness.testCreate(CurrencyComponent, comps.comp1).then((component) => {
+    Harness.testCreate(CurrencyComponent, comp1).then((component) => {
       Harness.testElements(component, 'input[type="text"]', 1);
       done();
     });
   });
+
   it('Should format currency for USA locale', (done) => {
-    Harness.testCreate(CurrencyComponent, comps.comp1, {language: 'en-US'}).then((component) => {
+    /* eslint-disable max-statements */
+    Harness.testCreate(CurrencyComponent, comp1, { language: 'en-US' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, undefined, null, '');
       Harness.testSetInput(component, {}, null, '');
@@ -59,9 +64,11 @@ describe('Currency Component', () => {
       Harness.testSetInput(component, '-$123456789.123456789', -123456789.12, '-$123,456,789.12');
       done();
     });
+    /* eslint-enable max-statements */
   });
+
   it('Should format currency for British locale', (done) => {
-    Harness.testCreate(CurrencyComponent, comps.comp1, {language: 'en-GB'}).then((component) => {
+    Harness.testCreate(CurrencyComponent, comp1, { language: 'en-GB' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, 'US$0.00');
       Harness.testSetInput(component, 1.00, 1, 'US$1.00');
@@ -79,8 +86,9 @@ describe('Currency Component', () => {
       done();
     });
   });
+
   it('Should format currency for French locale', (done) => {
-    Harness.testCreate(CurrencyComponent, comps.comp1, {language: 'fr'}).then((component) => {
+    Harness.testCreate(CurrencyComponent, comp1, { language: 'fr' }).then((component) => {
       // The spaces in these tests are a weird unicode space so be careful duplicating the tests.
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0,00 $US');
@@ -99,8 +107,9 @@ describe('Currency Component', () => {
       done();
     });
   });
+
   it('Should format currency for German locale', (done) => {
-    Harness.testCreate(CurrencyComponent, comps.comp1, {language: 'de'}).then((component) => {
+    Harness.testCreate(CurrencyComponent, comp1, { language: 'de' }).then((component) => {
       Harness.testSetInput(component, null, null, '');
       Harness.testSetInput(component, 0, 0, '0,00 $');
       Harness.testSetInput(component, 1.00, 1.00, '1,00 $');

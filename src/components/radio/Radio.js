@@ -8,7 +8,7 @@ export default class RadioComponent extends BaseComponent {
       inputType: 'radio',
       label: 'Radio',
       key: 'radio',
-      values: [{label: '', value: ''}],
+      values: [{ label: '', value: '' }],
       fieldSet: false
     }, ...extend);
   }
@@ -42,11 +42,6 @@ export default class RadioComponent extends BaseComponent {
     });
     const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
     const wrappers = [];
-
-    if (this.component.inputType === 'radio') {
-      this.info.attr.name += this.id;
-    }
-
     _.each(this.component.values, (value) => {
       const wrapperClass = `form-check ${this.optionWrapperClass}`;
       const labelWrapper = this.ce('div', {
@@ -59,15 +54,22 @@ export default class RadioComponent extends BaseComponent {
       this.addShortcut(label, value.shortcut);
 
       // Determine the attributes for this input.
-      const inputId = `${this.id}${this.row}-${value.value}`;
+      let inputId = this.id;
+      if (this.options.row) {
+        inputId += `-${this.options.row}`;
+      }
+      inputId += `-${value.value}`;
       this.info.attr.id = inputId;
       this.info.attr.value = value.value;
       label.setAttribute('for', this.info.attr.id);
 
       // Create the input.
       const input = this.ce('input');
-      _.each(this.info.attr, (value, key) => {
-        input.setAttribute(key, value);
+      _.each(this.info.attr, (attrValue, key) => {
+        if (key === 'name' && this.component.inputType === 'radio') {
+          attrValue += `[${this.id}]`;
+        }
+        input.setAttribute(key, attrValue);
       });
 
       const labelSpan = this.ce('span');

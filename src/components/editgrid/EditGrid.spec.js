@@ -1,11 +1,16 @@
-'use strict';
 import assert from 'power-assert';
-import EditGridComponent from './EditGrid';
-import {components as comps} from './fixtures/index';
+
 import Harness from '../../../test/harness';
+import EditGridComponent from './EditGrid';
+
+import {
+  comp1,
+  comp2
+} from './fixtures';
+
 describe('EditGrid Component', () => {
   it('Should build an empty edit grid component', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(1)', 'Field 1');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(2)', 'Field 2');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '0');
@@ -21,7 +26,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should build an edit grid component', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(1)', 'Field 1');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(2)', 'Field 2');
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '0');
@@ -52,7 +57,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should add a row when add another is clicked', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testElements(component, 'li.list-group-item', 1);
       Harness.testInnerHtml(component, 'li.list-group-header div.row div:nth-child(3)', '0');
       Harness.clickElement(component, 'div.editgrid-add button');
@@ -67,7 +72,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should save a new row when save is clicked', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -96,7 +101,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should cancel add a row when cancel is clicked', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -124,7 +129,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should delete a row when delete is clicked', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -152,7 +157,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should edit a row when edit is clicked', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -174,7 +179,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should save a row when save is clicked', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -198,7 +203,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should cancel edit row when cancel is clicked', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -222,7 +227,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should show error messages for existing data in rows', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'bad',
@@ -245,7 +250,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should not allow saving when errors exist', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       document.body.appendChild(component.element);
       Harness.clickElement(component, 'div.editgrid-add button');
       Harness.clickElement(component, 'div.editgrid-actions button.btn-primary');
@@ -273,7 +278,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should not allow saving when rows are open', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -297,7 +302,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should disable components when in read only', done => {
-    Harness.testCreate(EditGridComponent, comps.comp1, {readOnly: true}).then((component) => {
+    Harness.testCreate(EditGridComponent, comp1, { readOnly: true }).then((component) => {
       Harness.testSetGet(component, [
         {
           field1: 'good',
@@ -323,7 +328,7 @@ describe('EditGrid Component', () => {
   });
 
   it('Should calculate conditional logic and default values when adding row', done => {
-    Harness.testCreate(EditGridComponent, comps.comp2).then(component => {
+    Harness.testCreate(EditGridComponent, comp2).then(component => {
       Harness.clickElement(component, 'div.editgrid-add button');
       Harness.testVisibility(component, '.formio-component-field2', false);
       Harness.getInputValue(component, 'data[editgrid][0][field1]', 'bar');

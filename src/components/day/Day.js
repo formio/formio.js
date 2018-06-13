@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import BaseComponent from '../base/Base';
-import {getLocaleDateFormatInfo} from '../../utils/utils';
+import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends BaseComponent {
   static schema(...extend) {
@@ -48,14 +48,27 @@ export default class DayComponent extends BaseComponent {
     this.dayFirst = this.component.useLocaleSettings
       ? dateFormatInfo.dayFirst
       : this.component.dayFirst;
+    this.hideInputLabels = this.component.hideInputLabels;
+  }
+
+  get dayRequired() {
+    return this.showDay && _.get(this.component, 'fields.day.required', false);
   }
 
   get showDay() {
     return !_.get(this.component, 'fields.day.hide', false);
   }
 
+  get monthRequired() {
+    return this.showMonth && _.get(this.component, 'fields.month.required', false);
+  }
+
   get showMonth() {
     return !_.get(this.component, 'fields.month.hide', false);
+  }
+
+  get yearRequired() {
+    return this.showYear && _.get(this.component, 'fields.year.required', false);
   }
 
   get showYear() {
@@ -79,29 +92,43 @@ export default class DayComponent extends BaseComponent {
       return this._months;
     }
     this._months = [
-      {value: 0, label: _.get(this.component, 'fields.month.placeholder', '')},
-      {value: 1, label: this.t('january')},
-      {value: 2, label: this.t('february')},
-      {value: 3, label: this.t('march')},
-      {value: 4, label: this.t('april')},
-      {value: 5, label: this.t('may')},
-      {value: 6, label: this.t('june')},
-      {value: 7, label: this.t('july')},
-      {value: 8, label: this.t('august')},
-      {value: 9, label: this.t('september')},
-      {value: 10, label: this.t('october')},
-      {value: 11, label: this.t('november')},
-      {value: 12, label: this.t('december')}
+      { value: 0, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
+      { value: 1, label: this.t('january') },
+      { value: 2, label: this.t('february') },
+      { value: 3, label: this.t('march') },
+      { value: 4, label: this.t('april') },
+      { value: 5, label: this.t('may') },
+      { value: 6, label: this.t('june') },
+      { value: 7, label: this.t('july') },
+      { value: 8, label: this.t('august') },
+      { value: 9, label: this.t('september') },
+      { value: 10, label: this.t('october') },
+      { value: 11, label: this.t('november') },
+      { value: 12, label: this.t('december') }
     ];
     return this._months;
   }
 
-  get emptyValue() {
-    return null;
-  }
+  validateRequired(setting, value) {
+    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
+    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
+    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
+    if (this.dayRequired && !day) {
+      return false;
+    }
 
-  isEmpty(value) {
-    return super.isEmpty(value);
+    if (this.monthRequired && month < 0) {
+      return false;
+    }
+
+    if (this.yearRequired && !year) {
+      return false;
+    }
+
+    if (!boolValue(setting)) {
+      return true;
+    }
+    return !this.isEmpty(value);
   }
 
   createDayInput(subinputAtTheBottom) {
@@ -111,13 +138,19 @@ export default class DayComponent extends BaseComponent {
 
     const id = `${this.component.key}-day`;
 
-    const dayLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.day.required', false) ? 'field-required' : ''
-    });
-    dayLabel.appendChild(this.text(this.t('day')));
-    this.setSubinputLabelStyle(dayLabel);
-    if (!subinputAtTheBottom) {
+    const dayLabel = !this.hideInputLabels
+      ? this.ce('label', {
+        for: id,
+        class: _.get(this.component, 'fields.day.required', false) ? 'field-required' : ''
+      })
+      : null;
+
+    if (dayLabel) {
+      dayLabel.appendChild(this.text(this.t('day')));
+      this.setSubinputLabelStyle(dayLabel);
+    }
+
+    if (dayLabel && !subinputAtTheBottom) {
       dayColumn.appendChild(dayLabel);
     }
 
@@ -128,7 +161,7 @@ export default class DayComponent extends BaseComponent {
       step: '1',
       min: '1',
       max: '31',
-      placeholder: _.get(this.component, 'fields.day.placeholder', ''),
+      placeholder: _.get(this.component, 'fields.day.placeholder') || (this.hideInputLabels ? this.t('Day') : ''),
       id
     });
     this.hook('input', this.dayInput, dayInputWrapper);
@@ -137,7 +170,7 @@ export default class DayComponent extends BaseComponent {
     this.setSubinputStyle(dayInputWrapper);
     dayColumn.appendChild(dayInputWrapper);
 
-    if (subinputAtTheBottom) {
+    if (dayLabel && subinputAtTheBottom) {
       dayColumn.appendChild(dayLabel);
     }
 
@@ -151,13 +184,19 @@ export default class DayComponent extends BaseComponent {
 
     const id = `${this.component.key}-month`;
 
-    const monthLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.month.required', false) ? 'field-required' : ''
-    });
-    monthLabel.appendChild(this.text(this.t('month')));
-    this.setSubinputLabelStyle(monthLabel);
-    if (!subinputAtTheBottom) {
+    const monthLabel = !this.hideInputLabels
+      ? this.ce('label', {
+        for: id,
+        class: _.get(this.component, 'fields.month.required', false) ? 'field-required' : ''
+      })
+      : null;
+
+    if (monthLabel) {
+      monthLabel.appendChild(this.text(this.t('month')));
+      this.setSubinputLabelStyle(monthLabel);
+    }
+
+    if (monthLabel && !subinputAtTheBottom) {
       monthColumn.appendChild(monthLabel);
     }
 
@@ -182,7 +221,7 @@ export default class DayComponent extends BaseComponent {
     this.setSubinputStyle(monthInputWrapper);
     monthColumn.appendChild(monthInputWrapper);
 
-    if (subinputAtTheBottom) {
+    if (monthLabel && subinputAtTheBottom) {
       monthColumn.appendChild(monthLabel);
     }
 
@@ -196,13 +235,19 @@ export default class DayComponent extends BaseComponent {
 
     const id = `${this.component.key}-year`;
 
-    const yearLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.year.required', false) ? 'field-required' : ''
-    });
-    yearLabel.appendChild(this.text(this.t('year')));
-    this.setSubinputLabelStyle(yearLabel);
-    if (!subinputAtTheBottom) {
+    const yearLabel = !this.hideInputLabels
+      ? this.ce('label', {
+        for: id,
+        class: _.get(this.component, 'fields.year.required', false) ? 'field-required' : ''
+      })
+      : null;
+
+    if (yearLabel) {
+      yearLabel.appendChild(this.text(this.t('year')));
+      this.setSubinputLabelStyle(yearLabel);
+    }
+
+    if (yearLabel && !subinputAtTheBottom) {
       yearColumn.appendChild(yearLabel);
     }
 
@@ -212,7 +257,7 @@ export default class DayComponent extends BaseComponent {
       type: 'number',
       step: '1',
       min: '1',
-      placeholder: _.get(this.component, 'fields.year.placeholder', ''),
+      placeholder: _.get(this.component, 'fields.year.placeholder') || (this.hideInputLabels ? this.t('Year') : ''),
       id
     });
 
@@ -222,7 +267,7 @@ export default class DayComponent extends BaseComponent {
     this.setSubinputStyle(yearInputWrapper);
     yearColumn.appendChild(yearInputWrapper);
 
-    if (subinputAtTheBottom) {
+    if (yearLabel && subinputAtTheBottom) {
       yearColumn.appendChild(yearLabel);
     }
 
@@ -284,7 +329,7 @@ export default class DayComponent extends BaseComponent {
   }
 
   setSubinputLabelStyle(label) {
-    const {inputsLabelPosition} = this.component;
+    const { inputsLabelPosition } = this.component;
 
     if (inputsLabelPosition === 'left') {
       _.assign(label.style, {
@@ -306,7 +351,7 @@ export default class DayComponent extends BaseComponent {
   }
 
   setSubinputStyle(input) {
-    const {inputsLabelPosition} = this.component;
+    const { inputsLabelPosition } = this.component;
 
     if (['left', 'right'].includes(inputsLabelPosition)) {
       input.style.width = '67%';

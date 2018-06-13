@@ -1,8 +1,10 @@
+/* global $ */
+
 import Webform from './Webform';
 import dragula from 'dragula';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
-import {getComponent} from './utils/utils';
+import { getComponent } from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -11,7 +13,6 @@ require('./components/builder');
 export default class WebformBuilder extends Webform {
   constructor(element, options) {
     super(element, options);
-    const self = this;
     this.dragContainers = [];
     this.sidebarContainers = [];
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
@@ -34,7 +35,7 @@ export default class WebformBuilder extends Webform {
     this.options.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.options.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
     this.options.hooks = this.options.hooks || {};
-    this.options.hooks.addComponents = function(components) {
+    this.options.hooks.addComponents = (components) => {
       if (!components || (!components.length && !components.nodrop)) {
         // Return a simple alert so they know they can add something here.
         return [
@@ -44,9 +45,9 @@ export default class WebformBuilder extends Webform {
             tag: 'div',
             className: 'alert alert-info',
             attrs: [
-              {attr: 'id', value: `${this.id}-placeholder`},
-              {attr: 'style', value: 'text-align:center; margin-bottom: 0px;'},
-              {attr: 'role', value: 'alert'}
+              { attr: 'id', value: `${this.id}-placeholder` },
+              { attr: 'style', value: 'text-align:center; margin-bottom: 0px;' },
+              { attr: 'role', value: 'alert' }
             ],
             content: 'Drag and Drop a form component'
           }
@@ -54,7 +55,7 @@ export default class WebformBuilder extends Webform {
       }
       return components;
     };
-    this.options.hooks.addComponent = function(container, comp) {
+    this.options.hooks.addComponent = (container, comp) => {
       if (!comp || !comp.component) {
         return container;
       }
@@ -65,13 +66,13 @@ export default class WebformBuilder extends Webform {
 
         const removeButton = this.ce('div', {
           class: 'btn btn-xxs btn-danger component-settings-button component-settings-button-remove'
-        }, this.ce('span', {class: 'glyphicon glyphicon-remove'}));
-        this.addEventListener(removeButton, 'click', () => self.deleteComponent(comp));
+        }, this.getIcon('remove'));
+        this.addEventListener(removeButton, 'click', () => this.deleteComponent(comp));
 
         const editButton = this.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit'
-        }, this.ce('span', {class: 'glyphicon glyphicon-cog'}));
-        this.addEventListener(editButton, 'click', () => self.editComponent(comp));
+        }, this.getIcon('cog'));
+        this.addEventListener(editButton, 'click', () => this.editComponent(comp));
 
         // Add the edit buttons to the component.
         comp.prepend(this.ce('div', {
@@ -80,7 +81,7 @@ export default class WebformBuilder extends Webform {
       }
 
       if (!container.noDrop) {
-        self.addDragContainer(container, this);
+        this.addDragContainer(container, this);
       }
 
       return container;
@@ -258,7 +259,7 @@ export default class WebformBuilder extends Webform {
             href: componentInfo.documentation || '#',
             target: '_blank'
           }, this.ce('i', {
-            class: 'glyphicon glyphicon-new-window'
+            class: this.iconClass('new-window')
           }, ` ${this.t('Help')}`)))
         ])
       ]),
@@ -272,15 +273,15 @@ export default class WebformBuilder extends Webform {
           class: 'col col-sm-6'
         }, [
           this.ce('div', {
-            class: 'panel panel-default preview-panel'
+            class: 'card panel panel-default preview-panel'
           }, [
             this.ce('div', {
-              class: 'panel-heading'
+              class: 'card-header panel-heading'
             }, this.ce('h3', {
-              class: 'panel-title'
+              class: 'card-title panel-title'
             }, this.t('Preview'))),
             this.ce('div', {
-              class: 'panel-body'
+              class: 'card-body panel-body'
             }, this.componentPreview)
           ]),
           this.ce('div', {
@@ -338,7 +339,7 @@ export default class WebformBuilder extends Webform {
     });
 
     // Modify the component information in the edit form.
-    this.editForm.formReady.then(() => this.editForm.setValue({data: componentCopy.component}, {
+    this.editForm.formReady.then(() => this.editForm.setValue({ data: componentCopy.component }, {
       noUpdateEvent: true
     }));
 
@@ -427,49 +428,61 @@ export default class WebformBuilder extends Webform {
     }
 
     info = _.clone(info);
-    const groupAnchor = this.ce('a', {
-      href: `#group-${info.key}`
+    const groupAnchor = this.ce('button', {
+      class: 'btn btn-block builder-group-button',
+      'data-toggle': 'collapse',
+      'data-parent': `#${container.id}`,
+      'data-target': `#group-${info.key}`
     }, this.text(info.title));
 
-    // Add a listener when it is clicked.
-    this.addEventListener(groupAnchor, 'click', (event) => {
-      event.preventDefault();
-      const clickedGroupId = event.target.getAttribute('href').replace('#group-', '');
-      if (this.groups[clickedGroupId]) {
-        const clickedGroup = this.groups[clickedGroupId];
-        const wasIn = this.hasClass(clickedGroup.panel, 'in');
-        _.each(this.groups, (group, groupId) => {
-          this.removeClass(group.panel, 'in');
-          if ((groupId === clickedGroupId) && !wasIn) {
-            this.addClass(group.panel, 'in');
-            let parent = group.parent;
-            while (parent) {
-              this.addClass(parent.panel, 'in');
-              parent = parent.parent;
-            }
-          }
-        });
+    // See if we have bootstrap.js installed.
+    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().collapse === 'function');
 
-        // Match the form builder height to the sidebar.
-        this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
-        this.scrollSidebar();
-      }
-    });
+    // Add a listener when it is clicked.
+    if (!hasBootstrapJS) {
+      this.addEventListener(groupAnchor, 'click', (event) => {
+        event.preventDefault();
+        const clickedGroupId = event.target.getAttribute('data-target').replace('#group-', '');
+        if (this.groups[clickedGroupId]) {
+          const clickedGroup = this.groups[clickedGroupId];
+          const wasIn = this.hasClass(clickedGroup.panel, 'in');
+          _.each(this.groups, (group, groupId) => {
+            this.removeClass(group.panel, 'in');
+            this.removeClass(group.panel, 'show');
+            if ((groupId === clickedGroupId) && !wasIn) {
+              this.addClass(group.panel, 'in');
+              this.addClass(group.panel, 'show');
+              let parent = group.parent;
+              while (parent) {
+                this.addClass(parent.panel, 'in');
+                this.addClass(parent.panel, 'show');
+                parent = parent.parent;
+              }
+            }
+          });
+
+          // Match the form builder height to the sidebar.
+          this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
+          this.scrollSidebar();
+        }
+      });
+    }
 
     info.element = this.ce('div', {
-      class: 'panel panel-default form-builder-panel',
+      class: 'card panel panel-default form-builder-panel',
       id: `group-panel-${info.key}`
     }, [
       this.ce('div', {
-        class: 'panel-heading'
+        class: 'card-header panel-heading form-builder-group-header'
       }, [
-        this.ce('h4', {
-          class: 'panel-title'
+        this.ce('h5', {
+          class: 'mb-0 panel-title'
         }, groupAnchor)
       ])
     ]);
     info.body = this.ce('div', {
-      class: 'panel-body no-drop'
+      id: `group-container-${info.key}`,
+      class: 'card-body panel-body no-drop'
     });
 
     // Add this group body to the drag containers.
@@ -478,6 +491,9 @@ export default class WebformBuilder extends Webform {
     let groupBodyClass = 'panel-collapse collapse';
     if (info.default) {
       groupBodyClass += ' in';
+      if (!hasBootstrapJS) {
+        groupBodyClass += ' show';
+      }
     }
 
     info.panel = this.ce('div', {
@@ -548,7 +564,8 @@ export default class WebformBuilder extends Webform {
       this.removeChildFrom(this.sideBarElement, this.builderSidebar);
     }
     this.sideBarElement = this.ce('div', {
-      class: 'panel-group'
+      id: `builder-sidebar-${this.id}`,
+      class: 'accordion panel-group'
     });
 
     // Add the groups.
@@ -730,10 +747,10 @@ export default class WebformBuilder extends Webform {
       this.dragula.destroy();
     }
     this.dragula = dragula(this.sidebarContainers.concat(this.dragContainers), {
-      copy: function(el) {
+      copy(el) {
         return el.classList.contains('drag-copy');
       },
-      accepts: function(el, target) {
+      accepts(el, target) {
         return !target.classList.contains('no-drop');
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));

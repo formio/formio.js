@@ -25,6 +25,10 @@ export default class ContentComponent extends BaseComponent {
     return ContentComponent.schema();
   }
 
+  setHTML() {
+    this.element.innerHTML = this.interpolate(this.component.html);
+  }
+
   build() {
     this.element = this.ce('div', {
       id: this.id,
@@ -43,7 +47,11 @@ export default class ContentComponent extends BaseComponent {
       this.element.appendChild(editorElement);
     }
     else {
-      this.element.innerHTML = this.interpolate(this.component.html, {data: this.data});
+      this.setHTML();
+    }
+
+    if (this.component.refreshOnChange) {
+      this.on('change', () => this.setHTML());
     }
   }
 

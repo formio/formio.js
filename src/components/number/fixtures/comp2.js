@@ -1,4 +1,4 @@
-export const component = {
+export default {
   'multiple': false,
   'conditional': {
     'eq': '',
