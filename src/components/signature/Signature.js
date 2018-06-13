@@ -128,6 +128,7 @@ export default class SignatureComponent extends BaseComponent {
       style: (`width: ${this.component.width};height: ${this.component.height};padding:0;margin:0;`),
       tabindex: this.component.tabindex || 0
     });
+    this.addFocusBlurEvents(this.padBody);
 
     // Create the refresh button.
     this.refresh = this.ce('a', {

@@ -6,7 +6,7 @@ import 'whatwg-fetch';
 import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
-import providers from './providers';
+import * as providers from './providers';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -456,9 +456,9 @@ export default class Formio {
     const requestArgs = {
       provider: storage,
       method: 'upload',
-      file: file,
-      fileName: fileName,
-      dir: dir
+      file,
+      fileName,
+      dir
     };
     const request = Formio.pluginWait('preRequest', requestArgs)
       .then(() => {

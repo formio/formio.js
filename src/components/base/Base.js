@@ -1860,9 +1860,15 @@ export default class BaseComponent {
     }
     this.inputs.push(input);
     this.hook('input', input, container);
+    this.addFocusBlurEvents(input);
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
     return input;
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', () => this.emit('focus', this));
+    this.addEventListener(element, 'blur', () => this.emit('blur', this));
   }
 
   get wysiwygDefault() {
