@@ -1,4 +1,4 @@
-import UnknownComponent from './unknown/Unknown';
+import Component from './_classes/component/Component';
 import _ from 'lodash';
 export default class Components {
   static get components() {
@@ -20,17 +20,13 @@ export default class Components {
     Components.components[name] = comp;
   }
 
-  static create(component, options, data, nobuild) {
+  static create(component, options, data) {
     let comp = null;
     if (component.type && Components.components.hasOwnProperty(component.type)) {
       comp = new Components.components[component.type](component, options, data);
     }
     else {
-      comp = new UnknownComponent(component, options, data);
-    }
-    if (!nobuild) {
-      comp.build();
-      comp.isBuilt = true;
+      comp = new Component(component, options, data);
     }
     return comp;
   }

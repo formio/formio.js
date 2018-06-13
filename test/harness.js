@@ -81,7 +81,8 @@ const Harness = {
         if (err) {
           return reject(err);
         }
-        component.build();
+        const element = document.createElement('div');
+        component.build(element);
         assert(!!component.element, 'No ' + component.type + ' element created.');
         return resolve(component);
       });

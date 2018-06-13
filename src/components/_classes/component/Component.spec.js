@@ -1,7 +1,7 @@
 'use strict';
 import assert from 'power-assert';
 import _merge from 'lodash/merge';
-import Component from './Base';
+import Component from './Component';
 import Harness from '../../../../test/harness';
 import {components as comps} from './fixtures/index';
 describe('Component', () => {

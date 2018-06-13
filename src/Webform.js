@@ -47,8 +47,18 @@ export default class Webform extends NestedComponent {
    * @param {boolean} options.template - Provides a way to inject custom logic into the creation of every element rendered within the form.
    */
   /* eslint-disable max-statements */
-  constructor(options) {
+  constructor() {
+    let element;
+    let options;
+    if (arguments[0] instanceof HTMLElement) {
+      element = arguments[0];
+      options = arguments[1];
+    }
+    else {
+      options = arguments[0];
+    }
     super(null, getOptions(options));
+    this.element = element;
 
     // Keep track of all available forms globally.
     Formio.forms[this.id] = this;
@@ -197,21 +207,6 @@ export default class Webform extends NestedComponent {
       this.submissionReadyReject = reject;
     });
 
-    /**
-     * Promise to trigger when the element for this form is established.
-     *
-     * @type {Promise}
-     */
-    // this.onElement = new Promise((resolve) => {
-    //   /**
-    //    * Called when the element has been resolved.
-    //    *
-    //    * @type {function}
-    //    */
-    //   this.elementResolve = resolve;
-    //   this.setElement(element);
-    // });
-
     this.shortcuts = [];
 
     // Set language after everything is established.
@@ -228,7 +223,11 @@ export default class Webform extends NestedComponent {
     else {
       this.component = this.form;
     }
-    this.addComponents();
+
+    if (this.element) {
+      this.init();
+      this.build();
+    }
   }
   /* eslint-enable max-statements */
 
@@ -245,7 +244,7 @@ export default class Webform extends NestedComponent {
         if (err) {
           return reject(err);
         }
-        this.redraw();
+        this.build();
         resolve();
       });
     });
@@ -288,31 +287,6 @@ export default class Webform extends NestedComponent {
         resolve(i18next);
       });
     });
-  }
-
-  /**
-   * Sets the the outside wrapper element of the Form.
-   *
-   * @param {HTMLElement} element - The element to set as the outside wrapper element for this form.
-   */
-  setElement(element) {
-    if (!element) {
-      return;
-    }
-
-    if (this.element) {
-      // this.element.removeEventListener('keydown', this.executeShortcuts.bind(this));
-    }
-
-    this.wrapper = element;
-    this.element = this.ce('div');
-    this.wrapper.appendChild(this.element);
-    this.showElement(false);
-    let classNames = this.element.getAttribute('class');
-    classNames += ' formio-form';
-    this.addClass(this.wrapper, classNames);
-    this.loading = true;
-    this.elementResolve(element);
   }
 
   keyboardCatchableElement(element) {
@@ -607,15 +581,6 @@ export default class Webform extends NestedComponent {
       console.warn('You need to instantiate the PDF class to use this form as a pdf.');
     }
 
-    if (this.onFormBuild) {
-      return this.onFormBuild.then(
-        () => this.init(),
-        (err) => this.formReadyReject(err)
-      ).catch(
-        (err) => this.formReadyReject(err)
-      );
-    }
-
     // Create the form.
     this._form = form;
     return this.init().then(() => {
@@ -751,24 +716,24 @@ export default class Webform extends NestedComponent {
   }
 
   build(element) {
-    return this.onElement.then(() => {
-      return this.ready.then(() => {
-        element.innerHTML = this.render();
-        this.hydrate(element);
-      });
-    });
+    element = element || this.element;
+    if (element) {
+      return this.ready.then(() => super.build(element));
+    }
+    return this.ready;
   }
 
   render() {
     return this.renderTemplate('webform', {
       classes: 'formio-form',
-      children: super.renderComponents(this.components)
+      children: this.renderComponents()
     });
   }
 
   hydrate(element) {
+    this.element = element;
     this.loadRefs(element, {webform: 'single'});
-    super.hydrateComponents(this.refs.webform, this.components);
+    this.hydrateComponents(this.refs.webform);
     this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
