@@ -2,7 +2,7 @@
 import _ from 'lodash';
 
 import TextFieldComponent from '../textfield/TextField';
-import BaseComponent from '../base/Base';
+import Formio from '../../Formio';
 
 export default class AddressComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -37,7 +37,7 @@ export default class AddressComponent extends TextFieldComponent {
     if (component.map && component.map.region) {
       src += `&region=${component.map.region}`;
     }
-    BaseComponent.requireLibrary('googleMaps', 'google.maps.places', src);
+    Formio.requireLibrary('googleMaps', 'google.maps.places', src);
 
     // Keep track of the full addresses.
     this.addresses = [];
@@ -457,7 +457,7 @@ export default class AddressComponent extends TextFieldComponent {
 
   addInput(input, container) {
     super.addInput(input, container);
-    BaseComponent.libraryReady('googleMaps').then(() => {
+    Formio.libraryReady('googleMaps').then(() => {
       let autoCompleteOptions = {};
       if (this.component.map) {
         autoCompleteOptions = this.component.map.autoCompleteOptions || {};

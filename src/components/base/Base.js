@@ -5,6 +5,7 @@ import _ from 'lodash';
 import Tooltip from 'tooltip.js';
 import i18next from 'i18next';
 import * as FormioUtils from '../../utils/utils';
+import Formio from '../../Formio';
 import Validator from '../Validator';
 import moment from 'moment';
 
@@ -1888,12 +1889,12 @@ export default class BaseComponent {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
 
     // Lazy load the quill css.
-    BaseComponent.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
+    Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
       { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
-    return BaseComponent.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
+    return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
       .then(() => {
         this.quill = new Quill(element, settings);
 
@@ -2553,88 +2554,3 @@ export default class BaseComponent {
     }
   }
 }
-
-BaseComponent.externalLibraries = {};
-BaseComponent.requireLibrary = (name, property, src, polling) => {
-  if (!BaseComponent.externalLibraries.hasOwnProperty(name)) {
-    BaseComponent.externalLibraries[name] = {};
-    BaseComponent.externalLibraries[name].ready = new Promise((resolve, reject) => {
-      BaseComponent.externalLibraries[name].resolve = resolve;
-      BaseComponent.externalLibraries[name].reject = reject;
-    });
-
-    const callbackName = `${name}Callback`;
-
-    if (!polling && !window[callbackName]) {
-      window[callbackName] = () => BaseComponent.externalLibraries[name].resolve();
-    }
-
-    // See if the plugin already exists.
-    const plugin = _.get(window, property);
-    if (plugin) {
-      BaseComponent.externalLibraries[name].resolve(plugin);
-    }
-    else {
-      src = Array.isArray(src) ? src : [src];
-      src.forEach((lib) => {
-        let attrs = {};
-        let elementType = '';
-        if (typeof lib === 'string') {
-          lib = {
-            type: 'script',
-            src: lib
-          };
-        }
-        switch (lib.type) {
-          case 'script':
-            elementType = 'script';
-            attrs = {
-              src: lib.src,
-              type: 'text/javascript',
-              defer: true,
-              async: true
-            };
-            break;
-          case 'styles':
-            elementType = 'link';
-            attrs = {
-              href: lib.src,
-              rel: 'stylesheet'
-            };
-            break;
-        }
-
-        // Add the script to the top page.
-        const script = document.createElement(elementType);
-        for (const attr in attrs) {
-          script.setAttribute(attr, attrs[attr]);
-        }
-        document.getElementsByTagName('head')[0].appendChild(script);
-      });
-
-      // if no callback is provided, then check periodically for the script.
-      if (polling) {
-        const interval = setInterval(() => {
-          const plugin = _.get(window, property);
-
-          if (plugin) {
-            clearInterval(interval);
-            BaseComponent.externalLibraries[name].resolve(plugin);
-          }
-        }, 200);
-      }
-    }
-  }
-  return BaseComponent.externalLibraries[name].ready;
-};
-
-BaseComponent.libraryReady = (name) => {
-  if (
-    BaseComponent.externalLibraries.hasOwnProperty(name) &&
-    BaseComponent.externalLibraries[name].ready
-  ) {
-    return BaseComponent.externalLibraries[name].ready;
-  }
-
-  return Promise.reject(`${name} library was not required.`);
-};
