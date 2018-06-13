@@ -5,6 +5,7 @@ module.exports = function(gulp, plugins) {
       './node_modules/flatpickr/dist/flatpickr.min.css',
       './node_modules/choices.js/assets/styles/css/choices.min.css',
       './node_modules/dialog-polyfill/dialog-polyfill.css',
+      './node_modules/font-awesome/css/font-awesome.css',
       './src/sass/formio.form.scss'
     ])
       .pipe(sassFilter)
@@ -12,6 +13,7 @@ module.exports = function(gulp, plugins) {
       .pipe(sassFilter.restore)
       .pipe(plugins.concat('formio.form.css'))
       .pipe(plugins.replace(/\.\.\/\.\.\/icons\/\/?/g, 'icons/'))
+      .pipe(plugins.replace(/\.\.\/fonts\/\/?/g, 'fonts/'))
       .pipe(gulp.dest('dist/'))
       .pipe(plugins.rename('formio.full.css'))
       .pipe(gulp.dest('dist/'))
