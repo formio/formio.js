@@ -1067,7 +1067,9 @@ export default class Formio {
       return Promise.reject(errorMessage);
     }
     return new Promise((resolve, reject) => {
-      var authClient = new options.OktaAuth(options);
+      const Okta = options.OktaAuth;
+      delete options.OktaAuth;
+      var authClient = new Okta(options);
       var accessToken = authClient.tokenManager.get('accessToken');
       if (accessToken) {
         resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
