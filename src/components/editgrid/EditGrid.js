@@ -115,7 +115,7 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   createRow(row, rowIndex) {
-    const wrapper = this.ce('li', {class: 'list-group-item'});
+    const wrapper = this.ce('li', { class: 'list-group-item' });
     const rowTemplate = _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
 
     // Store info so we can detect changes later.
