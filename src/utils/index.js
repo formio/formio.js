@@ -704,7 +704,7 @@ const FormioUtils = {
     const formattedNumberString = (12345.6789).toLocaleString(lang);
     return {
       delimiter: formattedNumberString.match(/12(.*)345/)[1],
-      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+      decimalSeparator: formattedNumberString.match(/345(.*)6[78]/)[1]
     };
   },
   getNumberDecimalLimit(component) {

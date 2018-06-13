@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
  - Font Awesome fonts.
  - Button left/right icons.
+ - Possibility to unselect value for Select component.
 
 ## 2.32.2
 ### Fixed
