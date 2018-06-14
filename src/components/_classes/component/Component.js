@@ -306,6 +306,21 @@ export default class Component {
     // Set the template
     this.template = this.options.template;
 
+    this.logic.forEach(logic => {
+      if (logic.trigger.type === 'event') {
+        this.root.on(logic.trigger.event, () => {
+          const newComponent = _.cloneDeep(this.originalComponent);
+          if (this.applyActions(logic.actions, logic.trigger.event, this.data, newComponent)) {
+            // If component definition changed, replace it.
+            if (!_.isEqual(this.component, newComponent)) {
+              this.component = newComponent;
+            }
+            this.redraw();
+          }
+        });
+      }
+    });
+
     // Allow anyone to hook into the component creation.
     this.hook('component');
 
@@ -1277,13 +1292,17 @@ export default class Component {
     return result;
   }
 
+  get logic() {
+    return this.component.logic || [];
+  }
+
   /**
    * Check all triggers and apply necessary actions.
    *
    * @param data
    */
   fieldLogic(data) {
-    const logics = this.component.logic || [];
+    const logics = this.logic;
 
     // If there aren't logic, don't go further.
     if (logics.length === 0) {
@@ -1303,35 +1322,7 @@ export default class Component {
       );
 
       if (result) {
-        changed |= logic.actions.reduce((changed, action) => {
-          switch (action.type) {
-            case 'property':
-              FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
-              break;
-            case 'value': {
-              const oldValue = this.getValue();
-              const newValue = this.evaluate(
-                action.value,
-                {
-                  value: _.clone(oldValue),
-                  data,
-                  component: newComponent,
-                  result
-                },
-                'value'
-              );
-              if (!_.isEqual(oldValue, newValue)) {
-                this.setValue(newValue);
-                changed = true;
-              }
-              break;
-            }
-            case 'validation':
-              // TODO
-              break;
-          }
-          return changed;
-        }, false);
+        changed |= this.applyActions(logic.actions, result, data, newComponent);
       }
       return changed;
     }, false);
@@ -1343,6 +1334,38 @@ export default class Component {
     }
 
     return changed;
+  }
+
+  applyActions(actions, result, data, newComponent) {
+    return actions.reduce((changed, action) => {
+      switch (action.type) {
+        case 'property':
+          FormioUtils.setActionProperty(newComponent, action, this.data, data, newComponent, result, this);
+          break;
+        case 'value': {
+          const oldValue = this.getValue();
+          const newValue = this.evaluate(
+            action.value,
+            {
+              value: _.clone(oldValue),
+              data,
+              component: newComponent,
+              result
+            },
+            'value'
+          );
+          if (!_.isEqual(oldValue, newValue)) {
+            this.setValue(newValue);
+            changed = true;
+          }
+          break;
+        }
+        case 'validation':
+          // TODO
+          break;
+      }
+      return changed;
+    }, false);
   }
 
   /**
