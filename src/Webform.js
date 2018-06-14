@@ -738,6 +738,7 @@ export default class Webform extends NestedComponent {
     this.attachComponents(this.refs.webform);
     this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
     this.on('submitButton', (options) => this.submit(false, options), true);
+    this.on('checkValidity', (data) => this.checkValidity(data, true));
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);
     this.on('resetForm', () => this.resetValue(), true);
     this.on('deleteSubmission', () => this.deleteSubmission(), true);
