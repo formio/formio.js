@@ -72,10 +72,12 @@ export default class Formio {
     }
 
     const project = this.projectUrl || Formio.projectUrl;
+    const projectRegEx = /(^|\/)(project)($|\/[^/]+)/;
+    const isProjectUrl = (path.search(projectRegEx) !== -1);
 
-    // The baseURL is the same as the projectUrl. This is almost certainly against
-    // the Open Source server.
-    if (project && this.base === project) {
+    // The baseURL is the same as the projectUrl, and does not contain "/project/MONGO_ID" in
+    // its domain. This is almost certainly against the Open Source server.
+    if (project && this.base === project && !isProjectUrl) {
       this.noProject = true;
       this.projectUrl = this.base;
     }
@@ -130,9 +132,10 @@ export default class Formio {
 
     if (!this.noProject) {
       // Determine the projectUrl and projectId
-      if ((path.search(/(^|\/)(project)($|\/)/) !== -1)) {
+      if (isProjectUrl) {
         // Get project id as project/:projectId.
         registerItems(['project'], hostName);
+        path = path.replace(projectRegEx, '');
       }
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
@@ -155,7 +158,7 @@ export default class Formio {
     }
 
     // Configure Form urls and form ids.
-    if ((path.search(/(^|\/)(project|form)($|\/)/) !== -1)) {
+    if ((path.search(/(^|\/)(form)($|\/)/) !== -1)) {
       registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);
     }
     else {
@@ -165,7 +168,7 @@ export default class Formio {
       path = path.replace(subRegEx, '');
       path = path.replace(/\/$/, '');
       this.formsUrl = `${this.projectUrl}/form`;
-      this.formUrl = this.projectUrl + path;
+      this.formUrl = path ? this.projectUrl + path : '';
       this.formId = path.replace(/^\/+|\/+$/g, '');
       const items = ['submission', 'action', 'v'];
       for (const i in items) {
