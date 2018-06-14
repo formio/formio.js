@@ -128,7 +128,7 @@ export default class TableComponent extends NestedComponent {
   build() {
     this.element = this.ce('div', {
       id: this.id,
-      class: 'table-responsive'
+      class: `${this.className}  table-responsive`,
     });
     this.element.component = this;
 
