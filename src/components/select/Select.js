@@ -44,6 +44,9 @@ export default class SelectComponent extends BaseComponent {
     // Trigger an update.
     this.triggerUpdate = _.debounce(this.updateItems.bind(this), 100);
 
+    // Trigger loading more items
+    this.triggerLoading = _.debounce(this.loadMore.bind(this), 100);
+
     // Keep track of the select options.
     this.selectOptions = [];
 
@@ -216,7 +219,20 @@ export default class SelectComponent extends BaseComponent {
     });
 
     if (this.choices) {
-      this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+      if (this.component.dataSrc === 'resource') {
+        this.choices.setChoices(this.selectOptions, 'value', 'label', this.page === 1);
+
+        const dropdown = this.element.getElementsByClassName('choices__list')[2];
+
+        this.addEventListener(dropdown, 'scroll', () => {
+          if ((dropdown.scrollHeight <= dropdown.clientHeight + dropdown.scrollTop)) {
+            this.triggerLoading(items);
+          }
+        });
+      }
+      else {
+        this.choices.setChoices(this.selectOptions, 'value', 'label', true);
+      }
     }
     else if (this.loading) {
       // Re-attach select input.
@@ -241,6 +257,24 @@ export default class SelectComponent extends BaseComponent {
     // Say we are done loading the items.
     this.itemsLoadedResolve();
   }
+
+  loadMore(items) {
+    let resourceUrl = this.options.formio ? this.options.formio.formsUrl : `${Formio.getProjectUrl()}/form`;
+    resourceUrl += (`/${this.component.data.resource}/submission`);
+
+    this.page = this.page || 1;
+    this.page++;
+    this.loadedItems = (this.loadedItems || 0) + items.length;
+
+    if (items.serverCount > this.loadedItems) {
+      try {
+        this.loadItems(resourceUrl, this.lastSearch, this.requestHeaders);
+      }
+      catch (err) {
+        console.warn(`Unable to load resources for ${this.key}`);
+      }
+    }
+  }
   /* eslint-enable max-statements */
 
   loadItems(url, search, headers, options, method, body) {
@@ -253,8 +287,8 @@ export default class SelectComponent extends BaseComponent {
     }
 
     const query = (this.component.dataSrc === 'url') ? {} : {
-      limit: 100,
-      skip: 0
+      limit: this.component.limit || 20,
+      skip: (this.page - 1) * (this.component.limit || 20)
     };
 
     // Allow for url interpolation.
@@ -496,7 +530,8 @@ export default class SelectComponent extends BaseComponent {
         include: 'score',
         threshold: 0.3
       },
-      itemComparer: _.isEqual
+      itemComparer: _.isEqual,
+      resetScrollPosition: false
     };
 
     const tabIndex = input.tabIndex;
@@ -521,11 +556,19 @@ export default class SelectComponent extends BaseComponent {
       if (this.choices && this.choices.input) {
         this.addEventListener(this.choices.input, 'input', (event) => {
           if (!event.target.value) {
+            this.page = 1;
+            this.loadedItems = 0;
+            this.lastSearch = '';
             this.triggerUpdate();
           }
         });
       }
-      this.addEventListener(input, 'search', (event) => this.triggerUpdate(event.detail.value));
+      this.addEventListener(input, 'search', (event) => {
+        this.page = 1;
+        this.loadedItems = 0;
+        this.lastSearch = event.detail.value;
+        this.triggerUpdate(event.detail.value);
+      });
       this.addEventListener(input, 'stopSearch', () => this.triggerUpdate());
     }
 
