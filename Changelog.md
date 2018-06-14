@@ -55,6 +55,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
  - Okta SSO integration.
+ 
+## [UNRELEASED]
+### Added
+ - `focus` and `blur` events.
 
 ## 3.0.0-rc.10
 ### Added
