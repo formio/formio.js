@@ -21,6 +21,18 @@ export default [
     }
   },
   {
+    type: 'checkbox',
+    input: true,
+    inputType: 'checkbox',
+    key: 'showValidations',
+    label: 'Show Validations',
+    weight: 115,
+    tooltip: 'When the button is pressed, show any validation errors on the form.',
+    conditional: {
+      json: { '!==': [{ var: 'data.action' }, 'submit'] }
+    }
+  },
+  {
     type: 'textfield',
     label: 'Button Event',
     key: 'event',
