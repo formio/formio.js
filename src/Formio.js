@@ -1,3 +1,5 @@
+/* globals OktaAuth */
+
 // Intentionally use native-promise-only here... Other promise libraries (es6-promise)
 // duck-punch the global Promise definition which messes up Angular 2 since it
 // also duck-punches the global Promise definition. For now, keep native-promise-only.
@@ -7,6 +9,7 @@ import { EventEmitter2 as EventEmitter } from 'eventemitter2';
 import cookies from 'browser-cookies';
 import copy from 'shallow-copy';
 import providers from './providers';
+import _get from 'lodash/get';
 
 const isBoolean = (val) => typeof val === typeof true;
 const isNil = (val) => val === null || val === undefined;
@@ -69,10 +72,12 @@ export default class Formio {
     }
 
     const project = this.projectUrl || Formio.projectUrl;
+    const projectRegEx = /(^|\/)(project)($|\/[^/]+)/;
+    const isProjectUrl = (path.search(projectRegEx) !== -1);
 
-    // The baseURL is the same as the projectUrl. This is almost certainly against
-    // the Open Source server.
-    if (project && this.base === project) {
+    // The baseURL is the same as the projectUrl, and does not contain "/project/MONGO_ID" in
+    // its domain. This is almost certainly against the Open Source server.
+    if (project && this.base === project && !isProjectUrl) {
       this.noProject = true;
       this.projectUrl = this.base;
     }
@@ -127,9 +132,10 @@ export default class Formio {
 
     if (!this.noProject) {
       // Determine the projectUrl and projectId
-      if ((path.search(/(^|\/)(project)($|\/)/) !== -1)) {
+      if (isProjectUrl) {
         // Get project id as project/:projectId.
         registerItems(['project'], hostName);
+        path = path.replace(projectRegEx, '');
       }
       else if (hostName === this.base) {
         // Get project id as first part of path (subdirectory).
@@ -152,7 +158,7 @@ export default class Formio {
     }
 
     // Configure Form urls and form ids.
-    if ((path.search(/(^|\/)(project|form)($|\/)/) !== -1)) {
+    if ((path.search(/(^|\/)(form)($|\/)/) !== -1)) {
       registerItems(['form', ['submission', 'action', 'v']], this.projectUrl);
     }
     else {
@@ -162,7 +168,7 @@ export default class Formio {
       path = path.replace(subRegEx, '');
       path = path.replace(/\/$/, '');
       this.formsUrl = `${this.projectUrl}/form`;
-      this.formUrl = this.projectUrl + path;
+      this.formUrl = path ? this.projectUrl + path : '';
       this.formId = path.replace(/^\/+|\/+$/g, '');
       const items = ['submission', 'action', 'v'];
       for (const i in items) {
@@ -736,6 +742,7 @@ export default class Formio {
           (method === 'GET') &&
           !requestToken &&
           token &&
+          !opts.external &&
           !url.includes('token=') &&
           !url.includes('x-jwt-token=')
         ) {
@@ -1010,7 +1017,7 @@ export default class Formio {
   }
 
   static currentUser(formio, options) {
-    let projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
+    let projectUrl = formio ? formio.projectUrl : (Formio.projectUrl || Formio.baseUrl);
     projectUrl += '/current';
     const user = this.getUser();
     if (user) {
@@ -1020,8 +1027,7 @@ export default class Formio {
         options
       });
     }
-    const token = Formio.getToken();
-    if (!token) {
+    if ((!options || !options.external) && !Formio.getToken()) {
       return Formio.pluginAlter('wrapStaticRequestPromise', Promise.resolve(null), {
         url: projectUrl,
         method: 'GET',
@@ -1042,9 +1048,152 @@ export default class Formio {
     const projectUrl = formio ? formio.projectUrl : Formio.baseUrl;
     return Formio.makeRequest(formio, 'logout', `${projectUrl}/logout`);
   }
+
+  static oAuthCurrentUser(formio, token) {
+    return Formio.currentUser(formio, {
+      external: true,
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+  }
+
+  static oktaInit(options) {
+    options = options || {};
+    if (typeof OktaAuth !== undefined) {
+      options.OktaAuth = OktaAuth;
+    }
+
+    if (typeof options.OktaAuth === undefined) {
+      const errorMessage = 'Cannot find OktaAuth. Please include the Okta JavaScript SDK within your application. See https://developer.okta.com/code/javascript/okta_auth_sdk for an example.';
+      console.warn(errorMessage);
+      return Promise.reject(errorMessage);
+    }
+    return new Promise((resolve, reject) => {
+      const Okta = options.OktaAuth;
+      delete options.OktaAuth;
+      var authClient = new Okta(options);
+      var accessToken = authClient.tokenManager.get('accessToken');
+      if (accessToken) {
+        resolve(Formio.oAuthCurrentUser(options.formio, accessToken.accessToken));
+      }
+      else if (location.hash) {
+        authClient.token.parseFromUrl()
+          .then(token => {
+            authClient.tokenManager.add('accessToken', token);
+            resolve(Formio.oAuthCurrentUser(options.formio, token.accessToken));
+          })
+          .catch(err => {
+            console.warn(err);
+            reject(err);
+          });
+      }
+      else {
+        authClient.token.getWithRedirect({
+          responseType: 'token',
+          scopes: options.scopes
+        });
+        resolve(false);
+      }
+    });
+  }
+
+  static ssoInit(type, options) {
+    switch (type) {
+      case 'okta':
+        return Formio.oktaInit(options);
+      default:
+        console.warn('Unknown SSO type');
+        return Promise.reject('Unknown SSO type');
+    }
+  }
+
+  static requireLibrary(name, property, src, polling) {
+    if (!Formio.libraries.hasOwnProperty(name)) {
+      Formio.libraries[name] = {};
+      Formio.libraries[name].ready = new Promise((resolve, reject) => {
+        Formio.libraries[name].resolve = resolve;
+        Formio.libraries[name].reject = reject;
+      });
+
+      const callbackName = `${name}Callback`;
+
+      if (!polling && !window[callbackName]) {
+        window[callbackName] = () => Formio.libraries[name].resolve();
+      }
+
+      // See if the plugin already exists.
+      const plugin = _get(window, property);
+      if (plugin) {
+        Formio.libraries[name].resolve(plugin);
+      }
+      else {
+        src = Array.isArray(src) ? src : [src];
+        src.forEach((lib) => {
+          let attrs = {};
+          let elementType = '';
+          if (typeof lib === 'string') {
+            lib = {
+              type: 'script',
+              src: lib
+            };
+          }
+          switch (lib.type) {
+            case 'script':
+              elementType = 'script';
+              attrs = {
+                src: lib.src,
+                type: 'text/javascript',
+                defer: true,
+                async: true
+              };
+              break;
+            case 'styles':
+              elementType = 'link';
+              attrs = {
+                href: lib.src,
+                rel: 'stylesheet'
+              };
+              break;
+          }
+
+          // Add the script to the top page.
+          const script = document.createElement(elementType);
+          for (const attr in attrs) {
+            script.setAttribute(attr, attrs[attr]);
+          }
+          document.getElementsByTagName('head')[0].appendChild(script);
+        });
+
+        // if no callback is provided, then check periodically for the script.
+        if (polling) {
+          const interval = setInterval(() => {
+            const plugin = _get(window, property);
+            if (plugin) {
+              clearInterval(interval);
+              Formio.libraries[name].resolve(plugin);
+            }
+          }, 200);
+        }
+      }
+    }
+    return Formio.libraries[name].ready;
+  }
+
+  static libraryReady(name) {
+    if (
+      Formio.libraries.hasOwnProperty(name) &&
+      Formio.libraries[name].ready
+    ) {
+      return Formio.libraries[name].ready;
+    }
+
+    return Promise.reject(`${name} library was not required.`);
+  }
 }
 
 // Define all the static properties.
+Formio.libraries = {};
 Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;

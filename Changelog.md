@@ -45,6 +45,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## 3.0.0-rc.11
+### Fixed
+ - Some issues with the Formio constructor to determine the project, form, and submission paths for certain urls.
+ - Problem with the form builder where it would not add elements to the correct parents, but rather the root form.
+
+### Changed
+ - Moved the dynamic library loader into the Formio lib so that it is available to other libraries without renderer.
+
+### Added
+ - Okta SSO integration.
+
 ## 3.0.0-rc.10
 ### Added
  - Fontawesome for button icons.
