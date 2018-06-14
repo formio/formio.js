@@ -60,6 +60,11 @@ export default class FileComponent extends BaseComponent {
     return Array.isArray(value) ? value : [];
   }
 
+  // File is always an array.
+  validateMultiple() {
+    return false;
+  }
+
   build() {
     // Restore the value.
     this.restoreValue();
@@ -266,11 +271,11 @@ export default class FileComponent extends BaseComponent {
               return false;
             }
           },
-          [
-            this.ce('i', { class: this.iconClass('cloud-upload') }),
-            this.text(' Drop files to attach, or '),
-            this.buildBrowseLink()
-          ]
+            [
+              this.ce('i', { class: this.iconClass('cloud-upload') }),
+              this.text(' Drop files to attach, or '),
+              this.buildBrowseLink()
+            ]
           ) :
           this.ce('div')
       )
@@ -363,7 +368,7 @@ export default class FileComponent extends BaseComponent {
                 'aria-valuemax': 100,
                 style: `width:${fileUpload.progress}%`
               },
-              this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
+                this.ce('span', { class: 'sr-only' }, `${fileUpload.progress}% Complete`)
               )
             ) :
             this.ce('div', { class: `bg-${fileUpload.status}` }, fileUpload.message)
@@ -542,14 +547,19 @@ export default class FileComponent extends BaseComponent {
     }
   }
 
-  getFile(fileInfo, event)  {
+  getFile(fileInfo, event) {
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
-        download(file.url, file.originalName, file.type);
+        if (file.storage === 'base64') {
+          download(file.url, file.originalName, file.type);
+        }
+        else {
+          window.open(file.url, '_blank');
+        }
       }
     })
       .catch((response) => {
