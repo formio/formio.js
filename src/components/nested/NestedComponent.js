@@ -173,7 +173,7 @@ export default class NestedComponent extends BaseComponent {
       return comp;
     }
     this.setHidden(comp);
-    element = this.hook('addComponent', element, comp);
+    element = this.hook('addComponent', element, comp, this);
     if (before) {
       element.insertBefore(comp.getElement(), before);
     }
@@ -255,7 +255,7 @@ export default class NestedComponent extends BaseComponent {
   addComponents(element, data) {
     element = element || this.getContainer();
     data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents);
+    const components = this.hook('addComponents', this.componentComponents, this);
     _.each(components, (component) => this.addComponent(component, element, data));
   }
 

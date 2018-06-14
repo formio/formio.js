@@ -13,6 +13,11 @@ const baseUrl = `${protocol}://api.${domain}`;
 Formio.setBaseUrl(baseUrl);
 Formio.setToken(null);
 
+const projectId = '59bbe2ec8c246100079191aa';
+const formId = '59bbe2ec8c246100079191ab';
+const submissionId = '59bbe2ec8c246100079191ac';
+const actionId = '59bbe2ec8c246100079191ad';
+
 const generateID = function() {
   return chance.string({ length: 24, pool: '0123456789abcdef' });
 };
@@ -45,122 +50,122 @@ const runTests = function(fn, options) {
 
 describe('Formio Constructor Tests', () => {
   runTests((tests) => {
-    tests['http://form.io/project/234234234234/form/23234234234234'] = {
-      projectUrl: 'http://form.io/project/234234234234',
+    tests['http://form.io/project/' + projectId + '/form/' + formId] = {
+      projectUrl: 'http://form.io/project/' + projectId,
       projectsUrl: 'http://form.io/project',
-      projectId: '234234234234',
-      formsUrl: 'http://form.io/project/234234234234/form',
-      formUrl: 'http://form.io/project/234234234234/form/23234234234234',
-      formId: '23234234234234',
-      actionsUrl: 'http://form.io/project/234234234234/form/23234234234234/action',
+      projectId: projectId,
+      formsUrl: 'http://form.io/project/' + projectId + '/form',
+      formUrl: 'http://form.io/project/' + projectId + '/form/' + formId,
+      formId: formId,
+      actionsUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/action',
       actionUrl: '',
       actionId: '',
-      submissionsUrl: 'http://form.io/project/234234234234/form/23234234234234/submission',
+      submissionsUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/submission',
       submissionUrl: '',
       submissionId: '',
       query: ''
     };
-    tests['http://form.io/form/23234234234234'] = {
+    tests['http://form.io/form/' + formId] = {
       projectUrl: 'http://form.io',
       projectsUrl: `${baseUrl}/project`,
       projectId: '',
       formsUrl: 'http://form.io/form',
-      formUrl: 'http://form.io/form/23234234234234',
-      formId: '23234234234234',
-      actionsUrl: 'http://form.io/form/23234234234234/action',
+      formUrl: 'http://form.io/form/' + formId,
+      formId: formId,
+      actionsUrl: 'http://form.io/form/' + formId + '/action',
       actionUrl: '',
       actionId: '',
-      submissionsUrl: 'http://form.io/form/23234234234234/submission',
+      submissionsUrl: 'http://form.io/form/' + formId + '/submission',
       submissionUrl: '',
       submissionId: '',
       query: ''
     };
-    tests['http://form.io/form/23234234234234/submission/982398220983'] = {
+    tests['http://form.io/form/' + formId + '/submission/' + submissionId] = {
       projectUrl: 'http://form.io',
       projectsUrl: `${baseUrl}/project`,
       projectId: '',
       formsUrl: 'http://form.io/form',
-      formUrl: 'http://form.io/form/23234234234234',
-      formId: '23234234234234',
-      actionsUrl: 'http://form.io/form/23234234234234/action',
+      formUrl: 'http://form.io/form/' + formId,
+      formId: formId,
+      actionsUrl: 'http://form.io/form/' + formId + '/action',
       actionUrl: '',
       actionId: '',
-      submissionsUrl: 'http://form.io/form/23234234234234/submission',
-      submissionUrl: 'http://form.io/form/23234234234234/submission/982398220983',
-      submissionId: '982398220983',
+      submissionsUrl: 'http://form.io/form/' + formId + '/submission',
+      submissionUrl: 'http://form.io/form/' + formId + '/submission/' + submissionId,
+      submissionId: submissionId,
       query: ''
     };
-    tests['http://form.io/form/23234234234234/action/234230987872'] = {
+    tests['http://form.io/form/' + formId + '/action/' + actionId] = {
       projectUrl: 'http://form.io',
       projectsUrl: `${baseUrl}/project`,
       projectId: '',
       formsUrl: 'http://form.io/form',
-      formUrl: 'http://form.io/form/23234234234234',
-      formId: '23234234234234',
-      actionsUrl: 'http://form.io/form/23234234234234/action',
-      actionUrl: 'http://form.io/form/23234234234234/action/234230987872',
-      actionId: '234230987872',
-      submissionsUrl: 'http://form.io/form/23234234234234/submission',
+      formUrl: 'http://form.io/form/' + formId,
+      formId: formId,
+      actionsUrl: 'http://form.io/form/' + formId + '/action',
+      actionUrl: 'http://form.io/form/' + formId + '/action/' + actionId,
+      actionId: actionId,
+      submissionsUrl: 'http://form.io/form/' + formId + '/submission',
       submissionUrl: '',
       submissionId: '',
       query: ''
     };
-    tests['http://form.io/project/092934882/form/23234234234234/action/234230987872'] = {
-      projectUrl: 'http://form.io/project/092934882',
+    tests['http://form.io/project/' + projectId + '/form/' + formId + '/action/' + actionId] = {
+      projectUrl: 'http://form.io/project/' + projectId,
       projectsUrl: 'http://form.io/project',
-      projectId: '092934882',
-      formsUrl: 'http://form.io/project/092934882/form',
-      formUrl: 'http://form.io/project/092934882/form/23234234234234',
-      formId: '23234234234234',
-      actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
-      actionUrl: 'http://form.io/project/092934882/form/23234234234234/action/234230987872',
-      actionId: '234230987872',
-      submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
+      projectId: projectId,
+      formsUrl: 'http://form.io/project/' + projectId + '/form',
+      formUrl: 'http://form.io/project/' + projectId + '/form/' + formId,
+      formId: formId,
+      actionsUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/action',
+      actionUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/action/' + actionId,
+      actionId: actionId,
+      submissionsUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/submission',
       submissionUrl: '',
       submissionId: '',
       query: ''
     };
-    tests['http://api.form.io/project/092934882'] = {
-      projectUrl: 'http://api.form.io/project/092934882',
+    tests['http://api.form.io/project/' + projectId] = {
+      projectUrl: 'http://api.form.io/project/' + projectId,
       projectsUrl: 'http://api.form.io/project',
-      projectId: '092934882',
-      formsUrl: 'http://api.form.io/project/092934882/form',
+      projectId: projectId,
+      formsUrl: 'http://api.form.io/project/' + projectId + '/form',
       formUrl: '',
       formId: '',
-      actionsUrl: 'http://api.form.io/project/092934882/action',
+      actionsUrl: 'http://api.form.io/project/' + projectId + '/action',
       actionUrl: '',
       actionId: '',
-      submissionsUrl: 'http://api.form.io/project/092934882/submission',
+      submissionsUrl: 'http://api.form.io/project/' + projectId + '/submission',
       submissionUrl: '',
       submissionId: '',
       query: ''
     };
-    tests['http://form.io/project/092934882/form/23234234234234/submission/2987388987982'] = {
-      projectUrl: 'http://form.io/project/092934882',
+    tests['http://form.io/project/' + projectId + '/form/' + formId + '/submission/' + submissionId] = {
+      projectUrl: 'http://form.io/project/' + projectId,
       projectsUrl: 'http://form.io/project',
-      projectId: '092934882',
-      formsUrl: 'http://form.io/project/092934882/form',
-      formUrl: 'http://form.io/project/092934882/form/23234234234234',
-      formId: '23234234234234',
-      actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
+      projectId: projectId,
+      formsUrl: 'http://form.io/project/' + projectId + '/form',
+      formUrl: 'http://form.io/project/' + projectId + '/form/' + formId,
+      formId: formId,
+      actionsUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/action',
       actionUrl: '',
       actionId: '',
-      submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
-      submissionUrl: 'http://form.io/project/092934882/form/23234234234234/submission/2987388987982',
-      submissionId: '2987388987982',
+      submissionsUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/submission',
+      submissionUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/submission/' + submissionId,
+      submissionId: submissionId,
       query: ''
     };
-    tests['http://form.io/project/092934882/form/23234234234234?test=hello&test2=there'] = {
-      projectUrl: 'http://form.io/project/092934882',
+    tests['http://form.io/project/' + projectId + '/form/' + formId + '?test=hello&test2=there'] = {
+      projectUrl: 'http://form.io/project/' + projectId,
       projectsUrl: 'http://form.io/project',
-      projectId: '092934882',
-      formsUrl: 'http://form.io/project/092934882/form',
-      formUrl: 'http://form.io/project/092934882/form/23234234234234',
-      formId: '23234234234234',
-      actionsUrl: 'http://form.io/project/092934882/form/23234234234234/action',
+      projectId: projectId,
+      formsUrl: 'http://form.io/project/' + projectId + '/form',
+      formUrl: 'http://form.io/project/' + projectId + '/form/' + formId,
+      formId: formId,
+      actionsUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/action',
       actionUrl: '',
       actionId: '',
-      submissionsUrl: 'http://form.io/project/092934882/form/23234234234234/submission',
+      submissionsUrl: 'http://form.io/project/' + projectId + '/form/' + formId + '/submission',
       submissionUrl: '',
       submissionId: '',
       query: '?test=hello&test2=there'
@@ -180,7 +185,7 @@ describe('Formio Constructor Tests', () => {
       submissionId: '',
       query: ''
     };
-    tests['http://project.form.io/user/login/submission/234234243234'] = {
+    tests['http://project.form.io/user/login/submission/' + submissionId] = {
       projectUrl: 'http://project.form.io',
       projectsUrl: `${baseUrl}/project`,
       projectId: 'project',
@@ -191,11 +196,11 @@ describe('Formio Constructor Tests', () => {
       actionUrl: '',
       actionId: '',
       submissionsUrl: 'http://project.form.io/user/login/submission',
-      submissionUrl: 'http://project.form.io/user/login/submission/234234243234',
-      submissionId: '234234243234',
+      submissionUrl: 'http://project.form.io/user/login/submission/' + submissionId,
+      submissionId: submissionId,
       query: ''
     };
-    tests['http://project.form.io/user/login/action/234234243234'] = {
+    tests['http://project.form.io/user/login/action/' + actionId] = {
       projectUrl: 'http://project.form.io',
       projectsUrl: `${baseUrl}/project`,
       projectId: 'project',
@@ -203,14 +208,14 @@ describe('Formio Constructor Tests', () => {
       formUrl: 'http://project.form.io/user/login',
       formId: 'user/login',
       actionsUrl: 'http://project.form.io/user/login/action',
-      actionUrl: 'http://project.form.io/user/login/action/234234243234',
-      actionId: '234234243234',
+      actionUrl: 'http://project.form.io/user/login/action/' + actionId,
+      actionId: actionId,
       submissionsUrl: 'http://project.form.io/user/login/submission',
       submissionUrl: '',
       submissionId: '',
       query: ''
     };
-    tests['http://project.form.io/user/login/action/234234243234?test=test2'] = {
+    tests['http://project.form.io/user/login/action/' + actionId + '?test=test2'] = {
       projectUrl: 'http://project.form.io',
       projectsUrl: `${baseUrl}/project`,
       projectId: 'project',
@@ -218,14 +223,14 @@ describe('Formio Constructor Tests', () => {
       formUrl: 'http://project.form.io/user/login',
       formId: 'user/login',
       actionsUrl: 'http://project.form.io/user/login/action',
-      actionUrl: 'http://project.form.io/user/login/action/234234243234',
-      actionId: '234234243234',
+      actionUrl: 'http://project.form.io/user/login/action/' + actionId,
+      actionId: actionId,
       submissionsUrl: 'http://project.form.io/user/login/submission',
       submissionUrl: '',
       submissionId: '',
       query: '?test=test2'
     };
-    tests['http://project.form.io/user/loginform/action/234234243234?test=test2'] = {
+    tests['http://project.form.io/user/loginform/action/' + actionId + '?test=test2'] = {
       projectUrl: 'http://project.form.io',
       projectsUrl: `${baseUrl}/project`,
       projectId: 'project',
@@ -233,8 +238,8 @@ describe('Formio Constructor Tests', () => {
       formUrl: 'http://project.form.io/user/loginform',
       formId: 'user/loginform',
       actionsUrl: 'http://project.form.io/user/loginform/action',
-      actionUrl: 'http://project.form.io/user/loginform/action/234234243234',
-      actionId: '234234243234',
+      actionUrl: 'http://project.form.io/user/loginform/action/' + actionId,
+      actionId: actionId,
       submissionsUrl: 'http://project.form.io/user/loginform/submission',
       submissionUrl: '',
       submissionId: '',
@@ -270,7 +275,7 @@ describe('Formio Constructor Tests', () => {
       submissionId: '',
       query: ''
     };
-    tests['http://project.form.io/user/actionform/submission/2342424234234'] = {
+    tests['http://project.form.io/user/actionform/submission/' + submissionId] = {
       projectUrl: 'http://project.form.io',
       projectsUrl: `${baseUrl}/project`,
       projectId: 'project',
@@ -281,8 +286,8 @@ describe('Formio Constructor Tests', () => {
       actionUrl: '',
       actionId: '',
       submissionsUrl: 'http://project.form.io/user/actionform/submission',
-      submissionUrl: 'http://project.form.io/user/actionform/submission/2342424234234',
-      submissionId: '2342424234234',
+      submissionUrl: 'http://project.form.io/user/actionform/submission/' + submissionId,
+      submissionId: submissionId,
       query: ''
     };
     tests['http://project.form.io/user/actionform/?test=foo'] = {
@@ -419,7 +424,7 @@ describe('Subdirectory Constructor Tests', () => {
       projectsUrl: `${protocol}://${testBaseUrl}/project`,
       projectId: projectName,
       formsUrl: `${projectUrl}/form`,
-      formUrl: projectUrl,
+      formUrl: '',
       formId: '',
       actionsUrl: `${projectUrl}/action`,
       actionUrl: '',
@@ -922,6 +927,7 @@ describe('Test Formio.js capabilities', () => {
             'user.password': chance.string({ length: 12 })
           }
         };
+        Formio.setProjectUrl(Formio.getBaseUrl());
         const formio = new Formio(`${Formio.getBaseUrl()}/user/register`);
         return formio.saveSubmission(req)
           .then((response) => {
