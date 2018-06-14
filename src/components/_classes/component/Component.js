@@ -953,6 +953,7 @@ export default class Component {
     return Object.assign({
       component: this.component,
       row: this.data,
+      rowIndex: this.rowIndex,
       data: (this.root ? this.root.data : this.data),
       _,
       utils: FormioUtils,

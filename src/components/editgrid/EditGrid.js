@@ -272,6 +272,7 @@ export default class EditGridComponent extends NestedComponent {
       const comp = this.createComponent(_.assign({}, column, {
         row: options.row
       }), options, row);
+      comp.rowIndex = rowIndex;
       // Don't bubble sub changes since they won't apply until pressing save.
       comp.triggerChange = () => {
         // Should we recalculate or something here?
