@@ -231,6 +231,7 @@ export default class DataGridComponent extends NestedComponent {
       label: column.dataGridLabel ? column.label : false,
       row: options.row
     }), options, row);
+    comp.rowIndex = rowIndex;
     this.hook('addComponent', container, comp, this);
     container.appendChild(comp.getElement());
     this.rows[rowIndex][column.key] = comp;
