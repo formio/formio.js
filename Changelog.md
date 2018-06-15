@@ -45,6 +45,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## 3.0.0-rc.12
+### Fixed
+ - Problem with the PDF Builder where you would not see the builder elemements.
+ - Fix default value on checkboxes.
+ - Fix multiple required file fields not requiring uploading a file.
+ 
+### Added
+ - Make rowIndex available on editgrids and datagrids.
+ - Add custom class name to table component.
+ - Add the ability for events to trigger field logic.
+ - Add option to trigger validations when button is pressed.
+
 ## 3.0.0-rc.11
 ### Fixed
  - Some issues with the Formio constructor to determine the project, form, and submission paths for certain urls.
