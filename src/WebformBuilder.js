@@ -601,6 +601,10 @@ export default class WebformBuilder extends Webform {
     // Add the new sidebar element.
     this.builderSidebar.appendChild(this.sideBarElement);
     this.updateDraggable();
+    this.sideBarTop = this.sideBarElement.getBoundingClientRect().top + window.scrollY;
+    if (this.options.sideBarScroll) {
+      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
+    }
   }
 
   getParentElement(element) {
@@ -757,11 +761,6 @@ export default class WebformBuilder extends Webform {
 
   build() {
     this.buildSidebar();
-    this.sideBarTop = this.sideBarElement.getBoundingClientRect().top + window.scrollY;
-    if (this.options.sideBarScroll) {
-      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
-    }
-
     super.build();
     this.updateDraggable();
     this.formReadyResolve();
