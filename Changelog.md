@@ -56,6 +56,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Add custom class name to table component.
  - Add the ability for events to trigger field logic.
  - Add option to trigger validations when button is pressed.
+ 
+### Changed
+ - Upgrade i18next@11.3.3
 
 ## 3.0.0-rc.11
 ### Fixed
