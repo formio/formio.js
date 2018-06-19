@@ -25,6 +25,7 @@ export default class Multivalue extends Field {
     // If multiple value field.
     return super.render(this.renderTemplate('multiValueTable', {
       rows: this.dataValue.map(this.renderRow.bind(this)).join(''),
+      disabled: this.shouldDisable,
       addAnother: this.addAnother,
     }));
   }
@@ -32,14 +33,20 @@ export default class Multivalue extends Field {
   renderRow(value, index) {
     return this.renderTemplate('multiValueRow', {
       index,
+      disabled: this.shouldDisable,
       element: `${this.renderElement(value, index)}`,
     });
   }
 
   hydrate(dom) {
+    super.hydrate(dom);
     this.loadRefs(dom, {addButton: 'single', input: 'multiple', removeRow: 'multiple'});
 
     this.refs.input.forEach(this.hydrateElement.bind(this));
+    if (!this.component.multiple) {
+      return;
+    }
+
     this.refs.removeRow.forEach((removeButton, index) => {
       this.addEventListener(removeButton, 'click', (event) => {
         event.preventDefault();
@@ -48,14 +55,12 @@ export default class Multivalue extends Field {
     });
 
     // If single value field.
-    if (this.component.multiple) {
+    if (this.refs.addButton) {
       this.addEventListener(this.refs.addButton, 'click', (event) => {
         event.preventDefault();
         this.addValue();
       });
     }
-
-    super.hydrate(dom);
   }
 
   /**

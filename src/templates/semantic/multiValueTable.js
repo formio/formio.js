@@ -3,11 +3,13 @@ export default {
 <table class="ui celled table">
   <tbody>
   {{rows}}
+  {% if (!disabled) { %}}
   <tr>
     <td colspan="2">
       <button class="ui button primary" ref="addButton"><i class="plus icon"></i> {{addAnother}}</button>
     </td>
   </tr>
+  {% } %}
   </tbody>
 </table>
 `,

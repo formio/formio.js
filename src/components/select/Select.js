@@ -435,6 +435,9 @@ export default class SelectComponent extends Field {
     super.hydrate(element);
     this.loadRefs(element, {selectContainer: 'single'});
     const input = this.refs.selectContainer;
+    if (!input) {
+      return;
+    }
     this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
 
     if (this.component.widget === 'html5') {
@@ -498,7 +501,7 @@ export default class SelectComponent extends Field {
     this.addEventListener(input, 'showDropdown', () => this.update());
 
     // Force the disabled state with getters and setters.
-    this.disabled = this.disabled;
+    this.disabled = this.shouldDisable;
     this.triggerUpdate();
   }
 

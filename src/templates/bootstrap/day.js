@@ -1,6 +1,6 @@
 export default {
   form: `
-<div class="input-group row" style="width: 100%">
+<div class="row">
   {% if (dayFirst && showDay) { %}
   <div class="form-group col col-xs-3">
     <label for="{{component.key}}-day" class="">{{t('Day')}}</label>

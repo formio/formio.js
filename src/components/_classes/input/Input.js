@@ -20,6 +20,10 @@ export default class Input extends Multivalue {
       attr.tabindex = this.component.tabindex;
     }
 
+    if (this.shouldDisable) {
+      attr.disabled = 'disabled';
+    }
+
     return {
       id: this.key,
       type: 'input',
@@ -28,6 +32,21 @@ export default class Input extends Multivalue {
       attr
     };
   }
+
+  // set disabled(disabled) {
+  //   super.disabled = disabled;
+  //
+  //   // Add/remove the disabled class from the element.
+  //   if (disabled) {
+  //     this.addClass(this.getElement(), 'formio-disabled-input');
+  //   }
+  //   else {
+  //     this.removeClass(this.getElement(), 'formio-disabled-input');
+  //   }
+  //
+  //   // Disable all inputs.
+  //   _.each(this.refs.input, (input) => this.setDisabled(this.performInputMapping(input), disabled));
+  // }
 
   updateMask(textInput, newMaskName) {
     const newMask = this.getMaskByName(newMaskName);

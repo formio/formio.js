@@ -64,11 +64,6 @@ export default class ButtonComponent extends Field {
     this.setLoading(this.refs.button, loading);
   }
 
-  set disabled(disabled) {
-    super.disabled = disabled;
-    this.setDisabled(this.refs.button, disabled);
-  }
-
   // No label needed for buttons.
   createLabel() {}
 
@@ -118,8 +113,11 @@ export default class ButtonComponent extends Field {
   }
 
   hydrate(element) {
-    super.hydrate(element);
     this.loadRefs(element, {button: 'single'});
+    super.hydrate(element);
+    if (!this.refs.button) {
+      return;
+    }
     this.addShortcut(this.refs.button);
 
     if (this.component.action === 'submit') {

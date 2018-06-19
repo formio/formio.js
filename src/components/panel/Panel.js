@@ -53,15 +53,17 @@ export default class PanelComponent extends NestedComponent {
   }
 
   render() {
-    return this.renderTemplate('panel', {
+    return super.render(this.renderTemplate('panel', {
       bootstrap4Theme: this.bootstrap4Theme,
       children: super.renderComponents()
-    });
+    }));
   }
 
   hydrate(element) {
     this.loadRefs(element, {[this.panelId]: 'single'});
-    super.hydrateComponents(this.refs[this.panelId]);
+    if (this.refs[this.panelId]) {
+      super.hydrateComponents(this.refs[this.panelId]);
+    }
     // this.setCollapsed();
     // this.createTooltip(title);
     // this.setCollapseHeader(heading);

@@ -3,12 +3,9 @@ export default {
 <label class="{{input.labelClass}}">
   <{{input.type}} 
     ref="input" 
-    name="{{input.attr.name}}" 
-    type="{{input.attr.type}}" 
-    class="{{input.attr.class}}" 
-    lang="{{input.attr.lang}}" 
-    {% if (input.attr.placeholder) { %}placeholder="{{input.attr.placeholder}}"{% } %}
-    {% if (input.attr.tabindex) { %}tabindex="{{input.attr.tabindex}}"{% } %}
+    {% for (var attr in input.attr) { %}
+    {{attr}}="{{input.attr[attr]}}"
+    {% } %}
     {% if (checked) { %}checked=true{% } %}
     >
   <span>{{input.label}}</span> 

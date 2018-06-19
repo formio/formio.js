@@ -6,10 +6,9 @@ export default {
     <div class="ui {{input.attr.type==='radio' ? 'radio' : ''}} checkbox" ref="wrapper">
       <{{input.type}} 
         ref="input" 
-        name="{{input.attr.name}}" 
-        type="{{input.attr.type}}" 
-        class="{{input.attr.class}}" 
-        lang="{{input.attr.lang}}" 
+        {% for (var attr in input.attr) { %}
+        {{attr}}="{{input.attr[attr]}}"
+        {% } %}
         value="{{item.value}}"
         {% if (value === item.value || (typeof value === 'object' && value.hasOwnProperty(item.value) && value[item.value])) { %}
           checked=true

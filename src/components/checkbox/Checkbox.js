@@ -70,7 +70,9 @@ export default class CheckBoxComponent extends Component {
   hydrate(element) {
     this.loadRefs(element, {input: 'multiple'});
     this.input = this.refs.input[0];
-    this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue());
+    if (this.refs.input.length) {
+      this.addEventListener(this.input, this.inputInfo.changeEvent, () => this.updateValue());
+    }
     //   this.autofocus();
     //   this.addShortcut();
     //   if (this.shouldDisable) {

@@ -2,12 +2,10 @@ export default {
   form: `
 <{{input.type}} 
   ref="button" 
-  name="{{input.attr.name}}" 
-  type="{{input.attr.type}}" 
-  class="ui button {{component.theme}} {{component.customClass}}" 
-  lang="{{input.attr.lang}}" 
-  {% if (input.attr.placeholder) { %}placeholder="{{input.attr.placeholder}}"{% } %}
-  {% if (input.attr.tabindex) { %}tabindex="{{input.attr.tabindex}}"{% } %}
+  class="ui button {{transform('theme', component.theme)}} {{component.customClass}}" 
+  {% for (var attr in input.attr) { %}
+  {{attr}}="{{input.attr[attr]}}"
+  {% } %}
 >
 {% if (component.leftIcon) { %}<i class="{{component.leftIcon}}"></i>&nbsp;{% } %}
 {{input.content}}

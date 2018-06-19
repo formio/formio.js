@@ -663,7 +663,14 @@ export default class Component {
         title: this.component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
       });
     }
+
     this.restoreValue();
+
+    // Disable if needed.
+    if (this.shouldDisable) {
+      this.disabled = true;
+    }
+
     return Promise.resolve();
   }
 
@@ -2145,17 +2152,6 @@ export default class Component {
     }
 
     this._disabled = disabled;
-
-    // Add/remove the disabled class from the element.
-    if (disabled) {
-      this.addClass(this.getElement(), 'formio-disabled-input');
-    }
-    else {
-      this.removeClass(this.getElement(), 'formio-disabled-input');
-    }
-
-    // Disable all inputs.
-    _.each(this.refs.input, (input) => this.setDisabled(this.performInputMapping(input), disabled));
   }
 
   setDisabled(element, disabled) {
@@ -2289,6 +2285,10 @@ export default class Component {
 
     if (this.component.tabindex) {
       attributes.tabindex = this.component.tabindex;
+    }
+
+    if (this.shouldDisable) {
+      attributes.disabled = 'disabled';
     }
 
     return {

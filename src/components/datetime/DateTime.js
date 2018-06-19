@@ -102,6 +102,7 @@ export default class DateTimeComponent extends Input {
   hydrate(element) {
     this.loadRefs(element, {dateTimeToggle: 'multiple'});
     super.hydrate(element);
+    this.disabled = this.shouldDisable;
   }
 
   hydrateElement(input, index) {
