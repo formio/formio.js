@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import NestedComponent from '../nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class TabsComponent extends NestedComponent {
   static schema(...extend) {
@@ -29,11 +29,6 @@ export default class TabsComponent extends NestedComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
-    this.currentTab = 0;
-  }
-
   get defaultSchema() {
     return TabsComponent.schema();
   }
@@ -51,45 +46,52 @@ export default class TabsComponent extends NestedComponent {
     return schema;
   }
 
-  createElement() {
-    this.tabBar = this.ce('ul', {
-      class: 'nav nav-tabs'
-    });
-    this.tabContent = this.ce('div', {
-      class: 'tab-content'
-    });
+  get tabId() {
+    return `tab-${this.id}`;
+  }
+
+  get tabLiId() {
+    return `tabLi-${this.id}`;
+  }
+
+  get tabLinkId() {
+    return `tabLink-${this.id}`;
+  }
+
+  init() {
+    this.currentTab = 0;
     this.tabs = [];
-    this.tabLinks = [];
     _.each(this.component.components, (tab, index) => {
-      const tabPanel = this.ce('div', {
-        role: 'tabpanel',
-        class: 'tab-pane',
-        id: tab.key
+      this.tabs[index] = [];
+      _.each(tab.components, (comp) => {
+        const component = this.createComponent(comp);
+        component.tab = this.currentTab;
+        this.tabs[index].push(component);
       });
-      const tabLink = this.ce('a', {
-        class: 'nav-link',
-        href: `#${tab.key}`
-      }, tab.label);
+    });
+  }
+
+  render() {
+    return super.render(this.renderTemplate('tab', {
+      currentTab: this.currentTab,
+      tabComponents: this.tabs.map(tab => this.renderComponents(tab))
+    }));
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {[this.tabLinkId]: 'multiple', [this.tabId]: 'multiple', [this.tabLiId]: 'multiple'});
+    this.refs[this.tabLinkId].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
         event.preventDefault();
         this.setTab(index);
       });
-      const tabElement = this.ce('li', {
-        class: 'nav-item',
-        role: 'presentation'
-      }, tabLink);
-      tabElement.tabLink = tabLink;
-      this.tabLinks.push(tabElement);
-      this.tabs.push(tabPanel);
-      this.tabBar.appendChild(tabElement);
-      this.tabContent.appendChild(tabPanel);
     });
-    this.element = this.ce('div', {
-      id: this.id,
-      class: this.className
-    }, [this.tabBar, this.tabContent]);
-    this.element.component = this;
-    return this.element;
+    this.refs[this.tabId].forEach((tab, index) => this.hydrateComponents(tab, this.tabs[index]));
+  }
+
+  destroy(all) {
+    super.destroy(all);
+    delete this.columns;
   }
 
   /**
@@ -100,57 +102,35 @@ export default class TabsComponent extends NestedComponent {
   setTab(index) {
     if (
       !this.tabs ||
-      !this.component.components ||
-      !this.component.components[this.currentTab] ||
-      (this.currentTab >= this.tabs.length)
+      !this.tabs[index] ||
+      !this.refs[this.tabId] ||
+      !this.refs[this.tabId][index]
     ) {
       return;
     }
 
     this.currentTab = index;
 
-    // Get the current tab.
-    const tab = this.component.components[this.currentTab];
-    this.empty(this.tabs[this.currentTab]);
-    _.remove(this.components, (comp) => comp.component.tab === this.currentTab);
-    const components = this.hook('addComponents', tab.components);
-    _.each(components, (component) => this.addComponent(component, this.tabs[this.currentTab]));
-    this.checkConditions(this.root ? this.root.data : {});
-
-    if (this.tabLinks.length <= index) {
-      return;
-    }
-
-    _.each(this.tabLinks, (tabLink) => {
-      this.removeClass(tabLink, 'active');
-      this.removeClass(tabLink.tabLink, 'active');
-    });
-    this.addClass(this.tabLinks[index], 'active');
-    this.addClass(this.tabLinks[index].tabLink, 'active');
-    _.each(this.tabs, (tab) => {
+    _.each(this.refs[this.tabId], (tab) => {
       this.removeClass(tab, 'active');
+      tab.style.display = 'none';
     });
-    this.addClass(this.tabs[index], 'active');
-  }
+    this.addClass(this.refs[this.tabId][index], 'active');
+    this.refs[this.tabId][index].style.display = 'inherit';
 
-  /**
-   * Make sure to include the tab on the component as it is added.
-   *
-   * @param component
-   * @param element
-   * @param data
-   * @param before
-   * @return {BaseComponent}
-   */
-  addComponent(component, element, data, before) {
-    component.tab = this.currentTab;
-    return super.addComponent(component, element, data, before);
-  }
-
-  /**
-   * Only add the components for the active tab.
-   */
-  addComponents() {
-    this.setTab(this.currentTab);
+    _.each(this.refs[this.tabLinkId], (tabLink, tabIndex) => {
+      if (this.refs[this.tabLinkId][tabIndex]) {
+        this.removeClass(tabLink, 'active');
+      }
+      if (this.refs[this.tabLiId][tabIndex]) {
+        this.removeClass(this.refs[this.tabLiId][tabIndex], 'active');
+      }
+    });
+    if (this.refs[this.tabLinkId][index]) {
+      this.addClass(this.refs[this.tabLinkId][index], 'active');
+    }
+    if (this.refs[this.tabLiId][index]) {
+      this.addClass(this.refs[this.tabLiId][index], 'active');
+    }
   }
 }

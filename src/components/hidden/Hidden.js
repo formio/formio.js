@@ -1,8 +1,8 @@
-import BaseComponent from '../base/Base';
+import Input from '../_classes/input/Input';
 
-export default class HiddenComponent extends BaseComponent {
+export default class HiddenComponent extends Input {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Input.schema({
       type: 'hidden',
       inputType: 'hidden'
     }, ...extend);
@@ -23,7 +23,7 @@ export default class HiddenComponent extends BaseComponent {
     return HiddenComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'hidden';
@@ -31,15 +31,15 @@ export default class HiddenComponent extends BaseComponent {
     return info;
   }
 
-  build() {
-    super.build();
-    if (this.options.builder) {
-      // We need to see it in builder mode.
-      this.append(this.text(this.name));
-    }
+  labelIsHidden() {
+    return true;
   }
 
-  createLabel() {
-    return;
-  }
+  // build() {
+  //   super.build();
+  //   if (this.options.builder) {
+  //     // We need to see it in builder mode.
+  //     this.append(this.text(this.name));
+  //   }
+  // }
 }

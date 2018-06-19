@@ -1,6 +1,6 @@
-import NestedComponent from './nested/NestedComponent';
+import NestedComponent from './_classes/nested/NestedComponent';
 import AddressComponent from './address/Address';
-import BaseComponent from './base/Base';
+import Component from './_classes/component/Component';
 import ContentComponent from './content/Content';
 import ContainerComponent from './container/Container';
 import DataGridComponent from './datagrid/DataGrid';
@@ -29,7 +29,6 @@ import PanelComponent from './panel/Panel';
 import ColumnComponent from './columns/Column';
 import ColumnsComponent from './columns/Columns';
 import TableComponent from './table/Table';
-import UnknownComponent from './unknown/Unknown';
 import RadioComponent from './radio/Radio';
 import SelectBoxesComponent from './selectboxes/SelectBoxes';
 import SurveyComponent from './survey/Survey';
@@ -41,7 +40,7 @@ import TabsComponent from './tabs/Tabs';
 export default {
   nested: NestedComponent,
   address: AddressComponent,
-  base: BaseComponent,
+  base: Component,
   content: ContentComponent,
   container: ContainerComponent,
   datagrid: DataGridComponent,
@@ -71,7 +70,6 @@ export default {
   column: ColumnComponent,
   columns: ColumnsComponent,
   table: TableComponent,
-  unknown: UnknownComponent,
   radio: RadioComponent,
   selectboxes: SelectBoxesComponent,
   survey: SurveyComponent,

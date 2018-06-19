@@ -1,13 +1,13 @@
 'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import {checkCondition} from '../../utils/utils';
-import BaseComponent from '../base/Base';
-import Components from '../Components';
+import {checkCondition} from '../../../utils/utils';
+import Component from '../component/Component';
+import Components from '../../Components';
 
-export default class NestedComponent extends BaseComponent {
+export default class NestedComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       tree: true
     }, ...extend);
   }
@@ -18,14 +18,6 @@ export default class NestedComponent extends BaseComponent {
     this.components = [];
     this.hidden = [];
     this.collapsed = !!this.component.collapsed;
-  }
-
-  build(showLabel) {
-    this.createElement();
-    if (showLabel) {
-      this.createLabel(this.element);
-    }
-    this.addComponents();
   }
 
   get defaultSchema() {
@@ -132,7 +124,7 @@ export default class NestedComponent extends BaseComponent {
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
-    comp.build();
+    comp.init();
     comp.isBuilt = true;
     if (component.internal) {
       return comp;
@@ -157,38 +149,54 @@ export default class NestedComponent extends BaseComponent {
     return this.element;
   }
 
+  get componentComponents() {
+    return this.component.components;
+  }
+
+  /**
+   *
+   * @param element
+   * @param data
+   */
+  addComponents(data) {
+    data = data || this.data;
+    const components = this.hook('addComponents', this.componentComponents);
+    _.each(components, (component) => this.addComponent(component, data));
+  }
+
   /**
    * Add a new component to the components array.
    *
    * @param {Object} component - The component JSON schema to add.
-   * @param {HTMLElement} element - The DOM element to append this child to.
    * @param {Object} data - The submission data object to house the data for this component.
    * @param {HTMLElement} before - A DOM element to insert this element before.
-   * @return {BaseComponent} - The created component instance.
+   * @return {Component} - The created component instance.
    */
-  addComponent(component, element, data, before, noAdd) {
-    element = element || this.getContainer();
+  addComponent(component, data, before, noAdd) {
     data = data || this.data;
     const comp = this.createComponent(component, this.options, data, before ? before.component : null);
     if (noAdd) {
       return comp;
     }
-    this.setHidden(comp);
-    element = this.hook('addComponent', element, comp);
-    if (before) {
-      element.insertBefore(comp.getElement(), before);
-    }
-    else {
-      element.appendChild(comp.getElement());
-    }
+    // this.setHidden(comp);
     return comp;
+  }
+
+  renderComponents(components) {
+    components = components || this.components;
+    return components.map(component => component.render()).join('');
+  }
+
+  hydrateComponents(element, components) {
+    components = components || this.components;
+    return Promise.all[components.map((component, index) => component.hydrate(element.children[index]))];
   }
 
   /**
    * Remove a component from the components array.
    *
-   * @param {BaseComponent} component - The component to remove from the components.
-   * @param {Array<BaseComponent>} components - An array of components to remove this component from.
+   * @param {Component} component - The component to remove from the components.
+   * @param {Array<Component>} components - An array of components to remove this component from.
    */
   removeComponent(component, components) {
     components = components || this.components;
@@ -242,22 +250,6 @@ export default class NestedComponent extends BaseComponent {
       }
       return null;
     }
-  }
-
-  get componentComponents() {
-    return this.component.components;
-  }
-
-  /**
-   *
-   * @param element
-   * @param data
-   */
-  addComponents(element, data) {
-    element = element || this.getContainer();
-    data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents);
-    _.each(components, (component) => this.addComponent(component, element, data));
   }
 
   updateValue(flags) {

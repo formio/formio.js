@@ -1,8 +1,8 @@
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 
-export default class ContentComponent extends BaseComponent {
+export default class ContentComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'content',
       key: 'content',
       input: false,
@@ -25,35 +25,43 @@ export default class ContentComponent extends BaseComponent {
     return ContentComponent.schema();
   }
 
-  setHTML() {
-    this.element.innerHTML = this.interpolate(this.component.html);
+  get content() {
+    return this.component.html ? this.interpolate(this.component.html, {data: this.data, row: this.row}) : '';
   }
 
-  build() {
-    this.element = this.ce('div', {
-      id: this.id,
-      class: `form-group ${this.component.customClass}`
-    });
+  render() {
+    return super.render(this.renderTemplate('html', {
+      component: this.component,
+      tag: 'div',
+      attrs: '',
+      content: this.content,
+    }));
+  }
 
-    this.element.component = this;
-
-    if (this.options.builder) {
-      const editorElement = this.ce('div');
-      this.addQuill(editorElement, this.wysiwygDefault, (element) => {
-        this.component.html = element.value;
-      }).then((editor) => {
-        editor.setContents(editor.clipboard.convert(this.component.html));
-      });
-      this.element.appendChild(editorElement);
-    }
-    else {
-      this.setHTML();
-    }
-
+  hydrate(element) {
+    this.loadRefs(element, {html: 'single'});
     if (this.component.refreshOnChange) {
-      this.on('change', () => this.setHTML());
+      this.on('change', () => {
+        if (this.refs.html) {
+          this.refs.html.innerHTML = this.content;
+        }
+      });
     }
+    super.hydrate(element);
   }
+
+  // TODO: Need to move this to the builder code somewhere. Doesn't belong here.
+  // build() {
+  //   if (this.options.builder) {
+  //     const editorElement = this.ce('div');
+  //     this.addQuill(editorElement, this.wysiwygDefault, (element) => {
+  //       this.component.html = element.value;
+  //     }).then((editor) => {
+  //       editor.setContents(editor.clipboard.convert(this.component.html));
+  //     });
+  //     this.element.appendChild(editorElement);
+  //   }
+  // }
 
   get emptyValue() {
     return '';

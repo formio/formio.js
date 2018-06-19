@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import moment from 'moment';
-import BaseComponent from '../base/Base';
+import Field from '../_classes/field/Field';
 import {boolValue, getLocaleDateFormatInfo} from '../../utils/utils';
 
-export default class DayComponent extends BaseComponent {
+export default class DayComponent extends Field {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Field.schema({
       type: 'day',
       label: 'Day',
       key: 'day',
@@ -41,15 +41,6 @@ export default class DayComponent extends BaseComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
-    this.validators.push('date');
-    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
-    this.dayFirst = this.component.useLocaleSettings
-      ? dateFormatInfo.dayFirst
-      : this.component.dayFirst;
-  }
-
   get dayRequired() {
     return this.showDay && _.get(this.component, 'fields.day.required', false);
   }
@@ -78,7 +69,7 @@ export default class DayComponent extends BaseComponent {
     return DayComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'hidden';
@@ -86,32 +77,156 @@ export default class DayComponent extends BaseComponent {
     return info;
   }
 
+  inputDefinition(name) {
+    let min, max;
+    if (name === 'day') {
+      min = 1;
+      max = 31;
+    }
+    if (name === 'month') {
+      min = 1;
+      max = 12;
+    }
+    if (name === 'year') {
+      min = 1;
+      max = undefined;
+    }
+    return {
+      type: 'input',
+      ref: name,
+      attr: {
+        id: `${this.component.key}-${name}`,
+        class: 'form-control',
+        type: this.component.fields[name].type,
+        placeholder: this.component.fields[name].placeholder,
+        step: 1,
+        min,
+        max,
+      }
+    };
+  }
+
+  selectDefinition(name) {
+    return {
+      multiple: false,
+      ref: name,
+      widget: 'html5',
+      attr: {
+        class: 'form-control',
+        name,
+        lang: this.options.language
+      }
+    };
+  }
+
+  get days() {
+    if (this._days) {
+      return this._days;
+    }
+    this._days = [
+      {value: 0, label: _.get(this.component, 'fields.day.placeholder', '')}
+    ];
+    for (let x = 1; x <= 31; x++) {
+      this._days.push({
+        value: x,
+        label: x.toString()
+      });
+    }
+    return this._days;
+  }
+
   get months() {
     if (this._months) {
       return this._months;
     }
     this._months = [
-      {value: 0, label: _.get(this.component, 'fields.month.placeholder', '')},
-      {value: 1, label: this.t('january')},
-      {value: 2, label: this.t('february')},
-      {value: 3, label: this.t('march')},
-      {value: 4, label: this.t('april')},
-      {value: 5, label: this.t('may')},
-      {value: 6, label: this.t('june')},
-      {value: 7, label: this.t('july')},
-      {value: 8, label: this.t('august')},
-      {value: 9, label: this.t('september')},
-      {value: 10, label: this.t('october')},
-      {value: 11, label: this.t('november')},
-      {value: 12, label: this.t('december')}
+      {value: '', label: _.get(this.component, 'fields.month.placeholder', '')},
+      {value: 0, label: this.t('january')},
+      {value: 1, label: this.t('february')},
+      {value: 2, label: this.t('march')},
+      {value: 3, label: this.t('april')},
+      {value: 4, label: this.t('may')},
+      {value: 5, label: this.t('june')},
+      {value: 6, label: this.t('july')},
+      {value: 7, label: this.t('august')},
+      {value: 8, label: this.t('september')},
+      {value: 9, label: this.t('october')},
+      {value: 10, label: this.t('november')},
+      {value: 11, label: this.t('december')}
     ];
     return this._months;
   }
 
+  get years() {
+    if (this._years) {
+      return this._years;
+    }
+    this._years = [
+      {value: 0, label: _.get(this.component, 'fields.year.placeholder', '')}
+    ];
+    for (let x = 1900; x <= 2030; x++) {
+      this._years.push({
+        value: x,
+        label: x.toString()
+      });
+    }
+    return this._years;
+  }
+
+  init() {
+    super.init();
+    this.validators.push('date');
+    const dateFormatInfo = getLocaleDateFormatInfo(this.options.language);
+    this.dayFirst = this.component.useLocaleSettings
+      ? dateFormatInfo.dayFirst
+      : this.component.dayFirst;
+  }
+
+  render() {
+    return super.render(this.renderTemplate('day', {
+      dayFirst: this.dayFirst,
+      showDay: this.showDay,
+      showMonth: this.showMonth,
+      showYear: this.showYear,
+      day: this.renderField('day'),
+      month: this.renderField('month'),
+      year: this.renderField('year'),
+    }));
+  }
+
+  renderField(name) {
+    if (this.component.fields[name].type === 'number') {
+      return this.renderTemplate('input', {
+        input: this.inputDefinition(name)
+      });
+    }
+    else if (this.component.fields[name].type === 'select') {
+      return this.renderTemplate('select', {
+        input: this.selectDefinition(name),
+        options: this[`${name}s`].reduce((html, option) =>
+          html + this.renderTemplate('selectOption', {option, selected: false, attrs: {}}), ''
+        ),
+      });
+    }
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {day: 'single', month: 'single', year: 'single', input: 'multiple'});
+    super.hydrate(element);
+    if (this.refs.day) {
+      this.addEventListener(this.refs.day, 'change', () => this.updateValue());
+    }
+    if (this.refs.month) {
+      this.addEventListener(this.refs.month, 'change', () => this.updateValue());
+    }
+    if (this.refs.year) {
+      this.addEventListener(this.refs.year, 'change', () => this.updateValue());
+    }
+    this.addEventListener(this.refs.input, this.info.changeEvent, () => this.updateValue());
+  }
+
   validateRequired(setting, value) {
-    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
-    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
-    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
+    const {day, month, year} = this.parts;
     if (this.dayRequired && !day) {
       return false;
     }
@@ -128,46 +243,6 @@ export default class DayComponent extends BaseComponent {
       return true;
     }
     return !this.isEmpty(value);
-  }
-
-  createDayInput(subinputAtTheBottom) {
-    const dayColumn = this.ce('div', {
-      class: 'form-group col col-xs-3'
-    });
-
-    const id = `${this.component.key}-day`;
-
-    const dayLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.day.required', false) ? 'field-required' : ''
-    });
-    dayLabel.appendChild(this.text(this.t('day')));
-    this.setSubinputLabelStyle(dayLabel);
-    if (!subinputAtTheBottom) {
-      dayColumn.appendChild(dayLabel);
-    }
-
-    const dayInputWrapper = this.ce('div');
-    this.dayInput = this.ce('input', {
-      class: 'form-control',
-      type: 'number',
-      step: '1',
-      min: '1',
-      max: '31',
-      placeholder: _.get(this.component, 'fields.day.placeholder', ''),
-      id
-    });
-    this.hook('input', this.dayInput, dayInputWrapper);
-    this.addEventListener(this.dayInput, 'change', () => this.updateValue());
-    dayInputWrapper.appendChild(this.dayInput);
-    this.setSubinputStyle(dayInputWrapper);
-    dayColumn.appendChild(dayInputWrapper);
-
-    if (subinputAtTheBottom) {
-      dayColumn.appendChild(dayLabel);
-    }
-
-    return dayColumn;
   }
 
   createMonthInput(subinputAtTheBottom) {
@@ -188,23 +263,23 @@ export default class DayComponent extends BaseComponent {
     }
 
     const monthInputWrapper = this.ce('div');
-    this.monthInput = this.ce('select', {
+    this.refs.month = this.ce('select', {
       class: 'form-control',
       id
     });
-    this.hook('input', this.monthInput, monthInputWrapper);
-    this.selectOptions(this.monthInput, 'monthOption', this.months);
+    this.hook('input', this.refs.month, monthInputWrapper);
+    this.selectOptions(this.refs.month, 'monthOption', this.months);
     const self = this;
 
     // Ensure the day limits match up with the months selected.
-    this.monthInput.onchange = function() {
+    this.refs.month.onchange = function() {
       self.dayInput.max = new Date(self.yearInput.value, this.value, 0).getDate();
       if (self.dayInput.value > self.dayInput.max) {
         self.dayInput.value = self.dayInput.max;
       }
       self.updateValue();
     };
-    monthInputWrapper.appendChild(this.monthInput);
+    monthInputWrapper.appendChild(this.refs.month);
     this.setSubinputStyle(monthInputWrapper);
     monthColumn.appendChild(monthInputWrapper);
 
@@ -215,134 +290,20 @@ export default class DayComponent extends BaseComponent {
     return monthColumn;
   }
 
-  createYearInput(subinputAtTheBottom) {
-    const yearColumn = this.ce('div', {
-      class: 'form-group col col-xs-5'
-    });
-
-    const id = `${this.component.key}-year`;
-
-    const yearLabel = this.ce('label', {
-      for: id,
-      class: _.get(this.component, 'fields.year.required', false) ? 'field-required' : ''
-    });
-    yearLabel.appendChild(this.text(this.t('year')));
-    this.setSubinputLabelStyle(yearLabel);
-    if (!subinputAtTheBottom) {
-      yearColumn.appendChild(yearLabel);
-    }
-
-    const yearInputWrapper = this.ce('div');
-    this.yearInput = this.ce('input', {
-      class: 'form-control',
-      type: 'number',
-      step: '1',
-      min: '1',
-      placeholder: _.get(this.component, 'fields.year.placeholder', ''),
-      id
-    });
-
-    this.hook('input', this.yearInput, yearInputWrapper);
-    this.addEventListener(this.yearInput, 'change', () => this.updateValue());
-    yearInputWrapper.appendChild(this.yearInput);
-    this.setSubinputStyle(yearInputWrapper);
-    yearColumn.appendChild(yearInputWrapper);
-
-    if (subinputAtTheBottom) {
-      yearColumn.appendChild(yearLabel);
-    }
-
-    return yearColumn;
-  }
-
   set disabled(disabled) {
     super.disabled = disabled;
-    if (!this.yearInput || !this.monthInput || !this.dayInput) {
+    if (!this.refs.year || !this.refs.month || !this.refs.day) {
       return;
     }
     if (disabled) {
-      this.yearInput.setAttribute('disabled', 'disabled');
-      this.monthInput.setAttribute('disabled', 'disabled');
-      this.dayInput.setAttribute('disabled', 'disabled');
+      this.refs.year.setAttribute('disabled', 'disabled');
+      this.refs.month.setAttribute('disabled', 'disabled');
+      this.refs.day.setAttribute('disabled', 'disabled');
     }
     else {
-      this.yearInput.removeAttribute('disabled');
-      this.monthInput.removeAttribute('disabled');
-      this.dayInput.removeAttribute('disabled');
-    }
-  }
-
-  createInput(container) {
-    const inputGroup = this.ce('div', {
-      class: 'input-group row',
-      style: 'width: 100%'
-    });
-    const subinputAtTheBottom = this.component.inputsLabelPosition === 'bottom';
-    const [dayColumn, monthColumn, yearColumn] = this.createInputs(subinputAtTheBottom);
-
-    // Add the columns to the day select in the right order.
-    if (this.dayFirst && this.showDay) {
-      inputGroup.appendChild(dayColumn);
-    }
-    if (this.showMonth) {
-      inputGroup.appendChild(monthColumn);
-    }
-    if (!this.dayFirst && this.showDay) {
-      inputGroup.appendChild(dayColumn);
-    }
-    if (this.showYear) {
-      inputGroup.appendChild(yearColumn);
-    }
-
-    const input = this.ce(this.info.type, this.info.attr);
-    this.addInput(input, inputGroup);
-    this.errorContainer = container;
-    this.setInputStyles(inputGroup);
-    container.appendChild(inputGroup);
-  }
-
-  createInputs(subinputAtTheBottom) {
-    return [
-      this.createDayInput(subinputAtTheBottom),
-      this.createMonthInput(subinputAtTheBottom),
-      this.createYearInput(subinputAtTheBottom),
-    ];
-  }
-
-  setSubinputLabelStyle(label) {
-    const {inputsLabelPosition} = this.component;
-
-    if (inputsLabelPosition === 'left') {
-      _.assign(label.style, {
-        float: 'left',
-        width: '30%',
-        marginRight: '3%',
-        textAlign: 'left',
-      });
-    }
-
-    if (inputsLabelPosition === 'right') {
-      _.assign(label.style, {
-        float: 'right',
-        width: '30%',
-        marginLeft: '3%',
-        textAlign: 'right',
-      });
-    }
-  }
-
-  setSubinputStyle(input) {
-    const {inputsLabelPosition} = this.component;
-
-    if (['left', 'right'].includes(inputsLabelPosition)) {
-      input.style.width = '67%';
-
-      if (inputsLabelPosition === 'left') {
-        input.style.marginLeft = '33%';
-      }
-      else {
-        input.style.marginRight = '33%';
-      }
+      this.refs.year.removeAttribute('disabled');
+      this.refs.month.removeAttribute('disabled');
+      this.refs.day.removeAttribute('disabled');
     }
   }
 
@@ -358,17 +319,39 @@ export default class DayComponent extends BaseComponent {
     }
     const parts = value.split('/');
     if (this.component.dayFirst && this.showDay) {
-      this.dayInput.value = parseInt(parts.shift(), 10);
+      this.refs.day.value = parseInt(parts.shift(), 10);
     }
     if (this.showMonth) {
-      this.monthInput.value = parseInt(parts.shift(), 10);
+      this.refs.month.value = parseInt(parts.shift(), 10);
     }
     if (!this.component.dayFirst && this.showDay) {
-      this.dayInput.value = parseInt(parts.shift(), 10);
+      this.refs.day.value = parseInt(parts.shift(), 10);
     }
     if (this.showYear) {
-      this.yearInput.value = parseInt(parts.shift(), 10);
+      this.refs.year.value = parseInt(parts.shift(), 10);
     }
+  }
+
+  getFieldValue(name) {
+    let val = 0;
+    if (!this.refs[name]) {
+      return val;
+    }
+    if (this.component.fields[name].type === 'number') {
+      val = this.refs[name].value;
+    }
+    else if (this.component.fields[name].type === 'select') {
+      val = this.refs[name].options[this.refs[name].selectedIndex].value;
+    }
+    return _.isNaN(val) ? 0 : parseInt(val, 10);
+  }
+
+  get parts() {
+    return {
+      day: this.getFieldValue('day'),
+      month: this.getFieldValue('month'),
+      year: this.getFieldValue('year'),
+    };
   }
 
   /**
@@ -397,9 +380,7 @@ export default class DayComponent extends BaseComponent {
    * @returns {Date}
    */
   get date() {
-    const day = _.isNaN(this.dayInput.value) ? 0 : parseInt(this.dayInput.value, 10);
-    const month = _.isNaN(this.monthInput.value) ? -1 : (parseInt(this.monthInput.value, 10) - 1);
-    const year = _.isNaN(this.yearInput.value) ? 0 : parseInt(this.yearInput.value, 10);
+    const {day, month, year} = this.parts;
     if (this.showDay && !day) {
       // Invalid so return null
       return null;
@@ -438,11 +419,11 @@ export default class DayComponent extends BaseComponent {
   getValueAt(index) {
     const date = this.date;
     if (date) {
-      this.inputs[index].value = date.format(this.format);
-      return this.inputs[index].value;
+      this.refs.input[index].value = date.format(this.format);
+      return this.refs.input[index].value;
     }
     else {
-      this.inputs[index].value = '';
+      this.refs.input[index].value = '';
       return null;
     }
   }
@@ -457,13 +438,13 @@ export default class DayComponent extends BaseComponent {
 
   focus() {
     if (this.dayFirst && this.showDay || !this.dayFirst && !this.showMonth && this.showDay) {
-      this.dayInput.focus();
+      this.refs.day.focus();
     }
     else if (this.dayFirst && !this.showDay && this.showMonth || !this.dayFirst && this.showMonth) {
-      this.monthInput.focus();
+      this.refs.month.focus();
     }
     else if (!this.showDay && !this.showDay && this.showYear) {
-      this.yearInput.focus();
+      this.refs.year.focus();
     }
   }
 }

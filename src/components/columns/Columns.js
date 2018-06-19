@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import NestedComponent from '../nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class ColumnsComponent extends NestedComponent {
   static schema(...extend) {
@@ -50,12 +50,34 @@ export default class ColumnsComponent extends NestedComponent {
     return `row ${super.className}`;
   }
 
-  addComponents() {
-    const container = this.getContainer();
-    container.noDrop = true;
-    _.each(this.component.columns, (column) => {
-      column.type = 'column';
-      this.addComponent(column, container, this.data);
+  get columnId() {
+    return `column-${this.id}`;
+  }
+
+  init() {
+    this.columns = [];
+    _.each(this.component.columns, (column, index) => {
+      this.columns[index] = [];
+      _.each(column.components, (component) => {
+        this.columns[index].push(this.createComponent(component));
+      });
     });
+  }
+
+  render() {
+    return super.render(this.renderTemplate('columns', {
+      id: this.id,
+      columnComponents: this.columns.map(column => this.renderComponents(column))
+    }));
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {[this.columnId]: 'multiple'});
+    this.refs[this.columnId].forEach((column, index) => this.hydrateComponents(column, this.columns[index]));
+  }
+
+  destroy(all) {
+    super.destroy(all);
+    delete this.columns;
   }
 }

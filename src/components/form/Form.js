@@ -1,12 +1,12 @@
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 import Promise from 'native-promise-only';
 import {isMongoId, eachComponent} from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
 
-export default class FormComponent extends BaseComponent {
+export default class FormComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'form',
       key: 'form',
       src: '',

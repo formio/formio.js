@@ -27,16 +27,16 @@ export default class TimeComponent extends TextFieldComponent {
     return TimeComponent.schema();
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.attr.type = 'time';
     return info;
   }
   getValueAt(index) {
-    if (!this.inputs.length || !this.inputs[index]) {
+    if (!this.refs.input.length || !this.refs.input[index]) {
       return null;
     }
-    const val = this.inputs[index].value;
+    const val = this.refs.input[index].value;
     if (!val) {
       return null;
     }
@@ -44,6 +44,6 @@ export default class TimeComponent extends TextFieldComponent {
     return moment(val, this.component.format).format('HH:mm:ss');
   }
   setValueAt(index, value) {
-    this.inputs[index].value = moment(value, 'HH:mm:ss').format(this.component.format);
+    this.refs.input[index].value = moment(value, 'HH:mm:ss').format(this.component.format);
   }
 }

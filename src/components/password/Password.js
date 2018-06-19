@@ -24,8 +24,8 @@ export default class PasswordComponent extends TextFieldComponent {
     return PasswordComponent.schema();
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.attr.type = 'password';
     return info;
   }

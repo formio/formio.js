@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../_classes/component/Component.form';
 
 import SignatureEditDisplay from './editForm/Signature.edit.display';
 

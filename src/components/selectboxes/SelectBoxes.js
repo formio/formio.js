@@ -31,7 +31,7 @@ export default class SelectBoxesComponent extends RadioComponent {
     return SelectBoxesComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.attr.name += '[]';
     info.attr.type = 'checkbox';
@@ -62,7 +62,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       return this.dataValue;
     }
     const value = {};
-    _.each(this.inputs, (input) => {
+    _.each(this.refs.input, (input) => {
       value[input.value] = !!input.checked;
     });
     return value;
@@ -83,7 +83,7 @@ export default class SelectBoxesComponent extends RadioComponent {
       });
     }
 
-    _.each(this.inputs, (input) => {
+    _.each(this.refs.input, (input) => {
       if (_.isUndefined(value[input.value])) {
         value[input.value] = false;
       }

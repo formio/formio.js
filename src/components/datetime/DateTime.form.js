@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../_classes/component/Component.form';
 
 import DateTimeEditData from './editForm/DateTime.edit.data';
 import DateTimeEditDate from './editForm/DateTime.edit.date';

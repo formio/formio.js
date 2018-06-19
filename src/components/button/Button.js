@@ -1,10 +1,11 @@
 import _ from 'lodash';
-import BaseComponent from '../base/Base';
+import Field from '../_classes/field/Field';
+import Input from '../_classes/input/Input';
 import {flattenComponents} from '../../utils/utils';
 
-export default class ButtonComponent extends BaseComponent {
+export default class ButtonComponent extends Field {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Input.schema({
       type: 'button',
       label: 'Submit',
       key: 'submit',
@@ -34,7 +35,7 @@ export default class ButtonComponent extends BaseComponent {
     return ButtonComponent.schema();
   }
 
-  elementInfo() {
+  get inputInfo() {
     const info = super.elementInfo();
     info.type = 'button';
     info.attr.type = (['submit', 'saveState'].includes(this.component.action)) ? 'submit' : 'button';
@@ -49,24 +50,26 @@ export default class ButtonComponent extends BaseComponent {
     if (this.component.customClass) {
       info.attr.class += ` ${this.component.customClass}`;
     }
+    info.content = this.t(this.component.label);
     return info;
   }
 
-  set loading(loading) {
-    this.setLoading(this.buttonElement, loading);
+  get labelInfo() {
+    return {
+      hidden: true
+    };
   }
 
-  set disabled(disabled) {
-    super.disabled = disabled;
-    this.setDisabled(this.buttonElement, disabled);
+  set loading(loading) {
+    this.setLoading(this.refs.button, loading);
   }
 
   // No label needed for buttons.
   createLabel() {}
 
   createInput(container) {
-    this.buttonElement = super.createInput(container);
-    return this.buttonElement;
+    this.refs.button = super.createInput(container);
+    return this.refs.button;
   }
 
   get emptyValue() {
@@ -102,41 +105,27 @@ export default class ButtonComponent extends BaseComponent {
     return this.ce('span', {class: 'help-block'}, this.text(message));
   }
 
-  /* eslint-disable max-statements */
-  build() {
-    if (this.viewOnly) {
-      this.component.hidden = true;
-    }
+  render() {
+    return super.render(this.renderTemplate('button', {
+      component: this.component,
+      input: this.inputInfo,
+    }));
+  }
 
-    this.dataValue = false;
-    this.hasError = false;
-    this.createElement();
-    this.createInput(this.element);
-    this.addShortcut(this.buttonElement);
-    this.hook('input', this.buttonElement, this.element);
-    if (this.component.leftIcon) {
-      this.buttonElement.appendChild(this.ce('span', {
-        class: this.component.leftIcon
-      }));
-      this.buttonElement.appendChild(this.text(' '));
+  hydrate(element) {
+    this.loadRefs(element, {button: 'single'});
+    super.hydrate(element);
+    if (!this.refs.button) {
+      return;
     }
+    this.addShortcut(this.refs.button);
 
-    if (this.component.label) {
-      this.labelElement = this.text(this.addShortcutToLabel());
-      this.buttonElement.appendChild(this.labelElement);
-      this.createTooltip(this.buttonElement, null, this.iconClass('question-sign'));
-    }
-    if (this.component.rightIcon) {
-      this.buttonElement.appendChild(this.text(' '));
-      this.buttonElement.appendChild(this.ce('span', {
-        class: this.component.rightIcon
-      }));
-    }
     if (this.component.action === 'submit') {
       const message = this.ce('div');
       this.on('submitButton', () => {
         this.loading = true;
         this.disabled = true;
+        this.redraw();
       }, true);
       this.on('submitDone', () => {
         this.loading = false;
@@ -187,84 +176,9 @@ export default class ButtonComponent extends BaseComponent {
         this.loading = false;
       }, true);
     }
-    this.addEventListener(this.buttonElement, 'click', (event) => {
-      this.dataValue = true;
-      switch (this.component.action) {
-        case 'saveState':
-        case 'submit':
-          event.preventDefault();
-          event.stopPropagation();
-          this.emit('submitButton', {
-            state: this.component.state || 'submitted'
-          });
-          break;
-        case 'event':
-          this.emit(this.component.event, this.data);
-          this.events.emit(this.component.event, this.data);
-          this.emit('customEvent', {
-            type: this.component.event,
-            component: this.component,
-            data: this.data,
-            event: event
-          });
-          break;
-        case 'custom': {
-          // Get the FormioForm at the root of this component's tree
-          const form = this.getRoot();
-          // Get the form's flattened schema components
-          const flattened = flattenComponents(form.component.components, true);
-          // Create object containing the corresponding HTML element components
-          const components = {};
-          _.each(flattened, (component, key) => {
-            const element = form.getComponent(key);
-            if (element) {
-              components[key] = element;
-            }
-          });
 
-          this.evaluate(this.component.custom, {
-            form,
-            flattened,
-            components
-          });
-          break;
-        }
-        case 'url':
-          this.emit('requestButton');
-          this.emit('requestUrl', {
-            url: this.component.url,
-            headers: this.component.headers
-          });
-          break;
-        case 'reset':
-          this.emit('resetForm');
-          break;
-        case 'delete':
-          this.emit('deleteSubmission');
-          break;
-        case 'oauth':
-          if (this.root === this) {
-            console.warn('You must add the OAuth button to a form for it to function properly');
-            return;
-          }
+    this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
 
-          // Display Alert if OAuth config is missing
-          if (!this.component.oauth) {
-            this.root.setAlert('danger', 'You must assign this button to an OAuth action before it will work.');
-            break;
-          }
-
-          // Display Alert if oAuth has an error is missing
-          if (this.component.oauth.error) {
-            this.root.setAlert('danger', `The Following Error Has Occured${this.component.oauth.error}`);
-            break;
-          }
-
-          this.openOauth(this.component.oauth);
-
-          break;
-      }
-    });
     if (this.shouldDisable) {
       this.disabled = true;
     }
@@ -290,6 +204,85 @@ export default class ButtonComponent extends BaseComponent {
     this.autofocus();
   }
   /* eslint-enable max-statements */
+
+  onClick(event) {
+    this.dataValue = true;
+    switch (this.component.action) {
+      case 'saveState':
+      case 'submit':
+        event.preventDefault();
+        event.stopPropagation();
+        this.emit('submitButton', {
+          state: this.component.state || 'submitted'
+        });
+        break;
+      case 'event':
+        this.emit(this.component.event, this.data);
+        this.events.emit(this.component.event, this.data);
+        this.emit('customEvent', {
+          type: this.component.event,
+          component: this.component,
+          data: this.data,
+          event: event
+        });
+        break;
+      case 'custom': {
+        // Get the FormioForm at the root of this component's tree
+        const form = this.getRoot();
+        // Get the form's flattened schema components
+        const flattened = flattenComponents(form.component.components, true);
+        // Create object containing the corresponding HTML element components
+        const components = {};
+        _.each(flattened, (component, key) => {
+          const element = form.getComponent(key);
+          if (element) {
+            components[key] = element;
+          }
+        });
+
+        this.evaluate(this.component.custom, {
+          form,
+          flattened,
+          components
+        });
+        break;
+      }
+      case 'url':
+        this.emit('requestButton');
+        this.emit('requestUrl', {
+          url: this.component.url,
+          headers: this.component.headers
+        });
+        break;
+      case 'reset':
+        this.emit('resetForm');
+        break;
+      case 'delete':
+        this.emit('deleteSubmission');
+        break;
+      case 'oauth':
+        if (this.root === this) {
+          console.warn('You must add the OAuth button to a form for it to function properly');
+          return;
+        }
+
+        // Display Alert if OAuth config is missing
+        if (!this.component.oauth) {
+          this.root.setAlert('danger', 'You must assign this button to an OAuth action before it will work.');
+          break;
+        }
+
+        // Display Alert if oAuth has an error is missing
+        if (this.component.oauth.error) {
+          this.root.setAlert('danger', `The Following Error Has Occured${this.component.oauth.error}`);
+          break;
+        }
+
+        this.openOauth(this.component.oauth);
+
+        break;
+    }
+  }
 
   openOauth() {
     if (!this.root.formio) {
@@ -368,7 +361,7 @@ export default class ButtonComponent extends BaseComponent {
 
   destroy() {
     super.destroy.apply(this, Array.prototype.slice.apply(arguments));
-    this.removeShortcut(this.buttonElement);
+    this.removeShortcut(this.refs.button);
   }
 
   focus() {

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import NestedComponent from '../nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 import Components from '../Components';
 import {checkCondition} from '../../utils/utils';
 
@@ -168,7 +168,7 @@ export default class EditGridComponent extends NestedComponent {
     }
     else {
       wrapper.appendChild(
-        this.renderTemplate(rowTemplate,
+        this.renderTemplateOld(rowTemplate,
           {
             row,
             rowIndex,

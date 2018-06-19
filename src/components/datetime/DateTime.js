@@ -1,7 +1,7 @@
 import Flatpickr from 'flatpickr';
 import _ from 'lodash';
 
-import BaseComponent from '../base/Base';
+import Input from '../_classes/input/Input';
 
 import {
   getDateSetting,
@@ -11,9 +11,9 @@ import {
 } from '../../utils/utils';
 import moment from 'moment';
 
-export default class DateTimeComponent extends BaseComponent {
+export default class DateTimeComponent extends Input {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Input.schema({
       type: 'datetime',
       label: 'Date / Time',
       key: 'dateTime',
@@ -55,8 +55,8 @@ export default class DateTimeComponent extends BaseComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     this.validators.push('date');
     this.closedOn = 0;
 
@@ -86,17 +86,35 @@ export default class DateTimeComponent extends BaseComponent {
     return '';
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.type = 'input';
     info.attr.type = 'text';
     info.changeEvent = 'input';
-    this.component.suffix = true;
+    this.component.suffix = this.getIcon(this.component.enableDate ? 'calendar' : 'time', null, 'cursor: pointer', 'dateTimeToggle');
     return info;
   }
 
   get emptyValue() {
     return '';
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {dateTimeToggle: 'multiple'});
+    super.hydrate(element);
+    this.disabled = this.shouldDisable;
+  }
+
+  hydrateElement(input, index) {
+    if (!input.calendar && !this.options.noCalendar) {
+      input.calendar = new Flatpickr(input, this.config);
+      this.addEventListener(this.refs.dateTimeToggle[index], 'click', () => {
+        // Make sure the calendar is not already open and that it did not just close (like from blur event).
+        if (!input.calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
+          input.calendar.open();
+        }
+      });
+    }
   }
 
   /**
@@ -107,8 +125,7 @@ export default class DateTimeComponent extends BaseComponent {
     return getDateSetting(this.component.defaultDate);
   }
 
-  // This select component can handle multiple items on its own.
-  createWrapper() {
+  useWrapper() {
     return false;
   }
 
@@ -150,7 +167,7 @@ export default class DateTimeComponent extends BaseComponent {
 
   set disabled(disabled) {
     super.disabled = disabled;
-    _.each(this.inputs, (input) => {
+    _.each(this.refs.input, (input) => {
       const calendar = this.getCalendar(input);
       if (calendar) {
         if (disabled) {
@@ -165,34 +182,12 @@ export default class DateTimeComponent extends BaseComponent {
     });
   }
 
-  addSuffix(input, inputGroup) {
-    const suffix = this.ce('span', {
-      class: 'input-group-addon',
-      style: 'cursor: pointer'
-    });
-    suffix.appendChild(this.getIcon(this.component.enableDate ? 'calendar' : 'time'));
-    const calendar = this.getCalendar(input);
-    if (calendar) {
-      this.addEventListener(suffix, 'click', () => {
-        // Make sure the calendar is not already open and that it did not just close (like from blur event).
-        if (!calendar.isOpen && ((Date.now() - this.closedOn) > 200)) {
-          calendar.open();
-        }
-      });
-    }
-    inputGroup.appendChild(suffix);
-    return suffix;
-  }
-
   /**
    * Get the calendar or create an instance of one.
    * @param input
    * @return {Flatpickr|flatpickr}
    */
   getCalendar(input) {
-    if (!input.calendar && !this.options.noCalendar) {
-      input.calendar = new Flatpickr(input, this.config);
-    }
     return input.calendar;
   }
 
@@ -206,23 +201,23 @@ export default class DateTimeComponent extends BaseComponent {
 
   get validationValue() {
     const values = [];
-    for (const i in this.inputs) {
-      if (this.inputs.hasOwnProperty(i)) {
+    for (const i in this.refs.input) {
+      if (this.refs.input.hasOwnProperty(i)) {
         if (!this.component.multiple) {
-          return this.getDate(this.inputs[i].value);
+          return this.getDate(this.refs.input[i].value);
         }
-        values.push(this.getDate(this.inputs[i].value));
+        values.push(this.getDate(this.refs.input[i].value));
       }
     }
     return values;
   }
 
   getValueAt(index) {
-    if (!this.inputs[index]) {
+    if (!this.refs.input[index]) {
       return '';
     }
 
-    const calendar = this.getCalendar(this.inputs[index]);
+    const calendar = this.getCalendar(this.refs.input[index]);
     if (!calendar) {
       return super.getValueAt(index);
     }
@@ -246,7 +241,7 @@ export default class DateTimeComponent extends BaseComponent {
     }
 
     super.setValueAt(index, value);
-    const calendar = this.getCalendar(this.inputs[index]);
+    const calendar = this.getCalendar(this.refs.input[index]);
     if (calendar) {
       if (value) {
         calendar.setDate(new Date(value), false);
@@ -257,8 +252,18 @@ export default class DateTimeComponent extends BaseComponent {
     }
   }
 
+  destroy(all) {
+    // Clean up clalendars.
+    this.refs.inputs.forEach(input => {
+      if (input.calendar) {
+        input.calendar.destroy();
+      }
+    });
+    super.destroy(all);
+  }
+
   focus() {
-    const input = this.inputs[0];
+    const input = this.refs.input[0];
     if (input && !this.options.readOnly) {
       input.calendar.altInput.focus();
     }

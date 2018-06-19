@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../component/Component.form';
 
 export default function(...extend) {
   return baseEditForm(...extend, [

@@ -1,6 +1,6 @@
 /* global ace */
 import TextFieldComponent from '../textfield/TextField';
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -36,6 +36,14 @@ export default class TextAreaComponent extends TextFieldComponent {
     return TextAreaComponent.schema();
   }
 
+  get inputInfo() {
+    const info = super.inputInfo;
+    info.type = 'textarea';
+    if (this.component.hasOwnProperty('spellcheck')) {
+      info.attr.rows = this.component.rows;
+    }
+    return info;
+  }
   setupValueElement(element) {
     let value = this.getValue();
     value = this.isEmpty(value) ? this.defaultViewOnlyValue : this.getView(value);
@@ -64,38 +72,35 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
   }
 
-  get isPlain() {
-    return (!this.component.wysiwyg && !this.component.editor);
-  }
-
-  get htmlView() {
-    return this.options.readOnly && this.component.wysiwyg;
-  }
-
-  createInput(container) {
-    if (this.isPlain) {
-      return super.createInput(container);
-    }
-
-    if (this.htmlView) {
-      this.input = this.ce('div', {
-        class: 'well'
-      });
-      container.appendChild(this.input);
-      return this.input;
-    }
-
-    // Add the input.
-    this.input = this.ce('div', {
-      class: 'formio-wysiwyg-editor'
+  renderElement(value, index) {
+    const info = this.inputInfo;
+    info.attr = info.attr || {};
+    info.content = value;
+    return this.renderTemplate('input', {
+      input: info,
+      index
     });
-    container.appendChild(this.input);
+  }
+
+  hydrateElement(element, index) {
+    if (this.isPlain) {
+      this.addEventListener(this.refs.input[index], this.inputInfo.changeEvent, () => this.updateValue());
+      return;
+    }
+
+    // if (this.htmlView) {
+    //   this.input = this.ce('div', {
+    //     class: 'well'
+    //   });
+    //   container.appendChild(this.input);
+    //   return this.input;
+    // }
 
     if (this.component.editor === 'ace') {
-      this.editorReady = BaseComponent.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)
+      this.editorReady = Component.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)
         .then(() => {
           const mode = this.component.as || 'javascript';
-          this.editor = ace.edit(this.input);
+          this.editor = ace.edit(this.refs.input[index]);
           this.editor.on('change', () => {
             this.updateValue(null, this.getConvertedValue(this.editor.getValue()));
           });
@@ -105,7 +110,7 @@ export default class TextAreaComponent extends TextFieldComponent {
           setTimeout(() => this.acePlaceholder(), 100);
           return this.editor;
         });
-      return this.input;
+      return this.refs.input[index];
     }
 
     // Normalize the configurations.
@@ -121,7 +126,7 @@ export default class TextAreaComponent extends TextFieldComponent {
 
     // Add the quill editor.
     this.editorReady = this.addQuill(
-      this.input,
+      this.refs.input[index],
       this.component.wysiwyg, () => {
         this.updateValue(null, this.getConvertedValue(this.quill.root.innerHTML));
       }
@@ -134,7 +139,15 @@ export default class TextAreaComponent extends TextFieldComponent {
       return quill;
     });
 
-    return this.input;
+    return this.refs.input[index];
+  }
+
+  get isPlain() {
+    return (!this.component.wysiwyg && !this.component.editor);
+  }
+
+  get htmlView() {
+    return this.options.readOnly && this.component.wysiwyg;
   }
 
   setConvertedValue(value) {
@@ -170,6 +183,10 @@ export default class TextAreaComponent extends TextFieldComponent {
     value = value || '';
     if (this.isPlain) {
       return super.setValue(this.setConvertedValue(value), flags);
+    }
+
+    if (!this.editorReady) {
+      return value;
     }
 
     // Set the value when the editor is ready.
@@ -218,14 +235,5 @@ export default class TextAreaComponent extends TextFieldComponent {
     }
 
     return this.component.multiple ? [''] : '';
-  }
-
-  elementInfo() {
-    const info = super.elementInfo();
-    info.type = 'textarea';
-    if (this.component.rows) {
-      info.attr.rows = this.component.rows;
-    }
-    return info;
   }
 }

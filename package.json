@@ -1,6 +1,6 @@
 {
   "name": "formiojs",
-  "version": "3.0.0-rc.8",
+  "version": "4.0.0-alpha.1",
   "description": "Common js library for client side interaction with <form.io>",
   "main": "index.js",
   "files": [
@@ -17,9 +17,10 @@
   ],
   "scripts": {
     "build": "esdoc;gulp build",
+    "watch": "babel -w ./src/ --out-dir ./lib/",
     "rebuild": "rm -rf node_modules;npm install;gulp build",
     "tag": "VERSION=$(cat package.json | grep version | head -1 | awk -F: '{ print $2 }' | sed 's/[\",]//g' | tr -d '[[:space:]]');git add -A; git commit -m \"Build $Version\";git push origin master;git tag v$VERSION;git push origin --tags;",
-    "publish": "npm test;gulp build;npm run tag;npm publish lib  --tag beta;",
+    "publish": "npm test;gulp build;npm run tag;npm publish lib  --tag alpha;",
     "lint": "gulp eslint",
     "serve": "jekyll serve --config _config.yml,_config.dev.yml",
     "test": "./node_modules/karma/bin/karma start --verbose --single-run",
@@ -81,6 +82,7 @@
     "whatwg-fetch": "^2.0.4"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.2.3",
     "babel-plugin-array-includes": "^2.0.3",

@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../_classes/component/Component.form';
 
 import RadioEditDisplay from './editForm/Radio.edit.display';
 

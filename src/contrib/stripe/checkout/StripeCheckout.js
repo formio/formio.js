@@ -1,6 +1,6 @@
 /* globals StripeCheckout */
 import _ from 'lodash';
-import BaseComponent from '../../../components/base/Base';
+import Component from '../../../components/_classes/component/Component';
 import ButtonComponent from '../../../components/button/Button';
 export default class StripeCheckoutComponent extends ButtonComponent {
   constructor(component, options, data) {
@@ -13,7 +13,7 @@ export default class StripeCheckoutComponent extends ButtonComponent {
      * Promise when Stripe is ready.
      * @type {Promise}
      */
-    this.stripeCheckoutReady = BaseComponent.requireLibrary('stripeCheckout', 'StripeCheckout', src, true);
+    this.stripeCheckoutReady = Component.requireLibrary('stripeCheckout', 'StripeCheckout', src, true);
 
     /**
      * Keep initial component action

@@ -1,9 +1,8 @@
-import _ from 'lodash';
-import BaseComponent from '../base/Base';
+import Component from '../_classes/component/Component';
 
-export default class HTMLComponent extends BaseComponent {
+export default class HTMLComponent extends Component {
   static schema(...extend) {
-    return BaseComponent.schema({
+    return Component.schema({
       type: 'htmlelement',
       tag: 'p',
       attrs: [],
@@ -28,27 +27,28 @@ export default class HTMLComponent extends BaseComponent {
     return HTMLComponent.schema();
   }
 
-  setHTML() {
-    this.element.innerHTML = this.interpolate(this.component.content);
+  get content() {
+    return this.component.content ? this.interpolate(this.component.content, {data: this.data, row: this.row}) : '';
   }
 
-  build() {
-    this.element = this.ce(this.component.tag, {
-      id: this.id,
-      class: this.component.className
-    });
-    this.element.component = this;
-    _.each(this.component.attrs, (attr) => {
-      if (attr.attr) {
-        this.element.setAttribute(attr.attr, attr.value);
-      }
-    });
-    if (this.component.content) {
-      this.setHTML();
-    }
+  render() {
+    return super.render(this.renderTemplate('html', {
+      component: this.component,
+      tag: this.component.tag,
+      attrs: this.component.attrs || {},
+      content: this.content,
+    }));
+  }
 
+  hydrate(element) {
+    this.loadRefs(element, {html: 'single'});
     if (this.component.refreshOnChange) {
-      this.on('change', () => this.setHTML());
+      this.on('change', () => {
+        if (this.refs.html) {
+          this.refs.html.innerHTML = this.content;
+        }
+      });
     }
+    super.hydrate(element);
   }
 }

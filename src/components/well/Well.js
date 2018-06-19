@@ -1,4 +1,4 @@
-import NestedComponent from '../nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class WellComponent extends NestedComponent {
   static schema(...extend) {
@@ -27,6 +27,28 @@ export default class WellComponent extends NestedComponent {
   }
 
   get className() {
-    return `card card-body bg-faded well formio-component formio-component-well ${this.component.customClass}`;
+    return `${this.component.customClass}`;
+  }
+
+  get wellId() {
+    return `well-${this.id}`;
+  }
+
+  init() {
+    this.addComponents();
+  }
+
+  render() {
+    return super.render(this.renderTemplate('well', {
+      children: super.renderComponents(),
+      className: this.className,
+    }));
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {[this.wellId]: 'single'});
+    if (this.refs[this.wellId]) {
+      super.hydrateComponents(this.refs[this.wellId]);
+    }
   }
 }

@@ -1,4 +1,4 @@
-import NestedComponent from '../nested/NestedComponent';
+import NestedComponent from '../_classes/nested/NestedComponent';
 
 export default class FieldsetComponent extends NestedComponent {
   static schema(...extend) {
@@ -36,23 +36,28 @@ export default class FieldsetComponent extends NestedComponent {
     return `form-group ${super.className}`;
   }
 
-  build() {
-    this.element = this.ce('fieldset', {
-      id: this.id,
-      class: this.className
-    });
-    if (this.component.legend) {
-      const legend = this.ce('legend');
-      legend.appendChild(this.text(this.component.legend));
-      this.createTooltip(legend);
-      this.setCollapseHeader(legend);
-      this.element.appendChild(legend);
-    }
-    this.body = this.ce('div', {
-      class: 'card-body'
-    });
+  get fieldsetId() {
+    return `fieldset-${this.id}`;
+  }
+
+  init() {
     this.addComponents();
-    this.element.appendChild(this.body);
-    this.setCollapsed();
+  }
+
+  render() {
+    return super.render(this.renderTemplate('fieldset', {
+      children: super.renderComponents(),
+      className: this.className,
+    }));
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {[this.fieldsetId]: 'single'});
+    if (this.refs[this.fieldsetId]) {
+      super.hydrateComponents(this.refs[this.fieldsetId]);
+    }
+    // this.setCollapsed();
+    // this.createTooltip(title);
+    // this.setCollapseHeader(heading);
   }
 }
