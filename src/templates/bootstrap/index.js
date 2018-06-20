@@ -5,6 +5,7 @@ import component from './component';
 import day from './day';
 import field from './field';
 import fieldset from './fieldset';
+import file from './file';
 import html from './html';
 import icon from './icon';
 import iconClass from './iconClass';
@@ -31,6 +32,7 @@ export default {
   day,
   field,
   fieldset,
+  file,
   html,
   icon,
   input,

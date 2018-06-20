@@ -1162,7 +1162,6 @@ export default class Component {
       return;
     }
     this.clear();
-    this.destroy();
     this.element.innerHTML = this.render();
     this.hydrate(this.element);
   }

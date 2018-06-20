@@ -3,7 +3,7 @@ export default {
 <table class="table table-bordered">
   <tbody>
   {{rows}}
-  {% if (!disabled) { %}}
+  {% if (!disabled) { %}
   <tr>
     <td colspan="2">
       <button class="btn btn-primary" ref="addButton"><i class="glyphicon glyphicon-plus"></i> {{addAnother}}</button>

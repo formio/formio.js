@@ -36,6 +36,9 @@ export default class FileComponent extends Component {
       formdata: !!window.FormData,
       progress: 'upload' in new XMLHttpRequest
     };
+    this.support.hasWarning = !this.support.filereader || !this.support.dnd || !this.support.formdata || !this.support.progress;
+
+    this.statuses = [];
   }
 
   get defaultSchema() {
@@ -50,146 +53,9 @@ export default class FileComponent extends Component {
     return this.dataValue;
   }
 
-  setValue(value) {
-    this.dataValue = value || [];
-    this.refreshDOM();
-  }
-
   get defaultValue() {
     const value = super.defaultValue;
     return Array.isArray(value) ? value : [];
-  }
-
-  build() {
-    // Restore the value.
-    this.restoreValue();
-
-    const labelAtTheBottom = this.component.labelPosition === 'bottom';
-
-    this.createElement();
-    if (!labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    this.inputsContainer = this.ce('div');
-    this.errorContainer = this.inputsContainer;
-    this.createErrorElement();
-    this.listContainer = this.buildList();
-    this.inputsContainer.appendChild(this.listContainer);
-    this.uploadContainer = this.buildUpload();
-    this.hiddenFileInputElement = this.buildHiddenFileInput();
-    this.hook('input', this.hiddenFileInputElement, this.inputsContainer);
-    this.inputsContainer.appendChild(this.hiddenFileInputElement);
-    this.inputsContainer.appendChild(this.uploadContainer);
-    this.addWarnings(this.inputsContainer);
-    this.buildUploadStatusList(this.inputsContainer);
-    this.setInputStyles(this.inputsContainer);
-    this.element.appendChild(this.inputsContainer);
-    if (labelAtTheBottom) {
-      this.createLabel(this.element);
-    }
-    this.createDescription(this.element);
-    this.autofocus();
-
-    // Disable if needed.
-    if (this.shouldDisable) {
-      this.disabled = true;
-    }
-  }
-
-  refreshDOM() {
-    // Don't refresh before the initial render.
-    if (this.listContainer && this.uploadContainer) {
-      // Refresh file list.
-      const newList = this.buildList();
-      this.inputsContainer.replaceChild(newList, this.listContainer);
-      this.listContainer = newList;
-
-      // Refresh upload container.
-      const newUpload = this.buildUpload();
-      this.inputsContainer.replaceChild(newUpload, this.uploadContainer);
-      this.uploadContainer = newUpload;
-    }
-  }
-
-  buildList() {
-    if (this.component.image) {
-      return this.buildImageList();
-    }
-    else {
-      return this.buildFileList();
-    }
-  }
-
-  buildFileList() {
-    return this.ce('ul', {class: 'list-group list-group-striped'}, [
-      this.ce('li', {class: 'list-group-item list-group-header hidden-xs hidden-sm'},
-        this.ce('div', {class: 'row'},
-          [
-            this.ce('div', {class: 'col-md-1'}),
-            this.ce('div', {class: 'col-md-9'},
-              this.ce('strong', {}, this.text('File Name'))
-            ),
-            this.ce('div', {class: 'col-md-2'},
-              this.ce('strong', {}, this.text('Size'))
-            )
-          ]
-        )
-      ),
-      this.dataValue.map((fileInfo, index) => this.createFileListItem(fileInfo, index))
-    ]);
-  }
-
-  buildHiddenFileInput() {
-    // Input needs to be in DOM and "visible" (opacity 0 is fine) for IE to display file dialog.
-    return this.ce('input', {
-      type: 'file',
-      style: 'opacity: 0; position: absolute;',
-      tabindex: -1, // prevent focus
-      onChange: () => {
-        this.upload(this.hiddenFileInputElement.files);
-      }
-    });
-  }
-
-  createFileListItem(fileInfo, index) {
-    return this.ce('li', {class: 'list-group-item'},
-      this.ce('div', {class: 'row'},
-        [
-          this.ce('div', {class: 'col-md-1'},
-            (
-              (!this.disabled && !this.shouldDisable) ?
-                this.ce('i', {
-                  class: this.iconClass('remove'),
-                  onClick: event => {
-                    if (fileInfo && (this.component.storage === 'url')) {
-                      this.options.formio.makeRequest('', fileInfo.url, 'delete');
-                    }
-                    event.preventDefault();
-                    this.splice(index);
-                    this.refreshDOM();
-                  }
-                }) :
-                null
-            )
-          ),
-          this.ce('div', {class: 'col-md-9'}, this.createFileLink(fileInfo)),
-          this.ce('div', {class: 'col-md-2'}, this.fileSize(fileInfo.size))
-        ]
-      )
-    );
-  }
-
-  createFileLink(file) {
-    return this.ce('a', {
-      href: file.url, target: '_blank',
-      onClick: this.getFile.bind(this, file)
-    }, file.originalName || file.name);
-  }
-
-  buildImageList() {
-    return this.ce('div', {},
-      this.dataValue.map((fileInfo, index) => this.createImageListItem(fileInfo, index))
-    );
   }
 
   get fileService() {
@@ -205,131 +71,98 @@ export default class FileComponent extends Component {
     return new Formio();
   }
 
-  createImageListItem(fileInfo, index) {
-    let image;
+  render() {
+    return super.render(this.renderTemplate('file', {
+      fileSize: this.fileSize,
+      files: this.dataValue,
+      statuses: this.statuses,
+      disabled: this.shouldDisable,
+      support: this.support,
+    }));
+  }
 
-    const fileService = this.fileService;
-    if (fileService) {
-      fileService.downloadFile(fileInfo)
-        .then(result => {
-          image.src = result.url;
-        });
+  hydrate(element) {
+    this.loadRefs(element, {
+      fileDrop: 'single',
+      fileBrowse: 'single',
+      hiddenFileInputElement: 'single',
+      fileLink: 'multiple',
+      removeLink: 'multiple',
+      fileStatusRemove: 'multiple',
+      fileImage: 'multiple',
+    });
+    super.hydrate(element);
+
+    if (this.refs.fileDrop) {
+      const element = this;
+      this.addEventListener(this.refs.fileDrop, 'dragOver', function(event) {
+        this.className = 'fileSelector fileDragOver';
+        event.preventDefault();
+      });
+      this.addEventListener(this.refs.fileDrop, 'dragleave', function(event) {
+        this.className = 'fileSelector';
+        event.preventDefault();
+      });
+      this.addEventListener(this.refs.fileDrop, 'drop', function(event) {
+        this.className = 'fileSelector';
+        event.preventDefault();
+        element.upload(event.dataTransfer.files);
+        return false;
+      });
     }
-    return this.ce('div', {},
-      this.ce('span', {},
-        [
-          image = this.ce('img', {
-            src: '',
-            alt: fileInfo.originalName || fileInfo.name,
-            style: `width:${this.component.imageSize}px`
-          }),
-          (
-            !this.disabled ?
-              this.ce('i', {
-                class: this.iconClass('remove'),
-                onClick: event => {
-                  if (fileInfo && (this.component.storage === 'url')) {
-                    this.options.formio.makeRequest('', fileInfo.url, 'delete');
-                  }
-                  event.preventDefault();
-                  this.splice(index);
-                  this.refreshDOM();
-                }
-              }) :
-              null
-          )
-        ]
-      )
-    );
-  }
 
-  buildUpload() {
-    // Drop event must change this pointer so need a reference to parent this.
-    const element = this;
-    // If this is disabled or a single value with a value, don't show the upload div.
-    return this.ce('div', {},
-      (
-        (!this.disabled && (this.component.multiple || this.dataValue.length === 0)) ?
-          this.ce('div', {
-            class: 'fileSelector',
-            onDragover: function(event) {
-              this.className = 'fileSelector fileDragOver';
-              event.preventDefault();
-            },
-            onDragleave: function(event) {
-              this.className = 'fileSelector';
-              event.preventDefault();
-            },
-            onDrop: function(event) {
-              this.className = 'fileSelector';
-              event.preventDefault();
-              element.upload(event.dataTransfer.files);
-              return false;
-            }
-          },
-          [
-            this.ce('i', {class: this.iconClass('cloud-upload')}),
-            this.text(' Drop files to attach, or '),
-            this.buildBrowseLink()
-          ]
-          ) :
-          this.ce('div')
-      )
-    );
-  }
-
-  buildBrowseLink() {
-    this.browseLink = this.ce('a', {
-      href: '#',
-      onClick: (event) => {
+    if (this.refs.fileBrowse && this.refs.hiddenFileInputElement) {
+      this.addEventListener(this.refs.fileBrowse, 'click', (event) => {
         event.preventDefault();
         // There is no direct way to trigger a file dialog. To work around this, create an input of type file and trigger
         // a click event on it.
-        if (typeof this.hiddenFileInputElement.trigger === 'function') {
-          this.hiddenFileInputElement.trigger('click');
+        if (typeof this.refs.hiddenFileInputElement.trigger === 'function') {
+          this.refs.hiddenFileInputElement.trigger('click');
         }
         else {
-          this.hiddenFileInputElement.click();
+          this.refs.hiddenFileInputElement.click();
         }
-      },
-      class: 'browse'
-    }, this.text('browse'));
+      });
+      this.addEventListener(this.refs.hiddenFileInputElement, 'change', () => {
+        this.upload(this.refs.hiddenFileInputElement.files);
+      });
+    }
 
-    return this.browseLink;
-  }
+    this.refs.fileLink.forEach((fileLink, index) => {
+      this.addEventListener(fileLink, 'click', (event) => {
+        event.preventDefault();
+        this.getFile(this.dataValue[index]);
+      });
+    });
 
-  buildUploadStatusList(container) {
-    const list = this.ce('div');
-    this.uploadStatusList = list;
-    container.appendChild(list);
-  }
+    this.refs.removeLink.forEach((removeLink, index) => {
+      this.addEventListener(removeLink, 'click', (event) => {
+        const fileInfo = this.dataValue[index];
+        if (fileInfo && (this.component.storage === 'url')) {
+          this.options.formio.makeRequest('', fileInfo.url, 'delete');
+        }
+        event.preventDefault();
+        this.splice(index);
+        this.redraw();
+      });
+    });
 
-  addWarnings(container) {
-    let hasWarnings = false;
-    const warnings = this.ce('div', {class: 'alert alert-warning'});
-    if (!this.component.storage) {
-      hasWarnings = true;
-      warnings.appendChild(this.ce('p').appendChild(this.text(
-        'No storage has been set for this field. File uploads are disabled until storage is set up.')));
-    }
-    if (!this.support.dnd) {
-      hasWarnings = true;
-      warnings.appendChild(this.ce('p').appendChild(this.text('File Drag/Drop is not supported for this browser.')));
-    }
-    if (!this.support.filereader) {
-      hasWarnings = true;
-      warnings.appendChild(this.ce('p').appendChild(this.text('File API & FileReader API not supported.')));
-    }
-    if (!this.support.formdata) {
-      hasWarnings = true;
-      warnings.appendChild(this.ce('p').appendChild(this.text('XHR2\'s FormData is not supported.')));
-    }
-    if (!this.support.progress) {
-      hasWarnings = true;
-      warnings.appendChild(this.ce('p').appendChild(this.text('XHR2\'s upload progress isn\'t supported.')));
-    }
-    if (hasWarnings) {
-      container.appendChild(warnings);
+    this.refs.fileStatusRemove.forEach((fileStatusRemove, index) => {
+      this.addEventListener(fileStatusRemove, 'click', (event) => {
+        event.preventDefault();
+        this.statuses.splice(index, 1);
+        this.redraw();
+      });
+    });
+
+    const fileService = this.fileService;
+    if (fileService) {
+      this.refs.fileImage.forEach((image, index) => {
+        fileService.downloadFile(this.dataValue[index])
+          .then(result => {
+            image.src = result.url;
+          });
+      });
     }
   }
 
@@ -338,43 +171,6 @@ export default class FileComponent extends Component {
     return `${(b = Math, c = b.log, d = 1024, e = c(a) / c(d) | 0, a / b.pow(d, e)).toFixed(2)} ${e ? `${'kMGTPEZY'[--e]}B` : 'Bytes'}`;
   }
   /* eslint-enable max-len */
-
-  createUploadStatus(fileUpload) {
-    let container;
-    return container = this.ce('div', {class: `file${fileUpload.status === 'error' ? ' has-error' : ''}`}, [
-      this.ce('div', {class: 'row'}, [
-        this.ce('div', {class: 'fileName control-label col-sm-10'}, [
-          fileUpload.originalName,
-          this.ce('i', {
-            class: this.iconClass('remove'),
-            onClick: () => {
-              this.removeChildFrom(container, this.uploadStatusList);
-            }
-          })
-        ]),
-        this.ce('div', {class: 'fileSize control-label col-sm-2 text-right'}, this.fileSize(fileUpload.size))
-      ]),
-      this.ce('div', {class: 'row'}, [
-        this.ce('div', {class: 'col-sm-12'}, [
-          (fileUpload.status === 'progress' ?
-            this.ce('div', {class: 'progress'},
-              this.ce('div', {
-                class: 'progress-bar',
-                role: 'progressbar',
-                'aria-valuenow': fileUpload.progress,
-                'aria-valuemin': 0,
-                'aria-valuemax': 100,
-                style: `width:${fileUpload.progress}%`
-              },
-              this.ce('span', {class: 'sr-only'}, `${fileUpload.progress}% Complete`)
-              )
-            ) :
-            this.ce('div', {class: `bg-${fileUpload.status}`}, fileUpload.message)
-          )
-        ])
-      ])
-    ]);
-  }
 
   /* eslint-disable max-depth */
   globStringToRegex(str) {
@@ -513,32 +309,31 @@ export default class FileComponent extends Component {
           fileUpload.message = 'File Service not provided.';
         }
 
-        let uploadStatus = this.createUploadStatus(fileUpload);
-        this.uploadStatusList.appendChild(uploadStatus);
+        this.statuses.push(fileUpload);
+        this.redraw();
 
         if (fileUpload.status !== 'error') {
           fileService.uploadFile(this.component.storage, file, fileName, dir, evt => {
             fileUpload.status = 'progress';
             fileUpload.progress = parseInt(100.0 * evt.loaded / evt.total);
             delete fileUpload.message;
-            const originalStatus = uploadStatus;
-            uploadStatus = this.createUploadStatus(fileUpload);
-            this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+            this.redraw();
           }, this.component.url)
             .then(fileInfo => {
-              this.removeChildFrom(uploadStatus, this.uploadStatusList);
+              const index = this.statuses.indexOf(fileUpload);
+              if (index !== -1) {
+                this.statuses.splice(index, 1);
+              }
               fileInfo.originalName = file.name;
               this.dataValue.push(fileInfo);
-              this.refreshDOM();
+              this.redraw();
               this.triggerChange();
             })
             .catch(response => {
               fileUpload.status = 'error';
               fileUpload.message = response;
               delete fileUpload.progress;
-              const originalStatus = uploadStatus;
-              uploadStatus = this.createUploadStatus(fileUpload);
-              this.uploadStatusList.replaceChild(uploadStatus, originalStatus);
+              this.redraw();
             });
         }
       });
@@ -564,6 +359,6 @@ export default class FileComponent extends Component {
   }
 
   focus() {
-    this.browseLink.focus();
+    this.refs.fileBrowse.focus();
   }
 }
