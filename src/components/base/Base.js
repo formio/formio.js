@@ -777,6 +777,7 @@ export default class BaseComponent {
       component: this.component,
       row: this.data,
       data: (this.root ? this.root.data : this.data),
+      form: this.root ? this.root._form : {},
       _,
       utils: FormioUtils,
       util: FormioUtils,
