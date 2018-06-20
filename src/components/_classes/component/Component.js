@@ -955,6 +955,7 @@ export default class Component {
       row: this.data,
       rowIndex: this.rowIndex,
       data: (this.root ? this.root.data : this.data),
+      form: this.root ? this.root._form : {},
       _,
       utils: FormioUtils,
       util: FormioUtils,
