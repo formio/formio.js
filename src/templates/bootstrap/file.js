@@ -64,7 +64,7 @@ export default {
   </div>
 </div>
 {% }) %}
-{% if (!component.storage || status.hasWarning) { %}
+{% if (!component.storage || support.hasWarning) { %}
 <div class="alert alert-warning">
   {% if (!component.storage) { %}
     <p>No storage has been set for this field. File uploads are disabled until storage is set up.</p>
