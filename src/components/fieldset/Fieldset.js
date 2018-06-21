@@ -46,18 +46,16 @@ export default class FieldsetComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('fieldset', {
-      children: super.renderComponents(),
-      className: this.className,
+      children: this.renderComponents(),
+      collapsed: this.collapsed,
     }));
   }
 
   hydrate(element) {
     this.loadRefs(element, {[this.fieldsetId]: 'single'});
+    super.hydrate(element);
     if (this.refs[this.fieldsetId]) {
       super.hydrateComponents(this.refs[this.fieldsetId]);
     }
-    // this.setCollapsed();
-    // this.createTooltip(title);
-    // this.setCollapseHeader(heading);
   }
 }

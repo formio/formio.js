@@ -1158,7 +1158,12 @@ export default class Component {
       return;
     }
     this.clear();
-    this.element.innerHTML = this.render();
+    // Since we are going to replace the element, we need to know it's position so we can find it in the parent's children.
+    const parent = this.element.parentNode;
+    const index = Array.prototype.indexOf.call(parent.children, this.element);
+    this.element.outerHTML = this.render();
+    this.element = parent.children[index];
+
     this.hydrate(this.element);
   }
 
@@ -2220,6 +2225,7 @@ export default class Component {
 
   clear() {
     this.destroy();
+    this.refs = {};
     this.empty(this.getElement());
   }
 

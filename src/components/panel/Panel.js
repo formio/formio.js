@@ -33,6 +33,7 @@ export default class PanelComponent extends NestedComponent {
   }
 
   init() {
+    this._collapsed = this.component.collapsed;
     this.addComponents();
   }
 
@@ -44,10 +45,6 @@ export default class PanelComponent extends NestedComponent {
     return this.panelBody;
   }
 
-  get className() {
-    return `panel panel-${this.component.theme} ${super.className}`;
-  }
-
   get panelId() {
     return `panel-${this.id}`;
   }
@@ -55,17 +52,17 @@ export default class PanelComponent extends NestedComponent {
   render() {
     return super.render(this.renderTemplate('panel', {
       bootstrap4Theme: this.bootstrap4Theme,
-      children: super.renderComponents()
+      children: this.renderComponents(),
+      collapsed: this.collapsed,
     }));
   }
 
   hydrate(element) {
     this.loadRefs(element, {[this.panelId]: 'single'});
+    super.hydrate(element);
+
     if (this.refs[this.panelId]) {
-      super.hydrateComponents(this.refs[this.panelId]);
+      this.hydrateComponents(this.refs[this.panelId]);
     }
-    // this.setCollapsed();
-    // this.createTooltip(title);
-    // this.setCollapseHeader(heading);
   }
 }

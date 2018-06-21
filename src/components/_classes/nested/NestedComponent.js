@@ -17,7 +17,7 @@ export default class NestedComponent extends Component {
     this.type = 'components';
     this.components = [];
     this.hidden = [];
-    this.collapsed = !!this.component.collapsed;
+    this._collapsed = !!this.component.collapsed;
   }
 
   get defaultSchema() {
@@ -29,6 +29,15 @@ export default class NestedComponent extends Component {
     schema.components = [];
     this.eachComponent((component) => schema.components.push(component.schema));
     return schema;
+  }
+
+  get collapsed() {
+    return this._collapsed;
+  }
+
+  set collapsed(value) {
+    this._collapsed = value;
+    this.redraw();
   }
 
   getComponents() {
@@ -185,6 +194,16 @@ export default class NestedComponent extends Component {
   renderComponents(components) {
     components = components || this.components;
     return components.map(component => component.render()).join('');
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {header: 'single'});
+    super.hydrate(element);
+    if (this.component.collapsible && this.refs.header) {
+      this.addEventListener(this.refs.header, 'click', () => {
+        this.collapsed = !this.collapsed;
+      });
+    }
   }
 
   hydrateComponents(element, components) {
@@ -369,12 +388,6 @@ export default class NestedComponent extends Component {
     _.each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
   }
 
-  destroy(all) {
-    super.destroy(all);
-    this.empty(this.getElement());
-    this.destroyComponents();
-  }
-
   destroyComponents() {
     const components = _.clone(this.components);
     _.each(components, (comp) => this.removeComponent(comp, this.components));
@@ -462,34 +475,5 @@ export default class NestedComponent extends Component {
       }
     });
     return changed;
-  }
-
-  setCollapseHeader(header) {
-    if (this.component.collapsible) {
-      this.addClass(header, 'formio-clickable');
-      this.addEventListener(header, 'click', () => this.toggleCollapse());
-    }
-  }
-
-  setCollapsed(element) {
-    if (!this.component.collapsible) {
-      return;
-    }
-
-    const container = element || this.getContainer();
-
-    if (this.collapsed) {
-      container.setAttribute('hidden', true);
-      container.style.visibility = 'hidden';
-    }
-    else {
-      container.removeAttribute('hidden');
-      container.style.visibility = 'visible';
-    }
-  }
-
-  toggleCollapse() {
-    this.collapsed = !this.collapsed;
-    this.setCollapsed();
   }
 }

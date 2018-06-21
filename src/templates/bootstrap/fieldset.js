@@ -1,10 +1,12 @@
 export default {
   form: `
-<fieldset id="{{id}}" class="{{className}}">
-  {% if (component.legend) { %}<legend>{{t(component.legend)}}</legend>{% } %}
+<fieldset>
+  {% if (component.legend) { %}<legend ref="header" class="{{component.collapsible ? 'formio-clickable' : ''}}">{{t(component.legend)}}</legend>{% } %}
+  {% if (!collapsed) { %}
   <div class="card-body" ref="fieldset-{{id}}">
     {{children}}
   </div>
+  {% } %}
 </fieldset>
 `,
 };

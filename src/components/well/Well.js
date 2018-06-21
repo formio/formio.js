@@ -40,15 +40,14 @@ export default class WellComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('well', {
-      children: super.renderComponents(),
-      className: this.className,
+      children: this.renderComponents(),
     }));
   }
 
   hydrate(element) {
     this.loadRefs(element, {[this.wellId]: 'single'});
     if (this.refs[this.wellId]) {
-      super.hydrateComponents(this.refs[this.wellId]);
+      this.hydrateComponents(this.refs[this.wellId]);
     }
   }
 }
