@@ -1,10 +1,10 @@
 import SignaturePad from 'signature_pad/dist/signature_pad.js';
-import Component from '../_classes/component/Component';
+import Input from '../_classes/input/Input';
 import _ from 'lodash';
 
-export default class SignatureComponent extends Component {
+export default class SignatureComponent extends Input {
   static schema(...extend) {
-    return Component.schema({
+    return Input.schema({
       type: 'signature',
       label: 'Signature',
       key: 'signature',
@@ -50,10 +50,14 @@ export default class SignatureComponent extends Component {
   }
 
   get inputInfo() {
-    const info = super.elementInfo();
+    const info = super.inputInfo;
     info.type = 'input';
     info.attr.type = 'hidden';
     return info;
+  }
+
+  get className() {
+    return `${super.className} signature-pad`;
   }
 
   setValue(value, flags) {
@@ -61,19 +65,19 @@ export default class SignatureComponent extends Component {
     super.setValue(value, flags);
     if (value && !flags.noSign && this.signaturePad) {
       this.signaturePad.fromDataURL(value);
-      this.signatureImage.setAttribute('src', value);
+      this.refs.signatureImage.setAttribute('src', value);
       this.showCanvas(false);
     }
   }
 
   showCanvas(show) {
     if (show) {
-      this.canvas.style.display = 'inherit';
-      this.signatureImage.style.display = 'none';
+      this.refs.canvas.style.display = 'inherit';
+      this.refs.signatureImage.style.display = 'none';
     }
     else {
-      this.canvas.style.display = 'none';
-      this.signatureImage.style.display = 'inherit';
+      this.refs.canvas.style.display = 'none';
+      this.refs.signatureImage.style.display = 'inherit';
     }
   }
 
@@ -100,85 +104,44 @@ export default class SignatureComponent extends Component {
   }
 
   checkSize(force, scale) {
-    if (force || (this.padBody.offsetWidth !== this.currentWidth)) {
+    if (force || (this.refs.padBody.offsetWidth !== this.currentWidth)) {
       this.scale = force ? scale : this.scale;
-      this.currentWidth = this.padBody.offsetWidth;
-      this.canvas.width = this.currentWidth * this.scale;
-      this.canvas.height = this.padBody.offsetHeight * this.scale;
-      const ctx = this.canvas.getContext('2d');
+      this.currentWidth = this.refs.padBody.offsetWidth;
+      this.refs.canvas.width = this.currentWidth * this.scale;
+      this.refs.canvas.height = this.refs.padBody.offsetHeight * this.scale;
+      const ctx = this.refs.canvas.getContext('2d');
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.scale((1 / this.scale), (1 / this.scale));
       ctx.fillStyle = this.signaturePad.backgroundColor;
-      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      ctx.fillRect(0, 0, this.refs.canvas.width, this.refs.canvas.height);
       this.signaturePad.clear();
     }
   }
 
-  /* eslint-disable max-statements */
+  renderElement(value, index) {
+    return this.renderTemplate('signature', {
+      element: super.renderElement(value, index),
+      required: _.get(this.component, 'validate.required', false),
+    });
+  }
+
   hydrate(element) {
-    this.element = this.createElement();
-    this.element.component = this;
-    let classNames = this.element.getAttribute('class');
-    classNames += ' signature-pad';
-    this.element.setAttribute('class', classNames);
-
-    this.input = this.createInput(this.element);
-    this.padBody = this.ce('div', {
-      class: 'signature-pad-body',
-      style: (`width: ${this.component.width};height: ${this.component.height};padding:0;margin:0;`),
-      tabindex: this.component.tabindex || 0
-    });
-
-    // Create the refresh button.
-    this.refresh = this.ce('a', {
-      class: 'btn btn-sm btn-default btn-secondary signature-pad-refresh'
-    });
-    const refreshIcon = this.getIcon('refresh');
-    this.refresh.appendChild(refreshIcon);
-    this.padBody.appendChild(this.refresh);
-
-    // The signature canvas.
-    this.canvas = this.ce('canvas', {
-      class: 'signature-pad-canvas',
-      height: this.component.height
-    });
-    this.padBody.appendChild(this.canvas);
-
-    // Add an asterisk if required.
-    if (_.get(this.component, 'validate.required', false)) {
-      this.padBody.appendChild(this.ce('span', {
-        class: 'form-control-feedback field-required-inline text-danger'
-      }, this.getIcon('asterisk')));
-    }
-
-    this.signatureImage = this.ce('img', {
-      style: ('width: 100%;display: none;')
-    });
-    this.padBody.appendChild(this.signatureImage);
-
-    this.element.appendChild(this.padBody);
+    this.loadRefs(element, {canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single'});
+    super.hydrate(element);
 
     // Add the footer.
-    if (this.component.footer) {
-      this.signatureFooter = this.ce('div', {
-        class: 'signature-pad-footer'
-      });
-      this.signatureFooter.appendChild(this.text(this.component.footer));
-      this.createTooltip(this.signatureFooter);
-      this.element.appendChild(this.signatureFooter);
-    }
-
     // Create the signature pad.
-    this.signaturePad = new SignaturePad(this.canvas, {
+    this.signaturePad = new SignaturePad(this.refs.canvas, {
       minWidth: this.component.minWidth,
       maxWidth: this.component.maxWidth,
       penColor: this.component.penColor,
       backgroundColor: this.component.backgroundColor
     });
-    this.refresh.addEventListener('click', (event) => {
+    this.addEventListener(this.refs.refresh, 'click', (event) => {
       event.preventDefault();
       this.showCanvas(true);
       this.signaturePad.clear();
+      this.setValue(this.defaultValue);
     });
     this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
       noSign: true
@@ -187,23 +150,13 @@ export default class SignatureComponent extends Component {
     // Ensure the signature is always the size of its container.
     this.addEventListener(window, 'resize', _.debounce(() => this.checkSize(), 100));
     setTimeout(function checkWidth() {
-      if (this.padBody.offsetWidth) {
+      if (this.refs.padBody.offsetWidth) {
         this.checkSize();
       }
       else {
         setTimeout(checkWidth.bind(this), 200);
       }
     }.bind(this), 200);
-
-    // Restore values.
-    this.restoreValue();
-
-    // disable the signature pad if the form in ViewOnly mode
-    if (this.shouldDisable || this.viewOnly) {
-      this.disabled = true;
-    }
-
-    this.autofocus();
   }
   /* eslint-enable max-statements */
 
@@ -219,6 +172,6 @@ export default class SignatureComponent extends Component {
   }
 
   focus() {
-    this.padBody.focus();
+    this.refs.padBody.focus();
   }
 }

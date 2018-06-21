@@ -3,6 +3,7 @@ import checkbox from './checkbox';
 import columns from './columns';
 import component from './component';
 import day from './day';
+import dialog from './dialog';
 import field from './field';
 import fieldset from './fieldset';
 import file from './file';
@@ -15,8 +16,10 @@ import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
 import panel from './panel';
 import radio from './radio';
+import resourceAdd from './resourceAdd';
 import select from './select';
 import selectOption from './selectOption';
+import signature from './signature';
 import tab from './tab';
 import table from './table';
 import webform from './webform';
@@ -30,6 +33,7 @@ export default {
   columns,
   component,
   day,
+  dialog,
   field,
   fieldset,
   file,
@@ -41,8 +45,10 @@ export default {
   multiValueTable,
   panel,
   radio,
+  resourceAdd,
   select,
   selectOption,
+  signature,
   tab,
   table,
   webform,

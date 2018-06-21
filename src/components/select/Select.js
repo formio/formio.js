@@ -439,11 +439,15 @@ export default class SelectComponent extends Field {
     const info = this.inputInfo;
     info.attr = info.attr || {};
     info.multiple = this.component.multiple;
-    return super.render(this.renderTemplate('select', {
+    return super.render(this.wrapElement(this.renderTemplate('select', {
       input: info,
       options: '',
       index: null,
-    }));
+    })));
+  }
+
+  wrapElement(element) {
+    return element;
   }
 
   hydrate(element) {

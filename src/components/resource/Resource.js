@@ -54,45 +54,38 @@ export default class ResourceComponent extends SelectComponent {
     addButton.appendChild(addIcon);
     addButton.appendChild(this.text(` ${this.component.addResourceLabel || 'Add Resource'}`));
 
-    this.addEventListener(addButton, 'click', (event) => {
-      event.preventDefault();
-      const dialog = this.createModal(this.component.addResourceLabel || 'Add Resource');
-      const formioForm = this.ce('div');
-      dialog.body.appendChild(formioForm);
-      const form = new Webform(formioForm);
-      form.on('submit', (submission) => {
-        this.setValue(submission);
-        dialog.close();
-      });
-      form.src = `${_.get(this.root, 'formio.projectUrl', Formio.getBaseUrl())}/form/${this.component.resource}`;
-    });
-
     return addButton;
   }
 
-  addInput(input, container) {
-    // Add Resource button
+  wrapElement(element) {
     if (this.component.addResource) {
-      const table    = this.ce('table', {
-        class: 'table table-bordered'
+      return this.renderTemplate('resourceAdd', {
+        element
       });
-      const template = '<tbody>' +
-                       '<tr>' +
-                         '<td id="select">' +
-                         '</td>' +
-                       '</tr>' +
-                       '<tr>' +
-                         '<td id="button" colspan="2">' +
-                         '</td>' +
-                       '</tr>' +
-                     '</tbody>';
-      container.appendChild(table);
-      table.innerHTML = template;
-      table.querySelector('#button').appendChild(this.addButton());
-      super.addInput(input, table.querySelector('#select'));
     }
     else {
-      super.addInput(input, container);
+      return element;
+    }
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {addResource: 'single'});
+    super.hydrate(element);
+
+    if (this.refs.addResource) {
+      this.addEventListener(this.refs.addResource, 'click', (event) => {
+        event.preventDefault();
+        const formioForm = this.ce('div');
+        const dialog = this.createModal(formioForm);
+
+        const form = new Webform(formioForm);
+        form.on('submit', (submission) => {
+          this.setValue(submission);
+          dialog.close();
+        });
+        form.setSrc(`${_.get(this.root, 'formio.projectUrl', Formio.getBaseUrl())}/form/${this.component.resource}`)
+          .then(() => form.build());
+      });
     }
   }
 }

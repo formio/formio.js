@@ -472,6 +472,7 @@ export default class Component {
 
   renderTemplate(name, data = {}) {
     data.component = this.component;
+    data.iconClass = this.iconClass.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.options.templates.transform;
     data.id = data.id || this.id;
@@ -751,46 +752,41 @@ export default class Component {
     }
   }
 
-  createModal() {
+  createModal(element) {
     const self = this;
-    const modalBody = this.ce('div');
-    const modalOverlay = this.ce('div', {
-      class: 'formio-dialog-overlay'
-    });
-    const closeDialog = this.ce('button', {
-      class: 'formio-dialog-close pull-right btn btn-default btn-xs',
-      'aria-label': 'close'
+
+    const dialog = this.ce('div');
+    dialog.innerHTML = this.renderTemplate('dialog');
+
+    // Add refs to dialog, not "this".
+    dialog.refs = {};
+    this.loadRefs.call(dialog, dialog, {
+      dialogOverlay: 'single',
+      dialogContents: 'single',
+      dialogClose: 'single',
     });
 
-    const dialog = this.ce('div', {
-      class: 'formio-dialog formio-dialog-theme-default component-settings'
-    }, [
-      modalOverlay,
-      this.ce('div', {
-        class: 'formio-dialog-content'
-      }, [
-        modalBody,
-        closeDialog
-      ])
-    ]);
+    dialog.refs.dialogContents.appendChild(element);
 
-    this.addEventListener(modalOverlay, 'click', (event) => {
+    this.addEventListener(dialog.refs.dialogOverlay, 'click', (event) => {
       event.preventDefault();
       dialog.close();
     });
-    this.addEventListener(closeDialog, 'click', (event) => {
+    this.addEventListener(dialog.refs.dialogClose, 'click', (event) => {
       event.preventDefault();
       dialog.close();
     });
     this.addEventListener(dialog, 'close', () => {
       this.removeChildFrom(dialog, document.body);
     });
+
     document.body.appendChild(dialog);
-    dialog.body = modalBody;
+
     dialog.close = function() {
       dialog.dispatchEvent(new CustomEvent('close'));
       self.removeChildFrom(dialog, document.body);
     };
+
     return dialog;
   }
 

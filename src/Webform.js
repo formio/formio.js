@@ -412,7 +412,7 @@ export default class Webform extends NestedComponent {
   setSrc(value, options) {
     if (this.setUrl(value, options)) {
       this.nosubmit = false;
-      this.formio.loadForm({params: {live: 1}}).then(
+      return this.formio.loadForm({params: {live: 1}}).then(
         (form) => {
           const setForm = this.setForm(form);
           this.loadSubmission();
@@ -422,6 +422,7 @@ export default class Webform extends NestedComponent {
         this.formReadyReject(err);
       });
     }
+    return Promise.resolve();
   }
 
   /**
