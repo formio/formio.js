@@ -47,13 +47,19 @@ export default class AddressComponent extends TextFieldComponent {
     return AddressComponent.schema();
   }
 
+  get inputInfo() {
+    const info = super.inputInfo;
+    info.attr.class += ' address-search';
+    return info;
+  }
+
   setValueAt(index, value) {
     if (value === null || value === undefined) {
       value = this.defaultValue;
     }
     this.addresses[index] = value;
     if (value && value.formatted_address) {
-      this.inputs[index].value = value.formatted_address;
+      this.refs.input[index].value = value.formatted_address;
     }
   }
 
@@ -455,8 +461,9 @@ export default class AddressComponent extends TextFieldComponent {
     });
   }
 
-  addInput(input, container) {
-    super.addInput(input, container);
+  hydrateElement(element, index) {
+    super.hydrateElement(element, index);
+    const input = this.refs.input[index];
     Component.libraryReady('googleMaps').then(() => {
       let autoCompleteOptions = {};
       if (this.component.map) {
@@ -479,12 +486,6 @@ export default class AddressComponent extends TextFieldComponent {
         autocomplete.addListener('place_changed', () => this.setValue(autocomplete.getPlace()));
       }
     });
-  }
-
-  elementInfo() {
-    const info = super.elementInfo();
-    info.attr.class += ' address-search';
-    return info;
   }
 
   getView(value) {
