@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import Component from '../_classes/component/Component';
+import Field from '../_classes/field/Field';
 
-export default class SurveyComponent extends Component {
+export default class SurveyComponent extends Field {
   static schema(...extend) {
-    return Component.schema({
+    return Field.schema({
       type: 'survey',
       label: 'Survey',
       key: 'survey',
@@ -27,68 +27,16 @@ export default class SurveyComponent extends Component {
     return SurveyComponent.schema();
   }
 
-  build() {
-    if (this.viewOnly) {
-      this.viewOnlyBuild();
-    }
-    else {
-      this.createElement();
-      const labelAtTheBottom = this.component.labelPosition === 'bottom';
-      if (!labelAtTheBottom) {
-        this.createLabel(this.element);
-      }
-      this.table = this.ce('table', {
-        class: 'table table-striped table-bordered'
-      });
-      this.setInputStyles(this.table);
+  render() {
+    return super.render(this.renderTemplate('survey'));
+  }
 
-      // Build header.
-      const thead = this.ce('thead');
-      const thr = this.ce('tr');
-      thr.appendChild(this.ce('td'));
-      _.each(this.component.values, (value) => {
-        const th = this.ce('th', {
-          style: 'text-align: center;'
-        });
-        th.appendChild(this.text(value.label));
-        thr.appendChild(th);
-      });
-      thead.appendChild(thr);
-      this.table.appendChild(thead);
-      // Build the body.
-      const tbody = this.ce('tbody');
-      _.each(this.component.questions, (question) => {
-        const tr = this.ce('tr');
-        const td = this.ce('td');
-        td.appendChild(this.text(question.label));
-        tr.appendChild(td);
-        _.each(this.component.values, (value) => {
-          const td = this.ce('td', {
-            style: 'text-align: center;'
-          });
-          const input = this.ce('input', {
-            type: 'radio',
-            name: `data[${this.key}][${question.value}]`,
-            value: value.value,
-            id: `${this.id}-${question.value}-${value.value}`
-          });
-          this.addInput(input, td);
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
-      this.table.appendChild(tbody);
-      this.element.appendChild(this.table);
-      if (labelAtTheBottom) {
-        this.createLabel(this.element);
-      }
-      this.createDescription(this.element);
-      this.restoreValue();
-      if (this.shouldDisable) {
-        this.disabled = true;
-      }
-      this.autofocus();
-    }
+  hydrate(element) {
+    this.loadRefs(element, {input: 'multiple'});
+    super.hydrate(element);
+    this.refs.input.forEach((input) => {
+      this.addEventListener(input, 'change', () => this.updateValue());
+    });
   }
 
   setValue(value, flags) {
@@ -98,7 +46,7 @@ export default class SurveyComponent extends Component {
     }
     const key = `data[${this.key}]`;
     _.each(this.component.questions, (question) => {
-      _.each(this.inputs, (input) => {
+      _.each(this.refs.input, (input) => {
         if (input.name === (`${key}[${question.value}]`)) {
           input.checked = (input.value === value[question.value]);
         }
@@ -118,7 +66,7 @@ export default class SurveyComponent extends Component {
     const value = {};
     const key = `data[${this.key}]`;
     _.each(this.component.questions, (question) => {
-      _.each(this.inputs, (input) => {
+      _.each(this.refs.input, (input) => {
         if (input.checked && (input.name === (`${key}[${question.value}]`))) {
           value[question.value] = input.value;
           return false;

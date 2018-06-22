@@ -20,6 +20,7 @@ import resourceAdd from './resourceAdd';
 import select from './select';
 import selectOption from './selectOption';
 import signature from './signature';
+import survey from './survey';
 import tab from './tab';
 import table from './table';
 import webform from './webform';
@@ -49,6 +50,7 @@ export default {
   select,
   selectOption,
   signature,
+  survey,
   tab,
   table,
   webform,

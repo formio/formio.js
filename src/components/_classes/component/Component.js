@@ -476,6 +476,7 @@ export default class Component {
     data.t = this.t.bind(this);
     data.transform = this.options.templates.transform;
     data.id = data.id || this.id;
+    data.key = data.key || this.key;
     return this.interpolate(this.getTemplate(name), data);
   }
 
