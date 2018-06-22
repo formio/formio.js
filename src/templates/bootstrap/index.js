@@ -2,6 +2,7 @@ import button from './button';
 import checkbox from './checkbox';
 import columns from './columns';
 import component from './component';
+import container from './container';
 import day from './day';
 import dialog from './dialog';
 import field from './field';
@@ -33,6 +34,7 @@ export default {
   checkbox,
   columns,
   component,
+  container,
   day,
   dialog,
   field,

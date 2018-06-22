@@ -23,25 +23,36 @@ export default class ContainerComponent extends NestedComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     this.type = 'container';
+    this.dataValue = {};
+    this.addComponents(this.dataValue);
   }
 
   get defaultSchema() {
     return ContainerComponent.schema();
   }
 
-  build() {
-    this.createElement();
-    if (!this.hasValue()) {
-      this.dataValue = {};
-    }
-    this.addComponents(this.getContainer(), this.dataValue);
-  }
-
   get emptyValue() {
     return {};
+  }
+
+  get containerId() {
+    return `container-${this.id}`;
+  }
+
+  render() {
+    return super.render(this.renderTemplate('container', {
+      children: this.renderComponents(),
+    }));
+  }
+
+  hydrate(element) {
+    this.loadRefs(element, {[this.containerId]: 'single'});
+    if (this.refs[this.containerId]) {
+      this.hydrateComponents(this.refs[this.containerId]);
+    }
   }
 
   hasChanged(before, after) {
