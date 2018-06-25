@@ -3,6 +3,7 @@ import checkbox from './checkbox';
 import columns from './columns';
 import component from './component';
 import container from './container';
+import datagrid from './datagrid';
 import day from './day';
 import dialog from './dialog';
 import field from './field';
@@ -35,6 +36,7 @@ export default {
   columns,
   component,
   container,
+  datagrid,
   day,
   dialog,
   field,
