@@ -2509,25 +2509,25 @@ dialog.fixed {
   margin-left: 5px;
 }
 
-.formio-component-submit .btn-success::after {
+.formio-component-submit .submit-success::after {
   font-family: 'Glyphicons Halflings';
   content: '\e013';
   position: relative;
-  right: -2px;
+  right: -4px;
   top: 1;
   line-height: 1;
 }
 
-.formio-component-submit .btn-danger::after {
+.formio-component-submit .submit-fail::after {
   font-family: 'Glyphicons Halflings';
   content: '\e014';
   position: relative;
-  right: -2px;
+  right: -4px;
   top: 1;
   line-height: 1;
 }
 
-.formio-component-submit .btn-danger[disabled] {
+.formio-component-submit .submit-fail[disabled] {
   opacity: 1;
 }
 
