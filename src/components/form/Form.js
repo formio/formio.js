@@ -27,8 +27,8 @@ export default class FormComponent extends Component {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     this.subForm = null;
     this.formSrc = '';
     this.subFormReady = new Promise((resolve, reject) => {

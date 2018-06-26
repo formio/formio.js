@@ -28,14 +28,14 @@ export default class AddressComponent extends TextFieldComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=googleMapsCallback';
-    if (component.map && component.map.key) {
-      src += `&key=${component.map.key}`;
+    if (this.component.map && this.component.map.key) {
+      src += `&key=${this.component.map.key}`;
     }
-    if (component.map && component.map.region) {
-      src += `&region=${component.map.region}`;
+    if (this.component.map && this.component.map.region) {
+      src += `&region=${this.component.map.region}`;
     }
     Component.requireLibrary('googleMaps', 'google.maps.places', src);
 

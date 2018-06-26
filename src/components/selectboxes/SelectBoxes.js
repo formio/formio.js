@@ -22,8 +22,8 @@ export default class SelectBoxesComponent extends RadioComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     this.component.inputType = 'checkbox';
   }
 

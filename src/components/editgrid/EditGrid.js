@@ -47,8 +47,8 @@ export default class EditGridComponent extends NestedComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     this.type = 'datagrid';
     this.editRows = [];
   }

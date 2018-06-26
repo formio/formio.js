@@ -25,8 +25,8 @@ export default class TextAreaComponent extends TextFieldComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
 
     // Never submit on enter for text areas.
     this.options.submitOnEnter = false;

@@ -30,21 +30,21 @@ export default class NumberComponent extends Input {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
+  init() {
+    super.init();
     this.validators = this.validators.concat(['min', 'max']);
 
     const separators = getNumberSeparators(this.options.language);
 
-    this.decimalSeparator = options.decimalSeparator = options.decimalSeparator
+    this.decimalSeparator = this.options.decimalSeparator
       || separators.decimalSeparator;
 
     if (this.component.delimiter) {
-      if (options.hasOwnProperty('thousandsSeparator')) {
+      if (this.options.hasOwnProperty('thousandsSeparator')) {
         console.warn("Property 'thousandsSeparator' is deprecated. Please use i18n to specify delimiter.");
       }
 
-      this.delimiter = options.thousandsSeparator || separators.delimiter;
+      this.delimiter = this.options.thousandsSeparator || separators.delimiter;
     }
     else {
       this.delimiter = '';

@@ -28,11 +28,8 @@ export default class PanelComponent extends NestedComponent {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
-  }
-
   init() {
+    super.init();
     this._collapsed = this.component.collapsed;
     this.addComponents();
   }
