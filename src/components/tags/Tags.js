@@ -1,10 +1,10 @@
-import Component from '../_classes/component/Component';
+import Input from '../_classes/input/Input';
 import Choices from 'choices.js';
 import _ from 'lodash';
 
-export default class TagsComponent extends Component {
+export default class TagsComponent extends Input {
   static schema(...extend) {
-    return Component.schema({
+    return Input.schema({
       type: 'tags',
       label: 'Tags',
       key: 'tags',
@@ -34,26 +34,25 @@ export default class TagsComponent extends Component {
     return TagsComponent.schema();
   }
 
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.type = 'input';
     info.attr.type = 'text';
     info.changeEvent = 'change';
     return info;
   }
 
-  addInput(input, container) {
-    super.addInput(input, container);
-    if (!input) {
+  hydrateElement(element, index) {
+    if (!this.refs.input[index]) {
       return;
     }
-    this.choices = new Choices(input, {
+    this.choices = new Choices(this.refs.input[index], {
       delimiter: (this.component.delimeter || ','),
       editItems: true,
       maxItemCount: this.component.maxTags,
       removeItemButton: true,
     });
-    this.choices.itemList.tabIndex = input.tabIndex;
+    this.choices.itemList.tabIndex = this.refs.input[index].tabIndex;
   }
 
   setValue(value) {
