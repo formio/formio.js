@@ -106,6 +106,9 @@ export default class ButtonComponent extends Field {
   }
 
   render() {
+    if (this.viewOnly || this.options.hideButtons) {
+      this._visible = false;
+    }
     return super.render(this.renderTemplate('button', {
       component: this.component,
       input: this.inputInfo,
