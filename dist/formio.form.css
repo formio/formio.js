@@ -148,6 +148,28 @@ dialog.fixed {
   margin-left: 5px;
 }
 
+.formio-component-submit .btn-success::after {
+  font-family: 'Glyphicons Halflings';
+  content: '\e013';
+  position: relative;
+  right: -2px;
+  top: 1;
+  line-height: 1;
+}
+
+.formio-component-submit .btn-danger::after {
+  font-family: 'Glyphicons Halflings';
+  content: '\e014';
+  position: relative;
+  right: -2px;
+  top: 1;
+  line-height: 1;
+}
+
+.formio-component-submit .btn-danger[disabled] {
+  opacity: 1;
+}
+
 .form-control.flatpickr-input {
   background-color: #fff;
 }

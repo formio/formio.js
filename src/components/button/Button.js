@@ -104,7 +104,7 @@ export default class ButtonComponent extends BaseComponent {
 
   /* eslint-disable max-statements */
   build() {
-    if (this.viewOnly) {
+    if (this.viewOnly || this.options.hideButtons) {
       this.component.hidden = true;
     }
 
