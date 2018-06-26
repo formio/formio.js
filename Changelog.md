@@ -45,6 +45,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## 3.0.0-rc.13
+### Added
+ - Ability to not show any buttons in rendered form.
+ - Better feedback on the submit buttons when form is submitting and errors occur.
+
+### Fixed
+ - Wrong data being passed to EditGrid and DataGrid for some evals.
+
 ## 3.0.0-rc.12
 ### Fixed
  - Problem with the PDF Builder where you would not see the builder elemements.
