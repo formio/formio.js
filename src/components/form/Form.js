@@ -3,6 +3,7 @@ import Promise from 'native-promise-only';
 import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
+import _ from 'lodash';
 
 export default class FormComponent extends BaseComponent {
   static schema(...extend) {
@@ -267,5 +268,24 @@ export default class FormComponent extends BaseComponent {
       return this.subForm.getValue();
     }
     return this.dataValue;
+  }
+
+  everyComponent(fn) {
+    const components = this.subForm ? this.subForm.getComponents() : [];
+    _.each(components, (component, index) => {
+      if (fn(component, components, index) === false) {
+        return false;
+      }
+
+      if (typeof component.everyComponent === 'function') {
+        if (component.everyComponent(fn) === false) {
+          return false;
+        }
+      }
+    });
+  }
+
+  get printHeight() {
+    return 0;
   }
 }

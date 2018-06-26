@@ -42,11 +42,11 @@ export default class FieldsetComponent extends NestedComponent {
       class: this.className
     });
     if (this.component.legend) {
-      const legend = this.ce('legend');
-      legend.appendChild(this.text(this.component.legend));
-      this.createTooltip(legend);
-      this.setCollapseHeader(legend);
-      this.element.appendChild(legend);
+      this.legend = this.ce('legend');
+      this.legend.appendChild(this.text(this.component.legend));
+      this.createTooltip(this.legend);
+      this.setCollapseHeader(this.legend);
+      this.element.appendChild(this.legend);
     }
     this.body = this.ce('div', {
       class: 'card-body'
@@ -54,5 +54,9 @@ export default class FieldsetComponent extends NestedComponent {
     this.addComponents();
     this.element.appendChild(this.body);
     this.setCollapsed();
+  }
+
+  get printHeight() {
+    return this.legend ? this.legend.offsetHeight : 0;
   }
 }

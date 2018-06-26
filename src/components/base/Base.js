@@ -2425,6 +2425,11 @@ export default class BaseComponent {
     _.each(this.inputs, (input) => this.setDisabled(this.performInputMapping(input), disabled));
   }
 
+  get printHeight() {
+    const element = this.getElement();
+    return element ? element.offsetHeight : 0;
+  }
+
   setDisabled(element, disabled) {
     element.disabled = disabled;
     if (disabled) {
