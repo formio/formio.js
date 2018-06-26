@@ -45,12 +45,13 @@ export default class PanelComponent extends NestedComponent {
     return this.panelBody;
   }
 
-  get panelId() {
-    return `panel-${this.id}`;
+  get panelKey() {
+    return `panel-${this.key}`;
   }
 
   render() {
     return super.render(this.renderTemplate('panel', {
+      panelKey: this.panelKey,
       bootstrap4Theme: this.bootstrap4Theme,
       children: this.renderComponents(),
       collapsed: this.collapsed,
@@ -58,11 +59,11 @@ export default class PanelComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.panelId]: 'single'});
+    this.loadRefs(element, {[this.panelKey]: 'single'});
     super.hydrate(element);
 
-    if (this.refs[this.panelId]) {
-      this.hydrateComponents(this.refs[this.panelId]);
+    if (this.refs[this.panelKey]) {
+      this.hydrateComponents(this.refs[this.panelKey]);
     }
   }
 }

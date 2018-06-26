@@ -877,7 +877,7 @@ export default class Webform extends NestedComponent {
     const value = _.clone(this._submission);
     value.changed = changed;
     value.isValid = this.checkData(value.data, flags);
-    this.showElement(true);
+    // this.showElement(true);
     this.loading = false;
     this.emit('change', value);
   }

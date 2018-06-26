@@ -19,7 +19,7 @@ export default {
     {% tableComponents.forEach(function(row, rowIndex) { %}
     <tr ref="row-{{id}}">
       {% row.forEach(function(column, colIndex) { %}    
-      <td ref="column-{{id}}">{{column}}</td>
+      <td ref="{{columnKey}}">{{column}}</td>
       {% }) %}
     </tr>
     {% }) %}

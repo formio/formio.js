@@ -72,8 +72,8 @@ export default class TableComponent extends NestedComponent {
     return `table-responsive ${super.className}`;
   }
 
-  get columnId() {
-    return `column-${this.id}`;
+  get columnKey() {
+    return `column-${this.key}`;
   }
 
   init() {
@@ -95,6 +95,7 @@ export default class TableComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('table', {
+      columnKey: this.columnKey,
       tableComponents: this.table.map(row =>
         row.map(column =>
           this.renderComponents(column)
@@ -104,9 +105,9 @@ export default class TableComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.columnId]: 'multiple'});
+    this.loadRefs(element, {[this.columnKey]: 'multiple'});
     const rowLength = this.table.length;
-    this.refs[this.columnId].forEach((column, index) => {
+    this.refs[this.columnKey].forEach((column, index) => {
       const rowIndex = Math.floor(index / rowLength);
       const columnIndex = index % rowLength;
       this.hydrateComponents(column, this.table[rowIndex][columnIndex]);

@@ -46,16 +46,16 @@ export default class TabsComponent extends NestedComponent {
     return schema;
   }
 
-  get tabId() {
-    return `tab-${this.id}`;
+  get tabKey() {
+    return `tab-${this.key}`;
   }
 
-  get tabLiId() {
-    return `tabLi-${this.id}`;
+  get tabLikey() {
+    return `tabLi-${this.key}`;
   }
 
-  get tabLinkId() {
-    return `tabLink-${this.id}`;
+  get tabLinkKey() {
+    return `tabLink-${this.key}`;
   }
 
   init() {
@@ -73,20 +73,23 @@ export default class TabsComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('tab', {
+      tabKey: this.tabKey,
+      tabLikey: this.tabLikey,
+      tabLinkKey: this.tabLinkKey,
       currentTab: this.currentTab,
       tabComponents: this.tabs.map(tab => this.renderComponents(tab))
     }));
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.tabLinkId]: 'multiple', [this.tabId]: 'multiple', [this.tabLiId]: 'multiple'});
-    this.refs[this.tabLinkId].forEach((tabLink, index) => {
+    this.loadRefs(element, {[this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple'});
+    this.refs[this.tabLinkKey].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
         event.preventDefault();
         this.setTab(index);
       });
     });
-    this.refs[this.tabId].forEach((tab, index) => this.hydrateComponents(tab, this.tabs[index]));
+    this.refs[this.tabKey].forEach((tab, index) => this.hydrateComponents(tab, this.tabs[index]));
   }
 
   destroy(all) {
@@ -103,34 +106,34 @@ export default class TabsComponent extends NestedComponent {
     if (
       !this.tabs ||
       !this.tabs[index] ||
-      !this.refs[this.tabId] ||
-      !this.refs[this.tabId][index]
+      !this.refs[this.tabKey] ||
+      !this.refs[this.tabKey][index]
     ) {
       return;
     }
 
     this.currentTab = index;
 
-    _.each(this.refs[this.tabId], (tab) => {
+    _.each(this.refs[this.tabKey], (tab) => {
       this.removeClass(tab, 'active');
       tab.style.display = 'none';
     });
-    this.addClass(this.refs[this.tabId][index], 'active');
-    this.refs[this.tabId][index].style.display = 'inherit';
+    this.addClass(this.refs[this.tabKey][index], 'active');
+    this.refs[this.tabKey][index].style.display = 'inherit';
 
-    _.each(this.refs[this.tabLinkId], (tabLink, tabIndex) => {
-      if (this.refs[this.tabLinkId][tabIndex]) {
+    _.each(this.refs[this.tabLinkKey], (tabLink, tabIndex) => {
+      if (this.refs[this.tabLinkKey][tabIndex]) {
         this.removeClass(tabLink, 'active');
       }
-      if (this.refs[this.tabLiId][tabIndex]) {
-        this.removeClass(this.refs[this.tabLiId][tabIndex], 'active');
+      if (this.refs[this.tabLikey][tabIndex]) {
+        this.removeClass(this.refs[this.tabLikey][tabIndex], 'active');
       }
     });
-    if (this.refs[this.tabLinkId][index]) {
-      this.addClass(this.refs[this.tabLinkId][index], 'active');
+    if (this.refs[this.tabLikey][index]) {
+      this.addClass(this.refs[this.tabLikey][index], 'active');
     }
-    if (this.refs[this.tabLiId][index]) {
-      this.addClass(this.refs[this.tabLiId][index], 'active');
+    if (this.refs[this.tabLikey][index]) {
+      this.addClass(this.refs[this.tabLikey][index], 'active');
     }
   }
 }

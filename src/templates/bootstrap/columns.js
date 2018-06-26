@@ -6,7 +6,7 @@ export default {
     col-sm-offset-{{column.offset}}
     col-sm-push-{{column.push}}
     col-sm-pull-{{column.pull}}
-  " ref="column-{{id}}">
+  " ref="{{columnKey}}">
   {{columnComponents[index]}}
 </div>
 {% }) %}

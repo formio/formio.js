@@ -5,7 +5,7 @@ export default {
     <h4 class="mb-0 card-title panel-title" ref="header">{{t(component.title)}}</h4>
   </div>
   {% if (!collapsed) { %}
-  <div class="card-body panel-body" ref="panel-{{id}}">
+  <div class="card-body panel-body" ref="{{panelKey}}">
     {{children}}
   </div>
   {% } %}

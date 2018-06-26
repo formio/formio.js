@@ -65,7 +65,7 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   get datagridKey() {
-    return `datagrid-${this.component.key}`;
+    return `datagrid-${this.key}`;
   }
 
   hasAddButton() {

@@ -36,8 +36,8 @@ export default class FieldsetComponent extends NestedComponent {
     return `form-group ${super.className}`;
   }
 
-  get fieldsetId() {
-    return `fieldset-${this.id}`;
+  get fieldsetKey() {
+    return `fieldset-${this.key}`;
   }
 
   init() {
@@ -46,16 +46,17 @@ export default class FieldsetComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('fieldset', {
+      fieldsetKey: this.fieldsetKey,
       children: this.renderComponents(),
       collapsed: this.collapsed,
     }));
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.fieldsetId]: 'single'});
+    this.loadRefs(element, {[this.fieldsetKey]: 'single'});
     super.hydrate(element);
-    if (this.refs[this.fieldsetId]) {
-      super.hydrateComponents(this.refs[this.fieldsetId]);
+    if (this.refs[this.fieldsetKey]) {
+      super.hydrateComponents(this.refs[this.fieldsetKey]);
     }
   }
 }
