@@ -499,4 +499,8 @@ export default class NestedComponent extends BaseComponent {
     this.collapsed = !this.collapsed;
     this.setCollapsed();
   }
+
+  get printHeight() {
+    return 0;
+  }
 }

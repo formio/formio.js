@@ -153,4 +153,8 @@ export default class TabsComponent extends NestedComponent {
   addComponents() {
     this.setTab(this.currentTab);
   }
+
+  get printHeight() {
+    return this.tabBar ? this.tabBar.offsetHeight : 0;
+  }
 }

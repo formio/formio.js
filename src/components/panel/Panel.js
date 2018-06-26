@@ -58,7 +58,7 @@ export default class PanelComponent extends NestedComponent {
       class: 'card-body panel-body'
     });
     if (this.component.title && !this.component.hideLabel) {
-      const heading = this.ce('div', {
+      this.panelHeading = this.ce('div', {
         class: 'card-header panel-heading'
       });
       const title = this.ce('h4', {
@@ -66,9 +66,9 @@ export default class PanelComponent extends NestedComponent {
       });
       title.appendChild(this.text(this.component.title));
       this.createTooltip(title);
-      heading.appendChild(title);
-      this.setCollapseHeader(heading);
-      this.element.appendChild(heading);
+      this.panelHeading.appendChild(title);
+      this.setCollapseHeader(this.panelHeading);
+      this.element.appendChild(this.panelHeading);
     }
     else {
       this.createTooltip(this.panelBody, this.component, `${this.iconClass('question-sign')} text-muted formio-hide-label-panel-tooltip`);
@@ -77,5 +77,9 @@ export default class PanelComponent extends NestedComponent {
     this.addComponents();
     this.element.appendChild(this.panelBody);
     this.setCollapsed();
+  }
+
+  get printHeight() {
+    return this.panelHeading ? this.panelHeading.offsetHeight : 0;
   }
 }
