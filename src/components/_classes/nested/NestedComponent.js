@@ -41,7 +41,7 @@ export default class NestedComponent extends Component {
   }
 
   getComponents() {
-    return this.components;
+    return this.components || [];
   }
 
   /**

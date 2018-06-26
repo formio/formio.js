@@ -213,12 +213,6 @@ export default class Component {
     this.element = null;
 
     /**
-     * The HTML Element for the table body. This is relevant for the "multiple" flag on inputs.
-     * @type {null}
-     */
-    this.tbody = null;
-
-    /**
      * The HTMLElement that is assigned to the label of this component.
      * @type {null}
      */
@@ -591,38 +585,6 @@ export default class Component {
     return this.element;
   }
 
-  /**
-   * Create the input wrapping element. For multiple, this may be the table wrapper for the elements.
-   * @returns {boolean}
-   */
-  createWrapper() {
-    if (!this.component.multiple) {
-      return false;
-    }
-    else {
-      const table = this.ce('table', {
-        class: 'table table-bordered'
-      });
-      this.tbody = this.ce('tbody');
-      table.appendChild(this.tbody);
-
-      // Add a default value.
-      const dataValue = this.dataValue;
-      if (!dataValue || !dataValue.length) {
-        this.addNewValue(this.defaultValue);
-      }
-
-      // Build the rows.
-      this.buildRows();
-
-      this.setInputStyles(table);
-
-      // Add the table to the element.
-      this.append(table);
-      return true;
-    }
-  }
-
   loadRefs(element, refs) {
     for (const ref in refs) {
       if (refs[ref] === 'single') {
@@ -643,6 +605,7 @@ export default class Component {
   render(children = `Unknown component: ${this.component.type}`) {
     this.rendered = true;
     return this.renderTemplate('component', {
+      visible: this._visible,
       id: this.id,
       classes: this.className,
       styles: this.customStyle,
@@ -872,51 +835,6 @@ export default class Component {
     if (this.root) {
       this.root.onChange();
     }
-  }
-
-  /**
-   * Rebuild the rows to contain the values of this component.
-   */
-  buildRows(values) {
-    if (!this.tbody) {
-      return;
-    }
-    this.inputs = [];
-    this.tbody.innerHTML = '';
-    values = values || this.dataValue;
-    _.each(values, (value, index) => {
-      const tr = this.ce('tr');
-      const td = this.ce('td');
-      this.buildInput(td, value, index);
-      tr.appendChild(td);
-
-      if (!this.shouldDisable) {
-        const tdAdd = this.ce('td');
-        tdAdd.appendChild(this.removeButton(index));
-        tr.appendChild(tdAdd);
-      }
-
-      this.tbody.appendChild(tr);
-    });
-
-    if (!this.shouldDisable) {
-      const tr = this.ce('tr');
-      const td = this.ce('td', {
-        colspan: '2'
-      });
-      td.appendChild(this.addButton());
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
-    }
-
-    if (this.shouldDisable) {
-      this.disabled = true;
-    }
-  }
-
-  buildInput(container, value) {
-    const input = this.createInput(container);
-    input.value = value;
   }
 
   bootstrap4Theme(name) {
@@ -1494,35 +1412,8 @@ export default class Component {
     }
 
     this._visible = show;
-    this.showElement(show && !this.component.hidden);
     this.clearOnHide(show);
-    return show;
-  }
-
-  /**
-   * Show or hide the root element of this component.
-   *
-   * @param element
-   * @param show
-   */
-  showElement(element, show) {
-    if (typeof element === 'boolean') {
-      show = element;
-      element = this.getElement();
-    }
-
-    if (element) {
-      if (show) {
-        element.removeAttribute('hidden');
-        element.style.visibility = 'visible';
-        element.style.position = 'relative';
-      }
-      else {
-        element.setAttribute('hidden', true);
-        element.style.visibility = 'hidden';
-        element.style.position = 'absolute';
-      }
-    }
+    this.redraw();
     return show;
   }
 
