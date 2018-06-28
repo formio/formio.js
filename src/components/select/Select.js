@@ -139,7 +139,7 @@ export default class SelectComponent extends Field {
 
     this.selectOptions.push(option);
 
-    if (this.choices) {
+    if (this.choices || !this.element) {
       return;
     }
 
@@ -653,6 +653,10 @@ export default class SelectComponent extends Field {
 
     // Add the value options.
     this.addValueOptions();
+
+    if (!this.element) {
+      return;
+    }
 
     if (this.choices) {
       // Now set the value.

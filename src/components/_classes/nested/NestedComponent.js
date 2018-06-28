@@ -220,10 +220,10 @@ export default class NestedComponent extends Component {
   removeComponent(component, components) {
     components = components || this.components;
     component.destroy();
-    const element = component.getElement();
-    if (element && element.parentNode) {
-      this.removeChildFrom(element, element.parentNode);
-    }
+    // const element = component.getElement();
+    // if (element && element.parentNode) {
+    //   this.removeChildFrom(element, element.parentNode);
+    // }
     _.remove(components, {id: component.id});
   }
 

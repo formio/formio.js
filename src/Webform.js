@@ -217,12 +217,12 @@ export default class Webform extends NestedComponent {
     // Set the template
     this.template = this.options.template;
 
-    if (this.component) {
-      this.component.components = this.form.components;
-    }
-    else {
-      this.component = this.form;
-    }
+    // if (this.component) {
+    //   this.component.components = this.form.components;
+    // }
+    // else {
+    //   this.component = this.form;
+    // }
 
     if (this.element) {
       this.init();

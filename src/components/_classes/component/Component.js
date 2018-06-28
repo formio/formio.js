@@ -1048,6 +1048,9 @@ export default class Component {
    *   The callback function to be executed when the listener is triggered.
    */
   addEventListener(obj, evt, func) {
+    if (!obj) {
+      return;
+    }
     this.eventHandlers.push({type: evt, func: func});
     if ('addEventListener' in obj) {
       obj.addEventListener(evt, func, false);

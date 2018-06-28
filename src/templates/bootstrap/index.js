@@ -27,6 +27,7 @@ import tab from './tab';
 import table from './table';
 import webform from './webform';
 import well from './well';
+import wizard from './wizard';
 
 export default {
   transform: (type, text) => text,
@@ -59,4 +60,5 @@ export default {
   table,
   webform,
   well,
+  wizard,
 };
