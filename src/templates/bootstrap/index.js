@@ -13,6 +13,7 @@ import html from './html';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
+import map from './map';
 import message from './message';
 import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
@@ -46,6 +47,7 @@ export default {
   html,
   icon,
   input,
+  map,
   message,
   multiValueRow,
   multiValueTable,

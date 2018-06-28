@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Webform from './Webform';
 import Formio from './Formio';
-import {checkCondition, hasCondition} from './utils/utils';
+import {checkCondition} from './utils/utils';
 
 export default class Wizard extends Webform {
   /**

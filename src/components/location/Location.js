@@ -1,9 +1,9 @@
 /* global google */
-import Component from '../_classes/component/Component';
+import TextFieldComponent from '../textfield/TextField';
 
-export default class LocationComponent extends Component {
+export default class LocationComponent extends TextFieldComponent {
   static schema(...extend) {
-    return Component.schema({
+    return TextFieldComponent.schema({
       type: 'location',
       label: 'Location',
       key: 'location',
@@ -26,18 +26,17 @@ export default class LocationComponent extends Component {
     };
   }
 
-  constructor(component, options, data) {
-    super(component, options, data);
-
+  init() {
+    super.init();
     // Get the source for Google Maps API
     let src = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&callback=googleMapsCallback';
-    if (component.map && component.map.key) {
-      src += `&key=${component.map.key}`;
+    if (this.component.map && this.component.map.key) {
+      src += `&key=${this.component.map.key}`;
     }
-    if (component.map && component.map.region) {
-      src += `&region=${component.map.region}`;
+    if (this.component.map && this.component.map.region) {
+      src += `&region=${this.component.map.region}`;
     }
-    Component.requireLibrary('googleMaps', 'google.maps.places', src);
+    TextFieldComponent.requireLibrary('googleMaps', 'google.maps.places', src);
   }
 
   get defaultSchema() {
@@ -48,75 +47,25 @@ export default class LocationComponent extends Component {
     return '';
   }
 
-  build() {
-    this.element = this.ce('div', {
-      id: this.id,
-      class: 'map-container'
-    });
-    this.element.component = this;
-    this.initGoogleMap();
-    this.input = this.createInput(this.element);
-    this.addInput(this.input, this.element);
-    const gmapElement = this.ce('div', {
-      id: this.component.map.gmapId,
-      style: 'min-height: 300px; height: calc(100vh - 600px);'
-    });
-    this.element.appendChild(gmapElement);
-  }
-
-  setValue(value, flags) {
-    flags = this.getFlags.apply(this, arguments);
-    flags.noValidate = true;
-    super.setValue(value, flags);
-  }
-
-  addInput(input, container) {
-    super.addInput(input, container);
-    const that = this;
-    Component.libraryReady('googleMaps').then(() => {
-      let autocompleteOptions = {};
-      if (this.component.map) {
-        autocompleteOptions = this.component.map.autocompleteOptions || {};
-      }
-      const autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
-      autocomplete.addListener('place_changed', () => {
-        that.marker.setVisible(false);
-        const place = autocomplete.getPlace();
-        if (!place.geometry) {
-          console.log("Autocomplete's returned place contains no geometry");
-          return;
-        }
-
-        // If the place has a geometry, then present it on a map.
-        if (place.geometry.viewport) {
-          that.map.fitBounds(place.geometry.viewport);
-        }
-        else {
-          that.map.setCenter(place.geometry.location);
-          that.map.setZoom(17);  // Why 17? Because it looks good.
-        }
-        that.marker.setIcon(/** @type {google.maps.Icon} */({
-          url: place.icon,
-          size: new google.maps.Size(71, 71),
-          origin: new google.maps.Point(0, 0),
-          anchor: new google.maps.Point(17, 34),
-          scaledSize: new google.maps.Size(35, 35)
-        }));
-        that.marker.setPosition(place.geometry.location);
-        that.marker.setVisible(true);
-        that.setValue(place.name);
-      });
-    });
-  }
-
-  elementInfo() {
-    const info = super.elementInfo();
+  get inputInfo() {
+    const info = super.inputInfo;
     info.attr.class += ' Gmap-search';
     return info;
   }
 
-  initGoogleMap() {
-    Component.libraryReady('googleMaps').then(() => {
+  renderElement(value, index) {
+    return super.renderElement(value, index) + this.renderTemplate('map', {
+      mapId: this.component.map.gmapId,
+    });
+  }
+
+  hydrateElement(element, index) {
+    this.loadRefs(this.element, {gmapElement: 'single'});
+    super.hydrateElement(element, index);
+
+    const input = this.refs.input[0];
+    const that = this;
+    TextFieldComponent.libraryReady('googleMaps').then(() => {
       const defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
       const options = {
         zoom: 19,
@@ -142,13 +91,49 @@ export default class LocationComponent extends Component {
         ]
       };
 
-      const mapElement = document.getElementById(this.component.map.gmapId);
-      if (!mapElement) {
+      if (!this.refs.gmapElement) {
         return;
       }
-      this.map = new google.maps.Map(mapElement, options);
+      this.map = new google.maps.Map(this.refs.gmapElement, options);
       this.addMarker(defaultLatlng, 'Default Marker', this.map);
+
+      let autocompleteOptions = {};
+      if (this.component.map) {
+        autocompleteOptions = this.component.map.autocompleteOptions || {};
+      }
+      const autocomplete = new google.maps.places.Autocomplete(input, autocompleteOptions);
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (!place.geometry) {
+          console.log('Autocomplete\'s returned place contains no geometry');
+          return;
+        }
+
+        // If the place has a geometry, then present it on a map.
+        if (place.geometry.viewport) {
+          that.map.fitBounds(place.geometry.viewport);
+        }
+        else {
+          that.map.setCenter(place.geometry.location);
+          that.map.setZoom(17);  // Why 17? Because it looks good.
+        }
+        that.marker.setIcon(/** @type {google.maps.Icon} */({
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(35, 35)
+        }));
+        that.marker.setPosition(place.geometry.location);
+        that.setValue(place.name);
+      });
     });
+  }
+
+  setValue(value, flags) {
+    flags = this.getFlags.apply(this, arguments);
+    flags.noValidate = true;
+    super.setValue(value, flags);
   }
 
   addMarker(latlng, title, map) {
