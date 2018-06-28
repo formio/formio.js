@@ -59,7 +59,7 @@ export default class FormComponent extends Component {
       }
     });
 
-    (new Form(this.element, form, options)).render().then((instance) => {
+    (new Form(this.element, form, options)).then((instance) => {
       this.subForm = instance;
       this.subForm.on('change', () => {
         this.dataValue = this.subForm.getValue();
