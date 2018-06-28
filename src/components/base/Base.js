@@ -1868,8 +1868,28 @@ export default class BaseComponent {
   }
 
   addFocusBlurEvents(element) {
-    this.addEventListener(element, 'focus', () => this.emit('focus', this));
-    this.addEventListener(element, 'blur', () => this.emit('blur', this));
+    this.addEventListener(element, 'focus', () => {
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = FormioUtils.delay(() => {
+        this.emit('blur', this);
+        this.root.focusedComponent = null;
+        this.root.pendingBlur = null;
+      });
+    });
   }
 
   get wysiwygDefault() {
