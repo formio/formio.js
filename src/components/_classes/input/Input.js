@@ -1,6 +1,6 @@
 import maskInput from 'vanilla-text-mask';
 import Multivalue from '../multivalue/Multivalue';
-import {getInputMask} from '../../../utils/utils';
+import { getInputMask } from '../../../utils/utils';
 import _ from 'lodash';
 
 export default class Input extends Multivalue {

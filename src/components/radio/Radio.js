@@ -8,7 +8,7 @@ export default class RadioComponent extends Field {
       inputType: 'radio',
       label: 'Radio',
       key: 'radio',
-      values: [{label: '', value: ''}],
+      values: [{ label: '', value: '' }],
       fieldSet: false
     }, ...extend);
   }
@@ -50,7 +50,7 @@ export default class RadioComponent extends Field {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {input: 'multiple', wrapper: 'multiple'});
+    this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });
     this.refs.input.forEach(input => {
       this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
     });

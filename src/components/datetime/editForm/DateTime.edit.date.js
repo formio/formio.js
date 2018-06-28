@@ -35,13 +35,13 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'Sunday', value: 0},
-        {label: 'Monday', value: 1},
-        {label: 'Tuesday', value: 2},
-        {label: 'Wednesday', value: 3},
-        {label: 'Thursday', value: 4},
-        {label: 'Friday', value: 5},
-        {label: 'Saturday', value: 6}
+        { label: 'Sunday', value: 0 },
+        { label: 'Monday', value: 1 },
+        { label: 'Tuesday', value: 2 },
+        { label: 'Wednesday', value: 3 },
+        { label: 'Thursday', value: 4 },
+        { label: 'Friday', value: 5 },
+        { label: 'Saturday', value: 6 }
       ]
     }
   },
@@ -55,9 +55,9 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'Day', value: 'day'},
-        {label: 'Month', value: 'month'},
-        {label: 'Year', value: 'year'}
+        { label: 'Day', value: 'day' },
+        { label: 'Month', value: 'month' },
+        { label: 'Year', value: 'year' }
       ]
     }
   },
@@ -71,9 +71,9 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'Day', value: 'day'},
-        {label: 'Month', value: 'month'},
-        {label: 'Year', value: 'year'}
+        { label: 'Day', value: 'day' },
+        { label: 'Month', value: 'month' },
+        { label: 'Year', value: 'year' }
       ]
     }
   },

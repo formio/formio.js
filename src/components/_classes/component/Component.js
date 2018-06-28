@@ -1,10 +1,11 @@
 /* globals Quill */
-import {conformToMask} from 'vanilla-text-mask';
+import { conformToMask } from 'vanilla-text-mask';
 import Tooltip from 'tooltip.js';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 import i18next from 'i18next';
 import * as FormioUtils from '../../../utils/utils';
+import Formio from '../../Formio';
 import Validator from '../../Validator';
 import moment from 'moment';
 import templates from '../../../templates';
@@ -289,12 +290,6 @@ export default class Component {
     // Determine if the component has been built.
     this.isBuilt = false;
 
-    /**
-     * An array of the event listeners so that the destroy command can deregister them.
-     * @type {Array}
-     */
-    this.eventListeners = [];
-
     if (this.component) {
       this.type = this.component.type;
       if (this.hasInput && this.key) {
@@ -408,34 +403,37 @@ export default class Component {
    *
    * @param {string} event - The event you wish to register the handler for.
    * @param {function} cb - The callback handler to handle this event.
-   * @param {boolean} internal - This is an internal event handler.
    */
-  on(event, cb, internal) {
+  on(event, cb) {
     if (!this.events) {
       return;
     }
     const type = `formio.${event}`;
-    this.eventListeners.push({
-      type: type,
-      listener: cb,
-      internal
-    });
+
+    // Store the component id in the handler so that we can determine which events are for this component.
+    cb.id = this.id;
+
+    // Register for this event.
     return this.events.on(type, cb);
   }
 
-  /**
+  /**removeEventListeners
    * Removes all listeners for a certain event.
    *
    * @param event
    */
-  off(event, cb) {
+  off(event) {
     if (!this.events) {
       return;
     }
     const type = `formio.${event}`;
-    _.each(this.eventListeners, (listener) => {
-      if ((listener.type === type) && (!cb || (cb === listener.listener))) {
-        this.events.off(listener.type, listener.listener);
+
+    // Iterate through all the internal events.
+    _.each(this.events.listeners(type), (listener) => {
+      // Ensure this event is for this component.
+      if (listener && (listener.id === this.id)) {
+        // Turn off this event handler.
+        this.events.off(type, listener);
       }
     });
   }
@@ -616,7 +614,7 @@ export default class Component {
   hydrate(element) {
     this.hydrated = true;
     this.element = element;
-    this.loadRefs(element, {messageContainer: 'single', tooltip: 'single'});
+    this.loadRefs(element, { messageContainer: 'single', tooltip: 'single' });
 
     if (this.refs.tooltip) {
       this.tooltip = new Tooltip(this.refs.tooltip, {
@@ -1051,7 +1049,7 @@ export default class Component {
     if (!obj) {
       return;
     }
-    this.eventHandlers.push({type: evt, func: func});
+    this.eventHandlers.push({ type: evt, func: func });
     if ('addEventListener' in obj) {
       obj.addEventListener(evt, func, false);
     }
@@ -1064,14 +1062,19 @@ export default class Component {
    * Remove an event listener from the object.
    *
    * @param obj
-   * @param evt
+   * @param type
    */
-  removeEventListener(obj, evt) {
-    _.each(this.eventHandlers, (handler) => {
-      if (obj.removeEventListener && (handler.type === evt)) {
-        obj.removeEventListener(evt, handler.func);
+  removeEventListener(obj, type) {
+    const indexes = [];
+    _.each(this.eventHandlers, (handler, index) => {
+      if ((handler.id === this.id) && obj.removeEventListener && (handler.type === type)) {
+        obj.removeEventListener(type, handler.func);
+        indexes.push(index);
       }
     });
+    if (indexes.length) {
+      _.pullAt(this.eventHandlers, indexes);
+    }
   }
 
   redraw() {
@@ -1089,18 +1092,17 @@ export default class Component {
     this.hydrate(this.element);
   }
 
-  /**
-   * Remove all event handlers.
-   */
-  destroy(all) {
-    _.each(this.eventListeners, (listener) => {
-      if (all || listener.internal) {
-        this.events.off(listener.type, listener.listener);
-      }
+  removeEventListeners() {
+    _.each(this.events._events, (events, type) => {
+      _.each(events, (listener) => {
+        if (listener && (this.id === listener.id)) {
+          this.events.off(type, listener);
+        }
+      });
     });
     _.each(this.eventHandlers, (handler) => {
-      if (handler.event) {
-        window.removeEventListener(handler.event, handler.func);
+      if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
+        handler.obj.removeEventListener(handler.type, handler.func);
       }
     });
     _.each(this.refs.input, (input) => {
@@ -1114,6 +1116,14 @@ export default class Component {
       this.tooltip = null;
     }
     this.refs.input = [];
+  }
+
+  /**
+   * Remove all event handlers.
+   */
+  destroy(all) {
+    this.removeEventListeners(all);
+    this.destroyInputs();
   }
 
   /**
@@ -1441,7 +1451,6 @@ export default class Component {
    */
   hook() {
     const name = arguments[0];
-    const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
     if (
       this.options &&
       this.options.hooks &&
@@ -1451,6 +1460,7 @@ export default class Component {
     }
     else {
       // If this is an async hook instead of a sync.
+      const fn = (typeof arguments[arguments.length - 1] === 'function') ? arguments[arguments.length - 1] : null;
       if (fn) {
         return fn(null, arguments[1]);
       }
@@ -1508,12 +1518,12 @@ export default class Component {
       placeholder: this.t(this.component.placeholder),
       modules: {
         toolbar: [
-          [{'size': ['small', false, 'large', 'huge']}],  // custom dropdown
-          [{'header': [1, 2, 3, 4, 5, 6, false]}],
-          [{'font': []}],
-          ['bold', 'italic', 'underline', 'strike', {'script': 'sub'}, {'script': 'super'}, 'clean'],
-          [{'color': []}, {'background': []}],
-          [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}, {'align': []}],
+          [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'font': [] }],
+          ['bold', 'italic', 'underline', 'strike', { 'script': 'sub' }, { 'script': 'super' }, 'clean'],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
           ['blockquote', 'code-block'],
           ['link', 'image', 'video', 'formula', 'source']
         ]
@@ -1525,12 +1535,13 @@ export default class Component {
     settings = _.isEmpty(settings) ? this.wysiwygDefault : settings;
 
     // Lazy load the quill css.
-    Component.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
-      {type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css`}
+      Formio.requireLibrary(`quill-css-${settings.theme}`, 'Quill', [
+      { type: 'styles', src: `https://cdn.quilljs.com/1.3.6/quill.${settings.theme}.css` }
     ], true);
 
     // Lazy load the quill library.
-    return Component.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
+    return Formio.requireLibrary('quill', 'Quill', 'https://cdn.quilljs.com/1.3.6/quill.min.js', true)
+
       .then(() => {
         this.quill = new Quill(element, settings);
 
@@ -1608,7 +1619,8 @@ export default class Component {
     if (!this.key) {
       return value;
     }
-    if (value === null) {
+    if ((value === null) || (value === undefined)) {
+      _.unset(this.data, this.key);
       return value;
     }
     _.set(this.data, this.key, value);
@@ -1647,7 +1659,7 @@ export default class Component {
     else if (this.component.customDefaultValue) {
       defaultValue = this.evaluate(
         this.component.customDefaultValue,
-        {value: ''},
+        { value: '' },
         'value'
       );
     }
@@ -1804,7 +1816,7 @@ export default class Component {
    * Resets the value of this component.
    */
   resetValue() {
-    this.setValue(this.emptyValue, {noUpdateEvent: true, noValidate: true});
+    this.setValue(this.emptyValue, { noUpdateEvent: true, noValidate: true });
     _.unset(this.data, this.key);
   }
 
@@ -2203,7 +2215,7 @@ export default class Component {
 
   autofocus() {
     if (this.component.autofocus) {
-      this.on('render', () => this.focus(), true);
+      this.on('render', () => this.focus());
     }
   }
 

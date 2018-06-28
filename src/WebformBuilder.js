@@ -4,7 +4,7 @@ import Webform from './Webform';
 import dragula from 'dragula';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
-import {getComponent} from './utils/utils';
+import { getComponent } from './utils/utils';
 import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
@@ -13,7 +13,6 @@ require('./components/builder');
 export default class WebformBuilder extends Webform {
   constructor(element, options) {
     super(element, options);
-    const self = this;
     this.dragContainers = [];
     this.sidebarContainers = [];
     this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
@@ -36,7 +35,7 @@ export default class WebformBuilder extends Webform {
     this.options.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
     this.options.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
     this.options.hooks = this.options.hooks || {};
-    this.options.hooks.addComponents = function(components) {
+    this.options.hooks.addComponents = (components, parent) => {
       if (!components || (!components.length && !components.nodrop)) {
         // Return a simple alert so they know they can add something here.
         return [
@@ -46,9 +45,9 @@ export default class WebformBuilder extends Webform {
             tag: 'div',
             className: 'alert alert-info',
             attrs: [
-              {attr: 'id', value: `${this.id}-placeholder`},
-              {attr: 'style', value: 'text-align:center; margin-bottom: 0px;'},
-              {attr: 'role', value: 'alert'}
+              { attr: 'id', value: `${parent.id}-placeholder` },
+              { attr: 'style', value: 'text-align:center; margin-bottom: 0px;' },
+              { attr: 'role', value: 'alert' }
             ],
             content: 'Drag and Drop a form component'
           }
@@ -56,7 +55,7 @@ export default class WebformBuilder extends Webform {
       }
       return components;
     };
-    this.options.hooks.addComponent = function(container, comp) {
+    this.options.hooks.addComponent = (container, comp, parent) => {
       if (!comp || !comp.component) {
         return container;
       }
@@ -65,24 +64,24 @@ export default class WebformBuilder extends Webform {
         // Make sure the component position is relative so the buttons align properly.
         comp.getElement().style.position = 'relative';
 
-        const removeButton = this.ce('div', {
+        const removeButton = parent.ce('div', {
           class: 'btn btn-xxs btn-danger component-settings-button component-settings-button-remove'
-        }, this.getIcon('remove'));
-        this.addEventListener(removeButton, 'click', () => self.deleteComponent(comp));
+        }, parent.getIcon('remove'));
+        parent.addEventListener(removeButton, 'click', () => parent.deleteComponent(comp));
 
-        const editButton = this.ce('div', {
+        const editButton = parent.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit'
-        }, this.getIcon('cog'));
-        this.addEventListener(editButton, 'click', () => self.editComponent(comp));
+        }, parent.getIcon('cog'));
+        parent.addEventListener(editButton, 'click', () => parent.editComponent(comp));
 
         // Add the edit buttons to the component.
-        comp.prepend(this.ce('div', {
+        comp.prepend(parent.ce('div', {
           class: 'component-btn-group'
         }, [removeButton, editButton]));
       }
 
       if (!container.noDrop) {
-        self.addDragContainer(container, this);
+        this.addDragContainer(container, parent);
       }
 
       return container;
@@ -135,11 +134,6 @@ export default class WebformBuilder extends Webform {
       this.prependTo(this.builderSidebar, this.wrapper);
       this.addClass(this.element, 'col-xs-8 col-sm-9 col-md-10 formarea');
       this.element.component = this;
-      this.buildSidebar();
-      this.sideBarTop = this.sideBarElement.getBoundingClientRect().top + window.scrollY;
-      if (this.options.sideBarScroll) {
-        this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
-      }
     });
   }
 
@@ -340,7 +334,7 @@ export default class WebformBuilder extends Webform {
     });
 
     // Modify the component information in the edit form.
-    this.editForm.formReady.then(() => this.editForm.setValue({data: componentCopy.component}, {
+    this.editForm.formReady.then(() => this.editForm.setValue({ data: componentCopy.component }, {
       noUpdateEvent: true
     }));
 
@@ -748,10 +742,10 @@ export default class WebformBuilder extends Webform {
       this.dragula.destroy();
     }
     this.dragula = dragula(this.sidebarContainers.concat(this.dragContainers), {
-      copy: function(el) {
+      copy(el) {
         return el.classList.contains('drag-copy');
       },
-      accepts: function(el, target) {
+      accepts(el, target) {
         return !target.classList.contains('no-drop');
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
@@ -762,6 +756,12 @@ export default class WebformBuilder extends Webform {
   }
 
   build() {
+    this.buildSidebar();
+    this.sideBarTop = this.sideBarElement.getBoundingClientRect().top + window.scrollY;
+    if (this.options.sideBarScroll) {
+      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
+    }
+
     super.build();
     this.updateDraggable();
     this.formReadyResolve();

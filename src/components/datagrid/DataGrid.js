@@ -224,7 +224,7 @@ export default class DataGridComponent extends NestedComponent {
     });
 
     this.visibleColumns = visibility;
-    return {rebuild, show};
+    return { rebuild, show };
   }
 
   checkConditions(data) {
@@ -233,7 +233,7 @@ export default class DataGridComponent extends NestedComponent {
       return false;
     }
 
-    const {rebuild, show} = this.checkColumns(data);
+    const { rebuild, show } = this.checkColumns(data);
     // If a rebuild is needed, then rebuild the table.
     if (rebuild) {
       this.redraw();

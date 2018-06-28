@@ -1,6 +1,6 @@
 import Component from '../_classes/component/Component';
 import Promise from 'native-promise-only';
-import {isMongoId, eachComponent} from '../../utils/utils';
+import { isMongoId, eachComponent } from '../../utils/utils';
 import Formio from '../../Formio';
 import Form from '../../Form';
 
@@ -42,7 +42,7 @@ export default class FormComponent extends Component {
   }
 
   get emptyValue() {
-    return {data: {}};
+    return { data: {} };
   }
 
   /**
@@ -146,7 +146,7 @@ export default class FormComponent extends Component {
       this.renderSubForm(this.component, srcOptions);
     }
     else {
-      (new Formio(this.formSrc)).loadForm({params: {live: 1}})
+      (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
         .then((formObj) => this.renderSubForm(formObj, srcOptions))
         .catch(err => this.subFormReadyReject(err));
     }

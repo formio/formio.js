@@ -82,7 +82,7 @@ export default class TabsComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple'});
+    this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });
     this.refs[this.tabLinkKey].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
         event.preventDefault();

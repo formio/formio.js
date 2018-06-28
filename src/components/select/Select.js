@@ -57,22 +57,6 @@ export default class SelectComponent extends Field {
     this.itemsLoaded = new Promise((resolve) => {
       this.itemsLoadedResolve = resolve;
     });
-
-    // If they wish to refresh on a value, then add that here.
-    if (this.component.refreshOn) {
-      this.on('change', (event) => {
-        if (this.component.refreshOn === 'data') {
-          this.refreshItems();
-        }
-        else if (
-          event.changed &&
-          event.changed.component &&
-          (event.changed.component.key === this.component.refreshOn)
-        ) {
-          this.refreshItems();
-        }
-      });
-    }
   }
 
   get dataReady() {
@@ -111,7 +95,7 @@ export default class SelectComponent extends Field {
       return this.t(data);
     }
 
-    const template = this.component.template ? this.interpolate(this.component.template, {item: data}) : data.label;
+    const template = this.component.template ? this.interpolate(this.component.template, { item: data }) : data.label;
     if (template) {
       const label = template.replace(/<\/?[^>]+(>|$)/g, '');
       return template.replace(label, this.t(label));
@@ -398,7 +382,7 @@ export default class SelectComponent extends Field {
             body = null;
           }
         }
-        this.loadItems(url, searchInput, this.requestHeaders, {noToken: true}, method, body);
+        this.loadItems(url, searchInput, this.requestHeaders, { noToken: true }, method, body);
         break;
       }
     }
@@ -408,7 +392,7 @@ export default class SelectComponent extends Field {
     if (!this.component.placeholder) {
       return;
     }
-    this.addOption('', this.component.placeholder, {placeholder: true});
+    this.addOption('', this.component.placeholder, { placeholder: true });
   }
 
   /**
@@ -452,7 +436,7 @@ export default class SelectComponent extends Field {
 
   hydrate(element) {
     super.hydrate(element);
-    this.loadRefs(element, {selectContainer: 'single'});
+    this.loadRefs(element, { selectContainer: 'single' });
     const input = this.refs.selectContainer;
     if (!input) {
       return;
@@ -463,7 +447,7 @@ export default class SelectComponent extends Field {
       this.triggerUpdate();
       this.addEventListener(input, 'focus', () => this.update());
       this.addEventListener(input, 'keydown', (event) => {
-        const {keyCode} = event;
+        const { keyCode } = event;
 
         if ([8, 46].includes(keyCode)) {
           this.setValue(null);
@@ -531,6 +515,7 @@ export default class SelectComponent extends Field {
     this.disabled = this.shouldDisable;
     this.triggerUpdate();
   }
+  /* eslint-enable max-statements */
 
   update() {
     if (this.component.dataSrc === 'custom') {

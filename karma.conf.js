@@ -3,7 +3,18 @@ module.exports = function(config) {
     basePath: '',
     frameworks: ['mocha'],
     webpack: {
-      mode: 'development'
+      mode: 'development',
+      module: {
+        rules: [
+          {
+            test: /\.js$/,
+            exclude: /node_modules/,
+            use: {
+              loader: 'babel-loader'
+            }
+          }
+        ]
+      }
     },
     files: [
       'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css',

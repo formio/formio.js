@@ -49,7 +49,7 @@ export default class ContainerComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.containerId]: 'single'});
+    this.loadRefs(element, { [this.containerId]: 'single' });
     if (this.refs[this.containerId]) {
       this.hydrateComponents(this.refs[this.containerId]);
     }

@@ -7,7 +7,7 @@ export default class TableComponent extends NestedComponent {
     for (let i = 0; i < numRows; i++) {
       const cols = [];
       for (let j = 0; j < numCols; j++) {
-        cols.push({components: []});
+        cols.push({ components: [] });
       }
       rows.push(cols);
     }
@@ -58,7 +58,7 @@ export default class TableComponent extends NestedComponent {
         schema.rows[component.tableRow] = [];
       }
       if (!schema.rows[component.tableRow][component.tableColumn]) {
-        schema.rows[component.tableRow][component.column] = {components: []};
+        schema.rows[component.tableRow][component.column] = { components: [] };
       }
       schema.rows[component.tableRow][component.tableColumn].components.push(component.schema);
     });
@@ -105,7 +105,7 @@ export default class TableComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.columnKey]: 'multiple'});
+    this.loadRefs(element, { [this.columnKey]: 'multiple' });
     const rowLength = this.table.length;
     this.refs[this.columnKey].forEach((column, index) => {
       const rowIndex = Math.floor(index / rowLength);

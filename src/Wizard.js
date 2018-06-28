@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 import Webform from './Webform';
 import Formio from './Formio';
-import {checkCondition} from './utils/utils';
+import { checkCondition } from './utils/utils';
 
 export default class Wizard extends Webform {
   /**
@@ -84,10 +84,10 @@ export default class Wizard extends Webform {
     this.hydrateComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.currentPage]]);
 
     [
-      {name: 'cancel',    method: 'cancel'},
-      {name: 'previous',  method: 'prevPage'},
-      {name: 'next',      method: 'nextPage'},
-      {name: 'submit',    method: 'submit'}
+      { name: 'cancel',    method: 'cancel' },
+      { name: 'previous',  method: 'prevPage' },
+      { name: 'next',      method: 'nextPage' },
+      { name: 'submit',    method: 'submit' }
     ].forEach((button) => {
       const buttonElement = this.refs[`${this.wizardKey}-${button.name}`];
       if (!buttonElement) {
@@ -202,7 +202,7 @@ export default class Wizard extends Webform {
     if (this.options.readOnly) {
       this.history.push(this.currentPage);
       return this.setPage(this.getNextPage(this.submission.data, this.currentPage)).then(() => {
-        this.emit('nextPage', {page: this.currentPage, submission: this.submission});
+        this.emit('nextPage', { page: this.currentPage, submission: this.submission });
       });
     }
 
@@ -214,7 +214,7 @@ export default class Wizard extends Webform {
       return this.beforeNext().then(() => {
         this.history.push(this.currentPage);
         return this.setPage(this.getNextPage(this.submission.data, this.currentPage)).then(() => {
-          this.emit('nextPage', {page: this.currentPage, submission: this.submission});
+          this.emit('nextPage', { page: this.currentPage, submission: this.submission });
         });
       });
     }
@@ -226,7 +226,7 @@ export default class Wizard extends Webform {
   prevPage() {
     const prevPage = this.getPreviousPage();
     return this.setPage(prevPage).then(() => {
-      this.emit('prevPage', {page: this.currentPage, submission: this.submission});
+      this.emit('prevPage', { page: this.currentPage, submission: this.submission });
     });
   }
 

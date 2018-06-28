@@ -3,7 +3,7 @@ import assert from 'power-assert';
 import _merge from 'lodash/merge';
 import Component from './Component';
 import Harness from '../../../../test/harness';
-import {components as comps} from './fixtures/index';
+import { components as comps } from './fixtures/index';
 describe('Component', () => {
   it('Should build a base component', (done) => {
     Harness.testCreate(Component, comps.comp1).then((component) => {
@@ -17,7 +17,7 @@ describe('Component', () => {
 
   it('Should provide required validation', (done) => {
     Harness.testCreate(Component, _merge({}, comps.comp1, {
-      validate: {required: true}
+      validate: { required: true }
     })).then((component) => Harness.testComponent(component, {
       bad: {
         value: '',
@@ -32,7 +32,7 @@ describe('Component', () => {
 
   it('Should provide minLength validation', (done) => {
     Harness.testCreate(Component, _merge({}, comps.comp1, {
-      validate: {minLength: 2}
+      validate: { minLength: 2 }
     })).then((component) => Harness.testComponent(component, {
       bad: {
         value: 't',
@@ -47,7 +47,7 @@ describe('Component', () => {
 
   it('Should provide maxLength validation', (done) => {
     Harness.testCreate(Component, _merge({}, comps.comp1, {
-      validate: {maxLength: 5}
+      validate: { maxLength: 5 }
     })).then((component) => Harness.testComponent(component, {
       bad: {
         value: 'testte',
@@ -84,7 +84,7 @@ describe('Component', () => {
           'if': [
             {
               '===': [
-                {var: 'data.firstName'},
+                { var: 'data.firstName' },
                 'Joe'
               ]
             },

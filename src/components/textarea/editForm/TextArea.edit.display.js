@@ -25,9 +25,9 @@ export default [
     dataSrc: 'values',
     data: {
       values: [
-        {label: 'None', value: ''},
-        {label: 'Quill', value: 'quill'},
-        {label: 'ACE', value: 'ace'}
+        { label: 'None', value: '' },
+        { label: 'Quill', value: 'quill' },
+        { label: 'ACE', value: 'ace' }
       ]
     },
     weight: 415
@@ -42,22 +42,22 @@ export default [
     clearOnHide: true,
     data: {
       values: [
-        {label: 'String', value: 'string'},
-        {label: 'JSON', value: 'json'},
-        {label: 'HTML', value: 'html'}
+        { label: 'String', value: 'string' },
+        { label: 'JSON', value: 'json' },
+        { label: 'HTML', value: 'html' }
       ]
     },
     conditional: {
       json: {
         or: [
-          {'===': [
-            {var: 'data.editor'},
+          { '===': [
+            { var: 'data.editor' },
             'quill'
-          ]},
-          {'===': [
-            {var: 'data.editor'},
+          ] },
+          { '===': [
+            { var: 'data.editor' },
             'ace'
-          ]}
+          ] }
         ]
       }
     },
@@ -78,14 +78,14 @@ export default [
     conditional: {
       json: {
         or: [
-          {'===': [
-            {var: 'data.editor'},
+          { '===': [
+            { var: 'data.editor' },
             'quill'
-          ]},
-          {'===': [
-            {var: 'data.editor'},
+          ] },
+          { '===': [
+            { var: 'data.editor' },
             'ace'
-          ]}
+          ] }
         ]
       }
     },

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
+import { boolValue } from '../../utils/utils';
 
 export default class SurveyComponent extends Field {
   static schema(...extend) {
@@ -32,7 +33,7 @@ export default class SurveyComponent extends Field {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {input: 'multiple'});
+    this.loadRefs(element, { input: 'multiple' });
     super.hydrate(element);
     this.refs.input.forEach((input) => {
       this.addEventListener(input, 'change', () => this.updateValue());
@@ -74,6 +75,14 @@ export default class SurveyComponent extends Field {
       });
     });
     return value;
+  }
+
+  validateRequired(setting, value) {
+    if (!boolValue(setting)) {
+      return true;
+    }
+    return this.component.questions.reduce((result, question) =>
+      result && Boolean(value[question.value]), true);
   }
 
   getView(value) {

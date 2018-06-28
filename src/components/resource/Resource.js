@@ -69,7 +69,7 @@ export default class ResourceComponent extends SelectComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {addResource: 'single'});
+    this.loadRefs(element, { addResource: 'single' });
     super.hydrate(element);
 
     if (this.refs.addResource) {

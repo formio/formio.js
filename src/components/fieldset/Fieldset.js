@@ -53,7 +53,7 @@ export default class FieldsetComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.fieldsetKey]: 'single'});
+    this.loadRefs(element, { [this.fieldsetKey]: 'single' });
     super.hydrate(element);
     if (this.refs[this.fieldsetKey]) {
       super.hydrateComponents(this.refs[this.fieldsetKey]);

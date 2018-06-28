@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import maskInput from 'vanilla-text-mask';
 
-import {getInputMask} from '../../utils/utils';
+import { getInputMask } from '../../utils/utils';
 import Input from '../_classes/input/Input';
 
 export default class TextFieldComponent extends Input {

@@ -18,7 +18,7 @@ Formio.forms = {};
 // Allow people to register components.
 Formio.registerComponent = Components.setComponent;
 
-const getOptions = function(options) {
+function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
     i18next: i18next,
@@ -31,7 +31,7 @@ const getOptions = function(options) {
     });
   }
   return options;
-};
+}
 
 /**
  * Renders a Form.io form within the webpage.
@@ -80,7 +80,7 @@ export default class Webform extends NestedComponent {
       else {
         _.each(options.i18n, (lang, code) => {
           if (!i18n.resources[code]) {
-            i18n.resources[code] = {translation: lang};
+            i18n.resources[code] = { translation: lang };
           }
           else {
             _.assign(i18n.resources[code].translation, lang);
@@ -306,7 +306,7 @@ export default class Webform extends NestedComponent {
   }
 
   executeShortcuts(event) {
-    const {target} = event;
+    const { target } = event;
     if (!this.keyboardCatchableElement(target)) {
       return;
     }
@@ -412,7 +412,7 @@ export default class Webform extends NestedComponent {
   setSrc(value, options) {
     if (this.setUrl(value, options)) {
       this.nosubmit = false;
-      return this.formio.loadForm({params: {live: 1}}).then(
+      return this.formio.loadForm({ params: { live: 1 } }).then(
         (form) => {
           const setForm = this.setForm(form);
           this.loadSubmission();
@@ -677,7 +677,7 @@ export default class Webform extends NestedComponent {
 
   setValue(submission, flags) {
     if (!submission || !submission.data) {
-      submission = {data: {}};
+      submission = { data: {} };
     }
     const changed = super.setValue(submission.data, flags);
     this.mergeData(this.data, submission.data);
@@ -733,7 +733,7 @@ export default class Webform extends NestedComponent {
 
   hydrate(element) {
     this.element = element;
-    this.loadRefs(element, {webform: 'single'});
+    this.loadRefs(element, { webform: 'single' });
     this.hydrateComponents(this.refs.webform);
     this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
     this.on('submitButton', (options) => this.submit(false, options), true);
@@ -854,7 +854,7 @@ export default class Webform extends NestedComponent {
     if (error) {
       // Normalize the error.
       if (typeof error === 'string') {
-        error = {message: error};
+        error = { message: error };
       }
 
       if ('details' in error) {

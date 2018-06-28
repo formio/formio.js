@@ -26,7 +26,7 @@ export default class ContentComponent extends Component {
   }
 
   get content() {
-    return this.component.html ? this.interpolate(this.component.html, {data: this.data, row: this.row}) : '';
+    return this.component.html ? this.interpolate(this.component.html, { data: this.data, row: this.row }) : '';
   }
 
   render() {
@@ -39,7 +39,7 @@ export default class ContentComponent extends Component {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {html: 'single'});
+    this.loadRefs(element, { html: 'single' });
     if (this.component.refreshOnChange) {
       this.on('change', () => {
         if (this.refs.html) {

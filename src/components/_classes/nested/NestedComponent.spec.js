@@ -63,7 +63,7 @@ describe('NestedComponent class', () => {
           key: 'parent',
           title: 'Parent Panel',
           conditional: {
-            json: {var: 'data.showPanel'}
+            json: { var: 'data.showPanel' }
           },
           components: [
             {
@@ -72,7 +72,7 @@ describe('NestedComponent class', () => {
               label: 'Child 1',
               input: true,
               conditional: {
-                json: {var: 'data.showChild'}
+                json: { var: 'data.showChild' }
               }
             },
             {
@@ -81,7 +81,7 @@ describe('NestedComponent class', () => {
               label: 'Child 2',
               input: true,
               conditional: {
-                json: {var: 'data.forceParent'},
+                json: { var: 'data.forceParent' },
               }
             }
           ]

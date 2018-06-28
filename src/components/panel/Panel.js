@@ -56,7 +56,7 @@ export default class PanelComponent extends NestedComponent {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {[this.panelKey]: 'single'});
+    this.loadRefs(element, { [this.panelKey]: 'single' });
     super.hydrate(element);
 
     if (this.refs[this.panelKey]) {

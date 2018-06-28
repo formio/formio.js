@@ -1,9 +1,9 @@
-'use strict';
-import Webform from './Webform';
-import Harness from '../test/harness';
-import FormTests from '../test/forms/index';
 import assert from 'power-assert';
 import each from 'lodash/each';
+
+import Harness from '../test/harness';
+import FormTests from '../test/forms';
+import Webform from './Webform';
 
 describe('Formio Form Renderer tests', () => {
   let simpleForm = null;
@@ -34,10 +34,10 @@ describe('Formio Form Renderer tests', () => {
   });
 
   it('Should set a submission to the form.', () => {
-    Harness.testSubmission(simpleForm, {data: {
+    Harness.testSubmission(simpleForm, { data: {
       firstName: 'Joe',
       lastName: 'Smith'
-    }});
+    } });
   });
 
   it('Should translate a form from options', done => {
@@ -147,7 +147,7 @@ describe('Formio Form Renderer tests', () => {
         }
       ]
     }).then(() => {
-      translateForm.addLanguage('es', {'Default Label': 'Spanish Label'}, true);
+      translateForm.addLanguage('es', { 'Default Label': 'Spanish Label' }, true);
       const label = formElement.querySelector('.control-label');
       assert.equal(label.innerHTML.trim(), 'Spanish Label');
       done();
@@ -158,7 +158,7 @@ describe('Formio Form Renderer tests', () => {
     each(formTest.tests, (formTestTest, title) => {
       it(title, (done) => {
         const formElement = document.createElement('div');
-        const form = new Webform(formElement, {language: 'en'});
+        const form = new Webform(formElement, { language: 'en' });
         form.setForm(formTest.form).then(() => {
           formTestTest(form, done);
         }).catch(done);

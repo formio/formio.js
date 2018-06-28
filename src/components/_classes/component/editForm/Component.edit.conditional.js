@@ -15,8 +15,8 @@ export default [
         dataSrc: 'values',
         data: {
           values: [
-            {label: 'True', value: true},
-            {label: 'False', value: false}
+            { label: 'True', value: true },
+            { label: 'False', value: false }
           ]
         }
       },

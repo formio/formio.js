@@ -1,5 +1,5 @@
 import Component from '../_classes/component/Component';
-import {uniqueName} from '../../utils/utils';
+import { uniqueName } from '../../utils/utils';
 import download from 'downloadjs';
 import Formio from '../../Formio';
 
@@ -207,7 +207,7 @@ export default class FileComponent extends Component {
         }
       }
     }
-    return {regexp: regexp, excludes: excludes};
+    return { regexp: regexp, excludes: excludes };
   }
   /* eslint-enable max-depth */
 
@@ -340,14 +340,19 @@ export default class FileComponent extends Component {
     }
   }
 
-  getFile(fileInfo, event)  {
+  getFile(fileInfo, event) {
     const fileService = this.fileService;
     if (!fileService) {
       return alert('File Service not provided');
     }
     fileService.downloadFile(fileInfo).then((file) => {
       if (file) {
-        download(file.url, file.originalName, file.type);
+        if (file.storage === 'base64') {
+          download(file.url, file.originalName, file.type);
+        }
+        else {
+          window.open(file.url, '_blank');
+        }
       }
     })
       .catch((response) => {

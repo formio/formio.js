@@ -1,7 +1,7 @@
 'use strict';
 import _ from 'lodash';
 import Promise from 'native-promise-only';
-import {checkCondition} from '../../../utils/utils';
+import { checkCondition } from '../../../utils/utils';
 import Component from '../component/Component';
 import Components from '../../Components';
 
@@ -140,7 +140,7 @@ export default class NestedComponent extends Component {
     }
 
     if (before) {
-      const index = _.findIndex(this.components, {id: before.id});
+      const index = _.findIndex(this.components, { id: before.id });
       if (index !== -1) {
         this.components.splice(index, 0, comp);
       }
@@ -187,7 +187,6 @@ export default class NestedComponent extends Component {
     if (noAdd) {
       return comp;
     }
-    // this.setHidden(comp);
     return comp;
   }
 
@@ -197,7 +196,7 @@ export default class NestedComponent extends Component {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {header: 'single'});
+    this.loadRefs(element, { header: 'single' });
     super.hydrate(element);
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
@@ -220,11 +219,7 @@ export default class NestedComponent extends Component {
   removeComponent(component, components) {
     components = components || this.components;
     component.destroy();
-    // const element = component.getElement();
-    // if (element && element.parentNode) {
-    //   this.removeChildFrom(element, element.parentNode);
-    // }
-    _.remove(components, {id: component.id});
+    _.remove(components, { id: component.id });
   }
 
   /**

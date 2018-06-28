@@ -100,7 +100,7 @@ export default class DateTimeComponent extends Input {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {dateTimeToggle: 'multiple'});
+    this.loadRefs(element, { dateTimeToggle: 'multiple' });
     super.hydrate(element);
     this.disabled = this.shouldDisable;
   }
@@ -160,8 +160,8 @@ export default class DateTimeComponent extends Input {
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
       minDate: getDateSetting(_.get(this.component, 'datePicker.minDate')),
       maxDate: getDateSetting(_.get(this.component, 'datePicker.maxDate')),
-      onChange: () => this.onChange({noValidate: true}),
-      onClose: () => (this.closedOn = Date.now())
+      onChange: () => this.onChange({ noValidate: true }),
+      onClose: () => this.closedOn = Date.now()
     };
   }
 

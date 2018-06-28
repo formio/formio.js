@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Field from '../_classes/field/Field';
 import Input from '../_classes/input/Input';
-import {flattenComponents} from '../../utils/utils';
+import { flattenComponents } from '../../utils/utils';
 
 export default class ButtonComponent extends Field {
   static schema(...extend) {
@@ -102,7 +102,7 @@ export default class ButtonComponent extends Field {
   }
 
   buttonMessage(message) {
-    return this.ce('span', {class: 'help-block'}, this.text(message));
+    return this.ce('span', { class: 'help-block' }, this.text(message));
   }
 
   render() {
@@ -113,7 +113,7 @@ export default class ButtonComponent extends Field {
   }
 
   hydrate(element) {
-    this.loadRefs(element, {button: 'single'});
+    this.loadRefs(element, { button: 'single' });
     super.hydrate(element);
     if (!this.refs.button) {
       return;
@@ -126,7 +126,7 @@ export default class ButtonComponent extends Field {
         this.loading = true;
         this.disabled = true;
         this.redraw();
-      }, true);
+      });
       this.on('submitDone', () => {
         this.loading = false;
         this.disabled = false;
@@ -135,7 +135,7 @@ export default class ButtonComponent extends Field {
         this.removeClass(message, 'has-error');
         message.appendChild(this.buttonMessage('complete'));
         this.append(message);
-      }, true);
+      });
       this.on('change', (value) => {
         this.loading = false;
         const isValid = this.root.isValid(value.data, true);
@@ -147,7 +147,7 @@ export default class ButtonComponent extends Field {
           this.removeClass(message, 'has-success');
           this.removeClass(message, 'has-error');
         }
-      }, true);
+      });
       this.on('error', () => {
         this.loading = false;
         this.hasError = true;
@@ -156,25 +156,25 @@ export default class ButtonComponent extends Field {
         this.addClass(message, 'has-error');
         message.appendChild(this.buttonMessage(this.errorMessage('error')));
         this.append(message);
-      }, true);
+      });
     }
 
     if (this.component.action === 'url') {
       this.on('requestButton', () => {
         this.loading = true;
         this.disabled = true;
-      }, true);
+      });
       this.on('requestDone', () => {
         this.loading = false;
         this.disabled = false;
-      }, true);
+      });
       this.on('change', (value) => {
         this.loading = false;
         this.disabled = (this.component.disableOnInvalid && !this.root.isValid(value.data, true));
-      }, true);
+      });
       this.on('error', () => {
         this.loading = false;
-      }, true);
+      });
     }
 
     this.addEventListener(this.refs.button, 'click', this.onClick.bind(this));
@@ -335,7 +335,7 @@ export default class ButtonComponent extends Field {
             this.root.setAlert('danger', 'OAuth state does not match. Please try logging in again.');
             return;
           }
-          const submission = {data: {}, oauth: {}};
+          const submission = { data: {}, oauth: {} };
           submission.oauth[settings.provider] = params;
           submission.oauth[settings.provider].redirectURI = window.location.origin
             || `${window.location.protocol}//${window.location.host}`;

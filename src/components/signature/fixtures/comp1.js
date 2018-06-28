@@ -1,4 +1,4 @@
-export const component = {
+export default {
   'lockKey': true,
   'conditional': {
     'eq': '',

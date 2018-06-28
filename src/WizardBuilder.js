@@ -30,7 +30,7 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get pages() {
-    return _.filter(this.component.components, {type: 'panel'});
+    return _.filter(this.component.components, { type: 'panel' });
   }
 
   addSubmitButton() {
@@ -61,7 +61,7 @@ export default class WizardBuilder extends WebformBuilder {
   addComponents(element, data) {
     element = element || this.getContainer();
     data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents);
+    const components = this.hook('addComponents', this.componentComponents, this);
     _.each(components, (component, index) => {
       this.addComponent(component, element, data, null, (index !== this.currentPage));
     });

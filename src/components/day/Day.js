@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import Field from '../_classes/field/Field';
-import {boolValue, getLocaleDateFormatInfo} from '../../utils/utils';
+import { boolValue, getLocaleDateFormatInfo } from '../../utils/utils';
 
 export default class DayComponent extends Field {
   static schema(...extend) {
@@ -124,7 +124,7 @@ export default class DayComponent extends Field {
       return this._days;
     }
     this._days = [
-      {value: 0, label: _.get(this.component, 'fields.day.placeholder', '')}
+      { value: 0, label: _.get(this.component, 'fields.day.placeholder', '') }
     ];
     for (let x = 1; x <= 31; x++) {
       this._days.push({
@@ -140,19 +140,19 @@ export default class DayComponent extends Field {
       return this._months;
     }
     this._months = [
-      {value: '', label: _.get(this.component, 'fields.month.placeholder', '')},
-      {value: 0, label: this.t('january')},
-      {value: 1, label: this.t('february')},
-      {value: 2, label: this.t('march')},
-      {value: 3, label: this.t('april')},
-      {value: 4, label: this.t('may')},
-      {value: 5, label: this.t('june')},
-      {value: 6, label: this.t('july')},
-      {value: 7, label: this.t('august')},
-      {value: 8, label: this.t('september')},
-      {value: 9, label: this.t('october')},
-      {value: 10, label: this.t('november')},
-      {value: 11, label: this.t('december')}
+      { value: 0, label: _.get(this.component, 'fields.month.placeholder') || (this.hideInputLabels ? this.t('Month') : '') },
+      { value: 1, label: this.t('january') },
+      { value: 2, label: this.t('february') },
+      { value: 3, label: this.t('march') },
+      { value: 4, label: this.t('april') },
+      { value: 5, label: this.t('may') },
+      { value: 6, label: this.t('june') },
+      { value: 7, label: this.t('july') },
+      { value: 8, label: this.t('august') },
+      { value: 9, label: this.t('september') },
+      { value: 10, label: this.t('october') },
+      { value: 11, label: this.t('november') },
+      { value: 12, label: this.t('december') }
     ];
     return this._months;
   }
@@ -162,7 +162,7 @@ export default class DayComponent extends Field {
       return this._years;
     }
     this._years = [
-      {value: 0, label: _.get(this.component, 'fields.year.placeholder', '')}
+      { value: 0, label: _.get(this.component, 'fields.year.placeholder', '') }
     ];
     for (let x = 1900; x <= 2030; x++) {
       this._years.push({
@@ -204,14 +204,14 @@ export default class DayComponent extends Field {
       return this.renderTemplate('select', {
         input: this.selectDefinition(name),
         options: this[`${name}s`].reduce((html, option) =>
-          html + this.renderTemplate('selectOption', {option, selected: false, attrs: {}}), ''
+          html + this.renderTemplate('selectOption', { option, selected: false, attrs: {} }), ''
         ),
       });
     }
   }
 
   hydrate(element) {
-    this.loadRefs(element, {day: 'single', month: 'single', year: 'single', input: 'multiple'});
+    this.loadRefs(element, { day: 'single', month: 'single', year: 'single', input: 'multiple' });
     super.hydrate(element);
     if (this.refs.day) {
       this.addEventListener(this.refs.day, 'change', () => this.updateValue());
@@ -226,7 +226,7 @@ export default class DayComponent extends Field {
   }
 
   validateRequired(setting, value) {
-    const {day, month, year} = this.parts;
+    const { day, month, year } = this.parts;
     if (this.dayRequired && !day) {
       return false;
     }
@@ -283,7 +283,7 @@ export default class DayComponent extends Field {
     this.setSubinputStyle(monthInputWrapper);
     monthColumn.appendChild(monthInputWrapper);
 
-    if (subinputAtTheBottom) {
+    if (monthLabel && subinputAtTheBottom) {
       monthColumn.appendChild(monthLabel);
     }
 
@@ -380,7 +380,7 @@ export default class DayComponent extends Field {
    * @returns {Date}
    */
   get date() {
-    const {day, month, year} = this.parts;
+    const { day, month, year } = this.parts;
     if (this.showDay && !day) {
       // Invalid so return null
       return null;

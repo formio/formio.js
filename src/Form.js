@@ -1,8 +1,8 @@
-'use strict';
 import Formio from './Formio';
 import Wizard from './Wizard';
 import PDF from './PDF';
 import Webform from './Webform';
+
 export default class Form {
   /**
    * Creates an easy to use interface for embedding webforms, pdfs, and wizards into your application.
@@ -51,11 +51,12 @@ export default class Form {
     }
   }
 
-  set form(value) {
-    if (typeof value === 'string') {
-      return (new Formio(value)).loadForm().then(form => {
+  set form(formParam) {
+    formParam = formParam || this.form;
+    if (typeof formParam === 'string') {
+      return (new Formio(formParam)).loadForm().then(form => {
         this.instance = this.create(form.display);
-        this.instance.url = value;
+        this.instance.url = formParam;
         this.instance.nosubmit = false;
         this.instance.loadSubmission();
         this._form = this.instance.form = form;
@@ -66,8 +67,11 @@ export default class Form {
       });
     }
     else {
-      this.instance = this.create(value.display);
-      this._form = this.instance.form = value;
+      if (this.instance) {
+        this.instance.destroy();
+      }
+      this.instance = this.create(formParam.display);
+      this._form = this.instance.form = formParam;
       return this.instance.ready.then(() => {
         this.readyResolve(this.instance);
         return this.ready;

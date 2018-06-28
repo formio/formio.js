@@ -1,5 +1,6 @@
 /* global google */
 import TextFieldComponent from '../textfield/TextField';
+import Formio from '../../Formio';
 
 export default class LocationComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -36,7 +37,7 @@ export default class LocationComponent extends TextFieldComponent {
     if (this.component.map && this.component.map.region) {
       src += `&region=${this.component.map.region}`;
     }
-    TextFieldComponent.requireLibrary('googleMaps', 'google.maps.places', src);
+    Formio.requireLibrary('googleMaps', 'google.maps.places', src);
   }
 
   get defaultSchema() {
@@ -60,12 +61,12 @@ export default class LocationComponent extends TextFieldComponent {
   }
 
   hydrateElement(element, index) {
-    this.loadRefs(this.element, {gmapElement: 'single'});
+    this.loadRefs(this.element, { gmapElement: 'single' });
     super.hydrateElement(element, index);
 
     const input = this.refs.input[0];
     const that = this;
-    TextFieldComponent.libraryReady('googleMaps').then(() => {
+    Formio.libraryReady('googleMaps').then(() => {
       const defaultLatlng = new google.maps.LatLng(45.5041482, -73.5574125);
       const options = {
         zoom: 19,
@@ -146,8 +147,8 @@ export default class LocationComponent extends TextFieldComponent {
     });
     this.marker.addListener('dragend', (event) => {
       const geocoder = new google.maps.Geocoder;
-      const latlng = {lat: parseFloat(event.latLng.lat()), lng: parseFloat(event.latLng.lng())};
-      geocoder.geocode({'location': latlng}, (results, status) => {
+      const latlng = { lat: parseFloat(event.latLng.lat()), lng: parseFloat(event.latLng.lng()) };
+      geocoder.geocode({ 'location': latlng }, (results, status) => {
         if (status === google.maps.GeocoderStatus.OK) {
           if (results[1]) {
             that.setValue(results[0].formatted_address);

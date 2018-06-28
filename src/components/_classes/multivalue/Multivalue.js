@@ -40,7 +40,7 @@ export default class Multivalue extends Field {
 
   hydrate(dom) {
     super.hydrate(dom);
-    this.loadRefs(dom, {addButton: 'single', input: 'multiple', removeRow: 'multiple'});
+    this.loadRefs(dom, { addButton: 'single', input: 'multiple', removeRow: 'multiple' });
 
     this.refs.input.forEach(this.hydrateElement.bind(this));
     if (!this.component.multiple) {
