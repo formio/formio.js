@@ -68,8 +68,8 @@ export default class NestedComponent extends Component {
     return this.getComponents().reduce((components, component) => {
       let result = component;
 
-      if (component.type === 'form') {
-        result = component.subForm.getAllComponents();
+      if (component.getAllComponents) {
+        result = component.getAllComponents();
       }
 
       return components.concat(result);
