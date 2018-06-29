@@ -104,7 +104,7 @@ export default class ButtonComponent extends BaseComponent {
 
   /* eslint-disable max-statements */
   build() {
-    if (this.viewOnly) {
+    if (this.viewOnly || this.options.hideButtons) {
       this.component.hidden = true;
     }
 
@@ -139,18 +139,21 @@ export default class ButtonComponent extends BaseComponent {
         this.disabled = true;
       });
       this.on('submitDone', () => {
-        this.loading = false;
+        this.loading  = false;
         this.disabled = false;
         this.empty(message);
+        this.addClass(this.buttonElement, 'btn-success submit-success');
+        this.removeClass(this.buttonElement, 'btn-danger submit-fail');
         this.addClass(message, 'has-success');
         this.removeClass(message, 'has-error');
-        message.appendChild(this.buttonMessage('complete'));
         this.append(message);
       });
       this.on('change', (value) => {
         this.loading = false;
         const isValid = this.root.isValid(value.data, true);
         this.disabled = this.options.readOnly || (this.component.disableOnInvalid && !isValid);
+        this.removeClass(this.buttonElement, 'btn-success submit-success');
+        this.removeClass(this.buttonElement, 'btn-danger submit-fail');
         if (isValid && this.hasError) {
           this.hasError = false;
           this.empty(message);
@@ -162,10 +165,11 @@ export default class ButtonComponent extends BaseComponent {
       this.on('error', () => {
         this.loading = false;
         this.hasError = true;
+        this.removeClass(this.buttonElement, 'btn-success submit-success');
+        this.addClass(this.buttonElement, 'btn-danger submit-fail');
         this.empty(message);
         this.removeClass(message, 'has-success');
         this.addClass(message, 'has-error');
-        message.appendChild(this.buttonMessage(this.errorMessage('error')));
         this.append(message);
       });
     }
