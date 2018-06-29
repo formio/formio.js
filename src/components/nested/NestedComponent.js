@@ -42,6 +42,18 @@ export default class NestedComponent extends BaseComponent {
     return this.components;
   }
 
+  getAllComponents() {
+    return this.getComponents().reduce((components, component) => {
+      let result = component;
+
+      if (component.type === 'form') {
+        result = component.subForm.getAllComponents();
+      }
+
+      return components.concat(result);
+    }, []);
+  }
+
   /**
    * Perform a deep iteration over every component, including those
    * within other container based components.
@@ -417,7 +429,7 @@ export default class NestedComponent extends BaseComponent {
 
   get errors() {
     let errors = [];
-    _.each(this.getComponents(), (comp) => {
+    _.each(this.getAllComponents(), (comp) => {
       const compErrors = comp.errors;
       if (compErrors.length) {
         errors = errors.concat(compErrors);

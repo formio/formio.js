@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import BaseComponent from '../base/Base';
 import Promise from 'native-promise-only';
 import { isMongoId, eachComponent } from '../../utils/utils';
@@ -217,14 +218,16 @@ export default class FormComponent extends BaseComponent {
     // This submission has not been submitted yet.
     if (this.component.submit) {
       return this.loadSubForm().then(() => {
-        return this.subForm.submitForm().then(result => {
-          this.subForm.loading = false;
-          this.dataValue = this.component.reference ? {
-            _id: result.submission._id,
-            form: result.submission.form
-          } : result.submission;
-          return this.dataValue;
-        });
+        return this.subForm.submitForm()
+          .then(result => {
+            this.subForm.loading = false;
+            this.dataValue = this.component.reference ? {
+              _id: result.submission._id,
+              form: result.submission.form
+            } : result.submission;
+            return this.dataValue;
+          })
+          .catch(() => {});
       });
     }
     else {
@@ -243,12 +246,10 @@ export default class FormComponent extends BaseComponent {
 
   setValue(submission, flags) {
     const changed = super.setValue(submission, flags);
-    if (this.subForm) {
-      this.subForm.setValue(submission, flags);
-    }
-    else {
-      this.loadSubForm().then((form) => {
-        if (submission && submission._id && form.formio && !flags.noload) {
+
+    (this.subForm ? Promise.resolve(this.subForm) : this.loadSubForm())
+      .then((form) => {
+        if (submission && submission._id && form.formio && !flags.noload && _.isEmpty(submission.data)) {
           const submissionUrl = `${form.formio.formsUrl}/${submission.form}/submission/${submission._id}`;
           form.setUrl(submissionUrl, this.options);
           form.nosubmit = false;
@@ -258,7 +259,7 @@ export default class FormComponent extends BaseComponent {
           form.setValue(submission, flags);
         }
       });
-    }
+
     return changed;
   }
 
