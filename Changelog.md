@@ -47,7 +47,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Unreleased
 ### Fixed
-  - Fix nested forms validation.
+  - Nested forms validation.
+
+## 3.0.0-rc.14
+### Fixed
+ - Bad build from previous release.
+
+## 3.0.0-rc.13
+### Added
+ - Ability to not show any buttons in rendered form.
+ - Better feedback on the submit buttons when form is submitting and errors occur.
+
+### Fixed
+ - Wrong data being passed to EditGrid and DataGrid for some evals.
 
 ## 3.0.0-rc.12
 ### Fixed
