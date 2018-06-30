@@ -45,13 +45,26 @@ export default class FormComponent extends Component {
     return { data: {} };
   }
 
+  render() {
+    if (this.subform) {
+      return this.subform.render();
+    }
+  }
+
+  hydrate(element) {
+    console.log(element);
+    if (this.subform) {
+      return this.subForm.hydrate(element);
+    }
+  }
+
   /**
    * Render a subform.
    *
    * @param form
    * @param options
    */
-  renderSubForm(form, options) {
+  setSubForm(form, options) {
     // Iterate through every component and hide the submit button.
     eachComponent(form.components, (component) => {
       if ((component.type === 'button') && (component.action === 'submit')) {
@@ -59,7 +72,7 @@ export default class FormComponent extends Component {
       }
     });
 
-    (new Form(this.element, form, options)).then((instance) => {
+    (new Form(form, options)).then((instance) => {
       this.subForm = instance;
       this.subForm.on('change', () => {
         this.dataValue = this.subForm.getValue();
@@ -69,6 +82,7 @@ export default class FormComponent extends Component {
       this.subForm.nosubmit = false;
       this.restoreValue();
       this.subFormReadyResolve(this.subForm);
+      this.redraw();
       return this.subForm;
     });
   }
@@ -143,11 +157,11 @@ export default class FormComponent extends Component {
 
     // Determine if we already have a loaded form object.
     if (this.component && this.component.components && this.component.components.length) {
-      this.renderSubForm(this.component, srcOptions);
+      this.setSubForm(this.component, srcOptions);
     }
     else {
       (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
-        .then((formObj) => this.renderSubForm(formObj, srcOptions))
+        .then((formObj) => this.setSubForm(formObj, srcOptions))
         .catch(err => this.subFormReadyReject(err));
     }
     return this.subFormReady;
@@ -232,7 +246,7 @@ export default class FormComponent extends Component {
     }
   }
 
-  build() {
+  buildOld() {
     this.createElement();
 
     // Do not restore the value when building before submission.

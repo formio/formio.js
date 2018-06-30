@@ -46,11 +46,11 @@ export default class Field extends Component {
     }));
   }
 
-  hydrate(dom) {
-    super.hydrate(dom);
+  attach(dom) {
+    super.attach(dom);
   }
 
-  dehydrate() {
+  deattach() {
     if (this.tooltip) {
       this.tooltip.dispose();
     }

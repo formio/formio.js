@@ -434,8 +434,8 @@ export default class SelectComponent extends Field {
     return element;
   }
 
-  hydrate(element) {
-    super.hydrate(element);
+  attach(element) {
+    super.attach(element);
     this.loadRefs(element, { selectContainer: 'single' });
     const input = this.refs.selectContainer;
     if (!input) {

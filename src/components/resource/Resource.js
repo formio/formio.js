@@ -68,9 +68,9 @@ export default class ResourceComponent extends SelectComponent {
     }
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { addResource: 'single' });
-    super.hydrate(element);
+    super.attach(element);
 
     if (this.refs.addResource) {
       this.addEventListener(this.refs.addResource, 'click', (event) => {

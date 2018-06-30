@@ -81,7 +81,7 @@ export default class FileComponent extends Component {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, {
       fileDrop: 'single',
       fileBrowse: 'single',
@@ -91,7 +91,7 @@ export default class FileComponent extends Component {
       fileStatusRemove: 'multiple',
       fileImage: 'multiple',
     });
-    super.hydrate(element);
+    super.attach(element);
 
     if (this.refs.fileDrop) {
       const element = this;

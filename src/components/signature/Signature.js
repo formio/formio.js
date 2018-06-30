@@ -125,9 +125,9 @@ export default class SignatureComponent extends Input {
     });
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { canvas: 'single', refresh: 'single', padBody: 'single', signatureImage: 'single' });
-    super.hydrate(element);
+    super.attach(element);
 
     // Add the footer.
     // Create the signature pad.

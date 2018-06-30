@@ -40,7 +40,7 @@ export default class HTMLComponent extends Component {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { html: 'single' });
     if (this.component.refreshOnChange) {
       this.on('change', () => {
@@ -49,6 +49,6 @@ export default class HTMLComponent extends Component {
         }
       });
     }
-    super.hydrate(element);
+    super.attach(element);
   }
 }

@@ -112,9 +112,9 @@ export default class ButtonComponent extends Field {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { button: 'single' });
-    super.hydrate(element);
+    super.attach(element);
     if (!this.refs.button) {
       return;
     }

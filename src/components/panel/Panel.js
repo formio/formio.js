@@ -55,12 +55,12 @@ export default class PanelComponent extends NestedComponent {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { [this.panelKey]: 'single' });
-    super.hydrate(element);
+    super.attach(element);
 
     if (this.refs[this.panelKey]) {
-      this.hydrateComponents(this.refs[this.panelKey]);
+      this.attachComponents(this.refs[this.panelKey]);
     }
   }
 }

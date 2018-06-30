@@ -96,7 +96,7 @@ export default class Input extends Multivalue {
     });
   }
 
-  hydrateElement(element, index) {
+  attachElement(element, index) {
     this.addEventListener(this.refs.input[index], this.inputInfo.changeEvent, () => this.updateValue());
 
     if (this.options.submitOnEnter) {

@@ -60,9 +60,9 @@ export default class LocationComponent extends TextFieldComponent {
     });
   }
 
-  hydrateElement(element, index) {
+  attachElement(element, index) {
     this.loadRefs(this.element, { gmapElement: 'single' });
-    super.hydrateElement(element, index);
+    super.attachElement(element, index);
 
     const input = this.refs.input[0];
     const that = this;

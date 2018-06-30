@@ -195,9 +195,9 @@ export default class NestedComponent extends Component {
     return components.map(component => component.render()).join('');
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { header: 'single' });
-    super.hydrate(element);
+    super.attach(element);
     if (this.component.collapsible && this.refs.header) {
       this.addEventListener(this.refs.header, 'click', () => {
         this.collapsed = !this.collapsed;
@@ -205,9 +205,9 @@ export default class NestedComponent extends Component {
     }
   }
 
-  hydrateComponents(element, components) {
+  attachComponents(element, components) {
     components = components || this.components;
-    return Promise.all[components.map((component, index) => component.hydrate(element.children[index]))];
+    return Promise.all[components.map((component, index) => component.attach(element.children[index]))];
   }
 
   /**

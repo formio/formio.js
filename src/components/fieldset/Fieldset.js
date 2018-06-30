@@ -52,11 +52,11 @@ export default class FieldsetComponent extends NestedComponent {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { [this.fieldsetKey]: 'single' });
-    super.hydrate(element);
+    super.attach(element);
     if (this.refs[this.fieldsetKey]) {
-      super.hydrateComponents(this.refs[this.fieldsetKey]);
+      super.attachComponents(this.refs[this.fieldsetKey]);
     }
   }
 }

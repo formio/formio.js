@@ -210,9 +210,9 @@ export default class DayComponent extends Field {
     }
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { day: 'single', month: 'single', year: 'single', input: 'multiple' });
-    super.hydrate(element);
+    super.attach(element);
     if (this.refs.day) {
       this.addEventListener(this.refs.day, 'change', () => this.updateValue());
     }

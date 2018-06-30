@@ -99,13 +99,13 @@ export default class DateTimeComponent extends Input {
     return '';
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { dateTimeToggle: 'multiple' });
-    super.hydrate(element);
+    super.attach(element);
     this.disabled = this.shouldDisable;
   }
 
-  hydrateElement(input, index) {
+  attachElement(input, index) {
     if (!input.calendar && !this.options.noCalendar) {
       input.calendar = new Flatpickr(input, this.config);
       this.addEventListener(this.refs.dateTimeToggle[index], 'click', () => {

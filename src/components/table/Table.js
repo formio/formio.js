@@ -104,13 +104,13 @@ export default class TableComponent extends NestedComponent {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { [this.columnKey]: 'multiple' });
     const rowLength = this.table.length;
     this.refs[this.columnKey].forEach((column, index) => {
       const rowIndex = Math.floor(index / rowLength);
       const columnIndex = index % rowLength;
-      this.hydrateComponents(column, this.table[rowIndex][columnIndex]);
+      this.attachComponents(column, this.table[rowIndex][columnIndex]);
     });
   }
 

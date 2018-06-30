@@ -67,7 +67,7 @@ export default class CheckBoxComponent extends Component {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { input: 'multiple' });
     this.input = this.refs.input[0];
     if (this.refs.input.length) {
@@ -78,7 +78,7 @@ export default class CheckBoxComponent extends Component {
     //   if (this.shouldDisable) {
     //     this.disabled = true;
     //   }
-    super.hydrate(element);
+    super.attach(element);
   }
     // build() {
   //   if (this.viewOnly) {

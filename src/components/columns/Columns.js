@@ -71,9 +71,9 @@ export default class ColumnsComponent extends NestedComponent {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { [this.columnKey]: 'multiple' });
-    this.refs[this.columnKey].forEach((column, index) => this.hydrateComponents(column, this.columns[index]));
+    this.refs[this.columnKey].forEach((column, index) => this.attachComponents(column, this.columns[index]));
   }
 
   destroy(all) {

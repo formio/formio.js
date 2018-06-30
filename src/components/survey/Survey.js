@@ -32,9 +32,9 @@ export default class SurveyComponent extends Field {
     return super.render(this.renderTemplate('survey'));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { input: 'multiple' });
-    super.hydrate(element);
+    super.attach(element);
     this.refs.input.forEach((input) => {
       this.addEventListener(input, 'change', () => this.updateValue());
     });

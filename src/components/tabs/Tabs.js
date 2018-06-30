@@ -81,7 +81,7 @@ export default class TabsComponent extends NestedComponent {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });
     this.refs[this.tabLinkKey].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
@@ -89,7 +89,7 @@ export default class TabsComponent extends NestedComponent {
         this.setTab(index);
       });
     });
-    this.refs[this.tabKey].forEach((tab, index) => this.hydrateComponents(tab, this.tabs[index]));
+    this.refs[this.tabKey].forEach((tab, index) => this.attachComponents(tab, this.tabs[index]));
   }
 
   destroy(all) {

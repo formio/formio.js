@@ -38,11 +38,11 @@ export default class Multivalue extends Field {
     });
   }
 
-  hydrate(dom) {
-    super.hydrate(dom);
+  attach(dom) {
+    super.attach(dom);
     this.loadRefs(dom, { addButton: 'single', input: 'multiple', removeRow: 'multiple' });
 
-    this.refs.input.forEach(this.hydrateElement.bind(this));
+    this.refs.input.forEach(this.attachElement.bind(this));
     if (!this.component.multiple) {
       return;
     }

@@ -70,7 +70,7 @@ export default class Wizard extends Webform {
     });
   }
 
-  hydrate(element) {
+  attach(element) {
     this.element = element;
     this.loadRefs(element, {
       [this.wizardKey]: 'single',
@@ -81,7 +81,7 @@ export default class Wizard extends Webform {
       [`${this.wizardKey}-link`]: 'multiple',
     });
 
-    this.hydrateComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.currentPage]]);
+    this.attachComponents(this.refs[this.wizardKey], [...this.globalComponents, ...this.pages[this.currentPage]]);
 
     [
       { name: 'cancel',    method: 'cancel' },

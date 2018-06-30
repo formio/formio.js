@@ -49,13 +49,13 @@ export default class RadioComponent extends Field {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { input: 'multiple', wrapper: 'multiple' });
     this.refs.input.forEach(input => {
       this.addEventListener(input, this.inputInfo.changeEvent, () => this.updateValue());
     });
     // this.addShortcut(label, value.shortcut);
-    super.hydrate(element);
+    super.attach(element);
   }
 
   getValue() {

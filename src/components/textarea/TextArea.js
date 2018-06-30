@@ -82,7 +82,7 @@ export default class TextAreaComponent extends TextFieldComponent {
     });
   }
 
-  hydrateElement(element, index) {
+  attachElement(element, index) {
     if (this.isPlain) {
       this.addEventListener(this.refs.input[index], this.inputInfo.changeEvent, () => this.updateValue());
       return;

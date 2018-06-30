@@ -124,13 +124,13 @@ export default class DataGridComponent extends NestedComponent {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, {
       addRow: 'multiple',
       removeRow: 'multiple',
       [this.datagridKey]: 'multiple',
     });
-    super.hydrate(element);
+    super.attach(element);
 
     this.refs.addRow.forEach((addButton) => {
       this.addEventListener(addButton, 'click', this.addRow.bind(this));
@@ -145,7 +145,7 @@ export default class DataGridComponent extends NestedComponent {
       let columnIndex = 0;
       this.component.components.forEach((col) => {
         if (this.visibleColumns[col.key]) {
-          this.hydrateComponents(this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex], [this.rows[rowIndex][col.key]]);
+          this.attachComponents(this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex], [this.rows[rowIndex][col.key]]);
           columnIndex++;
         }
       });

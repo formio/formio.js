@@ -5,7 +5,7 @@ import Promise from 'native-promise-only';
 import _ from 'lodash';
 import i18next from 'i18next';
 import * as FormioUtils from '../../../utils/utils';
-import Formio from '../../Formio';
+import Formio from '../../../Formio';
 import Validator from '../../Validator';
 import moment from 'moment';
 import templates from '../../../templates';
@@ -183,9 +183,9 @@ export default class Component {
     this.refs = {};
 
     /**
-     * If the component has been hydrated
+     * If the component has been attached
      */
-    this.hydrated = false;
+    this.attached = false;
 
     /**
      * If the component has been rendered
@@ -597,7 +597,7 @@ export default class Component {
   build(element) {
     this.empty(element);
     element.innerHTML = this.render();
-    this.hydrate(element);
+    this.attach(element);
   }
 
   render(children = `Unknown component: ${this.component.type}`) {
@@ -611,8 +611,8 @@ export default class Component {
     });
   }
 
-  hydrate(element) {
-    this.hydrated = true;
+  attach(element) {
+    this.attached = true;
     this.element = element;
     this.loadRefs(element, { messageContainer: 'single', tooltip: 'single' });
 
@@ -1089,7 +1089,7 @@ export default class Component {
     this.element.outerHTML = this.render();
     this.element = parent.children[index];
 
-    this.hydrate(this.element);
+    this.attach(this.element);
   }
 
   removeEventListeners() {
@@ -1722,7 +1722,7 @@ export default class Component {
     this._value = value;
 
     // If we aren't connected to the dom yet, skip updating values.
-    if (!this.hydrated) {
+    if (!this.attached) {
       return;
     }
 

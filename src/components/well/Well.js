@@ -44,10 +44,10 @@ export default class WellComponent extends NestedComponent {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { [this.wellId]: 'single' });
     if (this.refs[this.wellId]) {
-      this.hydrateComponents(this.refs[this.wellId]);
+      this.attachComponents(this.refs[this.wellId]);
     }
   }
 }

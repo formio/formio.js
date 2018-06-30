@@ -48,10 +48,10 @@ export default class ContainerComponent extends NestedComponent {
     }));
   }
 
-  hydrate(element) {
+  attach(element) {
     this.loadRefs(element, { [this.containerId]: 'single' });
     if (this.refs[this.containerId]) {
-      this.hydrateComponents(this.refs[this.containerId]);
+      this.attachComponents(this.refs[this.containerId]);
     }
   }
 

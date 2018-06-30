@@ -113,7 +113,7 @@ export default class Form {
     this.element = element;
     return this.render().then(html => {
       this.element.innerHTML = html;
-      return this.hydrate(this.element).then(() => this.instance);
+      return this.attach(this.element).then(() => this.instance);
     });
   }
 
@@ -122,9 +122,9 @@ export default class Form {
     return this.ready.then(instance => instance.render());
   }
 
-  hydrate(element) {
+  attach(element) {
     this.element = element;
-    return this.ready.then(instance => instance.hydrate(this.element));
+    return this.ready.then(instance => instance.attach(this.element));
   }
 }
 

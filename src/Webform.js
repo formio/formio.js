@@ -731,10 +731,10 @@ export default class Webform extends NestedComponent {
     });
   }
 
-  hydrate(element) {
+  attach(element) {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });
-    this.hydrateComponents(this.refs.webform);
+    this.attachComponents(this.refs.webform);
     this.refs.webform.addEventListener('keydown', this.executeShortcuts.bind(this));
     this.on('submitButton', (options) => this.submit(false, options), true);
     this.on('requestUrl', (args) => (this.submitUrl(args.url,args.headers)), true);

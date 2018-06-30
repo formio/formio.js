@@ -42,7 +42,7 @@ export default class TagsComponent extends Input {
     return info;
   }
 
-  hydrateElement(element, index) {
+  attachElement(element, index) {
     if (!this.refs.input[index]) {
       return;
     }

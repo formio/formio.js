@@ -462,8 +462,8 @@ export default class AddressComponent extends TextFieldComponent {
     });
   }
 
-  hydrateElement(element, index) {
-    super.hydrateElement(element, index);
+  attachElement(element, index) {
+    super.attachElement(element, index);
     const input = this.refs.input[index];
     Formio.libraryReady('googleMaps').then(() => {
       let autoCompleteOptions = {};
