@@ -31,72 +31,12 @@ export default class FormComponent extends Component {
     super.init();
     this.subForm = null;
     this.formSrc = '';
+
     this.subFormReady = new Promise((resolve, reject) => {
       this.subFormReadyResolve = resolve;
       this.subFormReadyReject = reject;
     });
-  }
 
-  get defaultSchema() {
-    return FormComponent.schema();
-  }
-
-  get emptyValue() {
-    return { data: {} };
-  }
-
-  render() {
-    if (this.subform) {
-      return this.subform.render();
-    }
-  }
-
-  hydrate(element) {
-    console.log(element);
-    if (this.subform) {
-      return this.subForm.hydrate(element);
-    }
-  }
-
-  /**
-   * Render a subform.
-   *
-   * @param form
-   * @param options
-   */
-  setSubForm(form, options) {
-    // Iterate through every component and hide the submit button.
-    eachComponent(form.components, (component) => {
-      if ((component.type === 'button') && (component.action === 'submit')) {
-        component.hidden = true;
-      }
-    });
-
-    (new Form(form, options)).then((instance) => {
-      this.subForm = instance;
-      this.subForm.on('change', () => {
-        this.dataValue = this.subForm.getValue();
-        this.onChange();
-      });
-      this.subForm.url = this.formSrc;
-      this.subForm.nosubmit = false;
-      this.restoreValue();
-      this.subFormReadyResolve(this.subForm);
-      this.redraw();
-      return this.subForm;
-    });
-  }
-
-  /**
-   * Load the subform.
-   */
-  /* eslint-disable max-statements */
-  loadSubForm() {
-    // Only load the subform if the subform isn't loaded and the conditions apply.
-    if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
-      return this.subFormReady;
-    }
-    this.subFormLoaded = true;
     const srcOptions = {};
     if (this.options && this.options.base) {
       srcOptions.base = this.options.base;
@@ -155,13 +95,87 @@ export default class FormComponent extends Component {
       }
     }
 
+    // Ensure components is set.
+    this.component.components = this.component.components || [];
+
+    (new Form(this.component, srcOptions)).then((instance) => {
+      this.subForm = instance;
+      this.subForm.on('change', () => {
+        this.dataValue = this.subForm.getValue();
+        this.onChange();
+      });
+      this.loadSubForm().then(this.redraw.bind(this));
+      this.subForm.url = this.formSrc;
+      this.subForm.nosubmit = false;
+      this.restoreValue();
+    });
+  }
+
+  get defaultSchema() {
+    return FormComponent.schema();
+  }
+
+  get emptyValue() {
+    return { data: {} };
+  }
+
+  render() {
+    const subform = this.subForm ? this.subForm.render() : 'Loading';
+    return super.render(subform);
+  }
+
+  attach(element) {
+    this.element = element;
+    return this.subForm.attach(element);
+  }
+
+  destroy() {
+    this.subForm.destroy();
+    super.destroy();
+  }
+
+  redraw() {
+    this.subForm.form = this.component;
+    super.redraw();
+  }
+
+  /**
+   * Filter a subform to ensure all submit button components are hidden.
+   *
+   * @param form
+   * @param options
+   */
+  filterSubForm() {
+    // Iterate through every component and hide the submit button.
+    eachComponent(this.component.components, (component) => {
+      if ((component.type === 'button') && (component.action === 'submit')) {
+        component.hidden = true;
+      }
+    });
+  }
+
+  /**
+   * Load the subform.
+   */
+  /* eslint-disable max-statements */
+  loadSubForm() {
+    // Only load the subform if the subform isn't loaded and the conditions apply.
+    if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
+      return this.subFormReady;
+    }
+
     // Determine if we already have a loaded form object.
     if (this.component && this.component.components && this.component.components.length) {
-      this.setSubForm(this.component, srcOptions);
+      this.filterSubForm();
+      return this.subFormReadyResolve(this.subForm);
     }
     else {
       (new Formio(this.formSrc)).loadForm({ params: { live: 1 } })
-        .then((formObj) => this.setSubForm(formObj, srcOptions))
+        .then((formObj) => {
+          this.component.components = formObj.components;
+          this.filterSubForm();
+          return this.subFormReadyResolve(this.subForm);
+        })
         .catch(err => this.subFormReadyReject(err));
     }
     return this.subFormReady;
@@ -243,15 +257,6 @@ export default class FormComponent extends Component {
     }
     else {
       return super.beforeSubmit();
-    }
-  }
-
-  buildOld() {
-    this.createElement();
-
-    // Do not restore the value when building before submission.
-    if (!this.options.beforeSubmit) {
-      this.restoreValue();
     }
   }
 

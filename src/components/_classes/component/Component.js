@@ -1123,7 +1123,6 @@ export default class Component {
    */
   destroy(all) {
     this.removeEventListeners(all);
-    this.destroyInputs();
   }
 
   /**
