@@ -13,7 +13,8 @@ export default class FileComponent extends Component {
       imageSize: '200',
       filePattern: '*',
       fileMinSize: '0KB',
-      fileMaxSize: '1GB'
+      fileMaxSize: '1GB',
+      uploadOnly: false
     }, ...extend);
   }
 

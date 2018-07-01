@@ -17,7 +17,13 @@ export default {
       {% if (!disabled) { %}
       <div class="one wide column"><i class="{{iconClass('remove')}}" ref="removeLink"></i></div>
       {% } %}
-      <div class="twelve wide column"><a href="{{file.url}}" target="_blank" ref="fileLink">{{file.originalName || file.name}}</a></div>
+      <div class="twelve wide column">
+        {% if (component.uploadOnly) { %}
+          {{file.originalName || file.name}}
+        {% } else { %}
+          <a href="{{file.url}}" target="_blank" ref="fileLink">{{file.originalName || file.name}}</a>
+        {% } %}
+      </div>
       <div class="three wide column">{{fileSize(file.size)}}</div>
     </div>
   </li>
