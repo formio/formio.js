@@ -13,7 +13,8 @@ export default class FileComponent extends BaseComponent {
       imageSize: '200',
       filePattern: '*',
       fileMinSize: '0KB',
-      fileMaxSize: '1GB'
+      fileMaxSize: '1GB',
+      uploadOnly: false
     }, ...extend);
   }
 
@@ -184,6 +185,9 @@ export default class FileComponent extends BaseComponent {
   }
 
   createFileLink(file) {
+    if (this.options.uploadOnly) {
+      return file.originalName || file.name;
+    }
     return this.ce('a', {
       href: file.url, target: '_blank',
       onClick: this.getFile.bind(this, file)
