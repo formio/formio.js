@@ -193,6 +193,7 @@ export default class TextFieldComponent extends BaseComponent {
       container.appendChild(textInput);
     }
     this.hook('input', textInput, container);
+    this.addFocusBlurEvents(textInput);
     this.addInputEventListener(textInput);
     this.addInputSubmitListener(textInput);
   }

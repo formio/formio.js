@@ -1,4 +1,1 @@
-import storage from './storage';
-export default {
-  storage: storage
-};
+export storage from './storage';

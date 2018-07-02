@@ -557,3 +557,54 @@ describe('setActionProperty', () => {
     expect(component).to.deep.equal(originalComponent);
   });
 });
+
+describe('delay', () => {
+  let score = 0;
+
+  function incScore(value) {
+    score += value || 1;
+  }
+
+  beforeEach(() => {
+    score = 0;
+  });
+
+  it('should act as regular setTimeout()', (done) => {
+    utils.delay(incScore);
+    utils.delay(incScore, 0);
+    utils.delay(incScore, 100, 2);
+    utils.delay(() => {
+      if (score === 4) {
+        done();
+      }
+    }, 200);
+  });
+
+  it('should be cancelable via direct timer access', (done) => {
+    const delay = utils.delay(incScore);
+    clearTimeout(delay.timer);
+    setTimeout(() => {
+      if (score === 0) {
+        done();
+      }
+    }, 100);
+  });
+
+  it('should be cancelable via cancel() method', (done) => {
+    const delay = utils.delay(incScore);
+    delay.cancel();
+    setTimeout(() => {
+      if (score === 0) {
+        done();
+      }
+    }, 100);
+  });
+
+  it('should be able to call passed function synchronously', (done) => {
+    const delay = utils.delay(incScore);
+    delay();
+    if (score === 1) {
+      done();
+    }
+  });
+});

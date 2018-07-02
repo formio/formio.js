@@ -1,5 +1,6 @@
 import UnknownComponent from './unknown/Unknown';
 import _ from 'lodash';
+
 export default class Components {
   static get components() {
     if (!Components._components) {
