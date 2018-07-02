@@ -9,6 +9,7 @@ import Formio from '../../../Formio';
 import Validator from '../../Validator';
 import moment from 'moment';
 import templates from '../../../templates';
+import { boolValue } from '../../../utils/utils';
 
 /**
  * This is the Component class which all elements within the FormioForm derive from.
@@ -236,12 +237,12 @@ export default class Component {
      *
      * @type {boolean}
      */
-    this._disabled = false;
+    this._disabled = boolValue(this.component.disabled) ? this.component.disabled : false;
 
     /**
      * Determines if this component is visible, or not.
      */
-    this._visible = true;
+    this._visible = boolValue(this.component.hidden) ? !this.component.hidden : true;
 
     /**
      * If this input has been input and provided value.
@@ -470,6 +471,34 @@ export default class Component {
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     return this.interpolate(this.getTemplate(name), data);
+  }
+
+  /**
+   * Render a template string into html.
+   *
+   * @param template
+   * @param data
+   * @param actions
+   *
+   * @return {HTMLElement} - The created element.
+   */
+  renderString(template, data, actions = []) {
+    if (!template) {
+      return '';
+    }
+
+    // Interpolate the template and populate
+    return this.interpolate(template, data);
+
+    // Add actions to matching elements.
+    // actions.forEach(action => {
+    //   const elements = div.getElementsByClassName(action.class);
+    //   Array.prototype.forEach.call(elements, element => {
+    //     element.addEventListener(action.event, action.action);
+    //   });
+    // });
+    //
+    // return div;
   }
 
   performInputMapping(input) {
@@ -1123,33 +1152,6 @@ export default class Component {
    */
   destroy(all) {
     this.removeEventListeners(all);
-  }
-
-  /**
-   * Render a template string into html.
-   *
-   * @param template
-   * @param data
-   * @param actions
-   *
-   * @return {HTMLElement} - The created element.
-   */
-  renderTemplateOld(template, data, actions = []) {
-    // Create a container div.
-    const div = this.ce('div');
-
-    // Interpolate the template and populate
-    div.innerHTML = this.interpolate(template, data);
-
-    // Add actions to matching elements.
-    actions.forEach(action => {
-      const elements = div.getElementsByClassName(action.class);
-      Array.prototype.forEach.call(elements, element => {
-        element.addEventListener(action.event, action.action);
-      });
-    });
-
-    return div;
   }
 
   /**

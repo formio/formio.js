@@ -126,17 +126,17 @@ export default class DataGridComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, {
-      addRow: 'multiple',
-      removeRow: 'multiple',
+      [`${this.datagridKey}-addRow`]: 'multiple',
+      [`${this.datagridKey}-removeRow`]: 'multiple',
       [this.datagridKey]: 'multiple',
     });
     super.attach(element);
 
-    this.refs.addRow.forEach((addButton) => {
+    this.refs[`${this.datagridKey}-addRow`].forEach((addButton) => {
       this.addEventListener(addButton, 'click', this.addRow.bind(this));
     });
 
-    this.refs.removeRow.forEach((removeButton, index) => {
+    this.refs[`${this.datagridKey}-removeRow`].forEach((removeButton, index) => {
       this.addEventListener(removeButton, 'click', this.removeRow.bind(this, index));
     });
 

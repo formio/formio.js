@@ -6,6 +6,7 @@ import container from './container';
 import datagrid from './datagrid';
 import day from './day';
 import dialog from './dialog';
+import editgrid from './editgrid';
 import field from './field';
 import fieldset from './fieldset';
 import file from './file';
@@ -41,6 +42,7 @@ export default {
   datagrid,
   day,
   dialog,
+  editgrid,
   field,
   fieldset,
   file,

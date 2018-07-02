@@ -1,4 +1,4 @@
-import baseEditForm from '../base/Base.form';
+import baseEditForm from '../_classes/component/Component.form';
 
 import DayEditDisplay from './editForm/Day.edit.display';
 import DayEditValidation from './editForm/Day.edit.validation';

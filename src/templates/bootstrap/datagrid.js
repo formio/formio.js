@@ -21,7 +21,7 @@ export default {
       {% if (hasExtraColumn) { %}
       <th>
         {% if (hasAddButton && hasTopSubmit) { %}
-        <button class="btn btn-primary" ref="addRow">
+        <button class="btn btn-primary" ref="{{datagridKey}}-addRow">
           <i class="glyphicon glyphicon-plus"></i> Add Another
         </button>
         {% } %}
@@ -42,7 +42,7 @@ export default {
       {% }) %}
       {% if (hasExtraColumn && hasRemoveButtons) { %}
       <td>
-        <button type="button" class="btn btn-default btn-secondary" ref="removeRow">
+        <button type="button" class="btn btn-default btn-secondary" ref="{{datagridKey}}-removeRow">
           <i class="glyphicon glyphicon-remove-circle"></i>
         </button>
       </td>
@@ -54,8 +54,8 @@ export default {
   <tfoot>
     <tr>
       <td colspan="{{numColumns}}">
-        <button class="btn btn-primary" ref="addRow">
-          <i class="glyphicon glyphicon-plus"></i> Add Another
+        <button class="btn btn-primary" ref="{{datagridKey}}-addRow">
+          <i class="glyphicon glyphicon-plus"></i> {{t(component.addAnother || 'Add Another')}}
         </button>
       </td>
     </tr>

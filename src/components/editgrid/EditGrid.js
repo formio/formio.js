@@ -55,12 +55,6 @@ export default class EditGridComponent extends NestedComponent {
 </div>`;
   }
 
-  init() {
-    super.init();
-    this.type = 'datagrid';
-    this.editRows = [];
-  }
-
   get defaultSchema() {
     return EditGridComponent.schema();
   }
@@ -69,135 +63,93 @@ export default class EditGridComponent extends NestedComponent {
     return [];
   }
 
-  build() {
-    if (this.options.builder) {
-      return super.build(true);
-    }
-    this.createElement();
-    this.createLabel(this.element);
-    this.buildTable();
-    this.createDescription(this.element);
-    this.createAddButton();
-    this.element.appendChild(this.errorContainer = this.ce('div', { class: 'has-error' }));
+  get editgridKey() {
+    return `editgrid-${this.key}`;
   }
 
-  buildTable() {
-    if (this.tableElement) {
-      this.tableElement.innerHTML = '';
-    }
+  init() {
+    super.init();
+    this.type = 'editgrid';
+    this.editRows = this.dataValue.map((row, rowIndex) => ({
+      isOpen: false,
+      data: row,
+    }));
+  }
 
-    let tableClass = 'editgrid-listgroup list-group ';
-    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
-      if (this.component[prop]) {
-        tableClass += `table-${prop} `;
+  render() {
+    return super.render(this.renderTemplate('editgrid', {
+      editgridKey: this.editgridKey,
+      header: this.renderString(_.get(this.component, 'templates.header'), {
+        components: this.component.components,
+        value: this.dataValue
+      }),
+      footer: this.renderString(_.get(this.component, 'templates.footer'), {
+        components: this.component.components,
+        value: this.dataValue
+      }),
+      rows: this.editRows.map(this.renderRow.bind(this)),
+      openRows: this.editRows.map(row => row.isOpen),
+    }));
+  }
+
+  attach(element) {
+    this.loadRefs(element, {
+      [`${this.editgridKey}-addRow`]: 'multiple',
+      [`${this.editgridKey}-removeRow`]: 'multiple',
+      [`${this.editgridKey}-saveRow`]: 'multiple',
+      [`${this.editgridKey}-cancelRow`]: 'multiple',
+      [this.editgridKey]: 'multiple',
+    });
+    super.attach(element);
+
+    this.refs[`${this.editgridKey}-addRow`].forEach((addButton) => {
+      this.addEventListener(addButton, 'click', this.addRow.bind(this));
+    });
+
+    let openRowCount = 0;
+    this.refs[this.editgridKey].forEach((row, rowIndex) => {
+      if (this.editRows[rowIndex].isOpen) {
+        this.attachComponents(row, this.editRows[rowIndex].components);
+        this.addEventListener(this.refs[`${this.editgridKey}-saveRow`][openRowCount], 'click', this.saveRow.bind(this, rowIndex));
+        this.addEventListener(this.refs[`${this.editgridKey}-cancelRow`][openRowCount], 'click', this.cancelRow.bind(this, rowIndex));
+        openRowCount++;
+      }
+      else {
+        // Attach edit and remove button events.
+        [
+          {
+            class: 'removeRow',
+            event: 'click',
+            action: this.removeRow.bind(this, rowIndex)
+          },
+          {
+            class: 'editRow',
+            event: 'click',
+            action: this.editRow.bind(this, rowIndex)
+          },
+        ].forEach(action => {
+          const elements = row.getElementsByClassName(action.class);
+          Array.prototype.forEach.call(elements, element => {
+            element.addEventListener(action.event, action.action);
+          });
+        });
       }
     });
-    this.tableElement = this.ce('ul', { class: tableClass }, [
-      this.headerElement = this.createHeader(),
-      this.rowElements = _.map(this.rows, this.createRow.bind(this)),
-      this.footerElement = this.createFooter(),
-    ]);
-
-    this.element.appendChild(this.tableElement);
   }
 
-  createHeader() {
-    const templateHeader = _.get(this.component, 'templates.header');
-    if (!templateHeader) {
-      return this.text('');
-    }
-    return this.ce('li', {
-      class: 'list-group-item list-group-header'
-    }, this.renderTemplate(templateHeader, {
-      components: this.component.components,
-      value: this.dataValue
-    }));
-  }
-
-  createRow(row, rowIndex) {
-    const wrapper = this.ce('li', { class: 'list-group-item' });
-    const rowTemplate = _.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate);
-
-    // Store info so we can detect changes later.
-    wrapper.rowData = row;
-    wrapper.rowIndex = rowIndex;
-    wrapper.rowOpen = this.editRows[rowIndex].isOpen;
-    this.editRows[rowIndex].components = [];
-
-    if (wrapper.rowOpen) {
-      wrapper.appendChild(
-        this.ce('div', { class: 'editgrid-edit' },
-          this.ce('div', { class: 'editgrid-body' },
-            [
-              this.component.components.map(comp => {
-                const component = _.cloneDeep(comp);
-                const options = _.clone(this.options);
-                options.row = `${this.row}-${rowIndex}`;
-                options.name += `[${rowIndex}]`;
-                const instance = this.createComponent(component, options, this.editRows[rowIndex].data);
-                this.editRows[rowIndex].components.push(instance);
-                return instance.element;
-              }),
-              this.ce('div', { class: 'editgrid-actions' },
-                [
-                  this.ce('button', {
-                    class: 'btn btn-primary',
-                    onClick: this.saveRow.bind(this, rowIndex)
-                  }, this.component.saveRow || 'Save'),
-                  ' ',
-                  this.component.removeRow ?
-                    this.ce('button', {
-                      class: 'btn btn-danger',
-                      onClick: this.cancelRow.bind(this, rowIndex)
-                    }, this.component.removeRow || 'Cancel')
-                    : null
-                ]
-              )
-            ]
-          )
-        )
-      );
+  renderRow(row, rowIndex) {
+    if (row.isOpen) {
+      return this.renderComponents(row.components);
     }
     else {
-      wrapper.appendChild(
-        this.renderTemplateOld(rowTemplate,
-          {
-            row,
-            rowIndex,
-            components: this.component.components,
-            getView: (component, data) => Components.create(component, this.options, data, true).getView(data)
-          },
-          [
-            {
-              class: 'removeRow',
-              event: 'click',
-              action: this.removeRow.bind(this, rowIndex)
-            },
-            {
-              class: 'editRow',
-              event: 'click',
-              action: this.editRow.bind(this, rowIndex)
-            }
-          ]
-        )
-      );
+      return this.renderString(_.get(this.component, 'templates.row', EditGridComponent.defaultRowTemplate),
+        {
+          row: this.dataValue[rowIndex],
+          rowIndex,
+          components: this.component.components,
+          getView: (component, data) => Components.create(component, this.options, data, true).getView(data)
+        });
     }
-    wrapper.appendChild(this.editRows[rowIndex].errorContainer = this.ce('div', { class: 'has-error' }));
-    this.checkData(this.data, { noValidate: true }, rowIndex);
-    return wrapper;
-  }
-
-  createFooter() {
-    const footerTemplate = _.get(this.component, 'templates.footer');
-    if (!footerTemplate) {
-      return this.text('');
-    }
-    return this.ce('li', {
-      class: 'list-group-item list-group-footer'
-    }, this.renderTemplate(footerTemplate, {
-      components: this.component.components,
-      value: this.dataValue
-    }));
   }
 
   checkData(data, flags = {}, index) {
@@ -233,50 +185,6 @@ export default class EditGridComponent extends NestedComponent {
     return valid;
   }
 
-  createAddButton() {
-    this.element.appendChild(this.ce('div', { class: 'editgrid-add' },
-      this.ce('button', {
-        class: 'btn btn-primary',
-        role: 'button',
-        onClick: this.addRow.bind(this)
-      },
-      [
-        this.ce('span', { class: this.iconClass('plus'), 'aria-hidden': true }),
-        ' ',
-        this.t(this.component.addAnother ? this.component.addAnother : 'Add Another', {})
-      ])
-    ));
-  }
-
-  refreshDOM() {
-    const newHeader = this.createHeader();
-    this.tableElement.replaceChild(newHeader, this.headerElement);
-    this.headerElement = newHeader;
-
-    const newFooter = this.createFooter();
-    this.tableElement.replaceChild(newFooter, this.footerElement);
-    this.footerElement = newFooter;
-
-    this.editRows.forEach((editRow, rowIndex) => {
-      if (!editRow.element) {
-        // New row
-        editRow.element = this.createRow(editRow.data, rowIndex);
-        this.tableElement.insertBefore(editRow.element, this.tableElement.children[rowIndex + 1]);
-      }
-      else if (
-        editRow.element.rowData !== editRow.data ||
-        editRow.element.rowIndex !== rowIndex ||
-        editRow.element.rowOpen !== editRow.isOpen
-      ) {
-        // Row has changed due to an edit or delete.
-        this.removeRowComponents(rowIndex);
-        const newRow = this.createRow(editRow.data, rowIndex);
-        this.tableElement.replaceChild(newRow, editRow.element);
-        editRow.element = newRow;
-      }
-    });
-  }
-
   addRow() {
     if (this.options.readOnly) {
       return;
@@ -285,53 +193,52 @@ export default class EditGridComponent extends NestedComponent {
       isOpen: true,
       data: {}
     });
-    this.updateValue();
-    this.refreshDOM();
+    const rowIndex = this.editRows.length - 1;
+    this.editRows[rowIndex].components = this.createRowComponents(this.editRows[rowIndex].data, rowIndex);
+    this.redraw();
   }
 
   editRow(rowIndex) {
     this.editRows[rowIndex].isOpen = true;
     this.editRows[rowIndex].data = _.cloneDeep(this.dataValue[rowIndex]);
-    this.refreshDOM();
+    this.editRows[rowIndex].components = this.createRowComponents(this.editRows[rowIndex].data, rowIndex);
+    this.redraw();
   }
 
   cancelRow(rowIndex) {
+    this.removeRowComponents(rowIndex);
     if (this.options.readOnly) {
       this.editRows[rowIndex].isOpen = false;
-      this.removeRowComponents(rowIndex);
-      this.refreshDOM();
+      this.redraw();
       return;
     }
-    this.removeRowComponents(rowIndex);
     // Remove if new.
     if (!this.dataValue[rowIndex]) {
-      this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
       this.editRows.splice(rowIndex, 1);
-      this.splice(rowIndex);
     }
     else {
       this.editRows[rowIndex].isOpen = false;
       this.editRows[rowIndex].data = this.dataValue[rowIndex];
     }
-    this.refreshDOM();
+    this.redraw();
   }
 
   saveRow(rowIndex) {
     if (this.options.readOnly) {
       this.editRows[rowIndex].isOpen = false;
       this.removeRowComponents(rowIndex);
-      this.refreshDOM();
+      this.redraw();
       return;
     }
     if (!this.validateRow(rowIndex, true)) {
       return;
     }
-    this.removeRowComponents(rowIndex);
     this.dataValue[rowIndex] = this.editRows[rowIndex].data;
+    this.removeRowComponents(rowIndex);
     this.editRows[rowIndex].isOpen = false;
     this.checkValidity(this.data, true);
     this.updateValue();
-    this.refreshDOM();
+    this.redraw();
   }
 
   removeRow(rowIndex) {
@@ -340,10 +247,24 @@ export default class EditGridComponent extends NestedComponent {
     }
     this.removeRowComponents(rowIndex);
     this.splice(rowIndex);
-    this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
     this.editRows.splice(rowIndex, 1);
     this.updateValue();
-    this.refreshDOM();
+    this.redraw();
+  }
+
+  createRowComponents(row, rowIndex) {
+    const components = [];
+    this.component.components.map((col, colIndex) => {
+      const column = _.clone(col);
+      const options = _.clone(this.options);
+      options.name += `[${rowIndex}]`;
+      options.row = `${rowIndex}-${colIndex}`;
+      const comp = this.createComponent(_.assign({}, column, {
+        row: options.row
+      }), options, row);
+      components.push(comp);
+    });
+    return components;
   }
 
   removeRowComponents(rowIndex) {
@@ -395,10 +316,10 @@ export default class EditGridComponent extends NestedComponent {
       const rowValid = this.validateRow(rowIndex, false);
       // Add has-error class to row.
       if (!rowValid) {
-        this.addClass(this.editRows[rowIndex].element, 'has-error');
+        // this.addClass(this.editRows[rowIndex].element, 'has-error');
       }
       else {
-        this.removeClass(this.editRows[rowIndex].element, 'has-error');
+        // this.removeClass(this.editRows[rowIndex].element, 'has-error');
       }
       rowsValid &= rowValid;
 
@@ -421,27 +342,27 @@ export default class EditGridComponent extends NestedComponent {
   }
 
   setCustomValidity(message, dirty) {
-    if (this.errorElement && this.errorContainer) {
-      this.errorElement.innerHTML = '';
-      this.removeChildFrom(this.errorElement, this.errorContainer);
-    }
-    this.removeClass(this.element, 'has-error');
-    if (this.options.highlightErrors) {
-      this.removeClass(this.element, 'alert alert-danger');
-    }
+    // if (this.errorElement && this.errorContainer) {
+    //   this.errorElement.innerHTML = '';
+    //   this.removeChildFrom(this.errorElement, this.errorContainer);
+    // }
+    // this.removeClass(this.element, 'has-error');
+    // if (this.options.highlightErrors) {
+    //   this.removeClass(this.element, 'alert alert-danger');
+    // }
     if (message) {
       this.emit('componentError', this.error);
-      this.createErrorElement();
-      const errorMessage = this.ce('p', {
-        class: 'help-block'
-      });
-      errorMessage.appendChild(this.text(message));
-      this.appendTo(errorMessage, this.errorElement);
-      // Add error classes
-      this.addClass(this.element, 'has-error');
-      if (dirty && this.options.highlightErrors) {
-        this.addClass(this.element, 'alert alert-danger');
-      }
+      // this.createErrorElement();
+      // const errorMessage = this.ce('p', {
+      //   class: 'help-block'
+      // });
+      // errorMessage.appendChild(this.text(message));
+      // this.appendTo(errorMessage, this.errorElement);
+      // // Add error classes
+      // this.addClass(this.element, 'has-error');
+      // if (dirty && this.options.highlightErrors) {
+      //   this.addClass(this.element, 'alert alert-danger');
+      // }
     }
   }
 
@@ -477,14 +398,14 @@ export default class EditGridComponent extends NestedComponent {
       }
     });
     // Remove any extra edit rows.
-    if (this.dataValue.length < this.editRows.length) {
-      for (let rowIndex = this.editRows.length - 1; rowIndex >= this.dataValue.length; rowIndex--) {
-        this.removeRowComponents(rowIndex);
-        this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
-        this.editRows.splice(rowIndex, 1);
-      }
-    }
-    this.refreshDOM();
+    // if (this.dataValue.length < this.editRows.length) {
+    //   for (let rowIndex = this.editRows.length - 1; rowIndex >= this.dataValue.length; rowIndex--) {
+    //     this.removeRowComponents(rowIndex);
+    //     this.removeChildFrom(this.editRows[rowIndex].element, this.tableElement);
+    //     this.editRows.splice(rowIndex, 1);
+    //   }
+    // }
+    // this.refreshDOM();
   }
 
   /**
