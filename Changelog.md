@@ -48,7 +48,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - `focus` and `blur` events.
- 
+
+### Fixed
+  - Nested forms validation.
+  
 ## 3.0.0-rc.14
 ### Fixed
  - Bad build from previous release.
