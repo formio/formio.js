@@ -182,6 +182,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   build() {
+    this.buildSidebar();
     if (!this.pdfForm) {
       this.element.noDrop = true;
       this.pdfForm = new PDF(this.element, this.options);

@@ -135,6 +135,7 @@ export default class EditGridComponent extends NestedComponent {
                 options.row = `${this.row}-${rowIndex}`;
                 options.name += `[${rowIndex}]`;
                 const instance = this.createComponent(component, options, this.editRows[rowIndex].data);
+                instance.rowIndex = rowIndex;
                 this.editRows[rowIndex].components.push(instance);
                 return instance.element;
               }),
