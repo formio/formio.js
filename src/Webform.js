@@ -20,7 +20,7 @@ Formio.registerComponent = Components.setComponent;
 function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
-    i18next: i18next
+    i18next,
   });
   if (!options.events) {
     options.events = new EventEmitter({
@@ -68,7 +68,10 @@ export default class Webform extends NestedComponent {
       }
       else {
         _.each(options.i18n, (lang, code) => {
-          if (!i18n.resources[code]) {
+          if (code === 'options') {
+            _.merge(i18n, lang);
+          }
+          else if (!i18n.resources[code]) {
             i18n.resources[code] = { translation: lang };
           }
           else {
