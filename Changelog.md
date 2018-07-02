@@ -45,6 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## [UNRELEASED]
+### Added
+ - Possibility to override i18n settings.
+
 ## 3.0.0-rc.14
 ### Fixed
  - Bad build from previous release.
@@ -62,13 +66,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problem with the PDF Builder where you would not see the builder elemements.
  - Fix default value on checkboxes.
  - Fix multiple required file fields not requiring uploading a file.
- 
+
 ### Added
  - Make rowIndex available on editgrids and datagrids.
  - Add custom class name to table component.
  - Add the ability for events to trigger field logic.
  - Add option to trigger validations when button is pressed.
- 
+
 ### Changed
  - Upgrade i18next@11.3.3
 
