@@ -113,7 +113,6 @@ export default class ButtonComponent extends BaseComponent {
     this.createElement();
     this.createInput(this.element);
     this.addShortcut(this.buttonElement);
-    this.hook('input', this.buttonElement, this.element);
     if (this.component.leftIcon) {
       this.buttonElement.appendChild(this.ce('span', {
         class: this.component.leftIcon
@@ -379,7 +378,7 @@ export default class ButtonComponent extends BaseComponent {
   }
 
   focus() {
-    this.button.focus();
+    this.buttonElement.focus();
   }
 }
 

@@ -192,6 +192,7 @@ export default class DateTimeComponent extends BaseComponent {
   getCalendar(input) {
     if (!input.calendar && !this.options.noCalendar) {
       input.calendar = new Flatpickr(input, this.config);
+      this.addFocusBlurEvents(input.calendar.altInput);
     }
     return input.calendar;
   }
