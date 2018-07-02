@@ -48,7 +48,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Added
  - Possibility to override i18n settings.
-
+ - `focus` and `blur` events.
+ 
 ## 3.0.0-rc.14
 ### Fixed
  - Bad build from previous release.

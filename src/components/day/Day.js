@@ -165,6 +165,7 @@ export default class DayComponent extends BaseComponent {
       id
     });
     this.hook('input', this.dayInput, dayInputWrapper);
+    this.addFocusBlurEvents(this.dayInput);
     this.addEventListener(this.dayInput, 'change', () => this.updateValue());
     dayInputWrapper.appendChild(this.dayInput);
     this.setSubinputStyle(dayInputWrapper);
@@ -206,6 +207,7 @@ export default class DayComponent extends BaseComponent {
       id
     });
     this.hook('input', this.monthInput, monthInputWrapper);
+    this.addFocusBlurEvents(this.monthInput);
     this.selectOptions(this.monthInput, 'monthOption', this.months);
     const self = this;
 
@@ -262,6 +264,7 @@ export default class DayComponent extends BaseComponent {
     });
 
     this.hook('input', this.yearInput, yearInputWrapper);
+    this.addFocusBlurEvents(this.yearInput);
     this.addEventListener(this.yearInput, 'change', () => this.updateValue());
     yearInputWrapper.appendChild(this.yearInput);
     this.setSubinputStyle(yearInputWrapper);
