@@ -45,10 +45,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
-## [UNRELEASED]
+## 3.0.0-rc.15
 ### Added
  - Possibility to override i18n settings.
  - `focus` and `blur` events.
+ - Added uploadOnly to file component
 
 ### Fixed
   - Nested forms validation.
