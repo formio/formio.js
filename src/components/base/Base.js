@@ -1886,9 +1886,35 @@ export default class BaseComponent {
     }
     this.inputs.push(input);
     this.hook('input', input, container);
+    this.addFocusBlurEvents(input);
     this.addInputEventListener(input);
     this.addInputSubmitListener(input);
     return input;
+  }
+
+  addFocusBlurEvents(element) {
+    this.addEventListener(element, 'focus', () => {
+      if (this.root.focusedComponent !== this) {
+        if (this.root.pendingBlur) {
+          this.root.pendingBlur();
+        }
+
+        this.root.focusedComponent = this;
+
+        this.emit('focus', this);
+      }
+      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+        this.root.pendingBlur.cancel();
+        this.root.pendingBlur = null;
+      }
+    });
+    this.addEventListener(element, 'blur', () => {
+      this.root.pendingBlur = FormioUtils.delay(() => {
+        this.emit('blur', this);
+        this.root.focusedComponent = null;
+        this.root.pendingBlur = null;
+      });
+    });
   }
 
   get wysiwygDefault() {

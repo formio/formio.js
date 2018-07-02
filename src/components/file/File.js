@@ -302,6 +302,7 @@ export default class FileComponent extends BaseComponent {
       },
       class: 'browse'
     }, this.text('browse'));
+    this.addFocusBlurEvents(this.browseLink);
 
     return this.browseLink;
   }

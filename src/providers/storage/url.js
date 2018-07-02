@@ -6,9 +6,9 @@ const url = (formio) => ({
   uploadFile(file, fileName, dir, progressCallback, url) {
     return new Promise(((resolve, reject) => {
       const data = {
-        dir: dir,
-        name: fileName,
-        file: file
+        dir,
+        file,
+        name: fileName
       };
 
       // Send the file with data.
