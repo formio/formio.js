@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [UNRELEASED]
 ### Added
+ - Possibility to override i18n settings.
  - `focus` and `blur` events.
 
 ### Fixed
@@ -69,13 +70,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - Problem with the PDF Builder where you would not see the builder elemements.
  - Fix default value on checkboxes.
  - Fix multiple required file fields not requiring uploading a file.
- 
+
 ### Added
  - Make rowIndex available on editgrids and datagrids.
  - Add custom class name to table component.
  - Add the ability for events to trigger field logic.
  - Add option to trigger validations when button is pressed.
- 
+
 ### Changed
  - Upgrade i18next@11.3.3
 
