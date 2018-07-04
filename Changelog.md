@@ -45,6 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## [UNRELEASED]
+### Fixed
+ - Utils `getComponent()` function.
+
 ## 3.0.0-rc.15
 ### Added
  - Possibility to override i18n settings.
@@ -53,7 +57,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
   - Nested forms validation.
-  
+
 ## 3.0.0-rc.14
 ### Fixed
  - Bad build from previous release.
