@@ -284,7 +284,7 @@ export function matchComponent(component, query) {
 export function getComponent(components, key, includeAll) {
   let result;
   eachComponent(components, (component, path) => {
-    if (matchComponent(component, key)) {
+    if (path === key) {
       component.path = path;
       result = component;
       return true;
