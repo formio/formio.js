@@ -73,6 +73,7 @@ export default class RadioComponent extends BaseComponent {
       });
 
       const labelSpan = this.ce('span');
+      this.addBlurProtection(labelSpan);
       if (value.label && labelOnTheTopOrOnTheLeft) {
         label.appendChild(labelSpan);
       }

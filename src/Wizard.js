@@ -85,7 +85,7 @@ export default class Wizard extends Webform {
 
   beforeSubmit() {
     const ops = [];
-    this.eachPage(page => {
+    this.eachPage((page) => {
       page.options.beforeSubmit = true;
       ops.push(page.beforeSubmit());
     });

@@ -990,8 +990,8 @@ export default class Webform extends NestedComponent {
   executeSubmit(options) {
     this.submitted = true;
     return this.submitForm(options)
-      .then(result => this.onSubmit(result.submission, result.saved))
-      .catch(err => Promise.reject(this.onSubmissionError(err)));
+      .then((result) => this.onSubmit(result.submission, result.saved))
+      .catch((err) => Promise.reject(this.onSubmissionError(err)));
   }
 
   /**

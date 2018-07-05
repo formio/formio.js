@@ -156,6 +156,7 @@ export default class CheckBoxComponent extends BaseComponent {
 
     // Create the SPAN around the textNode for better style hooks
     this.labelSpan = this.ce('span');
+    this.addBlurProtection(this.labelSpan);
 
     if (this.info.attr.id) {
       this.labelElement.setAttribute('for', this.info.attr.id);

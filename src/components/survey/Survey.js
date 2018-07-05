@@ -42,6 +42,7 @@ export default class SurveyComponent extends BaseComponent {
         class: 'table table-striped table-bordered'
       });
       this.setInputStyles(this.table);
+      this.addBlurProtection(this.table);
 
       // Build header.
       const thead = this.ce('thead');

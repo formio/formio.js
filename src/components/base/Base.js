@@ -1893,28 +1893,43 @@ export default class BaseComponent {
   }
 
   addFocusBlurEvents(element) {
-    this.addEventListener(element, 'focus', () => {
-      if (this.root.focusedComponent !== this) {
-        if (this.root.pendingBlur) {
-          this.root.pendingBlur();
-        }
+    this.addEventListener(element, 'focus', () => this.handleFocus());
+    this.addEventListener(element, 'blur', () => this.handleBlur());
+  }
 
-        this.root.focusedComponent = this;
+  addBlurProtection(element) {
+    this.addEventListener(element, 'mousedown', () => {
+      this.root.blurCheck = () => this.handleFocus();
+    });
+  }
 
-        this.emit('focus', this);
+  handleFocus() {
+    this.root.blurCheck = null;
+    if (this.root.focusedComponent !== this) {
+      if (this.root.pendingBlur) {
+        this.root.pendingBlur();
       }
-      else if (this.root.focusedComponent === this && this.root.pendingBlur) {
-        this.root.pendingBlur.cancel();
-        this.root.pendingBlur = null;
-      }
+
+      this.root.focusedComponent = this;
+
+      this.emit('focus', this);
+    }
+    else if (this.root.focusedComponent === this && this.root.pendingBlur) {
+      this.root.pendingBlur.cancel();
+      this.root.pendingBlur = null;
+    }
+  }
+
+  handleBlur() {
+    this.root.pendingBlur = FormioUtils.delay(() => {
+      this.emit('blur', this);
+      this.root.focusedComponent = null;
+      this.root.pendingBlur = null;
     });
-    this.addEventListener(element, 'blur', () => {
-      this.root.pendingBlur = FormioUtils.delay(() => {
-        this.emit('blur', this);
-        this.root.focusedComponent = null;
-        this.root.pendingBlur = null;
-      });
-    });
+
+    if (this.root.blurCheck) {
+      this.root.blurCheck();
+    }
   }
 
   get wysiwygDefault() {
