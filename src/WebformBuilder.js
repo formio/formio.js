@@ -146,13 +146,14 @@ export default class WebformBuilder extends Webform {
       return;
     }
     let remove = true;
-    if (component.type === 'components' && component.getComponents().length > 0) {
+    if (component.type === 'components' && component.components.length > 0) {
       const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
       remove = window.confirm(this.t(message));
     }
     if (remove) {
       this.emit('deleteComponent', component);
-      component.parent.removeComponentById(component.id);
+      component.parent.removeComponent(component);
+      _.remove(this.components, { id: component.id });
       this.form = this.schema;
     }
     return remove;
@@ -727,7 +728,7 @@ export default class WebformBuilder extends Webform {
    * Adds a submit button if there are no components.
    */
   addSubmitButton() {
-    if (!this.getComponents().length) {
+    if (!this.components.length) {
       this.submitButton = this.addComponent({
         type: 'button',
         label: 'Submit',

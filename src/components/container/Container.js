@@ -53,7 +53,7 @@ export default class ContainerComponent extends NestedComponent {
       return this.dataValue;
     }
     const value = {};
-    _.each(this.components, (component) => _.set(value, component.key, component.getValue()));
+    this.eachComponent((component) => _.set(value, component.key, component.getValue()));
     return value;
   }
 
@@ -67,7 +67,7 @@ export default class ContainerComponent extends NestedComponent {
     }
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
-    _.each(this.components, (component) => {
+    this.eachComponent((component) => {
       if (component.type === 'components') {
         component.setValue(value, flags);
       }

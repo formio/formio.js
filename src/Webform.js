@@ -687,8 +687,7 @@ export default class Webform extends NestedComponent {
 
   get schema() {
     const schema = this._form;
-    schema.components = [];
-    this.eachComponent((component) => schema.components.push(component.schema));
+    schema.components = this.mapComponents((component) => component.schema);
     return schema;
   }
 
@@ -771,7 +770,7 @@ export default class Webform extends NestedComponent {
   }
 
   resetValue() {
-    _.each(this.getComponents(), (comp) => (comp.resetValue()));
+    this.eachComponent((comp) => (comp.resetValue()));
     this.setPristine(true);
   }
 

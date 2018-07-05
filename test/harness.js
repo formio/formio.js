@@ -17,7 +17,7 @@ const Harness = {
     formBuilderElement = document.createElement('div');
     document.body.appendChild(formBuilderElement);
     formBuilder = new WebformBuilder(formBuilderElement);
-    formBuilder.form = {components: []};
+    formBuilder.form = { components: [] };
     formBuilder.builderReady.then(done);
   },
 
@@ -167,7 +167,7 @@ const Harness = {
     return component;
   },
   setInputValue(component, name, value) {
-    const inputEvent = new Event('input', {bubbles: true, cancelable: true});
+    const inputEvent = new Event('input', { bubbles: true, cancelable: true });
     const element = component.element.querySelector(`input[name="${name}"]`);
     assert(element, `${name} input not found`);
     element.value = value;
