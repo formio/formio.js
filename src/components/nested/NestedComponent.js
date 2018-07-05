@@ -6,9 +6,7 @@ import Components from '../Components';
 
 export default class NestedComponent extends BaseComponent {
   static schema(...extend) {
-    return BaseComponent.schema({
-      tree: true
-    }, ...extend);
+    return BaseComponent.schema({}, ...extend);
   }
 
   constructor(component, options, data) {
