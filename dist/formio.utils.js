@@ -124,7 +124,7 @@ var FormioUtils = {
       }
 
       var subPath = function subPath() {
-        if (component.key && (['datagrid', 'container', 'editgrid'].indexOf(component.type) !== -1 || component.tree)) {
+        if (component.key && !(['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].indexOf(component.type) !== -1) && (['datagrid', 'container', 'editgrid'].indexOf(component.type) !== -1 || component.tree)) {
           return newPath;
         } else if (component.key && component.type === 'form') {
           return newPath + '.data';
@@ -684,7 +684,7 @@ var FormioUtils = {
     var formattedNumberString = 12345.6789.toLocaleString(lang);
     return {
       delimiter: formattedNumberString.match(/12(.*)345/)[1],
-      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+      decimalSeparator: formattedNumberString.match(/345(.*)6[78]/)[1]
     };
   },
   getNumberDecimalLimit: function getNumberDecimalLimit(component) {

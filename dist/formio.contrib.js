@@ -2944,11 +2944,26 @@ var ButtonComponent = exports.ButtonComponent = function (_BaseComponent) {
       this.addShortcut(this.button);
       this.hook('input', this.button, this.element);
 
+      if (this.component.leftIcon) {
+        this.button.appendChild(this.ce('span', {
+          class: this.component.leftIcon
+        }));
+        this.button.appendChild(this.text(' '));
+      }
+
       if (this.component.label) {
         this.labelElement = this.text(this.addShortcutToLabel());
         this.button.appendChild(this.labelElement);
         this.createTooltip(this.button, null, this.iconClass('question-sign'));
       }
+
+      if (this.component.rightIcon) {
+        this.button.appendChild(this.text(' '));
+        this.button.appendChild(this.ce('span', {
+          class: this.component.rightIcon
+        }));
+      }
+
       if (this.component.action === 'submit') {
         var errorContainer = this.ce('div', {
           class: 'has-error'
@@ -3942,7 +3957,7 @@ var FormioUtils = {
       }
 
       var subPath = function subPath() {
-        if (component.key && (['datagrid', 'container', 'editgrid'].indexOf(component.type) !== -1 || component.tree)) {
+        if (component.key && !(['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].indexOf(component.type) !== -1) && (['datagrid', 'container', 'editgrid'].indexOf(component.type) !== -1 || component.tree)) {
           return newPath;
         } else if (component.key && component.type === 'form') {
           return newPath + '.data';
@@ -4502,7 +4517,7 @@ var FormioUtils = {
     var formattedNumberString = 12345.6789.toLocaleString(lang);
     return {
       delimiter: formattedNumberString.match(/12(.*)345/)[1],
-      decimalSeparator: formattedNumberString.match(/345(.*)67/)[1]
+      decimalSeparator: formattedNumberString.match(/345(.*)6[78]/)[1]
     };
   },
   getNumberDecimalLimit: function getNumberDecimalLimit(component) {

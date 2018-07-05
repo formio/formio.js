@@ -21,5 +21,5 @@ gulp.task('icons', () => {
 });
 gulp.task('styles', require('./gulp/styles')(gulp, plugins));
 gulp.task('watch', require('./gulp/watch')(gulp, plugins));
-gulp.task('build', gulpsync.sync([['clean'], 'babel', ['icons', 'fonts', 'styles', 'scripts', 'scripts-full']]));
+gulp.task('build', gulpsync.sync([['clean'], 'babel', ['icons', 'fonts', 'styles', 'scripts', 'scripts-utils', 'scripts-form', 'scripts-wizard', 'scripts-embed', 'scripts-contrib', 'scripts-full']]));
 gulp.task('default', ['build', 'watch']);
