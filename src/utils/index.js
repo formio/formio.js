@@ -110,6 +110,7 @@ const FormioUtils = {
       const subPath = () => {
         if (
           component.key &&
+          !['panel', 'table', 'well', 'columns', 'fieldset', 'tabs', 'form'].includes(component.type) &&
           (
             ['datagrid', 'container', 'editgrid'].includes(component.type) ||
             component.tree
