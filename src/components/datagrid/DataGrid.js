@@ -9,6 +9,7 @@ export default class DataGridComponent extends NestedComponent {
       type: 'datagrid',
       clearOnHide: true,
       input: true,
+      tree: true,
       components: []
     }, ...extend);
   }
