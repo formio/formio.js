@@ -54,7 +54,7 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   get addAnotherPosition() {
-    return _.get(this.component, 'addAnotherPosition', 'bottom');
+    return this.component.addAnotherPosition || 'bottom';
   }
 
   get defaultValue() {
@@ -263,7 +263,8 @@ export default class DataGridComponent extends NestedComponent {
       if (value.length <= rowIndex) {
         return;
       }
-      _.each(row, (col, key) => {
+
+      row.forEach((col, key) => {
         if (col.type === 'components') {
           col.setValue(value[rowIndex], flags);
         }
@@ -292,14 +293,13 @@ export default class DataGridComponent extends NestedComponent {
     if (this.viewOnly) {
       return this.dataValue;
     }
-    const values = [];
-    _.each(this.rows, (row) => {
+
+    return this.rows.map((row) => {
       const value = {};
       _.each(row, (col, key) => {
         _.set(value, key, col.getValue());
       });
-      values.push(value);
+      return value;
     });
-    return values;
   }
 }

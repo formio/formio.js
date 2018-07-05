@@ -24,8 +24,7 @@ export default class NestedComponent extends Component {
 
   get schema() {
     const schema = super.schema;
-    schema.components = [];
-    this.eachComponent((component) => schema.components.push(component.schema));
+    schema.components = this.mapComponents((component) => component.schema);
     return schema;
   }
 
@@ -65,92 +64,72 @@ export default class NestedComponent extends Component {
   }
 
   getAllComponents() {
-    return this.getComponents().reduce((components, component) => {
-      let result = component;
-
-      if (component.getAllComponents) {
-        result = component.getAllComponents();
-      }
-
-      return components.concat(result);
-    }, []);
+    return this.reduceComponents(
+      (components, component) => components.concat(component.getAllComponents
+        ? component.getAllComponents()
+        : component),
+      [],
+    );
   }
 
   /**
-   * Perform a deep iteration over every component, including those
-   * within other container based components.
+   * Iterates over components and invokes iteratee for each component.
    *
-   * @param {function} fn - Called for every component.
+   * @param {*} iteratee The function invoked per iteration.
    */
-  everyComponent(fn) {
-    const components = this.getComponents();
-    _.each(components, (component, index) => {
-      if (fn(component, components, index) === false) {
-        return false;
+  eachComponent(iteratee) {
+    this.components.forEach(iteratee);
+  }
+
+  mapComponents(iteratee) {
+    return this.components.map(iteratee);
+  }
+
+  reduceComponents(iteratee, accumulator) {
+    return this.components.reduce(iteratee, accumulator);
+  }
+
+  /**
+   * Returns a component provided the predicate.
+   *
+   * @param {string} predicate Predicate to retrieve the component.
+   * @return {Object} The component retrieved.
+   */
+  getComponentBy(predicate) {
+    for (const component of this.components) {
+      if (predicate(component)) {
+        return component;
       }
 
-      if (typeof component.everyComponent === 'function') {
-        if (component.everyComponent(fn) === false) {
-          return false;
+      if (typeof component.getComponentBy === 'function') {
+        const result = component.getComponentBy(predicate);
+        if (result) {
+          return result;
         }
       }
-    });
+    }
+
+    return null;
   }
 
   /**
-   * Perform an iteration over each component within this container component.
+   * Returns a component provided the key.
    *
-   * @param {function} fn - Called for each component
+   * @param {string} key The key of the component to retrieve.
+   * @return {Object} The component retrieved.
    */
-  eachComponent(fn) {
-    _.each(this.getComponents(), (component, index) => {
-      if (fn(component, index) === false) {
-        return false;
-      }
-    });
-  }
-
-  /**
-   * Returns a component provided a key. This performs a deep search within the
-   * component tree.
-   *
-   * @param {string} key - The key of the component to retrieve.
-   * @param {function} fn - Called with the component once found.
-   * @return {Object} - The component that is located.
-   */
-  getComponent(key, fn) {
-    let comp = null;
-    this.everyComponent((component, components) => {
-      if (component.component.key === key) {
-        comp = component;
-        if (fn) {
-          fn(component, components);
-        }
-        return false;
-      }
-    });
-    return comp;
+  getComponentByKey(key) {
+    return this.getComponentBy((component) => component.component.key === key);
   }
 
   /**
    * Return a component provided the Id of the component.
    *
-   * @param {string} id - The Id of the component.
-   * @param {function} fn - Called with the component once it is retrieved.
-   * @return {Object} - The component retrieved.
+   * @param {string} id The Id of the component to retrieve.
+   * @return {Object} The component retrieved.
    */
-  getComponentById(id, fn) {
-    let comp = null;
-    this.everyComponent((component, components) => {
-      if (component.id === id) {
-        comp = component;
-        if (fn) {
-          fn(component, components);
-        }
-        return false;
-      }
-    });
-    return comp;
+  getComponentById(id) {
+    return this.getComponentBy((component) => component.id === id);
   }
 
   /**
@@ -172,7 +151,7 @@ export default class NestedComponent extends Component {
     }
 
     if (before) {
-      const index = _.findIndex(this.components, { id: before.id });
+      const index = this.components.findIndex((comp) => comp.id = before.id);
       if (index !== -1) {
         this.components.splice(index, 0, comp);
       }
@@ -291,13 +270,12 @@ export default class NestedComponent extends Component {
   }
 
   /**
-   * Remove a component from the components array.
+   * Destroys component and removes it from the containing node.
    *
    * @param {Component} component - The component to remove from the components.
    * @param {Array<Component>} components - An array of components to remove this component from.
    */
   removeComponent(component, components) {
-    components = components || this.components;
     component.destroy();
     _.remove(components, { id: component.id });
   }
@@ -347,11 +325,7 @@ export default class NestedComponent extends Component {
   }
 
   updateValue(flags) {
-    let changed = false;
-    _.each(this.components, (comp) => {
-      changed |= comp.updateValue(flags);
-    });
-    return changed;
+    return this.reduceComponents((result, comp) => result || comp.updateValue(flags), false);
   }
 
   hasChanged() {
@@ -378,7 +352,7 @@ export default class NestedComponent extends Component {
     });
 
     // Iterate through all components and check conditions, and calculate values.
-    _.each(this.getComponents(), (comp) => {
+    this.eachComponent((comp) => {
       changed |= comp.calculateValue(data, {
         noUpdateEvent: true
       });
@@ -398,13 +372,13 @@ export default class NestedComponent extends Component {
   }
 
   checkConditions(data) {
-    this.getComponents().forEach(comp => comp.checkConditions(data));
+    this.eachComponent((comp) => comp.checkConditions(data));
     return super.checkConditions(data);
   }
 
   clearOnHide(show) {
     super.clearOnHide(show);
-    this.getComponents().forEach(component => component.clearOnHide(show));
+    this.eachComponent((component) => component.clearOnHide(show));
   }
 
   /**
@@ -413,9 +387,7 @@ export default class NestedComponent extends Component {
    * @return {*}
    */
   beforeNext() {
-    const ops = [];
-    _.each(this.getComponents(), (comp) => ops.push(comp.beforeNext()));
-    return Promise.all(ops);
+    return Promise.all(this.mapComponents((comp) => comp.beforeNext()));
   }
 
   /**
@@ -424,25 +396,21 @@ export default class NestedComponent extends Component {
    * @return {*}
    */
   beforeSubmit() {
-    const ops = [];
-    _.each(this.getComponents(), (comp) => ops.push(comp.beforeSubmit()));
-    return Promise.all(ops);
+    return Promise.all(this.mapComponents((comp) => comp.beforeSubmit()));
   }
 
   calculateValue(data, flags) {
-    let changed = super.calculateValue(data, flags);
-    _.each(this.getComponents(), (comp) => {
-      changed |= comp.calculateValue(data, flags);
-    });
-    return changed;
+    return this.reduceComponents(
+      (result, comp) => result || comp.calculateValue(data, flags),
+      super.calculateValue(data, flags),
+    );
   }
 
   isValid(data, dirty) {
-    let valid = super.isValid(data, dirty);
-    _.each(this.getComponents(), (comp) => {
-      valid &= comp.isValid(data, dirty);
-    });
-    return valid;
+    return this.reduceComponents(
+      (result, comp) => result && comp.isValid(data, dirty),
+      super.isValid(data, dirty),
+    );
   }
 
   checkValidity(data, dirty) {
@@ -451,16 +419,15 @@ export default class NestedComponent extends Component {
       return true;
     }
 
-    let check = super.checkValidity(data, dirty);
-    _.each(this.getComponents(), (comp) => {
-      check &= comp.checkValidity(data, dirty);
-    });
-    return check;
+    return this.reduceComponents(
+      (result, comp) => result && comp.checkValidity(data, dirty),
+      super.checkValidity(data, dirty),
+    );
   }
 
   setPristine(pristine) {
     super.setPristine(pristine);
-    _.each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
+    this.eachComponent((comp) => comp.setPristine(pristine));
   }
 
   detach() {
@@ -476,29 +443,26 @@ export default class NestedComponent extends Component {
   }
 
   destroyComponents() {
-    const components = _.clone(this.components);
-    _.each(components, (comp) => this.removeComponent(comp, this.components));
+    this.eachComponent((comp) => this.removeComponent(comp));
     this.components = [];
   }
 
   setCustomValidity(message, dirty) {
     super.setCustomValidity(message, dirty);
-    _.each(this.getComponents(), (comp) => comp.setCustomValidity(message, dirty));
+    this.eachComponent((comp) => comp.setCustomValidity(message, dirty));
   }
 
   set disabled(disabled) {
-    _.each(this.components, (component) => (component.disabled = disabled));
+    this.eachComponent((component) => component.disabled = disabled);
   }
 
   get errors() {
-    let errors = [];
-    _.each(this.getAllComponents(), (comp) => {
+    return this.getAllComponents().reduce((errors, comp) => {
       const compErrors = comp.errors;
-      if (compErrors.length) {
-        errors = errors.concat(compErrors);
-      }
-    });
-    return errors;
+      return compErrors.length
+        ? errors.concat(compErrors)
+        : errors;
+    }, []);
   }
 
   get value() {
@@ -510,7 +474,7 @@ export default class NestedComponent extends Component {
   }
 
   resetValue() {
-    _.each(this.getComponents(), (comp) => (comp.resetValue()));
+    this.eachComponent((comp) => comp.resetValue());
     _.unset(this.data, this.key);
     this.setPristine(true);
   }
@@ -519,24 +483,23 @@ export default class NestedComponent extends Component {
     if (!value) {
       return false;
     }
-    flags = this.getFlags.apply(this, arguments);
-    let changed = false;
-    this.getComponents().forEach(component => {
+
+    flags = this.getFlags(...arguments);
+    return this.reduceComponents((changed, component) => {
       if (component.type === 'button') {
-        return;
+        return changed;
       }
 
       if (component.type === 'components') {
-        changed |= component.setValue(value, flags);
+        return changed || component.setValue(value, flags);
       }
       else if (value && component.hasValue(value)) {
-        changed |= component.setValue(_.get(value, component.key), flags);
+        return changed || component.setValue(_.get(value, component.key), flags);
       }
       else {
         flags.noValidate = true;
-        changed |= component.setValue(component.defaultValue, flags);
+        return changed || component.setValue(component.defaultValue, flags);
       }
-    });
-    return changed;
+    }, false);
   }
 }
