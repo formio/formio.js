@@ -1,5 +1,5 @@
 module.exports = function(gulp, plugins) {
   return function() {
-    gulp.watch(['./src/**.js', './src/*/**.js'], ['build']);
+    gulp.watch(['./src/**.js', './src/*/**.js'], ['babel']);
   }
 };

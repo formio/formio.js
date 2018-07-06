@@ -15,13 +15,41 @@ Every form within Form.io within [Form.io](https://form.io) can be rendered with
 ```
 
 ```js
-Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example').then((form) => {
+
+  // Default the submission.
+  form.submission = {
+    data: {
+      firstName: 'Joe',
+      lastName: 'Smith'
+    }
+  };
+});
 ```
 
 <h3>Result</h3>
 <div class="well">
 <div id="formio"></div>
 <script type="text/javascript">
-Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
+Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example').then((form) => {
+  form.submission = {
+    data: {
+      firstName: 'Joe',
+      lastName: 'Smith'
+    }
+  };
+  
+  form.on('render', function() {
+    console.log('Rendered!');
+  });
+
+  form.on('change', function(value) {
+      console.log(value);
+  });
+
+  form.on('submit', function(submission) {
+    console.log(submission);
+  });
+});
 </script>
 </div>

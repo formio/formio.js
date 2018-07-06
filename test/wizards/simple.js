@@ -233,9 +233,8 @@ module.exports = {
           // Should returns a reject
           done('Should not be called');
         })
-        .catch((error) => {
-          // Should returns a reject
-          assert.equal(error, 'Invalid Submission');
+        .catch((errors) => {
+          assert.equal(errors[0].message, '');
         })
 
 
@@ -287,7 +286,7 @@ module.exports = {
 
         .then(() => {
           // Click on cancel.
-          return form.cancel();
+          return form.cancel(true);
         })
         .catch((error) => {
           // Should returns a success

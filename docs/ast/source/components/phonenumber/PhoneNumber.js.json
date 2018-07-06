@@ -1,7 +1,7 @@
 {
   "type": "File",
   "start": 0,
-  "end": 125,
+  "end": 123,
   "loc": {
     "start": {
       "line": 1,
@@ -15,7 +15,7 @@
   "program": {
     "type": "Program",
     "start": 0,
-    "end": 125,
+    "end": 123,
     "loc": {
       "start": {
         "line": 1,
@@ -31,7 +31,7 @@
       {
         "type": "ImportDeclaration",
         "start": 0,
-        "end": 60,
+        "end": 58,
         "loc": {
           "start": {
             "line": 1,
@@ -39,36 +39,36 @@
           },
           "end": {
             "line": 1,
-            "column": 60
+            "column": 58
           }
         },
         "specifiers": [
           {
             "type": "ImportSpecifier",
-            "start": 9,
-            "end": 27,
+            "start": 8,
+            "end": 26,
             "loc": {
               "start": {
                 "line": 1,
-                "column": 9
+                "column": 8
               },
               "end": {
                 "line": 1,
-                "column": 27
+                "column": 26
               }
             },
             "imported": {
               "type": "Identifier",
-              "start": 9,
-              "end": 27,
+              "start": 8,
+              "end": 26,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 9
+                  "column": 8
                 },
                 "end": {
                   "line": 1,
-                  "column": 27
+                  "column": 26
                 },
                 "identifierName": "TextFieldComponent"
               },
@@ -76,16 +76,16 @@
             },
             "local": {
               "type": "Identifier",
-              "start": 9,
-              "end": 27,
+              "start": 8,
+              "end": 26,
               "loc": {
                 "start": {
                   "line": 1,
-                  "column": 9
+                  "column": 8
                 },
                 "end": {
                   "line": 1,
-                  "column": 27
+                  "column": 26
                 },
                 "identifierName": "TextFieldComponent"
               },
@@ -95,16 +95,16 @@
         ],
         "source": {
           "type": "StringLiteral",
-          "start": 35,
-          "end": 59,
+          "start": 33,
+          "end": 57,
           "loc": {
             "start": {
               "line": 1,
-              "column": 35
+              "column": 33
             },
             "end": {
               "line": 1,
-              "column": 59
+              "column": 57
             }
           },
           "extra": {
@@ -116,8 +116,8 @@
       },
       {
         "type": "ExportNamedDeclaration",
-        "start": 61,
-        "end": 124,
+        "start": 59,
+        "end": 122,
         "loc": {
           "start": {
             "line": 2,
@@ -132,8 +132,8 @@
         "source": null,
         "declaration": {
           "type": "ClassDeclaration",
-          "start": 68,
-          "end": 124,
+          "start": 66,
+          "end": 122,
           "loc": {
             "start": {
               "line": 2,
@@ -146,8 +146,8 @@
           },
           "id": {
             "type": "Identifier",
-            "start": 74,
-            "end": 94,
+            "start": 72,
+            "end": 92,
             "loc": {
               "start": {
                 "line": 2,
@@ -163,8 +163,8 @@
           },
           "superClass": {
             "type": "Identifier",
-            "start": 103,
-            "end": 121,
+            "start": 101,
+            "end": 119,
             "loc": {
               "start": {
                 "line": 2,
@@ -180,8 +180,8 @@
           },
           "body": {
             "type": "ClassBody",
-            "start": 122,
-            "end": 124,
+            "start": 120,
+            "end": 122,
             "loc": {
               "start": {
                 "line": 2,
@@ -208,7 +208,7 @@
         "label": "import",
         "keyword": "import",
         "beforeExpr": false,
-        "startsExpr": false,
+        "startsExpr": true,
         "rightAssociative": false,
         "isLoop": false,
         "isAssign": false,
@@ -269,16 +269,16 @@
         "binop": null
       },
       "value": "TextFieldComponent",
-      "start": 9,
-      "end": 27,
+      "start": 8,
+      "end": 26,
       "loc": {
         "start": {
           "line": 1,
-          "column": 9
+          "column": 8
         },
         "end": {
           "line": 1,
-          "column": 27
+          "column": 26
         }
       }
     },
@@ -294,16 +294,16 @@
         "postfix": false,
         "binop": null
       },
-      "start": 28,
-      "end": 29,
+      "start": 26,
+      "end": 27,
       "loc": {
         "start": {
           "line": 1,
-          "column": 28
+          "column": 26
         },
         "end": {
           "line": 1,
-          "column": 29
+          "column": 27
         }
       }
     },
@@ -320,16 +320,16 @@
         "binop": null
       },
       "value": "from",
-      "start": 30,
-      "end": 34,
+      "start": 28,
+      "end": 32,
       "loc": {
         "start": {
           "line": 1,
-          "column": 30
+          "column": 28
         },
         "end": {
           "line": 1,
-          "column": 34
+          "column": 32
         }
       }
     },
@@ -347,16 +347,16 @@
         "updateContext": null
       },
       "value": "../textfield/TextField",
-      "start": 35,
-      "end": 59,
+      "start": 33,
+      "end": 57,
       "loc": {
         "start": {
           "line": 1,
-          "column": 35
+          "column": 33
         },
         "end": {
           "line": 1,
-          "column": 59
+          "column": 57
         }
       }
     },
@@ -373,16 +373,16 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 59,
-      "end": 60,
+      "start": 57,
+      "end": 58,
       "loc": {
         "start": {
           "line": 1,
-          "column": 59
+          "column": 57
         },
         "end": {
           "line": 1,
-          "column": 60
+          "column": 58
         }
       }
     },
@@ -401,8 +401,8 @@
         "updateContext": null
       },
       "value": "export",
-      "start": 61,
-      "end": 67,
+      "start": 59,
+      "end": 65,
       "loc": {
         "start": {
           "line": 2,
@@ -429,8 +429,8 @@
         "updateContext": null
       },
       "value": "class",
-      "start": 68,
-      "end": 73,
+      "start": 66,
+      "end": 71,
       "loc": {
         "start": {
           "line": 2,
@@ -455,8 +455,8 @@
         "binop": null
       },
       "value": "PhoneNumberComponent",
-      "start": 74,
-      "end": 94,
+      "start": 72,
+      "end": 92,
       "loc": {
         "start": {
           "line": 2,
@@ -483,8 +483,8 @@
         "updateContext": null
       },
       "value": "extends",
-      "start": 95,
-      "end": 102,
+      "start": 93,
+      "end": 100,
       "loc": {
         "start": {
           "line": 2,
@@ -509,8 +509,8 @@
         "binop": null
       },
       "value": "TextFieldComponent",
-      "start": 103,
-      "end": 121,
+      "start": 101,
+      "end": 119,
       "loc": {
         "start": {
           "line": 2,
@@ -534,8 +534,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 122,
-      "end": 123,
+      "start": 120,
+      "end": 121,
       "loc": {
         "start": {
           "line": 2,
@@ -559,8 +559,8 @@
         "postfix": false,
         "binop": null
       },
-      "start": 123,
-      "end": 124,
+      "start": 121,
+      "end": 122,
       "loc": {
         "start": {
           "line": 2,
@@ -585,8 +585,8 @@
         "binop": null,
         "updateContext": null
       },
-      "start": 125,
-      "end": 125,
+      "start": 123,
+      "end": 123,
       "loc": {
         "start": {
           "line": 3,

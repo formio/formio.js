@@ -1,56 +1,18 @@
-"use strict";
-import Promise from "native-promise-only";
+'use strict';
+// DO NOT DELETE! THIS WILL BREAK PDF GENERATION.
+import * as polyfill from './formio.polyfill';
+
 import FormioWizard from './formio.wizard';
 import FormioPDF from './formio.pdf';
 import FormioForm from './formio.form';
-import { FormioComponents } from './components/Components';
+import {FormioComponents} from './components/Components';
 import Formio from './formio';
+import createForm from './createForm';
+import formFactory from './formFactory';
 
-/**
- * Provided a form object, this will return the form instance.
- * @param element
- * @param form
- * @param options
- * @return {*}
- */
-Formio.formFactory = (element, form, options) => {
-  let instance = null;
-  if (form.display === 'wizard') {
-    instance = new FormioWizard(element, options);
-  }
-  else if (form.display === 'pdf') {
-    instance = new FormioPDF(element, options);
-  }
-  else {
-    instance = new FormioForm(element, options);
-  }
-  instance.form = form;
-  return instance;
-};
+Formio.formFactory = formFactory;
 
-/**
- * Creates a new form based on the form parameter.
- *
- * @param element {HMTLElement} - The HTML Element to add this form to.
- * @param form {string|Object} - The src of the form, or a form object.
- * @param options {Object} - The options to create this form.
- *
- * @return {Promise} - When the form is instance is ready.
- */
-Formio.createForm = (element, form, options) => {
-  if (typeof form === 'string') {
-    return (new Formio(form)).loadForm().then((formObj) => {
-      let instance = Formio.formFactory(element, formObj, options);
-      instance.url = form;
-      instance.nosubmit = false;
-      instance.loadSubmission();
-      return instance;
-    });
-  }
-  else {
-    return Promise.resolve(Formio.formFactory(element, form, options));
-  }
-};
+Formio.createForm = createForm;
 
 /**
  * Embed this form within the current page.
@@ -60,12 +22,12 @@ Formio.embedForm = function(embed) {
   if (!embed || !embed.src) {
     return null;
   }
-  let id = embed.id || 'formio-' + Math.random().toString(36).substring(7);
-  let className = embed.class || 'formio-form-wrapper';
-  let code = embed.styles ? '<link rel="stylesheet" href="' + embed.styles + '">' : '';
-  code += '<div id="' + id + '" class="' + className + '"></div>';
+  const id = embed.id || `formio-${Math.random().toString(36).substring(7)}`;
+  const className = embed.class || 'formio-form-wrapper';
+  let code = embed.styles ? `<link rel="stylesheet" href="${embed.styles}">` : '';
+  code += `<div id="${id}" class="${className}"></div>`;
   document.write(code);
-  let formElement = document.getElementById(id);
+  const formElement = document.getElementById(id);
   return Formio.createForm(formElement, embed.src);
 };
 
@@ -79,6 +41,8 @@ FormioForm.registerComponent = Formio.registerComponent = function(type, compone
   FormioComponents.customComponents[type] = component;
 };
 
-exports.Formio = Formio;
+export default Formio;
+exports.Formio = global.Formio = Formio;
 exports.FormioForm = FormioForm;
 exports.FormioWizard = FormioWizard;
+exports.FormioPDF = FormioPDF;

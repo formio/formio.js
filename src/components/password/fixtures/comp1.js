@@ -1,22 +1,22 @@
 export const component = {
-  "input": true,
-  "tableView": false,
-  "inputType": "password",
-  "label": "Password",
-  "key": "password",
-  "placeholder": "",
-  "prefix": "",
-  "suffix": "",
-  "protected": true,
-  "persistent": true,
-  "type": "password",
-  "tags": [
+  'input': true,
+  'tableView': false,
+  'inputType': 'password',
+  'label': 'Password',
+  'key': 'password',
+  'placeholder': '',
+  'prefix': '',
+  'suffix': '',
+  'protected': true,
+  'persistent': true,
+  'type': 'password',
+  'tags': [
 
   ],
-  "conditional": {
-    "show": "",
-    "when": null,
-    "eq": ""
+  'conditional': {
+    'show': '',
+    'when': null,
+    'eq': ''
   },
-  "isNew": false
+  'isNew': false
 };

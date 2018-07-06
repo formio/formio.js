@@ -1,8 +1,8 @@
 import moment from 'moment';
-import { TextFieldComponent } from '../textfield/TextField';
+import {TextFieldComponent} from '../textfield/TextField';
 export class TimeComponent extends TextFieldComponent {
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.attr.type = 'time';
     return info;
   }
@@ -10,7 +10,7 @@ export class TimeComponent extends TextFieldComponent {
     if (!this.inputs.length || !this.inputs[index]) {
       return null;
     }
-    let val = this.inputs[index].value;
+    const val = this.inputs[index].value;
     if (!val) {
       return null;
     }

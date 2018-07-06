@@ -37,10 +37,14 @@ section: home
 
 ### Result
 <div class="well">
-<div id="formio"></formio>
+<div id="formio"></div>
 <script type="text/javascript">
   window.onload = function() {
     Formio.createForm(document.getElementById('formio'), 'https://examples.form.io/example');
   };
 </script>
 </div>
+
+### JSFiddle
+To play around with this renderer, we recommend using JSFiddle. Here is an example you can fork and use as a sandbox.
+<script async src="//jsfiddle.net/travistidwell/v38du9y1/3/embed/"></script>

@@ -72,6 +72,11 @@ Formio.createForm(document.getElementById('formio'), {
 
 This will render the JSON schema of the form within your application.
 
+## JSFiddle
+A great way to play around with this renderer is to use JSFiddle, which serves as a good sandbox environment. Here is an example that you can fork and make your own!
+
+http://jsfiddle.net/travistidwell/v38du9y1/
+
 ## Wizard Rendering
 This library can also be used to render a form wizard within your application using the same method as rendering a form.
 The determiniation on whether it should render as a wizard or not is based on the **display** property of the form schema 

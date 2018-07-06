@@ -178,7 +178,9 @@ module.exports = {
     'Test validation errors on typeMe field': (form, done) => {
       Harness.testErrors(form, {data: {
         typeShow: 'Show',
-        typeMe: ''
+        typeMe: '',
+        typeThe: '',
+        typeMonkey: ''
       }}, [
         {
           component: 'typeMe',
@@ -189,7 +191,9 @@ module.exports = {
     'Test validation errors on typeMe field': (form, done) => {
       Harness.testErrors(form, {data: {
         typeShow: 'Show',
-        typeMe: 'me'
+        typeMe: 'me',
+        typeThe: '',
+        typeMonkey: ''
       }}, [
         {
           component: 'typeMe',
@@ -201,7 +205,8 @@ module.exports = {
       Harness.testErrors(form, {data: {
         typeShow: 'Show',
         typeMe: 'Me',
-        typeThe: 'the'
+        typeThe: 'the',
+        typeMonkey: ''
       }}, [
         {
           component: 'typeThe',

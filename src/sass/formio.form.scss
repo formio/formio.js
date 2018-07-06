@@ -3,9 +3,17 @@
   min-height: 80px;
 }
 
+.formio-component.has-error .invalid-feedback {
+  display: block;
+}
+
 .formio-wysiwyg-editor {
   min-height: 200px;
   background-color: #fff;
+}
+
+.has-feedback .form-control {
+  padding-right: 10px;
 }
 
 .has-error.bg-danger {
@@ -87,6 +95,10 @@ td > .form-group {
 
 .signature-pad {
   position: relative;
+}
+
+.signature-pad-body {
+  overflow: hidden;
 }
 
 .signature-pad-canvas {
@@ -177,9 +189,13 @@ td > .form-group {
   border-color: #127abe;
 }
 
-.formio-component-file .fileSelector .glyphicon {
+.formio-component-file .fileSelector .glyphicon, .formio-component-file .fileSelector .fa {
   font-size: 20px;
   margin-right: 5px;
+}
+
+.formio-component-file .fileSelector .browse {
+  cursor: pointer;
 }
 
 .formio-dialog {
@@ -188,6 +204,11 @@ td > .form-group {
   top: 50%;
   transform: translate(0, -50%);
   border-radius: 5px;
+}
+
+.formio-placeholder {
+  position:absolute;
+  color: #999;
 }
 
 .formio-dialog-close {
@@ -203,4 +224,43 @@ td > .form-group {
 
 .inline-form-button {
   margin-right: 10px;
+}
+
+.tooltip {
+  opacity: 1;
+}
+
+.tooltip[x-placement="right"] .tooltip-arrow {
+  border-right: 5px solid black;
+}
+
+.tooltip[x-placement="right"] .tooltip-inner {
+  margin-left: 8px;
+}
+
+.control-label--bottom {
+  margin-bottom: 0;
+  margin-top: 5px;
+}
+
+.checkbox-inline label,
+.radio-inline label {
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.editgrid-listgroup {
+  margin-bottom: 10px;
+}
+
+.formio-component-submit .has-error {
+  display: none;
+}
+
+.formio-component-submit button[disabled]+.has-error {
+  display: block;
+}
+
+.formio-choices.form-group {
+  margin-bottom: 0;
 }

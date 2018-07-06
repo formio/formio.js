@@ -1,66 +1,199 @@
-import { BaseComponent } from '../base/Base';
-import _each from 'lodash/each';
+import _ from 'lodash';
+
+import {BaseComponent} from '../base/Base';
+
 export class RadioComponent extends BaseComponent {
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'input';
     info.changeEvent = 'click';
-    info.attr.class = '';
+    info.attr.class = 'form-check-input';
     return info;
   }
 
   createInput(container) {
-    let inputGroup = this.ce('div', {
+    const inputGroup = this.ce('div', {
       class: 'input-group'
     });
-    let inputType = this.component.inputType;
-    _each(this.component.values, (value) => {
-      var wrapperClass = (this.component.inline ? inputType + '-inline' : inputType);
-      let labelWrapper = this.ce('div', {
+    const labelOnTheTopOrOnTheLeft = this.optionsLabelOnTheTopOrLeft();
+    const wrappers = [];
+
+    if (this.component.inputType === 'radio') {
+      this.info.attr.name += this.id;
+    }
+
+    _.each(this.component.values, (value) => {
+      const wrapperClass = `form-check ${this.optionWrapperClass}`;
+      const labelWrapper = this.ce('div', {
         class: wrapperClass
       });
-      let label = this.ce('label', {
-        class: 'control-label'
+      const label = this.ce('label', {
+        class: 'control-label form-check-label'
       });
 
-      // Create the SPAN around the textNode for better style hooks
-      let labelSpan = this.ce('span');
+      this.addShortcut(label, value.shortcut);
 
       // Determine the attributes for this input.
-      let inputId = this.component.key + this.row + '-' + value.value;
+      const inputId = `${this.id}${this.row}-${value.value}`;
       this.info.attr.id = inputId;
       this.info.attr.value = value.value;
       label.setAttribute('for', this.info.attr.id);
 
       // Create the input.
-      let input = this.ce('input');
-      _each(this.info.attr, function(value, key) {
+      const input = this.ce('input');
+      _.each(this.info.attr, (value, key) => {
         input.setAttribute(key, value);
       });
+
+      const labelSpan = this.ce('span');
+      if (value.label && labelOnTheTopOrOnTheLeft) {
+        label.appendChild(labelSpan);
+      }
+
+      this.setInputLabelStyle(label);
+      this.setInputStyle(input);
+
       this.addInput(input, label);
 
-      labelSpan.appendChild(this.text(value.label));
-      label.appendChild(labelSpan);
+      if (value.label) {
+        labelSpan.appendChild(this.text(this.addShortcutToLabel(value.label, value.shortcut)));
+      }
+
+      if (value.label && !labelOnTheTopOrOnTheLeft) {
+        label.appendChild(labelSpan);
+      }
       labelWrapper.appendChild(label);
 
       inputGroup.appendChild(labelWrapper);
+      wrappers.push(labelWrapper);
     });
+    this.wrappers = wrappers;
     container.appendChild(inputGroup);
+    this.errorContainer = container;
+  }
+
+  get optionWrapperClass() {
+    const inputType = this.component.inputType;
+    const wrapperClass = (this.component.inline ? `form-check-inline ${inputType}-inline` : inputType);
+    return wrapperClass;
+  }
+
+  optionsLabelOnTheTopOrLeft() {
+    return ['top', 'left'].includes(this.component.optionsLabelPosition);
+  }
+
+  optionsLabelOnTheTopOrBottom() {
+    return ['top', 'bottom'].includes(this.component.optionsLabelPosition);
+  }
+
+  setInputLabelStyle(label) {
+    if (this.component.optionsLabelPosition === 'left') {
+      _.assign(label.style, {
+        textAlign: 'center',
+        paddingLeft: 0,
+      });
+    }
+
+    if (this.optionsLabelOnTheTopOrBottom()) {
+      _.assign(label.style, {
+        display: 'block',
+        textAlign: 'center',
+        paddingLeft: 0,
+      });
+    }
+  }
+
+  setInputStyle(input) {
+    if (this.component.optionsLabelPosition === 'left') {
+      _.assign(input.style, {
+        position: 'initial',
+        marginLeft: '7px'
+      });
+    }
+
+    if (this.optionsLabelOnTheTopOrBottom()) {
+      _.assign(input.style, {
+        width: '100%',
+        position: 'initial',
+        marginLeft: 0
+      });
+    }
   }
 
   getValue() {
+    if (this.viewOnly) {
+      return this.dataValue;
+    }
     let value = '';
-    _each(this.inputs, (input) => {
+    _.each(this.inputs, (input) => {
       if (input.checked) {
         value = input.value;
+        if (value === 'true') {
+          value = true;
+        }
+        else if (value === 'false') {
+          value = false;
+        }
+        else if (!isNaN(parseInt(value, 10)) && isFinite(value)) {
+          value = parseInt(value, 10);
+        }
       }
     });
     return value;
   }
 
+  getView(value) {
+    if (!value) {
+      return '';
+    }
+    if (!_.isString(value)) {
+      return _.toString(value);
+    }
+
+    const option = _.find(this.component.values, (v) => v.value === value);
+
+    return _.get(option, 'label');
+  }
+
   setValueAt(index, value) {
     if (this.inputs && this.inputs[index]) {
-      this.inputs[index].checked = (this.inputs[index].value === value);
+      let inputValue = this.inputs[index].value;
+      if (inputValue === 'true') {
+        inputValue = true;
+      }
+      else if (inputValue === 'false') {
+        inputValue = false;
+      }
+      else if (!isNaN(parseInt(inputValue, 10)) && isFinite(inputValue)) {
+        inputValue = parseInt(inputValue, 10);
+      }
+
+      this.inputs[index].checked = (inputValue === value);
     }
+  }
+
+  updateValue(value, flags) {
+    const changed = super.updateValue(value, flags);
+    if (changed) {
+      //add/remove selected option class
+      const value = this.dataValue;
+      const optionSelectedClass = 'radio-selected';
+
+      _.each(this.wrappers, (wrapper, index) => {
+        const input = this.inputs[index];
+        if (input.value === value) {
+          //add class to container when selected
+          this.addClass(wrapper, optionSelectedClass);
+        }
+        else {
+          this.removeClass(wrapper, optionSelectedClass);
+        }
+      });
+    }
+    return changed;
+  }
+
+  destroy() {
+    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
   }
 }

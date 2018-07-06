@@ -1,140 +1,196 @@
-import _each from 'lodash/each';
-import _cloneDeep from 'lodash/cloneDeep';
-import _clone from 'lodash/clone';
-import _isArray from 'lodash/isArray';
-import { FormioComponents } from '../Components';
+import _ from 'lodash';
+
+import {FormioComponents} from '../Components';
+
 export class DataGridComponent extends FormioComponents {
   constructor(component, options, data) {
     super(component, options, data);
     this.type = 'datagrid';
+    this.numRows = 0;
+    this.numColumns = 0;
+    this.rows = [];
+  }
+
+  get emptyValue() {
+    return [{}];
+  }
+
+  get addAnotherPosition() {
+    return _.get(this.component, 'addAnotherPosition', 'bottom');
+  }
+
+  hasAddButton() {
+    const maxLength = _.get(this.component, 'validate.maxLength');
+    return !this.shouldDisable && (!maxLength || (this.dataValue.length < maxLength));
+  }
+
+  hasRemoveButtons() {
+    return !this.shouldDisable && (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
+  }
+
+  hasTopSubmit() {
+    return this.hasAddButton() && ['top', 'both'].includes(this.addAnotherPosition);
+  }
+
+  hasBottomSubmit() {
+    return this.hasAddButton() && ['bottom', 'both'].includes(this.addAnotherPosition);
+  }
+
+  hasChanged(before, after) {
+    return !_.isEqual(before, after);
   }
 
   build() {
     this.createElement();
     this.createLabel(this.element);
-    if (!this.data.hasOwnProperty(this.component.key)) {
+    if (!this.dataValue.length) {
       this.addNewValue();
     }
     this.visibleColumns = true;
-    this.buildTable();
+    this.errorContainer = this.element;
+    this.restoreValue();
     this.createDescription(this.element);
   }
 
-  buildTable(data) {
-    data = data || {};
-    if (this.tableElement) {
-      this.element.removeChild(this.tableElement);
-      this.tableElement.innerHTML = '';
+  setVisibleComponents() {
+    // Add new values based on minLength.
+    for (let dIndex = this.dataValue.length; dIndex < _.get(this.component, 'validate.minLength', 0); dIndex++) {
+      this.dataValue.push({});
     }
 
+    this.numColumns = this.hasRemoveButtons() ? 1 : 0;
+    this.numRows = this.dataValue.length;
+
+    if (this.visibleColumns === true) {
+      this.numColumns += this.component.components.length;
+      this.visibleComponents = this.component.components;
+      return this.visibleComponents;
+    }
+
+    this.visibleComponents = _.filter(this.component.components, comp => this.visibleColumns[comp.key]);
+    this.numColumns += this.visibleComponents.length;
+  }
+
+  buildRows() {
+    this.setVisibleComponents();
+    this.clear();
+    this.createLabel(this.element);
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
-    _each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
+    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
-        tableClass += 'table-' + prop + ' ';
+        tableClass += `table-${prop} `;
       }
     });
     this.tableElement = this.ce('table', {
       class: tableClass
     });
 
-    let thead = this.ce('thead');
-
-    // Build the header.
-    let tr = this.ce('tr');
-    _each(this.component.components, (comp) => {
-      if ((this.visibleColumns === true) || (this.visibleColumns[comp.key])) {
-        let th = this.ce('th');
-        if (comp.validate && comp.validate.required) {
-          th.setAttribute('class', 'field-required');
-        }
-        let title = comp.label || comp.title;
-        if (title) {
-          th.appendChild(this.text(title));
-        }
-        tr.appendChild(th);
-      }
-    });
-    let th = this.ce('th');
-    tr.appendChild(th);
-    thead.appendChild(tr);
-    this.tableElement.appendChild(thead);
-
-    // Create the table body.
-    this.tbody = this.ce('tbody');
-
     // Build the rows.
-    this.buildRows(data);
+    const tableRows = [];
+    this.dataValue.forEach((row, rowIndex) => tableRows.push(this.buildRow(row, rowIndex)));
 
-    // Add the body to the table and to the element.
-    this.tableElement.appendChild(this.tbody);
+    // Create the header (must happen after build rows to get correct column length)
+    this.tableElement.appendChild(this.createHeader());
+    this.tableElement.appendChild(this.ce('tbody', null, tableRows));
+
+    // Create the add row button footer element.
+    if (this.hasBottomSubmit()) {
+      this.tableElement.appendChild(this.ce('tfoot', null,
+        this.ce('tr', null,
+          this.ce('td', {colspan: this.numColumns},
+            this.addButton()
+          )
+        )
+      ));
+    }
+
+    // Add the table to the element.
     this.element.appendChild(this.tableElement);
   }
 
-  get defaultValue() {
-    return {};
+  // Build the header.
+  createHeader() {
+    const hasTopButton = this.hasTopSubmit();
+    const hasEnd = this.hasRemoveButtons() || hasTopButton;
+    return this.ce('thead', null, this.ce('tr', null,
+      [
+        this.visibleComponents.map(comp => {
+          const th = this.ce('th');
+          if (comp.validate && comp.validate.required) {
+            th.setAttribute('class', 'field-required');
+          }
+          const title = comp.label || comp.title;
+          if (title) {
+            th.appendChild(this.text(title));
+            this.createTooltip(th, comp);
+          }
+          return th;
+        }),
+        hasEnd ? this.ce('th', null, (hasTopButton ? this.addButton(true) : null)) : null,
+      ]
+    ));
   }
 
-  buildRows(data) {
-    let components = require('../index');
-    this.tbody.innerHTML = '';
-    this.rows = [];
-    _each(this.data[this.component.key], (row, index) => {
-      let tr = this.ce('tr');
-      let cols = {};
-      _each(this.component.components, (col) => {
-        let column = _cloneDeep(col);
-        column.label = false;
-        column.row = this.row + '-' + index;
-        let options = _clone(this.options);
-        options.name += '[' + index + ']';
-        let comp = components.create(column, options, row);
-        if (row.hasOwnProperty(column.key)) {
-          comp.setValue(row[column.key]);
-        }
-        else if (comp.type === 'components') {
-          comp.setValue(row);
-        }
-        cols[column.key] = comp;
-        if ((this.visibleColumns === true) || this.visibleColumns[col.key]) {
-          let td = this.ce('td');
-          td.appendChild(comp.element);
-          tr.appendChild(td);
-          comp.checkConditions(data);
-        }
-      });
-      this.rows.push(cols);
-      let td = this.ce('td');
-      td.appendChild(this.removeButton(index));
-      tr.appendChild(td);
-      this.tbody.appendChild(tr);
-    });
+  get defaultValue() {
+    const value = super.defaultValue;
+    if (_.isArray(value)) {
+      return value;
+    }
+    if (value && (typeof value === 'object')) {
+      return [value];
+    }
+    return this.emptyValue;
+  }
 
-    // Add the add button.
-    let tr = this.ce('tr');
-    let td = this.ce('td', {
-      colspan: (this.component.components.length + 1)
-    });
-    td.appendChild(this.addButton());
-    tr.appendChild(td);
-    this.tbody.appendChild(tr);
+  buildRow(row, index) {
+    this.rows[index] = {};
+    return this.ce('tr', null,
+      [
+        this.component.components.map((col, colIndex) => this.buildComponent(col, colIndex, row, index)),
+        this.hasRemoveButtons() ? this.ce('td', null, this.removeButton(index)) : null
+      ]
+    );
+  }
+
+  destroy(all) {
+    super.destroy(all);
+    _.each(this.rows, row => _.each(row, col => this.removeComponent(col, row)));
+    this.rows = [];
+  }
+
+  buildComponent(col, colIndex, row, rowIndex) {
+    const column = _.cloneDeep(col);
+    column.label = false;
+    column.row = `${rowIndex}-${colIndex}`;
+    const options = _.clone(this.options);
+    options.name += `[${colIndex}]`;
+    const comp = this.createComponent(column, options, row);
+    this.rows[rowIndex][column.key] = comp;
+    if ((this.visibleColumns === true) || this.visibleColumns[column.key]) {
+      return this.ce('td', null, comp.element);
+    }
   }
 
   checkConditions(data) {
     let show = super.checkConditions(data);
+    // If table isn't visible, don't bother calculating columns.
+    if (!show) {
+      return false;
+    }
     let rebuild = false;
     if (this.visibleColumns === true) {
       this.visibleColumns = {};
     }
-    _each(this.component.components, (col) => {
+    _.each(this.component.components, (col) => {
       let showColumn = false;
-      _each(this.rows, (comps) => {
+      _.each(this.rows, (comps) => {
         showColumn |= comps[col.key].checkConditions(data);
       });
       if (
         (this.visibleColumns[col.key] && !showColumn) ||
         (!this.visibleColumns[col.key] && showColumn)
       ) {
-        rebuild = true
+        rebuild = true;
       }
 
       this.visibleColumns[col.key] = showColumn;
@@ -142,8 +198,8 @@ export class DataGridComponent extends FormioComponents {
     });
 
     // If a rebuild is needed, then rebuild the table.
-    if (rebuild && show) {
-      this.buildTable(data);
+    if (rebuild) {
+      this.restoreValue();
     }
 
     // Return if this table should show.
@@ -153,32 +209,40 @@ export class DataGridComponent extends FormioComponents {
   setValue(value, flags) {
     flags = this.getFlags.apply(this, arguments);
     if (!value) {
+      this.buildRows();
       return;
     }
-    if (!_isArray(value)) {
-      return;
+    if (!Array.isArray(value)) {
+      if (typeof value === 'object') {
+        value = [value];
+      }
+      else {
+        this.buildRows();
+        return;
+      }
     }
 
-    this.value = value;
-
-    // Add needed rows.
-    for (let i=this.rows.length; i < value.length; i++) {
-      this.addValue();
-    }
-
-    _each(this.rows, (row, index) => {
+    const changed = flags.changed || this.hasChanged(value, this.dataValue);
+    this.dataValue = value;
+    this.buildRows();
+    _.each(this.rows, (row, index) => {
       if (value.length <= index) {
         return;
       }
-      _each(row, (col, key) => {
+      _.each(row, (col, key) => {
         if (col.type === 'components') {
           col.setValue(value[index], flags);
         }
         else if (value[index].hasOwnProperty(key)) {
           col.setValue(value[index][key], flags);
         }
+        else {
+          col.data = value[index];
+          col.setValue(col.defaultValue, flags);
+        }
       });
     });
+    return changed;
   }
 
   /**
@@ -187,16 +251,19 @@ export class DataGridComponent extends FormioComponents {
    * @returns {*}
    */
   getValue() {
-    let values = [];
-    _each(this.rows, (row) => {
-      let value = {};
-      _each(row, (col) => {
+    if (this.viewOnly) {
+      return this.dataValue;
+    }
+    const values = [];
+    _.each(this.rows, (row) => {
+      const value = {};
+      _.each(row, (col) => {
         if (
           col &&
           col.component &&
           col.component.key
         ) {
-          value[col.component.key] = col.getValue();
+          _.set(value, col.component.key, col.getValue());
         }
       });
       values.push(value);

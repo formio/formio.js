@@ -1,9 +1,9 @@
 'use strict';
-import { Validator } from './Validator';
-import { BaseComponent } from './base/Base';
+import {Validator} from './Validator';
+import {BaseComponent} from './base/Base';
 import assert from 'power-assert';
 describe('Validator Tests', () => {
-  let baseComponent = new BaseComponent({});
+  const baseComponent = new BaseComponent({});
 
   it('Should test for minLength', () => {
     assert.equal(Validator.validators.minLength.check(baseComponent, 5, 'test'), false);
@@ -54,5 +54,14 @@ describe('Validator Tests', () => {
     assert.equal(Validator.validators.pattern.check(baseComponent, '\\w+', 'test'), true);
     assert.equal(Validator.validators.pattern.check(baseComponent, '\\w+@\\w+', 'test@a'), true);
     assert.equal(Validator.validators.pattern.check(baseComponent, '\\w+@\\w+', 'test@example.com'), false);
+  });
+
+  it('Should test for json', () => {
+    assert.equal(Validator.validators.json.check(baseComponent, {
+      or: [{'_isEqual': [{var: 'data.test'}, ['1', '2', '3']]}, 'Should be false.']
+    }, null, {test: ['1', '2', '3']}), true);
+    assert.equal(Validator.validators.json.check(baseComponent, {
+      or: [{'_isEqual': [{var: 'data.test'}, ['1', '2', '3']]}, 'Should be false.']
+    }, null, {test: ['1', '2', '4']}), 'Should be false.');
   });
 });

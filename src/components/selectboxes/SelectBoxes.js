@@ -1,6 +1,7 @@
-import { RadioComponent } from '../radio/Radio';
-import _each from 'lodash/each';
-import _isArray from 'lodash/isArray';
+import _ from 'lodash';
+
+import {RadioComponent} from '../radio/Radio';
+
 export class SelectBoxesComponent extends RadioComponent {
   constructor(component, options, data) {
     super(component, options, data);
@@ -8,9 +9,10 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.attr.name += '[]';
     info.attr.type = 'checkbox';
+    info.attr.class = 'form-check-input';
     return info;
   }
 
@@ -22,8 +24,8 @@ export class SelectBoxesComponent extends RadioComponent {
    */
   isEmpty(value) {
     let empty = true;
-    for (let key in value) {
-      if (value[key]) {
+    for (const key in value) {
+      if (value.hasOwnProperty(key) && value[key]) {
         empty = false;
         break;
       }
@@ -33,8 +35,11 @@ export class SelectBoxesComponent extends RadioComponent {
   }
 
   getValue() {
-    let value = {};
-    _each(this.inputs, (input) => {
+    if (this.viewOnly) {
+      return this.dataValue;
+    }
+    const value = {};
+    _.each(this.inputs, (input) => {
       value[input.value] = !!input.checked;
     });
     return value;
@@ -47,24 +52,31 @@ export class SelectBoxesComponent extends RadioComponent {
    * @param flags
    */
   setValue(value, flags) {
+    value = value || {};
     flags = this.getFlags.apply(this, arguments);
-    if (_isArray(value)) {
-      this.value = {};
-      _each(value, (val) => {
-        this.value[val] = true;
+    if (Array.isArray(value)) {
+      _.each(value, (val) => {
+        value[val] = true;
       });
     }
-    else {
-      this.value = value;
-    }
 
-    _each(this.inputs, (input) => {
-      if (this.value[input.value] == undefined) {
-        this.value[input.value] = false;
+    _.each(this.inputs, (input) => {
+      if (_.isUndefined(value[input.value])) {
+        value[input.value] = false;
       }
-      input.checked = !!this.value[input.value];
+      input.checked = !!value[input.value];
     });
 
     this.updateValue(flags);
+  }
+
+  getView(value) {
+    if (!value) {
+      return '';
+    }
+    return _(this.component.values || [])
+      .filter((v) => value[v.value])
+      .map('label')
+      .join(', ');
   }
 }

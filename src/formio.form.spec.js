@@ -1,14 +1,15 @@
 'use strict';
 import FormioForm from './formio.form';
-import { Harness } from '../test/harness';
-import { FormTests } from '../test/forms/index';
+import {Harness} from '../test/harness';
+import {FormTests} from '../test/forms/index';
 import assert from 'power-assert';
 import each from 'lodash/each';
+import i18next from 'i18next';
 
 describe('Formio Form Renderer tests', () => {
   let simpleForm = null;
   it('Should create a simple form', (done) => {
-    let formElement = document.createElement('div');
+    const formElement = document.createElement('div');
     simpleForm = new FormioForm(formElement);
     simpleForm.setForm({
       title: 'Simple Form',
@@ -39,11 +40,125 @@ describe('Formio Form Renderer tests', () => {
     }});
   });
 
+  it('Should translate a form from options', done => {
+    const formElement = document.createElement('div');
+    const translateForm = new FormioForm(formElement, {
+      language: 'es',
+      i18n: {
+        es: {
+          'Default Label': 'Spanish Label'
+        }
+      }
+    });
+    translateForm.setForm({
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    }).then(() => {
+      const label = formElement.querySelector('.control-label');
+      assert.equal(label.innerHTML, 'Spanish Label');
+      done();
+    });
+  });
+
+  it('Should translate a form after instantiate', done => {
+    const formElement = document.createElement('div');
+    const translateForm = new FormioForm(formElement, {
+      i18n: {
+        es: {
+          'Default Label': 'Spanish Label'
+        }
+      }
+    });
+    translateForm.setForm({
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    }).then(() => {
+      translateForm.language = 'es';
+      const label = formElement.querySelector('.control-label');
+      assert.equal(label.innerHTML, 'Spanish Label');
+      done();
+    });
+  });
+
+  it('Should add a translation after instantiate', done => {
+    const formElement = document.createElement('div');
+    const translateForm = new FormioForm(formElement, {
+      i18n: {
+        language: 'es',
+        es: {
+          'Default Label': 'Spanish Label'
+        },
+        fr: {
+          'Default Label': 'French Label'
+        }
+      }
+    });
+    translateForm.setForm({
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    }).then(() => {
+      translateForm.language = 'fr';
+      const label = formElement.querySelector('.control-label');
+      assert.equal(label.innerHTML, 'French Label');
+      done();
+    });
+  });
+
+  it('Should switch a translation after instantiate', done => {
+    const formElement = document.createElement('div');
+    const translateForm = new FormioForm(formElement);
+    translateForm.setForm({
+      title: 'Translate Form',
+      components: [
+        {
+          type: 'textfield',
+          label: 'Default Label',
+          key: 'myfield',
+          input: true,
+          inputType: 'text',
+          validate: {}
+        }
+      ]
+    }).then(() => {
+      translateForm.addLanguage('es', {'Default Label': 'Spanish Label'}, true);
+      const label = formElement.querySelector('.control-label');
+      assert.equal(label.innerHTML, 'Spanish Label');
+      done();
+    });
+  });
+
   each(FormTests, (formTest) => {
     each(formTest.tests, (formTestTest, title) => {
       it(title, (done) => {
-        let formElement = document.createElement('div');
-        let form = new FormioForm(formElement);
+        const formElement = document.createElement('div');
+        const form = new FormioForm(formElement, {language: 'en'});
         form.setForm(formTest.form).then(() => {
           formTestTest(form, done);
         }).catch((error) => {

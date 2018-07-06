@@ -16,7 +16,10 @@ Formio.createForm(document.getElementById('formio'), {
       placeholder: 'Enter the title.',
       key: 'title',
       input: true,
-      inputType: 'text'
+      inputType: 'text',
+      validate: {
+         required: true
+      }
     },
     {
       type: 'textarea',
@@ -24,14 +27,18 @@ Formio.createForm(document.getElementById('formio'), {
       wysiwyg: true,
       key: 'content',
       input: true,
-      inputType: 'text'
+      inputType: 'text',
+      validate: {
+         required: true
+      }
     },
     {
       type: 'button',
       action: 'submit',
       label: 'Submit',
       theme: 'primary',
-      key: 'submit'
+      key: 'submit',
+      disableOnInvalid: true
     }
   ]
 });
@@ -48,7 +55,10 @@ Formio.createForm(document.getElementById('formio'), {
         placeholder: 'Enter the title.',
         key: 'title',
         input: true,
-        inputType: 'text'
+        inputType: 'text',
+        validate: {
+           required: true
+        }
       },
       {
         type: 'textarea',
@@ -56,16 +66,24 @@ Formio.createForm(document.getElementById('formio'), {
         wysiwyg: true,
         key: 'content',
         input: true,
-        inputType: 'text'
+        inputType: 'text',
+        validate: {
+           required: true
+        }
       },
       {
         type: 'button',
         action: 'submit',
         label: 'Submit',
         theme: 'primary',
-        key: 'submit'
+        key: 'submit',
+        disableOnInvalid: true
       }
     ]
+  }).then(function(form) {
+    form.on('submit', function(submission) {
+      console.log(submission);
+    });
   });
   </script>
 </div>

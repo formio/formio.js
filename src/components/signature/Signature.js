@@ -1,8 +1,10 @@
-import SignaturePad from 'signature_pad';
-import { BaseComponent } from '../base/Base';
+import SignaturePad from 'signature_pad/dist/signature_pad.js';
+import {BaseComponent} from '../base/Base';
 export class SignatureComponent extends BaseComponent {
   constructor(component, options, data) {
     super(component, options, data);
+    this.currentWidth = 0;
+    this.scale = 1;
     if (!this.component.width) {
       this.component.width = '100%';
     }
@@ -12,7 +14,7 @@ export class SignatureComponent extends BaseComponent {
   }
 
   elementInfo() {
-    let info = super.elementInfo();
+    const info = super.elementInfo();
     info.type = 'input';
     info.attr.type = 'hidden';
     return info;
@@ -23,24 +25,31 @@ export class SignatureComponent extends BaseComponent {
     super.setValue(value, flags);
     if (value && !flags.noSign && this.signaturePad) {
       this.signaturePad.fromDataURL(value);
+      this.signatureImage.setAttribute('src', value);
+      this.showCanvas(false);
     }
   }
 
-  getSignatureImage() {
-    let image = this.ce('img', {
-      style: ('width: ' + this.component.width + ';height: ' + this.component.height)
-    });
-    image.setAttribute('src', this.value);
-    return image;
+  showCanvas(show) {
+    if (show) {
+      this.canvas.style.display = 'inherit';
+      this.signatureImage.style.display = 'none';
+    }
+    else {
+      this.canvas.style.display = 'none';
+      this.signatureImage.style.display = 'inherit';
+    }
   }
 
   set disabled(disabled) {
     super.disabled = disabled;
+    this.showCanvas(!disabled);
     if (this.signaturePad) {
-      if (disabled){
+      if (disabled) {
         this.signaturePad.off();
         this.refresh.classList.add('disabled');
-      } else {
+      }
+      else {
         this.signaturePad.on();
         this.refresh.classList.remove('disabled');
       }
@@ -54,52 +63,80 @@ export class SignatureComponent extends BaseComponent {
     }
   }
 
+  checkSize(force, scale) {
+    if (force || (this.padBody.offsetWidth !== this.currentWidth)) {
+      this.scale = force ? scale : this.scale;
+      this.currentWidth = this.padBody.offsetWidth;
+      this.canvas.width = this.currentWidth * this.scale;
+      this.canvas.height = this.padBody.offsetHeight * this.scale;
+      const ctx = this.canvas.getContext('2d');
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale((1 / this.scale), (1 / this.scale));
+      ctx.fillStyle = this.signaturePad.backgroundColor;
+      ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.signaturePad.clear();
+    }
+  }
+
   build() {
+    if (this.viewOnly) {
+      return this.viewOnlyBuild();
+    }
+
     this.element = this.createElement();
     let classNames = this.element.getAttribute('class');
     classNames += ' signature-pad';
     this.element.setAttribute('class', classNames);
 
     this.input = this.createInput(this.element);
-    let padBody = this.ce('div', {
+    this.padBody = this.ce('div', {
       class: 'signature-pad-body',
-      style: ('width: ' + this.component.width + ';height: ' + this.component.height)
+      style: (`width: ${this.component.width};height: ${this.component.height}`),
+      tabindex: this.component.tabindex || 0
     });
 
     // Create the refresh button.
     this.refresh = this.ce('a', {
-      class: 'btn btn-sm btn-default signature-pad-refresh'
+      class: 'btn btn-sm btn-default btn-secondary signature-pad-refresh'
     });
-    let refreshIcon = this.getIcon('refresh');
+    const refreshIcon = this.getIcon('refresh');
     this.refresh.appendChild(refreshIcon);
-    padBody.appendChild(this.refresh);
+    this.padBody.appendChild(this.refresh);
 
     // The signature canvas.
-    let canvas = this.ce('canvas', {
+    this.canvas = this.ce('canvas', {
       class: 'signature-pad-canvas',
       height: this.component.height
     });
-    padBody.appendChild(canvas);
-    this.element.appendChild(padBody);
+    this.padBody.appendChild(this.canvas);
+
+    this.signatureImage = this.ce('img', {
+      style: ('width: 100%;display: none;')
+    });
+    this.padBody.appendChild(this.signatureImage);
+
+    this.element.appendChild(this.padBody);
 
     // Add the footer.
     if (this.component.footer) {
-      let footer = this.ce('div', {
+      this.signatureFooter = this.ce('div', {
         class: 'signature-pad-footer'
       });
-      footer.appendChild(this.text(this.component.footer));
-      this.element.appendChild(footer);
+      this.signatureFooter.appendChild(this.text(this.component.footer));
+      this.createTooltip(this.signatureFooter);
+      this.element.appendChild(this.signatureFooter);
     }
 
     // Create the signature pad.
-    this.signaturePad = new SignaturePad(canvas, {
+    this.signaturePad = new SignaturePad(this.canvas, {
       minWidth: this.component.minWidth,
       maxWidth: this.component.maxWidth,
       penColor: this.component.penColor,
       backgroundColor: this.component.backgroundColor
     });
-    this.refresh.addEventListener("click", (event) => {
+    this.refresh.addEventListener('click', (event) => {
       event.preventDefault();
+      this.showCanvas(true);
       this.signaturePad.clear();
     });
     this.signaturePad.onEnd = () => this.setValue(this.signaturePad.toDataURL(), {
@@ -107,20 +144,33 @@ export class SignatureComponent extends BaseComponent {
     });
 
     // Ensure the signature is always the size of its container.
-    let currentWidth = 0;
     setTimeout(function checkWidth() {
-      if (padBody.offsetWidth !== currentWidth) {
-        currentWidth = padBody.offsetWidth;
-        canvas.width = currentWidth;
-        let ctx = canvas.getContext("2d");
-        ctx.fillStyle = this.signaturePad.backgroundColor;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
+      this.checkSize();
       setTimeout(checkWidth.bind(this), 200);
     }.bind(this), 200);
 
-    if (this.options.readOnly || this.component.disabled) {
+    // Restore values.
+    this.restoreValue();
+
+    if (this.shouldDisable) {
       this.disabled = true;
     }
+
+    this.autofocus();
+  }
+
+  createViewOnlyLabel(container) {
+    this.labelElement = this.ce('dt');
+    this.labelElement.appendChild(this.text(this.component.footer));
+    this.createTooltip(this.labelElement);
+    container.appendChild(this.labelElement);
+  }
+
+  getView(value) {
+    return value ? 'Yes' : 'No';
+  }
+
+  focus() {
+    this.padBody.focus();
   }
 }

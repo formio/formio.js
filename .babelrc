@@ -1,5 +1,12 @@
 {
   "presets": [
-    "es2015"
+    ["babel-preset-env", {
+      "targets": {
+        "browsers": ["last 2 versions", "safari >= 7"]
+      }
+    }]
+  ],
+  "plugins": [
+    "array-includes"
   ]
 }

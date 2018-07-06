@@ -26,6 +26,7 @@ module.exports = {
         firstName: 'test',
         lastName: 'test2',
         email: 'bademail',
+        submit: false,
         password: '',
         verifyPassword: ''
       }}, [{

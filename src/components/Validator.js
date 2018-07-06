@@ -1,19 +1,13 @@
-import _get from 'lodash/get';
-import _each from 'lodash/each';
-import _has from 'lodash/has';
-import _isNumber from 'lodash/isNumber';
-import FormioUtils from '../utils/index';
-export var Validator = {
-  get: _get,
-  each: _each,
-  has: _has,
-  checkValidator: function(component, validator, setting, value, data) {
-    // Make sure this component isn't conditionally disabled.
-    if (!FormioUtils.checkCondition(component.component, data, component.data)) {
-      return '';
-    }
+import _ from 'lodash';
 
-    let result = validator.check.call(this, component, setting, value, data);
+import FormioUtils from '../utils';
+
+export const Validator = {
+  get: _.get,
+  each: _.each,
+  has: _.has,
+  checkValidator(component, validator, setting, value, data) {
+    const result = validator.check.call(this, component, setting, value, data);
     if (typeof result === 'string') {
       return result;
     }
@@ -22,22 +16,22 @@ export var Validator = {
     }
     return '';
   },
-  validate: function(component, validator, value, data) {
-    if (validator.key && _has(component.component, validator.key)) {
-      let setting = this.get(component.component, validator.key);
+  validate(component, validator, value, data) {
+    if (validator.key && _.has(component.component, validator.key)) {
+      const setting = this.get(component.component, validator.key);
       return this.checkValidator(component, validator, setting, value, data);
     }
     return this.checkValidator(component, validator, null, value, data);
   },
-  check: function(component, data) {
+  check(component, data) {
     let result = '';
-    let value = component.getRawValue();
+    const value = component.validationValue;
     data = data || component.data;
-    _each(component.validators, (name) => {
+    _.each(component.validators, (name) => {
       if (this.validators.hasOwnProperty(name)) {
-        let validator = this.validators[name];
+        const validator = this.validators[name];
         if (component.validateMultiple(value)) {
-          _each(value, (val) => {
+          _.each(value, (val) => {
             result = this.validate(component, validator, val, data);
             if (result) {
               return false;
@@ -52,15 +46,27 @@ export var Validator = {
         }
       }
     });
+
+    const validateCustom = _.get(component, 'component.validate.custom');
+    const customErrorMessage = _.get(component, 'component.validate.customMessage');
+     if (result && (customErrorMessage || validateCustom)) { 
+      result = component.t(customErrorMessage || result, { 
+        data: component.data 
+      });
+     }
+
     return result;
   },
   validators: {
     required: {
       key: 'validate.required',
-      message: function(component, setting) {
-        return component.t('required', {field: component.errorLabel});
+      message(component) {
+        return component.t(component.errorMessage('required'), {
+          field: component.errorLabel,
+          data: component.data
+        });
       },
-      check: function(component, setting, value) {
+      check(component, setting, value) {
         if (!FormioUtils.boolValue(setting)) {
           return true;
         }
@@ -69,15 +75,16 @@ export var Validator = {
     },
     min: {
       key: 'validate.min',
-      message: function(component, setting) {
-        return component.t('min', {
+      message(component, setting) {
+        return component.t(component.errorMessage('min'), {
           field: component.errorLabel,
-          min: parseFloat(setting)
+          min: parseFloat(setting),
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
-        let min = parseFloat(setting);
-        if (!min || (!_isNumber(value))) {
+      check(component, setting, value) {
+        const min = parseFloat(setting);
+        if (!min || (!_.isNumber(value))) {
           return true;
         }
         return parseFloat(value) >= min;
@@ -85,15 +92,16 @@ export var Validator = {
     },
     max: {
       key: 'validate.max',
-      message: function(component, setting) {
-        return component.t('max', {
+      message(component, setting) {
+        return component.t(component.errorMessage('max'), {
           field: component.errorLabel,
-          max: parseFloat(setting)
+          max: parseFloat(setting),
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
-        let max = parseFloat(setting);
-        if (!max || (!_isNumber(value))) {
+      check(component, setting, value) {
+        const max = parseFloat(setting);
+        if (!max || (!_.isNumber(value))) {
           return true;
         }
         return parseFloat(value) <= max;
@@ -101,14 +109,15 @@ export var Validator = {
     },
     minLength: {
       key: 'validate.minLength',
-      message: function(component, setting) {
-        return component.t('minLength', {
+      message(component, setting) {
+        return component.t(component.errorMessage('minLength'), {
           field: component.errorLabel,
-          length: (setting - 1)
+          length: (setting - 1),
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
-        let minLength = parseInt(setting, 10);
+      check(component, setting, value) {
+        const minLength = parseInt(setting, 10);
         if (!minLength || (typeof value !== 'string')) {
           return true;
         }
@@ -117,14 +126,15 @@ export var Validator = {
     },
     maxLength: {
       key: 'validate.maxLength',
-      message: function(component, setting) {
-        return component.t('maxLength', {
+      message(component, setting) {
+        return component.t(component.errorMessage('maxLength'), {
           field: component.errorLabel,
-          length: (setting + 1)
+          length: (setting + 1),
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
-        let maxLength = parseInt(setting, 10);
+      check(component, setting, value) {
+        const maxLength = parseInt(setting, 10);
         if (!maxLength || (typeof value !== 'string')) {
           return true;
         }
@@ -132,55 +142,62 @@ export var Validator = {
       }
     },
     email: {
-      message: function(component, setting) {
-        return component.t('invalid_email', {
-          field: component.errorLabel
+      message(component) {
+        return component.t(component.errorMessage('invalid_email'), {
+          field: component.errorLabel,
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
+      check(component, setting, value) {
         // From http://stackoverflow.com/questions/46155/validate-email-address-in-javascript
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        return re.test(value);
+        const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+        // Allow emails to be valid if the component is pristine and no value is provided.
+        return !value || re.test(value);
       }
     },
     date: {
-      message: function(component, setting) {
-        return component.t('invalid_date', {
-          field: component.errorLabel
+      message(component) {
+        return component.t(component.errorMessage('invalid_date'), {
+          field: component.errorLabel,
+          data: component.data
         });
       },
-      check: function(component, setting, value) {
+      check(component, setting, value) {
         return (value !== 'Invalid date');
       }
     },
     pattern: {
       key: 'validate.pattern',
-      message: function(component, setting) {
-        return component.t('pattern', {
-          field: component.errorLabel
-        });
+      message(component, setting) {
+        return component.t(_.get(component, 'component.validate.patternMessage', component.errorMessage('pattern'), {
+          field: component.errorLabel,
+          pattern: setting,
+          data: component.data
+        }));
       },
-      check: function(component, setting, value) {
-        let pattern = setting;
+      check(component, setting, value) {
+        const pattern = setting;
         if (!pattern) {
           return true;
         }
-        let regexStr = '^' + pattern + '$';
-        let regex = new RegExp(regexStr);
+        const regexStr = `^${pattern}$`;
+        const regex = new RegExp(regexStr);
         return regex.test(value);
       }
     },
     json: {
       key: 'validate.json',
-      check: function(component, setting, value, data) {
+      check(component, setting, value, data) {
         if (!setting) {
           return true;
         }
         let valid = true;
         try {
           valid = FormioUtils.jsonLogic.apply(setting, {
-            data: data,
-            row: component.data
+            data,
+            row: component.data,
+            _
           });
         }
         catch (err) {
@@ -189,38 +206,50 @@ export var Validator = {
         return valid;
       }
     },
-    custom: {
-      key: 'validate.custom',
-      message: function(component) {
-        return component.t('custom', {
-          field: component.errorLabel
+    mask: {
+      message(component) {
+        return component.t(component.errorMessage('mask'), {
+          field: component.errorLabel,
+          data: component.data
         });
       },
-      check: function(component, setting, value, data) {
+      check(component, setting, value) {
+        if (value && component._inputMask) {
+          return FormioUtils.matchInputMask(value, component._inputMask);
+        }
+
+        return true;
+      }
+    },
+    custom: {
+      key: 'validate.custom',
+      message(component) {
+        return component.t(component.errorMessage('custom'), {
+          field: component.errorLabel,
+          data: component.data
+        });
+      },
+      check(component, setting, value, data) {
         if (!setting) {
           return true;
         }
-        var valid = true;
-        var row = component.data;
         let custom = setting;
-        /*eslint-disable no-unused-vars */
-        var input = value;
-        /*eslint-enable no-unused-vars */
-        custom = custom.replace(/({{\s+(.*)\s+}})/, function (match, $1, $2) {
+
+        custom = custom.replace(/({{\s+(.*)\s+}})/, (match, $1, $2) => {
           if ($2.indexOf('data.') === 0) {
-            return _get(data, $2.replace('data.', ''));
+            return _.get(data, $2.replace('data.', ''));
           }
           else if ($2.indexOf('row.') === 0) {
-            return _get(row, $2.replace('row.', ''));
+            return _.get(component.data, $2.replace('row.', ''));
           }
 
           // Support legacy...
-          return _get(data, $2);
+          return _.get(data, $2);
         });
 
         /* jshint evil: true */
-        eval(custom);
-        return valid;
+        return (new Function('row', 'data', 'component', 'input',
+          `var valid = true; ${custom}; return valid;`))(component.data, data, component, value);
       }
     }
   }

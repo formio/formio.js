@@ -1,6 +1,6 @@
-import { FormioComponents } from '../Components';
+import {FormioComponents} from '../Components';
 export class WellComponent extends FormioComponents {
   get className() {
-    return 'well formio-component formio-component-well ' + this.component.customClass;
+    return `card card-body bg-faded well formio-component formio-component-well ${this.component.customClass}`;
   }
 }
