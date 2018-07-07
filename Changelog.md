@@ -45,6 +45,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## 3.0.0-rc.18
+### Added
+ - A way to force components visible or hidden in a hierarchial manner.
+ - A way to get access to Formio.Utils from the global Formio object.
+
 ## 3.0.0-rc.17
 ### Added
  - A way to get access to the Formio.Components from within a global script.
