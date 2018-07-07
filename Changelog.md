@@ -53,6 +53,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Issues with all Nested components getting the "tree" parameter which messed up validators for non data components.
 
+### Changed
+ - Upgrade flatpickr@4.5.1, i18next@11.3.5, babel-loader@7.1.5, eslint@5.0.1, fetch-mock@6.5.0, sinon@6.1.3, webpack@4.15.1, gulp-eslint@5.0.0
+
 ## 3.0.0-rc.15
 ### Added
  - Possibility to override i18n settings.
