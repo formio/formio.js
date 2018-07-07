@@ -1194,6 +1194,7 @@ export default class Formio {
 
 // Define all the static properties.
 Formio.libraries = {};
+Formio.Promise = Promise;
 Formio.Headers = Headers;
 Formio.baseUrl = 'https://api.form.io';
 Formio.projectUrl = Formio.baseUrl;

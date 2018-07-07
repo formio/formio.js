@@ -1,11 +1,2 @@
-import AllComponents from './components';
-import Components from './components/Components';
-import Formio from './Formio';
-
-Components.setComponents(AllComponents);
-Formio.Components = Components;
-
-export Form from './Form';
+export * from './formio.form';
 export FormBuilder from './FormBuilder';
-export Utils from './utils';
-export { Components, Formio };

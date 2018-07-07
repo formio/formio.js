@@ -1,7 +1,4 @@
-import AllComponents from './components';
-import Components from './components/Components';
-Components.setComponents(AllComponents);
-import Form from './Form';
+import { Form } from './formio.form';
 const query = {};
 const scripts = document.getElementsByTagName('script');
 const thisScript = scripts[ scripts.length - 1 ];

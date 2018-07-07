@@ -45,6 +45,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## 3.0.0-rc.19
+### Changed
+ - Made each build entry derive from the same formio.form entry.
+
+### Added
+ - The ability to have access to the Promise library from external mechanisms.
+
 ## 3.0.0-rc.18
 ### Added
  - A way to force components visible or hidden in a hierarchial manner.
