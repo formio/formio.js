@@ -400,6 +400,19 @@ export default class Component {
     if (this.options.attachMode === 'builder' || this.options.showHiddenFields) {
       return true;
     }
+    if (
+      this.options.hide &&
+      this.options.hide[this.component.key]
+    ) {
+      return false;
+    }
+    if (
+      this.options.show &&
+      this.options.show[this.component.key]
+    ) {
+      return true;
+    }
+
     return this._visible && this._parentVisible;
   }
 
