@@ -11,6 +11,7 @@ export default class EditGridComponent extends NestedComponent {
       key: 'editGrid',
       clearOnHide: true,
       input: true,
+      tree: true,
       components: [],
       templates: {
         header: this.defaultHeaderTemplate,

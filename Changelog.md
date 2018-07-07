@@ -48,6 +48,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [UNRELEASED]
 ### Fixed
  - Utils `getComponent()` function.
+ 
+## 3.0.0-rc.16
+### Fixed
+ - Issues with all Nested components getting the "tree" parameter which messed up validators for non data components.
 
 ## 3.0.0-rc.15
 ### Added
