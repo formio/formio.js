@@ -129,6 +129,11 @@ export default class FormComponent extends Component {
     return this.subForm.attach(element);
   }
 
+  detach() {
+    this.subForm.detach();
+    super.detach();
+  }
+
   destroy() {
     this.subForm.destroy();
     super.destroy();

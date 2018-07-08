@@ -359,13 +359,8 @@ export default class ButtonComponent extends Field {
     }, 100);
   }
 
-  destroy() {
-    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
-    this.removeShortcut(this.refs.button);
-  }
-
   focus() {
-    this.button.focus();
+    this.refs.button.focus();
   }
 }
 

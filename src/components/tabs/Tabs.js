@@ -92,8 +92,8 @@ export default class TabsComponent extends NestedComponent {
     this.refs[this.tabKey].forEach((tab, index) => this.attachComponents(tab, this.tabs[index]));
   }
 
-  destroy(all) {
-    super.destroy(all);
+  detach(all) {
+    super.detach(all);
     delete this.columns;
   }
 

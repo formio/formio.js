@@ -96,9 +96,9 @@ export default class TableComponent extends NestedComponent {
   render() {
     return super.render(this.renderTemplate('table', {
       columnKey: this.columnKey,
-      tableComponents: this.table.map(row =>
-        row.map(column =>
-          this.renderComponents(column)
+      tableComponents: this.table.map((row, rowIndex) =>
+        row.map((column, columnIndex) =>
+          this.renderComponents(column, this.definitionPath + `rows[${rowIndex}][${columnIndex}]`)
         )
       )
     }));
@@ -114,8 +114,8 @@ export default class TableComponent extends NestedComponent {
     });
   }
 
-  destroy(all) {
-    super.destroy(all);
+  detach(all) {
+    super.detach(all);
     delete this.table;
   }
 

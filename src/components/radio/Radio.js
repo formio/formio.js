@@ -133,8 +133,4 @@ export default class RadioComponent extends Field {
     }
     return changed;
   }
-
-  destroy() {
-    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
-  }
 }

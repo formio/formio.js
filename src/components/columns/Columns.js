@@ -76,8 +76,8 @@ export default class ColumnsComponent extends NestedComponent {
     this.refs[this.columnKey].forEach((column, index) => this.attachComponents(column, this.columns[index]));
   }
 
-  destroy(all) {
-    super.destroy(all);
+  detach(all) {
+    super.detach(all);
     delete this.columns;
   }
 }

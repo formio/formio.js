@@ -19,7 +19,11 @@
   margin-top: -2px;
 }
 
-.formio-component:not(:hover) .component-btn-group {
+.builder-component {
+  position: relative;
+}
+
+.builder-component:not(:hover) .component-btn-group {
   display: none;
 }
 

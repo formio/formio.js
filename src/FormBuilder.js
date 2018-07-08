@@ -28,22 +28,19 @@ export default class FormBuilder extends Form {
    * ]});
    * builder.render();
    */
-  constructor(element, form, options) {
-    super(element, form, options);
+  constructor(...args) {
+    super(...args);
   }
 
-  create() {
-    if (!this.form.components) {
-      this.form.components = [];
+  create(display) {
+    if (display === 'wizard') {
+      return new WizardBuilder(this.options);
     }
-    if (this.form.display === 'wizard') {
-      return new WizardBuilder(this.element, this.options);
-    }
-    else if (this.form.display === 'pdf') {
-      return new PDFBuilder(this.element, this.options);
+    else if (display === 'pdf') {
+      return new PDFBuilder(this.options);
     }
     else {
-      return new WebformBuilder(this.element, this.options);
+      return new WebformBuilder(this.options);
     }
   }
 }
@@ -58,8 +55,7 @@ export default class FormBuilder extends Form {
  * @return {Promise} - When the form is instance is ready.
  */
 Formio.builder = (element, form, options) => {
-  const builder = new FormBuilder(element, form, options);
-  return builder.render();
+  return new FormBuilder(element, form, options);
 };
 
 Formio.FormBuilder = FormBuilder;

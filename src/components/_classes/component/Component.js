@@ -153,6 +153,8 @@ export default class Component {
      */
     this.id = (component && component.id) ? component.id : FormioUtils.getRandomComponentId();
 
+    this.schemaPath = '';
+
     /**
      * The options for this component.
      * @type {{}}
@@ -317,6 +319,11 @@ export default class Component {
     // Can be overridden
   }
 
+  destroy() {
+    this.detach();
+    // Can be overridden
+  }
+
   get hasInput() {
     return this.component.input || (this.refs.input && this.refs.input.length);
   }
@@ -451,26 +458,46 @@ export default class Component {
     }
   }
 
-  getTemplate(name) {
-    const mode = this.options.mode || 'form';
-    // Default back to bootstrap if not defined.
-    if (!this.options.templates[name]) {
-      if (!templates['bootstrap'][name]) {
-        return `Unknown template: ${name}`;
-      }
-      return templates['bootstrap'][name][mode];
+  getTemplate(names) {
+    // Allow just passing a string.
+    if (!Array.isArray(names)) {
+      names = [names];
     }
-    return this.options.templates[name][mode];
+    const mode = this.options.mode || 'form';
+    for (const name in names) {
+      if (this.options.templates[name]) {
+        return this.options.templates[name][mode];
+      }
+    }
+    // Default back to bootstrap if not defined.
+    const name = names[names.length - 1];
+    if (!templates['bootstrap'][name]) {
+      return `Unknown template: ${name}`;
+    }
+    return templates['bootstrap'][name][mode];
   }
 
   renderTemplate(name, data = {}) {
     data.component = this.component;
+    data.self = this;
     data.iconClass = this.iconClass.bind(this);
     data.t = this.t.bind(this);
     data.transform = this.options.templates.transform;
     data.id = data.id || this.id;
     data.key = data.key || this.key;
-    return this.interpolate(this.getTemplate(name), data);
+    // Allow more specific template names
+    const names = [
+      `${name}-${this.component.type}-${this.key}`,
+      `${name}-${this.component.type}`,
+      `${name}-${this.key}`,
+      `${name}`,
+    ];
+    // Allow template alters.
+    return this.hook(
+      'render' + name.charAt(0).toUpperCase() + name.substring(1, name.length),
+      this.interpolate(this.getTemplate(names), data),
+      data
+    );
   }
 
   /**
@@ -662,6 +689,8 @@ export default class Component {
     if (this.shouldDisable) {
       this.disabled = true;
     }
+
+    this.hook('attachComponent', element, this);
 
     return Promise.resolve();
   }
@@ -1121,6 +1150,11 @@ export default class Component {
     this.attach(this.element);
   }
 
+  rebuild() {
+    this.destroy();
+    this.init();
+  }
+
   removeEventListeners() {
     _.each(this.events._events, (events, type) => {
       _.each(events, (listener) => {
@@ -1150,7 +1184,7 @@ export default class Component {
   /**
    * Remove all event handlers.
    */
-  destroy(all) {
+  detach(all) {
     this.removeEventListeners(all);
   }
 
@@ -2132,7 +2166,7 @@ export default class Component {
   }
 
   clear() {
-    this.destroy();
+    this.detach();
     this.refs = {};
     this.empty(this.getElement());
   }

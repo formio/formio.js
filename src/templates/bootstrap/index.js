@@ -1,7 +1,13 @@
+import builder from './builder';
+import builderComponent from './builderComponent';
+import builderComponents from './builderComponents';
+import builderPlaceholder from './builderPlaceholder';
+import builderSidebar from './builderSidebar';
 import button from './button';
 import checkbox from './checkbox';
 import columns from './columns';
 import component from './component';
+import components from './components';
 import container from './container';
 import datagrid from './datagrid';
 import day from './day';
@@ -34,10 +40,16 @@ import wizard from './wizard';
 export default {
   transform: (type, text) => text,
   iconClass,
+  builder,
+  builderComponent,
+  builderComponents,
+  builderPlaceholder,
+  builderSidebar,
   button,
   checkbox,
   columns,
   component,
+  components,
   container,
   datagrid,
   day,

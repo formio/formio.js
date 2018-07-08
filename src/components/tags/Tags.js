@@ -55,6 +55,15 @@ export default class TagsComponent extends Input {
     this.choices.itemList.tabIndex = this.refs.input[index].tabIndex;
   }
 
+  detach() {
+    super.detach();
+    if (this.choices) {
+      this.choices.destroyed = true;
+      this.choices.destroy();
+      this.choices = null;
+    }
+  }
+
   setValue(value) {
     if (this.choices) {
       if (this.component.storeas === 'string' && (typeof value === 'string')) {
@@ -86,15 +95,6 @@ export default class TagsComponent extends Input {
     }
     else {
       this.choices.enable();
-    }
-  }
-
-  destroy() {
-    super.destroy();
-    if (this.choices) {
-      this.choices.destroyed = true;
-      this.choices.destroy();
-      this.choices = null;
     }
   }
 }

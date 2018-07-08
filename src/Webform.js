@@ -224,10 +224,7 @@ export default class Webform extends NestedComponent {
     //   this.component = this.form;
     // }
 
-    if (this.element) {
-      this.init();
-      this.build();
-    }
+    this.init();
   }
   /* eslint-enable max-statements */
 
@@ -244,7 +241,7 @@ export default class Webform extends NestedComponent {
         if (err) {
           return reject(err);
         }
-        this.build();
+        this.redraw();
         resolve();
       });
     });
@@ -596,6 +593,11 @@ export default class Webform extends NestedComponent {
    * @returns {Object} - The form JSON schema.
    */
   get form() {
+    if (!this._form) {
+      this._form = {
+        components: []
+      };
+    }
     return this._form;
   }
 
@@ -702,16 +704,26 @@ export default class Webform extends NestedComponent {
    * Build the form.
    */
   init() {
+    // Remove any existing components.
+    if (this.components && this.components.length) {
+      this.destroyComponents();
+      this.components = [];
+    }
+
     if (this.component) {
       this.component.components = this.form.components;
     }
     else {
       this.component = this.form;
     }
+
     this.addComponents();
     this.setValue(this.submission);
     // this.showElement(false);
     this.isBuilt = true;
+    if (this.element) {
+      this.build();
+    }
     this.formReadyResolve();
     return this.formReady;
   }
@@ -727,7 +739,7 @@ export default class Webform extends NestedComponent {
   render() {
     return this.renderTemplate('webform', {
       classes: 'formio-form',
-      children: this.renderComponents()
+      children: this.renderComponents(null, (this.schemaPath ? this.schemaPath + '.' : '') + 'components'),
     });
   }
 

@@ -96,13 +96,6 @@ export default class SignatureComponent extends Input {
     }
   }
 
-  destroy() {
-    super.destroy();
-    if (this.signaturePad) {
-      this.signaturePad.off();
-    }
-  }
-
   checkSize(force, scale) {
     if (force || (this.refs.padBody.offsetWidth !== this.currentWidth)) {
       this.scale = force ? scale : this.scale;
@@ -159,6 +152,14 @@ export default class SignatureComponent extends Input {
     }.bind(this), 200);
   }
   /* eslint-enable max-statements */
+
+  detach() {
+    if (this.signaturePad) {
+      this.signaturePad.off();
+    }
+    this.signaturePad = null;
+    super.detach();
+  }
 
   createViewOnlyLabel(container) {
     this.labelElement = this.ce('dt');

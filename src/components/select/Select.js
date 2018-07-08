@@ -718,8 +718,8 @@ export default class SelectComponent extends Field {
     element.innerHTML = this.asString();
   }
 
-  destroy() {
-    super.destroy();
+  detach() {
+    super.detach();
     if (this.choices) {
       this.choices.destroyed = true;
       this.choices.destroy();

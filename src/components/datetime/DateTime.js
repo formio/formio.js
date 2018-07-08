@@ -252,14 +252,14 @@ export default class DateTimeComponent extends Input {
     }
   }
 
-  destroy(all) {
+  detach(all) {
     // Clean up clalendars.
     this.refs.inputs.forEach(input => {
       if (input.calendar) {
         input.calendar.destroy();
       }
     });
-    super.destroy(all);
+    super.detach(all);
   }
 
   focus() {

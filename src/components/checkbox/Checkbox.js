@@ -174,9 +174,4 @@ export default class CheckBoxComponent extends Component {
   getView(value) {
     return value ? 'Yes' : 'No';
   }
-
-  destroy() {
-    super.destroy.apply(this, Array.prototype.slice.apply(arguments));
-    this.removeShortcut();
-  }
 }

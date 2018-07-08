@@ -1,6 +1,7 @@
 /* global $ */
 
 import Webform from './Webform';
+import Component from './components/_classes/component/Component';
 import dragula from 'dragula';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
@@ -10,86 +11,110 @@ import Promise from 'native-promise-only';
 import _ from 'lodash';
 require('./components/builder');
 
-export default class WebformBuilder extends Webform {
-  constructor(element, options) {
-    super(element, options);
+export default class WebformBuilder extends Component {
+  constructor(options) {
+    super(options);
     this.dragContainers = [];
     this.sidebarContainers = [];
-    this.updateDraggable = _.debounce(this.refreshDraggable.bind(this), 200);
+    this.schemas = {};
+
+    this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
+    this.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
 
     // Setup the builder options.
-    this.options.builder = _.defaultsDeep({}, this.options.builder, this.defaultComponents);
+    this.builder = _.defaultsDeep({}, this.options.builder, this.defaultGroups);
 
     // Turn off if explicitely said to do so...
-    _.each(this.defaultComponents, (config, key) => {
+    _.each(this.defaultGroups, (config, key) => {
       if (config === false) {
         this.options.builder[key] = false;
       }
     });
 
-    this.builderReady = new Promise((resolve) => {
-      this.builderReadyResolve = resolve;
-    });
-
+    // Add the groups.
     this.groups = {};
-    this.options.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
-    this.options.sideBarScrollOffset = _.get(this.options, 'sideBarScrollOffset', 0);
-    this.options.hooks = this.options.hooks || {};
-    this.options.hooks.addComponents = (components, parent) => {
-      if (!components || (!components.length && !components.nodrop)) {
-        // Return a simple alert so they know they can add something here.
-        return [
-          {
-            type: 'htmlelement',
-            internal: true,
-            tag: 'div',
-            className: 'alert alert-info',
-            attrs: [
-              { attr: 'id', value: `${parent.id}-placeholder` },
-              { attr: 'style', value: 'text-align:center; margin-bottom: 0px;' },
-              { attr: 'role', value: 'alert' }
-            ],
-            content: 'Drag and Drop a form component'
-          }
-        ];
+    this.groupOrder = [];
+    for (const group in this.builder) {
+      if (this.builder[group]) {
+        this.builder[group].key = group;
+        this.groups[group] = this.builder[group];
+        this.groupOrder.push(this.builder[group]);
       }
-      return components;
     };
-    this.options.hooks.addComponent = (container, comp, parent) => {
-      if (!comp || !comp.component) {
-        return container;
+
+    this.groupOrder = this.groupOrder
+      .sort((a, b) => a.weight - b.weight)
+      .map(group => group.key);
+
+    for (const type in Components.components) {
+      const component = Components.components[type];
+      if (component.builderInfo) {
+        this.schemas[type] = component.builderInfo.schema;
+        component.type = type;
+        const builderInfo = component.builderInfo;
+        builderInfo.key = component.type;
+        this.addBuilderComponentInfo(builderInfo);
       }
+    }
 
-      if (!comp.noEdit && !comp.component.internal) {
-        // Make sure the component position is relative so the buttons align properly.
-        comp.getElement().style.position = 'relative';
+    // Need to create a component order for each group.
+    for (const group in this.groups) {
+      if (this.groups[group] && this.groups[group].components) {
+        this.groups[group].componentOrder = this.groups[group].componentOrder
+          .sort((a, b) => a.weight - b.weight)
+          .map(component => component.key);
 
-        const removeButton = parent.ce('div', {
-          class: 'btn btn-xxs btn-danger component-settings-button component-settings-button-remove'
-        }, parent.getIcon('remove'));
-        parent.addEventListener(removeButton, 'click', () => parent.deleteComponent(comp));
-
-        const editButton = parent.ce('div', {
-          class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit'
-        }, parent.getIcon('cog'));
-        parent.addEventListener(editButton, 'click', () => parent.editComponent(comp));
-
-        // Add the edit buttons to the component.
-        comp.prepend(parent.ce('div', {
-          class: 'component-btn-group'
-        }, [removeButton, editButton]));
       }
+    }
 
-      if (!container.noDrop) {
-        this.addDragContainer(container, parent);
+    options.hooks = options.hooks || {};
+
+    options.hooks.renderComponents = (html, {components, self, path}) => {
+      if (!components || (!components.length && !components.nodrop) || (self.type === 'form' && components.length <= 1)) {
+        html = this.renderTemplate('builderPlaceholder', {}) + html;
       }
-
-      return container;
+      return this.renderTemplate('builderComponents', {
+        html,
+        path,
+      });
     };
-    this.setBuilderElement();
+
+    options.hooks.attachComponents = (element, components, container, component) => {
+      // Attach container and component to element for later reference.
+      const containerElement = element.querySelector(`[ref="container"]`);
+      containerElement.formioContainer = container;
+      containerElement.formioComponent = component;
+      // Add container to draggable list.
+      this.dragula.containers.push(containerElement);
+
+      // Since we added a wrapper, need to return the original element so that we can find the components inside it.
+      return element.children[0];
+    };
+
+    options.hooks.renderComponent = (html, {self}) => {
+      return this.renderTemplate('builderComponent', {
+        html,
+        path: self.schemaPath,
+      });
+    };
+
+    options.hooks.attachComponent = (element, component) => {
+      // Add component to element for later reference.
+      element.formioComponent = component;
+
+      component.loadRefs(element, {
+        removeComponent: 'single',
+        editComponent: 'single',
+      });
+      component.addEventListener(this.refs.editComponent, 'click', () => this.editComponent(component));
+      component.addEventListener(this.refs.removeComponent, 'click', () => this.deleteComponent(component));
+      return element;
+    };
+
+    this.webform = new Webform(options);
   }
 
-  get defaultComponents() {
+  get defaultGroups() {
     return {
       basic: {
         title: 'Basic Components',
@@ -111,37 +136,172 @@ export default class WebformBuilder extends Webform {
     };
   }
 
-  scrollSidebar() {
-    const newTop = (window.scrollY - this.sideBarTop) + this.options.sideBarScrollOffset;
-    const shouldScroll = (newTop > 0);
-    if (shouldScroll && ((newTop + this.sideBarElement.offsetHeight) < this.element.offsetHeight)) {
-      this.sideBarElement.style.marginTop = `${newTop}px`;
+  get options() {
+    if (this.webform) {
+      return this.webform.options;
     }
-    else if (shouldScroll && (this.sideBarElement.offsetHeight < this.element.offsetHeight)) {
-      this.sideBarElement.style.marginTop = `${this.element.offsetHeight - this.sideBarElement.offsetHeight}px`;
-    }
-    else {
-      this.sideBarElement.style.marginTop = '0px';
+    return {};
+  }
+
+  set options(value) {
+    if (this.webform) {
+      return this.webform.options = value;
     }
   }
 
-  setBuilderElement() {
-    return this.onElement.then(() => {
-      this.addClass(this.wrapper, 'row formbuilder');
-      this.builderSidebar = this.ce('div', {
-        class: 'col-xs-4 col-sm-3 col-md-2 formcomponents'
+  get form() {
+    return this.webform.form;
+  }
+
+  set form(value) {
+    if (!value.components) {
+      value.components = [];
+    }
+
+    // Ensure there is at least a submit button.
+    if (!value.components.length) {
+      value.components.push({
+        type: 'button',
+        label: 'Submit',
+        key: 'submit',
+        size: 'md',
+        block: false,
+        action: 'submit',
+        disableOnInvalid: true,
+        theme: 'primary'
       });
-      this.prependTo(this.builderSidebar, this.wrapper);
-      this.addClass(this.element, 'col-xs-8 col-sm-9 col-md-10 formarea');
-      this.element.component = this;
+    }
+
+    this.webform.form = value;
+  }
+
+  render() {
+    return this.renderTemplate('builder', {
+      sidebar: this.renderTemplate('builderSidebar', {
+        groupOrder: this.groupOrder,
+        groups: this.groups,
+      }),
+      form: this.webform.render(),
     });
   }
 
+  attach(element) {
+    this.element = element;
+    this.loadRefs(element, {
+      form: 'single',
+      sidebar: 'single',
+      'container': 'multiple',
+      'sidebar-anchor': 'multiple',
+      'sidebar-group': 'multiple',
+      'sidebar-container': 'multiple',
+    });
+
+    this.sideBarTop = this.refs.sidebar.getBoundingClientRect().top + window.scrollY;
+    if (this.sideBarScroll) {
+      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
+    }
+
+    // See if we have bootstrap.js installed.
+    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().collapse === 'function');
+
+    if (!hasBootstrapJS) {
+      this.refs['sidebar-anchor'].forEach((anchor, index) => {
+        this.addEventListener(anchor, 'click', () => {
+          this.refs['sidebar-group'].forEach((group, groupIndex) => {
+            group.style.display = (groupIndex === index) ? 'inherit' : 'none';
+          });
+        });
+      });
+    }
+
+    this.dragula = dragula(Array.prototype.slice.call(this.refs['sidebar-container']), {
+      copy(el) {
+        return el.classList.contains('drag-copy');
+      },
+      accepts(el, target) {
+        return !target.classList.contains('no-drop');
+      }
+    }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
+
+
+    this.webform.attach(this.refs.form);
+  }
+
+  detach() {
+    // if (this.dragula) {
+    //   this.dragula.destroy();
+    // }
+    // this.dragula = null;
+    super.detach();
+  }
+
+  onDrop(element, target, source, sibling) {
+    if (!target) {
+      return;
+    }
+
+    const type = element.getAttribute('data-type');
+    let info;
+
+    if (type) {
+      // This is a new component
+      info = this.schemas[type];
+      info.isNew = true;
+    }
+    else {
+      // Grab and remove the component from the source container.
+      info = source.formioContainer.splice(_.findIndex(source.formioContainer, {key: element.formioComponent.component.key}), 1);
+
+      // Since splice returns an array of one object, we need to destructure it.
+      info = info[0];
+
+      // If the target is different from the source, rebuild the source now that the item has been removed.
+      if (target !== source) {
+        source.formioComponent.rebuild();
+      }
+    }
+
+    // Insert in the new container.
+    if (sibling) {
+      let index = 0;
+      if (!sibling.getAttribute('data-noattach')) {
+        index = _.findIndex(target.formioContainer, {key: sibling.formioComponent.component.key});
+      }
+      target.formioContainer.splice(index, 0, info);
+    }
+    else {
+      target.formioContainer.push(info);
+    }
+
+    if (info.isNew) {
+      // this.editComponent(info);
+    }
+
+    // Cause parent to rebuild so component becomes visible.
+    target.formioComponent.rebuild();
+  }
+
+  scrollSidebar() {
+    const newTop = (window.scrollY - this.sideBarTop) + this.sideBarScrollOffset;
+    const shouldScroll = (newTop > 0);
+    if (shouldScroll && ((newTop + this.refs.sidebar.offsetHeight) < this.element.offsetHeight)) {
+      this.refs.sidebar.style.marginTop = `${newTop}px`;
+    }
+    else if (shouldScroll && (this.refs.sidebar.offsetHeight < this.element.offsetHeight)) {
+      this.refs.sidebar.style.marginTop = `${this.element.offsetHeight - this.refs.sidebar.offsetHeight}px`;
+    }
+    else {
+      this.refs.sidebar.style.marginTop = '0px';
+    }
+  }
+
   get ready() {
-    return this.builderReady;
+    return Promise.resolve(this);
   }
 
   deleteComponent(component) {
+    console.log('delete', component);
+    return;
     if (!component.parent) {
       return;
     }
@@ -156,6 +316,11 @@ export default class WebformBuilder extends Webform {
       this.form = this.schema;
     }
     return remove;
+  }
+
+  removeComponent(path) {
+    const container = _.get(this.form, path.replace(/\[[^\[]*?\]$/, ''));
+    container.splice(container.indexOf(_.get(this.form, path)), 1);
   }
 
   updateComponent(component) {
@@ -208,6 +373,8 @@ export default class WebformBuilder extends Webform {
   }
 
   editComponent(component) {
+    console.log('edit', component);
+    return;
     const componentCopy = _.cloneDeep(component);
     const componentClass = Components.components[componentCopy.component.type];
     // Make sure we only have one dialog open at a time.
@@ -373,143 +540,6 @@ export default class WebformBuilder extends Webform {
     this.emit('editComponent', component);
   }
 
-  destroy() {
-    super.destroy();
-    if (this.dragula) {
-      this.dragula.destroy();
-    }
-  }
-
-  /**
-   * Insert an element in the weight order.
-   *
-   * @param info
-   * @param items
-   * @param element
-   * @param container
-   */
-  insertInOrder(info, items, element, container) {
-    // Determine where this item should be added.
-    let beforeWeight = 0;
-    let before = null;
-    _.each(items, (itemInfo) => {
-      if (
-        (info.key !== itemInfo.key) &&
-        (info.weight < itemInfo.weight) &&
-        (!beforeWeight || (itemInfo.weight < beforeWeight))
-      ) {
-        before = itemInfo.element;
-        beforeWeight = itemInfo.weight;
-      }
-    });
-
-    if (before) {
-      try {
-        container.insertBefore(element, before);
-      }
-      catch (err) {
-        container.appendChild(element);
-      }
-    }
-    else {
-      container.appendChild(element);
-    }
-  }
-
-  addBuilderGroup(info, container) {
-    if (!info || !info.key) {
-      console.warn('Invalid Group Provided.');
-      return;
-    }
-
-    info = _.clone(info);
-    const groupAnchor = this.ce('button', {
-      class: 'btn btn-block builder-group-button',
-      'data-toggle': 'collapse',
-      'data-parent': `#${container.id}`,
-      'data-target': `#group-${info.key}`
-    }, this.text(info.title));
-
-    // See if we have bootstrap.js installed.
-    const hasBootstrapJS = (typeof $ === 'function') && (typeof $().collapse === 'function');
-
-    // Add a listener when it is clicked.
-    if (!hasBootstrapJS) {
-      this.addEventListener(groupAnchor, 'click', (event) => {
-        event.preventDefault();
-        const clickedGroupId = event.target.getAttribute('data-target').replace('#group-', '');
-        if (this.groups[clickedGroupId]) {
-          const clickedGroup = this.groups[clickedGroupId];
-          const wasIn = this.hasClass(clickedGroup.panel, 'in');
-          _.each(this.groups, (group, groupId) => {
-            this.removeClass(group.panel, 'in');
-            this.removeClass(group.panel, 'show');
-            if ((groupId === clickedGroupId) && !wasIn) {
-              this.addClass(group.panel, 'in');
-              this.addClass(group.panel, 'show');
-              let parent = group.parent;
-              while (parent) {
-                this.addClass(parent.panel, 'in');
-                this.addClass(parent.panel, 'show');
-                parent = parent.parent;
-              }
-            }
-          });
-
-          // Match the form builder height to the sidebar.
-          this.element.style.minHeight = `${this.builderSidebar.offsetHeight}px`;
-          this.scrollSidebar();
-        }
-      });
-    }
-
-    info.element = this.ce('div', {
-      class: 'card panel panel-default form-builder-panel',
-      id: `group-panel-${info.key}`
-    }, [
-      this.ce('div', {
-        class: 'card-header panel-heading form-builder-group-header'
-      }, [
-        this.ce('h5', {
-          class: 'mb-0 panel-title'
-        }, groupAnchor)
-      ])
-    ]);
-    info.body = this.ce('div', {
-      id: `group-container-${info.key}`,
-      class: 'card-body panel-body no-drop'
-    });
-
-    // Add this group body to the drag containers.
-    this.sidebarContainers.push(info.body);
-
-    let groupBodyClass = 'panel-collapse collapse';
-    if (info.default) {
-      groupBodyClass += ' in';
-      if (!hasBootstrapJS) {
-        groupBodyClass += ' show';
-      }
-    }
-
-    info.panel = this.ce('div', {
-      class: groupBodyClass,
-      id: `group-${info.key}`
-    }, info.body);
-
-    info.element.appendChild(info.panel);
-    this.groups[info.key] = info;
-    this.insertInOrder(info, this.groups, info.element, container);
-
-    // Now see if this group has subgroups.
-    if (info.groups) {
-      _.each(info.groups, (subInfo, subGroup) => {
-        subInfo.key = subGroup;
-        subInfo.parent = info;
-        this.addBuilderGroup(subInfo, info.body);
-      });
-    }
-  }
-
   addBuilderComponentInfo(component) {
     if (!component || !component.group || !this.groups[component.group]) {
       return;
@@ -520,250 +550,18 @@ export default class WebformBuilder extends Webform {
     if (!groupInfo.components) {
       groupInfo.components = {};
     }
+    if (!groupInfo.componentOrder) {
+      groupInfo.componentOrder = [];
+    }
+    groupInfo.componentOrder.push(component);
     if (!groupInfo.components.hasOwnProperty(component.key)) {
       groupInfo.components[component.key] = component;
     }
     return component;
   }
 
-  addBuilderComponent(component, group) {
-    if (!component) {
-      return;
-    }
-    if (!group && component.group && this.groups[component.group]) {
-      group = this.groups[component.group];
-    }
-    if (!group) {
-      return;
-    }
-    component.element = this.ce('span', {
-      id: `builder-${component.key}`,
-      class: 'btn btn-primary btn-xs btn-block formcomponent drag-copy'
-    });
-    if (component.icon) {
-      component.element.appendChild(this.ce('i', {
-        class: component.icon,
-        style: 'margin-right: 5px;'
-      }));
-    }
-    component.element.builderInfo = component;
-    component.element.appendChild(this.text(component.title));
-    this.insertInOrder(component, group.components, component.element, group.body);
-    return component;
-  }
-
-  buildSidebar() {
-    this.groups = {};
-    this.sidebarContainers = [];
-    if (this.sideBarElement) {
-      this.removeChildFrom(this.sideBarElement, this.builderSidebar);
-    }
-    this.sideBarElement = this.ce('div', {
-      id: `builder-sidebar-${this.id}`,
-      class: 'accordion panel-group'
-    });
-
-    // Add the groups.
-    _.each(this.options.builder, (info, group) => {
-      if (info) {
-        info.key = group;
-        this.addBuilderGroup(info, this.sideBarElement);
-      }
-    });
-
-    // Get all of the components builder info grouped and sorted.
-    const components = {};
-    const allComponents = _.filter(_.map(Components.components, (component, type) => {
-      if (!component.builderInfo) {
-        return null;
-      }
-      component.type = type;
-      return component;
-    }));
-    _.map(_.sortBy(allComponents, component => {
-      return component.builderInfo.weight;
-    }), (component) => {
-      const builderInfo = component.builderInfo;
-      builderInfo.key = component.type;
-      components[builderInfo.key] = builderInfo;
-      this.addBuilderComponentInfo(builderInfo);
-    });
-
-    // Add the components in each group.
-    _.each(this.groups, (info) =>
-      _.each(info.components, (comp, key) => {
-        if (comp) {
-          this.addBuilderComponent(comp === true ? components[key] : comp, info);
-        }
-      })
-    );
-
-    // Add the new sidebar element.
-    this.builderSidebar.appendChild(this.sideBarElement);
-    this.updateDraggable();
-  }
-
-  getParentElement(element) {
-    let containerComponent = element;
-    do {
-      containerComponent = containerComponent.parentNode;
-    } while (containerComponent && !containerComponent.component);
-    return containerComponent;
-  }
-
-  addDragContainer(element, component, dragEvents) {
-    _.remove(this.dragContainers, (container) => (element.id && (element.id === container.id)));
-    element.component = component;
-    if (dragEvents) {
-      element.dragEvents = dragEvents;
-    }
-    this.addClass(element, 'drag-container');
-    if (!element.id) {
-      element.id = `builder-element-${component.id}`;
-    }
-    this.dragContainers.push(element);
-    this.updateDraggable();
-  }
-
   clear() {
     super.clear();
     this.dragContainers = [];
-  }
-
-  addComponentTo(parent, schema, element, sibling) {
-    return parent.addComponent(
-      schema,
-      element,
-      parent.data,
-      sibling
-    );
-  }
-
-  onDrop(element, target, source, sibling) {
-    const builderElement = source.querySelector(`#${element.id}`);
-    const newParent = this.getParentElement(element);
-    if (!newParent || !newParent.component) {
-      return console.warn('Could not find parent component.');
-    }
-
-    // Remove any instances of the placeholder.
-    const placeholder = document.getElementById(`${newParent.component.id}-placeholder`);
-    if (placeholder) {
-      placeholder.parentNode.removeChild(placeholder);
-    }
-
-    // If the sibling is the placeholder, then set it to null.
-    if (sibling === placeholder) {
-      sibling = null;
-    }
-
-    // Make this element go before the submit button if it is still on the builder.
-    if (!sibling && this.submitButton && newParent.contains(this.submitButton.element)) {
-      sibling = this.submitButton.element;
-    }
-
-    // If this is a new component, it will come from the builderElement
-    if (
-      builderElement &&
-      builderElement.builderInfo &&
-      builderElement.builderInfo.schema
-    ) {
-      const componentSchema = _.clone(builderElement.builderInfo.schema);
-      if (target.dragEvents && target.dragEvents.onDrop) {
-        target.dragEvents.onDrop(element, target, source, sibling, componentSchema);
-      }
-
-      // Add the new component.
-      const component = this.addComponentTo(newParent.component, componentSchema, newParent, sibling);
-
-      // Set that this is a new component.
-      component.isNew = true;
-
-      // Pass along the save event.
-      if (target.dragEvents) {
-        component.dragEvents = target.dragEvents;
-      }
-
-      // Edit the component.
-      this.editComponent(component);
-
-      // Remove the element.
-      target.removeChild(element);
-    }
-    // Check to see if this is a moved component.
-    else if (element.component) {
-      const componentSchema = element.component.schema;
-      if (target.dragEvents && target.dragEvents.onDrop) {
-        target.dragEvents.onDrop(element, target, source, sibling, componentSchema);
-      }
-
-      // Remove the component from its parent.
-      if (element.component.parent) {
-        element.component.parent.removeComponent(element.component);
-      }
-
-      // Add the component to its new parent.
-      const component = newParent.component.addComponent(
-        componentSchema,
-        newParent,
-        newParent.component.data,
-        sibling
-      );
-
-      if (target.dragEvents && target.dragEvents.onSave) {
-        target.dragEvents.onSave(component);
-      }
-
-      // Refresh the form.
-      this.form = this.schema;
-    }
-  }
-
-  /**
-   * Adds a submit button if there are no components.
-   */
-  addSubmitButton() {
-    if (!this.getComponents().length) {
-      this.submitButton = this.addComponent({
-        type: 'button',
-        label: 'Submit',
-        key: 'submit',
-        size: 'md',
-        block: false,
-        action: 'submit',
-        disableOnInvalid: true,
-        theme: 'primary'
-      });
-    }
-  }
-
-  refreshDraggable() {
-    if (this.dragula) {
-      this.dragula.destroy();
-    }
-    this.dragula = dragula(this.sidebarContainers.concat(this.dragContainers), {
-      copy(el) {
-        return el.classList.contains('drag-copy');
-      },
-      accepts(el, target) {
-        return !target.classList.contains('no-drop');
-      }
-    }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
-
-    // If there are no components, then we need to add a default submit button.
-    this.addSubmitButton();
-    this.builderReadyResolve();
-  }
-
-  build() {
-    this.buildSidebar();
-    this.sideBarTop = this.sideBarElement.getBoundingClientRect().top + window.scrollY;
-    if (this.options.sideBarScroll) {
-      this.addEventListener(window, 'scroll', _.throttle(this.scrollSidebar.bind(this), 10));
-    }
-
-    super.build();
-    this.updateDraggable();
-    this.formReadyResolve();
   }
 }

@@ -127,12 +127,13 @@ export default class NestedComponent extends Component {
    * @param component
    * @param data
    */
-  createComponent(component, options, data, before) {
+  createComponent(component, index, options, data, before) {
     options = options || this.options;
     data = data || this.data;
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
+    comp.schemaPath = (this.schemaPath ? this.schemaPath + '.' : '') + `components[${index}]`;
     comp.init();
     comp.isBuilt = true;
     if (component.internal) {
@@ -170,7 +171,7 @@ export default class NestedComponent extends Component {
   addComponents(data) {
     data = data || this.data;
     const components = this.hook('addComponents', this.componentComponents);
-    _.each(components, (component) => this.addComponent(component, data));
+    _.each(components, (component, index) => this.addComponent(component, index, data));
   }
 
   /**
@@ -181,18 +182,19 @@ export default class NestedComponent extends Component {
    * @param {HTMLElement} before - A DOM element to insert this element before.
    * @return {Component} - The created component instance.
    */
-  addComponent(component, data, before, noAdd) {
+  addComponent(component, index, data, before, noAdd) {
     data = data || this.data;
-    const comp = this.createComponent(component, this.options, data, before ? before.component : null);
+    const comp = this.createComponent(component, index, this.options, data, before ? before.component : null);
     if (noAdd) {
       return comp;
     }
     return comp;
   }
 
-  renderComponents(components) {
+  renderComponents(components, path) {
     components = components || this.components;
-    return components.map(component => component.render()).join('');
+    const htmls = components.map(component => component.render());
+    return this.renderTemplate('components', {htmls, components, path});
   }
 
   attach(element) {
@@ -205,9 +207,20 @@ export default class NestedComponent extends Component {
     }
   }
 
-  attachComponents(element, components) {
+  attachComponents(element, components, container) {
     components = components || this.components;
-    return Promise.all[components.map((component, index) => component.attach(element.children[index]))];
+    container = container || this.component.components;
+
+    element = this.hook('attachComponents', element, components, container, this);
+
+    let index = 0;
+    Array.prototype.slice.call(element.children).forEach(child => {
+      if (!child.getAttribute('data-noattach')) {
+        components[index].attach(child);
+        index++;
+      }
+    });
+    // return Promise.all[components.map((component, index) => component.attach(element.children[index]))];
   }
 
   /**
@@ -381,6 +394,11 @@ export default class NestedComponent extends Component {
   setPristine(pristine) {
     super.setPristine(pristine);
     _.each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
+  }
+
+  destroy() {
+    this.destroyComponents();
+    super.destroy();
   }
 
   destroyComponents() {
