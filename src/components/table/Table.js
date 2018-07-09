@@ -96,9 +96,9 @@ export default class TableComponent extends NestedComponent {
   render() {
     return super.render(this.renderTemplate('table', {
       columnKey: this.columnKey,
-      tableComponents: this.table.map((row, rowIndex) =>
-        row.map((column, columnIndex) =>
-          this.renderComponents(column, this.definitionPath + `rows[${rowIndex}][${columnIndex}]`)
+      tableComponents: this.table.map(row =>
+        row.map(column =>
+          this.renderComponents(column)
         )
       )
     }));
@@ -110,7 +110,7 @@ export default class TableComponent extends NestedComponent {
     this.refs[this.columnKey].forEach((column, index) => {
       const rowIndex = Math.floor(index / rowLength);
       const columnIndex = index % rowLength;
-      this.attachComponents(column, this.table[rowIndex][columnIndex]);
+      this.attachComponents(column, this.table[rowIndex][columnIndex], this.component.rows[rowIndex][columnIndex].components);
     });
   }
 

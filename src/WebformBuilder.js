@@ -14,7 +14,6 @@ require('./components/builder');
 export default class WebformBuilder extends Component {
   constructor(options) {
     super(options);
-    this.dragContainers = [];
     this.sidebarContainers = [];
     this.schemas = {};
 
@@ -75,7 +74,6 @@ export default class WebformBuilder extends Component {
       }
       return this.renderTemplate('builderComponents', {
         html,
-        path,
       });
     };
 
@@ -94,7 +92,6 @@ export default class WebformBuilder extends Component {
     options.hooks.renderComponent = (html, {self}) => {
       return this.renderTemplate('builderComponent', {
         html,
-        path: self.schemaPath,
       });
     };
 
@@ -106,8 +103,9 @@ export default class WebformBuilder extends Component {
         removeComponent: 'single',
         editComponent: 'single',
       });
-      component.addEventListener(this.refs.editComponent, 'click', () => this.editComponent(component));
-      component.addEventListener(this.refs.removeComponent, 'click', () => this.deleteComponent(component));
+      console.log(component.refs);
+      component.addEventListener(component.refs.editComponent, 'click', () => this.editComponent(component.component));
+      component.addEventListener(component.refs.removeComponent, 'click', () => this.deleteComponent(component.component));
       return element;
     };
 
@@ -215,6 +213,9 @@ export default class WebformBuilder extends Component {
     }
 
     this.dragula = dragula(Array.prototype.slice.call(this.refs['sidebar-container']), {
+      moves(el) {
+        return !el.classList.contains('no-drag');
+      },
       copy(el) {
         return el.classList.contains('drag-copy');
       },
@@ -274,7 +275,7 @@ export default class WebformBuilder extends Component {
     }
 
     if (info.isNew) {
-      // this.editComponent(info);
+      this.editComponent(info);
     }
 
     // Cause parent to rebuild so component becomes visible.
@@ -373,95 +374,45 @@ export default class WebformBuilder extends Component {
   }
 
   editComponent(component) {
-    console.log('edit', component);
-    return;
     const componentCopy = _.cloneDeep(component);
-    const componentClass = Components.components[componentCopy.component.type];
+    const componentClass = Components.components[componentCopy.type];
     // Make sure we only have one dialog open at a time.
     if (this.dialog) {
       this.dialog.close();
     }
-    this.dialog = this.createModal(componentCopy.name);
-    const formioForm = this.ce('div');
-    this.componentPreview = this.ce('div', {
-      class: 'component-preview'
+
+    // This is the render step.
+    this.editForm = new Webform(_.omit(this.options, ['hooks', 'builder', 'events']));
+    this.editForm.form = componentClass.editForm();
+    this.editForm.submission = {
+      data: componentCopy,
+    };
+
+    this.preview = new Webform(_.omit(this.options, ['hooks', 'builder', 'events']));
+    this.preview.form = {components: [componentCopy]};
+
+    this.componentEdit = this.ce('div');
+    this.componentEdit.innerHTML = this.renderTemplate('builderEditForm', {
+      componentInfo: componentClass.builderInfo,
+      editForm: this.editForm.render(),
+      preview: this.preview.render(),
     });
-    const componentInfo = componentClass ? componentClass.builderInfo : {};
+    this.dialog = this.createModal(this.componentEdit);
 
-    const saveButton = this.ce('button', {
-      class: 'btn btn-success',
-      style: 'margin-right: 10px;'
-    }, this.t('Save'));
+    // This is the attach step.
+    const editForm = this.componentEdit.querySelector('[ref="editForm"]');
+    this.editForm.attach(editForm);
 
-    const cancelButton = this.ce('button', {
-      class: 'btn btn-default',
-      style: 'margin-right: 10px;'
-    }, this.t('Cancel'));
+    this.editForm.on('change', (event) => {
+      if (event.changed) {
+        this.preview.form = {
+          components: [_.cloneDeep(event.data)]
+        };
+        this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
+      }
+    });
 
-    const removeButton = this.ce('button', {
-      class: 'btn btn-danger'
-    }, this.t('Remove'));
-
-    const componentEdit = this.ce('div', {}, [
-      this.ce('div', {
-        class: 'row'
-      }, [
-        this.ce('div', {
-          class: 'col col-sm-6'
-        }, this.ce('p', {
-          class: 'lead'
-        }, `${componentInfo.title} Component`)),
-        this.ce('div', {
-          class: 'col col-sm-6'
-        }, [
-          this.ce('div', {
-            class: 'pull-right',
-            style: 'margin-right: 20px; margin-top: 10px'
-          }, this.ce('a', {
-            href: componentInfo.documentation || '#',
-            target: '_blank'
-          }, this.ce('i', {
-            class: this.iconClass('new-window')
-          }, ` ${this.t('Help')}`)))
-        ])
-      ]),
-      this.ce('div', {
-        class: 'row'
-      }, [
-        this.ce('div', {
-          class: 'col col-sm-6'
-        }, formioForm),
-        this.ce('div', {
-          class: 'col col-sm-6'
-        }, [
-          this.ce('div', {
-            class: 'card panel panel-default preview-panel'
-          }, [
-            this.ce('div', {
-              class: 'card-header panel-heading'
-            }, this.ce('h3', {
-              class: 'card-title panel-title'
-            }, this.t('Preview'))),
-            this.ce('div', {
-              class: 'card-body panel-body'
-            }, this.componentPreview)
-          ]),
-          this.ce('div', {
-            style: 'margin-top: 10px;'
-          }, [
-            saveButton,
-            cancelButton,
-            removeButton
-          ])
-        ])
-      ])
-    ]);
-
-    // Append the settings page to the dialog body.
-    this.dialog.body.appendChild(componentEdit);
-
-    const editForm = Components.components[componentCopy.component.type].editForm();
-
+    return;
     // Change the defaultValue component to be reflective.
     this.defaultValueComponent = getComponent(editForm.components, 'defaultValue');
     _.assign(this.defaultValueComponent, _.omit(componentCopy.component, [
@@ -558,10 +509,5 @@ export default class WebformBuilder extends Component {
       groupInfo.components[component.key] = component;
     }
     return component;
-  }
-
-  clear() {
-    super.clear();
-    this.dragContainers = [];
   }
 }

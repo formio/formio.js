@@ -30,6 +30,10 @@ export default class TagsComponent extends Input {
     this.component.delimeter = this.component.delimeter || ',';
   }
 
+  get emptyValue() {
+    return '';
+  }
+
   get defaultSchema() {
     return TagsComponent.schema();
   }

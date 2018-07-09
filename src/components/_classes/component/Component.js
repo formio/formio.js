@@ -153,8 +153,6 @@ export default class Component {
      */
     this.id = (component && component.id) ? component.id : FormioUtils.getRandomComponentId();
 
-    this.schemaPath = '';
-
     /**
      * The options for this component.
      * @type {{}}
@@ -464,7 +462,7 @@ export default class Component {
       names = [names];
     }
     const mode = this.options.mode || 'form';
-    for (const name in names) {
+    for (const name of names) {
       if (this.options.templates[name]) {
         return this.options.templates[name][mode];
       }
@@ -482,7 +480,7 @@ export default class Component {
     data.self = this;
     data.iconClass = this.iconClass.bind(this);
     data.t = this.t.bind(this);
-    data.transform = this.options.templates.transform;
+    data.transform = this.options.templates ? this.options.templates.transform : value => value;
     data.id = data.id || this.id;
     data.key = data.key || this.key;
     // Allow more specific template names
@@ -899,7 +897,7 @@ export default class Component {
 
   iconClass(name, spinning) {
     const iconset = (!this.options.icons || this.options.icons === 'glyphicon') ? 'glypicon' : this.options.icons;
-    return this.options.templates.iconClass(iconset, name, spinning);
+    return this.options.templates ? this.options.templates.iconClass(iconset, name, spinning) : name;
   }
 
   /**

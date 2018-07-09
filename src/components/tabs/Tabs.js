@@ -89,7 +89,9 @@ export default class TabsComponent extends NestedComponent {
         this.setTab(index);
       });
     });
-    this.refs[this.tabKey].forEach((tab, index) => this.attachComponents(tab, this.tabs[index]));
+    this.refs[this.tabKey].forEach((tab, index) => {
+      this.attachComponents(tab, this.tabs[index], this.components[index].components)
+    });
   }
 
   detach(all) {

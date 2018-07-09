@@ -737,10 +737,10 @@ export default class Webform extends NestedComponent {
   }
 
   render() {
-    return this.renderTemplate('webform', {
+    return super.render(this.renderTemplate('webform', {
       classes: 'formio-form',
-      children: this.renderComponents(null, (this.schemaPath ? this.schemaPath + '.' : '') + 'components'),
-    });
+      children: this.renderComponents(),
+    }));
   }
 
   attach(element) {

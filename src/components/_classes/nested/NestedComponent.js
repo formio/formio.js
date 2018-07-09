@@ -127,13 +127,12 @@ export default class NestedComponent extends Component {
    * @param component
    * @param data
    */
-  createComponent(component, index, options, data, before) {
+  createComponent(component, options, data, before) {
     options = options || this.options;
     data = data || this.data;
     const comp = Components.create(component, options, data, true);
     comp.parent = this;
     comp.root = this.root || this;
-    comp.schemaPath = (this.schemaPath ? this.schemaPath + '.' : '') + `components[${index}]`;
     comp.init();
     comp.isBuilt = true;
     if (component.internal) {
@@ -171,7 +170,7 @@ export default class NestedComponent extends Component {
   addComponents(data) {
     data = data || this.data;
     const components = this.hook('addComponents', this.componentComponents);
-    _.each(components, (component, index) => this.addComponent(component, index, data));
+    _.each(components, (component) => this.addComponent(component, data));
   }
 
   /**
@@ -182,19 +181,19 @@ export default class NestedComponent extends Component {
    * @param {HTMLElement} before - A DOM element to insert this element before.
    * @return {Component} - The created component instance.
    */
-  addComponent(component, index, data, before, noAdd) {
+  addComponent(component, data, before, noAdd) {
     data = data || this.data;
-    const comp = this.createComponent(component, index, this.options, data, before ? before.component : null);
+    const comp = this.createComponent(component, this.options, data, before ? before.component : null);
     if (noAdd) {
       return comp;
     }
     return comp;
   }
 
-  renderComponents(components, path) {
+  renderComponents(components) {
     components = components || this.components;
     const htmls = components.map(component => component.render());
-    return this.renderTemplate('components', {htmls, components, path});
+    return this.renderTemplate('components', {htmls, components});
   }
 
   attach(element) {
@@ -212,6 +211,9 @@ export default class NestedComponent extends Component {
     container = container || this.component.components;
 
     element = this.hook('attachComponents', element, components, container, this);
+    if (!element) {
+      return;
+    }
 
     let index = 0;
     Array.prototype.slice.call(element.children).forEach(child => {
