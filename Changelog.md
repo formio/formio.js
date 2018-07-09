@@ -45,6 +45,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
+## 3.0.0-rc.20
+### Fixed
+ - Problem where conditionally hidden select fields would not resolve their loaded promise.
+
 ## 3.0.0-rc.19
 ### Changed
  - Made each build entry derive from the same formio.form entry.
