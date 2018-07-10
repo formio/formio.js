@@ -13,7 +13,6 @@ require('./components/builder');
 export default class WebformBuilder extends Component {
   constructor(options) {
     super(options);
-    this.sidebarContainers = [];
     this.schemas = {};
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
@@ -210,6 +209,12 @@ export default class WebformBuilder extends Component {
     const hasBootstrapJS = (typeof $ === 'function') && (typeof $().collapse === 'function');
 
     if (!hasBootstrapJS) {
+      // Initialize
+      this.refs['sidebar-group'].forEach((group) => {
+        group.style.display = (group.getAttribute('data-default') === 'true') ? 'inherit' : 'none';
+      });
+
+      // Click event
       this.refs['sidebar-anchor'].forEach((anchor, index) => {
         this.addEventListener(anchor, 'click', () => {
           this.refs['sidebar-group'].forEach((group, groupIndex) => {

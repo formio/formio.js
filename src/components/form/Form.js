@@ -37,31 +37,7 @@ export default class FormComponent extends Component {
       this.subFormReadyReject = reject;
     });
 
-    const srcOptions = {};
-    if (this.options && this.options.base) {
-      srcOptions.base = this.options.base;
-    }
-    if (this.options && this.options.project) {
-      srcOptions.project = this.options.project;
-    }
-    if (this.options && this.options.readOnly) {
-      srcOptions.readOnly = this.options.readOnly;
-    }
-    if (this.options && this.options.viewAsHtml) {
-      srcOptions.viewAsHtml = this.options.viewAsHtml;
-    }
-    if (this.options && this.options.template) {
-      srcOptions.template = this.options.template;
-    }
-    if (this.options && this.options.templates) {
-      srcOptions.templates = this.options.templates;
-    }
-    if (this.options && this.options.mode) {
-      srcOptions.mode = this.options.mode;
-    }
-    if (this.options && this.options.icons) {
-      srcOptions.icons = this.options.icons;
-    }
+    const srcOptions = this.getSubOptions();
 
     // Make sure that if reference is provided, the form must submit.
     if (this.component.reference) {
@@ -129,6 +105,34 @@ export default class FormComponent extends Component {
 
   get emptyValue() {
     return { data: {} };
+  }
+
+  getSubOptions(options = {}) {
+    if (this.options && this.options.base) {
+      options.base = this.options.base;
+    }
+    if (this.options && this.options.project) {
+      options.project = this.options.project;
+    }
+    if (this.options && this.options.readOnly) {
+      options.readOnly = this.options.readOnly;
+    }
+    if (this.options && this.options.viewAsHtml) {
+      options.viewAsHtml = this.options.viewAsHtml;
+    }
+    if (this.options && this.options.template) {
+      options.template = this.options.template;
+    }
+    if (this.options && this.options.templates) {
+      options.templates = this.options.templates;
+    }
+    if (this.options && this.options.mode) {
+      options.mode = this.options.mode;
+    }
+    if (this.options && this.options.icons) {
+      options.icons = this.options.icons;
+    }
+    return options;
   }
 
   render() {

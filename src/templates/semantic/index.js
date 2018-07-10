@@ -1,3 +1,9 @@
+import builder from './builder';
+import builderComponent from './builderComponent';
+import builderComponents from './builderComponents';
+import builderEditForm from './builderEditForm';
+import builderPlaceholder from './builderPlaceholder';
+import builderSidebar from './builderSidebar';
 import button from './button';
 import checkbox from './checkbox';
 import columns from './columns';
@@ -59,6 +65,12 @@ export default {
     return text;
   },
   iconClass,
+  builder,
+  builderComponent,
+  builderComponents,
+  builderEditForm,
+  builderPlaceholder,
+  builderSidebar,
   button,
   checkbox,
   columns,

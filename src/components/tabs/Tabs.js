@@ -90,7 +90,7 @@ export default class TabsComponent extends NestedComponent {
       });
     });
     this.refs[this.tabKey].forEach((tab, index) => {
-      this.attachComponents(tab, this.tabs[index], this.components[index].components)
+      this.attachComponents(tab, this.tabs[index], this.components[index].components);
     });
   }
 
@@ -134,8 +134,8 @@ export default class TabsComponent extends NestedComponent {
     if (this.refs[this.tabLikey][index]) {
       this.addClass(this.refs[this.tabLikey][index], 'active');
     }
-    if (this.refs[this.tabLikey][index]) {
-      this.addClass(this.refs[this.tabLikey][index], 'active');
+    if (this.refs[this.tabLinkKey][index]) {
+      this.addClass(this.refs[this.tabLinkKey][index], 'active');
     }
   }
 }
