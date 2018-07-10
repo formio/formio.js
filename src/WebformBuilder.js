@@ -6,7 +6,6 @@ import dragula from 'dragula';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
 import { getComponent } from './utils/utils';
-import EventEmitter from 'eventemitter2';
 import Promise from 'native-promise-only';
 import _ from 'lodash';
 require('./components/builder');
@@ -39,7 +38,7 @@ export default class WebformBuilder extends Component {
         this.groups[group] = this.builder[group];
         this.groupOrder.push(this.builder[group]);
       }
-    };
+    }
 
     this.groupOrder = this.groupOrder
       .sort((a, b) => a.weight - b.weight)
@@ -62,13 +61,12 @@ export default class WebformBuilder extends Component {
         this.groups[group].componentOrder = this.groups[group].componentOrder
           .sort((a, b) => a.weight - b.weight)
           .map(component => component.key);
-
       }
     }
 
     options.hooks = options.hooks || {};
 
-    options.hooks.renderComponents = (html, {components, self, path}) => {
+    options.hooks.renderComponents = (html, { components, self }) => {
       if (!components || (!components.length && !components.nodrop) || (self.type === 'form' && components.length <= 1)) {
         html = this.renderTemplate('builderPlaceholder', {}) + html;
       }
@@ -79,7 +77,7 @@ export default class WebformBuilder extends Component {
 
     options.hooks.attachComponents = (element, components, container, component) => {
       // Attach container and component to element for later reference.
-      const containerElement = element.querySelector(`[ref="container"]`);
+      const containerElement = element.querySelector('[ref="container"]');
       containerElement.formioContainer = container;
       containerElement.formioComponent = component;
       // Add container to draggable list.
@@ -89,7 +87,7 @@ export default class WebformBuilder extends Component {
       return element.children[0];
     };
 
-    options.hooks.renderComponent = (html, {self}) => {
+    options.hooks.renderComponent = (html, { self }) => {
       if (self.type === 'form') {
         return html;
       }
@@ -233,7 +231,6 @@ export default class WebformBuilder extends Component {
       }
     }).on('drop', (element, target, source, sibling) => this.onDrop(element, target, source, sibling));
 
-
     this.webform.attach(this.refs.form);
   }
 
@@ -260,7 +257,9 @@ export default class WebformBuilder extends Component {
     }
     else {
       // Grab and remove the component from the source container.
-      info = source.formioContainer.splice(_.findIndex(source.formioContainer, {key: element.formioComponent.component.key}), 1);
+      info = source.formioContainer.splice(
+        _.findIndex(source.formioContainer, { key: element.formioComponent.component.key }), 1
+      );
 
       // Since splice returns an array of one object, we need to destructure it.
       info = info[0];
@@ -275,7 +274,7 @@ export default class WebformBuilder extends Component {
     if (sibling) {
       let index = 0;
       if (!sibling.getAttribute('data-noattach')) {
-        index = _.findIndex(target.formioContainer, {key: sibling.formioComponent.component.key});
+        index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key });
       }
       target.formioContainer.splice(index, 0, info);
     }
@@ -325,7 +324,7 @@ export default class WebformBuilder extends Component {
   updateComponent(component, keyModified, isNew) {
     // Update the preview.
     if (this.preview) {
-      this.preview.form = {components: [component]};
+      this.preview.form = { components: [component] };
       this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
     }
 

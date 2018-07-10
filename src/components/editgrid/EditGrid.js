@@ -70,7 +70,7 @@ export default class EditGridComponent extends NestedComponent {
   init() {
     super.init();
     this.type = 'editgrid';
-    this.editRows = this.dataValue.map((row, rowIndex) => ({
+    this.editRows = this.dataValue.map((row) => ({
       isOpen: false,
       data: row,
     }));

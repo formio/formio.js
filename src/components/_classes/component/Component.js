@@ -492,7 +492,7 @@ export default class Component {
     ];
     // Allow template alters.
     return this.hook(
-      'render' + name.charAt(0).toUpperCase() + name.substring(1, name.length),
+      `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names), data),
       data
     );
@@ -507,23 +507,13 @@ export default class Component {
    *
    * @return {HTMLElement} - The created element.
    */
-  renderString(template, data, actions = []) {
+  renderString(template, data) {
     if (!template) {
       return '';
     }
 
     // Interpolate the template and populate
     return this.interpolate(template, data);
-
-    // Add actions to matching elements.
-    // actions.forEach(action => {
-    //   const elements = div.getElementsByClassName(action.class);
-    //   Array.prototype.forEach.call(elements, element => {
-    //     element.addEventListener(action.event, action.action);
-    //   });
-    // });
-    //
-    // return div;
   }
 
   performInputMapping(input) {

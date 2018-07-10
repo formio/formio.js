@@ -2,7 +2,6 @@
 import _ from 'lodash';
 
 import TextFieldComponent from '../textfield/TextField';
-import Component from '../_classes/component/Component';
 import Formio from '../../Formio';
 
 export default class AddressComponent extends TextFieldComponent {

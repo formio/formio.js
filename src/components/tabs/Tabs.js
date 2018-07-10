@@ -90,7 +90,7 @@ export default class TabsComponent extends NestedComponent {
       });
     });
     this.refs[this.tabKey].forEach((tab, index) => {
-      this.attachComponents(tab, this.tabs[index], this.components[index].components)
+      this.attachComponents(tab, this.tabs[index], this.components[index].components);
     });
   }
 
