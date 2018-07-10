@@ -30,11 +30,11 @@ export default {
       </div>
     </div>
     <div style="margin-top: 10px;">
-      <button class="btn btn-success" style="margin-right: 10px;">{{t('Save')}}</button>
-      <button class="btn btn-default" style="margin-right: 10px;">{{t('Cancel')}}</button>
-      <button class="btn btn-danger">{{t('Remove')}}</button>
+      <button class="btn btn-success" style="margin-right: 10px;" ref="saveButton">{{t('Save')}}</button>
+      <button class="btn btn-default" style="margin-right: 10px;" ref="cancelButton">{{t('Cancel')}}</button>
+      <button class="btn btn-danger" ref="removeButton">{{t('Remove')}}</button>
     </div>
   </div>
-</div>
+</div> 
 `,
 };

@@ -90,6 +90,9 @@ export default class WebformBuilder extends Component {
     };
 
     options.hooks.renderComponent = (html, {self}) => {
+      if (self.type === 'form') {
+        return html;
+      }
       return this.renderTemplate('builderComponent', {
         html,
       });
@@ -103,13 +106,19 @@ export default class WebformBuilder extends Component {
         removeComponent: 'single',
         editComponent: 'single',
       });
-      console.log(component.refs);
-      component.addEventListener(component.refs.editComponent, 'click', () => this.editComponent(component.component));
-      component.addEventListener(component.refs.removeComponent, 'click', () => this.deleteComponent(component.component));
+
+      const parent = this.getParentElement(element);
+      component.addEventListener(component.refs.editComponent, 'click', () => this.editComponent(component.component, parent));
+      component.addEventListener(component.refs.removeComponent, 'click', () => this.removeComponent(component.component, parent));
+
       return element;
     };
 
     this.webform = new Webform(options);
+  }
+
+  get ready() {
+    return Promise.resolve(this);
   }
 
   get defaultGroups() {
@@ -242,12 +251,12 @@ export default class WebformBuilder extends Component {
     }
 
     const type = element.getAttribute('data-type');
-    let info;
+    let info, isNew;
 
     if (type) {
       // This is a new component
       info = this.schemas[type];
-      info.isNew = true;
+      isNew = true;
     }
     else {
       // Grab and remove the component from the source container.
@@ -274,8 +283,8 @@ export default class WebformBuilder extends Component {
       target.formioContainer.push(info);
     }
 
-    if (info.isNew) {
-      this.editComponent(info);
+    if (isNew) {
+      this.editComponent(info, target, isNew);
     }
 
     // Cause parent to rebuild so component becomes visible.
@@ -296,71 +305,47 @@ export default class WebformBuilder extends Component {
     }
   }
 
-  get ready() {
-    return Promise.resolve(this);
-  }
-
-  deleteComponent(component) {
-    console.log('delete', component);
-    return;
-    if (!component.parent) {
+  removeComponent(component, parent) {
+    if (!parent) {
       return;
     }
     let remove = true;
-    if (component.type === 'components' && component.getComponents().length > 0) {
-      const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
-      remove = window.confirm(this.t(message));
-    }
+    // if (component.type === 'components' && component.getComponents().length > 0) {
+    //   const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
+    //   remove = window.confirm(this.t(message));
+    // }
     if (remove) {
-      this.emit('deleteComponent', component);
-      component.parent.removeComponentById(component.id);
-      this.form = this.schema;
+      this.emit('removeComponent', component);
+      parent.formioContainer.splice(parent.formioContainer.indexOf(component), 1);
+      parent.formioComponent.rebuild();
     }
     return remove;
   }
 
-  removeComponent(path) {
-    const container = _.get(this.form, path.replace(/\[[^\[]*?\]$/, ''));
-    container.splice(container.indexOf(_.get(this.form, path)), 1);
-  }
-
-  updateComponent(component) {
+  updateComponent(component, keyModified, isNew) {
     // Update the preview.
-    if (this.componentPreview) {
-      this.preview = Components.create(component.component, {
-        preview: true,
-        events: new EventEmitter({
-          wildcard: false,
-          maxListeners: 0
-        })
-      }, {}, true);
-      this.preview.on('componentEdit', (comp) => {
-        _.merge(component.component, comp.component);
-        this.editForm.redraw();
-      });
-      this.preview.build();
-      this.preview.isBuilt = true;
-      this.componentPreview.innerHTML = '';
-      this.componentPreview.appendChild(this.preview.getElement());
+    if (this.preview) {
+      this.preview.form = {components: [component]};
+      this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
     }
 
     // Ensure this component has a key.
-    if (component.isNew) {
-      if (!component.keyModified) {
-        component.component.key = _.camelCase(
-          component.component.label ||
-          component.component.placeholder ||
-          component.component.type
+    if (isNew) {
+      if (!keyModified) {
+        component.key = _.camelCase(
+          component.label ||
+          component.placeholder ||
+          component.type
         );
       }
 
       // Set a unique key for this component.
-      BuilderUtils.uniquify(this._form, component.component);
+      BuilderUtils.uniquify(this._form, component);
     }
 
     // Change the "default value" field to be reflective of this component.
     if (this.defaultValueComponent) {
-      _.assign(this.defaultValueComponent, _.omit(component.component, [
+      _.assign(this.defaultValueComponent.component, _.omit(component, [
         'key',
         'label',
         'placeholder',
@@ -373,7 +358,7 @@ export default class WebformBuilder extends Component {
     this.emit('updateComponent', component);
   }
 
-  editComponent(component) {
+  editComponent(component, parent, isNew) {
     const componentCopy = _.cloneDeep(component);
     const componentClass = Components.components[componentCopy.type];
     // Make sure we only have one dialog open at a time.
@@ -383,13 +368,17 @@ export default class WebformBuilder extends Component {
 
     // This is the render step.
     this.editForm = new Webform(_.omit(this.options, ['hooks', 'builder', 'events']));
+
     this.editForm.form = componentClass.editForm();
+
+    // Pass along the form being edited.
+    this.editForm.editForm = this._form;
+
     this.editForm.submission = {
       data: componentCopy,
     };
 
     this.preview = new Webform(_.omit(this.options, ['hooks', 'builder', 'events']));
-    this.preview.form = {components: [componentCopy]};
 
     this.componentEdit = this.ce('div');
     this.componentEdit.innerHTML = this.renderTemplate('builderEditForm', {
@@ -397,98 +386,63 @@ export default class WebformBuilder extends Component {
       editForm: this.editForm.render(),
       preview: this.preview.render(),
     });
+
     this.dialog = this.createModal(this.componentEdit);
 
     // This is the attach step.
     const editForm = this.componentEdit.querySelector('[ref="editForm"]');
     this.editForm.attach(editForm);
 
-    this.editForm.on('change', (event) => {
-      if (event.changed) {
-        this.preview.form = {
-          components: [_.cloneDeep(event.data)]
-        };
-        this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
-      }
-    });
+    this.defaultValueComponent = getComponent(this.editForm.components, 'defaultValue');
 
-    return;
-    // Change the defaultValue component to be reflective.
-    this.defaultValueComponent = getComponent(editForm.components, 'defaultValue');
-    _.assign(this.defaultValueComponent, _.omit(componentCopy.component, [
-      'key',
-      'label',
-      'placeholder',
-      'tooltip',
-      'validate'
-    ]));
-
-    // Create the form instance.
-    this.editForm = new Webform(formioForm);
-
-    // Set the form to the edit form.
-    this.editForm.form = editForm;
-
-    // Pass along the form being edited.
-    this.editForm.editForm = this._form;
-
-    // Update the preview with this component.
     this.updateComponent(componentCopy);
 
-    // Register for when the edit form changes.
     this.editForm.on('change', (event) => {
       if (event.changed) {
-        // See if this is a manually modified key.
-        if (event.changed.component && (event.changed.component.key === 'key')) {
-          componentCopy.keyModified = true;
-        }
-
-        // Set the component JSON to the new data.
-        componentCopy.component = this.editForm.getValue().data;
-
-        // Update the component.
-        this.updateComponent(componentCopy);
+        this.updateComponent(event.data, event.data.key === component.key);
       }
     });
 
-    // Modify the component information in the edit form.
-    this.editForm.formReady.then(() => this.editForm.setValue({ data: componentCopy.component }, {
-      noUpdateEvent: true
-    }));
-
-    this.addEventListener(cancelButton, 'click', (event) => {
+    this.addEventListener(this.componentEdit.querySelector('[ref="cancelButton"]'), 'click', (event) => {
       event.preventDefault();
+      this.editForm.detach();
       this.emit('cancelComponent', component);
       this.dialog.close();
     });
 
-    this.addEventListener(removeButton, 'click', (event) => {
+    this.addEventListener(this.componentEdit.querySelector('[ref="removeButton"]'), 'click', (event) => {
       event.preventDefault();
-      this.deleteComponent(component);
+      this.editForm.detach();
+      this.removeComponent(component, parent);
       this.dialog.close();
     });
 
-    this.addEventListener(saveButton, 'click', (event) => {
+    this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
       event.preventDefault();
-      component.isNew = false;
-      component.component = componentCopy.component;
-      if (component.dragEvents && component.dragEvents.onSave) {
-        component.dragEvents.onSave(component);
-      }
+      this.editForm.detach();
+      parent.formioContainer[parent.formioContainer.indexOf(component)] = this.editForm.submission.data;
+      parent.formioComponent.rebuild();
       this.emit('saveComponent', component);
-      this.form = this.schema;
       this.dialog.close();
     });
 
     this.addEventListener(this.dialog, 'close', () => {
-      this.editForm.destroy();
-      if (component.isNew) {
-        this.deleteComponent(component);
+      this.editForm.detach();
+      if (isNew) {
+        // this.removeComponent(component);
       }
     });
 
     // Called when we edit a component.
     this.emit('editComponent', component);
+  }
+
+  getParentElement(element) {
+    let container = element;
+    do {
+      container = container.parentNode;
+    } while (container && !container.formioContainer);
+    return container;
   }
 
   addBuilderComponentInfo(component) {
