@@ -40,7 +40,10 @@ export default class AddressComponent extends TextFieldComponent {
     Formio.requireLibrary('googleMaps', 'google.maps.places', src);
 
     // Keep track of the full addresses.
-    this.addresses = [];
+    this.addresses = this.dataValue || '';
+    if (!Array.isArray(this.addresses)) {
+      this.addresses = [this.addresses];
+    }
   }
 
   get defaultSchema() {

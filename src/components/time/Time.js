@@ -32,17 +32,19 @@ export default class TimeComponent extends TextFieldComponent {
     info.attr.type = 'time';
     return info;
   }
+
   getValueAt(index) {
     if (!this.refs.input.length || !this.refs.input[index]) {
       return null;
     }
     const val = this.refs.input[index].value;
     if (!val) {
-      return null;
+      return '';
     }
 
     return moment(val, this.component.format).format('HH:mm:ss');
   }
+
   setValueAt(index, value) {
     this.refs.input[index].value = moment(value, 'HH:mm:ss').format(this.component.format);
   }

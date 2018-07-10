@@ -1524,17 +1524,6 @@ export default class Component {
     }
   }
 
-  /**
-   * Add a new input to this comonent.
-   *
-   * @param input
-   * @param container
-   * @param noSet
-   */
-  addInput() {
-    console.log('called Component.addInput');
-  }
-
   get wysiwygDefault() {
     return {
       theme: 'snow',
