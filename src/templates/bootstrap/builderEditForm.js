@@ -7,7 +7,7 @@ export default {
   <div class="col col-sm-6">
     <div class="pull-right" style="margin-right: 20px; margin-top: 10px">
       <a href="{{componentInfo.documentation}}" target="_blank">
-        <i class="glyphicon glyphicon-new-window"> {{t('Help')}}</i>
+        <i class="{{iconClass('new-window')}}"> {{t('Help')}}</i>
       </a>
     </div>
   </div>

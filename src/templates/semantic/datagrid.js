@@ -1,11 +1,11 @@
 export default {
   form: `
 <label class="control-label" style="">{{t(component.label)}}</label>
-<table class="table datagrid-table 
-    {{ component.striped ? 'table-striped' : ''}}
-    {{ component.bordered ? 'table-bordered' : ''}}
-    {{ component.hover ? 'table-hover' : ''}}
-    {{ component.condensed ? 'table-condensed' : ''}} 
+<table class="ui table datagrid-table 
+    {{ component.striped ? 'striped' : ''}}
+    {{ component.bordered ? 'celled' : ''}}
+    {{ component.hover ? 'selectable' : ''}}
+    {{ component.condensed ? 'compact' : 'padded'}}
     ">
   {% if (hasHeader) { %}
   <thead>
@@ -21,7 +21,7 @@ export default {
       {% if (hasExtraColumn) { %}
       <th>
         {% if (hasAddButton && hasTopSubmit) { %}
-        <button class="btn btn-primary" ref="{{datagridKey}}-addRow">
+        <button class="ui button primary" ref="{{datagridKey}}-addRow">
           <i class="{{iconClass('plus')}}"></i> Add Another
         </button>
         {% } %}
@@ -42,7 +42,7 @@ export default {
       {% }) %}
       {% if (hasExtraColumn && hasRemoveButtons) { %}
       <td>
-        <button type="button" class="btn btn-default btn-secondary" ref="{{datagridKey}}-removeRow">
+        <button type="button" class="ui icon button secondary" ref="{{datagridKey}}-removeRow">
           <i class="{{iconClass('remove-circle')}}"></i>
         </button>
       </td>
@@ -54,7 +54,7 @@ export default {
   <tfoot>
     <tr>
       <td colspan="{{numColumns}}">
-        <button class="btn btn-primary" ref="{{datagridKey}}-addRow">
+        <button class="ui button primary" ref="{{datagridKey}}-addRow">
           <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
         </button>
       </td>

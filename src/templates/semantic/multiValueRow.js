@@ -6,8 +6,8 @@ export default {
   </td>
   {% if (!disabled) { %}
   <td>
-    <button type="button" class="ui button secondary" ref="removeRow">
-      <i class="trash icon button"></i>
+    <button type="button" class="ui icon button secondary" ref="removeRow">
+      <i class="trash icon"></i>
     </button>
   </td>
   {% } %}

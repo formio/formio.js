@@ -2,9 +2,12 @@ import button from './button';
 import checkbox from './checkbox';
 import columns from './columns';
 import component from './component';
+import datagrid from './datagrid';
 import day from './day';
+import editgrid from './editgrid';
 import field from './field';
 import fieldset from './fieldset';
+import file from './file';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
@@ -13,8 +16,11 @@ import multiValueRow from './multiValueRow';
 import multiValueTable from './multiValueTable';
 import panel from './panel';
 import radio from './radio';
+import resourceAdd from './resourceAdd';
 import select from './select';
 import selectOption from './selectOption';
+import signature from './signature';
+import survey from './survey';
 import tab from './tab';
 import table from './table';
 import webform from './webform';
@@ -57,9 +63,12 @@ export default {
   checkbox,
   columns,
   component,
+  datagrid,
   day,
+  editgrid,
   field,
   fieldset,
+  file,
   icon,
   input,
   message,
@@ -67,8 +76,11 @@ export default {
   multiValueTable,
   panel,
   radio,
+  resourceAdd,
   select,
   selectOption,
+  signature,
+  survey,
   tab,
   table,
   webform,

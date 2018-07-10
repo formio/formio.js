@@ -658,6 +658,12 @@ export default class Component {
   attach(element) {
     this.attached = true;
     this.element = element;
+
+    // If this already has an id, get it from the dom. If SSR, it could be different from the initiated id.
+    if (this.element.id) {
+      this.id = this.element.id;
+    }
+
     this.loadRefs(element, { messageContainer: 'single', tooltip: 'single' });
 
     if (this.refs.tooltip) {

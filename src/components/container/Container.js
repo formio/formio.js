@@ -38,20 +38,21 @@ export default class ContainerComponent extends NestedComponent {
     return {};
   }
 
-  get containerId() {
-    return `container-${this.id}`;
+  get containerKey() {
+    return `container-${this.key}`;
   }
 
   render() {
     return super.render(this.renderTemplate('container', {
+      containerKey: this.containerKey,
       children: this.renderComponents(),
     }));
   }
 
   attach(element) {
-    this.loadRefs(element, { [this.containerId]: 'single' });
-    if (this.refs[this.containerId]) {
-      this.attachComponents(this.refs[this.containerId]);
+    this.loadRefs(element, { [this.containerKey]: 'single' });
+    if (this.refs[this.containerKey]) {
+      this.attachComponents(this.refs[this.containerKey]);
     }
   }
 

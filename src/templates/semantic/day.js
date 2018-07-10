@@ -1,6 +1,6 @@
 export default {
   form: `
-<div class="ui grid" style="width: 100%">
+<div class="ui grid">
   {% if (dayFirst && showDay) { %}
   <div class="four wide column">
     <label for="{{component.key}}-day" class="">{{t('Day')}}</label>

@@ -217,7 +217,7 @@ export default class NestedComponent extends Component {
 
     let index = 0;
     Array.prototype.slice.call(element.children).forEach(child => {
-      if (!child.getAttribute('data-noattach')) {
+      if (!child.getAttribute('data-noattach') && components[index]) {
         components[index].attach(child);
         index++;
       }

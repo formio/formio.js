@@ -33,7 +33,7 @@ export default {
   {% } %}
 </ul>
 <button class="btn btn-primary" ref="{{editgridKey}}-addRow">
-  <i class="glyphicon glyphicon-plus"></i> {{t(component.addAnother || 'Add Another')}}
+  <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
 </button>
 
 `,

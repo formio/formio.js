@@ -1,28 +1,28 @@
 export default {
   form: `
 {% if (!component.image) { %}
-<ul class="list-group list-group-striped">
-  <li class="list-group-item list-group-header hidden-xs hidden-sm">
-    <div class="row">
+<div class="ui celled list">
+  <div class="item">
+    <div class="ui grid">
       {% if (!disabled) { %}
-      <div class="col-md-1"></div>
+      <div class="one wide column"></div>
       {% } %}
-      <div class="col-md-9"><strong>File Name</strong></div>
-      <div class="col-md-2"><strong>Size</strong></div>
+      <div class="twelve wide column"><strong>File Name</strong></div>
+      <div class="three wide column"><strong>Size</strong></div>
     </div>
-  </li>
+  </div>
   {% files.forEach(function(file) { %}
   <li class="list-group-item">
-    <div class="row">
+    <div class="ui grid">
       {% if (!disabled) { %}
-      <div class="col-md-1"><i class="{{iconClass('remove')}}" ref="removeLink"></i></div>
+      <div class="one wide column"><i class="{{iconClass('remove')}}" ref="removeLink"></i></div>
       {% } %}
-      <div class="col-md-9"><a href="{{file.url}}" target="_blank" ref="fileLink">{{file.originalName || file.name}}</a></div>
-      <div class="col-md-2">{{fileSize(file.size)}}</div>
+      <div class="twelve wide column"><a href="{{file.url}}" target="_blank" ref="fileLink">{{file.originalName || file.name}}</a></div>
+      <div class="three wide column">{{fileSize(file.size)}}</div>
     </div>
   </li>
   {% }) %}
-</ul>
+</div>
 {% } else { %}
 <div>
   {% files.forEach(function(file) { %}
@@ -45,12 +45,12 @@ export default {
 {% } %}
 {% statuses.forEach(function(status) { %}
 <div class="file {{statuses.status === 'error' ? ' has-error' : ''}}">
-  <div class="row">
-    <div class="fileName control-label col-sm-10">{{status.originalName}} <i class="{{iconClass('remove')}}" ref="fileStatusRemove"></i></div>
-    <div class="fileSize control-label col-sm-2 text-right">{{fileSize(status.size)}}</div>
+  <div class="ui grid">
+    <div class="fileName control-label thirteen wide column">{{status.originalName}} <i class="{{iconClass('remove')}}" ref="fileStatusRemove"></i></div>
+    <div class="fileSize control-label three wide column">{{fileSize(status.size)}}</div>
   </div>
-  <div class="row">
-    <div class="col-sm-12">
+  <div class="ui grid">
+    <div class="thirteen wide column">
       {% if (status.status === 'progress') { %}
       <div class="progress">
         <div class="progress-bar" role="progressbar" aria-valuenow="{{status.progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{status.progress}}">

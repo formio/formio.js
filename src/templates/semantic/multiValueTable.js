@@ -6,7 +6,7 @@ export default {
   {% if (!disabled) { %}
   <tr>
     <td colspan="2">
-      <button class="ui button primary" ref="addButton"><i class="plus icon"></i> {{addAnother}}</button>
+      <button class="ui button primary" ref="addButton"><i class="{{iconClass('plus')}}"></i> {{addAnother}}</button>
     </td>
   </tr>
   {% } %}

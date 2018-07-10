@@ -14,7 +14,7 @@ export default {
     {{input.content}}
     <span>{{input.label}}</span> 
     {% if (component.tooltip) { %}
-      <i ref="tooltip" class="glyphicon glyphicon-question-sign text-muted"></i>
+      <i ref="tooltip" class="{{iconClass('question-sign')}}"></i>
     {% } %}
   </label>
 </div>

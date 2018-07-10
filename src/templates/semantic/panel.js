@@ -1,10 +1,10 @@
 export default {
   form: `
-<div id="{{id}}" class="formio-component formio-component-panel">
-  <h4 class="ui top attached block header {{component.className}}">{{t(component.title)}}</h4>
-  <div class="ui bottom attached segment" ref="{{panelKey}}">
-    {{children}}
-  </div>
+<h4 class="ui top attached block header {{component.className}}" ref="header">{{t(component.title)}}</h4>
+{% if (!collapsed) { %}
+<div class="ui bottom attached segment" ref="{{panelKey}}">
+  {{children}}
 </div>
+{% } %}
 `,
 };

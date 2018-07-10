@@ -1,6 +1,8 @@
 export default (iconset, name, spinning) => {
   const icons = {
-
+    'question-sign': 'question circle',
+    'remove-circle': 'trash alternate outline',
+    'cloud-upload': 'cloud upload',
   };
   if (icons.hasOwnProperty(name)) {
     name = icons[name];

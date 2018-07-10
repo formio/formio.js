@@ -30,8 +30,8 @@ export default class WellComponent extends NestedComponent {
     return `${this.component.customClass}`;
   }
 
-  get wellId() {
-    return `well-${this.id}`;
+  get wellkey() {
+    return `well-${this.key}`;
   }
 
   init() {
@@ -40,14 +40,15 @@ export default class WellComponent extends NestedComponent {
 
   render() {
     return super.render(this.renderTemplate('well', {
+      wellkey: this.wellkey,
       children: this.renderComponents(),
     }));
   }
 
   attach(element) {
-    this.loadRefs(element, { [this.wellId]: 'single' });
-    if (this.refs[this.wellId]) {
-      this.attachComponents(this.refs[this.wellId]);
+    this.loadRefs(element, { [this.wellkey]: 'single' });
+    if (this.refs[this.wellkey]) {
+      this.attachComponents(this.refs[this.wellkey]);
     }
   }
 }

@@ -1,7 +1,7 @@
 export default {
   form: `
-<div id="{{id}}" class="ui secondary segment formio-component formio-component-well {{className}}">
-  <div class="content" ref="well-{{id}}">
+<div class="ui secondary segment">
+  <div class="content" ref="{{wellkey}}">
     {{children}}
   </div>
 </div>
