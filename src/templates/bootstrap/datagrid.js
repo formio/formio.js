@@ -1,11 +1,11 @@
 export default {
   form: `
-<label class="control-label" style="">{{t(component.label)}}</label>
+<label class="col-form-label" style="">{{t(component.label)}}</label>
 <table class="table datagrid-table 
     {{ component.striped ? 'table-striped' : ''}}
     {{ component.bordered ? 'table-bordered' : ''}}
     {{ component.hover ? 'table-hover' : ''}}
-    {{ component.condensed ? 'table-condensed' : ''}} 
+    {{ component.condensed ? 'table-sm' : ''}} 
     ">
   {% if (hasHeader) { %}
   <thead>
@@ -42,7 +42,7 @@ export default {
       {% }) %}
       {% if (hasExtraColumn && hasRemoveButtons) { %}
       <td>
-        <button type="button" class="btn btn-default btn-secondary" ref="{{datagridKey}}-removeRow">
+        <button type="button" class="btn btn-secondary" ref="{{datagridKey}}-removeRow">
           <i class="{{iconClass('remove-circle')}}"></i>
         </button>
       </td>

@@ -64,6 +64,7 @@ export default {
     }
     return text;
   },
+  defaultIconset: 'icon',
   iconClass,
   builder,
   builderComponent,

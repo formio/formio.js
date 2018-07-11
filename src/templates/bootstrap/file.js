@@ -46,8 +46,8 @@ export default {
 {% statuses.forEach(function(status) { %}
 <div class="file {{statuses.status === 'error' ? ' has-error' : ''}}">
   <div class="row">
-    <div class="fileName control-label col-sm-10">{{status.originalName}} <i class="{{iconClass('remove')}}" ref="fileStatusRemove"></i></div>
-    <div class="fileSize control-label col-sm-2 text-right">{{fileSize(status.size)}}</div>
+    <div class="fileName col-form-label col-sm-10">{{status.originalName}} <i class="{{iconClass('remove')}}" ref="fileStatusRemove"></i></div>
+    <div class="fileSize col-form-label col-sm-2 text-right">{{fileSize(status.size)}}</div>
   </div>
   <div class="row">
     <div class="col-sm-12">

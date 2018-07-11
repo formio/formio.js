@@ -39,7 +39,17 @@ import well from './well';
 import wizard from './wizard';
 
 export default {
-  transform: (type, text) => text,
+  transform: (type, text) => {
+    const classes = {
+      'border-default': '',
+    };
+    switch (type) {
+      case 'class':
+        return classes.hasOwnProperty(text.toString()) ? classes[text.toString()] : text;
+    }
+    return text;
+  },
+  defaultIconset: 'fa',
   iconClass,
   builder,
   builderComponent,

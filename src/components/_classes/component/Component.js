@@ -887,12 +887,8 @@ export default class Component {
     }
   }
 
-  bootstrap4Theme(name) {
-    return (name === 'default') ? 'secondary' : name;
-  }
-
   iconClass(name, spinning) {
-    const iconset = (!this.options.icons || this.options.icons === 'glyphicon') ? 'glypicon' : this.options.icons;
+    const iconset = this.options.iconset || this.options.templates.defaultIconset;
     return this.options.templates ? this.options.templates.iconClass(iconset, name, spinning) : name;
   }
 

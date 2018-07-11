@@ -16,7 +16,7 @@ export default {
   <ul class="list-inline">
     {% if (buttons.cancel) { %}
     <li class="list-inline-item">
-      <button class="btn btn-default btn-secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
+      <button class="btn btn-secondary btn-wizard-nav-cancel" ref="{{wizardKey}}-cancel">{{t('cancel')}}</button>
     </li>
     {% } %}
     {% if (buttons.previous) { %}

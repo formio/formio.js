@@ -4,7 +4,11 @@ export default {
 <div class="input-group">
 {% } %}
 {% if (component.prefix) { %}
-<div class="input-group-addon">{{component.prefix}}</div>
+<div class="input-group-prepend">
+  <span class="input-group-text">
+    {{component.prefix}}
+  </span>
+</div>
 {% } %}
 <{{input.type}} 
   ref="{{input.ref ? input.ref : 'input'}}" 
@@ -13,7 +17,11 @@ export default {
   {% } %}
 >{{input.content}}</{{input.type}}>
 {% if (component.suffix) { %}
-<div class="input-group-addon">{{component.suffix}}</div>
+<div class="input-group-append">
+  <span class="input-group-text">
+    {{component.suffix}}
+  </span>
+</div>
 {% } %}
 {% if (component.prefix || component.suffix) { %}
 </div>

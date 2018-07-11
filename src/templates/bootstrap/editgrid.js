@@ -1,11 +1,11 @@
 export default {
   form: `
-<label class="control-label" style="">{{t(component.label)}}</label>
+<label class="col-form-label" style="">{{t(component.label)}}</label>
 <ul class="editgrid-listgroup list-group 
     {{ component.striped ? 'table-striped' : ''}}
     {{ component.bordered ? 'table-bordered' : ''}}
     {{ component.hover ? 'table-hover' : ''}}
-    {{ component.condensed ? 'table-condensed' : ''}} 
+    {{ component.condensed ? 'table-sm' : ''}} 
     ">
   {% if (header) { %}
   <li class="list-group-item list-group-header">

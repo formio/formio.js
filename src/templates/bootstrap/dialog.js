@@ -4,7 +4,7 @@ export default {
   <div class="formio-dialog-overlay" ref="dialogOverlay"></div>
   <div class="formio-dialog-content" ref="dialogContents">
     <div ref="dialogContents"></div>
-    <button class="formio-dialog-close pull-right btn btn-default btn-xs" aria-label="close" ref="dialogClose"></button>
+    <button class="formio-dialog-close float-right btn btn-secondary btn-sm" aria-label="close" ref="dialogClose"></button>
   </div>
 </div>
 `,

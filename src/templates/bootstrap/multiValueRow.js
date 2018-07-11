@@ -6,7 +6,7 @@ export default {
   </td>
   {% if (!disabled) { %}
   <td>
-    <button type="button" class="btn btn-default btn-secondary" ref="removeRow">
+    <button type="button" class="btn btn-secondary" ref="removeRow">
       <i class="{{iconClass('remove-circle')}}"></i>
     </button>
   </td>

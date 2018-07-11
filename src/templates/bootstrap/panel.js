@@ -1,11 +1,11 @@
 export default {
   form: `
-<div class="card border-{{bootstrap4Theme(component.theme)}} panel panel-{{component.theme}}">
-  <div class="card-header panel-heading">
-    <h4 class="mb-0 card-title panel-title" ref="header">{{t(component.title)}}</h4>
+<div class="card {{transform('class', 'border-' + component.theme)}}">
+  <div class="card-header">
+    <h4 class="mb-0 card-title" ref="header">{{t(component.title)}}</h4>
   </div>
   {% if (!collapsed) { %}
-  <div class="card-body panel-body" ref="{{panelKey}}">
+  <div class="card-body" ref="{{panelKey}}">
     {{children}}
   </div>
   {% } %}

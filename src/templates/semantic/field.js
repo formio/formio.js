@@ -1,19 +1,19 @@
 export default {
   form: `
 {% if (!label.hidden && label.labelPosition !== 'bottom') { %}
-  <label 
-    class="{{label.className}}" 
-    style="{{label.style}}"
-  >
+  <label class="{{label.className}}">
     {{t(component.label)}}
-    {% if (component.tooltip) { %} <i ref="tooltip" class="{{label.tooltipClass}}"></i>{% } %}
+    {% if (component.tooltip) { %} 
+      <i ref="tooltip" class="{{iconClass('question-sign')}}"></i>
+    {% } %}
   </label>
 {% } %}
 {{element}}
 {% if (!label.hidden && label.labelPosition === 'bottom') { %}
-  <label class="{{label.className}}" style="{{label.style}}">{{t(component.label)}}
+  <label class="{{label.className}}">
+  {{t(component.label)}}
   {% if (component.tooltip) { %}
-    <i class="{{label.tooltipClass}}"></i>
+    <i class="{{iconClass('question-sign')}}"></i>
   {% } %}
   </label>
 {% } %}

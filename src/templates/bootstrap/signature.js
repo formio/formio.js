@@ -8,7 +8,7 @@ export default {
   ref="padBody"
 >
   
-  <a class="btn btn-sm btn-default btn-secondary signature-pad-refresh" ref="refresh">
+  <a class="btn btn-sm btn-light signature-pad-refresh" ref="refresh">
     <i class="{{iconClass('refresh')}}"></i>
   </a>
   <canvas class="signature-pad-canvas" height="{{component.height}}" ref="canvas"></canvas>

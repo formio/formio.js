@@ -121,7 +121,7 @@ export default class TabsComponent extends NestedComponent {
       tab.style.display = 'none';
     });
     this.addClass(this.refs[this.tabKey][index], 'active');
-    this.refs[this.tabKey][index].style.display = 'inherit';
+    this.refs[this.tabKey][index].style.display = 'block';
 
     _.each(this.refs[this.tabLinkKey], (tabLink, tabIndex) => {
       if (this.refs[this.tabLinkKey][tabIndex]) {

@@ -49,7 +49,6 @@ export default class PanelComponent extends NestedComponent {
   render() {
     return super.render(this.renderTemplate('panel', {
       panelKey: this.panelKey,
-      bootstrap4Theme: this.bootstrap4Theme,
       children: this.renderComponents(),
       collapsed: this.collapsed,
     }));

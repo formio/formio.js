@@ -1,6 +1,6 @@
 export default {
   form: `
-<div class="card card-body bg-faded well">
+<div class="card card-body bg-faded">
   <div ref="{{wellkey}}">
     {{children}}
   </div>
