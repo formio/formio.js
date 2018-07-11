@@ -719,7 +719,11 @@ body.formio-dialog-open {
   margin-top: -2px;
 }
 
-.formio-component:not(:hover) .component-btn-group {
+.builder-component {
+  position: relative;
+}
+
+.builder-component:not(:hover) .component-btn-group {
   display: none;
 }
 
@@ -783,4 +787,8 @@ body.formio-dialog-open {
 
 .form-builder-panel .panel-body {
   padding: 5px;
+}
+
+.formio-component-tabs .ui.tabular.menu .item {
+  padding: 0.8em;
 }

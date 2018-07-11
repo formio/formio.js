@@ -313,7 +313,7 @@ export default class WebformBuilder extends Component {
     if (!parent) {
       return;
     }
-    let remove = true;
+    const remove = true;
     // if (component.type === 'components' && component.getComponents().length > 0) {
     //   const message = 'Removing this component will also remove all of its children. Are you sure you want to do this?';
     //   remove = window.confirm(this.t(message));
