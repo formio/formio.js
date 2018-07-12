@@ -222,7 +222,6 @@ export default class NestedComponent extends Component {
         index++;
       }
     });
-    // return Promise.all[components.map((component, index) => component.attach(element.children[index]))];
   }
 
   /**

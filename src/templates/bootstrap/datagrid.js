@@ -20,7 +20,7 @@ export default {
       {% }) %}
       {% if (hasExtraColumn) { %}
       <th>
-        {% if (hasAddButton && hasTopSubmit) { %}
+        {% if (!builder && hasAddButton && hasTopSubmit) { %}
         <button class="btn btn-primary" ref="{{datagridKey}}-addRow">
           <i class="{{iconClass('plus')}}"></i> Add Another
         </button>
@@ -40,17 +40,22 @@ export default {
       </td>
       {% } %}
       {% }) %}
-      {% if (hasExtraColumn && hasRemoveButtons) { %}
-      <td>
-        <button type="button" class="btn btn-secondary" ref="{{datagridKey}}-removeRow">
-          <i class="{{iconClass('remove-circle')}}"></i>
-        </button>
-      </td>
+      {% if (hasExtraColumn) { %}
+        <td>
+        {% if (!builder && hasRemoveButtons) { %}
+          <button type="button" class="btn btn-secondary" ref="{{datagridKey}}-removeRow">
+            <i class="{{iconClass('remove-circle')}}"></i>
+          </button>
+        {% } %}
+        {% if (builder) { %}
+          {{placeholder}}
+        {% } %}
+        </td>
       {% } %}
     </tr>
     {% }) %}
   </tbody>
-  {% if (hasAddButton && hasBottomSubmit) { %}
+  {% if (!builder && hasAddButton && hasBottomSubmit) { %}
   <tfoot>
     <tr>
       <td colspan="{{numColumns}}">

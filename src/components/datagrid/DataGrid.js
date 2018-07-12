@@ -121,6 +121,11 @@ export default class DataGridComponent extends NestedComponent {
       hasBottomSubmit: this.hasBottomSubmit(),
       numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
       datagridKey: this.datagridKey,
+      builder: this.options.builder,
+      placeholder: this.renderTemplate('builderComponents', {
+        html: this.renderTemplate('builderPlaceholder', {}),
+        type: 'datagrid',
+      }),
     }));
   }
 
@@ -145,11 +150,16 @@ export default class DataGridComponent extends NestedComponent {
       let columnIndex = 0;
       this.component.components.forEach((col) => {
         if (this.visibleColumns[col.key]) {
-          this.attachComponents(this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex], [this.rows[rowIndex][col.key]]);
+          this.attachComponents(
+            this.refs[this.datagridKey][(rowIndex * rowLength) + columnIndex],
+            [this.rows[rowIndex][col.key]],
+            this.component.components
+          );
           columnIndex++;
         }
       });
     });
+    this.hook('attachDatagrid', element, this);
   }
 
   addRow() {
@@ -189,18 +199,6 @@ export default class DataGridComponent extends NestedComponent {
       }), options, row);
       components[col.key] = comp;
     });
-    // if (this.options.builder) {
-    //   lastColumn = this.ce('td', {
-    //     id: `${this.id}-drag-container`,
-    //     class: 'drag-container'
-    //   }, this.ce('div', {
-    //     id: `${this.id}-placeholder`,
-    //     class: 'alert alert-info',
-    //     style: 'text-align:center; margin-bottom: 0px;',
-    //     role: 'alert'
-    //   }, this.text('Drag and Drop a form component')));
-    //   this.root.addDragContainer(lastColumn, this);
-    // }
     return components;
   }
 

@@ -66,6 +66,11 @@ export default class WebformBuilder extends Component {
     options.hooks = options.hooks || {};
 
     options.hooks.renderComponents = (html, { components, self }) => {
+      // if Datagrid and already has a component, don't make it droppable.
+      if (self.type === 'datagrid' && components.length > 0) {
+        return html;
+      }
+
       if (!components || (!components.length && !components.nodrop) || (self.type === 'form' && components.length <= 1)) {
         html = this.renderTemplate('builderPlaceholder', {}) + html;
       }
@@ -77,14 +82,29 @@ export default class WebformBuilder extends Component {
 
     options.hooks.attachComponents = (element, components, container, component) => {
       // Attach container and component to element for later reference.
-      const containerElement = element.querySelector('[ref="container"]');
+      const containerElement = element.querySelector('[ref="container"]') || element;
       containerElement.formioContainer = container;
       containerElement.formioComponent = component;
+
+      // If this is an existing datagrid element, don't make it draggable.
+      if (component.type === 'datagrid' && components.length > 0) {
+        return element;
+      }
+
       // Add container to draggable list.
       this.dragula.containers.push(containerElement);
 
       // Since we added a wrapper, need to return the original element so that we can find the components inside it.
       return element.children[0];
+    };
+
+    options.hooks.attachDatagrid = (element, component) => {
+      component.loadRefs(element, {
+        'container': 'single',
+      });
+      component.attachComponents(component.refs.container.parentNode, [], component.component.components);
+
+      // Need to set up horizontal rearrangement of fields.
     };
 
     options.hooks.renderComponent = (html, { self }) => {
@@ -291,7 +311,7 @@ export default class WebformBuilder extends Component {
       target.formioContainer.push(info);
     }
 
-    if (isNew) {
+    if (isNew && !this.options.noNewEdit) {
       this.editComponent(info, target, isNew);
     }
 
@@ -428,6 +448,7 @@ export default class WebformBuilder extends Component {
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
       event.preventDefault();
       this.editForm.detach();
+      console.log(parent, parent.formioContainer, this.editForm.submission.data);
       parent.formioContainer[parent.formioContainer.indexOf(component)] = this.editForm.submission.data;
       parent.formioComponent.rebuild();
       this.emit('saveComponent', component);
