@@ -12,7 +12,7 @@ export default {
       <div id="group-container-{{groupKey}}" class="card-body panel-body no-drop" ref="sidebar-container">
         {% groups[groupKey].componentOrder.forEach(function(componentKey) { %}
         <span data-type="{{componentKey}}" class="ui button mini primary fluid formcomponent drag-copy">
-          <i class="{{groups[groupKey].components[componentKey].icon}}" style="margin-right: 5px;"></i>
+          <i class="{{iconClass(groups[groupKey].components[componentKey].icon)}}" style="margin-right: 5px;"></i>
           {{groups[groupKey].components[componentKey].title}}
         </span>
         {% }) %}

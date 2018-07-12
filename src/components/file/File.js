@@ -21,7 +21,7 @@ export default class FileComponent extends Component {
     return {
       title: 'File',
       group: 'advanced',
-      icon: 'fa fa-file',
+      icon: 'file',
       documentation: 'http://help.form.io/userguide/#file',
       weight: 100,
       schema: FileComponent.schema()

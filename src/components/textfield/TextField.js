@@ -24,7 +24,7 @@ export default class TextFieldComponent extends Input {
   static get builderInfo() {
     return {
       title: 'Text Field',
-      icon: 'fa fa-terminal',
+      icon: 'terminal',
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#textfield',
       weight: 0,

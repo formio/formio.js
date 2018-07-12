@@ -16,7 +16,7 @@ export default class HTMLComponent extends Component {
     return {
       title: 'HTML Element',
       group: 'advanced',
-      icon: 'fa fa-code',
+      icon: 'code',
       weight: 90,
       documentation: 'http://help.form.io/userguide/#html-element-component',
       schema: HTMLComponent.schema()

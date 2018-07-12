@@ -19,7 +19,7 @@ export default class FormComponent extends Component {
   static get builderInfo() {
     return {
       title: 'Nested Form',
-      icon: 'fa fa-wpforms',
+      icon: 'wpforms',
       group: 'advanced',
       documentation: 'http://help.form.io/userguide/#form',
       weight: 110,

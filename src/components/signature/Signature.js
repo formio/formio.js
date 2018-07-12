@@ -22,7 +22,7 @@ export default class SignatureComponent extends Input {
     return {
       title: 'Signature',
       group: 'advanced',
-      icon: 'fa fa-pencil',
+      icon: 'pencil',
       weight: 120,
       documentation: 'http://help.form.io/userguide/#signature',
       schema: SignatureComponent.schema()

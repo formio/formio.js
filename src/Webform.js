@@ -743,6 +743,16 @@ export default class Webform extends NestedComponent {
     }));
   }
 
+  redraw() {
+    // Don't bother if we have not built yet.
+    if (!this.element) {
+      return;
+    }
+    this.clear();
+    this.element.innerHTML = this.render();
+    this.attach(this.element);
+  }
+
   attach(element) {
     this.element = element;
     this.loadRefs(element, { webform: 'single' });

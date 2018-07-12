@@ -22,7 +22,7 @@ export default class TabsComponent extends NestedComponent {
     return {
       title: 'Tabs',
       group: 'layout',
-      icon: 'fa fa-folder-o',
+      icon: 'folder-o',
       weight: 50,
       documentation: 'http://help.form.io/userguide/#tabs',
       schema: TabsComponent.schema()
@@ -58,11 +58,17 @@ export default class TabsComponent extends NestedComponent {
     return `tabLink-${this.key}`;
   }
 
-  init() {
+  constructor(...args) {
+    super(...args);
     this.currentTab = 0;
+  }
+
+  init() {
     this.tabs = [];
     _.each(this.component.components, (tab, index) => {
       this.tabs[index] = [];
+      // Initialize empty tabs.
+      tab.components = tab.components || [];
       _.each(tab.components, (comp) => {
         const component = this.createComponent(comp);
         component.tab = this.currentTab;
@@ -83,6 +89,7 @@ export default class TabsComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.tabLinkKey]: 'multiple', [this.tabKey]: 'multiple', [this.tabLikey]: 'multiple' });
+    super.attach(element);
     this.refs[this.tabLinkKey].forEach((tabLink, index) => {
       this.addEventListener(tabLink, 'click', (event) => {
         event.preventDefault();
@@ -90,7 +97,7 @@ export default class TabsComponent extends NestedComponent {
       });
     });
     this.refs[this.tabKey].forEach((tab, index) => {
-      this.attachComponents(tab, this.tabs[index], this.components[index].components);
+      this.attachComponents(tab, this.tabs[index], this.component.components[index].components);
     });
   }
 

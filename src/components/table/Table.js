@@ -36,7 +36,7 @@ export default class TableComponent extends NestedComponent {
     return {
       title: 'Table',
       group: 'layout',
-      icon: 'fa fa-table',
+      icon: 'table',
       weight: 40,
       documentation: 'http://help.form.io/userguide/#table',
       schema: TableComponent.schema()
@@ -106,6 +106,7 @@ export default class TableComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.columnKey]: 'multiple' });
+    super.attach(element);
     const rowLength = this.table.length;
     this.refs[this.columnKey].forEach((column, index) => {
       const rowIndex = Math.floor(index / rowLength);
@@ -114,8 +115,8 @@ export default class TableComponent extends NestedComponent {
     });
   }
 
-  detach(all) {
-    super.detach(all);
+  destroy(all) {
+    super.destroy(all);
     delete this.table;
   }
 

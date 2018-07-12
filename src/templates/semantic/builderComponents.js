@@ -1,6 +1,6 @@
 export default {
   form: `
-<div class="builder-components" ref="container">
+<div class="builder-components drag-container {{type}}" ref="container">
   {{html}}
 </div>
 `,

@@ -12,7 +12,7 @@ export default class PasswordComponent extends TextFieldComponent {
   static get builderInfo() {
     return {
       title: 'Password',
-      icon: 'fa fa-asterisk',
+      icon: 'asterisk',
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#password',
       weight: 20,

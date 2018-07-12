@@ -15,7 +15,7 @@ export default class TimeComponent extends TextFieldComponent {
   static get builderInfo() {
     return {
       title: 'Time',
-      icon: 'fa fa-clock-o',
+      icon: 'clock-o',
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#time',
       weight: 60,

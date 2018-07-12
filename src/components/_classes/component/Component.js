@@ -639,6 +639,7 @@ export default class Component {
   }
 
   build(element) {
+    // this.replaceElement(element, this.render());
     this.empty(element);
     element.innerHTML = this.render();
     this.attach(element);
@@ -1143,6 +1144,7 @@ export default class Component {
   rebuild() {
     this.destroy();
     this.init();
+    this.redraw();
   }
 
   removeEventListeners() {

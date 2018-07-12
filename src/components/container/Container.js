@@ -15,7 +15,7 @@ export default class ContainerComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Container',
-      icon: 'fa fa-folder-open',
+      icon: 'folder-open',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#container',
       weight: 10,
@@ -51,6 +51,7 @@ export default class ContainerComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.containerKey]: 'single' });
+    super.attach(element);
     if (this.refs[this.containerKey]) {
       this.attachComponents(this.refs[this.containerKey]);
     }

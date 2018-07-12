@@ -17,7 +17,7 @@ export default class TagsComponent extends Input {
   static get builderInfo() {
     return {
       title: 'Tags',
-      icon: 'fa fa-tags',
+      icon: 'tags',
       group: 'advanced',
       documentation: 'http://help.form.io/userguide/#tags',
       weight: 50,

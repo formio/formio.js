@@ -398,6 +398,13 @@ export default class NestedComponent extends Component {
     _.each(this.getComponents(), (comp) => (comp.setPristine(pristine)));
   }
 
+  detach() {
+    this.components.forEach(component => {
+      component.detach();
+    });
+    super.detach();
+  }
+
   destroy() {
     this.destroyComponents();
     super.destroy();

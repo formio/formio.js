@@ -17,7 +17,7 @@ export default class SurveyComponent extends Field {
     return {
       title: 'Survey',
       group: 'advanced',
-      icon: 'fa fa-list',
+      icon: 'list',
       weight: 170,
       documentation: 'http://help.form.io/userguide/#survey',
       schema: SurveyComponent.schema()

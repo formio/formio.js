@@ -16,7 +16,7 @@ export default class DataGridComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Data Grid',
-      icon: 'fa fa-th',
+      icon: 'th',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#datagrid',
       weight: 20,

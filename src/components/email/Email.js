@@ -17,7 +17,7 @@ export default class EmailComponent extends TextFieldComponent {
     return {
       title: 'Email',
       group: 'advanced',
-      icon: 'fa fa-at',
+      icon: 'at',
       documentation: 'http://help.form.io/userguide/#email',
       weight: 10,
       schema: EmailComponent.schema()

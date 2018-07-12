@@ -22,7 +22,7 @@ export default class NumberComponent extends Input {
   static get builderInfo() {
     return {
       title: 'Number',
-      icon: 'fa fa-hashtag',
+      icon: 'hashtag',
       group: 'basic',
       documentation: 'http://help.form.io/userguide/#number',
       weight: 10,

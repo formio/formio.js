@@ -70,6 +70,7 @@ export default class WebformBuilder extends Component {
         html = this.renderTemplate('builderPlaceholder', {}) + html;
       }
       return this.renderTemplate('builderComponents', {
+        type: self.type,
         html,
       });
     };
@@ -111,6 +112,9 @@ export default class WebformBuilder extends Component {
       return element;
     };
 
+    // Notify components if they need to modify their render.
+    options.builder = true;
+
     this.webform = new Webform(options);
   }
 
@@ -121,7 +125,7 @@ export default class WebformBuilder extends Component {
   get defaultGroups() {
     return {
       basic: {
-        title: 'Basic Components',
+        title: 'Basic',
         weight: 0,
         default: true,
       },

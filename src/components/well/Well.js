@@ -14,7 +14,7 @@ export default class WellComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Well',
-      icon: 'fa fa-square-o',
+      icon: 'square-o',
       group: 'layout',
       documentation: 'http://help.form.io/userguide/#well',
       weight: 60,
@@ -47,6 +47,7 @@ export default class WellComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.wellkey]: 'single' });
+    super.attach(element);
     if (this.refs[this.wellkey]) {
       this.attachComponents(this.refs[this.wellkey]);
     }

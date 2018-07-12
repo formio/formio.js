@@ -21,7 +21,7 @@ export default class ColumnsComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Columns',
-      icon: 'fa fa-columns',
+      icon: 'columns',
       group: 'layout',
       documentation: 'http://help.form.io/userguide/#columns',
       weight: 10,
@@ -73,11 +73,18 @@ export default class ColumnsComponent extends NestedComponent {
 
   attach(element) {
     this.loadRefs(element, { [this.columnKey]: 'multiple' });
-    this.refs[this.columnKey].forEach((column, index) => this.attachComponents(column, this.columns[index]));
+    super.attach(element);
+    this.refs[this.columnKey].forEach((column, index) =>
+      this.attachComponents(column, this.columns[index], this.component.columns[index].components)
+    );
   }
 
   detach(all) {
     super.detach(all);
-    delete this.columns;
+  }
+
+  destroy() {
+    super.destroy();
+    this.columns = [];
   }
 }

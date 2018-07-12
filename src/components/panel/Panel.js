@@ -20,7 +20,7 @@ export default class PanelComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Panel',
-      icon: 'fa fa-list-alt',
+      icon: 'list-alt',
       group: 'layout',
       documentation: 'http://help.form.io/userguide/#panels',
       weight: 30,

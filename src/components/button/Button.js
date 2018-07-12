@@ -24,7 +24,7 @@ export default class ButtonComponent extends Field {
     return {
       title: 'Button',
       group: 'basic',
-      icon: 'fa fa-stop',
+      icon: 'stop',
       documentation: 'http://help.form.io/userguide/#button',
       weight: 110,
       schema: ButtonComponent.schema()

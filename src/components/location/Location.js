@@ -21,7 +21,7 @@ export default class LocationComponent extends TextFieldComponent {
     return {
       title: 'Location',
       group: 'advanced',
-      icon: 'fa fa-map',
+      icon: 'map',
       weight: 500,
       schema: LocationComponent.schema()
     };

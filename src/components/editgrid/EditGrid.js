@@ -23,7 +23,7 @@ export default class EditGridComponent extends NestedComponent {
   static get builderInfo() {
     return {
       title: 'Edit Grid',
-      icon: 'fa fa-tasks',
+      icon: 'tasks',
       group: 'data',
       documentation: 'http://help.form.io/userguide/#editgrid',
       weight: 40,

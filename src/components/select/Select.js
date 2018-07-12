@@ -31,7 +31,7 @@ export default class SelectComponent extends Field {
     return {
       title: 'Select',
       group: 'basic',
-      icon: 'fa fa-th-list',
+      icon: 'th-list',
       weight: 70,
       documentation: 'http://help.form.io/userguide/#select',
       schema: SelectComponent.schema()
