@@ -254,6 +254,7 @@ export default class DataGridComponent extends NestedComponent {
       _.each(this.rows, (comps) => {
         showColumn |= comps[col.key].checkConditions(data);
       });
+      showColumn = showColumn && col.type !== 'hidden' && !col.hidden;
       if (
         (this.visibleColumns[col.key] && !showColumn) ||
         (!this.visibleColumns[col.key] && showColumn)
