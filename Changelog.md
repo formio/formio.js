@@ -49,9 +49,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
-## Unreleased
+## 3.0.0-rc.21
 ### Fixed
+ - Issue with builder where editing a component would not work inside nested component.
+ - Fixed data grid to not show columns consisting of hidden components.
  - Decimal separators for languages that do not use numerics.
+ 
+### Added
+ - Configure dragula to check if a component can be dragged using the 'no-drag' class
 
 ## 3.0.0-rc.20
 ### Fixed
