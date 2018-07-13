@@ -170,8 +170,8 @@ export default class WebformBuilder extends Component {
       });
 
       const parent = this.getParentElement(element);
-      component.addEventListener(component.refs.editComponent, 'click', () => this.editComponent(component.component, parent));
-      component.addEventListener(component.refs.removeComponent, 'click', () => this.removeComponent(component.component, parent));
+      component.addEventListener(component.refs.editComponent, 'click', () => parent.root.editComponent(component.component, parent));
+      component.addEventListener(component.refs.removeComponent, 'click', () => parent.root.removeComponent(component.component, parent));
 
       return element;
     };
