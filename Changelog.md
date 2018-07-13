@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Data Grid displaying column for Hidden field
+
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
