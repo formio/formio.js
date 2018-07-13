@@ -67,12 +67,12 @@ export default class WebformBuilder extends Webform {
         const removeButton = parent.ce('div', {
           class: 'btn btn-xxs btn-danger component-settings-button component-settings-button-remove'
         }, parent.getIcon('remove'));
-        parent.addEventListener(removeButton, 'click', () => parent.deleteComponent(comp));
+        parent.addEventListener(removeButton, 'click', () => parent.root.deleteComponent(comp));
 
         const editButton = parent.ce('div', {
           class: 'btn btn-xxs btn-default component-settings-button component-settings-button-edit'
         }, parent.getIcon('cog'));
-        parent.addEventListener(editButton, 'click', () => parent.editComponent(comp));
+        parent.addEventListener(editButton, 'click', () => parent.root.editComponent(comp));
 
         // Add the edit buttons to the component.
         comp.prepend(parent.ce('div', {
