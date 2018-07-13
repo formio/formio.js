@@ -122,9 +122,8 @@ export default class DataGridComponent extends NestedComponent {
       numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
       datagridKey: this.datagridKey,
       builder: this.options.builder,
-      placeholder: this.renderTemplate('builderComponents', {
-        html: this.renderTemplate('builderPlaceholder', {}),
-        type: 'datagrid',
+      placeholder: this.renderTemplate('builderPlaceholder', {
+        position: this.component.components.length,
       }),
     }));
   }
@@ -188,15 +187,10 @@ export default class DataGridComponent extends NestedComponent {
   createRowComponents(row, rowIndex) {
     const components = {};
     this.component.components.map((col, colIndex) => {
-      const column = _.clone(col);
       const options = _.clone(this.options);
       options.name += `[${rowIndex}]`;
       options.row = `${rowIndex}-${colIndex}`;
-      const comp = this.createComponent(_.assign({}, column, {
-        hideLabel: !column.dataGridLabel,
-        row: options.row
-      }), options, row);
-      components[col.key] = comp;
+      components[col.key] = this.createComponent(col, options, row);
     });
     return components;
   }

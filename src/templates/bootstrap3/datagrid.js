@@ -1,9 +1,8 @@
 export default {
   form: `
 <label class="control-label" style="">{{t(component.label)}}</label>
-<table class="table datagrid-table 
+<table class="table datagrid-table table-bordered
     {{ component.striped ? 'table-striped' : ''}}
-    {{ component.bordered ? 'table-bordered' : ''}}
     {{ component.hover ? 'table-hover' : ''}}
     {{ component.condensed ? 'table-condensed' : ''}} 
     ">
@@ -20,7 +19,7 @@ export default {
       {% }) %}
       {% if (hasExtraColumn) { %}
       <th>
-        {% if (hasAddButton && hasTopSubmit) { %}
+        {% if (!builder && hasAddButton && hasTopSubmit) { %}
         <button class="btn btn-primary" ref="{{datagridKey}}-addRow">
           <i class="{{iconClass('plus')}}"></i> Add Another
         </button>

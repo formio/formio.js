@@ -72,7 +72,9 @@ export default class WebformBuilder extends Component {
       }
 
       if (!components || (!components.length && !components.nodrop) || (self.type === 'form' && components.length <= 1)) {
-        html = this.renderTemplate('builderPlaceholder', {}) + html;
+        html = this.renderTemplate('builderPlaceholder', {
+          position: 0
+        }) + html;
       }
       return this.renderTemplate('builderComponents', {
         type: self.type,
@@ -313,6 +315,9 @@ export default class WebformBuilder extends Component {
       if (!sibling.getAttribute('data-noattach')) {
         index = _.findIndex(target.formioContainer, { key: sibling.formioComponent.component.key });
       }
+      else {
+        index = sibling.getAttribute('data-position');
+      }
       target.formioContainer.splice(index, 0, info);
     }
     else {
@@ -456,7 +461,6 @@ export default class WebformBuilder extends Component {
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
       event.preventDefault();
       this.editForm.detach();
-      console.log(parent, parent.formioContainer, this.editForm.submission.data);
       parent.formioContainer[parent.formioContainer.indexOf(component)] = this.editForm.submission.data;
       parent.formioComponent.rebuild();
       this.emit('saveComponent', component);

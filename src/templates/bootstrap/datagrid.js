@@ -1,9 +1,8 @@
 export default {
   form: `
 <label class="col-form-label" style="">{{t(component.label)}}</label>
-<table class="table datagrid-table 
+<table class="table datagrid-table table-bordered
     {{ component.striped ? 'table-striped' : ''}}
-    {{ component.bordered ? 'table-bordered' : ''}}
     {{ component.hover ? 'table-hover' : ''}}
     {{ component.condensed ? 'table-sm' : ''}} 
     ">
@@ -41,16 +40,18 @@ export default {
       {% } %}
       {% }) %}
       {% if (hasExtraColumn) { %}
-        <td>
         {% if (!builder && hasRemoveButtons) { %}
+        <td>
           <button type="button" class="btn btn-secondary" ref="{{datagridKey}}-removeRow">
             <i class="{{iconClass('remove-circle')}}"></i>
           </button>
+        </td>
         {% } %}
         {% if (builder) { %}
+        <td ref="container">
           {{placeholder}}
-        {% } %}
         </td>
+        {% } %}
       {% } %}
     </tr>
     {% }) %}
