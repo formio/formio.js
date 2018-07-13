@@ -746,6 +746,9 @@ export default class WebformBuilder extends Webform {
       this.dragula.destroy();
     }
     this.dragula = dragula(this.sidebarContainers.concat(this.dragContainers), {
+      moves(el) {
+        return !el.classList.contains('no-drag');
+      },
       copy(el) {
         return el.classList.contains('drag-copy');
       },
