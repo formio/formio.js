@@ -159,7 +159,6 @@ export default class DataGridComponent extends NestedComponent {
         }
       });
     });
-    this.hook('attachDatagrid', element, this);
   }
 
   addRow() {

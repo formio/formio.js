@@ -31,7 +31,6 @@ export default class ContentComponent extends Component {
 
   render() {
     return super.render(this.renderTemplate('html', {
-      component: this.component,
       tag: 'div',
       attrs: '',
       content: this.content,
@@ -49,19 +48,6 @@ export default class ContentComponent extends Component {
     }
     super.attach(element);
   }
-
-  // TODO: Need to move this to the builder code somewhere. Doesn't belong here.
-  // build() {
-  //   if (this.options.builder) {
-  //     const editorElement = this.ce('div');
-  //     this.addQuill(editorElement, this.wysiwygDefault, (element) => {
-  //       this.component.html = element.value;
-  //     }).then((editor) => {
-  //       editor.setContents(editor.clipboard.convert(this.component.html));
-  //     });
-  //     this.element.appendChild(editorElement);
-  //   }
-  // }
 
   get emptyValue() {
     return '';

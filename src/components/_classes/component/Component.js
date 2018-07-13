@@ -685,7 +685,11 @@ export default class Component {
       this.disabled = true;
     }
 
+    // Allow global attach.
     this.hook('attachComponent', element, this);
+    // Allow attach per component type.
+    const type = this.component.type;
+    this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
 
     return Promise.resolve();
   }

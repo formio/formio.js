@@ -107,6 +107,14 @@ export default class WebformBuilder extends Component {
       // Need to set up horizontal rearrangement of fields.
     };
 
+    options.hooks.attachContent = (element, component) => {
+      component.addQuill(component.refs.html, component.wysiwygDefault, (element) => {
+        component.component.html = element.value;
+      }).then((editor) => {
+        editor.setContents(editor.clipboard.convert(component.component.html));
+      });
+    };
+
     options.hooks.renderComponent = (html, { self }) => {
       if (self.type === 'form') {
         return html;
