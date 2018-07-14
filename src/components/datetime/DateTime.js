@@ -158,6 +158,7 @@ export default class DateTimeComponent extends Input {
   }
 
   get config() {
+    /* eslint-disable camelcase */
     return {
       altInput: true,
       clickOpens: true,
@@ -172,11 +173,13 @@ export default class DateTimeComponent extends Input {
       defaultDate: this.defaultDate,
       hourIncrement: _.get(this.component, 'timePicker.hourStep', 1),
       minuteIncrement: _.get(this.component, 'timePicker.minuteStep', 5),
+      time_24hr: !_.get(this.component, 'timePicker.showMeridian', true),
       minDate: getDateSetting(_.get(this.component, 'datePicker.minDate')),
       maxDate: getDateSetting(_.get(this.component, 'datePicker.maxDate')),
       onChange: () => this.onChange({ noValidate: true }),
       onClose: () => this.closedOn = Date.now()
     };
+    /* eslint-enable camelcase */
   }
 
   set disabled(disabled) {
