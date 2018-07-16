@@ -50,5 +50,19 @@ export default [
     input: true,
     key: 'suffix',
     label: 'Suffix'
+  },
+  {
+    weight: 710,
+    type: 'checkbox',
+    input: true,
+    key: 'showWordCount',
+    label: 'Show Word Counter'
+  },
+  {
+    weight: 720,
+    type: 'checkbox',
+    input: true,
+    key: 'showCharCount',
+    label: 'Show Character Counter'
   }
 ];
