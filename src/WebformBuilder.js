@@ -65,6 +65,15 @@ export default class WebformBuilder extends Component {
 
     options.hooks = options.hooks || {};
 
+    options.hooks.renderComponent = (html, { self }) => {
+      if (self.type === 'form' && !self.key) {
+        return html;
+      }
+      return this.renderTemplate('builderComponent', {
+        html,
+      });
+    };
+
     options.hooks.renderComponents = (html, { components, self }) => {
       // if Datagrid and already has a component, don't make it droppable.
       if (self.type === 'datagrid' && components.length > 0) {
@@ -80,6 +89,36 @@ export default class WebformBuilder extends Component {
         type: self.type,
         html,
       });
+    };
+
+    options.hooks.renderLoading = (html, { self }) => {
+      if (self.key) {
+        return self.name;
+      }
+    };
+
+    options.hooks.renderEditgrid = (html, { self }, mode) => {
+      // Prevent recursion.
+      if (mode !== 'form') {
+        return html;
+      }
+      return self.renderTemplate('editgrid', {
+        components: self.renderComponents(),
+      }, 'builder');
+    };
+
+    options.hooks.renderInput = (html, { self }) => {
+      if (self.type === 'hidden') {
+        return html + self.name;
+      }
+      return html;
+    };
+
+    options.hooks.renderLoading = (html, { self }) => {
+      if (self.type === 'form' && self.key) {
+        return self.name;
+      }
+      return html;
     };
 
     options.hooks.attachComponents = (element, components, container, component) => {
@@ -109,20 +148,18 @@ export default class WebformBuilder extends Component {
       // Need to set up horizontal rearrangement of fields.
     };
 
+    options.hooks.attachEditgrid = (element, component) => {
+      component.loadRefs(element, {
+        'container': 'single',
+      });
+      component.attachComponents(component.refs.container.parentNode, [], component.component.components);
+    };
+
     options.hooks.attachContent = (element, component) => {
       component.addQuill(component.refs.html, component.wysiwygDefault, (element) => {
         component.component.html = element.value;
       }).then((editor) => {
         editor.setContents(editor.clipboard.convert(component.component.html));
-      });
-    };
-
-    options.hooks.renderComponent = (html, { self }) => {
-      if (self.type === 'form') {
-        return html;
-      }
-      return this.renderTemplate('builderComponent', {
-        html,
       });
     };
 
@@ -143,7 +180,7 @@ export default class WebformBuilder extends Component {
     };
 
     // Notify components if they need to modify their render.
-    options.builder = true;
+    options.attachMode = 'builder';
 
     this.webform = new Webform(options);
   }

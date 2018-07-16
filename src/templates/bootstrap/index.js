@@ -21,6 +21,7 @@ import html from './html';
 import icon from './icon';
 import iconClass from './iconClass';
 import input from './input';
+import loading from './loading';
 import map from './map';
 import message from './message';
 import multiValueRow from './multiValueRow';
@@ -73,6 +74,7 @@ export default {
   html,
   icon,
   input,
+  loading,
   map,
   message,
   multiValueRow,

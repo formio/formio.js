@@ -34,9 +34,4 @@ export default class HiddenComponent extends Input {
   labelIsHidden() {
     return true;
   }
-
-  renderElement() {
-    // We need to see it in builder mode.
-    return super.renderElement() + (this.options.builder ? this.name : '');
-  }
 }

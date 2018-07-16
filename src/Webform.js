@@ -22,7 +22,9 @@ function getOptions(options) {
   options = _.defaults(options, {
     submitOnEnter: false,
     i18next: i18next,
-    template: 'bootstrap'
+    template: 'bootstrap',
+    renderMode: 'form',
+    attachMode: 'full'
   });
   if (!options.events) {
     options.events = new EventEmitter({

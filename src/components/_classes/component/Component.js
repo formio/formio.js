@@ -456,12 +456,13 @@ export default class Component {
     }
   }
 
-  getTemplate(names) {
+  getTemplate(names, modeOption) {
     // Allow just passing a string.
     if (!Array.isArray(names)) {
       names = [names];
     }
-    const mode = this.options.mode || 'form';
+    // Need to make this fall back to form if renderMode is not found similar to how we search templates.
+    const mode = modeOption || this.options.renderMode || 'form';
     for (const name of names) {
       if (this.options.templates[name]) {
         return this.options.templates[name][mode];
@@ -475,7 +476,7 @@ export default class Component {
     return templates['bootstrap'][name][mode];
   }
 
-  renderTemplate(name, data = {}) {
+  renderTemplate(name, data = {}, mode) {
     data.component = this.component;
     data.self = this;
     data.iconClass = this.iconClass.bind(this);
@@ -493,8 +494,9 @@ export default class Component {
     // Allow template alters.
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
-      this.interpolate(this.getTemplate(names), data),
-      data
+      this.interpolate(this.getTemplate(names, mode), data),
+      data,
+      mode
     );
   }
 
@@ -1451,7 +1453,7 @@ export default class Component {
    */
   show(show) {
     // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
-    if (!show === !this._visible || this.options.builder || this.options.showHiddenFields) {
+    if (!show === !this._visible || this.options.attachMode === 'builder' || this.options.showHiddenFields) {
       return show;
     }
 

@@ -126,8 +126,11 @@ export default class FormComponent extends Component {
     if (this.options && this.options.templates) {
       options.templates = this.options.templates;
     }
-    if (this.options && this.options.mode) {
-      options.mode = this.options.mode;
+    if (this.options && this.options.renderMode) {
+      options.renderMode = this.options.renderMode;
+    }
+    if (this.options && this.options.attachMode) {
+      options.attachMode = this.options.attachMode;
     }
     if (this.options && this.options.icons) {
       options.icons = this.options.icons;
@@ -136,27 +139,35 @@ export default class FormComponent extends Component {
   }
 
   render() {
-    const subform = this.subForm ? this.subForm.render() : 'Loading';
+    const subform = this.subForm ? this.subForm.render() : this.renderTemplate('loading');
     return super.render(subform);
   }
 
   attach(element) {
-    this.element = element;
-    return this.subForm.attach(element);
+    super.attach(element);
+    if (this.subForm) {
+      return this.subForm.attach(element);
+    }
   }
 
   detach() {
-    this.subForm.detach();
+    if (this.subForm) {
+      this.subForm.detach();
+    }
     super.detach();
   }
 
   destroy() {
-    this.subForm.destroy();
+    if (this.subForm) {
+      this.subForm.destroy();
+    }
     super.destroy();
   }
 
   redraw() {
-    this.subForm.form = this.component;
+    if (this.subForm) {
+      this.subForm.form = this.component;
+    }
     super.redraw();
   }
 
@@ -180,6 +191,11 @@ export default class FormComponent extends Component {
    */
   /* eslint-disable max-statements */
   loadSubForm() {
+    // Don't load form in builder mode.
+    if (this.options.attachMode === 'builder') {
+      return this.subFormReady;
+    }
+
     // Only load the subform if the subform isn't loaded and the conditions apply.
     if (this.subFormLoaded || !super.checkConditions(this.root ? this.root.data : this.data)) {
       return this.subFormReady;

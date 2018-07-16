@@ -119,30 +119,4 @@ export default class TableComponent extends NestedComponent {
     super.destroy(all);
     delete this.table;
   }
-
-  /**
-   *
-   * @param element
-   * @param data
-   */
-  // addComponentsOld(element, data) {
-
-    // TODO: Need to figure out another way of doing this.
-    //     if (this.options.builder) {
-    //       if (!column.components || !column.components.length) {
-    //         td.appendChild(this.ce('div', {
-    //           id: `${this.id}-${rowIndex}-${colIndex}-placeholder`,
-    //           class: 'alert alert-info',
-    //           style: 'text-align:center; margin-bottom: 0px;',
-    //           role: 'alert'
-    //         }, this.text('Drag and Drop a form component')));
-    //       }
-    //       this.root.addDragContainer(td, this, {
-    //         onSave: (component) => {
-    //           component.tableRow = rowIndex;
-    //           component.tableColumn = colIndex;
-    //         }
-    //       });
-    //     }
-  // }
 }

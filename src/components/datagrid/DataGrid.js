@@ -72,19 +72,19 @@ export default class DataGridComponent extends NestedComponent {
     const maxLength = _.get(this.component, 'validate.maxLength');
     return !this.component.disableAddingRemovingRows &&
     !this.shouldDisable &&
-      !this.options.builder &&
+      !this.options.attachMode === 'builder' &&
       !this.options.preview &&
       (!maxLength || (this.dataValue.length < maxLength));
   }
 
   hasExtraColumn() {
-    return this.hasRemoveButtons() || this.options.builder;
+    return this.hasRemoveButtons() || this.options.attachMode === 'builder';
   }
 
   hasRemoveButtons() {
     return !this.component.disableAddingRemovingRows &&
       !this.shouldDisable &&
-      !this.options.builder &&
+      !this.options.attachMode === 'builder' &&
       (this.dataValue.length > _.get(this.component, 'validate.minLength', 0));
   }
 
@@ -121,7 +121,7 @@ export default class DataGridComponent extends NestedComponent {
       hasBottomSubmit: this.hasBottomSubmit(),
       numColumns: _.filter(this.visibleColumns).length + (this.hasExtraColumn() ? 1 : 0),
       datagridKey: this.datagridKey,
-      builder: this.options.builder,
+      builder: this.options.attachMode === 'builder',
       placeholder: this.renderTemplate('builderPlaceholder', {
         position: this.component.components.length,
       }),

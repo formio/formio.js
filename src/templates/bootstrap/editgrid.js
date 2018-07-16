@@ -35,6 +35,9 @@ export default {
 <button class="btn btn-primary" ref="{{editgridKey}}-addRow">
   <i class="{{iconClass('plus')}}"></i> {{t(component.addAnother || 'Add Another')}}
 </button>
-
+`,
+  builder: `
+<label class="col-form-label" style="">{{t(component.label)}}</label>
+{{components}}
 `,
 };
