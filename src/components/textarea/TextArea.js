@@ -1,7 +1,6 @@
 /* global ace */
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
-import _ from 'lodash';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
