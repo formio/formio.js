@@ -1,6 +1,7 @@
 /* global ace */
 import TextFieldComponent from '../textfield/TextField';
 import Formio from '../../Formio';
+import _ from 'lodash';
 
 export default class TextAreaComponent extends TextFieldComponent {
   static schema(...extend) {
@@ -10,7 +11,11 @@ export default class TextAreaComponent extends TextFieldComponent {
       key: 'textArea',
       rows: 3,
       wysiwyg: false,
-      editor: ''
+      editor: '',
+      validate: {
+        minWords: '',
+        maxWords: ''
+      }
     }, ...extend);
   }
 
@@ -72,9 +77,37 @@ export default class TextAreaComponent extends TextFieldComponent {
     return this.options.readOnly && this.component.wysiwyg;
   }
 
+  onChange(flags, fromRoot) {
+    super.onChange(flags, fromRoot);
+    if (this.wordCount) {
+      const wordCount = this.dataValue.trim().split(/\s+/).length;
+      const remaining = this.maxWordCount - wordCount;
+      if (remaining > 0) {
+        this.removeClass(this.wordCount, 'text-danger');
+      }
+      else {
+        this.addClass(this.wordCount, 'text-danger');
+      }
+      this.wordCount.innerHTML = `${remaining} words remaining.`;
+    }
+  }
+
+  addWordCount(container) {
+    if (_.has(this.component, 'validate.maxWords')) {
+      this.maxWordCount = _.parseInt(_.get(this.component, 'validate.maxWords'), 10);
+      this.wordCount = this.ce('span', {
+        class: 'text-muted pull-right'
+      });
+      container.appendChild(this.wordCount);
+    }
+    return container;
+  }
+
   createInput(container) {
     if (this.isPlain) {
-      return super.createInput(container);
+      const inputGroup = super.createInput(container);
+      this.addWordCount(container);
+      return inputGroup;
     }
 
     if (this.htmlView) {
@@ -90,6 +123,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       class: 'formio-wysiwyg-editor'
     });
     container.appendChild(this.input);
+    this.addWordCount(container);
 
     if (this.component.editor === 'ace') {
       this.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)
