@@ -222,7 +222,7 @@ export default class ButtonComponent extends BaseComponent {
           // Create object containing the corresponding HTML element components
           const components = {};
           _.each(flattened, (component, key) => {
-            const element = form.getComponentByKey(key);
+            const element = form.getComponent(key);
             if (element) {
               components[key] = element;
             }

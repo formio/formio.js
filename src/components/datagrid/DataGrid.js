@@ -42,7 +42,7 @@ export default class DataGridComponent extends NestedComponent {
   }
 
   get addAnotherPosition() {
-    return this.component.addAnotherPosition || 'bottom';
+    return _.get(this.component, 'addAnotherPosition', 'bottom');
   }
 
   hasAddButton() {
@@ -91,7 +91,9 @@ export default class DataGridComponent extends NestedComponent {
 
   setVisibleComponents() {
     // Add new values based on minLength.
-    _.times(_.get(this.component, 'validate.minLength', 0) - this.dataValue.length, () => this.dataValue.push({}));
+    for (let dIndex = this.dataValue.length; dIndex < _.get(this.component, 'validate.minLength', 0); dIndex++) {
+      this.dataValue.push({});
+    }
 
     this.numColumns = this.hasExtraColumn() ? 1 : 0;
     this.numRows = this.dataValue.length;
@@ -102,7 +104,7 @@ export default class DataGridComponent extends NestedComponent {
       return this.visibleComponents;
     }
 
-    this.visibleComponents = this.component.components.filter((comp) => this.visibleColumns[comp.key]);
+    this.visibleComponents = _.filter(this.component.components, comp => this.visibleColumns[comp.key]);
     this.numColumns += this.visibleComponents.length;
   }
 
@@ -111,7 +113,7 @@ export default class DataGridComponent extends NestedComponent {
     this.clear();
     this.createLabel(this.element);
     let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
-    ['striped', 'bordered', 'hover', 'condensed'].forEach((prop) => {
+    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
       if (this.component[prop]) {
         tableClass += `table-${prop} `;
       }
@@ -174,7 +176,7 @@ export default class DataGridComponent extends NestedComponent {
 
   get defaultValue() {
     const value = super.defaultValue;
-    if (Array.isArray(value)) {
+    if (_.isArray(value)) {
       return value;
     }
     if (value && (typeof value === 'object')) {
@@ -209,9 +211,9 @@ export default class DataGridComponent extends NestedComponent {
     );
   }
 
-  destroy() {
-    super.destroy();
-    this.rows.forEach((row) => row.forEach((col) => this.removeComponent(col)));
+  destroy(all) {
+    super.destroy(all);
+    _.each(this.rows, row => _.each(row, col => this.removeComponent(col, row)));
     this.rows = [];
   }
 
@@ -247,9 +249,11 @@ export default class DataGridComponent extends NestedComponent {
     if (this.visibleColumns === true) {
       this.visibleColumns = {};
     }
-    this.component.components.forEach((col) => {
-      const showColumn = this.rows.reduce((result, comps) => result || comps[col.key].checkConditions(data), false);
-
+    _.each(this.component.components, (col) => {
+      let showColumn = false;
+      _.each(this.rows, (comps) => {
+        showColumn |= comps[col.key].checkConditions(data);
+      });
       if (
         (this.visibleColumns[col.key] && !showColumn) ||
         (!this.visibleColumns[col.key] && showColumn)
@@ -289,12 +293,11 @@ export default class DataGridComponent extends NestedComponent {
     const changed = this.hasChanged(value, this.dataValue);
     this.dataValue = value;
     this.buildRows();
-    this.rows.forEach((row, index) => {
+    _.each(this.rows, (row, index) => {
       if (value.length <= index) {
         return;
       }
-
-      row.forEach((col, key) => {
+      _.each(row, (col, key) => {
         if (col.type === 'components') {
           col.setValue(value[index], flags);
         }
@@ -319,15 +322,16 @@ export default class DataGridComponent extends NestedComponent {
     if (this.viewOnly) {
       return this.dataValue;
     }
-
-    return this.rows.map((row) => {
+    const values = [];
+    _.each(this.rows, (row) => {
       const value = {};
-      row.forEach((col) => {
+      _.each(row, (col) => {
         if (col && col.key) {
           _.set(value, col.key, col.getValue());
         }
       });
-      return value;
+      values.push(value);
     });
+    return values;
   }
 }
