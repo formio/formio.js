@@ -1374,7 +1374,7 @@ export default class BaseComponent {
   addEventListener(obj, type, func) {
     this.eventHandlers.push({ id: this.id, obj, type, func });
     if ('addEventListener' in obj) {
-      obj.addEventListener(type, func);
+      obj.addEventListener(type, func, false);
     }
     else if ('attachEvent' in obj) {
       obj.attachEvent(`on${type}`, func);
@@ -1388,24 +1388,16 @@ export default class BaseComponent {
    * @param type
    */
   removeEventListener(obj, type) {
-    this.eventHandlers = this.eventHandlers.filter(({
-      id,
-      type: handlerType,
-      func,
-    }) => {
-      if ((id === this.id) && (handlerType === type)) {
-        if ('removeEventListener' in obj) {
-          obj.removeEventListener(type, func);
-        }
-        else if ('detachEvent' in obj) {
-          obj.detachEvent(`on${type}`, func);
-        }
-
-        return false;
+    const indexes = [];
+    _.each(this.eventHandlers, (handler, index) => {
+      if ((handler.id === this.id) && obj.removeEventListener && (handler.type === type)) {
+        obj.removeEventListener(type, handler.func);
+        indexes.push(index);
       }
-
-      return true;
     });
+    if (indexes.length) {
+      _.pullAt(this.eventHandlers, indexes);
+    }
   }
 
   redraw() {
@@ -1419,25 +1411,15 @@ export default class BaseComponent {
 
   removeEventListeners() {
     _.each(this.events._events, (events, type) => {
-      events.forEach((listener) => {
+      _.each(events, (listener) => {
         if (listener && (this.id === listener.id)) {
           this.events.off(type, listener);
         }
       });
     });
-    this.eventHandlers.forEach(({
-      id,
-      type,
-      obj,
-      func,
-    }) => {
-      if ((this.id === id) && type && obj) {
-        if ('removeEventListener' in obj) {
-          obj.removeEventListener(type, func);
-        }
-        else if ('detachEvent' in obj) {
-          obj.detachEvent(`on${type}`, func);
-        }
+    _.each(this.eventHandlers, (handler) => {
+      if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
+        handler.obj.removeEventListener(handler.type, handler.func);
       }
     });
   }
@@ -1459,8 +1441,8 @@ export default class BaseComponent {
   /**
    * Remove all event handlers.
    */
-  destroy() {
-    this.removeEventListeners();
+  destroy(all) {
+    this.removeEventListeners(all);
     this.destroyInputs();
   }
 
