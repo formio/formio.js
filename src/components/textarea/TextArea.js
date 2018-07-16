@@ -90,6 +90,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       class: 'formio-wysiwyg-editor'
     });
     container.appendChild(this.input);
+    this.addCounter(container);
 
     if (this.component.editor === 'ace') {
       this.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)

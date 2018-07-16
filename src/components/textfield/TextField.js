@@ -16,6 +16,8 @@ export default class TextFieldComponent extends BaseComponent {
       validate: {
         minLength: '',
         maxLength: '',
+        minWords: '',
+        maxWords: '',
         pattern: ''
       }
     }, ...extend);
@@ -60,7 +62,9 @@ export default class TextFieldComponent extends BaseComponent {
 
   createInput(container) {
     if (!this.isMultipleMasksField) {
-      return super.createInput(container);
+      const inputGroup = super.createInput(container);
+      this.addCounter(container);
+      return inputGroup;
     }
     //if component should have multiple masks
     const id = `${this.key}`;
@@ -79,8 +83,58 @@ export default class TextFieldComponent extends BaseComponent {
 
     this.errorContainer = container;
     this.setInputStyles(inputGroup);
+    this.addCounter(inputGroup);
     container.appendChild(inputGroup);
     return inputGroup;
+  }
+
+  addCounter(container) {
+    if (_.get(this.component, 'showWordCount', false)) {
+      this.maxWordCount = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
+      this.wordCount = this.ce('span', {
+        class: 'text-muted pull-right',
+        style: 'margin-left: 4px'
+      });
+      container.appendChild(this.wordCount);
+    }
+    if (_.get(this.component, 'showCharCount', false)) {
+      this.maxCharCount = _.parseInt(_.get(this.component, 'validate.maxLength', 0), 10);
+      this.charCount = this.ce('span', {
+        class: 'text-muted pull-right'
+      });
+      container.appendChild(this.charCount);
+    }
+    return container;
+  }
+
+  setCounter(type, element, count, max) {
+    if (max) {
+      const remaining = max - count;
+      if (remaining > 0) {
+        this.removeClass(element, 'text-danger');
+      }
+      else {
+        this.addClass(element, 'text-danger');
+      }
+      element.innerHTML = this.t(`{{ remaining }} ${type} remaining.`, {
+        remaining: remaining
+      });
+    }
+    else {
+      element.innerHTML = this.t(`{{ count }} ${type}`, {
+        count: count
+      });
+    }
+  }
+
+  onChange(flags, fromRoot) {
+    super.onChange(flags, fromRoot);
+    if (this.wordCount) {
+      this.setCounter('words', this.wordCount, this.dataValue.trim().split(/\s+/).length, this.maxWordCount);
+    }
+    if (this.charCount) {
+      this.setCounter('characters', this.charCount, this.dataValue.length, this.maxCharCount);
+    }
   }
 
   setInputMask(input, inputMask) {
