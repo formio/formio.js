@@ -285,7 +285,9 @@ export default class EditGridComponent extends NestedComponent {
 
   removeRowComponents(rowIndex) {
     // Clean up components list.
-    this.editRows[rowIndex].components.forEach((comp) => this.removeComponent(comp));
+    this.editRows[rowIndex].components.forEach(comp => {
+      this.removeComponent(comp, this.components);
+    });
     this.editRows[rowIndex].components = [];
   }
 

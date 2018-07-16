@@ -36,7 +36,7 @@ export default class TabsComponent extends NestedComponent {
   get schema() {
     const schema = super.schema;
     schema.components = [];
-    const allComponents = _.groupBy(this.components, 'component.tab');
+    const allComponents = _.groupBy(this.getComponents(), 'component.tab');
     _.each(this.component.components, (tab, index) => {
       const tabSchema = tab;
       tabSchema.components = [];
