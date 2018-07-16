@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [Unreleased]
+### Fixed
+ - Data Grid displaying column for Hidden field
+
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -49,9 +53,41 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
  - Utils `getComponent()` function.
  
+## 3.0.0-rc.21
+### Fixed
+ - Issue with builder where editing a component would not work inside nested component.
+ - Fixed data grid to not show columns consisting of hidden components.
+ - Decimal separators for languages that do not use numerics.
+ 
+### Added
+ - Configure dragula to check if a component can be dragged using the 'no-drag' class
+
+## 3.0.0-rc.20
+### Fixed
+ - Problem where conditionally hidden select fields would not resolve their loaded promise.
+
+## 3.0.0-rc.19
+### Changed
+ - Made each build entry derive from the same formio.form entry.
+
+### Added
+ - The ability to have access to the Promise library from external mechanisms.
+
+## 3.0.0-rc.18
+### Added
+ - A way to force components visible or hidden in a hierarchial manner.
+ - A way to get access to Formio.Utils from the global Formio object.
+
+## 3.0.0-rc.17
+### Added
+ - A way to get access to the Formio.Components from within a global script.
+
 ## 3.0.0-rc.16
 ### Fixed
  - Issues with all Nested components getting the "tree" parameter which messed up validators for non data components.
+
+### Changed
+ - Upgrade flatpickr@4.5.1, i18next@11.3.5, babel-loader@7.1.5, eslint@5.0.1, fetch-mock@6.5.0, sinon@6.1.3, webpack@4.15.1, gulp-eslint@5.0.0
 
 ## 3.0.0-rc.15
 ### Added

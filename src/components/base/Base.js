@@ -1738,6 +1738,19 @@ export default class BaseComponent {
    * @param show
    */
   show(show) {
+    if (
+      this.options.hide &&
+      this.options.hide[this.component.key]
+    ) {
+      show = false;
+    }
+    else if (
+      this.options.show &&
+      this.options.show[this.component.key]
+    ) {
+      show = true;
+    }
+
     // Execute only if visibility changes or if we are in builder mode or if hidden fields should be shown.
     if (!show === !this._visible || this.options.builder || this.options.showHiddenFields) {
       return show;

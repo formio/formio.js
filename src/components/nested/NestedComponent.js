@@ -330,6 +330,23 @@ export default class NestedComponent extends BaseComponent {
     this.getComponents().forEach(component => component.clearOnHide(show));
   }
 
+  show(show) {
+    const shown = super.show(show);
+    const forceShow = this.options.show && this.options.show[this.component.key];
+    const forceHide = this.options.hide && this.options.hide[this.component.key];
+    if (forceShow || forceHide) {
+      this.getComponents().forEach(component => {
+        if (forceShow) {
+          component.show(true);
+        }
+        else if (forceHide) {
+          component.show(false);
+        }
+      });
+    }
+    return shown;
+  }
+
   /**
    * Allow components to hook into the next page trigger to perform their own logic.
    *
