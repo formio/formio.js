@@ -121,7 +121,7 @@ export default class TextFieldComponent extends BaseComponent {
       });
     }
     else {
-      element.innerHTML = this.t(`{{ count }} ${type}.`, {
+      element.innerHTML = this.t(`{{ count }} ${type}`, {
         count: count
       });
     }
