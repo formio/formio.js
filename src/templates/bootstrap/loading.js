@@ -1,5 +1,5 @@
 export default {
   form: `
-Loading...
+Loading...  
 `,
 };

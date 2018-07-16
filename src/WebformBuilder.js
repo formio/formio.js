@@ -91,12 +91,6 @@ export default class WebformBuilder extends Component {
       });
     };
 
-    options.hooks.renderLoading = (html, { self }) => {
-      if (self.key) {
-        return self.name;
-      }
-    };
-
     options.hooks.renderEditgrid = (html, { self }, mode) => {
       // Prevent recursion.
       if (mode !== 'form') {

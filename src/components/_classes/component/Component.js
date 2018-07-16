@@ -456,13 +456,11 @@ export default class Component {
     }
   }
 
-  getTemplate(names, modeOption) {
+  getTemplate(names, mode) {
     // Allow just passing a string.
     if (!Array.isArray(names)) {
       names = [names];
     }
-    // Need to make this fall back to form if renderMode is not found similar to how we search templates.
-    const mode = modeOption || this.options.renderMode || 'form';
     for (const name of names) {
       if (this.options.templates[name]) {
         return this.options.templates[name][mode];
@@ -476,7 +474,10 @@ export default class Component {
     return templates['bootstrap'][name][mode];
   }
 
-  renderTemplate(name, data = {}, mode) {
+  renderTemplate(name, data = {}, modeOption) {
+    // Need to make this fall back to form if renderMode is not found similar to how we search templates.
+    const mode = modeOption || this.options.renderMode || 'form';
+
     data.component = this.component;
     data.self = this;
     data.iconClass = this.iconClass.bind(this);
@@ -484,6 +485,7 @@ export default class Component {
     data.transform = this.options.templates ? this.options.templates.transform : value => value;
     data.id = data.id || this.id;
     data.key = data.key || this.key;
+
     // Allow more specific template names
     const names = [
       `${name}-${this.component.type}-${this.key}`,
@@ -491,7 +493,9 @@ export default class Component {
       `${name}-${this.key}`,
       `${name}`,
     ];
+
     // Allow template alters.
+    // console.log(`render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`);
     return this.hook(
       `render${name.charAt(0).toUpperCase() + name.substring(1, name.length)}`,
       this.interpolate(this.getTemplate(names, mode), data),

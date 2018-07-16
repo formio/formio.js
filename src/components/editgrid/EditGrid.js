@@ -74,6 +74,10 @@ export default class EditGridComponent extends NestedComponent {
       isOpen: false,
       data: row,
     }));
+    // In builder we need one row so the components will show up.
+    if (this.options.attachMode === 'builder') {
+      this.addRow();
+    }
   }
 
   render() {
