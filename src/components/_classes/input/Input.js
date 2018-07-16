@@ -86,6 +86,16 @@ export default class Input extends Multivalue {
     }
   }
 
+  hasWordCount() {
+    return _.has(this.component, 'validate.maxWords');
+  }
+
+  get remainingWords() {
+    const maxWords = _.parseInt(_.get(this.component, 'validate.maxWords'), 10);
+    const wordCount = this.dataValue.trim().split(/\s+/).length;
+    return maxWords - wordCount;
+  }
+
   renderElement(value, index) {
     const info = this.inputInfo;
     info.attr = info.attr || {};

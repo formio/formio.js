@@ -148,6 +148,40 @@ export default {
         return (value.length <= maxLength);
       }
     },
+    maxWords: {
+      key: 'validate.maxWords',
+      message(component, setting) {
+        return component.t(component.errorMessage('maxWords'), {
+          field: component.errorLabel,
+          length: (setting + 1),
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        const maxWords = parseInt(setting, 10);
+        if (!maxWords || (typeof value !== 'string')) {
+          return true;
+        }
+        return (value.trim().split(/\s+/).length <= maxWords);
+      }
+    },
+    minWords: {
+      key: 'validate.minWords',
+      message(component, setting) {
+        return component.t(component.errorMessage('minWords'), {
+          field: component.errorLabel,
+          length: (setting + 1),
+          data: component.data
+        });
+      },
+      check(component, setting, value) {
+        const minWords = parseInt(setting, 10);
+        if (!minWords || (typeof value !== 'string')) {
+          return true;
+        }
+        return (value.trim().split(/\s+/).length >= minWords);
+      }
+    },
     email: {
       message(component) {
         return component.t(component.errorMessage('invalid_email'), {

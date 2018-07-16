@@ -16,6 +16,9 @@ export default {
   {{attr}}="{{input.attr[attr]}}"
   {% } %}
 >{{input.content}}</{{input.type}}>
+{% if (hasWordCount()) { %}
+<span class="text-muted float-right">{{ remainingWords }} words remaining.</span>
+{% } %}
 {% if (component.suffix) { %}
 <div class="input-group-append">
   <span class="input-group-text">

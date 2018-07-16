@@ -10,6 +10,9 @@ export default {
   {{attr}}="{{input.attr[attr]}}"
   {% } %}
 >{{input.content}}</{{input.type}}>
+{% if (hasWordCount()) { %}
+<span>{{ remainingWords }} words remaining.</span>
+{% } %}
 {% if (component.suffix) { %}
 <div class="ui label">{{component.suffix}}</div>
 {% } %}
