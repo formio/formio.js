@@ -4,10 +4,6 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
-## [Unreleased]
-### Fixed
- - Data Grid displaying column for Hidden field
-
 ### 3.0.0
 #### Breaking Changes
  - Changed the overrall structure of the library and how "imports" work to make them more structured.
@@ -49,10 +45,18 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
    - "row" always points to the "data" context object for that instance (typically row in DataGrid)
    - "data" always refers to the global data of the submission.
 
-## [UNRELEASED]
+## 3.0.0-rc.22
+### Added
+ - Word and character counts along with validation to all text components.
+
+### Changed
+ - Upgraded i18next@11.3.6, babel-eslint@8.2.6, eslint@5.1.0, webpack@4.16.1
+
 ### Fixed
  - Utils `getComponent()` function.
- 
+ - Data Grid displaying column for Hidden field
+ - Fixed the 12hr time configuration for DateTime component. 
+
 ## 3.0.0-rc.21
 ### Fixed
  - Issue with builder where editing a component would not work inside nested component.
