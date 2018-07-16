@@ -62,7 +62,9 @@ export default class TextFieldComponent extends BaseComponent {
 
   createInput(container) {
     if (!this.isMultipleMasksField) {
-      return super.createInput(container);
+      const inputGroup = super.createInput(container);
+      this.addCounter(container);
+      return inputGroup;
     }
     //if component should have multiple masks
     const id = `${this.key}`;
@@ -90,7 +92,8 @@ export default class TextFieldComponent extends BaseComponent {
     if (_.get(this.component, 'showWordCount', false)) {
       this.maxWordCount = _.parseInt(_.get(this.component, 'validate.maxWords', 0), 10);
       this.wordCount = this.ce('span', {
-        class: 'text-muted pull-right'
+        class: 'text-muted pull-right',
+        style: 'margin-left: 4px'
       });
       container.appendChild(this.wordCount);
     }
