@@ -1060,7 +1060,7 @@ export default class Component {
     }
     this.eventHandlers.push({ type: evt, func: func });
     if ('addEventListener' in obj) {
-      obj.addEventListener(evt, func);
+      obj.addEventListener(evt, func, false);
     }
     else if ('attachEvent' in obj) {
       obj.attachEvent(`on${evt}`, func);
@@ -1074,24 +1074,16 @@ export default class Component {
    * @param type
    */
   removeEventListener(obj, type) {
-    this.eventHandlers = this.eventHandlers.filter(({
-      id,
-      type: handlerType,
-      func,
-    }) => {
-      if ((id === this.id) && (handlerType === type)) {
-        if ('removeEventListener' in obj) {
-          obj.removeEventListener(type, func);
-        }
-        else if ('detachEvent' in obj) {
-          obj.detachEvent(`on${type}`, func);
-        }
-
-        return false;
+    const indexes = [];
+    _.each(this.eventHandlers, (handler, index) => {
+      if ((handler.id === this.id) && obj.removeEventListener && (handler.type === type)) {
+        obj.removeEventListener(type, handler.func);
+        indexes.push(index);
       }
-
-      return true;
     });
+    if (indexes.length) {
+      _.pullAt(this.eventHandlers, indexes);
+    }
   }
 
   redraw() {
@@ -1116,28 +1108,16 @@ export default class Component {
   }
 
   removeEventListeners() {
-    if (this.events) {
-      _.each(this.events._events, (events, type) => {
-        events.forEach((listener) => {
-          if (listener && (this.id === listener.id)) {
-            this.events.off(type, listener);
-          }
-        });
+    _.each(this.events._events, (events, type) => {
+      _.each(events, (listener) => {
+        if (listener && (this.id === listener.id)) {
+          this.events.off(type, listener);
+        }
       });
-    }
-    this.eventHandlers.forEach(({
-      id,
-      type,
-      obj,
-      func,
-    }) => {
-      if ((this.id === id) && type && obj) {
-        if ('removeEventListener' in obj) {
-          obj.removeEventListener(type, func);
-        }
-        else if ('detachEvent' in obj) {
-          obj.detachEvent(`on${type}`, func);
-        }
+    });
+    _.each(this.eventHandlers, (handler) => {
+      if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
+        handler.obj.removeEventListener(handler.type, handler.func);
       }
     });
     _.each(this.refs.input, (input) => {
