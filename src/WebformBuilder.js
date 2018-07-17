@@ -88,6 +88,7 @@ export default class WebformBuilder extends Component {
         }) + html;
       }
       return this.renderTemplate('builderComponents', {
+        key: self.key,
         type: self.type,
         html,
       });
@@ -119,7 +120,7 @@ export default class WebformBuilder extends Component {
 
     options.hooks.attachComponents = (element, components, container, component) => {
       // Attach container and component to element for later reference.
-      const containerElement = element.querySelector('[ref="container"]') || element;
+      const containerElement = element.querySelector(`[ref="${component.component.key}-container"]`) || element;
       containerElement.formioContainer = container;
       containerElement.formioComponent = component;
 

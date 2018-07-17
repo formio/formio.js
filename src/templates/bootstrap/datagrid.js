@@ -48,7 +48,7 @@ export default {
         </td>
         {% } %}
         {% if (builder) { %}
-        <td ref="container">
+        <td ref="{{key}}-container">
           {{placeholder}}
         </td>
         {% } %}
