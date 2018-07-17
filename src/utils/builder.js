@@ -12,7 +12,7 @@ export default {
    */
   iterateKey(key) {
     if (!key.match(/(\d+)$/)) {
-      return `${key}2`;
+      return `${key}1`;
     }
 
     return key.replace(/(\d+)$/, function(suffix) {
@@ -28,10 +28,10 @@ export default {
    * @param {Object} component
    *   The component to uniquify
    */
-  uniquify(form, component) {
+  uniquify(container, component) {
     let changed = false;
     const formKeys = {};
-    eachComponent(form.components, function(comp) {
+    eachComponent(container, function(comp) {
       formKeys[comp.key] = true;
     });
 

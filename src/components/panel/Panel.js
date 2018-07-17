@@ -6,7 +6,7 @@ export default class PanelComponent extends NestedComponent {
       label: 'Panel',
       type: 'panel',
       key: 'panel',
-      title: '',
+      title: 'Panel',
       theme: 'default',
       breadcrumb: 'default',
       components: [],

@@ -219,13 +219,6 @@ export default class Webform extends NestedComponent {
     // Set the template
     this.template = this.options.template;
 
-    // if (this.component) {
-    //   this.component.components = this.form.components;
-    // }
-    // else {
-    //   this.component = this.form;
-    // }
-
     this.init();
   }
   /* eslint-enable max-statements */
@@ -574,9 +567,6 @@ export default class Webform extends NestedComponent {
    * @returns {*}
    */
   setForm(form) {
-    if (form.display === 'wizard') {
-      console.warn('You need to instantiate the Wizard class to use this form as a wizard.');
-    }
     if (form.display === 'pdf') {
       console.warn('You need to instantiate the PDF class to use this form as a pdf.');
     }
@@ -713,7 +703,7 @@ export default class Webform extends NestedComponent {
     }
 
     if (this.component) {
-      this.component.components = this.form.components;
+      this.component.components = this.form ? this.form.components : [];
     }
     else {
       this.component = this.form;

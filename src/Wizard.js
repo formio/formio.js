@@ -121,10 +121,10 @@ export default class Wizard extends Webform {
   addComponents() {
     this.pages = [];
     this.panels = [];
-    _.each(this.wizard.components, (item) => {
+    _.each(this.component.components, (item) => {
       const pageOptions = _.clone(this.options);
       if (item.type === 'panel') {
-        if (checkCondition(item, this.data, this.data, this.wizard, this)) {
+        if (checkCondition(item, this.data, this.data, this.component, this)) {
           this.panels.push(item);
           const page = [];
           _.each(item.components, (comp) => {

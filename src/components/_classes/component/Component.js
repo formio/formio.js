@@ -313,6 +313,11 @@ export default class Component {
   }
   /* eslint-enable max-statements */
 
+  // For legacy.
+  get ready() {
+    return Promise.resolve(this);
+  }
+
   init() {
     // Can be overridden
   }
@@ -695,7 +700,9 @@ export default class Component {
     this.hook('attachComponent', element, this);
     // Allow attach per component type.
     const type = this.component.type;
-    this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
+    if (type) {
+      this.hook(`attach${type.charAt(0).toUpperCase() + type.substring(1, type.length)}`, element, this);
+    }
 
     return Promise.resolve();
   }
@@ -1158,13 +1165,15 @@ export default class Component {
   }
 
   removeEventListeners() {
-    _.each(this.events._events, (events, type) => {
-      _.each(events, (listener) => {
-        if (listener && (this.id === listener.id)) {
-          this.events.off(type, listener);
-        }
+    if (this.events) {
+      _.each(this.events._events, (events, type) => {
+        _.each(events, (listener) => {
+          if (listener && (this.id === listener.id)) {
+            this.events.off(type, listener);
+          }
+        });
       });
-    });
+    }
     _.each(this.eventHandlers, (handler) => {
       if ((this.id === handler.id) && handler.type && handler.obj && handler.obj.removeEventListener) {
         handler.obj.removeEventListener(handler.type, handler.func);

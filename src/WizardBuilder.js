@@ -2,23 +2,19 @@ import WebformBuilder from './WebformBuilder';
 import _ from 'lodash';
 
 export default class WizardBuilder extends WebformBuilder {
-  setBuilderElement() {
-    return super.setBuilderElement().then(() => {
-      const buildRegion = this.ce('div', {
-        class: 'col-xs-8 col-sm-9 col-md-10 formarea'
-      });
+  constructor(...args) {
+    super(...args);
 
-      this.element.setAttribute('class', '');
-      this.element.noDrop = true;
-      this.wrapper.insertBefore(buildRegion, this.element);
-      this.pageBar = this.ce('ol', {
-        class: 'breadcrumb'
-      });
-
-      buildRegion.appendChild(this.pageBar);
-      buildRegion.appendChild(this.element);
-      this.currentPage = 0;
-    });
+    this._form = {
+      components: [
+        {
+          title: 'Page 1',
+          label: 'Page 1',
+          type: 'panel',
+          key: 'page1'
+        }
+      ]
+    };
   }
 
   get currentPage() {
@@ -30,18 +26,76 @@ export default class WizardBuilder extends WebformBuilder {
   }
 
   get pages() {
-    return _.filter(this.component.components, { type: 'panel' });
+    return _.filter(this._form.components, { type: 'panel' });
   }
 
-  addSubmitButton() {
-    // Do nothing...
-  }
-
-  deleteComponent(component) {
-    if (super.deleteComponent(component)) {
-      this.gotoPage(0);
+  set form(value) {
+    this._form = value;
+    if (!this._form.components || !Array.isArray(this._form.components)) {
+      this._form.components = [];
     }
+    if (this._form.components.length === 0) {
+      this._form.components.push(        {
+        title: 'Page 1',
+        label: 'Page 1',
+        type: 'panel',
+        key: 'page1'
+      });
+    }
+    this.rebuild();
   }
+
+  get form() {
+    return this._form;
+  }
+
+  render() {
+    return this.renderTemplate('builderWizard', {
+      sidebar: this.renderTemplate('builderSidebar', {
+        groupOrder: this.groupOrder,
+        groups: this.groups,
+      }),
+      pages: this.pages,
+      form: this.webform.render(),
+    });
+  }
+
+  attach(element) {
+    this.loadRefs(element, {
+      addPage: 'multiple',
+      gotoPage: 'multiple',
+    });
+    super.attach(element);
+
+    this.refs.addPage.forEach(link => {
+      this.addEventListener(link, 'click', (event) => {
+        event.preventDefault();
+        this.addPage();
+      });
+    });
+
+    this.refs.gotoPage.forEach((link, index) => {
+      this.addEventListener(link, 'click', (event) => {
+        event.preventDefault();
+        this.gotoPage(index);
+      });
+    });
+  }
+
+  rebuild() {
+    this.webform.form = {
+      display: 'form',
+      type: 'form',
+      components: [this.pages[this.currentPage]],
+    };
+    this.redraw();
+  }
+
+  // deleteComponent(component) {
+  //   if (super.deleteComponent(component)) {
+  //     this.gotoPage(0);
+  //   }
+  // }
 
   addPage() {
     const pageNum = (this.pages.length + 1);
@@ -51,77 +105,13 @@ export default class WizardBuilder extends WebformBuilder {
       type: 'panel',
       key: `page${pageNum}`
     };
-    this.component.components.push(newPage);
-    this.addComponent(newPage);
+    this._form.components.push(newPage);
     this.emit('saveComponent', newPage);
-    this.form = this.schema;
-    this.redraw();
-  }
-
-  addComponents(element, data) {
-    element = element || this.getContainer();
-    data = data || this.data;
-    const components = this.hook('addComponents', this.componentComponents, this);
-    _.each(components, (component, index) => {
-      this.addComponent(component, element, data, null, (index !== this.currentPage));
-    });
+    this.rebuild();
   }
 
   gotoPage(page) {
     this.currentPage = page;
-    this.redraw();
-  }
-
-  /**
-   * Only show the current page.
-   *
-   * @return {Array}
-   */
-  get componentComponents() {
-    const components = this.pages;
-    components.nodrop = true;
-    return components;
-  }
-
-  buildPageBar() {
-    const pages = this.pages;
-
-    // Always ensure we have a single page.
-    if (!pages.length) {
-      return this.addPage();
-    }
-
-    this.empty(this.pageBar);
-    _.each(pages, (page, index) => {
-      const pageLink = this.ce('a', {
-        title: page.title,
-        class: (index === this.currentPage) ? 'label label-primary' : 'label label-info'
-      }, this.text(page.title));
-      this.pageBar.appendChild(this.ce('li', null, pageLink));
-      this.addEventListener(pageLink, 'click', (event) => {
-        event.preventDefault();
-        this.gotoPage(index);
-      });
-    });
-
-    const newPage = this.ce('a', {
-      title: this.t('Create Page'),
-      class: 'label label-success'
-    }, [
-      this.getIcon('plus'),
-      this.text(' PAGE')
-    ]);
-
-    this.addEventListener(newPage, 'click', (event) => {
-      event.preventDefault();
-      this.addPage();
-    });
-
-    this.pageBar.appendChild(this.ce('li', null, newPage));
-  }
-
-  build() {
-    super.build();
-    this.builderReady.then(() => this.buildPageBar());
+    this.rebuild();
   }
 }

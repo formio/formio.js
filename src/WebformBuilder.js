@@ -6,13 +6,12 @@ import dragula from 'dragula';
 import Components from './components/Components';
 import BuilderUtils from './utils/builder';
 import { getComponent } from './utils/utils';
-import Promise from 'native-promise-only';
 import _ from 'lodash';
 require('./components/builder');
 
 export default class WebformBuilder extends Component {
   constructor(options) {
-    super(options);
+    super(null, options);
     this.schemas = {};
 
     this.sideBarScroll = _.get(this.options, 'sideBarScroll', true);
@@ -80,7 +79,10 @@ export default class WebformBuilder extends Component {
         return html;
       }
 
-      if (!components || (!components.length && !components.nodrop) || (self.type === 'form' && components.length <= 1)) {
+      if (!components ||
+        (!components.length && !components.nodrop) ||
+        (self.type === 'form' && components.length <= 1 && (components.length === 0 || components[0].type === 'button'))
+      ) {
         html = this.renderTemplate('builderPlaceholder', {
           position: 0
         }) + html;
@@ -176,11 +178,11 @@ export default class WebformBuilder extends Component {
     // Notify components if they need to modify their render.
     options.attachMode = 'builder';
 
-    this.webform = new Webform(options);
+    this.webform = this.createForm(options);
   }
 
-  get ready() {
-    return Promise.resolve(this);
+  createForm(options) {
+    return new Webform(options);
   }
 
   get defaultGroups() {
@@ -255,7 +257,7 @@ export default class WebformBuilder extends Component {
   }
 
   attach(element) {
-    this.element = element;
+    super.attach(element);
     this.loadRefs(element, {
       form: 'single',
       sidebar: 'single',
@@ -322,7 +324,16 @@ export default class WebformBuilder extends Component {
 
     if (type) {
       // This is a new component
-      info = this.schemas[type];
+      info = _.cloneDeep(this.schemas[type]);
+      info.key = _.camelCase(
+        info.label ||
+        info.placeholder ||
+        info.type
+      );
+
+      // Set a unique key for this component.
+      BuilderUtils.uniquify(target.formioContainer, info);
+
       isNew = true;
     }
     else {
@@ -334,9 +345,12 @@ export default class WebformBuilder extends Component {
       // Since splice returns an array of one object, we need to destructure it.
       info = info[0];
 
-      // If the target is different from the source, rebuild the source now that the item has been removed.
       if (target !== source) {
+        // If the target is different from the source, rebuild the source now that the item has been removed.
         source.formioComponent.rebuild();
+
+        // Ensure the key remains unique in its new container.
+        BuilderUtils.uniquify(target.formioContainer, info);
       }
     }
 
@@ -399,20 +413,6 @@ export default class WebformBuilder extends Component {
     if (this.preview) {
       this.preview.form = { components: [component] };
       this.componentEdit.querySelector('[ref="preview"]').innerHTML = this.preview.render();
-    }
-
-    // Ensure this component has a key.
-    if (isNew) {
-      if (!keyModified) {
-        component.key = _.camelCase(
-          component.label ||
-          component.placeholder ||
-          component.type
-        );
-      }
-
-      // Set a unique key for this component.
-      BuilderUtils.uniquify(this._form, component);
     }
 
     // Change the "default value" field to be reflective of this component.
@@ -501,7 +501,7 @@ export default class WebformBuilder extends Component {
     this.addEventListener(this.dialog, 'close', () => {
       this.editForm.detach();
       if (isNew) {
-        // this.removeComponent(component);
+        this.removeComponent(component, parent);
       }
     });
 
