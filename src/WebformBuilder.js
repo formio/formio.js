@@ -443,7 +443,11 @@ export default class WebformBuilder extends Component {
     // This is the render step.
     this.editForm = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
 
-    this.editForm.form = componentClass.editForm();
+    // Allow editForm overrides per component.
+    const overrides = _.get(this.options, `editForm.${componentCopy.component.type}`, {});
+
+    // Get the editform for this component.
+    this.editForm.form = componentClass.editForm(overrides);
 
     // Pass along the form being edited.
     this.editForm.editForm = this.form;
