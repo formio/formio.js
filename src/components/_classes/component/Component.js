@@ -461,6 +461,10 @@ export default class Component {
     }
   }
 
+  get transform() {
+    return this.options.templates ? this.options.templates.transform : (type, value) => value;
+  }
+
   getTemplate(names, mode) {
     // Allow just passing a string.
     if (!Array.isArray(names)) {
@@ -487,7 +491,7 @@ export default class Component {
     data.self = this;
     data.iconClass = this.iconClass.bind(this);
     data.t = this.t.bind(this);
-    data.transform = this.options.templates ? this.options.templates.transform : value => value;
+    data.transform = this.transform;
     data.id = data.id || this.id;
     data.key = data.key || this.key;
 
@@ -1277,8 +1281,11 @@ export default class Component {
    * Taken from jQuery https://j11y.io/jquery/#v=1.5.0&fn=jQuery.fn.hasClass
    */
   hasClass(element, className) {
+    if (!element) {
+      return false;
+    }
     // Allow templates to intercept.
-    className = this.options.templates.transform('class', className);
+    className = this.transform('class', className);
     className = ` ${className} `;
     return ((` ${element.className} `).replace(/[\n\t\r]/g, ' ').indexOf(className) > -1);
   }
@@ -1292,8 +1299,11 @@ export default class Component {
    *   The name of the class to add.
    */
   addClass(element, className) {
+    if (!element) {
+      return;
+    }
     // Allow templates to intercept.
-    className = this.options.templates.transform('class', className);
+    className = this.transform('class', className);
     const classes = element.getAttribute('class');
     if (!classes || classes.indexOf(className) === -1) {
       element.setAttribute('class', `${classes} ${className}`);
@@ -1309,8 +1319,11 @@ export default class Component {
    *   The name of the class that is to be removed.
    */
   removeClass(element, className) {
+    if (!element) {
+      return;
+    }
     // Allow templates to intercept.
-    className = this.options.templates.transform('class', className);
+    className = this.transform('class', className);
     let cls = element.getAttribute('class');
     if (cls) {
       cls = cls.replace(new RegExp(className, 'g'), '');

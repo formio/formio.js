@@ -100,7 +100,7 @@ export default class TextAreaComponent extends TextFieldComponent {
       this.editorReady = Formio.requireLibrary('ace', 'ace', 'https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.0/ace.js', true)
         .then(() => {
           const mode = this.component.as || 'javascript';
-          this.editor = ace.edit(this.refs.input[index]);
+          this.editor = ace.edit(element);
           this.editor.on('change', () => {
             this.updateValue(null, this.getConvertedValue(this.editor.getValue()));
           });
