@@ -75,7 +75,7 @@ export default [
     input: true,
     weight: 440,
     label: 'Datagrid Label',
-    key: 'datagridLabel',
+    key: 'dataGridLabel',
     tooltip: 'Show the label when in a datagrid.'
   }
 ];

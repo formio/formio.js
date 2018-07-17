@@ -15,7 +15,7 @@ export default {
   'protected': false,
   'defaultValue': false,
   'key': 'checkme',
-  'datagridLabel': true,
+  'dataGridLabel': true,
   'label': 'Check me',
   'hideLabel': false,
   'tableView': true,

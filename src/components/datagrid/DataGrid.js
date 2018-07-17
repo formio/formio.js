@@ -229,7 +229,6 @@ export default class DataGridComponent extends NestedComponent {
     options.name += `[${rowIndex}]`;
     options.row = `${rowIndex}-${colIndex}`;
     const comp = this.createComponent(_.assign({}, column, {
-      label: column.dataGridLabel ? column.label : false,
       row: options.row
     }), options, row);
     comp.rowIndex = rowIndex;

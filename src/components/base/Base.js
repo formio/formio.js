@@ -1090,7 +1090,7 @@ export default class BaseComponent {
   }
 
   labelIsHidden() {
-    return !this.component.label || this.component.hideLabel || this.options.inputsOnly;
+    return !this.component.label || this.component.hideLabel || this.options.inputsOnly || (this.component.inDataGrid && !this.component.dataGridLabel);
   }
 
   /**
