@@ -826,10 +826,6 @@ export default class Component {
   }
 
   createViewOnlyLabel(container) {
-    // if (this.labelIsHidden()) {
-    //   return;
-    // }
-
     this.labelElement = this.ce('dt');
     this.labelElement.appendChild(this.text(this.component.label));
     this.createTooltip(this.labelElement);

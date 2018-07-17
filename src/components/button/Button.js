@@ -16,7 +16,8 @@ export default class ButtonComponent extends Field {
       action: 'submit',
       persistent: false,
       disableOnInvalid: false,
-      theme: 'default'
+      theme: 'default',
+      dataGridLabel: true
     }, ...extend);
   }
 
@@ -122,7 +123,6 @@ export default class ButtonComponent extends Field {
       return;
     }
     // this.addShortcut(this.refs.button);
-
     if (this.component.action === 'submit') {
       const message = this.ce('div');
       this.on('submitButton', () => {
