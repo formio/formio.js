@@ -15,7 +15,8 @@ export default class ButtonComponent extends BaseComponent {
       action: 'submit',
       persistent: false,
       disableOnInvalid: false,
-      theme: 'default'
+      theme: 'default',
+      dataGridLabel: true
     }, ...extend);
   }
 
@@ -120,7 +121,7 @@ export default class ButtonComponent extends BaseComponent {
       this.buttonElement.appendChild(this.text(' '));
     }
 
-    if (this.component.label) {
+    if (!this.labelIsHidden()) {
       this.labelElement = this.text(this.addShortcutToLabel());
       this.buttonElement.appendChild(this.labelElement);
       this.createTooltip(this.buttonElement, null, this.iconClass('question-sign'));
