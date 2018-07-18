@@ -432,6 +432,7 @@ export default class WebformBuilder extends Component {
   }
 
   editComponent(component, parent, isNew) {
+    let saved = false;
     const componentCopy = _.cloneDeep(component);
     const componentClass = Components.components[componentCopy.type];
     // Make sure we only have one dialog open at a time.
@@ -485,6 +486,8 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.componentEdit.querySelector('[ref="removeButton"]'), 'click', (event) => {
       event.preventDefault();
+      // Since we are already removing the component, don't trigger another remove.
+      saved = true;
       this.editForm.detach();
       this.removeComponent(component, parent);
       this.dialog.close();
@@ -492,6 +495,7 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.componentEdit.querySelector('[ref="saveButton"]'), 'click', (event) => {
       event.preventDefault();
+      saved = true;
       this.editForm.detach();
       parent.formioContainer[parent.formioContainer.indexOf(component)] = this.editForm.submission.data;
       parent.formioComponent.rebuild();
@@ -501,7 +505,7 @@ export default class WebformBuilder extends Component {
 
     this.addEventListener(this.dialog, 'close', () => {
       this.editForm.detach();
-      if (isNew) {
+      if (isNew && !saved) {
         this.removeComponent(component, parent);
       }
     });
