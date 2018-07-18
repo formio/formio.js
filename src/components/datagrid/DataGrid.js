@@ -80,6 +80,16 @@ export default class DataGridComponent extends NestedComponent {
   build() {
     this.createElement();
     this.createLabel(this.element);
+    let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
+    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
+      if (this.component[prop]) {
+        tableClass += `table-${prop} `;
+      }
+    });
+    this.tableElement = this.ce('table', {
+      class: tableClass
+    });
+    this.element.appendChild(this.tableElement);
     if (!this.dataValue.length) {
       this.addNewValue();
     }
@@ -110,17 +120,8 @@ export default class DataGridComponent extends NestedComponent {
 
   buildRows() {
     this.setVisibleComponents();
-    this.clear();
-    this.createLabel(this.element);
-    let tableClass = 'table datagrid-table table-bordered form-group formio-data-grid ';
-    _.each(['striped', 'bordered', 'hover', 'condensed'], (prop) => {
-      if (this.component[prop]) {
-        tableClass += `table-${prop} `;
-      }
-    });
-    this.tableElement = this.ce('table', {
-      class: tableClass
-    });
+    this.destroy();
+    this.empty(this.tableElement);
 
     // Build the rows.
     const tableRows = [];
@@ -143,9 +144,6 @@ export default class DataGridComponent extends NestedComponent {
         )
       ));
     }
-
-    // Add the table to the element.
-    this.element.appendChild(this.tableElement);
   }
 
   // Build the header.
@@ -211,10 +209,14 @@ export default class DataGridComponent extends NestedComponent {
     );
   }
 
-  destroy(all) {
-    super.destroy(all);
+  destroyRows() {
     _.each(this.rows, row => _.each(row, col => this.removeComponent(col, row)));
     this.rows = [];
+  }
+
+  destroy(all) {
+    super.destroy(all);
+    this.destroyRows();
   }
 
   buildComponent(col, colIndex, row, rowIndex) {
@@ -228,6 +230,7 @@ export default class DataGridComponent extends NestedComponent {
     const options = _.clone(this.options);
     options.name += `[${rowIndex}]`;
     options.row = `${rowIndex}-${colIndex}`;
+    options.inDataGrid = true;
     const comp = this.createComponent(_.assign({}, column, {
       row: options.row
     }), options, row);

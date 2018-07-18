@@ -50,6 +50,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  - PDF builder to work much better with the drop zone handling for remote pdf forms.
  - Fixed Data Grid components labels being rewritten to false
  - Hidden Component value being equal to '[object Object]'
+ - DataGrid in the builder to allow for editing of the data grid.
 
 ### Added 
  - Allow for editForm overrides when embedding the form builder.

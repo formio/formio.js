@@ -161,6 +161,10 @@ export default class BaseComponent {
       row: ''
     });
 
+    // Determine if we are inside a datagrid.
+    this.inDataGrid = this.options.inDataGrid;
+    this.options.inDataGrid = false;
+
     // Use the i18next that is passed in, otherwise use the global version.
     this.i18next = this.options.i18next || i18next;
 
@@ -1093,7 +1097,7 @@ export default class BaseComponent {
     return !this.component.label ||
       this.component.hideLabel ||
       this.options.inputsOnly ||
-      (this.component.inDataGrid && !this.component.dataGridLabel);
+      (this.inDataGrid && !this.component.dataGridLabel);
   }
 
   /**
