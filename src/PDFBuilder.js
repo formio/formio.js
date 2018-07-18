@@ -35,12 +35,12 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   addDropZone() {
-    if (this.dropZone) {
-      return;
+    if (!this.dropZone) {
+      this.dropZone = this.ce('div', {
+        class: 'formio-drop-zone'
+      });
+      this.prepend(this.dropZone);
     }
-    this.dropZone = this.ce('div');
-    this.disableDropZone();
-    this.pdfForm.prepend(this.dropZone);
     this.addEventListener(this.dropZone, 'dragover', (event) => {
       event.preventDefault();
       return false;
@@ -50,12 +50,7 @@ export default class PDFBuilder extends WebformBuilder {
       this.dragStop(event);
       return false;
     });
-  }
-
-  get dropZoneStyles() {
-    const iframeRect = getElementRect(this.pdfForm.element);
-    const iframeHeight = iframeRect ? iframeRect.height || 1000 : 1000;
-    return `position:absolute;width: 100%;height:${iframeHeight}px;`;
+    this.disableDropZone();
   }
 
   render() {
@@ -72,15 +67,18 @@ export default class PDFBuilder extends WebformBuilder {
     });
   }
 
-  activateDropZone() {
+  enableDropZone() {
     if (this.dropZone) {
-      this.dropZone.setAttribute('style', `${this.dropZoneStyles}display:inherit;`);
+      const iframeRect = getElementRect(this.pdfForm.element);
+      this.dropZone.style.height = iframeRect && iframeRect.height  ? `${iframeRect.height}px` : '1000px';
+      this.dropZone.style.width = iframeRect && iframeRect.width ? `${iframeRect.width}px` : '100%';
+      this.addClass(this.dropZone, 'enabled');
     }
   }
 
   disableDropZone() {
     if (this.dropZone) {
-      this.dropZone.setAttribute('style', `${this.dropZoneStyles}display:none;`);
+      this.removeClass(this.dropZone, 'enabled');
     }
   }
 
@@ -112,8 +110,10 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   dragStart(event, component) {
-    event.dataTransfer.setData('text/plain', JSON.stringify(component.schema));
-    this.activateDropZone();
+    event.stopPropagation();
+    event.dataTransfer.setData('text/plain', 'true');
+    this.currentComponent = component;
+    this.enableDropZone();
   }
 
   removeEventListeners(all) {
@@ -121,6 +121,7 @@ export default class PDFBuilder extends WebformBuilder {
     _.each(this.groups, (group) => {
       _.each(group.components, (builderComponent) => {
         this.removeEventListener(builderComponent, 'dragstart');
+        this.removeEventListener(builderComponent, 'dragend');
       });
     });
   }
@@ -135,13 +136,7 @@ export default class PDFBuilder extends WebformBuilder {
   }
 
   dragStop(event) {
-    event.preventDefault();
-    const dropData = event.dataTransfer.getData('text/plain');
-    if (!dropData || (typeof dropData !== 'string')) {
-      return false;
-    }
-
-    const schema = JSON.parse(dropData);
+    const schema = this.currentComponent ? this.currentComponent.schema : null;
     if (!schema) {
       return false;
     }
@@ -167,6 +162,7 @@ export default class PDFBuilder extends WebformBuilder {
       builderComponent.element.draggable = true;
       builderComponent.element.setAttribute('draggable', true);
       this.addEventListener(builderComponent.element, 'dragstart', (event) => this.dragStart(event, component));
+      this.addEventListener(builderComponent.element, 'dragend', () => this.disableDropZone());
     }
     return builderComponent;
   }
@@ -186,6 +182,7 @@ export default class PDFBuilder extends WebformBuilder {
     if (!this.pdfForm) {
       this.element.noDrop = true;
       this.pdfForm = new PDF(this.element, this.options);
+      this.addClass(this.pdfForm.element, 'formio-pdf-builder');
     }
     this.pdfForm.removeEventListeners(true);
     this.pdfForm.events.removeAllListeners();
