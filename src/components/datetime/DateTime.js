@@ -105,6 +105,20 @@ export default class DateTimeComponent extends Input {
     this.disabled = this.shouldDisable;
   }
 
+  detach() {
+    if (!this.attached) {
+      return;
+    }
+
+    // Clean up clalendars.
+    this.refs.input.forEach(input => {
+      if (input.calendar) {
+        input.calendar.destroy();
+      }
+    });
+    super.detach();
+  }
+
   attachElement(input, index) {
     if (!input.calendar && !this.options.noCalendar) {
       input.calendar = new Flatpickr(input, this.config);
@@ -250,16 +264,6 @@ export default class DateTimeComponent extends Input {
         calendar.clear();
       }
     }
-  }
-
-  detach(all) {
-    // Clean up clalendars.
-    this.refs.inputs.forEach(input => {
-      if (input.calendar) {
-        input.calendar.destroy();
-      }
-    });
-    super.detach(all);
   }
 
   focus() {
