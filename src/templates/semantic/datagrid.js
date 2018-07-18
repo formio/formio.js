@@ -14,7 +14,7 @@ export default {
       {% if (visibleColumns[col.key]) { %}
       <th class="{{col.validate && col.validate.required ? 'field-required' : ''}}">
         {{ col.hideLabel ? '' : t(col.label || col.title) }}
-        {% if (col.tooltip) { %} <i ref="tooltip-{{col.key}}" class="{{iconClass('question-sign')}} text-muted"></i>{% } %}
+        {% if (col.tooltip) { %} <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted" data-title="{{col.tooltip}}"></i>{% } %}
       </th>
       {% } %}
       {% }) %}

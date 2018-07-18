@@ -4,7 +4,7 @@ export default {
   <label class="col-form-label {{label.className}}">
     {{t(component.label)}}
     {% if (component.tooltip) { %} 
-      <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted"></i>
+      <i ref="tooltip" class="{{iconClass('question-sign')}} text-muted" data-title="{{component.tooltip}}"></i>
     {% } %}
   </label>
 {% } %}

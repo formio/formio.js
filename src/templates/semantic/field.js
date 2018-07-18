@@ -4,7 +4,7 @@ export default {
   <label class="{{label.className}}">
     {{t(component.label)}}
     {% if (component.tooltip) { %} 
-      <i ref="tooltip" class="{{iconClass('question-sign')}}"></i>
+      <i ref="tooltip" class="{{iconClass('question-sign')}}" data-title="{{component.tooltip}}"></i>
     {% } %}
   </label>
 {% } %}

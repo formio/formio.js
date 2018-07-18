@@ -47,6 +47,7 @@ export default class TagsComponent extends Input {
   }
 
   attachElement(element, index) {
+    super.attachElement(element, index);
     if (!this.refs.input[index]) {
       return;
     }

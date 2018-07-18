@@ -285,6 +285,11 @@ export default class Component {
      */
     this.eventHandlers = [];
 
+    /**
+     * list of attached tooltips
+     * @type {Array}
+     */
+    this.tooltips = [];
     // To force this component to be invalid.
     this.invalid = false;
 
@@ -680,18 +685,20 @@ export default class Component {
       this.id = this.element.id;
     }
 
-    this.loadRefs(element, { messageContainer: 'single', tooltip: 'single' });
+    this.loadRefs(element, { messageContainer: 'single', tooltip: 'multiple' });
 
-    if (this.refs.tooltip) {
-      this.tooltip = new Tooltip(this.refs.tooltip, {
+    this.refs.tooltip.forEach((tooltip, index) => {
+      console.log('tooltipe', tooltip);
+      const title = (tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
+      this.tooltips[index] = new Tooltip(tooltip, {
         delay: {
           hide: 100
         },
         placement: 'right',
         html: true,
-        title: this.component.tooltip.replace(/(?:\r\n|\r|\n)/g, '<br />')
+        title,
       });
-    }
+    });
 
     this.restoreValue();
 
@@ -709,6 +716,17 @@ export default class Component {
     }
 
     return Promise.resolve();
+  }
+
+  /**
+   * Remove all event handlers.
+   */
+  detach(all) {
+    this.removeEventListeners(all);
+    this.tooltips.forEach((tooltip, index) => {
+      tooltip.dispose();
+    });
+    this.tooltips = [];
   }
 
   get viewOnly() {
@@ -1194,13 +1212,6 @@ export default class Component {
       this.tooltip = null;
     }
     this.refs.input = [];
-  }
-
-  /**
-   * Remove all event handlers.
-   */
-  detach(all) {
-    this.removeEventListeners(all);
   }
 
   /**
