@@ -440,7 +440,7 @@ export default class WebformBuilder extends Component {
     }
 
     // This is the render step.
-    this.editForm = new Webform(_.omit(this.options, ['hooks', 'builder', 'events']));
+    this.editForm = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
 
     this.editForm.form = componentClass.editForm();
 
@@ -451,7 +451,7 @@ export default class WebformBuilder extends Component {
       data: componentCopy,
     };
 
-    this.preview = new Webform(_.omit(this.options, ['hooks', 'builder', 'events']));
+    this.preview = new Webform(_.omit(this.options, ['hooks', 'builder', 'events', 'attachMode']));
 
     this.componentEdit = this.ce('div');
     this.componentEdit.innerHTML = this.renderTemplate('builderEditForm', {

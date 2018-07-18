@@ -300,10 +300,8 @@ export default class Component {
       this.type = this.component.type;
       if (this.hasInput && this.key) {
         this.options.name += `[${this.key}]`;
-        /**
-         * The value of the component. Initially set it to the default.
-         */
-        this.dataValue = this.defaultValue;
+        // Ensure the dataValue is set.
+        this.dataValue = this.dataValue;
       }
 
       /**
@@ -688,7 +686,6 @@ export default class Component {
     this.loadRefs(element, { messageContainer: 'single', tooltip: 'multiple' });
 
     this.refs.tooltip.forEach((tooltip, index) => {
-      console.log('tooltipe', tooltip);
       const title = (tooltip.getAttribute('data-title') || this.component.tooltip).replace(/(?:\r\n|\r|\n)/g, '<br />');
       this.tooltips[index] = new Tooltip(tooltip, {
         delay: {
@@ -1778,7 +1775,7 @@ export default class Component {
    * @return {boolean} - If the value changed.
    */
   setValue(value, flags) {
-    this._value = value;
+    this.dataValue = value;
 
     // If we aren't connected to the dom yet, skip updating values.
     if (!this.attached) {
