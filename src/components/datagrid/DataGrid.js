@@ -219,7 +219,7 @@ export default class DataGridComponent extends NestedComponent {
 
   buildComponent(col, colIndex, row, rowIndex) {
     var container;
-    const isVisible = this.visibleColumns && this.visibleColumns.hasOwnProperty(col.key) && this.visibleColumns[col.key];
+    const isVisible = this.visibleColumns && (!this.visibleColumns.hasOwnProperty(col.key) || this.visibleColumns[col.key]);
     if (isVisible) {
       container = this.ce('td');
       container.noDrop = true;
