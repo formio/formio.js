@@ -1252,7 +1252,7 @@ export default class Component {
     className = this.transform('class', className);
     let cls = element.getAttribute('class');
     if (cls) {
-      cls = cls.replace(new RegExp(className, 'g'), '');
+      cls = cls.replace(new RegExp(` ${className}`, 'g'), '');
       element.setAttribute('class', cls);
     }
   }
