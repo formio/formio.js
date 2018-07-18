@@ -836,19 +836,37 @@ export default class Formio {
       });
   }
 
+  // Needed to maintain reverse compatability...
+  static get token() {
+    if (!Formio.tokens) {
+      Formio.tokens = {};
+    }
+
+    return Formio.tokens.formioToken ? Formio.tokens.formioToken : '';
+  }
+
+  // Needed to maintain reverse compatability...
+  static set token(token) {
+    if (!Formio.tokens) {
+      Formio.tokens = {};
+    }
+
+    return Formio.tokens.formioToken = token || '';
+  }
+
   static setToken(token, opts) {
     token = token || '';
     opts = opts || {};
     var tokenName = `${opts.namespace || 'formio'}Token`;
-    if (!this.tokens) {
-      this.tokens = {};
+    if (!Formio.tokens) {
+      Formio.tokens = {};
     }
 
-    if (this.tokens[tokenName] && (this.tokens[tokenName] === token)) {
+    if (Formio.tokens[tokenName] && Formio.tokens[tokenName] === token) {
       return;
     }
 
-    this.tokens[tokenName] = token;
+    Formio.tokens[tokenName] = token;
     if (!token) {
       Formio.setUser(null, opts);
       // iOS in private browse mode will throw an error but we can't detect ahead of time that we are in private mode.
@@ -872,20 +890,20 @@ export default class Formio {
   static getToken(options) {
     options = options || {};
     var tokenName = `${options.namespace || 'formio'}Token`;
-    if (!this.tokens) {
-      this.tokens = {};
+    if (!Formio.tokens) {
+      Formio.tokens = {};
     }
 
-    if (this.tokens[tokenName]) {
-      return this.tokens[tokenName];
+    if (Formio.tokens[tokenName]) {
+      return Formio.tokens[tokenName];
     }
     try {
-      this.tokens[tokenName] = localStorage.getItem(tokenName) || '';
-      return this.tokens[tokenName];
+      Formio.tokens[tokenName] = localStorage.getItem(tokenName) || '';
+      return Formio.tokens[tokenName];
     }
     catch (e) {
-      this.tokens[tokenName] = cookies.get(tokenName);
-      return this.tokens[tokenName];
+      Formio.tokens[tokenName] = cookies.get(tokenName);
+      return Formio.tokens[tokenName];
     }
   }
 
@@ -1063,6 +1081,7 @@ export default class Formio {
   }
 
   static logout(formio, options) {
+    options = options || {};
     options.formio = formio;
     Formio.setToken(null, options);
     Formio.setUser(null, options);
